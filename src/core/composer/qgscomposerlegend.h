@@ -73,7 +73,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void adjustBoxSize();
 
     /** Sets whether the legend should automatically resize to fit its contents.
-     * @param enabled set to false to disable automatic resizing. The legend frame will not
+     * \param enabled set to false to disable automatic resizing. The legend frame will not
      * be expanded to fit legend items, and items may be cropped from display.
      * @see resizeToContents()
      * \since QGIS 3.0
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     Qt::AlignmentFlag titleAlignment() const;
 
     /** Sets the alignment of the legend title
-     * @param alignment Text alignment for drawing the legend title
+     * \param alignment Text alignment for drawing the legend title
      * \since QGIS 2.3
      * @see titleAlignment
      */
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     double lineSpacing() const;
 
     /** Sets the spacing in-between multiple lines
-     * @param spacing Double value to use as spacing in between multiple lines
+     * \param spacing Double value to use as spacing in between multiple lines
      * \since QGIS 3.0
      * @see lineSpacing
      */
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     bool drawRasterStroke() const;
 
     /** Sets whether a stroke will be drawn around raster symbol items.
-     * @param enabled set to true to draw borders
+     * \param enabled set to true to draw borders
      * @see drawRasterStroke()
      * @see setRasterStrokeColor()
      * @see setRasterStrokeWidth()
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     /** Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @param color stroke color
+     * \param color stroke color
      * @see rasterStrokeColor()
      * @see setDrawRasterStroke()
      * @see setRasterStrokeWidth()
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     /** Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @param width stroke width in millimeters
+     * \param width stroke width in millimeters
      * @see rasterStrokeWidth()
      * @see setDrawRasterStroke()
      * @see setRasterStrokeColor()
@@ -258,14 +258,14 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void updateLegend();
 
     /** Stores state in Dom node
-       * @param elem is Dom element corresponding to 'Composer' tag
-       * @param doc Dom document
+       * \param elem is Dom element corresponding to 'Composer' tag
+       * \param doc Dom document
        */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
-       * @param itemElem is Dom node corresponding to item tag
-       * @param doc is Dom document
+       * \param itemElem is Dom node corresponding to item tag
+       * \param doc is Dom document
        */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 

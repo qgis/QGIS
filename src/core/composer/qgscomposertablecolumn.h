@@ -36,20 +36,20 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
   public:
 
     /** Constructor for QgsComposerTableColumn.
-     * @param heading column heading
+     * \param heading column heading
      */
     QgsComposerTableColumn( const QString &heading = QString() );
 
     /** Writes the column's properties to xml for storage.
-     * @param columnElem an existing QDomElement in which to store the column's properties.
-     * @param doc QDomDocument for the destination xml.
+     * \param columnElem an existing QDomElement in which to store the column's properties.
+     * \param doc QDomDocument for the destination xml.
      * \since QGIS 2.3
      * @see readXml
      */
     virtual bool writeXml( QDomElement &columnElem, QDomDocument &doc ) const;
 
     /** Reads the column's properties from xml.
-     * @param columnElem a QDomElement holding the column's desired properties.
+     * \param columnElem a QDomElement holding the column's desired properties.
      * \since QGIS 2.3
      * @see writeXml
      */
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     double width() const { return mWidth; }
 
     /** Sets the width for a column.
-     * @param width column width in mm, or 0 if column width is to be automatically calculated.
+     * \param width column width in mm, or 0 if column width is to be automatically calculated.
      * \since QGIS 2.5
      * @see width
      */
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     /** Sets the heading for a column, which is the value displayed in the columns
      * header cell.
-     * @param heading Heading for column.
+     * \param heading Heading for column.
      * \since QGIS 2.3
      * @see heading
      */
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     /** Sets the horizontal alignment for a column, which controls the alignment
      * used for drawing column values within cells.
-     * @param alignment horizontal alignment for cell.
+     * \param alignment horizontal alignment for cell.
      * \since QGIS 2.3
      * @see hAlignment
      * @see setVAlignment
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     /** Sets the vertical alignment for a column, which controls the alignment
      * used for drawing column values within cells.
-     * @param alignment vertical alignment for cell.
+     * \param alignment vertical alignment for cell.
      * \since QGIS 2.12
      * @see vAlignment
      * @see setHAlignment
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     /** Sets the attribute name or expression used for the column's values. This property
      * is only used when the column is part of a QgsComposerAttributeTable.
-     * @param attribute attribute name or expression text for column
+     * \param attribute attribute name or expression text for column
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable
      * @see attribute
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     /** Sets the sort order for the column. This property is only used when the column
      * is part of a QgsComposerAttributeTable and when sortByRank is > 0.
-     * @param sortOrder sort order for column
+     * \param sortOrder sort order for column
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable
      * @see sortOrder
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * column when the table is sorted by multiple columns, with lower sort ranks
      * having higher priority. This property is only used when the column
      * is part of a QgsComposerAttributeTable.
-     * @param sortByRank sort rank for column. If sort rank is <= 0 then the column is not being
+     * \param sortByRank sort rank for column. If sort rank is <= 0 then the column is not being
      * sorted.
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable

@@ -48,21 +48,21 @@ class QgsSelectedFeature: public QObject
 
     /**
      * Setting selected feature
-     * @param featureId id of feature which was selected
-     * @param vlayer vector layer in which feature is selected
-     * @param canvas mapCanvas on which we are working
+     * \param featureId id of feature which was selected
+     * \param vlayer vector layer in which feature is selected
+     * \param canvas mapCanvas on which we are working
      */
     void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *vlayer, QgsMapCanvas *canvas );
 
     /**
      * Function to select vertex with number
-     * @param vertexNr number of vertex which is to be selected
+     * \param vertexNr number of vertex which is to be selected
      */
     void selectVertex( int vertexNr );
 
     /**
      * Function to deselect vertex with number
-     * @param vertexNr number of vertex which is to be deselected
+     * \param vertexNr number of vertex which is to be deselected
      */
     void deselectVertex( int vertexNr );
 
@@ -78,25 +78,25 @@ class QgsSelectedFeature: public QObject
 
     /**
      * Moves selected vertex
-     * @param v translation vector
+     * \param v translation vector
      */
     void moveSelectedVertexes( QgsVector v );
 
     /**
      * Inverts selection of vertex with number
-     * @param vertexNr number of vertex which is to be inverted
+     * \param vertexNr number of vertex which is to be inverted
      */
     void invertVertexSelection( int vertexNr );
 
     /**
      * Inverts selection of a set of vertices at once.
-     * @param vertexIndices list of vertex indices to invert whether or not they are selected
+     * \param vertexIndices list of vertex indices to invert whether or not they are selected
      */
     void invertVertexSelection( const QVector<int> &vertexIndices );
 
     /**
      * Tells if vertex is selected
-     * @param vertexNr number of vertex for which we are getting info
+     * \param vertexNr number of vertex for which we are getting info
      * @return true if vertex is selected, false otherwise
      */
     bool isSelected( int vertexNr );

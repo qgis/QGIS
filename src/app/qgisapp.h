@@ -171,8 +171,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** \brief overloaded version of the private addLayer method that takes a list of
      * file names instead of prompting user with a dialog.
-     @param enc encoding type for the layer
-    @param dataSourceType type of ogr datasource
+     \param enc encoding type for the layer
+    \param dataSourceType type of ogr datasource
      @returns true if successfully added layer
      */
     bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
@@ -340,8 +340,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QSet<QgsComposer *> printComposers() const {return mPrintComposers;}
 
     /** Get a unique title from user for new and duplicate composers
-     * @param acceptEmpty whether to accept empty titles (one will be generated)
-     * @param currentTitle base name for initial title choice
+     * \param acceptEmpty whether to accept empty titles (one will be generated)
+     * \param currentTitle base name for initial title choice
      * @return QString::null if user cancels input dialog
      */
     bool uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentTitle = QString() );
@@ -376,8 +376,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *       to long running tasks and to when the user needs to be notified
      *       about interaction with OS services, like the password manager.
      *
-     * @param title
-     * @param message
+     * \param title
+     * \param message
      */
     void showSystemNotification( const QString title, const QString message );
 
@@ -570,7 +570,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsPluginManager *pluginManager();
 
     /** Return vector layers in edit mode
-     * @param modified whether to return only layers that have been modified
+     * \param modified whether to return only layers that have been modified
      * @returns list of layers in legend order, or empty list */
     QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
 
@@ -661,14 +661,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void saveActiveLayerEdits();
 
     /** Save edits of a layer
-     * @param leaveEditable leave the layer in editing mode when done
-     * @param triggerRepaint send layer signal to repaint canvas when done
+     * \param leaveEditable leave the layer in editing mode when done
+     * \param triggerRepaint send layer signal to repaint canvas when done
      */
     void saveEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
 
     /** Cancel edits for a layer
-      * @param leaveEditable leave the layer in editing mode when done
-      * @param triggerRepaint send layer signal to repaint canvas when done
+      * \param leaveEditable leave the layer in editing mode when done
+      * \param triggerRepaint send layer signal to repaint canvas when done
       */
     void cancelEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
 
@@ -990,7 +990,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * To remove this widget again, call {@link removeToolBarIcon}
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
+     * \param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
     QAction *addPluginToolBarWidget( QWidget *widget );
@@ -1004,7 +1004,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * To remove this widget again, call {@link removeRasterToolBarIcon}
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
+     * \param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
     QAction *addRasterToolBarWidget( QWidget *widget );
@@ -1018,7 +1018,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * To remove this widget again, call {@link removeVectorToolBarIcon}
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
+     * \param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
     QAction *addVectorToolBarWidget( QWidget *widget );
@@ -1032,7 +1032,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * To remove this widget again, call {@link removeDatabaseToolBarIcon}
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
+     * \param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
     QAction *addDatabaseToolBarWidget( QWidget *widget );
@@ -1046,7 +1046,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * To remove this widget again, call {@link removeWebToolBarIcon}
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
+     * \param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
     QAction *addWebToolBarWidget( QWidget *widget );
@@ -1069,7 +1069,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void openProject( QAction *action );
 
     /** Attempts to run a Python script
-     * @param filePath full path to Python script
+     * \param filePath full path to Python script
      * \since QGIS 2.7
      */
     void runScript( const QString &filePath );
@@ -1558,7 +1558,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.
      *
-     * @param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
+     * \param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
      */
     void saveRecentProjectPath( const QString &projectPath, bool savePreviewImage = true );
     //! Update project menu with the current list of recently accessed projects

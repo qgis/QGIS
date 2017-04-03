@@ -46,7 +46,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
   public:
 
     /** \brief Constructor
-     * @param ml Map layer for which properties will be displayed
+     * \param ml Map layer for which properties will be displayed
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgisGui::ModalDialogFlags );
 

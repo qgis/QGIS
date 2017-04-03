@@ -38,8 +38,8 @@ class CORE_EXPORT QgsMapUnitScale
   public:
 
     /** Constructor for QgsMapUnitScale
-     * @param minScale minimum allowed scale, or 0.0 if no minimum scale set
-     * @param maxScale maximum allowed scale, or 0.0 if no maximum scale set
+     * \param minScale minimum allowed scale, or 0.0 if no minimum scale set
+     * \param maxScale maximum allowed scale, or 0.0 if no maximum scale set
      */
     explicit QgsMapUnitScale( double minScale = 0.0, double maxScale = 0.0 )
       : minScale( minScale )
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMapUnitScale
 
     /** Computes a map units per pixel scaling factor, respecting the minimum and maximum scales
      * set for the object.
-     * @param c render context
+     * \param c render context
      * @returns map units per pixel, limited between minimum and maximum scales
      */
     double computeMapUnitsPerPixel( const QgsRenderContext &c ) const;

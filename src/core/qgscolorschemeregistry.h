@@ -63,14 +63,14 @@ class CORE_EXPORT QgsColorSchemeRegistry
 
     /** Adds a color scheme to the registry. Ownership of the scheme is transferred
      * to the registry.
-     * @param scheme color scheme to add
+     * \param scheme color scheme to add
      * @see populateFromInstance
      * @see removeColorScheme
      */
     void addColorScheme( QgsColorScheme *scheme );
 
     /** Removes all matching color schemes from the registry
-     * @param scheme color scheme to remove
+     * \param scheme color scheme to remove
      * @returns true if scheme was found and removed
      * @see addColorScheme
      */
@@ -82,13 +82,13 @@ class CORE_EXPORT QgsColorSchemeRegistry
     QList<QgsColorScheme *> schemes() const;
 
     /** Returns all color schemes in the registry which have a specified flag set
-     * @param flag flag to match
+     * \param flag flag to match
      * @returns list of color schemes with flag set
      */
     QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
 
     /** Return color schemes of a specific type
-     * @param schemeList destination list for matching schemes
+     * \param schemeList destination list for matching schemes
      * \note not available in Python bindings
      */
     template<class T> void schemes( QList<T *> &schemeList );

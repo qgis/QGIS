@@ -47,7 +47,7 @@ class CORE_EXPORT QgsLegendSettings
     Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
 
     /** Sets the alignment of the legend title
-     * @param alignment Text alignment for drawing the legend title
+     * \param alignment Text alignment for drawing the legend title
      * @see titleAlignment
      */
     void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsLegendSettings
     bool drawRasterStroke() const { return mRasterSymbolStroke; }
 
     /** Sets whether a stroke will be drawn around raster symbol items.
-     * @param enabled set to true to draw borders
+     * \param enabled set to true to draw borders
      * @see drawRasterStroke()
      * @see setRasterStrokeColor()
      * @see setRasterStrokeWidth()
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsLegendSettings
 
     /** Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @param color stroke color
+     * \param color stroke color
      * @see rasterStrokeColor()
      * @see setDrawRasterStroke()
      * @see setRasterStrokeWidth()
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsLegendSettings
 
     /** Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @param width stroke width in millimeters
+     * \param width stroke width in millimeters
      * @see rasterStrokeWidth()
      * @see setDrawRasterStroke()
      * @see setRasterStrokeColor()
@@ -168,13 +168,13 @@ class CORE_EXPORT QgsLegendSettings
     void drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const;
 
     /** Like the above, but with a rectangle for multiline text
-     * @param p painter to use
-     * @param rect rectangle to draw into
-     * @param text text to draw
-     * @param font font to use
-     * @param halignment optional horizontal alignment
-     * @param valignment optional vertical alignment
-     * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
+     * \param p painter to use
+     * \param rect rectangle to draw into
+     * \param text text to draw
+     * \param font font to use
+     * \param halignment optional horizontal alignment
+     * \param valignment optional vertical alignment
+     * \param flags allows for passing Qt::TextFlags to control appearance of rendered text
      */
     void drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 

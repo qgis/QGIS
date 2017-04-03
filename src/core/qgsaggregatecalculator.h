@@ -87,7 +87,7 @@ class CORE_EXPORT QgsAggregateCalculator
     };
 
     /** Constructor for QgsAggregateCalculator.
-     * @param layer vector layer to calculate aggregate from
+     * \param layer vector layer to calculate aggregate from
      */
     QgsAggregateCalculator( const QgsVectorLayer *layer );
 
@@ -96,12 +96,12 @@ class CORE_EXPORT QgsAggregateCalculator
     const QgsVectorLayer *layer() const;
 
     /** Sets all aggregate parameters from a parameter bundle.
-     * @param parameters aggregate parameters
+     * \param parameters aggregate parameters
      */
     void setParameters( const AggregateParameters &parameters );
 
     /** Sets a filter to limit the features used during the aggregate calculation.
-     * @param filterExpression expression for filtering features, or empty string to remove filter
+     * \param filterExpression expression for filtering features, or empty string to remove filter
      * @see filter()
      */
     void setFilter( const QString &filterExpression ) { mFilterExpression = filterExpression; }
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsAggregateCalculator
     QString filter() const { return mFilterExpression; }
 
     /** Sets the delimiter to use for joining values with the StringConcatenate aggregate.
-     * @param delimiter string delimiter
+     * \param delimiter string delimiter
      * @see delimiter()
      */
     void setDelimiter( const QString &delimiter ) { mDelimiter = delimiter; }
@@ -123,19 +123,19 @@ class CORE_EXPORT QgsAggregateCalculator
     QString delimiter() const { return mDelimiter; }
 
     /** Calculates the value of an aggregate.
-     * @param aggregate aggregate to calculate
-     * @param fieldOrExpression source field or expression to use as basis for aggregated values.
+     * \param aggregate aggregate to calculate
+     * \param fieldOrExpression source field or expression to use as basis for aggregated values.
      * If an expression is used, then the context parameter must be set.
-     * @param context expression context for evaluating expressions
-     * @param ok if specified, will be set to true if aggregate calculation was successful
+     * \param context expression context for evaluating expressions
+     * \param ok if specified, will be set to true if aggregate calculation was successful
      * @returns calculated aggregate value
      */
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
                         QgsExpressionContext *context = nullptr, bool *ok = nullptr ) const;
 
     /** Converts a string to a aggregate type.
-     * @param string string to convert
-     * @param ok if specified, will be set to true if conversion was successful
+     * \param string string to convert
+     * \param ok if specified, will be set to true if conversion was successful
      * @returns aggregate type
      */
     static Aggregate stringToAggregate( const QString &string, bool *ok = nullptr );

@@ -37,7 +37,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     virtual ~QgsNineCellFilter() = default;
 
     /** Starts the calculation, reads from mInputFile and stores the result in mOutputFile
-      @param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
+      \param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
       @return 0 in case of success*/
     int processRaster( QProgressDialog *p );
 

@@ -81,8 +81,8 @@ public:
      * Note that you will need to use setSuspended() on both devices to
      * control which one gets the incoming data from the pty.
      *
-     * @param fd an open pty master file descriptor.
-     * @param mode the device mode to open the pty with.
+     * \param fd an open pty master file descriptor.
+     * \param mode the device mode to open the pty with.
      * @return true if a pty pair was successfully opened
      */
     bool open(int fd, OpenMode mode = ReadWrite | Unbuffered);

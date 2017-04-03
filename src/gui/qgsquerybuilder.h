@@ -44,9 +44,9 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     /** This constructor is used when the query builder is called from the
      * vector layer properties dialog
-     * @param layer existing vector layer
-     * @param parent Parent widget
-     * @param fl dialog flags
+     * \param layer existing vector layer
+     * \param parent Parent widget
+     * \param fl dialog flags
      */
     QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent = nullptr,
                      Qt::WindowFlags fl = QgisGui::ModalDialogFlags );

@@ -59,7 +59,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
     /** Constructor for QgsDateTimeStatisticalSummary
-     * @param stats flags for statistics to calculate
+     * \param stats flags for statistics to calculate
      */
     QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats = All );
 
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., count).
-     * @param stats flags for statistics to calculate
+     * \param stats flags for statistics to calculate
      * @see statistics
      */
     void setStatistics( Statistics stats ) { mStatistics = stats; }
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
 
     /** Calculates summary statistics for a list of variants. Any non-datetime variants will be
      * ignored.
-     * @param values list of variants
+     * \param values list of variants
      * @see addValue()
      */
     void calculate( const QVariantList &values );
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      * allows datetimes to be added to the calculation one at a time. For large
      * quantities of dates this may be more efficient then first adding all the
      * variants to a list and calling calculate().
-     * @param value datetime to add. Any non-datetime variants will be ignored.
+     * \param value datetime to add. Any non-datetime variants will be ignored.
      * \note call reset() before adding the first datetime using this method
      * to clear the results from any previous calculations
      * \note finalize() must be called after adding the final value and before
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     void finalize();
 
     /** Returns the value of a specified statistic
-     * @param stat statistic to return
+     * \param stat statistic to return
      * @returns calculated value of statistic
      */
     QVariant statistic( Statistic stat ) const;
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     QgsInterval range() const { return mMax - mMin; }
 
     /** Returns the friendly display name for a statistic
-     * @param statistic statistic to return name for
+     * \param statistic statistic to return name for
      */
     static QString displayName( Statistic statistic );
 

@@ -123,8 +123,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void restoreWindowState();
 
     /** Loads the contents of a template document into the composer's composition.
-     * @param templateDoc template document to load
-     * @param clearExisting set to true to remove all existing composition settings and items before loading template
+     * \param templateDoc template document to load
+     * \param clearExisting set to true to remove all existing composition settings and items before loading template
      * @returns true if template load was successful
      */
     bool loadFromTemplate( const QDomDocument &templateDoc, bool clearExisting );

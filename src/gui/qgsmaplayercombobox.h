@@ -121,7 +121,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     QgsMapLayer *currentLayer() const;
 
     /** Return the layer currently shown at the specified index within the combo box.
-     * @param layerIndex position of layer to return
+     * \param layerIndex position of layer to return
      * \since QGIS 2.10
      * @see currentLayer
      */

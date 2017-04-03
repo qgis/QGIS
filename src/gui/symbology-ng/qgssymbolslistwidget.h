@@ -43,7 +43,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     virtual ~QgsSymbolsListWidget();
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
+     * \param context symbol widget context
      * @see context()
      * \since QGIS 3.0
      */

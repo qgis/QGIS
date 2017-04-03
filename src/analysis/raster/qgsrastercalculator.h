@@ -54,33 +54,33 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     };
 
     /** QgsRasterCalculator constructor.
-     * @param formulaString formula for raster calculation
-     * @param outputFile output file path
-     * @param outputFormat output file format
-     * @param outputExtent output extent. CRS for output is taken from first entry in rasterEntries.
-     * @param nOutputColumns number of columns in output raster
-     * @param nOutputRows number of rows in output raster
-     * @param rasterEntries list of referenced raster layers
+     * \param formulaString formula for raster calculation
+     * \param outputFile output file path
+     * \param outputFormat output file format
+     * \param outputExtent output extent. CRS for output is taken from first entry in rasterEntries.
+     * \param nOutputColumns number of columns in output raster
+     * \param nOutputRows number of rows in output raster
+     * \param rasterEntries list of referenced raster layers
      */
     QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
                          const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries );
 
     /** QgsRasterCalculator constructor.
-     * @param formulaString formula for raster calculation
-     * @param outputFile output file path
-     * @param outputFormat output file format
-     * @param outputExtent output extent, CRS is specified by outputCrs parameter
-     * @param outputCrs destination CRS for output raster
-     * @param nOutputColumns number of columns in output raster
-     * @param nOutputRows number of rows in output raster
-     * @param rasterEntries list of referenced raster layers
+     * \param formulaString formula for raster calculation
+     * \param outputFile output file path
+     * \param outputFormat output file format
+     * \param outputExtent output extent, CRS is specified by outputCrs parameter
+     * \param outputCrs destination CRS for output raster
+     * \param nOutputColumns number of columns in output raster
+     * \param nOutputRows number of rows in output raster
+     * \param rasterEntries list of referenced raster layers
      * \since QGIS 2.10
      */
     QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
                          const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries );
 
     /** Starts the calculation and writes new raster
-      @param p progress bar (or 0 if called from non-gui code)
+      \param p progress bar (or 0 if called from non-gui code)
       @return 0 in case of success*/
     //TODO QGIS 3.0 - return QgsRasterCalculator::Result
     int processCalculation( QProgressDialog *p = nullptr );
@@ -98,7 +98,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     GDALDatasetH openOutputFile( GDALDriverH outputDriver );
 
     /** Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows
-      @param transform double[6] array that receives the GDAL parameters*/
+      \param transform double[6] array that receives the GDAL parameters*/
     void outputGeoTransform( double *transform ) const;
 
     QString mFormulaString;

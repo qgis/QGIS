@@ -55,10 +55,10 @@ class CORE_EXPORT QgsRendererRange
     QString dump() const;
 
     /** Creates a DOM element representing the range in SLD format.
-     * @param doc DOM document
-     * @param element destination DOM element
-     * @param props graduated renderer properties
-     * @param firstRange set to true if the range is the first range, where the lower value uses a <= test
+     * \param doc DOM document
+     * \param element destination DOM element
+     * \param props graduated renderer properties
+     * \param firstRange set to true if the range is the first range, where the lower value uses a <= test
      * rather than a < test.
      */
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
@@ -165,8 +165,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     /** Add a breakpoint by splitting existing classes so that the specified
      * value becomes a break between two classes.
-     * @param breakValue position to insert break
-     * @param updateSymbols set to true to reapply ramp colors to the new
+     * \param breakValue position to insert break
+     * \param updateSymbols set to true to reapply ramp colors to the new
      * symbol ranges
      * \since QGIS 2.9
      */
@@ -206,9 +206,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     Mode mode() const { return mMode; }
     void setMode( Mode mode ) { mMode = mode; }
     //! Recalculate classes for a layer
-    //! @param vlayer  The layer being rendered (from which data values are calculated)
-    //! @param mode    The calculation mode
-    //! @param nclasses The number of classes to calculate (approximate for some modes)
+    //! \param vlayer  The layer being rendered (from which data values are calculated)
+    //! \param mode    The calculation mode
+    //! \param nclasses The number of classes to calculate (approximate for some modes)
     //! \since QGIS 2.6
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
 
@@ -216,24 +216,24 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! \since QGIS 2.6
     const QgsRendererRangeLabelFormat &labelFormat() const { return mLabelFormat; }
     //! Set the label format used to generate default classification labels
-    //! @param labelFormat The string appended to classification labels
-    //! @param updateRanges If true then ranges ending with the old unit string are updated to the new.
+    //! \param labelFormat The string appended to classification labels
+    //! \param updateRanges If true then ranges ending with the old unit string are updated to the new.
     //! \since QGIS 2.6
     void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false );
 
     //! Reset the label decimal places to a numberbased on the minimum class interval
-    //! @param updateRanges if true then ranges currently using the default label will be updated
+    //! \param updateRanges if true then ranges currently using the default label will be updated
     //! \since QGIS 2.6
     void calculateLabelPrecision( bool updateRanges = true );
 
     /** Creates a new graduated renderer.
-     * @param vlayer vector layer
-     * @param attrName attribute to classify
-     * @param classes number of classes
-     * @param mode classification mode
-     * @param symbol base symbol
-     * @param ramp color ramp for classes
-     * @param legendFormat
+     * \param vlayer vector layer
+     * \param attrName attribute to classify
+     * \param classes number of classes
+     * \param mode classification mode
+     * \param symbol base symbol
+     * \param ramp color ramp for classes
+     * \param legendFormat
      * @returns new QgsGraduatedSymbolRenderer object
      */
     static QgsGraduatedSymbolRenderer *createRenderer(
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     /** Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
      * the classes' color.
-     * @param sym source symbol, ownership is transferred to the renderer
+     * \param sym source symbol, ownership is transferred to the renderer
      * @see sourceSymbol()
      * @see setSourceColorRamp()
      */
@@ -277,19 +277,19 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QgsColorRamp *sourceColorRamp();
 
     /** Sets the source color ramp.
-     * @param ramp color ramp. Ownership is transferred to the renderer
+     * \param ramp color ramp. Ownership is transferred to the renderer
      */
     void setSourceColorRamp( QgsColorRamp *ramp );
 
     /** Update the color ramp used. Also updates all symbols colors.
      * Doesn't alter current breaks.
-     * @param ramp color ramp. Ownership is transferred to the renderer
+     * \param ramp color ramp. Ownership is transferred to the renderer
      */
     void updateColorRamp( QgsColorRamp *ramp = nullptr );
 
     /** Update all the symbols but leave breaks and colors. This method also sets the source
      * symbol for the renderer.
-     * @param sym source symbol to use for classes. Ownership is not transferred.
+     * \param sym source symbol to use for classes. Ownership is not transferred.
      * @see setSourceSymbol()
      */
     void updateSymbols( QgsSymbol *sym );

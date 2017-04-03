@@ -152,13 +152,13 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     /** Scales the view in a safe way, by limiting the acceptable range
      * of the scale applied.
-     * @param scale factor to scale view by
+     * \param scale factor to scale view by
      * \since QGIS 2.16
      */
     void scaleSafe( double scale );
 
     /** Sets whether a preview effect should be used to alter the view's appearance
-     * @param enabled Set to true to enable the preview effect on the view
+     * \param enabled Set to true to enable the preview effect on the view
      * \since QGIS 2.3
      * @see setPreviewMode
      */
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     /** Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
      * if setPreviewMode is set to true.
-     * @param mode PreviewMode to be used to draw the view
+     * \param mode PreviewMode to be used to draw the view
      * \since QGIS 2.3
      * @see setPreviewModeEnabled
      */

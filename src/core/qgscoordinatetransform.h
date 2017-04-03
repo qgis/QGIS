@@ -56,8 +56,8 @@ class CORE_EXPORT QgsCoordinateTransform
     QgsCoordinateTransform();
 
     /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
-     * @param source source CRS, typically of the layer's coordinate system
-     * @param destination CRS, typically of the map canvas coordinate system
+     * \param source source CRS, typically of the layer's coordinate system
+     * \param destination CRS, typically of the map canvas coordinate system
      */
     QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
                             const QgsCoordinateReferenceSystem &destination );
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsCoordinateTransform
 
     /*!
      * Sets the source coordinate reference system.
-     * @param crs CRS to transform coordinates from
+     * \param crs CRS to transform coordinates from
      * @see sourceCrs()
      * @see setDestinationCrs()
      */
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsCoordinateTransform
 
     /*!
      * Sets the destination coordinate reference system.
-     * @param crs CRS to transform coordinates to
+     * \param crs CRS to transform coordinates to
      * @see destinationCrs()
      * @see setSourceCrs()
      */
@@ -114,8 +114,8 @@ class CORE_EXPORT QgsCoordinateTransform
     /** Transform the point from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
-     * @param point point to transform
-     * @param direction transform direction (defaults to ForwardTransform)
+     * \param point point to transform
+     * \param direction transform direction (defaults to ForwardTransform)
      * @return transformed point
      */
     QgsPoint transform( const QgsPoint &point, TransformDirection direction = ForwardTransform ) const;
@@ -123,9 +123,9 @@ class CORE_EXPORT QgsCoordinateTransform
     /** Transform the point specified by x,y from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
-     * @param x x coordinate of point to transform
-     * @param y y coordinate of point to transform
-     * @param direction transform direction (defaults to ForwardTransform)
+     * \param x x coordinate of point to transform
+     * \param y y coordinate of point to transform
+     * \param direction transform direction (defaults to ForwardTransform)
      * @return transformed point
      */
     QgsPoint transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
@@ -136,9 +136,9 @@ class CORE_EXPORT QgsCoordinateTransform
      * This method assumes that the rectangle is a bounding box, and creates a bounding box
      * in the projected CRS, such that all points from the source rectangle are within
      * the returned rectangle.
-     * @param rectangle rectangle to transform
-     * @param direction transform direction (defaults to ForwardTransform)
-     * @param handle180Crossover set to true if destination CRS is geographic and handling of extents
+     * \param rectangle rectangle to transform
+     * \param direction transform direction (defaults to ForwardTransform)
+     * \param handle180Crossover set to true if destination CRS is geographic and handling of extents
      * crossing the 180 degree longitude line is required
      * @return rectangle in destination CRS
      */
@@ -147,24 +147,24 @@ class CORE_EXPORT QgsCoordinateTransform
     /** Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
-     * @param x array of x coordinates of points to transform
-     * @param y array of y coordinates of points to transform
-     * @param z array of z coordinates of points to transform. The z coordinates of the points
+     * \param x array of x coordinates of points to transform
+     * \param y array of y coordinates of points to transform
+     * \param z array of z coordinates of points to transform. The z coordinates of the points
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
-     * @param direction transform direction (defaults to ForwardTransform)
+     * \param direction transform direction (defaults to ForwardTransform)
      */
     void transformInPlace( double &x, double &y, double &z, TransformDirection direction = ForwardTransform ) const;
 
     /** Transforms an array of x, y and z float coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
-     * @param x array of x coordinates of points to transform
-     * @param y array of y coordinates of points to transform
-     * @param z array of z coordinates of points to transform. The z coordinates of the points
+     * \param x array of x coordinates of points to transform
+     * \param y array of y coordinates of points to transform
+     * \param z array of z coordinates of points to transform. The z coordinates of the points
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
-     * @param direction transform direction (defaults to ForwardTransform)
+     * \param direction transform direction (defaults to ForwardTransform)
      * \note not available in Python bindings
      */
     void transformInPlace( float &x, float &y, double &z, TransformDirection direction = ForwardTransform ) const;
@@ -172,12 +172,12 @@ class CORE_EXPORT QgsCoordinateTransform
     /** Transforms an array of x, y and z float coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
-     * @param x array of x coordinates of points to transform
-     * @param y array of y coordinates of points to transform
-     * @param z array of z coordinates of points to transform. The z coordinates of the points
+     * \param x array of x coordinates of points to transform
+     * \param y array of y coordinates of points to transform
+     * \param z array of z coordinates of points to transform. The z coordinates of the points
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
-     * @param direction transform direction (defaults to ForwardTransform)
+     * \param direction transform direction (defaults to ForwardTransform)
      * \note not available in Python bindings
      */
     void transformInPlace( float &x, float &y, float &z, TransformDirection direction = ForwardTransform ) const;
@@ -185,12 +185,12 @@ class CORE_EXPORT QgsCoordinateTransform
     /** Transforms a vector of x, y and z float coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
-     * @param x vector of x coordinates of points to transform
-     * @param y vector of y coordinates of points to transform
-     * @param z vector of z coordinates of points to transform. The z coordinates of the points
+     * \param x vector of x coordinates of points to transform
+     * \param y vector of y coordinates of points to transform
+     * \param z vector of z coordinates of points to transform. The z coordinates of the points
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
-     * @param direction transform direction (defaults to ForwardTransform)
+     * \param direction transform direction (defaults to ForwardTransform)
      * \note not available in Python bindings
      */
     void transformInPlace( QVector<float> &x, QVector<float> &y, QVector<float> &z,
@@ -199,28 +199,28 @@ class CORE_EXPORT QgsCoordinateTransform
     /** Transforms a vector of x, y and z double coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
-     * @param x vector of x coordinates of points to transform
-     * @param y vector of y coordinates of points to transform
-     * @param z vector of z coordinates of points to transform. The z coordinates of the points
+     * \param x vector of x coordinates of points to transform
+     * \param y vector of y coordinates of points to transform
+     * \param z vector of z coordinates of points to transform. The z coordinates of the points
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
-     * @param direction transform direction (defaults to ForwardTransform)
+     * \param direction transform direction (defaults to ForwardTransform)
      * \note not available in Python bindings
      */
     void transformInPlace( QVector<double> &x, QVector<double> &y, QVector<double> &z,
                            TransformDirection direction = ForwardTransform ) const;
 
     /** Transforms a polygon to the destination coordinate system.
-     * @param polygon polygon to transform (occurs in place)
-     * @param direction transform direction (defaults to forward transformation)
+     * \param polygon polygon to transform (occurs in place)
+     * \param direction transform direction (defaults to forward transformation)
      */
     void transformPolygon( QPolygonF &polygon, TransformDirection direction = ForwardTransform ) const;
 
     /** Transforms a rectangle to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
-     * @param rectangle rectangle to transform
-     * @param direction transform direction (defaults to ForwardTransform)
+     * \param rectangle rectangle to transform
+     * \param direction transform direction (defaults to ForwardTransform)
      * @return transformed rectangle
      */
     QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const;
@@ -228,11 +228,11 @@ class CORE_EXPORT QgsCoordinateTransform
     /** Transform an array of coordinates to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
-     * @param numPoint number of coordinates in arrays
-     * @param x array of x coordinates to transform
-     * @param y array of y coordinates to transform
-     * @param z array of z coordinates to transform
-     * @param direction transform direction (defaults to ForwardTransform)
+     * \param numPoint number of coordinates in arrays
+     * \param x array of x coordinates to transform
+     * \param y array of y coordinates to transform
+     * \param z array of z coordinates to transform
+     * \param direction transform direction (defaults to ForwardTransform)
      */
     void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
 
@@ -259,15 +259,15 @@ class CORE_EXPORT QgsCoordinateTransform
     void initialize();
 
     /** Restores state from the given Dom node.
-     * @param node The node from which state will be restored
+     * \param node The node from which state will be restored
      * @return bool True on success, False on failure
      * @see writeXml()
      */
     bool readXml( const QDomNode &node );
 
     /** Stores state to the given Dom node in the given document
-     * @param node The node in which state will be restored
-     * @param document The document in which state will be stored
+     * \param node The node in which state will be restored
+     * \param document The document in which state will be stored
      * @return bool True on success, False on failure
      * @see readXml()
      */

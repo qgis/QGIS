@@ -202,7 +202,7 @@ class CORE_EXPORT QgsRenderContext
     void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
 
     /** Sets whether vector selections should be shown in the rendered map
-     * @param showSelection set to true if selections should be shown
+     * \param showSelection set to true if selections should be shown
      * @see showSelection
      * @see setSelectionColor
      * \since QGIS v2.4
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsRenderContext
     void setGeometry( const QgsAbstractGeometry *geometry ) { mGeometry = geometry; }
 
     /** Set a filter feature provider used for additional filtering of rendered features.
-     * @param ffp the filter feature provider
+     * \param ffp the filter feature provider
      * \since QGIS 2.14
      * @see featureFilterProvider()
      */
@@ -261,13 +261,13 @@ class CORE_EXPORT QgsRenderContext
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
-    @param tolerance the segmentation tolerance*/
+    \param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
     //! Gets the segmentation tolerance applied when rendering curved geometries
     double segmentationTolerance() const { return mSegmentationTolerance; }
 
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    @param type the segmentation tolerance typename*/
+    \param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
     //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }

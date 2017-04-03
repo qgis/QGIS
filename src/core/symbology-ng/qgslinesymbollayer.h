@@ -89,7 +89,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void setUseCustomDashPattern( bool b ) { mUseCustomDashPattern = b; }
 
     /** Sets the units for lengths used in the custom dash pattern.
-     * @param unit length units
+     * \param unit length units
      * @see customDashPatternUnit()
     */
     void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit ) { mCustomDashPatternUnit = unit; }
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     /**
      * Create a new MarkerLineSymbolLayerV2
      *
-     * @param properties A property map to deserialize saved information from properties()
+     * \param properties A property map to deserialize saved information from properties()
      *
      * @return A new MarkerLineSymbolLayerV2
      */
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     /**
      * Create a new MarkerLineSymbolLayerV2 from SLD
      *
-     * @param element An SLD XML DOM element
+     * \param element An SLD XML DOM element
      *
      * @return A new MarkerLineSymbolLayerV2
      */
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 
     /**
      * Sets the interval between individual markers.
-     * @param interval interval size. Units are specified through setIntervalUnits()
+     * \param interval interval size. Units are specified through setIntervalUnits()
      * @see interval()
      * @see setIntervalUnits()
      */
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
      * distance between the marker and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
-     * @param offsetAlongLine Distance to offset markers along the line. The offset
+     * \param offsetAlongLine Distance to offset markers along the line. The offset
      * unit is set via setOffsetAlongLineUnit.
      * \since QGIS 2.3
      * @see offsetAlongLine
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     QgsUnitTypes::RenderUnit offsetAlongLineUnit() const { return mOffsetAlongLineUnit; }
 
     /** Sets the unit used for calculating the offset along line for markers.
-     * @param unit Offset along line unit type.
+     * \param unit Offset along line unit type.
      * @see offsetAlongLineUnit
      * @see setOffsetAlongLine
      */
@@ -299,12 +299,12 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     const QgsMapUnitScale &offsetAlongLineMapUnitScale() const { return mOffsetAlongLineMapUnitScale; }
 
     /** Sets the map unit scale used for calculating the offset in map units along line for markers.
-     * @param scale Offset along line map unit scale.
+     * \param scale Offset along line map unit scale.
      */
     void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetAlongLineMapUnitScale = scale; }
 
     /** Sets the units for the interval between markers.
-     * @param unit interval units
+     * \param unit interval units
      * @see intervalUnit()
      * @see setInterval()
     */
@@ -350,12 +350,12 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
   private:
 
     /** Renders a marker by offsetting a vertex along the line by a specified distance.
-     * @param points vertices making up the line
-     * @param vertex vertex number to begin offset at
-     * @param distance distance to offset from vertex. If distance is positive, offset is calculated
+     * \param points vertices making up the line
+     * \param vertex vertex number to begin offset at
+     * \param distance distance to offset from vertex. If distance is positive, offset is calculated
      * moving forward along the line. If distance is negative, offset is calculated moving backward
      * along the line's vertices.
-     * @param context render context
+     * \param context render context
      * @see setoffsetAlongLine
      * @see setOffsetAlongLineUnit
      */

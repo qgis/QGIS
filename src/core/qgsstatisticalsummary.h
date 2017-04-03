@@ -67,7 +67,7 @@ class CORE_EXPORT QgsStatisticalSummary
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
     /** Constructor for QgsStatisticalSummary
-     * @param stats flags for statistics to calculate
+     * \param stats flags for statistics to calculate
      */
     QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = All );
 
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsStatisticalSummary
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., sum, min and max).
-     * @param stats flags for statistics to calculate
+     * \param stats flags for statistics to calculate
      * @see statistics
      */
     void setStatistics( Statistics stats ) { mStatistics = stats; }
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsStatisticalSummary
     void reset();
 
     /** Calculates summary statistics for a list of values
-     * @param values list of doubles
+     * \param values list of doubles
      */
     void calculate( const QList<double> &values );
 
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * allows values to be added to the calculation one at a time. For large
      * quantities of values this may be more efficient then first adding all the
      * values to a list and calling calculate().
-     * @param value value to add
+     * \param value value to add
      * \note call reset() before adding the first value using this method
      * to clear the results from any previous calculations
      * \note finalize() must be called after adding the final value and before
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * allows values to be added to the calculation one at a time. For large
      * quantities of values this may be more efficient then first adding all the
      * values to a list and calling calculate().
-     * @param value variant containing to add. Non-numeric values are treated as null.
+     * \param value variant containing to add. Non-numeric values are treated as null.
      * \note call reset() before adding the first value using this method
      * to clear the results from any previous calculations
      * \note finalize() must be called after adding the final value and before
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsStatisticalSummary
     void finalize();
 
     /** Returns the value of a specified statistic
-     * @param stat statistic to return
+     * \param stat statistic to return
      * @returns calculated value of statistic. A NaN value may be returned for invalid
      * statistics.
      */
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsStatisticalSummary
     double interQuartileRange() const { return qIsNaN( mThirdQuartile ) || qIsNaN( mFirstQuartile ) ? std::numeric_limits<double>::quiet_NaN() : mThirdQuartile - mFirstQuartile; }
 
     /** Returns the friendly display name for a statistic
-     * @param statistic statistic to return name for
+     * \param statistic statistic to return name for
      */
     static QString displayName( Statistic statistic );
 

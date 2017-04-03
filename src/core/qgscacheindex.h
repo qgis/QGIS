@@ -55,8 +55,8 @@ class CORE_EXPORT QgsAbstractCacheIndex
      * to properly index. (E.g. spatial index)
      * Does nothing by default
      *
-     * @param featureRequest  The feature request that was answered
-     * @param fids            The feature ids that have been returned
+     * \param featureRequest  The feature request that was answered
+     * \param fids            The feature ids that have been returned
      */
     virtual void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 
@@ -66,10 +66,10 @@ class CORE_EXPORT QgsAbstractCacheIndex
      * and set the iterator to a valid iterator over the cached features. If it is not able
      * it will return false.
      *
-     * @param featureIterator  A reference to a {@link QgsFeatureIterator}. A valid featureIterator will
+     * \param featureIterator  A reference to a {@link QgsFeatureIterator}. A valid featureIterator will
      *                         be assigned in case this index is able to answer the request and the return
      *                         value is true.
-     * @param featureRequest   The feature request, for which this index is queried.
+     * \param featureRequest   The feature request, for which this index is queried.
      *
      * @return   True, if this index holds the information to answer the request.
      *

@@ -36,7 +36,7 @@ class GUI_EXPORT QgsMapCanvasSnapper
   public:
 
     /** Constructor
-     @param canvas the map canvas to snap to*/
+     \param canvas the map canvas to snap to*/
     QgsMapCanvasSnapper( QgsMapCanvas *canvas );
 
     QgsMapCanvasSnapper();
@@ -53,12 +53,12 @@ class GUI_EXPORT QgsMapCanvasSnapper
      * and QgsSnapper::SnapWithOneResult_BY_SEGMENT if not. As this method is usually used to
      * find vertices/segments for editing operations, it uses the search radius for vertex
      * editing from the qgis options.
-     * @param p start point of the snap (in pixel coordinates)
-     * @param results list to which the results are appended
-     * @param snap_to snap to vertex or to segment
-     * @param snappingTol snapping tolerance. -1 means that the search radius for vertex edits is taken
-     * @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
-     * @param allResutInTolerance return all thew results in the tolerance
+     * \param p start point of the snap (in pixel coordinates)
+     * \param results list to which the results are appended
+     * \param snap_to snap to vertex or to segment
+     * \param snappingTol snapping tolerance. -1 means that the search radius for vertex edits is taken
+     * \param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
+     * \param allResutInTolerance return all thew results in the tolerance
      */
     int snapToCurrentLayer( QPoint p, QList<QgsSnappingResult> &results, QgsSnapper::SnappingType snap_to, double snappingTol = -1, const QList<QgsPoint> &excludePoints = QList<QgsPoint>(), bool allResutInTolerance = false );
 
@@ -66,9 +66,9 @@ class GUI_EXPORT QgsMapCanvasSnapper
      * edited layers to those of other layers (as described in the project properties).
      * Uses snap mode QgsSnapper::SnapWithOneResult. Therefore, only the
      * closest result is returned.
-     * @param p start point of the snap (in pixel coordinates)
-     * @param results snapped points
-     * @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
+     * \param p start point of the snap (in pixel coordinates)
+     * \param results snapped points
+     * \param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
      * @return 0 in case of success
      */
     int snapToBackgroundLayers( QPoint p, QList<QgsSnappingResult> &results, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() );

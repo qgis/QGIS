@@ -148,7 +148,7 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QByteArray asWkb() const = 0;
 
     /** Returns a WKT representation of the geometry.
-     * @param precision number of decimal places for coordinates
+     * \param precision number of decimal places for coordinates
      * @see asWkb
      * @see asGML2
      * @see asGML3
@@ -157,9 +157,9 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QString asWkt( int precision = 17 ) const = 0;
 
     /** Returns a GML2 representation of the geometry.
-     * @param doc DOM document
-     * @param precision number of decimal places for coordinates
-     * @param ns XML namespace
+     * \param doc DOM document
+     * \param precision number of decimal places for coordinates
+     * \param ns XML namespace
      * @see asWkb
      * @see asWkt
      * @see asGML3
@@ -168,9 +168,9 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 
     /** Returns a GML3 representation of the geometry.
-     * @param doc DOM document
-     * @param precision number of decimal places for coordinates
-     * @param ns XML namespace
+     * \param doc DOM document
+     * \param precision number of decimal places for coordinates
+     * \param ns XML namespace
      * @see asWkb
      * @see asWkt
      * @see asGML2
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 
     /** Returns a GeoJSON representation of the geometry.
-     * @param precision number of decimal places for coordinates
+     * \param precision number of decimal places for coordinates
      * @see asWkb
      * @see asWkt
      * @see asGML2
@@ -190,9 +190,9 @@ class CORE_EXPORT QgsAbstractGeometry
     //render pipeline
 
     /** Transforms the geometry using a coordinate transform
-     * @param ct coordinate transform
-     * @param d transformation direction
-     * @param transformZ set to true to also transform z coordinates. This requires that
+     * \param ct coordinate transform
+     * \param d transformation direction
+     * \param transformZ set to true to also transform z coordinates. This requires that
      * the z coordinates in the geometry represent height relative to the vertical datum
      * of the source CRS (generally ellipsoidal heights) and are expressed in its vertical
      * units (generally meters). If false, then z coordinates will not be changed by the
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsAbstractGeometry
                             bool transformZ = false ) = 0;
 
     /** Transforms the geometry using a QTransform object
-     * @param t QTransform transformation
+     * \param t QTransform transformation
      */
     virtual void transform( const QTransform &t ) = 0;
 
@@ -211,14 +211,14 @@ class CORE_EXPORT QgsAbstractGeometry
 #endif
 
     /** Draws the geometry using the specified QPainter.
-     * @param p destination QPainter
+     * \param p destination QPainter
      */
     virtual void draw( QPainter &p ) const = 0;
 
     /** Returns next vertex id and coordinates
-     * @param id initial value should be the starting vertex id. The next vertex id will be stored
+     * \param id initial value should be the starting vertex id. The next vertex id will be stored
      * in this variable if found.
-     * @param vertex container for found node
+     * \param vertex container for found node
      * @return false if at end
      */
     virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const = 0;
@@ -237,12 +237,12 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsPointV2 vertexAt( QgsVertexId id ) const = 0;
 
     /** Searches for the closest segment of the geometry to a given point.
-     * @param pt specifies the point to find closest segment to
-     * @param segmentPt storage for the closest point within the geometry
-     * @param vertexAfter storage for the ID of the vertex at the end of the closest segment
-     * @param leftOf returns whether the point lies on the left side of the nearest segment (true if point is to left of segment,
+     * \param pt specifies the point to find closest segment to
+     * \param segmentPt storage for the closest point within the geometry
+     * \param vertexAfter storage for the ID of the vertex at the end of the closest segment
+     * \param leftOf returns whether the point lies on the left side of the nearest segment (true if point is to left of segment,
      * false if point is to right of segment)
-     * @param epsilon epsilon for segment snapping
+     * \param epsilon epsilon for segment snapping
      * @returns squared distance to closest segment or negative value on error
      */
     virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt, QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const = 0;
@@ -250,8 +250,8 @@ class CORE_EXPORT QgsAbstractGeometry
     //low-level editing
 
     /** Inserts a vertex into the geometry
-     * @param position vertex id for position of inserted vertex
-     * @param vertex vertex to insert
+     * \param position vertex id for position of inserted vertex
+     * \param vertex vertex to insert
      * @returns true if insert was successful
      * @see moveVertex
      * @see deleteVertex
@@ -259,8 +259,8 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) = 0;
 
     /** Moves a vertex within the geometry
-     * @param position vertex id for vertex to move
-     * @param newPos new position of vertex
+     * \param position vertex id for vertex to move
+     * \param newPos new position of vertex
      * @returns true if move was successful
      * @see insertVertex
      * @see deleteVertex
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) = 0;
 
     /** Deletes a vertex within the geometry
-     * @param position vertex id for vertex to delete
+     * \param position vertex id for vertex to delete
      * @returns true if delete was successful
      * @see insertVertex
      * @see moveVertex
@@ -306,8 +306,8 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /** Returns a version of the geometry without curves. Caller takes ownership of
      * the returned geometry.
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
     virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const;
 
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the
      * geometry at the specified vertex.
-     * @param vertex the vertex id
+     * \param vertex the vertex id
      * @return rotation in radians, clockwise from north
      */
     virtual double vertexAngle( QgsVertexId vertex ) const = 0;
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual int partCount() const = 0;
 
     /** Adds a z-dimension to the geometry, initialized to a preset value.
-     * @param zValue initial z-value for all nodes
+     * \param zValue initial z-value for all nodes
      * @returns true on success
      * \since QGIS 2.12
      * @see dropZValue()
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool addZValue( double zValue = 0 ) = 0;
 
     /** Adds a measure to the geometry, initialized to a preset value.
-     * @param mValue initial m-value for all nodes
+     * \param mValue initial m-value for all nodes
      * @returns true on success
      * \since QGIS 2.12
      * @see dropMValue()

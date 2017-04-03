@@ -36,9 +36,9 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
 
     /**
        * @brief A panel widget that can be shown in the map style dock
-       * @param layer The layer active in the dock.
-       * @param canvas The canvas object.
-       * @param parent The parent of the widget.
+       * \param layer The layer active in the dock.
+       * \param canvas The canvas object.
+       * \param parent The parent of the widget.
        * \note The widget is created each time the panel is selected in the dock.
        * Keep the loading light as possible for speed in the UI.
        */

@@ -121,7 +121,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     Placement placement() const { return mPlacement; }
 
     /** Sets the diagram placement.
-     * @param value placement value
+     * \param value placement value
      * @see placement()
      * \since QGIS 2.16
      */
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /** Sets the the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
-     * @param flags placement value
+     * \param flags placement value
      * @see getPlacement()
      * \since QGIS 2.16
      */
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     int priority() const { return mPriority; }
 
     /** Sets the diagram priority.
-     * @param value priority, where 0 = low and 10 = high
+     * \param value priority, where 0 = low and 10 = high
      * @see priority()
      * \since QGIS 2.16
      */
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /** Sets the diagram z-index. Diagrams (or labels) with a higher z-index are drawn over diagrams
      * with a lower z-index.
-     * @param index diagram z-index
+     * \param index diagram z-index
      * @see zIndex()
      * \since QGIS 2.16
      */
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     bool isObstacle() const { return mObstacle; }
 
     /** Sets whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
-     * @param isObstacle set to true for feature to act as obstacle
+     * \param isObstacle set to true for feature to act as obstacle
      * @see isObstacle()
      * \since QGIS 2.16
      */
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     double distance() const { return mDistance; }
 
     /** Sets the distance between the diagram and the feature.
-     * @param distance distance in mm
+     * \param distance distance in mm
      * @see distance()
      * \since QGIS 2.16
      */
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     const QgsDiagramRenderer *renderer() const { return mRenderer; }
 
     /** Sets the diagram renderer associated with the layer.
-     * @param diagramRenderer diagram renderer. Ownership is transferred to the object.
+     * \param diagramRenderer diagram renderer. Ownership is transferred to the object.
      * @see renderer()
      * \since QGIS 2.16
      */
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     QgsCoordinateTransform coordinateTransform() const { return mCt; }
 
     /** Sets the coordinate transform associated with the layer.
-     * @param transform coordinate transform. Ownership is transferred to the object.
+     * \param transform coordinate transform. Ownership is transferred to the object.
      * @see coordinateTransform()
      * \since QGIS 2.16
      */
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     bool showAllDiagrams() const { return mShowAll; }
 
     /** Sets whether the layer should show all diagrams, including overlapping diagrams
-     * @param showAllDiagrams set to true to show all diagrams
+     * \param showAllDiagrams set to true to show all diagrams
      * @see showAllDiagrams()
      * \since QGIS 2.16
      */
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     /** Returns the set of any fields referenced by the layer's diagrams.
-     * @param context expression context the diagrams will be drawn using
+     * \param context expression context the diagrams will be drawn using
      * \since QGIS 2.16
      */
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the diagram's property collection, used for data defined overrides.
-     * @param collection property collection. Existing properties will be replaced.
+     * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
      * @see dataDefinedProperties()
      */
@@ -477,7 +477,7 @@ class CORE_EXPORT QgsDiagramRenderer
     virtual QList<QString> diagramAttributes() const = 0;
 
     /** Returns the set of any fields required for diagram rendering
-     * @param context expression context the diagrams will be drawn using
+     * \param context expression context the diagrams will be drawn using
      * \since QGIS 2.16
      */
     virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
@@ -521,7 +521,7 @@ class CORE_EXPORT QgsDiagramRenderer
     bool attributeLegend() const { return mShowAttributeLegend; }
 
     /** Sets whether the renderer will show legend items for diagram attributes.
-     * @param enabled set to true to show diagram attribute legend
+     * \param enabled set to true to show diagram attribute legend
      * \since QGIS 2.16
      * @see attributeLegend()
      * @see setSizeLegend()
@@ -537,7 +537,7 @@ class CORE_EXPORT QgsDiagramRenderer
     bool sizeLegend() const { return mShowSizeLegend; }
 
     /** Sets whether the renderer will show legend items for diagram sizes.
-     * @param enabled set to true to show diagram size legend
+     * \param enabled set to true to show diagram size legend
      * \since QGIS 2.16
      * @see sizeLegend()
      * @see setAttributeLegend()
@@ -553,7 +553,7 @@ class CORE_EXPORT QgsDiagramRenderer
     QgsMarkerSymbol *sizeLegendSymbol() const { return mSizeLegendSymbol.get(); }
 
     /** Sets the marker symbol used for rendering the diagram size legend.
-     * @param symbol marker symbol, ownership is transferred to the renderer.
+     * \param symbol marker symbol, ownership is transferred to the renderer.
      * \since QGIS 2.16
      * @see sizeLegendSymbol()
      * @see setSizeLegend()
@@ -565,9 +565,9 @@ class CORE_EXPORT QgsDiagramRenderer
     QgsDiagramRenderer &operator=( const QgsDiagramRenderer &other );
 
     /** Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
-     * @param feature the feature
-     * @param c render context
-     * @param s out: diagram settings for the feature
+     * \param feature the feature
+     * \param c render context
+     * \param s out: diagram settings for the feature
      */
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const = 0;
 

@@ -46,7 +46,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
 
     /**
      * Sets predefined vector layer for selection of data
-     * @param layer Vector layer which is to be set as predefined one
+     * \param layer Vector layer which is to be set as predefined one
      */
     void setVectorLayer( QgsVectorLayer *layer );
 
@@ -67,14 +67,14 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
 
     /**
      * Slot which reacts to change of selected layer to fill other two comboboxes with correct data
-     * @param layerIndex index of layer which was selected
+     * \param layerIndex index of layer which was selected
      */
     void fillComboBoxes( int layerIndex );
 
     /**
      * Slot to react to button push or change of selected column for display of preview
-     * @param fieldIndex indexOfChangedField
-     * @param full flag if all values should be displayed or just preview of first 10
+     * \param fieldIndex indexOfChangedField
+     * \param full flag if all values should be displayed or just preview of first 10
      */
     void createPreview( int fieldIndex, bool full = false );
 

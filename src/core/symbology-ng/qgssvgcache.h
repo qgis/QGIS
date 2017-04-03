@@ -42,13 +42,13 @@ class CORE_EXPORT QgsSvgCacheEntry
     QgsSvgCacheEntry();
 
     /** Constructor.
-     * @param file Absolute path to SVG file (relative paths are not resolved).
-     * @param size
-     * @param strokeWidth width of stroke
-     * @param widthScaleFactor width scale factor
-     * @param fill color of fill
-     * @param stroke color of stroke
-     * @param lookupKey the key string used in QgsSvgCache for quick lookup of this entry (relative or absolute path)
+     * \param file Absolute path to SVG file (relative paths are not resolved).
+     * \param size
+     * \param strokeWidth width of stroke
+     * \param widthScaleFactor width scale factor
+     * \param fill color of fill
+     * \param stroke color of stroke
+     * \param lookupKey the key string used in QgsSvgCache for quick lookup of this entry (relative or absolute path)
      */
     QgsSvgCacheEntry( const QString &file, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke, const QString &lookupKey = QString() );
     ~QgsSvgCacheEntry();
@@ -111,36 +111,36 @@ class CORE_EXPORT QgsSvgCache : public QObject
     ~QgsSvgCache();
 
     /** Get SVG as QImage.
-     * @param file Absolute or relative path to SVG file.
-     * @param size size of cached image
-     * @param fill color of fill
-     * @param stroke color of stroke
-     * @param strokeWidth width of stroke
-     * @param widthScaleFactor width scale factor
-     * @param fitsInCache
+     * \param file Absolute or relative path to SVG file.
+     * \param size size of cached image
+     * \param fill color of fill
+     * \param stroke color of stroke
+     * \param strokeWidth width of stroke
+     * \param widthScaleFactor width scale factor
+     * \param fitsInCache
      */
     QImage svgAsImage( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                        double widthScaleFactor, bool &fitsInCache );
 
     /** Get SVG  as QPicture&.
-     * @param file Absolute or relative path to SVG file.
-     * @param size size of cached image
-     * @param fill color of fill
-     * @param stroke color of stroke
-     * @param strokeWidth width of stroke
-     * @param widthScaleFactor width scale factor
-     * @param forceVectorOutput
+     * \param file Absolute or relative path to SVG file.
+     * \param size size of cached image
+     * \param fill color of fill
+     * \param stroke color of stroke
+     * \param strokeWidth width of stroke
+     * \param widthScaleFactor width scale factor
+     * \param forceVectorOutput
      */
     QPicture svgAsPicture( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, bool forceVectorOutput = false );
 
     /** Calculates the viewbox size of a (possibly cached) SVG file.
-     * @param file Absolute or relative path to SVG file.
-     * @param size size of cached image
-     * @param fill color of fill
-     * @param stroke color of stroke
-     * @param strokeWidth width of stroke
-     * @param widthScaleFactor width scale factor
+     * \param file Absolute or relative path to SVG file.
+     * \param size size of cached image
+     * \param fill color of fill
+     * \param stroke color of stroke
+     * \param strokeWidth width of stroke
+     * \param widthScaleFactor width scale factor
      * @returns viewbox size set in SVG file
      * \since QGIS 2.14
      */
@@ -154,22 +154,22 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
     /** Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
      * default values in the svg file, only the first one is considered.
-     * @param path path to SVG file
-     * @param hasFillParam will be true if fill param present in SVG
-     * @param hasDefaultFillParam will be true if fill param has a default value specified
-     * @param defaultFillColor will be set to default fill color specified in SVG, if present
-     * @param hasFillOpacityParam will be true if fill opacity param present in SVG
-     * @param hasDefaultFillOpacity will be true if fill opacity param has a default value specified
-     * @param defaultFillOpacity will be set to default fill opacity specified in SVG, if present
-     * @param hasStrokeParam will be true if stroke param present in SVG
-     * @param hasDefaultStrokeColor will be true if stroke param has a default value specified
-     * @param defaultStrokeColor will be set to default stroke color specified in SVG, if present
-     * @param hasStrokeWidthParam will be true if stroke width param present in SVG
-     * @param hasDefaultStrokeWidth will be true if stroke width param has a default value specified
-     * @param defaultStrokeWidth will be set to default stroke width specified in SVG, if present
-     * @param hasStrokeOpacityParam will be true if stroke opacity param present in SVG
-     * @param hasDefaultStrokeOpacity will be true if stroke opacity param has a default value specified
-     * @param defaultStrokeOpacity will be set to default stroke opacity specified in SVG, if present
+     * \param path path to SVG file
+     * \param hasFillParam will be true if fill param present in SVG
+     * \param hasDefaultFillParam will be true if fill param has a default value specified
+     * \param defaultFillColor will be set to default fill color specified in SVG, if present
+     * \param hasFillOpacityParam will be true if fill opacity param present in SVG
+     * \param hasDefaultFillOpacity will be true if fill opacity param has a default value specified
+     * \param defaultFillOpacity will be set to default fill opacity specified in SVG, if present
+     * \param hasStrokeParam will be true if stroke param present in SVG
+     * \param hasDefaultStrokeColor will be true if stroke param has a default value specified
+     * \param defaultStrokeColor will be set to default stroke color specified in SVG, if present
+     * \param hasStrokeWidthParam will be true if stroke width param present in SVG
+     * \param hasDefaultStrokeWidth will be true if stroke width param has a default value specified
+     * \param defaultStrokeWidth will be set to default stroke width specified in SVG, if present
+     * \param hasStrokeOpacityParam will be true if stroke opacity param present in SVG
+     * \param hasDefaultStrokeOpacity will be true if stroke opacity param has a default value specified
+     * \param defaultStrokeOpacity will be set to default stroke opacity specified in SVG, if present
      * \note available in Python bindings as containsParamsV3
      * \since QGIS 2.14
      */
@@ -193,13 +193,13 @@ class CORE_EXPORT QgsSvgCache : public QObject
   protected:
 
     /** Creates new cache entry and returns pointer to it
-     * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerUtils::symbolNameToPath() in SVG paths.
+     * \param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerUtils::symbolNameToPath() in SVG paths.
      * in settings svg/searchPathsForSVG
-     * @param size size of cached image
-     * @param fill color of fill
-     * @param stroke color of stroke
-     * @param strokeWidth width of stroke
-     * @param widthScaleFactor width scale factor
+     * \param size size of cached image
+     * \param fill color of fill
+     * \param stroke color of stroke
+     * \param strokeWidth width of stroke
+     * \param widthScaleFactor width scale factor
      */
     QgsSvgCacheEntry *insertSVG( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                                  double widthScaleFactor );

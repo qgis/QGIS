@@ -81,7 +81,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QVariant minimumValue( int index ) const override;
 
     /** Returns the maximum value of an attribute
-     *  @param index the index of the attribute */
+     *  \param index the index of the attribute */
     QVariant maxValue( int index );
 
     /** Update (reload) non static members (marked !UPDATE!) from the static layer and the map.
@@ -144,7 +144,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     void thaw();
 
     /** Close editing. Rebuild topology, GMAP.update = false
-     *   @param newMap set to true if a new map was created
+     *   \param newMap set to true if a new map was created
      *          and it is not yet used as layer
      *   @return true success
      *   @return false failed to close vector or vector was not in update mode
@@ -162,69 +162,69 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     int numNodes( void );
 
     /** Read line
-     *   @param Points pointer to existing structure or NULL
-     *   @param Cats pointer to existing structure or NULL
-     *   @param line line number
+     *   \param Points pointer to existing structure or NULL
+     *   \param Cats pointer to existing structure or NULL
+     *   \param line line number
      *   @return line type
      *   @return <0 deadline or error
      */
     int readLine( struct line_pnts *Points, struct line_cats *Cats, int line );
 
     /** Read node coordinates
-     *   @param line line number
+     *   \param line line number
      *   @return true node is alive
      *   @return false node is dead
      */
     bool nodeCoor( int node, double *x, double *y );
 
     /** Read line nodes
-     *   @param line line number
+     *   \param line line number
      *   @return true line is alive
      *   @return false line is dead
      */
     bool lineNodes( int line, int *node1, int *node2 );
 
     /** Read boundary areas
-     *   @param line line number
+     *   \param line line number
      *   @return true line is alive
      *   @return false line is dead
      */
     bool lineAreas( int line, int *left, int *right );
 
     /** Get isle area
-     *   @param isle number
+     *   \param isle number
      *   @return area number
      */
     int isleArea( int isle );
 
     /** Get centroid area
-     *   @param centroid line number
+     *   \param centroid line number
      *   @return area number (negative for island)
      */
     int centroidArea( int centroid );
 
     /** Get number of lines at node
-     *   @param node node number
+     *   \param node node number
      *   @return number of lines at node (including dead lines)
      */
     int nodeNLines( int node );
 
     /** Get line number of line at node for given line index
-     *   @param node node number
-     *   @param idx line index
+     *   \param node node number
+     *   \param idx line index
      *   @return line number
      */
     int nodeLine( int node, int idx );
 
     /** True if line is alive
-     *   @param line line number
+     *   \param line line number
      *   @return true alive
      *   @return false dead
      */
     int lineAlive( int line );
 
     /** True if node is alive
-     *   @param node node number
+     *   \param node node number
      *   @return true alive
      *   @return false dead
      */
@@ -265,14 +265,14 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     int updatedNode( int idx );
 
     /** Find nearest line
-     *   @param threshold maximum distance
+     *   \param threshold maximum distance
      *   @return line number
      *   @return 0 nothing found
      */
     int findLine( double x, double y, int type, double threshold );
 
     /** Find nearest node
-     *   @param threshold maximum distance
+     *   \param threshold maximum distance
      *   @return node number
      *   @return 0 nothing found
      */
@@ -281,14 +281,14 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // TODO is it used?
 
     /** Read attributes from DB
-     *   @param field
-     *   @param cat
+     *   \param field
+     *   \param cat
      *   @return vector of attributes
      */
     QgsAttributeMap *attributes( int field, int cat );
 
     /** Key (cat) column name
-     *   @param field
+     *   \param field
      *   @return Key column name or empty string
      */
     QString key( int field );
@@ -299,7 +299,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     int numDbLinks( void );
 
     /** Get db link field
-     *  @param link
+     *  \param link
      *   @return field number or 0
      */
     int dbLinkField( int link );
@@ -405,9 +405,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     static QgsFeatureId makeFeatureId( int grassId, int cat );
 
     /** Get attribute by category(key) and attribute number.
-     *  @param layerId
-     *  @param category (key)
-     *  @param column column number ( < nColumns )
+     *  \param layerId
+     *  \param category (key)
+     *  \param column column number ( < nColumns )
      *  @return pointer to string representation of the value or NULL, this value must not be changed
      */
     static char *attribute( int layerId, int cat, int column );

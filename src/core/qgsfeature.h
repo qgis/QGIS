@@ -178,7 +178,7 @@ class CORE_EXPORT QgsFeature
 #endif
 
     /** Constructor for QgsFeature
-     * @param id feature id
+     * \param id feature id
      */
 #ifndef SIP_RUN
     QgsFeature( QgsFeatureId id = QgsFeatureId() );
@@ -187,8 +187,8 @@ class CORE_EXPORT QgsFeature
 #endif
 
     /** Constructor for QgsFeature
-     * @param fields feature's fields
-     * @param id feature id
+     * \param fields feature's fields
+     * \param id feature id
      */
 #ifndef SIP_RUN
     QgsFeature( const QgsFields &fields, QgsFeatureId id = QgsFeatureId() );
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsFeature
     QgsFeatureId id() const;
 
     /** Sets the feature ID for this feature.
-     * @param id feature id
+     * \param id feature id
      * @see id
      */
     void setId( QgsFeatureId id );
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsFeature
 
     /** Sets the feature's attributes.
      * The feature will be valid after.
-     * @param attrs attribute list
+     * \param attrs attribute list
      * @see setAttribute
      * @see attributes
      */
@@ -247,8 +247,8 @@ class CORE_EXPORT QgsFeature
 
     /** Set an attribute's value by field index.
      * The feature will be valid if it was successful.
-     * @param field the index of the field to set
-     * @param attr the value of the attribute
+     * \param field the index of the field to set
+     * \param attr the value of the attribute
      * @return false, if the field index does not exist
      * \note For Python: raises a KeyError exception instead of returning false
      * \note Alternatively in Python: @code feature[field] = attr @endcode
@@ -281,12 +281,12 @@ class CORE_EXPORT QgsFeature
 #endif
 
     /** Initialize this feature with the given number of fields. Discard any previously set attribute data.
-     * @param fieldCount Number of fields to initialize
+     * \param fieldCount Number of fields to initialize
      */
     void initAttributes( int fieldCount );
 
     /** Deletes an attribute and its value.
-     * @param field the index of the field
+     * \param field the index of the field
      * @see setAttribute
      * \note For Python: raises a KeyError exception if the field is not found
      * \note Alternatively in Python: @code del feature[field] @endcode
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsFeature
     bool isValid() const;
 
     /** Sets the validity of the feature.
-     * @param validity set to true if feature is valid
+     * \param validity set to true if feature is valid
      * @see isValid
      */
     void setValid( bool validity );
@@ -331,7 +331,7 @@ class CORE_EXPORT QgsFeature
     QgsGeometry geometry() const;
 
     /** Set the feature's geometry. The feature will be valid after.
-     * @param geometry new feature geometry
+     * \param geometry new feature geometry
      * @see geometry()
      * @see clearGeometry()
      */
@@ -345,8 +345,8 @@ class CORE_EXPORT QgsFeature
     void clearGeometry();
 
     /** Assign a field map with the feature to allow attribute access by attribute name.
-     *  @param fields The attribute fields which this feature holds
-     *  @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
+     *  \param fields The attribute fields which this feature holds
+     *  \param initAttributes If true, attributes are initialized. Clears any data previously assigned.
      *                        C++: Defaults to false
      *                        Python: Defaults to true
      * \since QGIS 2.9
@@ -362,8 +362,8 @@ class CORE_EXPORT QgsFeature
     /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
      *  Field map must be associated using @link setFields @endlink before this method can be used.
      *  The feature will be valid if it was successful
-     *  @param name The name of the field to set
-     *  @param value The value to set
+     *  \param name The name of the field to set
+     *  \param value The value to set
      *  @return false if attribute name could not be converted to index (C++ only)
      *  \note For Python: raises a KeyError exception instead of returning false
      *  \note Alternatively in Python: @code feature[name] = attr @endcode
@@ -396,7 +396,7 @@ class CORE_EXPORT QgsFeature
 
     /** Removes an attribute value by field name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
-     *  @param name The name of the field to delete
+     *  \param name The name of the field to delete
      *  @return false if attribute name could not be converted to index (C++ only)
      *  \note For Python: raises a KeyError exception instead of returning false
      *  \note Alternatively in Python: @code del feature[name] @endcode
@@ -422,7 +422,7 @@ class CORE_EXPORT QgsFeature
 
     /** Lookup attribute value from attribute name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
-     *  @param name The name of the attribute to get
+     *  \param name The name of the attribute to get
      *  @return The value of the attribute (C++: Invalid variant if no such name exists )
      *  \note For Python: raises a KeyError exception if the field is not found
      *  \note Alternatively in Python: @code feature[name] @endcode
@@ -449,7 +449,7 @@ class CORE_EXPORT QgsFeature
 
     /** Lookup attribute value from its index. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
-     *  @param fieldIdx The index of the attribute to get
+     *  \param fieldIdx The index of the attribute to get
      *  @return The value of the attribute (C++: Invalid variant if no such index exists )
      *  \note For Python: raises a KeyError exception if the field is not found
      *  \note Alternatively in Python: @code feature[fieldIdx] @endcode
@@ -477,7 +477,7 @@ class CORE_EXPORT QgsFeature
 
     /** Utility method to get attribute index from name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
-     *  @param fieldName name of field to get attribute index of
+     *  \param fieldName name of field to get attribute index of
      *  @returns -1 if field does not exist or field map is not associated.
      *  @see setFields
      */

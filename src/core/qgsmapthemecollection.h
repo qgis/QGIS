@@ -151,8 +151,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     /**
      * Updates a map theme within the collection.
-     * @param name name of map theme to update
-     * @param state map theme record to replace existing map theme
+     * \param name name of map theme to update
+     * \param state map theme record to replace existing map theme
      * @see insert()
      */
     void update( const QString &name, const MapThemeRecord &state );
@@ -204,13 +204,13 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     /**
      * Reads the map theme collection state from XML
-     * @param doc DOM document
+     * \param doc DOM document
      * @see writeXml
      */
     void readXml( const QDomDocument &doc );
 
     /** Writes the map theme collection state to XML.
-     * @param doc DOM document
+     * \param doc DOM document
      * @see readXml
      */
     void writeXml( QDomDocument &doc );

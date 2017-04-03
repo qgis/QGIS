@@ -53,8 +53,8 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     };
 
     /** Constructor for QgsAttributeFormEditorWidget.
-     * @param editorWidget associated editor widget wrapper (for default/edit modes)
-     * @param form parent attribute form
+     * \param editorWidget associated editor widget wrapper (for default/edit modes)
+     * \param form parent attribute form
      */
     explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget,
                                            QgsAttributeForm *form );
@@ -63,10 +63,10 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
 
     /** Creates the search widget wrappers for the widget used when the form is in
      * search mode.
-     * @param widgetId id of the widget type to create a search wrapper for
-     * @param fieldIdx index of field associated with widget
-     * @param config configuration which should be used for the widget creation
-     * @param context editor context (not available in Python bindings)
+     * \param widgetId id of the widget type to create a search wrapper for
+     * \param fieldIdx index of field associated with widget
+     * \param config configuration which should be used for the widget creation
+     * \param context editor context (not available in Python bindings)
      */
     void createSearchWidgetWrappers( const QString &widgetId, int fieldIdx,
                                      const QVariantMap &config,
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
 
     /** Sets the current mode for the widget. The widget will adapt its state and visible widgets to
      * reflect the updated mode. For example, showing multi edit tool buttons if the mode is set to MultiEditMode.
-     * @param mode widget mode
+     * \param mode widget mode
      * @see mode()
      */
     void setMode( Mode mode );
@@ -85,8 +85,8 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     Mode mode() const { return mMode; }
 
     /** Resets the widget to an initial value.
-     * @param initialValue initial value to show in widget
-     * @param mixedValues set to true to initially show the mixed values state
+     * \param initialValue initial value to show in widget
+     * \param mixedValues set to true to initially show the mixed values state
      */
     void initialize( const QVariant &initialValue, bool mixedValues = false );
 
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
   public slots:
 
     /** Sets whether the widget should be displayed in a "mixed values" mode.
-     * @param mixed set to true to show in a mixed values state
+     * \param mixed set to true to show in a mixed values state
      */
     void setIsMixed( bool mixed );
 
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
   signals:
 
     //! Emitted when the widget's value changes
-    //! @param value new widget value
+    //! \param value new widget value
     void valueChanged( const QVariant &value );
 
   private slots:
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
 
     /** Sets the search widget wrapper for the widget used when the form is in
      * search mode.
-     * @param wrapper search widget wrapper.
+     * \param wrapper search widget wrapper.
      * \note the search widget wrapper should be created using searchWidgetFrame()
      * as its parent
      * \note this method is in place for unit testing only, and is not considered

@@ -38,10 +38,10 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 
     /**
      * @brief A renderer for generating live hillshade models.
-     * @param input The input raster interface
-     * @param band The band in the raster to use
-     * @param lightAzimuth The azimuth of the light source
-     * @param lightAltitude The altitude of the light source
+     * \param input The input raster interface
+     * \param band The band in the raster to use
+     * \param lightAzimuth The azimuth of the light source
+     * \param lightAltitude The altitude of the light source
      */
     QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAltitude );
 
@@ -49,8 +49,8 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 
     /**
      * @brief Factory method to create a new renderer
-     * @param elem A DOM element to create the renderer from.
-     * @param input The raster input interface.
+     * \param elem A DOM element to create the renderer from.
+     * \param input The raster input interface.
      * @return A new QgsHillshadeRenderer.
      */
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
@@ -93,27 +93,27 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 
     /**
      * @brief Set the azimuth of the light source.
-     * @param azimuth The azimuth of the light source, between 0 and 360.0
+     * \param azimuth The azimuth of the light source, between 0 and 360.0
      * @see azimuth()
      */
     void setAzimuth( double azimuth ) { mLightAzimuth = azimuth; }
 
     /**
      * @brief Set the altitude of the light source
-     * @param altitude the altitude
+     * \param altitude the altitude
      * @see altitude()
      */
     void setAltitude( double altitude ) { mLightAngle = altitude; }
 
     /**
      * @brief Set the Z scaling factor of the result image.
-     * @param zfactor The z factor
+     * \param zfactor The z factor
      * @see zFactor()
      */
     void setZFactor( double zfactor ) { mZFactor = zfactor; }
 
     /** Sets whether to render using a multi-directional hillshade algorithm.
-     * @param isMultiDirectional set to true to use multi directional rendering
+     * \param isMultiDirectional set to true to use multi directional rendering
      * @see multiDirectional()
      */
     void setMultiDirectional( bool isMultiDirectional ) { mMultiDirectional = isMultiDirectional; }

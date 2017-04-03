@@ -73,8 +73,8 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 
     /**
      * @brief currentField returns the currently selected field or expression if allowed
-     * @param isExpression determines if the string returned is the name of a field or an expression
-     * @param isValid determines if the expression (or field) returned is valid
+     * \param isExpression determines if the string returned is the name of a field or an expression
+     * \param isValid determines if the expression (or field) returned is valid
      */
     QString currentField( bool *isExpression = nullptr, bool *isValid = nullptr ) const;
 
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     /**
      * Register an expression context generator class that will be used to retrieve
      * an expression context for the widget.
-     * @param generator A QgsExpressionContextGenerator class that will be used to
+     * \param generator A QgsExpressionContextGenerator class that will be used to
      *                  create an expression context when required.
      * \since QGIS 3.0
      */
@@ -172,7 +172,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 
     /**
      * @brief updateLineEditStyle will re-style (color/font) the line edit depending on content and status
-     * @param expression if expression is given it will be evaluated for the given string, otherwise it takes
+     * \param expression if expression is given it will be evaluated for the given string, otherwise it takes
      * current expression from the model
      */
     void updateLineEditStyle( const QString &expression = QString() );

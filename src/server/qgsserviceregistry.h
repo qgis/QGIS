@@ -56,8 +56,8 @@ class SERVER_EXPORT QgsServiceRegistry
 
     /**
      * Retrieve a service from its name
-     * @param name the name of the service
-     * @param version the version string (optional)
+     * \param name the name of the service
+     * \param version the version string (optional)
      * @return QgsService
      *
      * If the version is not provided the higher version of the service is returned
@@ -72,15 +72,15 @@ class SERVER_EXPORT QgsServiceRegistry
      *
      * The registry gain ownership of services and will call 'delete' on cleanup
      *
-     * @param service a QgsServerResponse to be registered
+     * \param service a QgsServerResponse to be registered
      */
     void registerService( QgsService *service );
 
     /**
      * Unregister service from its name and version
      *
-     * @param name the tame of the service
-     * @param version (optional) the specific version to unload
+     * \param name the tame of the service
+     * \param version (optional) the specific version to unload
      * @return the number of services unregistered
      *
      * If the version is not specified then all versions from the specified service
@@ -90,8 +90,8 @@ class SERVER_EXPORT QgsServiceRegistry
 
     /**
      * Initialize registry, load modules and auto register services
-     * @param serverIface the server interface
-     * @param nativeModulepath the native module path
+     * \param serverIface the server interface
+     * \param nativeModulepath the native module path
      */
     void init( const QString &nativeModulepath, QgsServerInterface *serverIface = nullptr );
 

@@ -58,16 +58,16 @@ class CORE_EXPORT QgsField
   public:
 
     /** Constructor. Constructs a new QgsField object.
-     * @param name Field name
-     * @param type Field variant type, currently supported: String / Int / Double
-     * @param typeName Field type (e.g., char, varchar, text, int, serial, double).
+     * \param name Field name
+     * \param type Field variant type, currently supported: String / Int / Double
+     * \param typeName Field type (e.g., char, varchar, text, int, serial, double).
      * Field types are usually unique to the source and are stored exactly
      * as returned from the data store.
-     * @param len Field length
-     * @param prec Field precision. Usually decimal places but may also be
+     * \param len Field length
+     * \param prec Field precision. Usually decimal places but may also be
      * used in conjunction with other fields types (e.g., variable character fields)
-     * @param comment Comment for the field
-     * @param subType If the field is a collection, its element's type. When
+     * \param comment Comment for the field
+     * \param subType If the field is a collection, its element's type. When
      *                all the elements don't need to have the same type, leave
      *                this to QVariant::Invalid.
      */
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsField
 
     /**
      * Set the field name.
-     * @param name Name of the field
+     * \param name Name of the field
      */
     void setName( const QString &name );
 
@@ -171,19 +171,19 @@ class CORE_EXPORT QgsField
 
     /**
      * Set the field type.
-     * @param typeName Field type
+     * \param typeName Field type
      */
     void setTypeName( const QString &typeName );
 
     /**
      * Set the field length.
-     * @param len Length of the field
+     * \param len Length of the field
      */
     void setLength( int len );
 
     /**
      * Set the field precision.
-     * @param precision Precision of the field
+     * \param precision Precision of the field
      */
     void setPrecision( int precision );
 
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsField
     QString defaultValueExpression() const;
 
     /** Sets an expression to use when calculating the default value for the field.
-     * @param expression expression to evaluate when calculating default values for field. Pass
+     * \param expression expression to evaluate when calculating default values for field. Pass
      * an empty expression to clear the default.
      * \since QGIS 3.0
      * @see defaultValueExpression()
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsField
     QString alias() const;
 
     /** Sets the alias for the field (the friendly displayed name of the field ).
-     * @param alias field alias, or empty string to remove an existing alias
+     * \param alias field alias, or empty string to remove an existing alias
      * @see alias()
      * \since QGIS 3.0
      */
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsField
     /**
      * Converts the provided variant to a compatible format
      *
-     * @param v  The value to convert
+     * \param v  The value to convert
      *
      * @return   True if the conversion was successful
      */
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsField
     /**
      * Set the editor widget setup for the field.
      *
-     * @param v  The value to set
+     * \param v  The value to set
      */
     void setEditorWidgetSetup( const QgsEditorWidgetSetup &v );
 

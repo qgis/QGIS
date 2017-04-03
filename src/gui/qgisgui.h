@@ -70,12 +70,12 @@ namespace QgisGui
     last one used, if any; also, prefer to start in the last directory
     associated with filterName.
 
-    @param filterName the name of the filter; used for persistent store key
-    @param filters    the file filters used for QFileDialog
-    @param selectedFiles string list of selected files; will be empty if none selected
-    @param enc        encoding?
-    @param title      the title for the dialog
-    @param cancelAll  add button to cancel further requests
+    \param filterName the name of the filter; used for persistent store key
+    \param filters    the file filters used for QFileDialog
+    \param selectedFiles string list of selected files; will be empty if none selected
+    \param enc        encoding?
+    \param title      the title for the dialog
+    \param cancelAll  add button to cancel further requests
     \note
 
     Stores persistent settings under /UI/.  The sub-keys will be
@@ -94,9 +94,9 @@ namespace QgisGui
 
   /** A helper function to get an image name from the user. It will nicely
    * provide filters with all available writable image formats.
-   * @param parent widget that should act as the parent for the file dialog
-   * @param message the message to display to the user
-   * @param defaultFilename default file name (empty by default)
+   * \param parent widget that should act as the parent for the file dialog
+   * \param message the message to display to the user
+   * \param defaultFilename default file name (empty by default)
    * @return QPair<QString, QString> where first is the file name and second is
    * the file type
    */
@@ -115,16 +115,16 @@ namespace QgisGui
   /**
    * Create file filters suitable for use with QFileDialog
    *
-   * @param format extension e.g. "png"
+   * \param format extension e.g. "png"
    * @return QString e.g. "PNG format (*.png, *.PNG)"
    */
   QString GUI_EXPORT createFileFilter_( QString const &format );
 
   /**
    * Show font selection dialog
-   * @param ok true on ok, false on cancel
-   * @param initial initial font
-   * @param title optional dialog title
+   * \param ok true on ok, false on cancel
+   * \param initial initial font
+   * \param title optional dialog title
    * @return QFont the selected fon
    */
   QFont GUI_EXPORT getFont( bool &ok, const QFont &initial, const QString &title = QString() );

@@ -93,7 +93,7 @@ public:
      *
      * This function must be called before starting the process.
      *
-     * @param mode the output channel handling mode
+     * \param mode the output channel handling mode
      */
     void setOutputChannelMode(OutputChannelMode mode);
 
@@ -109,7 +109,7 @@ public:
      *
      * This function must be called before starting the process, obviously.
      *
-     * @param mode the open mode. Note that this mode is automatically
+     * \param mode the open mode. Note that this mode is automatically
      *   "reduced" according to the channel modes and redirections.
      *   The default is QIODevice::ReadWrite.
      */
@@ -120,9 +120,9 @@ public:
      *
      * This function must be called before starting the process.
      *
-     * @param name the name of the environment variable
-     * @param value the new value for the environment variable
-     * @param overwrite if @c false and the environment variable is already
+     * \param name the name of the environment variable
+     * \param value the new value for the environment variable
+     * \param overwrite if @c false and the environment variable is already
      *   set, the old value will be preserved
      */
     void setEnv(const QString &name, const QString &value, bool overwrite = true);
@@ -132,7 +132,7 @@ public:
      *
      * This function must be called before starting the process.
      *
-     * @param name the name of the environment variable
+     * \param name the name of the environment variable
      */
     void unsetEnv(const QString &name);
 
@@ -151,8 +151,8 @@ public:
      *
      * This function must be called before starting the process, obviously.
      *
-     * @param exe the program to execute
-     * @param args the command line arguments for the program,
+     * \param exe the program to execute
+     * \param args the command line arguments for the program,
      *   one per list element
      */
     void setProgram(const QString &exe, const QStringList &args = QStringList());
@@ -160,7 +160,7 @@ public:
     /**
      * @overload
      *
-     * @param argv the program to execute and the command line arguments
+     * \param argv the program to execute and the command line arguments
      *   for the program, one per list element
      */
     void setProgram(const QStringList &argv);
@@ -179,7 +179,7 @@ public:
      *
      * This function must be called before starting the process, obviously.
      *
-     * @param arg the argument to add
+     * \param arg the argument to add
      * @return a reference to this KProcess
      */
     KProcess &operator<<(const QString& arg);
@@ -187,7 +187,7 @@ public:
     /**
      * @overload
      *
-     * @param args the arguments to add
+     * \param args the arguments to add
      * @return a reference to this KProcess
      */
     KProcess &operator<<(const QStringList& args);
@@ -212,7 +212,7 @@ public:
      *
      * This function must be called before starting the process, obviously.
      *
-     * @param cmd the command to execute through a shell.
+     * \param cmd the command to execute through a shell.
      *   The caller must make sure that all filenames etc. are properly
      *   quoted when passed as argument. Failure to do so often results in
      *   serious security holes. See KShell::quoteArg().
@@ -247,7 +247,7 @@ public:
      * Unlike the other execute() variants this method is not static,
      * so the process can be parametrized properly and talked to.
      *
-     * @param msecs time to wait for process to exit before killing it
+     * \param msecs time to wait for process to exit before killing it
      * @return -2 if the process could not be started, -1 if it crashed,
      *  otherwise its exit code
      */
@@ -256,10 +256,10 @@ public:
     /**
      * @overload
      *
-     * @param exe the program to execute
-     * @param args the command line arguments for the program,
+     * \param exe the program to execute
+     * \param args the command line arguments for the program,
      *   one per list element
-     * @param msecs time to wait for process to exit before killing it
+     * \param msecs time to wait for process to exit before killing it
      * @return -2 if the process could not be started, -1 if it crashed,
      *  otherwise its exit code
      */
@@ -268,9 +268,9 @@ public:
     /**
      * @overload
      *
-     * @param argv the program to execute and the command line arguments
+     * \param argv the program to execute and the command line arguments
      *   for the program, one per list element
-     * @param msecs time to wait for process to exit before killing it
+     * \param msecs time to wait for process to exit before killing it
      * @return -2 if the process could not be started, -1 if it crashed,
      *  otherwise its exit code
      */
@@ -295,8 +295,8 @@ public:
     /**
      * @overload
      *
-     * @param exe the program to start
-     * @param args the command line arguments for the program,
+     * \param exe the program to start
+     * \param args the command line arguments for the program,
      *   one per list element
      * @return the PID of the started process or 0 on error
      */
@@ -305,7 +305,7 @@ public:
     /**
      * @overload
      *
-     * @param argv the program to start and the command line arguments
+     * \param argv the program to start and the command line arguments
      *   for the program, one per list element
      * @return the PID of the started process or 0 on error
      */

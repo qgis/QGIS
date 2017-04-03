@@ -29,15 +29,15 @@ class CORE_EXPORT QgsConditionalLayerStyles
     /**
      * @brief Set the conditional styles that apply to full rows of data in the attribute table.
      * Each row will check be checked against each rule.
-     * @param styles The styles to assign to all the rows
+     * \param styles The styles to assign to all the rows
      * \since QGIS 2.12
      */
     void setRowStyles( const QList<QgsConditionalStyle> &styles );
 
     /**
      * @brief Set the conditional styles for the field UI properties.
-     * @param fieldName name of field
-     * @param styles
+     * \param fieldName name of field
+     * \param styles
      */
     void setFieldStyles( const QString &fieldName, const QList<QgsConditionalStyle> &styles );
 
@@ -75,8 +75,8 @@ class CORE_EXPORT QgsConditionalStyle
 
     /**
      * @brief Check if the rule matches using the given value and feature
-     * @param value The current value being checked. The "value" variable from the context is replaced with this value.
-     * @param context Expression context for evaluating rule expression
+     * \param value The current value being checked. The "value" variable from the context is replaced with this value.
+     * \param context Expression context for evaluating rule expression
      * @return True of the rule matches against the given feature
      */
     bool matches( const QVariant &value, QgsExpressionContext &context ) const;
@@ -89,38 +89,38 @@ class CORE_EXPORT QgsConditionalStyle
 
     /**
      * @brief Set the name of the style.  Names are optional but handy for display
-     * @param value The name given to the style
+     * \param value The name given to the style
      */
     void setName( const QString &value ) { mName = value; mValid = true; }
 
     /**
      * @brief Set the rule for the style.  Rules should be of QgsExpression syntax.
      * Special value of \@value is replaced at run time with the check value
-     * @param value The QgsExpression style rule to use for this style
+     * \param value The QgsExpression style rule to use for this style
      */
     void setRule( const QString &value ) { mRule = value; mValid = true; }
 
     /**
      * @brief Set the background color for the style
-     * @param value QColor for background color
+     * \param value QColor for background color
      */
     void setBackgroundColor( const QColor &value ) { mBackColor = value; mValid = true; }
 
     /**
      * @brief Set the text color for the style
-     * @param value QColor for text color
+     * \param value QColor for text color
      */
     void setTextColor( const QColor &value ) { mTextColor = value; mValid = true; }
 
     /**
      * @brief Set the font for the the style
-     * @param value QFont to be used for text
+     * \param value QFont to be used for text
      */
     void setFont( const QFont &value ) { mFont = value; mValid = true; }
 
     /**
      * @brief Set the icon for the style. Icons are generated from symbols
-     * @param value QgsSymbol to be used when generating the icon
+     * \param value QgsSymbol to be used when generating the icon
      */
     void setSymbol( QgsSymbol *value );
 
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsConditionalStyle
     /**
      * @brief Compress a list of styles into a single style.  This can be used to stack the elements of the
      * styles. The font of the last style is used in the output.
-     * @param styles The list of styles to compress down
+     * \param styles The list of styles to compress down
      * @return A single style generated from joining each style property.
      */
     static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle> &styles );

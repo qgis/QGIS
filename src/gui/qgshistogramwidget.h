@@ -55,9 +55,9 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
     /** QgsHistogramWidget constructor. If layer and fieldOrExp are specified then the histogram
      * will be initially populated with the corresponding values.
-     * @param parent parent widget
-     * @param layer source vector layer
-     * @param fieldOrExp field name or expression string
+     * \param parent parent widget
+     * \param layer source vector layer
+     * \param fieldOrExp field name or expression string
      */
     QgsHistogramWidget( QWidget *parent = nullptr, QgsVectorLayer *layer = nullptr, const QString &fieldOrExp = QString() );
 
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     /** Sets the pen to use when drawing histogram bars. If set to Qt::NoPen then the
      * pen will be automatically calculated. If ranges have been set using @link setGraduatedRanges @endlink
      * then the pen and brush will have no effect.
-     * @param pen histogram pen
+     * \param pen histogram pen
      * @see pen
      * @see setBrush
      */
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
     /** Sets the brush used for drawing histogram bars. If ranges have been set using @link setGraduatedRanges @endlink
      * then the pen and brush will have no effect.
-     * @param brush histogram brush
+     * \param brush histogram brush
      * @see brush
      * @see setPen
      */
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
     /** Sets the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
      * bars and for showing vertical dividers at the histogram breaks.
-     * @param ranges graduated range list
+     * \param ranges graduated range list
      * @see graduatedRanges
      */
     void setGraduatedRanges( const QgsRangeList &ranges );
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     QString xAxisTitle() const { return mXAxisTitle; }
 
     /** Sets the title for the histogram's x-axis.
-     * @param title x-axis title, or empty string to remove title
+     * \param title x-axis title, or empty string to remove title
      * @see xAxisTitle
      * @see setYAxisTitle
      */
@@ -139,7 +139,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     QString yAxisTitle() const { return mYAxisTitle; }
 
     /** Sets the title for the histogram's y-axis.
-     * @param title y-axis title, or empty string to remove title
+     * \param title y-axis title, or empty string to remove title
      * @see yAxisTitle
      * @see setXAxisTitle
      */
@@ -157,13 +157,13 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     void refresh();
 
     /** Sets the vector layer associated with the histogram.
-     * @param layer source vector layer
+     * \param layer source vector layer
      * @see setSourceFieldExp
      */
     void setLayer( QgsVectorLayer *layer );
 
     /** Sets the source field or expression to use for values in the histogram.
-     * @param fieldOrExp field name or expression string
+     * \param fieldOrExp field name or expression string
      * @see setLayer
      */
     void setSourceFieldExp( const QString &fieldOrExp );

@@ -43,7 +43,7 @@ class APP_EXPORT QgsTipFactory : public QObject
     QgsTip getTip();
 
     /** Get a specific tip (generic or gui-centric).
-     * @param position The tip returned will be based on the
+     * \param position The tip returned will be based on the
      *        number passed in as position. If the
      *        position is invalid, an empty string will be
      *        returned.

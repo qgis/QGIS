@@ -48,7 +48,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * Set the icon for the factory object.
-     * @param icon The icon to show in the interface.
+     * \param icon The icon to show in the interface.
      */
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * Set the title for the interface
      * \note Not all users may show this as a label
      * e.g style dock uses this as a tooltip.
-     * @param title The title to set.
+     * \param title The title to set.
      */
     void setTitle( const QString &title ) { mTitle = title; }
 
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * Set support flag for style dock
-     * @param supports True if this widget is supported in the style dock.
+     * \param supports True if this widget is supported in the style dock.
      */
     void setSupportsStyleDock( bool supports ) { mSupportsDock = supports; }
 
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * Set support flag for style dock
-     * @param supports True if this widget is supported in the style dock.
+     * \param supports True if this widget is supported in the style dock.
      */
     void setSupportLayerPropertiesDialog( bool supports ) { mSupportsProperties = supports; }
 
@@ -100,10 +100,10 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     /**
      * @brief Factory function to create the widget on demand as needed by the dock.
      * \note This function is called each time the panel is selected. Keep it light for better UX.
-     * @param layer The active layer in the dock.
-     * @param canvas The map canvas.
-     * @param dockWidget True of the widget will be shown a dock style widget.
-     * @param parent The parent of the widget.
+     * \param layer The active layer in the dock.
+     * \param canvas The map canvas.
+     * \param dockWidget True of the widget will be shown a dock style widget.
+     * \param parent The parent of the widget.
      * @return A new QgsMapStylePanel which is shown in the map style dock.
      */
     virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent = 0 ) const = 0;

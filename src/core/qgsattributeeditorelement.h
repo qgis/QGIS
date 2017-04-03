@@ -46,9 +46,9 @@ class CORE_EXPORT QgsAttributeEditorElement
     /**
      * Constructor
      *
-     * @param type The type of the new element. Should never
-     * @param name
-     * @param parent
+     * \param type The type of the new element. Should never
+     * \param name
+     * \param parent
      */
     QgsAttributeEditorElement( AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = nullptr )
       : mType( type )
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsAttributeEditorElement
     /**
      * Get the XML Dom element to save this element.
      *
-     * @param doc The QDomDocument which is used to create new XML elements
+     * \param doc The QDomDocument which is used to create new XML elements
      *
      * @return A DOM element to serialize this element
      */
@@ -147,8 +147,8 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     /**
      * Creates a new attribute editor container
      *
-     * @param name   The name to show as title
-     * @param parent The parent. May be another container.
+     * \param name   The name to show as title
+     * \param parent The parent. May be another container.
      */
     QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeContainer, name, parent )
@@ -162,14 +162,14 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     /**
      * Add a child element to this container. This may be another container, a field or a relation.
      *
-     * @param element The element to add as child
+     * \param element The element to add as child
      */
     virtual void addChildElement( QgsAttributeEditorElement *element );
 
     /**
      * Determines if this container is rendered as collapsible group box or tab in a tabwidget
      *
-     * @param isGroupBox If true, this will be a group box
+     * \param isGroupBox If true, this will be a group box
      */
     virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
 
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     /**
      * Traverses the element tree to find any element of the specified type
      *
-     * @param type The type which should be searched
+     * \param type The type which should be searched
      *
      * @return A list of elements of the type which has been searched for
      */
@@ -261,9 +261,9 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
     /**
      * Creates a new attribute editor element which represents a field
      *
-     * @param name   The name of the element
-     * @param idx    The index of the field which should be embedded
-     * @param parent The parent of this widget (used as container)
+     * \param name   The name of the element
+     * \param idx    The index of the field which should be embedded
+     * \param parent The parent of this widget (used as container)
      */
     QgsAttributeEditorField( const QString &name, int idx, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeField, name, parent )
@@ -294,9 +294,9 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     /**
      * Creates a new element which embeds a relation.
      *
-     * @param name         The name of this element
-     * @param relationId   The id of the relation to embed
-     * @param parent       The parent (used as container)
+     * \param name         The name of this element
+     * \param relationId   The id of the relation to embed
+     * \param parent       The parent (used as container)
      */
     QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, name, parent )
@@ -308,9 +308,9 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     /**
      * Creates a new element which embeds a relation.
      *
-     * @param name         The name of this element
-     * @param relation     The relation to embed
-     * @param parent       The parent (used as container)
+     * \param name         The name of this element
+     * \param relation     The relation to embed
+     * \param parent       The parent (used as container)
      */
     QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, name, parent )
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     /**
      * Initializes the relation from the id
      *
-     * @param relManager The relation manager to use for the initialization
+     * \param relManager The relation manager to use for the initialization
      * @return true if the relation was found in the relationmanager
      */
     bool init( QgsRelationManager *relManager );

@@ -529,7 +529,7 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     /** Attempts to extract the WKB type from a WKT string.
-     * @param wktStr a valid WKT string
+     * \param wktStr a valid WKT string
      */
     static Type parseType( const QString &wktStr );
 
@@ -839,7 +839,7 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     /** Adds the z dimension to a WKB type and returns the new type
-     * @param type original type
+     * \param type original type
      * \since QGIS 2.12
      * @see addM()
      * @see dropZ()
@@ -863,7 +863,7 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     /** Adds the m dimension to a WKB type and returns the new type
-     * @param type original type
+     * \param type original type
      * \since QGIS 2.12
      * @see addZ()
      * @see dropM()
@@ -894,7 +894,7 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     /** Drops the z dimension (if present) for a WKB type and returns the new type.
-     * @param type original type
+     * \param type original type
      * \since QGIS 2.14
      * @see dropM()
      * @see addZ()
@@ -911,7 +911,7 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     /** Drops the m dimension (if present) for a WKB type and returns the new type.
-     * @param type original type
+     * \param type original type
      * \since QGIS 2.14
      * @see dropZ()
      * @see addM()
@@ -929,7 +929,7 @@ class CORE_EXPORT QgsWkbTypes
 
     /**
      * Will convert the 25D version of the flat type if supported or Unknown if not supported.
-     * @param type The type to convert
+     * \param type The type to convert
      * @return the 25D version of the type or Unknown
      */
     static Type to25D( Type type )

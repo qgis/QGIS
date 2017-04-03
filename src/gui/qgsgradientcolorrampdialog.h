@@ -40,8 +40,8 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
   public:
 
     /** Constructor for QgsGradientColorRampDialog.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
+     * \param ramp initial ramp to show in dialog
+     * \param parent parent widget
      */
     QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent = nullptr );
     ~QgsGradientColorRampDialog();
@@ -52,7 +52,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     QgsGradientColorRamp ramp() const { return mRamp; }
 
     /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
+     * \param ramp color ramp
      * @see ramp()
      */
     void setRamp( const QgsGradientColorRamp &ramp );

@@ -117,10 +117,10 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
         snapper.setSnapToMapMode(QgsSnappingUtils.SnapAdvanced)
         ```
 
-       * @param l   The vector layer for which this configuration is
-       * @param t   Which parts of the geometry should be snappable
-       * @param tol The tolerance radius in which the snapping will trigger
-       * @param u   The unit in which the tolerance is specified
+       * \param l   The vector layer for which this configuration is
+       * \param t   Which parts of the geometry should be snappable
+       * \param tol The tolerance radius in which the snapping will trigger
+       * \param u   The unit in which the tolerance is specified
        */
       LayerConfig( QgsVectorLayer *l, QgsPointLocator::Types t, double tol, QgsTolerance::UnitType u )
         : layer( l )

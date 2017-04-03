@@ -47,7 +47,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
   public:
 
     /** Constructor for QgsVariableEditorWidget.
-     * @param parent parent widget
+     * \param parent parent widget
      */
     QgsVariableEditorWidget( QWidget *parent = nullptr );
 
@@ -56,7 +56,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
     /** Overwrites the QgsExpressionContext for the widget. Setting a context
      * allows the widget to show all inherited variables for the context,
      * and highlight any overridden variables within scopes.
-     * @param context expression context
+     * \param context expression context
      * @see context()
      */
     void setContext( QgsExpressionContext *context );
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
     /** Sets the editable scope for the widget. Only variables from the editable scope can
      * be modified by users.
-     * @param scopeIndex index of current editable scope. Set to -1 to disable
+     * \param scopeIndex index of current editable scope. Set to -1 to disable
      * editing and make the widget read-only.
      * @see editableScope()
      */
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
     /** Sets the setting group for the widget. QgsVariableEditorWidget widgets with
      * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
-     * @param group setting group
+     * \param group setting group
      * @see settingGroup()
      */
     void setSettingGroup( const QString &group ) { mSettingGroup = group; }

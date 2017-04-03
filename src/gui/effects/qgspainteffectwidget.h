@@ -44,7 +44,7 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
 
     /**
      * Sets the paint effect to modify with the widget
-     * @param effect paint effect
+     * \param effect paint effect
      */
     virtual void setPaintEffect( QgsPaintEffect *effect ) = 0;
 

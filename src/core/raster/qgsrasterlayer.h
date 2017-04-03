@@ -288,11 +288,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     double rasterUnitsPerPixelY() const;
 
     /** \brief Set contrast enhancement algorithm
-     *  @param algorithm Contrast enhancement algorithm
-     *  @param limits Limits
-     *  @param extent Extent used to calculate limits, if empty, use full layer extent
-     *  @param sampleSize Size of data sample to calculate limits, if 0, use full resolution
-     *  @param generateLookupTableFlag Generate lookup table. */
+     *  \param algorithm Contrast enhancement algorithm
+     *  \param limits Limits
+     *  \param extent Extent used to calculate limits, if empty, use full layer extent
+     *  \param sampleSize Size of data sample to calculate limits, if 0, use full resolution
+     *  \param generateLookupTableFlag Generate lookup table. */
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,

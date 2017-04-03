@@ -34,8 +34,8 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
   public:
 
     /** Runs the dialoag and creates a new memory layer
-     * @param parent parent widget
-     * @param defaultCrs default layer CRS to show in dialog
+     * \param parent parent widget
+     * \param defaultCrs default layer CRS to show in dialog
      * @returns new memory layer
      */
     static QgsVectorLayer *runAndCreateLayer( QWidget *parent = nullptr, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );

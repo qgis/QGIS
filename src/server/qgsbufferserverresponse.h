@@ -96,16 +96,16 @@ class QgsBufferServerRequest : public QgsServerRequest
     /**
     * Constructor
     *
-    * @param url the url string
-    * @param method the request method
+    * \param url the url string
+    * \param method the request method
     */
     QgsBufferServerRequest( const QString &url, Method method = GetMethod, QByteArray *data = nullptr );
 
     /**
      * Constructor
      *
-     * @param url QUrl
-     * @param method the request method
+     * \param url QUrl
+     * \param method the request method
      */
     QgsBufferServerRequest( const QUrl &url, Method method = GetMethod, QByteArray *data = nullptr );
 

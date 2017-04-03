@@ -59,7 +59,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
     /** Constructor for QgsStringStatistics
-     * @param stats flags for statistics to calculate
+     * \param stats flags for statistics to calculate
      */
     QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = All );
 
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., count).
-     * @param stats flags for statistics to calculate
+     * \param stats flags for statistics to calculate
      * @see statistics
      */
     void setStatistics( Statistics stats ) { mStatistics = stats; }
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
     void reset();
 
     /** Calculates summary statistics for an entire list of strings at once.
-     * @param values list of strings
+     * \param values list of strings
      * @see calculateFromVariants()
      * @see addString()
      */
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
 
     /** Calculates summary statistics for an entire list of variants at once. Any
      * non-string variants will be ignored.
-     * @param values list of variants
+     * \param values list of variants
      * @see calculate()
      * @see addValue()
      */
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * allows strings to be added to the calculation one at a time. For large
      * quantities of strings this may be more efficient then first adding all the
      * strings to a list and calling calculate().
-     * @param string string to add
+     * \param string string to add
      * \note call reset() before adding the first string using this method
      * to clear the results from any previous calculations
      * \note finalize() must be called after adding the final string and before
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * allows variants to be added to the calculation one at a time. For large
      * quantities of variants this may be more efficient then first adding all the
      * variants to a list and calling calculateFromVariants().
-     * @param value variant to add
+     * \param value variant to add
      * \note call reset() before adding the first string using this method
      * to clear the results from any previous calculations
      * \note finalize() must be called after adding the final value and before
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
     void finalize();
 
     /** Returns the value of a specified statistic
-     * @param stat statistic to return
+     * \param stat statistic to return
      * @returns calculated value of statistic
      */
     QVariant statistic( Statistic stat ) const;
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
     double meanLength() const { return mMeanLength; }
 
     /** Returns the friendly display name for a statistic
-     * @param statistic statistic to return name for
+     * \param statistic statistic to return name for
      */
     static QString displayName( Statistic statistic );
 

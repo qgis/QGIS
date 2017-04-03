@@ -67,9 +67,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     };
 
     /** Constructor for QgsMapLayer
-     * @param type layer type
-     * @param name display name for the layer
-     * @param source datasource of layer
+     * \param type layer type
+     * \param name display name for the layer
+     * \param source datasource of layer
      */
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString::null, const QString &source = QString::null );
 
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Set the display name of the layer
-     * @param name new name for the layer
+     * \param name new name for the layer
      * \since QGIS 2.16
      * @see name()
      */
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString metadataUrlFormat() const { return mMetadataUrlFormat; }
 
     /** Set the blending mode used for rendering a layer.
-     * @param blendMode new blending mode
+     * \param blendMode new blending mode
      * @see blendMode()
     */
     void setBlendMode( QPainter::CompositionMode blendMode );
@@ -338,8 +338,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual void setLayerOrder( const QStringList &layers );
 
     /** Set the visibility of the given sublayer name.
-     * @param name sublayer name
-     * @param visible sublayer visibility
+     * \param name sublayer name
+     * \param visible sublayer visibility
     */
     virtual void setSubLayerVisibility( const QString &name, bool visible );
 
@@ -352,8 +352,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool isSpatial() const { return true; }
 
     /** Sets state from Dom document
-       @param layerElement The Dom element corresponding to ``maplayer'' tag
-       @param pathResolver object for conversion between relative and absolute paths
+       \param layerElement The Dom element corresponding to ``maplayer'' tag
+       \param pathResolver object for conversion between relative and absolute paths
        \note
 
        The Dom node corresponds to a Dom document project file XML element read
@@ -369,9 +369,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool readLayerXml( const QDomElement &layerElement, const QgsPathResolver &pathResolver );
 
     /** Stores state in Dom node
-     * @param layerElement is a Dom element corresponding to ``maplayer'' tag
-     * @param document is a the dom document being written
-     * @param pathResolver object for conversion between relative and absolute paths
+     * \param layerElement is a Dom element corresponding to ``maplayer'' tag
+     * \param document is a the dom document being written
+     * \param pathResolver object for conversion between relative and absolute paths
      * \note
      *
      * The Dom node corresponds to a Dom document project file XML element to be
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Retrieve the default style for this layer if one
      * exists (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to false if
      * we did not manage to load the default style.
      * @return a QString with any status messages
      * @see also loadNamedStyle ();
@@ -440,12 +440,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Retrieve a named style for this layer if one
      * exists (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param uri - the file name or other URI for the
+     * \param uri - the file name or other URI for the
      * style file. First an attempt will be made to see if this
      * is a file and load that, if that fails the qgis.db styles
      * table will be consulted to see if there is a style who's
      * key matches the URI.
-     * @param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to false if
      * we did not manage to load the default style.
      * @return a QString with any status messages
      * @see also loadDefaultStyle ();
@@ -453,17 +453,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString loadNamedStyle( const QString &uri, bool &resultFlag );
 
     /** Retrieve a named style for this layer from a sqlite database.
-     * @param db path to sqlite database
-     * @param uri uri for table
-     * @param qml will be set to QML style content from database
+     * \param db path to sqlite database
+     * \param uri uri for table
+     * \param qml will be set to QML style content from database
      * @returns true if style was successfully loaded
      */
     virtual bool loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml );
 
     /**
      * Import the properties of this layer from a QDomDocument
-     * @param doc source QDomDocument
-     * @param errorMsg this QString will be initialized on error
+     * \param doc source QDomDocument
+     * \param errorMsg this QString will be initialized on error
      * during the execution of readSymbology
      * @return true on success
      * \since QGIS 2.8
@@ -472,8 +472,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Export the properties of this layer as named style in a QDomDocument
-     * @param doc the target QDomDocument
-     * @param errorMsg this QString will be initialized on error
+     * \param doc the target QDomDocument
+     * \param errorMsg this QString will be initialized on error
      * during the execution of writeSymbology
      */
     virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const;
@@ -481,8 +481,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Export the properties of this layer as SLD style in a QDomDocument
-     * @param doc the target QDomDocument
-     * @param errorMsg this QString will be initialized on error
+     * \param doc the target QDomDocument
+     * \param errorMsg this QString will be initialized on error
      * during the execution of writeSymbology
      */
     virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const;
@@ -490,7 +490,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Save the properties of this layer as the default style
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to false if
      * we did not manage to save the default style.
      * @return a QString with any status messages
      * @sa loadNamedStyle() and @see saveNamedStyle()
@@ -500,12 +500,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Save the properties of this layer as a named style
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param uri the file name or other URI for the
+     * \param uri the file name or other URI for the
      * style file. First an attempt will be made to see if this
      * is a file and save to that, if that fails the qgis.db styles
      * table will be used to create a style entry who's
      * key matches the URI.
-     * @param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to false if
      * we did not manage to save the default style.
      * @return a QString with any status messages
      * @sa saveDefaultStyle()
@@ -513,8 +513,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString saveNamedStyle( const QString &uri, bool &resultFlag );
 
     /** Saves the properties of this layer to an SLD format file.
-     * @param uri uri of destination for exported SLD file.
-     * @param resultFlag a reference to a flag that will be set to false if
+     * \param uri uri of destination for exported SLD file.
+     * \param resultFlag a reference to a flag that will be set to false if
      * the SLD file could not be generated
      * @returns a string with any status or error messages
      * @see loadSldStyle()
@@ -522,8 +522,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString saveSldStyle( const QString &uri, bool &resultFlag ) const;
 
     /** Attempts to style the layer using the formatting from an SLD type file.
-     * @param uri uri of source SLD file
-     * @param resultFlag a reference to a flag that will be set to false if
+     * \param uri uri of source SLD file
+     * \param resultFlag a reference to a flag that will be set to false if
      * the SLD file could not be loaded
      * @returns a string with any status or error messages
      * @see saveSldStyle()
@@ -536,15 +536,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 
     /** Read the symbology for the current layer from the Dom node supplied.
-     * @param node node that will contain the symbology definition for this layer.
-     * @param errorMessage reference to string that will be updated with any error messages
+     * \param node node that will contain the symbology definition for this layer.
+     * \param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
      */
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage ) = 0;
 
     /** Read the style for the current layer from the Dom node supplied.
-     * @param node node that will contain the style definition for this layer.
-     * @param errorMessage reference to string that will be updated with any error messages
+     * \param node node that will contain the style definition for this layer.
+     * \param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
      * \since QGIS 2.16
      * \note To be implemented in subclasses. Default implementation does nothing and returns false.
@@ -552,17 +552,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool readStyle( const QDomNode &node, QString &errorMessage );
 
     /** Write the symbology for the layer into the docment provided.
-     *  @param node the node that will have the style element added to it.
-     *  @param doc the document that will have the QDomNode added.
-     *  @param errorMessage reference to string that will be updated with any error messages
+     *  \param node the node that will have the style element added to it.
+     *  \param doc the document that will have the QDomNode added.
+     *  \param errorMessage reference to string that will be updated with any error messages
      *  @return true in case of success.
      */
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const = 0;
 
     /** Write just the style information for the layer into the document
-     *  @param node the node that will have the style element added to it.
-     *  @param doc the document that will have the QDomNode added.
-     *  @param errorMessage reference to string that will be updated with any error messages
+     *  \param node the node that will have the style element added to it.
+     *  \param doc the document that will have the QDomNode added.
+     *  \param errorMessage reference to string that will be updated with any error messages
      *  @return true in case of success.
      *  \since QGIS 2.16
      *  \note To be implemented in subclasses. Default implementation does nothing and returns false.
@@ -585,7 +585,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Assign a legend controller to the map layer. The object will be responsible for providing legend items.
-     * @param legend Takes ownership of the object. Can be null pointer
+     * \param legend Takes ownership of the object. Can be null pointer
      * \since QGIS 2.6
      */
     void setLegend( QgsMapLayerLegend *legend );
@@ -603,7 +603,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsMapLayerStyleManager *styleManager() const;
 
     /** Tests whether the layer should be visible at the specified scale.
-     * @param scale scale denominator to test
+     * \param scale scale denominator to test
      * @returns true if the layer is visible at the given scale.
      * \since QGIS 2.16
      * @see minimumScale()
@@ -686,7 +686,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Sets the minimum scale denominator at which the layer will be visible.
      * Scale based visibility is only used if setScaleBasedVisibility is set to true.
-     * @param scale minimum scale denominator at which the layer should render
+     * \param scale minimum scale denominator at which the layer should render
      * @see minimumScale
      * @see setMaximumScale
      * @see setScaleBasedVisibility
@@ -695,7 +695,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Sets the maximum scale denominator at which the layer will be visible.
      * Scale based visibility is only used if setScaleBasedVisibility is set to true.
-     * @param scale maximum scale denominator at which the layer should render
+     * \param scale maximum scale denominator at which the layer should render
      * @see maximumScale
      * @see setMinimumScale
      * @see setScaleBasedVisibility
@@ -703,7 +703,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setMaximumScale( double scale );
 
     /** Sets whether scale based visibility is enabled for the layer.
-     * @param enabled set to true to enable scale based visibility
+     * \param enabled set to true to enable scale based visibility
      * @see setMinimumScale
      * @see setMaximumScale
      * @see scaleBasedVisibility
@@ -735,7 +735,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the list of dependencies.
      * @see dependencies()
      *
-     * @param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
+     * \param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
      * @returns false if a dependency cycle has been detected
      * \since QGIS 3.0
      */
@@ -845,8 +845,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 
     /** Read custom properties from project file.
-      @param layerNode note to read from
-      @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
+      \param layerNode note to read from
+      \param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
     void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = "" );
 
     //! Write custom properties to project file.

@@ -62,8 +62,8 @@ class CORE_EXPORT QgsGeometryEngine
 
     /** Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the
      * relationship between the geometries.
-     * @param geom geometry to relate to
-     * @param errorMsg destination storage for any error message
+     * \param geom geometry to relate to
+     * \param errorMsg destination storage for any error message
      * @returns DE-9IM string for relationship, or an empty string if an error occurred
      * \since QGIS 2.12
      */
@@ -71,9 +71,9 @@ class CORE_EXPORT QgsGeometryEngine
 
     /** Tests whether two geometries are related by a specified Dimensional Extended 9 Intersection Model (DE-9IM)
      * pattern.
-     * @param geom geometry to relate to
-     * @param pattern DE-9IM pattern for match
-     * @param errorMsg destination storage for any error message
+     * \param geom geometry to relate to
+     * \param pattern DE-9IM pattern for match
+     * \param errorMsg destination storage for any error message
      * @returns true if geometry relationship matches with pattern
      * \since QGIS 2.14
      */

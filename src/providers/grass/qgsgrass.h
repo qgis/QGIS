@@ -217,21 +217,21 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** Init or reset GRASS library
      *
-     * @param gisdbase full path to GRASS GISDBASE.
-     * @param location location name (not path!).
+     * \param gisdbase full path to GRASS GISDBASE.
+     * \param location location name (not path!).
      */
     static void setLocation( const QString &gisdbase, const QString &location );
 
     /*!
-     * @param gisdbase full path to GRASS GISDBASE.
-     * @param location location name (not path!).
-     * @param mapset current mupset. Note that some variables depend on mapset and
+     * \param gisdbase full path to GRASS GISDBASE.
+     * \param location location name (not path!).
+     * \param mapset current mupset. Note that some variables depend on mapset and
      * may influence behavior of some functions (e.g. search path etc.)
      */
     static void setMapset( const QString &gisdbase, const QString &location, const QString &mapset );
 
     /** Set mapset according to object gisdbase, location and mapset
-     * @param grassObject
+     * \param grassObject
      */
     static void setMapset( const QgsGrassObject &grassObject );
 
@@ -409,14 +409,14 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** Find a module trying to append .bat, .py and .exe on Windows. The module may be a full path
      * without extension or just a module name in which case it is searched in grassModulesPaths().
-     * @param module module name or path to module without extension
+     * \param module module name or path to module without extension
      * @return full path including extension or empty string */
     static QString findModule( QString module );
 
     /** Start a GRASS module in any gisdbase/location/mapset.
-     * @param mapset if empty a first mapset owned by user will be used, if no mapset is owned
+     * \param mapset if empty a first mapset owned by user will be used, if no mapset is owned
      *               by user, exception is thrown.
-     * @param qgisModule append GRASS major version (for modules built in qgis)
+     * \param qgisModule append GRASS major version (for modules built in qgis)
      * @throws QgsGrass::Exception */
     static QProcess *startModule( const QString &gisdbase, const QString  &location,
                                   const QString &mapset, const QString  &moduleName,
@@ -430,7 +430,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
                                  bool qgisModule = true );
 
     /** \brief Get info string from qgis.g.info module
-     * @param info info type
+     * \param info info type
      * @gisdbase GISBASE path
      * @location location name
      * @mapset mapset name
@@ -456,7 +456,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QgsCoordinateReferenceSystem crsDirect( const QString &gisdbase, const QString &location );
 
     // ! Get map extent
-    // @param error set to error if happens
+    // \param error set to error if happens
     static QgsRectangle extent( const QString &gisdbase, const QString &location,
                                 const QString &mapset, const QString &map,
                                 QgsGrassObject::Type type, QString &error );
@@ -467,7 +467,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     // ! Get raster info, info is either 'info' or 'stats'
     //   extent and sampleSize are stats options
-    // @param error set to error if happens
+    // \param error set to error if happens
     static QHash<QString, QString> info( const QString &gisdbase, const QString &location,
                                          const QString &mapset, const QString &map,
                                          QgsGrassObject::Type type,
@@ -499,8 +499,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static bool deleteObjectDialog( const QgsGrassObject &object );
 
     /** Create new vector map
-     * @param object GRASS object specifying location/mapset/map
-     * @param error */
+     * \param object GRASS object specifying location/mapset/map
+     * \param error */
     static void createVectorMap( const QgsGrassObject &object, QString &error );
 
     //! Create new table. Throws  QgsGrass::Exception
@@ -521,12 +521,12 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QMap<int, QString> vectorTypeMap();
 
     /** Get GRASS vector type from name
-     * @param point,centroid,line,boundary,area,face,kernel
+     * \param point,centroid,line,boundary,area,face,kernel
      * @returns type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE,GV_KERNEL  */
     static int vectorType( const QString &name );
 
     /** Get name for vector primitive type
-     * @param type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE, GV_KERNEL  */
+     * \param type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE, GV_KERNEL  */
     static QString vectorTypeName( int type );
 
     //! Library version
@@ -619,10 +619,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     void emitNewLayer( const QString &uri, const QString &name ) { emit newLayer( uri, name ); }
 
     /** Parse single line of output from GRASS modules run with GRASS_MESSAGE_FORMAT=gui
-     * @param input input string read from module stderr
-     * @param text parsed text
-     * @param html html formatted parsed text, e.g. + icons
-     * @param value percent 0-100 or progress as absolute number if total is unknown*/
+     * \param input input string read from module stderr
+     * \param text parsed text
+     * \param html html formatted parsed text, e.g. + icons
+     * \param value percent 0-100 or progress as absolute number if total is unknown*/
     static ModuleOutput parseModuleOutput( const QString &input, QString &text, QString &html, int &value );
 
   public slots:

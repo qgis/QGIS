@@ -64,8 +64,8 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QgsCoordinateReferenceSystem crs() const;
 
     /** Sets whether a predefined CRS option should be shown in the widget.
-     * @param option CRS option to show/hide
-     * @param visible whether the option should be shown
+     * \param option CRS option to show/hide
+     * \param visible whether the option should be shown
      * @see optionVisible()
      */
     void setOptionVisible( const CrsOption option, const bool visible );
@@ -99,13 +99,13 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
   public slots:
 
     /** Sets the current CRS for the widget
-     * @param crs new CRS
+     * \param crs new CRS
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Sets the layer CRS for the widget. If set, this will be added as an option
      * to the preset CRSes shown in the widget.
-     * @param crs layer CRS
+     * \param crs layer CRS
      */
     void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
 

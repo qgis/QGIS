@@ -144,7 +144,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     struct ProgressHandler
     {
       //! Method to be overridden for progress reporting.
-      //! @param complete Overall progress of the alignment operation
+      //! \param complete Overall progress of the alignment operation
       //! @return false if the execution should be canceled, true otherwise
       virtual bool progress( double complete ) = 0;
 

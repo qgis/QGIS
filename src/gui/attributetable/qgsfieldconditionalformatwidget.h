@@ -37,7 +37,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
   public:
 
     /** Constructor for QgsFieldConditionalFormatWidget.
-     * @param parent parent widget
+     * \param parent parent widget
      */
     explicit QgsFieldConditionalFormatWidget( QWidget *parent = nullptr );
 
@@ -48,18 +48,18 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     void viewRules();
 
     /** Sets the vector layer associated with the widget.
-     * @param layer vector layer
+     * \param layer vector layer
      */
     void setLayer( QgsVectorLayer *layer );
 
     /** Switches the widget to the edit style mode for the specified style.
-     * @param index index of conditional style to edit
-     * @param style initial conditional styling options
+     * \param index index of conditional style to edit
+     * \param style initial conditional styling options
      */
     void editStyle( int index, const QgsConditionalStyle &style );
 
     /**
-     * @param style initial conditional styling options
+     * \param style initial conditional styling options
      */
     void loadStyle( const QgsConditionalStyle &style );
 
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
 
     /**
      * @brief Set the presets that can be used for quick pick
-     * @param styles A list of styles used as presets
+     * \param styles A list of styles used as presets
      */
     void setPresets( const QList<QgsConditionalStyle> &styles );
 
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
   signals:
 
     /** Emitted when the conditional styling rules are updated.
-     * @param fieldName name of field whose rules have been modified.
+     * \param fieldName name of field whose rules have been modified.
      */
     void rulesUpdated( const QString &fieldName );
 

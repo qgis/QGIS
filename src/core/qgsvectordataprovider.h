@@ -114,7 +114,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Constructor of the vector provider
-     * @param uri  uniform resource locator (URI) for a dataset
+     * \param uri  uniform resource locator (URI) for a dataset
      */
     QgsVectorDataProvider( const QString &uri = QString() );
 
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Query the provider for features specified in request.
-     * @param request feature request describing parameters of features to return
+     * \param request feature request describing parameters of features to return
      * @returns iterator for matching features from provider
      */
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Returns the minimum value of an attribute
-     * @param index the index of the attribute
+     * \param index the index of the attribute
      *
      * Default implementation walks all numeric attributes and caches minimal
      * and maximal values. If provider has facilities to retrieve minimal
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Returns the maximum value of an attribute
-     * @param index the index of the attribute
+     * \param index the index of the attribute
      *
      * Default implementation walks all numeric attributes and caches minimal
      * and maximal values. If provider has facilities to retrieve maximal
@@ -192,9 +192,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Return unique values of an attribute
-     * @param index the index of the attribute
-     * @param uniqueValues values reference to the list to fill
-     * @param limit maxmum number of the values to return
+     * \param index the index of the attribute
+     * \param uniqueValues values reference to the list to fill
+     * \param limit maxmum number of the values to return
      *
      * Default implementation simply iterates the features
      */
@@ -203,10 +203,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Returns unique string values of an attribute which contain a specified subset string. Subset
      * matching is done in a case-insensitive manner.
-     * @param index the index of the attribute
-     * @param substring substring to match (case insensitive)
-     * @param limit maxmum number of the values to return, or -1 to return all unique values
-     * @param feedback optional feedback object for canceling request
+     * \param index the index of the attribute
+     * \param substring substring to match (case insensitive)
+     * \param limit maxmum number of the values to return, or -1 to return all unique values
+     * \param feedback optional feedback object for canceling request
      * @returns list of unique strings containing substring
      */
     virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
@@ -214,11 +214,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /** Calculates an aggregated value from the layer's features. The base implementation does nothing,
      * but subclasses can override this method to handoff calculation of aggregates to the provider.
-     * @param aggregate aggregate to calculate
-     * @param index the index of the attribute to calculate aggregate over
-     * @param parameters parameters controlling aggregate calculation
-     * @param context expression context for filter
-     * @param ok will be set to true if calculation was successfully performed by the data provider
+     * \param aggregate aggregate to calculate
+     * \param index the index of the attribute to calculate aggregate over
+     * \param parameters parameters controlling aggregate calculation
+     * \param context expression context for filter
+     * \param ok will be set to true if calculation was successfully performed by the data provider
      * @return calculated aggregate value
      * \since QGIS 2.16
      */
@@ -231,8 +231,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
      * or if the given attribute is not an enum type.
-     * @param index the index of the attribute
-     * @param enumList reference to the list to fill
+     * \param index the index of the attribute
+     * \param enumList reference to the list to fill
      */
     virtual void enumValues( int index, QStringList &enumList ) const { Q_UNUSED( index ); enumList.clear(); }
 
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Deletes one or more features from the provider. This requires the DeleteFeatures capability.
-     * @param id list containing feature ids to delete
+     * \param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
      * @see truncate()
      */
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Deletes existing \a attributes from the provider.
      * If attributes are deleted using this method then QgsVectorLayer::updateFields() must be called
      * manually to ensure that the layer's field are correctly reported.
-     * @param attributes a set containing indices of attributes
+     * \param attributes a set containing indices of attributes
      * @return true in case of success and false in case of failure
      */
     virtual bool deleteAttributes( const QgsAttributeIds &attributes );
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Renames existing attributes.
      * If attributes are renamed using this method then QgsVectorLayer::updateFields() must be called
      * manually to ensure that the layer's field are correctly reported.
-     * @param renamedAttributes map of attribute index to new attribute name
+     * \param renamedAttributes map of attribute index to new attribute name
      * @return true in case of success and false in case of failure
      * \since QGIS 2.16
      */
@@ -288,7 +288,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Changes attribute values of existing features. This should
      * succeed if the provider reports the ChangeAttributeValues capability.
-     * @param attr_map a map containing changed attributes
+     * \param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
@@ -298,8 +298,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * succeed if the provider reports both the ChangeAttributeValues and
      * ChangeGeometries capabilities. Providers which report the ChangeFeatures
      * capability implement an optimised version of this method.
-     * @param attr_map a map containing changed attributes
-     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
+     * \param attr_map a map containing changed attributes
+     * \param geometry_map   A QgsGeometryMap whose index contains the feature IDs
      *                       that will have their geometries changed.
      *                       The second map parameter being the new geometries themselves
      * @return true in case of success and false in case of failure
@@ -348,7 +348,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Changes geometries of existing features
-     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
+     * \param geometry_map   A QgsGeometryMap whose index contains the feature IDs
      *                       that will have their geometries changed.
      *                       The second map parameter being the new geometries themselves
      * @return               True in case of success and false in case of failure
@@ -503,8 +503,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Discover the available relations with the given layers.
-     * @param self the layer using this data provider.
-     * @param layers the other layers.
+     * \param self the layer using this data provider.
+     * \param layers the other layers.
      * @return the list of N-1 relations from this provider.
      * \since QGIS 3.0
      */
@@ -518,15 +518,15 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Get the translated metadata key.
-     * @param mdKey The metadata key
+     * \param mdKey The metadata key
      * @return The translated metadata value
      */
     virtual QString translateMetadataKey( const QString &mdKey ) const { return mdKey; };
 
     /**
      * Get the translated metadata value.
-     * @param mdKey The metadata key
-     * @param value The metadata value
+     * \param mdKey The metadata key
+     * \param value The metadata value
      * @return The translated metadata value
      */
     virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ); return value.toString(); };

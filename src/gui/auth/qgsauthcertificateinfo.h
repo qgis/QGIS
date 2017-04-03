@@ -145,10 +145,10 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
 
     /**
      * Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
-     * @param cert Certificate object
-     * @param manageCertTrust Whether to show widgets to manage the trust policy of certs in hierarchy
-     * @param parent Parent widget
-     * @param connectionCAs List of hierarchical certificates in a connection
+     * \param cert Certificate object
+     * \param manageCertTrust Whether to show widgets to manage the trust policy of certs in hierarchy
+     * \param parent Parent widget
+     * \param connectionCAs List of hierarchical certificates in a connection
      */
     explicit QgsAuthCertInfoDialog( const QSslCertificate &cert,
                                     bool manageCertTrust,

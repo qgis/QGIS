@@ -53,8 +53,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     };
 
     /** Constructor for QgsFilterLineEdit.
-     * @param parent parent widget
-     * @param nullValue string for representing null values
+     * \param parent parent widget
+     * \param nullValue string for representing null values
      */
     QgsFilterLineEdit( QWidget *parent = nullptr, const QString &nullValue = QString::null );
 
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     bool showClearButton() const { return mClearButtonVisible; }
 
     /** Sets whether the widget's clear button is visible.
-     * @param visible set to false to hide the clear button
+     * \param visible set to false to hide the clear button
      * @see showClearButton()
      * \since QGIS 3.0
      */
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /** Sets the string representation for null values in the widget. This does not
      * affect the values returned for null values by value(), rather it only affects
      * the text that is shown to users when the widget's value is null.
-     * @param nullValue string to show when widget's value is null
+     * \param nullValue string to show when widget's value is null
      * @see nullValue()
      */
     void setNullValue( const QString &nullValue ) { mNullValue = nullValue; }
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     /** Define if a search icon shall be shown on the left of the image
      * when no text is entered
-     * @param visible set to false to hide the search icon
+     * \param visible set to false to hide the search icon
      * \since QGIS 3.0
      */
     void setShowSearchIcon( bool visible );
@@ -115,7 +115,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /** Sets the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
      * is equal to ClearToDefault.
-     * @param defaultValue default value
+     * \param defaultValue default value
      * @see defaultValue()
      * @see clearMode()
      * \since QGIS 3.0
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /**
      * Sets the current text for the widget with support for handling null values.
      *
-     * @param value The text to set. If a null string is provided, the text shown in the
+     * \param value The text to set. If a null string is provided, the text shown in the
      * widget will be set to the current nullValue().
      * @see value()
      */
@@ -176,7 +176,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /**
      * Same as textChanged() but with support for null values.
      *
-     * @param value The current text or null string if it matches the nullValue() property.
+     * \param value The current text or null string if it matches the nullValue() property.
      */
     void valueChanged( const QString &value );
 

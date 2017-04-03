@@ -80,7 +80,7 @@ class CORE_EXPORT QgsRelation
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.
      *
-     * @param node The dom node containing the relation information
+     * \param node The dom node containing the relation information
      *
      * @return A relation
      */
@@ -89,8 +89,8 @@ class CORE_EXPORT QgsRelation
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects
      *
-     * @param node The parent node in which the relation will be created
-     * @param doc  The document in which the relation will be saved
+     * \param node The parent node in which the relation will be created
+     * \param doc  The document in which the relation will be saved
      */
     void writeXml( QDomNode &node, QDomDocument &doc ) const;
 
@@ -119,8 +119,8 @@ class CORE_EXPORT QgsRelation
      * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
-     * @param referencingField  The field name on the referencing (child) layer (FK)
-     * @param referencedField   The field name on the referenced (parent) layer  (PK)
+     * \param referencingField  The field name on the referencing (child) layer (FK)
+     * \param referencedField   The field name on the referenced (parent) layer  (PK)
      */
     void addFieldPair( const QString &referencingField, const QString &referencedField );
 
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsRelation
      * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
-     * @param fieldPair A pair of two strings
+     * \param fieldPair A pair of two strings
      * \note not available in Python bindings
      */
     void addFieldPair( const FieldPair &fieldPair );
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsRelation
      * Creates an iterator which returns all the features on the referencing (child) layer
      * which have a foreign key pointing to the provided feature.
      *
-     * @param feature A feature from the referenced (parent) layer
+     * \param feature A feature from the referenced (parent) layer
      *
      * @return An iterator with all the referenced features
      * @see getRelatedFeaturesRequest()
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsRelation
      * Creates a request to return all the features on the referencing (child) layer
      * which have a foreign key pointing to the provided feature.
      *
-     * @param feature A feature from the referenced (parent) layer
+     * \param feature A feature from the referenced (parent) layer
      *
      * @return A request for all the referencing features
      * @see getRelatedFeatures()
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsRelation
 
     /** Returns a filter expression which returns all the features on the referencing (child) layer
      * which have a foreign key pointing to the provided feature.
-     * @param feature A feature from the referenced (parent) layer
+     * \param feature A feature from the referenced (parent) layer
      * @return expression filter string for all the referencing features
      * \since QGIS 2.16
      * @see getRelatedFeatures()
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsRelation
      * Creates a request to return the feature on the referenced (parent) layer
      * which is referenced by the provided feature.
      *
-     * @param attributes An attribute vector containing the foreign key
+     * \param attributes An attribute vector containing the foreign key
      *
      * @return A request the referenced feature
      * \note not available in Python bindings
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsRelation
      * Creates a request to return the feature on the referenced (parent) layer
      * which is referenced by the provided feature.
      *
-     * @param feature A feature from the referencing (child) layer
+     * \param feature A feature from the referencing (child) layer
      *
      * @return A request the referenced feature
      */
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsRelation
      * Creates a request to return the feature on the referenced (parent) layer
      * which is referenced by the provided feature.
      *
-     * @param feature A feature from the referencing (child) layer
+     * \param feature A feature from the referencing (child) layer
      *
      * @return A request the referenced feature
      */
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsRelation
     /**
      * Compares the two QgsRelation, ignoring the name and the ID.
      *
-     * @param other The other relation
+     * \param other The other relation
      * @return true if they are similar
      * \since QGIS 3.0
      */

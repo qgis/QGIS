@@ -66,10 +66,10 @@ class CORE_EXPORT QgsSnappingConfig
 
         /**
          * @brief IndividualLayerSettings
-         * @param enabled
-         * @param type
-         * @param tolerance
-         * @param units
+         * \param enabled
+         * \param type
+         * \param tolerance
+         * \param units
          */
         IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingType type, double tolerance, QgsTolerance::UnitType units );
 

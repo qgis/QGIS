@@ -39,12 +39,12 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
   public:
 
     /** Constructor for QgsSubstitutionListWidget.
-     * @param parent parent widget
+     * \param parent parent widget
      */
     QgsSubstitutionListWidget( QWidget *parent = nullptr );
 
     /** Sets the list of substitutions to show in the widget.
-     * @param substitutions substitution list
+     * \param substitutions substitution list
      * @see substitutions()
      */
     void setSubstitutions( const QgsStringReplacementCollection &substitutions );
@@ -88,12 +88,12 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
   public:
 
     /** Constructor for QgsSubstitutionListDialog.
-     * @param parent parent widget
+     * \param parent parent widget
      */
     QgsSubstitutionListDialog( QWidget *parent = nullptr );
 
     /** Sets the list of substitutions to show in the dialog.
-     * @param substitutions substitution list
+     * \param substitutions substitution list
      * @see substitutions()
      */
     void setSubstitutions( const QgsStringReplacementCollection &substitutions );

@@ -59,7 +59,7 @@ class SERVER_EXPORT QgsServerProjectParser
     //! Returns the layer id under a <legendlayer> tag in the QGIS projectfile
     QString layerIdFromLegendLayer( const QDomElement &legendLayer ) const;
 
-    //! @param considerMapExtent Take user-defined map extent instead of data-calculated extent if present in project file
+    //! \param considerMapExtent Take user-defined map extent instead of data-calculated extent if present in project file
     void combineExtentAndCrsOfGroupChildren( QDomElement &groupElement, QDomDocument &doc, bool considerMapExtent = false ) const;
 
     void addLayerProjectSettings( QDomElement &layerElem, QDomDocument &doc, QgsMapLayer *currentLayer ) const;

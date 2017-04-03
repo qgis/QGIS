@@ -41,7 +41,7 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
 
     /**
      * Constructor
-     * @param parent parent object
+     * \param parent parent object
      */
     QgsAttributeTableDelegate( QObject *parent = nullptr )
       : QItemDelegate( parent )
@@ -63,16 +63,16 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
 
     /**
      * Sets data from editor back to model. Overloads default method
-     * @param editor editor which was created by create editor function in this class
-     * @param model model where data should be updated
-     * @param index index of field which is to be modified
+     * \param editor editor which was created by create editor function in this class
+     * \param model model where data should be updated
+     * \param index index of field which is to be modified
      */
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
     /**
      * Sets data from model into the editor. Overloads default method
-     * @param editor editor which was created by create editor function in this class
-     * @param index index of field which is to be retrieved
+     * \param editor editor which was created by create editor function in this class
+     * \param index index of field which is to be retrieved
      */
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
 

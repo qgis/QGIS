@@ -52,8 +52,8 @@ class CORE_EXPORT QgsPoint
     QgsPoint( const QgsPoint &p );
 
     /** Create a point from x,y coordinates
-     * @param x x coordinate
-     * @param y y coordinate
+     * \param x x coordinate
+     * \param y y coordinate
      */
     QgsPoint( double x, double y )
       : mX( x )
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsPoint
     {}
 
     /** Create a point from a QPointF
-     * @param point QPointF source
+     * \param point QPointF source
      * \since QGIS 2.7
      */
     QgsPoint( QPointF point )
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsPoint
     {}
 
     /** Create a point from a QPoint
-     * @param point QPoint source
+     * \param point QPoint source
      * \since QGIS 2.7
      */
     QgsPoint( QPoint point )
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsPoint
     {}
 
     /** Sets the x value of the point
-     * @param x x coordinate
+     * \param x x coordinate
      */
     void setX( double x )
     {
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsPoint
     }
 
     /** Sets the y value of the point
-     * @param y y coordinate
+     * \param y y coordinate
      */
     void setY( double y )
     {
@@ -143,10 +143,10 @@ class CORE_EXPORT QgsPoint
     /** Return a string representation as degrees minutes seconds.
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
-     *  @param precision number of decimal points to use for seconds
-     *  @param useSuffix set to true to include a direction suffix (e.g., 'N'),
+     *  \param precision number of decimal points to use for seconds
+     *  \param useSuffix set to true to include a direction suffix (e.g., 'N'),
      *  set to false to use a "-" prefix for west and south coordinates
-     *  @param padded set to true to force minutes and seconds to use two decimals,
+     *  \param padded set to true to force minutes and seconds to use two decimals,
      *  e.g., '05' instead of '5'.
      */
     QString toDegreesMinutesSeconds( int precision, const bool useSuffix = true, const bool padded = false ) const;
@@ -154,10 +154,10 @@ class CORE_EXPORT QgsPoint
     /** Return a string representation as degrees minutes.
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
-     *  @param precision number of decimal points to use for minutes
-     *  @param useSuffix set to true to include a direction suffix (e.g., 'N'),
+     *  \param precision number of decimal points to use for minutes
+     *  \param useSuffix set to true to include a direction suffix (e.g., 'N'),
      *  set to false to use a "-" prefix for west and south coordinates
-     *  @param padded set to true to force minutes to use two decimals,
+     *  \param padded set to true to force minutes to use two decimals,
      *  e.g., '05' instead of '5'.
      */
     QString toDegreesMinutes( int precision, const bool useSuffix = true, const bool padded = false ) const;
@@ -180,15 +180,15 @@ class CORE_EXPORT QgsPoint
     double sqrDist( const QgsPoint &other ) const;
 
     /** Returns the distance between this point and a specified x, y coordinate.
-     * @param x x-coordniate
-     * @param y y-coordinate
+     * \param x x-coordniate
+     * \param y y-coordinate
      * @see sqrDist()
      * \since QGIS 2.16
     */
     double distance( double x, double y ) const;
 
     /** Returns the distance between this point and another point.
-     * @param other other point
+     * \param other other point
      * @see sqrDist()
      * \since QGIS 2.16
     */
@@ -202,15 +202,15 @@ class CORE_EXPORT QgsPoint
 
     /** Returns a new point which corresponds to this point projected by a specified distance
      * in a specified bearing.
-     * @param distance distance to project
-     * @param bearing angle to project in, clockwise in degrees starting from north
+     * \param distance distance to project
+     * \param bearing angle to project in, clockwise in degrees starting from north
      * \since QGIS 2.16
      */
     QgsPoint project( double distance, double bearing ) const;
 
     /** Compares this point with another point with a fuzzy tolerance
-     * @param other point to compare with
-     * @param epsilon maximum difference for coordinates between the points
+     * \param other point to compare with
+     * \param epsilon maximum difference for coordinates between the points
      * @returns true if points are equal within specified tolerance
      * \since QGIS 2.9
      */

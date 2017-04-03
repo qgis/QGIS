@@ -42,12 +42,12 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     int numGeometries() const;
 
     /** Returns a const reference to a geometry from within the collection.
-     * @param n index of geometry to return
+     * \param n index of geometry to return
      */
     const QgsAbstractGeometry *geometryN( int n ) const;
 
     /** Returns a geometry from within the collection.
-     * @param n index of geometry to return
+     * \param n index of geometry to return
      */
     QgsAbstractGeometry *geometryN( int n );
 
@@ -62,13 +62,13 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     virtual bool addGeometry( QgsAbstractGeometry *g );
 
     /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
-     * @param g geometry to insert. Ownership is transferred to the collection.
-     * @param index position to insert geometry before
+     * \param g geometry to insert. Ownership is transferred to the collection.
+     * \param index position to insert geometry before
      */
     virtual bool insertGeometry( QgsAbstractGeometry *g, int index );
 
     /** Removes a geometry from the collection.
-     * @param nr index of geometry to remove
+     * \param nr index of geometry to remove
      * @returns true if removal was successful.
      */
     virtual bool removeGeometry( int nr );
@@ -109,12 +109,12 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool hasCurvedSegments() const override;
 
     /** Returns a geometry without curves. Caller takes ownership
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-     * @param vertex the vertex id
+     * \param vertex the vertex id
      * @return rotation in radians, clockwise from north
      */
     double vertexAngle( QgsVertexId vertex ) const override;

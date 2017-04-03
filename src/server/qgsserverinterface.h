@@ -62,7 +62,7 @@ class SERVER_EXPORT QgsServerInterface
 
     /**
      * Set the request handler
-     * @param requestHandler request handler
+     * \param requestHandler request handler
      * \note not available in Python bindings
      */
     virtual void setRequestHandler( QgsRequestHandler *requestHandler ) = 0;
@@ -88,14 +88,14 @@ class SERVER_EXPORT QgsServerInterface
 
     /**
      * Register a QgsServerFilter
-     * @param filter the QgsServerFilter to add
-     * @param priority an optional priority for the filter order
+     * \param filter the QgsServerFilter to add
+     * \param priority an optional priority for the filter order
      */
     virtual void registerFilter( QgsServerFilter *filter, int priority = 0 ) = 0;
 
     /**
      * Set the filters map
-     * @param filters the QgsServerFiltersMap
+     * \param filters the QgsServerFiltersMap
      */
     virtual void setFilters( QgsServerFiltersMap *filters ) = 0;
 
@@ -106,8 +106,8 @@ class SERVER_EXPORT QgsServerInterface
     virtual QgsServerFiltersMap filters() = 0;
 
     /** Register an access control filter
-     * @param accessControl the access control to register
-     * @param priority the priority used to order them
+     * \param accessControl the access control to register
+     * \param priority the priority used to order them
      */
     virtual void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) = 0;
 
@@ -125,19 +125,19 @@ class SERVER_EXPORT QgsServerInterface
 
     /**
      * Set the configuration file path
-     * @param configFilePath QString with the configuration file path
+     * \param configFilePath QString with the configuration file path
      */
     virtual void setConfigFilePath( const QString &configFilePath ) = 0;
 
     /**
      * Remove entry from config cache
-     * @param path the path of the file to remove
+     * \param path the path of the file to remove
      */
     virtual void removeConfigCacheEntry( const QString &path ) = 0;
 
     /**
      * Remove entries from layer cache
-     * @param path the path of the project which own the layers to be removed
+     * \param path the path of the project which own the layers to be removed
      */
     virtual void removeProjectLayers( const QString &path ) = 0;
 

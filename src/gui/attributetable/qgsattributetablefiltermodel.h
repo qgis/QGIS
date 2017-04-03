@@ -72,16 +72,16 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Make sure, the master model is already loaded, so the selection will get synchronized.
      *
-     * @param parent parent object (owner)
-     * @param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
-     * @param canvas  The mapCanvas. Used to identify the currently visible features.
+     * \param parent parent object (owner)
+     * \param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
+     * \param canvas  The mapCanvas. Used to identify the currently visible features.
      */
     QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent = nullptr );
 
     /**
      * Set the attribute table model that backs this model
      *
-     * @param sourceModel The model
+     * \param sourceModel The model
      *
      * \since QGIS 2.0
      */
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * Changes the sort order of the features. If set to true, selected features
      * will be sorted on top, regardless of the current sort column
      *
-     * @param selectedOnTop Specify, if selected features should be sorted on top
+     * \param selectedOnTop Specify, if selected features should be sorted on top
      */
     void setSelectedOnTop( bool selectedOnTop );
 
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * Specify a list of features, which the filter will accept.
      * The filter mode will automatically be adjusted to show only these features (ShowFilteredList).
      *
-     * @param ids  The list of feature ids which will be accepted by the filter
+     * \param ids  The list of feature ids which will be accepted by the filter
      */
     virtual void setFilteredFeatures( const QgsFeatureIds &ids );
 
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Set the filter mode the filter will use.
      *
-     * @param filterMode Sets the current mode of the filter
+     * \param filterMode Sets the current mode of the filter
      */
     void setFilterMode( FilterMode filterMode );
 
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Returns the feature id for a given model index.
      *
-     * @param row A model index of the row in question
+     * \param row A model index of the row in question
      *
      * @return The feature id of the feature visible in the provided row
      */
@@ -177,8 +177,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * Sort by the given column using the given order.
      * Prefetches all the data from the layer to speed up sorting.
      *
-     * @param column The column which should be sorted
-     * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
+     * \param column The column which should be sorted
+     * \param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
      */
     virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
 
@@ -186,8 +186,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * Sort by the given expression using the given order.
      * Prefetches all the data from the layer to speed up sorting.
      *
-     * @param expression The expression which should be used for sorting
-     * @param order      The order ( Qt::AscendingOrder or Qt::DescendingOrder )
+     * \param expression The expression which should be used for sorting
+     * \param order      The order ( Qt::AscendingOrder or Qt::DescendingOrder )
      */
     void sort( const QString &expression, Qt::SortOrder order = Qt::AscendingOrder );
 
@@ -222,8 +222,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     /**
      * Is emitted whenever the sort column is changed
-     * @param column The sort column
-     * @param order The sort order
+     * \param column The sort column
+     * \param order The sort order
      */
     void sortColumnChanged( int column, Qt::SortOrder order );
 
@@ -232,8 +232,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Returns true if the source row will be accepted
      *
-     * @param sourceRow row from the source model
-     * @param sourceParent parent index in the source model
+     * \param sourceRow row from the source model
+     * \param sourceParent parent index in the source model
      */
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 

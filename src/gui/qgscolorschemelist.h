@@ -68,10 +68,10 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
   public:
 
     /** Constructor
-     * @param scheme color scheme for list
-     * @param context context string for color scheme
-     * @param baseColor base color for color scheme
-     * @param parent parent object
+     * \param scheme color scheme for list
+     * \param context context string for color scheme
+     * \param baseColor base color for color scheme
+     * \param parent parent object
      */
     explicit QgsColorSchemeModel( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject *parent = nullptr );
 
@@ -97,9 +97,9 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     QgsNamedColorList colors() const { return mColors; }
 
     /** Sets the color scheme to show in the widget
-     * @param scheme color scheme
-     * @param context context for color scheme
-     * @param baseColor base color for color scheme
+     * \param scheme color scheme
+     * \param context context for color scheme
+     * \param baseColor base color for color scheme
      */
     void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 
@@ -116,9 +116,9 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     QColor baseColor() const { return mBaseColor; }
 
     /** Add a color to the list
-     * @param color color to add
-     * @param label label for color
-     * @param allowDuplicate set to true to allow duplicate colors to be added (colors which are already present in the list)
+     * \param color color to add
+     * \param label label for color
+     * \param allowDuplicate set to true to allow duplicate colors to be added (colors which are already present in the list)
      */
     void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
@@ -155,10 +155,10 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
   public:
 
     /** Construct a new color swatch grid.
-     * @param parent parent widget
-     * @param scheme QgsColorScheme for colors to show in the list
-     * @param context context string provided to color scheme
-     * @param baseColor base color for color scheme
+     * \param parent parent widget
+     * \param scheme QgsColorScheme for colors to show in the list
+     * \param context context string provided to color scheme
+     * \param baseColor base color for color scheme
      */
     QgsColorSchemeList( QWidget *parent = nullptr, QgsColorScheme *scheme = nullptr, const QString &context = QString(), const QColor &baseColor = QColor() );
 
@@ -169,13 +169,13 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     bool saveColorsToScheme();
 
     /** Import colors from a GPL palette file to the list
-     * @param file file to import
+     * \param file file to import
      * @see exportColorsToGpl
      */
     bool importColorsFromGpl( QFile &file );
 
     /** Export colors to a GPL palette file from the list
-     * @param file destination file
+     * \param file destination file
      * @see importColorsFromGpl
      */
     bool exportColorsToGpl( QFile &file );
@@ -194,9 +194,9 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
   public slots:
 
     /** Sets the color scheme to show in the list
-     * @param scheme QgsColorScheme for colors to show in the list
-     * @param context context string provided to color scheme
-     * @param baseColor base color for color scheme
+     * \param scheme QgsColorScheme for colors to show in the list
+     * \param context context string provided to color scheme
+     * \param baseColor base color for color scheme
      * @see scheme()
      */
     void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
@@ -206,9 +206,9 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     void removeSelection();
 
     /** Adds a color to the list
-     * @param color color to add
-     * @param label optional label for color
-     * @param allowDuplicate set to true to allow duplicate colors to be added, ie colors which already exist in the list
+     * \param color color to add
+     * \param label optional label for color
+     * \param allowDuplicate set to true to allow duplicate colors to be added, ie colors which already exist in the list
      */
     void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
@@ -237,7 +237,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
   signals:
 
     /** Emitted when a color is selected from the list
-     * @param color color selected
+     * \param color color selected
      */
     void colorSelected( const QColor &color );
 

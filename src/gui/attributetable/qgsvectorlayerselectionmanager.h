@@ -42,14 +42,14 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
     /**
      * Select features
      *
-     * @param ids            Feature ids to select
+     * \param ids            Feature ids to select
      */
     virtual void select( const QgsFeatureIds &ids ) override;
 
     /**
      * Deselect features
      *
-     * @param ids            Feature ids to deselect
+     * \param ids            Feature ids to deselect
      */
     virtual void deselect( const QgsFeatureIds &ids ) override;
 
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
      * Will emit the { @link selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) } signal with the
      * clearAndSelect flag set.
      *
-     * @param ids   The ids which will be the new selection
+     * \param ids   The ids which will be the new selection
      */
     virtual void setSelectedFeatures( const QgsFeatureIds &ids ) override;
 

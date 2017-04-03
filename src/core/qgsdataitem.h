@@ -82,26 +82,26 @@ class CORE_EXPORT QgsDataItem : public QObject
     State state() const;
 
     /** Set item state. It also take care about starting/stopping loading icon animation.
-     * @param state
+     * \param state
      * \since QGIS 2.8
      */
     virtual void setState( State state );
 
     /** Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
-     * @param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
-     * @param refresh - set to true to refresh populated item, emitting relevant signals to the model
+     * \param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
+     * \param refresh - set to true to refresh populated item, emitting relevant signals to the model
      * @see deleteChildItem()
      */
     virtual void addChildItem( QgsDataItem *child, bool refresh = false );
 
     /** Removes and deletes a child item, emitting relevant signals to the model.
-     * @param child child to remove. Item must exist as a current child.
+     * \param child child to remove. Item must exist as a current child.
      * @see addChildItem()
      */
     virtual void deleteChildItem( QgsDataItem *child );
 
     /** Removes a child item and returns it without deleting it. Emits relevant signals to model as required.
-     * @param child child to remove
+     * \param child child to remove
      * @returns pointer to the removed item or null if no such item was found
      */
     virtual QgsDataItem *removeChildItem( QgsDataItem *child );
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void deleteLater();
 
     // Populate children using children vector created by createChildren()
-    // @param foreground run createChildren in foreground
+    // \param foreground run createChildren in foreground
     virtual void populate( bool foreground = false );
 
     //! Remove children recursively and set as not populated. This is used when refreshing collapsed items.
@@ -410,10 +410,10 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     /** Constructor.
-     * @param parent
-     * @param name directory name
-     * @param dirPath path to directory in file system
-     * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
+     * \param parent
+     * \param name directory name
+     * \param dirPath path to directory in file system
+     * \param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
     virtual void setState( State state ) override;
@@ -451,9 +451,9 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
 
     /**
      * @brief A data item holding a reference to a QGIS project file.
-     * @param parent The parent data item.
-     * @param name The name of the of the project. Displayed to the user.
-     * @param path The full path to the project.
+     * \param parent The parent data item.
+     * \param name The name of the of the project. Displayed to the user.
+     * \param path The full path to the project.
      */
     QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
 

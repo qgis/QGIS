@@ -91,7 +91,7 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
   signals:
 
     /** Emitted when values have been collected
-     * @param values list of unique matching string values
+     * \param values list of unique matching string values
      */
     void collectedValues( const QStringList &values );
 
@@ -125,14 +125,14 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
   public:
 
     /** Constructor for QgsFieldValuesLineEdit
-     * @param parent parent widget
+     * \param parent parent widget
      */
     QgsFieldValuesLineEdit( QWidget *parent = nullptr );
 
     virtual ~QgsFieldValuesLineEdit();
 
     /** Sets the layer containing the field that values will be shown from.
-     * @param layer vector layer
+     * \param layer vector layer
      * @see layer()
      * @see setAttributeIndex()
      */
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     QgsVectorLayer *layer() const { return mLayer; }
 
     /** Sets the attribute index for the field containing values to show in the widget.
-     * @param index index of attribute
+     * \param index index of attribute
      * @see attributeIndex()
      * @see setLayer()
      */
@@ -160,12 +160,12 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
   signals:
 
     /** Emitted when the layer associated with the widget changes.
-     * @param layer vector layer
+     * \param layer vector layer
      */
     void layerChanged( QgsVectorLayer *layer );
 
     /** Emitted when the field associated with the widget changes.
-     * @param index new attribute index for field
+     * \param index new attribute index for field
      */
     void attributeIndexChanged( int index );
 
@@ -182,7 +182,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     void triggerCompleterUpdate();
 
     /** Updates the values shown in the completer list.
-     * @param values list of string values to show
+     * \param values list of string values to show
      */
     void updateCompleter( const QStringList &values );
 

@@ -84,11 +84,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     };
 
     /** \brief Draw to paint device
-     *  @param painter painter
-     *  @param extent map extent
-     *  @param size size in scene coordinates
-     *  @param dpi scene dpi
-     *  @param forceWidthScale force wysiwyg line widths / marker sizes
+     *  \param painter painter
+     *  \param extent map extent
+     *  \param size size in scene coordinates
+     *  \param dpi scene dpi
+     *  \param forceWidthScale force wysiwyg line widths / marker sizes
      */
     void draw( QPainter *painter, const QgsRectangle &extent, QSizeF size, double dpi, double *forceWidthScale = nullptr );
 
@@ -112,15 +112,15 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void resize( double dx, double dy );
 
     /** Move content of map
-     * @param dx move in x-direction (item and canvas coordinates)
-     * @param dy move in y-direction (item and canvas coordinates)
+     * \param dx move in x-direction (item and canvas coordinates)
+     * \param dy move in y-direction (item and canvas coordinates)
      */
     void moveContent( double dx, double dy ) override;
 
     /** Zoom content of item. Does nothing per default (but implemented in composer map)
-     * @param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
-     * @param point item point for zoom center
-     * @param mode zoom mode
+     * \param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
+     * \param point item point for zoom center
+     * \param mode zoom mode
      * \since QGIS 2.5
      */
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) override;
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Sets new extent for the map. This method may change the width or height of the map
      * item to ensure that the extent exactly matches the specified extent, with no
      * overlap or margin. This method implicitly alters the map scale.
-     * @param extent new extent for the map
+     * \param extent new extent for the map
      * @see zoomToExtent
      */
     void setNewExtent( const QgsRectangle &extent );
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * This method will not change the width or height of the map, and may result in
      * an overlap or margin from the specified extent. This method implicitly alters the
      * map scale.
-     * @param extent new extent for the map
+     * \param extent new extent for the map
      * @see setNewExtent
      * \since QGIS 2.5
      */
@@ -290,14 +290,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     bool containsAdvancedEffects() const;
 
     /** Stores state in Dom node
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc Dom document
+     * \param elem is Dom element corresponding to 'Composer' tag
+     * \param doc Dom document
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
-     * @param itemElem is Dom node corresponding to 'ComposerMap' tag
-     * @param doc is Dom document
+     * \param itemElem is Dom node corresponding to 'ComposerMap' tag
+     * \param doc is Dom document
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Returns the rotation used for drawing the map within the composer item
      * @returns rotation for map
-     * @param valueType controls whether the returned value is the user specified rotation,
+     * \param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
      */
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     bool atlasDriven() const { return mAtlasDriven; }
 
     /** Sets whether the map extent will follow the current atlas feature.
-     * @param enabled set to true if the map extents should be set by the current atlas feature.
+     * \param enabled set to true if the map extents should be set by the current atlas feature.
      * @see atlasDriven
      * @see setAtlasScalingMode
      */
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Sets the current atlas scaling mode. This controls how the map's extents
      * are calculated for the current atlas feature when an atlas composition
      * is enabled.
-     * @param mode atlas scaling mode to set
+     * \param mode atlas scaling mode to set
      * \note this parameter is only used if atlasDriven() is true
      * @see atlasScalingMode
      * @see atlasDriven
@@ -407,7 +407,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setAtlasScalingMode( AtlasScalingMode mode ) { mAtlasScalingMode = mode; }
 
     /** Returns the margin size (percentage) used when the map is in atlas mode.
-     * @param valueType controls whether the returned value is the user specified atlas margin,
+     * \param valueType controls whether the returned value is the user specified atlas margin,
      * or the current evaluated atlas margin (which may be affected by data driven atlas margin
      * settings).
      * @returns margin size in percentage to leave around the atlas feature's extent
@@ -418,7 +418,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double atlasMargin( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue );
 
     /** Sets the margin size (percentage) used when the map is in atlas mode.
-     * @param margin size in percentage to leave around the atlas feature's extent
+     * \param margin size in percentage to leave around the atlas feature's extent
      * \note this is only used if atlasScalingMode() is Auto.
      * @see atlasScalingMode
      * @see atlasMargin
@@ -602,8 +602,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void mapPolygon( const QgsRectangle &extent, QPolygonF &poly ) const;
 
     /** Scales a composer map shift (in MM) and rotates it by mRotation
-        @param xShift in: shift in x direction (in item units), out: xShift in map units
-        @param yShift in: shift in y direction (in item units), out: yShift in map units*/
+        \param xShift in: shift in x direction (in item units), out: xShift in map units
+        \param yShift in: shift in y direction (in item units), out: yShift in map units*/
     void transformShift( double &xShift, double &yShift ) const;
 
     void drawAnnotations( QPainter *painter );
@@ -624,7 +624,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     bool shouldDrawPart( PartType part ) const;
 
     /** Refresh the map's extents, considering data defined extent, scale and rotation
-     * @param context expression context for evaluating data defined map parameters
+     * \param context expression context for evaluating data defined map parameters
      * \since QGIS 2.5
      */
     void refreshMapExtents( const QgsExpressionContext *context = nullptr );

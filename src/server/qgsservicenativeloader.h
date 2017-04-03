@@ -49,9 +49,9 @@ class SERVER_EXPORT QgsServiceNativeLoader
 
     /**
      * Lead all medules from path
-     * @param modulePath the path to look for module
-     * @param registrar QgsServiceRegistry instance for registering services
-     * @param serverIface QgsServerInterface instarce
+     * \param modulePath the path to look for module
+     * \param registrar QgsServiceRegistry instance for registering services
+     * \param serverIface QgsServerInterface instarce
      */
     void loadModules( const QString &modulePath, QgsServiceRegistry &registrar,
                       QgsServerInterface *serverIface = nullptr );
@@ -64,7 +64,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
     /**
      * Load the native module from path
      *
-     * @param location QString location holding the module relalive path
+     * \param location QString location holding the module relalive path
      * @return a qgsservicemodule instance
      */
     QgsServiceModule *loadNativeModule( const QString &location );
@@ -75,7 +75,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
 
     /**
      * Find module
-     * @param path the module path
+     * \param path the module path
      * @return a module hook entry
      */
     QgsServiceNativeModuleEntry *findModuleEntry( const QString &path );

@@ -103,7 +103,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     bool startPlugin( const QString &packageName ) override;
 
     //! helper function to get some information about plugin
-    //! @param function one of these strings: name, tpye, version, description
+    //! \param function one of these strings: name, tpye, version, description
     QString getPluginMetadata( const QString &pluginName, const QString &function ) override;
 
     //! confirm it is safe to uninstall the plugin

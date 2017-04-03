@@ -105,7 +105,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     static const QgsPropertiesDefinition &propertyDefinitions();
 
     /** Constructor
-     * @param composition parent composition
+     * \param composition parent composition
      */
     QgsComposerObject( QgsComposition *composition );
     virtual ~QgsComposerObject() = default;
@@ -119,14 +119,14 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     QgsComposition *composition() { return mComposition; }
 
     /** Stores item state in DOM element
-     * @param elem is DOM element corresponding to item tag
-     * @param doc is the DOM document
+     * \param elem is DOM element corresponding to item tag
+     * \param doc is the DOM document
      */
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets item state from DOM element
-     * @param itemElem is DOM node corresponding to item tag
-     * @param doc is DOM document
+     * \param itemElem is DOM node corresponding to item tag
+     * \param doc is DOM document
      */
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
@@ -143,15 +143,15 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the objects's property collection, used for data defined overrides.
-     * @param collection property collection. Existing properties will be replaced.
+     * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
      * @see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /** Set a custom property for the object.
-     * @param key property key. If a property with the same key already exists it will be overwritten.
-     * @param value property value
+     * \param key property key. If a property with the same key already exists it will be overwritten.
+     * \param value property value
      * @see customProperty()
      * @see removeCustomProperty()
      * @see customProperties()
@@ -160,8 +160,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     void setCustomProperty( const QString &key, const QVariant &value );
 
     /** Read a custom property from the object.
-     * @param key property key
-     * @param defaultValue default value to return if property with matching key does not exist
+     * \param key property key
+     * \param defaultValue default value to return if property with matching key does not exist
      * @returns value of matching property
      * @see setCustomProperty()
      * @see removeCustomProperty()
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 
     /** Remove a custom property from the object.
-     * @param key property key
+     * \param key property key
      * @see setCustomProperty()
      * @see customProperty()
      * @see customProperties()
@@ -200,10 +200,10 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
 
     /** Refreshes a data defined property for the item by reevaluating the property's value
      * and redrawing the item with this new value.
-     * @param property data defined property to refresh. If property is set to
+     * \param property data defined property to refresh. If property is set to
      * QgsComposerItem::AllProperties then all data defined properties for the item will be
      * refreshed.
-     * @param context expression context for evaluating data defined expressions
+     * \param context expression context for evaluating data defined expressions
      * \since QGIS 2.5
      */
     virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties, const QgsExpressionContext *context = nullptr );

@@ -181,7 +181,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
   private:
 
     /** Read and parse module options (--interface-description).
-     * @param errors - list to which possible errors are added
+     * \param errors - list to which possible errors are added
      */
     QDomDocument readInterfaceDescription( const QString &xname, QStringList &errors );
 

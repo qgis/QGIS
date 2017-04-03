@@ -62,56 +62,56 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /**
      * Constructor
-     * @param layerCache  A layer cache to use as backend
-     * @param parent      The parent QObject (owner)
+     * \param layerCache  A layer cache to use as backend
+     * \param parent      The parent QObject (owner)
      */
     QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = nullptr );
 
     /**
      * Returns the number of rows
-     * @param parent parent index
+     * \param parent parent index
      */
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     /**
      * Returns the number of columns
-     * @param parent parent index
+     * \param parent parent index
      */
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     /**
      * Returns header data
-     * @param section required section
-     * @param orientation horizontal or vertical orientation
-     * @param role data role
+     * \param section required section
+     * \param orientation horizontal or vertical orientation
+     * \param role data role
      */
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     /**
      * Returns data on the given index
-     * @param index model index
-     * @param role data role
+     * \param index model index
+     * \param role data role
      */
     virtual QVariant data( const QModelIndex &index, int role ) const override;
 
     /**
      * Updates data on given index
-     * @param index model index
-     * @param value new data value
-     * @param role data role
+     * \param index model index
+     * \param value new data value
+     * \param role data role
      */
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**
      * Returns item flags for the index
-     * @param index model index
+     * \param index model index
      */
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Reloads the model data between indices
-     * @param index1 start index
-     * @param index2 end index
+     * \param index1 start index
+     * \param index2 end index
      */
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
 
@@ -129,7 +129,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /**
      * Maps feature id to table row
-     * @param id feature id
+     * \param id feature id
      */
     int idToRow( QgsFeatureId id ) const;
 
@@ -149,14 +149,14 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /**
      * Maps row to feature id
-     * @param row row number
+     * \param row row number
      */
     QgsFeatureId rowToId( int row ) const;
 
     /**
      * Swaps two rows
-     * @param a first row
-     * @param b second row
+     * \param a first row
+     * \param b second row
      */
     void swapRows( QgsFeatureId a, QgsFeatureId b );
 
@@ -191,7 +191,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * so the data does not have to be fetched for every single comparison.
      * Specify -1 as column to invalidate the cache
      *
-     * @param column The column index of the field to catch
+     * \param column The column index of the field to catch
      */
     void prefetchColumnData( int column );
 
@@ -199,7 +199,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * Prefetches the entire data for one expression. Based on this cached information
      * the sorting can later be done in a performant way.
      *
-     * @param expression The expression to cache
+     * \param expression The expression to cache
      */
     void prefetchSortData( const QString &expression );
 
@@ -213,7 +213,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * In contrast to a filter, the request will constrain the data shown without the possibility
      * to dynamically adjust it.
      *
-     * @param request The request to use to fill this table model.
+     * \param request The request to use to fill this table model.
      */
     void setRequest( const QgsFeatureRequest &request );
 
@@ -227,7 +227,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * Sets the context in which this table is shown.
      * Will be forwarded to any editor widget created when editing data on this model.
      *
-     * @param context The context
+     * \param context The context
      */
     void setEditorContext( const QgsAttributeEditorContext &context ) { mEditorContext = context; }
 
@@ -260,7 +260,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     virtual void loadLayer();
 
     /** Handles updating the model when the conditional style for a field changes.
-     * @param fieldName name of field whose conditional style has changed
+     * \param fieldName name of field whose conditional style has changed
      * \since QGIS 2.12
      */
     void fieldConditionalStyleChanged( const QString &fieldName );
@@ -297,21 +297,21 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /**
      * Launched when attribute value has been changed
-     * @param fid feature id
-     * @param idx attribute index
-     * @param value new value
+     * \param fid feature id
+     * \param idx attribute index
+     * \param value new value
      */
     virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
     /**
      * Launched when eatures have been deleted
-     * @param fids feature ids
+     * \param fids feature ids
      */
     virtual void featuresDeleted( const QgsFeatureIds &fids );
 
     /**
      * Launched when a feature has been added
-     * @param fid feature id
+     * \param fid feature id
      */
     virtual void featureAdded( QgsFeatureId fid );
 
@@ -348,7 +348,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Load feature fid into local cache (mFeat)
      *
-     * @param  fid     feature id
+     * \param  fid     feature id
      *
      * @return feature exists
      */

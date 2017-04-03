@@ -91,7 +91,7 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * Set the magnification factor.
-     * @param factor the factor of magnification
+     * \param factor the factor of magnification
      * \since QGIS 2.16
      * @see magnificationFactor()
      */
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsMapSettings
     QString customRenderFlags() const { return mCustomRenderFlags; }
 
     /** Sets the custom rendering flags. Layers might honour these to alter their rendering.
-     * @param customRenderFlags custom flags strings, separated by ';'
+     * \param customRenderFlags custom flags strings, separated by ';'
      * \since QGIS 2.16
      * @see customRenderFlags()
      */
@@ -217,8 +217,8 @@ class CORE_EXPORT QgsMapSettings
     const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }
 
     /** Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
-     * @param layer The layer
-     * @param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
+     * \param layer The layer
+     * \param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
      * \since QGIS 2.12
      */
     double layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent = QgsRectangle() ) const;
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * @brief Return coordinate transform from layer's CRS to destination CRS
-     * @param layer
+     * \param layer
      * @return transform - may be invalid if the transform is not needed
      */
     QgsCoordinateTransform layerTransform( const QgsMapLayer *layer ) const;
@@ -280,13 +280,13 @@ class CORE_EXPORT QgsMapSettings
     void writeXml( QDomNode &node, QDomDocument &doc );
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
-    @param tolerance the segmentation tolerance*/
+    \param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
     //! Gets the segmentation tolerance applied when rendering curved geometries
     double segmentationTolerance() const { return mSegmentationTolerance; }
 
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    @param type the segmentation tolerance typename*/
+    \param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
     //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }

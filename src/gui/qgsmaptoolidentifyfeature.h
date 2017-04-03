@@ -32,8 +32,8 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
 
     /**
      * @brief QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer
-     * @param canvas the map canvas
-     * @param vl the vector layer. The map tool can be initialized without any layer and can be set afterward.
+     * \param canvas the map canvas
+     * \param vl the vector layer. The map tool can be initialized without any layer and can be set afterward.
      */
     QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl = nullptr );
 

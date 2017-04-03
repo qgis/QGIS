@@ -83,7 +83,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * If you write a feature iterator for your provider, this is the method you
      * need to implement!!
      *
-     * @param f The feature to write to
+     * \param f The feature to write to
      * @return  true if a feature was written to f
      */
     virtual bool fetchFeature( QgsFeature &f ) = 0;
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * and you check for the expression in your fetchFeature method, you can just
      * redirect this call to fetchFeature so the default check will be omitted.
      *
-     * @param f The feature to write to
+     * \param f The feature to write to
      * @return  true if a feature was written to f
      */
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * if the request was FilterFids you can just redirect this call to fetchFeature
      * so the default check will be omitted.
      *
-     * @param f The feature to write to
+     * \param f The feature to write to
      * @return  true if a feature was written to f
      */
     virtual bool nextFeatureFilterFids( QgsFeature &f );

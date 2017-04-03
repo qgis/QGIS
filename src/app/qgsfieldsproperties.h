@@ -138,7 +138,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     ~QgsFieldsProperties();
 
     /** Adds an attribute to the table (but does not commit it yet)
-    @param field the field to add
+    \param field the field to add
     @return false in case of a name conflict, true in case of success */
     bool addAttribute( const QgsField &field );
 
@@ -160,11 +160,11 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
     /**
      * @brief setEditFormInit set the private ui fields
-     * @param editForm
-     * @param initFunction
-     * @param initCode
-     * @param initFilePath
-     * @param codeSource
+     * \param editForm
+     * \param initFunction
+     * \param initCode
+     * \param initFilePath
+     * \param codeSource
      */
     void setEditFormInit( const QString &editForm,
                           const QString &initFunction,

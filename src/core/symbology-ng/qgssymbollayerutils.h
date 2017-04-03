@@ -119,16 +119,16 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QVector<qreal> decodeSldRealVector( const QString &s );
 
     /** Encodes a render unit into an SLD unit of measure string.
-     * @param unit unit to encode
-     * @param scaleFactor if specified, will be set to scale factor for unit of measure
+     * \param unit unit to encode
+     * \param scaleFactor if specified, will be set to scale factor for unit of measure
      * @returns encoded string
      * @see decodeSldUom()
      */
     static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor );
 
     /** Decodes a SLD unit of measure string to a render unit.
-     * @param str string to decode
-     * @param scaleFactor if specified, will be set to scale factor for unit of measure
+     * \param str string to decode
+     * \param scaleFactor if specified, will be set to scale factor for unit of measure
      * @returns matching render unit
      * @see encodeSldUom()
      */
@@ -140,28 +140,28 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QPainter::CompositionMode decodeBlendMode( const QString &s );
 
     /** Returns an icon preview for a color ramp.
-     * @param symbol symbol
-     * @param size target pixmap size
-     * @param padding space between icon edge and symbol
+     * \param symbol symbol
+     * \param size target pixmap size
+     * \param padding space between icon edge and symbol
      * @see symbolPreviewPixmap()
      */
     static QIcon symbolPreviewIcon( QgsSymbol *symbol, QSize size, int padding = 0 );
 
     /** Returns a pixmap preview for a color ramp.
-     * @param symbol symbol
-     * @param size target pixmap size
-     * @param padding space between icon edge and symbol
-     * @param customContext render context to use when rendering symbol
+     * \param symbol symbol
+     * \param size target pixmap size
+     * \param padding space between icon edge and symbol
+     * \param customContext render context to use when rendering symbol
      * \note Parameter customContext added in QGIS 2.6
      * @see symbolPreviewIcon()
      */
     static QPixmap symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr );
 
     /** Draws a symbol layer preview to a QPicture
-     * @param layer symbol layer to draw
-     * @param units size units
-     * @param size target size of preview picture
-     * @param scale map unit scale for preview
+     * \param layer symbol layer to draw
+     * \param units size units
+     * \param size target size of preview picture
+     * \param scale map unit scale for preview
      * @returns QPicture containing symbol layer preview
      * \since QGIS 2.9
      * @see symbolLayerPreviewIcon()
@@ -169,27 +169,27 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QPicture symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 
     /** Draws a symbol layer preview to an icon.
-     * @param layer symbol layer to draw
-     * @param u size units
-     * @param size target size of preview icon
-     * @param scale map unit scale for preview
+     * \param layer symbol layer to draw
+     * \param u size units
+     * \param size target size of preview icon
+     * \param scale map unit scale for preview
      * @returns icon containing symbol layer preview
      * @see symbolLayerPreviewPicture()
      */
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 
     /** Returns an icon preview for a color ramp.
-     * @param ramp color ramp
-     * @param size target icon size
-     * @param padding space between icon edge and color ramp
+     * \param ramp color ramp
+     * \param size target icon size
+     * \param padding space between icon edge and color ramp
      * @see colorRampPreviewPixmap()
      */
     static QIcon colorRampPreviewIcon( QgsColorRamp *ramp, QSize size, int padding = 0 );
 
     /** Returns a pixmap preview for a color ramp.
-     * @param ramp color ramp
-     * @param size target pixmap size
-     * @param padding space between icon edge and color ramp
+     * \param ramp color ramp
+     * \param size target pixmap size
+     * \param padding space between icon edge and color ramp
      * @see colorRampPreviewIcon()
      */
     static QPixmap colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding = 0 );
@@ -200,14 +200,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static double estimateMaxSymbolBleed( QgsSymbol *symbol, const QgsRenderContext &context );
 
     /** Attempts to load a symbol from a DOM element
-     * @param element DOM element representing symbol
+     * \param element DOM element representing symbol
      * @returns decoded symbol, if possible
      */
     static QgsSymbol *loadSymbol( const QDomElement &element );
 
     /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
-     * @param element DOM element representing symbol
+     * \param element DOM element representing symbol
      * @returns decoded symbol cast to specified type, if possible
      * \note not available in Python bindings
      */
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
                                        const QVector<qreal> *dashPattern = nullptr );
 
     /** Create ogr feature style string for brush
-     @param fillColr fill color*/
+     \param fillColr fill color*/
     static QString ogrFeatureStyleBrush( const QColor &fillColr );
 
     static void createRotationElement( QDomDocument &doc, QDomElement &element, const QString &rotationFunc );
@@ -325,9 +325,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Creates a OGC Expression element based on the provided function expression
-     * @param doc The document owning the element
-     * @param element The element parent
-     * @param function The expression to be encoded
+     * \param doc The document owning the element
+     * \param element The element parent
+     * \param function The expression to be encoded
      * @return
      */
     static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString &function );
@@ -349,16 +349,16 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
     /** Creates a color ramp from the settings encoded in an XML element
-     * @param element DOM element
+     * \param element DOM element
      * @returns new color ramp. Caller takes responsibility for deleting the returned value.
      * @see saveColorRamp()
      */
     static QgsColorRamp *loadColorRamp( QDomElement &element );
 
     /** Encodes a color ramp's settings to an XML element
-     * @param name name of ramp
-     * @param ramp color ramp to save
-     * @param doc XML document
+     * \param name name of ramp
+     * \param ramp color ramp to save
+     * \param doc XML document
      * @returns DOM element representing state of color ramp
      * @see loadColorRamp()
      */
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Returns a friendly display name for a color
-     * @param color source color
+     * \param color source color
      * @returns display name for color
      * \since QGIS 2.5
      */
@@ -391,7 +391,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Attempts to parse a string as a list of colors using a variety of common formats, including hex
      * codes, rgb and rgba strings.
-     * @param colorStr string representing the color list
+     * \param colorStr string representing the color list
      * @returns list of parsed colors
      * \since QGIS 2.5
      */
@@ -400,7 +400,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Creates mime data from a color. Sets both the mime data's color data, and the
      * mime data's text with the color's hex code.
-     * @param color color to encode as mime data
+     * \param color color to encode as mime data
      * @see colorFromMimeData
      * \since QGIS 2.5
      */
@@ -408,8 +408,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Attempts to parse mime data as a color
-     * @param data mime data to parse
-     * @param hasAlpha will be set to true if mime data was interpreted as a color containing
+     * \param data mime data to parse
+     * \param hasAlpha will be set to true if mime data was interpreted as a color containing
      * an explicit alpha value
      * @returns valid color if mimedata could be interpreted as a color, otherwise an
      * invalid color
@@ -419,7 +419,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Attempts to parse mime data as a list of named colors
-     * @param data mime data to parse
+     * \param data mime data to parse
      * @returns list of parsed colors
      * \since QGIS 2.5
      */
@@ -427,8 +427,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Creates mime data from a list of named colors
-     * @param colorList list of named colors
-     * @param allFormats set to true to include additional mime formats, include text/plain and application/x-color
+     * \param colorList list of named colors
+     * \param allFormats set to true to include additional mime formats, include text/plain and application/x-color
      * @returns mime data containing encoded colors
      * \since QGIS 2.5
      */
@@ -436,9 +436,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Exports colors to a gpl GIMP palette file
-     * @param file destination file
-     * @param paletteName name of palette, which is stored in gpl file
-     * @param colors colors to export
+     * \param file destination file
+     * \param paletteName name of palette, which is stored in gpl file
+     * \param colors colors to export
      * @returns true if export was successful
      * @see importColorsFromGpl
      */
@@ -446,9 +446,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Imports colors from a gpl GIMP palette file
-     * @param file source gpl file
-     * @param ok will be true if file was successfully read
-     * @param name will be set to palette name from gpl file, if present
+     * \param file source gpl file
+     * \param ok will be true if file was successfully read
+     * \param name will be set to palette name from gpl file, if present
      * @returns list of imported colors
      * @see saveColorsToGpl
      */
@@ -457,8 +457,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
      * codes, rgb and rgba strings.
-     * @param colorStr string representing the color
-     * @param strictEval set to true for stricter color parsing rules
+     * \param colorStr string representing the color
+     * \param strictEval set to true for stricter color parsing rules
      * @returns parsed color
      * \since QGIS 2.3
      */
@@ -467,9 +467,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
      * codes, rgb and rgba strings.
-     * @param colorStr string representing the color
-     * @param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to true
-     * @param strictEval set to true for stricter color parsing rules
+     * \param colorStr string representing the color
+     * \param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to true
+     * \param strictEval set to true for stricter color parsing rules
      * @returns parsed color
      * \since QGIS 2.3
      */

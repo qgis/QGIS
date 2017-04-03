@@ -90,7 +90,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
     /**
      * @brief setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
-     * @param filter Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
+     * \param filter Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
      */
     void setFilter( const QString &filter );
 

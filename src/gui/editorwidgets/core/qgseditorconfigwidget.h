@@ -40,9 +40,9 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
     /**
      * Create a new configuration widget
      *
-     * @param vl       The layer for which the configuration dialog will be created
-     * @param fieldIdx The index of the field on the layer for which this dialog will be created
-     * @param parent   A parent widget
+     * \param vl       The layer for which the configuration dialog will be created
+     * \param fieldIdx The index of the field on the layer for which this dialog will be created
+     * \param parent   A parent widget
      */
     explicit QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
 
@@ -56,7 +56,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
     /**
      * @brief Update the configuration widget to represent the given configuration.
      *
-     * @param config The configuration which should be represented by this widget
+     * \param config The configuration which should be represented by this widget
      */
     virtual void setConfig( const QVariantMap &config ) = 0;
 
@@ -87,8 +87,8 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
 
     /**
      * Registers a property override button, setting up its initial value, connections and description.
-     * @param button button to register
-     * @param key corresponding data defined property key
+     * \param button button to register
+     * \param key corresponding data defined property key
      */
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key );
 

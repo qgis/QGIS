@@ -146,11 +146,11 @@ class CORE_EXPORT QgsRasterInterface
     /** Read block of data using given extent and size.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
-     * @param bandNo band number
-     * @param extent extent of block
-     * @param width pixel width of block
-     * @param height pixel height of block
-     * @param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+     * \param bandNo band number
+     * \param extent extent of block
+     * \param width pixel width of block
+     * \param height pixel height of block
+     * \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0;
 
@@ -188,11 +188,11 @@ class CORE_EXPORT QgsRasterInterface
     }
 
     /** \brief Get band statistics.
-     * @param bandNo The band (number).
-     * @param stats Requested statistics
-     * @param extent Extent used to calc statistics, if empty, whole raster extent is used.
-     * @param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
-     * @param feedback optional feedback object
+     * \param bandNo The band (number).
+     * \param stats Requested statistics
+     * \param extent Extent used to calc statistics, if empty, whole raster extent is used.
+     * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * \param feedback optional feedback object
      * @return Band statistics.
      */
     virtual QgsRasterBandStats bandStatistics( int bandNo,
@@ -209,15 +209,15 @@ class CORE_EXPORT QgsRasterInterface
                                 int sampleSize = 0 );
 
     /** \brief Get histogram. Histograms are cached in providers.
-     * @param bandNo The band (number).
-     * @param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
-     * @param minimum Minimum value, if NaN, raster minimum value will be used.
-     * @param maximum Maximum value, if NaN, raster minimum value will be used.
-     * @param extent Extent used to calc histogram, if empty, whole raster extent is used.
-     * @param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
-     * @param includeOutOfRange include out of range values
-     * @param feedback optional feedback object
-     * @return Vector of non NULL cell counts for each bin.
+     * \param bandNo The band (number).
+     * \param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
+     * \param minimum Minimum value, if NaN, raster minimum value will be used.
+     * \param maximum Maximum value, if NaN, raster minimum value will be used.
+     * \param extent Extent used to calc histogram, if empty, whole raster extent is used.
+     * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * \param includeOutOfRange include out of range values
+     * \param feedback optional feedback object
+     * \returns Vector of non NULL cell counts for each bin.
      * \note binCount, minimum and maximum not optional in Python bindings
      */
     virtual QgsRasterHistogram histogram( int bandNo,
@@ -240,13 +240,13 @@ class CORE_EXPORT QgsRasterInterface
                                bool includeOutOfRange = false );
 
     /** \brief Find values for cumulative pixel count cut.
-     * @param bandNo The band (number).
-     * @param lowerCount The lower count as fraction of 1, e.g. 0.02 = 2%
-     * @param upperCount The upper count as fraction of 1, e.g. 0.98 = 98%
-     * @param lowerValue Location into which the lower value will be set.
-     * @param upperValue  Location into which the upper value will be set.
-     * @param extent Extent used to calc histogram, if empty, whole raster extent is used.
-     * @param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * \param bandNo The band (number).
+     * \param lowerCount The lower count as fraction of 1, e.g. 0.02 = 2%
+     * \param upperCount The upper count as fraction of 1, e.g. 0.98 = 98%
+     * \param lowerValue Location into which the lower value will be set.
+     * \param upperValue  Location into which the upper value will be set.
+     * \param extent Extent used to calc histogram, if empty, whole raster extent is used.
+     * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      */
     virtual void cumulativeCut( int bandNo,
                                 double lowerCount,

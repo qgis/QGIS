@@ -212,7 +212,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
   public:
 
     /** Constructor for QgsWebPage.
-     * @param parent parent object
+     * \param parent parent object
      */
     explicit QgsWebPage( QObject *parent = 0 )
       : QWebPage( parent )
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
     /** Sets an identifier for the QgsWebPage. The page's identifier is included in messages written to the
      * log, and should be set to a user-friendly string so that users can identify which QgsWebPage has
      * logged the message.
-     * @param identifier identifier string
+     * \param identifier identifier string
      * @see identifier()
      */
     void setIdentifier( const QString &identifier ) { mIdentifier = identifier; }

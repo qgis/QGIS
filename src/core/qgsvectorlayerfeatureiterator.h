@@ -42,7 +42,7 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
   public:
 
     /** Constructor for QgsVectorLayerFeatureSource.
-     * @param layer source layer
+     * \param layer source layer
      */
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
 
@@ -141,14 +141,14 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      *  - Joined fields
      *  - Expression fields
      *
-     * @param f The feature will be modified
+     * \param f The feature will be modified
      * \note not available in Python bindings
      */
     void addVirtualAttributes( QgsFeature &f );
 
     /** Adds an expression based attribute to a feature
-     * @param f feature
-     * @param attrIndex attribute index
+     * \param f feature
+     * \param attrIndex attribute index
      * \since QGIS 2.14
      * \note not available in Python bindings
      */

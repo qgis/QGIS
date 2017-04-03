@@ -98,20 +98,20 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /** Main call to initially set or continually check master password is set
      * \note If it is not set, the user is asked for its input
-     * @param verify Whether password's hash was saved in authentication database
+     * \param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( bool verify = false );
 
     /** Overloaded call to reset master password or set it initially without user interaction
      * \note Only use this in trusted reset functions, unit tests or user/app setup scripts!
-     * @param pass Password to use
-     * @param verify Whether password's hash was saved in authentication database
+     * \param pass Password to use
+     * \param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( const QString &pass, bool verify = false );
 
     /** Verify the supplied master password against any existing hash in authentication database
      * \note Do not emit verification signals when only comparing
-     * @param compare Password to compare against
+     * \param compare Password to compare against
      */
     bool verifyMasterPassword( const QString &compare = QString::null );
 
@@ -127,16 +127,16 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void clearMasterPassword() { mMasterPass = QString(); }
 
     /** Check whether supplied password is the same as the one already set
-     * @param pass Password to verify
+     * \param pass Password to verify
      */
     bool masterPasswordSame( const QString &pass ) const;
 
     /** Reset the master password to a new one, then re-encrypt all previous
      * configs in a new database file, optionally backup curren database
-     * @param newpass New master password to replace existing
-     * @param oldpass Current master password to replace existing
-     * @param keepbackup Whether to keep the generated backup of current database
-     * @param backuppath Where the backup is located, if kept
+     * \param newpass New master password to replace existing
+     * \param oldpass Current master password to replace existing
+     * \param keepbackup Whether to keep the generated backup of current database
+     * \param backuppath Where the backup is located, if kept
      */
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath = nullptr );
 
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \note This can be called from the slot connected to a previously emitted scheduling signal,
      * so that the slot can ask for another emit later, if the slot noticies the current GUI
      * processing state is not ready for interacting with the user, e.g. project is still loading
-     * @param emitted Setting to false will cause signal to be emitted by the schedule timer.
+     * \param emitted Setting to false will cause signal to be emitted by the schedule timer.
      * Setting to true will stop any emitting, but will not stop the schedule timer.
      */
     void setScheduledAuthDatabaseEraseRequestEmitted( bool emitted ) { mScheduledDbEraseRequestEmitted = emitted; }
@@ -181,13 +181,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Get authentication method from the config/provider cache
-     * @param authcfg Authentication config id
+     * \param authcfg Authentication config id
      */
     QgsAuthMethod *configAuthMethod( const QString &authcfg );
 
     /**
      * Get key of authentication method associated with config ID
-     * @param authcfg
+     * \param authcfg
      */
     QString configAuthMethodKey( const QString &authcfg ) const;
 
@@ -198,27 +198,27 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Get authentication method from the config/provider cache via its key
-     * @param authMethodKey Authentication method key
+     * \param authMethodKey Authentication method key
      */
     QgsAuthMethod *authMethod( const QString &authMethodKey );
 
     /**
      * Get available authentication methods mapped to their key
-     * @param dataprovider Provider key filter, returning only methods that support a particular provider
+     * \param dataprovider Provider key filter, returning only methods that support a particular provider
      * \note not available in Python bindings
      */
     QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() );
 
     /**
      * Get authentication method edit widget via its key
-     * @param authMethodKey Authentication method key
-     * @param parent Parent widget
+     * \param authMethodKey Authentication method key
+     * \param parent Parent widget
      */
     QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
 
     /**
      * Get supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
-     * @param authcfg
+     * \param authcfg
      */
     QgsAuthMethod::Expansions supportedAuthMethodExpansions( const QString &authcfg );
 
@@ -227,13 +227,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Verify if provided authentication id is unique
-     * @param id Id to check
+     * \param id Id to check
      */
     bool configIdUnique( const QString &id ) const;
 
     /**
      * Return whether a string includes an authcfg ID token
-     * @param txt String to check
+     * \param txt String to check
      */
     bool hasConfigId( const QString &txt ) const;
 
@@ -245,30 +245,30 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Store an authentication config in the database
-     * @param mconfig Associated authentication config id
+     * \param mconfig Associated authentication config id
      * @return Whether operation succeeded
      */
     bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig );
 
     /**
      * Update an authentication config in the database
-     * @param config Associated authentication config id
+     * \param config Associated authentication config id
      * @return Whether operation succeeded
      */
     bool updateAuthenticationConfig( const QgsAuthMethodConfig &config );
 
     /**
      * Load an authentication config from the database into subclass
-     * @param authcfg Associated authentication config id
-     * @param mconfig Subclassed config to load into
-     * @param full Whether to decrypt and populate all sensitive data in subclass
+     * \param authcfg Associated authentication config id
+     * \param mconfig Subclassed config to load into
+     * \param full Whether to decrypt and populate all sensitive data in subclass
      * @return Whether operation succeeded
      */
     bool loadAuthenticationConfig( const QString &authcfg, QgsAuthMethodConfig &mconfig, bool full = false );
 
     /**
      * Remove an authentication config in the database
-     * @param authcfg Associated authentication config id
+     * \param authcfg Associated authentication config id
      * @return Whether operation succeeded
      */
     bool removeAuthenticationConfig( const QString &authcfg );
@@ -287,8 +287,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Erase all rows from all tables in authentication database
-     * @param backup Whether to backup of current database
-     * @param backuppath Where the backup is locate
+     * \param backup Whether to backup of current database
+     * \param backuppath Where the backup is locate
      * @return Whether operation succeeded
      */
     bool eraseAuthenticationDatabase( bool backup, QString *backuppath = nullptr );
@@ -298,9 +298,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Provider call to update a QNetworkRequest with an authentication config
-     * @param request The QNetworkRequest
-     * @param authcfg Associated authentication config id
-     * @param dataprovider Provider key filter, offering logic branching in authentication method
+     * \param request The QNetworkRequest
+     * \param authcfg Associated authentication config id
+     * \param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded
      */
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
@@ -308,9 +308,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Provider call to update a QNetworkReply with an authentication config (used to skip known SSL errors, etc.)
-     * @param reply The QNetworkReply
-     * @param authcfg Associated authentication config id
-     * @param dataprovider Provider key filter, offering logic branching in authentication method
+     * \param reply The QNetworkReply
+     * \param authcfg Associated authentication config id
+     * \param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded
      */
     bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
@@ -318,9 +318,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Provider call to update a QgsDataSourceUri with an authentication config
-     * @param connectionItems The connection items, e.g. username=myname, of QgsDataSourceUri
-     * @param authcfg Associated authentication config id
-     * @param dataprovider Provider key filter, offering logic branching in authentication method
+     * \param connectionItems The connection items, e.g. username=myname, of QgsDataSourceUri
+     * \param authcfg Associated authentication config id
+     * \param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded
      */
     bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
@@ -501,15 +501,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Custom logging signal to relay to console output and QgsMessageLog
      * @see QgsMessageLog
-     * @param message Message to send
-     * @param tag Associated tag (title)
-     * @param level Message log level
+     * \param message Message to send
+     * \param tag Associated tag (title)
+     * \param level Message log level
      */
     void messageOut( const QString &message, const QString &tag = AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
 
     /**
      * Emitted when a password has been verify (or not)
-     * @param verified The state of password's verification
+     * \param verified The state of password's verification
      */
     void masterPasswordVerified( bool verified ) const;
 

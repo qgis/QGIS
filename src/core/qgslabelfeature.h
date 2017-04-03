@@ -66,7 +66,7 @@ class CORE_EXPORT QgsLabelFeature
     /** Sets the label's permissible zone geometry. If set, the feature's label MUST be fully contained
      * within this zone, and the feature will not be labeled if no candidates can be generated which
      * are not contained within the zone.
-     * @param geometry permissible zone geometry. If an invalid QgsGeometry is passed then no zone limit
+     * \param geometry permissible zone geometry. If an invalid QgsGeometry is passed then no zone limit
      * will be applied to the label candidates (this is the default behavior).
      * \since QGIS 3.0
      * @see permissibleZone()
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsLabelFeature
      * of candidates so that they all appear to be at visually equal distances from a point feature.
      * For instance, this can be used to place labels which sit above a point so that their baseline
      * rather then the descender of the label is at a preset distance from the point.
-     * @param margin visual margins for label
+     * \param margin visual margins for label
      * @see visualMargin()
      */
     void setVisualMargin( const QgsMargins &margin ) { mVisualMargin = margin; }
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsLabelFeature
     double priority() const { return mPriority; }
 
     /** Sets the priority for labeling the feature.
-     * @param priority feature's priority, as a value between 0 (highest priority)
+     * \param priority feature's priority, as a value between 0 (highest priority)
      * and 1 (lowest priority). Set to -1.0 to use the layer's default priority
      * for this feature.
      * @see priority
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsLabelFeature
 
     /** Sets the label's z-index. Higher z-index labels are rendered on top of lower
      * z-index labels.
-     * @param zIndex z-index for label
+     * \param zIndex z-index for label
      * @see zIndex()
      * \since QGIS 2.14
      */
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsLabelFeature
     bool isObstacle() const { return mIsObstacle; }
 
     /** Sets whether the feature will act as an obstacle for labels.
-     * @param enabled whether feature will act as an obstacle
+     * \param enabled whether feature will act as an obstacle
      * @see isObstacle
      */
     void setIsObstacle( bool enabled ) { mIsObstacle = enabled; }
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsLabelFeature
 
     /** Sets the obstacle factor for the feature. The factor controls the penalty
      * for labels overlapping this feature.
-     * @param factor larger factors ( > 1.0 ) will result in labels
+     * \param factor larger factors ( > 1.0 ) will result in labels
      * which are less likely to cover this feature, smaller factors ( < 1.0 ) mean labels
      * are more likely to cover this feature (where required)
      * @see obstacleFactor

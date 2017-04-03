@@ -78,7 +78,7 @@ class SERVER_EXPORT QgsServerResponse
 
 
     /** Set the http return code
-     * @param code HTTP return code value
+     * \param code HTTP return code value
      */
     virtual void setReturnCode( int code ) = 0;
 
@@ -88,8 +88,8 @@ class SERVER_EXPORT QgsServerResponse
      * from calling setReturnCode() which let you return a specific response body.
      * Calling sendError() will end the transaction and any attempt to write data
      * or set headers will be an error.
-     * @param code HHTP return code value
-     * @param message An informative error message
+     * \param code HHTP return code value
+     * \param message An informative error message
      */
     virtual void sendError( int code,  const QString &message ) = 0;
 

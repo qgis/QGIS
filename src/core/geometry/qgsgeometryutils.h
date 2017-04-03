@@ -42,8 +42,8 @@ class CORE_EXPORT QgsGeometryUtils
     static QgsPointV2 closestVertex( const QgsAbstractGeometry &geom, const QgsPointV2 &pt, QgsVertexId &id );
 
     /** Returns the distance along a geometry from its first vertex to the specified vertex.
-     * @param geom geometry
-     * @param id vertex id to find distance to
+     * \param geom geometry
+     * \param id vertex id to find distance to
      * @returns distance to vertex (following geometry)
      * \since QGIS 2.16
      */
@@ -51,10 +51,10 @@ class CORE_EXPORT QgsGeometryUtils
 
     /** Retrieves the vertices which are before and after the interpolated point at a specified distance along a linestring
      * (or polygon boundary).
-     * @param geometry line or polygon geometry
-     * @param distance distance to traverse along geometry
-     * @param previousVertex will be set to previous vertex ID
-     * @param nextVertex will be set to next vertex ID
+     * \param geometry line or polygon geometry
+     * \param distance distance to traverse along geometry
+     * \param previousVertex will be set to previous vertex ID
+     * \param nextVertex will be set to next vertex ID
      * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * @returns true if vertices were successfully retrieved
      * \since QGIS 3.0
@@ -78,32 +78,32 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * @brief Compute the intersection between two lines
-     * @param p1 Point on the first line
-     * @param v Direction vector of the first line
-     * @param q1 Point on the second line
-     * @param w Direction vector of the second line
-     * @param inter Output parameter, the intersection point
+     * \param p1 Point on the first line
+     * \param v Direction vector of the first line
+     * \param q1 Point on the second line
+     * \param w Direction vector of the second line
+     * \param inter Output parameter, the intersection point
      * @return Whether the lines intersect
      */
     static bool lineIntersection( const QgsPointV2 &p1, QgsVector v, const QgsPointV2 &q1, QgsVector w, QgsPointV2 &inter );
 
     /**
      * @brief Compute the intersection between two segments
-     * @param p1 First segment start point
-     * @param p2 First segment end point
-     * @param q1 Second segment start point
-     * @param q2 Second segment end point
-     * @param inter Output parameter, the intersection point
-     * @param tolerance The tolerance to use
+     * \param p1 First segment start point
+     * \param p2 First segment end point
+     * \param q1 Second segment start point
+     * \param q2 Second segment end point
+     * \param inter Output parameter, the intersection point
+     * \param tolerance The tolerance to use
      * @return  Whether the segments intersect
      */
     static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2 &inter, double tolerance );
 
     /**
      * @brief Project the point on a segment
-     * @param p The point
-     * @param s1 The segment start point
-     * @param s2 The segment end point
+     * \param p The point
+     * \param s1 The segment start point
+     * \param s2 The segment end point
      * @return The projection of the point on the segment
      */
     static QgsPointV2 projPointOnSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 )
@@ -124,10 +124,10 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * @brief Find self intersections in a polyline
-     * @param geom The geometry to check
-     * @param part The part of the geometry to check
-     * @param ring The ring of the geometry part to check
-     * @param tolerance The tolerance to use
+     * \param geom The geometry to check
+     * \param part The part of the geometry to check
+     * \param ring The ring of the geometry part to check
+     * \param tolerance The tolerance to use
      * @return The list of self intersections
      * \note not available in Python bindings
      * \since QGIS 2.12
@@ -207,28 +207,28 @@ class CORE_EXPORT QgsGeometryUtils
     static QString pointsToJSON( const QgsPointSequence &points, int precision );
 
     /** Ensures that an angle is in the range 0 <= angle < 2 pi.
-     * @param angle angle in radians
+     * \param angle angle in radians
      * @returns equivalent angle within the range [0, 2 pi)
      */
     static double normalizedAngle( double angle );
 
     /** Calculates the direction of line joining two points in radians, clockwise from the north direction.
-     * @param x1 x-coordinate of line start
-     * @param y1 y-coordinate of line start
-     * @param x2 x-coordinate of line end
-     * @param y2 y-coordinate of line end
+     * \param x1 x-coordinate of line start
+     * \param y1 y-coordinate of line start
+     * \param x2 x-coordinate of line end
+     * \param y2 y-coordinate of line end
      * @returns angle in radians. Returned value is undefined if start and end point are the same.
      */
     static double lineAngle( double x1, double y1, double x2, double y2 );
 
     /** Calculates the angle between the lines AB and BC, where AB and BC described
      * by points a, b and b, c.
-     * @param x1 x-coordinate of point a
-     * @param y1 y-coordinate of point a
-     * @param x2 x-coordinate of point b
-     * @param y2 y-coordinate of point b
-     * @param x3 x-coordinate of point c
-     * @param y3 y-coordinate of point c
+     * \param x1 x-coordinate of point a
+     * \param y1 y-coordinate of point a
+     * \param x2 x-coordinate of point b
+     * \param y2 y-coordinate of point b
+     * \param x3 x-coordinate of point c
+     * \param y3 y-coordinate of point c
      * @returns angle between lines in radians. Returned value is undefined if two or more points are equal.
      */
     static double angleBetweenThreePoints( double x1, double y1, double x2, double y2,
@@ -236,10 +236,10 @@ class CORE_EXPORT QgsGeometryUtils
 
     /** Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
      * clockwise from the north direction.
-     * @param x1 x-coordinate of line start
-     * @param y1 y-coordinate of line start
-     * @param x2 x-coordinate of line end
-     * @param y2 y-coordinate of line end
+     * \param x1 x-coordinate of line start
+     * \param y1 y-coordinate of line start
+     * \param x2 x-coordinate of line end
+     * \param y2 y-coordinate of line end
      * @returns angle in radians. Returned value is undefined if start and end point are the same.
      */
     static double linePerpendicularAngle( double x1, double y1, double x2, double y2 );
@@ -248,8 +248,8 @@ class CORE_EXPORT QgsGeometryUtils
     static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 );
 
     /** Averages two angles, correctly handling negative angles and ensuring the result is between 0 and 2 pi.
-     * @param a1 first angle (in radians)
-     * @param a2 second angle (in radians)
+     * \param a1 first angle (in radians)
+     * \param a2 second angle (in radians)
      * @returns average angle (in radians)
      */
     static double averageAngle( double a1, double a2 );
@@ -262,8 +262,8 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Parses a WKT string and returns of list of blocks contained in the WKT.
-     * @param wkt WKT string in the format "TYPE1 (contents1), TYPE2 (TYPE3 (contents3), TYPE4 (contents4))"
-     * @param defaultType default geometry type for children
+     * \param wkt WKT string in the format "TYPE1 (contents1), TYPE2 (TYPE3 (contents3), TYPE4 (contents4))"
+     * \param defaultType default geometry type for children
      * @returns list of WKT child block strings, e.g., List("TYPE1 (contents1)", "TYPE2 (TYPE3 (contents3), TYPE4 (contents4))")
      * \note not available in Python bindings
      */
@@ -272,8 +272,8 @@ class CORE_EXPORT QgsGeometryUtils
     /** Returns a middle point between points pt1 and pt2.
      * Z value is computed if one of this point have Z.
      * M value is computed if one of this point have M.
-     * @param pt1 first point.
-     * @param pt2 second point.
+     * \param pt1 first point.
+     * \param pt2 second point.
      * @return New point at middle between points pt1 and pt2.
      * * Example:
      * \code{.py}
@@ -292,28 +292,28 @@ class CORE_EXPORT QgsGeometryUtils
     static QgsPointV2 midpoint( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
 
     /** Return the gradient of a line defined by points \a pt1 and \a pt2.
-     * @param pt1 first point.
-     * @param pt2 second point.
+     * \param pt1 first point.
+     * \param pt2 second point.
      * @return The gradient of this linear entity, or infinity if vertical
      * \since QGIS 3.0
      */
     static double gradient( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
 
     /** Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
-     * @param pt1 first point.
-     * @param pt2 second point.
-     * @param a Output parameter, a coefficient of the equation.
-     * @param b Output parameter, b coefficient of the equation.
-     * @param c Output parameter, c coefficient of the equation.
+     * \param pt1 first point.
+     * \param pt2 second point.
+     * \param a Output parameter, a coefficient of the equation.
+     * \param b Output parameter, b coefficient of the equation.
+     * \param c Output parameter, c coefficient of the equation.
      * \since QGIS 3.0
      */
     static void coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2, double &a, double &b, double &c );
 
     /**
      * @brief Create a perpendicular line segment from p to segment [s1, s2]
-     * @param p The point
-     * @param s1 The segment start point
-     * @param s2 The segment end point
+     * \param p The point
+     * \param s1 The segment start point
+     * \param s2 The segment end point
      * @return A line (segment) from p to perpendicular point on segment [s1, s2]
      */
     static QgsLineString perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 );

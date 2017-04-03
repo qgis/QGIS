@@ -38,10 +38,10 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
   public:
 
     /** Constructor for QgsSelectByFormDialog
-     * @param layer vector layer to select from
-     * @param context editor context
-     * @param parent parent widget
-     * @param fl window flags
+     * \param layer vector layer to select from
+     * \param context editor context
+     * \param parent parent widget
+     * \param fl window flags
      */
     QgsSelectByFormDialog( QgsVectorLayer *layer,
                            const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
@@ -51,7 +51,7 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
 
     /** Sets the message bar to display feedback from the form in. This is used in the search/filter
      * mode to display the count of selected features.
-     * @param messageBar target message bar
+     * \param messageBar target message bar
      * \since QGIS 2.16
      */
     void setMessageBar( QgsMessageBar *messageBar );

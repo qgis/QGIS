@@ -73,8 +73,8 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
 
     /**
      * Prepare for registration of features. Must be called after provider has been added to engine (uses its map settings)
-     * @param context render context.
-     * @param attributeNames list of attribute names to which additional required attributes shall be added
+     * \param context render context.
+     * \param attributeNames list of attribute names to which additional required attributes shall be added
      * @return Whether the preparation was successful - if not, the provider shall not be used
      */
     virtual bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames );
@@ -82,10 +82,10 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     /**
      * Register a feature for labeling as one or more QgsLabelFeature objects stored into mFeatures
      *
-     * @param feature feature for diagram
-     * @param context render context. The QgsExpressionContext contained within the render context
+     * \param feature feature for diagram
+     * \param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
-     * @param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
+     * \param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
      * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels. Ownership of obstacleGeometry

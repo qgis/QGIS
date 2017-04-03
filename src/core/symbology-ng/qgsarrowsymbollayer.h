@@ -35,7 +35,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     /**
      * Create a new QgsArrowSymbolLayer
      *
-     * @param properties A property map to deserialize saved information from properties()
+     * \param properties A property map to deserialize saved information from properties()
      *
      * @return A new QgsArrowSymbolLayer
      */

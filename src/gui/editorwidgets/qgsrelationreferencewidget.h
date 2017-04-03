@@ -108,7 +108,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      * Set if filters are chained.
      * Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
      *
-     * @param chainFilters If chaining should be enabled
+     * \param chainFilters If chaining should be enabled
      */
     void setChainFilters( bool chainFilters );
 

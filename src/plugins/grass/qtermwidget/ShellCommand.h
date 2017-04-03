@@ -53,7 +53,7 @@ public:
     /**
      * Constructs a ShellCommand from a command line.
      *
-     * @param fullCommand The command line to parse.
+     * \param fullCommand The command line to parse.
      */
     ShellCommand(const QString & fullCommand);
     /**

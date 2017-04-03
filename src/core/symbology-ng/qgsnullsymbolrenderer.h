@@ -47,7 +47,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     /** Creates a null renderer from XML element.
-     * @param element DOM element
+     * \param element DOM element
      * @returns new null symbol renderer
      */
     static QgsFeatureRenderer *create( QDomElement &element );
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
     virtual QDomElement save( QDomDocument &doc ) override;
 
     /** Creates a QgsNullSymbolRenderer from an existing renderer.
-     * @param renderer renderer to convert from
+     * \param renderer renderer to convert from
      * @returns a new renderer if the conversion was possible, otherwise nullptr.
      */
     static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );

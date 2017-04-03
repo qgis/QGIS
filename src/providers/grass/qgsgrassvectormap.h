@@ -114,13 +114,13 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     void clearUndoCommands();
 
     /** Get layer, layer is created and loaded if not yet.
-     *  @param field
+     *  \param field
      *  @return pointer to layer or 0 if layer doe not exist */
     QgsGrassVectorMapLayer *openLayer( int field );
 
     /** Close layer and release cached data if there are no more users and close map
      *  if there are no more map users.
-     *  @param layer */
+     *  \param layer */
     void closeLayer( QgsGrassVectorMapLayer *layer );
 
     /** Update map. Close and reopen vector and refresh layers.
@@ -141,8 +141,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QString toString();
 
     /** Get topology symbol code
-     * @param lid line or area number
-     * @param type geometry type */
+     * \param lid line or area number
+     * \param type geometry type */
     TopoSymbol topoSymbol( int lid );
 
     static QString topoSymbolFieldName() { return QStringLiteral( "topo_symbol" ) ; }
@@ -227,7 +227,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapStore
     static void setStore( QgsGrassVectorMapStore *store ) { sStore = store; }
 
     /** Open map.
-     *  @param grassObject
+     *  \param grassObject
      *  @return map, the map may be invalide  */
     QgsGrassVectorMap *openMap( const QgsGrassObject &grassObject );
 

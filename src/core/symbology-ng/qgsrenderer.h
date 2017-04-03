@@ -95,8 +95,8 @@ class CORE_EXPORT QgsFeatureRenderer
     /** To be overridden
      *
      * Must be called between startRender() and stopRender() calls.
-     * @param feature feature
-     * @param context render context
+     * \param feature feature
+     * \param context render context
      * @return returns pointer to symbol or 0 if symbol was not found
      * \since QGIS 2.12
      */
@@ -119,8 +119,8 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * Needs to be called when a new render cycle is started
      *
-     * @param context  Additional information passed to the renderer about the job which will be rendered
-     * @param fields   The fields available for rendering
+     * \param context  Additional information passed to the renderer about the job which will be rendered
+     * \param fields   The fields available for rendering
      * @return         Information passed back from the renderer that can e.g. be used to reduce the amount of requested features
      */
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) = 0;
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual Capabilities capabilities() { return 0; }
 
     /** Returns list of symbols used by the renderer.
-     * @param context render context
+     * \param context render context
      * \since QGIS 2.12
      */
     virtual QgsSymbolList symbols( QgsRenderContext &context ) { Q_UNUSED( context ); return QgsSymbolList(); }
@@ -230,11 +230,11 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /** Create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document
-     * @param node the node in the SLD document whose the UserStyle element
+     * \param node the node in the SLD document whose the UserStyle element
      * is a child
-     * @param geomType the geometry type of the features, used to convert
+     * \param geomType the geometry type of the features, used to convert
      * Symbolizer elements
-     * @param errorMessage it will contain the error message if something
+     * \param errorMessage it will contain the error message if something
      * went wrong
      * @return the renderer
      */
@@ -263,8 +263,8 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
 
     /** Sets the symbol to be used for a legend symbol item.
-     * @param key rule key for legend symbol
-     * @param symbol new symbol for legend item. Ownership is transferred to renderer.
+     * \param key rule key for legend symbol
+     * \param symbol new symbol for legend item. Ownership is transferred to renderer.
      * \since QGIS 2.14
      */
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol );
@@ -306,9 +306,9 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
 
     /** Allows for a renderer to modify the extent of a feature request prior to rendering
-     * @param extent reference to request's filter extent. Modify extent to change the
+     * \param extent reference to request's filter extent. Modify extent to change the
      * extent of feature request
-     * @param context render context
+     * \param context render context
      * \since QGIS 2.7
      */
     virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context ) { Q_UNUSED( extent ); Q_UNUSED( context ); }
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsFeatureRenderer
     QgsPaintEffect *paintEffect() const;
 
     /** Sets the current paint effect for the renderer.
-     * @param effect paint effect. Ownership is transferred to the renderer.
+     * \param effect paint effect. Ownership is transferred to the renderer.
      * \since QGIS 2.9
      * @see paintEffect
      */
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsFeatureRenderer
     bool forceRasterRender() const { return mForceRaster; }
 
     /** Sets whether the renderer should be rendered to a raster destination.
-     * @param forceRaster set to true if renderer must be drawn on a raster surface.
+     * \param forceRaster set to true if renderer must be drawn on a raster surface.
      * This may be desirable for highly detailed layers where rendering as a vector
      * would result in a large, complex vector output.
      * @see forceRasterRender
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /**
      * Sets whether custom ordering should be applied before features are processed by this renderer.
-     * @param enabled set to true to enable custom feature ordering
+     * \param enabled set to true to enable custom feature ordering
      * \since QGIS 2.14
      * @see setOrderBy()
      * @see orderByEnabled()
@@ -377,7 +377,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /** Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
      * does nothing with subrenderers, but individual derived classes can use these to modify their behavior.
-     * @param subRenderer the embedded renderer. Ownership will be transferred.
+     * \param subRenderer the embedded renderer. Ownership will be transferred.
      * @see embeddedRenderer()
      * \since QGIS 2.16
      */
@@ -419,7 +419,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *  * Order By
      *  * Paint Effect
      *
-     * @param destRenderer destination renderer for copied effect
+     * \param destRenderer destination renderer for copied effect
      */
     void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
 

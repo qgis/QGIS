@@ -54,18 +54,18 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     /**
      * Constructor for QgsPropertyOverrideButton.
-     * @param parent parent widget
-     * @param layer associated vector layer
+     * \param parent parent widget
+     * \param layer associated vector layer
      */
     QgsPropertyOverrideButton( QWidget *parent = nullptr,
                                const QgsVectorLayer *layer = nullptr );
 
     /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
-     * @param propertyKey key for corresponding property
-     * @param property initial value of associated property to show in widget
-     * @param definitions properties definitions for corresponding collection
-     * @param layer associated vector layer
+     * \param propertyKey key for corresponding property
+     * \param property initial value of associated property to show in widget
+     * \param definitions properties definitions for corresponding collection
+     * \param layer associated vector layer
      */
     void init( int propertyKey,
                const QgsProperty &property,
@@ -74,10 +74,10 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
-     * @param propertyKey key for corresponding property
-     * @param collection associated property collection
-     * @param definitions properties definitions for collection
-     * @param layer associated vector layer
+     * \param propertyKey key for corresponding property
+     * \param collection associated property collection
+     * \param definitions properties definitions for collection
+     * \param layer associated vector layer
      */
     void init( int propertyKey,
                const QgsAbstractPropertyCollection &collection,

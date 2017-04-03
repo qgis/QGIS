@@ -40,13 +40,13 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
     void paint( QPainter *painter ) override;
 
     /** Sets the center point of the marker symbol (in map coordinates)
-     * @param p center point
+     * \param p center point
     */
     void setPointLocation( const QgsPoint &p );
 
     /** Sets the marker symbol to use for rendering the point. Note - you may need to call
      * updateSize() after setting the symbol.
-     * @param symbol marker symbol. Ownership is transferred to item.
+     * \param symbol marker symbol. Ownership is transferred to item.
      * @see symbol()
      * @see updateSize()
      */
@@ -59,7 +59,7 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
 
     /** Sets the feature used for rendering the marker symbol. The feature's attributes
      * may affect the rendered symbol if data defined overrides are in place.
-     * @param feature feature for symbol
+     * \param feature feature for symbol
      * @see feature()
      * @see updateSize()
      */
@@ -76,7 +76,7 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
     void updateSize();
 
     /** Sets the transparency for the marker.
-     * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
+     * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see transparency()
      */

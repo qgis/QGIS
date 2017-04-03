@@ -58,7 +58,7 @@ class CORE_EXPORT QgsInterval
     QgsInterval();
 
     /** Constructor for QgsInterval.
-     * @param seconds duration of interval in seconds
+     * \param seconds duration of interval in seconds
      */
     QgsInterval( double seconds );
 
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsInterval
     double years() const { return mSeconds / YEARS; }
 
     /** Sets the interval duration in years.
-     * @param years duration in years (based on average year length)
+     * \param years duration in years (based on average year length)
      * @see years()
      */
     void setYears( double years ) { mSeconds = years * YEARS; mValid = true; }
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsInterval
     double months() const { return mSeconds / MONTHS; }
 
     /** Sets the interval duration in months.
-     * @param months duration in months (based on a 30 day month)
+     * \param months duration in months (based on a 30 day month)
      * @see months()
      */
     void setMonths( double months ) { mSeconds = months * MONTHS; mValid = true; }
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsInterval
     double weeks() const { return mSeconds / WEEKS; }
 
     /** Sets the interval duration in weeks.
-     * @param weeks duration in weeks
+     * \param weeks duration in weeks
      * @see weeks()
      */
     void setWeeks( double weeks ) { mSeconds = weeks * WEEKS; mValid = true; }
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsInterval
     double days() const { return mSeconds / DAY; }
 
     /** Sets the interval duration in days.
-     * @param days duration in days
+     * \param days duration in days
      * @see days()
      */
     void setDays( double days ) { mSeconds = days * DAY; mValid = true; }
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsInterval
     double hours() const { return mSeconds / HOUR; }
 
     /** Sets the interval duration in hours.
-     * @param hours duration in hours
+     * \param hours duration in hours
      * @see hours()
      */
     void setHours( double hours ) { mSeconds = hours * HOUR; mValid = true; }
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsInterval
     double minutes() const { return mSeconds / MINUTE; }
 
     /** Sets the interval duration in minutes.
-     * @param minutes duration in minutes
+     * \param minutes duration in minutes
      * @see minutes()
      */
     void setMinutes( double minutes ) { mSeconds = minutes * MINUTE; mValid = true; }
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsInterval
     double seconds() const { return mSeconds; }
 
     /** Sets the interval duration in seconds.
-     * @param seconds duration in seconds
+     * \param seconds duration in seconds
      * @see seconds()
      */
     void setSeconds( double seconds ) { mSeconds = seconds; mValid = true; }
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsInterval
     bool isValid() const { return mValid; }
 
     /** Sets whether the interval is valid.
-     * @param valid set to true to set the interval as valid.
+     * \param valid set to true to set the interval as valid.
      * @see isValid()
      */
     void setValid( bool valid ) { mValid = valid; }
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsInterval
     bool operator==( QgsInterval other ) const;
 
     /** Converts a string to an interval
-     * @param string string to parse
+     * \param string string to parse
      * @returns interval, or invalid interval if string could not be parsed
      */
     static QgsInterval fromString( const QString &string );
@@ -176,32 +176,32 @@ class CORE_EXPORT QgsInterval
 Q_DECLARE_METATYPE( QgsInterval )
 
 /** Returns the interval between two datetimes.
- * @param datetime1 start datetime
- * @param datetime2 datetime to subtract, ie subtract datetime2 from datetime1
+ * \param datetime1 start datetime
+ * \param datetime2 datetime to subtract, ie subtract datetime2 from datetime1
  * \since QGIS 2.16
  * \note not available in Python bindings
  */
 QgsInterval CORE_EXPORT operator-( const QDateTime &datetime1, const QDateTime &datetime2 );
 
 /** Returns the interval between two dates.
- * @param date1 start date
- * @param date2 date to subtract, ie subtract date2 from date1
+ * \param date1 start date
+ * \param date2 date to subtract, ie subtract date2 from date1
  * \since QGIS 2.16
  * \note not available in Python bindings
  */
 QgsInterval CORE_EXPORT operator-( QDate date1, QDate date2 );
 
 /** Returns the interval between two times.
- * @param time1 start time
- * @param time2 time to subtract, ie subtract time2 from time1
+ * \param time1 start time
+ * \param time2 time to subtract, ie subtract time2 from time1
  * \since QGIS 2.16
  * \note not available in Python bindings
  */
 QgsInterval CORE_EXPORT operator-( QTime time1, QTime time2 );
 
 /** Adds an interval to a datetime
- * @param start initial datetime
- * @param interval interval to add
+ * \param start initial datetime
+ * \param interval interval to add
  * \since QGIS 2.16
  * \note not available in Python bindings
  */

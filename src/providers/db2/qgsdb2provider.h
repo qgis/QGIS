@@ -44,7 +44,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
      * If service is provided, then username and password is required.
      * If service is not provided, the remaining arguments are required.
      *
-     * @param connInfo A string containing all connection information.
+     * \param connInfo A string containing all connection information.
      */
     static QSqlDatabase getDatabase( const QString &connInfo, QString &errMsg );
 

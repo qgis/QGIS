@@ -55,14 +55,14 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     /** Stores state in Dom element
-       * @param elem is Dom element corresponding to 'Composer' tag
-       * @param doc Dom document
+       * \param elem is Dom element corresponding to 'Composer' tag
+       * \param doc Dom document
        */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is the Dom document
+     * \param itemElem is Dom node corresponding to item tag
+     * \param doc is the Dom document
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 

@@ -58,7 +58,7 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
 
     /**
      * @brief build group tree
-     * @param parent
+     * \param parent
      */
     void buildTagTree( QStandardItem *&parent );
     QgsStyle *mStyle = nullptr;

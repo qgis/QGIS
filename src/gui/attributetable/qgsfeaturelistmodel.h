@@ -68,7 +68,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
 
     /**
      * @brief If true is specified, a NULL value will be injected
-     * @param injectNull state of null value injection
+     * \param injectNull state of null value injection
      * \since QGIS 2.9
      */
     void setInjectNull( bool injectNull );
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     QgsAttributeTableModel *masterModel();
 
     /**
-     *  @param  expression   A {@link QgsExpression} compatible string.
+     *  \param  expression   A {@link QgsExpression} compatible string.
      *  @return true if the expression could be set, false if there was a parse error.
      *          If it fails, the old expression will still be applied. Call {@link parserErrorString()}
      *          for a meaningful error message.

@@ -55,7 +55,7 @@ class CORE_EXPORT QgsProjectProperty
     /**
      * Dumps out the keys and values
      *
-     * @param tabs is number of tabs to print; used for pretty-printing hierarchy
+     * \param tabs is number of tabs to print; used for pretty-printing hierarchy
      */
     virtual void dump( int tabs = 0 ) const = 0;
 
@@ -95,9 +95,9 @@ class CORE_EXPORT QgsProjectProperty
      *
      * Used for saving properties to project file.
      *
-     * @param nodeName the tag name associated with this element
-     * @param element the parent (or encompassing) property element
-     * @param document the overall project file Dom document
+     * \param nodeName the tag name associated with this element
+     * \param element the parent (or encompassing) property element
+     * \param document the overall project file Dom document
      */
     virtual bool writeXml( const QString &nodeName,
                            QDomElement &element,
@@ -233,8 +233,8 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 
     /**
      * Sets the value associated with this key.
-     * @param name is the key name
-     * @param value is the value to set
+     * \param name is the key name
+     * \param value is the value to set
      * @return pointer to property value
      */
     QgsProjectPropertyValue *setValue( const QString &name, const QVariant &value )

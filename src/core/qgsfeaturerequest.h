@@ -114,8 +114,8 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
-         * @param expression The expression to use for ordering
-         * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
          *                   If the order is ascending, by default nulls are last
          *                   If the order is descending, by default nulls are first
          */
@@ -124,9 +124,9 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
-         * @param expression The expression to use for ordering
-         * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-         * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
          */
         OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
 
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsFeatureRequest
     const QgsFeatureIds &filterFids() const { return mFilterFids; }
 
     /** Set the filter expression. {@see QgsExpression}
-     * @param expression expression string
+     * \param expression expression string
      * @see filterExpression
      * @see setExpressionContext
      */
@@ -317,8 +317,8 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Adds a new OrderByClause, appending it as the least important one.
      *
-     * @param expression The expression to use for ordering
-     * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+     * \param expression The expression to use for ordering
+     * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
      *                   If the order is ascending, by default nulls are last
      *                   If the order is descending, by default nulls are first
      *
@@ -330,9 +330,9 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Adds a new OrderByClause, appending it as the least important one.
      *
-     * @param expression The expression to use for ordering
-     * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-     * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+     * \param expression The expression to use for ordering
+     * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+     * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
      *
      * \since QGIS 2.14
      */
@@ -353,7 +353,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setOrderBy( const OrderBy &orderBy );
 
     /** Set the maximum number of features to request.
-     * @param limit maximum number of features, or -1 to request all features.
+     * \param limit maximum number of features, or -1 to request all features.
      * @see limit()
      * \since QGIS 2.14
      */
@@ -395,7 +395,7 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Check if a feature is accepted by this requests filter
      *
-     * @param feature  The feature which will be tested
+     * \param feature  The feature which will be tested
      *
      * @return true, if the filter accepts the feature
      *
@@ -434,7 +434,7 @@ class CORE_EXPORT QgsAbstractFeatureSource
 
     /**
      * Get an iterator for features matching the specified request
-     * @param request The request
+     * \param request The request
      * @return A feature iterator
      */
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) = 0;

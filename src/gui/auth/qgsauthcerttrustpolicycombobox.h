@@ -32,9 +32,9 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
 
     /**
      * Construct a combo box for defining certificate trust policy
-     * @param parent Parent widget
-     * @param policy Defined trust policy
-     * @param defaultpolicy Default trust policy
+     * \param parent Parent widget
+     * \param policy Defined trust policy
+     * \param defaultpolicy Default trust policy
      */
     explicit QgsAuthCertTrustPolicyComboBox(
       QWidget *parent = nullptr,

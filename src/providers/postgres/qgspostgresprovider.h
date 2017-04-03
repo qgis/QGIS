@@ -50,7 +50,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
   public:
 
     /** Import a vector layer into the database
-     * @param options options for provider, specified via a map of option name
+     * \param options options for provider, specified via a map of option name
      * to value. Valid options are lowercaseFieldNames (set to true to convert
      * field names to lowercase), dropStringConstraints (set to true to remove
      * length constraints on character fields).
@@ -69,7 +69,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Constructor for the provider. The uri must be in the following format:
      * host=localhost dbname=test [user=gsherman [password=xxx] | authcfg=xxx] table=test.alaska (the_geom)
-     * @param uri String containing the required parameters to connect to the database
+     * \param uri String containing the required parameters to connect to the database
      * and query the table.
      */
     explicit QgsPostgresProvider( QString const &uri = "" );
@@ -174,9 +174,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     /**
      * Convert the postgres string representation into the given QVariant type.
-     * @param type the wanted type
-     * @param subType if type is a collection, the wanted element type
-     * @param value the value to convert
+     * \param type the wanted type
+     * \param subType if type is a collection, the wanted element type
+     * \param value the value to convert
      * @return a QVariant of the given type or a null QVariant
      */
     static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value );
@@ -221,8 +221,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString geomParam( int offset ) const;
 
     /** Get parametrized primary key clause
-     * @param offset specifies offset to use for the pk value parameter
-     * @param alias specifies an optional alias given to the subject table
+     * \param offset specifies offset to use for the pk value parameter
+     * \param alias specifies an optional alias given to the subject table
      */
     QString pkParamWhereClause( int offset, const char *alias = nullptr ) const;
     QString whereClause( QgsFeatureId featureId ) const;
@@ -245,21 +245,21 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = nullptr );
 
     /** Parses the enum_range of an attribute and inserts the possible values into a stringlist
-    @param enumValues the stringlist where the values are appended
-    @param attributeName the name of the enum attribute
+    \param enumValues the stringlist where the values are appended
+    \param attributeName the name of the enum attribute
     @return true in case of success and fals in case of error (e.g. if the type is not an enum type)*/
     bool parseEnumRange( QStringList &enumValues, const QString &attributeName ) const;
 
     /** Parses the possible enum values of a domain type (given in the check constraint of the domain type)
-     * @param enumValues Reference to list that receives enum values
-     * @param attributeName Name of the domain type attribute
+     * \param enumValues Reference to list that receives enum values
+     * \param attributeName Name of the domain type attribute
      * @return true in case of success and false in case of error (e.g. if the attribute is not a domain type or does not have a check constraint)
      */
     bool parseDomainCheckConstraint( QStringList &enumValues, const QString &attributeName ) const;
 
     /** Return the type of primary key for a PK field
      *
-     * @param fld the field to determine PK type of
+     * \param fld the field to determine PK type of
      * @return the PrimaryKeyType
      *
      * \note that this only makes sense for single-field primary keys,

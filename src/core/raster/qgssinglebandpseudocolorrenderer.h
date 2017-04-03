@@ -59,12 +59,12 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     const QgsRasterShader *shader() const { return mShader.get(); }
 
     /** Creates a color ramp shader
-     * @param colorRamp vector color ramp
-     * @param colorRampType type of color ramp shader
-     * @param classificationMode classification mode
-     * @param classes number of classes
-     * @param clip clip out of range values
-     * @param extent extent used in classification (only used in quantile mode)
+     * \param colorRamp vector color ramp
+     * \param colorRampType type of color ramp shader
+     * \param classificationMode classification mode
+     * \param classes number of classes
+     * \param clip clip out of range values
+     * \param extent extent used in classification (only used in quantile mode)
      */
     void createShader( QgsColorRamp *colorRamp = nullptr, QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated, QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous, int classes = 0, bool clip = false, const QgsRectangle &extent = QgsRectangle() );
 

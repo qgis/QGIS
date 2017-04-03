@@ -44,7 +44,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
     /**
      * Constructor
      *
-     * @param name A human readable name for this widget type
+     * \param name A human readable name for this widget type
      */
     QgsEditorWidgetFactory( const QString &name );
 
@@ -55,10 +55,10 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * Create a new editor widget wrapper. Call {@link QgsEditorWidgetRegistry::create()}
      * instead of calling this method directly.
      *
-     * @param vl       The vector layer on which this widget will act
-     * @param fieldIdx The field index on which this widget will act
-     * @param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
-     * @param parent   The parent for the wrapper class and any created widget.
+     * \param vl       The vector layer on which this widget will act
+     * \param fieldIdx The field index on which this widget will act
+     * \param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
+     * \param parent   The parent for the wrapper class and any created widget.
      *
      * @return         A new widget wrapper
      */
@@ -77,9 +77,9 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * Override this in your implementation.
      * Create a new configuration widget for this widget type.
      *
-     * @param vl       The layer for which the widget will be created
-     * @param fieldIdx The field index for which the widget will be created
-     * @param parent   The parent widget of the created config widget
+     * \param vl       The layer for which the widget will be created
+     * \param fieldIdx The field index for which the widget will be created
+     * \param parent   The parent widget of the created config widget
      *
      * @return         A configuration widget
      */
@@ -88,8 +88,8 @@ class GUI_EXPORT QgsEditorWidgetFactory
     /**
      * Check if this editor widget type supports a certain field.
      *
-     * @param vl        The layer
-     * @param fieldIdx  The field index
+     * \param vl        The layer
+     * \param fieldIdx  The field index
      * @return          True if the type is supported for this field
      *
      * @see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
@@ -117,8 +117,8 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *   * 10: basic support (this is what returns TextEdit for example, since it supports everything in a crude way)
      *   * 20: specialized support
      *
-     * @param vl
-     * @param fieldIdx
+     * \param vl
+     * \param fieldIdx
      * @return 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
      *      taken by default). The default implementation returns 5..
      *

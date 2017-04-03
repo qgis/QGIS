@@ -34,25 +34,25 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /** Construct a QgsTriangle from three QgsPointV2.
      * An empty triangle is returned if there are identical points or if the points are collinear.
-     * @param p1 first point
-     * @param p2 second point
-     * @param p3 third point
+     * \param p1 first point
+     * \param p2 second point
+     * \param p3 third point
      */
     QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 );
 
     /** Construct a QgsTriangle from three QgsPoint.
      * An empty triangle is returned if there are identical points or if the points are collinear.
-     * @param p1 first point
-     * @param p2 second point
-     * @param p3 third point
+     * \param p1 first point
+     * \param p2 second point
+     * \param p3 third point
      */
     explicit QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 );
 
     /** Construct a QgsTriangle from three QPointF.
      * An empty triangle is returned if there are identical points or if the points are collinear.
-     * @param p1 first point
-     * @param p2 second point
-     * @param p3 third point
+     * \param p1 first point
+     * \param p2 second point
+     * \param p3 third point
      */
     explicit QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 );
 
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      *  Returns coordinates of a vertex.
-     *  @param atVertex index of the vertex
+     *  \param atVertex index of the vertex
      *  @return Coordinates of the vertex or QgsPointV2(0,0) on error (\a atVertex < 0 or > 3).
      */
     QgsPointV2 vertexAt( int atVertex ) const;
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Is the triangle isocele (two sides with the same length)?
-     * @param lengthTolerance The tolerance to use
+     * \param lengthTolerance The tolerance to use
      * @return True or False
      * * Example:
      * \code{.py}
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Is the triangle equilateral (three sides with the same length)?
-     * @param lengthTolerance The tolerance to use
+     * \param lengthTolerance The tolerance to use
      * @return True or False
      * * Example:
      * \code{.py}
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Is the triangle right-angled?
-     * @param angleTolerance The tolerance to use
+     * \param angleTolerance The tolerance to use
      * @return True or False
      * * Example:
      * \code{.py}
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Is the triangle scalene (all sides have differen lengths)?
-     * @param lengthTolerance The tolerance to use
+     * \param lengthTolerance The tolerance to use
      * @return True or False
      * @return True or False
      * * Example:
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * The segment (defined by a QgsLineString) returned bisect the angle of a vertex to the opposite side.
-     * @param lengthTolerance The tolerance to use
+     * \param lengthTolerance The tolerance to use
      * @return Three angle bisector from this triangle
      * * Example:
      * \code{.py}
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * An orthocenter is the point of intersection of the altitudes of a triangle.
-     * @param lengthTolerance The tolerance to use
+     * \param lengthTolerance The tolerance to use
      * @return The orthocenter of the triangle.
      * * Example:
      * \code{.py}
@@ -310,9 +310,9 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * @brief Convenient method checking the validity of geometry (no duplicate point(s), no colinearity).
-     * @param p1 first point
-     * @param p2 second point
-     * @param p3 third point
+     * \param p1 first point
+     * \param p2 second point
+     * \param p3 third point
      * @return True if the points can create a triangle, otherwise false.
      * \note not available in Python bindings
      */

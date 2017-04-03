@@ -115,8 +115,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     /** Return index of item with given path. It only searches in currently fetched
      * items, i.e. it does not fetch children.
-     * @param path item path
-     * @param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
+     * \param path item path
+     * \param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
      *        item with the longest match from start with path (to get as close/deep as possible to deleted item).
      * @return model index, invalid if item not found */
     QModelIndex findPath( const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );

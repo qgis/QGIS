@@ -64,7 +64,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
     /**
      * Create a new vector of attributes with the given size
      *
-     * @param size Number of attributes
+     * \param size Number of attributes
      */
     QgsAttributes( int size )
       : QVector<QVariant>( size )
@@ -72,8 +72,8 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
 
     /**
      * Constructs a vector with an initial size of size elements. Each element is initialized with value.
-     * @param size Number of elements
-     * @param v    Initial value
+     * \param size Number of elements
+     * \param v    Initial value
      */
     QgsAttributes( int size, const QVariant &v )
       : QVector<QVariant>( size, v )
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
 
     /**
      * Copies another vector of attributes
-     * @param v Attributes to copy
+     * \param v Attributes to copy
      */
     QgsAttributes( const QVector<QVariant> &v )
       : QVector<QVariant>( v )
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * This was introduced because the default Qt implementation of QVariant comparison does not
      * handle NULL values for certain types (like int).
      *
-     * @param v The attributes to compare
+     * \param v The attributes to compare
      * @return True if v is equal
      */
     bool operator==( const QgsAttributes &v ) const

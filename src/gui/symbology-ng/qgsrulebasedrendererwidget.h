@@ -185,11 +185,11 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
 
     /**
        * Widget to edit the details of a rule based renderer rule.
-       * @param rule The rule to edit.
-       * @param layer The layer used to pull layer related information.
-       * @param style The active QGIS style.
-       * @param parent The parent widget.
-       * @param context the symbol widget context
+       * \param rule The rule to edit.
+       * \param layer The layer used to pull layer related information.
+       * \param style The active QGIS style.
+       * \param parent The parent widget.
+       * \param context the symbol widget context
        */
     QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 
@@ -218,7 +218,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
 
     /**
      * Set the widget in dock mode.
-     * @param dockMode True for dock mode.
+     * \param dockMode True for dock mode.
      */
     virtual void setDockMode( bool dockMode );
 
@@ -242,11 +242,11 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
   public:
 
     /** Constructor for QgsRendererRulePropsDialog
-     * @param rule associated rule based renderer rule
-     * @param layer source vector layer
-     * @param style style collection
-     * @param parent parent widget
-     * @param context symbol widget context
+     * \param rule associated rule based renderer rule
+     * \param layer source vector layer
+     * \param style style collection
+     * \param parent parent widget
+     * \param context symbol widget context
      */
     QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 

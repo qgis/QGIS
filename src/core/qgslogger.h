@@ -58,11 +58,11 @@ class CORE_EXPORT QgsLogger
   public:
 
     /** Goes to qDebug.
-    @param msg the message to be printed
-    @param debuglevel
-    @param file file name where the message comes from
-    @param function function where the message comes from
-    @param line place in file where the message comes from*/
+    \param msg the message to be printed
+    \param debuglevel
+    \param file file name where the message comes from
+    \param function function where the message comes from
+    \param line place in file where the message comes from*/
     static void debug( const QString &msg, int debuglevel = 1, const char *file = nullptr, const char *function = nullptr, int line = -1 );
 
     //! Similar to the previous method, but prints a variable int-value pair

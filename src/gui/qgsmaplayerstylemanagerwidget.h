@@ -37,9 +37,9 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
 
     /**
      * @brief Style manager widget to manage the layers styles.
-     * @param layer The layer for the widget
-     * @param canvas The canvas object.
-     * @param parent The parent.
+     * \param layer The layer for the widget
+     * \param canvas The canvas object.
+     * \param parent The parent.
      */
     QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 

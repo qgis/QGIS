@@ -45,8 +45,8 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
 
     /**
      * Constructor
-     * @param qIface  pointer to QgisInterface instance that is passed to the rulesDialog
-     * @param parent parent object
+     * \param qIface  pointer to QgisInterface instance that is passed to the rulesDialog
+     * \param parent parent object
      */
     checkDock( QgisInterface *qIface, QWidget *parent = nullptr );
     ~checkDock();
@@ -85,7 +85,7 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
 
     /**
      * Handles error selection
-     * @param index clicked index in the table
+     * \param index clicked index in the table
      */
     void errorListClicked( const QModelIndex &index );
 
@@ -96,13 +96,13 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
 
     /**
      * Filters all errors involving features from specified layer
-     * @param layerId layer ID
+     * \param layerId layer ID
      */
     void parseErrorListByLayer( const QString &layerId );
 
     /**
      * Clears rubberbands when window is hidden
-     * @param visible true if the window is visible
+     * \param visible true if the window is visible
      */
     void updateRubberBands( bool visible );
 
@@ -130,19 +130,19 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
 
     /**
      * Runs tests from the test table
-     * @param type validation type - what features to check
+     * \param type validation type - what features to check
      */
     void runTests( ValidateType type );
 
     /**
      * Validates topology
-     * @param type validation type - what features to check
+     * \param type validation type - what features to check
      */
     void validate( ValidateType type );
 
     /**
      * Filters all errors involving specified feature
-     * @param featureId feature ID
+     * \param featureId feature ID
      */
     void parseErrorListByFeature( int featureId );
 

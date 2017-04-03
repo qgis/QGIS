@@ -35,7 +35,7 @@ class APP_EXPORT QgsMapToolChangeLabelProperties: public QgsMapToolLabel
   protected:
 
     /** Applies the label property changes
-     * @param changes attribute map of changes
+     * \param changes attribute map of changes
      * \since QGIS 2.9
      */
     void applyChanges( const QgsAttributeMap &changes );

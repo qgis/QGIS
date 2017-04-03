@@ -57,16 +57,16 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Constructor
      *
-     * @param url the url string
-     * @param method the request method
+     * \param url the url string
+     * \param method the request method
      */
     QgsServerRequest( const QString &url, Method method = GetMethod );
 
     /**
      * Constructor
      *
-     * @param url QUrl
-     * @param method the request method
+     * \param url QUrl
+     * \param method the request method
      */
     QgsServerRequest( const QUrl &url, Method method = GetMethod );
 

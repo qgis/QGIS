@@ -36,7 +36,7 @@ class CORE_EXPORT QgsSQLiteExpressionCompiler : public QgsSqlExpressionCompiler
   public:
 
     /** Constructor for expression compiler.
-     * @param fields fields from provider
+     * \param fields fields from provider
      */
     explicit QgsSQLiteExpressionCompiler( const QgsFields &fields );
 

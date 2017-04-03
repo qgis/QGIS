@@ -73,10 +73,10 @@ class CORE_EXPORT QgsColorScheme
 
     /** Gets a list of colors from the scheme. The colors can optionally
      * be generated using the supplied context and base color.
-     * @param context string specifying an optional context for the returned
+     * \param context string specifying an optional context for the returned
      * colors. For instance, a "recent colors" scheme may filter returned colors
      * by context so that colors used only in a "composer" context are returned.
-     * @param baseColor base color for the scheme's colors. Some color schemes
+     * \param baseColor base color for the scheme's colors. Some color schemes
      * may take advantage of this to filter or modify their returned colors
      * to colors related to the base color.
      * @returns a list of QPairs of color and color name
@@ -91,9 +91,9 @@ class CORE_EXPORT QgsColorScheme
     virtual bool isEditable() const { return false; }
 
     /** Sets the colors for the scheme. This method is only valid for editable color schemes.
-     * @param colors list of colors for the scheme
-     * @param context to set colors for
-     * @param baseColor base color to set colors for
+     * \param colors list of colors for the scheme
+     * \param context to set colors for
+     * \param baseColor base color to set colors for
      * @returns true if colors were set successfully
      * @see isEditable
      */
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
   public:
 
     /** Constructs a new user color scheme, using a specified gpl palette file
-     * @param filename filename of gpl palette file stored in the users "palettes" folder
+     * \param filename filename of gpl palette file stored in the users "palettes" folder
      */
     QgsUserColorScheme( const QString &filename );
 
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
     virtual QgsColorScheme::SchemeFlags flags() const override;
 
     /** Sets the name for the scheme
-     * @param name new name
+     * \param name new name
      */
     void setName( const QString &name ) { mName = name; }
 
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
     bool erase();
 
     /** Sets whether a this scheme should be shown in color button menus.
-     * @param show set to true to show in color button menus, or false to hide from menus
+     * \param show set to true to show in color button menus, or false to hide from menus
      * \since QGIS 3.0
      */
     void setShowSchemeInMenu( bool show );
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
     QgsRecentColorScheme *clone() const override;
 
     /** Adds a color to the list of recent colors.
-     * @param color color to add
+     * \param color color to add
      * \since QGIS 2.14
      * @see lastUsedColor()
      */

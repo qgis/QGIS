@@ -100,7 +100,7 @@ namespace QgsWms
 
 
       /** Returns printed page as binary
-        @param formatString out: format of the print output (e.g. pdf, svg, png, ...)
+        \param formatString out: format of the print output (e.g. pdf, svg, png, ...)
         @return printed page as binary or 0 in case of error*/
       QByteArray *getPrint( const QString &formatString );
 
@@ -112,18 +112,18 @@ namespace QgsWms
     private:
 
       /** Initializes WMS layers and configures rendering.
-       * @param layersList out: list with WMS layer names
-       * @param stylesList out: list with WMS style names
-       * @param layerIdList out: list with QGIS layer ids
+       * \param layersList out: list with WMS layer names
+       * \param stylesList out: list with WMS style names
+       * \param layerIdList out: list with QGIS layer ids
        * @return image configured. The calling function takes ownership of the image
        * may throw an exception
        */
       QImage *initializeRendering( QStringList &layersList, QStringList &stylesList, QStringList &layerIdList, QgsMapSettings &mapSettings );
 
       /** Creates a QImage from the HEIGHT and WIDTH parameters
-       * @param width image width (or -1 if width should be taken from WIDTH wms parameter)
-       * @param height image height (or -1 if height should be taken from HEIGHT wms parameter)
-       * @param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
+       * \param width image width (or -1 if width should be taken from WIDTH wms parameter)
+       * \param height image height (or -1 if height should be taken from HEIGHT wms parameter)
+       * \param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
        * @return a non null pointer
        * may throw an exception
        */
@@ -131,7 +131,7 @@ namespace QgsWms
 
       /** Configures mapSettings to the parameters
        * HEIGHT, WIDTH, BBOX, CRS.
-       * @param paintDevice the device that is used for painting (for dpi)
+       * \param paintDevice the device that is used for painting (for dpi)
        * may throw an exception
        */
       void configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings ) const;
@@ -144,7 +144,7 @@ namespace QgsWms
       void initializeSLDParser( QStringList &layersList, QStringList &stylesList );
 
       /** Appends feature info xml for the layer to the layer element of the feature info dom document
-      @param featureBBox the bounding box of the selected features in output CRS
+      \param featureBBox the bounding box of the selected features in output CRS
       @return true in case of success*/
       bool featureInfoFromVectorLayer( QgsVectorLayer *layer,
                                        const QgsPoint *infoPoint,
@@ -166,7 +166,7 @@ namespace QgsWms
                                        const QString &infoFormat ) const;
 
       /** Creates a layer set and returns a stringlist with layer ids that can be passed to a renderer. Usually used in conjunction with readLayersAndStyles
-         @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
+         \param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
       QStringList layerSet( const QStringList &layersList, const QStringList &stylesList, const QgsCoordinateReferenceSystem &destCRS, double scaleDenominator = -1 ) const;
 
       //! Record which symbols would be used if the map was in the current configuration of renderer. This is useful for content-based legend
@@ -179,8 +179,8 @@ namespace QgsWms
                              double &symbolSpace, double &iconLabelSpace, double &symbolWidth, double &symbolHeight, QFont &layerFont, QFont &itemFont, QColor &layerFontColor, QColor &itemFontColor );
 
       /** Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
-       * @param layerList list of layer IDs to filter
-       * @param originalFilters hash of layer ID to original filter string
+       * \param layerList list of layer IDs to filter
+       * \param originalFilters hash of layer ID to original filter string
        * \note It is strongly recommended that this method be called alongside use of QgsOWSServerFilterRestorer
        * to ensure that the original filters are always correctly restored, regardless of whether exceptions
        * are thrown or functions are terminated early.
@@ -190,8 +190,8 @@ namespace QgsWms
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
       /** Apply filter strings from the access control to the layers.
-       * @param layerList layers to filter
-       * @param originalLayerFilters the original layers filter dictionary
+       * \param layerList layers to filter
+       * \param originalLayerFilters the original layers filter dictionary
        */
       void applyAccessControlLayersFilters( const QStringList &layerList, QHash<QgsMapLayer *, QString> &originalLayerFilters ) const;
 #endif

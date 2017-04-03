@@ -86,7 +86,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     SegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
 
     /** Sets the size mode for scale bar segments.
-     * @param mode size mode
+     * \param mode size mode
      * @see segmentSizeMode
      * @see setMinBarWidth
      * @see setMaxBarWidth
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /** Sets the minimum size (in millimeters) for scale bar segments. This
      * property is only effective if the @link segmentSizeMode @endlink is set
      * to @link SegmentSizeFitWidth @endlink.
-     * @param minWidth minimum width in millimeters
+     * \param minWidth minimum width in millimeters
      * @see minBarWidth
      * @see setMaxBarWidth
      * @see setSegmentSizeMode
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /** Sets the maximum size (in millimeters) for scale bar segments. This
      * property is only effective if the @link segmentSizeMode @endlink is set
      * to @link SegmentSizeFitWidth @endlink.
-     * @param maxWidth maximum width in millimeters
+     * \param maxWidth maximum width in millimeters
      * @see minBarWidth
      * @see setMaxBarWidth
      * @see setSegmentSizeMode
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QColor fontColor() const {return mFontColor;}
 
     /** Sets the color used for drawing text in the scalebar.
-     * @param c font color for scalebar.
+     * \param c font color for scalebar.
      * @see fontColor
      * @see setFont
      */
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     Qt::PenJoinStyle lineJoinStyle() const { return mLineJoinStyle; }
 
     /** Sets join style used when drawing the lines in the scalebar
-     * @param style Join style for lines
+     * \param style Join style for lines
      * @returns nothing
      * \since QGIS 2.3
      * @see lineJoinStyle
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     Qt::PenCapStyle lineCapStyle() const { return mLineCapStyle; }
 
     /** Sets cap style used when drawing the lines in the scalebar
-     * @param style Cap style for lines
+     * \param style Cap style for lines
      * @returns nothing
      * \since QGIS 2.3
      * @see lineCapStyle
@@ -293,7 +293,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void applyDefaultSize( ScaleBarUnits u = Meters );
 
     /** Sets style by name
-     @param styleName (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*/
+     \param styleName (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*/
     void setStyle( const QString &styleName );
 
     //! Returns style name
@@ -315,14 +315,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QString firstLabelString() const;
 
     /** Stores state in Dom element
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc Dom document
+     * \param elem is Dom element corresponding to 'Composer' tag
+     * \param doc Dom document
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is Dom document
+     * \param itemElem is Dom node corresponding to item tag
+     * \param doc is Dom document
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 

@@ -47,7 +47,7 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
     QgsMarkerSymbol *clusterSymbol();
 
     /** Sets the symbol for rendering clustered groups.
-     * @param symbol new cluster symbol. Ownership is transferred to the renderer.
+     * \param symbol new cluster symbol. Ownership is transferred to the renderer.
      * @see clusterSymbol()
     */
     void setClusterSymbol( QgsMarkerSymbol *symbol );

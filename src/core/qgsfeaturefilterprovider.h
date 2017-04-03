@@ -46,8 +46,8 @@ class CORE_EXPORT QgsFeatureFilterProvider
 
     /** Add additional filters to the feature request to further restrict the features returned by the request.
      * Derived classes must implement this method.
-     * @param layer the layer to filter
-     * @param featureRequest the feature request to update
+     * \param layer the layer to filter
+     * \param featureRequest the feature request to update
      */
     virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &featureRequest ) const = 0;
 

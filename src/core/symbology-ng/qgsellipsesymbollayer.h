@@ -75,7 +75,7 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     QColor strokeColor() const override { return mStrokeColor; }
 
     /** Sets the units for the symbol's width.
-     * @param unit symbol units
+     * \param unit symbol units
      * @see symbolWidthUnit()
      * @see setSymbolHeightUnit()
     */
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     const QgsMapUnitScale &symbolWidthMapUnitScale() const { return mSymbolWidthMapUnitScale; }
 
     /** Sets the units for the symbol's height.
-     * @param unit symbol units
+     * \param unit symbol units
      * @see symbolHeightUnit()
      * @see setSymbolWidthUnit()
     */
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     const QgsMapUnitScale &symbolHeightMapUnitScale() const { return mSymbolHeightMapUnitScale; }
 
     /** Sets the units for the symbol's stroke width.
-     * @param unit symbol units
+     * \param unit symbol units
      * @see strokeWidthUnit()
     */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
@@ -149,11 +149,11 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     QBrush mBrush;
 
     /** Setup mPainterPath
-      @param symbolName name of symbol
-      @param context render context
-      @param scaledWidth optional width
-      @param scaledHeight optional height
-      @param f optional feature to render (0 if no data defined rendering)
+      \param symbolName name of symbol
+      \param context render context
+      \param scaledWidth optional width
+      \param scaledHeight optional height
+      \param f optional feature to render (0 if no data defined rendering)
      */
     void preparePath( const QString &symbolName, QgsSymbolRenderContext &context, double *scaledWidth = nullptr, double *scaledHeight = nullptr, const QgsFeature *f = nullptr );
     QSizeF calculateSize( QgsSymbolRenderContext &context, double *scaledWidth = nullptr, double *scaledHeight = nullptr );

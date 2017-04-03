@@ -46,9 +46,9 @@ class GUI_EXPORT QgsFileDownloader : public QObject
 
     /**
      * QgsFileDownloader
-     * @param url the download url
-     * @param outputFileName file name where the downloaded content will be stored
-     * @param guiNotificationsEnabled if false, the downloader will not display any progress bar or error message
+     * \param url the download url
+     * \param outputFileName file name where the downloaded content will be stored
+     * \param guiNotificationsEnabled if false, the downloader will not display any progress bar or error message
      */
     QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool guiNotificationsEnabled = true );
 
@@ -90,8 +90,8 @@ class GUI_EXPORT QgsFileDownloader : public QObject
 
     /**
      * Called on SSL network Errors
-     * @param reply
-     * @param errors
+     * \param reply
+     * \param errors
      */
     void onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 #endif

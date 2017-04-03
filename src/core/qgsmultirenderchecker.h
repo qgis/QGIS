@@ -69,14 +69,14 @@ class CORE_EXPORT QgsMultiRenderChecker
      * Set the path to the rendered image. If this is not set or set to QString::Null, an image
      * will be rendered based on the provided mapsettings
      *
-     * @param renderedImagePath A path to the rendered image with which control images will be compared
+     * \param renderedImagePath A path to the rendered image with which control images will be compared
      */
     void setRenderedImage( const QString &renderedImagePath ) { mRenderedImage = renderedImagePath; }
 
     /**
      * Set the map settings to use to render the image
      *
-     * @param mapSettings The map settings
+     * \param mapSettings The map settings
      */
     void setMapSettings( const QgsMapSettings &mapSettings );
 
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsMultiRenderChecker
      * Set tolerance for color components used by runTest()
      * Default value is 0.
      *
-     * @param colorTolerance The maximum difference for each color component
+     * \param colorTolerance The maximum difference for each color component
      *                          including alpha to be considered correct.
      */
     void setColorTolerance( unsigned int colorTolerance ) { mColorTolerance = colorTolerance; }
@@ -92,10 +92,10 @@ class CORE_EXPORT QgsMultiRenderChecker
     /**
      * Test using renderer to generate the image to be compared.
      *
-     * @param testName - to be used as the basis for writing a file to
+     * \param testName - to be used as the basis for writing a file to
      * e.g. /tmp/theTestName.png
      *
-     * @param mismatchCount - defaults to 0 - the number of pixels that
+     * \param mismatchCount - defaults to 0 - the number of pixels that
      * are allowed to be different from the control image. In some cases
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.

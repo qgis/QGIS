@@ -48,7 +48,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 
     /** Sets the expression context for the dialog. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
-     * @param context expression context
+     * \param context expression context
      * @see expressionContext
      * \since QGIS 2.12
      */
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      * Is called when the dialog get accepted or rejected
      * Used to save geometry
      *
-     * @param r result value (unused)
+     * \param r result value (unused)
      */
     virtual void done( int r ) override;
 

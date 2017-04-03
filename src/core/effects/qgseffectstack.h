@@ -46,7 +46,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
 
     /** Creates a new QgsEffectStack effect. This method ignores
      * the map parameter, and always returns an empty effect stack.
-     * @param map unused encoded properties string map
+     * \param map unused encoded properties string map
      * @returns new QgsEffectStack
      */
     static QgsPaintEffect *create( const QgsStringMap &map );
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     QgsEffectStack( const QgsEffectStack &other );
 
     /** Creates a new QgsEffectStack effect from a single initial effect.
-     * @param effect initial effect to add to the stack. The effect will
+     * \param effect initial effect to add to the stack. The effect will
      * be cloned, so ownership is not transferred to the stack.
      * @returns new QgsEffectStack containing initial effect
      */
@@ -77,29 +77,29 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     virtual void readProperties( const QgsStringMap &props ) override;
 
     /** Appends an effect to the end of the stack.
-     * @param effect QgsPaintEffect to append. Ownership of the effect will be
+     * \param effect QgsPaintEffect to append. Ownership of the effect will be
      * transferred to the stack object.
      * @see insertEffect
      */
     void appendEffect( QgsPaintEffect *effect );
 
     /** Inserts an effect at a specified index within the stack.
-     * @param index position to insert the effect
-     * @param effect QgsPaintEffect to insert. Ownership of the effect will be
+     * \param index position to insert the effect
+     * \param effect QgsPaintEffect to insert. Ownership of the effect will be
      * transferred to the stack object.
      * @see appendEffect
      */
     bool insertEffect( const int index, QgsPaintEffect *effect );
 
     /** Replaces the effect at a specified position within the stack.
-     * @param index position of effect to replace
-     * @param effect QgsPaintEffect to replace with. Ownership of the effect will be
+     * \param index position of effect to replace
+     * \param effect QgsPaintEffect to replace with. Ownership of the effect will be
      * transferred to the stack object.
      */
     bool changeEffect( const int index, QgsPaintEffect *effect );
 
     /** Removes an effect from the stack and returns a pointer to it.
-     * @param index position of effect to take
+     * \param index position of effect to take
      */
     QgsPaintEffect *takeEffect( const int index );
 
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     int count() const { return mEffectList.count(); }
 
     /** Returns a pointer to the effect at a specified index within the stack
-     * @param index position of effect to return
+     * \param index position of effect to return
      * @returns QgsPaintEffect at specified position
      */
     QgsPaintEffect *effect( int index ) const;

@@ -101,20 +101,20 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     virtual void deactivate() override;
 
     /** Performs the identification.
-    @param x x coordinates of mouseEvent
-    @param y y coordinates of mouseEvent
-    @param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
-    @param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
+    \param x x coordinates of mouseEvent
+    \param y y coordinates of mouseEvent
+    \param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
+    \param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
     @return a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting );
 
     /** Performs the identification.
     To avoid being forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
-    @param x x coordinates of mouseEvent
-    @param y y coordinates of mouseEvent
-    @param mode Identification mode. Can use Qgis default settings or a defined mode.
-    @param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
+    \param x x coordinates of mouseEvent
+    \param y y coordinates of mouseEvent
+    \param mode Identification mode. Can use Qgis default settings or a defined mode.
+    \param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
     @return a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
@@ -135,11 +135,11 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     /** Performs the identification.
     To avoid being forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
-    @param x x coordinates of mouseEvent
-    @param y y coordinates of mouseEvent
-    @param mode Identification mode. Can use Qgis default settings or a defined mode.
-    @param layerList Performs the identification within the given list of layers.
-    @param layerType Only performs identification in a certain type of layers (raster, vector).
+    \param x x coordinates of mouseEvent
+    \param y y coordinates of mouseEvent
+    \param mode Identification mode. Can use Qgis default settings or a defined mode.
+    \param layerList Performs the identification within the given list of layers.
+    \param layerType Only performs identification in a certain type of layers (raster, vector).
     @return a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers );
 

@@ -38,7 +38,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     QMap<QString, QVariant> defaultOptions();
 
     /** Generate stylesheet
-     * @param opts generated default option values, or a changed copy of them
+     * \param opts generated default option values, or a changed copy of them
      * \note on success emits appStyleSheetChanged
      */
     void buildStyleSheet( const QMap<QString, QVariant> &opts );

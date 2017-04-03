@@ -85,7 +85,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     /** Guess GML schema from data if XSD does not exist.
       * Currently only recognizes UMN Mapserver GetFeatureInfo GML response.
       * Supports only UTF-8, UTF-16, ISO-8859-1, US-ASCII XML encodings.
-      * @param data GML data
+      * \param data GML data
       * @return true in case of success */
     bool guessSchema( const QByteArray &data );
 
@@ -158,8 +158,8 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QString stripNS( const QString &name );
 
     /** Find GML base type for complex type of given name
-     * @param element input element
-     * @param name complex type name
+     * \param element input element
+     * \param name complex type name
      * @return name of GML base type without NS, e.g. AbstractFeatureType or empty string if not passed on GML type
      */
     QString xsdComplexTypeGmlBaseType( const QDomElement &element, const QString &name );

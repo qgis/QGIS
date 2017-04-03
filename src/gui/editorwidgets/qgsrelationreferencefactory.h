@@ -38,10 +38,10 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      * Create a new editor widget wrapper. Call {@link QgsEditorWidgetRegistry::create()}
      * instead of calling this method directly.
      *
-     * @param vl       The vector layer on which this widget will act
-     * @param fieldIdx The field index on which this widget will act
-     * @param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
-     * @param parent   The parent for the wrapper class and any created widget.
+     * \param vl       The vector layer on which this widget will act
+     * \param fieldIdx The field index on which this widget will act
+     * \param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
+     * \param parent   The parent for the wrapper class and any created widget.
      *
      * @return         A new widget wrapper
      */
@@ -53,9 +53,9 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      * Override this in your implementation.
      * Create a new configuration widget for this widget type.
      *
-     * @param vl       The layer for which the widget will be created
-     * @param fieldIdx The field index for which the widget will be created
-     * @param parent   The parent widget of the created config widget
+     * \param vl       The layer for which the widget will be created
+     * \param fieldIdx The field index for which the widget will be created
+     * \param parent   The parent widget of the created config widget
      *
      * @return         A configuration widget
      */

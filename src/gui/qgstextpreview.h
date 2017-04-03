@@ -46,14 +46,14 @@ class GUI_EXPORT QgsTextPreview : public QLabel
   public:
 
     /** Constructor for QgsTextPreview
-     * @param parent parent widget
+     * \param parent parent widget
      */
     QgsTextPreview( QWidget *parent = nullptr );
 
     void paintEvent( QPaintEvent *e ) override;
 
     /** Sets the text format for previewing in the widget.
-     * @param format text format
+     * \param format text format
      * @see format()
      */
     void setFormat( const QgsTextFormat &format );
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsTextPreview : public QLabel
     QgsTextFormat format() const { return mFormat; }
 
     /** Sets the scale to use for previewing format sizes in map units.
-     * @param scale preview map scale
+     * \param scale preview map scale
      * @see scale()
      * @see setMapUnits()
      */
@@ -77,7 +77,7 @@ class GUI_EXPORT QgsTextPreview : public QLabel
     double scale() const { return mScale; }
 
     /** Sets the map unit type for previewing format sizes in map units.
-     * @param unit map units
+     * \param unit map units
      * @see mapUnits()
      * @see setScale()
      */

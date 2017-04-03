@@ -49,7 +49,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Creates a feature list view
      *
-     * @param parent   owner
+     * \param parent   owner
      */
     explicit QgsFeatureListView( QWidget *parent = nullptr );
 
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Set the {@link QgsFeatureListModel} which is used to retrieve information
      *
-     * @param featureListModel  The model to use
+     * \param featureListModel  The model to use
      */
     virtual void setModel( QgsFeatureListModel *featureListModel );
 
@@ -77,7 +77,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * The display expression is an expression used to render the fields into a single string
      * which is displaied.
      *
-     * @param displayExpression  The expression used to render the feature
+     * \param displayExpression  The expression used to render the feature
      *
      * @see QgsExpression
      */
@@ -109,13 +109,13 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Sets if the currently shown form has received any edit events so far.
      *
-     * @param state The state
+     * \param state The state
      */
     void setCurrentFeatureEdited( bool state );
 
     /**
      * @brief setFeatureSelectionManager
-     * @param featureSelectionManager We will take ownership
+     * \param featureSelectionManager We will take ownership
      */
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
   protected:
@@ -130,13 +130,13 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Is emitted, whenever the current edit selection has been changed.
      *
-     * @param feat the feature, which will be edited.
+     * \param feat the feature, which will be edited.
      */
     void currentEditSelectionChanged( QgsFeature &feat );
 
     /**
      * Is emitted, whenever the display expression is successfully changed
-     * @param expression The expression that was applied
+     * \param expression The expression that was applied
      */
     void displayExpressionChanged( const QString &expression );
 
@@ -148,15 +148,15 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Set the feature(s) to be edited
      *
-     * @param fids  A list of features to be edited
+     * \param fids  A list of features to be edited
      */
     void setEditSelection( const QgsFeatureIds &fids );
 
     /**
      * Set the feature(s) to be edited
      *
-     * @param index The selection to set
-     * @param command selection update mode
+     * \param index The selection to set
+     * \param command selection update mode
      */
     void setEditSelection( const QModelIndex &index, QItemSelectionModel::SelectionFlags command );
 

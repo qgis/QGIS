@@ -37,7 +37,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
   public:
 
     /** Creates a new QgsColorEffect effect from a properties string map.
-     * @param map encoded properties string map
+     * \param map encoded properties string map
      * @returns new QgsColorEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map );
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     virtual QgsColorEffect *clone() const override;
 
     /** Sets the brightness modification for the effect.
-     * @param brightness Valid values are between -255 and 255, where 0 represents
+     * \param brightness Valid values are between -255 and 255, where 0 represents
      * no change, negative values indicate darkening and positive values indicate
      * lightening
      * @see setBrightness
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     int brightness() const { return mBrightness; }
 
     /** Sets the contrast modification for the effect.
-     * @param contrast Valid values are between -100 and 100, where 0 represents
+     * \param contrast Valid values are between -100 and 100, where 0 represents
      * no change, negative values indicate less contrast and positive values indicate
      * greater contrast
      * @see setContrast
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     int contrast() const { return mContrast; }
 
     /** Sets the saturation modification for the effect.
-     * @param saturation Valid values are between 0 and 2.0, where 1.0 represents
+     * \param saturation Valid values are between 0 and 2.0, where 1.0 represents
      * no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
      * greater saturation
      * @see saturation
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     double saturation() const { return mSaturation; }
 
     /** Sets whether the effect should convert a picture to grayscale.
-     * @param grayscaleMode method for grayscale conversion
+     * \param grayscaleMode method for grayscale conversion
      * @see grayscaleMode
      */
     void setGrayscaleMode( QgsImageOperation::GrayscaleMode grayscaleMode ) { mGrayscaleMode = grayscaleMode; }
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     QgsImageOperation::GrayscaleMode grayscaleMode() const { return mGrayscaleMode; }
 
     /** Sets whether the effect should colorize a picture.
-     * @param colorizeOn set to true to enable colorization
+     * \param colorizeOn set to true to enable colorization
      * @see colorizeOn
      * @see setColorizeColor
      * @see setColorizeStrength
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
     /** Sets the color used for colorizing a picture. This is only used if
      * @link setColorizeOn @endlink is set to true.
-     * @param colorizeColor colorization color
+     * \param colorizeColor colorization color
      * @see colorizeColor
      * @see setColorizeOn
      * @see setColorizeStrength
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
     /** Sets the strength for colorizing a picture. This is only used if
      * @link setColorizeOn @endlink is set to true.
-     * @param colorizeStrength colorization strength, between 0 and 100
+     * \param colorizeStrength colorization strength, between 0 and 100
      * @see colorizeStrength
      * @see setColorizeOn
      * @see setColorizeColor
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     int colorizeStrength() const { return mColorizeStrength; }
 
     /** Sets the transparency for the effect
-     * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
+     * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see transparency
      */
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     double transparency() const { return mTransparency; }
 
     /** Sets the blend mode for the effect
-     * @param mode blend mode used for drawing the effect on to a destination
+     * \param mode blend mode used for drawing the effect on to a destination
      * paint device
      * @see blendMode
      */

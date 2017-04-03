@@ -48,7 +48,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     ~QgsComposerHtml();
 
     /** Sets the source mode for item's HTML content.
-     * @param mode ContentMode for the item's source
+     * \param mode ContentMode for the item's source
      * @see contentMode
      * @see setUrl
      * @see setHtml
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     /** Sets the URL for content to display in the item when the item is using
      * the QgsComposerHtml::Url mode. Content is automatically fetched and the
      * HTML item refreshed after calling this function.
-     * @param url URL of content to display in the item
+     * \param url URL of content to display in the item
      * @see url
      * @see contentMode
      */
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * the QgsComposerHtml::ManualHtml mode. Setting the HTML using this function
      * does not automatically refresh the item's contents. Call loadHtml to trigger
      * a refresh of the item after setting the HTML content.
-     * @param html HTML to display in item
+     * \param html HTML to display in item
      * @see html
      * @see contentMode
      * @see loadHtml
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * the HTML content. If set, any content inside [% %] tags will be
      * treated as a QGIS expression and evaluated against the current atlas
      * feature.
-     * @param evaluateExpressions set to true to evaluate expressions in the HTML content
+     * \param evaluateExpressions set to true to evaluate expressions in the HTML content
      * @see evaluateExpressions
      * \since QGIS 2.5
      */
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     /** Sets whether the html item should use smart breaks. Smart breaks prevent
      * the html frame contents from breaking mid-way though a line of text.
-     * @param useSmartBreaks set to true to prevent content from breaking
+     * \param useSmartBreaks set to true to prevent content from breaking
      * mid-way through a line of text
      * @see useSmartBreaks
      */
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * a larger value will result in better choice of page break location, but more
      * wasted space at the bottom of frames. This setting is only effective if
      * useSmartBreaks is true.
-     * @param maxBreakDistance maximum amount of empty space to leave when calculating
+     * \param maxBreakDistance maximum amount of empty space to leave when calculating
      * page break locations
      * \since QGIS 2.3
      * @see maxBreakDistance
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * allow for overriding the styles specified within the HTML source. Setting the stylesheet
      * using this function does not automatically refresh the item's contents. Call loadHtml
      * to trigger a refresh of the item after setting the stylesheet rules.
-     * @param stylesheet CSS rules for user stylesheet
+     * \param stylesheet CSS rules for user stylesheet
      * @see userStylesheet
      * @see setUserStylesheetEnabled
      * @see loadHtml
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     QString userStylesheet() const { return mUserStylesheet; }
 
     /** Sets whether user stylesheets are enabled for the HTML content.
-     * @param stylesheetEnabled set to true to enable user stylesheets
+     * \param stylesheetEnabled set to true to enable user stylesheets
      * @see userStylesheetEnabled
      * @see setUserStylesheet
      * \since QGIS 2.5
@@ -212,9 +212,9 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
   public slots:
 
     /** Reloads the html source from the url and redraws the item.
-     * @param useCache set to true to use a cached copy of remote html
+     * \param useCache set to true to use a cached copy of remote html
      * content
-     * @param context expression context for evaluating data defined urls and expressions in html
+     * \param context expression context for evaluating data defined urls and expressions in html
      * @see setUrl
      * @see url
      */

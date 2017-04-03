@@ -58,9 +58,9 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     };
 
     /** Construct a new color button.
-     * @param parent The parent QWidget for the dialog
-     * @param cdt The title to show in the color chooser dialog
-     * @param registry a color scheme registry for color swatch grids to show in the drop down menu. If not
+     * \param parent The parent QWidget for the dialog
+     * \param cdt The title to show in the color chooser dialog
+     * \param registry a color scheme registry for color swatch grids to show in the drop down menu. If not
      * specified, the button will use the global color scheme registry
      */
     QgsColorButton( QWidget *parent = nullptr, const QString &cdt = "", QgsColorSchemeRegistry *registry = nullptr );
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Sets whether alpha modification (transparency) is permitted
      * for the color. Defaults to false.
-     * @param allowAlpha set to true to allow alpha modification
+     * \param allowAlpha set to true to allow alpha modification
      * @see allowAlpha
      */
     void setAllowAlpha( const bool allowAlpha );
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     bool allowAlpha() const { return mAllowAlpha; }
 
     /** Set the title for the color chooser dialog window.
-     * @param title Title for the color chooser dialog
+     * \param title Title for the color chooser dialog
      * @see colorDialogTitle
      */
     void setColorDialogTitle( const QString &title );
@@ -107,14 +107,14 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Sets whether the button accepts live updates from QColorDialog. Live updates may cause changes
      * that are not undoable on QColorDialog cancel.
-     * @param accept set to true to enable live updates
+     * \param accept set to true to enable live updates
      * @see acceptLiveUpdates
      */
     void setAcceptLiveUpdates( const bool accept ) { mAcceptLiveUpdates = accept; }
 
     /** Sets whether the drop down menu should be shown for the button. The default behavior is to
      * show the menu.
-     * @param showMenu set to false to hide the drop down menu
+     * \param showMenu set to false to hide the drop down menu
      * @see showMenu
      */
     void setShowMenu( const bool showMenu );
@@ -127,7 +127,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Sets the behavior for when the button is clicked. The default behavior is to show
      * a color picker dialog.
-     * @param behavior behavior when button is clicked
+     * \param behavior behavior when button is clicked
      * @see behavior
      */
     void setBehavior( const Behavior behavior );
@@ -140,7 +140,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Sets the default color for the button, which is shown in the button's drop down menu for the
      * "default color" option.
-     * @param color default color for the button. Set to an invalid QColor to disable the default color
+     * \param color default color for the button. Set to an invalid QColor to disable the default color
      * option.
      * @see defaultColor
      */
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Sets whether the "no color" option should be shown in the button's drop down menu. If selected,
      * the "no color" option sets the color button's color to a totally transparent color.
-     * @param showNoColorOption set to true to show the no color option. This is disabled by default.
+     * \param showNoColorOption set to true to show the no color option. This is disabled by default.
      * @see showNoColor
      * @see setNoColorString
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
@@ -175,7 +175,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     bool showNoColor() const { return mShowNoColorOption; }
 
     /** Sets the string to use for the "no color" option in the button's drop down menu.
-     * @param noColorString string to use for the "no color" menu option
+     * \param noColorString string to use for the "no color" menu option
      * @see noColorString
      * @see setShowNoColor
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
@@ -184,7 +184,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void setNoColorString( const QString &noColorString ) { mNoColorString = noColorString; }
 
     /** Sets whether a set to null (clear) option is shown in the button's drop down menu.
-     * @param showNull set to true to show a null option
+     * \param showNull set to true to show a null option
      * \since QGIS 2.16
      * @see showNull()
      * @see isNull()
@@ -217,7 +217,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /** Sets the context string for the color button. The context string is passed to all color swatch
      * grids shown in the button's drop down menu, to allow them to customise their display colors
      * based on the context.
-     * @param context context string for the color button's color swatch grids
+     * \param context context string for the color button's color swatch grids
      * @see context
      */
     void setContext( const QString &context ) { mContext = context; }
@@ -232,7 +232,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Sets the color scheme registry for the button, which controls the color swatch grids
      * that are shown in the button's drop down menu.
-     * @param registry color scheme registry for the button. Set to 0 to hide all color
+     * \param registry color scheme registry for the button. Set to 0 to hide all color
      * swatch grids from the button's drop down menu.
      * @see colorSchemeRegistry
      */
@@ -250,7 +250,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Sets the current color for the button. Will emit a colorChanged signal if the color is different
      * to the previous color.
-     * @param color new color for the button
+     * \param color new color for the button
      * @see color
      */
     void setColor( const QColor &color );
@@ -259,7 +259,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * Call directly to update background after adding/removing QColorDialog::ShowAlphaChannel option
      * but the color has not changed, i.e. setColor() wouldn't update button and
      * you want the button to retain the set color's alpha component regardless
-     * @param color Color for button background. If no color is specified, the button's current
+     * \param color Color for button background. If no color is specified, the button's current
      * color will be used
      */
     void setButtonBackground( const QColor &color = QColor() );
@@ -304,12 +304,12 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Is emitted whenever a new color is set for the button. The color is always valid.
      * In case the new color is the same no signal is emitted, to avoid infinite loops.
-     * @param color New color
+     * \param color New color
      */
     void colorChanged( const QColor &color );
 
     /** Emitted when the button is clicked, if the button's behavior is set to SignalOnly
-     * @param color button color
+     * \param color button color
      * @see setBehavior
      * @see behavior
      */
@@ -389,22 +389,22 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /** Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
      * @returns true if mime data could be intrepreted as a color
-     * @param mimeData mime data
-     * @param resultColor QColor to store evaluated color
+     * \param mimeData mime data
+     * \param resultColor QColor to store evaluated color
      * @see createColorMimeData
      */
     bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor );
 
     /** Ends a color picking operation
-     * @param eventPos global position of pixel to sample color from
-     * @param sampleColor set to true to actually sample the color, false to just cancel
+     * \param eventPos global position of pixel to sample color from
+     * \param sampleColor set to true to actually sample the color, false to just cancel
      * the color picking operation
      */
     void stopPicking( QPointF eventPos, bool sampleColor = true );
 
     /** Create a color icon for display in the drop down menu
-     * @param color for icon
-     * @param showChecks set to true to display a checkboard pattern behind
+     * \param color for icon
+     * \param showChecks set to true to display a checkboard pattern behind
      * transparent colors
      */
     QPixmap createMenuIcon( const QColor &color, const bool showChecks = true );
@@ -425,7 +425,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void setValidTemporaryColor( const QColor &newColor );
 
     /** Adds a color to the recent colors list
-     * @param color to add to recent colors list
+     * \param color to add to recent colors list
      */
     void addRecentColor( const QColor &color );
 

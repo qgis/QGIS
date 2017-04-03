@@ -60,9 +60,9 @@ class ANALYSIS_EXPORT QgsInterpolator
     virtual ~QgsInterpolator() = default;
 
     /** Calculates interpolation value for map coordinates x, y
-       @param x x-coordinate (in map units)
-       @param y y-coordinate (in map units)
-       @param result out: interpolation result
+       \param x x-coordinate (in map units)
+       \param y y-coordinate (in map units)
+       \param result out: interpolation result
        @return 0 in case of success*/
     virtual int interpolatePoint( double x, double y, double &result ) = 0;
 
@@ -88,9 +88,9 @@ class ANALYSIS_EXPORT QgsInterpolator
     QgsInterpolator(); //forbidden
 
     /** Helper method that adds the vertices of a geometry to the mCachedBaseData
-       @param geom the geometry
-       @param zCoord true if the z-coordinate of the geometry is to be interpolated
-       @param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
+       \param geom the geometry
+       \param zCoord true if the z-coordinate of the geometry is to be interpolated
+       \param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
      @return 0 in case of success*/
     int addVerticesToCache( const QgsGeometry &geom, bool zCoord, double attributeValue );
 };

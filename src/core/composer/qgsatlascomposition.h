@@ -54,7 +54,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     bool enabled() const { return mEnabled; }
 
     /** Sets whether the atlas is enabled
-     * @param enabled set to true to enable to atlas
+     * \param enabled set to true to enable to atlas
      * @see enabled
      */
     void setEnabled( bool enabled );
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     bool hideCoverage() const { return mHideCoverage; }
 
     /** Sets whether the coverage layer should be hidden in map items in the composition
-     * @param hide set to true to hide the coverage layer
+     * \param hide set to true to hide the coverage layer
      * @see hideCoverage
      */
     void setHideCoverage( bool hide );
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /** Sets the filename expression used for generating output filenames for each
      * atlas page.
      * @returns true if filename expression could be successful set, false if expression is invalid
-     * @param pattern expression to use for output filenames
+     * \param pattern expression to use for output filenames
      * @see filenamePattern
      * @see filenamePatternErrorString
      * \note This method has no effect when exporting to PDF if singleFile() is true
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QgsVectorLayer *coverageLayer() const { return mCoverageLayer; }
 
     /** Sets the coverage layer to use for the atlas features
-     * @param layer vector coverage layer
+     * \param layer vector coverage layer
      * @see coverageLayer
      */
     void setCoverageLayer( QgsVectorLayer *layer );
@@ -118,14 +118,14 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QString pageNameExpression() const { return mPageNameExpression; }
 
     /** Sets the expression used for calculating the page name.
-     * @param pageNameExpression expression string, or field name from coverage layer
+     * \param pageNameExpression expression string, or field name from coverage layer
      * @see pageNameExpression
      * \since QGIS 2.12
      */
     void setPageNameExpression( const QString &pageNameExpression ) { mPageNameExpression = pageNameExpression; }
 
     /** Returns the calculated name for a specified atlas page number.
-     * @param pageNumber number of page, where 0 = first page
+     * \param pageNumber number of page, where 0 = first page
      * @returns page name
      * @see pageNameExpression
      * \since QGIS 2.12
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Sets whether the atlas should be exported to a single file. This is only
      * applicable for PDF exports.
-     * @param single set to true to export atlas to a single file.
+     * \param single set to true to export atlas to a single file.
      * @see singleFile
      * \note This method is only used for PDF exports.
      */
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Sets the list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
-     * @param scales a vector of doubles representing predefined scales
+     * \param scales a vector of doubles representing predefined scales
      * @see predefinedScales
      * @see QgsComposerMap::atlasScalingMode
      */
@@ -196,8 +196,8 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     int numFeatures() const;
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
-     * @param i feature number
-     * @param updateMaps set to true to redraw maps and recalculate their extent
+     * \param i feature number
+     * \param updateMaps set to true to redraw maps and recalculate their extent
      * @returns true if feature was successfully prepared
      */
     bool prepareForFeature( const int i, const bool updateMaps = true );
@@ -213,8 +213,8 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Reads general atlas settings from xml
-     * @param elem a QDomElement holding the atlas properties.
-     * @param doc QDomDocument for the source xml.
+     * \param elem a QDomElement holding the atlas properties.
+     * \param doc QDomDocument for the source xml.
      * @see readXMLMapSettings
      * \note This method should be called before restoring composer item properties
      */

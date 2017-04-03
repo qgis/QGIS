@@ -34,7 +34,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 
     /** Sets the visible part of the multiframe's content which is visible within
      * this frame (relative to the total multiframe extent in mm).
-     * @param section visible portion of content
+     * \param section visible portion of content
      * @see extent
      */
     void setContentSection( const QRectF &section ) { mSection = section; }
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     bool hidePageIfEmpty() const { return mHidePageIfEmpty; }
 
     /** Sets whether the page should be hidden (ie, not included in composer exports) if this frame is empty
-     * @param hidePageIfEmpty set to true if page should be hidden if frame is empty
+     * \param hidePageIfEmpty set to true if page should be hidden if frame is empty
      * \since QGIS 2.5
      * @see hidePageIfEmpty
      */
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     bool hideBackgroundIfEmpty() const { return mHideBackgroundIfEmpty; }
 
     /** Sets whether the background and frame stroke should be hidden if this frame is empty
-     * @param hideBackgroundIfEmpty set to true if background and stroke should be hidden if frame is empty
+     * \param hideBackgroundIfEmpty set to true if background and stroke should be hidden if frame is empty
      * \since QGIS 2.5
      * @see hideBackgroundIfEmpty
      */

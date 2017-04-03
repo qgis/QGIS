@@ -66,12 +66,12 @@ class QgsHttpTransaction : public QObject
 
     /*!
         The function returns false if there is an error while getting the response.
-        @param[out] respondedContent is replaced with the new content.
+        \param[out] respondedContent is replaced with the new content.
 
-        @param[in]  redirections     is used to measure how many http redirections we've been through.
+        \param[in]  redirections     is used to measure how many http redirections we've been through.
         Clients typically don't need to set this.
 
-        @param postData data to send with the http message. This is only used for HTTP POST. If
+        \param postData data to send with the http message. This is only used for HTTP POST. If
         0 then the request is done with HTTP GET.
 
         @return true in case of success

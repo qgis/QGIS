@@ -72,7 +72,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Sets the source path of the image (may be svg or a raster format). Data defined
      * picture source may override this value. The path can either be a local path
      * or a remote (http) path.
-     * @param path path for the source image
+     * \param path path for the source image
      * @see usePictureExpression
      * @see picturePath
      * \since QGIS 2.5
@@ -94,14 +94,14 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     void setSceneRect( const QRectF &rectangle ) override;
 
     /** Stores state in Dom element
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc is Dom document
+     * \param elem is Dom element corresponding to 'Composer' tag
+     * \param doc is Dom document
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is Dom document
+     * \param itemElem is Dom node corresponding to item tag
+     * \param doc is Dom document
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * rotation.  If this is set then the picture will be rotated by the same
      * amount as the specified map object. This is useful especially for
      * syncing north arrows with a map item.
-     * @param composerMapId composer map id to sync rotation with
+     * \param composerMapId composer map id to sync rotation with
      * @see setPictureRotation
      * @see rotationMap
      */
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Sets the picture's anchor point, which controls how it is placed
      * within the picture item's frame.
-     * @param anchor anchor point for picture
+     * \param anchor anchor point for picture
      * \since QGIS 2.3
      * @see pictureAnchor
      */
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     QColor svgFillColor() const { return mSvgFillColor; }
 
     /** Sets the fill color used for parametrized SVG files.
-     * @param color fill color.
+     * \param color fill color.
      * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
      * @see svgFillColor()
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     QColor svgStrokeColor() const { return mSvgStrokeColor; }
 
     /** Sets the stroke color used for parametrized SVG files.
-     * @param color stroke color.
+     * \param color stroke color.
      * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
      * @see svgStrokelColor()
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     double svgStrokeWidth() const { return mSvgStrokeWidth; }
 
     /** Sets the stroke width used for parametrized SVG files.
-     * @param width stroke width in mm
+     * \param width stroke width in mm
      * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
      * @see svgStrokeWidth()
@@ -256,14 +256,14 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Sets the picture rotation within the item bounds. This does not affect
      * the item's frame, only the way the picture is drawn within the item.
-     * @param r rotation in degrees clockwise
+     * \param r rotation in degrees clockwise
      * @see pictureRotation
      * \since QGIS 2.2
      */
     virtual void setPictureRotation( double r );
 
     /** Sets the resize mode used for drawing the picture within the item bounds.
-     * @param mode ResizeMode to use for image file
+     * \param mode ResizeMode to use for image file
      * \since QGIS 2.3
      * @see resizeMode
      */
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.
-     * @param context expression context for evaluating data defined picture sources
+     * \param context expression context for evaluating data defined picture sources
      * \since QGIS 2.3
      */
     void refreshPicture( const QgsExpressionContext *context = nullptr );

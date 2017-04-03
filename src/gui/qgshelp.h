@@ -44,14 +44,14 @@ class GUI_EXPORT QgsHelp
 
     /** Opens help topic for the given help key using default system
      * web browser. If help topic not found, builtin error page shown.
-     * @param key key which identified help topic
+     * \param key key which identified help topic
      * \since QGIS 3.0
      */
     static void openHelp( const QString &key );
 
     /** Returns URI of the help topic for the given key. If help topic
      * not found, URI of the builtin error page returned.
-     * @param key key which identified help topic
+     * \param key key which identified help topic
      * \since QGIS 3.0
      */
     static QUrl helpUrl( const QString &key );
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsHelp
 
     /** Check if given URL accessible by issuing HTTP HEAD request.
      * Returns true if URL accessible, false otherwise.
-     * @param url URL to check
+     * \param url URL to check
      * \since QGIS 3.0
      */
     static bool urlExists( const QString &url );

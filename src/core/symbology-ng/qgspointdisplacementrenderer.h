@@ -38,7 +38,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     };
 
     /** Constructor for QgsPointDisplacementRenderer.
-     * @param labelAttributeName optional attribute name for labeling points
+     * \param labelAttributeName optional attribute name for labeling points
      */
     QgsPointDisplacementRenderer( const QString &labelAttributeName = QString() );
 
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     static QgsFeatureRenderer *create( QDomElement &symbologyElem );
 
     /** Sets the line width for the displacement group circle.
-     * @param width line width in mm
+     * \param width line width in mm
      * @see circleWidth()
      * @see setCircleColor()
      */
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     double circleWidth() const { return mCircleWidth; }
 
     /** Sets the color used for drawing the displacement group circle.
-     * @param color circle color
+     * \param color circle color
      * @see circleColor()
      * @see setCircleWidth()
      */
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     QColor circleColor() const { return mCircleColor; }
 
     /** Sets a factor for increasing the ring size of displacement groups.
-     * @param distance addition factor
+     * \param distance addition factor
      * @see circleRadiusAddition()
      */
     void setCircleRadiusAddition( double distance ) { mCircleRadiusAddition = distance; }
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     Placement placement() const { return mPlacement; }
 
     /** Sets the placement method used for dispersing the points.
-     * @param placement placement method
+     * \param placement placement method
      * @see placement()
      * \since QGIS 2.12
      */
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     QgsMarkerSymbol *centerSymbol();
 
     /** Sets the center symbol for a displacement group.
-     * @param symbol new center symbol. Ownership is transferred to the renderer.
+     * \param symbol new center symbol. Ownership is transferred to the renderer.
      * @see centerSymbol()
     */
     void setCenterSymbol( QgsMarkerSymbol *symbol );

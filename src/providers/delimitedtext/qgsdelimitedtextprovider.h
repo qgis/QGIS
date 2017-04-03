@@ -167,8 +167,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     /**
      * Check to see if the point is withn the selection
      * rectangle
-     * @param x X value of point
-     * @param y Y value of point
+     * \param x X value of point
+     * \param y Y value of point
      * @return True if point is within the rectangle
      */
     bool boundsCheck( double x, double y );
@@ -177,16 +177,16 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     /**
      * Check to see if a geometry overlaps the selection
      * rectangle
-     * @param geom geometry to test against bounds
-     * @param y Y value of point
+     * \param geom geometry to test against bounds
+     * \param y Y value of point
      * @return True if point is within the rectangle
      */
     bool boundsCheck( QgsGeometry *geom );
 
     /**
      * Try to read field types from CSVT (or equivalent xxxT) file.
-     * @param filename The name of the file from which to read the field types
-     * @param message  Pointer to a string to receive a status message
+     * \param filename The name of the file from which to read the field types
+     * \param message  Pointer to a string to receive a status message
      * @return A list of field type strings, empty if not found or not valid
      */
     QStringList readCsvtFieldTypes( const QString &filename, QString *message = nullptr );

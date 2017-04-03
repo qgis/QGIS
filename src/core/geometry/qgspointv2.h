@@ -38,8 +38,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
   public:
 
     /** Construct a 2 dimensional point with an initial x and y coordinate.
-     * @param x x-coordinate of point
-     * @param y y-coordinate of point
+     * \param x x-coordinate of point
+     * \param y y-coordinate of point
      */
     QgsPointV2( double x = 0.0, double y = 0.0 );
 
@@ -52,11 +52,11 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     explicit QgsPointV2( QPointF p );
 
     /** Construct a point with a specified type (e.g., PointZ, PointM) and initial x, y, z, and m values.
-     * @param type point type
-     * @param x x-coordinate of point
-     * @param y y-coordinate of point
-     * @param z z-coordinate of point, for PointZ or PointZM types
-     * @param m m-value of point, for PointM or PointZM types
+     * \param type point type
+     * \param x x-coordinate of point
+     * \param y y-coordinate of point
+     * \param z z-coordinate of point, for PointZ or PointZM types
+     * \param m m-value of point, for PointM or PointZM types
      */
     QgsPointV2( QgsWkbTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
 
@@ -231,9 +231,9 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     /** Returns a new point which correspond to this point projected by a specified distance
      * with specified angles (azimuth and inclination).
      * M value is preserved.
-     * @param distance distance to project
-     * @param azimuth angle to project in X Y, clockwise in degrees starting from north
-     * @param inclination angle to project in Z (3D)
+     * \param distance distance to project
+     * \param azimuth angle to project in X Y, clockwise in degrees starting from north
+     * \param inclination angle to project in Z (3D)
      * @return The point projected. If a 2D point is projected a 3D point will be returned except if
      *  inclination is 90. A 3D point is always returned if a 3D point is projected.
      * Example:
@@ -318,7 +318,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const override;
 
     /** Angle undefined. Always returns 0.0
-        @param vertex the vertex id
+        \param vertex the vertex id
         @return 0.0*/
     double vertexAngle( QgsVertexId vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
 

@@ -151,8 +151,8 @@ class CORE_EXPORT QgsEditFormConfig
      *   layer.setEditFormConfig(editFormConfig)
      * \endcode
      *
-     * @param widgetName  The name of the widget to configure
-     * @param config      The config to set for this widget
+     * \param widgetName  The name of the widget to configure
+     * \param config      The config to set for this widget
      * @returns false if a field exists with the provided widgetName. In this case
      *          QgsVectorLayer::setEditorWidgetSetup should be used.
      *
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Get the configuration for the editor widget with the given name.
      *
-     * @param widgetName The name of the widget.
+     * \param widgetName The name of the widget.
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
      */
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Remove the configuration for the editor widget with the given name
      *
-     * @param widgetName The name of the widget.
+     * \param widgetName The name of the widget.
      *
      * @return true if a configuration has been removed
      */

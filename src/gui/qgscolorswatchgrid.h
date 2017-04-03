@@ -34,9 +34,9 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
   public:
 
     /** Construct a new color swatch grid.
-     * @param scheme QgsColorScheme for colors to show in grid
-     * @param context context string provided to color scheme
-     * @param parent parent widget
+     * \param scheme QgsColorScheme for colors to show in grid
+     * \param context context string provided to color scheme
+     * \param parent parent widget
      */
     QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &context = QString(), QWidget *parent = nullptr );
 
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     QString context() const { return mContext; }
 
     /** Sets the current context for the grid
-     * @param context string which is passed to scheme for color generation
+     * \param context string which is passed to scheme for color generation
      * @see context
      */
     void setContext( const QString &context );
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     QColor baseColor() const { return mBaseColor; }
 
     /** Sets the base color for the widget
-     * @param baseColor base color to pass to scheme for color generation
+     * \param baseColor base color to pass to scheme for color generation
      * @see baseColor
      */
     void setBaseColor( const QColor &baseColor );
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
   signals:
 
     /** Emitted when a color has been selected from the widget
-     * @param color selected color
+     * \param color selected color
      */
     void colorChanged( const QColor &color );
 
@@ -125,18 +125,18 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     int calculateHeight() const;
 
     /** Draws widget
-     * @param painter destination painter
+     * \param painter destination painter
      */
     void draw( QPainter &painter );
 
     /** Calculate swatch corresponding to a position within the widget
-     * @param position position
+     * \param position position
      * @returns swatch number (starting at 0), or -1 if position is outside a swatch
      */
     int swatchForPosition( QPoint position ) const;
 
     /** Updates the widget's tooltip for a given color index
-     * @param colorIdx color index to use for calculating tooltip
+     * \param colorIdx color index to use for calculating tooltip
      */
     void updateTooltip( const int colorIdx );
 
@@ -161,15 +161,15 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
   public:
 
     /** Construct a new color swatch grid action.
-     * @param scheme QgsColorScheme for colors to show in grid
-     * @param menu parent menu
-     * @param context context string provided to color scheme
-     * @param parent parent widget
+     * \param scheme QgsColorScheme for colors to show in grid
+     * \param menu parent menu
+     * \param context context string provided to color scheme
+     * \param parent parent widget
      */
     QgsColorSwatchGridAction( QgsColorScheme *scheme, QMenu *menu = nullptr, const QString &context = QString(), QWidget *parent = nullptr );
 
     /** Sets the base color for the color grid
-     * @param baseColor base color to pass to scheme for color generation
+     * \param baseColor base color to pass to scheme for color generation
      * @see baseColor
      */
     void setBaseColor( const QColor &baseColor );
@@ -187,14 +187,14 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
     QString context() const;
 
     /** Sets the current context for the color grid
-     * @param context string which is passed to scheme for color generation
+     * \param context string which is passed to scheme for color generation
      * @see context
      */
     void setContext( const QString &context );
 
     /** Sets whether the parent menu should be dismissed and closed when a color is selected
      * from the action's color widget.
-     * @param dismiss set to true (default) to immediately close the menu when a color is selected
+     * \param dismiss set to true (default) to immediately close the menu when a color is selected
      * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
      * stay open.
      * @see dismissOnColorSelection()
@@ -218,7 +218,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
   signals:
 
     /** Emitted when a color has been selected from the widget
-     * @param color selected color
+     * \param color selected color
      */
     void colorChanged( const QColor &color );
 

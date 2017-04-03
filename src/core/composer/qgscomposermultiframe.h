@@ -55,8 +55,8 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     };
 
     /** Construct a new multiframe item.
-     * @param c parent composition
-     * @param createUndoCommands
+     * \param c parent composition
+     * \param createUndoCommands
      */
     QgsComposerMultiFrame( QgsComposition *c, bool createUndoCommands );
 
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
     /** Returns the fixed size for a frame, if desired. If the fixed frame size changes,
      * the sizes of all frames can be recalculated by calling recalculateFrameRects().
-     * @param frameIndex frame number
+     * \param frameIndex frame number
      * @returns fixed size for frame. If the size has a width or height of 0, then
      * the frame size is not fixed in that direction and frames can have variable width
      * or height accordingly.
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     /** Returns the minimum size for a frames, if desired. If the minimum
      * size changes, the sizes of all frames can be recalculated by calling
      * recalculateFrameRects().
-     * @param frameIndex frame number
+     * \param frameIndex frame number
      * @returns minimum size for frame. If the size has a width or height of 0, then
      * the frame size has no minimum in that direction.
      * \since QGIS 2.5
@@ -92,22 +92,22 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const { Q_UNUSED( frameIndex ); return QSizeF( 0, 0 ); }
 
     /** Renders a portion of the multiframe's content into a painter.
-     * @param painter destination painter
-     * @param renderExtent visible extent of content to render into the painter.
-     * @param frameIndex frame number for content
+     * \param painter destination painter
+     * \param renderExtent visible extent of content to render into the painter.
+     * \param frameIndex frame number for content
      * \since QGIS 2.5
      */
     virtual void render( QPainter *painter, const QRectF &renderExtent, const int frameIndex ) = 0;
 
     /** Adds a frame to the multiframe.
-     * @param frame frame to add
-     * @param recalcFrameSizes set to true to force recalculation of all existing frame sizes
+     * \param frame frame to add
+     * \param recalcFrameSizes set to true to force recalculation of all existing frame sizes
      * @see removeFrame
      */
     virtual void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true ) = 0;
 
     /** Finds the optimal position to break a frame at.
-     * @param yPos maximum vertical position for break
+     * \param yPos maximum vertical position for break
      * @returns the optimal breakable position which occurs in the multi frame close
      * to and before the specified yPos
      * \since QGIS 2.3
@@ -116,8 +116,8 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
     /** Removes a frame from the multiframe. This method automatically removes the frame from the
      * composition.
-     * @param i index of frame to remove
-     * @param removeEmptyPages set to true to remove pages which are empty after the frame is removed
+     * \param i index of frame to remove
+     * \param removeEmptyPages set to true to remove pages which are empty after the frame is removed
      * @see addFrame
      * @see deleteFrames
      */
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     void deleteFrames();
 
     /** Sets the resize mode for the multiframe, and recalculates frame sizes to match.
-     * @param mode resize mode
+     * \param mode resize mode
      * @see resizeMode
      */
     void setResizeMode( ResizeMode mode );
@@ -142,36 +142,36 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
     /** Stores state information about multiframe in DOM element. Implementations of writeXml
      * should also call the _writeXML method to save general multiframe properties.
-     * @param elem is DOM element
-     * @param doc is the DOM document
-     * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
+     * \param elem is DOM element
+     * \param doc is the DOM document
+     * \param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see _writeXML
      */
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const = 0;
 
     /** Stores state information about base multiframe object in DOM element. Implementations of writeXml
      * should call this method.
-     * @param elem is DOM element
-     * @param doc is the DOM document
-     * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
+     * \param elem is DOM element
+     * \param doc is the DOM document
+     * \param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see writeXml
      */
     bool _writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const;
 
     /** Reads multiframe state information from a DOM element. Implementations of readXml
      * should also call the _readXML method to restore general multiframe properties.
-     * @param itemElem is DOM element
-     * @param doc is the DOM document
-     * @param ignoreFrames set to false to avoid read state information about child frames from DOM
+     * \param itemElem is DOM element
+     * \param doc is the DOM document
+     * \param ignoreFrames set to false to avoid read state information about child frames from DOM
      * @see _readXML
      */
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) = 0;
 
     /** Restores state information about base multiframe object from a DOM element. Implementations of readXml
      * should call this method.
-     * @param itemElem is DOM element
-     * @param doc is the DOM document
-     * @param ignoreFrames set to false to avoid reading state information about child frames from DOM
+     * \param itemElem is DOM element
+     * \param doc is the DOM document
+     * \param ignoreFrames set to false to avoid reading state information about child frames from DOM
      * @see readXml
      */
     bool _readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false );
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     bool createUndoCommands() const { return mCreateUndoCommands; }
 
     /** Sets whether undo commands should be created for interactions with the multiframe.
-     * @param enabled set to true if undo commands should be created
+     * \param enabled set to true if undo commands should be created
      * @see createUndoCommands
      */
     void setCreateUndoCommands( bool enabled ) { mCreateUndoCommands = enabled; }
@@ -199,14 +199,14 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     int frameCount() const { return mFrameItems.size(); }
 
     /** Returns a child frame from the multiframe.
-     * @param i index of frame
+     * \param i index of frame
      * @returns child frame if found
      * @see frameIndex
      */
     QgsComposerFrame *frame( int i ) const;
 
     /** Returns the index of a frame within the multiframe
-     * @param frame frame to find index of
+     * \param frame frame to find index of
      * @returns index for frame if found, -1 if frame not found in multiframe
      * \since QGIS 2.5
      * @see frame
@@ -214,10 +214,10 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     int frameIndex( QgsComposerFrame *frame ) const;
 
     /** Creates a new frame and adds it to the multi frame and composition.
-     * @param currentFrame an existing QgsComposerFrame from which to copy the size
+     * \param currentFrame an existing QgsComposerFrame from which to copy the size
      * and general frame properties (e.g., frame style, background, rendering settings).
-     * @param pos position of top-left corner of the new frame
-     * @param size size of the new frame
+     * \param pos position of top-left corner of the new frame
+     * \param size size of the new frame
      * @returns new QgsComposerFrame
      * \since QGIS 2.3
      */

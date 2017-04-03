@@ -74,16 +74,16 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     static QList< Shape > availableShapes();
 
     /** Returns true if a symbol shape has a fill.
-     * @param shape shape to test
+     * \param shape shape to test
      * @returns true if shape uses a fill, or false if shape uses lines only
      */
     static bool shapeIsFilled( Shape shape );
 
     /** Constructor for QgsSimpleMarkerSymbolLayerBase.
-    * @param shape symbol shape for markers
-    * @param size symbol size (in mm)
-    * @param angle symbol rotation angle
-    * @param scaleMethod scaling method for data defined scaling
+    * \param shape symbol shape for markers
+    * \param size symbol size (in mm)
+    * \param angle symbol rotation angle
+    * \param scaleMethod scaling method for data defined scaling
     */
     QgsSimpleMarkerSymbolLayerBase( Shape shape = Circle,
                                     double size = DEFAULT_SIMPLEMARKER_SIZE,
@@ -96,22 +96,22 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     Shape shape() const { return mShape; }
 
     /** Sets the rendered marker shape.
-     * @param shape new marker shape
+     * \param shape new marker shape
      * @see shape()
      */
     void setShape( Shape shape ) { mShape = shape; }
 
     /** Attempts to decode a string representation of a shape name to the corresponding
      * shape.
-     * @param name encoded shape name
-     * @param ok if specified, will be set to true if shape was successfully decoded
+     * \param name encoded shape name
+     * \param ok if specified, will be set to true if shape was successfully decoded
      * @return decoded name
      * @see encodeShape()
      */
     static Shape decodeShape( const QString &name, bool *ok = nullptr );
 
     /** Encodes a shape to its string representation.
-     * @param shape shape to encode
+     * \param shape shape to encode
      * @returns encoded string
      * @see decodeShape()
      */
@@ -133,27 +133,27 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     bool prepareMarkerPath( Shape symbol );
 
     /** Creates a polygon representing the specified shape.
-     * @param shape shape to create
-     * @param polygon destination polygon for shape
+     * \param shape shape to create
+     * \param polygon destination polygon for shape
      * @returns true if shape was successfully stored in polygon
      * \note not available in Python bindings
      */
     bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
 
     /** Calculates the desired size of the marker, considering data defined size overrides.
-     * @param context symbol render context
-     * @param hasDataDefinedSize will be set to true if marker uses data defined sizes
+     * \param context symbol render context
+     * \param hasDataDefinedSize will be set to true if marker uses data defined sizes
      * @returns marker size, in original size units
      * \note not available in Python bindings
      */
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
 
     /** Calculates the marker offset and rotation.
-     * @param context symbol render context
-     * @param scaledSize size of symbol to render
-     * @param hasDataDefinedRotation will be set to true if marker has data defined rotation
-     * @param offset will be set to calculated marker offset (in painter units)
-     * @param angle will be set to calculated marker angle
+     * \param context symbol render context
+     * \param scaledSize size of symbol to render
+     * \param hasDataDefinedRotation will be set to true if marker has data defined rotation
+     * \param offset will be set to calculated marker offset (in painter units)
+     * \param angle will be set to calculated marker angle
      * \note not available in Python bindings
      */
     void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
@@ -170,11 +170,11 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
   private:
 
     /** Derived classes must implement draw() to handle drawing the generated shape onto the painter surface.
-     * @param context symbol render context
-     * @param shape shape to draw
-     * @param polygon polygon representing transformed marker shape. May be empty, in which case the shape will be specified
+     * \param context symbol render context
+     * \param shape shape to draw
+     * \param polygon polygon representing transformed marker shape. May be empty, in which case the shape will be specified
      * in the path argument.
-     * @param path transformed painter path representing shape to draw
+     * \param path transformed painter path representing shape to draw
      */
     virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0;
 };
@@ -188,13 +188,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
   public:
 
     /** Constructor for QgsSimpleMarkerSymbolLayer.
-    * @param shape symbol shape
-    * @param size symbol size (in mm)
-    * @param angle symbol rotation angle
-    * @param scaleMethod scaling method for data defined scaling
-    * @param color fill color for symbol
-    * @param strokeColor stroke color for symbol
-    * @param penJoinStyle join style for stroke pen
+    * \param shape symbol shape
+    * \param size symbol size (in mm)
+    * \param angle symbol rotation angle
+    * \param scaleMethod scaling method for data defined scaling
+    * \param color fill color for symbol
+    * \param strokeColor stroke color for symbol
+    * \param penJoinStyle join style for stroke pen
     */
     QgsSimpleMarkerSymbolLayer( Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
@@ -207,13 +207,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     // static methods
 
     /** Creates a new QgsSimpleMarkerSymbolLayer.
-     * @param properties a property map containing symbol properties (see properties())
+     * \param properties a property map containing symbol properties (see properties())
      * @returns new QgsSimpleMarkerSymbolLayer
      */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
 
     /** Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
-     * @param element XML element containing SLD definition of symbol
+     * \param element XML element containing SLD definition of symbol
      * @returns new QgsSimpleMarkerSymbolLayer
      */
     static QgsSymbolLayer *createFromSld( QDomElement &element );
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QColor strokeColor() const override { return mStrokeColor; }
 
     /** Sets the marker's stroke color.
-     * @param color stroke color
+     * \param color stroke color
      * @see strokeColor()
      * @see setStrokeStyle()
      * @see setPenJoinStyle()
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     Qt::PenStyle strokeStyle() const { return mStrokeStyle; }
 
     /** Sets the marker's stroke style (e.g., solid, dashed, etc)
-     * @param strokeStyle style
+     * \param strokeStyle style
      * \since QGIS 2.4
      * @see strokeStyle()
      * @see setStrokeColor()
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
     /** Sets the marker's stroke join style (e.g., miter, bevel, etc).
-     * @param style join style
+     * \param style join style
      * \since QGIS 2.16
      * @see penJoinStyle()
      * @see setStrokeColor()
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     double strokeWidth() const { return mStrokeWidth; }
 
     /** Sets the width of the marker's stroke.
-     * @param w stroke width. See strokeWidthUnit() for units.
+     * \param w stroke width. See strokeWidthUnit() for units.
      * @see strokeWidth()
      * @see setStrokeWidthUnit()
      * @see setStrokeWidthMapUnitScale()
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void setStrokeWidth( double w ) { mStrokeWidth = w; }
 
     /** Sets the unit for the width of the marker's stroke.
-     * @param u stroke width unit
+     * \param u stroke width unit
      * @see strokeWidthUnit()
      * @see setStrokeWidth()
      * @see setStrokeWidthMapUnitScale()
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
     /** Sets the map scale for the width of the marker's stroke.
-     * @param scale stroke width map unit scale
+     * \param scale stroke width map unit scale
      * @see strokeWidthMapUnitScale()
      * @see setStrokeWidth()
      * @see setStrokeWidthUnit()
@@ -337,8 +337,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
   protected:
 
     /** Draws the marker shape in the specified painter.
-     * @param p destination QPainter
-     * @param context symbol context
+     * \param p destination QPainter
+     * \param context symbol context
      * \note this method does not handle setting the painter pen or brush to match the symbol's fill or stroke
      */
     void drawMarker( QPainter *p, QgsSymbolRenderContext &context );
@@ -395,10 +395,10 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
   public:
 
     /** Constructor for QgsFilledMarkerSymbolLayer.
-    * @param shape symbol shape
-    * @param size symbol size (in mm)
-    * @param angle symbol rotation angle
-    * @param scaleMethod size scaling method
+    * \param shape symbol shape
+    * \param size symbol size (in mm)
+    * \param angle symbol rotation angle
+    * \param scaleMethod size scaling method
     */
     QgsFilledMarkerSymbolLayer( Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
@@ -406,7 +406,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
                                 QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     /** Creates a new QgsFilledMarkerSymbolLayer.
-     * @param properties a property map containing symbol properties (see properties())
+     * \param properties a property map containing symbol properties (see properties())
      * @returns new QgsFilledMarkerSymbolLayer
      */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
@@ -482,7 +482,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeWidth( double w ) { mStrokeWidth = w; }
 
     /** Sets the units for the stroke width.
-     * @param unit width units
+     * \param unit width units
      * @see strokeWidthUnit()
     */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }

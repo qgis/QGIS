@@ -69,7 +69,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     QgsColorRamp *colorRamp() const { return mGradientRamp; }
 
     /** Sets the color ramp to use for shading the heatmap.
-     * @param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
+     * \param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
      * @see colorRamp
      */
     void setColorRamp( QgsColorRamp *ramp );
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     double radius() const { return mRadius; }
 
     /** Sets the radius for the heatmap
-     * @param radius heatmap radius
+     * \param radius heatmap radius
      * @see radius
      * @see setRadiusUnit
      * @see setRadiusMapUnitScale
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     QgsUnitTypes::RenderUnit radiusUnit() const { return mRadiusUnit; }
 
     /** Sets the units used for the heatmap's radius
-     * @param unit units for heatmap radius
+     * \param unit units for heatmap radius
      * @see radiusUnit
      * @see setRadius
      * @see radiusMapUnitScale
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     const QgsMapUnitScale &radiusMapUnitScale() const { return mRadiusMapUnitScale; }
 
     /** Sets the map unit scale used for the heatmap's radius
-     * @param scale map unit scale for heatmap's radius
+     * \param scale map unit scale for heatmap's radius
      * @see setRadius
      * @see setRadiusUnit
      * @see radiusMapUnitScale
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     double maximumValue() const { return mExplicitMax; }
 
     /** Sets the maximum value used for shading the heatmap.
-     * @param value maximum value for heatmap shading. Set to 0 for automatic calculation of
+     * \param value maximum value for heatmap shading. Set to 0 for automatic calculation of
      * maximum value.
      * @see maximumValue
      */
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     double renderQuality() const { return mRenderQuality; }
 
     /** Sets the render quality used for drawing the heatmap.
-     * @param quality render quality. A value of 1 indicates maximum quality, and increasing the
+     * \param quality render quality. A value of 1 indicates maximum quality, and increasing the
      * value will result in faster drawing but lower quality rendering.
      * @see renderQuality
      */
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     QString weightExpression() const { return mWeightExpressionString; }
 
     /** Sets the expression used for weighting points when generating the heatmap.
-     * @param expression point weight expression. If set to empty, all points are equally weighted.
+     * \param expression point weight expression. If set to empty, all points are equally weighted.
      * @see weightExpression
      */
     void setWeightExpression( const QString &expression ) { mWeightExpressionString = expression; }

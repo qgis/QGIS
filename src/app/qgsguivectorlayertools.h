@@ -33,9 +33,9 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
     /**
      * This method should be called, whenever a new feature is added to a layer
      *
-     * @param layer           The layer to which the feature should be added
-     * @param defaultValues   Default values for the feature to add
-     * @param defaultGeometry A default geometry to add to the feature
+     * \param layer           The layer to which the feature should be added
+     * \param defaultValues   Default values for the feature to add
+     * \param defaultGeometry A default geometry to add to the feature
      *
      * @return                True in case of success, False if the operation failed/was aborted
      */
@@ -45,7 +45,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      * This should be called, whenever a vector layer should be switched to edit mode. If successful
      * the layer is switched to editable and an edit sessions started.
      *
-     * @param layer  The layer on which to start an edit session
+     * \param layer  The layer on which to start an edit session
      *
      * @return       True, if the editing session was started
      */
@@ -56,8 +56,8 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      * An appropriate dialog asking the user if he wants to save the edits will be shown if
      * allowCancel is set to true.
      *
-     * @param layer       The layer to commit
-     * @param allowCancel True if a cancel button should be offered
+     * \param layer       The layer to commit
+     * \param allowCancel True if a cancel button should be offered
      *
      * @return            True if successful
      */
@@ -66,7 +66,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
     /**
      * Should be called, when the features should be committed but the editing session is not ended.
      *
-     * @param layer       The layer to commit
+     * \param layer       The layer to commit
      * @return            True if successful
      */
     bool saveEdits( QgsVectorLayer *layer ) const override;

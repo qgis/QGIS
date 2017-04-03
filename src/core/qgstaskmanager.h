@@ -74,8 +74,8 @@ class CORE_EXPORT QgsTask : public QObject
 
     /**
      * Constructor for QgsTask.
-     * @param description text description of task
-     * @param flags task flags
+     * \param description text description of task
+     * \param flags task flags
      */
     QgsTask( const QString &description = QString(), const Flags &flags = AllFlags );
 
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsTask : public QObject
 
     /**
      * Will be emitted by task when its progress changes.
-     * @param progress percent of progress, from 0.0 - 100.0
+     * \param progress percent of progress, from 0.0 - 100.0
      * \note derived classes should not emit this signal directly, instead they should call
      * setProgress()
      */
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsTask : public QObject
 
     /**
      * Will be emitted by task when its status changes.
-     * @param status new task status
+     * \param status new task status
      * \note derived classes should not emit this signal directly, it will automatically
      * be emitted
      */
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsTask : public QObject
     /**
      * Sets the task's current progress. The derived class should call this method whenever
      * the task wants to update its progress. Calling will automatically emit the progressChanged signal.
-     * @param progress percent of progress, from 0.0 - 100.0
+     * \param progress percent of progress, from 0.0 - 100.0
      */
     void setProgress( double progress );
 
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
   public:
 
     /** Constructor for QgsTaskManager.
-     * @param parent parent QObject
+     * \param parent parent QObject
      */
     QgsTaskManager( QObject *parent = nullptr );
 
@@ -396,7 +396,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     long addTask( const TaskDefinition &task, int priority = 0 );
 
     /** Returns the task with matching ID.
-     * @param id task ID
+     * \param id task ID
      * @returns task if found, or nullptr
      */
     QgsTask *task( long id ) const;
@@ -409,7 +409,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     int count() const;
 
     /** Returns the unique task ID corresponding to a task managed by the class.
-     * @param task task to find
+     * \param task task to find
      * @returns task ID, or -1 if task not found
      */
     long taskId( QgsTask *task ) const;
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     /** Returns a list of layers on which as task is dependent. The task will automatically
      * be canceled if any of these layers are above to be removed.
-     * @param taskId task ID
+     * \param taskId task ID
      * @returns list of layers
      * @see tasksDependentOnLayer()
      */
@@ -456,26 +456,26 @@ class CORE_EXPORT QgsTaskManager : public QObject
   signals:
 
     //! Will be emitted when a task reports a progress change
-    //! @param taskId ID of task
-    //! @param progress percent of progress, from 0.0 - 100.0
+    //! \param taskId ID of task
+    //! \param progress percent of progress, from 0.0 - 100.0
     void progressChanged( long taskId, double progress );
 
     //! Will be emitted when only a single task remains to complete
     //! and that task has reported a progress change
-    //! @param progress percent of progress, from 0.0 - 100.0
+    //! \param progress percent of progress, from 0.0 - 100.0
     void finalTaskProgressChanged( double progress );
 
     //! Will be emitted when a task reports a status change
-    //! @param taskId ID of task
-    //! @param status new task status
+    //! \param taskId ID of task
+    //! \param status new task status
     void statusChanged( long taskId, int status );
 
     //! Emitted when a new task has been added to the manager
-    //! @param taskId ID of task
+    //! \param taskId ID of task
     void taskAdded( long taskId );
 
     //! Emitted when a task is about to be deleted
-    //! @param taskId ID of task
+    //! \param taskId ID of task
     void taskAboutToBeDeleted( long taskId );
 
     //! Emitted when all tasks are complete
@@ -533,7 +533,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     void processQueue();
 
     //! Recursively cancel dependent tasks
-    //! @param taskId id of terminated task to cancel any other tasks
+    //! \param taskId id of terminated task to cancel any other tasks
     //! which are dependent on
     void cancelDependentTasks( long taskId );
 

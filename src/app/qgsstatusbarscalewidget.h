@@ -45,7 +45,7 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
 
     /**
      * @brief setScale set the selected scale from double
-     * @param scale
+     * \param scale
      */
     void setScale( double scale );
 
@@ -56,7 +56,7 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
     bool isLocked() const;
 
     /** Set the font of the text
-      * @param font the font to use
+      * \param font the font to use
       */
     void setFont( const QFont &font );
 

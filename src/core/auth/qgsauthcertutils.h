@@ -106,9 +106,9 @@ class CORE_EXPORT QgsAuthCertUtils
     static QSslCertificate certFromFile( const QString &certpath );
 
     /** Return non-encrypted key from a PEM or DER formatted file
-     * @param keypath File path to private key
-     * @param keypass Passphrase for private key
-     * @param algtype QString to set with resolved algorithm type
+     * \param keypath File path to private key
+     * \param keypass Passphrase for private key
+     * \param algtype QString to set with resolved algorithm type
      */
     static QSslKey keyFromFile( const QString &keypath,
                                 const QString &keypass = QString(),
@@ -118,10 +118,10 @@ class CORE_EXPORT QgsAuthCertUtils
     static QList<QSslCertificate> certsFromString( const QString &pemtext );
 
     /** Return list of certificate, private key and algorithm (as PEM text) from file path components
-     * @param certpath File path to certificate
-     * @param keypath File path to private key
-     * @param keypass Passphrase for private key
-     * @param reencrypt Whether to re-encrypt the private key with the passphrase
+     * \param certpath File path to certificate
+     * \param keypath File path to private key
+     * \param keypass Passphrase for private key
+     * \param reencrypt Whether to re-encrypt the private key with the passphrase
      * @return certificate, private key, key's algorithm type
      */
     static QStringList certKeyBundleToPem( const QString &certpath,
@@ -130,9 +130,9 @@ class CORE_EXPORT QgsAuthCertUtils
                                            bool reencrypt = true );
 
     /** Return list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
-     * @param bundlepath File path to the PKCS bundle
-     * @param bundlepass Passphrase for bundle
-     * @param reencrypt Whether to re-encrypt the private key with the passphrase
+     * \param bundlepath File path to the PKCS bundle
+     * \param bundlepass Passphrase for bundle
+     * \param reencrypt Whether to re-encrypt the private key with the passphrase
      * @return certificate, private key, key's algorithm type
      */
     static QStringList pkcs12BundleToPem( const QString &bundlepath,
@@ -140,15 +140,15 @@ class CORE_EXPORT QgsAuthCertUtils
                                           bool reencrypt = true );
 
     /** Write a temporary file for a PEM text of cert/key/CAs bundle component
-     * @param pemtext Component content as PEM text
-     * @param name Name of file
+     * \param pemtext Component content as PEM text
+     * \param name Name of file
      * @return File path to temporary file
      */
     static QString pemTextToTempFile( const QString &name, const QByteArray &pemtext );
 
     /** Get the general name for CA source enum type
-     * @param source The enum source type for the CA
-     * @param single Whether to return singular or plural description
+     * \param source The enum source type for the CA
+     * \param single Whether to return singular or plural description
      */
     static QString getCaSourceName( QgsAuthCertUtils::CaCertSource source, bool single = false );
 
@@ -156,9 +156,9 @@ class CORE_EXPORT QgsAuthCertUtils
     static QString resolvedCertName( const QSslCertificate &cert, bool issuer = false );
 
     /** Get combined distinguished name for certificate
-     * @param qcert Qt SSL cert object
-     * @param acert QCA SSL cert object to add more info to the output
-     * @param issuer Whether to return cert's subject or issuer combined name
+     * \param qcert Qt SSL cert object
+     * \param acert QCA SSL cert object to add more info to the output
+     * \param issuer Whether to return cert's subject or issuer combined name
      * \note not available in Python bindings
      */
     static QString getCertDistinguishedName( const QSslCertificate &qcert,
@@ -172,8 +172,8 @@ class CORE_EXPORT QgsAuthCertUtils
     static QString getColonDelimited( const QString &txt );
 
     /** Get the sha1 hash for certificate
-     * @param cert Qt SSL certificate to generate hash from
-     * @param formatted Whether to colon-delimit the hash
+     * \param cert Qt SSL certificate to generate hash from
+     * \param formatted Whether to colon-delimit the hash
      */
     static QString shaHexForCert( const QSslCertificate &cert, bool formatted = false );
 

@@ -66,7 +66,7 @@ class CORE_EXPORT QgsImageFetcher : public QObject
   signals:
 
     /** Emitted when the download completes
-     *  @param legend The downloaded legend image */
+     *  \param legend The downloaded legend image */
     void finish( const QImage &legend );
     //! Emitted to report progress
     void progress( qint64 received, qint64 total );
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     }
 
     /** \brief Accessor for the raster layers pyramid list.
-     * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
+     * \param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      * A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
      * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
@@ -302,12 +302,12 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *
      * \note  The arbitraryness of the returned document is enforced by WMS standards
      *        up to at least v1.3.0
-     * @param point coordinates in data source CRS
-     * @param format result format
-     * @param boundingBox context bounding box
-     * @param width context width
-     * @param height context height
-     * @param dpi context dpi
+     * \param point coordinates in data source CRS
+     * \param format result format
+     * \param boundingBox context bounding box
+     * \param width context width
+     * \param height context height
+     * \param dpi context dpi
      * @return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
@@ -413,8 +413,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
                                           const QStringList &createOptions = QStringList() );
 
     /** Set no data value on created dataset
-     *  @param bandNo band number
-     *  @param noDataValue no data value
+     *  \param bandNo band number
+     *  \param noDataValue no data value
      */
     virtual bool setNoDataValue( int bandNo, double noDataValue ) { Q_UNUSED( bandNo ); Q_UNUSED( noDataValue ); return false; }
 

@@ -204,18 +204,18 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void clearExtentHistory();
 
     /** Zoom to the extent of the selected features of current (vector) layer.
-     * @param layer optionally specify different than current layer
+     * \param layer optionally specify different than current layer
      */
     void zoomToSelected( QgsVectorLayer *layer = nullptr );
 
     /** Set canvas extent to the bounding box of a set of features
-        @param layer the vector layer
-        @param ids the feature ids*/
+        \param layer the vector layer
+        \param ids the feature ids*/
     void zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
 
     /** Centers canvas extent to feature ids
-        @param layer the vector layer
-        @param ids the feature ids*/
+        \param layer the vector layer
+        \param ids the feature ids*/
     void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
 
     //! Pan to the selected features of current (vector) layer keeping same extent.
@@ -262,7 +262,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
-     * @param frozen Boolean specifying if the canvas should be frozen (true) or
+     * \param frozen Boolean specifying if the canvas should be frozen (true) or
      * thawed (false). Default is true.
      * @see isFrozen()
      * @see setRenderFlag(). freeze() should be used to programmatically halt map updates,
@@ -394,7 +394,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QPoint mouseLastXY();
 
     /** Enables a preview mode for the map canvas
-     * @param previewEnabled set to true to enable a preview mode
+     * \param previewEnabled set to true to enable a preview mode
      * @see setPreviewMode
      * \since QGIS 2.3 */
     void setPreviewModeEnabled( bool previewEnabled );
@@ -408,7 +408,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Sets a preview mode for the map canvas. This setting only has an effect if
      * previewModeEnabled is true.
-     * @param mode preview mode for the canvas
+     * \param mode preview mode for the canvas
      * @see previewMode
      * @see setPreviewModeEnabled
      * @see previewModeEnabled
@@ -445,7 +445,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * context used for rendering the map, and can be used to apply specific variable overrides for
      * expression evaluation for the map canvas render. This method will overwrite the existing expression
      * context scope for the canvas.
-     * @param scope new expression context scope
+     * \param scope new expression context scope
      * \since QGIS 2.12
      * @see expressionContextScope()
      */
@@ -467,11 +467,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; }
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
-    @param tolerance the segmentation tolerance*/
+    \param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance );
 
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    @param type the segmentation tolerance typename*/
+    \param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 
     /**
@@ -513,7 +513,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Sets whether a user has disabled canvas renders via the GUI.
-     * @param flag set to false to indicate that user has disabled renders
+     * \param flag set to false to indicate that user has disabled renders
      * @see renderFlag()
      * @see freeze(). freeze() should be used to programmatically halt map updates,
      * while setRenderFlag() should only be used when users disable rendering via GUI.
@@ -817,22 +817,22 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void updateMapSize();
 
     /** Starts zooming via rectangle
-     * @param pos start position for rectangle
+     * \param pos start position for rectangle
      * \since QGIS 2.16
      */
     void beginZoomRect( QPoint pos );
 
     /** Ends zooming via rectangle
-     * @param pos end position for rectangle
+     * \param pos end position for rectangle
      * \since QGIS 2.16
      */
     void endZoomRect( QPoint pos );
 
     /** Returns bounding box of feature list (in canvas coordinates)
-        @param ids feature id list
-        @param layer the layer
-        @param bbox out: bounding box
-        @param errorMsg error message in case of error
+        \param ids feature id list
+        \param layer the layer
+        \param bbox out: bounding box
+        \param errorMsg error message in case of error
         @return true in case of success*/
     bool boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorLayer *layer, QgsRectangle &bbox, QString &errorMsg ) const;
 

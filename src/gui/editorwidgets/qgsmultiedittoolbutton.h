@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     };
 
     /** Constructor for QgsMultiEditToolButton.
-     * @param parent parent object
+     * \param parent parent object
      */
     explicit QgsMultiEditToolButton( QWidget *parent = nullptr );
 
@@ -52,14 +52,14 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
 
     /** Sets the field associated with this button. This is used to customise the widget menu
      * and tooltips to match the field properties.
-     * @param field associated field
+     * \param field associated field
      */
     void setField( const QgsField &field ) { mField = field; }
 
   public slots:
 
     /** Sets whether the associated field contains mixed values.
-     * @param mixed whether field values are mixed
+     * \param mixed whether field values are mixed
      * @see isMixed()
      * @see setIsChanged()
      * @see resetChanges()
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     void setIsMixed( bool mixed ) { mIsMixedValues = mixed; updateState(); }
 
     /** Sets whether the associated field has changed.
-     * @param changed whether field has changed
+     * \param changed whether field has changed
      * @see isChanged()
      * @see setIsMixed()
      * @see resetChanges()

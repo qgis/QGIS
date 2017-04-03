@@ -42,15 +42,15 @@ class CORE_EXPORT QgsHistogram
     virtual ~QgsHistogram() = default;
 
     /** Assigns numeric source values for the histogram.
-     * @param values list of doubles
+     * \param values list of doubles
      */
     void setValues( const QList<double> &values );
 
     /** Assigns numeric source values for the histogram from a vector layer's field or as the
      * result of an expression.
-     * @param layer vector layer
-     * @param fieldOrExpression field name or expression to be evaluated
-     * @param feedback optional feedback object to allow cancelation of calculation
+     * \param layer vector layer
+     * \param fieldOrExpression field name or expression to be evaluated
+     * \param feedback optional feedback object to allow cancelation of calculation
      * @returns true if values were successfully set
      */
     bool setValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, QgsFeedback *feedback = nullptr );
@@ -74,14 +74,14 @@ class CORE_EXPORT QgsHistogram
 
     /** Returns a list of edges for the histogram for a specified number of bins. This list
      * will be length bins + 1, as both the first and last value are also included.
-     * @param bins number of bins
+     * \param bins number of bins
      * @return list of bin edges
      * \note values must first be specified using @link setValues @endlink
      */
     QList<double> binEdges( int bins ) const;
 
     /** Returns the calculated list of the counts for the histogram bins.
-     * @param bins number of histogram bins
+     * \param bins number of histogram bins
      * @return list of histogram counts
      * \note values must first be specified using @link setValues @endlink
      */

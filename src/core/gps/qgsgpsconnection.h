@@ -74,7 +74,7 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     };
 
     /** Constructor
-        @param dev input device for the connection (e.g. serial device). The class takes ownership of the object
+        \param dev input device for the connection (e.g. serial device). The class takes ownership of the object
       */
     QgsGPSConnection( QIODevice *dev );
     virtual ~QgsGPSConnection();

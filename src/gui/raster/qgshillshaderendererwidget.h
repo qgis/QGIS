@@ -37,8 +37,8 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
 
     /**
      * @brief Renderer widget for the hill shade renderer.
-     * @param layer The layer attached for this widget.
-     * @param extent The current extent.
+     * \param layer The layer attached for this widget.
+     * \param extent The current extent.
      */
     QgsHillshadeRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
@@ -55,7 +55,7 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
 
     /**
      * @brief Set the widget state from the given renderer.
-     * @param renderer The renderer to take the state from.
+     * \param renderer The renderer to take the state from.
      */
     void setFromRenderer( const QgsRasterRenderer *renderer );
 
@@ -85,27 +85,27 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
 
     /**
      * @brief Set the altitude of the light source
-     * @param altitude the altitude
+     * \param altitude the altitude
      * @see altitude()
      */
     void setAltitude( double altitude );
 
     /**
      * @brief Set the azimuth of the light source.
-     * @param azimuth The azimuth of the light source, between 0 and 360.0
+     * \param azimuth The azimuth of the light source, between 0 and 360.0
      * @see azimuth()
      */
     void setAzimuth( double azimuth );
 
     /**
      * @brief Set the Z scaling factor of the result image.
-     * @param zfactor The z factor
+     * \param zfactor The z factor
      * @see zFactor()
      */
     void setZFactor( double zfactor );
 
     /** Sets whether to render using a multi-directional hillshade algorithm.
-     * @param isMultiDirectional set to true to use multi directional rendering
+     * \param isMultiDirectional set to true to use multi directional rendering
      * @see multiDirectional()
      */
     void setMultiDirectional( bool isMultiDirectional );

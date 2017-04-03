@@ -114,15 +114,15 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     void setFeatureGeometry( QgsFeature &feature, int id, int type );
 
     /** Set feature attributes.
-     *  @param feature
-     *  @param cat category number
+     *  \param feature
+     *  \param cat category number
      */
     void setFeatureAttributes( int cat, QgsFeature *feature, QgsGrassVectorMap::TopoSymbol symbol );
 
     /** Set feature attributes.
-     *  @param feature
-     *  @param cat category number
-     *  @param attlist a list containing the index number of the fields to set
+     *  \param feature
+     *  \param cat category number
+     *  \param attlist a list containing the index number of the fields to set
      */
     void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList &attlist, QgsGrassVectorMap::TopoSymbol symbol );
 

@@ -89,7 +89,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Set the data source specification. This may be a path or database
      * connection string
-     * @param uri source specification
+     * \param uri source specification
      */
     virtual void setDataSourceUri( const QString &uri )
     {
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Get the data source specification. This may be a path or database
      * connection string
-     * @param expandAuthConfig Whether to expand any assigned authentication configuration
+     * \param expandAuthConfig Whether to expand any assigned authentication configuration
      * @return data source specification
      * \note The default authentication configuration expansion is FALSE. This keeps credentials
      * out of layer data source URIs and project files. Expansion should be specifically done

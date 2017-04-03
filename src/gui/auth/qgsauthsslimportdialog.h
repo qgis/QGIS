@@ -84,7 +84,7 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
 
     /**
      * Construct dialog for importing certificates
-     * @param parent
+     * \param parent
      */
     QgsAuthSslImportDialog( QWidget *parent = nullptr );
 

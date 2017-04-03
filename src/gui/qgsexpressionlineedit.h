@@ -52,13 +52,13 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
     /**
      * Constructor for QgsExpressionLineEdit.
-     * @param parent parent widget
+     * \param parent parent widget
      */
     explicit QgsExpressionLineEdit( QWidget *parent = nullptr );
 
     /**
      * Sets the title used in the expression builder dialog
-     * @param title dialog title
+     * \param title dialog title
      * @see expressionDialogTitle()
      */
     void setExpressionDialogTitle( const QString &title );
@@ -71,14 +71,14 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
     /**
      * Sets whether the widget should show a multiline text editor.
-     * @param multiLine set to true to show multiline editor, or false
+     * \param multiLine set to true to show multiline editor, or false
      * to show single line editor (the default).
      */
     void setMultiLine( bool multiLine );
 
     /**
      * Set the geometry calculator used in the expression dialog.
-     * @param distanceArea calculator
+     * \param distanceArea calculator
      */
     void setGeomCalculator( const QgsDistanceArea &distanceArea );
 
@@ -100,14 +100,14 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
     /**
       * Returns true if the current expression is valid.
-      * @param expressionError will be set to any generated error message if specified
+      * \param expressionError will be set to any generated error message if specified
       */
     bool isValidExpression( QString *expressionError = nullptr ) const;
 
     /**
      * Register an expression context generator class that will be used to retrieve
      * an expression context for the widget.
-     * @param generator A QgsExpressionContextGenerator class that will be used to
+     * \param generator A QgsExpressionContextGenerator class that will be used to
      *                  create an expression context when required.
      */
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
@@ -115,7 +115,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
   signals:
 
     /** Emitted when the expression is changed.
-     * @param expression new expression
+     * \param expression new expression
      */
     void expressionChanged( const QString &expression );
 
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
     /**
      * Sets the current expression to show in the widget.
-     * @param expression expression string
+     * \param expression expression string
      * @see expression()
      */
     void setExpression( const QString &expression );
@@ -143,7 +143,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
     /**
      * @brief updateLineEditStyle will re-style (color/font) the line edit depending on content and status
-     * @param expression if expression is given it will be evaluated for the given string, otherwise it takes
+     * \param expression if expression is given it will be evaluated for the given string, otherwise it takes
      * current expression from the model
      */
     void updateLineEditStyle( const QString &expression = QString() );

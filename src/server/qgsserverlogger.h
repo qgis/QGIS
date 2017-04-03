@@ -45,7 +45,7 @@ class QgsServerLogger: public QObject
 
     /**
       * Set the current log level
-      * @param level the log level
+      * \param level the log level
       * \since QGIS 3.0
       */
     void setLogLevel( QgsMessageLog::MessageLevel level );
@@ -60,9 +60,9 @@ class QgsServerLogger: public QObject
     /**
      * Log a message from the server context
      *
-     * @param message the message
-     * @param tag tag of the message
-     * @param level log level of the message
+     * \param message the message
+     * \param tag tag of the message
+     * \param level log level of the message
      */
     void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
 

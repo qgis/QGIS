@@ -45,11 +45,11 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
 
     /** Create a group or ungroup command
      *
-     * @param s command kind (@see State)
-     * @param item the group item being created or ungrouped
-     * @param c the composition including this group
-     * @param text command label
-     * @param parent parent command, if any
+     * \param s command kind (@see State)
+     * \param item the group item being created or ungrouped
+     * \param c the composition including this group
+     * \param text command label
+     * \param parent parent command, if any
      *
      */
     QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup *item, QgsComposition *c, const QString &text, QUndoCommand *parent = nullptr );

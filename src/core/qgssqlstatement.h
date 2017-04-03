@@ -237,7 +237,7 @@ class CORE_EXPORT QgsSQLStatement
          *
          *     v.visit( self)
          *
-         * @param v A visitor that visits this node.
+         * \param v A visitor that visits this node.
          */
         virtual void accept( Visitor &v ) const = 0;
     };

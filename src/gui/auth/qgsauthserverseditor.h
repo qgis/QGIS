@@ -36,7 +36,7 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
 
     /**
      * Widget for editing authentication configurations directly in database
-     * @param parent Parent Widget
+     * \param parent Parent Widget
      */
     explicit QgsAuthServersEditor( QWidget *parent = nullptr );
 

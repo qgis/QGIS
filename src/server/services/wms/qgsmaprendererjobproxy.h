@@ -34,7 +34,7 @@ namespace QgsWms
     public:
 
       /** Constructor.
-        * @param accessControl Does not take ownership of QgsAccessControl
+        * \param accessControl Does not take ownership of QgsAccessControl
         */
       QgsMapRendererJobProxy(
         bool parallelRendering
@@ -43,8 +43,8 @@ namespace QgsWms
       );
 
       /** Sequential or parallel map rendering according to qsettings.
-        * @param mapSettings passed to MapRendererJob
-        * @param the rendered image
+        * \param mapSettings passed to MapRendererJob
+        * \param the rendered image
         */
       void render( const QgsMapSettings &mapSettings, QImage *image );
 

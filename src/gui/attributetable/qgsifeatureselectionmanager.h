@@ -45,14 +45,14 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
     /**
      * Select features
      *
-     * @param ids            Feature ids to select
+     * \param ids            Feature ids to select
      */
     virtual void select( const QgsFeatureIds &ids ) = 0;
 
     /**
      * Deselect features
      *
-     * @param ids            Feature ids to deselect
+     * \param ids            Feature ids to deselect
      */
     virtual void deselect( const QgsFeatureIds &ids ) = 0;
 
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      * Will emit the { @link selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) } signal with the
      * clearAndSelect flag set.
      *
-     * @param ids   The ids which will be the new selection
+     * \param ids   The ids which will be the new selection
      */
     virtual void setSelectedFeatures( const QgsFeatureIds &ids ) = 0;
 
@@ -78,9 +78,9 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
     /**
      * This signal is emitted when selection was changed
      *
-     * @param selected        Newly selected feature ids
-     * @param deselected      Ids of all features which have previously been selected but are not any more
-     * @param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+     * \param selected        Newly selected feature ids
+     * \param deselected      Ids of all features which have previously been selected but are not any more
+     * \param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
      */
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );
 };

@@ -49,7 +49,7 @@ class CORE_EXPORT QgsFeatureStore
     void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
     /** Add feature. Feature's fields will be set to pointer to the store fields.
-     * @param feature
+     * \param feature
      * \since QGIS 2.1
      */
     void addFeature( const QgsFeature &feature );

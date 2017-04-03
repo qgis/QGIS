@@ -43,7 +43,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     };
 
     /** Creates a new QgsBlurEffect effect from a properties string map.
-     * @param map encoded properties string map
+     * \param map encoded properties string map
      * @returns new QgsBlurEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map );
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     virtual QgsBlurEffect *clone() const override;
 
     /** Sets blur level (strength)
-     * @param level blur level. Depending on the current @link blurMethod @endlink, this parameter
+     * \param level blur level. Depending on the current @link blurMethod @endlink, this parameter
      * has different effects
      * @see blurLevel
      * @see blurMethod
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     int blurLevel() const { return mBlurLevel; }
 
     /** Sets the blur method (algorithm) to use for performing the blur.
-     * @param method blur method
+     * \param method blur method
      * @see blurMethod
      */
     void setBlurMethod( const BlurMethod method ) { mBlurMethod = method; }
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     BlurMethod blurMethod() const { return mBlurMethod; }
 
     /** Sets the transparency for the effect
-     * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
+     * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see transparency
      */
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     double transparency() const { return mTransparency; }
 
     /** Sets the blend mode for the effect
-     * @param mode blend mode used for drawing the effect on to a destination
+     * \param mode blend mode used for drawing the effect on to a destination
      * paint device
      * @see blendMode
      */

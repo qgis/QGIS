@@ -40,7 +40,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     /**
      * Widget for viewing and editing certificate authorities directly in database
-     * @param parent Parent widget
+     * \param parent Parent widget
      */
     explicit QgsAuthAuthoritiesEditor( QWidget *parent = nullptr );
 

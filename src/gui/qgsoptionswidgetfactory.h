@@ -94,7 +94,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory
 
     /**
      * @brief Factory function to create the widget on demand as needed by the options dialog.
-     * @param parent The parent of the widget.
+     * \param parent The parent of the widget.
      * @return A new widget to show as a page in the options dialog.
      */
     virtual QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const = 0;

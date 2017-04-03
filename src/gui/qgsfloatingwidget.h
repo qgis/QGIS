@@ -53,13 +53,13 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
     };
 
     /** Constructor for QgsFloatingWidget.
-     * @param parent parent widget
+     * \param parent parent widget
      */
     QgsFloatingWidget( QWidget *parent = nullptr );
 
     /** Sets the widget to "anchor" the floating widget to. The floating widget will be repositioned whenever the
      * anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
-     * @param widget anchor widget. Both the floating widget and the anchor widget must share some common parent.
+     * \param widget anchor widget. Both the floating widget and the anchor widget must share some common parent.
      * @see anchorWidget()
      */
     void setAnchorWidget( QWidget *widget );
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
 
     /** Sets the floating widget's anchor point, which corresponds to the point on the widget which should remain
      * fixed in the same relative position whenever the widget's parent is resized or moved.
-     * @param point anchor point
+     * \param point anchor point
      * @see anchorPoint()
      */
     void setAnchorPoint( AnchorPoint point );

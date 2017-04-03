@@ -67,10 +67,10 @@ class CORE_EXPORT QgsTolerance
 
     /**
      * Static function to translate tolerance value into map units
-     * @param tolerance tolerance value to be translated
-     * @param layer source layer necessary in case tolerance is in layer units
-     * @param mapSettings settings of the map
-     * @param units type of units to be translated
+     * \param tolerance tolerance value to be translated
+     * \param layer source layer necessary in case tolerance is in layer units
+     * \param mapSettings settings of the map
+     * \param units type of units to be translated
      * @return value of tolerance in map units
      * \since QGIS 2.8
      */
@@ -78,10 +78,10 @@ class CORE_EXPORT QgsTolerance
 
     /**
      * Static function to translate tolerance value into layer units
-     * @param tolerance tolerance value to be translated
-     * @param layer reference layer
-     * @param mapSettings settings of the map
-     * @param units type of units to be translated
+     * \param tolerance tolerance value to be translated
+     * \param layer reference layer
+     * \param mapSettings settings of the map
+     * \param units type of units to be translated
      * @return value of tolerance in layer units
      */
     static double toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, UnitType units = LayerUnits );

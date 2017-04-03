@@ -39,7 +39,7 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent = nullptr );
 
     /** Sets the extent to use for minimum and maximum value calculation.
-     * @param extent extent in raster layer's CRS
+     * \param extent extent in raster layer's CRS
      * \note if a map canvas is set using setMapCanvas(), its extent will take
      * precedence over any extent set using this method.
      */
@@ -48,7 +48,7 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map extent from the canvas. If a canvas is set it will take precedence over any extent
      * set from calling setExtent().
-     * @param canvas map canvas
+     * \param canvas map canvas
      * @see mapCanvas()
      * \since QGIS 2.16
      */

@@ -37,14 +37,14 @@ class CORE_EXPORT QgsRelationManager : public QObject
   public:
 
     /** Constructor for QgsRelationManager.
-     * @param project associated project (used to notify project of changes)
+     * \param project associated project (used to notify project of changes)
      */
     explicit QgsRelationManager( QgsProject *project = nullptr );
 
     /**
      * Will set the specified relations and remove any relation currently set.
      *
-     * @param relations A list of relations to set.
+     * \param relations A list of relations to set.
      */
     void setRelations( const QList<QgsRelation> &relations );
 
@@ -58,28 +58,28 @@ class CORE_EXPORT QgsRelationManager : public QObject
     /**
      * Add a relation.
      *
-     * @param relation The relation to add.
+     * \param relation The relation to add.
      */
     void addRelation( const QgsRelation &relation );
 
     /**
      * Remove a relation.
      *
-     * @param id The id of the relation to remove.
+     * \param id The id of the relation to remove.
      */
     void removeRelation( const QString &id );
 
     /**
      * Remove a relation.
      *
-     * @param relation The relation to remove.
+     * \param relation The relation to remove.
      */
     void removeRelation( const QgsRelation &relation );
 
     /**
      * Get access to a relation by its id.
      *
-     * @param id The id to search for
+     * \param id The id to search for
      *
      * @return A relation. Invalid if not found.
      * @see relationsByName()
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     Q_INVOKABLE QgsRelation relation( const QString &id ) const;
 
     /** Returns a list of relations with matching names.
-     * @param name relation name to search for. Searching is case insensitive.
+     * \param name relation name to search for. Searching is case insensitive.
      * @returns a list of matching relations
      * \since QGIS 2.16
      * @see relation()
@@ -102,8 +102,8 @@ class CORE_EXPORT QgsRelationManager : public QObject
     /**
      * Get all relations where the specified layer (and field) is the referencing part (i.e. the child table with the foreign key).
      *
-     * @param layer     The layer which should be searched for.
-     * @param fieldIdx  The field which should be part of the foreign key. If not set will return all relations.
+     * \param layer     The layer which should be searched for.
+     * \param fieldIdx  The field which should be part of the foreign key. If not set will return all relations.
      *
      * @return A list of relations matching the given layer and fieldIdx.
      */
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     /**
      * Get all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).
      *
-     * @param layer   The layer which should be searched for.
+     * \param layer   The layer which should be searched for.
      *
      * @return A list of relations where the specified layer is the referenced part.
      */
@@ -121,8 +121,8 @@ class CORE_EXPORT QgsRelationManager : public QObject
     /**
      * Discover all the relations available from the current layers.
      *
-     * @param existingRelations the existing relations to filter them out
-     * @param layers the current layers
+     * \param existingRelations the existing relations to filter them out
+     * \param layers the current layers
      * @return the list of discovered relations
      * \since QGIS 3.0
      */

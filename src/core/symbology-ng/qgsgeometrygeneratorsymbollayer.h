@@ -35,7 +35,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * Set the type of symbol which should be created.
      * Should match with the return type of the expression.
      *
-     * @param symbolType The symbol type which shall be used below this symbol.
+     * \param symbolType The symbol type which shall be used below this symbol.
      */
     void setSymbolType( QgsSymbol::SymbolType symbolType );
 
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * which contains a QgsRenderContext which in turn contains an expression
      * context which is available to the evaluated expression.
      *
-     * @param context The rendering context which will be used to render and to
+     * \param context The rendering context which will be used to render and to
      *                construct a geometry.
      */
     virtual void render( QgsSymbolRenderContext &context );

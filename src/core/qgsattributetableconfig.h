@@ -86,7 +86,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     bool isEmpty() const;
 
     /** Maps a visible column index to its original column index.
-     * @param visibleColumn index of visible column
+     * \param visibleColumn index of visible column
      * @returns corresponding index when hidden columns are considered
      */
     int mapVisibleColumnToIndex( int visibleColumn ) const;
@@ -146,27 +146,27 @@ class CORE_EXPORT QgsAttributeTableConfig
     void setSortExpression( const QString &sortExpression );
 
     /** Returns the width of a column, or -1 if column should use default width.
-     * @param column column index
+     * \param column column index
      * @see setColumnWidth()
      */
     int columnWidth( int column ) const;
 
     /** Sets the width of a column.
-     * @param column column index
-     * @param width column width in pixels, or -1 if column should use default width
+     * \param column column index
+     * \param width column width in pixels, or -1 if column should use default width
      * @see columnWidth()
      */
     void setColumnWidth( int column, int width );
 
     /** Returns true if the specified column is hidden.
-     * @param column column index
+     * \param column column index
      * @see setColumnHidden()
      */
     bool columnHidden( int column ) const;
 
     /** Sets whether the specified column should be hidden.
-     * @param column column index
-     * @param hidden set to true to hide column
+     * \param column column index
+     * \param hidden set to true to hide column
      * @see columnHidden()
      */
     void setColumnHidden( int column, bool hidden );

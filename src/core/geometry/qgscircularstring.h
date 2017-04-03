@@ -83,8 +83,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     void draw( QPainter &p ) const override;
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     bool hasCurvedSegments() const override { return true; }
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-        @param vertex the vertex id
+        \param vertex the vertex id
         @return rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
 

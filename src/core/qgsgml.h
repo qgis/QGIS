@@ -183,15 +183,15 @@ class CORE_EXPORT QgsGmlStreamingParser
     //helper routines
 
     /** Reads attribute srsName="EpsgCrsId:..."
-       @param epsgNr result
-       @param attr attribute strings
+       \param epsgNr result
+       \param attr attribute strings
        @return 0 in case of success
       */
     int readEpsgFromAttribute( int &epsgNr, const XML_Char **attr );
 
     /** Reads attribute as string
-       @param attributeName
-       @param attr
+       \param attributeName
+       \param attr
        @return attribute value or an empty string if no such attribute
       */
     QString readAttribute( const QString &attributeName, const XML_Char **attr ) const;
@@ -199,16 +199,16 @@ class CORE_EXPORT QgsGmlStreamingParser
     bool createBBoxFromCoordinateString( QgsRectangle &bb, const QString &coordString ) const;
 
     /** Creates a set of points from a coordinate string.
-       @param points list that will contain the created points
-       @param coordString the text containing the coordinates
+       \param points list that will contain the created points
+       \param coordString the text containing the coordinates
        @return 0 in case of success
       */
     int pointsFromCoordinateString( QList<QgsPoint> &points, const QString &coordString ) const;
 
     /** Creates a set of points from a gml:posList or gml:pos coordinate string.
-       @param points list that will contain the created points
-       @param coordString the text containing the coordinates
-       @param dimension number of dimensions
+       \param points list that will contain the created points
+       \param coordString the text containing the coordinates
+       \param dimension number of dimensions
        @return 0 in case of success
       */
     int pointsFromPosListString( QList<QgsPoint> &points, const QString &coordString, int dimension ) const;
@@ -342,12 +342,12 @@ class CORE_EXPORT QgsGml : public QObject
 
     /** Does the Http GET request to the wfs server
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
-     *  @param uri GML URL
-     *  @param wkbType wkbType to retrieve
-     *  @param extent retrieved extents
-     *  @param userName username for authentication
-     *  @param password password for authentication
-     *  @param authcfg authentication configuration id
+     *  \param uri GML URL
+     *  \param wkbType wkbType to retrieve
+     *  \param extent retrieved extents
+     *  \param userName username for authentication
+     *  \param password password for authentication
+     *  \param authcfg authentication configuration id
      *  @return 0 in case of success
      *  \note available in Python as getFeaturesUri
      */

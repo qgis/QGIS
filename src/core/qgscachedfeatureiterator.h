@@ -34,8 +34,8 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     /**
      * This constructor creates a feature iterator, that delivers all cached features. No request is made to the backend.
      *
-     * @param vlCache          The vector layer cache to use
-     * @param featureRequest   The feature request to answer
+     * \param vlCache          The vector layer cache to use
+     * \param featureRequest   The feature request to answer
      */
     QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     /**
      * Implementation for fetching a feature.
      *
-     * @param f      Will write to this feature
+     * \param f      Will write to this feature
      * @return bool  true if the operation was ok
      *
      * @see bool getFeature( QgsFeature& f )
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     /**
      * We have a local special iterator for FilterFids, no need to run the generic.
      *
-     * @param f      Will write to this feature
+     * \param f      Will write to this feature
      * @return bool  true if the operation was ok
      */
     virtual bool nextFeatureFilterFids( QgsFeature &f ) override { return fetchFeature( f ); }
@@ -92,8 +92,8 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
     /**
      * This constructor creates a feature iterator, which queries the backend and caches retrieved features.
      *
-     * @param vlCache          The vector layer cache to use
-     * @param featureRequest   The feature request to answer
+     * \param vlCache          The vector layer cache to use
+     * \param featureRequest   The feature request to answer
      */
     QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
     /**
      * Implementation for fetching a feature.
      *
-     * @param f      Will write to this feature
+     * \param f      Will write to this feature
      * @return bool  true if the operation was ok
      *
      * @see bool getFeature( QgsFeature& f )

@@ -42,14 +42,14 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     };
 
     /** Constructor
-     * @param c parent composition
+     * \param c parent composition
      */
     QgsComposerArrow( QgsComposition *c );
 
     /** Constructor
-     * @param startPoint start point for line
-     * @param stopPoint end point for line
-     * @param c parent composition
+     * \param startPoint start point for line
+     * \param stopPoint end point for line
+     * \param c parent composition
      */
     QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition *c );
 
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void setSceneRect( const QRectF &rectangle ) override;
 
     /** Sets the width of the arrow head in mm
-     * @param width width of arrow head
+     * \param width width of arrow head
      * @see arrowHeadWidth
      */
     void setArrowHeadWidth( double width );
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     double arrowHeadWidth() const { return mArrowHeadWidth; }
 
     /** Sets the marker to draw at the start of the line
-     * @param svgPath file path for svg marker graphic to draw
+     * \param svgPath file path for svg marker graphic to draw
      * @see startMarker
      * @see setEndMarker
      */
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QString startMarker() const { return mStartMarkerFile; }
 
     /** Sets the marker to draw at the end of the line
-     * @param svgPath file path for svg marker graphic to draw
+     * \param svgPath file path for svg marker graphic to draw
      * @see endMarker
      * @see setStartMarker
      */
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QColor arrowHeadStrokeColor() const { return mArrowHeadStrokeColor; }
 
     /** Sets the color used to draw the stroke around the arrow head.
-     * @param color arrow head stroke color
+     * \param color arrow head stroke color
      * @see setArrowHeadFillColor
      * @see arrowHeadStrokeColor
      * \since QGIS 2.5
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QColor arrowHeadFillColor() const { return mArrowHeadFillColor; }
 
     /** Sets the color used to fill the arrow head.
-     * @param color arrow head fill color
+     * \param color arrow head fill color
      * @see arrowHeadFillColor
      * @see setArrowHeadStrokeColor
      * \since QGIS 2.5
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void setArrowHeadFillColor( const QColor &color );
 
     /** Sets the pen width for the stroke of the arrow head
-     * @param width pen width for arrow head stroke
+     * \param width pen width for arrow head stroke
      * @see arrowHeadStrokeWidth
      * @see setArrowHeadStrokeColor
      * \since QGIS 2.5
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     double arrowHeadStrokeWidth() const { return mArrowHeadStrokeWidth; }
 
     /** Sets the line symbol used for drawing the line portion of the arrow
-     * @param symbol line symbol
+     * \param symbol line symbol
      * @see lineSymbol
      * \since QGIS 2.5
      */
@@ -174,20 +174,20 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     MarkerMode markerMode() const { return mMarkerMode; }
 
     /** Sets the marker mode, which controls how the arrow endpoints are drawn
-     * @param mode marker mode
+     * \param mode marker mode
      * @see setMarkerMode
      */
     void setMarkerMode( MarkerMode mode );
 
     /** Stores state in DOM element
-     * @param elem is DOM element corresponding to 'Composer' tag
-     * @param doc document
+     * \param elem is DOM element corresponding to 'Composer' tag
+     * \param doc document
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from DOM document
-     * @param itemElem is DOM node corresponding to item tag
-     * @param doc is the document to read
+     * \param itemElem is DOM node corresponding to item tag
+     * \param doc is the document to read
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 

@@ -37,18 +37,18 @@ class CORE_EXPORT QgsRasterBlock
     QgsRasterBlock();
 
     /** \brief Constructor which allocates data block in memory
-     *  @param dataType raster data type
-     *  @param width width of data matrix
-     *  @param height height of data matrix
+     *  \param dataType raster data type
+     *  \param width width of data matrix
+     *  \param height height of data matrix
      */
     QgsRasterBlock( Qgis::DataType dataType, int width, int height );
 
     virtual ~QgsRasterBlock();
 
     /** \brief Reset block
-     *  @param dataType raster data type
-     *  @param width width of data matrix
-     *  @param height height of data matrix
+     *  \param dataType raster data type
+     *  \param width width of data matrix
+     *  \param height height of data matrix
      *  @return true on success
      */
     bool reset( Qgis::DataType dataType, int width, int height );
@@ -158,80 +158,80 @@ class CORE_EXPORT QgsRasterBlock
     double noDataValue() const { return mNoDataValue; }
 
     /** Get byte array representing a value.
-     * @param dataType data type
-     * @param value value
+     * \param dataType data type
+     * \param value value
      * @return byte array representing the value */
     static QByteArray valueBytes( Qgis::DataType dataType, double value );
 
     /** \brief Read a single value if type of block is numeric. If type is color,
      *  returned value is undefined.
-     *  @param row row index
-     *  @param column column index
+     *  \param row row index
+     *  \param column column index
      *  @return value */
     double value( int row, int column ) const;
 
     /** \brief Read a single value if type of block is numeric. If type is color,
      *  returned value is undefined.
-     *  @param index data matrix index (long type in Python)
+     *  \param index data matrix index (long type in Python)
      *  @return value */
     double value( qgssize index ) const;
 
     /** \brief Read a single color
-     *  @param row row index
-     *  @param column column index
+     *  \param row row index
+     *  \param column column index
      *  @return color */
     QRgb color( int row, int column ) const;
 
     /** \brief Read a single value
-     *  @param index data matrix index (long type in Python)
+     *  \param index data matrix index (long type in Python)
      *  @return color */
     QRgb color( qgssize index ) const;
 
     /** \brief Check if value at position is no data
-     *  @param row row index
-     *  @param column column index
+     *  \param row row index
+     *  \param column column index
      *  @return true if value is no data */
     bool isNoData( int row, int column );
 
     /** \brief Check if value at position is no data
-     *  @param index data matrix index (long type in Python)
+     *  \param index data matrix index (long type in Python)
      *  @return true if value is no data */
     bool isNoData( qgssize index );
 
     /** \brief Set value on position
-     *  @param row row index
-     *  @param column column index
-     *  @param value the value to be set
+     *  \param row row index
+     *  \param column column index
+     *  \param value the value to be set
      *  @return true on success */
     bool setValue( int row, int column, double value );
 
     /** \brief Set value on index (indexed line by line)
-     *  @param index data matrix index (long type in Python)
-     *  @param value the value to be set
+     *  \param index data matrix index (long type in Python)
+     *  \param value the value to be set
      *  @return true on success */
     bool setValue( qgssize index, double value );
 
     /** \brief Set color on position
-     *  @param row row index
-     *  @param column column index
-     *  @param color the color to be set, QRgb value
+     *  \param row row index
+     *  \param column column index
+     *  \param color the color to be set, QRgb value
      *  @return true on success */
     bool setColor( int row, int column, QRgb color );
 
     /** \brief Set color on index (indexed line by line)
-     *  @param index data matrix index (long type in Python)
-     *  @param color the color to be set, QRgb value
+     *  \param index data matrix index (long type in Python)
+     *  \param color the color to be set, QRgb value
      *  @return true on success */
     bool setColor( qgssize index, QRgb color );
 
     /** \brief Set no data on pixel
-     *  @param row row index
-     *  @param column column index
+     *  \param row row index
+     *  \param column column index
      *  @return true on success */
     bool setIsNoData( int row, int column );
 
     /** \brief Set no data on pixel
-     *  @param index data matrix index (long type in Python)
+     *  \param index data matrix index (long type in Python)
      *  @return true on success */
     bool setIsNoData( qgssize index );
 
@@ -247,8 +247,8 @@ class CORE_EXPORT QgsRasterBlock
      * no data value set then an internal map of no data pixels is maintained for the block.
      * In this case it is possible to reset a pixel to flag it as having valid data using this
      * method. This method has no effect for raster blocks with an explicit no data value set.
-     *  @param row row index
-     *  @param column column index
+     *  \param row row index
+     *  \param column column index
      *  \since QGIS 2.10 */
     void setIsData( int row, int column );
 
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsRasterBlock
      * no data value set then an internal map of no data pixels is maintained for the block.
      * In this case it is possible to reset a pixel to flag it as having valid data using this
      * method. This method has no effect for raster blocks with an explicit no data value set.
-     *  @param index data matrix index (long type in Python)
+     *  \param index data matrix index (long type in Python)
      *  \since QGIS 2.10 */
     void setIsData( qgssize index );
 
@@ -281,15 +281,15 @@ class CORE_EXPORT QgsRasterBlock
     void setData( const QByteArray &data, int offset = 0 );
 
     /** \brief Get pointer to data
-     *  @param row row index
-     *  @param column column index
+     *  \param row row index
+     *  \param column column index
      *  @return pointer to data
      *  \note not available in Python bindings
      */
     char *bits( int row, int column );
 
     /** \brief Get pointer to data
-     *  @param index data matrix index (long type in Python)
+     *  \param index data matrix index (long type in Python)
      *  @return pointer to data
      *  \note not available in Python bindings
      */
@@ -303,13 +303,13 @@ class CORE_EXPORT QgsRasterBlock
 
     /** \brief Print double value with all necessary significant digits.
      *         It is ensured that conversion back to double gives the same number.
-     *  @param value the value to be printed
+     *  \param value the value to be printed
      *  @return string representing the value*/
     static QString printValue( double value );
 
     /** \brief Print float value with all necessary significant digits.
      *         It is ensured that conversion back to float gives the same number.
-     *  @param value the value to be printed
+     *  \param value the value to be printed
      *  @return string representing the value
      * \since QGIS 2.16
      * \note not available in Python bindings
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsRasterBlock
     static QString printValue( float value );
 
     /** \brief Convert data to different type.
-     *  @param destDataType dest data type
+     *  \param destDataType dest data type
      *  @return true on success */
     bool convert( Qgis::DataType destDataType );
 
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsRasterBlock
     QImage image() const;
 
     /** \brief set image.
-     *  @param image image
+     *  \param image image
      *  @return true on success */
     bool setImage( const QImage *image );
 
@@ -353,10 +353,10 @@ class CORE_EXPORT QgsRasterBlock
     /** \brief For extent and width, height find rectangle covered by subextent.
      * The output rect has x oriented from left to right and y from top to bottom
      * (upper-left to lower-right orientation).
-     * @param extent extent, usually the larger
-     * @param width numbers of columns in theExtent
-     * @param height numbers of rows in theExtent
-     * @param subExtent extent, usually smaller than theExtent
+     * \param extent extent, usually the larger
+     * \param width numbers of columns in theExtent
+     * \param height numbers of rows in theExtent
+     * \param subExtent extent, usually smaller than theExtent
      * @return the rectangle covered by sub extent
      */
     static QRect subRect( const QgsRectangle &extent, int width, int height, const QgsRectangle &subExtent );
@@ -378,13 +378,13 @@ class CORE_EXPORT QgsRasterBlock
     static Qgis::DataType dataType( QImage::Format format );
 
     /** Test if value is nodata comparing to noDataValue
-     * @param value tested value
-     * @param noDataValue no data value
+     * \param value tested value
+     * \param noDataValue no data value
      * @return true if value is nodata */
     static bool isNoDataValue( double value, double noDataValue );
 
     /** Test if value is nodata for specific band
-     * @param value tested value
+     * \param value tested value
      * @return true if value is nodata */
     bool isNoDataValue( double value ) const;
 
@@ -394,10 +394,10 @@ class CORE_EXPORT QgsRasterBlock
 
     /** \brief Convert block of data from one type to another. Original block memory
      *         is not release.
-     *  @param srcData source data
-     *  @param srcDataType source data type
-     *  @param destDataType dest data type
-     *  @param size block size (width * height)
+     *  \param srcData source data
+     *  \param srcDataType source data type
+     *  \param destDataType dest data type
+     *  \param size block size (width * height)
      *  @return block of data in destDataType */
     static void *convert( void *srcData, Qgis::DataType srcDataType, Qgis::DataType destDataType, qgssize size );
 

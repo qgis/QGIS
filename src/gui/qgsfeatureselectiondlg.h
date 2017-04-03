@@ -40,7 +40,7 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
 
     /**
      * Set the selected features
-     * @param ids The feature ids to select
+     * \param ids The feature ids to select
      */
     void setSelectedFeatures( const QgsFeatureIds &ids );
 

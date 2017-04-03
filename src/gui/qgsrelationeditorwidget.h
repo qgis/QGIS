@@ -44,7 +44,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
   public:
 
     /**
-     * @param parent parent widget
+     * \param parent parent widget
      */
     QgsRelationEditorWidget( QWidget *parent = nullptr );
 
@@ -62,8 +62,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      * If both relations are set, it will act as an N:M relation widget
      * inserting and deleting entries on the intermediate table as required.
      *
-     * @param relation    Relation referencing the edited table
-     * @param nmrelation  Optional reference from the referencing table to a 3rd N:M table
+     * \param relation    Relation referencing the edited table
+     * \param nmrelation  Optional reference from the referencing table to a 3rd N:M table
      */
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 

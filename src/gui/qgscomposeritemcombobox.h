@@ -38,8 +38,8 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
     /**
      * QgsComposerItemComboBox creates a combo box to display a list of items in a
      * composition. The items can optionally be filtered by type.
-     * @param parent parent widget
-     * @param composition composition to show items from. If not set, no items will be shown
+     * \param parent parent widget
+     * \param composition composition to show items from. If not set, no items will be shown
      * until setComposition() is called
      */
     explicit QgsComposerItemComboBox( QWidget *parent = nullptr, QgsComposition *composition = nullptr );
@@ -49,7 +49,7 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
     void setComposition( QgsComposition *composition );
 
     /** Sets a filter for the item type to show in the combo box.
-     * @param itemType type of items to show. Set to QgsComposerItem::ComposerItem to
+     * \param itemType type of items to show. Set to QgsComposerItem::ComposerItem to
      * show all items.
      * @see itemType()
      */
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
     QgsComposerItem::ItemType itemType() const;
 
     /** Sets a list of specific items to exclude from the combo box.
-     * @param exceptList list of items to exclude
+     * \param exceptList list of items to exclude
      * @see exceptedItemList()
      */
     void setExceptedItemList( const QList< QgsComposerItem * > &exceptList );
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
     QList< QgsComposerItem * > exceptedItemList() const;
 
     /** Return the item currently shown at the specified index within the combo box.
-     * @param index position of item to return
+     * \param index position of item to return
      * @see currentItem()
      */
     QgsComposerItem *item( int index ) const;
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
   public slots:
 
     /** Sets the currently selected item in the combo box.
-     * @param item selected item
+     * \param item selected item
      */
     void setItem( const QgsComposerItem *item );
 

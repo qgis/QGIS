@@ -140,7 +140,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * Set the minimum denominator for which this rule shall apply.
          * E.g. 1000 if it shall be evaluated between 1:1000 and 1:100'000
          * Set to 0 to disable the minimum check
-         * @param scaleMinDenom The minimum scale denominator for this rule
+         * \param scaleMinDenom The minimum scale denominator for this rule
          */
         void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
 
@@ -148,34 +148,34 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * Set the maximum denominator for which this rule shall apply.
          * E.g. 100'000 if it shall be evaluated between 1:1000 and 1:100'000
          * Set to 0 to disable the maximum check
-         * @param scaleMaxDenom maximum scale denominator for this rule
+         * \param scaleMaxDenom maximum scale denominator for this rule
          */
         void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
 
         /**
          * Set the expression used to check if a given feature shall be rendered with this rule
          *
-         * @param filterExp An expression
+         * \param filterExp An expression
          */
         void setFilterExpression( const QString &filterExp ) { mFilterExp = filterExp; initFilter(); }
 
         /**
          * Set a human readable description for this rule
          *
-         * @param description Description
+         * \param description Description
          */
         void setDescription( const QString &description ) { mDescription = description; }
 
         /**
          * Sets if this rule is active
-         * @param state Determines if the rule should be activated or deactivated
+         * \param state Determines if the rule should be activated or deactivated
          */
         void setActive( bool state ) { mIsActive = state; }
 
         /**
          * Sets if this rule is an ELSE rule
          *
-         * @param iselse If true, this rule is an ELSE rule
+         * \param iselse If true, this rule is an ELSE rule
          */
         void setIsElse( bool iselse ) { mElseRule = iselse; }
 
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
         /**
          * Create a rule from an XML definition
-         * @param ruleElem  The XML rule element
+         * \param ruleElem  The XML rule element
          * @return A new rule
          */
         static Rule *create( const QDomElement &ruleElem );
@@ -271,15 +271,15 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Check if a given feature shall be labelled by this rule
          *
-         * @param f         The feature to test
-         * @param context   The context in which the rendering happens
+         * \param f         The feature to test
+         * \param context   The context in which the rendering happens
          * @return          True if the feature shall be rendered
          */
         bool isFilterOK( QgsFeature &f, QgsRenderContext &context ) const;
 
         /**
          * Check if this rule applies for a given scale
-         * @param scale The scale to check. If set to 0, it will always return true.
+         * \param scale The scale to check. If set to 0, it will always return true.
          *
          * @return If the rule will be evaluated at this scale
          */

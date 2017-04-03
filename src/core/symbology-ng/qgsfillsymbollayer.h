@@ -90,7 +90,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     QPointF offset() { return mOffset; }
 
     /** Sets the units for the width of the fill's stroke.
-     * @param unit width units
+     * \param unit width units
      * @see strokeWidthUnit()
     */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
     /** Sets the units for the fill's offset.
-     * @param unit offset units
+     * \param unit offset units
      * @see offsetUnit()
     */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     /** Sets the color ramp used for the gradient fill. This is only
      * used if the gradient color type is set to ColorRamp.
-     * @param ramp color ramp. Ownership is transferred.
+     * \param ramp color ramp. Ownership is transferred.
      * @see colorRamp()
      * @see setGradientColorType()
      */
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
     /** Sets the blur radius, which controls the amount of blurring applied to the fill.
-     * @param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
+     * \param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
      * \since QGIS 2.3
      * @see blurRadius
      */
@@ -377,7 +377,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     int blurRadius() const { return mBlurRadius; }
 
     /** Sets whether the shapeburst fill should be drawn using the entire shape.
-     * @param useWholeShape Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
+     * \param useWholeShape Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
      * be shaded
      * \since QGIS 2.3
      * @see useWholeShape
@@ -394,7 +394,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     bool useWholeShape() const { return mUseWholeShape; }
 
     /** Sets the maximum distance to shape inside of the shape from the polygon's boundary.
-     * @param maxDistance distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
+     * \param maxDistance distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
      * \since QGIS 2.3
      * @see maxDistance
      * @see setUseWholeShape
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     double maxDistance() const { return mMaxDistance; }
 
     /** Sets the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
-     * @param unit distance unit for the maximum distance
+     * \param unit distance unit for the maximum distance
      * \since QGIS 2.3
      * @see setMaxDistance
      * @see distanceUnit
@@ -432,7 +432,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /** Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
      * or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
-     * @param colorType color type to use for shapeburst fill
+     * \param colorType color type to use for shapeburst fill
      * \since QGIS 2.3
      * @see colorType
      * @see setColor
@@ -453,7 +453,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     ShapeburstColorType colorType() const { return mColorType; }
 
     /** Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
-     * @param ramp color ramp to use for shapeburst fill
+     * \param ramp color ramp to use for shapeburst fill
      * \since QGIS 2.3
      * @see setColorType
      * @see colorRamp
@@ -469,7 +469,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     QgsColorRamp *colorRamp() { return mGradientRamp; }
 
     /** Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType::SimpleTwoColor.
-     * @param color2 QColor to use for endpoint of gradient
+     * \param color2 QColor to use for endpoint of gradient
      * \since QGIS 2.3
      * @see setColorType
      * @see color2
@@ -486,7 +486,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /** Sets whether the shapeburst fill should ignore polygon rings when calculating
      * the buffered shading.
-     * @param ignoreRings Set to true if buffers should ignore interior rings for polygons.
+     * \param ignoreRings Set to true if buffers should ignore interior rings for polygons.
      * \since QGIS 2.3
      * @see ignoreRings
      */
@@ -500,7 +500,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     bool ignoreRings() const { return mIgnoreRings; }
 
     /** Sets the offset for the shapeburst fill.
-     * @param offset QPointF indicating the horizontal/vertical offset amount
+     * \param offset QPointF indicating the horizontal/vertical offset amount
      * \since QGIS 2.3
      * @see offset
      * @see setOffsetUnit
@@ -516,7 +516,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     QPointF offset() const { return mOffset; }
 
     /** Sets the units used for the offset for the shapeburst fill.
-     * @param unit units for fill offset
+     * \param unit units for fill offset
      * \since QGIS 2.3
      * @see setOffset
      * @see offsetUnit
@@ -592,7 +592,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     virtual bool setSubSymbol( QgsSymbol *symbol ) override;
 
     /** Sets the units for the symbol's stroke width.
-     * @param unit symbol units
+     * \param unit symbol units
      * @see strokeWidthUnit()
     */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
@@ -668,7 +668,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     virtual bool setSubSymbol( QgsSymbol *symbol ) override;
 
     /** Sets the path to the raster image used for the fill.
-     * @param imagePath path to image file
+     * \param imagePath path to image file
      * @see imageFilePath
      */
     void setImageFilePath( const QString &imagePath );
@@ -681,7 +681,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     /** Set the coordinate mode for fill. Controls how the top left corner of the image
      * fill is positioned relative to the feature.
-     * @param mode coordinate mode
+     * \param mode coordinate mode
      * @see coordinateMode
      */
     void setCoordinateMode( const FillCoordinateMode mode );
@@ -694,7 +694,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     FillCoordinateMode coordinateMode() const { return mCoordinateMode; }
 
     /** Sets the opacity for the raster image used in the fill.
-     * @param alpha opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \param alpha opacity value between 0 (fully transparent) and 1 (fully opaque)
      * @see alpha
      */
     void setAlpha( const double alpha );
@@ -706,7 +706,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     double alpha() const { return mAlpha; }
 
     /** Sets the offset for the fill.
-     * @param offset offset for fill
+     * \param offset offset for fill
      * @see offset
      * @see setOffsetUnit
      * @see setOffsetMapUnitScale
@@ -722,7 +722,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QPointF offset() const { return mOffset; }
 
     /** Sets the units for the fill's offset.
-     * @param unit units for offset
+     * \param unit units for offset
      * @see offsetUnit
      * @see setOffset
      * @see setOffsetMapUnitScale
@@ -738,7 +738,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /** Sets the map unit scale for the fill's offset.
-     * @param scale map unit scale for offset
+     * \param scale map unit scale for offset
      * @see offsetMapUnitScale
      * @see setOffset
      * @see setOffsetUnit
@@ -755,7 +755,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     /** Sets the width for scaling the image used in the fill. The image's height will also be
      * scaled to maintain the image's aspect ratio.
-     * @param width width for scaling the image
+     * \param width width for scaling the image
      * @see width
      * @see setWidthUnit
      * @see setWidthMapUnitScale
@@ -772,7 +772,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     double width() const { return mWidth; }
 
     /** Sets the units for the image's width.
-     * @param unit units for width
+     * \param unit units for width
      * @see widthUnit
      * @see setWidth
      * @see setWidthMapUnitScale
@@ -788,7 +788,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsUnitTypes::RenderUnit widthUnit() const { return mWidthUnit; }
 
     /** Sets the map unit scale for the image's width.
-     * @param scale map unit scale for width
+     * \param scale map unit scale for width
      * @see widthMapUnitScale
      * @see setWidth
      * @see setWidthUnit
@@ -868,7 +868,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     double svgStrokeWidth() const { return mSvgStrokeWidth; }
 
     /** Sets the units for the width of the SVG images in the pattern.
-     * @param unit width units
+     * \param unit width units
      * @see patternWidthUnit()
     */
     void setPatternWidthUnit( QgsUnitTypes::RenderUnit unit ) { mPatternWidthUnit = unit; }
@@ -882,7 +882,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     const QgsMapUnitScale &patternWidthMapUnitScale() const { return mPatternWidthMapUnitScale; }
 
     /** Sets the units for the stroke width.
-     * @param unit width units
+     * \param unit width units
      * @see svgStrokeWidthUnit()
     */
     void setSvgStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSvgStrokeWidthUnit = unit; }
@@ -968,7 +968,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double lineAngle() const { return mLineAngle; }
 
     /** Sets the distance between lines in the fill pattern.
-     * @param d distance. Units are specified by setDistanceUnit()
+     * \param d distance. Units are specified by setDistanceUnit()
      * @see distance()
      * @see setDistanceUnit()
     */
@@ -988,7 +988,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double offset() const { return mOffset; }
 
     /** Sets the units for the distance between lines in the fill pattern.
-     * @param unit distance units
+     * \param unit distance units
      * @see distanceUnit()
      * @see setDistance()
     */
@@ -1004,7 +1004,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     const QgsMapUnitScale &distanceMapUnitScale() const { return mDistanceMapUnitScale; }
 
     /** Sets the units for the line's width.
-     * @param unit width units
+     * \param unit width units
      * @see lineWidthUnit()
     */
     void setLineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mLineWidthUnit = unit; }
@@ -1018,7 +1018,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     const QgsMapUnitScale &lineWidthMapUnitScale() const { return mLineWidthMapUnitScale; }
 
     /** Sets the units for the line pattern's offset.
-     * @param unit offset units
+     * \param unit offset units
      * @see offsetUnit()
     */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
@@ -1112,7 +1112,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     virtual QgsSymbol *subSymbol() override { return mMarkerSymbol; }
 
     /** Sets the units for the horizontal distance between points in the pattern.
-     * @param unit distance units
+     * \param unit distance units
      * @see distanceXUnit()
      * @see setDistanceYUnit()
     */
@@ -1128,7 +1128,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     const QgsMapUnitScale &distanceXMapUnitScale() const { return mDistanceXMapUnitScale; }
 
     /** Sets the units for the vertical distance between points in the pattern.
-     * @param unit distance units
+     * \param unit distance units
      * @see distanceYUnit()
      * @see setDistanceXUnit()
     */
@@ -1144,7 +1144,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     const QgsMapUnitScale &distanceYMapUnitScale() const { return mDistanceYMapUnitScale; }
 
     /** Sets the units for the horizontal displacement between rows in the pattern.
-     * @param unit displacement units
+     * \param unit displacement units
      * @see displacementXUnit()
      * @see setDisplacementYUnit()
     */
@@ -1160,7 +1160,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     const QgsMapUnitScale &displacementXMapUnitScale() const { return mDisplacementXMapUnitScale; }
 
     /** Sets the units for the vertical displacement between rows in the pattern.
-     * @param unit displacement units
+     * \param unit displacement units
      * @see displacementYUnit()
      * @see setDisplacementXUnit()
     */

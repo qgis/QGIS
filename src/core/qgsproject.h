@@ -99,7 +99,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     ~QgsProject();
 
     /** Sets the project's title.
-     * @param title new title
+     * \param title new title
      * \since QGIS 2.4
      * @see title()
      */
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Sets the file name associated with the project. This is the file which contains the project's XML
      * representation.
-     * @param name project file name
+     * \param name project file name
      * @see fileName()
      */
     void setFileName( const QString &name );
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void clear();
 
     /** Reads given project file from the given file.
-     * @param filename name of project file to read
+     * \param filename name of project file to read
      * @returns true if project file has been read successfully
      */
     bool read( const QString &filename );
@@ -189,13 +189,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * that may fix definition of bad layers with the user's help in GUI. Calling
      * this method with corrected DOM node adds the layer back to the project.
      *
-     * @param layerNode represents a QgsProject DOM node that encodes a specific layer.
+     * \param layerNode represents a QgsProject DOM node that encodes a specific layer.
      */
     bool readLayer( const QDomNode &layerNode );
 
     /**
      * Writes the project to a file.
-     * @param filename destination file
+     * \param filename destination file
      * \note calling this implicitly sets the project's filename (see setFileName() )
      * \note isDirty() will be set to false if project is successfully written
      * @returns true if project was written successfully
@@ -519,7 +519,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     int count() const;
 
     /** Retrieve a pointer to a registered layer by layer ID.
-     * @param layerId ID of layer to retrieve
+     * \param layerId ID of layer to retrieve
      * @returns matching layer, or nullptr if no matching layer found
      * @see mapLayersByName()
      * @see mapLayers()
@@ -527,7 +527,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsMapLayer *mapLayer( const QString &layerId ) const;
 
     /** Retrieve a list of matching registered layers by layer name.
-     * @param layerName name of layers to match
+     * \param layerName name of layers to match
      * @returns list of matching layers
      * @see mapLayer()
      * @see mapLayers()
@@ -574,11 +574,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The layersAdded() and layerWasAdded() signals will always be emitted.
      * The legendLayersAdded() signal is emitted only if addToLegend is true.
      *
-     * @param mapLayers  A list of layer which should be added to the registry
-     * @param addToLegend   If true (by default), the layers will be added to the
+     * \param mapLayers  A list of layer which should be added to the registry
+     * \param addToLegend   If true (by default), the layers will be added to the
      *                      legend and to the main canvas. If you have a private
      *                      layer you can set this parameter to false to hide it.
-     * @param takeOwnership Ownership will be transferred to the layer registry.
+     * \param takeOwnership Ownership will be transferred to the layer registry.
      *                      If you specify false here you have take care of deleting
      *                      the layers yourself. Not available in Python.
      *
@@ -605,11 +605,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * If you are adding multiple layers at once, you should use
      * addMapLayers() instead.
      *
-     * @param mapLayer A layer to add to the registry
-     * @param addToLegend If true (by default), the layer will be added to the
+     * \param mapLayer A layer to add to the registry
+     * \param addToLegend If true (by default), the layer will be added to the
      *                    legend and to the main canvas. If you have a private
      *                    layer you can set this parameter to false to hide it.
-     * @param takeOwnership Ownership will be transferred to the layer registry.
+     * \param takeOwnership Ownership will be transferred to the layer registry.
      *                      If you specify false here you have take care of deleting
      *                      the layer yourself. Not available in Python.
      *
@@ -632,7 +632,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layers will be removed from the registry. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
-     * @param layerIds list of IDs of the layers to remove
+     * \param layerIds list of IDs of the layers to remove
      *
      * \note As a side-effect the QgsProject instance is marked dirty.
      * \since QGIS 1.8
@@ -648,7 +648,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layers will be removed from the registry. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
-     * @param layers A list of layers to remove. Null pointers are ignored.
+     * \param layers A list of layers to remove. Null pointers are ignored.
      *
      * \note As a side-effect the QgsProject instance is marked dirty.
      * @see removeMapLayer()
@@ -664,7 +664,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layer will be removed from the registry. If the registry has ownership
      * of the layer then it will also be deleted.
      *
-     * @param layerId ID of the layer to remove
+     * \param layerId ID of the layer to remove
      *
      * \note As a side-effect the QgsProject instance is marked dirty.
      * @see removeMapLayers()
@@ -679,7 +679,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layer will be removed from the registry. If the registry has ownership
      * of the layer then it will also be deleted.
      *
-     * @param layer The layer to remove. Null pointers are ignored.
+     * \param layer The layer to remove. Null pointers are ignored.
      *
      * \note As a side-effect the QgsProject instance is marked dirty.
      * @see removeMapLayers()
@@ -718,8 +718,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * file is done. You can use this signal to read additional information
      * from the project file.
      *
-     * @param mapLayer  The map layer which is being initialized
-     * @param layerNode The layer node from the project file
+     * \param mapLayer  The map layer which is being initialized
+     * \param layerNode The layer node from the project file
      */
     void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
 
@@ -727,9 +727,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted, when a layer is being saved. You can use this method to save
      * additional information to the layer.
      *
-     * @param mapLayer  The map layer which is being initialized
-     * @param layerElem The layer element from the project file
-     * @param doc The document
+     * \param mapLayer  The map layer which is being initialized
+     * \param layerElem The layer element from the project file
+     * \param doc The document
      */
     void writeMapLayer( QgsMapLayer *mapLayer, QDomElement &layerElem, QDomDocument &doc );
 
@@ -741,8 +741,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Emitted when a layer from a projects was read.
-     * @param i current layer
-     * @param n number of layers
+     * \param i current layer
+     * \param n number of layers
      */
     void layerLoaded( int i, int n );
 
@@ -814,7 +814,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when one or more layers are about to be removed from the registry.
      *
-     * @param layerIds A list of IDs for the layers which are to be removed.
+     * \param layerIds A list of IDs for the layers which are to be removed.
      * @see layerWillBeRemoved()
      * @see layersRemoved()
      */
@@ -823,7 +823,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when one or more layers are about to be removed from the registry.
      *
-     * @param layers A list of layers which are to be removed.
+     * \param layers A list of layers which are to be removed.
      * @see layerWillBeRemoved()
      * @see layersRemoved()
      */
@@ -832,7 +832,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when a layer is about to be removed from the registry.
      *
-     * @param layerId The ID of the layer to be removed.
+     * \param layerId The ID of the layer to be removed.
      *
      * \note Consider using {@link layersWillBeRemoved()} instead
      * @see layersWillBeRemoved()
@@ -843,7 +843,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when a layer is about to be removed from the registry.
      *
-     * @param layer The layer to be removed.
+     * \param layer The layer to be removed.
      *
      * \note Consider using {@link layersWillBeRemoved()} instead
      * @see layersWillBeRemoved()
@@ -854,7 +854,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted after one or more layers were removed from the registry.
      *
-     * @param layerIds  A list of IDs of the layers which were removed.
+     * \param layerIds  A list of IDs of the layers which were removed.
      * @see layersWillBeRemoved()
      */
     void layersRemoved( const QStringList &layerIds );
@@ -862,7 +862,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted after a layer was removed from the registry.
      *
-     * @param layerId The ID of the layer removed.
+     * \param layerId The ID of the layer removed.
      *
      * \note Consider using {@link layersRemoved()} instead
      * @see layerWillBeRemoved()
@@ -883,7 +883,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * This signal is also emitted for layers added to the registry,
      * but not to the legend.
      *
-     * @param layers List of layers which have been added.
+     * \param layers List of layers which have been added.
      *
      * @see legendLayersAdded()
      * @see layerWasAdded()
@@ -904,7 +904,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * {@link layersAdded()} and {@link layerWasAdded()} but will not be
      * advertised by this signal.
      *
-     * @param layers List of {@link QgsMapLayer}s which were added to the legend.
+     * \param layers List of {@link QgsMapLayer}s which were added to the legend.
      */
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 
@@ -938,8 +938,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     static QgsProject *sProject;
 
     /** Read map layers from project file.
-     * @param doc DOM document to parse
-     * @param brokenNodes a list of DOM nodes corresponding to layers that we were unable to load; this could be
+     * \param doc DOM document to parse
+     * \param brokenNodes a list of DOM nodes corresponding to layers that we were unable to load; this could be
      * because the layers were removed or re-located after the project was last saved
      * @returns true if function worked; else is false
     */

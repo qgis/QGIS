@@ -29,8 +29,8 @@ class QgsFtpTransaction: public QObject
     ~QgsFtpTransaction();
 
     /** Transfers the file with the given Url and stores it into ba
-       @param ftpUrl url of the file to access
-       @param pointer to buffer to store file contents
+       \param ftpUrl url of the file to access
+       \param pointer to buffer to store file contents
        @return 0 in case of success*/
     Q_DECL_DEPRECATED int get( const QString &ftpUrl, QByteArray &ba );
 

@@ -53,7 +53,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     virtual void readProperties( const QgsStringMap &props ) override;
 
     /** Sets the spread distance for drawing the glow effect.
-     * @param spread spread distance. Units are specified via @link setSpreadUnit @endlink
+     * \param spread spread distance. Units are specified via @link setSpreadUnit @endlink
      * @see spread
      * @see setSpreadUnit
      * @see setSpreadMapUnitScale
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     double spread() const { return mSpread; }
 
     /** Sets the units used for the glow spread distance.
-     * @param unit units for spread distance
+     * \param unit units for spread distance
      * @see spreadUnit
      * @see setSpread
      * @see setSpreadMapUnitScale
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     QgsUnitTypes::RenderUnit spreadUnit() const { return mSpreadUnit; }
 
     /** Sets the map unit scale used for the spread distance.
-     * @param scale map unit scale for spread distance
+     * \param scale map unit scale for spread distance
      * @see spreadMapUnitScale
      * @see setSpread
      * @see setSpreadUnit
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
 
     /** Sets blur level (strength) for the glow. This can be used to smooth the
      * output from the glow effect.
-     * @param level blur level. Values between 0 and 16 are valid, with larger
+     * \param level blur level. Values between 0 and 16 are valid, with larger
      * values indicating greater blur strength.
      * @see blurLevel
      */
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     int blurLevel() const { return mBlurLevel; }
 
     /** Sets the transparency for the effect
-     * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
+     * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see transparency
      */
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     /** Sets the color for the glow. This only applies if the @link colorType @endlink
      * is set to SingleColor. The glow will fade between the specified color and
      * a totally transparent version of the color.
-     * @param color glow color
+     * \param color glow color
      * @see color
      * @see setColorType
      */
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
 
     /** Sets the color ramp for the glow. This only applies if the @link colorType @endlink
      * is set to ColorRamp. The glow will utilize colors from the ramp.
-     * @param ramp color ramp for glow. Ownership of the ramp is transferred to the effect.
+     * \param ramp color ramp for glow. Ownership of the ramp is transferred to the effect.
      * @see ramp
      * @see setColorType
      */
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     QgsColorRamp *ramp() const { return mRamp; }
 
     /** Sets the blend mode for the effect
-     * @param mode blend mode used for drawing the effect on to a destination
+     * \param mode blend mode used for drawing the effect on to a destination
      * paint device
      * @see blendMode
      */
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     /** Sets the color mode to use for the glow. The glow can either be drawn using a QgsColorRamp
      * color ramp or by simply specificing a single color. setColorType is used to specify which mode to use
      * for the glow.
-     * @param colorType color type to use for glow
+     * \param colorType color type to use for glow
      * @see colorType
      * @see setColor
      * @see setRamp
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
   public:
 
     /** Creates a new QgsOuterGlowEffect effect from a properties string map.
-     * @param map encoded properties string map
+     * \param map encoded properties string map
      * @returns new QgsOuterGlowEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map );
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
   public:
 
     /** Creates a new QgsInnerGlowEffect effect from a properties string map.
-     * @param map encoded properties string map
+     * \param map encoded properties string map
      * @returns new QgsInnerGlowEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map );

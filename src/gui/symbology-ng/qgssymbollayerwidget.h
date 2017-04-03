@@ -44,7 +44,7 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     virtual QgsSymbolLayer *symbolLayer() = 0;
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
+     * \param context symbol widget context
      * @see context()
      * \since QGIS 3.0
      */
@@ -256,13 +256,13 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
   public:
 
     /** Constructor for QgsFilledMarkerSymbolLayerWidget.
-     * @param vl associated vector layer
-     * @param parent parent widget
+     * \param vl associated vector layer
+     * \param parent parent widget
      */
     QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
 
     /** Creates a new QgsFilledMarkerSymbolLayerWidget.
-     * @param vl associated vector layer
+     * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) { return new QgsFilledMarkerSymbolLayerWidget( vl ); }
 
@@ -537,7 +537,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
 
     /** Enables or disables svg fill color, stroke color and stroke width based on whether the
      * svg file supports custom parameters.
-     * @param resetValues set to true to overwrite existing layer fill color, stroke color and stroke width
+     * \param resetValues set to true to overwrite existing layer fill color, stroke color and stroke width
      * with default values from svg file
      */
     void updateParamGui( bool resetValues = true );

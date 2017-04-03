@@ -38,9 +38,9 @@ class CORE_EXPORT QgsMapHitTest
     //! Maps an expression string to a layer id
     typedef QMap<QString, QString> LayerFilterExpression;
 
-    //! @param settings Map settings used to evaluate symbols
-    //! @param polygon Polygon geometry to refine the hit test
-    //! @param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
+    //! \param settings Map settings used to evaluate symbols
+    //! \param polygon Polygon geometry to refine the hit test
+    //! \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
     QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const LayerFilterExpression &layerFilterExpression = LayerFilterExpression() );
 
     //! Constructor version used with only expressions to filter symbols (no extent or polygon intersection)
@@ -50,16 +50,16 @@ class CORE_EXPORT QgsMapHitTest
     void run();
 
     /** Tests whether a symbol is visible for a specified layer.
-     * @param symbol symbol to find
-     * @param layer vector layer
+     * \param symbol symbol to find
+     * \param layer vector layer
      * \since QGIS 2.12
      * @see legendKeyVisible()
      */
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 
     /** Tests whether a given legend key is visible for a specified layer.
-     * @param ruleKey legend rule key
-     * @param layer vector layer
+     * \param ruleKey legend rule key
+     * \param layer vector layer
      * \since QGIS 2.14
      * @see symbolVisible()
      */
@@ -74,10 +74,10 @@ class CORE_EXPORT QgsMapHitTest
     typedef QMap<QgsVectorLayer *, SymbolSet> HitTest;
 
     /** Runs test for visible symbols within a layer
-     * @param vl vector layer
-     * @param usedSymbols set for storage of visible symbols
-     * @param usedSymbolsRuleKey set of storage of visible legend rule keys
-     * @param context render context
+     * \param vl vector layer
+     * \param usedSymbols set for storage of visible symbols
+     * \param usedSymbolsRuleKey set of storage of visible legend rule keys
+     * \param context render context
      * \since QGIS 2.12
      * \note not available in Python bindings
      */

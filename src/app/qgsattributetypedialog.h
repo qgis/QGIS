@@ -36,7 +36,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     /**
      * Setting page which is to be selected
-     * @param index index of page which was selected
+     * \param index index of page which was selected
      */
     void setPage( int index );
 
@@ -52,7 +52,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     /**
      * Setter for checkbox to label on top
-     * @param bool onTop
+     * \param bool onTop
      */
     void setLabelOnTop( bool onTop );
 
@@ -118,7 +118,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     /**
      * Setter for constraint expression description
-     * @param desc the expression description
+     * \param desc the expression description
      * \since QGIS 2.16
      **/
     void setConstraintExpressionDescription( const QString &desc );
@@ -167,7 +167,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     /**
      * Slot to handle change of index in combobox to select correct page
-     * @param index index of value in combobox
+     * \param index index of value in combobox
      */
     void on_selectionListWidget_currentRowChanged( int index );
 

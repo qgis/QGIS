@@ -75,7 +75,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     static QList< FilterFlag > nonExclusiveFilterFlags();
 
     /** Returns a translated string representing a filter flag.
-     * @param flag flag to convert to string
+     * \param flag flag to convert to string
      * \since QGIS 2.16
      */
     static QString toString( FilterFlag flag );
@@ -83,9 +83,9 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     /**
      * Create a new widget wrapper
      *
-     * @param vl        The layer on which the field is
-     * @param fieldIdx  The field which will be controlled
-     * @param parent    A parent widget for this widget wrapper and the created widget.
+     * \param vl        The layer on which the field is
+     * \param fieldIdx  The field which will be controlled
+     * \param parent    A parent widget for this widget wrapper and the created widget.
      */
     explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
     /** Creates a filter expression based on the current state of the search widget
      * and the specified filter flags.
-     * @param flags filter flags
+     * \param flags filter flags
      * @returns filter expression
      * \since QGIS 2.16
      */
@@ -135,7 +135,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     virtual void clearWidget() {}
 
     /** Toggles whether the search widget is enabled or disabled.
-     * @param enabled set to true to enable widget
+     * \param enabled set to true to enable widget
      */
     virtual void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
 
@@ -143,7 +143,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Emitted whenever the expression changes
-     * @param exp The new search expression
+     * \param exp The new search expression
      */
     void expressionChanged( const QString &exp );
 

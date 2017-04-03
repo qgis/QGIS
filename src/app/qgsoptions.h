@@ -43,10 +43,10 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     /**
      * Constructor
-     * @param parent Parent widget (usually a QgisApp)
-     * @param name name for the widget
-     * @param modal true for modal dialog
-     * @param optionsFactories factories for additional option pages
+     * \param parent Parent widget (usually a QgisApp)
+     * \param name name for the widget
+     * \param modal true for modal dialog
+     * \param optionsFactories factories for additional option pages
      */
     QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
                 const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );

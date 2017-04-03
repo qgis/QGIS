@@ -47,8 +47,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 
     /**
      * Creates an advanced digitizing maptool
-     * @param canvas         The map canvas on which the tool works
-     * @param cadDockWidget  The cad dock widget which will be used to adjust mouse events
+     * \param canvas         The map canvas on which the tool works
+     * \param cadDockWidget  The cad dock widget which will be used to adjust mouse events
      */
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * Set capture mode. This should correspond to the layer on which the digitizing
      * happens.
      *
-     * @param mode Capture Mode
+     * \param mode Capture Mode
      */
     void setMode( CaptureMode mode ) { mCaptureMode = mode; }
 
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * canvasPressEvent is triggered and it's not hidden by the cad's
      * construction mode.
      *
-     * @param e Mouse events prepared by the cad system
+     * \param e Mouse events prepared by the cad system
      */
     virtual void cadCanvasPressEvent( QgsMapMouseEvent *e ) { Q_UNUSED( e ) }
 
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * canvasReleaseEvent is triggered and it's not hidden by the cad's
      * construction mode.
      *
-     * @param e Mouse events prepared by the cad system
+     * \param e Mouse events prepared by the cad system
      */
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) { Q_UNUSED( e ) }
 
@@ -117,7 +117,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * canvasMoveEvent is triggered and it's not hidden by the cad's
      * construction mode.
      *
-     * @param e Mouse events prepared by the cad system
+     * \param e Mouse events prepared by the cad system
      */
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) { Q_UNUSED( e ) }
 
@@ -137,7 +137,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * The specified point will be used to generate a fake mouse event which will
      * be sent as move event to cadCanvasMoveEvent.
      *
-     * @param point The last point known to the cad system.
+     * \param point The last point known to the cad system.
      */
     void cadPointChanged( const QgsPoint &point );
 

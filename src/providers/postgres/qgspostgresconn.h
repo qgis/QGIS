@@ -187,7 +187,7 @@ class QgsPostgresConn : public QObject
 
   public:
     /*
-     * @param shared allow using a shared connection. Should never be
+     * \param shared allow using a shared connection. Should never be
      *        called from a thread other than the main one.
      *        An assertion guards against such programmatic error.
      */
@@ -270,12 +270,12 @@ class QgsPostgresConn : public QObject
     static QString quotedValue( const QVariant &value );
 
     /** Get the list of supported layers
-     * @param layers list to store layers in
-     * @param searchGeometryColumnsOnly only look for geometry columns which are
+     * \param layers list to store layers in
+     * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
-     * @param searchPublicOnly
-     * @param allowGeometrylessTables
-     * @param schema restrict layers to layers within specified schema
+     * \param searchPublicOnly
+     * \param allowGeometrylessTables
+     * \param schema restrict layers to layers within specified schema
      * @returns true if layers were fetched successfully
      */
     bool supportedLayers( QVector<QgsPostgresLayerProperty> &layers,
@@ -285,7 +285,7 @@ class QgsPostgresConn : public QObject
                           const QString &schema = QString() );
 
     /** Get the list of database schemas
-     * @param schemas list to store schemas in
+     * \param schemas list to store schemas in
      * @returns true if schemas where fetched successfully
      * \since QGIS 2.7
      */
@@ -294,11 +294,11 @@ class QgsPostgresConn : public QObject
     void retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata );
 
     /** Gets information about the spatial tables
-     * @param searchGeometryColumnsOnly only look for geometry columns which are
+     * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
-     * @param searchPublicOnly
-     * @param allowGeometrylessTables
-     * @param schema restrict tables to those within specified schema
+     * \param searchPublicOnly
+     * \param allowGeometrylessTables
+     * \param schema restrict tables to those within specified schema
      * @returns true if tables were successfully queried
      */
     bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables,

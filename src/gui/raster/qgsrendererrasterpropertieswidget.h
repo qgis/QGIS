@@ -39,15 +39,15 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
 
     /**
      * A widget to hold the renderer properties for a raster layer.
-     * @param layer The raster layer to style
-     * @param canvas The canvas object used to calculate the max and min values from the extent.
-     * @param parent Parent object
+     * \param layer The raster layer to style
+     * \param canvas The canvas object used to calculate the max and min values from the extent.
+     * \param parent Parent object
      */
     QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
-     * @param canvas map canvas
+     * \param canvas map canvas
      * \since QGIS 2.12
      */
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
 
     /**
      * @brief Sync the widget to the given layer.
-     * @param layer The layer to use for the widget
+     * \param layer The layer to use for the widget
      */
     void syncToLayer( QgsRasterLayer *layer );
 

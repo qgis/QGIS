@@ -77,12 +77,12 @@ class CORE_EXPORT QgsLayerDefinition
       public:
 
         /** Constructor
-         * @param doc The XML document containing maplayer elements
+         * \param doc The XML document containing maplayer elements
          */
         DependencySorter( const QDomDocument &doc );
 
         /** Constructor
-         * @param fileName The filename where the XML document is stored
+         * \param fileName The filename where the XML document is stored
          */
         DependencySorter( const QString &fileName );
 

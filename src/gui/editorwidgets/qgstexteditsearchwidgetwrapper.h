@@ -35,9 +35,9 @@ class GUI_EXPORT QgsTextEditSearchWidgetWrapper : public QgsDefaultSearchWidgetW
   public:
 
     /** Constructor for QgsTextEditSearchWidgetWrapper.
-     * @param vl associated vector layer
-     * @param fieldIdx index of associated field
-     * @param parent parent widget
+     * \param vl associated vector layer
+     * \param fieldIdx index of associated field
+     * \param parent parent widget
      */
     explicit QgsTextEditSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 

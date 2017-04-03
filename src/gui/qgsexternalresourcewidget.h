@@ -61,7 +61,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     /**
      * @brief documentPath returns the path of the current document in the widget
-     * @param type determines the type of the returned null variant if the document is not defined yet
+     * \param type determines the type of the returned null variant if the document is not defined yet
      */
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
     void setDocumentPath( const QVariant &documentPath );
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     /**
      * @brief setDocumentViewerWidth set the height of the document viewer.
-     * @param height the height. Use 0 for automatic best display.
+     * \param height the height. Use 0 for automatic best display.
      */
     void setDocumentViewerHeight( int height );
     //! returns the width of the document viewer
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     /**
      * @brief setDocumentViewerWidth set the width of the document viewer.
-     * @param width the width. Use 0 for automatic best display.
+     * \param width the width. Use 0 for automatic best display.
      */
     void setDocumentViewerWidth( int width );
 

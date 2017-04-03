@@ -89,10 +89,10 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
     /**
        * Symbol selector widget that can be used to select and build a symbol
-       * @param symbol The symbol to load into the widget as a start point.
-       * @param style The style used by the widget.
-       * @param vl The vector layer for the symbol.
-       * @param parent
+       * \param symbol The symbol to load into the widget as a start point.
+       * \param style The style used by the widget.
+       * \param vl The vector layer for the symbol.
+       * \param parent
        */
     QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent = nullptr );
 
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QMenu *advancedMenu();
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
+     * \param context symbol widget context
      * @see context()
      * \since QGIS 3.0
      */
@@ -128,8 +128,8 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
     /**
      * Load the given symbol into the widget..
-     * @param symbol The symbol to load.
-     * @param parent The parent symbol layer item.
+     * \param symbol The symbol to load.
+     * \param parent The parent symbol layer item.
      */
     void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent );
 
@@ -154,13 +154,13 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
     /**
      * Move the current active layer by a set offset in the list.
-     * @param offset The offset to move the layer by
+     * \param offset The offset to move the layer by
      */
     void moveLayerByOffset( int offset );
 
     /**
      * Set the properties widget for the active symbol layer.
-     * @param widget The widget to set to configure the active symbol layer.
+     * \param widget The widget to set to configure the active symbol layer.
      */
     void setWidget( QWidget *widget );
 
@@ -254,7 +254,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     QMenu *advancedMenu();
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
+     * \param context symbol widget context
      * @see context()
      * \since QGIS 3.0
      */

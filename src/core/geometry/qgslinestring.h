@@ -62,7 +62,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool operator!=( const QgsCurve &other ) const override;
 
     /** Returns the specified point from inside the line string.
-     * @param i index of point, starting at 0 for the first point
+     * \param i index of point, starting at 0 for the first point
      */
     QgsPointV2 pointN( int i ) const;
 
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     double yAt( int index ) const override;
 
     /** Returns the z-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0
+     * \param index index of node, where the first node in the line is 0
      * @returns z-coordinate of node, or 0.0 if index is out of bounds or the line
      * does not have a z dimension
      * @see setZAt()
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     double zAt( int index ) const;
 
     /** Returns the m value of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0
+     * \param index index of node, where the first node in the line is 0
      * @returns m value of node, or 0.0 if index is out of bounds or the line
      * does not have m values
      * @see setMAt()
@@ -86,50 +86,50 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     double mAt( int index ) const;
 
     /** Sets the x-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0. Corresponding
+     * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string.
-     * @param x x-coordinate of node
+     * \param x x-coordinate of node
      * @see xAt()
      */
     void setXAt( int index, double x );
 
     /** Sets the y-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0. Corresponding
+     * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string.
-     * @param y y-coordinate of node
+     * \param y y-coordinate of node
      * @see yAt()
      */
     void setYAt( int index, double y );
 
     /** Sets the z-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0. Corresponding
+     * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string, and the line string must have z-dimension.
-     * @param z z-coordinate of node
+     * \param z z-coordinate of node
      * @see zAt()
      */
     void setZAt( int index, double z );
 
     /** Sets the m value of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0. Corresponding
+     * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string, and the line string must have m values.
-     * @param m m value of node
+     * \param m m value of node
      * @see mAt()
      */
     void setMAt( int index, double m );
 
     /** Resets the line string to match the specified list of points. The line string will
      * inherit the dimensionality of the first point in the list.
-     * @param points new points for line string. If empty, line string will be cleared.
+     * \param points new points for line string. If empty, line string will be cleared.
      */
     void setPoints( const QgsPointSequence &points );
 
     /** Appends the contents of another line string to the end of this line string.
-     * @param line line to append. Ownership is not transferred.
+     * \param line line to append. Ownership is not transferred.
      */
     void append( const QgsLineString *line );
 
     /** Adds a new vertex to the end of the line string.
-     * @param pt vertex to add
+     * \param pt vertex to add
      */
     void addVertex( const QgsPointV2 &pt );
 
@@ -172,8 +172,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     int numPoints() const override;
@@ -224,8 +224,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     void importVerticesFromWkb( const QgsConstWkbPtr &wkb );
 
     /** Resets the line string to match the line string in a WKB geometry.
-     * @param type WKB type
-     * @param wkb WKB representation of line geometry
+     * \param type WKB type
+     * \param wkb WKB representation of line geometry
      */
     void fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr &wkb );
 

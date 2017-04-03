@@ -35,8 +35,8 @@ class GUI_EXPORT QgsStyleSaveDialog: public QDialog, private Ui::QgsStyleSaveDia
   public:
 
     /** Constructor for QgsSymbolSaveDialog
-     * @param parent parent widget
-     * @param type the QgsStyle entity type being saved
+     * \param parent parent widget
+     * \param type the QgsStyle entity type being saved
      */
     QgsStyleSaveDialog( QWidget *parent = nullptr, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
 

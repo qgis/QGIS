@@ -62,8 +62,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     /** Returns the number of curves in the geometry.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     void addCurve( QgsCurve *c );
 
     /** Removes a curve from the geometry.
-     * @param i index of curve to remove
+     * \param i index of curve to remove
      */
     void removeCurve( int i );
 
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     bool hasCurvedSegments() const override;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-        @param vertex the vertex id
+        \param vertex the vertex id
         @return rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
 

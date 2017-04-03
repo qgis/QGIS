@@ -68,19 +68,19 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     /**
      * @brief Constructor
-     * @param parent  The parent widget
+     * \param parent  The parent widget
      */
     explicit QgsDualView( QWidget *parent = nullptr );
 
     /**
      * Has to be called to initialize the dual view.
      *
-     * @param layer      The layer which should be used to fetch features
-     * @param mapCanvas  The mapCanvas (used for the FilterMode
+     * \param layer      The layer which should be used to fetch features
+     * \param mapCanvas  The mapCanvas (used for the FilterMode
      *                   {@link QgsAttributeTableFilterModel::ShowVisible}
-     * @param request    Use a modified request to limit the shown features
-     * @param context    The context in which this view is shown
-     * @param loadFeatures whether to initially load all features into the view. If set to
+     * \param request    Use a modified request to limit the shown features
+     * \param context    The context in which this view is shown
+     * \param loadFeatures whether to initially load all features into the view. If set to
      * false, limited features can later be loaded using setFilterMode()
      */
     void init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Change the current view mode.
      *
-     * @param view The view mode to set
+     * \param view The view mode to set
      * @see view()
      */
     void setView( ViewMode view );
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Set the filter mode
      *
-     * @param filterMode
+     * \param filterMode
      */
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
 
@@ -118,7 +118,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
      *
-     * @param selectedOnTop True: Show selected features on top.
+     * \param selectedOnTop True: Show selected features on top.
      *                      False: Use defined sorting column.
      */
     void setSelectedOnTop( bool selectedOnTop );
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Set a list of currently visible features
      *
-     * @param filteredFeatures  A list of feature ids
+     * \param filteredFeatures  A list of feature ids
      *
      */
     void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
@@ -161,14 +161,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Set the request
      *
-     * @param request The request
+     * \param request The request
      */
     void setRequest( const QgsFeatureRequest &request );
 
     /**
      * Set the feature selection model
      *
-     * @param featureSelectionManager the feature selection model
+     * \param featureSelectionManager the feature selection model
      */
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 
@@ -207,7 +207,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * @brief Set the current edit selection in the {@link AttributeEditor} mode.
      *
-     * @param fids   A list of edited features (Currently only one at a time is supported)
+     * \param fids   A list of edited features (Currently only one at a time is supported)
      */
     void setCurrentEditSelection( const QgsFeatureIds &fids );
 
@@ -227,7 +227,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void setMultiEditEnabled( bool enabled );
 
     /** Toggles whether search mode should be enabled in the form.
-     * @param enabled set to true to switch on search mode
+     * \param enabled set to true to switch on search mode
      * \since QGIS 2.16
      */
     void toggleSearchMode( bool enabled );
@@ -242,7 +242,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     /**
      * Is emitted, whenever the display expression is successfully changed
-     * @param expression The expression that was applied
+     * \param expression The expression that was applied
      */
     void displayExpressionChanged( const QString &expression );
 
@@ -252,14 +252,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void filterChanged();
 
     /** Is emitted when a filter expression is set using the view.
-     * @param expression filter expression
-     * @param type filter type
+     * \param expression filter expression
+     * \param type filter type
      * \since QGIS 2.16
      */
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 
     /** Emitted when the form changes mode.
-     * @param mode new mode
+     * \param mode new mode
      */
     void formModeChanged( QgsAttributeForm::Mode mode );
 
@@ -270,7 +270,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Changes the currently visible feature within the attribute editor
      *
-     * @param feat  The newly visible feature
+     * \param feat  The newly visible feature
      */
     void on_mFeatureList_currentEditSelectionChanged( const QgsFeature &feat );
 
@@ -314,8 +314,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Will be called periodically, when loading layers from slow data providers.
      *
-     * @param i       The number of features already loaded
-     * @param cancel  Set to true to cancel
+     * \param i       The number of features already loaded
+     * \param cancel  Set to true to cancel
      */
     virtual void progress( int i, bool &cancel );
 

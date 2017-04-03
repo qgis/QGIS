@@ -41,7 +41,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
     typedef QMap<QByteArray, QByteArray> RawHeaderMap;
 
     /** Constructor
-      * @param reply */
+      * \param reply */
     QgsNetworkReplyParser( QNetworkReply *reply );
 
     /** Indicates if successfully parsed
@@ -53,8 +53,8 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
     int parts() const { return mHeaders.size(); }
 
     /** Get part header
-      * @param part part index
-      * @param headerName header name
+      * \param part part index
+      * \param headerName header name
       * @return raw header */
     QByteArray rawHeader( int part, const QByteArray &headerName ) const { return mHeaders.value( part ).value( headerName ); }
 
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
     QList< RawHeaderMap > headers() const { return mHeaders; }
 
     /** Get part part body
-      * @param part part index
+      * \param part part index
       * @return part body */
     QByteArray body( int part ) const { return mBodies.value( part ); }
 

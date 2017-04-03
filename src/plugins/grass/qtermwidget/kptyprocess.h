@@ -79,7 +79,7 @@ public:
     /**
      * Construct a process using an open pty master.
      *
-     * @param ptyMasterFd an open pty master file descriptor.
+     * \param ptyMasterFd an open pty master file descriptor.
      *   The process does not take ownership of the descriptor;
      *   it will not be automatically closed at any point.
      */
@@ -95,7 +95,7 @@ public:
      *
      * This function must be called before starting the process.
      *
-     * @param channels the output channel handling mode
+     * \param channels the output channel handling mode
      */
     void setPtyChannels(PtyChannels channels);
 
@@ -122,7 +122,7 @@ public:
      *
      * This function must be called before starting the process.
      *
-     * @param value whether to register in utmp.
+     * \param value whether to register in utmp.
      */
     void setUseUtmp(bool value);
 

@@ -33,7 +33,7 @@ class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui
 
     /**
      * A widget to configure layer tree embedded widgets for a particular map layer.
-     * @param parent The parent of the widget.
+     * \param parent The parent of the widget.
      */
     QgsLayerTreeEmbeddedConfigWidget( QWidget *parent = nullptr );
 

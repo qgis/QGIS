@@ -106,7 +106,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     /**
      * Collapse or uncollapse this groupbox
      *
-     * @param collapse Will collapse on true and uncollapse on false
+     * \param collapse Will collapse on true and uncollapse on false
      */
     void setCollapsed( bool collapse );
 

@@ -33,7 +33,7 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
     /**
      * Calculates the height for the given width.
      *
-     * @param width The width for the widget
+     * \param width The width for the widget
      * @return An appropriate height
      */
     virtual int heightForWidth( int width ) const override;

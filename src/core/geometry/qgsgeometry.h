@@ -159,7 +159,7 @@ class CORE_EXPORT QgsGeometry
     void fromWkb( const QByteArray &wkb );
 
     /** Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
-     *  @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
+     *  \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      *  \since QGIS 3.0
      *  \note not available in Python bindings
      */
@@ -210,20 +210,20 @@ class CORE_EXPORT QgsGeometry
      * Returns the minimum distance between this geometry and another geometry, using GEOS.
      * Will return a negative value if a geometry is missing.
      *
-     * @param geom geometry to find minimum distance to
+     * \param geom geometry to find minimum distance to
      */
     double distance( const QgsGeometry &geom ) const;
 
     /**
      * Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
      * and the indices of the vertices before and after the closest vertex.
-     * @param point point to search for
-     * @param atVertex will be set to the vertex index of the closest found vertex
-     * @param beforeVertex will be set to the vertex index of the previous vertex from the closest one. Will be set to -1 if
+     * \param point point to search for
+     * \param atVertex will be set to the vertex index of the closest found vertex
+     * \param beforeVertex will be set to the vertex index of the previous vertex from the closest one. Will be set to -1 if
      * not present.
-     * @param afterVertex will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
+     * \param afterVertex will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
      * not present.
-     * @param sqrDist will be set to the square distance between the closest vertex and the specified point
+     * \param sqrDist will be set to the square distance between the closest vertex and the specified point
      * @returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
      */
     //TODO QGIS 3.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns the distance along this geometry from its first vertex to the specified vertex.
-     * @param vertex vertex index to calculate distance to
+     * \param vertex vertex index to calculate distance to
      * @returns distance to vertex (following geometry), or -1 for invalid vertex numbers
      * \since QGIS 2.16
      */
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns the bisector angle for this geometry at the specified vertex.
-     * @param vertex vertex index to calculate bisector angle at
+     * \param vertex vertex index to calculate bisector angle at
      * @returns bisector angle, in radians clockwise from north
      * \since QGIS 3.0
      * @see interpolateAngle()
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      *  Returns coordinates of a vertex.
-     *  @param atVertex index of the vertex
+     *  \param atVertex index of the vertex
      *  @return Coordinates of the vertex or QgsPoint(0,0) on error
      */
     QgsPoint vertexAt( int atVertex ) const;
@@ -342,20 +342,20 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Searches for the closest vertex in this geometry to the given point.
-     * @param point Specifiest the point for search
-     * @param atVertex Receives index of the closest vertex
+     * \param point Specifiest the point for search
+     * \param atVertex Receives index of the closest vertex
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
     double closestVertexWithContext( const QgsPoint &point, int &atVertex ) const;
 
     /**
      * Searches for the closest segment of geometry to the given point
-     * @param point Specifies the point for search
-     * @param minDistPoint Receives the nearest point on the segment
-     * @param afterVertex Receives index of the vertex after the closest segment. The vertex
+     * \param point Specifies the point for search
+     * \param minDistPoint Receives the nearest point on the segment
+     * \param afterVertex Receives index of the vertex after the closest segment. The vertex
      * before the closest segment is always afterVertex - 1
-     * @param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
-     * @param epsilon epsilon for segment snapping (added in 1.8)
+     * \param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
+     * \param epsilon epsilon for segment snapping (added in 1.8)
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
     double closestSegmentWithContext( const QgsPoint &point, QgsPoint &minDistPoint, int &afterVertex, double *leftOf = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
@@ -373,8 +373,8 @@ class CORE_EXPORT QgsGeometry
     int addRing( QgsCurve *ring );
 
     /** Adds a new part to a the geometry.
-     * @param points points describing part to add
-     * @param geomType default geometry type to create if no existing geometry
+     * \param points points describing part to add
+     * \param geomType default geometry type to create if no existing geometry
      * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
@@ -382,8 +382,8 @@ class CORE_EXPORT QgsGeometry
     int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new part to a the geometry.
-     * @param points points describing part to add
-     * @param geomType default geometry type to create if no existing geometry
+     * \param points points describing part to add
+     * \param geomType default geometry type to create if no existing geometry
      * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
@@ -391,8 +391,8 @@ class CORE_EXPORT QgsGeometry
     int addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new part to this geometry.
-     * @param part part to add (ownership is transferred)
-     * @param geomType default geometry type to create if no existing geometry
+     * \param part part to add (ownership is transferred)
+     * \param geomType default geometry type to create if no existing geometry
      * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
@@ -400,7 +400,7 @@ class CORE_EXPORT QgsGeometry
     int addPart( QgsAbstractGeometry *part, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
-     * @param newPart part to add. Ownership is NOT transferred.
+     * \param newPart part to add. Ownership is NOT transferred.
      * @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      * \note not available in Python bindings
@@ -440,16 +440,16 @@ class CORE_EXPORT QgsGeometry
 
     /** Rotate this geometry around the Z axis
          \since QGIS 2.8
-         @param rotation clockwise rotation in degrees
-         @param center rotation center
+         \param rotation clockwise rotation in degrees
+         \param center rotation center
          @return 0 in case of success*/
     int rotate( double rotation, const QgsPoint &center );
 
     /** Splits this geometry according to a given line.
-    @param splitLine the line that splits the geometry
-    @param[out] newGeometries list of new geometries that have been created with the split
-    @param topological true if topological editing is enabled
-    @param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+    \param splitLine the line that splits the geometry
+    \param[out] newGeometries list of new geometries that have been created with the split
+    \param topological true if topological editing is enabled
+    \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
     @return 0 in case of success, 1 if geometry has not been split, error else*/
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitGeometry( const QList<QgsPoint> &splitLine,
@@ -464,14 +464,14 @@ class CORE_EXPORT QgsGeometry
     int reshapeGeometry( const QList<QgsPoint> &reshapeWithLine );
 
     /** Changes this geometry such that it does not intersect the other geometry
-     * @param other geometry that should not be intersect
+     * \param other geometry that should not be intersect
      * @return 0 in case of success
      */
     int makeDifference( const QgsGeometry *other );
 
     /** Returns the geometry formed by modifying this geometry such that it does not
      * intersect the other geometry.
-     * @param other geometry that should not be intersect
+     * \param other geometry that should not be intersect
      * @return difference geometry, or empty geometry if difference could not be calculated
      * \since QGIS 3.0
      */
@@ -567,20 +567,20 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry buffer( double distance, int segments ) const;
 
     /** Returns a buffer region around the geometry, with additional style options.
-     * @param distance    buffer distance
-     * @param segments    for round joins, number of segments to approximate quarter-circle
-     * @param endCapStyle end cap style
-     * @param joinStyle   join style for corners in geometry
-     * @param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
+     * \param distance    buffer distance
+     * \param segments    for round joins, number of segments to approximate quarter-circle
+     * \param endCapStyle end cap style
+     * \param joinStyle   join style for corners in geometry
+     * \param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
      * \since QGIS 2.4
      */
     QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double mitreLimit ) const;
 
     /** Returns an offset line at a given distance and side from an input line.
-     * @param distance    buffer distance
-     * @param segments    for round joins, number of segments to approximate quarter-circle
-     * @param joinStyle   join style for corners in geometry
-     * @param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
+     * \param distance    buffer distance
+     * \param segments    for round joins, number of segments to approximate quarter-circle
+     * \param joinStyle   join style for corners in geometry
+     * \param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
      * \since QGIS 2.4
      */
     QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double mitreLimit ) const;
@@ -588,11 +588,11 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns a single sided buffer for a (multi)line geometry. The buffer is only
      * applied to one side of the line.
-     * @param distance buffer distance
-     * @param segments for round joins, number of segments to approximate quarter-circle
-     * @param side side of geometry to buffer
-     * @param joinStyle join style for corners
-     * @param mitreLimit limit on the mitre ratio used for very sharp corners
+     * \param distance buffer distance
+     * \param segments for round joins, number of segments to approximate quarter-circle
+     * \param side side of geometry to buffer
+     * \param joinStyle join style for corners
+     * \param mitreLimit limit on the mitre ratio used for very sharp corners
      * @return buffered geometry, or an empty geometry if buffer could not be
      * calculated
      * \since QGIS 3.0
@@ -713,7 +713,7 @@ class CORE_EXPORT QgsGeometry
      * on this linestring geometry to the specified point. Ie, the returned value indicates
      * how far along this linestring you need to traverse to get to the closest location
      * where this linestring comes to the specified point.
-     * @param point point to seek proximity to
+     * \param point point to seek proximity to
      * @return distance along line, or -1 on error
      * \note only valid for linestring geometries
      * @see interpolate()
@@ -725,7 +725,7 @@ class CORE_EXPORT QgsGeometry
      * along the geometry. Angles are in radians, clockwise from north.
      * If the distance coincides precisely at a node then the average angle from the segment either side
      * of the node is returned.
-     * @param distance distance along geometry
+     * \param distance distance along geometry
      * \since QGIS 3.0
      * @see angleAtVertex()
      */
@@ -778,8 +778,8 @@ class CORE_EXPORT QgsGeometry
     QString exportToGeoJSON( int precision = 17 ) const;
 
     /** Try to convert the geometry to the requested type
-     * @param destType the geometry type to be converted to
-     * @param destMultipart determines if the output geometry will be multipart or not
+     * \param destType the geometry type to be converted to
+     * \param destMultipart determines if the output geometry will be multipart or not
      * @return the converted geometry or nullptr if the conversion fails.
      * \since QGIS 2.2
      */
@@ -868,8 +868,8 @@ class CORE_EXPORT QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
-     *  @param avoidIntersectionsLayers list of layers to check for intersections
-     *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
+     *  \param avoidIntersectionsLayers list of layers to check for intersections
+     *  \param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
      *  \since QGIS 1.5
      */
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
@@ -942,27 +942,27 @@ class CORE_EXPORT QgsGeometry
     bool requiresConversionToStraightSegments() const;
 
     /** Transforms the geometry from map units to pixels in place.
-     * @param mtp map to pixel transform
+     * \param mtp map to pixel transform
      * \since QGIS 2.10
      */
     void mapToPixel( const QgsMapToPixel &mtp );
 
     // not implemented for 2.10
     /* Clips the geometry using the specified rectangle
-     * @param rect clip rectangle
+     * \param rect clip rectangle
      * \since QGIS 2.10
      */
     // void clip( const QgsRectangle& rect );
 
     /** Draws the geometry onto a QPainter
-     * @param p destination QPainter
+     * \param p destination QPainter
      * \since QGIS 2.10
      */
     void draw( QPainter &p ) const;
 
     /** Calculates the vertex ID from a vertex number
-     * @param nr vertex number
-     * @param id reference to QgsVertexId for storing result
+     * \param nr vertex number
+     * \param id reference to QgsVertexId for storing result
      * @returns true if vertex was found
      * \since QGIS 2.10
      * @see vertexNrFromVertexId
@@ -970,7 +970,7 @@ class CORE_EXPORT QgsGeometry
     bool vertexIdFromVertexNr( int nr, QgsVertexId &id ) const;
 
     /** Returns the vertex number corresponding to a vertex idd
-     * @param i vertex id
+     * \param i vertex id
      * @returns vertex number
      * \since QGIS 2.10
      * @see vertexIdFromVertexNr
@@ -984,7 +984,7 @@ class CORE_EXPORT QgsGeometry
     static GEOSContextHandle_t getGEOSHandler();
 
     /** Construct geometry from a QPointF
-     * @param point source QPointF
+     * \param point source QPointF
      * \since QGIS 2.7
      */
     static QgsGeometry fromQPointF( QPointF point );
@@ -992,29 +992,29 @@ class CORE_EXPORT QgsGeometry
     /** Construct geometry from a QPolygonF. If the polygon is closed than
      * the resultant geometry will be a polygon, if it is open than the
      * geometry will be a polyline.
-     * @param polygon source QPolygonF
+     * \param polygon source QPolygonF
      * \since QGIS 2.7
      */
     static QgsGeometry fromQPolygonF( const QPolygonF &polygon );
 
     /** Creates a QgsPolyline from a QPolygonF.
-     * @param polygon source polygon
+     * \param polygon source polygon
      * @returns QgsPolyline
      * @see createPolygonFromQPolygonF
      */
     static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon );
 
     /** Creates a QgsPolygon from a QPolygonF.
-     * @param polygon source polygon
+     * \param polygon source polygon
      * @returns QgsPolygon
      * @see createPolylineFromQPolygonF
      */
     static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon );
 
     /** Compares two polylines for equality within a specified tolerance.
-     * @param p1 first polyline
-     * @param p2 second polyline
-     * @param epsilon maximum difference for coordinates between the polylines
+     * \param p1 first polyline
+     * \param p2 second polyline
+     * \param epsilon maximum difference for coordinates between the polylines
      * @returns true if polylines have the same number of points and all
      * points are equal within the specified tolerance
      * \since QGIS 2.9
@@ -1022,9 +1022,9 @@ class CORE_EXPORT QgsGeometry
     static bool compare( const QgsPolyline &p1, const QgsPolyline &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
     /** Compares two polygons for equality within a specified tolerance.
-     * @param p1 first polygon
-     * @param p2 second polygon
-     * @param epsilon maximum difference for coordinates between the polygons
+     * \param p1 first polygon
+     * \param p2 second polygon
+     * \param epsilon maximum difference for coordinates between the polygons
      * @returns true if polygons have the same number of rings, and each ring has the same
      * number of points and all points are equal within the specified tolerance
      * \since QGIS 2.9
@@ -1032,9 +1032,9 @@ class CORE_EXPORT QgsGeometry
     static bool compare( const QgsPolygon &p1, const QgsPolygon &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
     /** Compares two multipolygons for equality within a specified tolerance.
-     * @param p1 first multipolygon
-     * @param p2 second multipolygon
-     * @param epsilon maximum difference for coordinates between the multipolygons
+     * \param p1 first multipolygon
+     * \param p2 second multipolygon
+     * \param epsilon maximum difference for coordinates between the multipolygons
      * @returns true if multipolygons have the same number of polygons, the polygons have the same number
      * of rings, and each ring has the same number of points and all points are equal within the specified
      * tolerance
@@ -1044,13 +1044,13 @@ class CORE_EXPORT QgsGeometry
 
     /** Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
      * roughly doubles the number of vertices in a geometry.
-     * @param iterations number of smoothing iterations to run. More iterations results
+     * \param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
-     * @param offset fraction of line to create new vertices along, between 0 and 1.0,
+     * \param offset fraction of line to create new vertices along, between 0 and 1.0,
      * e.g., the default value of 0.25 will create new vertices 25% and 75% along each line segment
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
-     * @param minimumDistance minimum segment length to apply smoothing to
-     * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
+     * \param minimumDistance minimum segment length to apply smoothing to
+     * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
      * \since QGIS 2.9
      */
     QgsGeometry smooth( const unsigned int iterations = 1, const double offset = 0.25,
@@ -1061,14 +1061,14 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry );
 
     /** Upgrades a point list from QgsPoint to QgsPointV2
-     * @param input list of QgsPoint objects to be upgraded
-     * @param output destination for list of points converted to QgsPointV2
+     * \param input list of QgsPoint objects to be upgraded
+     * \param output destination for list of points converted to QgsPointV2
      */
     static void convertPointList( const QList<QgsPoint> &input, QgsPointSequence &output );
 
     /** Downgrades a point list from QgsPointV2 to QgsPoint
-     * @param input list of QgsPointV2 objects to be downgraded
-     * @param output destination for list of points converted to QgsPoint
+     * \param input list of QgsPointV2 objects to be downgraded
+     * \param output destination for list of points converted to QgsPoint
      */
     static void convertPointList( const QgsPointSequence &input, QList<QgsPoint> &output );
 
@@ -1101,27 +1101,27 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry convertToPolygon( bool destMultipart ) const;
 
     /** Smooths a polyline using the Chaikin algorithm
-     * @param line line to smooth
-     * @param iterations number of smoothing iterations to run. More iterations results
+     * \param line line to smooth
+     * \param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
-     * @param offset fraction of line to create new vertices along, between 0 and 1.0,
+     * \param offset fraction of line to create new vertices along, between 0 and 1.0,
      * e.g., the default value of 0.25 will create new vertices 25% and 75% along each line segment
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
-     * @param minimumDistance minimum segment length to apply smoothing to
-     * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
+     * \param minimumDistance minimum segment length to apply smoothing to
+     * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
     QgsLineString *smoothLine( const QgsLineString &line, const unsigned int iterations = 1, const double offset = 0.25,
                                double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
     /** Smooths a polygon using the Chaikin algorithm
-     * @param polygon polygon to smooth
-     * @param iterations number of smoothing iterations to run. More iterations results
+     * \param polygon polygon to smooth
+     * \param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
-     * @param offset fraction of segment to create new vertices along, between 0 and 1.0,
+     * \param offset fraction of segment to create new vertices along, between 0 and 1.0,
      * e.g., the default value of 0.25 will create new vertices 25% and 75% along each line segment
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
-     * @param minimumDistance minimum segment length to apply smoothing to
-     * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
+     * \param minimumDistance minimum segment length to apply smoothing to
+     * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
     QgsPolygonV2 *smoothPolygon( const QgsPolygonV2 &polygon, const unsigned int iterations = 1, const double offset = 0.25,
                                  double minimumDistance = -1, double maxAngle = 180.0 ) const;

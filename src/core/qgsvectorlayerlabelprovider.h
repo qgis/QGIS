@@ -54,8 +54,8 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 
     /**
      * Prepare for registration of features. Must be called after provider has been added to engine (uses its map settings)
-     * @param context render context.
-     * @param attributeNames list of attribute names to which additional required attributes shall be added
+     * \param context render context.
+     * \param attributeNames list of attribute names to which additional required attributes shall be added
      * @return Whether the preparation was successful - if not, the provider shall not be used
      */
     virtual bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames );
@@ -63,10 +63,10 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     /**
      * Register a feature for labeling as one or more QgsLabelFeature objects stored into mLabels
      *
-     * @param feature feature to label
-     * @param context render context. The QgsExpressionContext contained within the render context
+     * \param feature feature to label
+     * \param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
-     * @param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
+     * \param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
      * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels.
@@ -76,9 +76,9 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     /** Returns the geometry for a point feature which should be used as an obstacle for labels. This
      * obstacle geometry will respect the dimensions and offsets of the symbol used to render the
      * point, and ensures that labels will not overlap large or offset points.
-     * @param fet point feature
-     * @param context render context
-     * @param symbols symbols rendered for point feature
+     * \param fet point feature
+     * \param context render context
+     * \param symbols symbols rendered for point feature
      * \since QGIS 2.14
      */
     static QgsGeometry *getPointObstacleGeometry( QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols );

@@ -52,7 +52,7 @@ class ANALYSIS_EXPORT QgsRelief
     QgsRelief &operator=( const QgsRelief &rh ) = delete;
 
     /** Starts the calculation, reads from mInputFile and stores the result in mOutputFile
-      @param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
+      \param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
       @return 0 in case of success*/
     int processRaster( QProgressDialog *p );
 
@@ -122,9 +122,9 @@ class ANALYSIS_EXPORT QgsRelief
     void optimiseClassBreaks( QList<int> &breaks, double *frequencies );
 
     /** Calculates coefficients a and b
-      @param input data points ( elevation class / frequency )
-      @param a slope
-      @param b y value for x=0
+      \param input data points ( elevation class / frequency )
+      \param a slope
+      \param b y value for x=0
      */
     bool calculateRegression( const QList< QPair < int, double > > &input, double &a, double &b );
 

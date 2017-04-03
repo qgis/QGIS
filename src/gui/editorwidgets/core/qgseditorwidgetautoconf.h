@@ -37,9 +37,9 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
      *   * 10: a widget has been guessed from the type of field.
      *   * 20: a widget has been determined from an external configuration (for example a database table)
      *
-     * @param vl        The vector layer for which this widget will be created
-     * @param fieldName The field name on the specified layer for which this widget will be created
-     * @param score     Where the score is returned (default to 0)
+     * \param vl        The vector layer for which this widget will be created
+     * \param fieldName The field name on the specified layer for which this widget will be created
+     * \param score     Where the score is returned (default to 0)
      *
      * @return and integer value rating how good is the setup provided by this plugin.
      */
@@ -70,8 +70,8 @@ class GUI_EXPORT QgsEditorWidgetAutoConf
     /**
      * Iterate over the plugins and return the setup of the plugin returning the highest score.
      *
-     * @param vl        The vector layer for which this widget will be created
-     * @param fieldName The field name on the specified layer for which this widget will be created
+     * \param vl        The vector layer for which this widget will be created
+     * \param fieldName The field name on the specified layer for which this widget will be created
      *
      * @return The best widget setup that was found
      */
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConf
     /**
      * Register a new plugin.
      *
-     * @param plugin The plugin (ownership is transferred)
+     * \param plugin The plugin (ownership is transferred)
      */
     void registerPlugin( QgsEditorWidgetAutoConfPlugin *plugin );
 

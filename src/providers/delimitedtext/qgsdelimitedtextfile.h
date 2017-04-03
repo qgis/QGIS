@@ -99,7 +99,7 @@ class QgsDelimitedTextFile : public QObject
     virtual ~QgsDelimitedTextFile();
 
     /** Set the filename
-     * @param filename  the name of the file
+     * \param filename  the name of the file
      */
     void setFileName( const QString &filename );
 
@@ -112,7 +112,7 @@ class QgsDelimitedTextFile : public QObject
     }
 
     /** Set the file encoding (defuault is UTF-8)
-     *  @param encoding the encoding to use for the fileName()
+     *  \param encoding the encoding to use for the fileName()
      */
     void setEncoding( const QString &encoding );
 
@@ -122,12 +122,12 @@ class QgsDelimitedTextFile : public QObject
     QString encoding() { return mEncoding; }
 
     /** Decode the parser settings from a url as a string
-     *  @param url  The url from which the delimiter and delimiterType items are read
+     *  \param url  The url from which the delimiter and delimiterType items are read
      */
     bool setFromUrl( const QString &url );
 
     /** Decode the parser settings from a url
-     *  @param url  The url from which the delimiter and delimiterType items are read
+     *  \param url  The url from which the delimiter and delimiterType items are read
      */
     bool setFromUrl( const QUrl &url );
 
@@ -141,20 +141,20 @@ class QgsDelimitedTextFile : public QObject
     void setTypeWhitespace();
 
     /** Set the parser for parsing based on a reqular expression delimiter
-     *  @param regexp A string defining the regular expression
+     *  \param regexp A string defining the regular expression
      */
     void setTypeRegexp( const QString &regexp );
 
     /** Set the parser to use a character type delimiter.
-     *  @param delim  The field delimiter character set
-     *  @param quote  The quote character, used to define quoted fields
-     *  @param escape The escape character used to escape quote or delim
+     *  \param delim  The field delimiter character set
+     *  \param quote  The quote character, used to define quoted fields
+     *  \param escape The escape character used to escape quote or delim
      *                characters.
      */
     void setTypeCSV( const QString &delim = QString( "," ), const QString &quote = QString( "\"" ), const QString &escape = QString( "\"" ) );
 
     /** Set the number of header lines to skip
-     * @param skiplines The maximum lines to skip
+     * \param skiplines The maximum lines to skip
      */
     void setSkipLines( int skiplines );
 
@@ -167,7 +167,7 @@ class QgsDelimitedTextFile : public QObject
     }
 
     /** Set reading field names from the first record
-     * @param useheaders Field names will be read if true
+     * \param useheaders Field names will be read if true
      */
     void setUseHeader( bool useheader = true );
 
@@ -180,7 +180,7 @@ class QgsDelimitedTextFile : public QObject
     }
 
     /** Set the option for dicarding empty fields
-     * @param useheaders Empty fields will be discarded if true
+     * \param useheaders Empty fields will be discarded if true
      */
     void setDiscardEmptyFields( bool discardEmptyFields = true );
 
@@ -193,7 +193,7 @@ class QgsDelimitedTextFile : public QObject
     }
 
     /** Set the option for trimming whitespace from fields
-     * @param trimFields Fields will be trimmed if true
+     * \param trimFields Fields will be trimmed if true
      */
     void setTrimFields( bool trimFields = true );
 
@@ -207,7 +207,7 @@ class QgsDelimitedTextFile : public QObject
 
     /** Set the maximum number of fields that will be read from a record
      *  By default the maximum number is unlimited (0)
-     *  @param maxFields  The maximum number of fields that will be read
+     *  \param maxFields  The maximum number of fields that will be read
      */
     void setMaxFields( int maxFields );
 
@@ -220,7 +220,7 @@ class QgsDelimitedTextFile : public QObject
      *  Field names are set from QStringList.  Names may be modified
      *  to ensure that they are unique, not empty, and do not conflict
      *  with default field name (field_##)
-     *  @param names  A list of proposed field names
+     *  \param names  A list of proposed field names
      */
     void setFieldNames( const QStringList &names );
 
@@ -235,7 +235,7 @@ class QgsDelimitedTextFile : public QObject
     QStringList &fieldNames();
 
     /** Return the index of a names field
-     *  @param name    The name of the field to find.  This will also accept an
+     *  \param name    The name of the field to find.  This will also accept an
      *                 integer string ("1" = first field).
      *  @return index  The zero based index of the field name, or -1 if the field
      *                 name does not exist or cannot be inferred
@@ -243,7 +243,7 @@ class QgsDelimitedTextFile : public QObject
     int fieldIndex( const QString &name );
 
     /** Reads the next record from the stream splits into string fields.
-     *  @param fields  The string list to populate with the fields
+     *  \param fields  The string list to populate with the fields
      *  @return status The result of trying to parse a record.  RecordOk
      *                 if read successfully, RecordEOF if reached the end of the
      *                 file, RecordEmpty if no data on the next line, and
@@ -260,7 +260,7 @@ class QgsDelimitedTextFile : public QObject
     }
 
     /** Set the index of the next record to return.
-     *  @param  nextRecordId The id to set the next record to
+     *  \param  nextRecordId The id to set the next record to
      *  @return valid  True if the next record can be located
      */
     bool setNextRecordId( long nextRecordId );
@@ -288,20 +288,20 @@ class QgsDelimitedTextFile : public QObject
 
     /** Encode characters - used to convert delimiter/quote/escape characters to
      *  encoded form (e.g., replace tab with \t)
-     *  @param string  The unencoded string
+     *  \param string  The unencoded string
      *  @return encstring  The encoded string
      */
     static QString encodeChars( QString string );
 
     /** Encode characters - used to encoded character strings to
      *  decoded form (e.g., replace \t with tab)
-     *  @param string  The unencoded string
+     *  \param string  The unencoded string
      *  @return decstring  The decoded string
      */
     static QString decodeChars( QString string );
 
     /** Set to use or not use a QFileWatcher to notify of changes to the file
-     * @param useWatcher True to use a watcher, false otherwise
+     * \param useWatcher True to use a watcher, false otherwise
      */
 
     void setUseWatcher( bool useWatcher );

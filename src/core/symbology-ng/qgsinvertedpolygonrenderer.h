@@ -41,7 +41,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
   public:
 
     /** Constructor
-     * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
+     * \param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
      * Ownership will be transferred.
      */
     QgsInvertedPolygonRenderer( QgsFeatureRenderer *embeddedRenderer = nullptr );
@@ -56,11 +56,11 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 
     /** Renders a given feature.
      * This will here collect features. The actual rendering will be postponed to stopRender()
-     * @param feature the feature to render
-     * @param context the rendering context
-     * @param layer the symbol layer to render, if that makes sense
-     * @param selected whether this feature has been selected (this will add decorations)
-     * @param drawVertexMarker whether this feature has vertex markers (in edit mode usually)
+     * \param feature the feature to render
+     * \param context the rendering context
+     * \param layer the symbol layer to render, if that makes sense
+     * \param selected whether this feature has been selected (this will add decorations)
+     * \param drawVertexMarker whether this feature has vertex markers (in edit mode usually)
      * @returns true if the rendering was ok
      */
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     bool preprocessingEnabled() const { return mPreprocessingEnabled; }
 
     /**
-     * @param enabled enables or disables the preprocessing.
+     * \param enabled enables or disables the preprocessing.
      * When enabled, geometries will be merged with an union before being rendered.
      * It allows fixing some rendering artifacts (when rendering overlapping polygons for instance).
      * This will involve some CPU-demanding computations and is thus disabled by default.

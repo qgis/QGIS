@@ -103,7 +103,7 @@ class CORE_EXPORT QgsFields
     //! Return number of items
     int size() const;
     //! Return if a field index is valid
-    //! @param i  Index of the field which needs to be checked
+    //! \param i  Index of the field which needs to be checked
     //! @return   True if the field exists
     bool exists( int i ) const;
 
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsFields
      * name of the field.
      * Alias for indexOf
      *
-     * @param fieldName The name of the field.
+     * \param fieldName The name of the field.
      *
      * @return The field index if found or -1 in case it cannot be found.
      * @see lookupField For a more tolerant alternative.
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsFields
      * This method takes is case sensitive and only matches the data source
      * name of the field.
      *
-     * @param fieldName The name of the field.
+     * \param fieldName The name of the field.
      *
      * @return The field index if found or -1 in case it cannot be found.
      * @see lookupField For a more tolerant alternative.
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsFields
      *  2. Looks for the field name by case insensitive comparison
      *  3. The field alias (case insensitive)
      *
-     * @param fieldName The name to look for.
+     * \param fieldName The name to look for.
      *
      * @return The field index if found or -1 in case it cannot be found.
      * @see indexFromName For a more performant and precise but less tolerant alternative.

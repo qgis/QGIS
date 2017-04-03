@@ -32,15 +32,15 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
   public:
 
     /** Constructor for QgsComposerImageExportOptionsDialog
-     * @param parent parent widget
-     * @param flags window flags
+     * \param parent parent widget
+     * \param flags window flags
      */
     QgsComposerImageExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
 
     ~QgsComposerImageExportOptionsDialog();
 
     /** Sets the initial resolution displayed in the dialog.
-     * @param resolution default resolution in DPI
+     * \param resolution default resolution in DPI
      * @see resolution()
      */
     void setResolution( int resolution );
@@ -53,7 +53,7 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
 
     /** Sets the target image size. This is used to calculate the default size in pixels
      * and also for determining the image's width to height ratio.
-     * @param size image size
+     * \param size image size
      */
     void setImageSize( QSizeF size );
 
@@ -68,7 +68,7 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
     int imageHeight() const;
 
     /** Sets whether the crop to contents option should be checked in the dialog
-     * @param crop set to true to check crop to contents
+     * \param crop set to true to check crop to contents
      * @see cropToContents()
      */
     void setCropToContents( bool crop );
@@ -79,18 +79,18 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
     bool cropToContents() const;
 
     /** Fetches the current crop to contents margin values, in pixels.
-     * @param topMargin destination for top margin
-     * @param rightMargin destination for right margin
-     * @param bottomMargin destination for bottom margin
-     * @param leftMargin destination for left margin
+     * \param topMargin destination for top margin
+     * \param rightMargin destination for right margin
+     * \param bottomMargin destination for bottom margin
+     * \param leftMargin destination for left margin
      */
     void getCropMargins( int &topMargin, int &rightMargin, int &bottomMargin, int &leftMargin ) const;
 
     /** Sets the current crop to contents margin values, in pixels.
-     * @param topMargin top margin
-     * @param rightMargin right margin
-     * @param bottomMargin bottom margin
-     * @param leftMargin left margin
+     * \param topMargin top margin
+     * \param rightMargin right margin
+     * \param bottomMargin bottom margin
+     * \param leftMargin left margin
      */
     void setCropMargins( int topMargin, int rightMargin, int bottomMargin, int leftMargin );
 

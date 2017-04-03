@@ -71,7 +71,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Returns true if the collection contains a property with the specified key.
-     * @param key integer key for property. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * @see property()
      */
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Returns a matching property from the collection, if one exists.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * @returns matching property, or null if no matching, active property found.
      * @see hasProperty()
@@ -88,10 +88,10 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Returns the calculated value of the property with the specified key from within the collection.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @param context expression context to evaluate property against
-     * @param defaultValue default value to return if no matching, active property found or if the property value
+     * \param context expression context to evaluate property against
+     * \param defaultValue default value to return if no matching, active property found or if the property value
      * cannot be calculated
      * @returns calculated property value, or default value if property could not be evaluated
      * @see valueAsString()
@@ -104,11 +104,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a string.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @param context QgsExpressionContext to evaluate the property for.
-     * @param defaultString default string to return if the property cannot be calculated as a string
-     * @param ok if specified, will be set to true if conversion was successful
+     * \param context QgsExpressionContext to evaluate the property for.
+     * \param defaultString default string to return if the property cannot be calculated as a string
+     * \param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to string
      * @see value()
      * @see valueAsColor()
@@ -120,11 +120,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a color.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @param context QgsExpressionContext to evaluate the property for.
-     * @param defaultColor default color to return if the property cannot be calculated as a color
-     * @param ok if specified, will be set to true if conversion was successful
+     * \param context QgsExpressionContext to evaluate the property for.
+     * \param defaultColor default color to return if the property cannot be calculated as a color
+     * \param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to color
      * @see value()
      * @see valueAsString()
@@ -136,11 +136,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a double.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @param context QgsExpressionContext to evaluate the property for.
-     * @param defaultValue default double to return if the property cannot be calculated as a double
-     * @param ok if specified, will be set to true if conversion was successful
+     * \param context QgsExpressionContext to evaluate the property for.
+     * \param defaultValue default double to return if the property cannot be calculated as a double
+     * \param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to double
      * @see value()
      * @see valueAsString()
@@ -152,11 +152,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an integer.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @param context QgsExpressionContext to evaluate the property for.
-     * @param defaultValue default integer to return if the property cannot be calculated as a integer
-     * @param ok if specified, will be set to true if conversion was successful
+     * \param context QgsExpressionContext to evaluate the property for.
+     * \param defaultValue default integer to return if the property cannot be calculated as a integer
+     * \param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to integer
      * @see value()
      * @see valueAsString()
@@ -168,11 +168,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an boolean.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @param context QgsExpressionContext to evaluate the property for.
-     * @param defaultValue default boolean to return if the property cannot be calculated as a boolean
-     * @param ok if specified, will be set to true if conversion was successful
+     * \param context QgsExpressionContext to evaluate the property for.
+     * \param defaultValue default boolean to return if the property cannot be calculated as a boolean
+     * \param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to bool
      * @see value()
      * @see valueAsString()
@@ -191,13 +191,13 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Returns the set of any fields referenced by the active properties from the collection.
-     * @param context expression context the properties will be evaluated against.
+     * \param context expression context the properties will be evaluated against.
      */
     virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
 
     /**
      * Returns true if the collection contains an active property with the specified key.
-     * @param key integer key for property to test. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to test. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      */
     virtual bool isActive( int key ) const = 0;
@@ -218,16 +218,16 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Writes the current state of the property collection into an XML element
-     * @param collectionElem destination element for the property collection's state
-     * @param definitions property definitions
+     * \param collectionElem destination element for the property collection's state
+     * \param definitions property definitions
      * @see readXml()
     */
     virtual bool writeXml( QDomElement &collectionElem, const QgsPropertiesDefinition &definitions ) const;
 
     /**
      * Reads property collection state from an XML element.
-     * @param collectionElem source DOM element for property collection's state
-     * @param definitions property definitions
+     * \param collectionElem source DOM element for property collection's state
+     * \param definitions property definitions
      * @see writeXml()
     */
     virtual bool readXml( const QDomElement &collectionElem, const QgsPropertiesDefinition &definitions );
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 
     /**
      * Constructor for QgsPropertyCollection
-     * @param name collection name
+     * \param name collection name
      */
     QgsPropertyCollection( const QString &name = QString() );
 
@@ -293,7 +293,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 
     /**
      * Returns a reference to a matching property from the collection, if one exists.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * @returns matching property, or null if no matching, active property found.
      * @see hasProperty()
@@ -312,20 +312,20 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 
     /**
      * Adds a property to the collection and takes ownership of it.
-     * @param key integer key for property. Any existing property with the same key will be removed
+     * \param key integer key for property. Any existing property with the same key will be removed
      * and replaced by this property. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @param property property to add. Ownership is transferred to the collection. Setting an invalid property
+     * \param property property to add. Ownership is transferred to the collection. Setting an invalid property
      * will remove the property from the collection.
      */
     void setProperty( int key, const QgsProperty &property );
 
     /**
      * Convience method, creates a QgsStaticProperty and stores it within the collection.
-     * @param key integer key for property. Any existing property with the same key will be deleted
+     * \param key integer key for property. Any existing property with the same key will be deleted
      * and replaced by this property. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @param value static value for property
+     * \param value static value for property
      */
     void setProperty( int key, const QVariant &value );
 
@@ -377,27 +377,27 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     /**
      * Appends a collection to the end of the stack, and transfers ownership of the collection to the stack. Properties
      * from the newly added collection will take priority over any existing properties with the same name.
-     * @param collection collection to append. Ownership is transferred to the stack.
+     * \param collection collection to append. Ownership is transferred to the stack.
      */
     void appendCollection( QgsPropertyCollection *collection );
 
     /**
      * Returns the collection at the corresponding index from the stack.
-     * @param index position of collection, 0 based
+     * \param index position of collection, 0 based
      * @returns collection if one exists at the specified index
      */
     QgsPropertyCollection *at( int index );
 
     /**
      * Returns the collection at the corresponding index from the stack.
-     * @param index position of collection, 0 based
+     * \param index position of collection, 0 based
      * @returns collection if one exists at the specified index
      */
     const QgsPropertyCollection *at( int index ) const;
 
     /**
      * Returns the first collection with a matching name from the stack.
-     * @param name name of collection to find
+     * \param name name of collection to find
      * @returns collection if one exists with the specified name
      */
     QgsPropertyCollection *collection( const QString &name );
@@ -419,7 +419,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 
     /**
      * Returns true if the stack contains an active property with the specified key.
-     * @param key integer key for property to test. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to test. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * @see hasActiveProperties()
      */
@@ -427,7 +427,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 
     /**
      * Returns the highest priority property with a matching key from within the stack.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * @returns matching property, or null if no matching, active property found.
      * @see hasActiveProperty()
@@ -436,10 +436,10 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 
     /**
      * Returns the calculated value of the highest priority property with the specified key from within the stack.
-     * @param key integer key for property to calculate. The intended use case is that a context specific enum is cast to
+     * \param key integer key for property to calculate. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @param context expression context to evaluate property against
-     * @param defaultValue default value to return if no matching, active property found or if the property value
+     * \param context expression context to evaluate property against
+     * \param defaultValue default value to return if no matching, active property found or if the property value
      * cannot be calculated
      * @returns calculated property value, or default value if property could not be evaluated
      */
@@ -447,7 +447,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 
     /**
      * Returns the set of any fields referenced by the active properties from the stack.
-     * @param context expression context the properties will be evaluated against.
+     * \param context expression context the properties will be evaluated against.
      */
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;

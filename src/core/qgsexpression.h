@@ -170,7 +170,7 @@ class CORE_EXPORT QgsExpression
     const Node *rootNode() const;
 
     /** Get the expression ready for evaluation - find out column indexes.
-     * @param context context for preparing expression
+     * \param context context for preparing expression
      * \since QGIS 2.12
      */
     bool prepare( const QgsExpressionContext *context );
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsExpression
     QVariant evaluate();
 
     /** Evaluate the expression against the specified context and return the result.
-     * @param context context for evaluating expression
+     * \param context context for evaluating expression
      * \note prepare() should be called before calling this method.
      * \since QGIS 2.12
      */
@@ -233,9 +233,9 @@ class CORE_EXPORT QgsExpression
     bool isField() const { return rootNode() && dynamic_cast<const NodeColumnRef *>( rootNode() ) ;}
 
     /** Tests whether a string is a valid expression.
-     * @param text string to test
-     * @param context optional expression context
-     * @param errorMessage will be filled with any error message from the validation
+     * \param text string to test
+     * \param context optional expression context
+     * \param errorMessage will be filled with any error message from the validation
      * @returns true if string is a valid expression
      * \since QGIS 2.12
      */
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsExpression
      * (used by $length, $area and $perimeter functions only). By default, no geometry
      * calculator is set and all distance and area calculations are performed using simple
      * cartesian methods (ie no ellipsoidal calculations).
-     * @param calc geometry calculator. Ownership is not transferred. Set to a nullptr to force
+     * \param calc geometry calculator. Ownership is not transferred. Set to a nullptr to force
      * cartesian calculations.
      * @see geomCalculator()
      */
@@ -313,9 +313,9 @@ class CORE_EXPORT QgsExpression
      * in the string with the result of its evaluation with the specified context
      *
      * Additional substitutions can be passed through the substitutionMap parameter
-     * @param action The source string in which placeholders should be replaced.
-     * @param context Expression context
-     * @param distanceArea Optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
+     * \param action The source string in which placeholders should be replaced.
+     * \param context Expression context
+     * \param distanceArea Optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
      * and area conversion
      * \since QGIS 2.12
      */
@@ -324,8 +324,8 @@ class CORE_EXPORT QgsExpression
 
     /** Attempts to evaluate a text string as an expression to a resultant double
      * value.
-     * @param text text to evaluate as expression
-     * @param fallbackValue value to return if text can not be evaluated as a double
+     * \param text text to evaluate as expression
+     * \param fallbackValue value to return if text can not be evaluated as a double
      * @returns evaluated double value, or fallback value
      * \since QGIS 2.7
      * \note this method is inefficient for bulk evaluation of expressions, it is intended
@@ -409,9 +409,9 @@ class CORE_EXPORT QgsExpression
       public:
 
         /** Constructor for Parameter.
-         * @param name parameter name, used when named parameter are specified in an expression
-         * @param optional set to true if parameter should be optional
-         * @param defaultValue default value to use for optional parameters
+         * \param name parameter name, used when named parameter are specified in an expression
+         * \param optional set to true if parameter should be optional
+         * \param defaultValue default value to use for optional parameters
          */
         Parameter( const QString &name,
                    bool optional = false,
@@ -614,9 +614,9 @@ class CORE_EXPORT QgsExpression
         const QString helpText() const { return mHelpText.isEmpty() ? QgsExpression::helpText( mName ) : mHelpText; }
 
         /** Returns result of evaluating the function.
-         * @param values list of values passed to the function
-         * @param context context expression is being evaluated against
-         * @param parent parent expression
+         * \param values list of values passed to the function
+         * \param context context expression is being evaluated against
+         * \param parent parent expression
          * @returns result of function
          */
         virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) = 0;
@@ -725,9 +725,9 @@ class CORE_EXPORT QgsExpression
         {}
 
         /** Returns result of evaluating the function.
-         * @param values list of values passed to the function
-         * @param context context expression is being evaluated against
-         * @param parent parent expression
+         * \param values list of values passed to the function
+         * \param context context expression is being evaluated against
+         * \param parent parent expression
          * @returns result of function
          */
         virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) override
@@ -759,15 +759,15 @@ class CORE_EXPORT QgsExpression
     static const QStringList &BuiltinFunctions();
 
     /** Registers a function to the expression engine. This is required to allow expressions to utilize the function.
-     * @param function function to register
-     * @param transferOwnership set to true to transfer ownership of function to expression engine
+     * \param function function to register
+     * \param transferOwnership set to true to transfer ownership of function to expression engine
      * @returns true on successful registration
      * @see unregisterFunction
      */
     static bool registerFunction( Function *function, bool transferOwnership = false );
 
     /** Unregisters a function from the expression engine. The function will no longer be usable in expressions.
-     * @param name function name
+     * \param name function name
      * @see registerFunction
      */
     static bool unregisterFunction( const QString &name );
@@ -806,7 +806,7 @@ class CORE_EXPORT QgsExpression
 
     /** Returns a string representation of a literal value, including appropriate
      * quotations where required.
-     * @param value value to convert to a string representation
+     * \param value value to convert to a string representation
      * \since QGIS 2.14
      * @see quotedString()
      * @see quotedColumnRef()
@@ -815,8 +815,8 @@ class CORE_EXPORT QgsExpression
 
     /** Returns a string representation of a literal value, including appropriate
      * quotations where required.
-     * @param value value to convert to a string representation
-     * @param type value type
+     * \param value value to convert to a string representation
+     * \param type value type
      * \since QGIS 2.14
      * @see quotedString()
      * @see quotedColumnRef()
@@ -917,8 +917,8 @@ class CORE_EXPORT QgsExpression
       public:
 
         /** Constructor for NamedNode
-         * @param name node name
-         * @param node node
+         * \param name node name
+         * \param node node
          */
         NamedNode( const QString &name, Node *node )
           : name( name )
@@ -1049,8 +1049,8 @@ class CORE_EXPORT QgsExpression
         double computeDouble( double x, double y );
 
         /** Computes the result date time calculation from a start datetime and an interval
-         * @param d start datetime
-         * @param i interval to add or subtract (depending on mOp)
+         * \param d start datetime
+         * \param i interval to add or subtract (depending on mOp)
          */
         QDateTime computeDateTimeFromInterval( const QDateTime &d, QgsInterval *i );
 
@@ -1231,28 +1231,28 @@ class CORE_EXPORT QgsExpression
     };
 
     /** Returns the help text for a specified function.
-     * @param name function name
+     * \param name function name
      * @see variableHelpText()
      */
     static QString helpText( QString name );
 
     /** Returns the help text for a specified variable.
-     * @param variableName name of variable
-     * @param showValue set to true to include current value of variable in help text
-     * @param value current value of variable to show in help text
+     * \param variableName name of variable
+     * \param showValue set to true to include current value of variable in help text
+     * \param value current value of variable to show in help text
      * @see helpText()
      * \since QGIS 2.12
      */
     static QString variableHelpText( const QString &variableName, bool showValue = true, const QVariant &value = QVariant() );
 
     /** Returns the translated name for a function group.
-     * @param group untranslated group name
+     * \param group untranslated group name
      */
     static QString group( const QString &group );
 
     /** Formats an expression result for friendly display to the user. Truncates the result to a sensible
      * length, and presents text representations of non numeric/text types (e.g., geometries and features).
-     * @param value expression result to format
+     * \param value expression result to format
      * @returns formatted string, may contain HTML formatting characters
      * \since QGIS 2.14
      */

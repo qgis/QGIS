@@ -58,9 +58,9 @@ class QgsGeometryEditUtils
     static bool deletePart( QgsAbstractGeometry *geom, int partNum );
 
     /** Alters a geometry so that it avoids intersections with features from all open vector layers.
-     * @param geom geometry to alter
-     * @param avoidIntersectionsLayers list of layers to check for intersections
-     * @param ignoreFeatures map of layer to feature id of features to ignore
+     * \param geom geometry to alter
+     * \param avoidIntersectionsLayers list of layers to check for intersections
+     * \param ignoreFeatures map of layer to feature id of features to ignore
      */
     static QgsAbstractGeometry *avoidIntersections( const QgsAbstractGeometry &geom,
         const QList<QgsVectorLayer *> &avoidIntersectionsLayers,

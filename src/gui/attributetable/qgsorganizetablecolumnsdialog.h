@@ -39,9 +39,9 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
 
     /**
      * Constructor
-     * @param vl The concerned vector layer
-     * @param parent parent object
-     * @param flags window flags
+     * \param vl The concerned vector layer
+     * \param parent parent object
+     * \param flags window flags
      */
     QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
 

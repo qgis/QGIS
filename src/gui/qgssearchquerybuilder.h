@@ -110,7 +110,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
 
     /*!
      * populates list box with values of selected field
-     * @param limit if not zero, inserts only this count of values
+     * \param limit if not zero, inserts only this count of values
      */
     void getFieldValues( int limit );
 

@@ -41,12 +41,12 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     /**
      * Create an attribute dialog for a given layer and feature
      *
-     * @param vl                The layer for which the dialog will be generated
-     * @param thepFeature       A feature for which the dialog will be generated
-     * @param featureOwner      Set to true, if the dialog should take ownership of the feature
-     * @param parent            A parent widget for the dialog
-     * @param showDialogButtons True: Show the dialog buttons accept/cancel
-     * @param context           The context in which this dialog is created
+     * \param vl                The layer for which the dialog will be generated
+     * \param thepFeature       A feature for which the dialog will be generated
+     * \param featureOwner      Set to true, if the dialog should take ownership of the feature
+     * \param parent            A parent widget for the dialog
+     * \param showDialogButtons True: Show the dialog buttons accept/cancel
+     * \param context           The context in which this dialog is created
      *
      */
     QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
     /**
      * @brief setHighlight
-     * @param h The highlight. Ownership is taken.
+     * \param h The highlight. Ownership is taken.
      */
     void setHighlight( QgsHighlight *h );
 
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
     /**
      * Toggles the form mode.
-     * @param mode form mode. For example, if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
+     * \param mode form mode. For example, if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
      * will add a new feature when the form is accepted.
      */
     void setMode( QgsAttributeForm::Mode mode ) { mAttributeForm->setMode( mode ); }
@@ -90,14 +90,14 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted
      *
-     * @param message The message
+     * \param message The message
      */
     void setEditCommandMessage( const QString &message ) { mAttributeForm->setEditCommandMessage( message ); }
 
     /**
      * Intercept window activate/deactive events to show/hide the highlighted feature.
      *
-     * @param e The event
+     * \param e The event
      *
      * @return The same as the parent QDialog
      */

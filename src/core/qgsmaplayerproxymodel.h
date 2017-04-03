@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 
     /**
      * @brief setFilters set flags that affect how layers are filtered
-     * @param filters are Filter flags
+     * \param filters are Filter flags
      * \since QGIS 2.3
      */
     QgsMapLayerProxyModel *setFilters( QgsMapLayerProxyModel::Filters filters );

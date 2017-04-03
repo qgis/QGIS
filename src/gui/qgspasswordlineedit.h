@@ -37,13 +37,13 @@ class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
   public:
 
     /** Constructor for QgsPasswordLineEdit.
-     * @param parent parent widget
-     * @param passwordVisible Initial state of the password's visibility
+     * \param parent parent widget
+     * \param passwordVisible Initial state of the password's visibility
      */
     QgsPasswordLineEdit( QWidget *parent = nullptr, bool passwordVisible = false );
 
     /** Define if a lock icon shall be shown on the left of the widget
-     * @param visible set to false to hide the lock icon
+     * \param visible set to false to hide the lock icon
      */
     void setShowLockIcon( bool visible );
 

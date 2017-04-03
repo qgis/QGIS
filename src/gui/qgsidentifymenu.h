@@ -142,8 +142,8 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
 
     /**
      * @brief exec
-     * @param idResults the list of identify results to choose within
-     * @param pos the position where the menu will be executed
+     * \param idResults the list of identify results to choose within
+     * \param pos the position where the menu will be executed
      */
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> &idResults, QPoint pos );
 

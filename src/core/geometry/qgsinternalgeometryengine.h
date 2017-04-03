@@ -36,7 +36,7 @@ class QgsInternalGeometryEngine
     /**
      * The caller is responsible that the geometry is available and unchanged
      * for the whole lifetime of this object.
-     * @param geometry
+     * \param geometry
      */
     explicit QgsInternalGeometryEngine( const QgsGeometry &geometry );
 
@@ -44,8 +44,8 @@ class QgsInternalGeometryEngine
      * Will extrude a line or (segmentized) curve by a given offset and return a polygon
      * representation of it.
      *
-     * @param x offset in x direction
-     * @param y offset in y direction
+     * \param x offset in x direction
+     * \param y offset in y direction
      * @return an extruded polygon
      */
     QgsGeometry extrude( double x, double y ) const;
