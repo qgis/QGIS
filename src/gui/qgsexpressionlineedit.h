@@ -29,7 +29,7 @@ class QgsExpressionContextGenerator;
 class QgsCodeEditorSQL;
 
 /** \ingroup gui
- * @class QgsExpressionLineEdit
+ * \class QgsExpressionLineEdit
  * @brief The QgsExpressionLineEdit widget includes a line edit for entering expressions
  * together with a button to open the expression creation dialog.
  *

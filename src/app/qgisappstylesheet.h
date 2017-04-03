@@ -23,7 +23,7 @@
 #include <QMap>
 #include "qgis_app.h"
 
-/** @class QgisAppStyleSheet
+/** \class QgisAppStyleSheet
  * @brief Adjustable stylesheet for the Qgis application
  */
 class APP_EXPORT QgisAppStyleSheet: public QObject

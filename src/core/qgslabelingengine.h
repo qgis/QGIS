@@ -263,7 +263,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngine::Flags )
 
 
 /** \ingroup core
- * @class QgsLabelingUtils
+ * \class QgsLabelingUtils
  * @brief Contains helper utilities for working with QGIS' labeling engine.
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \since QGIS 2.14

@@ -26,7 +26,7 @@
 #include <QtSql>
 
 /**
- * @class QgsDb2Provider
+ * \class QgsDb2Provider
  * @brief Data provider for DB2 server.
  */
 class QgsDb2Provider : public QgsVectorDataProvider
