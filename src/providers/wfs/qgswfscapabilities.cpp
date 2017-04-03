@@ -28,7 +28,7 @@
 QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
   : QgsWfsRequest( uri )
 {
-  connect( this, SIGNAL( downloadFinished() ), this, SLOT( capabilitiesReplyFinished() ) );
+  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished );
 }
 
 QgsWfsCapabilities::~QgsWfsCapabilities()

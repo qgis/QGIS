@@ -56,13 +56,13 @@ QgsGrassImportProgress::QgsGrassImportProgress( QProcess *process, QObject *pare
   , mProgressMax( 0 )
   , mProgressValue( 0 )
 {
-  connect( mProcess, SIGNAL( readyReadStandardError() ), SLOT( onReadyReadStandardError() ) );
+  connect( mProcess, &QProcess::readyReadStandardError, this, &QgsGrassImportProgress::onReadyReadStandardError );
 }
 
 void QgsGrassImportProgress::setProcess( QProcess *process )
 {
   mProcess = process;
-  connect( mProcess, SIGNAL( readyReadStandardError() ), SLOT( onReadyReadStandardError() ) );
+  connect( mProcess, &QProcess::readyReadStandardError, this, &QgsGrassImportProgress::onReadyReadStandardError );
 }
 
 void QgsGrassImportProgress::onReadyReadStandardError()
@@ -161,7 +161,7 @@ QString QgsGrassImport::error()
 void QgsGrassImport::importInThread()
 {
   mFutureWatcher = new QFutureWatcher<bool>( this );
-  connect( mFutureWatcher, SIGNAL( finished() ), SLOT( onFinished() ) );
+  connect( mFutureWatcher, &QFutureWatcherBase::finished, this, &QgsGrassImport::onFinished );
   mFutureWatcher->setFuture( QtConcurrent::run( run, this ) );
 }
 

@@ -91,11 +91,11 @@ QList<QAction *> QgsWfsConnectionItem::actions()
   QList<QAction *> lst;
 
   QAction *actionEdit = new QAction( tr( "Edit..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  connect( actionEdit, &QAction::triggered, this, &QgsWfsConnectionItem::editConnection );
   lst.append( actionEdit );
 
   QAction *actionDelete = new QAction( tr( "Delete" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  connect( actionDelete, &QAction::triggered, this, &QgsWfsConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
   return lst;
@@ -156,7 +156,7 @@ QList<QAction *> QgsWfsRootItem::actions()
   QList<QAction *> lst;
 
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
-  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  connect( actionNew, &QAction::triggered, this, &QgsWfsRootItem::newConnection );
   lst.append( actionNew );
 
   return lst;
@@ -165,7 +165,7 @@ QList<QAction *> QgsWfsRootItem::actions()
 QWidget *QgsWfsRootItem::paramWidget()
 {
   QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, 0, true );
-  connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
+  connect( select, &QgsWFSSourceSelect::connectionsChanged, this, &QgsWfsRootItem::connectionsChanged );
   return select;
 }
 

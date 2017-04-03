@@ -703,7 +703,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   mLayerValid = mValid;
 
   // If it is valid, then watch for changes to the file
-  connect( mFile, SIGNAL( fileUpdated() ), this, SLOT( onFileUpdated() ) );
+  connect( mFile, &QgsDelimitedTextFile::fileUpdated, this, &QgsDelimitedTextProvider::onFileUpdated );
 
 
 }

@@ -258,7 +258,8 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
   loadMapInfo();
   setTopoFields();
 
-  connect( mLayer->map(), SIGNAL( dataChanged() ), SLOT( onDataChanged() ) );
+  connect( mLayer->map(),
+           &QgsGrassVectorMap::dataChanged, this, &QgsGrassProvider::onDataChanged );
 
   // TODO: types according to database
   setNativeTypes( QList<NativeType>()
@@ -648,7 +649,7 @@ bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
     {
       vectorLayer->updateFields();
     }
-    connect( mLayer->map(), SIGNAL( dataChanged() ), SLOT( onDataChanged() ) );
+    connect( mLayer->map(), &QgsGrassVectorMap::dataChanged, this, &QgsGrassProvider::onDataChanged );
     emit fullExtentCalculated();
     sEditedCount--;
     return true;
@@ -1106,22 +1107,22 @@ void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
   }
 
   // disconnect dataChanged() because the changes are done here and we know about them
-  disconnect( mLayer->map(), SIGNAL( dataChanged() ), this, SLOT( onDataChanged() ) );
+  disconnect( mLayer->map(), &QgsGrassVectorMap::dataChanged, this, &QgsGrassProvider::onDataChanged );
   mLayer->map()->startEdit();
   mLayer->startEdit();
 
   mEditBuffer = vectorLayer->editBuffer();
-  connect( mEditBuffer, SIGNAL( featureAdded( QgsFeatureId ) ), SLOT( onFeatureAdded( QgsFeatureId ) ) );
-  connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-  connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), SLOT( onGeometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
-  connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ), SLOT( onAttributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
-  connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), SLOT( onAttributeAdded( int ) ) );
-  connect( mEditBuffer, SIGNAL( attributeDeleted( int ) ), SLOT( onAttributeDeleted( int ) ) );
-  connect( vectorLayer, SIGNAL( beforeCommitChanges() ), SLOT( onBeforeCommitChanges() ) );
-  connect( vectorLayer, SIGNAL( beforeRollBack() ), SLOT( onBeforeRollBack() ) );
-  connect( vectorLayer, SIGNAL( editingStopped() ), SLOT( onEditingStopped() ) );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureAdded, this, &QgsGrassProvider::onFeatureAdded );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureDeleted, this, &QgsGrassProvider::onFeatureDeleted );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::geometryChanged, this, &QgsGrassProvider::onGeometryChanged );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::attributeValueChanged, this, &QgsGrassProvider::onAttributeValueChanged );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::attributeAdded, this, &QgsGrassProvider::onAttributeAdded );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::attributeDeleted, this, &QgsGrassProvider::onAttributeDeleted );
+  connect( vectorLayer, &QgsVectorLayer::beforeCommitChanges, this, &QgsGrassProvider::onBeforeCommitChanges );
+  connect( vectorLayer, &QgsVectorLayer::beforeRollBack, this, &QgsGrassProvider::onBeforeRollBack );
+  connect( vectorLayer, &QgsVectorLayer::editingStopped, this, &QgsGrassProvider::onEditingStopped );
 
-  connect( vectorLayer->undoStack(), SIGNAL( indexChanged( int ) ), this, SLOT( onUndoIndexChanged( int ) ) );
+  connect( vectorLayer->undoStack(), &QUndoStack::indexChanged, this, &QgsGrassProvider::onUndoIndexChanged );
 
   // let qgis know (attribute table etc.) that we added topo symbol field
   vectorLayer->updateFields();

@@ -59,7 +59,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
 
   setAcceptDrops( true );
   setMinimumSize( QSize( 24, 16 ) );
-  connect( this, SIGNAL( clicked() ), this, SLOT( buttonClicked() ) );
+  connect( this, &QAbstractButton::clicked, this, &QgsColorButton::buttonClicked );
 
   //setup dropdown menu
   mMenu = new QMenu( this );

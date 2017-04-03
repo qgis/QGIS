@@ -133,11 +133,11 @@ QList<QAction *> QgsOWSConnectionItem::actions()
   QList<QAction *> lst;
 
   QAction *actionEdit = new QAction( tr( "Edit..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  connect( actionEdit, &QAction::triggered, this, &QgsOWSConnectionItem::editConnection );
   lst.append( actionEdit );
 
   QAction *actionDelete = new QAction( tr( "Delete" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  connect( actionDelete, &QAction::triggered, this, &QgsOWSConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
   return lst;

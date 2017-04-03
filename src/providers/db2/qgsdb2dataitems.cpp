@@ -248,15 +248,15 @@ QList<QAction *> QgsDb2ConnectionItem::actions()
   QList<QAction *> lst;
 
   QAction *actionRefresh = new QAction( tr( "Refresh connection" ), this );
-  connect( actionRefresh, SIGNAL( triggered() ), this, SLOT( refreshConnection() ) );
+  connect( actionRefresh, &QAction::triggered, this, &QgsDb2ConnectionItem::refreshConnection );
   lst.append( actionRefresh );
 
   QAction *actionEdit = new QAction( tr( "Edit connection..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  connect( actionEdit, &QAction::triggered, this, &QgsDb2ConnectionItem::editConnection );
   lst.append( actionEdit );
 
   QAction *actionDelete = new QAction( tr( "Delete connection" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  connect( actionDelete, &QAction::triggered, this, &QgsDb2ConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
   return lst;
@@ -443,7 +443,7 @@ QList<QAction *> QgsDb2RootItem::actions()
   QList<QAction *> actionList;
 
   QAction *action = new QAction( tr( "New Connection..." ), this );
-  connect( action, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  connect( action, &QAction::triggered, this, &QgsDb2RootItem::newConnection );
   actionList.append( action );
   QgsDebugMsg( "DB2: Browser Panel; New Connection option added." );
 

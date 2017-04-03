@@ -203,7 +203,7 @@ class QgsWFSFeatureIterator : public QObject,
     void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override;
 
     //! Used by QgsWFSSharedData::registerToCache()
-    void connectSignals( QObject *downloader );
+    void connectSignals( QgsWFSFeatureDownloader *downloader );
 
   private slots:
     void featureReceived( int featureCount );

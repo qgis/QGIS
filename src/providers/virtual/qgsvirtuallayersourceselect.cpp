@@ -42,12 +42,12 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
 {
   setupUi( this );
 
-  QObject::connect( mTestButton, SIGNAL( clicked() ), this, SLOT( onTestQuery() ) );
-  QObject::connect( mBrowseCRSBtn, SIGNAL( clicked() ), this, SLOT( onBrowseCRS() ) );
-  QObject::connect( mAddLayerBtn, SIGNAL( clicked() ), this, SLOT( onAddLayer() ) );
-  QObject::connect( mRemoveLayerBtn, SIGNAL( clicked() ), this, SLOT( onRemoveLayer() ) );
-  QObject::connect( mImportLayerBtn, SIGNAL( clicked() ), this, SLOT( onImportLayer() ) );
-  QObject::connect( mLayersTable->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( onTableRowChanged( const QModelIndex &, const QModelIndex & ) ) );
+  QObject::connect( mTestButton, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onTestQuery );
+  QObject::connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onBrowseCRS );
+  QObject::connect( mAddLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onAddLayer );
+  QObject::connect( mRemoveLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onRemoveLayer );
+  QObject::connect( mImportLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onImportLayer );
+  QObject::connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::onTableRowChanged );
 
   // prepare provider list
   Q_FOREACH ( const QString &pk, QgsProviderRegistry::instance()->providerList() )
@@ -88,7 +88,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
     }
   }
 
-  QObject::connect( mLayerNameCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( onLayerComboChanged( int ) ) );
+  QObject::connect( mLayerNameCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVirtualLayerSourceSelect::onLayerComboChanged );
   onLayerComboChanged( mLayerNameCombo->currentIndex() );
 
   // configure auto completion with SQL functions

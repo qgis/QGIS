@@ -86,11 +86,11 @@ QList<QAction *> QgsWCSConnectionItem::actions()
   QList<QAction *> lst;
 
   QAction *actionEdit = new QAction( tr( "Edit..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  connect( actionEdit, &QAction::triggered, this, &QgsWCSConnectionItem::editConnection );
   lst.append( actionEdit );
 
   QAction *actionDelete = new QAction( tr( "Delete" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  connect( actionDelete, &QAction::triggered, this, &QgsWCSConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
   return lst;
@@ -244,7 +244,7 @@ QList<QAction *> QgsWCSRootItem::actions()
   QList<QAction *> lst;
 
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
-  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  connect( actionNew, &QAction::triggered, this, &QgsWCSRootItem::newConnection );
   lst.append( actionNew );
 
   return lst;
@@ -254,7 +254,7 @@ QList<QAction *> QgsWCSRootItem::actions()
 QWidget *QgsWCSRootItem::paramWidget()
 {
   QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, 0, true, true );
-  connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
+  connect( select, &QgsOWSSourceSelect::connectionsChanged, this, &QgsWCSRootItem::connectionsChanged );
   return select;
 }
 

@@ -762,13 +762,13 @@ void QgsGrass::setMapsetSearchPathWatcher()
   {
     QgsDebugMsg( "add watcher on SEARCH_PATH file " + searchFilePath );
     mMapsetSearchPathWatcher->addPath( searchFilePath );
-    connect( mMapsetSearchPathWatcher, SIGNAL( fileChanged( const QString & ) ), SLOT( onSearchPathFileChanged( const QString & ) ) );
+    connect( mMapsetSearchPathWatcher, &QFileSystemWatcher::fileChanged, this, &QgsGrass::onSearchPathFileChanged );
   }
   else
   {
     QgsDebugMsg( "add watcher on mapset " + getDefaultMapsetPath() );
     mMapsetSearchPathWatcher->addPath( getDefaultMapsetPath() );
-    connect( mMapsetSearchPathWatcher, SIGNAL( directoryChanged( const QString & ) ), SLOT( onSearchPathFileChanged( const QString & ) ) );
+    connect( mMapsetSearchPathWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsGrass::onSearchPathFileChanged );
   }
 }
 

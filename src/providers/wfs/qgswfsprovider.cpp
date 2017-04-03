@@ -59,8 +59,8 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const QgsWfsCapabilities::Ca
   , mCapabilities( 0 )
 {
   mShared->mCaps = caps;
-  connect( mShared.get(), SIGNAL( raiseError( const QString & ) ), this, SLOT( pushErrorSlot( const QString & ) ) );
-  connect( mShared.get(), SIGNAL( extentUpdated() ), this, SIGNAL( fullExtentCalculated() ) );
+  connect( mShared.get(), &QgsWFSSharedData::raiseError, this, &QgsWFSProvider::pushErrorSlot );
+  connect( mShared.get(), &QgsWFSSharedData::extentUpdated, this, &QgsWFSProvider::fullExtentCalculated );
 
   if ( uri.isEmpty() )
   {
@@ -121,8 +121,8 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const QgsWfsCapabilities::Ca
   if ( mWKBType == QgsWkbTypes::Unknown )
   {
     QgsWFSFeatureDownloader downloader( mShared.get() );
-    connect( &downloader, SIGNAL( featureReceived( QVector<QgsWFSFeatureGmlIdPair> ) ),
-             this, SLOT( featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> ) ) );
+    connect( &downloader, static_cast<void ( QgsWFSFeatureDownloader::* )( QVector<QgsWFSFeatureGmlIdPair> )>( &QgsWFSFeatureDownloader::featureReceived ),
+             this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
     downloader.run( false, /* serialize features */
                     1 /* maxfeatures */ );
   }
