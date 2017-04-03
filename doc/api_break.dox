@@ -1536,7 +1536,10 @@ QgsPaintEffectRegistry        {#qgis_api_break_3_0_QgsPaintEffectRegistry}
 QgsPalettedRasterRenderer        {#qgis_api_break_3_0_QgsPalettedRasterRenderer}
 -------------------------
 
-- The rgbArray() method was made private
+- The rgbArray() method was removed
+- colors() has been removed, use classes() instead.
+- The constructor has a different signature and requires a list of classes instead of an array
+
 
 QgsPalLabeling        {#qgis_api_break_3_0_QgsPalLabeling}
 --------------
@@ -1660,7 +1663,8 @@ QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 - setUseSrcNoDataValue() has been renamed to setUseSourceNoDataValue()
 - srcNoDataValue() has been renamed to sourceNoDataValue()
 - draw() has been removed from the interface as it was not used anywhere.
-
+- The progress and progressUpdate signals were removed. Methods which previously emitted these
+signals now accept a QgsRasterBlockFeedback argument for reporting progress updates.
 
 QgsRasterInterface        {#qgis_api_break_3_0_QgsRasterInterface}
 ------------------
@@ -1668,6 +1672,7 @@ QgsRasterInterface        {#qgis_api_break_3_0_QgsRasterInterface}
 - srcDataType() has been renamed to sourceDataType()
 - srcInput() has been renamed to sourceInput()
 - block() has new "feedback" argument.
+- The signature of histogram() and bandStatistics() now takes a QgsRasterBlockFeedback pointer argument.
 
 
 QgsRasterLayer        {#qgis_api_break_3_0_QgsRasterLayer}
@@ -1681,6 +1686,10 @@ constructor variant which accepts a data provider string and loadDefaultStyleFla
 - updateProgress() had no effect and was removed.
 - CUMULATIVE_CUT_LOWER and CUMULATIVE_CUT_UPPER have been moved to QgsRasterMinMaxOrigin
 - the second parameter of setContrastEnhancement() has changed type. It is now QgsRasterMinMaxOrigin::Limits
+- showProgress() and onProgress() were removed
+- The progressUpdate() signal was removed.  Methods which previously emitted these
+signals now accept a QgsRasterBlockFeedback argument for reporting progress updates.
+
 
 QgsRasterProjector        {#qgis_api_break_3_0_QgsRasterProjector}
 ------------------

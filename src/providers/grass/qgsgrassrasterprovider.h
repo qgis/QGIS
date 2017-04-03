@@ -193,7 +193,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     QgsRasterBandStats bandStatistics( int bandNo,
                                        int stats = QgsRasterBandStats::All,
                                        const QgsRectangle &boundingBox = QgsRectangle(),
-                                       int sampleSize = 0 ) override;
+                                       int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 

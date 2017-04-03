@@ -262,12 +262,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QString buildPyramids( const QList<QgsRasterPyramid> &pyramidList,
                                    const QString &resamplingMethod = "NEAREST",
                                    QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
-                                   const QStringList &configOptions = QStringList() )
+                                   const QStringList &configOptions = QStringList(),
+                                   QgsRasterBlockFeedback *feedback = nullptr )
     {
       Q_UNUSED( pyramidList );
       Q_UNUSED( resamplingMethod );
       Q_UNUSED( format );
       Q_UNUSED( configOptions );
+      Q_UNUSED( feedback );
       return QStringLiteral( "FAILED_NOT_SUPPORTED" );
     }
 
@@ -458,11 +460,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual int stepHeight() const { return QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT; }
 
   signals:
-
-    /** Emit a signal to notify of the progress event.
-      * Emitted progress is in percents (0.0-100.0) */
-    void progress( int type, double progress, const QString &message );
-    void progressUpdate( int progress );
 
     /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
      * \since QGIS 2.14

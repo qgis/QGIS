@@ -198,39 +198,20 @@ class QgsRasterInterface
      */
     virtual QgsRasterBandStats bandStatistics( int bandNo,
         int stats = QgsRasterBandStats::All,
-        const QgsRectangle & extent = QgsRectangle(),
-        int sampleSize = 0 );
-
-    /** \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
-     * @return true if statistics are available (ready to use)
-     */
+        const QgsRectangle &extent = QgsRectangle(),
+        int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 );
     virtual bool hasStatistics( int bandNo,
                                 int stats = QgsRasterBandStats::All,
-                                const QgsRectangle & extent = QgsRectangle(),
+                                const QgsRectangle &extent = QgsRectangle(),
                                 int sampleSize = 0 );
-
-    /** \brief Get histogram. Histograms are cached in providers.
-     * @param bandNo The band (number).
-     * @param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
-     * @param minimum Minimum value, if NaN, raster minimum value will be used.
-     * @param maximum Maximum value, if NaN, raster minimum value will be used.
-     * @param extent Extent used to calc histogram, if empty, whole raster extent is used.
-     * @param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
-     * @param includeOutOfRange include out of range values
-     * @return Vector of non NULL cell counts for each bin.
-     * @note binCount, minimum and maximum not optional in python bindings
-     */
     virtual QgsRasterHistogram histogram( int bandNo,
                                           int binCount,
                                           double minimum,
                                           double maximum,
-                                          const QgsRectangle & extent,
-                                          int sampleSize,
-                                          bool includeOutOfRange );
+                                          const QgsRectangle &extent = QgsRectangle(),
+                                          int sampleSize = 0,
+                                          bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = 0 );
 
-    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()
-     * @note binCount, minimum and maximum not optional in python bindings
-     */
     virtual bool hasHistogram( int bandNo,
                                int binCount,
                                double minimum,

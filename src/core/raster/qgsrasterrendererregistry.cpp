@@ -54,7 +54,7 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
   // insert items in a particular order, which is returned in renderersList()
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "multibandcolor" ), QObject::tr( "Multiband color" ),
                                           QgsMultiBandColorRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "paletted" ), QObject::tr( "Paletted" ), QgsPalettedRasterRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "paletted" ), QObject::tr( "Paletted/Unique values" ), QgsPalettedRasterRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "singlebandgray" ), QObject::tr( "Singleband gray" ),
                                           QgsSingleBandGrayRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "singlebandpseudocolor" ), QObject::tr( "Singleband pseudocolor" ),
@@ -122,39 +122,10 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     case QgsRaster::PalettedColor:
     {
       int grayBand = 1; //reasonable default
-      QList<QgsColorRampShader::ColorRampItem> colorEntries = provider->colorTable( grayBand );
-
-      //go through list and take maximum value (it could be that entries don't start at 0 or indices are not contiguous)
-      int colorArraySize = 0;
-      QList<QgsColorRampShader::ColorRampItem>::const_iterator colorIt = colorEntries.constBegin();
-      for ( ; colorIt != colorEntries.constEnd(); ++colorIt )
-      {
-        if ( colorIt->value > colorArraySize )
-        {
-          colorArraySize = ( int )( colorIt->value );
-        }
-      }
-
-      colorArraySize += 1; //usually starts at 0
-      QColor *colorArray = new QColor[ colorArraySize ];
-      colorIt = colorEntries.constBegin();
-      QVector<QString> labels;
-      for ( ; colorIt != colorEntries.constEnd(); ++colorIt )
-      {
-        int idx = ( int )( colorIt->value );
-        colorArray[idx] = colorIt->color;
-        if ( !colorIt->label.isEmpty() )
-        {
-          if ( labels.size() <= idx ) labels.resize( idx + 1 );
-          labels[idx] = colorIt->label;
-        }
-      }
-
+      QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
       renderer = new QgsPalettedRasterRenderer( provider,
           grayBand,
-          colorArray,
-          colorArraySize,
-          labels );
+          classes );
     }
     break;
     case QgsRaster::MultiBandSingleBandGray:
