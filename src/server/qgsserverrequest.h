@@ -74,12 +74,12 @@ class SERVER_EXPORT QgsServerRequest
     virtual ~QgsServerRequest() = default;
 
     /**
-     * \return  the request url
+     * \returns  the request url
      */
     QUrl url() const;
 
     /**
-     * \return the request method
+     * \returns the request method
       */
     Method method() const;
 
@@ -112,7 +112,7 @@ class SERVER_EXPORT QgsServerRequest
     virtual QByteArray data() const;
 
     /**
-     * \return the value of the header field for that request
+     * \returns the value of the header field for that request
      */
     virtual QString getHeader( const QString &name ) const;
 

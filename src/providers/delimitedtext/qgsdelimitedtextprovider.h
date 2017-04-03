@@ -92,13 +92,13 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     /**
      * Get feature type.
-     * \return int representing the feature type
+     * \returns int representing the feature type
      */
     virtual QgsWkbTypes::Type wkbType() const override;
 
     /**
      * Number of features in the layer
-     * \return long containing number of features
+     * \returns long containing number of features
      */
     virtual long featureCount() const override;
 
@@ -112,7 +112,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** Creates a spatial index on the data
-     * \return indexCreated  Returns true if a spatial index is created
+     * \returns indexCreated  Returns true if a spatial index is created
      */
     virtual bool createSpatialIndex() override;
 
@@ -169,7 +169,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * rectangle
      * \param x X value of point
      * \param y Y value of point
-     * \return True if point is within the rectangle
+     * \returns True if point is within the rectangle
      */
     bool boundsCheck( double x, double y );
 
@@ -179,7 +179,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * rectangle
      * \param geom geometry to test against bounds
      * \param y Y value of point
-     * \return True if point is within the rectangle
+     * \returns True if point is within the rectangle
      */
     bool boundsCheck( QgsGeometry *geom );
 
@@ -187,7 +187,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * Try to read field types from CSVT (or equivalent xxxT) file.
      * \param filename The name of the file from which to read the field types
      * \param message  Pointer to a string to receive a status message
-     * \return A list of field type strings, empty if not found or not valid
+     * \returns A list of field type strings, empty if not found or not valid
      */
     QStringList readCsvtFieldTypes( const QString &filename, QString *message = nullptr );
 

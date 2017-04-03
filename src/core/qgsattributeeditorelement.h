@@ -63,14 +63,14 @@ class CORE_EXPORT QgsAttributeEditorElement
     /**
      * Return the name of this element
      *
-     * \return The name for this element
+     * \returns The name for this element
      */
     QString name() const { return mName; }
 
     /**
      * The type of this element
      *
-     * \return The type
+     * \returns The type
      */
     AttributeEditorType type() const { return mType; }
 
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsAttributeEditorElement
      *
      * \param doc The QDomDocument which is used to create new XML elements
      *
-     * \return A DOM element to serialize this element
+     * \returns A DOM element to serialize this element
      */
     QDomElement toDomElement( QDomDocument &doc ) const;
 
@@ -176,14 +176,14 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     /**
      * Returns if this container is going to be rendered as a group box
      *
-     * \return True if it will be a group box, false if it will be a tab
+     * \returns True if it will be a group box, false if it will be a tab
      */
     virtual bool isGroupBox() const { return mIsGroupBox; }
 
     /**
      * Get a list of the children elements of this container
      *
-     * \return A list of elements
+     * \returns A list of elements
      */
     QList<QgsAttributeEditorElement *> children() const { return mChildren; }
 
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \param type The type which should be searched
      *
-     * \return A list of elements of the type which has been searched for
+     * \returns A list of elements of the type which has been searched for
      */
     virtual QList<QgsAttributeEditorElement *> findElements( AttributeEditorType type ) const;
 
@@ -272,7 +272,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 
     /**
      * Return the index of the field
-     * \return
+     * \returns
      */
     int idx() const { return mIdx; }
 
@@ -323,7 +323,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     /**
      * Get the id of the relation which shall be embedded
      *
-     * \return the id
+     * \returns the id
      */
     const QgsRelation &relation() const { return mRelation; }
 
@@ -331,7 +331,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * Initializes the relation from the id
      *
      * \param relManager The relation manager to use for the initialization
-     * \return true if the relation was found in the relationmanager
+     * \returns true if the relation was found in the relationmanager
      */
     bool init( QgsRelationManager *relManager );
 

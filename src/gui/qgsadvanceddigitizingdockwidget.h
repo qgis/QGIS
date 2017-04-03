@@ -119,7 +119,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
         /**
          * The current lock mode of this constraint
-         * \return Lock mode
+         * \returns Lock mode
          */
         LockMode lockMode() const { return mLockMode; }
 
@@ -216,7 +216,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Will react on a canvas press event
      *
      * \param e A mouse event (may be modified)
-     * \return  If the event is hidden (construction mode hides events from the maptool)
+     * \returns  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasPressEvent( QgsMapMouseEvent *e );
 
@@ -225,7 +225,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      *
      * \param e A mouse event (may be modified)
      * \param mode determines if the dock has to record one, two or many points.
-     * \return  If the event is hidden (construction mode hides events from the maptool)
+     * \returns  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode );
 
@@ -233,7 +233,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Will react on a canvas move event
      *
      * \param e A mouse event (may be modified)
-     * \return  If the event is hidden (construction mode hides events from the maptool)
+     * \returns  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasMoveEvent( QgsMapMouseEvent *e );
 
@@ -241,12 +241,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Filter key events to e.g. toggle construction mode or adapt constraints
      *
      * \param e A mouse event (may be modified)
-     * \return  If the event is hidden (construction mode hides events from the maptool)
+     * \returns  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasKeyPressEventFilter( QKeyEvent *e );
 
     //! apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
-    //! \return false if no solution was found (invalid constraints)
+    //! \returns false if no solution was found (invalid constraints)
     virtual bool applyConstraints( QgsMapMouseEvent *e );
 
     /**
@@ -256,7 +256,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * The snapping mode
-     * \return Snapping mode
+     * \returns Snapping mode
      */
     QgsMapMouseEvent::SnappingMode snappingMode() { return mSnappingMode; }
 

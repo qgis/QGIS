@@ -36,7 +36,7 @@ class QgsRemoteDataSourceBuilder: public QgsMSLayerBuilder
     QgsVectorLayer *vectorLayerFromRemoteVDS( const QDomElement &remoteVDSElem, const QString &layerName, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove, bool allowCaching = true ) const;
 
     /** Loads data from http or ftp
-     \return 0 in case of success*/
+     \returns 0 in case of success*/
     int loadData( const QString &url, QByteArray &data ) const;
 };
 

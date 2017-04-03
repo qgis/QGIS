@@ -46,7 +46,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * This class is a singleton and has therefore to be accessed with this method instead
      * of a constructor.
      *
-     * \return The one and only instance of the editor widget registry
+     * \returns The one and only instance of the editor widget registry
      */
     static QgsEditorWidgetRegistry *instance();
 
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param vl        The vector layer for which this widget will be created
      * \param fieldName The field name on the specified layer for which this widget will be created
      *
-     * \return The id of the widget type to use and its config
+     * \returns The id of the widget type to use and its config
      */
     QgsEditorWidgetSetup findBest( const QgsVectorLayer *vl, const QString &fieldName ) const;
 
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param parent    The parent which will be used for the created wrapper and the created widget
      * \param context   The editor context (not available in Python bindings)
      *
-     * \return A new widget wrapper
+     * \returns A new widget wrapper
      */
     QgsEditorWidgetWrapper *create( const QString &widgetId,
                                     QgsVectorLayer *vl,
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param parent    The parent which will be used for the created wrapper and the created widget
      * \param context   The editor context (not available in Python bindings)
      *
-     * \return A new widget wrapper
+     * \returns A new widget wrapper
      */
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl,
                                     int fieldIdx,
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param fieldIdx  The field index on the specified layer for which this widget will be created
      * \param parent    The parent widget for the created widget
      *
-     * \return A new configuration widget
+     * \returns A new configuration widget
      */
     QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
 
@@ -143,21 +143,21 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * \param widgetId The widget type to get the name for
      *
-     * \return A human readable name
+     * \returns A human readable name
      */
     QString name( const QString &widgetId );
 
     /**
      * Get access to all registered factories
      *
-     * \return All ids and factories
+     * \returns All ids and factories
      */
     QMap<QString, QgsEditorWidgetFactory *> factories();
 
     /**
      * Get a factory for the given widget type id.
      *
-     * \return A factory or Null if not existent
+     * \returns A factory or Null if not existent
      */
     QgsEditorWidgetFactory *factory( const QString &widgetId );
 
@@ -167,7 +167,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param widgetId      The id which will be used later to refer to this widget type
      * \param widgetFactory The factory which will create this widget type
      *
-     * \return true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
+     * \returns true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
      */
     bool registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory );
 

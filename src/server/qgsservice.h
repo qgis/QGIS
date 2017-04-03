@@ -47,12 +47,12 @@ class SERVER_EXPORT QgsService
     virtual ~QgsService() = default;
 
     /**
-     * \return the name of the service
+     * \returns the name of the service
      */
     virtual QString name() const = 0;
 
     /**
-     * \return the version of the service
+     * \returns the version of the service
      */
     virtual QString version() const = 0;
 

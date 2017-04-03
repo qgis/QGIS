@@ -43,7 +43,7 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      * \param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
      * \param parent   The parent for the wrapper class and any created widget.
      *
-     * \return         A new widget wrapper
+     * \returns         A new widget wrapper
      */
     virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
 
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      * \param fieldIdx The field index for which the widget will be created
      * \param parent   The parent widget of the created config widget
      *
-     * \return         A configuration widget
+     * \returns         A configuration widget
      */
     virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 

@@ -58,7 +58,7 @@ class SERVER_EXPORT QgsServiceRegistry
      * Retrieve a service from its name
      * \param name the name of the service
      * \param version the version string (optional)
-     * \return QgsService
+     * \returns QgsService
      *
      * If the version is not provided the higher version of the service is returned
      */
@@ -81,7 +81,7 @@ class SERVER_EXPORT QgsServiceRegistry
      *
      * \param name the tame of the service
      * \param version (optional) the specific version to unload
-     * \return the number of services unregistered
+     * \returns the number of services unregistered
      *
      * If the version is not specified then all versions from the specified service
      * are unloaded

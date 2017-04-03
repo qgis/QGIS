@@ -43,7 +43,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * Access the symbol type. This defines the type of geometry
      * that is created by this generator.
      *
-     * \return Symbol type
+     * \returns Symbol type
      */
     QgsSymbol::SymbolType symbolType() const { return mSymbolType; }
 

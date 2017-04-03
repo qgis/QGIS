@@ -52,7 +52,7 @@ class ANALYSIS_EXPORT Triangulation
 
     /**
      * Calculates the normal at a point on the surface and assigns it to 'result'.
-     * \return true in case of success and false in case of failure
+     * \returns true in case of success and false in case of failure
      */
     virtual bool calcNormal( double x, double y, Vector3D *result ) = 0;
 
@@ -148,7 +148,7 @@ class ANALYSIS_EXPORT Triangulation
 
     /**
      * Saves the triangulation as a (line) shapefile
-     * \return true in case of success
+     * \returns true in case of success
      */
     virtual bool saveAsShapefile( const QString &fileName ) const = 0;
 };

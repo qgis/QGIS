@@ -52,7 +52,7 @@ class CORE_EXPORT QgsFeatureFilterProvider
     virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &featureRequest ) const = 0;
 
     /** Create a clone of the feature filter provider
-     * \return a new clone
+     * \returns a new clone
      */
     virtual QgsFeatureFilterProvider *clone() const = 0;
 };

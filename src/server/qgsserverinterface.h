@@ -76,13 +76,13 @@ class SERVER_EXPORT QgsServerInterface
 
     /**
      * Get pointer to the capabiblities cache
-     * \return QgsCapabilitiesCache
+     * \returns QgsCapabilitiesCache
      */
     virtual QgsCapabilitiesCache *capabilitiesCache() = 0;
 
     /**
      * Get pointer to the request handler
-     * \return QgsRequestHandler
+     * \returns QgsRequestHandler
      */
     virtual QgsRequestHandler *requestHandler() = 0;
 
@@ -101,7 +101,7 @@ class SERVER_EXPORT QgsServerInterface
 
     /**
      * Return the list of current QgsServerFilter
-     * \return QgsServerFiltersMap list of QgsServerFilter
+     * \returns QgsServerFiltersMap list of QgsServerFilter
      */
     virtual QgsServerFiltersMap filters() = 0;
 
@@ -119,7 +119,7 @@ class SERVER_EXPORT QgsServerInterface
 
     /**
      * Return the configuration file path
-     * \return QString containing the configuration file path
+     * \returns QString containing the configuration file path
      */
     virtual QString configFilePath() = 0;
 
@@ -143,13 +143,13 @@ class SERVER_EXPORT QgsServerInterface
 
     /**
      * Return the service registry
-     * \return QgsServiceResgistry
+     * \returns QgsServiceResgistry
      */
     virtual QgsServiceRegistry *serviceRegistry() = 0;
 
     /**
      * Return the server settings
-     * \return QgsServerSettings
+     * \returns QgsServerSettings
      *
      * \note not available in Python bindings
      */

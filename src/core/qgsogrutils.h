@@ -39,7 +39,7 @@ class CORE_EXPORT QgsOgrUtils
      * \param ogrFet OGR feature handle
      * \param fields fields collection corresponding to feature
      * \param encoding text encoding
-     * \return valid feature if read was successful
+     * \returns valid feature if read was successful
      */
     static QgsFeature readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding );
 

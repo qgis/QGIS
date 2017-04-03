@@ -70,7 +70,7 @@ class QgsExpressionItem : public QStandardItem
 
     /** Get the help text that is associated with this expression item.
       *
-      * \return The help text.
+      * \returns The help text.
       */
     QString getHelpText() const { return mHelpText; }
 
@@ -82,7 +82,7 @@ class QgsExpressionItem : public QStandardItem
 
     /** Get the type of expression item, e.g., header, field, ExpressionNode.
       *
-      * \return The QgsExpressionItem::ItemType
+      * \returns The QgsExpressionItem::ItemType
       */
     QgsExpressionItem::ItemType getItemType() const { return mType; }
 

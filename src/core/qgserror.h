@@ -103,18 +103,18 @@ class CORE_EXPORT QgsError
     void append( const QgsErrorMessage &message );
 
     /** Test if any error is set.
-     *  \return true if contains error
+     *  \returns true if contains error
      */
     bool isEmpty() const { return mMessageList.isEmpty(); }
 
     /** Full error messages description
      *  \param format output format
-     *  \return error report
+     *  \returns error report
      */
     QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;
 
     /** Short error description, usually the first error in chain, the real error.
-     *  \return error description
+     *  \returns error description
      */
     QString summary() const;
 

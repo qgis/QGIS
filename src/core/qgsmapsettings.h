@@ -226,47 +226,47 @@ class CORE_EXPORT QgsMapSettings
     /**
      * @brief transform bounding box from layer's CRS to output CRS
      * @see layerToMapCoordinates( QgsMapLayer* layer, QgsRectangle rect ) if you want to transform a rectangle
-     * \return a bounding box (aligned rectangle) containing the transformed extent
+     * \returns a bounding box (aligned rectangle) containing the transformed extent
      */
     QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 
     /**
      * @brief transform bounding box from output CRS to layer's CRS
      * @see mapToLayerCoordinates( QgsMapLayer* layer,QgsRectangle rect ) if you want to transform a rectangle
-     * \return a bounding box (aligned rectangle) containing the transformed extent
+     * \returns a bounding box (aligned rectangle) containing the transformed extent
      */
     QgsRectangle outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 
     /**
      * @brief transform point coordinates from layer's CRS to output CRS
-     * \return the transformed point
+     * \returns the transformed point
      */
     QgsPoint layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
 
     /**
      * @brief transform rectangle from layer's CRS to output CRS
      * @see layerExtentToOutputExtent() if you want to transform a bounding box
-     * \return the transformed rectangle
+     * \returns the transformed rectangle
      */
     QgsRectangle layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 
     /**
      * @brief transform point coordinates from output CRS to layer's CRS
-     * \return the transformed point
+     * \returns the transformed point
      */
     QgsPoint mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
 
     /**
      * @brief transform rectangle from output CRS to layer's CRS
      * @see outputExtentToLayerExtent() if you want to transform a bounding box
-     * \return the transformed rectangle
+     * \returns the transformed rectangle
      */
     QgsRectangle mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 
     /**
      * @brief Return coordinate transform from layer's CRS to destination CRS
      * \param layer
-     * \return transform - may be invalid if the transform is not needed
+     * \returns transform - may be invalid if the transform is not needed
      */
     QgsCoordinateTransform layerTransform( const QgsMapLayer *layer ) const;
 

@@ -134,7 +134,7 @@ namespace pal
        * \param stats A PalStat object (can be NULL)
        * \param displayAll if true, all feature will be labelled even though overlaps occur
        *
-       * \return A list of label to display on map
+       * \returns A list of label to display on map
        */
       QList<LabelPosition *> *labeller( double bbox[4], PalStat **stats, bool displayAll );
 
@@ -160,7 +160,7 @@ namespace pal
       /**
        * \brief Get flag show partial label
        *
-       * \return value of flag
+       * \returns value of flag
        */
       bool getShowPartial();
 
@@ -216,7 +216,7 @@ namespace pal
       /**
        * \brief get the search method in use
        *
-       * \return the search method
+       * \returns the search method
        */
       SearchMethod getSearch();
 
@@ -317,13 +317,13 @@ namespace pal
 
       /**
        * \brief Get the minimum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * \return minimum # of iteration
+       * \returns minimum # of iteration
        */
       int getMinIt();
 
       /**
        * \brief Get the maximum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * \return maximum # of iteration
+       * \returns maximum # of iteration
        */
       int getMaxIt();
 

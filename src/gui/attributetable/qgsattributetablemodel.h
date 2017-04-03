@@ -182,7 +182,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /**
      * Return the feature attributes at given model index
-     * \return feature attributes at given model index
+     * \returns feature attributes at given model index
      */
     QgsFeature feature( const QModelIndex &idx ) const;
 
@@ -235,7 +235,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * Returns the context in which this table is shown.
      * Will be forwarded to any editor widget created when editing data on this model.
      *
-     * \return The context
+     * \returns The context
      */
     const QgsAttributeEditorContext &editorContext() const { return mEditorContext; }
 
@@ -350,7 +350,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      *
      * \param  fid     feature id
      *
-     * \return feature exists
+     * \returns feature exists
      */
     virtual bool loadFeatureAtId( QgsFeatureId fid ) const;
 

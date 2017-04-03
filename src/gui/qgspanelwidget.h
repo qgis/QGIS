@@ -42,7 +42,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 
     /**
      * The title of the panel.
-     * \return The title pf the panel.
+     * \returns The title pf the panel.
      */
     QString panelTitle() { return mPanelTitle; }
 
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 
     /**
      * Return the dock mode state.
-     * \return True if in dock mode.  If in dock mode the widget
+     * \returns True if in dock mode.  If in dock mode the widget
      * will emit the showPanel signal to handle panel opening
      * If false it will open dialogs when openPanel is called.
      */
@@ -190,7 +190,7 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
 
     /**
      * Returns the internal widget that is wrapped in this panel.
-     * \return The internal widget. Can be nullptr.
+     * \returns The internal widget. Can be nullptr.
      */
     QWidget *widget() { return mWidget; }
 

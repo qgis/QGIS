@@ -170,7 +170,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * \return the QAction you can use to remove this widget from the toolbar
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     virtual QAction *addToolBarWidget( QWidget *widget ) = 0;
 
@@ -183,7 +183,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * \return the QAction you can use to remove this widget from the toolbar
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     virtual QAction *addRasterToolBarWidget( QWidget *widget ) = 0;
 
@@ -202,7 +202,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * \return the QAction you can use to remove this widget from the toolbar
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     virtual QAction *addVectorToolBarWidget( QWidget *widget ) = 0;
 
@@ -218,7 +218,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * \return the QAction you can use to remove this widget from the toolbar
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     virtual QAction *addDatabaseToolBarWidget( QWidget *widget ) = 0;
 
@@ -234,7 +234,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * \return the QAction you can use to remove this widget from the toolbar
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     virtual QAction *addWebToolBarWidget( QWidget *widget ) = 0;
 
@@ -617,7 +617,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param l The layer for which the dialog will be created
      * \param f The feature for which the dialog will be created
      *
-     * \return A feature form
+     * \returns A feature form
      */
     virtual QgsAttributeDialog *getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
 
@@ -626,7 +626,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * With the help of this you can access methods like addFeature, startEditing
      * or stopEditing while giving the user the appropriate dialogs.
      *
-     * \return An instance of the vector layer tools
+     * \returns An instance of the vector layer tools
      */
     virtual QgsVectorLayerTools *vectorLayerTools() = 0;
 

@@ -186,7 +186,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     QDomDocument readInterfaceDescription( const QString &xname, QStringList &errors );
 
     /** Get region for currently selected map. It will show warning dialog if region could not be read.
-     * \return true if region was successfully read
+     * \returns true if region was successfully read
      */
     bool getCurrentMapRegion( QgsGrassModuleInput *param, struct Cell_head *window );
 

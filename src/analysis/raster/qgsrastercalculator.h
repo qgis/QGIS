@@ -81,7 +81,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
 
     /** Starts the calculation and writes new raster
       \param p progress bar (or 0 if called from non-gui code)
-      \return 0 in case of success*/
+      \returns 0 in case of success*/
     //TODO QGIS 3.0 - return QgsRasterCalculator::Result
     int processCalculation( QProgressDialog *p = nullptr );
 
@@ -90,11 +90,11 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     QgsRasterCalculator();
 
     /** Opens the output driver and tests if it supports the creation of a new dataset
-      \return nullptr on error and the driver handle on success*/
+      \returns nullptr on error and the driver handle on success*/
     GDALDriverH openOutputDriver();
 
     /** Opens the output file and sets the same geotransform and CRS as the input data
-      \return the output dataset or nullptr in case of error*/
+      \returns the output dataset or nullptr in case of error*/
     GDALDatasetH openOutputFile( GDALDriverH outputDriver );
 
     /** Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows

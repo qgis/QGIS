@@ -167,7 +167,7 @@ class ANALYSIS_EXPORT QgsGraph
 
     /**
      * Find vertex by associated point
-     * \return vertex index
+     * \returns vertex index
      */
     int findVertex( const QgsPoint &pt ) const;
 

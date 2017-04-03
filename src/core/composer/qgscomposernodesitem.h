@@ -81,7 +81,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     /** Gets the position of a node in scene coordinate.
       * \param index of the node
       * \param position the position of the node
-      * \return true if the index is valid and the position is set, false otherwise
+      * \returns true if the index is valid and the position is set, false otherwise
       */
     bool nodePosition( const int index, QPointF &position );
 
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     bool setSelectedNode( const int index );
 
     /** Returns the currently selected node.
-      * \return the index of the selected node, -1 otherwise
+      * \returns the index of the selected node, -1 otherwise
       */
     int selectedNode() { return mSelectedNode; }
 

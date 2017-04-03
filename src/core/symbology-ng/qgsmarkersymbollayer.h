@@ -105,7 +105,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * shape.
      * \param name encoded shape name
      * \param ok if specified, will be set to true if shape was successfully decoded
-     * \return decoded name
+     * \returns decoded name
      * @see encodeShape()
      */
     static Shape decodeShape( const QString &name, bool *ok = nullptr );

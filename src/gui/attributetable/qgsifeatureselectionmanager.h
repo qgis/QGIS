@@ -38,7 +38,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
     /**
      * The number of features that are selected in this layer
      *
-     * \return See description
+     * \returns See description
      */
     virtual int selectedFeatureCount() = 0;
 
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
     /**
      * Return reference to identifiers of selected features
      *
-     * \return A list of { @link QgsFeatureId } 's
+     * \returns A list of { @link QgsFeatureId } 's
      * @see selectedFeatures()
      */
     virtual const QgsFeatureIds &selectedFeatureIds() const = 0;

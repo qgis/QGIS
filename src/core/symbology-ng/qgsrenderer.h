@@ -97,7 +97,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Must be called between startRender() and stopRender() calls.
      * \param feature feature
      * \param context render context
-     * \return returns pointer to symbol or 0 if symbol was not found
+     * \returns returns pointer to symbol or 0 if symbol was not found
      * \since QGIS 2.12
      */
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) = 0;
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \param context  Additional information passed to the renderer about the job which will be rendered
      * \param fields   The fields available for rendering
-     * \return         Information passed back from the renderer that can e.g. be used to reduce the amount of requested features
+     * \returns         Information passed back from the renderer that can e.g. be used to reduce the amount of requested features
      */
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) = 0;
 
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * You do not need to specify the extent in here, this is taken care of separately and
      * will be combined with a filter returned from this method.
      *
-     * \return An expression used as where clause
+     * \returns An expression used as where clause
      */
     virtual QString filter( const QgsFields &fields = QgsFields() ) { Q_UNUSED( fields ); return QString::null; }
 
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Return a list of attributes required by this renderer. Attributes not listed in here may
      * not have been requested from the provider at rendering time.
      *
-     * \return A set of attributes
+     * \returns A set of attributes
      */
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const = 0;
 
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Create a deep copy of this renderer. Should be implemented by all subclasses
      * and generate a proper subclass.
      *
-     * \return A copy of this renderer
+     * \returns A copy of this renderer
      */
     virtual QgsFeatureRenderer *clone() const = 0;
 
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Symbolizer elements
      * \param errorMessage it will contain the error message if something
      * went wrong
-     * \return the renderer
+     * \returns the renderer
      */
     static QgsFeatureRenderer *loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage );
 

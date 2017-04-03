@@ -180,7 +180,7 @@ class CORE_EXPORT QgsStringUtils
     /** Converts a string by applying capitalization rules to the string.
      * \param string input string
      * \param capitalization capitalization type to apply
-     * \return capitalized string
+     * \returns capitalized string
      * \since QGIS 3.0
      */
     static QString capitalize( const QString &string, Capitalization capitalization );

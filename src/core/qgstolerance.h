@@ -46,7 +46,7 @@ class CORE_EXPORT QgsTolerance
     /**
      * Static function to get vertex tolerance value.
      * The value is read from settings and transformed if necessary.
-     * \return value of vertex tolerance in map units (not layer units)
+     * \returns value of vertex tolerance in map units (not layer units)
      * \since QGIS 2.8
      */
     static double vertexSearchRadius( const QgsMapSettings &mapSettings );
@@ -54,14 +54,14 @@ class CORE_EXPORT QgsTolerance
     /**
      * Static function to get vertex tolerance value for a layer.
      * The value is read from settings and transformed if necessary.
-     * \return value of vertex tolerance in layer units
+     * \returns value of vertex tolerance in layer units
      */
     static double vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings );
 
     /**
      * Static function to get default tolerance value for a layer.
      * The value is read from settings and transformed if necessary.
-     * \return value of default tolerance in layer units
+     * \returns value of default tolerance in layer units
      */
     static double defaultTolerance( QgsMapLayer *layer, const QgsMapSettings &mapSettings );
 
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsTolerance
      * \param layer source layer necessary in case tolerance is in layer units
      * \param mapSettings settings of the map
      * \param units type of units to be translated
-     * \return value of tolerance in map units
+     * \returns value of tolerance in map units
      * \since QGIS 2.8
      */
     static double toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, QgsTolerance::UnitType units );
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsTolerance
      * \param layer reference layer
      * \param mapSettings settings of the map
      * \param units type of units to be translated
-     * \return value of tolerance in layer units
+     * \returns value of tolerance in layer units
      */
     static double toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, UnitType units = LayerUnits );
 

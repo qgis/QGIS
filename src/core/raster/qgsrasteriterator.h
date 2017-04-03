@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRasterIterator
        \param block address of block pointer
        \param topLeftCol top left column
        \param topLeftRow top left row
-       \return false if the last part was already returned*/
+       \returns false if the last part was already returned*/
     bool readNextRasterPart( int bandNumber,
                              int &nCols, int &nRows,
                              QgsRasterBlock **block,

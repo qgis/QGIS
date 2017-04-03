@@ -69,13 +69,13 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
      *
      * Only one request may be pending at one point - if you need more requests at once, use several instances.
      *
-     * \return true if the network request has been issued, false otherwise (and sets error string)
+     * \returns true if the network request has been issued, false otherwise (and sets error string)
      */
     bool start();
 
     /**
      * @brief Aborts current pending request
-     * \return true if there is a pending request and has been aborted, false otherwise
+     * \returns true if there is a pending request and has been aborted, false otherwise
      */
     bool abort();
 

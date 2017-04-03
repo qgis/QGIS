@@ -49,7 +49,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
     /**
      * @brief Create a configuration from the current GUI state
      *
-     * \return A widget configuration
+     * \returns A widget configuration
      */
     virtual QVariantMap config() = 0;
 
@@ -63,14 +63,14 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
     /**
      * Returns the field for which this configuration widget applies
      *
-     * \return The field index
+     * \returns The field index
      */
     int field();
 
     /**
      * Returns the layer for which this configuration widget applies
      *
-     * \return The layer
+     * \returns The layer
      */
     QgsVectorLayer *layer();
 

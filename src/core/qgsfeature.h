@@ -249,7 +249,7 @@ class CORE_EXPORT QgsFeature
      * The feature will be valid if it was successful.
      * \param field the index of the field to set
      * \param attr the value of the attribute
-     * \return false, if the field index does not exist
+     * \returns false, if the field index does not exist
      * \note For Python: raises a KeyError exception instead of returning false
      * \note Alternatively in Python: @code feature[field] = attr @endcode
      * @see setAttributes
@@ -364,7 +364,7 @@ class CORE_EXPORT QgsFeature
      *  The feature will be valid if it was successful
      *  \param name The name of the field to set
      *  \param value The value to set
-     *  \return false if attribute name could not be converted to index (C++ only)
+     *  \returns false if attribute name could not be converted to index (C++ only)
      *  \note For Python: raises a KeyError exception instead of returning false
      *  \note Alternatively in Python: @code feature[name] = attr @endcode
      *  @see setFields
@@ -397,7 +397,7 @@ class CORE_EXPORT QgsFeature
     /** Removes an attribute value by field name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
      *  \param name The name of the field to delete
-     *  \return false if attribute name could not be converted to index (C++ only)
+     *  \returns false if attribute name could not be converted to index (C++ only)
      *  \note For Python: raises a KeyError exception instead of returning false
      *  \note Alternatively in Python: @code del feature[name] @endcode
      *  @see setFields
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsFeature
     /** Lookup attribute value from attribute name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
      *  \param name The name of the attribute to get
-     *  \return The value of the attribute (C++: Invalid variant if no such name exists )
+     *  \returns The value of the attribute (C++: Invalid variant if no such name exists )
      *  \note For Python: raises a KeyError exception if the field is not found
      *  \note Alternatively in Python: @code feature[name] @endcode
      *  @see setFields
@@ -450,7 +450,7 @@ class CORE_EXPORT QgsFeature
     /** Lookup attribute value from its index. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
      *  \param fieldIdx The index of the attribute to get
-     *  \return The value of the attribute (C++: Invalid variant if no such index exists )
+     *  \returns The value of the attribute (C++: Invalid variant if no such index exists )
      *  \note For Python: raises a KeyError exception if the field is not found
      *  \note Alternatively in Python: @code feature[fieldIdx] @endcode
      *  @see setFields

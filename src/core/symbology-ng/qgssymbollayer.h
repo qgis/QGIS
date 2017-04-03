@@ -610,7 +610,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     /** Adjusts a marker offset to account for rotation.
      * \param offset offset prior to rotation
      * \param angle rotation angle in degrees clockwise from north
-     * \return adjusted offset
+     * \returns adjusted offset
      */
     static QPointF _rotatedOffset( QPointF offset, double angle );
 

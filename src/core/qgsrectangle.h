@@ -126,12 +126,12 @@ class CORE_EXPORT QgsRectangle
     QString asPolygon() const;
 
     /** Comparison operator
-     * \return True if rectangles are equal
+     * \returns True if rectangles are equal
      */
     bool operator==( const QgsRectangle &r1 ) const;
 
     /** Comparison operator
-     * \return False if rectangles are equal
+     * \returns False if rectangles are equal
      */
     bool operator!=( const QgsRectangle &r1 ) const;
 

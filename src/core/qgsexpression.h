@@ -568,7 +568,7 @@ class CORE_EXPORT QgsExpression
 
         /** Returns a list of possible aliases for the function. These include
          * other permissible names for the function, e.g., deprecated names.
-         * \return list of known aliases
+         * \returns list of known aliases
          * \since QGIS 2.9
          */
         virtual QStringList aliases() const { return QStringList(); }
@@ -788,7 +788,7 @@ class CORE_EXPORT QgsExpression
     static int functionIndex( const QString &name );
 
     /** Returns the number of functions defined in the parser
-     *  \return The number of function defined in the parser.
+     *  \returns The number of function defined in the parser.
      */
     static int functionCount();
 
@@ -846,7 +846,7 @@ class CORE_EXPORT QgsExpression
         /**
          * Abstract virtual that returns the type of this node.
          *
-         * \return The type of this node
+         * \returns The type of this node
          */
         virtual NodeType nodeType() const = 0;
 
@@ -867,7 +867,7 @@ class CORE_EXPORT QgsExpression
         /**
          * Abstract virtual dump method
          *
-         * \return An expression which represents this node as string
+         * \returns An expression which represents this node as string
          */
         virtual QString dump() const = 0;
 
@@ -877,7 +877,7 @@ class CORE_EXPORT QgsExpression
          * generated in prepare and context related.
          * Ownership is transferred to the caller.
          *
-         * \return a deep copy of this node.
+         * \returns a deep copy of this node.
          */
         virtual Node *clone() const = 0;
 
@@ -889,7 +889,7 @@ class CORE_EXPORT QgsExpression
          * evaluate this node and in addition recursively collect all the columns required
          * to evaluate child nodes.
          *
-         * \return A list of columns required to evaluate this expression
+         * \returns A list of columns required to evaluate this expression
          */
         virtual QSet<QString> referencedColumns() const = 0;
 
@@ -904,7 +904,7 @@ class CORE_EXPORT QgsExpression
          *
          * This needs to call `needsGeometry()` recursively on any child nodes.
          *
-         * \return true if a geometry is required to evaluate this expression
+         * \returns true if a geometry is required to evaluate this expression
          */
         virtual bool needsGeometry() const = 0;
     };

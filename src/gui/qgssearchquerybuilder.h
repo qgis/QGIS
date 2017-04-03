@@ -104,7 +104,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void setupListViews();
 
     /** Get the number of records that would be returned by the current SQL
-     * \return Number of records or -1 if an error was encountered
+     * \returns Number of records or -1 if an error was encountered
      */
     long countRecords( const QString &sql );
 

@@ -69,57 +69,57 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
 
     /** Return a clone of the object
-     * \return A clone
+     * \returns A clone
      */
     QgsFeatureFilterProvider *clone() const;
 
     /** Return an additional subset string (typically SQL) filter
      * \param layer the layer to control
-     * \return the subset string to use
+     * \returns the subset string to use
      */
     QString extraSubsetString( const QgsVectorLayer *layer ) const;
 
     /** Return the layer read right
      * \param layer the layer to control
-     * \return true if it can be read
+     * \returns true if it can be read
      */
     bool layerReadPermission( const QgsMapLayer *layer ) const;
 
     /** Return the layer insert right
      * \param layer the layer to control
-     * \return true if we can insert on it
+     * \returns true if we can insert on it
      */
     bool layerInsertPermission( const QgsVectorLayer *layer ) const;
 
     /** Return the layer update right
      * \param layer the layer to control
-     * \return true if we can do an update
+     * \returns true if we can do an update
      */
     bool layerUpdatePermission( const QgsVectorLayer *layer ) const;
 
     /** Return the layer delete right
      * \param layer the layer to control
-     * \return true if we can do a delete
+     * \returns true if we can do a delete
      */
     bool layerDeletePermission( const QgsVectorLayer *layer ) const;
 
     /** Return the authorized layer attributes
      * \param layer the layer to control
      * \param attributes the list of attribute
-     * \return the list of visible attributes
+     * \returns the list of visible attributes
      */
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
 
     /** Are we authorized to modify the following geometry
      * \param layer the layer to control
      * \param feature the concerned feature
-     * \return true if we are allowed to edit the feature
+     * \returns true if we are allowed to edit the feature
      */
     bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;
 
     /** Fill the capabilities caching key
      * \param cacheKey the list to fill with a cache variant
-     * \return false if we can't create a cache
+     * \returns false if we can't create a cache
      */
     bool fillCacheKey( QStringList &cacheKey ) const;
 

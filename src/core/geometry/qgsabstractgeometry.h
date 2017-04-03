@@ -219,12 +219,12 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param id initial value should be the starting vertex id. The next vertex id will be stored
      * in this variable if found.
      * \param vertex container for found node
-     * \return false if at end
+     * \returns false if at end
      */
     virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const = 0;
 
     /** Retrieves the sequence of geometries, rings and nodes.
-     * \return coordinate sequence
+     * \returns coordinate sequence
      */
     virtual QgsCoordinateSequence coordinateSequence() const = 0;
 
@@ -314,14 +314,14 @@ class CORE_EXPORT QgsAbstractGeometry
     /** Returns the geometry converted to the more generic curve type.
         E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
         QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
-        \return the converted geometry. Caller takes ownership*/
+        \returns the converted geometry. Caller takes ownership*/
     virtual QgsAbstractGeometry *toCurveType() const { return 0; }
 
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the
      * geometry at the specified vertex.
      * \param vertex the vertex id
-     * \return rotation in radians, clockwise from north
+     * \returns rotation in radians, clockwise from north
      */
     virtual double vertexAngle( QgsVertexId vertex ) const = 0;
 

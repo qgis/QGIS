@@ -79,7 +79,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     \param topological true if topological editing is enabled
     \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
     \param[out] errorMsg error messages emitted, if any
-    \return 0 in case of success, 1 if geometry has not been split, error else*/
+    \returns 0 in case of success, 1 if geometry has not been split, error else*/
     int splitGeometry( const QgsLineString &splitLine,
                        QList<QgsAbstractGeometry *> &newGeometries,
                        bool topological,
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param joinStyle join style for corners ( Round (1) / Mitre (2) / Bevel (3) )
      * \param mitreLimit limit on the mitre ratio used for very sharp corners
      * \param errorMsg error messages emitted, if any
-     * \return buffered geometry, or an nullptr if buffer could not be
+     * \returns buffered geometry, or an nullptr if buffer could not be
      * calculated
      * \since QGIS 3.0
      */
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param point point to seek proximity to
      * \param errorMsg error messages emitted, if any
      * \note only valid for linestring geometries
-     * \return distance along line, or -1 on error
+     * \returns distance along line, or -1 on error
      */
     double lineLocatePoint( const QgsPointV2 &point, QString *errorMsg = nullptr ) const;
 

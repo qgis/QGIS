@@ -86,7 +86,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param name is the name of the symbol being added or updated
      *  \param symbol is the Vector symbol
      *  \param update set to true when the style DB has to be updated, by default it is false
-     *  \return success status of the operation
+     *  \returns success status of the operation
      */
     bool addSymbol( const QString &name, QgsSymbol *symbol, bool update = false );
 
@@ -95,14 +95,14 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param name is the name of the color ramp being added or updated
      *  \param colorRamp is the color ramp. Ownership is transferred.
      *  \param update set to true when the style DB has to be updated, by default it is false
-     *  \return success status of the operation
+     *  \returns success status of the operation
      */
     bool addColorRamp( const QString &name, QgsColorRamp *colorRamp, bool update = false );
 
     /** Adds a new tag and returns the tag's id
      *
      *  \param tagName the name of the new tag to be created
-     *  \return returns an int, which is the DB id of the new tag created, 0 if the tag couldn't be created
+     *  \returns returns an int, which is the DB id of the new tag created, 0 if the tag couldn't be created
      */
     int addTag( const QString &tagName );
 
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param symbol is the name of the symbol or colorramp as QString
      *  \param tags is the list of the tags that are to be applied as QStringList
-     *  \return returns the success state of the operation
+     *  \returns returns the success state of the operation
      */
     bool tagSymbol( StyleEntity type, const QString &symbol, const QStringList &tags );
 
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param symbol is the name of the symbol or colorramp
      *  \param tags is the list of tags that are to be removed as QStringList
-     *  \return returns the success state of the operation
+     *  \returns returns the success state of the operation
      */
     bool detagSymbol( StyleEntity type, const QString &symbol, const QStringList &tags );
 
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  Removes all tags for the specified symbol or colorramp
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param symbol is the name of the symbol or colorramp
-     *  \return returns the success state of the operation
+     *  \returns returns the success state of the operation
      */
     bool detagSymbol( StyleEntity type, const QString &symbol );
 
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /** Returns the symbol names which are flagged as favorite
      *
      *  \param type is either SymbolEntity or ColorampEntity
-     *  \return A QStringList of the symbol or colorramp names flagged as favorite
+     *  \returns A QStringList of the symbol or colorramp names flagged as favorite
      */
     QStringList symbolsOfFavorite( StyleEntity type ) const;
 
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  \param type is either SymbolEntity or ColorampEntity
      *  \param tagid is id of the tag which has been applied over the symbol as int
-     *  \return A QStringList of the symbol or colorramp names for the given tag id
+     *  \returns A QStringList of the symbol or colorramp names for the given tag id
      */
     QStringList symbolsWithTag( StyleEntity type, int tagid ) const;
 
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  \param type is either SymbolEntity of ColorrampEntity
      *  \param name is the name of the symbol or coloramp whose is to be added to favorites
-     *  \return returns the success state as bool
+     *  \returns returns the success state as bool
      */
     bool addFavorite( StyleEntity type, const QString &name );
 
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  \param type is either SymbolEntity of ColorrampEntity
      *  \param name is the name of the symbol or coloramp whose is to be removed from favorites
-     *  \return returns the success state as bool
+     *  \returns returns the success state as bool
      */
     bool removeFavorite( StyleEntity type, const QString &name );
 
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param symbol is the pointer to the new QgsSymbol being saved
      *  \param favorite is a boolean value to specify whether the symbol should be added to favorites
      *  \param tags is a list of tags that are associated with the symbol as a QStringList.
-     *  \return returns the success state of the save operation
+     *  \returns returns the success state of the save operation
      */
     bool saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags );
 
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param ramp is the pointer to the new QgsColorRamp being saved
      *  \param favorite is a boolean value to specify whether the colorramp should be added to favorites
      *  \param tags is a list of tags that are associated with the color ramp as a QStringList.
-     *  \return returns the success state of the save operation
+     *  \returns returns the success state of the save operation
      */
     bool saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags );
 
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /** Creates an on-disk database
      *
      *  This function creates a new on-disk permanent style database.
-     *  \return returns the success state of the database creation
+     *  \returns returns the success state of the database creation
      *  \since QGIS 3.0
      *  \see createMemoryDb()
      */
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /** Creates a temporary memory database
      *
      *  This function is used to create a temporary style database in case a permanent on-disk database is not needed.
-     *  \return returns the success state of the temporary memory database creation
+     *  \returns returns the success state of the temporary memory database creation
      *  \since QGIS 3.0
      *  \see createDb()
      */
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /** Creates tables structure for new database
      *
      *  This function is used to create the tables structure in a newly-created database.
-     *  \return returns the success state of the temporary memory database creation
+     *  \returns returns the success state of the temporary memory database creation
      *  \since QGIS 3.0
      *  \see createDB(), createMemoryDB()
      */
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  This function will load an on-disk database and populate styles.
      *  \param filename location of the database to load styles from
-     *  \return returns the success state of the database being loaded
+     *  \returns returns the success state of the database being loaded
      */
     bool load( const QString &filename );
 
@@ -322,7 +322,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param qword is the query string to search the symbols or colorramps.
-     *  \return A QStringList of the matched symbols or colorramps
+     *  \returns A QStringList of the matched symbols or colorramps
      * */
     QStringList findSymbols( StyleEntity type, const QString &qword );
 
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param symbol is the name of the symbol or color ramp
-     *  \return A QStringList of the tags that have been applied to that symbol/colorramp
+     *  \returns A QStringList of the tags that have been applied to that symbol/colorramp
      */
     QStringList tagsOfSymbol( StyleEntity type, const QString &symbol );
 
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param symbol is the name of the symbol or color ramp
      *  \param tag the name of the tag to look for
-     *  \return A boolean value identicating whether a tag was found attached to the symbol
+     *  \returns A boolean value identicating whether a tag was found attached to the symbol
      */
     bool symbolHasTag( StyleEntity type, const QString &symbol, const QString &tag );
 
@@ -394,7 +394,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  \param query query to run
      *  \param freeQuery release query memory
-     *  \return success true on success
+     *  \returns success true on success
      */
     bool runEmptyQuery( char *query, bool freeQuery = true );
 
@@ -409,7 +409,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \note This should not be called separately, only called through addSymbol or addColorRamp
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param name is the name of an existing symbol or a color ramp
-     *  \return Success state of the update operation
+     *  \returns Success state of the update operation
      */
     bool updateSymbol( StyleEntity type, const QString &name );
 

@@ -194,7 +194,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     /**
      * Return map settings with which this job was started.
-     * \return A QgsMapSettings instance with render settings
+     * \returns A QgsMapSettings instance with render settings
      * \since QGIS 2.8
      */
     const QgsMapSettings &mapSettings() const;

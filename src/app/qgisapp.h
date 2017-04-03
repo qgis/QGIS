@@ -342,7 +342,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Get a unique title from user for new and duplicate composers
      * \param acceptEmpty whether to accept empty titles (one will be generated)
      * \param currentTitle base name for initial title choice
-     * \return QString::null if user cancels input dialog
+     * \returns QString::null if user cancels input dialog
      */
     bool uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentTitle = QString() );
     //! Creates a new composer and returns a pointer to it
@@ -366,7 +366,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Access the vector layer tools. This will be an instance of {@see QgsGuiVectorLayerTools}
      * by default.
-     * \return  The vector layer tools
+     * \returns  The vector layer tools
      */
     QgsVectorLayerTools *vectorLayerTools() { return mVectorLayerTools; }
 
@@ -991,7 +991,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * \return the QAction you can use to remove this widget from the toolbar
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addPluginToolBarWidget( QWidget *widget );
     //! Remove an icon from the plugin toolbar
@@ -1005,7 +1005,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * \return the QAction you can use to remove this widget from the toolbar
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addRasterToolBarWidget( QWidget *widget );
     //! Remove an icon from the Raster toolbar
@@ -1019,7 +1019,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * \return the QAction you can use to remove this widget from the toolbar
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addVectorToolBarWidget( QWidget *widget );
     //! Remove an icon from the Vector toolbar
@@ -1033,7 +1033,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * \return the QAction you can use to remove this widget from the toolbar
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addDatabaseToolBarWidget( QWidget *widget );
     //! Remove an icon from the Database toolbar
@@ -1047,7 +1047,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * \return the QAction you can use to remove this widget from the toolbar
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addWebToolBarWidget( QWidget *widget );
     //! Remove an icon from the Web toolbar
@@ -1573,7 +1573,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool checkTasksDependOnProject();
 
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
-      \return empty geometry in case of error or if canceled */
+      \returns empty geometry in case of error or if canceled */
     QgsGeometry unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &featureList, bool &canceled );
 
     //! Deletes all the composer objects and clears mPrintComposers
@@ -1589,7 +1589,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Paste features from clipboard into a new memory layer.
      *  If no features are in clipboard an empty layer is returned.
-     *  \return pointer to a new layer or 0 if failed
+     *  \returns pointer to a new layer or 0 if failed
      */
     QgsVectorLayer *pasteToNewMemoryVector();
 

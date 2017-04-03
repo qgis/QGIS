@@ -45,7 +45,7 @@ class ANALYSIS_EXPORT QgsNetworkStrategy
     /**
      * Returns list of the source layer attributes needed for cost calculation.
      * This method called by QgsGraphDirector.
-     * \return list of required attributes
+     * \returns list of required attributes
      */
     virtual QgsAttributeList requiredAttributes() const { return QgsAttributeList(); }
 

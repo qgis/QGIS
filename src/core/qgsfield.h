@@ -121,19 +121,19 @@ class CORE_EXPORT QgsField
      * Gets the field type. Field types vary depending on the data source. Examples
      * are char, int, double, blob, geometry, etc. The type is stored exactly as
      * the data store reports it, with no attempt to standardize the value.
-     * \return QString containing the field type
+     * \returns QString containing the field type
      */
     QString typeName() const;
 
     /**
      * Gets the length of the field.
-     * \return int containing the length of the field
+     * \returns int containing the length of the field
      */
     int length() const;
 
     /**
      * Gets the precision of the field. Not all field types have a related precision.
-     * \return int containing the precision or zero if not applicable to the field type.
+     * \returns int containing the precision or zero if not applicable to the field type.
      */
     int precision() const;
 
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsField
      *
      * \param v  The value to convert
      *
-     * \return   True if the conversion was successful
+     * \returns   True if the conversion was successful
      */
     bool convertCompatible( QVariant &v ) const;
 
@@ -267,7 +267,7 @@ class CORE_EXPORT QgsField
      * Defaults may be set by the provider and can be overridden
      * by manual field configuration.
      *
-     * \return the value
+     * \returns the value
      */
     QgsEditorWidgetSetup editorWidgetSetup() const;
 

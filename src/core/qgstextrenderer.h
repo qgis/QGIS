@@ -1133,7 +1133,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param c rendercontext
      * \param unit size units
      * \param mapUnitScale a mapUnitScale clamper
-     * \return font pixel size
+     * \returns font pixel size
      */
     static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 

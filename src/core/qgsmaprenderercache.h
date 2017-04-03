@@ -54,7 +54,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     /**
      * Initialize cache: set new parameters and clears the cache if any
      * parameters have changed since last initialization.
-     * \return flag whether the parameters are the same as last time
+     * \returns flag whether the parameters are the same as last time
      */
     bool init( const QgsRectangle &extent, double scale );
 

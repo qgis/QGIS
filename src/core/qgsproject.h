@@ -327,7 +327,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString layerIsEmbedded( const QString &id ) const;
 
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
-     * \return the layer or 0 in case of error
+     * \returns the layer or 0 in case of error
      * \note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
@@ -374,7 +374,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
     /** Return project's home path
-      \return home path of project (or QString::null if not set) */
+      \returns home path of project (or QString::null if not set) */
     QString homePath() const;
 
     QgsRelationManager *relationManager() const;
@@ -582,7 +582,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *                      If you specify false here you have take care of deleting
      *                      the layers yourself. Not available in Python.
      *
-     * \return a list of the map layers that were added
+     * \returns a list of the map layers that were added
      *         successfully. If a layer is invalid, or already exists in the registry,
      *         it will not be part of the returned QList.
      *
@@ -613,7 +613,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *                      If you specify false here you have take care of deleting
      *                      the layer yourself. Not available in Python.
      *
-     * \return nullptr if unable to add layer, otherwise pointer to newly added layer
+     * \returns nullptr if unable to add layer, otherwise pointer to newly added layer
      *
      * @see addMapLayers
      *

@@ -121,7 +121,7 @@ namespace pal
        * \brief Check whether or not this overlap with another labelPosition
        *
        * \param ls other labelposition
-       * \return true or false
+       * \returns true or false
        */
       bool isInConflict( LabelPosition *ls );
 
@@ -150,13 +150,13 @@ namespace pal
       void offsetPosition( double xOffset, double yOffset );
 
       /** \brief return id
-       * \return id
+       * \returns id
        */
       int getId() const;
 
 
       /** \brief return the feature corresponding to this labelposition
-       * \return the feature
+       * \returns the feature
        */
       FeaturePart *getFeaturePart();
 
@@ -202,13 +202,13 @@ namespace pal
 
       /**
        * \brief get the down-left x coordinate
-       * \return x coordinate
+       * \returns x coordinate
        */
       double getX( int i = 0 ) const;
 
       /**
        * \brief get the down-left y coordinate
-       * \return y coordinate
+       * \returns y coordinate
        */
       double getY( int i = 0 ) const;
 
@@ -217,7 +217,7 @@ namespace pal
 
       /**
        * \brief get alpha
-       * \return alpha to rotate text (in rad)
+       * \returns alpha to rotate text (in rad)
        */
       double getAlpha() const;
       bool getReversed() const { return reversed; }

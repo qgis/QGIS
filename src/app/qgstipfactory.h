@@ -38,7 +38,7 @@ class APP_EXPORT QgsTipFactory : public QObject
     ~QgsTipFactory();
 
     /** Get a random tip (generic or gui-centric)
-     * \return An QgsTip containing the tip
+     * \returns An QgsTip containing the tip
      */
     QgsTip getTip();
 
@@ -47,17 +47,17 @@ class APP_EXPORT QgsTipFactory : public QObject
      *        number passed in as position. If the
      *        position is invalid, an empty string will be
      *        returned.
-     * \return An QgsTip containing the tip
+     * \returns An QgsTip containing the tip
      */
     QgsTip getTip( int position );
 
     /** Get a random generic tip
-     * \return An QgsTip containing the tip
+     * \returns An QgsTip containing the tip
      */
     QgsTip getGenericTip();
 
     /** Get a random gui-centric tip
-     * \return An QgsTip  containing the tip
+     * \returns An QgsTip  containing the tip
      */
     QgsTip getGuiTip();
 

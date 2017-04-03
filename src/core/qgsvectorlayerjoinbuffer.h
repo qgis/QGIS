@@ -38,7 +38,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
 
     /** Joins another vector layer to this layer
       \param joinInfo join object containing join layer id, target and source field
-      \return (since 2.6) whether the join was successfully added */
+      \returns (since 2.6) whether the join was successfully added */
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 
     /** Removes a vector layer join

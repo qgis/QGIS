@@ -659,7 +659,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     double rectHandlerBorderTolerance() const;
 
     /** Returns the zoom factor of the graphics view.
-     * \return the factor or -1 in case of error (e.g. graphic view does not exist)
+     * \returns the factor or -1 in case of error (e.g. graphic view does not exist)
      */
     double horizontalViewScaleFactor() const;
 

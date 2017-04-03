@@ -113,7 +113,7 @@ class CORE_EXPORT QgsPoint
     }
 
     /** Get the x value of the point
-     * \return x coordinate
+     * \returns x coordinate
      */
     double x() const
     {
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsPoint
     }
 
     /** Get the y value of the point
-     * \return y coordinate
+     * \returns y coordinate
      */
     double y() const
     {
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsPoint
 
     /** Return the well known text representation for the point.
      * The wkt is created without an SRID.
-     * \return Well known text in the form POINT(x y)
+     * \returns Well known text in the form POINT(x y)
      */
     QString wellKnownText() const;
 
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsPoint
     void multiply( double scalar );
 
     //! Test if this point is on the segment defined by points a, b
-    //! \return 0 if this point is not on the open ray through a and b,
+    //! \returns 0 if this point is not on the open ray through a and b,
     //! 1 if point is on open ray a, 2 if point is within line segment,
     //! 3 if point is on open ray b.
     int onSegment( const QgsPoint &a, const QgsPoint &b ) const;

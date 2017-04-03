@@ -139,11 +139,11 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
     /** Adds an attribute to the table (but does not commit it yet)
     \param field the field to add
-    \return false in case of a name conflict, true in case of success */
+    \returns false in case of a name conflict, true in case of success */
     bool addAttribute( const QgsField &field );
 
     /** Creates the a proper item to save from the tree
-     * \return A widget definition. Containing another container or the final field
+     * \returns A widget definition. Containing another container or the final field
      */
     QgsAttributeEditorElement *createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool forceGroup = true );
 

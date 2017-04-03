@@ -201,7 +201,7 @@ class CORE_EXPORT QgsRasterInterface
         int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr );
 
     /** \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
-     * \return true if statistics are available (ready to use)
+     * \returns true if statistics are available (ready to use)
      */
     virtual bool hasStatistics( int bandNo,
                                 int stats = QgsRasterBandStats::All,

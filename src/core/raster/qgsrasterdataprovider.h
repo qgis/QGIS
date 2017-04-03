@@ -245,7 +245,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \param mapSettings map settings for legend providers supporting
      *                    contextual legends.
      *
-     * \return a download handler or null if the provider does not support
+     * \returns a download handler or null if the provider does not support
      *         legend at all. Ownership of the returned object is transferred
      *         to caller.
      *
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \param width context width
      * \param height context height
      * \param dpi context dpi
-     * \return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
+     * \returns QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
      *         (WMS) - TODO: it is not consistent with QgsRaster::IdentifyFormatValue.

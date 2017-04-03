@@ -45,17 +45,17 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
     QgsNetworkReplyParser( QNetworkReply *reply );
 
     /** Indicates if successfully parsed
-      * \return true if successfully parsed */
+      * \returns true if successfully parsed */
     bool isValid() const { return mValid; }
 
     /** Get number of parts
-      * \return number of parts */
+      * \returns number of parts */
     int parts() const { return mHeaders.size(); }
 
     /** Get part header
       * \param part part index
       * \param headerName header name
-      * \return raw header */
+      * \returns raw header */
     QByteArray rawHeader( int part, const QByteArray &headerName ) const { return mHeaders.value( part ).value( headerName ); }
 
     //! Get headers
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
 
     /** Get part part body
       * \param part part index
-      * \return part body */
+      * \returns part body */
     QByteArray body( int part ) const { return mBodies.value( part ); }
 
     //! Get bodies
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
     QString error() const { return mError; }
 
     /** Test if reply is multipart.
-      * \return true if reply is multipart */
+      * \returns true if reply is multipart */
     static bool isMultipart( QNetworkReply *reply );
 
   private:

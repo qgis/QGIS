@@ -833,7 +833,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
         \param layer the layer
         \param bbox out: bounding box
         \param errorMsg error message in case of error
-        \return true in case of success*/
+        \returns true in case of success*/
     bool boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorLayer *layer, QgsRectangle &bbox, QString &errorMsg ) const;
 
     void setLayersPrivate( const QList<QgsMapLayer *> &layers );

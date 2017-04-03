@@ -62,7 +62,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     /**
      * The capture mode
      *
-     * \return Capture mode
+     * \returns Capture mode
      */
     CaptureMode mode() const { return mCaptureMode; }
 

@@ -101,7 +101,7 @@ namespace QgsWms
 
       /** Returns printed page as binary
         \param formatString out: format of the print output (e.g. pdf, svg, png, ...)
-        \return printed page as binary or 0 in case of error*/
+        \returns printed page as binary or 0 in case of error*/
       QByteArray *getPrint( const QString &formatString );
 
       /** Creates an xml document that describes the result of the getFeatureInfo request.
@@ -115,7 +115,7 @@ namespace QgsWms
        * \param layersList out: list with WMS layer names
        * \param stylesList out: list with WMS style names
        * \param layerIdList out: list with QGIS layer ids
-       * \return image configured. The calling function takes ownership of the image
+       * \returns image configured. The calling function takes ownership of the image
        * may throw an exception
        */
       QImage *initializeRendering( QStringList &layersList, QStringList &stylesList, QStringList &layerIdList, QgsMapSettings &mapSettings );
@@ -124,7 +124,7 @@ namespace QgsWms
        * \param width image width (or -1 if width should be taken from WIDTH wms parameter)
        * \param height image height (or -1 if height should be taken from HEIGHT wms parameter)
        * \param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
-       * \return a non null pointer
+       * \returns a non null pointer
        * may throw an exception
        */
       QImage *createImage( int width = -1, int height = -1, bool useBbox = true ) const;
@@ -145,7 +145,7 @@ namespace QgsWms
 
       /** Appends feature info xml for the layer to the layer element of the feature info dom document
       \param featureBBox the bounding box of the selected features in output CRS
-      \return true in case of success*/
+      \returns true in case of success*/
       bool featureInfoFromVectorLayer( QgsVectorLayer *layer,
                                        const QgsPoint *infoPoint,
                                        int nFeatures,
@@ -197,13 +197,13 @@ namespace QgsWms
 #endif
 
       /** Tests if a filter sql string is allowed (safe)
-        \return true in case of success, false if string seems unsafe*/
+        \returns true in case of success, false if string seems unsafe*/
       bool testFilterStringSafety( const QString &filter ) const;
       //! Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes
       static void groupStringList( QStringList &list, const QString &groupString );
 
       /** Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
-        \return list with layer ids where selections have been created*/
+        \returns list with layer ids where selections have been created*/
       QStringList applyFeatureSelections( const QStringList &layerList ) const;
       //! Clear all feature selections in the given layers
       void clearFeatureSelections( const QStringList &layerIds ) const;
@@ -222,7 +222,7 @@ namespace QgsWms
                              QList< QPair< QgsVectorLayer *, double > > &labelBufferTransparencies );
 
       /** Checks WIDTH/HEIGHT values against MaxWidth and MaxHeight
-        \return true if width/height values are okay*/
+        \returns true if width/height values are okay*/
       bool checkMaximumWidthHeight() const;
 
       //! Converts a feature info xml document to SIA2045 norm

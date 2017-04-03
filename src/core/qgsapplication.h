@@ -113,7 +113,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @brief All themes found in ~/.qgis3/themes folder.
      * The path is to the root folder for the theme
      * \note Valid theme folders must contain a style.qss file.
-     * \return A hash of theme name and theme path. Valid theme folders contain style.qss
+     * \returns A hash of theme name and theme path. Valid theme folders contain style.qss
      */
     static QHash<QString, QString> uiThemes();
 
@@ -318,7 +318,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Typically you will use this method by doing:
      * QString myStyle = QgsApplication::reportStyleSheet();
      * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
-     * \return QString containing the CSS 2.1 compliant stylesheet.
+     * \returns QString containing the CSS 2.1 compliant stylesheet.
      * \note you can use the special Qt extensions too, for example
      * the gradient fills for backgrounds.
      */

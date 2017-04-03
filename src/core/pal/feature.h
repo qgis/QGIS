@@ -124,7 +124,7 @@ namespace pal
        * \param bboxMax max values of the map extent
        * \param mapShape generate candidates for this spatial entity
        * \param candidates index for candidates
-       * \return the number of candidates generated in lPos
+       * \returns the number of candidates generated in lPos
        */
       int createCandidates( QList<LabelPosition *> &lPos, double bboxMin[2], double bboxMax[2], PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates );
 
@@ -203,7 +203,7 @@ namespace pal
       /** Generate candidates for polygon features.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the polygon
-       * \return the number of generated candidates
+       * \returns the number of generated candidates
        */
       int createCandidatesForPolygon( QList<LabelPosition *> &lPos, PointSet *mapShape );
 

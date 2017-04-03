@@ -974,11 +974,11 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     QString gridAnnotationString( double value, AnnotationCoordinate coord, QgsExpressionContext &expressionContext ) const;
 
     /** Returns the grid lines with associated coordinate value
-        \return 0 in case of success*/
+        \returns 0 in case of success*/
     int xGridLines( QList< QPair< double, QLineF > > &lines ) const;
 
     /** Returns the grid lines for the y-coordinates. Not vertical in case of rotation
-        \return 0 in case of success*/
+        \returns 0 in case of success*/
     int yGridLines( QList< QPair< double, QLineF > > &lines ) const;
 
     int xGridLinesCrsTransform( const QgsRectangle &bbox, const QgsCoordinateTransform &t, QList< QPair< double, QPolygonF > > &lines ) const;

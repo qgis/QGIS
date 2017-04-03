@@ -49,7 +49,7 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
 
     /**
      * @brief The renderer for the widget.
-     * \return A new renderer for the the config in the widget
+     * \returns A new renderer for the the config in the widget
      */
     QgsRasterRenderer *renderer() override;
 

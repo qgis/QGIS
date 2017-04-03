@@ -200,7 +200,7 @@ class CORE_EXPORT QgsSnappingConfig
      * When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
      * it is best to directly feed this with information from the layer registry.
      *
-     * \return True if changes have been done.
+     * \returns True if changes have been done.
      *
      * \since QGIS 3.0
      */
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsSnappingConfig
      * When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
      * it is best to directly feed this with information from the layer registry.
      *
-     * \return True if changes have been done.
+     * \returns True if changes have been done.
      *
      * \since QGIS 3.0
      */

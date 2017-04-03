@@ -71,7 +71,7 @@ class QgsMSLayerCache: public QObject
     void insertLayer( const QString &url, const QString &layerName, QgsMapLayer *layer, const QString &configFile = QString(), const QList<QString> &tempFiles = QList<QString>() );
 
     /** Searches for the layer with the given url.
-     \return a pointer to the layer or 0 if no such layer*/
+     \returns a pointer to the layer or 0 if no such layer*/
     QgsMapLayer *searchLayer( const QString &url, const QString &layerName, const QString &configFile = QString() );
 
     int projectsMaxLayers() const { return mProjectMaxLayers; }

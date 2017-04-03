@@ -43,7 +43,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     /**
      * Get the set of layers currently managed by this transaction group.
      *
-     * \return Layer set
+     * \returns Layer set
      */
     QSet<QgsVectorLayer *> layers() const;
 

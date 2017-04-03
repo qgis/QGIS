@@ -101,7 +101,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     virtual QList<int> *getPointsAroundEdge( double x, double y ) override;
 
     /** Saves the triangulation as a (line) shapefile
-    \return true in case of success*/
+    \returns true in case of success*/
     virtual bool saveAsShapefile( const QString &fileName ) const override;
 
   protected:

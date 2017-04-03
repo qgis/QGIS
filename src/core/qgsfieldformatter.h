@@ -55,7 +55,7 @@ class CORE_EXPORT QgsFieldFormatter
     /**
      * Create a pretty String representation of the value.
      *
-     * \return By default the string representation of the provided value as implied by the field definition is returned.
+     * \returns By default the string representation of the provided value as implied by the field definition is returned.
      *
      * \since QGIS 3.0
      */

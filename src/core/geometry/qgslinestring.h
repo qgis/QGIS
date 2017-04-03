@@ -137,7 +137,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     void close();
 
     /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
-        \return the converted geometry. Caller takes ownership*/
+        \returns the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry *toCurveType() const override;
 
     /**

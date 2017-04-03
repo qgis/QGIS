@@ -173,7 +173,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \param properties A property map to deserialize saved information from properties()
      *
-     * \return A new MarkerLineSymbolLayerV2
+     * \returns A new MarkerLineSymbolLayerV2
      */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
 
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \param element An SLD XML DOM element
      *
-     * \return A new MarkerLineSymbolLayerV2
+     * \returns A new MarkerLineSymbolLayerV2
      */
     static QgsSymbolLayer *createFromSld( QDomElement &element );
 
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     /**
      * Shall the marker be rotated.
      *
-     * \return True if the marker should be rotated.
+     * \returns True if the marker should be rotated.
      */
     bool rotateMarker() const { return mRotateMarker; }
 

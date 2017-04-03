@@ -49,7 +49,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      *
      * \param fid  The featureid to determine the selection status of
      *
-     * \return The selection status
+     * \returns The selection status
      */
 
     virtual bool isSelected( QgsFeatureId fid );
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      *
      * \param index  The index to determine the selection status of
      *
-     * \return The selection status
+     * \returns The selection status
      */
     virtual bool isSelected( const QModelIndex &index );
 

@@ -52,7 +52,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Get the capture curve
      *
-     * \return Capture curve
+     * \returns Capture curve
      */
     const QgsCompoundCurve *captureCurve() const { return &mCaptureCurve; }
 
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /** Converts a map point to layer coordinates
      *  \param mapPoint the point in map coordinates
      *  \param[in,out] layerPoint the point in layer coordinates
-     *  \return
+     *  \returns
      *   0 in case of success
      *   1 if the current layer is null or not a vector layer
      *   2 if the transformation failed
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * \param p the input point
      * \param[in,out] layerPoint the point in layer coordinates
      * \param[in,out] mapPoint the point in map coordinates
-     * \return
+     * \returns
      *  0 in case of success
      *  1 if the current layer is null or not a vector layer
      *  2 if the transformation failed
@@ -106,14 +106,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     /** Fetches the original point from the source layer if it has the same
      * CRS as the current layer.
-     * \return 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
+     * \returns 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
      * \since QGIS 2.14
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPointV2 &layerPoint );
 
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
-     * \return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
+     * \returns 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addVertex( const QgsPoint &point );
@@ -136,7 +136,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Are we currently capturing?
      *
-     * \return Is the tool in capture mode?
+     * \returns Is the tool in capture mode?
      */
     bool isCapturing() const;
 
@@ -148,13 +148,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Number of points digitized
      *
-     * \return Number of points
+     * \returns Number of points
      */
     int size();
 
     /**
      * List of digitized points
-     * \return List of points
+     * \returns List of points
      */
     QList<QgsPoint> points();
 

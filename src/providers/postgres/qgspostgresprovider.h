@@ -177,7 +177,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * \param type the wanted type
      * \param subType if type is a collection, the wanted element type
      * \param value the value to convert
-     * \return a QVariant of the given type or a null QVariant
+     * \returns a QVariant of the given type or a null QVariant
      */
     static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value );
 
@@ -247,20 +247,20 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** Parses the enum_range of an attribute and inserts the possible values into a stringlist
     \param enumValues the stringlist where the values are appended
     \param attributeName the name of the enum attribute
-    \return true in case of success and fals in case of error (e.g. if the type is not an enum type)*/
+    \returns true in case of success and fals in case of error (e.g. if the type is not an enum type)*/
     bool parseEnumRange( QStringList &enumValues, const QString &attributeName ) const;
 
     /** Parses the possible enum values of a domain type (given in the check constraint of the domain type)
      * \param enumValues Reference to list that receives enum values
      * \param attributeName Name of the domain type attribute
-     * \return true in case of success and false in case of error (e.g. if the attribute is not a domain type or does not have a check constraint)
+     * \returns true in case of success and false in case of error (e.g. if the attribute is not a domain type or does not have a check constraint)
      */
     bool parseDomainCheckConstraint( QStringList &enumValues, const QString &attributeName ) const;
 
     /** Return the type of primary key for a PK field
      *
      * \param fld the field to determine PK type of
-     * \return the PrimaryKeyType
+     * \returns the PrimaryKeyType
      *
      * \note that this only makes sense for single-field primary keys,
      *       whereas multi-field keys always need the PktFidMap

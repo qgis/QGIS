@@ -56,7 +56,7 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
 
     /**
      * Run import. This will parse the XML file and store the data in a SQLite database.
-     * \return true on success, false when import failed (see errorString() for the error)
+     * \returns true on success, false when import failed (see errorString() for the error)
      */
     bool import();
 

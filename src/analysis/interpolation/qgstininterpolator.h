@@ -44,7 +44,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
        \param x x-coordinate (in map units)
        \param y y-coordinate (in map units)
        \param result out: interpolation result
-       \return 0 in case of success*/
+       \returns 0 in case of success*/
     int interpolatePoint( double x, double y, double &result ) override;
 
     void setExportTriangulationToFile( bool e ) {mExportTriangulationToFile = e;}
@@ -70,7 +70,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
       \param zCoord true if the z coordinate is the interpolation attribute
       \param attr interpolation attribute index (if zCoord is false)
       \param type point/structure line, break line
-      \return 0 in case of success, -1 if the feature could not be inserted because of numerical problems*/
+      \returns 0 in case of success, -1 if the feature could not be inserted because of numerical problems*/
     int insertData( QgsFeature *f, bool zCoord, int attr, InputType type );
 };
 

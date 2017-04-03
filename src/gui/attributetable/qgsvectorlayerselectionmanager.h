@@ -35,7 +35,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
     /**
      * The number of features that are selected in this layer
      *
-     * \return See description
+     * \returns See description
      */
     virtual int selectedFeatureCount() override;
 
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
     /**
      * Return reference to identifiers of selected features
      *
-     * \return A list of { @link QgsFeatureIds }
+     * \returns A list of { @link QgsFeatureIds }
      * @see selectedFeatures()
      */
     virtual const QgsFeatureIds &selectedFeatureIds() const override;

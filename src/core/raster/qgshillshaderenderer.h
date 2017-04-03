@@ -51,7 +51,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      * @brief Factory method to create a new renderer
      * \param elem A DOM element to create the renderer from.
      * \param input The raster input interface.
-     * \return A new QgsHillshadeRenderer.
+     * \returns A new QgsHillshadeRenderer.
      */
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
 

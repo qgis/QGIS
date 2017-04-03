@@ -102,7 +102,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     void setName( const QString &name ) { mName = name; }
 
     /** Return full name (map@mapset)
-     * \return full name or empty string if map name is empty */
+     * \returns full name or empty string if map name is empty */
     QString fullName() const;
 
     /** Parse full name in map@mapset form and set map and mapset. If mapset is not
@@ -236,7 +236,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static void setMapset( const QgsGrassObject &grassObject );
 
     /** Check if mapset is in search pat set by g.mapsets
-     *  \return true if in search path
+     *  \returns true if in search path
      */
     bool isMapsetInSearchPath( const QString &mapset );
 
@@ -271,7 +271,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** Open existing GRASS mapset.
      * Emits signal mapsetChanged().
-     * \return Empty string or error message
+     * \returns Empty string or error message
      */
     static QString openMapset( const QString &gisdbase,
                                const QString &location, const QString &mapset );
@@ -280,7 +280,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      *         Delete GISRC, lock and temporary directory.
      *         Emits signal mapsetChanged().
      * \param showError show error dialog on error
-     * \return Empty string or error message
+     * \returns Empty string or error message
      */
     static QString closeMapset();
 
@@ -392,7 +392,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
                               struct Cell_head *target );
 
     /** Initialize GRASS library. This has to be called before any other function is used.
-     * \return true if successfully initialized */
+     * \returns true if successfully initialized */
     static bool init( void );
 
     //! test if the directory is location
@@ -410,7 +410,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Find a module trying to append .bat, .py and .exe on Windows. The module may be a full path
      * without extension or just a module name in which case it is searched in grassModulesPaths().
      * \param module module name or path to module without extension
-     * \return full path including extension or empty string */
+     * \returns full path including extension or empty string */
     static QString findModule( QString module );
 
     /** Start a GRASS module in any gisdbase/location/mapset.
@@ -494,7 +494,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static bool deleteObject( const QgsGrassObject &object );
 
     /** Ask user confirmation to delete a map
-     *  \return true if confirmed
+     *  \returns true if confirmed
      */
     static bool deleteObjectDialog( const QgsGrassObject &object );
 

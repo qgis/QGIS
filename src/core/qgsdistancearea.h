@@ -299,7 +299,7 @@ class CORE_EXPORT QgsDistanceArea
      *
      * \note if course1 is not NULL, bearing (in radians) from first point is calculated
      * (the same for course2)
-     * \return distance in meters
+     * \returns distance in meters
      */
     double computeDistanceBearing( const QgsPoint &p1, const QgsPoint &p2,
                                    double *course1 = nullptr, double *course2 = nullptr ) const;

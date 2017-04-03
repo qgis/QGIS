@@ -203,14 +203,14 @@ class CORE_EXPORT QgsSQLStatement
         /**
          * Abstract virtual that returns the type of this node.
          *
-         * \return The type of this node
+         * \returns The type of this node
          */
         virtual NodeType nodeType() const = 0;
 
         /**
          * Abstract virtual dump method
          *
-         * \return A statement which represents this node as string
+         * \returns A statement which represents this node as string
          */
         virtual QString dump() const = 0;
 
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsSQLStatement
          * generated in prepare and context related.
          * Ownership is transferred to the caller.
          *
-         * \return a deep copy of this node.
+         * \returns a deep copy of this node.
          */
         virtual Node *clone() const = 0;
 

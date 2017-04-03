@@ -161,7 +161,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      *  as wildcards sometimes and so when using the string as part of the
      *  LIKE phrase of a select statement, should be escaped.
      * \arg const QString in The input string to make safe.
-     * \return The string made safe for SQL statements.
+     * \returns The string made safe for SQL statements.
      */
     const QString sqlSafeString( const QString &theSQL );
 

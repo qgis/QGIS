@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
     virtual bool addGeometry( QgsAbstractGeometry *g ) override;
 
     /** Returns the geometry converted to the more generic curve type QgsMultiSurface
-    \return the converted geometry. Caller takes ownership*/
+    \returns the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry *toCurveType() const override;
 
     virtual QgsAbstractGeometry *boundary() const override;

@@ -368,7 +368,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconRaster();
     static QIcon iconDefault();
 
-    //! \return the layer name
+    //! \returns the layer name
     virtual QString layerName() const { return name(); }
 };
 

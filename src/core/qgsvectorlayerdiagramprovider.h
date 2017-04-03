@@ -75,7 +75,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
      * Prepare for registration of features. Must be called after provider has been added to engine (uses its map settings)
      * \param context render context.
      * \param attributeNames list of attribute names to which additional required attributes shall be added
-     * \return Whether the preparation was successful - if not, the provider shall not be used
+     * \returns Whether the preparation was successful - if not, the provider shall not be used
      */
     virtual bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames );
 

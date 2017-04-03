@@ -234,7 +234,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \param distance distance to project
      * \param azimuth angle to project in X Y, clockwise in degrees starting from north
      * \param inclination angle to project in Z (3D)
-     * \return The point projected. If a 2D point is projected a 3D point will be returned except if
+     * \returns The point projected. If a 2D point is projected a 3D point will be returned except if
      *  inclination is 90. A 3D point is always returned if a 3D point is projected.
      * Example:
      * \code{.py}
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
 
     /** Angle undefined. Always returns 0.0
         \param vertex the vertex id
-        \return 0.0*/
+        \returns 0.0*/
     double vertexAngle( QgsVertexId vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return 1; }

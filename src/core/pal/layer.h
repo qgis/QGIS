@@ -225,7 +225,7 @@ namespace pal
        *
        * @throws PalException::FeatureExists
        *
-       * \return true on success (i.e. valid geometry)
+       * \returns true on success (i.e. valid geometry)
        */
       bool registerFeature( QgsLabelFeature *label );
 

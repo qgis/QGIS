@@ -145,7 +145,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * in the widget matches the current nullValue() then the returned value will be
      * a null string.
      *
-     * \return Current text (or null string if it matches the nullValue() property )
+     * \returns Current text (or null string if it matches the nullValue() property )
      * @see setValue()
      */
     QString value() const { return isNull() ? QString::null : text(); }
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /**
      * Determine if the current text represents null.
      *
-     * \return True if the widget's value is null.
+     * \returns True if the widget's value is null.
      * @see nullValue()
      */
     inline bool isNull() const { return text() == mNullValue; }

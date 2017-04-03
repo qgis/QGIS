@@ -43,7 +43,7 @@ class CORE_EXPORT QgsConditionalLayerStyles
 
     /**
      * @brief Returns the conditional styles set for the field UI properties
-     * \return A list of conditional styles that have been set.
+     * \returns A list of conditional styles that have been set.
      */
     QList<QgsConditionalStyle> fieldStyles( const QString &fieldName );
 
@@ -77,13 +77,13 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief Check if the rule matches using the given value and feature
      * \param value The current value being checked. The "value" variable from the context is replaced with this value.
      * \param context Expression context for evaluating rule expression
-     * \return True of the rule matches against the given feature
+     * \returns True of the rule matches against the given feature
      */
     bool matches( const QVariant &value, QgsExpressionContext &context ) const;
 
     /**
      * @brief Render a preview icon of the rule.
-     * \return QPixmap preview of the style
+     * \returns QPixmap preview of the style
      */
     QPixmap renderPreview() const;
 
@@ -126,71 +126,71 @@ class CORE_EXPORT QgsConditionalStyle
 
     /**
      * @brief The name of the style.
-     * \return The name of the style. Names are optional so might be empty.
+     * \returns The name of the style. Names are optional so might be empty.
      */
     QString displayText() const;
 
     /**
      * @brief The name of the style.
-     * \return The name of the style. Names are optional so might be empty.
+     * \returns The name of the style. Names are optional so might be empty.
      */
     QString name() const { return mName; }
 
     /**
      * @brief The icon set for style generated from the set symbol
-     * \return A QPixmap that was set for the icon using the symbol
+     * \returns A QPixmap that was set for the icon using the symbol
      */
     QPixmap icon() const { return mIcon; }
 
     /**
      * @brief The symbol used to generate the icon for the style
-     * \return The QgsSymbol used for the icon
+     * \returns The QgsSymbol used for the icon
      */
     QgsSymbol *symbol() const { return mSymbol.get(); }
 
     /**
      * @brief The text color set for style
-     * \return QColor for text color
+     * \returns QColor for text color
      */
     QColor textColor() const { return mTextColor; }
 
     /**
      * @brief Check if the text color is valid for render.
      * Valid colors are non invalid QColors and a color with a > 0 alpha
-     * \return True of the color set for text is valid.
+     * \returns True of the color set for text is valid.
      */
     bool validTextColor() const;
 
     /**
      * @brief The background color for style
-     * \return QColor for background color
+     * \returns QColor for background color
      */
     QColor backgroundColor() const { return mBackColor; }
 
     /**
      * @brief Check if the background color is valid for render.
      * Valid colors are non invalid QColors and a color with a > 0 alpha
-     * \return True of the color set for background is valid.
+     * \returns True of the color set for background is valid.
      */
     bool validBackgroundColor() const;
 
     /**
      * @brief The font for the style
-     * \return QFont for the style
+     * \returns QFont for the style
      */
     QFont font() const { return mFont; }
 
     /**
      * @brief The condition rule set for the style. Rule may contain variable \@value
      * to represent the current value
-     * \return QString of the current set rule
+     * \returns QString of the current set rule
      */
     QString rule() const { return mRule; }
 
     /**
      * @brief isValid Check if this rule is valid.  A valid rule has one or more properties
      * set.
-     * \return True if the rule is valid.
+     * \returns True if the rule is valid.
      */
     bool isValid() const { return mValid; }
 
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief Find and return the matching styles for the value and feature.
      * If no match is found a invalid QgsConditionalStyle is return.
      *
-     * \return A condtional style that matches the value and feature.
+     * \returns A condtional style that matches the value and feature.
      * Check with QgsConditionalStyle::isValid()
      */
     static QList<QgsConditionalStyle> matchingConditionalStyles( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief Find and return the matching style for the value and feature.
      * If no match is found a invalid QgsConditionalStyle is return.
      *
-     * \return A condtional style that matches the value and feature.
+     * \returns A condtional style that matches the value and feature.
      * Check with QgsConditionalStyle::isValid()
      */
     static QgsConditionalStyle matchingConditionalStyle( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief Compress a list of styles into a single style.  This can be used to stack the elements of the
      * styles. The font of the last style is used in the output.
      * \param styles The list of styles to compress down
-     * \return A single style generated from joining each style property.
+     * \returns A single style generated from joining each style property.
      */
     static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle> &styles );
 

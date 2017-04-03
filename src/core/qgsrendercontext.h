@@ -254,7 +254,7 @@ class CORE_EXPORT QgsRenderContext
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp );
 
     /** Get the filter feature provider used for additional filtering of rendered features.
-     * \return the filter feature provider
+     * \returns the filter feature provider
      * \since QGIS 2.14
      * @see setFeatureFilterProvider()
      */

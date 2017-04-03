@@ -81,7 +81,7 @@ namespace pal
        * \param y y coordinates
        * \param n Size of subset (vector id)
        * \param cHull returns the point id (id of id's vector...) whom are parts of the convex hull
-       * \return convexHull's size
+       * \returns convexHull's size
        */
       static int convexHullId( int *id, const double *const x, const double *const y, int n, int *&cHull );
 

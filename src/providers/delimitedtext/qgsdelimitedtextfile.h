@@ -104,7 +104,7 @@ class QgsDelimitedTextFile : public QObject
     void setFileName( const QString &filename );
 
     /** Return the filename
-     * \return filename  the name of the file
+     * \returns filename  the name of the file
      */
     QString fileName()
     {
@@ -117,7 +117,7 @@ class QgsDelimitedTextFile : public QObject
     void setEncoding( const QString &encoding );
 
     /** Return the file encoding
-     *  \return encoding The file encoding
+     *  \returns encoding The file encoding
      */
     QString encoding() { return mEncoding; }
 
@@ -132,7 +132,7 @@ class QgsDelimitedTextFile : public QObject
     bool setFromUrl( const QUrl &url );
 
     /** Encode the parser settings into a QUrl
-     *  \return url  The url into which the delimiter and delimiterType items are set
+     *  \returns url  The url into which the delimiter and delimiterType items are set
      */
     QUrl url();
 
@@ -159,7 +159,7 @@ class QgsDelimitedTextFile : public QObject
     void setSkipLines( int skiplines );
 
     /** Return the number of header lines to skip
-     * \return skiplines The maximum lines to skip
+     * \returns skiplines The maximum lines to skip
      */
     int skipLines()
     {
@@ -172,7 +172,7 @@ class QgsDelimitedTextFile : public QObject
     void setUseHeader( bool useheader = true );
 
     /** Return the option for reading field names from the first record
-     * \return useheaders Field names will be read if true
+     * \returns useheaders Field names will be read if true
      */
     bool useHeader()
     {
@@ -185,7 +185,7 @@ class QgsDelimitedTextFile : public QObject
     void setDiscardEmptyFields( bool discardEmptyFields = true );
 
     /** Return the option for discarding empty fields
-     * \return useheaders Empty fields will be discarded if true
+     * \returns useheaders Empty fields will be discarded if true
      */
     bool discardEmptyFields()
     {
@@ -198,7 +198,7 @@ class QgsDelimitedTextFile : public QObject
     void setTrimFields( bool trimFields = true );
 
     /** Return the option for trimming empty fields
-     * \return useheaders Empty fields will be trimmed if true
+     * \returns useheaders Empty fields will be trimmed if true
      */
     bool trimFields()
     {
@@ -212,7 +212,7 @@ class QgsDelimitedTextFile : public QObject
     void setMaxFields( int maxFields );
 
     /** Return the maximum number of fields that will be read
-     *  \return maxFields The maximum number of fields that will be read
+     *  \returns maxFields The maximum number of fields that will be read
      */
     int maxFields() { return mMaxFields; }
 
@@ -230,21 +230,21 @@ class QgsDelimitedTextFile : public QObject
      *  not been read then the field names are empty until records have
      *  been read.  The list may be expanded as the file is read and records
      *  with more fields are loaded.
-     *  \return names  A list of field names in the file
+     *  \returns names  A list of field names in the file
      */
     QStringList &fieldNames();
 
     /** Return the index of a names field
      *  \param name    The name of the field to find.  This will also accept an
      *                 integer string ("1" = first field).
-     *  \return index  The zero based index of the field name, or -1 if the field
+     *  \returns index  The zero based index of the field name, or -1 if the field
      *                 name does not exist or cannot be inferred
      */
     int fieldIndex( const QString &name );
 
     /** Reads the next record from the stream splits into string fields.
      *  \param fields  The string list to populate with the fields
-     *  \return status The result of trying to parse a record.  RecordOk
+     *  \returns status The result of trying to parse a record.  RecordOk
      *                 if read successfully, RecordEOF if reached the end of the
      *                 file, RecordEmpty if no data on the next line, and
      *                 RecordInvalid if the record is ill-formatted.
@@ -252,7 +252,7 @@ class QgsDelimitedTextFile : public QObject
     Status nextRecord( QStringList &fields );
 
     /** Return the line number of the start of the last record read
-     *  \return linenumber  The line number of the start of the record
+     *  \returns linenumber  The line number of the start of the record
      */
     int recordId()
     {
@@ -261,13 +261,13 @@ class QgsDelimitedTextFile : public QObject
 
     /** Set the index of the next record to return.
      *  \param  nextRecordId The id to set the next record to
-     *  \return valid  True if the next record can be located
+     *  \returns valid  True if the next record can be located
      */
     bool setNextRecordId( long nextRecordId );
 
     /** Number record number of records visited. After scanning the file
      *  serves as a record count.
-     *  \return maxRecordNumber The maximum record number
+     *  \returns maxRecordNumber The maximum record number
      */
     long recordCount() { return mMaxRecordNumber; }
 
@@ -276,27 +276,27 @@ class QgsDelimitedTextFile : public QObject
     Status reset();
 
     /** Return a string defining the type of the delimiter as a string
-     *  \return type The delimiter type as a string
+     *  \returns type The delimiter type as a string
      */
     QString type();
 
     /** Check that provider is valid (filename and definition valid)
      *
-     * \return valid True if the provider is valid
+     * \returns valid True if the provider is valid
      */
     bool isValid();
 
     /** Encode characters - used to convert delimiter/quote/escape characters to
      *  encoded form (e.g., replace tab with \t)
      *  \param string  The unencoded string
-     *  \return encstring  The encoded string
+     *  \returns encstring  The encoded string
      */
     static QString encodeChars( QString string );
 
     /** Encode characters - used to encoded character strings to
      *  decoded form (e.g., replace \t with tab)
      *  \param string  The unencoded string
-     *  \return decstring  The decoded string
+     *  \returns decstring  The decoded string
      */
     static QString decodeChars( QString string );
 
@@ -322,7 +322,7 @@ class QgsDelimitedTextFile : public QObject
 
     /** Open the file
      *
-     * \return valid  True if the file is successfully opened
+     * \returns valid  True if the file is successfully opened
      */
     bool open();
 

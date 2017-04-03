@@ -403,14 +403,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     template<class T> void composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const;
 
     /** Returns the composer map with specified id
-     * \return QgsComposerMap or 0 pointer if the composer map item does not exist
+     * \returns QgsComposerMap or 0 pointer if the composer map item does not exist
      */
     const QgsComposerMap *getComposerMapById( const int id ) const;
 
     /** Returns a composer item given its text identifier.
      *  Ids are not necessarely unique, but this function returns only one element.
      * \param id - A QString representing the identifier of the item to retrieve.
-     * \return QgsComposerItem pointer or 0 pointer if no such item exists.
+     * \returns QgsComposerItem pointer or 0 pointer if no such item exists.
      */
     const QgsComposerItem *getComposerItemById( const QString &id ) const;
 
@@ -960,7 +960,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void updateZValues( const bool addUndoCommands = true );
 
     /** Returns the bounding rectangle of the selected items in scene coordinates
-     \return 0 in case of success*/
+     \returns 0 in case of success*/
     int boundingRectOfSelectedItems( QRectF &bRect );
 
     //! Loads default composer settings

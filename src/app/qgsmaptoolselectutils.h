@@ -92,7 +92,7 @@ namespace QgsMapToolSelectUtils
   /**
     Get the current selected canvas map layer. Returns nullptr if it is not a vector layer
     \param canvas The map canvas used for getting the current layer
-    \return QgsVectorLayer The layer
+    \returns QgsVectorLayer The layer
   */
   QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas );
 

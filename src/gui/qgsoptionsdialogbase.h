@@ -64,7 +64,7 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
 
     /**
      * search for a text pattern and highlight the widget if the text is found
-     * \return true if the text pattern is found
+     * \returns true if the text pattern is found
      */
     bool searchHighlight( const QString &searchText );
 

@@ -37,7 +37,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      * \param defaultValues   Default values for the feature to add
      * \param defaultGeometry A default geometry to add to the feature
      *
-     * \return                True in case of success, False if the operation failed/was aborted
+     * \returns                True in case of success, False if the operation failed/was aborted
      */
     bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat = nullptr ) const override;
 
@@ -47,7 +47,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      *
      * \param layer  The layer on which to start an edit session
      *
-     * \return       True, if the editing session was started
+     * \returns       True, if the editing session was started
      */
     bool startEditing( QgsVectorLayer *layer ) const override;
 
@@ -59,7 +59,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      * \param layer       The layer to commit
      * \param allowCancel True if a cancel button should be offered
      *
-     * \return            True if successful
+     * \returns            True if successful
      */
     bool stopEditing( QgsVectorLayer *layer, bool allowCancel = true ) const override;
 
@@ -67,7 +67,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      * Should be called, when the features should be committed but the editing session is not ended.
      *
      * \param layer       The layer to commit
-     * \return            True if successful
+     * \returns            True if successful
      */
     bool saveEdits( QgsVectorLayer *layer ) const override;
 

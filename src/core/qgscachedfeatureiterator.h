@@ -42,14 +42,14 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     /**
      * Rewind to the beginning of the iterator
      *
-     * \return bool true if the operation was ok
+     * \returns bool true if the operation was ok
      */
     virtual bool rewind() override;
 
     /**
      * Close this iterator. No further features will be available.
      *
-     * \return true if successful
+     * \returns true if successful
      */
     virtual bool close() override;
 
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * Implementation for fetching a feature.
      *
      * \param f      Will write to this feature
-     * \return bool  true if the operation was ok
+     * \returns bool  true if the operation was ok
      *
      * @see bool getFeature( QgsFeature& f )
      */
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * We have a local special iterator for FilterFids, no need to run the generic.
      *
      * \param f      Will write to this feature
-     * \return bool  true if the operation was ok
+     * \returns bool  true if the operation was ok
      */
     virtual bool nextFeatureFilterFids( QgsFeature &f ) override { return fetchFeature( f ); }
 
@@ -100,14 +100,14 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
     /**
      * Rewind to the beginning of the iterator
      *
-     * \return bool true if the operation was ok
+     * \returns bool true if the operation was ok
      */
     virtual bool rewind() override;
 
     /**
      * Close this iterator. No further features will be available.
      *
-     * \return true if successful
+     * \returns true if successful
      */
     virtual bool close() override;
 
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
      * Implementation for fetching a feature.
      *
      * \param f      Will write to this feature
-     * \return bool  true if the operation was ok
+     * \returns bool  true if the operation was ok
      *
      * @see bool getFeature( QgsFeature& f )
      */

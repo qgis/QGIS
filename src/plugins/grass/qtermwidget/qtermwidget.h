@@ -162,13 +162,13 @@ public:
      * This method may return a nullptr if no hotspot is available.
      *
      * \param[in] pos The point of interest in the QTermWidget coordinates.
-     * \return Hotspot for the given position, or nullptr if no hotspot.
+     * \returns Hotspot for the given position, or nullptr if no hotspot.
      */
     Filter::HotSpot* getHotSpotAt(const QPoint& pos) const;
 
     /** Returns the available hotspots for the given row and column.
      *
-     * \return Hotspot for the given position, or nullptr if no hotspot.
+     * \returns Hotspot for the given position, or nullptr if no hotspot.
      */
     Filter::HotSpot* getHotSpotAt(int row, int column) const;
 

@@ -108,7 +108,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * If an invalid variant is returned this will be interpreted as no change.
      * Be sure to return a NULL QVariant if it should be set to NULL.
      *
-     * \return The current value the widget represents
+     * \returns The current value the widget represents
      */
     virtual QString expression() = 0;
 

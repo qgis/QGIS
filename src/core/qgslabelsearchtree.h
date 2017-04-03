@@ -58,7 +58,7 @@ class CORE_EXPORT QgsLabelSearchTree
     void labelsInRect( const QgsRectangle &r, QList<QgsLabelPosition *> &posList ) const;
 
     /** Inserts label position. Does not take ownership of labelPos
-     * \return true in case of success
+     * \returns true in case of success
      * \note not available in Python bindings
      */
     bool insertLabel( pal::LabelPosition *labelPos, int featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString() );

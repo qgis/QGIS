@@ -75,14 +75,14 @@ class CORE_EXPORT QgsHistogram
     /** Returns a list of edges for the histogram for a specified number of bins. This list
      * will be length bins + 1, as both the first and last value are also included.
      * \param bins number of bins
-     * \return list of bin edges
+     * \returns list of bin edges
      * \note values must first be specified using @link setValues @endlink
      */
     QList<double> binEdges( int bins ) const;
 
     /** Returns the calculated list of the counts for the histogram bins.
      * \param bins number of histogram bins
-     * \return list of histogram counts
+     * \returns list of histogram counts
      * \note values must first be specified using @link setValues @endlink
      */
     QList<int> counts( int bins ) const;

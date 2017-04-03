@@ -115,21 +115,21 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // ----------------------------------- Edit ----------------------------------
 
     /** Is the layer editable? I.e. the layer is valid and current user is owner of the mapset
-     *   \return true the layer editable
-     *   \return false the is not editable
+     *   \returns true the layer editable
+     *   \returns false the is not editable
      */
     bool isGrassEditable();
 
     /** Returns true if the layer is currently edited (opened in update mode)
-     *   \return true in update mode
-     *   \return false not edited
+     *   \returns true in update mode
+     *   \returns false not edited
      */
     bool isEdited();
 
     /** Returns true if the layer is currently froze, i.e. a module
      *  from GRASS Tools is writing to this vector
-     *   \return true in update mode
-     *   \return false not edited
+     *   \returns true in update mode
+     *   \returns false not edited
      */
     bool isFrozen();
 
@@ -146,18 +146,18 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     /** Close editing. Rebuild topology, GMAP.update = false
      *   \param newMap set to true if a new map was created
      *          and it is not yet used as layer
-     *   \return true success
-     *   \return false failed to close vector or vector was not in update mode
+     *   \returns true success
+     *   \returns false failed to close vector or vector was not in update mode
      */
     bool closeEdit( bool newMap = false, QgsVectorLayer *vectorLayer = 0 );
 
     /** Get current number of lines.
-     *   \return number of lines
+     *   \returns number of lines
      */
     int numLines( void );
 
     /** Get current number of nodes.
-     *   \return number of nodes
+     *   \returns number of nodes
      */
     int numNodes( void );
 
@@ -165,86 +165,86 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   \param Points pointer to existing structure or NULL
      *   \param Cats pointer to existing structure or NULL
      *   \param line line number
-     *   \return line type
-     *   \return <0 deadline or error
+     *   \returns line type
+     *   \returns <0 deadline or error
      */
     int readLine( struct line_pnts *Points, struct line_cats *Cats, int line );
 
     /** Read node coordinates
      *   \param line line number
-     *   \return true node is alive
-     *   \return false node is dead
+     *   \returns true node is alive
+     *   \returns false node is dead
      */
     bool nodeCoor( int node, double *x, double *y );
 
     /** Read line nodes
      *   \param line line number
-     *   \return true line is alive
-     *   \return false line is dead
+     *   \returns true line is alive
+     *   \returns false line is dead
      */
     bool lineNodes( int line, int *node1, int *node2 );
 
     /** Read boundary areas
      *   \param line line number
-     *   \return true line is alive
-     *   \return false line is dead
+     *   \returns true line is alive
+     *   \returns false line is dead
      */
     bool lineAreas( int line, int *left, int *right );
 
     /** Get isle area
      *   \param isle number
-     *   \return area number
+     *   \returns area number
      */
     int isleArea( int isle );
 
     /** Get centroid area
      *   \param centroid line number
-     *   \return area number (negative for island)
+     *   \returns area number (negative for island)
      */
     int centroidArea( int centroid );
 
     /** Get number of lines at node
      *   \param node node number
-     *   \return number of lines at node (including dead lines)
+     *   \returns number of lines at node (including dead lines)
      */
     int nodeNLines( int node );
 
     /** Get line number of line at node for given line index
      *   \param node node number
      *   \param idx line index
-     *   \return line number
+     *   \returns line number
      */
     int nodeLine( int node, int idx );
 
     /** True if line is alive
      *   \param line line number
-     *   \return true alive
-     *   \return false dead
+     *   \returns true alive
+     *   \returns false dead
      */
     int lineAlive( int line );
 
     /** True if node is alive
      *   \param node node number
-     *   \return true alive
-     *   \return false dead
+     *   \returns true alive
+     *   \returns false dead
      */
     int nodeAlive( int node );
 
     /** Write a new line into vector.
-     *   \return line number
-     *   \return -1 error
+     *   \returns line number
+     *   \returns -1 error
      */
     int writeLine( int type, struct line_pnts *Points, struct line_cats *Cats );
 
     /** Rewrite line.
-     *   \return line number
-     *   \return -1 error
+     *   \returns line number
+     *   \returns -1 error
      */
     int rewriteLine( int lid, int type, struct line_pnts *Points, struct line_cats *Cats );
 
     /** Delete line
-     *   \return 0 OK
-     *   \return -1 error
+     *   \returns 0 OK
+     *   \returns -1 error
      */
     int deleteLine( int line );
 
@@ -266,15 +266,15 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /** Find nearest line
      *   \param threshold maximum distance
-     *   \return line number
-     *   \return 0 nothing found
+     *   \returns line number
+     *   \returns 0 nothing found
      */
     int findLine( double x, double y, int type, double threshold );
 
     /** Find nearest node
      *   \param threshold maximum distance
-     *   \return node number
-     *   \return 0 nothing found
+     *   \returns node number
+     *   \returns 0 nothing found
      */
     int findNode( double x, double y, double threshold );
 
@@ -283,24 +283,24 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     /** Read attributes from DB
      *   \param field
      *   \param cat
-     *   \return vector of attributes
+     *   \returns vector of attributes
      */
     QgsAttributeMap *attributes( int field, int cat );
 
     /** Key (cat) column name
      *   \param field
-     *   \return Key column name or empty string
+     *   \returns Key column name or empty string
      */
     QString key( int field );
 
     /** Get number of db links
-     *   \return number of links
+     *   \returns number of links
      */
     int numDbLinks( void );
 
     /** Get db link field
      *  \param link
-     *   \return field number or 0
+     *   \returns field number or 0
      */
     int dbLinkField( int link );
 
@@ -408,7 +408,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *  \param layerId
      *  \param category (key)
      *  \param column column number ( < nColumns )
-     *  \return pointer to string representation of the value or NULL, this value must not be changed
+     *  \returns pointer to string representation of the value or NULL, this value must not be changed
      */
     static char *attribute( int layerId, int cat, int column );
 

@@ -49,7 +49,7 @@ namespace QgsWms
       void render( const QgsMapSettings &mapSettings, QImage *image );
 
       /** Take ownership of the painter used for rendering.
-        * \return painter
+        * \returns painter
         */
       QPainter *takePainter();
 

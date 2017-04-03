@@ -70,14 +70,14 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * If an invalid variant is returned this will be interpreted as no change.
      * Be sure to return a NULL QVariant if it should be set to NULL.
      *
-     * \return The current value the widget represents
+     * \returns The current value the widget represents
      */
     virtual QVariant value() const = 0;
 
     /**
      * Access the field index.
      *
-     * \return The index of the field you are working on
+     * \returns The index of the field you are working on
      *
      * @see layer()
      */
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Access the field.
      *
-     * \return The field you are working on
+     * \returns The field you are working on
      *
      * @see layer()
      */
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Access the default value of the field.
      *
-     * \return the default value of the field
+     * \returns the default value of the field
      *
      * @see layer()
      */
@@ -104,14 +104,14 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Will return a wrapper for a given widget
      * \param widget The widget which was created by a wrapper
-     * \return The wrapper for the widget or NULL
+     * \returns The wrapper for the widget or NULL
      */
     static QgsEditorWidgetWrapper *fromWidget( QWidget *widget );
 
     /**
      * Check if the given widget or one of its parent is a QTableView.
      * \param parent the widget to check
-     * \return true if yes
+     * \returns true if yes
      */
     static bool isInTable( const QWidget *parent );
 
@@ -139,7 +139,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Get the current constraint status.
-     * \return true if the constraint is valid or if there's no constraint,
+     * \returns true if the constraint is valid or if there's no constraint,
      * false otherwise
      * \since QGIS 2.16
      * @see constraintFailureReason()

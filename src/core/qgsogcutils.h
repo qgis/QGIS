@@ -73,7 +73,7 @@ class CORE_EXPORT QgsOgcUtils
     static QgsRectangle rectangleFromGMLEnvelope( const QDomNode &envelopeNode );
 
     /** Exports the geometry to GML
-        \return QDomElement
+        \returns QDomElement
         \since QGIS 2.16
      */
     static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc,
@@ -84,22 +84,22 @@ class CORE_EXPORT QgsOgcUtils
                                       int precision = 17 );
 
     /** Exports the geometry to GML2 or GML3
-        \return QDomElement
+        \returns QDomElement
      */
     static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, const QString &format, int precision = 17 );
 
     /** Exports the geometry to GML2
-        \return QDomElement
+        \returns QDomElement
      */
     static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, int precision = 17 );
 
     /** Exports the rectangle to GML2 Box
-        \return QDomElement
+        \returns QDomElement
      */
     static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc, int precision = 17 );
 
     /** Exports the rectangle to GML2 Box
-        \return QDomElement
+        \returns QDomElement
         \since QGIS 2.16
      */
     static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc,
@@ -108,12 +108,12 @@ class CORE_EXPORT QgsOgcUtils
                                           int precision = 17 );
 
     /** Exports the rectangle to GML3 Envelope
-        \return QDomElement
+        \returns QDomElement
      */
     static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc, int precision = 17 );
 
     /** Exports the rectangle to GML3 Envelope
-        \return QDomElement
+        \returns QDomElement
         \since QGIS 2.16
      */
     static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc,
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsOgcUtils
 
     /** Creates OGC filter XML element. Supports minimum standard filter
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
-     * \return valid \verbatim <Filter> \endverbatim QDomElement on success,
+     * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcFilter( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsOgcUtils
 
     /** Creates OGC filter XML element. Supports minimum standard filter
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
-     * \return valid \verbatim <Filter> \endverbatim QDomElement on success,
+     * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      * \since QGIS 2.16
      * \note not available in Python bindings
@@ -163,13 +163,13 @@ class CORE_EXPORT QgsOgcUtils
         QString *errorMessage = nullptr );
 
     /** Creates an OGC expression XML element.
-     * \return valid OGC expression QDomElement on success,
+     * \returns valid OGC expression QDomElement on success,
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
 
     /** Creates an OGC expression XML element.
-     * \return valid OGC expression QDomElement on success,
+     * \returns valid OGC expression QDomElement on success,
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcExpression( const QgsExpression &exp,
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsOgcUtils
      *          ST_Disjoint(), ST_Overlaps(), ST_Touches(), ST_Within()
      *          ST_DWithin(), ST_Beyond()
      *          custom functions
-     * \return valid \verbatim <Filter> \endverbatim QDomElement on success,
+     * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      * \since QGIS 2.16
      * \note not available in Python bindings
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsOgcUtils
     /** Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
        \param coords list where the found coordinates are appended
        \param elem the \verbatim <gml:coordinates> \endverbatim element
-       \return boolean for success*/
+       \returns boolean for success*/
     static bool readGMLCoordinates( QgsPolyline &coords, const QDomElement &elem );
 
     /** Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
@@ -254,20 +254,20 @@ class CORE_EXPORT QgsOgcUtils
        \param coords list where the found coordinates are appended
        \param elem the \verbatim <gml:pos> \endverbatim or
                     \verbatim <gml:posList> \endverbatim element
-       \return boolean for success*/
+       \returns boolean for success*/
     static bool readGMLPositions( QgsPolyline &coords, const QDomElement &elem );
 
 
     /** Create a GML coordinates element from a point list.
       \param points list of data points
       \param doc the GML document
-      \return QDomElement */
+      \returns QDomElement */
     static QDomElement createGMLCoordinates( const QgsPolyline &points, QDomDocument &doc );
 
     /** Create a GML pos or posList element from a point list.
       \param points list of data points
       \param doc the GML document
-      \return QDomElement */
+      \returns QDomElement */
     static QDomElement createGMLPositions( const QgsPolyline &points, QDomDocument &doc );
 
     //! handle a generic sub-expression

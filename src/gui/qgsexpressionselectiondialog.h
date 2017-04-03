@@ -46,7 +46,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
 
     /**
      * The builder widget that is used by the dialog
-     * \return The builder widget that is used by the dialog
+     * \returns The builder widget that is used by the dialog
      */
     QgsExpressionBuilderWidget *expressionBuilder();
 
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
 
     /**
      * Returns the current expression text
-     * \return The expression text
+     * \returns The expression text
      */
     QString expressionText();
 

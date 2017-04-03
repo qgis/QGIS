@@ -191,14 +191,14 @@ class CORE_EXPORT QgsVectorFileWriter
 
         /** Return a possibly modified field definition. Default implementation will return provided field unmodified.
          * \param field original field definition
-         * \return possibly modified field definition
+         * \returns possibly modified field definition
          */
         virtual QgsField fieldDefinition( const QgsField &field );
 
         /** Convert the provided value, for field fieldIdxInLayer. Default implementation will return provided value unmodified.
          * \param fieldIdxInLayer field index
          * \param value original raw value
-         * \return possibly modified value.
+         * \returns possibly modified value.
          */
         virtual QVariant convert( int fieldIdxInLayer, const QVariant &value );
     };
@@ -467,7 +467,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** Delete a shapefile (and its accompanying shx / dbf / prf)
      * \param fileName /path/to/file.shp
-     * \return bool true if the file was deleted successfully
+     * \returns bool true if the file was deleted successfully
      */
     static bool deleteShapeFile( const QString &fileName );
 

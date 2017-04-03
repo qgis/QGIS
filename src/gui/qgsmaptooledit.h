@@ -67,7 +67,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
 
     /** Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
      * \param geom list of points (in layer coordinate system)
-     * \return 0 in case of success
+     * \returns 0 in case of success
      */
     int addTopologicalPoints( const QList<QgsPoint> &geom );
 

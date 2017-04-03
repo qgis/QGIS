@@ -82,7 +82,7 @@ class CORE_EXPORT QgsRelation
      *
      * \param node The dom node containing the relation information
      *
-     * \return A relation
+     * \returns A relation
      */
     static QgsRelation createFromXml( const QDomNode &node );
 
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsRelation
      *
      * \param feature A feature from the referenced (parent) layer
      *
-     * \return An iterator with all the referenced features
+     * \returns An iterator with all the referenced features
      * @see getRelatedFeaturesRequest()
      * @see getRelatedFeaturesFilter()
      */
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsRelation
      *
      * \param feature A feature from the referenced (parent) layer
      *
-     * \return A request for all the referencing features
+     * \returns A request for all the referencing features
      * @see getRelatedFeatures()
      * @see getRelatedFeaturesFilter()
      */
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsRelation
     /** Returns a filter expression which returns all the features on the referencing (child) layer
      * which have a foreign key pointing to the provided feature.
      * \param feature A feature from the referenced (parent) layer
-     * \return expression filter string for all the referencing features
+     * \returns expression filter string for all the referencing features
      * \since QGIS 2.16
      * @see getRelatedFeatures()
      * @see getRelatedFeaturesRequest()
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsRelation
      *
      * \param attributes An attribute vector containing the foreign key
      *
-     * \return A request the referenced feature
+     * \returns A request the referenced feature
      * \note not available in Python bindings
      */
     QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsRelation
      *
      * \param feature A feature from the referencing (child) layer
      *
-     * \return A request the referenced feature
+     * \returns A request the referenced feature
      */
     QgsFeatureRequest getReferencedFeatureRequest( const QgsFeature &feature ) const;
 
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsRelation
      *
      * \param feature A feature from the referencing (child) layer
      *
-     * \return A request the referenced feature
+     * \returns A request the referenced feature
      */
     QgsFeature getReferencedFeature( const QgsFeature &feature ) const;
 
@@ -204,14 +204,14 @@ class CORE_EXPORT QgsRelation
      *
      * @see id()
      *
-     * \return A name
+     * \returns A name
      */
     QString name() const;
 
     /**
      * A (project-wide) unique id for this relation
      *
-     * \return The id
+     * \returns The id
      */
     QString id() const;
 
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsRelation
      * Access the referencing (child) layer's id
      * This is the layer which has the field(s) which point to another layer
      *
-     * \return The id of the referencing layer
+     * \returns The id of the referencing layer
      */
     QString referencingLayerId() const;
 
@@ -233,21 +233,21 @@ class CORE_EXPORT QgsRelation
      * Access the referencing (child) layer
      * This is the layer which has the field(s) which point to another layer
      *
-     * \return The referencing layer
+     * \returns The referencing layer
      */
     QgsVectorLayer *referencingLayer() const;
 
     /**
      * Access the referenced (parent) layer's id
      *
-     * \return The id of the referenced layer
+     * \returns The id of the referenced layer
      */
     QString referencedLayerId() const;
 
     /**
      * Access the referenced (parent) layer
      *
-     * \return referenced layer
+     * \returns referenced layer
      */
     QgsVectorLayer *referencedLayer() const;
 
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsRelation
      * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
-     * \return The fields forming the relation
+     * \returns The fields forming the relation
      */
     QList< FieldPair > fieldPairs() const;
 
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsRelation
      * Returns a list of attributes used to form the referenced fields
      * (most likely primary key) on the referenced (parent) layer.
      *
-     * \return A list of attributes
+     * \returns A list of attributes
      */
     QgsAttributeList referencedFields() const;
 
@@ -272,14 +272,14 @@ class CORE_EXPORT QgsRelation
      * Returns a list of attributes used to form the referencing fields
      * (foreign key) on the referencing (child) layer.
      *
-     * \return A list of attributes
+     * \returns A list of attributes
      */
     QgsAttributeList referencingFields() const;
 
     /**
      * Returns the validity of this relation. Don't use the information if it's not valid.
      *
-     * \return true if the relation is valid
+     * \returns true if the relation is valid
      */
     bool isValid() const;
 
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsRelation
      * Compares the two QgsRelation, ignoring the name and the ID.
      *
      * \param other The other relation
-     * \return true if they are similar
+     * \returns true if they are similar
      * \since QGIS 3.0
      */
     bool hasEqualDefinition( const QgsRelation &other ) const;

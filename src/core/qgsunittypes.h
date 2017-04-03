@@ -244,7 +244,7 @@ class CORE_EXPORT QgsUnitTypes
 
     /** Converts a distance unit to its corresponding area unit, e.g., meters to square meters
      * \param distanceUnit distance unit to convert
-     * \return matching areal unit
+     * \returns matching areal unit
      */
     Q_INVOKABLE static AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
 

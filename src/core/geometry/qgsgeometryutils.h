@@ -83,7 +83,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param q1 Point on the second line
      * \param w Direction vector of the second line
      * \param inter Output parameter, the intersection point
-     * \return Whether the lines intersect
+     * \returns Whether the lines intersect
      */
     static bool lineIntersection( const QgsPointV2 &p1, QgsVector v, const QgsPointV2 &q1, QgsVector w, QgsPointV2 &inter );
 
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param q2 Second segment end point
      * \param inter Output parameter, the intersection point
      * \param tolerance The tolerance to use
-     * \return  Whether the segments intersect
+     * \returns  Whether the segments intersect
      */
     static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2 &inter, double tolerance );
 
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param p The point
      * \param s1 The segment start point
      * \param s2 The segment end point
-     * \return The projection of the point on the segment
+     * \returns The projection of the point on the segment
      */
     static QgsPointV2 projPointOnSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 )
     {
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param part The part of the geometry to check
      * \param ring The ring of the geometry part to check
      * \param tolerance The tolerance to use
-     * \return The list of self intersections
+     * \returns The list of self intersections
      * \note not available in Python bindings
      * \since QGIS 2.12
      */
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsGeometryUtils
      * M value is computed if one of this point have M.
      * \param pt1 first point.
      * \param pt2 second point.
-     * \return New point at middle between points pt1 and pt2.
+     * \returns New point at middle between points pt1 and pt2.
      * * Example:
      * \code{.py}
      *   p = QgsPointV2( 4, 6 ) # 2D point
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsGeometryUtils
     /** Return the gradient of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
      * \param pt2 second point.
-     * \return The gradient of this linear entity, or infinity if vertical
+     * \returns The gradient of this linear entity, or infinity if vertical
      * \since QGIS 3.0
      */
     static double gradient( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param p The point
      * \param s1 The segment start point
      * \param s2 The segment end point
-     * \return A line (segment) from p to perpendicular point on segment [s1, s2]
+     * \returns A line (segment) from p to perpendicular point on segment [s1, s2]
      */
     static QgsLineString perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 );
 

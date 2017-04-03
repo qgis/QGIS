@@ -68,7 +68,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * \param parent parent widget
      * \param title the title of the dialog.
      * \param allowAlpha set to true to allow modification of color alpha value (transparency)
-     * \return Selected color on accepted() or initialColor on rejected().
+     * \returns Selected color on accepted() or initialColor on rejected().
      * @see getColor
      */
     static QColor getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot,
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * \param parent parent widget
      * \param title the title of the dialog.
      * \param allowAlpha set to true to allow modification of color alpha value (transparency)
-     * \return Selected color on accepted() or initialColor on rejected().
+     * \returns Selected color on accepted() or initialColor on rejected().
      * @see getLiveColor
      */
     static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),

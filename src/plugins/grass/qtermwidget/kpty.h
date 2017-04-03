@@ -50,7 +50,7 @@ class KPty {
     /**
      * Create a pty master/slave pair.
      *
-     * \return true if a pty pair was successfully opened
+     * \returns true if a pty pair was successfully opened
      */
     bool open();
 
@@ -110,7 +110,7 @@ class KPty {
      *  Note: when declaring ttmode, @c struct @c ::termios must be used -
      *  without the '::' some version of HP-UX thinks, this declares
      *  the struct in your class, in your method.
-     * \return @c true on success, false otherwise
+     * \returns @c true on success, false otherwise
      */
     bool tcGetAttr(struct ::termios * ttmode) const;
 
@@ -120,7 +120,7 @@ class KPty {
      * This function can be used only while the PTY is open.
      *
      * \param ttmode a pointer to a termios structure.
-     * \return @c true on success, false otherwise. Note that success means
+     * \returns @c true on success, false otherwise. Note that success means
      *  that @em at @em least @em one attribute could be set.
      */
     bool tcSetAttr(struct ::termios * ttmode);
@@ -133,7 +133,7 @@ class KPty {
      *
      * \param lines the number of rows
      * \param columns the number of columns
-     * \return @c true on success, false otherwise
+     * \returns @c true on success, false otherwise
      */
     bool setWinSize(int lines, int columns);
 
@@ -147,26 +147,26 @@ class KPty {
      * This function can be used only while the PTY is open.
      *
      * \param echo true if input should be echoed.
-     * \return @c true on success, false otherwise
+     * \returns @c true on success, false otherwise
      */
     bool setEcho(bool echo);
 
     /**
-     * \return the name of the slave pty device.
+     * \returns the name of the slave pty device.
      *
      * This function should be called only while the pty is open.
      */
     const char * ttyName() const;
 
     /**
-     * \return the file descriptor of the master pty
+     * \returns the file descriptor of the master pty
      *
      * This function should be called only while the pty is open.
      */
     int masterFd() const;
 
     /**
-     * \return the file descriptor of the slave pty
+     * \returns the file descriptor of the slave pty
      *
      * This function should be called only while the pty slave is open.
      */

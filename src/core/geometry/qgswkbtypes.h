@@ -930,7 +930,7 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * Will convert the 25D version of the flat type if supported or Unknown if not supported.
      * \param type The type to convert
-     * \return the 25D version of the type or Unknown
+     * \returns the 25D version of the type or Unknown
      */
     static Type to25D( Type type )
     {

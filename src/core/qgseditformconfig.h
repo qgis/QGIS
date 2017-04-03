@@ -165,7 +165,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * \param widgetName The name of the widget.
      *
-     * \return The configuration for the editor widget or an empty config if the field does not exist
+     * \returns The configuration for the editor widget or an empty config if the field does not exist
      */
     QVariantMap widgetConfig( const QString &widgetName ) const;
 
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * \param widgetName The name of the widget.
      *
-     * \return true if a configuration has been removed
+     * \returns true if a configuration has been removed
      */
     bool removeWidgetConfig( const QString &widgetName );
 

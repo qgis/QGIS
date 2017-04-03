@@ -130,7 +130,7 @@ class CORE_EXPORT QgsSymbol
      * Ownership will be transferred.
      * \param index The index at which the layer should be added
      * \param layer The symbol layer to add
-     * \return True if the layer is added, False if the index or the layer is bad
+     * \returns True if the layer is added, False if the index or the layer is bad
      */
     bool insertSymbolLayer( int index, QgsSymbolLayer *layer );
 
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsSymbol
      * Append symbol layer at the end of the list
      * Ownership will be transferred.
      * \param layer The layer to add
-     * \return True if the layer is added, False if the layer is bad
+     * \returns True if the layer is added, False if the layer is bad
      */
     bool appendSymbolLayer( QgsSymbolLayer *layer );
 
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsSymbol
      * Remove symbol layer from the list and return pointer to it.
      * Ownership is handed to the caller.
      * \param index The index of the layer to remove
-     * \return A pointer to the removed layer
+     * \returns A pointer to the removed layer
      */
     QgsSymbolLayer *takeSymbolLayer( int index );
 
@@ -285,7 +285,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Returns the symbol render context. Only valid between startRender and stopRender calls.
      *
-     * \return The symbol render context
+     * \returns The symbol render context
      */
     QgsSymbolRenderContext *symbolRenderContext();
 
@@ -486,7 +486,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     /**
      * This scope is always available when a symbol of this type is being rendered.
      *
-     * \return An expression scope for details about this symbol
+     * \returns An expression scope for details about this symbol
      */
     QgsExpressionContextScope *expressionContextScope();
 

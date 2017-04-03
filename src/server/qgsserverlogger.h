@@ -38,7 +38,7 @@ class QgsServerLogger: public QObject
 
     /**
      * Get the current log level
-     * \return the log level
+     * \returns the log level
      * \since QGIS 3.0
      */
     QgsMessageLog::MessageLevel logLevel() const { return mLogLevel; }
