@@ -61,6 +61,9 @@ class CORE_EXPORT QgsGeoNodeConnection : public QObject
     //! Return list of available layers
     QVariantList getMaps();
 
+    //! Return WMS url for the layer / map / resource ID
+    QString wmsUrl( QString &resourceID );
+
     // Methods below can be moved to another class. I will put here first until I decide. (Ismail)
 
 //    //! Get all layer IDs from the geonode instances

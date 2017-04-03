@@ -25,6 +25,7 @@
 #include <QJsonDocument>
 #include <QDebug>
 #include <QUrl>
+#include <QDomDocument>
 
 
 const QString QgsGeoNodeConnection::pathGeoNodeConnection = "qgis/connections-geonode";
@@ -122,7 +123,27 @@ QVariantList QgsGeoNodeConnection::getLayers()
   QJsonObject jsonObject = jsonDocument.object();
   QVariantMap jsonVariantMap = jsonObject.toVariantMap();
   QVariantList layerList = jsonVariantMap["objects"].toList();
+  for ( int i = 0; i < layerList.count(); ++i )
+  {
+    QVariantMap layer = layerList[i].toMap();
 
+    // Trick to get layer's name from distribution_url or detail_url
+    QStringList temp = layer["distribution_url"].toString().split( "/" );
+    QString layerName = temp[temp.count() - 1];
+    if ( layerName.length() == 0 )
+    {
+      temp = layer["detail_url"].toString().split( "/" );
+      layerName = temp[temp.count() - 1];
+    }
+    // Clean from geonode%3A
+    QString geonodePrefix = QString( "geonode%3A" );
+    if ( layerName.contains( geonodePrefix ) )
+    {
+      layerName.remove( 0, geonodePrefix.length() );
+    }
+    layer[QString( "name" )] = layerName;
+    layerList[i] = layer;
+  }
   return layerList;
 }
 
@@ -153,4 +174,47 @@ QVariantList QgsGeoNodeConnection::getMaps()
   QVariantList layerList = jsonVariantMap["objects"].toList();
 
   return layerList;
+}
+
+QString QgsGeoNodeConnection::wmsUrl( QString &resourceID )
+{
+  // Example CSW url
+  // demo.geonode.org/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=
+
+  QString url = "http://" + uri().param( "url" ) + QString( "/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=%1" ).arg( resourceID );
+  QUrl layerUrl( url );
+  layerUrl.setScheme( "http" );
+  QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
+
+  QNetworkRequest request( layerUrl );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, "application/xml" );
+
+  QNetworkReply *reply = networkManager->get( request );
+  while ( !reply->isFinished() )
+  {
+    qApp->processEvents();
+  }
+  QByteArray response_data = reply->readAll();
+
+  QDomDocument dom;
+  dom.setContent( response_data );
+
+  QDomNodeList referenceNodeList = dom.elementsByTagName( "dct:references" );
+  if ( !referenceNodeList.isEmpty() )
+  {
+    for ( int i = 0; i < referenceNodeList.size(); ++i )
+    {
+      QDomNode referenceNode = referenceNodeList.at( i );
+      QDomNamedNodeMap attributes = referenceNode.attributes();
+      QString scheme = attributes.namedItem( "scheme" ).firstChild().nodeValue();
+      if ( scheme == QStringLiteral( "OGC WMS: geonode Service" ) )
+      {
+        QString url = referenceNode.firstChild().nodeValue();
+        return url;
+      }
+    }
+  }
+
+  QString result;
+  return result;
 }

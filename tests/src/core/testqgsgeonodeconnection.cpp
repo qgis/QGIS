@@ -34,23 +34,26 @@ class TestQgsGeoNodeConnection: public QObject
     // will be called before the first testfunction is executed.
     void initTestCase();
     // will be called after the last testfunction was executed.
-    void cleanupTestCase() {}
-    // will be called before each testfunction is executed.
-    void init() {}
-    // will be called after every testfunction.
-    void cleanup()
+    void cleanupTestCase()
     {
       QgsGeoNodeConnection::deleteConnection( mGeoNodeConnectionName );
       QgsGeoNodeConnection::deleteConnection( "Demo GeoNode" );
     }
+    // will be called before each testfunction is executed.
+    void init() {}
+    // will be called after every testfunction.
+    void cleanup() {}
 
     // Check if we can create geonode connection from database.
     void testCreation();
     void testGetLayers();
     void testGetMaps();
+    void testGetWMSUrl();
   private:
     QString mGeoNodeConnectionName;
     QString mGeoNodeConnectionURL;
+    QString mDemoGeoNodeName;
+    bool mSkipRemoteTest;
 };
 
 // Runs before all unit tests
@@ -59,6 +62,16 @@ void TestQgsGeoNodeConnection::initTestCase()
   std::cout << "CTEST_FULL_OUTPUT" << std::endl;
   mGeoNodeConnectionName = "ThisIsAGeoNodeConnection";
   mGeoNodeConnectionURL = "www.thisisageonodeurl.com";
+  mDemoGeoNodeName = "Demo GeoNode";
+  // Change it to skip remote testing
+  mSkipRemoteTest = true;
+
+  // Add Demo GeoNode Connection
+  QgsSettings settings;
+
+  // Testing real server, demo.geonode.org. Need to be changed later.
+  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection + QStringLiteral( "/%1/url" ).arg( mDemoGeoNodeName ), "demo.geonode.org" );
+
 }
 
 // Test the creation of geonode connection
@@ -66,6 +79,9 @@ void TestQgsGeoNodeConnection::testCreation()
 {
   QStringList connectionList = QgsGeoNodeConnection::connectionList();
   int numberOfConnection = connectionList.count();
+  // Verify if the demo.geonode.org is created properly
+  QVERIFY( connectionList.contains( mDemoGeoNodeName ) );
+  QVERIFY( !connectionList.contains( mGeoNodeConnectionName ) );
 
   // Add new GeoNode Connection
   QgsSettings settings;
@@ -82,16 +98,15 @@ void TestQgsGeoNodeConnection::testCreation()
   QVERIFY( newConnectionList.contains( mGeoNodeConnectionName ) );
 }
 
-// Test retrieveng layers
+// Test retrieving layers
 void TestQgsGeoNodeConnection::testGetLayers()
 {
-  // Add Demo GeoNode Connection
-  QgsSettings settings;
+  if ( !mSkipRemoteTest )
+  {
+    QSKIP( "Skip remote test for faster testing" );
+  }
 
-  // Testing real server, demo.geonode.org. Need to be changed later.
-  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection + QStringLiteral( "/%1/url" ).arg( "Demo GeoNode" ), "demo.geonode.org" );
-
-  QgsGeoNodeConnection geonodeConnection( "Demo GeoNode" );
+  QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
 
   QVariantList layers = geonodeConnection.getLayers();
 
@@ -100,18 +115,18 @@ void TestQgsGeoNodeConnection::testGetLayers()
   QVariantMap layer1 = layers[0].toMap();  // Need to convert to map
   QList<QString> keys = layer1.keys();
   QVERIFY( keys.indexOf( "title" ) != -1 ); // Check if title is in the keys
+  QVERIFY( keys.indexOf( "name" ) != -1 ); // Check if title is in the keys
+  QVERIFY( !layer1["name"].toString().contains( "geonode%3A" ) ); // Check if there is not geonode prefix
 }
 
-// Test retrieveng layers
+// Test retrieving maps
 void TestQgsGeoNodeConnection::testGetMaps()
 {
-  // Add Demo GeoNode Connection
-  QgsSettings settings;
-
-  // Testing real server, demo.geonode.org. Need to be changed later.
-  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection + QStringLiteral( "/%1/url" ).arg( "Demo GeoNode" ), "demo.geonode.org" );
-
-  QgsGeoNodeConnection geonodeConnection( "Demo GeoNode" );
+  if ( mSkipRemoteTest )
+  {
+    QSKIP( "Skip remote test for faster testing" );
+  }
+  QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
 
   QVariantList layers = geonodeConnection.getMaps();
 
@@ -120,6 +135,21 @@ void TestQgsGeoNodeConnection::testGetMaps()
   QVariantMap layer1 = layers[0].toMap();  // Need to convert to map
   QList<QString> keys = layer1.keys();
   QVERIFY( keys.indexOf( "title" ) != -1 ); // Check if title is in the keys
+}
+
+// Test retrieving WMS Url
+void TestQgsGeoNodeConnection::testGetWMSUrl()
+{
+  if ( mSkipRemoteTest )
+  {
+    QSKIP( "Skip remote test for faster testing" );
+  }
+  QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
+
+  QString layerID = "1c863918-f9e8-11e6-ab35-0e23392a5c01";
+  QString WMSUrl = geonodeConnection.wmsUrl( layerID );
+  std::cout << WMSUrl.toStdString();
+  QVERIFY( WMSUrl == "http://demo.geonode.org/geoserver/geonode/wms" );
 }
 
 QGSTEST_MAIN( TestQgsGeoNodeConnection )
