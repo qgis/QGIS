@@ -52,14 +52,14 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Returns the CRS currently selected in the widget.
      * \since QGIS 3.0
-     * @see setCrs()
+     * \see setCrs()
      */
     QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets whether a "no/invalid" projection option should be shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
-     * @see showNoProjection()
+     * \see showNoProjection()
      * \since QGIS 3.0
      */
     void setShowNoProjection( bool show );
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * Returns whether the "no/invalid" projection option is shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
      * \since QGIS 3.0
-     * @see setShowNoProjection()
+     * \see setShowNoProjection()
      */
     bool showNoProjection() const;
 
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Sets the initial \a crs to show within the dialog.
      * \since QGIS 3.0
-     * @see crs()
+     * \see crs()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
@@ -154,14 +154,14 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      */
     void loadCrsList( QSet<QString> *crsFilter = nullptr );
 
-    /*!
+    /**
      * \brief Make the string safe for use in SQL statements.
      *  This involves escaping single quotes, double quotes, backslashes,
      *  and optionally, percentage symbols.  Percentage symbols are used
      *  as wildcards sometimes and so when using the string as part of the
      *  LIKE phrase of a select statement, should be escaped.
      * \arg const QString in The input string to make safe.
-     * \return The string made safe for SQL statements.
+     * \returns The string made safe for SQL statements.
      */
     const QString sqlSafeString( const QString &theSQL );
 

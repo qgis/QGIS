@@ -89,7 +89,7 @@ class CORE_EXPORT QgsTracer : public QObject
 
     //! Given two points, find the shortest path and return points on the way.
     //! The optional "error" argument may receive error code (PathError enum) if it is not null
-    //! @return array of points - trace of linestrings of other features (empty array one error)
+    //! \returns array of points - trace of linestrings of other features (empty array one error)
     QVector<QgsPoint> findShortestPath( const QgsPoint &p1, const QgsPoint &p2, PathError *error = nullptr );
 
     //! Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)

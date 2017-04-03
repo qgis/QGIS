@@ -122,7 +122,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         void addLayerRecord( const MapThemeLayerRecord &record );
 
         //! Return set with only records for valid layers
-        //! @note not available in Python bindings
+        //! \note not available in Python bindings
         QHash<QgsMapLayer *, MapThemeLayerRecord> validLayerRecords() const;
 
       private:
@@ -145,15 +145,15 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     /**
      * Inserts a new map theme to the collection.
-     * @see update()
+     * \see update()
      */
     void insert( const QString &name, const MapThemeRecord &state );
 
     /**
      * Updates a map theme within the collection.
-     * @param name name of map theme to update
-     * @param state map theme record to replace existing map theme
-     * @see insert()
+     * \param name name of map theme to update
+     * \param state map theme record to replace existing map theme
+     * \see insert()
      */
     void update( const QString &name, const MapThemeRecord &state );
 
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     /**
      * Returns the list of layer IDs that are visible for the specified map theme.
      *
-     * @note The order of the returned list is not guaranteed to reflect the order of layers
+     * \note The order of the returned list is not guaranteed to reflect the order of layers
      * in the canvas.
      * \since QGIS 3.0
      */
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     /**
      * Returns the list of layers that are visible for the specified map theme.
      *
-     * @note The order of the returned list is not guaranteed to reflect the order of layers
+     * \note The order of the returned list is not guaranteed to reflect the order of layers
      * in the canvas.
      * \since QGIS 3.0
      */
@@ -204,14 +204,14 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     /**
      * Reads the map theme collection state from XML
-     * @param doc DOM document
-     * @see writeXml
+     * \param doc DOM document
+     * \see writeXml
      */
     void readXml( const QDomDocument &doc );
 
     /** Writes the map theme collection state to XML.
-     * @param doc DOM document
-     * @see readXml
+     * \param doc DOM document
+     * \see readXml
      */
     void writeXml( QDomDocument &doc );
 
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * Returns the master layer order (this will always match the project's QgsProject::layerOrder() ).
      * All map themes will maintain the same layer order as the master layer order.
      * \since QGIS 3.0
-     * @see masterVisibleLayers()
+     * \see masterVisibleLayers()
      */
     QList< QgsMapLayer * > masterLayerOrder() const;
 
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * of masterLayerOrder(), but the returned layers are filtered to only include those visible
      * in the project's layer tree.
      * \since QGIS 3.0
-     * @see masterLayerOrder()
+     * \see masterLayerOrder()
      */
     QList< QgsMapLayer * > masterVisibleLayers() const;
 

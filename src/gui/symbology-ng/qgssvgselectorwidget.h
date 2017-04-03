@@ -51,7 +51,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
   public:
 
     /** Constructor for QgsSvgSelectorLoader
-     * @param parent parent object
+     * \param parent parent object
      */
     QgsSvgSelectorLoader( QObject *parent = nullptr );
 
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 
     /** Starts the loader finding and generating previews for SVG images. foundSvgs() will be
      * emitted as the loader encounters SVG images.
-     * @brief run
+     * \brief run
      */
     virtual void run() override;
 
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 
     /** Emitted when the loader has found a block of SVG images. This signal is emitted with blocks
      * of SVG images to prevent spamming any connected model.
-     * @param svgs list of SVGs and preview images found.
+     * \param svgs list of SVGs and preview images found.
      */
     void foundSvgs( QStringList svgs );
 
@@ -111,14 +111,14 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
   public:
 
     /** Constructor for QgsSvgGroupLoader
-     * @param parent parent object
+     * \param parent parent object
      */
     QgsSvgGroupLoader( QObject *parent = nullptr );
 
     ~QgsSvgGroupLoader();
 
     /** Starts the loader finding folders for SVG images.
-     * @brief run
+     * \brief run
      */
     virtual void run() override;
 
@@ -139,7 +139,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 
     /** Emitted when the loader has found a block of SVG images. This signal is emitted with blocks
      * of SVG images to prevent spamming any connected model.
-     * @param svgs list of SVGs and preview images found.
+     * \param svgs list of SVGs and preview images found.
      */
     void foundPath( const QString &parentPath, const QString &path );
 
@@ -170,13 +170,13 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 
     /** Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
      * search paths will be shown.
-     * @param parent parent object
+     * \param parent parent object
      */
     QgsSvgSelectorListModel( QObject *parent );
 
     /** Constructor for creating a model for SVG files in a specific path.
-     * @param parent parent object
-     * @param path initial path, which is recursively searched
+     * \param parent parent object
+     * \param path initial path, which is recursively searched
      */
     QgsSvgSelectorListModel( QObject *parent, const QString &path );
 
@@ -193,7 +193,7 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
   private slots:
 
     /** Called to add SVG files to the model.
-     * @param svgs list of SVG files to add to model.
+     * \param svgs list of SVG files to add to model.
      */
     void addSvgs( const QStringList &svgs );
 

@@ -68,14 +68,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Hides the button box (Ok/Cancel) and enables auto-commit
-     * @note set Embed in QgsAttributeEditorContext in constructor instead
+     * \note set Embed in QgsAttributeEditorContext in constructor instead
      */
     // TODO QGIS 3.0 - make private
     void hideButtonBox();
 
     /**
      * Shows the button box (Ok/Cancel) and disables auto-commit
-     * @note set Embed in QgsAttributeEditorContext in constructor instead
+     * \note set Embed in QgsAttributeEditorContext in constructor instead
      */
     // TODO QGIS 3.0 - make private
     void showButtonBox();
@@ -89,63 +89,63 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Takes ownership
-     * @param iface
+     * \param iface
      */
     void addInterface( QgsAttributeFormInterface *iface );
 
     /**
      * Returns the layer for which this form is shown
      *
-     * @return  Layer
+     * \returns  Layer
      */
     QgsVectorLayer *layer() { return mLayer; }
 
     /**
      * Returns if the form is currently in editable mode.
      *
-     * @return Editable mode of this form
+     * \returns Editable mode of this form
      */
     bool editable();
 
     /** Returns the current mode of the form.
      * \since QGIS 2.16
-     * @see setMode()
+     * \see setMode()
      */
     Mode mode() const { return mMode; }
 
     /** Sets the current mode of the form.
-     * @param mode form mode
+     * \param mode form mode
      * \since QGIS 2.16
-     * @see mode()
+     * \see mode()
      */
     void setMode( Mode mode );
 
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted
      *
-     * @param message The message
+     * \param message The message
      */
     void setEditCommandMessage( const QString &message ) { mEditCommandMessage = message; }
 
     /**
      * Intercepts keypress on custom form (escape should not close it)
      *
-     * @param object   The object for which the event has been sent
-     * @param event    The event which is being filtered
+     * \param object   The object for which the event has been sent
+     * \param event    The event which is being filtered
      *
-     * @return         true if the event has been handled (key was ESC)
+     * \returns         true if the event has been handled (key was ESC)
      */
     bool eventFilter( QObject *object, QEvent *event ) override;
 
     /** Sets all feature IDs which are to be edited if the form is in multiedit mode
-     * @param fids feature ID list
+     * \param fids feature ID list
      * \since QGIS 2.16
      */
     void setMultiEditFeatureIds( const QgsFeatureIds &fids );
 
     /** Sets the message bar to display feedback from the form in. This is used in the search/filter
      * mode to display the count of selected features.
-     * @param messageBar target message bar
+     * \param messageBar target message bar
      * \since QGIS 2.16
      */
     void setMessageBar( QgsMessageBar *messageBar );
@@ -155,8 +155,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     /**
      * Notifies about changes of attributes
      *
-     * @param attribute The name of the attribute that changed.
-     * @param value     The new value of the attribute.
+     * \param attribute The name of the attribute that changed.
+     * \param value     The new value of the attribute.
      */
     void attributeChanged( const QString &attribute, const QVariant &value );
 
@@ -165,8 +165,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * You can set the parameter ok to false to notify the form that you don't want it to be saved.
      * If you want the form to be saved, leave the parameter untouched.
      *
-     * @param ok  Set this parameter to false if you don't want the form to be saved
-     * @note not available  in Python bindings
+     * \param ok  Set this parameter to false if you don't want the form to be saved
+     * \note not available  in Python bindings
      */
     void beforeSave( bool &ok );
 
@@ -176,14 +176,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void featureSaved( const QgsFeature &feature );
 
     /** Is emitted when a filter expression is set using the form.
-     * @param expression filter expression
-     * @param type filter type
+     * \param expression filter expression
+     * \param type filter type
      * \since QGIS 2.16
      */
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 
     /** Emitted when the form changes mode.
-     * @param mode new mode
+     * \param mode new mode
      */
     void modeChanged( QgsAttributeForm::Mode mode );
 
@@ -203,22 +203,22 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     /**
      * Call this to change the content of a given attribute. Will update the editor(s) related to this field.
      *
-     * @param field The field to change
-     * @param value The new value
+     * \param field The field to change
+     * \param value The new value
      */
     void changeAttribute( const QString &field, const QVariant &value );
 
     /**
      * Update all editors to correspond to a different feature.
      *
-     * @param feature The feature which will be represented by the form
+     * \param feature The feature which will be represented by the form
      */
     void setFeature( const QgsFeature &feature );
 
     /**
      * Save all the values from the editors to the layer.
      *
-     * @return True if successful
+     * \returns True if successful
      */
     bool save();
 

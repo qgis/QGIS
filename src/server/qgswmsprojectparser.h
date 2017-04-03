@@ -39,7 +39,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     virtual ~QgsWmsProjectParser();
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
-        @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
+        \param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
     void layersAndStylesCapabilities( QDomElement &parentElement, QDomDocument &doc, const QString &version, const QString &serviceUrl, bool fullProjectSettings = false ) const override;
 
     QList<QgsMapLayer *> mapLayerFromStyle( const QString &lName, const QString &styleName, bool useCache = true ) const override;

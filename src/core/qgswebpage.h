@@ -33,7 +33,7 @@
 
 
 /** \ingroup core
- * @brief The QWebSettings class is a collection of stubs to mimic the API of a QWebSettings on systems
+ * \brief The QWebSettings class is a collection of stubs to mimic the API of a QWebSettings on systems
  * where QtWebkit is not available.
  */
 class CORE_EXPORT QWebSettings : public QObject
@@ -94,7 +94,7 @@ class CORE_EXPORT QWebSettings : public QObject
 
 /**
  * \ingroup core
- * @brief The QWebPage class is a collection of stubs to mimic the API of a QWebPage on systems
+ * \brief The QWebPage class is a collection of stubs to mimic the API of a QWebPage on systems
  * where QtWebkit is not available.
  */
 class CORE_EXPORT QWebPage : public QObject
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
   public:
 
     /** Constructor for QgsWebPage.
-     * @param parent parent object
+     * \param parent parent object
      */
     explicit QgsWebPage( QObject *parent = 0 )
       : QWebPage( parent )
@@ -221,14 +221,14 @@ class CORE_EXPORT QgsWebPage : public QWebPage
     /** Sets an identifier for the QgsWebPage. The page's identifier is included in messages written to the
      * log, and should be set to a user-friendly string so that users can identify which QgsWebPage has
      * logged the message.
-     * @param identifier identifier string
-     * @see identifier()
+     * \param identifier identifier string
+     * \see identifier()
      */
     void setIdentifier( const QString &identifier ) { mIdentifier = identifier; }
 
     /** Returns the QgsWebPage's identifier. The page's identifier is included in messages written to the
      * log so that users can identify which QgsWebPage has logged the message.
-     * @see setIdentifier()
+     * \see setIdentifier()
      */
     QString identifier() const { return mIdentifier; }
 

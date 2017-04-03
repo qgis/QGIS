@@ -54,13 +54,11 @@ QgsDistanceArea::QgsDistanceArea()
 }
 
 
-//! Copy constructor
 QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea &origDA )
 {
   _copy( origDA );
 }
 
-//! Assignment operator
 QgsDistanceArea &QgsDistanceArea::operator=( const QgsDistanceArea &origDA )
 {
   if ( this == & origDA )
@@ -243,7 +241,6 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
   return true;
 }
 
-//! Sets ellipsoid by supplied radii
 // Inverse flattening is calculated with invf = a/(a-b)
 // Also, b = a-(a/invf)
 bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )

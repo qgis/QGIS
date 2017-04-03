@@ -25,7 +25,7 @@ class QgsMapLayer;
 class QgsVectorLayer;
 
 /** \ingroup gui
- * @brief The QgsMapLayerComboBox class is a combo box which displays the list of layers
+ * \brief The QgsMapLayerComboBox class is a combo box which displays the list of layers
  * \since QGIS 2.3
  */
 class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
@@ -40,7 +40,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
   public:
 
     /**
-     * @brief QgsMapLayerComboBox creates a combo box to dislpay the list of layers (currently in the registry).
+     * \brief QgsMapLayerComboBox creates a combo box to dislpay the list of layers (currently in the registry).
      * The layers can be filtered and/or ordered.
      */
     explicit QgsMapLayerComboBox( QWidget *parent = nullptr );
@@ -60,41 +60,41 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     /**
      * Sets a list of data providers which should be excluded from the combobox.
      * \since QGIS 3.0
-     * @see excludedProviders()
+     * \see excludedProviders()
      */
     void setExcludedProviders( const QStringList &providers );
 
     /**
      * Returns the list of data providers which are excluded from the combobox.
-     * @see setExcludedProviders()
+     * \see setExcludedProviders()
      * \since QGIS 3.0
      */
     QStringList excludedProviders() const;
 
     /**
      * Sets whether an optional empty layer ("not set") option is shown in the combo box.
-     * @see allowEmptyLayer()
+     * \see allowEmptyLayer()
      * \since QGIS 3.0
      */
     void setAllowEmptyLayer( bool allowEmpty );
 
     /**
      * Returns true if the combo box allows the empty layer ("not set") choice.
-     * @see setAllowEmptyLayer()
+     * \see setAllowEmptyLayer()
      * \since QGIS 3.0
      */
     bool allowEmptyLayer() const;
 
     /**
      * Sets whether the CRS of layers is also included in the combo box text.
-     * @see showCrs()
+     * \see showCrs()
      * \since QGIS 3.0
      */
     void setShowCrs( bool showCrs );
 
     /**
      * Returns true if the combo box shows the layer's CRS.
-     * @see setShowCrs()
+     * \see setShowCrs()
      * \since QGIS 3.0
      */
     bool showCrs() const;
@@ -103,27 +103,27 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * Sets a list of additional (non map layer) items to include at the end of the combobox.
      * These may represent additional layers such as layers which are not included in the map
      * layer registry, or paths to layers which have not yet been loaded into QGIS.
-     * @see additionalItems()
+     * \see additionalItems()
      * \since QGIS 3.0
      */
     void setAdditionalItems( const QStringList &items );
 
     /**
      * Return the list of additional (non map layer) items included at the end of the combo box.
-     * @see setAdditionalItems()
+     * \see setAdditionalItems()
      * \since QGIS 3.0
      */
     QStringList additionalItems() const;
 
     /** Returns the current layer selected in the combo box.
-     * @see layer
+     * \see layer
      */
     QgsMapLayer *currentLayer() const;
 
     /** Return the layer currently shown at the specified index within the combo box.
-     * @param layerIndex position of layer to return
+     * \param layerIndex position of layer to return
      * \since QGIS 2.10
-     * @see currentLayer
+     * \see currentLayer
      */
     QgsMapLayer *layer( int layerIndex ) const;
 

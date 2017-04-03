@@ -71,14 +71,14 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
 
     /**
      * Returns list of selected options
-     * @see setOptions()
+     * \see setOptions()
      */
     QStringList options() const;
 
     /**
      * Populate widget with user-defined options. String should contain
      * key=value pairs separated by spaces, e.g. "TILED=YES TFW=YES"
-     * @see options()
+     * \see options()
      * \since QGIS 3.0
      */
     void setOptions( const QString &options );

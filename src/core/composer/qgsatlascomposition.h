@@ -37,7 +37,7 @@ class QgsExpressionContext;
  * Class used to render an Atlas, iterating over geometry features.
  * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
  * This class is used for printing, exporting to PDF and images.
- * @note This class should not be created directly. For the atlas to function correctly
+ * \note This class should not be created directly. For the atlas to function correctly
  * the atlasComposition() property for QgsComposition should be used to retrieve a
  * QgsAtlasComposition which is automatically created and attached to the composition.
  */
@@ -48,103 +48,103 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QgsAtlasComposition( QgsComposition *composition );
 
     /** Returns whether the atlas generation is enabled
-     * @returns true if atlas is enabled
-     * @see setEnabled
+     * \returns true if atlas is enabled
+     * \see setEnabled
      */
     bool enabled() const { return mEnabled; }
 
     /** Sets whether the atlas is enabled
-     * @param enabled set to true to enable to atlas
-     * @see enabled
+     * \param enabled set to true to enable to atlas
+     * \see enabled
      */
     void setEnabled( bool enabled );
 
     /** Returns true if the atlas is set to hide the coverage layer
-     * @returns true if coverage layer is hidden
-     * @see setHideCoverage
+     * \returns true if coverage layer is hidden
+     * \see setHideCoverage
      */
     bool hideCoverage() const { return mHideCoverage; }
 
     /** Sets whether the coverage layer should be hidden in map items in the composition
-     * @param hide set to true to hide the coverage layer
-     * @see hideCoverage
+     * \param hide set to true to hide the coverage layer
+     * \see hideCoverage
      */
     void setHideCoverage( bool hide );
 
     /** Returns the filename expression used for generating output filenames for each
      * atlas page.
-     * @returns filename pattern
-     * @see setFilenamePattern
-     * @see filenamePatternErrorString
-     * @note This property has no effect when exporting to PDF if singleFile() is true
+     * \returns filename pattern
+     * \see setFilenamePattern
+     * \see filenamePatternErrorString
+     * \note This property has no effect when exporting to PDF if singleFile() is true
      */
     QString filenamePattern() const { return mFilenamePattern; }
 
     /** Sets the filename expression used for generating output filenames for each
      * atlas page.
-     * @returns true if filename expression could be successful set, false if expression is invalid
-     * @param pattern expression to use for output filenames
-     * @see filenamePattern
-     * @see filenamePatternErrorString
-     * @note This method has no effect when exporting to PDF if singleFile() is true
+     * \returns true if filename expression could be successful set, false if expression is invalid
+     * \param pattern expression to use for output filenames
+     * \see filenamePattern
+     * \see filenamePatternErrorString
+     * \note This method has no effect when exporting to PDF if singleFile() is true
      */
     bool setFilenamePattern( const QString &pattern );
 
     /** Returns an error string from parsing the filename expression.
-     * @returns filename pattern parser error
-     * @see setFilenamePattern
-     * @see filenamePattern
+     * \returns filename pattern parser error
+     * \see setFilenamePattern
+     * \see filenamePattern
      */
     QString filenamePatternErrorString() const { return mFilenameParserError; }
 
     /** Returns the coverage layer used for the atlas features
-     * @returns atlas coverage layer
-     * @see setCoverageLayer
+     * \returns atlas coverage layer
+     * \see setCoverageLayer
      */
     QgsVectorLayer *coverageLayer() const { return mCoverageLayer; }
 
     /** Sets the coverage layer to use for the atlas features
-     * @param layer vector coverage layer
-     * @see coverageLayer
+     * \param layer vector coverage layer
+     * \see coverageLayer
      */
     void setCoverageLayer( QgsVectorLayer *layer );
 
     /** Returns the expression used for calculating the page name.
-     * @returns expression string, or field name from coverage layer
-     * @see setPageNameExpression
-     * @see nameForPage
+     * \returns expression string, or field name from coverage layer
+     * \see setPageNameExpression
+     * \see nameForPage
      * \since QGIS 2.12
      */
     QString pageNameExpression() const { return mPageNameExpression; }
 
     /** Sets the expression used for calculating the page name.
-     * @param pageNameExpression expression string, or field name from coverage layer
-     * @see pageNameExpression
+     * \param pageNameExpression expression string, or field name from coverage layer
+     * \see pageNameExpression
      * \since QGIS 2.12
      */
     void setPageNameExpression( const QString &pageNameExpression ) { mPageNameExpression = pageNameExpression; }
 
     /** Returns the calculated name for a specified atlas page number.
-     * @param pageNumber number of page, where 0 = first page
-     * @returns page name
-     * @see pageNameExpression
+     * \param pageNumber number of page, where 0 = first page
+     * \returns page name
+     * \see pageNameExpression
      * \since QGIS 2.12
      */
     QString nameForPage( int pageNumber ) const;
 
     /** Returns whether the atlas will be exported to a single file. This is only
      * applicable for PDF exports.
-     * @returns true if atlas will be exported to a single file
-     * @see setSingleFile
-     * @note This property is only used for PDF exports.
+     * \returns true if atlas will be exported to a single file
+     * \see setSingleFile
+     * \note This property is only used for PDF exports.
      */
     bool singleFile() const { return mSingleFile; }
 
     /** Sets whether the atlas should be exported to a single file. This is only
      * applicable for PDF exports.
-     * @param single set to true to export atlas to a single file.
-     * @see singleFile
-     * @note This method is only used for PDF exports.
+     * \param single set to true to export atlas to a single file.
+     * \see singleFile
+     * \note This method is only used for PDF exports.
      */
     void setSingleFile( bool single ) { mSingleFile = single; }
 
@@ -161,9 +161,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void setFeatureFilter( const QString &expression ) { mFeatureFilter = expression; }
 
     /** Returns an error string from parsing the feature filter expression.
-     * @returns filename pattern parser error
-     * @see setFilenamePattern
-     * @see filenamePattern
+     * \returns filename pattern parser error
+     * \see setFilenamePattern
+     * \see filenamePattern
      */
     QString featureFilterErrorString() const { return mFilterParserError; }
 
@@ -172,17 +172,17 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Returns the current list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
-     * @returns a vector of doubles representing predefined scales
-     * @see setPredefinedScales
-     * @see QgsComposerMap::atlasScalingMode
+     * \returns a vector of doubles representing predefined scales
+     * \see setPredefinedScales
+     * \see QgsComposerMap::atlasScalingMode
      */
     QVector<qreal> predefinedScales() const { return mPredefinedScales; }
 
     /** Sets the list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
-     * @param scales a vector of doubles representing predefined scales
-     * @see predefinedScales
-     * @see QgsComposerMap::atlasScalingMode
+     * \param scales a vector of doubles representing predefined scales
+     * \see predefinedScales
+     * \see QgsComposerMap::atlasScalingMode
      */
     void setPredefinedScales( const QVector<qreal> &scales );
 
@@ -196,14 +196,14 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     int numFeatures() const;
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
-     * @param i feature number
-     * @param updateMaps set to true to redraw maps and recalculate their extent
-     * @returns true if feature was successfully prepared
+     * \param i feature number
+     * \param updateMaps set to true to redraw maps and recalculate their extent
+     * \returns true if feature was successfully prepared
      */
     bool prepareForFeature( const int i, const bool updateMaps = true );
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
-     * @returns true if feature was successfully prepared
+     * \returns true if feature was successfully prepared
      */
     bool prepareForFeature( const QgsFeature *feat );
 
@@ -213,10 +213,10 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Reads general atlas settings from xml
-     * @param elem a QDomElement holding the atlas properties.
-     * @param doc QDomDocument for the source xml.
-     * @see readXMLMapSettings
-     * @note This method should be called before restoring composer item properties
+     * \param elem a QDomElement holding the atlas properties.
+     * \param doc QDomDocument for the source xml.
+     * \see readXMLMapSettings
+     * \note This method should be called before restoring composer item properties
      */
     void readXml( const QDomElement &elem, const QDomDocument &doc );
 
@@ -290,12 +290,12 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
   private:
 
     /** Updates the filename expression.
-     * @returns true if expression was successfully parsed, false if expression is invalid
+     * \returns true if expression was successfully parsed, false if expression is invalid
      */
     bool updateFilenameExpression();
 
     /** Evaluates filename for current feature
-     * @returns true if feature filename was successfully evaluated
+     * \returns true if feature filename was successfully evaluated
      */
     bool evalFeatureFilename( const QgsExpressionContext &context );
 

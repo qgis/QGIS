@@ -64,7 +64,7 @@ namespace QgsWms
   QgsWmsConfigParser *getConfigParser( QgsServerInterface *serverIface );
 
   /** Parse image format parameter
-   *  @return OutputFormat
+   *  \returns OutputFormat
    */
   ImageOutputFormat parseImageFormat( const QString &format );
 
@@ -75,8 +75,8 @@ namespace QgsWms
 
   /**
    * Parse bbox parameter
-   * @param bboxstr the bbox string as comma separated values
-   * @return QgsRectangle
+   * \param bboxstr the bbox string as comma separated values
+   * \returns QgsRectangle
    *
    * If the parsing fail then an empty bbox is returned
    */

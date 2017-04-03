@@ -45,21 +45,21 @@ class QgsProcessingRegistry : QObject
  Add a processing provider to the registry. Ownership of the provider is transferred to the registry.
  Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
  in the registry).
- @see removeProvider()
+ \see removeProvider()
 %End
 
     bool removeProvider( QgsProcessingProvider *provider );
 %Docstring
  Removes a provider implementation from the registry (the provider object is deleted).
  Returns false if the provider could not be removed (eg provider does not exist in the registry).
- @see addProvider()
+ \see addProvider()
 %End
 
     bool removeProvider( const QString &providerId );
 %Docstring
  Removes a provider implementation from the registry (the provider object is deleted).
  Returns false if the provider could not be removed (eg provider does not exist in the registry).
- @see addProvider()
+ \see addProvider()
 %End
 
     QgsProcessingProvider *providerById( const QString &id );

@@ -114,22 +114,22 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     QgsMapLayerStyle style( const QString &name ) const;
 
     //! Add a style with given name and data
-    //! @return true on success (name is unique and style is valid)
+    //! \returns true on success (name is unique and style is valid)
     bool addStyle( const QString &name, const QgsMapLayerStyle &style );
     //! Add style by cloning the current one
-    //! @return true on success
+    //! \returns true on success
     bool addStyleFromLayer( const QString &name );
     //! Remove a stored style
-    //! @return true on success (style exists and it is not the last one)
+    //! \returns true on success (style exists and it is not the last one)
     bool removeStyle( const QString &name );
     //! Rename a stored style to a different name
-    //! @return true on success (style exists and new name is unique)
+    //! \returns true on success (style exists and new name is unique)
     bool renameStyle( const QString &name, const QString &newName );
 
     //! Return name of the current style
     QString currentStyle() const;
     //! Set a different style as the current style - will apply it to the layer
-    //! @return true on success
+    //! \returns true on success
     bool setCurrentStyle( const QString &name );
 
     //! Temporarily apply a different style to the layer. The argument

@@ -68,7 +68,7 @@ public:
     /**
      * Create a pty master/slave pair.
      *
-     * @return true if a pty pair was successfully opened
+     * \returns true if a pty pair was successfully opened
      */
     virtual bool open(OpenMode mode = ReadWrite | Unbuffered);
 
@@ -81,9 +81,9 @@ public:
      * Note that you will need to use setSuspended() on both devices to
      * control which one gets the incoming data from the pty.
      *
-     * @param fd an open pty master file descriptor.
-     * @param mode the device mode to open the pty with.
-     * @return true if a pty pair was successfully opened
+     * \param fd an open pty master file descriptor.
+     * \param mode the device mode to open the pty with.
+     * \returns true if a pty pair was successfully opened
      */
     bool open(int fd, OpenMode mode = ReadWrite | Unbuffered);
 
@@ -117,7 +117,7 @@ public:
     bool isSuspended() const;
 
     /**
-     * @return always true
+     * \returns always true
      */
     virtual bool isSequential() const;
 

@@ -53,44 +53,35 @@
 
 #include "characterwidget.h"
 
-//! [0]
 CharacterWidget::CharacterWidget( QWidget *parent )
   : QWidget( parent )
 {
-  squareSize = 24;
-  columns = 16;
-  lastKey = -1;
   setMouseTracking( true );
 }
-//! [0]
 
-//! [1]
-void CharacterWidget::updateFont( const QFont &font )
+void CharacterWidget::setFont( const QFont &font )
 {
-  displayFont.setFamily( font.family() );
-  squareSize = qMax( 24, QFontMetrics( displayFont ).xHeight() * 3 );
+  mDisplayFont.setFamily( font.family() );
+  mSquareSize = qMax( 24, QFontMetrics( mDisplayFont ).xHeight() * 3 );
   adjustSize();
   update();
 }
-//! [1]
 
-//! [2]
-void CharacterWidget::updateSize( double fontSize )
+void CharacterWidget::setFontSize( double fontSize )
 {
-  displayFont.setPointSizeF( fontSize );
-  squareSize = qMax( 24, QFontMetrics( displayFont ).xHeight() * 3 );
+  mDisplayFont.setPointSizeF( fontSize );
+  mSquareSize = qMax( 24, QFontMetrics( mDisplayFont ).xHeight() * 3 );
   adjustSize();
   update();
 }
-//! [2]
 
-void CharacterWidget::updateStyle( const QString &fontStyle )
+void CharacterWidget::setFontStyle( const QString &fontStyle )
 {
   QFontDatabase fontDatabase;
-  const QFont::StyleStrategy oldStrategy = displayFont.styleStrategy();
-  displayFont = fontDatabase.font( displayFont.family(), fontStyle, displayFont.pointSize() );
-  displayFont.setStyleStrategy( oldStrategy );
-  squareSize = qMax( 24, QFontMetrics( displayFont ).xHeight() * 3 );
+  const QFont::StyleStrategy oldStrategy = mDisplayFont.styleStrategy();
+  mDisplayFont = fontDatabase.font( mDisplayFont.family(), fontStyle, mDisplayFont.pointSize() );
+  mDisplayFont.setStyleStrategy( oldStrategy );
+  mSquareSize = qMax( 24, QFontMetrics( mDisplayFont ).xHeight() * 3 );
   adjustSize();
   update();
 }
@@ -98,94 +89,80 @@ void CharacterWidget::updateStyle( const QString &fontStyle )
 void CharacterWidget::updateFontMerging( bool enable )
 {
   if ( enable )
-    displayFont.setStyleStrategy( QFont::PreferDefault );
+    mDisplayFont.setStyleStrategy( QFont::PreferDefault );
   else
-    displayFont.setStyleStrategy( QFont::NoFontMerging );
+    mDisplayFont.setStyleStrategy( QFont::NoFontMerging );
   adjustSize();
   update();
 }
 
-void CharacterWidget::updateColumns( int cols )
+void CharacterWidget::setColumns( int columns )
 {
-  if ( columns == cols || cols < 1 )
+  if ( mColumns == columns || columns < 1 )
     return;
-  columns = cols;
+  mColumns = columns;
   adjustSize();
   update();
 }
 
 void CharacterWidget::setCharacter( QChar character )
 {
-  lastKey = character.unicode();
+  mLastKey = character.unicode();
   update();
 }
 
-//! [3]
 QSize CharacterWidget::sizeHint() const
 {
-  return QSize( columns * squareSize, ( 65536 / columns ) * squareSize );
+  return QSize( mColumns * mSquareSize, ( 65536 / mColumns ) * mSquareSize );
 }
-//! [3]
 
-//! [4]
 void CharacterWidget::mouseMoveEvent( QMouseEvent *event )
 {
   QPoint widgetPosition = mapFromGlobal( event->globalPos() );
-  uint key = ( widgetPosition.y() / squareSize ) * columns + widgetPosition.x() / squareSize;
+  uint key = ( widgetPosition.y() / mSquareSize ) * mColumns + widgetPosition.x() / mSquareSize;
 
   QString text = tr( "<p>Character: <span style=\"font-size: 24pt; font-family: %1\">%2</span><p>Value: 0x%3" )
-                 .arg( displayFont.family() )
+                 .arg( mDisplayFont.family() )
                  .arg( QChar( key ) )
                  .arg( key, 16 );
   QToolTip::showText( event->globalPos(), text, this );
 }
-//! [4]
 
-//! [5]
 void CharacterWidget::mousePressEvent( QMouseEvent *event )
 {
   if ( event->button() == Qt::LeftButton )
   {
-    lastKey = ( event->y() / squareSize ) * columns + event->x() / squareSize;
-    if ( QChar( lastKey ).category() != QChar::Other_NotAssigned )
-      emit characterSelected( QChar( lastKey ) );
+    mLastKey = ( event->y() / mSquareSize ) * mColumns + event->x() / mSquareSize;
+    if ( QChar( mLastKey ).category() != QChar::Other_NotAssigned )
+      emit characterSelected( QChar( mLastKey ) );
     update();
   }
   else
     QWidget::mousePressEvent( event );
 }
-//! [5]
 
-//! [6]
 void CharacterWidget::paintEvent( QPaintEvent *event )
 {
   QPainter painter( this );
   painter.fillRect( event->rect(), QBrush( Qt::white ) );
-  painter.setFont( displayFont );
-//! [6]
+  painter.setFont( mDisplayFont );
 
-//! [7]
   QRect redrawRect = event->rect();
-  int beginRow = redrawRect.top() / squareSize;
-  int endRow = redrawRect.bottom() / squareSize;
-  int beginColumn = redrawRect.left() / squareSize;
-  int endColumn = redrawRect.right() / squareSize;
-//! [7]
+  int beginRow = redrawRect.top() / mSquareSize;
+  int endRow = redrawRect.bottom() / mSquareSize;
+  int beginColumn = redrawRect.left() / mSquareSize;
+  int endColumn = redrawRect.right() / mSquareSize;
 
-//! [8]
   painter.setPen( QPen( Qt::gray ) );
   for ( int row = beginRow; row <= endRow; ++row )
   {
     for ( int column = beginColumn; column <= endColumn; ++column )
     {
-      painter.drawRect( column * squareSize, row * squareSize, squareSize, squareSize );
+      painter.drawRect( column * mSquareSize, row * mSquareSize, mSquareSize, mSquareSize );
     }
-//! [8] //! [9]
   }
-//! [9]
 
-//! [10]
-  QFontMetrics fontMetrics( displayFont );
+  QFontMetrics fontMetrics( mDisplayFont );
   painter.setPen( QPen( Qt::black ) );
   for ( int row = beginRow; row <= endRow; ++row )
   {
@@ -193,16 +170,15 @@ void CharacterWidget::paintEvent( QPaintEvent *event )
     for ( int column = beginColumn; column <= endColumn; ++column )
     {
 
-      int key = row * columns + column;
-      painter.setClipRect( column * squareSize, row * squareSize, squareSize, squareSize );
+      int key = row * mColumns + column;
+      painter.setClipRect( column * mSquareSize, row * mSquareSize, mSquareSize, mSquareSize );
 
-      if ( key == lastKey )
-        painter.fillRect( column * squareSize + 1, row * squareSize + 1, squareSize, squareSize, QBrush( Qt::red ) );
+      if ( key == mLastKey )
+        painter.fillRect( column * mSquareSize + 1, row * mSquareSize + 1, mSquareSize, mSquareSize, QBrush( Qt::red ) );
 
-      painter.drawText( column * squareSize + ( squareSize / 2 ) - fontMetrics.width( QChar( key ) ) / 2,
-                        row * squareSize + 4 + fontMetrics.ascent(),
+      painter.drawText( column * mSquareSize + ( mSquareSize / 2 ) - fontMetrics.width( QChar( key ) ) / 2,
+                        row * mSquareSize + 4 + fontMetrics.ascent(),
                         QString( QChar( key ) ) );
     }
   }
 }
-//! [10]

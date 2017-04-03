@@ -32,16 +32,16 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, Ui::Qgs25DRend
   public:
 
     /** Static creation method
-     * @param layer the layer where this renderer is applied
-     * @param style
-     * @param renderer the mask renderer (will not take ownership)
+     * \param layer the layer where this renderer is applied
+     * \param style
+     * \param renderer the mask renderer (will not take ownership)
      */
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
     /** Constructor
-     * @param layer the layer where this renderer is applied
-     * @param style
-     * @param renderer the mask renderer (will not take ownership)
+     * \param layer the layer where this renderer is applied
+     * \param style
+     * \param renderer the mask renderer (will not take ownership)
      */
     Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 

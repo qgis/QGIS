@@ -47,10 +47,10 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     /**
      * Make a graph using QgsGraphBuilder
      *
-     * @param builder the graph builder
-     * @param additionalPoints list of points that should be snapped to the graph
-     * @param snappedPoints list of snapped points
-     * @note if snappedPoints[i] == QgsPoint(0.0,0.0) then snapping failed.
+     * \param builder the graph builder
+     * \param additionalPoints list of points that should be snapped to the graph
+     * \param snappedPoints list of snapped points
+     * \note if snappedPoints[i] == QgsPoint(0.0,0.0) then snapping failed.
      */
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPoint > &additionalPoints,

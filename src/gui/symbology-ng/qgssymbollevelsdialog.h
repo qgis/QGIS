@@ -31,7 +31,7 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog, private Ui::QgsSymbolLe
 {
     Q_OBJECT
   public:
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, bool usingSymbolLevels, QWidget *parent = nullptr );
 
     ~QgsSymbolLevelsDialog();
@@ -47,9 +47,9 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog, private Ui::QgsSymbolLe
     void renderingPassChanged( int row, int column );
 
   protected:
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void populateTable();
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void setDefaultLevels();
 
   protected:

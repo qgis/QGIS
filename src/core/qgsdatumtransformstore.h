@@ -25,7 +25,7 @@ class QDomElement;
 
 
 /** \ingroup core
- * @brief The QgsDatumTransformStore class keeps track of datum transformations
+ * \brief The QgsDatumTransformStore class keeps track of datum transformations
  * as chosen by the user.
  *
  * \since QGIS 2.4
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsDatumTransformStore
 
     /** Will return transform from layer's CRS to current destination CRS.
      *  Will emit datumTransformInfoRequested signal if the layer has no entry.
-     *  @returns transformation associated with layer, or an invalid QgsCoordinateTransform
+     *  \returns transformation associated with layer, or an invalid QgsCoordinateTransform
      *  if no transform is associated with the layer
      */
     QgsCoordinateTransform transformation( const QgsMapLayer *layer ) const;

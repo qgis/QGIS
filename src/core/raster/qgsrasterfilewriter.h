@@ -58,8 +58,8 @@ class CORE_EXPORT QgsRasterFileWriter
     /** Create a raster file with one band without initializing the pixel data.
      * Returned provider may be used to initialize the raster using writeBlock() calls.
      * Ownership of the returned provider is passed to the caller.
-     * @note Does not work with tiled mode enabled.
-     * @returns Instance of data provider in editing mode (on success) or null on error.
+     * \note Does not work with tiled mode enabled.
+     * \returns Instance of data provider in editing mode (on success) or null on error.
      * \since QGIS 3.0
      */
     QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
@@ -68,12 +68,12 @@ class CORE_EXPORT QgsRasterFileWriter
         const QgsCoordinateReferenceSystem &crs );
 
     /** Write raster file
-        @param pipe raster pipe
-        @param nCols number of output columns
-        @param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
-        @param outputExtent extent to output
-        @param crs crs to reproject to
-        @param p dialog to show progress in */
+        \param pipe raster pipe
+        \param nCols number of output columns
+        \param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
+        \param outputExtent extent to output
+        \param crs crs to reproject to
+        \param p dialog to show progress in */
     WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
                              const QgsCoordinateReferenceSystem &crs, QProgressDialog *p = nullptr );
 
@@ -131,13 +131,13 @@ class CORE_EXPORT QgsRasterFileWriter
                                   const QgsCoordinateReferenceSystem &crs, QProgressDialog *progressDialog = nullptr );
 
     /** \brief Initialize vrt member variables
-     *  @param xSize width of vrt
-     *  @param ySize height of vrt
-     *  @param crs coordinate system of vrt
-     *  @param geoTransform optional array of transformation matrix values
-     *  @param type datatype of vrt
-     *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
-     *  @param destNoDataValueList no data value, indexed from 0
+     *  \param xSize width of vrt
+     *  \param ySize height of vrt
+     *  \param crs coordinate system of vrt
+     *  \param geoTransform optional array of transformation matrix values
+     *  \param type datatype of vrt
+     *  \param destHasNoDataValueList true if destination has no data value, indexed from 0
+     *  \param destNoDataValueList no data value, indexed from 0
      */
     void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem &crs, double *geoTransform, Qgis::DataType type, const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList );
     //write vrt document to disk
@@ -153,14 +153,14 @@ class CORE_EXPORT QgsRasterFileWriter
         const QgsCoordinateReferenceSystem &crs );
 
     /** \brief Init VRT (for tiled mode) or create global output provider (single-file mode)
-     *  @param nCols number of tile columns
-     *  @param nRows number of tile rows
-     *  @param crs coordinate system of vrt
-     *  @param geoTransform optional array of transformation matrix values
-     *  @param nBands number of bands
-     *  @param type datatype of vrt
-     *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
-     *  @param destNoDataValueList no data value, indexed from 0
+     *  \param nCols number of tile columns
+     *  \param nRows number of tile rows
+     *  \param crs coordinate system of vrt
+     *  \param geoTransform optional array of transformation matrix values
+     *  \param nBands number of bands
+     *  \param type datatype of vrt
+     *  \param destHasNoDataValueList true if destination has no data value, indexed from 0
+     *  \param destNoDataValueList no data value, indexed from 0
      */
     QgsRasterDataProvider *initOutput( int nCols, int nRows,
                                        const QgsCoordinateReferenceSystem &crs, double *geoTransform, int nBands,

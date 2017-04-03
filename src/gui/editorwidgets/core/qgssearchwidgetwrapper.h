@@ -64,18 +64,18 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
     /** Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
      * \since QGIS 2.16
-     * @see nonExclusiveFilterFlags()
+     * \see nonExclusiveFilterFlags()
      */
     static QList< FilterFlag > exclusiveFilterFlags();
 
     /** Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
      * \since QGIS 2.16
-     * @see exclusiveFilterFlags()
+     * \see exclusiveFilterFlags()
      */
     static QList< FilterFlag > nonExclusiveFilterFlags();
 
     /** Returns a translated string representing a filter flag.
-     * @param flag flag to convert to string
+     * \param flag flag to convert to string
      * \since QGIS 2.16
      */
     static QString toString( FilterFlag flag );
@@ -83,21 +83,21 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     /**
      * Create a new widget wrapper
      *
-     * @param vl        The layer on which the field is
-     * @param fieldIdx  The field which will be controlled
-     * @param parent    A parent widget for this widget wrapper and the created widget.
+     * \param vl        The layer on which the field is
+     * \param fieldIdx  The field which will be controlled
+     * \param parent    A parent widget for this widget wrapper and the created widget.
      */
     explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     /** Returns filter flags supported by the search widget.
      * \since QGIS 2.16
-     * @see defaultFlags()
+     * \see defaultFlags()
      */
     virtual FilterFlags supportedFlags() const;
 
     /** Returns the filter flags which should be set by default for the search widget.
      * \since QGIS 2.16
-     * @see supportedFlags()
+     * \see supportedFlags()
      */
     virtual FilterFlags defaultFlags() const;
 
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * If an invalid variant is returned this will be interpreted as no change.
      * Be sure to return a NULL QVariant if it should be set to NULL.
      *
-     * @return The current value the widget represents
+     * \returns The current value the widget represents
      */
     virtual QString expression() = 0;
 
@@ -120,8 +120,8 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
     /** Creates a filter expression based on the current state of the search widget
      * and the specified filter flags.
-     * @param flags filter flags
-     * @returns filter expression
+     * \param flags filter flags
+     * \returns filter expression
      * \since QGIS 2.16
      */
     // TODO QGIS 3.0 - make pure virtual
@@ -135,7 +135,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     virtual void clearWidget() {}
 
     /** Toggles whether the search widget is enabled or disabled.
-     * @param enabled set to true to enable widget
+     * \param enabled set to true to enable widget
      */
     virtual void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
 
@@ -143,7 +143,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Emitted whenever the expression changes
-     * @param exp The new search expression
+     * \param exp The new search expression
      */
     void expressionChanged( const QString &exp );
 

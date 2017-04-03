@@ -24,8 +24,8 @@
 /**
  * Class that adds extra information to QgsLabelFeature for text labels
  *
- * @note not part of public API
- * @note not available in Python bindings
+ * \note not part of public API
+ * \note not available in Python bindings
  */
 class QgsTextLabelFeature : public QgsLabelFeature
 {
@@ -45,7 +45,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
     }
 
     /** Returns the text component corresponding to a specified label part
-     * @param partId Set to -1 for labels which are not broken into parts (e.g., non-curved labels), or the required
+     * \param partId Set to -1 for labels which are not broken into parts (e.g., non-curved labels), or the required
      * part index for labels which are broken into parts (curved labels)
      * \since QGIS 2.10
      */

@@ -259,7 +259,6 @@ QString QgsRectangle::asWktPolygon() const
   return rep;
 }
 
-//! returns a QRectF with same coordinates.
 QRectF QgsRectangle::toRectF() const
 {
   return QRectF( static_cast< qreal >( xmin ), static_cast< qreal >( ymin ), static_cast< qreal >( xmax - xmin ), static_cast< qreal >( ymax - ymin ) );

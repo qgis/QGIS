@@ -60,7 +60,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 
     //! creates a QgsSingleSymbolRenderer from an existing renderer.
     //! \since QGIS 2.5
-    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    //! \returns a new renderer if the conversion was possible, otherwise 0.
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   protected:

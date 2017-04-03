@@ -161,7 +161,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     //helper methods for WFS-T
 
     /** Sends the transaction document to the server using HTTP POST
-      @return true if transmission to the server succeeded, otherwise false
+      \returns true if transmission to the server succeeded, otherwise false
         note: true does not automatically mean that the transaction succeeded*/
     bool sendTransactionDocument( const QDomDocument &doc, QDomDocument &serverResponse );
 

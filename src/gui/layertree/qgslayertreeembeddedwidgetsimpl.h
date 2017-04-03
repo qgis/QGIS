@@ -27,9 +27,9 @@ class QgsMapLayer;
 ///@cond PRIVATE
 
 /**
- * @brief Implementation of simple transparency widget to be used in layer tree view
+ * \brief Implementation of simple transparency widget to be used in layer tree view
  *
- * @note private class - not in QGIS API
+ * \note private class - not in QGIS API
  */
 class QgsLayerTreeTransparencyWidget : public QWidget
 {

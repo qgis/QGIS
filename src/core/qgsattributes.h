@@ -51,7 +51,7 @@ typedef QMap<int, QgsField> QgsFieldMap;
 
 /** \ingroup core
  * A vector of attributes. Mostly equal to QVector<QVariant>.
- @note QgsAttributes is implemented as a Python list of Python objects.
+ \note QgsAttributes is implemented as a Python list of Python objects.
  */
 #ifndef SIP_RUN
 class CORE_EXPORT QgsAttributes : public QVector<QVariant>
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
     /**
      * Create a new vector of attributes with the given size
      *
-     * @param size Number of attributes
+     * \param size Number of attributes
      */
     QgsAttributes( int size )
       : QVector<QVariant>( size )
@@ -72,8 +72,8 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
 
     /**
      * Constructs a vector with an initial size of size elements. Each element is initialized with value.
-     * @param size Number of elements
-     * @param v    Initial value
+     * \param size Number of elements
+     * \param v    Initial value
      */
     QgsAttributes( int size, const QVariant &v )
       : QVector<QVariant>( size, v )
@@ -81,20 +81,20 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
 
     /**
      * Copies another vector of attributes
-     * @param v Attributes to copy
+     * \param v Attributes to copy
      */
     QgsAttributes( const QVector<QVariant> &v )
       : QVector<QVariant>( v )
     {}
 
     /**
-     * @brief Compares two vectors of attributes.
+     * \brief Compares two vectors of attributes.
      * They are considered equal if all their members contain the same value and NULL flag.
      * This was introduced because the default Qt implementation of QVariant comparison does not
      * handle NULL values for certain types (like int).
      *
-     * @param v The attributes to compare
-     * @return True if v is equal
+     * \param v The attributes to compare
+     * \returns True if v is equal
      */
     bool operator==( const QgsAttributes &v ) const
     {
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * Returns a QgsAttributeMap of the attribute values. Null values are
      * excluded from the map.
      * \since QGIS 3.0
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QgsAttributeMap toMap() const SIP_SKIP;
 

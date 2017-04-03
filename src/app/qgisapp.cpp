@@ -4805,7 +4805,7 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   prj->setCrs( srs );
   prj->setDirty( false );
 
-  /** New Empty Project Created
+  /* New Empty Project Created
       (before attempting to load custom project templates/filepaths) */
 
   // load default template
@@ -4915,10 +4915,10 @@ void QgisApp::fileOpenAfterLaunch()
 
   // notify user if last attempt at auto-opening a project failed
 
-  /** NOTE: Notification will not show if last auto-opened project failed but
+  /* NOTE: Notification will not show if last auto-opened project failed but
       next project opened is from command line (minor issue) */
 
-  /** TODO: Keep projOpenedOKAtLaunch from being reset to true after
+  /* TODO: Keep projOpenedOKAtLaunch from being reset to true after
       reading command line project (which happens before initialization signal) */
   if ( !projOpenedOK )
   {
@@ -6588,7 +6588,7 @@ void QgisApp::saveAsLayerDefinition()
 
 ///@cond PRIVATE
 
-/** Field value converter for export as vecotr layer
+/** Field value converter for export as vector layer
  * \note Not available in Python bindings
  */
 class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
@@ -9604,13 +9604,11 @@ void QgisApp::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
   mOptionsWidgetFactories.removeAll( factory );
 }
 
-//! Get a pointer to the currently selected map layer
 QgsMapLayer *QgisApp::activeLayer()
 {
   return mLayerTreeView ? mLayerTreeView->currentLayer() : nullptr;
 }
 
-//! Set the current layer
 bool QgisApp::setActiveLayer( QgsMapLayer *layer )
 {
   if ( !layer )
@@ -9623,13 +9621,7 @@ bool QgisApp::setActiveLayer( QgsMapLayer *layer )
   return true;
 }
 
-/** Add a vector layer directly without prompting user for location
-  The caller must provide information compatible with the provider plugin
-  using the vectorLayerPath and baseName. The provider can use these
-  parameters in any way necessary to initialize the layer. The baseName
-  parameter is used in the Map Legend so it should be formed in a meaningful
-  way.
-  */
+
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey )
 {
   bool wasfrozen = mMapCanvas->isFrozen();
@@ -11493,15 +11485,6 @@ QgsRasterLayer *QgisApp::addRasterLayer(
 }
 
 
-/** Add a raster layer directly without prompting user for location
-  The caller must provide information compatible with the provider plugin
-  using the uri and baseName. The provider can use these
-  parameters in any way necessary to initialize the layer. The baseName
-  parameter is used in the Map Legend so it should be formed in a meaningful
-  way.
-
-  \note   Copied from the equivalent addVectorLayer function in this file
-  */
 QgsRasterLayer *QgisApp::addRasterLayer(
   QString const &uri, QString const &baseName, QString const &providerKey )
 {

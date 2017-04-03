@@ -251,7 +251,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsRasterDataProvider *dataProvider();
 
     /** Returns the data provider in a const-correct manner
-      @note available in Python bindings as constDataProvider()
+      \note available in Python bindings as constDataProvider()
      */
     const QgsRasterDataProvider *dataProvider() const;
 
@@ -288,11 +288,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     double rasterUnitsPerPixelY() const;
 
     /** \brief Set contrast enhancement algorithm
-     *  @param algorithm Contrast enhancement algorithm
-     *  @param limits Limits
-     *  @param extent Extent used to calculate limits, if empty, use full layer extent
-     *  @param sampleSize Size of data sample to calculate limits, if 0, use full resolution
-     *  @param generateLookupTableFlag Generate lookup table. */
+     *  \param algorithm Contrast enhancement algorithm
+     *  \param limits Limits
+     *  \param extent Extent used to calculate limits, if empty, use full layer extent
+     *  \param sampleSize Size of data sample to calculate limits, if 0, use full resolution
+     *  \param generateLookupTableFlag Generate lookup table. */
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
@@ -302,19 +302,19 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                                  bool generateLookupTableFlag = true );
 
     /** \brief Refresh contrast enhancement with new extent.
-     *  @note not available in Python bindings
+     *  \note not available in Python bindings
      */
     // Used by QgisApp::legendLayerStretchUsingCurrentExtent()
     void refreshContrastEnhancement( const QgsRectangle &extent );
 
     /** \brief Refresh renderer with new extent, if needed
-     *  @note not available in Python bindings
+     *  \note not available in Python bindings
      */
     // Used by QgsRasterLayerRenderer
     void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
 
     /** \brief Return default contrast enhancemnt settings for that type of raster.
-     *  @note not available in Python bindings
+     *  \note not available in Python bindings
      */
     bool defaultContrastEnhancementSettings(
       QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,

@@ -37,16 +37,16 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
     QgsVectorLayerJoinBuffer( QgsVectorLayer *layer = nullptr );
 
     /** Joins another vector layer to this layer
-      @param joinInfo join object containing join layer id, target and source field
-      @return (since 2.6) whether the join was successfully added */
+      \param joinInfo join object containing join layer id, target and source field
+      \returns (since 2.6) whether the join was successfully added */
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 
     /** Removes a vector layer join
-      @returns true if join was found and successfully removed */
+      \returns true if join was found and successfully removed */
     bool removeJoin( const QString &joinLayerId );
 
     /** Updates field map with joined attributes
-      @param fields map to append joined attributes
+      \param fields map to append joined attributes
      */
     void updateFields( QgsFields &fields );
 
@@ -70,9 +70,9 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
     const QgsVectorJoinList &vectorJoins() const { return mVectorJoins; }
 
     /** Finds the vector join for a layer field index.
-      @param index this layers attribute index
-      @param fields fields of the vector layer (including joined fields)
-      @param sourceFieldIndex Output: field's index in source layer */
+      \param index this layers attribute index
+      \param fields fields of the vector layer (including joined fields)
+      \param sourceFieldIndex Output: field's index in source layer */
     const QgsVectorLayerJoinInfo *joinForFieldIndex( int index, const QgsFields &fields, int &sourceFieldIndex ) const;
 
     //! Find out what is the first index of the join within fields. Returns -1 if join is not present

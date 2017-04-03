@@ -39,7 +39,7 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     bool testConnection( const QString &testDatabase = QString() );
 
     /**
-     * @brief List all databases found for the given server.
+     * \brief List all databases found for the given server.
      */
     void listDatabases();
   public slots:

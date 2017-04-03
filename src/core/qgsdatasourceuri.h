@@ -69,7 +69,7 @@ class CORE_EXPORT QgsDataSourceUri
     //! Set generic param (generic mode)
     // \note if key exists, another is inserted
     void setParam( const QString &key, const QString &value );
-    //! @note available in Python as setParamList
+    //! \note available in Python as setParamList
     void setParam( const QString &key, const QStringList &value );
 
     //! Remove generic param (generic mode)

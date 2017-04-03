@@ -87,7 +87,7 @@ class CORE_EXPORT QgsClipper
      * the function treats the points as a closed shape (polygon), or as
      * an open shape (linestring).
      *
-     * @note not available in Python bindings on android
+     * \note not available in Python bindings on android
      */
     static void trimFeature( QVector<double> &x,
                              QVector<double> &y,
@@ -98,9 +98,9 @@ class CORE_EXPORT QgsClipper
     static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );
 
     /** Takes a linestring and clips it to clipExtent
-     * @param curve the linestring
-     * @param clipExtent clipping bounds
-     * @return clipped line coordinates
+     * \param curve the linestring
+     * \param clipExtent clipping bounds
+     * \returns clipped line coordinates
      */
     static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
 
@@ -139,12 +139,12 @@ class CORE_EXPORT QgsClipper
     static bool clipLineSegment( double xLeft, double xRight, double yBottom, double yTop, double &x0, double &y0, double &x1, double &y1 );
 
     /** Connects two lines split by the clip (by inserting points on the clip border)
-      @param x0 x-coordinate of the first line end
-      @param y0 y-coordinate of the first line end
-      @param x1 x-coordinate of the second line start
-      @param y1 y-coordinate of the second line start
-      @param clipRect clip rectangle
-      @param pts: in/out array of clipped points
+      \param x0 x-coordinate of the first line end
+      \param y0 y-coordinate of the first line end
+      \param x1 x-coordinate of the second line start
+      \param y1 y-coordinate of the second line start
+      \param clipRect clip rectangle
+      \param pts: in/out array of clipped points
       */
     static void connectSeparatedLines( double x0, double y0, double x1, double y1,
                                        const QgsRectangle &clipRect, QPolygonF &pts );

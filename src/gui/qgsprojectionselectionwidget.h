@@ -54,26 +54,26 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     /** Returns a pointer to the projection selector dialog used by the widget.
      * Can be used to modify how the projection selector dialog behaves.
-     * @returns projection selector dialog
+     * \returns projection selector dialog
      */
     QgsProjectionSelectionDialog *dialog() { return mDialog; }
 
     /** Returns the currently selected CRS for the widget
-     * @returns current CRS
+     * \returns current CRS
      */
     QgsCoordinateReferenceSystem crs() const;
 
     /** Sets whether a predefined CRS option should be shown in the widget.
-     * @param option CRS option to show/hide
-     * @param visible whether the option should be shown
-     * @see optionVisible()
+     * \param option CRS option to show/hide
+     * \param visible whether the option should be shown
+     * \see optionVisible()
      */
     void setOptionVisible( const CrsOption option, const bool visible );
 
     /**
      * Returns whether the specified CRS option is visible in the widget.
      * \since QGIS 3.0
-     * @see setOptionVisible()
+     * \see setOptionVisible()
      */
     bool optionVisible( CrsOption option ) const;
 
@@ -99,13 +99,13 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
   public slots:
 
     /** Sets the current CRS for the widget
-     * @param crs new CRS
+     * \param crs new CRS
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Sets the layer CRS for the widget. If set, this will be added as an option
      * to the preset CRSes shown in the widget.
-     * @param crs layer CRS
+     * \param crs layer CRS
      */
     void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
 

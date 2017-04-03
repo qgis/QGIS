@@ -44,13 +44,13 @@ class CORE_EXPORT QgsSvgAnnotation: public QgsAnnotation
 
     /**
      * Sets the file path for the source SVG file.
-     * @see filePath()
+     * \see filePath()
      */
     void setFilePath( const QString &file );
 
     /**
      * Returns the file path for the source SVG file.
-     * @see setFilePath()
+     * \see setFilePath()
      */
     QString filePath() const { return mFilePath; }
 

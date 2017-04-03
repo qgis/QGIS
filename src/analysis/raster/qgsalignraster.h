@@ -29,7 +29,7 @@ typedef void *GDALDatasetH;
 
 
 /** \ingroup analysis
- * @brief QgsAlignRaster takes one or more raster layers and warps (resamples) them
+ * \brief QgsAlignRaster takes one or more raster layers and warps (resamples) them
  * so they have the same:
  * - coordinate reference system
  * - cell size and raster size
@@ -96,7 +96,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
 
     //! Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)
-    //! @note RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only
+    //! \note RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only
     enum ResampleAlg
     {
       RA_NearestNeighbour = 0, //!< Nearest neighbour (select on one input pixel)
@@ -144,8 +144,8 @@ class ANALYSIS_EXPORT QgsAlignRaster
     struct ProgressHandler
     {
       //! Method to be overridden for progress reporting.
-      //! @param complete Overall progress of the alignment operation
-      //! @return false if the execution should be canceled, true otherwise
+      //! \param complete Overall progress of the alignment operation
+      //! \returns false if the execution should be canceled, true otherwise
       virtual bool progress( double complete ) = 0;
 
       virtual ~ProgressHandler() = default;
@@ -194,25 +194,25 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! If a custom CRS is provided, suggested reprojection is calculated first (using GDAL) in order
     //! to determine suitable defaults for cell size and grid offset.
     //!
-    //! @return true on success (may fail if it is not possible to reproject raster to given CRS)
+    //! \returns true on success (may fail if it is not possible to reproject raster to given CRS)
     bool setParametersFromRaster( const RasterInfo &rasterInfo, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
     //! Overridden variant for convenience, taking filename instead RasterInfo object.
     //! See the other variant for details.
     bool setParametersFromRaster( const QString &filename, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
 
     //! Determine destination extent from the input rasters and calculate derived values
-    //! @return true on success, sets error on error (see errorMessage())
+    //! \returns true on success, sets error on error (see errorMessage())
     bool checkInputParameters();
 
     //! Return expected size of the resulting aligned raster
-    //! @note first need to run checkInputParameters() which returns with success
+    //! \note first need to run checkInputParameters() which returns with success
     QSize alignedRasterSize() const;
     //! Return expected extent of the resulting aligned raster
-    //! @note first need to run checkInputParameters() which returns with success
+    //! \note first need to run checkInputParameters() which returns with success
     QgsRectangle alignedRasterExtent() const;
 
     //! Run the alignment process
-    //! @return true on success, sets error on error (see errorMessage())
+    //! \returns true on success, sets error on error (see errorMessage())
     bool run();
 
     //! Return error from a previous run() call.

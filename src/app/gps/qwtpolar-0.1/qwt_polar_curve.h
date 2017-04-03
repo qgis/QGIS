@@ -117,13 +117,13 @@ class QWT_POLAR_EXPORT QwtPolarCurve: public QwtPolarItem
     PrivateData *d_data;
 };
 
-//! \return the curve data
+//! \returns the curve data
 inline QwtData &QwtPolarCurve::data()
 {
   return *d_points;
 }
 
-//! \return the curve data
+//! \returns the curve data
 inline const QwtData &QwtPolarCurve::data() const
 {
   return *d_points;
@@ -131,7 +131,7 @@ inline const QwtData &QwtPolarCurve::data() const
 
 /*!
     \param i index
-    \return azimuth at position i
+    \returns azimuth at position i
 */
 inline double QwtPolarCurve::azimuth( int i ) const
 {
@@ -140,7 +140,7 @@ inline double QwtPolarCurve::azimuth( int i ) const
 
 /*!
     \param i index
-    \return radius at position i
+    \returns radius at position i
 */
 inline double QwtPolarCurve::radius( int i ) const
 {
@@ -149,7 +149,7 @@ inline double QwtPolarCurve::radius( int i ) const
 
 /*!
     \param i index
-    \return point at position i
+    \returns point at position i
 */
 inline QwtPolarPoint QwtPolarCurve::sample( int i ) const
 {

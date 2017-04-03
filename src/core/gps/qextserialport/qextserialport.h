@@ -200,7 +200,7 @@ class QextSerialPort: public QIODevice
 
         /**!
          * Get query mode.
-         * \return query mode.
+         * \returns query mode.
          */
         inline QueryMode queryMode() const { return _queryMode; }
 

@@ -1281,23 +1281,14 @@ void QgsProjectProperties::srIdUpdated()
   }
 }
 
-/*!
- * Function to save non-base dialog states
- */
 void QgsProjectProperties::saveState()
 {
 }
 
-/*!
- * Function to restore non-base dialog states
- */
 void QgsProjectProperties::restoreState()
 {
 }
 
-/*!
- * Set WMS default extent to current canvas extent
- */
 void QgsProjectProperties::on_pbnWMSExtCanvas_clicked()
 {
   QgsRectangle ext = mMapCanvas->extent();

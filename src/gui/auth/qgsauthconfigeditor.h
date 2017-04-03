@@ -37,9 +37,9 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
 
     /**
      * Widget for editing authentication configurations directly in database
-     * @param parent Parent widget
-     * @param showUtilities Whether to show the widget's utilities button
-     * @param relayMessages Whether to relay auth manager messages to internal message bar
+     * \param parent Parent widget
+     * \param showUtilities Whether to show the widget's utilities button
+     * \param relayMessages Whether to relay auth manager messages to internal message bar
      */
     explicit QgsAuthConfigEditor( QWidget *parent = nullptr, bool showUtilities = true, bool relayMessages = true );
 

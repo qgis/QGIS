@@ -67,9 +67,9 @@ class QgsClipper
     static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
 %Docstring
  Takes a linestring and clips it to clipExtent
- @param curve the linestring
- @param clipExtent clipping bounds
- @return clipped line coordinates
+ \param curve the linestring
+ \param clipExtent clipping bounds
+ \returns clipped line coordinates
 %End
 
 };

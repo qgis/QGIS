@@ -73,7 +73,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
   private:
 
     /** Returns the default templates (key: template name, value: absolute path to template file)
-     * @param fromUser whether to return user templates from ~/.qgis/composer_templates
+     * \param fromUser whether to return user templates from ~/.qgis/composer_templates
      */
     QMap<QString, QString> defaultTemplates( bool fromUser = false ) const;
     QMap<QString, QString> otherTemplates() const;

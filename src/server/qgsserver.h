@@ -57,8 +57,8 @@ class SERVER_EXPORT QgsServer
     QgsServer();
 
     /** Set environment variable
-     * @param var environment variable name
-     * @param val value
+     * \param var environment variable name
+     * \param val value
      * \since QGIS 2.14
      */
     void putenv( const QString &var, const QString &val );
@@ -68,8 +68,8 @@ class SERVER_EXPORT QgsServer
      * but can be also passed in args and in this case overrides the environment
      * variable
      *
-     * @param request a QgsServerRequest holding request parameters
-     * @param response a QgsServerResponse for handling response I/O)
+     * \param request a QgsServerRequest holding request parameters
+     * \param response a QgsServerResponse for handling response I/O)
      */
     void handleRequest( QgsServerRequest &request, QgsServerResponse &response );
 
@@ -78,8 +78,8 @@ class SERVER_EXPORT QgsServer
      * but can be also passed in args and in this case overrides the environment
      * variable.
      *
-     * @param queryString QString containing the query string
-     * @return the response headers and body QPair of QByteArray
+     * \param queryString QString containing the query string
+     * \returns the response headers and body QPair of QByteArray
      */
     QPair<QByteArray, QByteArray> handleRequest( const QString &queryString );
 
@@ -103,9 +103,9 @@ class SERVER_EXPORT QgsServer
                                const QMap<QString, QString> &parameters );
 
     /**
-     * @brief QgsServer::printRequestParameters prints the request parameters
-     * @param parameterMap
-     * @param logLevel
+     * \brief QgsServer::printRequestParameters prints the request parameters
+     * \param parameterMap
+     * \param logLevel
      */
     static void printRequestParameters(
       const QMap< QString, QString> &parameterMap,

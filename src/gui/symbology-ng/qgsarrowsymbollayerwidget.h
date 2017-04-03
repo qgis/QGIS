@@ -31,13 +31,13 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
   public:
 
     /** Constructor
-     * @param layer the layer where this symbol layer is applied
-     * @param parent the parent widget
+     * \param layer the layer where this symbol layer is applied
+     * \param parent the parent widget
      */
     QgsArrowSymbolLayerWidget( const QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     /** Static creation method
-     * @param layer the layer where this symbol layer is applied
+     * \param layer the layer where this symbol layer is applied
      */
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
 

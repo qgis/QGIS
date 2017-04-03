@@ -20,16 +20,6 @@
 #include <QUrl>
 #include <QMimeData>
 
-/*!
-  \class QgsFileDropEdit
-
-  \brief The QgsDropNameEdit class provides a line edit widget which
-  accepts file drops.
-
-  Dropping can be limited to files only, files with a specific extension
-  or directories only. By default, dropping is limited to files only.
-*/
-
 QgsFileDropEdit::QgsFileDropEdit( QWidget *parent )
   : QLineEdit( parent )
 {
@@ -39,9 +29,6 @@ QgsFileDropEdit::QgsFileDropEdit( QWidget *parent )
   setAcceptDrops( true );
 }
 
-/*!
-  Limit drops to directories.
-*/
 void QgsFileDropEdit::setDirOnly( bool isDirOnly )
 {
   mDirOnly = isDirOnly;
@@ -51,9 +38,6 @@ void QgsFileDropEdit::setDirOnly( bool isDirOnly )
   }
 }
 
-/*!
-  Limit drops to files.
-*/
 void QgsFileDropEdit::setFileOnly( bool isFileOnly )
 {
   mFileOnly = isFileOnly;
@@ -63,17 +47,11 @@ void QgsFileDropEdit::setFileOnly( bool isFileOnly )
   }
 }
 
-/*!
-  Limit drops to files with specified extension.
-*/
 void QgsFileDropEdit::setSuffixFilter( const QString &suffix )
 {
   mSuffix = suffix;
 }
 
-/*!
-  Return file name if object meets drop criteria.
-*/
 QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
 {
   QString path;
@@ -88,10 +66,6 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
   return path;
 }
 
-/*!
-  Check if dragged object is acceptable. Called when a drag is in progress
-  and the mouse enters this widget.
-*/
 void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent *event )
 {
   QString filePath = acceptableFilePath( event );
@@ -107,9 +81,6 @@ void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent *event )
   }
 }
 
-/*!
-  Called when a drag is in progress and the mouse leaves this widget.
-*/
 void QgsFileDropEdit::dragLeaveEvent( QDragLeaveEvent *event )
 {
   QLineEdit::dragLeaveEvent( event );
@@ -118,9 +89,6 @@ void QgsFileDropEdit::dragLeaveEvent( QDragLeaveEvent *event )
   update();
 }
 
-/*!
-  Receive the dragged object. Called when the drag is dropped on this widget.
-*/
 void QgsFileDropEdit::dropEvent( QDropEvent *event )
 {
   QString filePath = acceptableFilePath( event );
@@ -139,9 +107,6 @@ void QgsFileDropEdit::dropEvent( QDropEvent *event )
   }
 }
 
-/*!
-  Paints line edit with drag highlight in response to a paint event.
-*/
 void QgsFileDropEdit::paintEvent( QPaintEvent *e )
 {
   QLineEdit::paintEvent( e );

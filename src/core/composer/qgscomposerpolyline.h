@@ -36,13 +36,13 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
   public:
 
     /** Constructor
-     * @param c parent composition
+     * \param c parent composition
      */
     QgsComposerPolyline( QgsComposition *c );
 
     /** Constructor
-     * @param polyline nodes of the shape
-     * @param c parent composition
+     * \param polyline nodes of the shape
+     * \param c parent composition
      */
     QgsComposerPolyline( const QPolygonF &polyline, QgsComposition *c );
 

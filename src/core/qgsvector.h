@@ -33,8 +33,8 @@ class CORE_EXPORT QgsVector
     QgsVector();
 
     /** Constructor for QgsVector taking x and y component values.
-     * @param x x-component
-     * @param y y-component
+     * \param x x-component
+     * \param y y-component
      */
     QgsVector( double x, double y );
 
@@ -42,12 +42,12 @@ class CORE_EXPORT QgsVector
     QgsVector operator-() const;
 
     /** Returns a vector where the components have been multiplied by a scalar value.
-     * @param scalar factor to multiply by
+     * \param scalar factor to multiply by
      */
     QgsVector operator*( double scalar ) const;
 
     /** Returns a vector where the components have been divided by a scalar value.
-     * @param scalar factor to divide by
+     * \param scalar factor to divide by
      */
     QgsVector operator/( double scalar ) const;
 
@@ -86,12 +86,12 @@ class CORE_EXPORT QgsVector
     double length() const;
 
     /** Returns the vector's x-component.
-     * @see y()
+     * \see y()
      */
     double x() const;
 
     /** Returns the vector's y-component.
-     * @see x()
+     * \see x()
      */
     double y() const;
 
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsVector
     double angle( QgsVector v ) const;
 
     /** Rotates the vector by a specified angle.
-     * @param rot angle in radians
+     * \param rot angle in radians
      */
     QgsVector rotateBy( double rot ) const;
 

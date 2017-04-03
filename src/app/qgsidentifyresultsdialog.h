@@ -49,10 +49,6 @@ class QgsEditorWidgetSetup;
 
 class QwtPlotCurve;
 
-/**
- *@author Gary E.Sherman
- */
-
 class APP_EXPORT QgsIdentifyResultsWebView : public QgsWebView
 {
     Q_OBJECT

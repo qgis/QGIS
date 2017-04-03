@@ -1,10 +1,10 @@
 /***************************************************************************
-  qgsmapcanvas.cpp  -  description
-  -------------------
+qgsmapcanvas.cpp  -  description
+------------------ -
 begin                : Sun Jun 30 2002
-copyright            : (C) 2002 by Gary E.Sherman
+copyright            : ( C ) 2002 by Gary E.Sherman
 email                : sherman at mrcc.com
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -1506,11 +1506,8 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
   QPoint xy = e->pos();
   QgsPoint coord = getCoordinateTransform()->toMapCoordinates( xy );
   emit xyCoordinates( coord );
-} // mouseMoveEvent
+}
 
-
-
-//! Sets the map tool currently being used on the canvas
 void QgsMapCanvas::setMapTool( QgsMapTool *tool )
 {
   if ( !tool )
@@ -1945,7 +1942,6 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
-//! Ask user which datum transform to use
 void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer *ml, const QString &srcAuthId, const QString &destAuthId )
 {
   if ( !ml )

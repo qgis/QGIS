@@ -101,21 +101,21 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     virtual void deactivate() override;
 
     /** Performs the identification.
-    @param x x coordinates of mouseEvent
-    @param y y coordinates of mouseEvent
-    @param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
-    @param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
-    @return a list of IdentifyResult*/
+    \param x x coordinates of mouseEvent
+    \param y y coordinates of mouseEvent
+    \param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
+    \param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
+    \returns a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting );
 
     /** Performs the identification.
     To avoid being forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
-    @param x x coordinates of mouseEvent
-    @param y y coordinates of mouseEvent
-    @param mode Identification mode. Can use Qgis default settings or a defined mode.
-    @param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
-    @return a list of IdentifyResult*/
+    \param x x coordinates of mouseEvent
+    \param y y coordinates of mouseEvent
+    \param mode Identification mode. Can use Qgis default settings or a defined mode.
+    \param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
+    \returns a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
     //! return a pointer to the identify menu which will be used in layer selection mode
@@ -135,12 +135,12 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     /** Performs the identification.
     To avoid being forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
-    @param x x coordinates of mouseEvent
-    @param y y coordinates of mouseEvent
-    @param mode Identification mode. Can use Qgis default settings or a defined mode.
-    @param layerList Performs the identification within the given list of layers.
-    @param layerType Only performs identification in a certain type of layers (raster, vector).
-    @return a list of IdentifyResult*/
+    \param x x coordinates of mouseEvent
+    \param y y coordinates of mouseEvent
+    \param mode Identification mode. Can use Qgis default settings or a defined mode.
+    \param layerList Performs the identification within the given list of layers.
+    \param layerType Only performs identification in a certain type of layers (raster, vector).
+    \returns a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers );
 
     QgsIdentifyMenu *mIdentifyMenu = nullptr;
@@ -155,25 +155,25 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     /** Desired units for distance display.
      * \since QGIS 2.14
-     * @see displayAreaUnits()
+     * \see displayAreaUnits()
      */
     virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const;
 
     /** Desired units for area display.
      * \since QGIS 2.14
-     * @see displayDistanceUnits()
+     * \see displayDistanceUnits()
      */
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const;
 
     /** Format a distance into a suitable string for display to the user
      * \since QGIS 2.14
-     * @see formatArea()
+     * \see formatArea()
      */
     QString formatDistance( double distance ) const;
 
     /** Format a distance into a suitable string for display to the user
      * \since QGIS 2.14
-     * @see formatDistance()
+     * \see formatDistance()
      */
     QString formatArea( double area ) const;
 

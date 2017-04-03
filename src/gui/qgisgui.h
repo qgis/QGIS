@@ -31,7 +31,7 @@ class QFont;
 namespace QgisGui
 {
 
-  /*!
+  /**
    * /var ModalDialogFlags
    * /brief Flags used to create a modal dialog (adapted from QMessageBox).
    *
@@ -52,14 +52,14 @@ namespace QgisGui
 
   /**
    * Minimum magnification level allowed in map canvases.
-   * @see CANVAS_MAGNIFICATION_MAX
+   * \see CANVAS_MAGNIFICATION_MAX
    * \since QGIS 3.0
    */
   constexpr double CANVAS_MAGNIFICATION_MIN = 0.1;
 
   /**
    * Maximum magnification level allowed in map canvases.
-   * @see CANVAS_MAGNIFICATION_MAX
+   * \see CANVAS_MAGNIFICATION_MAX
    * \since QGIS 3.0
    */
   // Must be a factor of 2, so zooming in to max from 100% then zooming back out will result in 100% mag
@@ -70,13 +70,13 @@ namespace QgisGui
     last one used, if any; also, prefer to start in the last directory
     associated with filterName.
 
-    @param filterName the name of the filter; used for persistent store key
-    @param filters    the file filters used for QFileDialog
-    @param selectedFiles string list of selected files; will be empty if none selected
-    @param enc        encoding?
-    @param title      the title for the dialog
-    @param cancelAll  add button to cancel further requests
-    @note
+    \param filterName the name of the filter; used for persistent store key
+    \param filters    the file filters used for QFileDialog
+    \param selectedFiles string list of selected files; will be empty if none selected
+    \param enc        encoding?
+    \param title      the title for the dialog
+    \param cancelAll  add button to cancel further requests
+    \note
 
     Stores persistent settings under /UI/.  The sub-keys will be
     filterName and filterName + "Dir".
@@ -94,10 +94,10 @@ namespace QgisGui
 
   /** A helper function to get an image name from the user. It will nicely
    * provide filters with all available writable image formats.
-   * @param parent widget that should act as the parent for the file dialog
-   * @param message the message to display to the user
-   * @param defaultFilename default file name (empty by default)
-   * @return QPair<QString, QString> where first is the file name and second is
+   * \param parent widget that should act as the parent for the file dialog
+   * \param message the message to display to the user
+   * \param defaultFilename default file name (empty by default)
+   * \returns QPair<QString, QString> where first is the file name and second is
    * the file type
    */
   QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *parent, const QString &message, const QString &defaultFilename = QString::null );
@@ -115,17 +115,17 @@ namespace QgisGui
   /**
    * Create file filters suitable for use with QFileDialog
    *
-   * @param format extension e.g. "png"
-   * @return QString e.g. "PNG format (*.png, *.PNG)"
+   * \param format extension e.g. "png"
+   * \returns QString e.g. "PNG format (*.png, *.PNG)"
    */
   QString GUI_EXPORT createFileFilter_( QString const &format );
 
   /**
    * Show font selection dialog
-   * @param ok true on ok, false on cancel
-   * @param initial initial font
-   * @param title optional dialog title
-   * @return QFont the selected fon
+   * \param ok true on ok, false on cancel
+   * \param initial initial font
+   * \param title optional dialog title
+   * \returns QFont the selected fon
    */
   QFont GUI_EXPORT getFont( bool &ok, const QFont &initial, const QString &title = QString() );
 }

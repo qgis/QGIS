@@ -26,9 +26,6 @@ class QgsDecorationGrid;
 class QgsLineSymbol;
 class QgsMarkerSymbol;
 
-/**
-@author Etienne Tourigny
-*/
 class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecorationGridDialog
 {
     Q_OBJECT

@@ -45,13 +45,13 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
 
     /**
      * Sets the path to the Qt Designer UI file to show in the annotation.
-     * @see designerForm()
+     * \see designerForm()
      */
     void setDesignerForm( const QString &uiFile );
 
     /**
      * Returns the path to the Qt Designer UI file to show in the annotation.
-     * @see setDesignerForm()
+     * \see setDesignerForm()
      */
     QString designerForm() const { return mDesignerForm; }
 

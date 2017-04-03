@@ -67,9 +67,9 @@ Constructor
 %Docstring
  Does the action using the expression engine to replace any embedded expressions
  in the action definition.
- @param actionId action id
- @param feature feature to run action for
- @param context expression context to evaluate expressions under
+ \param actionId action id
+ \param feature feature to run action for
+ \param context expression context to evaluate expressions under
 %End
 
     void clearActions();

@@ -59,18 +59,12 @@ QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
   saveState();
 }
 
-/*!
- * Function to save dialog window state
- */
 void QgsConfigureShortcutsDialog::saveState()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/ShortcutsDialog/geometry" ), saveGeometry() );
 }
 
-/*!
- * Function to restore dialog window state
- */
 void QgsConfigureShortcutsDialog::restoreState()
 {
   QgsSettings settings;

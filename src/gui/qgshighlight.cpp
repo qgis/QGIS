@@ -45,11 +45,7 @@
    - fill with highlight or contrast color but opaque and using pattern
      (e.g. Qt::Dense7Pattern): again no highlight impression
 */
-/*!
-  \class QgsHighlight
-  \brief The QgsHighlight class provides a transparent overlay widget
-  for highlighting features on the map.
-*/
+
 QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer )
   : QgsMapCanvasItem( mapCanvas )
   , mLayer( layer )
@@ -108,9 +104,6 @@ QgsHighlight::~QgsHighlight()
   delete mGeometry;
 }
 
-/*!
-  Set the stroke and fill color.
-  */
 void QgsHighlight::setColor( const QColor &color )
 {
   mPen.setColor( color );
@@ -198,9 +191,6 @@ double QgsHighlight::getSymbolWidth( const QgsRenderContext &context, double wid
   return width;
 }
 
-/*!
-  Set the stroke width.
-  */
 void QgsHighlight::setWidth( int width )
 {
   mPen.setWidth( width );
@@ -270,9 +260,6 @@ void QgsHighlight::updatePosition()
   // nothing to do here...
 }
 
-/*!
-  Draw the shape in response to an update event.
-  */
 void QgsHighlight::paint( QPainter *p )
 {
   if ( mGeometry )

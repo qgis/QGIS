@@ -100,8 +100,8 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /**
      * Function to check if selected feature exists and is same with original one
      * stored in internal structures
-     * @param vlayer vector layer for checking
-     * @return if feature is same as one in internal structures
+     * \param vlayer vector layer for checking
+     * \returns if feature is same as one in internal structures
      */
     bool checkCorrectnessOfFeature( QgsVectorLayer *vlayer );
 
@@ -123,16 +123,16 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /** Extracts a single snapping point from a set of snapping results.
     This is useful for snapping operations that just require a position to snap to and not all the
     snapping results. If the list is empty, the screen coordinates are transformed into map coordinates and returned
-    @param snapResults results collected from the snapping operation.
-    @return the snapped point in map coordinates*/
+    \param snapResults results collected from the snapping operation.
+    \returns the snapped point in map coordinates*/
     QgsPoint snapPointFromResults( const QList<QgsSnappingResult> &snapResults, QPoint screenCoords );
 
     /** Inserts vertices to the snapped segments of the editing layer.
          This is useful for topological editing if snap to segment is enabled.
-         @param snapResults results collected from the snapping operation
-         @param editedLayer pointer to the editing layer
-         @param skipFids set of feature IDs to avoid inserting vertices in
-         @return 0 in case of success*/
+         \param snapResults results collected from the snapping operation
+         \param editedLayer pointer to the editing layer
+         \param skipFids set of feature IDs to avoid inserting vertices in
+         \returns 0 in case of success*/
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult> &snapResults, QgsVectorLayer *editedLayer, const QgsFeatureIds &skipFids );
 
     /** Snapper object that reads the settings from project and option

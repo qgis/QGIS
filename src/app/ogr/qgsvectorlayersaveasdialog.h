@@ -74,19 +74,19 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     bool onlySelected() const;
 
     /** Returns the selected flat geometry type for the export.
-     * @see automaticGeometryType()
-     * @see forceMulti()
-     * @see includeZ()
+     * \see automaticGeometryType()
+     * \see forceMulti()
+     * \see includeZ()
      */
     QgsWkbTypes::Type geometryType() const;
 
     /** Returns true if geometry type is set to automatic.
-     * @see geometryType()
+     * \see geometryType()
      */
     bool automaticGeometryType() const;
 
     /** Returns true if force multi geometry type is checked.
-     * @see includeZ()
+     * \see includeZ()
      */
     bool forceMulti() const;
 
@@ -95,7 +95,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void setForceMulti( bool checked );
 
     /** Returns true if include z dimension is checked.
-     * @see forceMulti()
+     * \see forceMulti()
      */
     bool includeZ() const;
 

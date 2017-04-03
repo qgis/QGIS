@@ -35,7 +35,7 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
 
     /**
      * Construct a widget to contain various certificate editors
-     * @param parent Parent widget
+     * \param parent Parent widget
      */
     explicit QgsAuthCertEditors( QWidget *parent = nullptr );
 
@@ -55,7 +55,7 @@ class GUI_EXPORT QgsAuthCertManager : public QDialog
 
     /**
      * Construct a dialog wrapper for widget to manage available certificate editors
-     * @param parent Parent widget
+     * \param parent Parent widget
      */
     explicit QgsAuthCertManager( QWidget *parent = nullptr );
 

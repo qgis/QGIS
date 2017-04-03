@@ -198,7 +198,6 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-//! called when map tool is being deactivated
 void QgsMapToolMoveFeature::deactivate()
 {
   //delete rubber band

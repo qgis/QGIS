@@ -41,12 +41,12 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual QgsCurve *clone() const override = 0;
 
     /** Returns the starting point of the curve.
-     * @see endPoint
+     * \see endPoint
      */
     virtual QgsPointV2 startPoint() const = 0;
 
     /** Returns the end point of the curve.
-     * @see startPoint
+     * \see startPoint
      */
     virtual QgsPointV2 endPoint() const = 0;
 
@@ -60,8 +60,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0;
 
     /** Adds a curve to a painter path.
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual void addToPainterPath( QPainterPath &path ) const = 0;
 
     /** Draws the curve as a polygon on the specified QPainter.
-     * @param p destination QPainter
+     * \param p destination QPainter
      */
     virtual void drawAsPolygon( QPainter &p ) const = 0;
 
@@ -89,10 +89,10 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const override;
 
     /** Returns the point and vertex id of a point within the curve.
-     * @param node node number, where the first node is 0
-     * @param point will be set to point at corresponding node in the curve
-     * @param type will be set to the vertex type of the node
-     * @returns true if node exists within the curve
+     * \param node node number, where the first node is 0
+     * \param point will be set to point at corresponding node in the curve
+     * \param type will be set to the vertex type of the node
+     * \returns true if node exists within the curve
      */
     virtual bool pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const = 0;
 
@@ -104,8 +104,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual QgsAbstractGeometry *boundary() const override;
 
     /** Returns a geometry without curves. Caller takes ownership
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsCurve *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const override { Q_UNUSED( part );  Q_UNUSED( ring ); return numPoints(); }
@@ -116,16 +116,16 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual QgsRectangle boundingBox() const override;
 
     /** Returns the x-coordinate of the specified node in the line string.
-    * @param index index of node, where the first node in the line is 0
-    * @returns x-coordinate of node, or 0.0 if index is out of bounds
-    * @see setXAt()
+    * \param index index of node, where the first node in the line is 0
+    * \returns x-coordinate of node, or 0.0 if index is out of bounds
+    * \see setXAt()
     */
     virtual double xAt( int index ) const = 0;
 
     /** Returns the y-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0
-     * @returns y-coordinate of node, or 0.0 if index is out of bounds
-     * @see setYAt()
+     * \param index index of node, where the first node in the line is 0
+     * \returns y-coordinate of node, or 0.0 if index is out of bounds
+     * \see setYAt()
      */
     virtual double yAt( int index ) const = 0;
 

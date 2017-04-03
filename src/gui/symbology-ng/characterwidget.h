@@ -52,34 +52,99 @@
 #include <QSize>
 #include <QString>
 #include <QWidget>
+#include "qgis.h"
 #include "qgis_gui.h"
 
-QT_BEGIN_NAMESPACE
 class QMouseEvent;
 class QPaintEvent;
-QT_END_NAMESPACE
 
-//! \ingroup gui
+/**
+ * \ingroup gui
+ *
+ * A widget for displaying characters available in a preset font, and allowing
+ * users to select an individual character.
+ */
 class GUI_EXPORT CharacterWidget : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY( QChar character READ character WRITE setCharacter NOTIFY characterSelected )
+    Q_PROPERTY( int columns READ columns WRITE setColumns )
+    Q_PROPERTY( QFont font READ font WRITE setFont )
 
   public:
-    CharacterWidget( QWidget *parent = nullptr );
+
+    /**
+     * Constructor for CharacterWidget.
+     */
+    CharacterWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
     QSize sizeHint() const override;
 
-    int getColumns() const { return columns; }
-    int getSquareSize() const { return squareSize; }
+    /**
+     * Returns the number of columns of characters shown in the widget.
+     */
+    int columns() const { return mColumns; }
+
+    /**
+     * Returns the size (in pixels) of the square used to render each character preview.
+     */
+    int squareSize() const { return mSquareSize; }
+
+    /**
+     * Returns the currently selected character in the widget.
+     * \see setCharacter()
+     * \since QGIS 3.0
+     */
+    QChar character() const { return QChar( mLastKey ); }
+
+    /**
+     * Returns the font shown in the widget
+     * \see setFont()
+     * \since QGIS 3.0
+     */
+    QFont font() const { return mDisplayFont; }
 
   public slots:
-    void updateFont( const QFont &font );
-    void updateSize( double fontSize );
-    void updateStyle( const QString &fontStyle );
+
+    /**
+     * Sets the \a font to show in the widget.
+     * \see font()
+     * \since QGIS 3.0
+     */
+    void setFont( const QFont &font );
+
+    /**
+     * Sets the font size (in points) to render in the widget.
+     * \since QGIS 3.0
+     */
+    void setFontSize( double fontSize );
+
+    /**
+     * Sets the font style to show in the widget.
+     * \since QGIS 3.0
+     */
+    void setFontStyle( const QString &fontStyle );
+
     void updateFontMerging( bool enable );
-    void updateColumns( int cols );
+
+    /**
+     * Sets the number of columns of characters to show in the widget.
+     * \since QGIS 3.0
+     */
+    void setColumns( int columns );
+
+    /**
+     * Sets the currently selected \a character in the widget.
+     * \see character()
+     * \see characterSelected()
+     */
     void setCharacter( QChar character );
 
   signals:
+
+    /**
+     * Emitted when a character is selected in the widget.
+     */
     void characterSelected( QChar character );
 
   protected:
@@ -88,11 +153,10 @@ class GUI_EXPORT CharacterWidget : public QWidget
     void paintEvent( QPaintEvent *event ) override;
 
   private:
-    QFont displayFont;
-    int columns;
-    int lastKey;
-    int squareSize;
+    QFont mDisplayFont;
+    int mColumns = 16;
+    int mLastKey = -1;
+    int mSquareSize = 24;
 };
-//! [0]
 
 #endif

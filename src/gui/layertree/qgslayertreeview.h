@@ -41,7 +41,7 @@ class QgsMapLayer;
  * Allows the client to specify a context menu provider with custom actions. Also it comes
  * with a set of default actions that can be used when building context menu.
  *
- * @see QgsLayerTreeModel
+ * \see QgsLayerTreeModel
  * \since QGIS 2.4
  */
 class GUI_EXPORT QgsLayerTreeView : public QTreeView
@@ -140,7 +140,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
  * Implementation of this interface can be implemented to allow QgsLayerTreeView
  * instance to provide custom context menus (opened upon right-click).
  *
- * @see QgsLayerTreeView
+ * \see QgsLayerTreeView
  * \since QGIS 2.4
  */
 class GUI_EXPORT QgsLayerTreeViewMenuProvider

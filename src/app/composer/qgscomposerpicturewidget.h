@@ -64,7 +64,7 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void setPicRotationSpinValue( double r );
 
     /** Load SVG and pixel-based image previews
-     * @param collapsed Whether the parent group box is collapsed */
+     * \param collapsed Whether the parent group box is collapsed */
     void loadPicturePreviews( bool collapsed );
 
     void on_mFillColorButton_colorChanged( const QColor &color );

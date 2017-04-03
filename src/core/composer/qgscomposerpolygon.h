@@ -37,13 +37,13 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
   public:
 
     /** Constructor
-     * @param c parent composition
+     * \param c parent composition
      */
     QgsComposerPolygon( QgsComposition *c );
 
     /** Constructor
-     * @param polygon nodes of the shape
-     * @param c parent composition
+     * \param polygon nodes of the shape
+     * \param c parent composition
      */
     QgsComposerPolygon( const QPolygonF &polygon, QgsComposition *c );
 

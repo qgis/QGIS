@@ -40,8 +40,8 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     /**
      * Create a new order by dialog. This helps building order by structures.
      *
-     * @param layer  The vector layer for which the order by should be produced
-     * @param parent The parent widget, optional
+     * \param layer  The vector layer for which the order by should be produced
+     * \param parent The parent widget, optional
      */
     QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 

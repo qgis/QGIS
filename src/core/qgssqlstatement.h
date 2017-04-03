@@ -79,29 +79,29 @@ class CORE_EXPORT QgsSQLStatement
     QString dump() const;
 
     /** Returns a quoted column reference (in double quotes)
-     * @see quotedString(), quotedIdentifierIfNeeded()
+     * \see quotedString(), quotedIdentifierIfNeeded()
      */
     static QString quotedIdentifier( QString name );
 
     /** Returns a quoted column reference (in double quotes) if needed, or
      * otherwise the original string.
-     * @see quotedString(), quotedIdentifier()
+     * \see quotedString(), quotedIdentifier()
      */
     static QString quotedIdentifierIfNeeded( const QString &name );
 
     /** Remove double quotes from an identifier.
-     * @see quotedIdentifier()
+     * \see quotedIdentifier()
      */
     static QString stripQuotedIdentifier( QString text );
 
     /** Returns a quoted version of a string (in single quotes)
-     * @see quotedIdentifier(), quotedIdentifierIfNeeded()
+     * \see quotedIdentifier(), quotedIdentifierIfNeeded()
      */
     static QString quotedString( QString text );
 
     /**
-     * @brief list of unary operators
-     * @note if any change is made here, the definition of QgsSQLStatement::UnaryOperatorText[] must be adapted.
+     * \brief list of unary operators
+     * \note if any change is made here, the definition of QgsSQLStatement::UnaryOperatorText[] must be adapted.
      */
     enum UnaryOperator
     {
@@ -110,8 +110,8 @@ class CORE_EXPORT QgsSQLStatement
     };
 
     /**
-     * @brief list of binary operators
-     * @note if any change is made here, the definition of QgsSQLStatement::BinaryOperatorText[] must be adapted.
+     * \brief list of binary operators
+     * \note if any change is made here, the definition of QgsSQLStatement::BinaryOperatorText[] must be adapted.
      */
     enum BinaryOperator
     {
@@ -147,8 +147,8 @@ class CORE_EXPORT QgsSQLStatement
     };
 
     /**
-     * @brief list of join types
-     * @note if any change is made here, the definition of QgsSQLStatement::JoinTypeText[] must be adapted.
+     * \brief list of join types
+     * \note if any change is made here, the definition of QgsSQLStatement::JoinTypeText[] must be adapted.
      */
     enum JoinType
     {
@@ -162,13 +162,13 @@ class CORE_EXPORT QgsSQLStatement
       jtFull
     };
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static const char *BINARY_OPERATOR_TEXT[];
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static const char *UNARY_OPERATOR_TEXT[];
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static const char *JOIN_TYPE_TEXT[];
 
     //////
@@ -203,14 +203,14 @@ class CORE_EXPORT QgsSQLStatement
         /**
          * Abstract virtual that returns the type of this node.
          *
-         * @return The type of this node
+         * \returns The type of this node
          */
         virtual NodeType nodeType() const = 0;
 
         /**
          * Abstract virtual dump method
          *
-         * @return A statement which represents this node as string
+         * \returns A statement which represents this node as string
          */
         virtual QString dump() const = 0;
 
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsSQLStatement
          * generated in prepare and context related.
          * Ownership is transferred to the caller.
          *
-         * @return a deep copy of this node.
+         * \returns a deep copy of this node.
          */
         virtual Node *clone() const = 0;
 
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsSQLStatement
          *
          *     v.visit( self)
          *
-         * @param v A visitor that visits this node.
+         * \param v A visitor that visits this node.
          */
         virtual void accept( Visitor &v ) const = 0;
     };

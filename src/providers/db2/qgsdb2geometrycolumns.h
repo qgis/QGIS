@@ -22,8 +22,8 @@
 #include <QtSql>
 
 /**
- * @class QgsDb2GeometryColumns
- * @brief Data provider for DB2 server.
+ * \class QgsDb2GeometryColumns
+ * \brief Data provider for DB2 server.
  */
 
 static const int ENV_LUW = 1, ENV_ZOS = 2;

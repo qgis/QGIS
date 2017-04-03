@@ -104,19 +104,19 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     /**
      * Draws symbol on the left side of the item
-     * @param settings Legend layout configuration
-     * @param ctx Context for rendering - may be null if only doing layout without actual rendering
-     * @param itemHeight Minimal height of the legend item - used for correct positioning when rendering
-     * @return Real size of the symbol (may be bigger than "normal" symbol size from settings)
+     * \param settings Legend layout configuration
+     * \param ctx Context for rendering - may be null if only doing layout without actual rendering
+     * \param itemHeight Minimal height of the legend item - used for correct positioning when rendering
+     * \returns Real size of the symbol (may be bigger than "normal" symbol size from settings)
      */
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
     /**
      * Draws label on the right side of the item
-     * @param settings Legend layout configuration
-     * @param ctx Context for rendering - may be null if only doing layout without actual rendering
-     * @param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
-     * @return Size of the label (may span multiple lines)
+     * \param settings Legend layout configuration
+     * \param ctx Context for rendering - may be null if only doing layout without actual rendering
+     * \param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
+     * \returns Size of the label (may span multiple lines)
      */
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 
@@ -187,15 +187,15 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QSize minimumIconSize( QgsRenderContext *context ) const;
 
     /** Returns the symbol used by the legend node.
-     * @see setSymbol()
+     * \see setSymbol()
      * \since QGIS 2.14
      */
     const QgsSymbol *symbol() const;
 
     /** Sets the symbol to be used by the legend node. The symbol change is also propagated
      * to the associated vector layer's renderer.
-     * @param symbol new symbol for node. Ownership is transferred.
-     * @see symbol()
+     * \param symbol new symbol for node. Ownership is transferred.
+     * \see symbol()
      * \since QGIS 2.14
      */
     void setSymbol( QgsSymbol *symbol );
@@ -204,13 +204,13 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     /** Checks all items belonging to the same layer as this node.
      * \since QGIS 2.14
-     * @see uncheckAllItems()
+     * \see uncheckAllItems()
      */
     void checkAllItems();
 
     /** Unchecks all items belonging to the same layer as this node.
      * \since QGIS 2.14
-     * @see checkAllItems()
+     * \see checkAllItems()
      */
     void uncheckAllItems();
 
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QgsRenderContext *createTemporaryRenderContext() const;
 
     /** Sets all items belonging to the same layer as this node to the same check state.
-     * @param state check state
+     * \param state check state
      */
     void checkAll( bool state );
 };
@@ -314,8 +314,8 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
   public:
 
     /** Constructor for QgsWmsLegendNode.
-     * @param nodeLayer layer node
-     * @param parent parent object
+     * \param nodeLayer layer node
+     * \param parent parent object
      */
     QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent = nullptr );
 

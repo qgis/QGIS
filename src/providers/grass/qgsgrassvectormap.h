@@ -63,7 +63,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     int userCount() const;
 
     /** Get current number of lines.
-     *   @return number of lines */
+     *   \returns number of lines */
     int numLines();
     int numAreas();
     // 3D map with z coordinates
@@ -89,7 +89,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QMap<int, QList<QgsGrassUndoCommand *> > &undoCommands() { return mUndoCommands; }
 
     /** Get geometry of line.
-     * @return geometry (point,line or polygon(GV_FACE)) or 0 */
+     * \returns geometry (point,line or polygon(GV_FACE)) or 0 */
     QgsAbstractGeometry *lineGeometry( int id );
     QgsAbstractGeometry *nodeGeometry( int id );
     QgsAbstractGeometry *areaGeometry( int id );
@@ -114,13 +114,13 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     void clearUndoCommands();
 
     /** Get layer, layer is created and loaded if not yet.
-     *  @param field
-     *  @return pointer to layer or 0 if layer doe not exist */
+     *  \param field
+     *  \returns pointer to layer or 0 if layer doe not exist */
     QgsGrassVectorMapLayer *openLayer( int field );
 
     /** Close layer and release cached data if there are no more users and close map
      *  if there are no more map users.
-     *  @param layer */
+     *  \param layer */
     void closeLayer( QgsGrassVectorMapLayer *layer );
 
     /** Update map. Close and reopen vector and refresh layers.
@@ -141,8 +141,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QString toString();
 
     /** Get topology symbol code
-     * @param lid line or area number
-     * @param type geometry type */
+     * \param lid line or area number
+     * \param type geometry type */
     TopoSymbol topoSymbol( int lid );
 
     static QString topoSymbolFieldName() { return QStringLiteral( "topo_symbol" ) ; }
@@ -227,8 +227,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapStore
     static void setStore( QgsGrassVectorMapStore *store ) { sStore = store; }
 
     /** Open map.
-     *  @param grassObject
-     *  @return map, the map may be invalide  */
+     *  \param grassObject
+     *  \returns map, the map may be invalide  */
     QgsGrassVectorMap *openMap( const QgsGrassObject &grassObject );
 
   private:

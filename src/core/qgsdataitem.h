@@ -82,27 +82,27 @@ class CORE_EXPORT QgsDataItem : public QObject
     State state() const;
 
     /** Set item state. It also take care about starting/stopping loading icon animation.
-     * @param state
+     * \param state
      * \since QGIS 2.8
      */
     virtual void setState( State state );
 
     /** Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
-     * @param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
-     * @param refresh - set to true to refresh populated item, emitting relevant signals to the model
-     * @see deleteChildItem()
+     * \param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
+     * \param refresh - set to true to refresh populated item, emitting relevant signals to the model
+     * \see deleteChildItem()
      */
     virtual void addChildItem( QgsDataItem *child, bool refresh = false );
 
     /** Removes and deletes a child item, emitting relevant signals to the model.
-     * @param child child to remove. Item must exist as a current child.
-     * @see addChildItem()
+     * \param child child to remove. Item must exist as a current child.
+     * \see addChildItem()
      */
     virtual void deleteChildItem( QgsDataItem *child );
 
     /** Removes a child item and returns it without deleting it. Emits relevant signals to model as required.
-     * @param child child to remove
-     * @returns pointer to the removed item or null if no such item was found
+     * \param child child to remove
+     * \returns pointer to the removed item or null if no such item was found
      */
     virtual QgsDataItem *removeChildItem( QgsDataItem *child );
 
@@ -119,27 +119,27 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /** Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
      * Subclasses should override this and handleDrop() to accept dropped layers.
-     * @see handleDrop()
+     * \see handleDrop()
      */
     virtual bool acceptDrop() { return false; }
 
     /** Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
      * accept dropped layers.
-     * @see acceptDrop()
+     * \see acceptDrop()
      */
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
 
     /** Returns true if the item may be dragged.
      * Default implementation returns false.
      * A draggable item has to implement mimeUri() that will be used to pass data.
-     * @see mimeUri()
+     * \see mimeUri()
      * \since QGIS 3.0
      */
     virtual bool hasDragEnabled() const { return false; }
 
     /** Return mime URI for the data item.
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
-     * @see hasDragEnabled()
+     * \see hasDragEnabled()
      * \since QGIS 3.0
      */
     virtual QgsMimeDataUtils::Uri mimeUri() const { return QgsMimeDataUtils::Uri(); }
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void deleteLater();
 
     // Populate children using children vector created by createChildren()
-    // @param foreground run createChildren in foreground
+    // \param foreground run createChildren in foreground
     virtual void populate( bool foreground = false );
 
     //! Remove children recursively and set as not populated. This is used when refreshing collapsed items.
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconRaster();
     static QIcon iconDefault();
 
-    //! @return the layer name
+    //! \returns the layer name
     virtual QString layerName() const { return name(); }
 };
 
@@ -410,10 +410,10 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     /** Constructor.
-     * @param parent
-     * @param name directory name
-     * @param dirPath path to directory in file system
-     * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
+     * \param parent
+     * \param name directory name
+     * \param dirPath path to directory in file system
+     * \param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
     virtual void setState( State state ) override;
@@ -450,10 +450,10 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
   public:
 
     /**
-     * @brief A data item holding a reference to a QGIS project file.
-     * @param parent The parent data item.
-     * @param name The name of the of the project. Displayed to the user.
-     * @param path The full path to the project.
+     * \brief A data item holding a reference to a QGIS project file.
+     * \param parent The parent data item.
+     * \param name The name of the of the project. Displayed to the user.
+     * \param path The full path to the project.
      */
     QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
 
@@ -512,13 +512,13 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 
     /**
      * Adds a new directory to the favorites group.
-     * @see removeDirectory()
+     * \see removeDirectory()
      */
     void addDirectory( const QString &directory );
 
     /**
      * Removes an existing directory from the favorites group.
-     * @see addDirectory()
+     * \see addDirectory()
      */
     void removeDirectory( QgsDirectoryItem *item );
 
@@ -548,7 +548,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     QStringList getZipFileList();
 
-    //! @note not available via Python bindings
+    //! \note not available via Python bindings
     static QVector<dataItem_t *> sDataItemPtr;
     static QStringList sProviderNames;
 
@@ -561,7 +561,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 
     /**
     * Creates a new data item from the specified path.
-    * @note available in Python as itemFromFilePath
+    * \note available in Python as itemFromFilePath
     */
     static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &filePath, const QString &name, const QString &path );
 

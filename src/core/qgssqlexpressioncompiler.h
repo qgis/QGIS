@@ -57,8 +57,8 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /** Constructor for expression compiler.
-     * @param fields fields from provider
-     * @param flags flags which control how expression is compiled
+     * \param fields fields from provider
+     * \param flags flags which control how expression is compiled
      */
     explicit QgsSqlExpressionCompiler( const QgsFields &fields, QgsSqlExpressionCompiler::Flags flags = Flags() );
     virtual ~QgsSqlExpressionCompiler() = default;
@@ -76,37 +76,37 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     /** Returns a quoted column identifier, in the format expected by the provider.
      * Derived classes should override this if special handling of column identifiers
      * is required.
-     * @see quotedValue()
+     * \see quotedValue()
      */
     virtual QString quotedIdentifier( const QString &identifier );
 
     /** Returns a quoted attribute value, in the format expected by the provider.
      * Derived classes should override this if special handling of attribute values is required.
-     * @param value value to quote
-     * @param ok wil be set to true if value can be compiled
-     * @see quotedIdentifier()
+     * \param value value to quote
+     * \param ok wil be set to true if value can be compiled
+     * \see quotedIdentifier()
      */
     virtual QString quotedValue( const QVariant &value, bool &ok );
 
     /** Compiles an expression node and returns the result of the compilation.
-     * @param node expression node to compile
-     * @param str string representing compiled node should be stored in this parameter
-     * @returns result of node compilation
+     * \param node expression node to compile
+     * \param str string representing compiled node should be stored in this parameter
+     * \returns result of node compilation
      */
     virtual Result compileNode( const QgsExpression::Node *node, QString &str );
 
     /** Return the SQL function for the expression function.
      * Derived classes should override this to help compile functions
-     * @param fnName expression function name
-     * @returns the SQL function name
+     * \param fnName expression function name
+     * \returns the SQL function name
      */
     virtual QString sqlFunctionFromFunctionName( const QString &fnName ) const;
 
     /** Return the Arguments for SQL function for the expression function.
      * Derived classes should override this to help compile functions
-     * @param fnName expression function name
-     * @param fnArgs arguments from expression
-     * @returns the arguments updated for SQL Function
+     * \param fnName expression function name
+     * \param fnArgs arguments from expression
+     * \returns the arguments updated for SQL Function
      */
     virtual QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const;
 

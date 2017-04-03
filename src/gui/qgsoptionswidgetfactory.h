@@ -68,34 +68,34 @@ class GUI_EXPORT QgsOptionsWidgetFactory
     virtual ~QgsOptionsWidgetFactory() = default;
 
     /**
-     * @brief The icon that will be shown in the UI for the panel.
-     * @return A QIcon for the panel icon.
-     * @see setIcon()
+     * \brief The icon that will be shown in the UI for the panel.
+     * \returns A QIcon for the panel icon.
+     * \see setIcon()
      */
     virtual QIcon icon() const { return mIcon; }
 
     /**
      * Set the \a icon to show in the interface for the factory object.
-     * @see icon()
+     * \see icon()
      */
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     /**
      * The title of the panel.
-     * @see setTitle()
+     * \see setTitle()
      */
     virtual QString title() const { return mTitle; }
 
     /**
      * Set the \a title for the interface.
-     * @see title()
+     * \see title()
      */
     void setTitle( const QString &title ) { mTitle = title; }
 
     /**
-     * @brief Factory function to create the widget on demand as needed by the options dialog.
-     * @param parent The parent of the widget.
-     * @return A new widget to show as a page in the options dialog.
+     * \brief Factory function to create the widget on demand as needed by the options dialog.
+     * \param parent The parent of the widget.
+     * \returns A new widget to show as a page in the options dialog.
      */
     virtual QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const = 0;
 

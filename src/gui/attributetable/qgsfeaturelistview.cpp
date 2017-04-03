@@ -219,12 +219,6 @@ void QgsFeatureListView::repaintRequested()
   setDirtyRegion( viewport()->rect() );
 }
 
-/*!
-    This function is called with the given \a event when a mouse move event is
-    sent to the widget. If a selection is in progress and new items are moved
-    over the selection is extended; if a drag is in progress it is continued.
-*/
-
 void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 {
   QPoint pos = event->pos();
@@ -241,13 +235,6 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
   }
 }
 
-/*!
-    This function is called with the given \a event when a mouse button is released,
-    after a mouse press event on the widget. If a user presses the mouse inside your
-    widget and then drags the mouse to another location before releasing the mouse button,
-    your widget receives the release event. The function will emit the clicked() signal if an
-    item was being pressed.
-*/
 void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
 {
   Q_UNUSED( event );

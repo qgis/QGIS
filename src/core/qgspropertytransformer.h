@@ -81,28 +81,28 @@ class CORE_EXPORT QgsCurveTransform
 
     /**
      * Returns a list of the control points for the transform.
-     * @see setControlPoints()
+     * \see setControlPoints()
      */
     QList< QgsPoint > controlPoints() const { return mControlPoints; }
 
     /**
      * Sets the list of control points for the transform. Any existing
      * points are removed.
-     * @see controlPoints()
+     * \see controlPoints()
      */
     void setControlPoints( const QList< QgsPoint > &points );
 
     /**
      * Adds a control point to the transform. Behavior is undefined if duplicate
      * x values exist in the control points list.
-     * @see removeControlPoint()
+     * \see removeControlPoint()
      */
     void addControlPoint( double x, double y );
 
     /**
      * Removes a control point from the transform. This will have no effect if a
      * matching control point does not exist.
-     * @see addControlPoint()
+     * \see addControlPoint()
      */
     void removeControlPoint( double x, double y );
 
@@ -120,17 +120,17 @@ class CORE_EXPORT QgsCurveTransform
 
     /**
      * Reads the curve's state from an XML element.
-     * @param elem source DOM element for transform's state
-     * @param doc DOM document
-     * @see writeXml()
+     * \param elem source DOM element for transform's state
+     * \param doc DOM document
+     * \see writeXml()
     */
     bool readXml( const QDomElement &elem, const QDomDocument &doc );
 
     /**
      * Writes the current state of the transform into an XML element
-     * @param transformElem destination element for the transform's state
-     * @param doc DOM document
-     * @see readXml()
+     * \param transformElem destination element for the transform's state
+     * \param doc DOM document
+     * \see readXml()
     */
     bool writeXml( QDomElement &transformElem, QDomDocument &doc ) const;
 
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsCurveTransform
      * Saves this curve transformer to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      *
-     * @see loadVariant()
+     * \see loadVariant()
      */
     QVariant toVariant() const;
 
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsCurveTransform
      * Load this curve transformer from a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to load it from an XML document.
      *
-     * @see toVariant()
+     * \see toVariant()
      */
     bool loadVariant( const QVariant &transformer );
 
@@ -195,14 +195,14 @@ class CORE_EXPORT QgsPropertyTransformer
 
     /**
      * Factory method for creating a new property transformer of the specified type.
-     * @param type transformer type to create
+     * \param type transformer type to create
      */
     static QgsPropertyTransformer *create( Type type ) SIP_FACTORY;
 
     /**
      * Constructor for QgsPropertyTransformer
-     * @param minValue minimum expected value from source property
-     * @param maxValue maximum expected value from source property
+     * \param minValue minimum expected value from source property
+     * \param maxValue maximum expected value from source property
      */
     QgsPropertyTransformer( double minValue = 0.0, double maxValue = 1.0 );
 
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsPropertyTransformer
      * Loads this transformer from a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      *
-     * @see loadVariant()
+     * \see loadVariant()
      */
     virtual bool loadVariant( const QVariant &transformer );
 
@@ -236,44 +236,44 @@ class CORE_EXPORT QgsPropertyTransformer
      * Saves this transformer to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      *
-     * @see toVariant()
+     * \see toVariant()
      */
     virtual QVariant toVariant() const;
 
     /**
      * Returns the minimum value expected by the transformer.
-     * @see maxValue()
-     * @see setMinValue()
+     * \see maxValue()
+     * \see setMinValue()
      */
     double minValue() const { return mMinValue; }
 
     /**
      * Sets the minimum value expected by the transformer.
-     * @param min minimum value
-     * @see setMaxValue()
-     * @see minValue()
+     * \param min minimum value
+     * \see setMaxValue()
+     * \see minValue()
      */
     void setMinValue( double min ) { mMinValue = min; }
 
     /**
      * Returns the maximum value expected by the transformer.
-     * @see minValue()
-     * @see setMaxValue()
+     * \see minValue()
+     * \see setMaxValue()
      */
     double maxValue() const { return mMaxValue; }
 
     /**
      * Sets the maximum value expected by the transformer.
-     * @param max maximum value
-     * @see setMinValue()
-     * @see maxValue()
+     * \param max maximum value
+     * \see setMinValue()
+     * \see maxValue()
      */
     void setMaxValue( double max ) { mMaxValue = max; }
 
     /**
      * Returns the curve transform applied to input values before they are transformed
      * by the individual transform subclasses.
-     * @see setCurveTransform()
+     * \see setCurveTransform()
      */
     QgsCurveTransform *curveTransform() const { return mCurveTransform.get(); }
 
@@ -281,15 +281,15 @@ class CORE_EXPORT QgsPropertyTransformer
      * Sets a curve transform to apply to input values before they are transformed
      * by the individual transform subclasses. Ownership of \a transform is transferred
      * to the property transformer.
-     * @see curveTransform()
+     * \see curveTransform()
      */
     void setCurveTransform( QgsCurveTransform *transform SIP_TRANSFER ) { mCurveTransform.reset( transform ); }
 
     /**
      * Calculates the transform of a value. Derived classes must implement this to perform their transformations
      * on input values
-     * @param context expression context
-     * @param value input value to transform
+     * \param context expression context
+     * \param value input value to transform
      */
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const = 0;
 
@@ -301,14 +301,14 @@ class CORE_EXPORT QgsPropertyTransformer
 
     /**
      * Attempts to parse an expression into a corresponding property transformer.
-     * @param expression expression to parse
-     * @param baseExpression will be set to the component of the source expression which
+     * \param expression expression to parse
+     * \param baseExpression will be set to the component of the source expression which
      * is used to calculate the input to the property transformer. This will be set to an
      * empty string if a field reference is the transformer input.
-     * @param fieldName will be set to a field name which is used to calculate the input
+     * \param fieldName will be set to a field name which is used to calculate the input
      * to the property transformer. This will be set to an
      * empty string if an expression is the transformer input.
-     * @returns corresponding property transformer, or nullptr if expression could not
+     * \returns corresponding property transformer, or nullptr if expression could not
      * be parsed to a transformer.
      */
     static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
@@ -346,12 +346,12 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
 
     /**
      * Constructor for QgsGenericNumericTransformer.
-     * @param minValue minimum expected input value
-     * @param maxValue maximum expected input value
-     * @param minOutput minimum value to return
-     * @param maxOutput maximum value to return
-     * @param nullOutput value to return for null inputs
-     * @param exponent optional exponential for non-linear scaling
+     * \param minValue minimum expected input value
+     * \param maxValue maximum expected input value
+     * \param minOutput minimum value to return
+     * \param maxOutput maximum value to return
+     * \param nullOutput value to return for null inputs
+     * \param exponent optional exponential for non-linear scaling
      */
     QgsGenericNumericTransformer( double minValue = 0.0,
                                   double maxValue = 1.0,
@@ -375,77 +375,77 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
 
     /**
      * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
-     * @param expression expression to parse
-     * @param baseExpression will be set to the component of the source expression which
+     * \param expression expression to parse
+     * \param baseExpression will be set to the component of the source expression which
      * is used to calculate the input to the property transformer. This will be set to an
      * empty string if a field reference is the transformer input.
-     * @param fieldName will be set to a field name which is used to calculate the input
+     * \param fieldName will be set to a field name which is used to calculate the input
      * to the property transformer. This will be set to an
      * empty string if an expression is the transformer input.
-     * @returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
+     * \returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
      * be parsed to a size scale transformer.
      */
     static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
 
     /**
      * Calculates the size corresponding to a specific \a input value.
-     * @returns calculated size using size scale transformer's parameters and type
+     * \returns calculated size using size scale transformer's parameters and type
      */
     double value( double input ) const;
 
     /**
      * Returns the minimum calculated size.
-     * @see setMinSize()
-     * @see maxSize()
+     * \see setMinSize()
+     * \see maxSize()
      */
     double minOutputValue() const { return mMinOutput; }
 
     /**
      * Sets the minimum calculated size.
-     * @param size minimum size
-     * @see minSize()
-     * @see setMaxSize()
+     * \param size minimum size
+     * \see minSize()
+     * \see setMaxSize()
      */
     void setMinOutputValue( double size ) { mMinOutput = size; }
 
     /**
      * Returns the maximum calculated size.
-     * @see minSize()
+     * \see minSize()
      */
     double maxOutputValue() const { return mMaxOutput; }
 
     /**
      * Sets the maximum calculated size.
-     * @param size maximum size
-     * @see maxSize()
-     * @see setMinSize()
+     * \param size maximum size
+     * \see maxSize()
+     * \see setMinSize()
      */
     void setMaxOutputValue( double size ) { mMaxOutput = size; }
 
     /**
      * Returns the size value when an expression evaluates to NULL.
-     * @see setNullSize()
+     * \see setNullSize()
      */
     double nullOutputValue() const { return mNullOutput; }
 
     /**
      * Sets the size value for when an expression evaluates to NULL.
-     * @param size null size
-     * @see nullSize()
+     * \param size null size
+     * \see nullSize()
      */
     void setNullOutputValue( double size ) { mNullOutput = size; }
 
     /**
      * Returns the exponent for an exponential expression.
-     * @see setExponent()
-     * @see type()
+     * \see setExponent()
+     * \see type()
      */
     double exponent() const { return mExponent; }
 
     /**
      * Sets the exponent for an exponential expression.
-     * @param exponent exponent
-     * @see exponent()
+     * \param exponent exponent
+     * \see exponent()
      */
     void setExponent( double exponent ) { mExponent = exponent; }
 
@@ -480,13 +480,13 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
 
     /**
      * Constructor for QgsSizeScaleTransformer.
-     * @param type scaling type
-     * @param minValue minimum expected value
-     * @param maxValue maximum expected value
-     * @param minSize minimum size to return
-     * @param maxSize maximum size to return
-     * @param nullSize size to return for null values
-     * @param exponent exponent for Exponential scaling method
+     * \param type scaling type
+     * \param minValue minimum expected value
+     * \param maxValue maximum expected value
+     * \param minSize minimum size to return
+     * \param maxSize maximum size to return
+     * \param nullSize size to return for null values
+     * \param exponent exponent for Exponential scaling method
      */
     QgsSizeScaleTransformer( ScaleType type = Linear,
                              double minValue = 0.0,
@@ -511,93 +511,93 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
 
     /**
      * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
-     * @param expression expression to parse
-     * @param baseExpression will be set to the component of the source expression which
+     * \param expression expression to parse
+     * \param baseExpression will be set to the component of the source expression which
      * is used to calculate the input to the property transformer. This will be set to an
      * empty string if a field reference is the transformer input.
-     * @param fieldName will be set to a field name which is used to calculate the input
+     * \param fieldName will be set to a field name which is used to calculate the input
      * to the property transformer. This will be set to an
      * empty string if an expression is the transformer input.
-     * @returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
+     * \returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
      * be parsed to a size scale transformer.
      */
     static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
 
     /**
      * Calculates the size corresponding to a specific value.
-     * @param value value to calculate size for
-     * @returns calculated size using size scale transformer's parameters and type
+     * \param value value to calculate size for
+     * \returns calculated size using size scale transformer's parameters and type
      */
     double size( double value ) const;
 
     /**
      * Returns the minimum calculated size.
-     * @see setMinSize()
-     * @see maxSize()
+     * \see setMinSize()
+     * \see maxSize()
      */
     double minSize() const { return mMinSize; }
 
     /**
      * Sets the minimum calculated size.
-     * @param size minimum size
-     * @see minSize()
-     * @see setMaxSize()
+     * \param size minimum size
+     * \see minSize()
+     * \see setMaxSize()
      */
     void setMinSize( double size ) { mMinSize = size; }
 
     /**
      * Returns the maximum calculated size.
-     * @see minSize()
+     * \see minSize()
      */
     double maxSize() const { return mMaxSize; }
 
     /**
      * Sets the maximum calculated size.
-     * @param size maximum size
-     * @see maxSize()
-     * @see setMinSize()
+     * \param size maximum size
+     * \see maxSize()
+     * \see setMinSize()
      */
     void setMaxSize( double size ) { mMaxSize = size; }
 
     /**
      * Returns the size value when an expression evaluates to NULL.
-     * @see setNullSize()
+     * \see setNullSize()
      */
     double nullSize() const { return mNullSize; }
 
     /**
      * Sets the size value for when an expression evaluates to NULL.
-     * @param size null size
-     * @see nullSize()
+     * \param size null size
+     * \see nullSize()
      */
     void setNullSize( double size ) { mNullSize = size; }
 
     /**
      * Returns the exponent for an exponential expression.
-     * @see setExponent()
-     * @see type()
+     * \see setExponent()
+     * \see type()
      */
     double exponent() const { return mExponent; }
 
     /**
      * Sets the exponent for an exponential expression.
-     * @param exponent exponent
-     * @see exponent()
+     * \param exponent exponent
+     * \see exponent()
      */
     void setExponent( double exponent ) { mExponent = exponent; }
 
     /**
      * Returns the size transformer's scaling type (the method used to calculate
      * the size from a value).
-     * @see setType()
+     * \see setType()
      */
     ScaleType type() const { return mType; }
 
     /**
      * Sets the size transformer's scaling type (the method used to calculate
      * the size from a value).
-     * @param type scale type
-     * @see type()
+     * \param type scale type
+     * \see type()
      */
     void setType( ScaleType type );
 
@@ -624,10 +624,10 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
 
     /**
      * Constructor for QgsColorRampTransformer.
-     * @param minValue minimum expected value
-     * @param maxValue maximum expected value
-     * @param ramp source color ramp. Ownership is transferred to the transformer.
-     * @param nullColor color to return for null values
+     * \param minValue minimum expected value
+     * \param maxValue maximum expected value
+     * \param ramp source color ramp. Ownership is transferred to the transformer.
+     * \param nullColor color to return for null values
      */
     QgsColorRampTransformer( double minValue = 0.0,
                              double maxValue = 1.0,
@@ -648,41 +648,41 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
 
     /**
      * Calculates the color corresponding to a specific value.
-     * @param value value to calculate color for
-     * @returns calculated color using transformer's parameters and type
+     * \param value value to calculate color for
+     * \returns calculated color using transformer's parameters and type
      */
     QColor color( double value ) const;
 
     /**
      * Returns the color ramp used for calculating property colors.
-     * @returns color ramp
-     * @see setColorRamp()
+     * \returns color ramp
+     * \see setColorRamp()
      */
     QgsColorRamp *colorRamp() const;
 
     /**
      * Sets the color ramp to use for calculating property colors.
-     * @param ramp color ramp, ownership of ramp is transferred to the transformer.
-     * @see colorRamp()
+     * \param ramp color ramp, ownership of ramp is transferred to the transformer.
+     * \see colorRamp()
      */
     void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /**
      * Returns the color corresponding to a null value.
-     * @see setNullColor()
+     * \see setNullColor()
      */
     QColor nullColor() const { return mNullColor; }
 
     /**
      * Sets the color corresponding to a null value.
-     * @param color null color
-     * @see nullSize()
+     * \param color null color
+     * \see nullSize()
      */
     void setNullColor( const QColor &color ) { mNullColor = color; }
 
     /**
      * Returns the color ramp's name.
-     * @see setRampName()
+     * \see setRampName()
      */
     QString rampName() const { return mRampName; }
 
@@ -690,7 +690,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
      * Sets the color ramp's \a name. The ramp name must be set to match
      * a color ramp available in the style database for conversion to expression
      * to work correctly.
-     * @see rampName()
+     * \see rampName()
      */
     void setRampName( const QString &name ) { mRampName = name; }
 

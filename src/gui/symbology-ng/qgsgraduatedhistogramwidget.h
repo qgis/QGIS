@@ -38,20 +38,20 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
   public:
 
     /** QgsGraduatedHistogramWidget constructor
-     * @param parent parent widget
+     * \param parent parent widget
      */
     QgsGraduatedHistogramWidget( QWidget *parent = nullptr );
 
     /** Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
      * The histogram will fetch the ranges from the renderer before every refresh.
-     * @param renderer associated QgsGraduatedSymbolRenderer
+     * \param renderer associated QgsGraduatedSymbolRenderer
      */
     void setRenderer( QgsGraduatedSymbolRenderer *renderer );
 
   signals:
 
     /** Emitted when the user modifies the graduated ranges using the histogram widget.
-     * @param rangesAdded true if the user has added ranges, false if the user has just
+     * \param rangesAdded true if the user has added ranges, false if the user has just
      * modified existing range breaks
      */
     void rangesModified( bool rangesAdded );

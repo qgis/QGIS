@@ -91,15 +91,15 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * Set the magnification factor.
-     * @param factor the factor of magnification
+     * \param factor the factor of magnification
      * \since QGIS 2.16
-     * @see magnificationFactor()
+     * \see magnificationFactor()
      */
     void setMagnificationFactor( double factor );
 
     //! Return the magnification factor.
     //! \since QGIS 2.16
-    //! @see setMagnificationFactor()
+    //! \see setMagnificationFactor()
     double magnificationFactor() const;
 
     //! Get list of layer IDs for map rendering
@@ -120,16 +120,16 @@ class CORE_EXPORT QgsMapSettings
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
     /** Get custom rendering flags. Layers might honour these to alter their rendering.
-     *  @returns custom flags strings, separated by ';'
+     *  \returns custom flags strings, separated by ';'
      * \since QGIS 2.16
-     * @see setCustomRenderFlags()
+     * \see setCustomRenderFlags()
      */
     QString customRenderFlags() const { return mCustomRenderFlags; }
 
     /** Sets the custom rendering flags. Layers might honour these to alter their rendering.
-     * @param customRenderFlags custom flags strings, separated by ';'
+     * \param customRenderFlags custom flags strings, separated by ';'
      * \since QGIS 2.16
-     * @see customRenderFlags()
+     * \see customRenderFlags()
      */
     void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
 
@@ -196,77 +196,77 @@ class CORE_EXPORT QgsMapSettings
 
     /** Sets the expression context. This context is used for all expression evaluation
      * associated with this map settings.
-     * @see expressionContext()
+     * \see expressionContext()
      * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
     /** Gets the expression context. This context should be used for all expression evaluation
      * associated with this map settings.
-     * @see setExpressionContext()
+     * \see setExpressionContext()
      * \since QGIS 2.12
      */
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
 
     // -- utility functions --
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     const QgsDatumTransformStore &datumTransformStore() const { return mDatumTransformStore; }
     QgsDatumTransformStore &datumTransformStore() { return mDatumTransformStore; }
 
     const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }
 
     /** Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
-     * @param layer The layer
-     * @param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
+     * \param layer The layer
+     * \param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
      * \since QGIS 2.12
      */
     double layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent = QgsRectangle() ) const;
 
     /**
-     * @brief transform bounding box from layer's CRS to output CRS
-     * @see layerToMapCoordinates( QgsMapLayer* layer, QgsRectangle rect ) if you want to transform a rectangle
-     * @return a bounding box (aligned rectangle) containing the transformed extent
+     * \brief transform bounding box from layer's CRS to output CRS
+     * \see layerToMapCoordinates( QgsMapLayer* layer, QgsRectangle rect ) if you want to transform a rectangle
+     * \returns a bounding box (aligned rectangle) containing the transformed extent
      */
     QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 
     /**
-     * @brief transform bounding box from output CRS to layer's CRS
-     * @see mapToLayerCoordinates( QgsMapLayer* layer,QgsRectangle rect ) if you want to transform a rectangle
-     * @return a bounding box (aligned rectangle) containing the transformed extent
+     * \brief transform bounding box from output CRS to layer's CRS
+     * \see mapToLayerCoordinates( QgsMapLayer* layer,QgsRectangle rect ) if you want to transform a rectangle
+     * \returns a bounding box (aligned rectangle) containing the transformed extent
      */
     QgsRectangle outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 
     /**
-     * @brief transform point coordinates from layer's CRS to output CRS
-     * @return the transformed point
+     * \brief transform point coordinates from layer's CRS to output CRS
+     * \returns the transformed point
      */
     QgsPoint layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
 
     /**
-     * @brief transform rectangle from layer's CRS to output CRS
-     * @see layerExtentToOutputExtent() if you want to transform a bounding box
-     * @return the transformed rectangle
+     * \brief transform rectangle from layer's CRS to output CRS
+     * \see layerExtentToOutputExtent() if you want to transform a bounding box
+     * \returns the transformed rectangle
      */
     QgsRectangle layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 
     /**
-     * @brief transform point coordinates from output CRS to layer's CRS
-     * @return the transformed point
+     * \brief transform point coordinates from output CRS to layer's CRS
+     * \returns the transformed point
      */
     QgsPoint mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
 
     /**
-     * @brief transform rectangle from output CRS to layer's CRS
-     * @see outputExtentToLayerExtent() if you want to transform a bounding box
-     * @return the transformed rectangle
+     * \brief transform rectangle from output CRS to layer's CRS
+     * \see outputExtentToLayerExtent() if you want to transform a bounding box
+     * \returns the transformed rectangle
      */
     QgsRectangle mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 
     /**
-     * @brief Return coordinate transform from layer's CRS to destination CRS
-     * @param layer
-     * @return transform - may be invalid if the transform is not needed
+     * \brief Return coordinate transform from layer's CRS to destination CRS
+     * \param layer
+     * \returns transform - may be invalid if the transform is not needed
      */
     QgsCoordinateTransform layerTransform( const QgsMapLayer *layer ) const;
 
@@ -280,13 +280,13 @@ class CORE_EXPORT QgsMapSettings
     void writeXml( QDomNode &node, QDomDocument &doc );
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
-    @param tolerance the segmentation tolerance*/
+    \param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
     //! Gets the segmentation tolerance applied when rendering curved geometries
     double segmentationTolerance() const { return mSegmentationTolerance; }
 
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    @param type the segmentation tolerance typename*/
+    \param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
     //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }

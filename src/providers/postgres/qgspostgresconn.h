@@ -187,7 +187,7 @@ class QgsPostgresConn : public QObject
 
   public:
     /*
-     * @param shared allow using a shared connection. Should never be
+     * \param shared allow using a shared connection. Should never be
      *        called from a thread other than the main one.
      *        An assertion guards against such programmatic error.
      */
@@ -270,13 +270,13 @@ class QgsPostgresConn : public QObject
     static QString quotedValue( const QVariant &value );
 
     /** Get the list of supported layers
-     * @param layers list to store layers in
-     * @param searchGeometryColumnsOnly only look for geometry columns which are
+     * \param layers list to store layers in
+     * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
-     * @param searchPublicOnly
-     * @param allowGeometrylessTables
-     * @param schema restrict layers to layers within specified schema
-     * @returns true if layers were fetched successfully
+     * \param searchPublicOnly
+     * \param allowGeometrylessTables
+     * \param schema restrict layers to layers within specified schema
+     * \returns true if layers were fetched successfully
      */
     bool supportedLayers( QVector<QgsPostgresLayerProperty> &layers,
                           bool searchGeometryColumnsOnly = true,
@@ -285,8 +285,8 @@ class QgsPostgresConn : public QObject
                           const QString &schema = QString() );
 
     /** Get the list of database schemas
-     * @param schemas list to store schemas in
-     * @returns true if schemas where fetched successfully
+     * \param schemas list to store schemas in
+     * \returns true if schemas where fetched successfully
      * \since QGIS 2.7
      */
     bool getSchemas( QList<QgsPostgresSchemaProperty> &schemas );
@@ -294,12 +294,12 @@ class QgsPostgresConn : public QObject
     void retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata );
 
     /** Gets information about the spatial tables
-     * @param searchGeometryColumnsOnly only look for geometry columns which are
+     * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
-     * @param searchPublicOnly
-     * @param allowGeometrylessTables
-     * @param schema restrict tables to those within specified schema
-     * @returns true if tables were successfully queried
+     * \param searchPublicOnly
+     * \param allowGeometrylessTables
+     * \param schema restrict tables to those within specified schema
+     * \returns true if tables were successfully queried
      */
     bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables,
                        const QString &schema = QString() );
@@ -395,7 +395,7 @@ class QgsPostgresConn : public QObject
     /**
      * Flag indicating whether data from binary cursors must undergo an
      * endian conversion prior to use
-     @note
+     \note
 
      XXX Umm, it'd be helpful to know what we're swapping from and to.
      XXX Presumably this means swapping from big-endian (network) byte order

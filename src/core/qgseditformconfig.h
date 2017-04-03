@@ -151,30 +151,30 @@ class CORE_EXPORT QgsEditFormConfig
      *   layer.setEditFormConfig(editFormConfig)
      * \endcode
      *
-     * @param widgetName  The name of the widget to configure
-     * @param config      The config to set for this widget
-     * @returns false if a field exists with the provided widgetName. In this case
+     * \param widgetName  The name of the widget to configure
+     * \param config      The config to set for this widget
+     * \returns false if a field exists with the provided widgetName. In this case
      *          QgsVectorLayer::setEditorWidgetSetup should be used.
      *
-     * @see QgsVectorLayer::setEditorWidgetSetup() for field configurations.
+     * \see QgsVectorLayer::setEditorWidgetSetup() for field configurations.
      */
     bool setWidgetConfig( const QString &widgetName, const QVariantMap &config );
 
     /**
      * Get the configuration for the editor widget with the given name.
      *
-     * @param widgetName The name of the widget.
+     * \param widgetName The name of the widget.
      *
-     * @return The configuration for the editor widget or an empty config if the field does not exist
+     * \returns The configuration for the editor widget or an empty config if the field does not exist
      */
     QVariantMap widgetConfig( const QString &widgetName ) const;
 
     /**
      * Remove the configuration for the editor widget with the given name
      *
-     * @param widgetName The name of the widget.
+     * \param widgetName The name of the widget.
      *
-     * @return true if a configuration has been removed
+     * \returns true if a configuration has been removed
      */
     bool removeWidgetConfig( const QString &widgetName );
 
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Get Python function for edit form initialization.
      * Will be looked up in a Python file relative to the project folder if it
      * includes a module name or if it's a pure function name it will searched
-     * in the Python code set with @link setInitCode @endlink.
+     * in the Python code set with setInitCode().
      */
     QString initFunction() const;
 
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Set Python function for edit form initialization.
      * Will be looked up in a Python file relative to the project folder if it
      * includes a module name or if it's a pure function name it will searched
-     * in the Python code set with @link setInitCode @endlink.
+     * in the Python code set with setInitCode().
      */
     void setInitFunction( const QString &function );
 
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Set Python code for edit form initialization.
      * Make sure that you also set the appropriate function name in
-     * @link setInitFunction @endlink
+     * setInitFunction().
      */
     void setInitCode( const QString &code );
 
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Set Python external file path for edit form initialization.
      * Make sure that you also set the appropriate function name in
-     * @link setInitFunction @endlink
+     * setInitFunction().
      */
     void setInitFilePath( const QString &filePath );
 

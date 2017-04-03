@@ -38,27 +38,27 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
 
     /**
      * Creates a new selection dialog.
-     * @param layer     The layer on which the selection is to be performed.
-     * @param startText A default expression text to be applied (Defaults to empty)
-     * @param parent parent object (owner)
+     * \param layer     The layer on which the selection is to be performed.
+     * \param startText A default expression text to be applied (Defaults to empty)
+     * \param parent parent object (owner)
      */
     QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent = nullptr );
 
     /**
      * The builder widget that is used by the dialog
-     * @return The builder widget that is used by the dialog
+     * \returns The builder widget that is used by the dialog
      */
     QgsExpressionBuilderWidget *expressionBuilder();
 
     /**
      * Sets the current expression text
-     * @param text the expression text to set
+     * \param text the expression text to set
      */
     void setExpressionText( const QString &text );
 
     /**
      * Returns the current expression text
-     * @return The expression text
+     * \returns The expression text
      */
     QString expressionText();
 
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
 
     /** Sets the message bar to display feedback from the dialog. This is used when zooming to
      * features to display the count of selected features.
-     * @param messageBar target message bar
+     * \param messageBar target message bar
      * \since QGIS 3.0
      */
     void setMessageBar( QgsMessageBar *messageBar );
@@ -93,14 +93,14 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     /**
      * Implementation for closeEvent
      * Saves the window geometry
-     * @param closeEvent Event object. Unused.
+     * \param closeEvent Event object. Unused.
      */
     virtual void closeEvent( QCloseEvent *closeEvent ) override;
 
     /**
      * Implementation for done (default behavior when pressing esc)
      * Calls close, so the window geometry gets saved and the object deleted.
-     * @param r   Result value. Unused.
+     * \param r   Result value. Unused.
      */
     virtual void done( int r ) override;
 

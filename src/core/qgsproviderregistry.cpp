@@ -339,7 +339,7 @@ QDir QgsProviderRegistry::libraryDirectory() const
 typedef QgsDataProvider *classFactoryFunction_t( const QString * );
 
 
-/** Copied from QgsVectorLayer::setDataProvider
+/* Copied from QgsVectorLayer::setDataProvider
  *  TODO: Make it work in the generic environment
  *
  *  TODO: Is this class really the best place to put a data provider loader?

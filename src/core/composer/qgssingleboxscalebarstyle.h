@@ -33,8 +33,8 @@ class CORE_EXPORT QgsSingleBoxScaleBarStyle: public QgsScaleBarStyle
     QString name() const override;
 
     /** Draw method
-     @param p painter object
-     @param xOffset x offset
+     \param p painter object
+     \param xOffset x offset
      */
     void draw( QPainter *p, double xOffset = 0 ) const override;
 

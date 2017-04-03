@@ -29,7 +29,6 @@
 
 
 /**
-@author Tim Sutton
 */
 class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 {

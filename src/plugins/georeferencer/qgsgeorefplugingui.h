@@ -192,8 +192,8 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
      * ground control points and transform method.
      * Note that the RMSE measure is adjusted for the degrees of freedom of the
      * used polynomial transform.
-     * @param error out: the mean error
-     * @return true in case of success
+     * \param error out: the mean error
+     * \returns true in case of success
      */
     bool calculateMeanError( double &error ) const;
 

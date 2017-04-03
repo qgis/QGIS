@@ -77,7 +77,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     /**
     * Constructor for a plugin. The QgisInterface pointer is passed by
     * QGIS when it attempts to instantiate the plugin.
-    * @param interface Pointer to the QgisInterface object.
+    * \param interface Pointer to the QgisInterface object.
      */
     explicit CoordinateCapture( QgisInterface *interface );
 

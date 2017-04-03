@@ -73,15 +73,15 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void adjustBoxSize();
 
     /** Sets whether the legend should automatically resize to fit its contents.
-     * @param enabled set to false to disable automatic resizing. The legend frame will not
+     * \param enabled set to false to disable automatic resizing. The legend frame will not
      * be expanded to fit legend items, and items may be cropped from display.
-     * @see resizeToContents()
+     * \see resizeToContents()
      * \since QGIS 3.0
      */
     void setResizeToContents( bool enabled );
 
     /** Returns whether the legend should automatically resize to fit its contents.
-     * @see setResizeToContents()
+     * \see setResizeToContents()
      * \since QGIS 3.0
      */
     bool resizeToContents() const;
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setLegendFilterOutAtlas( bool doFilter );
 
     //! Whether to filter out legend elements outside of the current atlas feature
-    //! @see setLegendFilterOutAtlas()
+    //! \see setLegendFilterOutAtlas()
     //! \since QGIS 2.14
     bool legendFilterOutAtlas() const;
 
@@ -123,16 +123,16 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QString title() const;
 
     /** Returns the alignment of the legend title
-     * @returns Qt::AlignmentFlag for the legend title
+     * \returns Qt::AlignmentFlag for the legend title
      * \since QGIS 2.3
-     * @see setTitleAlignment
+     * \see setTitleAlignment
      */
     Qt::AlignmentFlag titleAlignment() const;
 
     /** Sets the alignment of the legend title
-     * @param alignment Text alignment for drawing the legend title
+     * \param alignment Text alignment for drawing the legend title
      * \since QGIS 2.3
-     * @see titleAlignment
+     * \see titleAlignment
      */
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
@@ -152,14 +152,14 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     /** Returns the spacing in-between lines in mm
      * \since QGIS 3.0
-     * @see setLineSpacing
+     * \see setLineSpacing
      */
     double lineSpacing() const;
 
     /** Sets the spacing in-between multiple lines
-     * @param spacing Double value to use as spacing in between multiple lines
+     * \param spacing Double value to use as spacing in between multiple lines
      * \since QGIS 3.0
-     * @see lineSpacing
+     * \see lineSpacing
      */
     void setLineSpacing( double spacing );
 
@@ -197,56 +197,56 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setEqualColumnWidth( bool s );
 
     /** Returns whether a stroke will be drawn around raster symbol items.
-     * @see setDrawRasterStroke()
-     * @see rasterStrokeColor()
-     * @see rasterStrokeWidth()
+     * \see setDrawRasterStroke()
+     * \see rasterStrokeColor()
+     * \see rasterStrokeWidth()
      * \since QGIS 2.12
      */
     bool drawRasterStroke() const;
 
     /** Sets whether a stroke will be drawn around raster symbol items.
-     * @param enabled set to true to draw borders
-     * @see drawRasterStroke()
-     * @see setRasterStrokeColor()
-     * @see setRasterStrokeWidth()
+     * \param enabled set to true to draw borders
+     * \see drawRasterStroke()
+     * \see setRasterStrokeColor()
+     * \see setRasterStrokeWidth()
      * \since QGIS 2.12
      */
     void setDrawRasterStroke( bool enabled );
 
     /** Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @see setRasterStrokeColor()
-     * @see drawRasterStroke()
-     * @see rasterStrokeWidth()
+     * \see setRasterStrokeColor()
+     * \see drawRasterStroke()
+     * \see rasterStrokeWidth()
      * \since QGIS 2.12
      */
     QColor rasterStrokeColor() const;
 
     /** Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @param color stroke color
-     * @see rasterStrokeColor()
-     * @see setDrawRasterStroke()
-     * @see setRasterStrokeWidth()
+     * \param color stroke color
+     * \see rasterStrokeColor()
+     * \see setDrawRasterStroke()
+     * \see setRasterStrokeWidth()
      * \since QGIS 2.12
      */
     void setRasterStrokeColor( const QColor &color );
 
     /** Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @see setRasterStrokeWidth()
-     * @see drawRasterStroke()
-     * @see rasterStrokeColor()
+     * \see setRasterStrokeWidth()
+     * \see drawRasterStroke()
+     * \see rasterStrokeColor()
      * \since QGIS 2.12
      */
     double rasterStrokeWidth() const;
 
     /** Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @param width stroke width in millimeters
-     * @see rasterStrokeWidth()
-     * @see setDrawRasterStroke()
-     * @see setRasterStrokeColor()
+     * \param width stroke width in millimeters
+     * \see rasterStrokeWidth()
+     * \see setDrawRasterStroke()
+     * \see setRasterStrokeColor()
      * \since QGIS 2.12
      */
     void setRasterStrokeWidth( double width );
@@ -258,14 +258,14 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void updateLegend();
 
     /** Stores state in Dom node
-       * @param elem is Dom element corresponding to 'Composer' tag
-       * @param doc Dom document
+       * \param elem is Dom element corresponding to 'Composer' tag
+       * \param doc Dom document
        */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
-       * @param itemElem is Dom node corresponding to item tag
-       * @param doc is Dom document
+       * \param itemElem is Dom node corresponding to item tag
+       * \param doc is Dom document
        */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 

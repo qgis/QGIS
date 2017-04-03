@@ -70,19 +70,19 @@ class QgsExpressionItem : public QStandardItem
 
     /** Get the help text that is associated with this expression item.
       *
-      * @return The help text.
+      * \returns The help text.
       */
     QString getHelpText() const { return mHelpText; }
 
     /** Set the help text for the current item
       *
-      * @note The help text can be set as a html string.
+      * \note The help text can be set as a html string.
       */
     void setHelpText( const QString &helpText ) { mHelpText = helpText; }
 
     /** Get the type of expression item, e.g., header, field, ExpressionNode.
       *
-      * @return The QgsExpressionItem::ItemType
+      * \returns The QgsExpressionItem::ItemType
       */
     QgsExpressionItem::ItemType getItemType() const { return mType; }
 
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     ~QgsExpressionBuilderWidget();
 
     /** Sets layer in order to get the fields and values
-      * @note this needs to be called before calling loadFieldNames().
+      * \note this needs to be called before calling loadFieldNames().
       */
     void setLayer( QgsVectorLayer *layer );
 
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadFieldNames( const QgsFields &fields );
 
     /** Loads field names and values from the specified map.
-     *  @note The field values must be quoted appropriately if they are strings.
+     *  \note The field values must be quoted appropriately if they are strings.
      *  \since QGIS 2.12
      */
     void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues );
@@ -155,7 +155,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setGeomCalculator( const QgsDistanceArea &da );
 
     /** Gets the expression string that has been set in the expression area.
-      * @returns The expression as a string. */
+      * \returns The expression as a string. */
     QString expressionText();
 
     //! Sets the expression string for the widget
@@ -163,27 +163,27 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /** Returns the expression context for the widget. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
-     * @see setExpressionContext
+     * \see setExpressionContext
      * \since QGIS 2.12
      */
     QgsExpressionContext expressionContext() const { return mExpressionContext; }
 
     /** Sets the expression context for the widget. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
-     * @param context expression context
-     * @see expressionContext
+     * \param context expression context
+     * \see expressionContext
      * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context );
 
     /** Registers a node item for the expression builder.
-      * @param group The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
-      * @param label The label that is show to the user for the item in the tree.
-      * @param expressionText The text that is inserted into the expression area when the user double clicks on the item.
-      * @param helpText The help text that the user will see when item is selected.
-      * @param type The type of the expression item.
-      * @param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
-      * @param sortOrder sort ranking for item
+      * \param group The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
+      * \param label The label that is show to the user for the item in the tree.
+      * \param expressionText The text that is inserted into the expression area when the user double clicks on the item.
+      * \param helpText The help text that the user will see when item is selected.
+      * \param type The type of the expression item.
+      * \param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
+      * \param sortOrder sort ranking for item
       */
     void registerItem( const QString &group, const QString &label, const QString &expressionText,
                        const QString &helpText = "",
@@ -244,7 +244,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /**
      * Enabled or disable auto saving. When enabled Python scripts will be auto saved
      * when text changes.
-     * @param enabled True to enable auto saving.
+     * \param enabled True to enable auto saving.
      */
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
 
@@ -269,7 +269,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /** Emitted when the user changes the expression in the widget.
       * Users of this widget should connect to this signal to decide if to let the user
       * continue.
-      * @param isValid Is true if the expression the user has typed is valid.
+      * \param isValid Is true if the expression the user has typed is valid.
       */
     void expressionParsed( bool isValid );
 
@@ -286,13 +286,13 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadExpressionContext();
 
     /** Registers a node item for the expression builder, adding multiple items when the function exists in multiple groups
-      * @param groups The groups the item will be show in the tree view.  If a group doesn't exist it will be created.
-      * @param label The label that is show to the user for the item in the tree.
-      * @param expressionText The text that is inserted into the expression area when the user double clicks on the item.
-      * @param helpText The help text that the user will see when item is selected.
-      * @param type The type of the expression item.
-      * @param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
-      * @param sortOrder sort ranking for item
+      * \param groups The groups the item will be show in the tree view.  If a group doesn't exist it will be created.
+      * \param label The label that is show to the user for the item in the tree.
+      * \param expressionText The text that is inserted into the expression area when the user double clicks on the item.
+      * \param helpText The help text that the user will see when item is selected.
+      * \param type The type of the expression item.
+      * \param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
+      * \param sortOrder sort ranking for item
       */
     void registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText,
                                    const QString &helpText = "",

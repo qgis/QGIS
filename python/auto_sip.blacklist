@@ -527,7 +527,6 @@ gui/raster/qgssinglebandpseudocolorrendererwidget.sip
 gui/raster/qgsrendererrasterpropertieswidget.sip
 gui/raster/qgsrastertransparencywidget.sip
 gui/raster/qgshillshaderendererwidget.sip
-gui/symbology-ng/characterwidget.sip
 gui/symbology-ng/qgs25drendererwidget.sip
 gui/symbology-ng/qgsarrowsymbollayerwidget.sip
 gui/symbology-ng/qgsbrushstylecombobox.sip

@@ -114,8 +114,8 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
-         * @param expression The expression to use for ordering
-         * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
          *                   If the order is ascending, by default nulls are last
          *                   If the order is descending, by default nulls are first
          */
@@ -124,21 +124,21 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
-         * @param expression The expression to use for ordering
-         * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-         * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
          */
         OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
 
         /**
          * The expression
-         * @return the expression
+         * \returns the expression
          */
         QgsExpression expression() const;
 
         /**
          * Order ascending
-         * @return If ascending order is requested
+         * \returns If ascending order is requested
          */
         bool ascending() const;
 
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsFeatureRequest
 
         /**
          * Set if NULLS should be returned first
-         * @return if NULLS should be returned first
+         * \returns if NULLS should be returned first
          */
         bool nullsFirst() const;
 
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Return the filter type which is currently set on this request
      *
-     * @return Filter type
+     * \returns Filter type
      */
     FilterType filterType() const { return mFilter; }
 
@@ -270,16 +270,16 @@ class CORE_EXPORT QgsFeatureRequest
     //! Get feature IDs that should be fetched.
     const QgsFeatureIds &filterFids() const { return mFilterFids; }
 
-    /** Set the filter expression. {@see QgsExpression}
-     * @param expression expression string
-     * @see filterExpression
-     * @see setExpressionContext
+    /** Set the filter expression. {\see QgsExpression}
+     * \param expression expression string
+     * \see filterExpression
+     * \see setExpressionContext
      */
     QgsFeatureRequest &setFilterExpression( const QString &expression );
 
     /** Returns the filter expression if set.
-     * @see setFilterExpression
-     * @see expressionContext
+     * \see setFilterExpression
+     * \see expressionContext
      */
     QgsExpression *filterExpression() const { return mFilterExpression.get(); }
 
@@ -292,15 +292,15 @@ class CORE_EXPORT QgsFeatureRequest
 
     /** Returns the expression context used to evaluate filter expressions.
      * \since QGIS 2.12
-     * @see setExpressionContext
-     * @see filterExpression
+     * \see setExpressionContext
+     * \see filterExpression
      */
     QgsExpressionContext *expressionContext() { return &mExpressionContext; }
 
     /** Sets the expression context used to evaluate filter expressions.
      * \since QGIS 2.12
-     * @see expressionContext
-     * @see setFilterExpression
+     * \see expressionContext
+     * \see setFilterExpression
      */
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsFeatureRequest
      * Disables filter conditions.
      * The spatial filter (filterRect) will be kept in place.
      *
-     * @return The object the method is called on for chaining
+     * \returns The object the method is called on for chaining
      *
      * \since QGIS 2.12
      */
@@ -317,8 +317,8 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Adds a new OrderByClause, appending it as the least important one.
      *
-     * @param expression The expression to use for ordering
-     * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+     * \param expression The expression to use for ordering
+     * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
      *                   If the order is ascending, by default nulls are last
      *                   If the order is descending, by default nulls are first
      *
@@ -330,9 +330,9 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Adds a new OrderByClause, appending it as the least important one.
      *
-     * @param expression The expression to use for ordering
-     * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-     * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+     * \param expression The expression to use for ordering
+     * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+     * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
      *
      * \since QGIS 2.14
      */
@@ -353,14 +353,14 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setOrderBy( const OrderBy &orderBy );
 
     /** Set the maximum number of features to request.
-     * @param limit maximum number of features, or -1 to request all features.
-     * @see limit()
+     * \param limit maximum number of features, or -1 to request all features.
+     * \see limit()
      * \since QGIS 2.14
      */
     QgsFeatureRequest &setLimit( long limit );
 
     /** Returns the maximum number of features to request, or -1 if no limit set.
-     * @see setLimit
+     * \see setLimit
      * \since QGIS 2.14
      */
     long limit() const { return mLimit; }
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * Return the subset of attributes which at least need to be fetched
-     * @return A list of attributes to be fetched
+     * \returns A list of attributes to be fetched
      */
     QgsAttributeList subsetOfAttributes() const { return mAttrs; }
 
@@ -395,9 +395,9 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Check if a feature is accepted by this requests filter
      *
-     * @param feature  The feature which will be tested
+     * \param feature  The feature which will be tested
      *
-     * @return true, if the filter accepts the feature
+     * \returns true, if the filter accepts the feature
      *
      * \since QGIS 2.1
      */
@@ -434,8 +434,8 @@ class CORE_EXPORT QgsAbstractFeatureSource
 
     /**
      * Get an iterator for features matching the specified request
-     * @param request The request
-     * @return A feature iterator
+     * \param request The request
+     * \returns A feature iterator
      */
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) = 0;
 

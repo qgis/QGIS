@@ -130,9 +130,9 @@ class CORE_EXPORT Qgis
 /** \ingroup core
  * RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
- * @see whileBlocking()
+ * \see whileBlocking()
  * \since QGIS 2.16
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
 template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
@@ -140,7 +140,7 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
   public:
 
     /** Constructor for QgsSignalBlocker
-     * @param object QObject to block signals from
+     * \param object QObject to block signals from
      */
     explicit QgsSignalBlocker( Object *object )
       : mObject( object )
@@ -171,8 +171,8 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
  * No signals will be emitted when calling these methods.
  *
  * \since QGIS 2.16
- * @see QgsSignalBlocker
- * @note not available in Python bindings
+ * \see QgsSignalBlocker
+ * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
 template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object )
@@ -181,8 +181,8 @@ template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *ob
 }
 
 //! Returns a string representation of a double
-//! @param a double value
-//! @param precision number of decimal places to retain
+//! \param a double value
+//! \param precision number of decimal places to retain
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
   if ( precision )
@@ -192,9 +192,9 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
 }
 
 //! Compare two doubles (but allow some difference)
-//! @param a first double
-//! @param b second double
-//! @param epsilon maximum difference allowable between doubles
+//! \param a first double
+//! \param b second double
+//! \param epsilon maximum difference allowable between doubles
 inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
 {
   const double diff = a - b;
@@ -202,9 +202,9 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON 
 }
 
 //! Compare two floats (but allow some difference)
-//! @param a first float
-//! @param b second float
-//! @param epsilon maximum difference allowable between floats
+//! \param a first float
+//! \param b second float
+//! \param epsilon maximum difference allowable between floats
 inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 {
   const float diff = a - b;
@@ -246,54 +246,54 @@ inline double qgsRound( double number, double places )
 
 /** Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
- * @param string string to convert
- * @param ok will be set to true if conversion was successful
- * @returns string converted to double if possible
+ * \param string string to convert
+ * \param ok will be set to true if conversion was successful
+ * \returns string converted to double if possible
  * \since QGIS 2.9
- * @see permissiveToInt
+ * \see permissiveToInt
  */
 CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
 
 /** Converts a string to an integer in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
- * @param string string to convert
- * @param ok will be set to true if conversion was successful
- * @returns string converted to int if possible
+ * \param string string to convert
+ * \param ok will be set to true if conversion was successful
+ * \returns string converted to int if possible
  * \since QGIS 2.9
- * @see permissiveToDouble
+ * \see permissiveToDouble
  */
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
-//! @see qgsVariantGreaterThan()
+//! \see qgsVariantGreaterThan()
 CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 
 //! Compares two QVariant values and returns whether the first is greater than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
-//! @see qgsVariantLessThan()
+//! \see qgsVariantLessThan()
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
 CORE_EXPORT QString qgsVsiPrefix( const QString &path );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
-    @param size size in bytes
+    \param size size in bytes
  */
 void CORE_EXPORT *qgsMalloc( size_t size );
 
 /** Allocates  memory for an array of nmemb elements of size bytes each and returns
     a pointer to the allocated memory. Works like C calloc() but prints debug message
     by QgsLogger if allocation fails.
-    @param nmemb number of elements
-    @param size size of element in bytes
+    \param nmemb number of elements
+    \param size size of element in bytes
  */
 void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size );
 
 /** Frees the memory space  pointed  to  by  ptr. Works like C free().
-    @param ptr pointer to memory space
+    \param ptr pointer to memory space
  */
 void CORE_EXPORT qgsFree( void *ptr );
 

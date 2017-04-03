@@ -75,7 +75,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /**
      * Constructor for the provider. The uri must be in the following format:
      * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
-     * @param uri String containing the required parameters to connect to the database
+     * \param uri String containing the required parameters to connect to the database
      * and query the table.
      */
     explicit QgsOracleProvider( QString const &uri = "" );
@@ -89,7 +89,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QgsWkbTypes::Type wkbType() const override;
 
     /** Return the number of layers for the current data source
-     * @note Should this be subLayerCount() instead?
+     * \note Should this be subLayerCount() instead?
      */
     size_t layerCount() const;
 

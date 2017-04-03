@@ -43,6 +43,15 @@ class QgsAnnotationRegistry;
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
+ *
+ * This is a subclass of QApplication and should be instantiated in place of
+  QApplication. Most methods are static in keeping with the design of QApplication.
+
+  This class hides platform-specific path information and provides
+  a portable way of referencing specific files and directories.
+  Ideally, hard-coded paths should appear only here and not in other modules
+  so that platform-conditional code is minimized and paths are easier
+  to change due to centralization.
  */
 
 class CORE_EXPORT QgsApplication : public QApplication
@@ -66,9 +75,9 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /** This method initializes paths etc for QGIS. Called by the ctor or call it manually
         when your app does not extend the QApplication class.
-        @note you will probably want to call initQgis too to load the providers in
+        \note you will probably want to call initQgis too to load the providers in
         the above case.
-        @note not available in Python bindings
+        \note not available in Python bindings
       */
     static void init( QString customConfigPath = QString() );
 
@@ -86,7 +95,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
      * but plugin writers etc can use themeName() as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
-     * @note A basic test will be carried out to ensure the theme search path
+     * \note A basic test will be carried out to ensure the theme search path
      * based on the supplied theme name exists. If it does not the theme name will
      * be reverted to 'default'.
      */
@@ -101,19 +110,19 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString themeName();
 
     /**
-     * @brief Set the current UI theme used to style the interface.  Use uiThemes() to
+     * \brief Set the current UI theme used to style the interface.  Use uiThemes() to
      * find valid themes to use. Variables found in variables.qss will be added to the stylesheet
      * on load.
-     * @param themeName The name of the theme.
-     * @note using an invalid theme name will reset to default
+     * \param themeName The name of the theme.
+     * \note using an invalid theme name will reset to default
      */
     static void setUITheme( const QString &themeName );
 
     /**
-     * @brief All themes found in ~/.qgis3/themes folder.
+     * \brief All themes found in ~/.qgis3/themes folder.
      * The path is to the root folder for the theme
-     * @note Valid theme folders must contain a style.qss file.
-     * @return A hash of theme name and theme path. Valid theme folders contain style.qss
+     * \note Valid theme folders must contain a style.qss file.
+     * \returns A hash of theme name and theme path. Valid theme folders contain style.qss
      */
     static QHash<QString, QString> uiThemes();
 
@@ -142,7 +151,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString translatorsFilePath();
 
-    /*!
+    /**
       Returns the path to the licence file.
      */
     static QString licenceFilePath();
@@ -218,25 +227,25 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /** Returns the user's operating system login account name.
      * \since QGIS 2.14
-     * @see userFullName()
+     * \see userFullName()
      */
     static QString userLoginName();
 
     /** Returns the user's operating system login account full display name.
      * \since QGIS 2.14
-     * @see userLoginName()
+     * \see userLoginName()
      */
     static QString userFullName();
 
     /** Returns a string name of the operating system QGIS is running on.
      * \since QGIS 2.14
-     * @see platform()
+     * \see platform()
      */
     static QString osName();
 
     /** Returns the QGIS platform name, e.g., "desktop" or "server".
      * \since QGIS 2.14
-     * @see osName()
+     * \see osName()
      */
     static QString platform();
 
@@ -301,7 +310,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static endian_t endian();
 
     /** Swap the endianness of the specified value.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     template<typename T>
     static void endian_swap( T &value )
@@ -318,8 +327,8 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Typically you will use this method by doing:
      * QString myStyle = QgsApplication::reportStyleSheet();
      * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
-     * @return QString containing the CSS 2.1 compliant stylesheet.
-     * @note you can use the special Qt extensions too, for example
+     * \returns QString containing the CSS 2.1 compliant stylesheet.
+     * \note you can use the special Qt extensions too, for example
      * the gradient fills for backgrounds.
      */
     static QString reportStyleSheet();
@@ -369,9 +378,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QStringList skippedGdalDrivers() { return ABISYM( mGdalSkipList ); }
 
     /** Apply the skipped drivers list to gdal
-     * @see skipGdalDriver
-     * @see restoreGdalDriver
-     * @see skippedGdalDrivers */
+     * \see skipGdalDriver
+     * \see restoreGdalDriver
+     * \see skippedGdalDrivers */
     static void applyGdalSkippedDrivers();
 
     /** Get maximum concurrent thread count
@@ -379,7 +388,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static int maxThreads() { return ABISYM( mMaxThreads ); }
 
     /** Set maximum concurrent thread count
-     * @note must be between 1 and \#cores, -1 means use all available cores
+     * \note must be between 1 and \#cores, -1 means use all available cores
      * \since QGIS 2.4 */
     static void setMaxThreads( int maxThreads );
 
@@ -411,7 +420,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the application's raster renderer registry, used for managing raster layer renderers.
      * \since QGIS 3.0
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QgsRasterRendererRegistry *rasterRendererRegistry();
 
@@ -463,7 +472,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the application's annotation registry, used for managing annotation types.
      * \since QGIS 3.0
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QgsAnnotationRegistry *annotationRegistry();
 
@@ -527,7 +536,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void setCustomVariable( const QString &name, const QVariant &value );
 
   signals:
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void preNotify( QObject *receiver, QEvent *event, bool *done );
 
     /**
@@ -572,7 +581,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString ABISYM( mBuildOutputPath );
 
     /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
-     * @see skipGdalDriver, restoreGdalDriver */
+     * \see skipGdalDriver, restoreGdalDriver */
     static QStringList ABISYM( mGdalSkipList );
 
     /**

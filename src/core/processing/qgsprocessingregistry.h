@@ -60,21 +60,21 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      * Add a processing provider to the registry. Ownership of the provider is transferred to the registry.
      * Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
      * in the registry).
-     * @see removeProvider()
+     * \see removeProvider()
      */
     bool addProvider( QgsProcessingProvider *provider SIP_TRANSFER );
 
     /**
      * Removes a provider implementation from the registry (the provider object is deleted).
      * Returns false if the provider could not be removed (eg provider does not exist in the registry).
-     * @see addProvider()
+     * \see addProvider()
      */
     bool removeProvider( QgsProcessingProvider *provider );
 
     /**
      * Removes a provider implementation from the registry (the provider object is deleted).
      * Returns false if the provider could not be removed (eg provider does not exist in the registry).
-     * @see addProvider()
+     * \see addProvider()
      */
     bool removeProvider( const QString &providerId );
 

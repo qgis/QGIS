@@ -34,20 +34,20 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
     QgsCapabilitiesCache();
 
     /** Returns cached capabilities document (or 0 if document for configuration file not in cache)
-     * @param configFilePath the progect file path
-     * @param key key used to separate different version in different cache
+     * \param configFilePath the progect file path
+     * \param key key used to separate different version in different cache
      */
     const QDomDocument *searchCapabilitiesDocument( const QString &configFilePath, const QString &key );
 
     /** Inserts new capabilities document (creates a copy of the document, does not take ownership)
-     * @param configFilePath the project file path
-     * @param key key used to separate different version in different cache
-     * @param doc the DOM document
+     * \param configFilePath the project file path
+     * \param key key used to separate different version in different cache
+     * \param doc the DOM document
      */
     void insertCapabilitiesDocument( const QString &configFilePath, const QString &key, const QDomDocument *doc );
 
     /** Remove capabilities document
-     * @param path the project file path
+     * \param path the project file path
      * \since QGIS 2.16
      */
     void removeCapabilitiesDocument( const QString &path );

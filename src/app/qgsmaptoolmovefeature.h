@@ -38,7 +38,6 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    //! called when map tool is being deactivated
     void deactivate() override;
 
   private:

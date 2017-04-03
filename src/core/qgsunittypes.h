@@ -151,45 +151,45 @@ class CORE_EXPORT QgsUnitTypes
     Q_INVOKABLE static DistanceUnitType unitType( DistanceUnit unit );
 
     /** Encodes a distance unit to a string.
-     * @param unit unit to encode
-     * @returns encoded string
-     * @see decodeDistanceUnit()
+     * \param unit unit to encode
+     * \returns encoded string
+     * \see decodeDistanceUnit()
      */
     Q_INVOKABLE static QString encodeUnit( QgsUnitTypes::DistanceUnit unit );
 
     /** Decodes a distance unit from a string.
-     * @param string string to decode
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @returns decoded units
-     * @see encodeUnit()
+     * \param string string to decode
+     * \param ok optional boolean, will be set to true if string was converted successfully
+     * \returns decoded units
+     * \see encodeUnit()
      */
     Q_INVOKABLE static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString &string, bool *ok = 0 );
 
     /** Returns a translated string representing a distance unit.
-     * @param unit unit to convert to string
-     * @see stringToDistanceUnit()
+     * \param unit unit to convert to string
+     * \see stringToDistanceUnit()
      */
     Q_INVOKABLE static QString toString( QgsUnitTypes::DistanceUnit unit );
 
     /** Returns a translated abbreviation representing a distance unit.
-     * @param unit unit to convert to string
-     * @see stringToDistanceUnit()
+     * \param unit unit to convert to string
+     * \see stringToDistanceUnit()
      *
      * \since QGIS 3.0
      */
     Q_INVOKABLE static QString toAbbreviatedString( QgsUnitTypes::DistanceUnit unit );
 
     /** Converts a translated string to a distance unit.
-     * @param string string representing a distance unit
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @see toString()
+     * \param string string representing a distance unit
+     * \param ok optional boolean, will be set to true if string was converted successfully
+     * \see toString()
      */
     Q_INVOKABLE static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString &string, bool *ok = 0 );
 
     /** Returns the conversion factor between the specified distance units.
-     * @param fromUnit distance unit to convert from
-     * @param toUnit distance unit to convert to
-     * @returns multiplication factor to convert between units
+     * \param fromUnit distance unit to convert from
+     * \param toUnit distance unit to convert to
+     * \returns multiplication factor to convert between units
      */
     Q_INVOKABLE static double fromUnitToUnitFactor( QgsUnitTypes::DistanceUnit fromUnit, QgsUnitTypes::DistanceUnit toUnit );
 
@@ -200,88 +200,88 @@ class CORE_EXPORT QgsUnitTypes
     Q_INVOKABLE static DistanceUnitType unitType( AreaUnit unit );
 
     /** Encodes an areal unit to a string.
-     * @param unit unit to encode
-     * @returns encoded string
-     * @see decodeAreaUnit()
+     * \param unit unit to encode
+     * \returns encoded string
+     * \see decodeAreaUnit()
     */
     Q_INVOKABLE static QString encodeUnit( AreaUnit unit );
 
     /** Decodes an areal unit from a string.
-     * @param string string to decode
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @returns decoded units
-     * @see encodeUnit()
+     * \param string string to decode
+     * \param ok optional boolean, will be set to true if string was converted successfully
+     * \returns decoded units
+     * \see encodeUnit()
     */
     Q_INVOKABLE static AreaUnit decodeAreaUnit( const QString &string, bool *ok = 0 );
 
     /** Returns a translated string representing an areal unit.
-     * @param unit unit to convert to string
-     * @see stringToAreaUnit()
+     * \param unit unit to convert to string
+     * \see stringToAreaUnit()
      */
     Q_INVOKABLE static QString toString( AreaUnit unit );
 
     /** Returns a translated abbreviation representing an areal unit.
-     * @param unit unit to convert to string
-     * @see stringToAreaUnit()
+     * \param unit unit to convert to string
+     * \see stringToAreaUnit()
      *
      * \since QGIS 3.0
      */
     Q_INVOKABLE static QString toAbbreviatedString( AreaUnit unit );
 
     /** Converts a translated string to an areal unit.
-     * @param string string representing an areal unit
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @see toString()
+     * \param string string representing an areal unit
+     * \param ok optional boolean, will be set to true if string was converted successfully
+     * \see toString()
      */
     Q_INVOKABLE static AreaUnit stringToAreaUnit( const QString &string, bool *ok = 0 );
 
     /** Returns the conversion factor between the specified areal units.
-     * @param fromUnit area unit to convert from
-     * @param toUnit area unit to convert to
-     * @returns multiplication factor to convert between units
+     * \param fromUnit area unit to convert from
+     * \param toUnit area unit to convert to
+     * \returns multiplication factor to convert between units
      */
     Q_INVOKABLE static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
 
     /** Converts a distance unit to its corresponding area unit, e.g., meters to square meters
-     * @param distanceUnit distance unit to convert
-     * @return matching areal unit
+     * \param distanceUnit distance unit to convert
+     * \returns matching areal unit
      */
     Q_INVOKABLE static AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
 
     // ANGULAR UNITS
 
     /** Encodes an angular unit to a string.
-     * @param unit unit to encode
-     * @returns encoded string
-     * @see decodeAngleUnit()
+     * \param unit unit to encode
+     * \returns encoded string
+     * \see decodeAngleUnit()
     */
     Q_INVOKABLE static QString encodeUnit( AngleUnit unit );
 
     /** Decodes an angular unit from a string.
-     * @param string string to decode
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @returns decoded units
-     * @see encodeUnit()
+     * \param string string to decode
+     * \param ok optional boolean, will be set to true if string was converted successfully
+     * \returns decoded units
+     * \see encodeUnit()
     */
     Q_INVOKABLE static AngleUnit decodeAngleUnit( const QString &string, bool *ok = 0 );
 
     /** Returns a translated string representing an angular unit.
-     * @param unit unit to convert to string
+     * \param unit unit to convert to string
      */
     Q_INVOKABLE static QString toString( AngleUnit unit );
 
     /** Returns the conversion factor between the specified angular units.
-     * @param fromUnit angle unit to convert from
-     * @param toUnit angle unit to convert to
-     * @returns multiplication factor to convert between units
+     * \param fromUnit angle unit to convert from
+     * \param toUnit angle unit to convert to
+     * \returns multiplication factor to convert between units
      */
     Q_INVOKABLE static double fromUnitToUnitFactor( AngleUnit fromUnit, AngleUnit toUnit );
 
     /** Returns an angle formatted as a friendly string.
-     * @param angle angle to format
-     * @param decimals number of decimal places to show
-     * @param unit unit of angle
-     * @returns formatted angle string
+     * \param angle angle to format
+     * \param decimals number of decimal places to show
+     * \param unit unit of angle
+     * \returns formatted angle string
      */
     Q_INVOKABLE static QString formatAngle( double angle, int decimals, AngleUnit unit );
 
@@ -309,43 +309,43 @@ class CORE_EXPORT QgsUnitTypes
     Q_INVOKABLE static AreaValue scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit = false );
 
     /** Returns an distance formatted as a friendly string.
-     * @param distance distance to format
-     * @param decimals number of decimal places to show
-     * @param unit unit of distance
-     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, e.g., meters to
+     * \param distance distance to format
+     * \param decimals number of decimal places to show
+     * \param unit unit of distance
+     * \param keepBaseUnit set to false to allow conversion of large distances to more suitable units, e.g., meters to
      * kilometers
-     * @returns formatted distance string
+     * \returns formatted distance string
      * \since QGIS 3.0
-     * @see formatArea()
+     * \see formatArea()
      */
     Q_INVOKABLE static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
 
     /** Returns an area formatted as a friendly string.
-     * @param area area to format
-     * @param decimals number of decimal places to show
-     * @param unit unit of area
-     * @param keepBaseUnit set to false to allow conversion of large areas to more suitable units, e.g., square meters to
+     * \param area area to format
+     * \param decimals number of decimal places to show
+     * \param unit unit of area
+     * \param keepBaseUnit set to false to allow conversion of large areas to more suitable units, e.g., square meters to
      * square kilometers
-     * @returns formatted area string
+     * \returns formatted area string
      * \since QGIS 3.0
-     * @see formatDistance()
+     * \see formatDistance()
      */
     Q_INVOKABLE static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
 
     // RENDER UNITS
 
     /** Encodes a render unit to a string.
-     * @param unit unit to encode
-     * @returns encoded string
-     * @see decodeRenderUnit()
+     * \param unit unit to encode
+     * \returns encoded string
+     * \see decodeRenderUnit()
      */
     Q_INVOKABLE static QString encodeUnit( RenderUnit unit );
 
     /** Decodes a render unit from a string.
-     * @param string string to decode
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @returns decoded units
-     * @see encodeUnit()
+     * \param string string to decode
+     * \param ok optional boolean, will be set to true if string was converted successfully
+     * \returns decoded units
+     * \see encodeUnit()
      */
     Q_INVOKABLE static RenderUnit decodeRenderUnit( const QString &string, bool *ok = 0 );
 

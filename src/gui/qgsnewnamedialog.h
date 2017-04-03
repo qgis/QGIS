@@ -34,14 +34,14 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
   public:
 
     /** New dialog constructor.
-     * @param source original data source name, e.g. original layer name of the layer to be copied
-     * @param initial initial name
-     * @param extensions base name extensions, e.g. raster base name band extensions or vector layer type extensions
-     * @param existing existing names
-     * @param regexp regular expression to be used as validator, for example db tables should have "[A-Za-z_][A-Za-z0-9_]+"
-     * @param cs case sensitivity for new name to existing names comparison
-     * @param parent
-     * @param flags
+     * \param source original data source name, e.g. original layer name of the layer to be copied
+     * \param initial initial name
+     * \param extensions base name extensions, e.g. raster base name band extensions or vector layer type extensions
+     * \param existing existing names
+     * \param regexp regular expression to be used as validator, for example db tables should have "[A-Za-z_][A-Za-z0-9_]+"
+     * \param cs case sensitivity for new name to existing names comparison
+     * \param parent
+     * \param flags
      */
     QgsNewNameDialog( const QString &source = QString::null, const QString &initial = QString::null,
                       const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(),
@@ -50,15 +50,15 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
 
     /** Sets the hint string for the dialog (the text shown above the name
      * input box).
-     * @param hintString hint text
-     * @see hintString()
+     * \param hintString hint text
+     * \see hintString()
      * \since QGIS 2.12
      */
     void setHintString( const QString &hintString );
 
     /** Returns the hint string for the dialog (the text shown above the name
      * input box).
-     * @see setHintString()
+     * \see setHintString()
      * \since QGIS 2.12
      */
     QString hintString() const;
@@ -67,40 +67,40 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * the dialog will reflect that the new name will overwrite an existing name. If false,
      * then the dialog will not accept names which already exist.
      * \since QGIS 2.12
-     * @see overwriteEnabled()
+     * \see overwriteEnabled()
      */
     void setOverwriteEnabled( bool enabled );
 
     /** Returns whether users are permitted to overwrite existing names.
      * \since QGIS 2.12
-     * @see setOverwriteEnabled()
+     * \see setOverwriteEnabled()
      */
     bool overwriteEnabled() const { return mOverwriteEnabled; }
 
     /** Sets the string used for warning users if a conflicting name exists.
-     * @param string warning string. If empty a default warning string will be used.
+     * \param string warning string. If empty a default warning string will be used.
      * \since QGIS 2.12
-     * @see conflictingNameWarning()
+     * \see conflictingNameWarning()
      */
     void setConflictingNameWarning( const QString &string );
 
     /** Returns the string used for warning users if a conflicting name exists.
      * \since QGIS 2.12
-     * @see setConflictingNameWarning()
+     * \see setConflictingNameWarning()
      */
     QString conflictingNameWarning() const { return mConflictingNameWarning; }
 
     /** Name entered by user.
-     * @return new name
+     * \returns new name
      */
     QString name() const;
 
     /** Test if name or name with at least one extension exists.
-     * @param name name or base name
-     * @param extensions base name extensions
-     * @param existing existing names
-     * @param cs case sensitivity for new name to existing names comparison
-     * @return true if name exists
+     * \param name name or base name
+     * \param extensions base name extensions
+     * \param existing existing names
+     * \param cs case sensitivity for new name to existing names comparison
+     * \returns true if name exists
      */
     static bool exists( const QString &name, const QStringList &extensions,
                         const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );

@@ -140,7 +140,7 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
     /**
      * Sets a symbol which can be used for previews inside the widget. If not specified, default
      * created symbols will be used instead.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); }
 

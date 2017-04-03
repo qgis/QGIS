@@ -36,13 +36,13 @@ class QgsProcessingProvider
     virtual QIcon icon() const;
 %Docstring
  Returns an icon for the provider.
- @see svgIconPath()
+ \see svgIconPath()
 %End
 
     virtual QString svgIconPath() const;
 %Docstring
  Returns a path to an SVG version of the provider's icon.
- @see icon()
+ \see icon()
 %End
 
     virtual QString id() const = 0;
@@ -50,14 +50,14 @@ class QgsProcessingProvider
  Returns the unique provider id, used for identifying the provider. This string
  should be a unique, short, character only string, eg "qgis" or "gdal". This
  string should not be localised.
- @see name()
+ \see name()
 %End
 
     virtual QString name() const = 0;
 %Docstring
  Returns the full provider name, which is used to describe the provider within the GUI.
  This string should be localised.
- @see id()
+ \see id()
 %End
 
     virtual bool canBeActivated() const;

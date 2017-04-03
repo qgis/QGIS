@@ -54,18 +54,18 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     /**
      * Constructor for QgsPropertyOverrideButton.
-     * @param parent parent widget
-     * @param layer associated vector layer
+     * \param parent parent widget
+     * \param layer associated vector layer
      */
     QgsPropertyOverrideButton( QWidget *parent = nullptr,
                                const QgsVectorLayer *layer = nullptr );
 
     /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
-     * @param propertyKey key for corresponding property
-     * @param property initial value of associated property to show in widget
-     * @param definitions properties definitions for corresponding collection
-     * @param layer associated vector layer
+     * \param propertyKey key for corresponding property
+     * \param property initial value of associated property to show in widget
+     * \param definitions properties definitions for corresponding collection
+     * \param layer associated vector layer
      */
     void init( int propertyKey,
                const QgsProperty &property,
@@ -74,10 +74,10 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
-     * @param propertyKey key for corresponding property
-     * @param collection associated property collection
-     * @param definitions properties definitions for collection
-     * @param layer associated vector layer
+     * \param propertyKey key for corresponding property
+     * \param collection associated property collection
+     * \param definitions properties definitions for collection
+     * \param layer associated vector layer
      */
     void init( int propertyKey,
                const QgsAbstractPropertyCollection &collection,
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     /**
      * Returns a QgsProperty object encapsulating the current state of the
      * widget.
-     * @see setToProperty()
+     * \see setToProperty()
      */
     QgsProperty toProperty() const;
 
@@ -121,27 +121,27 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     /**
      * Returns usage information for the property.
-     * @see setUsageInfo()
+     * \see setUsageInfo()
      */
     QString usageInfo() const { return mUsageInfo; }
 
     /**
      * Set the usage information for the property.
-     * @see usageInfo()
+     * \see usageInfo()
      */
     void setUsageInfo( const QString &info ) { mUsageInfo = info; updateGui(); }
 
     /**
      * Sets the vector layer associated with the button. This controls which fields are
      * displayed within the widget's pop up menu.
-     * @see vectorLayer()
+     * \see vectorLayer()
      */
     void setVectorLayer( const QgsVectorLayer *layer );
 
     /**
      * Returns the vector layer associated with the button. This controls which fields are
      * displayed within the widget's pop up menu.
-     * @see setVectorLayer()
+     * \see setVectorLayer()
      */
     const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 
@@ -159,7 +159,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     /**
      * Sets a symbol which can be used for previews inside the widget or in any dialog created
      * by the widget. If not specified, a default created symbol will be used instead.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; }
 

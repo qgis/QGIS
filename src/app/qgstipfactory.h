@@ -25,7 +25,7 @@
 * Tips can be generic, in which case they make no mention of
 * gui dialogs etc, or gui-specific in which case they may allude
 * to features of the graphical user interface.
-* @see also QgsTipOfTheDay, QgsTip
+* \see also QgsTipOfTheDay, QgsTip
 */
 
 class APP_EXPORT QgsTipFactory : public QObject
@@ -38,26 +38,26 @@ class APP_EXPORT QgsTipFactory : public QObject
     ~QgsTipFactory();
 
     /** Get a random tip (generic or gui-centric)
-     * @return An QgsTip containing the tip
+     * \returns An QgsTip containing the tip
      */
     QgsTip getTip();
 
     /** Get a specific tip (generic or gui-centric).
-     * @param position The tip returned will be based on the
+     * \param position The tip returned will be based on the
      *        number passed in as position. If the
      *        position is invalid, an empty string will be
      *        returned.
-     * @return An QgsTip containing the tip
+     * \returns An QgsTip containing the tip
      */
     QgsTip getTip( int position );
 
     /** Get a random generic tip
-     * @return An QgsTip containing the tip
+     * \returns An QgsTip containing the tip
      */
     QgsTip getGenericTip();
 
     /** Get a random gui-centric tip
-     * @return An QgsTip  containing the tip
+     * \returns An QgsTip  containing the tip
      */
     QgsTip getGuiTip();
 

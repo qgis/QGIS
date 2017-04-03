@@ -51,10 +51,10 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     QgsOfflineEditing();
 
     /** Convert current project for offline editing
-     * @param offlineDataPath Path to offline db file
-     * @param offlineDbFile Offline db file name
-     * @param layerIds List of layer names to convert
-     * @param onlySelected Only copy selected features from layers where a selection is present
+     * \param offlineDataPath Path to offline db file
+     * \param offlineDbFile Offline db file name
+     * \param layerIds List of layer names to convert
+     * \param onlySelected Only copy selected features from layers where a selection is present
      */
     bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false );
 
@@ -69,19 +69,19 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void progressStarted();
 
     /** Emit a signal that the next layer of numLayers has started processing
-     * @param layer current layer index
-     * @param numLayers total number of layers
+     * \param layer current layer index
+     * \param numLayers total number of layers
      */
     void layerProgressUpdated( int layer, int numLayers );
 
     /** Emit a signal that sets the mode for the progress of the current operation
-     * @param mode progress mode
-     * @param maximum total number of entities to process in the current operation
+     * \param mode progress mode
+     * \param maximum total number of entities to process in the current operation
      */
     void progressModeSet( QgsOfflineEditing::ProgressMode mode, int maximum );
 
     /** Emit a signal with the progress of the current mode
-     * @param progress current index of processed entities
+     * \param progress current index of processed entities
      */
     void progressUpdated( int progress );
 
@@ -90,8 +90,8 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
 
     /**
      * Emitted when a warning needs to be displayed.
-     * @param title title string for message
-     * @param message A descriptive message for the warning
+     * \param title title string for message
+     * \param message A descriptive message for the warning
      */
     void warning( const QString &title, const QString &message );
 

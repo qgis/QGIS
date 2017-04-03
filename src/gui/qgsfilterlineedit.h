@@ -53,34 +53,34 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     };
 
     /** Constructor for QgsFilterLineEdit.
-     * @param parent parent widget
-     * @param nullValue string for representing null values
+     * \param parent parent widget
+     * \param nullValue string for representing null values
      */
     QgsFilterLineEdit( QWidget *parent = nullptr, const QString &nullValue = QString::null );
 
     /** Returns true if the widget's clear button is visible.
-     * @see setShowClearButton()
+     * \see setShowClearButton()
      * \since QGIS 3.0
      */
     bool showClearButton() const { return mClearButtonVisible; }
 
     /** Sets whether the widget's clear button is visible.
-     * @param visible set to false to hide the clear button
-     * @see showClearButton()
+     * \param visible set to false to hide the clear button
+     * \see showClearButton()
      * \since QGIS 3.0
      */
     void setShowClearButton( bool visible );
 
     /** Returns the clear mode for the widget. The clear mode defines the behavior of the
      * widget when its value is cleared. This defaults to ClearToNull.
-     * @see setClearMode()
+     * \see setClearMode()
      * \since QGIS 3.0
      */
     ClearMode clearMode() const { return mClearMode; }
 
     /** Sets the clear mode for the widget. The clear mode defines the behavior of the
      * widget when its value is cleared. This defaults to ClearToNull.
-     * @see clearMode()
+     * \see clearMode()
      * \since QGIS 3.0
      */
     void setClearMode( ClearMode mode ) { mClearMode = mode; }
@@ -88,20 +88,20 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /** Sets the string representation for null values in the widget. This does not
      * affect the values returned for null values by value(), rather it only affects
      * the text that is shown to users when the widget's value is null.
-     * @param nullValue string to show when widget's value is null
-     * @see nullValue()
+     * \param nullValue string to show when widget's value is null
+     * \see nullValue()
      */
     void setNullValue( const QString &nullValue ) { mNullValue = nullValue; }
 
     /** Returns the string used for representating null values in the widget.
-     * @see setNullValue()
-     * @see isNull()
+     * \see setNullValue()
+     * \see isNull()
      */
     QString nullValue() const { return mNullValue; }
 
     /** Define if a search icon shall be shown on the left of the image
      * when no text is entered
-     * @param visible set to false to hide the search icon
+     * \param visible set to false to hide the search icon
      * \since QGIS 3.0
      */
     void setShowSearchIcon( bool visible );
@@ -115,9 +115,9 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /** Sets the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
      * is equal to ClearToDefault.
-     * @param defaultValue default value
-     * @see defaultValue()
-     * @see clearMode()
+     * \param defaultValue default value
+     * \see defaultValue()
+     * \see clearMode()
      * \since QGIS 3.0
      */
     void setDefaultValue( const QString &defaultValue ) { mDefaultValue = defaultValue; }
@@ -125,8 +125,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /** Returns the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
      * is equal to ClearToDefault.
-     * @see setDefaultValue()
-     * @see clearMode()
+     * \see setDefaultValue()
+     * \see clearMode()
      * \since QGIS 3.0
      */
     QString defaultValue() const { return mDefaultValue; }
@@ -134,9 +134,9 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /**
      * Sets the current text for the widget with support for handling null values.
      *
-     * @param value The text to set. If a null string is provided, the text shown in the
+     * \param value The text to set. If a null string is provided, the text shown in the
      * widget will be set to the current nullValue().
-     * @see value()
+     * \see value()
      */
     void setValue( const QString &value ) { setText( value.isNull() ? mNullValue : value ); }
 
@@ -145,23 +145,23 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * in the widget matches the current nullValue() then the returned value will be
      * a null string.
      *
-     * @return Current text (or null string if it matches the nullValue() property )
-     * @see setValue()
+     * \returns Current text (or null string if it matches the nullValue() property )
+     * \see setValue()
      */
     QString value() const { return isNull() ? QString::null : text(); }
 
     /**
      * Determine if the current text represents null.
      *
-     * @return True if the widget's value is null.
-     * @see nullValue()
+     * \returns True if the widget's value is null.
+     * \see nullValue()
      */
     inline bool isNull() const { return text() == mNullValue; }
 
   public slots:
 
     /** Clears the widget and resets it to the null value.
-     * @see nullValue()
+     * \see nullValue()
      * \since QGIS 3.0
      */
     virtual void clearValue();
@@ -169,14 +169,14 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
   signals:
 
     /** Emitted when the widget is cleared
-     * @see clearValue()
+     * \see clearValue()
      */
     void cleared();
 
     /**
      * Same as textChanged() but with support for null values.
      *
-     * @param value The current text or null string if it matches the nullValue() property.
+     * \param value The current text or null string if it matches the nullValue() property.
      */
     void valueChanged( const QString &value );
 

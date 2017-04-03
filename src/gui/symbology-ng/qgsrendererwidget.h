@@ -52,14 +52,14 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     void showSymbolLevelsDialog( QgsFeatureRenderer *r );
 
     /** Sets the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
-     * @see context()
+     * \param context symbol widget context
+     * \see context()
      * \since QGIS 3.0
      */
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
+     * \see setContext()
      * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
@@ -149,21 +149,21 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
   public:
 
     /** Constructor
-     * @param symbolList must not be empty
-     * @param layer must not be null
-     * @param label value label
+     * \param symbolList must not be empty
+     * \param layer must not be null
+     * \param label value label
      */
     QgsDataDefinedValueDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer, const QString &label );
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
-     * @see context()
+     * \param context symbol widget context
+     * \see context()
      * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
+     * \see setContext()
      * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
@@ -181,7 +181,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     /**
      * Should be called in the constructor of child classes.
      *
-     * @note May be missing Python bindings depending on the platform.
+     * \note May be missing Python bindings depending on the platform.
      */
     void init( int propertyKey ); // needed in children ctor to call virtual
 

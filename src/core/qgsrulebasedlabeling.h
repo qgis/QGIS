@@ -33,9 +33,9 @@ class QgsGeometry;
 class QgsRuleBasedLabelProvider;
 
 /** \ingroup core
- * @class QgsRuleBasedLabeling
- * @note not available in Python bindings
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \class QgsRuleBasedLabeling
+ * \note not available in Python bindings
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */
 
 class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
@@ -47,9 +47,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
     /**
      * \ingroup core
-     * @class QgsRuleBasedLabeling::Rule
-     * @note not available in Python bindings
-     * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
+     * \class QgsRuleBasedLabeling::Rule
+     * \note not available in Python bindings
+     * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
      */
     class CORE_EXPORT Rule
     {
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Determines if scale based labeling is active
          *
-         * @return True if scale based labeling is active
+         * \returns True if scale based labeling is active
          */
         bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
 
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * E.g. Denominator 1000 is a scale of 1:1000, where a rule with minimum denominator
          * of 900 will not be applied while a rule with 2000 will be applied.
          *
-         * @return The minimum scale denominator
+         * \returns The minimum scale denominator
          */
         int scaleMinDenom() const { return mScaleMinDenom; }
 
@@ -99,34 +99,34 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * E.g. Denominator 1000 is a scale of 1:1000, where a rule with maximum denominator
          * of 900 will be applied while a rule with 2000 will not be applied.
          *
-         * @return The maximum scale denominator
+         * \returns The maximum scale denominator
          */
         int scaleMaxDenom() const { return mScaleMaxDenom; }
 
         /**
          * A filter that will check if this rule applies
-         * @return An expression
+         * \returns An expression
          */
         QString filterExpression() const { return mFilterExp; }
 
         /**
          * A human readable description for this rule
          *
-         * @return Description
+         * \returns Description
          */
         QString description() const { return mDescription; }
 
         /**
          * Returns if this rule is active
          *
-         * @return True if the rule is active
+         * \returns True if the rule is active
          */
         bool active() const { return mIsActive; }
 
         /**
          * Check if this rule is an ELSE rule
          *
-         * @return True if this rule is an else rule
+         * \returns True if this rule is an else rule
          */
         bool isElse() const { return mElseRule; }
 
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * Set the minimum denominator for which this rule shall apply.
          * E.g. 1000 if it shall be evaluated between 1:1000 and 1:100'000
          * Set to 0 to disable the minimum check
-         * @param scaleMinDenom The minimum scale denominator for this rule
+         * \param scaleMinDenom The minimum scale denominator for this rule
          */
         void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
 
@@ -148,34 +148,34 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * Set the maximum denominator for which this rule shall apply.
          * E.g. 100'000 if it shall be evaluated between 1:1000 and 1:100'000
          * Set to 0 to disable the maximum check
-         * @param scaleMaxDenom maximum scale denominator for this rule
+         * \param scaleMaxDenom maximum scale denominator for this rule
          */
         void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
 
         /**
          * Set the expression used to check if a given feature shall be rendered with this rule
          *
-         * @param filterExp An expression
+         * \param filterExp An expression
          */
         void setFilterExpression( const QString &filterExp ) { mFilterExp = filterExp; initFilter(); }
 
         /**
          * Set a human readable description for this rule
          *
-         * @param description Description
+         * \param description Description
          */
         void setDescription( const QString &description ) { mDescription = description; }
 
         /**
          * Sets if this rule is active
-         * @param state Determines if the rule should be activated or deactivated
+         * \param state Determines if the rule should be activated or deactivated
          */
         void setActive( bool state ) { mIsActive = state; }
 
         /**
          * Sets if this rule is an ELSE rule
          *
-         * @param iselse If true, this rule is an ELSE rule
+         * \param iselse If true, this rule is an ELSE rule
          */
         void setIsElse( bool iselse ) { mElseRule = iselse; }
 
@@ -187,35 +187,35 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Return all children rules of this rule
          *
-         * @return A list of rules
+         * \returns A list of rules
          */
         const RuleList &children() const { return mChildren; }
 
         /**
          * Return all children rules of this rule
          *
-         * @return A list of rules
+         * \returns A list of rules
          */
         RuleList &children() { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
-         * @return A list of descendant rules
+         * \returns A list of descendant rules
          */
         RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
 
         /**
          * The parent rule
          *
-         * @return Parent rule
+         * \returns Parent rule
          */
         const Rule *parent() const { return mParent; }
 
         /**
          * The parent rule
          *
-         * @return Parent rule
+         * \returns Parent rule
          */
         Rule *parent() { return mParent; }
 
@@ -238,8 +238,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
         /**
          * Create a rule from an XML definition
-         * @param ruleElem  The XML rule element
-         * @return A new rule
+         * \param ruleElem  The XML rule element
+         * \returns A new rule
          */
         static Rule *create( const QDomElement &ruleElem );
 
@@ -271,17 +271,17 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Check if a given feature shall be labelled by this rule
          *
-         * @param f         The feature to test
-         * @param context   The context in which the rendering happens
-         * @return          True if the feature shall be rendered
+         * \param f         The feature to test
+         * \param context   The context in which the rendering happens
+         * \returns          True if the feature shall be rendered
          */
         bool isFilterOK( QgsFeature &f, QgsRenderContext &context ) const;
 
         /**
          * Check if this rule applies for a given scale
-         * @param scale The scale to check. If set to 0, it will always return true.
+         * \param scale The scale to check. If set to 0, it will always return true.
          *
-         * @return If the rule will be evaluated at this scale
+         * \returns If the rule will be evaluated at this scale
          */
         bool isScaleOK( double scale ) const;
 
@@ -340,9 +340,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
 
 /** \ingroup core
- * @class QgsRuleBasedLabelProvider
- * @note not available in Python bindings
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \class QgsRuleBasedLabelProvider
+ * \note not available in Python bindings
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */
 class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 {

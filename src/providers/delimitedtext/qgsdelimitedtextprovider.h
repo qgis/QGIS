@@ -90,16 +90,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
-    /**
-     * Get feature type.
-     * @return int representing the feature type
-     */
     virtual QgsWkbTypes::Type wkbType() const override;
 
-    /**
-     * Number of features in the layer
-     * @return long containing number of features
-     */
     virtual long featureCount() const override;
 
     virtual QgsFields fields() const override;
@@ -112,7 +104,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** Creates a spatial index on the data
-     * @return indexCreated  Returns true if a spatial index is created
+     * \returns indexCreated  Returns true if a spatial index is created
      */
     virtual bool createSpatialIndex() override;
 
@@ -125,7 +117,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      *  if more than one provider supports a given format, the user is able to
      *  select a specific provider to open that file.
      *
-     *  @note
+     *  \note
      *
      *  Instead of being pure virtual, might be better to generalize this
      *  behavior and presume that none of the sub-classes are going to do
@@ -137,7 +129,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      *
      *  Return a terse string describing what the provider is.
      *
-     *  @note
+     *  \note
      *
      *  Instead of being pure virtual, might be better to generalize this
      *  behavior and presume that none of the sub-classes are going to do
@@ -167,9 +159,9 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     /**
      * Check to see if the point is withn the selection
      * rectangle
-     * @param x X value of point
-     * @param y Y value of point
-     * @return True if point is within the rectangle
+     * \param x X value of point
+     * \param y Y value of point
+     * \returns True if point is within the rectangle
      */
     bool boundsCheck( double x, double y );
 
@@ -177,17 +169,17 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     /**
      * Check to see if a geometry overlaps the selection
      * rectangle
-     * @param geom geometry to test against bounds
-     * @param y Y value of point
-     * @return True if point is within the rectangle
+     * \param geom geometry to test against bounds
+     * \param y Y value of point
+     * \returns True if point is within the rectangle
      */
     bool boundsCheck( QgsGeometry *geom );
 
     /**
      * Try to read field types from CSVT (or equivalent xxxT) file.
-     * @param filename The name of the file from which to read the field types
-     * @param message  Pointer to a string to receive a status message
-     * @return A list of field type strings, empty if not found or not valid
+     * \param filename The name of the file from which to read the field types
+     * \param message  Pointer to a string to receive a status message
+     * \returns A list of field type strings, empty if not found or not valid
      */
     QStringList readCsvtFieldTypes( const QString &filename, QString *message = nullptr );
 

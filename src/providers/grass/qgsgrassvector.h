@@ -89,14 +89,14 @@ class GRASS_LIB_EXPORT QgsGrassVector : public QObject
     QList<QgsGrassVectorLayer *> layers() const { return mLayers; }
 
     /** Get numbers of primitives
-     * @return type/count pairs */
+     * \returns type/count pairs */
     QMap<int, int> typeCounts() const {return mTypeCounts; }
 
     //! Get total number of primitives of given type. Types may be combined by bitwise or)
     int typeCount( int type ) const;
 
     /** Maximum layer number (field).
-     * @return max layer number or 0 if no layer exists */
+     * \returns max layer number or 0 if no layer exists */
     int maxLayerNumber() const;
 
     //! Get number of nodes

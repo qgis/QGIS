@@ -45,14 +45,14 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent = nullptr );
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
-     * @see context()
+     * \param context symbol widget context
+     * \see context()
      * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
+     * \see setContext()
      * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     /**
      * Set the widget in dock mode which tells the widget to emit panel
      * widgets and not open dialogs
-     * @param dockMode True to enable dock mode.
+     * \param dockMode True to enable dock mode.
      */
     virtual void setDockMode( bool dockMode ) override;
 

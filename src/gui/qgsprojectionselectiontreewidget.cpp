@@ -993,15 +993,6 @@ QStringList QgsProjectionSelectionTreeWidget::authorities()
   return authorities;
 }
 
-/** Linfinity qtcreator qgis
-* \brief Make the string safe for use in SQL statements.
-*  This involves escaping single quotes, double quotes, backslashes,
-*  and optionally, percentage symbols.  Percentage symbols are used
-*  as wildcards sometimes and so when using the string as part of the
-*  LIKE phrase of a select statement, should be escaped.
-* \arg const QString in The input string to make safe.
-* \return The string made safe for SQL statements.
-*/
 const QString QgsProjectionSelectionTreeWidget::sqlSafeString( const QString &theSQL )
 {
   QString retval = theSQL;

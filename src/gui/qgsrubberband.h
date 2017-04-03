@@ -28,7 +28,9 @@ class QPaintEvent;
 
 /** \ingroup gui
  * A class for drawing transient features (e.g. digitizing lines) on the map.
- * It may be used
+ *
+ * The QgsRubberBand class provides a transparent overlay widget
+  for tracking the mouse while drawing polylines or polygons.
  */
 class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 {
@@ -71,20 +73,20 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /**
      * Creates a new RubberBand.
-     *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
-     *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
+     *  \param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
+     *  \param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
     QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
      * Sets the color for the rubberband
-     *  @param color  The color used to render this rubberband
+     *  \param color  The color used to render this rubberband
      */
     void setColor( const QColor &color );
 
     /**
      * Sets the fill color for the rubberband
-     *  @param color  The color used to render this rubberband
+     *  \param color  The color used to render this rubberband
      *  \since QGIS 2.6
      */
     void setFillColor( const QColor &color );
@@ -96,7 +98,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /**
      * Sets the stroke color for the rubberband
-     *  @param color  The color used to render this rubberband
+     *  \param color  The color used to render this rubberband
      *  \since QGIS 2.6
      */
     void setStrokeColor( const QColor &color );
@@ -109,7 +111,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Sets a secondary stroke color for the rubberband which will be drawn under the main stroke color.
      * Set to an invalid color to avoid drawing the secondary stroke.
-     *  @param color  The color used to render a secondary stroke color to this rubberband
+     *  \param color  The color used to render a secondary stroke color to this rubberband
      *  \since QGIS 3.0
      */
     void setSecondaryStrokeColor( const QColor &color );
@@ -121,7 +123,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /**
      * Sets the width of the line. Stroke width for polygon.
-     *  @param width The width for any lines painted for this rubberband
+     *  \param width The width for any lines painted for this rubberband
      */
     void setWidth( int width );
 
@@ -132,7 +134,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /**
      * Sets the icon type to highlight point geometries.
-     *  @param icon The icon to visualize point geometries
+     *  \param icon The icon to visualize point geometries
      */
     void setIcon( IconType icon );
 
@@ -165,7 +167,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Clears all the geometries in this rubberband.
      * Sets the representation type according to geometryType.
-     *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
+     *  \param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
     void reset( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
@@ -173,25 +175,25 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Adds a vertex to the rubberband and update canvas.
      * The rendering of the vertex depends on the current GeometryType and icon.
      * If adding more points consider using update=false for better performance
-     *  @param p             The vertex/point to add
-     *  @param doUpdate      Should the map canvas be updated immediately?
-     *  @param geometryIndex The index of the feature part (in case of multipart geometries)
+     *  \param p             The vertex/point to add
+     *  \param doUpdate      Should the map canvas be updated immediately?
+     *  \param geometryIndex The index of the feature part (in case of multipart geometries)
      */
     void addPoint( const QgsPoint &p, bool doUpdate = true, int geometryIndex = 0 );
 
     /** Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
-     * @param doUpdate set to true to update the map canvas immediately
-     * @param geometryIndex index of the feature part (in case of multipart geometries)
+     * \param doUpdate set to true to update the map canvas immediately
+     * \param geometryIndex index of the feature part (in case of multipart geometries)
      * \since QGIS 2.16
      */
     void closePoints( bool doUpdate = true, int geometryIndex = 0 );
 
     /**
      * Removes a vertex from the rubberband and (optionally) updates canvas.
-     * @param index The index of the vertex/point to remove, negative indexes start at end
-     * @param doUpdate Should the map canvas be updated immediately?
-     * @param geometryIndex The index of the feature part (in case of multipart geometries)
+     * \param index The index of the vertex/point to remove, negative indexes start at end
+     * \param doUpdate Should the map canvas be updated immediately?
+     * \param geometryIndex The index of the feature part (in case of multipart geometries)
      */
     void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0 );
 
@@ -214,24 +216,24 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /**
      * Returns number of vertices in feature part
-     *  @param geometryIndex The index of the feature part (in case of multipart geometries)
-     *  @return number of vertices
+     *  \param geometryIndex The index of the feature part (in case of multipart geometries)
+     *  \returns number of vertices
      */
     int partSize( int geometryIndex ) const;
 
     /**
      * Sets this rubber band to the geometry of an existing feature.
      * This is useful for feature highlighting.
-     * In contrast to {@link addGeometry}, this method does also change the geometry type of the rubberband.
-     *  @param geom the geometry object
-     *  @param layer the layer containing the feature, used for coord transformation to map
+     * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
+     *  \param geom the geometry object
+     *  \param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
     void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
 
     /**
      * Sets this rubber band to a map canvas rectangle
-     *  @param rect rectangle in canvas coordinates
+     *  \param rect rectangle in canvas coordinates
      */
     void setToCanvasRectangle( QRect rect );
 
@@ -239,44 +241,44 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Adds the geometry of an existing feature to a rubberband
      * This is useful for multi feature highlighting.
      * As of 2.0, this method does not change the GeometryType any more. You need to set the GeometryType
-     * of the rubberband explicitly by calling {@link reset} or {@link setToGeometry} with appropriate arguments.
-     * {@link setToGeometry} is also to be preferred for backwards-compatibility.
+     * of the rubberband explicitly by calling reset() or setToGeometry() with appropriate arguments.
+     * setToGeometry() is also to be preferred for backwards-compatibility.
      *
-     *  @param geom the geometry object. Will be treated as a collection of vertices.
-     *  @param layer the layer containing the feature, used for coord transformation to map
+     *  \param geom the geometry object. Will be treated as a collection of vertices.
+     *  \param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
     void addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
 
     /**
      * Adds translation to original coordinates (all in map coordinates)
-     *  @param dx  x translation
-     *  @param dy  y translation
+     *  \param dx  x translation
+     *  \param dy  y translation
      */
     void setTranslationOffset( double dx, double dy );
 
     /**
      * Returns number of geometries
-     *  @return number of geometries
+     *  \returns number of geometries
      */
     int size() const;
 
     /**
      * Returns count of vertices in all lists of mPoint
-     *  @return The total number of vertices
+     *  \returns The total number of vertices
      */
     int numberOfVertices() const;
 
     /**
      * Returns a vertex
-     *  @param i   The geometry index
-     *  @param j   The vertex index within geometry i
+     *  \param i   The geometry index
+     *  \param j   The vertex index within geometry i
      */
     const QgsPoint *getPoint( int i, int j = 0 ) const;
 
     /**
      * Returns the rubberband as a Geometry
-     *  @return A geometry object which reflects the current state of the rubberband.
+     *  \returns A geometry object which reflects the current state of the rubberband.
      */
     QgsGeometry asGeometry() const;
 
@@ -286,14 +288,14 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /**
      * Paints the rubber band in response to an update event.
-     *  @param p The QPainter object
+     *  \param p The QPainter object
      */
     virtual void paint( QPainter *p ) override;
 
     /**
      * Draws shape of the rubber band.
-     *  @param p The QPainter object
-     *  @param pts A list of points used to draw the shape
+     *  \param p The QPainter object
+     *  \param pts A list of points used to draw the shape
      */
     void drawShape( QPainter *p, QVector<QPointF> &pts );
 

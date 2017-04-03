@@ -291,7 +291,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
  Provider to display vector data in a GRASS GIS layer.
 
  TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
- @see QgsVectorLayerUtils()
+ \see QgsVectorLayerUtils()
 %End
 
 %TypeHeaderCode
@@ -327,11 +327,11 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
  interprets the supplied path (url) of the data source to connect to and access the
  data.
 
- @param  path  The path or url of the parameter.  Typically this encodes
+ \param  path  The path or url of the parameter.  Typically this encodes
                parameters used by the data provider as url query items.
- @param  baseName The name used to represent the layer in the legend
- @param  providerLib  The name of the data provider, e.g., "memory", "postgres"
- @param  loadDefaultStyleFlag whether to load the default style
+ \param  baseName The name used to represent the layer in the legend
+ \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
+ \param  loadDefaultStyleFlag whether to load the default style
 %End
 
 
@@ -360,24 +360,24 @@ Returns a comment for the data in the layer
  If the displayExpression is more complex than a simple field, a null string will
  be returned.
 
- @see displayExpression
+ \see displayExpression
 %End
 
     void setDisplayExpression( const QString &displayExpression );
 %Docstring
  Set the preview expression, used to create a human readable preview string.
-  Used e.g. in the attribute table feature list. Uses { @link QgsExpression }.
+  Used e.g. in the attribute table feature list. Uses QgsExpression.
 
-  @param displayExpression The expression which will be used to preview features
+  \param displayExpression The expression which will be used to preview features
                            for this layer
 %End
 
     QString displayExpression() const;
 %Docstring
   Get the preview expression, used to create a human readable preview string.
-  Uses { @link QgsExpression }
+  Uses QgsExpression
 
-  @return The expression which will be used to preview features for this layer
+  \returns The expression which will be used to preview features for this layer
 %End
 
     QgsVectorDataProvider *dataProvider();
@@ -399,7 +399,7 @@ Setup the coordinate system transformation for the layer
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 %Docstring
  Joins another vector layer to this layer
-@param joinInfo join object containing join layer id, target and source field
+\param joinInfo join object containing join layer id, target and source field
 .. note::
 
    since 2.6 returns bool indicating whether the join can be added *
@@ -408,7 +408,7 @@ Setup the coordinate system transformation for the layer
     bool removeJoin( const QString &joinLayerId );
 %Docstring
  Removes a vector layer join
-@returns true if join was found and successfully removed *
+\returns true if join was found and successfully removed *
 %End
 
     QgsVectorLayerJoinBuffer *joinBuffer();
@@ -421,19 +421,19 @@ Setup the coordinate system transformation for the layer
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
 %Docstring
  Sets the list of dependencies.
- @see dependencies()
+ \see dependencies()
 
- @param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
- @returns false if a dependency cycle has been detected
+ \param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
+ \returns false if a dependency cycle has been detected
 .. versionadded:: 3.0
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 %Docstring
- Gets the list of dependencies. This includes data dependencies set by the user (@see setDataDependencies)
+ Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
  as well as dependencies given by the provider
 
- @returns a set of QgsMapLayerDependency
+ \returns a set of QgsMapLayerDependency
 .. versionadded:: 3.0
 %End
 
@@ -441,10 +441,10 @@ Setup the coordinate system transformation for the layer
 %Docstring
  Add a new field which is calculated by the expression specified
 
- @param exp The expression which calculates the field
- @param fld The field to calculate
+ \param exp The expression which calculates the field
+ \param fld The field to calculate
 
- @return The index of the new field
+ \returns The index of the new field
 
 .. versionadded:: 2.9
 %End
@@ -453,7 +453,7 @@ Setup the coordinate system transformation for the layer
 %Docstring
  Remove an expression field
 
- @param index The index of the field
+ \param index The index of the field
 
 .. versionadded:: 2.6
 %End
@@ -462,9 +462,9 @@ Setup the coordinate system transformation for the layer
 %Docstring
  Returns the expression used for a given expression field
 
- @param index An index of an epxression based (virtual) field
+ \param index An index of an epxression based (virtual) field
 
- @return The expression for the field at index
+ \returns The expression for the field at index
 
 .. versionadded:: 2.9
 %End
@@ -473,9 +473,9 @@ Setup the coordinate system transformation for the layer
 %Docstring
  Changes the expression used to define an expression based (virtual) field
 
- @param index The index of the expression to change
+ \param index The index of the expression to change
 
- @param exp The new expression to set
+ \param exp The new expression to set
 
 .. versionadded:: 2.9
 %End
@@ -492,55 +492,55 @@ Setup the coordinate system transformation for the layer
 %Docstring
  The number of features that are selected in this layer
 
- @return See description
+ \returns See description
 %End
 
     void selectByRect( QgsRectangle &rect, SelectBehavior behavior = SetSelection );
 %Docstring
  Select features found within the search rectangle (in layer's coordinates)
- @param rect search rectangle
- @param behavior selection type, allows adding to current selection, removing
+ \param rect search rectangle
+ \param behavior selection type, allows adding to current selection, removing
  from selection, etc.
- @see invertSelectionInRectangle(QgsRectangle & rect)
- @see selectByExpression()
- @see selectByIds()
+ \see invertSelectionInRectangle(QgsRectangle & rect)
+ \see selectByExpression()
+ \see selectByIds()
 %End
 
     void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
 %Docstring
  Select matching features using an expression.
- @param expression expression to evaluate to select features
- @param behavior selection type, allows adding to current selection, removing
+ \param expression expression to evaluate to select features
+ \param behavior selection type, allows adding to current selection, removing
  from selection, etc.
 .. versionadded:: 2.16
- @see selectByRect()
- @see selectByIds()
+ \see selectByRect()
+ \see selectByIds()
 %End
 
     void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
 %Docstring
  Select matching features using a list of feature IDs. Will emit the
  selectionChanged() signal with the clearAndSelect flag set.
- @param ids feature IDs to select
- @param behavior selection type, allows adding to current selection, removing
+ \param ids feature IDs to select
+ \param behavior selection type, allows adding to current selection, removing
  from selection, etc.
 .. versionadded:: 2.16
- @see selectByRect()
- @see selectByExpression()
+ \see selectByRect()
+ \see selectByExpression()
 %End
 
     void modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds &deselectIds );
 %Docstring
  Modifies the current selection on this layer
 
- @param selectIds    Select these ids
- @param deselectIds  Deselect these ids
+ \param selectIds    Select these ids
+ \param deselectIds  Deselect these ids
 
- @see   select(QgsFeatureIds)
- @see   select(QgsFeatureId)
- @see   deselect(QgsFeatureIds)
- @see   deselect(QgsFeatureId)
- @see selectByExpression()
+ \see   select(QgsFeatureIds)
+ \see   select(QgsFeatureId)
+ \see   deselect(QgsFeatureIds)
+ \see   deselect(QgsFeatureId)
+ \see selectByExpression()
 %End
 
     void invertSelection();
@@ -562,40 +562,40 @@ Get all feature Ids
 %Docstring
  Invert selection of features found within the search rectangle (in layer's coordinates)
 
- @param rect  The rectangle in which the selection of features will be inverted
+ \param rect  The rectangle in which the selection of features will be inverted
 
- @see   invertSelection()
+ \see   invertSelection()
 %End
 
     QgsFeatureList selectedFeatures() const;
 %Docstring
  Get a copy of the user-selected features
 
- @return A list of { @link QgsFeature } 's
+ \returns A list of QgsFeature
 
- @see    selectedFeatureIds()
- @see    selectedFeaturesIterator() which is more memory friendly when handling large selections
+ \see    selectedFeatureIds()
+ \see    selectedFeaturesIterator() which is more memory friendly when handling large selections
 %End
 
     QgsFeatureIterator selectedFeaturesIterator( QgsFeatureRequest request = QgsFeatureRequest() ) const;
 %Docstring
  Get an iterator of the selected features
 
- @param request You may specify a request, e.g. to limit the set of requested attributes.
+ \param request You may specify a request, e.g. to limit the set of requested attributes.
                 Any filter on the request will be discarded.
 
- @return Iterator over the selected features
+ \returns Iterator over the selected features
 
- @see    selectedFeatureIds()
- @see    selectedFeatures()
+ \see    selectedFeatureIds()
+ \see    selectedFeatures()
 %End
 
     const QgsFeatureIds &selectedFeatureIds() const;
 %Docstring
  Return reference to identifiers of selected features
 
- @return A list of { @link QgsFeatureId } 's
- @see selectedFeatures()
+ \returns A list of QgsFeatureId
+ \see selectedFeatures()
 %End
 
     QgsRectangle boundingBoxOfSelected() const;
@@ -606,14 +606,14 @@ Returns the bounding box of the selected features. If there is no selection, Qgs
     bool labelsEnabled() const;
 %Docstring
  Returns whether the layer contains labels which are enabled and should be drawn.
- @return true if layer contains enabled labels
+ \returns true if layer contains enabled labels
 .. versionadded:: 2.9
 %End
 
     bool diagramsEnabled() const;
 %Docstring
  Returns whether the layer contains diagrams which are enabled and should be drawn.
- @return true if layer contains enabled diagrams
+ \returns true if layer contains enabled diagrams
 .. versionadded:: 2.9
 %End
 
@@ -685,22 +685,22 @@ Return the provider type for this layer
                                       QString &msgError /Out/ );
 %Docstring
  Save named and sld style of the layer to the style table in the db.
- @param name
- @param description
- @param useAsDefault
- @param uiFileContent
- @param msgError
+ \param name
+ \param description
+ \param useAsDefault
+ \param uiFileContent
+ \param msgError
 %End
 
     virtual int listStylesInDatabase( QStringList &ids /Out/, QStringList &names /Out/,
                                       QStringList &descriptions /Out/, QString &msgError /Out/ );
 %Docstring
  Lists all the style in db split into related to the layer and not related to
- @param ids the list in which will be stored the style db ids
- @param names the list in which will be stored the style names
- @param descriptions the list in which will be stored the style descriptions
- @param msgError
- @return the number of styles related to current layer
+ \param ids the list in which will be stored the style db ids
+ \param names the list in which will be stored the style names
+ \param descriptions the list in which will be stored the style descriptions
+ \param msgError
+ \returns the number of styles related to current layer
 %End
 
     virtual QString getStyleFromDatabase( const QString &styleId, QString &msgError /Out/ );
@@ -712,17 +712,17 @@ Return the provider type for this layer
 %Docstring
  Delete a style from the database
 .. versionadded:: 3.0
- @param styleId the provider's layer_styles table id of the style to delete
- @param msgError reference to string that will be updated with any error messages
- @return true in case of success
+ \param styleId the provider's layer_styles table id of the style to delete
+ \param msgError reference to string that will be updated with any error messages
+ \returns true in case of success
 %End
 
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb );
 %Docstring
  Load a named style from file/local db/datasource db
- @param theURI the URI of the style or the URI of the layer
- @param resultFlag will be set to true if a named style is correctly loaded
- @param loadFromLocalDb if true forces to load from local db instead of datasource one
+ \param theURI the URI of the style or the URI of the layer
+ \param resultFlag will be set to true if a named style is correctly loaded
+ \param loadFromLocalDb if true forces to load from local db instead of datasource one
 %End
 
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/ );
@@ -734,45 +734,45 @@ Return the provider type for this layer
     bool readSymbology( const QDomNode &layerNode, QString &errorMessage );
 %Docstring
  Read the symbology for the current layer from the Dom node supplied.
- @param layerNode node that will contain the symbology definition for this layer.
- @param errorMessage reference to string that will be updated with any error messages
- @return true in case of success.
+ \param layerNode node that will contain the symbology definition for this layer.
+ \param errorMessage reference to string that will be updated with any error messages
+ \returns true in case of success.
 %End
 
     bool readStyle( const QDomNode &node, QString &errorMessage );
 %Docstring
  Read the style for the current layer from the Dom node supplied.
- @param node node that will contain the style definition for this layer.
- @param errorMessage reference to string that will be updated with any error messages
- @return true in case of success.
+ \param node node that will contain the style definition for this layer.
+ \param errorMessage reference to string that will be updated with any error messages
+ \returns true in case of success.
 %End
 
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
 %Docstring
  Write the symbology for the layer into the docment provided.
-  @param node the node that will have the style element added to it.
-  @param doc the document that will have the QDomNode added.
-  @param errorMessage reference to string that will be updated with any error messages
-  @return true in case of success.
+  \param node the node that will have the style element added to it.
+  \param doc the document that will have the QDomNode added.
+  \param errorMessage reference to string that will be updated with any error messages
+  \returns true in case of success.
 %End
 
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
 %Docstring
  Write just the style information for the layer into the document
-  @param node the node that will have the style element added to it.
-  @param doc the document that will have the QDomNode added.
-  @param errorMessage reference to string that will be updated with any error messages
-  @return true in case of success.
+  \param node the node that will have the style element added to it.
+  \param doc the document that will have the QDomNode added.
+  \param errorMessage reference to string that will be updated with any error messages
+  \returns true in case of success.
 %End
 
     bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
 %Docstring
  Writes the symbology of the layer into the document provided in SLD 1.1 format
- @param node the node that will have the style element added to it.
- @param doc the document that will have the QDomNode added.
- @param errorMessage reference to string that will be updated with any error messages
- @param props a open ended set of properties that can drive/inform the SLD encoding
- @return true in case of success
+ \param node the node that will have the style element added to it.
+ \param doc the document that will have the QDomNode added.
+ \param errorMessage reference to string that will be updated with any error messages
+ \param props a open ended set of properties that can drive/inform the SLD encoding
+ \returns true in case of success
 %End
 
     bool readSld( const QDomNode &node, QString &errorMessage );
@@ -781,17 +781,17 @@ Return the provider type for this layer
 %Docstring
  Number of features rendered with specified legend key. Features must be first
  calculated by countSymbolFeatures()
- @return number of features rendered by symbol or -1 if failed or counts are not available
+ \returns number of features rendered by symbol or -1 if failed or counts are not available
 %End
 
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
 %Docstring
  Update the data source of the layer. The layer's renderer and legend will be preserved only
  if the geometry type of the new data source matches the current geometry type of the layer.
- @param dataSource new layer data source
- @param baseName base name of the layer
- @param provider provider string
- @param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+ \param dataSource new layer data source
+ \param baseName base name of the layer
+ \param provider provider string
+ \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
  data source
 .. versionadded:: 2.10
 %End
@@ -799,30 +799,30 @@ Return the provider type for this layer
     bool countSymbolFeatures( bool showProgress = true );
 %Docstring
  Count features for symbols. Feature counts may be get by featureCount().
- @param showProgress show progress dialog
- @return true if calculated, false if failed or was canceled by user
+ \param showProgress show progress dialog
+ \returns true if calculated, false if failed or was canceled by user
 %End
 
     virtual bool setSubsetString( const QString &subset );
 %Docstring
  Set the string (typically sql) used to define a subset of the layer
- @param subset The subset string. This may be the where clause of a sql statement
+ \param subset The subset string. This may be the where clause of a sql statement
                or other definition string specific to the underlying dataprovider
                and data store.
- @return true, when setting the subset string was successful, false otherwise
+ \returns true, when setting the subset string was successful, false otherwise
 %End
 
     virtual QString subsetString() const;
 %Docstring
  Get the string (typically sql) used to define a subset of the layer
- @return The subset string or QString::null if not implemented by the provider
+ \returns The subset string or QString::null if not implemented by the provider
 %End
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
 %Docstring
  Query the layer for features specified in request.
- @param request feature request describing parameters of features to return
- @returns iterator for matching features from provider
+ \param request feature request describing parameters of features to return
+ \returns iterator for matching features from provider
 %End
 
     QgsFeatureIterator getFeatures( const QString &expression );
@@ -849,18 +849,18 @@ Return the provider type for this layer
     bool addFeature( QgsFeature &feature, bool alsoUpdateExtent = true );
 %Docstring
  Adds a feature
-@param feature feature to add
-@param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
-@return                    True in case of success and False in case of error
+\param feature feature to add
+\param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
+\returns                    True in case of success and False in case of error
 %End
 
     bool updateFeature( QgsFeature &f );
 %Docstring
  Updates an existing feature. This method needs to query the datasource
-on every call. Consider using {@link changeAttributeValue()} or
-{@link changeGeometry()} instead.
-@param f  Feature to update
-@return   True in case of success and False in case of error
+on every call. Consider using changeAttributeValue() or
+changeGeometry() instead.
+\param f  Feature to update
+\returns   True in case of success and False in case of error
 %End
 
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
@@ -897,15 +897,15 @@ on every call. Consider using {@link changeAttributeValue()} or
     EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 %Docstring
  Deletes a vertex from a feature.
- @param featureId ID of feature to remove vertex from
- @param vertex index of vertex to delete
+ \param featureId ID of feature to remove vertex from
+ \param vertex index of vertex to delete
 .. versionadded:: 2.14
 %End
 
     bool deleteSelectedFeatures( int *deletedCount = 0 );
 %Docstring
  Deletes the selected features
-  @return true in case of success and false otherwise
+  \returns true in case of success and false otherwise
 %End
 
     int addRing( const QList<QgsPoint> &ring, QgsFeatureId *featureId = 0 );
@@ -939,10 +939,10 @@ TODO QGIS 3.0 returns an enum instead of a magic constant
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
 %Docstring
  Translates feature by dx, dy
-  @param featureId id of the feature to translate
-  @param dx translation of x-coordinate
-  @param dy translation of y-coordinate
-  @return 0 in case of success
+  \param featureId id of the feature to translate
+  \param dx translation of x-coordinate
+  \param dy translation of y-coordinate
+  \returns 0 in case of success
 %End
 
     int splitParts( const QList<QgsPoint> &splitLine, bool topologicalEditing = false );
@@ -958,11 +958,11 @@ TODO QGIS 3.0 returns an enum instead of a magic constant
     int addTopologicalPoints( const QgsGeometry &geom );
 %Docstring
  Adds topological points for every vertex of the geometry.
- @param geom the geometry where each vertex is added to segments of other features
+ \param geom the geometry where each vertex is added to segments of other features
 .. note::
 
    geom is not going to be modified by the function
- @return 0 in case of success
+ \returns 0 in case of success
 %End
 
     int addTopologicalPoints( const QgsPoint &p );
@@ -971,16 +971,16 @@ TODO QGIS 3.0 returns an enum instead of a magic constant
  already have a vertex there. If a feature already has a vertex at position p,
  no additional vertex is inserted. This method is useful for topological
  editing.
- @param p position of the vertex
- @return 0 in case of success
+ \param p position of the vertex
+ \returns 0 in case of success
 %End
 
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult> &snapResults );
 %Docstring
  Inserts vertices to the snapped segments.
  This is useful for topological editing if snap to segment is enabled.
- @param snapResults results collected from the snapping operation
- @return 0 in case of success
+ \param snapResults results collected from the snapping operation
+ \returns 0 in case of success
 %End
 
 
@@ -1000,10 +1000,10 @@ Returns true if the provider has been modified since the last commit
     bool snapPoint( QgsPoint &point, double tolerance );
 %Docstring
  Snaps a point to the closest vertex if there is one within the snapping tolerance
-  @param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.
+  \param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.
   If there is no point within this tolerance, point is left unchanged.
-  @param tolerance   The snapping tolerance
-  @return true if the point has been snapped, false if no vertex within search tolerance
+  \param tolerance   The snapping tolerance
+  \returns true if the point has been snapped, false if no vertex within search tolerance
 %End
 
     int snapWithContext( const QgsPoint &startPoint,
@@ -1012,11 +1012,11 @@ Returns true if the provider has been modified since the last commit
                          QgsSnapper::SnappingType snap_to );
 %Docstring
  Snaps to segment or vertex within given tolerance
- @param startPoint point to snap (in layer coordinates)
- @param snappingTolerance distance tolerance for snapping
- @param snappingResults snapping results. Key is the distance between startPoint and snapping target
- @param snap_to to segment / to vertex
- @return 0 in case of success
+ \param startPoint point to snap (in layer coordinates)
+ \param snappingTolerance distance tolerance for snapping
+ \param snappingResults snapping results. Key is the distance between startPoint and snapping target
+ \param snap_to to segment / to vertex
+ \returns 0 in case of success
 %End
 
     virtual void reload();
@@ -1040,34 +1040,34 @@ Return the extent of the layer
  Returns the list of fields of this layer.
  This also includes fields which have not yet been saved to the provider.
 
- @return A list of fields
+ \returns A list of fields
 %End
 
     QgsFields pendingFields() const;
 %Docstring
  Returns the list of fields of this layer.
  This also includes fields which have not yet been saved to the provider.
- Alias for {@link fields()}
+ Alias for fields()
 
- @return A list of fields
+ \returns A list of fields
 %End
 
     QgsAttributeList pendingAllAttributesList() const;
 %Docstring
  Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
- Alias for {@link attributeList()}
+ Alias for attributeList()
 %End
 
     QgsAttributeList attributeList() const;
 %Docstring
  Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
- Alias for {@link attributeList()}
+ Alias for attributeList()
 %End
 
     QgsAttributeList pendingPkAttributesList() const;
 %Docstring
  Returns list of attributes making up the primary key
- Alias for {@link pkAttributeList()}
+ Alias for pkAttributeList()
 %End
 
     QgsAttributeList pkAttributeList() const;
@@ -1078,7 +1078,7 @@ Returns list of attributes making up the primary key
     long pendingFeatureCount() const;
 %Docstring
  Returns feature count including changes which have not yet been committed
- Alias for {@link featureCount()}
+ Alias for featureCount()
 %End
 
     long featureCount() const;
@@ -1090,7 +1090,7 @@ Returns list of attributes making up the primary key
     bool setReadOnly( bool readonly = true );
 %Docstring
  Make layer read-only (editing disabled) or not
-  @return false if the layer is in editing yet
+  \returns false if the layer is in editing yet
 %End
 
     bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom );
@@ -1102,12 +1102,12 @@ Change feature's geometry
 %Docstring
  Changes an attribute value (but does not commit it)
 
- @param fid   The feature id of the feature to be changed
- @param field The index of the field to be updated
- @param newValue The value which will be assigned to the field
- @param oldValue The previous value to restore on undo (will otherwise be retrieved)
+ \param fid   The feature id of the feature to be changed
+ \param field The index of the field to be updated
+ \param newValue The value which will be assigned to the field
+ \param oldValue The previous value to restore on undo (will otherwise be retrieved)
 
- @return true in case of success
+ \returns true in case of success
 %End
 
     bool addAttribute( const QgsField &field );
@@ -1133,8 +1133,8 @@ Change feature's geometry
     bool renameAttribute( int index, const QString &newName );
 %Docstring
  Renames an attribute field  (but does not commit it).
- @param index attribute index
- @param newName new name of field
+ \param index attribute index
+ \param newName new name of field
 .. versionadded:: 2.16
 %End
 
@@ -1142,7 +1142,7 @@ Change feature's geometry
 %Docstring
  Returns the alias of an attribute name or a null string if there is no alias.
 
- @see {attributeDisplayName( int attributeIndex )} which returns the field name
+ \see {attributeDisplayName( int attributeIndex )} which returns the field name
       if no alias is defined.
 %End
 
@@ -1185,8 +1185,8 @@ Delete an attribute field (but does not commit it)
 %Docstring
  Deletes a list of attribute fields (but does not commit it)
 
- @param  attrs the indices of the attributes to delete
- @return true if at least one attribute has been deleted
+ \param  attrs the indices of the attributes to delete
+ \returns true if at least one attribute has been deleted
 %End
 
     bool addFeatures( QgsFeatureList features, bool makeSelected = true );
@@ -1202,9 +1202,9 @@ Delete a feature from the layer (but does not commit it)
     bool deleteFeatures( const QgsFeatureIds &fids );
 %Docstring
  Deletes a set of features from the layer (but does not commit it)
- @param fids The feature ids to delete
+ \param fids The feature ids to delete
 
- @return false if the layer is not in edit mode or does not support deleting
+ \returns false if the layer is not in edit mode or does not support deleting
          in case of an active transaction depends on the provider implementation
 %End
 
@@ -1223,20 +1223,20 @@ Delete a feature from the layer (but does not commit it)
  so if a stage fails, it's difficult to roll back cleanly.
  Therefore any error message also includes which stage failed so
  that the user has some chance of repairing the damage cleanly.
- @see commitErrors()
+ \see commitErrors()
 %End
 
     QStringList commitErrors() const;
 %Docstring
  Returns a list containing any error messages generated when attempting
  to commit changes to the layer.
- @see commitChanges()
+ \see commitChanges()
 %End
 
     bool rollBack( bool deleteBuffer = true );
 %Docstring
  Stop editing and discard the edits
- @param deleteBuffer whether to delete editing buffer
+ \param deleteBuffer whether to delete editing buffer
 %End
 
     QString annotationForm() const;
@@ -1253,8 +1253,8 @@ Set annotation form for layer
 %Docstring
  Get relations, where the foreign key is on this layer
 
- @param idx Only get relations, where idx forms part of the foreign key
- @return A list of relations
+ \param idx Only get relations, where idx forms part of the foreign key
+ \returns A list of relations
 %End
 
     QgsVectorLayerEditBuffer *editBuffer();
@@ -1266,7 +1266,7 @@ Buffer with uncommitted editing operations. Only valid after editing has been tu
     void beginEditCommand( const QString &text );
 %Docstring
  Create edit command for undo/redo operations
- @param text text which is to be displayed in undo window
+ \param text text which is to be displayed in undo window
 %End
 
     void endEditCommand();
@@ -1302,37 +1302,37 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  Returns the calculated default value for the specified field index. The default
  value may be taken from a client side default value expression (see setDefaultValueExpression())
  or taken from the underlying data provider.
- @param index field index
- @param feature optional feature to use for default value evaluation. If passed,
+ \param index field index
+ \param feature optional feature to use for default value evaluation. If passed,
  then properties from the feature (such as geometry) can be used when calculating
  the default value.
- @param context optional expression context to evaluate expressions again. If not
+ \param context optional expression context to evaluate expressions again. If not
  specified, a default context will be created
- @return calculated default value
+ \returns calculated default value
 .. versionadded:: 3.0
- @see setDefaultValueExpression()
+ \see setDefaultValueExpression()
 %End
 
     void setDefaultValueExpression( int index, const QString &expression );
 %Docstring
  Sets an expression to use when calculating the default value for a field.
- @param index field index
- @param expression expression to evaluate when calculating default values for field. Pass
+ \param index field index
+ \param expression expression to evaluate when calculating default values for field. Pass
  an empty expression to clear the default.
 .. versionadded:: 3.0
- @see defaultValue()
- @see defaultValueExpression()
+ \see defaultValue()
+ \see defaultValueExpression()
 %End
 
     QString defaultValueExpression( int index ) const;
 %Docstring
  Returns the expression used when calculating the default value for a field.
- @param index field index
- @returns expression evaluated when calculating default values for field, or an
+ \param index field index
+ \returns expression evaluated when calculating default values for field, or an
  empty string if no default is set
 .. versionadded:: 3.0
- @see defaultValue()
- @see setDefaultValueExpression()
+ \see defaultValue()
+ \see setDefaultValueExpression()
 %End
 
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
@@ -1341,7 +1341,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  field index. These constraints may be inherited from the layer's data provider
  or may be set manually on the vector layer from within QGIS.
 .. versionadded:: 3.0
- @see setFieldConstraint()
+ \see setFieldConstraint()
 %End
 
     void setFieldConstraint( int index, QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthHard );
@@ -1350,8 +1350,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  data provider will be kept intact and cannot be modified. Ie, calling this method only allows for new
  constraints to be added on top of the existing provider constraints.
 .. versionadded:: 3.0
- @see fieldConstraints()
- @see removeFieldConstraint()
+ \see fieldConstraints()
+ \see removeFieldConstraint()
 %End
 
     void removeFieldConstraint( int index, QgsFieldConstraints::Constraint constraint );
@@ -1359,26 +1359,26 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  Removes a constraint for a specified field index. Any constraints inherited from the layer's
  data provider will be kept intact and cannot be removed.
 .. versionadded:: 3.0
- @see fieldConstraints()
- @see setFieldConstraint()
+ \see fieldConstraints()
+ \see setFieldConstraint()
 %End
 
     QString constraintExpression( int index ) const;
 %Docstring
  Returns the constraint expression for for a specified field index, if set.
 .. versionadded:: 3.0
- @see fieldConstraints()
- @see constraintDescription()
- @see setConstraintExpression()
+ \see fieldConstraints()
+ \see constraintDescription()
+ \see setConstraintExpression()
 %End
 
     QString constraintDescription( int index ) const;
 %Docstring
  Returns the descriptive name for the constraint expression for a specified field index.
 .. versionadded:: 3.0
- @see constraints()
- @see constraintExpression()
- @see setConstraintExpression()
+ \see constraints()
+ \see constraintExpression()
+ \see setConstraintExpression()
 %End
 
     void setConstraintExpression( int index, const QString &expression, const QString &description = QString() );
@@ -1386,9 +1386,9 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  Set the constraint expression for the specified field index. An optional descriptive name for the constraint
  can also be set. Setting an empty expression will clear any existing expression constraint.
 .. versionadded:: 3.0
- @see constraintExpression()
- @see constraintDescription()
- @see constraints()
+ \see constraintExpression()
+ \see constraintDescription()
+ \see constraints()
 %End
 
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup );
@@ -1411,11 +1411,11 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  may contain outdated values (for instance when the attribute value in a saved feature has
  been changed inside the edit buffer then the previous saved value will be included in the
  returned list).
- @param index column index for attribute
- @param uniqueValues out: result list
- @param limit maximum number of values to return (or -1 if unlimited)
- @see minimumValue()
- @see maximumValue()
+ \param index column index for attribute
+ \param uniqueValues out: result list
+ \param limit maximum number of values to return (or -1 if unlimited)
+ \see minimumValue()
+ \see maximumValue()
 %End
 
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
@@ -1427,11 +1427,11 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  may contain outdated values (for instance when the attribute value in a saved feature has
  been changed inside the edit buffer then the previous saved value will be included in the
  returned list).
- @param index column index for attribute
- @param substring substring to match (case insensitive)
- @param limit maxmum number of the values to return, or -1 to return all unique values
- @param feedback optional feedback object for canceling request
- @returns list of unique strings containing substring
+ \param index column index for attribute
+ \param substring substring to match (case insensitive)
+ \param limit maxmum number of the values to return, or -1 to return all unique values
+ \param feedback optional feedback object for canceling request
+ \returns list of unique strings containing substring
 %End
 
     QVariant minimumValue( int index ) const;
@@ -1440,8 +1440,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  Note that in some circumstances when unsaved changes are present for the layer then the
  returned value may be outdated (for instance when the attribute value in a saved feature has
  been changed inside the edit buffer then the previous saved value may be returned as the minimum).
- @see maximumValue()
- @see uniqueValues()
+ \see maximumValue()
+ \see uniqueValues()
 %End
 
     QVariant maximumValue( int index ) const;
@@ -1450,8 +1450,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  Note that in some circumstances when unsaved changes are present for the layer then the
  returned value may be outdated (for instance when the attribute value in a saved feature has
  been changed inside the edit buffer then the previous saved value may be returned as the maximum).
- @see minimumValue()
- @see uniqueValues()
+ \see minimumValue()
+ \see uniqueValues()
 %End
 
     QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
@@ -1461,39 +1461,39 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
                         bool *ok = 0 ) const;
 %Docstring
  Calculates an aggregated value from the layer's features.
- @param aggregate aggregate to calculate
- @param fieldOrExpression source field or expression to use as basis for aggregated values.
- @param parameters parameters controlling aggregate calculation
- @param context expression context for expressions and filters
- @param ok if specified, will be set to true if aggregate calculation was successful
- @return calculated aggregate value
+ \param aggregate aggregate to calculate
+ \param fieldOrExpression source field or expression to use as basis for aggregated values.
+ \param parameters parameters controlling aggregate calculation
+ \param context expression context for expressions and filters
+ \param ok if specified, will be set to true if aggregate calculation was successful
+ \returns calculated aggregate value
 .. versionadded:: 2.16
 %End
 
     QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = 0 ) const;
 %Docstring
  Fetches all values from a specified field name or expression.
- @param fieldOrExpression field name or an expression string
- @param ok will be set to false if field or expression is invalid, otherwise true
- @param selectedOnly set to true to get values from selected features only
- @param feedback optional feedback object to allow cancelation
- @returns list of fetched values
+ \param fieldOrExpression field name or an expression string
+ \param ok will be set to false if field or expression is invalid, otherwise true
+ \param selectedOnly set to true to get values from selected features only
+ \param feedback optional feedback object to allow cancelation
+ \returns list of fetched values
 .. versionadded:: 2.9
- @see getDoubleValues
+ \see getDoubleValues
 %End
 
     QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = 0, QgsFeedback *feedback = 0 ) const;
 %Docstring
  Fetches all double values from a specified field name or expression. Null values or
  invalid expression results are skipped.
- @param fieldOrExpression field name or an expression string evaluating to a double value
- @param ok will be set to false if field or expression is invalid, otherwise true
- @param selectedOnly set to true to get values from selected features only
- @param nullCount optional pointer to integer to store number of null values encountered in
- @param feedback optional feedback object to allow cancelation
- @returns list of fetched values
+ \param fieldOrExpression field name or an expression string evaluating to a double value
+ \param ok will be set to false if field or expression is invalid, otherwise true
+ \param selectedOnly set to true to get values from selected features only
+ \param nullCount optional pointer to integer to store number of null values encountered in
+ \param feedback optional feedback object to allow cancelation
+ \returns list of fetched values
 .. versionadded:: 2.9
- @see getValues
+ \see getValues
 %End
 
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
@@ -1542,7 +1542,7 @@ Returns the current transparency for the vector layer
 %Docstring
  Return the conditional styles that are set for this layer. Style information is
  used to render conditional formatting in the attribute table.
- @return Return a QgsConditionalLayerStyles object holding the conditional attribute
+ \returns Return a QgsConditionalLayerStyles object holding the conditional attribute
  style information. Style information is generic and can be used for anything.
 .. versionadded:: 2.12
 %End
@@ -1584,7 +1584,7 @@ Returns the current transparency for the vector layer
  Get the configuration of the form used to represent this vector layer.
  This is a writable configuration that can directly be changed in place.
 
- @return The configuration of this layers' form
+ \returns The configuration of this layers' form
 
 .. versionadded:: 2.14
 %End
@@ -1594,7 +1594,7 @@ Returns the current transparency for the vector layer
  Get the configuration of the form used to represent this vector layer.
  This is a writable configuration that can directly be changed in place.
 
- @return The configuration of this layers' form
+ \returns The configuration of this layers' form
 
 .. versionadded:: 3.0
 %End
@@ -1605,43 +1605,43 @@ Returns the current transparency for the vector layer
 %Docstring
  Select feature by its ID
 
- @param featureId  The id of the feature to select
+ \param featureId  The id of the feature to select
 
- @see select(QgsFeatureIds)
+ \see select(QgsFeatureIds)
 %End
 
     void select( const QgsFeatureIds &featureIds );
 %Docstring
  Select features by their ID
 
- @param featureIds The ids of the features to select
+ \param featureIds The ids of the features to select
 
- @see select(QgsFeatureId)
+ \see select(QgsFeatureId)
 %End
 
     void deselect( const QgsFeatureId featureId );
 %Docstring
  Deselect feature by its ID
 
- @param featureId  The id of the feature to deselect
+ \param featureId  The id of the feature to deselect
 
- @see deselect(QgsFeatureIds)
+ \see deselect(QgsFeatureIds)
 %End
 
     void deselect( const QgsFeatureIds &featureIds );
 %Docstring
  Deselect features by their ID
 
- @param featureIds The ids of the features to deselect
+ \param featureIds The ids of the features to deselect
 
- @see deselect(QgsFeatureId)
+ \see deselect(QgsFeatureId)
 %End
 
     void removeSelection();
 %Docstring
  Clear selection
 
- @see selectByIds()
+ \see selectByIds()
 %End
 
     virtual void updateExtents();
@@ -1654,8 +1654,8 @@ Returns the current transparency for the vector layer
 %Docstring
  Make layer editable.
  This starts an edit session on this layer. Changes made in this edit session will not
- be made persistent until {@link commitChanges()} is called and can be reverted by calling
- {@link rollBack()}.
+ be made persistent until commitChanges() is called and can be reverted by calling
+ rollBack().
 %End
 
 
@@ -1668,9 +1668,9 @@ Returns the current transparency for the vector layer
 %Docstring
  This signal is emitted when selection was changed
 
- @param selected        Newly selected feature ids
- @param deselected      Ids of all features which have previously been selected but are not any more
- @param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+ \param selected        Newly selected feature ids
+ \param deselected      Ids of all features which have previously been selected but are not any more
+ \param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
 %End
 
     void layerModified();
@@ -1711,44 +1711,44 @@ Is emitted, before changes are rolled back
     void attributeAdded( int idx );
 %Docstring
  Will be emitted, when a new attribute has been added to this vector layer.
- Applies only to types {@link QgsFields::OriginEdit}, {@link QgsFields::OriginProvider} and {@link QgsFields::OriginExpression }
+ Applies only to types QgsFields::OriginEdit, QgsFields::OriginProvider and QgsFields::OriginExpression
 
- @param idx The index of the new attribute
+ \param idx The index of the new attribute
 
- @see updatedFields()
+ \see updatedFields()
 %End
 
     void beforeAddingExpressionField( const QString &fieldName );
 %Docstring
  Will be emitted, when an expression field is going to be added to this vector layer.
- Applies only to types {@link QgsFields::OriginExpression }
+ Applies only to types QgsFields::OriginExpression
 
- @param fieldName The name of the attribute to be added
+ \param fieldName The name of the attribute to be added
 %End
 
     void attributeDeleted( int idx );
 %Docstring
  Will be emitted, when an attribute has been deleted from this vector layer.
- Applies only to types {@link QgsFields::OriginEdit}, {@link QgsFields::OriginProvider} and {@link QgsFields::OriginExpression }
+ Applies only to types QgsFields::OriginEdit, QgsFields::OriginProvider and QgsFields::OriginExpression
 
- @param idx The index of the deleted attribute
+ \param idx The index of the deleted attribute
 
- @see updatedFields()
+ \see updatedFields()
 %End
 
     void beforeRemovingExpressionField( int idx );
 %Docstring
  Will be emitted, when an expression field is going to be deleted from this vector layer.
- Applies only to types {@link QgsFields::OriginExpression }
+ Applies only to types QgsFields::OriginExpression
 
- @param idx The index of the attribute to be deleted
+ \param idx The index of the attribute to be deleted
 %End
 
     void featureAdded( QgsFeatureId fid );
 %Docstring
  Emitted when a new feature has been added to the layer
 
- @param fid The id of the new feature
+ \param fid The id of the new feature
 %End
 
     void featureDeleted( QgsFeatureId fid );
@@ -1756,9 +1756,9 @@ Is emitted, before changes are rolled back
  Emitted when a feature has been deleted.
 
  If you do expensive operations in a slot connected to this, you should prever to use
- {@link featuresDeleted( const QgsFeatureIds& )}.
+ featuresDeleted( const QgsFeatureIds& ).
 
- @param fid The id of the feature which has been deleted
+ \param fid The id of the feature which has been deleted
 %End
 
     void featuresDeleted( const QgsFeatureIds &fids );
@@ -1769,7 +1769,7 @@ Is emitted, before changes are rolled back
  to allow connected slots to minimize the overhead.
  If features are deleted outside of an edit command, this signal will be emitted once per feature.
 
- @param fids The feature ids that have been deleted.
+ \param fids The feature ids that have been deleted.
 %End
 
     void updatedFields();
@@ -1784,9 +1784,9 @@ Is emitted, before changes are rolled back
  Is emitted whenever an attribute value change is done in the edit buffer.
  Note that at this point the attribute change is not yet saved to the provider.
 
- @param fid The id of the changed feature
- @param idx The attribute index of the changed attribute
- @param value The new value of the attribute
+ \param fid The id of the changed feature
+ \param idx The attribute index of the changed attribute
+ \param value The new value of the attribute
 %End
 
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geometry );
@@ -1794,8 +1794,8 @@ Is emitted, before changes are rolled back
  Is emitted whenever a geometry change is done in the edit buffer.
  Note that at this point the geometry change is not yet saved to the provider.
 
- @param fid The id of the changed feature
- @param geometry The new geometry
+ \param fid The id of the changed feature
+ \param geometry The new geometry
 %End
 
     void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
@@ -1842,7 +1842,7 @@ Signal emitted when setLayerTransparency() is called
 %Docstring
  Signal emitted when a new edit command has been started
 
- @param text Description for this edit command
+ \param text Description for this edit command
 %End
 
     void editCommandEnded();
@@ -1851,7 +1851,7 @@ Signal emitted when setLayerTransparency() is called
 .. note::
 
    This does not mean it is also committed, only that it is written
- to the edit buffer. See {@link beforeCommitChanges()}
+ to the edit buffer. See beforeCommitChanges()
 %End
 
     void editCommandDestroyed();
@@ -1860,7 +1860,7 @@ Signal emitted when setLayerTransparency() is called
 .. note::
 
    This is not a rollback, it is only related to the current edit command.
- See {@link beforeRollBack()}
+ See beforeRollBack()
 %End
 
     void readCustomSymbology( const QDomElement &element, QString &errorMessage );
@@ -1869,9 +1869,9 @@ Signal emitted when setLayerTransparency() is called
  If there is custom style information saved in the file, you can connect to this signal
  and update the layer style accordingly.
 
- @param element The XML layer style element.
+ \param element The XML layer style element.
 
- @param errorMessage Write error messages into this string.
+ \param errorMessage Write error messages into this string.
 %End
 
     void writeCustomSymbology( QDomElement &element, QDomDocument &doc, QString &errorMessage ) const;
@@ -1880,9 +1880,9 @@ Signal emitted when setLayerTransparency() is called
  If there is custom style information you want to save to the file, you can connect
  to this signal and update the element accordingly.
 
- @param element  The XML element where you can add additional style information to.
- @param doc      The XML document that you can use to create new XML nodes.
- @param errorMessage Write error messages into this string.
+ \param element  The XML element where you can add additional style information to.
+ \param doc      The XML document that you can use to create new XML nodes.
+ \param errorMessage Write error messages into this string.
 %End
 
     void mapTipTemplateChanged();

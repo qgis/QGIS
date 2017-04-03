@@ -63,7 +63,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
                         Statistics stats = Statistics( Count | Sum | Mean ) );
 
     /** Starts the calculation
-      @return 0 in case of success*/
+      \returns 0 in case of success*/
     int calculateStatistics( QProgressDialog *p );
 
   private:
@@ -111,7 +111,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     };
 
     /** Analysis what cells need to be considered to cover the bounding box of a feature
-      @return 0 in case of success*/
+      \returns 0 in case of success*/
     int cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY,
                          int &offsetX, int &offsetY, int &nCellsX, int &nCellsY ) const;
 

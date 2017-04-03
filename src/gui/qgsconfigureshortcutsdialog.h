@@ -37,8 +37,8 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
   public:
 
     /** Constructor for QgsConfigureShortcutsDialog.
-     * @param parent parent widget
-     * @param manager associated QgsShortcutsManager, or leave as null to use the default
+     * \param parent parent widget
+     * \param manager associated QgsShortcutsManager, or leave as null to use the default
      * singleton QgsShortcutsManager instance.
      */
     QgsConfigureShortcutsDialog( QWidget *parent = nullptr, QgsShortcutsManager *manager = nullptr );

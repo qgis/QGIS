@@ -104,7 +104,7 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * Returns the destination QPainter for the render operation.
-     * @see setPainter()
+     * \see setPainter()
     */
     QPainter *painter() {return mPainter;}
 
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsRenderContext
      * Returns the scaling factor for the render to convert painter units
      * to physical sizes. This is usually equal to the number of pixels
      * per millimeter.
-     * @see setScaleFactor()
+     * \see setScaleFactor()
      */
     double scaleFactor() const {return mScaleFactor;}
 
@@ -142,20 +142,20 @@ class CORE_EXPORT QgsRenderContext
     /**
      * Returns the renderer map scale. This will match the desired scale denominator
      * for the rendered map, eg 1000.0 for a 1:1000 map render.
-     * @see setRendererScale()
+     * \see setRendererScale()
      */
     double rendererScale() const {return mRendererScale;}
 
     //! Get access to new labeling engine (may be nullptr)
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; }
 
     QColor selectionColor() const { return mSelectionColor; }
 
     /** Returns true if vector selections should be shown in the rendered map
-     * @returns true if selections should be shown
-     * @see setShowSelection
-     * @see selectionColor
+     * \returns true if selections should be shown
+     * \see setShowSelection
+     * \see selectionColor
      * \since QGIS v2.4
      */
     bool showSelection() const;
@@ -175,14 +175,14 @@ class CORE_EXPORT QgsRenderContext
      * Sets the scaling factor for the render to convert painter units
      * to physical sizes. This should usually be equal to the number of pixels
      * per millimeter.
-     * @see scaleFactor()
+     * \see scaleFactor()
      */
     void setScaleFactor( double factor ) {mScaleFactor = factor;}
 
     /**
      * Sets the renderer map scale. This should match the desired scale denominator
      * for the rendered map, eg 1000.0 for a 1:1000 map render.
-     * @see rendererScale()
+     * \see rendererScale()
      */
     void setRendererScale( double scale ) {mRendererScale = scale;}
 
@@ -190,21 +190,21 @@ class CORE_EXPORT QgsRenderContext
      * Sets the destination QPainter for the render operation. Ownership of the painter
      * is not transferred and the QPainter destination must stay alive for the duration
      * of any rendering operations.
-     * @see painter()
+     * \see painter()
      */
     void setPainter( QPainter *p ) {mPainter = p;}
 
     void setForceVectorOutput( bool force );
 
     //! Assign new labeling engine
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void setLabelingEngine( QgsLabelingEngine *engine2 ) { mLabelingEngine = engine2; }
     void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
 
     /** Sets whether vector selections should be shown in the rendered map
-     * @param showSelection set to true if selections should be shown
-     * @see showSelection
-     * @see setSelectionColor
+     * \param showSelection set to true if selections should be shown
+     * \see showSelection
+     * \see setSelectionColor
      * \since QGIS v2.4
      */
     void setShowSelection( const bool showSelection );
@@ -221,23 +221,23 @@ class CORE_EXPORT QgsRenderContext
 
     /** Sets the expression context. This context is used for all expression evaluation
      * associated with this render context.
-     * @see expressionContext()
+     * \see expressionContext()
      * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
     /** Gets the expression context. This context should be used for all expression evaluation
      * associated with this render context.
-     * @see setExpressionContext()
+     * \see setExpressionContext()
      * \since QGIS 2.12
      */
     QgsExpressionContext &expressionContext() { return mExpressionContext; }
 
     /** Gets the expression context (const version). This context should be used for all expression evaluation
      * associated with this render context.
-     * @see setExpressionContext()
+     * \see setExpressionContext()
      * \since QGIS 2.12
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
 
@@ -247,27 +247,27 @@ class CORE_EXPORT QgsRenderContext
     void setGeometry( const QgsAbstractGeometry *geometry ) { mGeometry = geometry; }
 
     /** Set a filter feature provider used for additional filtering of rendered features.
-     * @param ffp the filter feature provider
+     * \param ffp the filter feature provider
      * \since QGIS 2.14
-     * @see featureFilterProvider()
+     * \see featureFilterProvider()
      */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp );
 
     /** Get the filter feature provider used for additional filtering of rendered features.
-     * @return the filter feature provider
+     * \returns the filter feature provider
      * \since QGIS 2.14
-     * @see setFeatureFilterProvider()
+     * \see setFeatureFilterProvider()
      */
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
-    @param tolerance the segmentation tolerance*/
+    \param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
     //! Gets the segmentation tolerance applied when rendering curved geometries
     double segmentationTolerance() const { return mSegmentationTolerance; }
 
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    @param type the segmentation tolerance typename*/
+    \param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
     //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
@@ -278,7 +278,7 @@ class CORE_EXPORT QgsRenderContext
      * Converts a size from the specified units to painter units (pixels). The conversion respects the limits
      * specified by the optional scale parameter.
      * \since QGIS 3.0
-     * @see convertToMapUnits()
+     * \see convertToMapUnits()
      */
     double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
 
@@ -286,14 +286,14 @@ class CORE_EXPORT QgsRenderContext
      * Converts a size from the specified units to map units. The conversion respects the limits
      * specified by the optional scale parameter.
      * \since QGIS 3.0
-     * @see convertToPainterUnits()
+     * \see convertToPainterUnits()
      */
     double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
 
     /**
      * Converts a size from map units to the specified units.
      * \since QGIS 3.0
-     * @see convertToMapUnits()
+     * \see convertToMapUnits()
      */
     double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
 

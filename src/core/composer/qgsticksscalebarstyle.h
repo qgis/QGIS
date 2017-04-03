@@ -38,8 +38,8 @@ class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
     QString name() const override;
 
     /** Draw method
-     @param p painter object
-     @param xOffset offset
+     \param p painter object
+     \param xOffset offset
      */
     void draw( QPainter *p, double xOffset = 0 ) const override;
 

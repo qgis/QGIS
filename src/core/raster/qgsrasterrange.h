@@ -38,8 +38,8 @@ class CORE_EXPORT QgsRasterRange
     QgsRasterRange();
 
     /** \brief Constructor
-     *  @param min minimum value
-     *  @param max max value
+     *  \param min minimum value
+     *  \param max max value
      */
     QgsRasterRange( double min, double max );
 
@@ -55,10 +55,10 @@ class CORE_EXPORT QgsRasterRange
     }
 
     /** \brief Test if value is within the list of ranges
-     *  @param value value
-     *  @param rangeList list of ranges
-     *  @return true if value is in at least one of ranges
-     *  @note not available in Python bindings
+     *  \param value value
+     *  \param rangeList list of ranges
+     *  \returns true if value is in at least one of ranges
+     *  \note not available in Python bindings
      */
     static bool contains( double value, const QgsRasterRangeList &rangeList );
 

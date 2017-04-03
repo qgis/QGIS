@@ -25,7 +25,7 @@ class QgsSymbolLayerWidget;
 /** \ingroup core
  Stores metadata about one symbol layer class.
 
- @note It's necessary to implement createSymbolLayer() function.
+ \note It's necessary to implement createSymbolLayer() function.
    In C++ you can use QgsSymbolLayerMetadata convenience class.
  */
 class CORE_EXPORT QgsSymbolLayerAbstractMetadata
@@ -67,7 +67,7 @@ typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFromSldFunc )( QDomElement & );
 class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
 {
   public:
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsSymbolLayerMetadata( const QString &name, const QString &visibleName,
                             QgsSymbol::SymbolType type,
                             QgsSymbolLayerCreateFunc pfCreate,
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
       , mCreateFromSldFunc( nullptr )
     {}
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsSymbolLayerMetadata( const QString &name, const QString &visibleName,
                             QgsSymbol::SymbolType type,
                             QgsSymbolLayerCreateFunc pfCreate,
@@ -90,14 +90,14 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
       , mCreateFromSldFunc( pfCreateFromSld )
     {}
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsSymbolLayerCreateFunc createFunction() const { return mCreateFunc; }
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsSymbolLayerWidgetFunc widgetFunction() const { return mWidgetFunc; }
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsSymbolLayerCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; }
 
     virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }

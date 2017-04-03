@@ -34,8 +34,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
   public:
 
     /** GEOS geometry engine constructor
-     * @param geometry The geometry
-     * @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
+     * \param geometry The geometry
+     * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      */
     QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0 );
     ~QgsGeos();
@@ -74,12 +74,12 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isEmpty( QString *errorMsg = nullptr ) const override;
 
     /** Splits this geometry according to a given line.
-    @param splitLine the line that splits the geometry
-    @param[out] newGeometries list of new geometries that have been created with the split
-    @param topological true if topological editing is enabled
-    @param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-    @param[out] errorMsg error messages emitted, if any
-    @return 0 in case of success, 1 if geometry has not been split, error else*/
+    \param splitLine the line that splits the geometry
+    \param[out] newGeometries list of new geometries that have been created with the split
+    \param topological true if topological editing is enabled
+    \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+    \param[out] errorMsg error messages emitted, if any
+    \returns 0 in case of success, 1 if geometry has not been split, error else*/
     int splitGeometry( const QgsLineString &splitLine,
                        QList<QgsAbstractGeometry *> &newGeometries,
                        bool topological,
@@ -91,13 +91,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     /**
      * Returns a single sided buffer for a geometry. The buffer is only
      * applied to one side of the geometry.
-     * @param distance buffer distance
-     * @param segments for round joins, number of segments to approximate quarter-circle
-     * @param side side of geometry to buffer (0 = left, 1 = right)
-     * @param joinStyle join style for corners ( Round (1) / Mitre (2) / Bevel (3) )
-     * @param mitreLimit limit on the mitre ratio used for very sharp corners
-     * @param errorMsg error messages emitted, if any
-     * @return buffered geometry, or an nullptr if buffer could not be
+     * \param distance buffer distance
+     * \param segments for round joins, number of segments to approximate quarter-circle
+     * \param side side of geometry to buffer (0 = left, 1 = right)
+     * \param joinStyle join style for corners ( Round (1) / Mitre (2) / Bevel (3) )
+     * \param mitreLimit limit on the mitre ratio used for very sharp corners
+     * \param errorMsg error messages emitted, if any
+     * \returns buffered geometry, or an nullptr if buffer could not be
      * calculated
      * \since QGIS 3.0
      */
@@ -110,8 +110,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     /** Merges any connected lines in a LineString/MultiLineString geometry and
      * converts them to single line strings.
-     * @param errorMsg if specified, will be set to any reported GEOS errors
-     * @returns a LineString or MultiLineString geometry, with any connected lines
+     * \param errorMsg if specified, will be set to any reported GEOS errors
+     * \returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * LineString/MultiLineString geometry.
      * \since QGIS 3.0
@@ -120,13 +120,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     /** Returns the closest point on the geometry to the other geometry.
      * \since QGIS 2.14
-     * @see shortestLine()
+     * \see shortestLine()
      */
     QgsGeometry closestPoint( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
     /** Returns the shortest line joining this geometry to the other geometry.
      * \since QGIS 2.14
-     * @see closestPoint()
+     * \see closestPoint()
      */
     QgsGeometry shortestLine( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
@@ -134,10 +134,10 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * on this linestring geometry to the specified point. Ie, the returned value indicates
      * how far along this linestring you need to traverse to get to the closest location
      * where this linestring comes to the specified point.
-     * @param point point to seek proximity to
-     * @param errorMsg error messages emitted, if any
-     * @note only valid for linestring geometries
-     * @return distance along line, or -1 on error
+     * \param point point to seek proximity to
+     * \param errorMsg error messages emitted, if any
+     * \note only valid for linestring geometries
+     * \returns distance along line, or -1 on error
      */
     double lineLocatePoint( const QgsPointV2 &point, QString *errorMsg = nullptr ) const;
 
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg = nullptr ) const;
 
     /** Create a geometry from a GEOSGeometry
-     * @param geos GEOSGeometry. Ownership is NOT transferred.
+     * \param geos GEOSGeometry. Ownership is NOT transferred.
      */
     static QgsAbstractGeometry *fromGeos( const GEOSGeometry *geos );
     static QgsPolygonV2 *fromGeosPolygon( const GEOSGeometry *geos );

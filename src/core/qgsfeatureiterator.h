@@ -24,7 +24,7 @@
  * Interface that can be optionally attached to an iterator so its
  * nextFeature() implementaton can check if it must stop as soon as possible.
  * \since QGIS 2.16
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class CORE_EXPORT QgsInterruptionChecker
 {
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * WFS provider. When nextFeature()/fetchFeature() is reasonably fast, it is not necessary
      * to implement this method. The default implementation does nothing.
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
 
@@ -83,8 +83,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * If you write a feature iterator for your provider, this is the method you
      * need to implement!!
      *
-     * @param f The feature to write to
-     * @return  true if a feature was written to f
+     * \param f The feature to write to
+     * \returns  true if a feature was written to f
      */
     virtual bool fetchFeature( QgsFeature &f ) = 0;
 
@@ -95,8 +95,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * and you check for the expression in your fetchFeature method, you can just
      * redirect this call to fetchFeature so the default check will be omitted.
      *
-     * @param f The feature to write to
-     * @return  true if a feature was written to f
+     * \param f The feature to write to
+     * \returns  true if a feature was written to f
      */
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
 
@@ -108,8 +108,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * if the request was FilterFids you can just redirect this call to fetchFeature
      * so the default check will be omitted.
      *
-     * @param f The feature to write to
-     * @return  true if a feature was written to f
+     * \param f The feature to write to
+     * \returns  true if a feature was written to f
      */
     virtual bool nextFeatureFilterFids( QgsFeature &f );
 
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsFeatureIterator
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider.
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
 

@@ -42,16 +42,16 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
     QgsPreviewEffect( QObject *parent );
 
     /** Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
-     * @param mode PreviewMode to use to draw the widget
+     * \param mode PreviewMode to use to draw the widget
      * \since QGIS 2.3
-     * @see mode
+     * \see mode
      */
     void setMode( PreviewMode mode );
 
     /** Returns the mode used for the preview effect.
-     * @returns PreviewMode currently used by the effect
+     * \returns PreviewMode currently used by the effect
      * \since QGIS 2.3
-     * @see setMode
+     * \see setMode
      */
     PreviewMode mode() const { return mMode; }
 

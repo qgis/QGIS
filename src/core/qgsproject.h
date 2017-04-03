@@ -62,7 +62,7 @@ class QgsLayerTree;
 /** \ingroup core
  * Reads and writes project states.
  *
-  @note
+  \note
 
   Has two general kinds of state to make persistent.  (I.e., to read and
   write.)  First, QGIS proprietary information.  Second plug-in information.
@@ -99,14 +99,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     ~QgsProject();
 
     /** Sets the project's title.
-     * @param title new title
+     * \param title new title
      * \since QGIS 2.4
-     * @see title()
+     * \see title()
      */
     void setTitle( const QString &title );
 
     /** Returns the project's title.
-     * @see setTitle()
+     * \see setTitle()
     */
     QString title() const;
 
@@ -117,20 +117,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Sets the file name associated with the project. This is the file which contains the project's XML
      * representation.
-     * @param name project file name
-     * @see fileName()
+     * \param name project file name
+     * \see fileName()
      */
     void setFileName( const QString &name );
 
     /** Returns the project's file name. This is the file which contains the project's XML
      * representation.
-     * @see setFileName()
-     * @see fileInfo()
+     * \see setFileName()
+     * \see fileInfo()
     */
     QString fileName() const;
 
     /** Returns QFileInfo object for the project's associated file.
-     * @see fileName()
+     * \see fileName()
      * \since QGIS 2.9
      */
     QFileInfo fileInfo() const;
@@ -138,31 +138,31 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns the project's native coordinate reference system.
      * \since QGIS 3.0
-     * @see setCrs()
-     * @see ellipsoid()
+     * \see setCrs()
+     * \see ellipsoid()
      */
     QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets the project's native coordinate reference system.
      * \since QGIS 3.0
-     * @see crs()
-     * @see setEllipsoid()
+     * \see crs()
+     * \see setEllipsoid()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
-     * @see setEllipsoid()
-     * @see crs()
+     * \see setEllipsoid()
+     * \see crs()
      * \since QGIS 3.0
      */
     QString ellipsoid() const;
 
     /**
      * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
-     * @see ellipsoid()
-     * @see setCrs()
+     * \see ellipsoid()
+     * \see setCrs()
      * \since QGIS 3.0
      */
     void setEllipsoid( const QString &ellipsoid );
@@ -173,40 +173,40 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void clear();
 
     /** Reads given project file from the given file.
-     * @param filename name of project file to read
-     * @returns true if project file has been read successfully
+     * \param filename name of project file to read
+     * \returns true if project file has been read successfully
      */
     bool read( const QString &filename );
 
     /** Reads the project from its currently associated file (see fileName() ).
-     * @returns true if project file has been read successfully
+     * \returns true if project file has been read successfully
      */
     bool read();
 
     /** Reads the layer described in the associated DOM node.
      *
-     * @note This method is mainly for use by QgsProjectBadLayerHandler subclasses
+     * \note This method is mainly for use by QgsProjectBadLayerHandler subclasses
      * that may fix definition of bad layers with the user's help in GUI. Calling
      * this method with corrected DOM node adds the layer back to the project.
      *
-     * @param layerNode represents a QgsProject DOM node that encodes a specific layer.
+     * \param layerNode represents a QgsProject DOM node that encodes a specific layer.
      */
     bool readLayer( const QDomNode &layerNode );
 
     /**
      * Writes the project to a file.
-     * @param filename destination file
-     * @note calling this implicitly sets the project's filename (see setFileName() )
-     * @note isDirty() will be set to false if project is successfully written
-     * @returns true if project was written successfully
+     * \param filename destination file
+     * \note calling this implicitly sets the project's filename (see setFileName() )
+     * \note isDirty() will be set to false if project is successfully written
+     * \returns true if project was written successfully
      *
      * \since QGIS 3.0
      */
     bool write( const QString &filename );
 
     /** Writes the project to its current associated file (see fileName() ).
-     * @note isDirty() will be set to false if project is successfully written
-     * @returns true if project was written successfully
+     * \note isDirty() will be set to false if project is successfully written
+     * \returns true if project was written successfully
      */
     bool write();
 
@@ -216,8 +216,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
-     * @note The key string must be valid xml tag names in order to be saved to the file.
-     * @note available in Python bindings as writeEntryBool
+     * \note The key string must be valid xml tag names in order to be saved to the file.
+     * \note available in Python bindings as writeEntryBool
      */
     bool writeEntry( const QString &scope, const QString &key, bool value );
 
@@ -227,8 +227,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
-     * @note The key string must be valid xml tag names in order to be saved to the file.
-     * @note available in Python bindings as writeEntryDouble
+     * \note The key string must be valid xml tag names in order to be saved to the file.
+     * \note available in Python bindings as writeEntryDouble
      */
     bool writeEntry( const QString &scope, const QString &key, double value );
 
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
-     * @note The key string must be valid xml tag names in order to be saved to the file.
+     * \note The key string must be valid xml tag names in order to be saved to the file.
      */
     bool writeEntry( const QString &scope, const QString &key, int value );
 
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
-     * @note The key string must be valid xml tag names in order to be saved to the file.
+     * \note The key string must be valid xml tag names in order to be saved to the file.
      */
     bool writeEntry( const QString &scope, const QString &key, const QString &value );
 
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
-     * @note The key string must be valid xml tag names in order to be saved to the file.
+     * \note The key string must be valid xml tag names in order to be saved to the file.
      */
     bool writeEntry( const QString &scope, const QString &key, const QStringList &value );
 
@@ -282,13 +282,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Return keys with values -- do not return keys that contain other keys
      *
-     * @note equivalent to QgsSettings entryList()
+     * \note equivalent to QgsSettings entryList()
      */
     QStringList entryList( const QString &scope, const QString &key ) const;
 
     /** Return keys with keys -- do not return keys that contain only values
      *
-     * @note equivalent to QgsSettings subkeyList()
+     * \note equivalent to QgsSettings subkeyList()
      */
     QStringList subkeyList( const QString &scope, const QString &key ) const;
 
@@ -327,8 +327,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString layerIsEmbedded( const QString &id ) const;
 
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
-     * @return the layer or 0 in case of error
-     * @note not available in Python bindings
+     * \returns the layer or 0 in case of error
+     * \note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
                               bool saveFlag = true );
@@ -346,35 +346,35 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Convenience function to query default distance measurement units for project.
      * \since QGIS 2.14
-     * @see setDistanceUnits()
-     * @see areaUnits()
+     * \see setDistanceUnits()
+     * \see areaUnits()
      */
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 
     /**
      * Sets the default distance measurement units for the project.
      * \since QGIS 3.0
-     * @see distanceUnits()
-     * @see setAreaUnits()
+     * \see distanceUnits()
+     * \see setAreaUnits()
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
     /** Convenience function to query default area measurement units for project.
      * \since QGIS 2.14
-     * @see distanceUnits()
+     * \see distanceUnits()
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
     /**
      * Sets the default area measurement units for the project.
      * \since QGIS 3.0
-     * @see areaUnits()
-     * @see setDistanceUnits()
+     * \see areaUnits()
+     * \see setDistanceUnits()
      */
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
     /** Return project's home path
-      @return home path of project (or QString::null if not set) */
+      \returns home path of project (or QString::null if not set) */
     QString homePath() const;
 
     QgsRelationManager *relationManager() const;
@@ -405,7 +405,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Returns pointer to the project's map theme collection.
      * \since QGIS 2.12
-     * @note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
+     * \note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
     QgsMapThemeCollection *mapThemeCollection();
 
@@ -456,7 +456,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * QPair( providerKey, connString ) -> transactionGroup
      *
      * \since QGIS 2.16
-     * @note Not available in Python bindings
+     * \note Not available in Python bindings
      */
     QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups();
 
@@ -519,25 +519,25 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     int count() const;
 
     /** Retrieve a pointer to a registered layer by layer ID.
-     * @param layerId ID of layer to retrieve
-     * @returns matching layer, or nullptr if no matching layer found
-     * @see mapLayersByName()
-     * @see mapLayers()
+     * \param layerId ID of layer to retrieve
+     * \returns matching layer, or nullptr if no matching layer found
+     * \see mapLayersByName()
+     * \see mapLayers()
      */
     QgsMapLayer *mapLayer( const QString &layerId ) const;
 
     /** Retrieve a list of matching registered layers by layer name.
-     * @param layerName name of layers to match
-     * @returns list of matching layers
-     * @see mapLayer()
-     * @see mapLayers()
+     * \param layerName name of layers to match
+     * \returns list of matching layers
+     * \see mapLayer()
+     * \see mapLayers()
      */
     QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
 
     /** Returns a map of all registered layers by layer ID.
-     * @see mapLayer()
-     * @see mapLayersByName()
-     * @see layers()
+     * \see mapLayer()
+     * \see mapLayersByName()
+     * \see layers()
      */
     QMap<QString, QgsMapLayer *> mapLayers() const;
 
@@ -547,9 +547,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      *     QVector<QgsVectorLayer*> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer*>();
      *
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      * \since QGIS 2.16
-     * @see mapLayers()
+     * \see mapLayers()
      */
     template <typename T>
     QVector<T> layers() const
@@ -568,36 +568,36 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     }
 
     /**
-     * @brief
+     * \brief
      * Add a list of layers to the map of loaded layers.
      *
      * The layersAdded() and layerWasAdded() signals will always be emitted.
      * The legendLayersAdded() signal is emitted only if addToLegend is true.
      *
-     * @param mapLayers  A list of layer which should be added to the registry
-     * @param addToLegend   If true (by default), the layers will be added to the
+     * \param mapLayers  A list of layer which should be added to the registry
+     * \param addToLegend   If true (by default), the layers will be added to the
      *                      legend and to the main canvas. If you have a private
      *                      layer you can set this parameter to false to hide it.
-     * @param takeOwnership Ownership will be transferred to the layer registry.
+     * \param takeOwnership Ownership will be transferred to the layer registry.
      *                      If you specify false here you have take care of deleting
      *                      the layers yourself. Not available in Python.
      *
-     * @return a list of the map layers that were added
+     * \returns a list of the map layers that were added
      *         successfully. If a layer is invalid, or already exists in the registry,
      *         it will not be part of the returned QList.
      *
-     * @note As a side-effect QgsProject is made dirty.
-     * @note takeOwnership is not available in the Python bindings - the registry will always
+     * \note As a side-effect QgsProject is made dirty.
+     * \note takeOwnership is not available in the Python bindings - the registry will always
      * take ownership
      * \since QGIS 1.8
-     * @see addMapLayer()
+     * \see addMapLayer()
      */
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers,
                                        bool addToLegend = true,
                                        bool takeOwnership = true );
 
     /**
-     * @brief
+     * \brief
      * Add a layer to the map of loaded layers.
      *
      * The layersAdded() and layerWasAdded() signals will always be emitted.
@@ -605,85 +605,85 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * If you are adding multiple layers at once, you should use
      * addMapLayers() instead.
      *
-     * @param mapLayer A layer to add to the registry
-     * @param addToLegend If true (by default), the layer will be added to the
+     * \param mapLayer A layer to add to the registry
+     * \param addToLegend If true (by default), the layer will be added to the
      *                    legend and to the main canvas. If you have a private
      *                    layer you can set this parameter to false to hide it.
-     * @param takeOwnership Ownership will be transferred to the layer registry.
+     * \param takeOwnership Ownership will be transferred to the layer registry.
      *                      If you specify false here you have take care of deleting
      *                      the layer yourself. Not available in Python.
      *
-     * @return nullptr if unable to add layer, otherwise pointer to newly added layer
+     * \returns nullptr if unable to add layer, otherwise pointer to newly added layer
      *
-     * @see addMapLayers
+     * \see addMapLayers
      *
-     * @note As a side-effect QgsProject is made dirty.
-     * @note Use addMapLayers if adding more than one layer at a time
-     * @note takeOwnership is not available in the Python bindings - the registry will always
+     * \note As a side-effect QgsProject is made dirty.
+     * \note Use addMapLayers if adding more than one layer at a time
+     * \note takeOwnership is not available in the Python bindings - the registry will always
      * take ownership
-     * @see addMapLayers()
+     * \see addMapLayers()
      */
     QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer, bool addToLegend = true, bool takeOwnership = true );
 
     /**
-     * @brief
+     * \brief
      * Remove a set of layers from the registry by layer ID.
      *
      * The specified layers will be removed from the registry. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
-     * @param layerIds list of IDs of the layers to remove
+     * \param layerIds list of IDs of the layers to remove
      *
-     * @note As a side-effect the QgsProject instance is marked dirty.
+     * \note As a side-effect the QgsProject instance is marked dirty.
      * \since QGIS 1.8
-     * @see removeMapLayer()
-     * @see removeAllMapLayers()
+     * \see removeMapLayer()
+     * \see removeAllMapLayers()
      */
     void removeMapLayers( const QStringList &layerIds );
 
     /**
-     * @brief
+     * \brief
      * Remove a set of layers from the registry.
      *
      * The specified layers will be removed from the registry. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
-     * @param layers A list of layers to remove. Null pointers are ignored.
+     * \param layers A list of layers to remove. Null pointers are ignored.
      *
-     * @note As a side-effect the QgsProject instance is marked dirty.
-     * @see removeMapLayer()
-     * @see removeAllMapLayers()
+     * \note As a side-effect the QgsProject instance is marked dirty.
+     * \see removeMapLayer()
+     * \see removeAllMapLayers()
      */
     //TODO QGIS 3.0 - add PyName alias to avoid list type conversion error
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
 
     /**
-     * @brief
+     * \brief
      * Remove a layer from the registry by layer ID.
      *
      * The specified layer will be removed from the registry. If the registry has ownership
      * of the layer then it will also be deleted.
      *
-     * @param layerId ID of the layer to remove
+     * \param layerId ID of the layer to remove
      *
-     * @note As a side-effect the QgsProject instance is marked dirty.
-     * @see removeMapLayers()
-     * @see removeAllMapLayers()
+     * \note As a side-effect the QgsProject instance is marked dirty.
+     * \see removeMapLayers()
+     * \see removeAllMapLayers()
      */
     void removeMapLayer( const QString &layerId );
 
     /**
-     * @brief
+     * \brief
      * Remove a layer from the registry.
      *
      * The specified layer will be removed from the registry. If the registry has ownership
      * of the layer then it will also be deleted.
      *
-     * @param layer The layer to remove. Null pointers are ignored.
+     * \param layer The layer to remove. Null pointers are ignored.
      *
-     * @note As a side-effect the QgsProject instance is marked dirty.
-     * @see removeMapLayers()
-     * @see removeAllMapLayers()
+     * \note As a side-effect the QgsProject instance is marked dirty.
+     * \see removeMapLayers()
+     * \see removeAllMapLayers()
      */
     void removeMapLayer( QgsMapLayer *layer );
 
@@ -691,18 +691,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Removes all registered layers. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
-     * @note As a side-effect the QgsProject instance is marked dirty.
-     * @note Calling this method will cause the removeAll() signal to
+     * \note As a side-effect the QgsProject instance is marked dirty.
+     * \note Calling this method will cause the removeAll() signal to
      * be emitted.
-     * @see removeMapLayer()
-     * @see removeMapLayers()
+     * \see removeMapLayer()
+     * \see removeMapLayers()
      */
     void removeAllMapLayers();
 
     /**
      * Reload all registered layer's provider data caches, synchronising the layer
      * with any changes in the datasource.
-     * @see QgsMapLayer::reload()
+     * \see QgsMapLayer::reload()
      */
     void reloadAllLayers();
 
@@ -718,8 +718,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * file is done. You can use this signal to read additional information
      * from the project file.
      *
-     * @param mapLayer  The map layer which is being initialized
-     * @param layerNode The layer node from the project file
+     * \param mapLayer  The map layer which is being initialized
+     * \param layerNode The layer node from the project file
      */
     void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
 
@@ -727,9 +727,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted, when a layer is being saved. You can use this method to save
      * additional information to the layer.
      *
-     * @param mapLayer  The map layer which is being initialized
-     * @param layerElem The layer element from the project file
-     * @param doc The document
+     * \param mapLayer  The map layer which is being initialized
+     * \param layerElem The layer element from the project file
+     * \param doc The document
      */
     void writeMapLayer( QgsMapLayer *mapLayer, QDomElement &layerElem, QDomDocument &doc );
 
@@ -741,8 +741,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Emitted when a layer from a projects was read.
-     * @param i current layer
-     * @param n number of layers
+     * \param i current layer
+     * \param n number of layers
      */
     void layerLoaded( int i, int n );
 
@@ -814,64 +814,64 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when one or more layers are about to be removed from the registry.
      *
-     * @param layerIds A list of IDs for the layers which are to be removed.
-     * @see layerWillBeRemoved()
-     * @see layersRemoved()
+     * \param layerIds A list of IDs for the layers which are to be removed.
+     * \see layerWillBeRemoved()
+     * \see layersRemoved()
      */
     void layersWillBeRemoved( const QStringList &layerIds );
 
     /**
      * Emitted when one or more layers are about to be removed from the registry.
      *
-     * @param layers A list of layers which are to be removed.
-     * @see layerWillBeRemoved()
-     * @see layersRemoved()
+     * \param layers A list of layers which are to be removed.
+     * \see layerWillBeRemoved()
+     * \see layersRemoved()
      */
     void layersWillBeRemoved( const QList<QgsMapLayer *> &layers );
 
     /**
      * Emitted when a layer is about to be removed from the registry.
      *
-     * @param layerId The ID of the layer to be removed.
+     * \param layerId The ID of the layer to be removed.
      *
-     * @note Consider using {@link layersWillBeRemoved()} instead
-     * @see layersWillBeRemoved()
-     * @see layerRemoved()
+     * \note Consider using layersWillBeRemoved() instead
+     * \see layersWillBeRemoved()
+     * \see layerRemoved()
      */
     void layerWillBeRemoved( const QString &layerId );
 
     /**
      * Emitted when a layer is about to be removed from the registry.
      *
-     * @param layer The layer to be removed.
+     * \param layer The layer to be removed.
      *
-     * @note Consider using {@link layersWillBeRemoved()} instead
-     * @see layersWillBeRemoved()
-     * @see layerRemoved()
+     * \note Consider using layersWillBeRemoved() instead
+     * \see layersWillBeRemoved()
+     * \see layerRemoved()
      */
     void layerWillBeRemoved( QgsMapLayer *layer );
 
     /**
      * Emitted after one or more layers were removed from the registry.
      *
-     * @param layerIds  A list of IDs of the layers which were removed.
-     * @see layersWillBeRemoved()
+     * \param layerIds  A list of IDs of the layers which were removed.
+     * \see layersWillBeRemoved()
      */
     void layersRemoved( const QStringList &layerIds );
 
     /**
      * Emitted after a layer was removed from the registry.
      *
-     * @param layerId The ID of the layer removed.
+     * \param layerId The ID of the layer removed.
      *
-     * @note Consider using {@link layersRemoved()} instead
-     * @see layerWillBeRemoved()
+     * \note Consider using layersRemoved() instead
+     * \see layerWillBeRemoved()
      */
     void layerRemoved( const QString &layerId );
 
     /**
-     * Emitted when all layers are removed, before {@link layersWillBeRemoved()} and
-     * {@link layerWillBeRemoved()} signals are emitted. The layersWillBeRemoved() and
+     * Emitted when all layers are removed, before layersWillBeRemoved() and
+     * layerWillBeRemoved() signals are emitted. The layersWillBeRemoved() and
      * layerWillBeRemoved() signals will still be emitted following this signal.
      * You can use this signal to do easy (and fast) cleanup.
      */
@@ -883,28 +883,28 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * This signal is also emitted for layers added to the registry,
      * but not to the legend.
      *
-     * @param layers List of layers which have been added.
+     * \param layers List of layers which have been added.
      *
-     * @see legendLayersAdded()
-     * @see layerWasAdded()
+     * \see legendLayersAdded()
+     * \see layerWasAdded()
      */
     void layersAdded( const QList<QgsMapLayer *> &layers );
 
     /**
      * Emitted when a layer was added to the registry.
      *
-     * @note Consider using {@link layersAdded()} instead
-     * @see layersAdded()
+     * \note Consider using layersAdded() instead
+     * \see layersAdded()
      */
     void layerWasAdded( QgsMapLayer *layer );
 
     /**
      * Emitted, when a layer was added to the registry and the legend.
      * Layers can also be private layers, which are signalled by
-     * {@link layersAdded()} and {@link layerWasAdded()} but will not be
+     * layersAdded() and layerWasAdded() but will not be
      * advertised by this signal.
      *
-     * @param layers List of {@link QgsMapLayer}s which were added to the legend.
+     * \param layers List of QgsMapLayer which were added to the legend.
      */
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 
@@ -922,7 +922,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * be asked to save changes to the project before closing the current project.
      *
      * \since QGIS 2.4
-     * @note promoted to public slot in 2.16
+     * \note promoted to public slot in 2.16
      */
     void setDirty( bool b = true );
 
@@ -938,31 +938,31 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     static QgsProject *sProject;
 
     /** Read map layers from project file.
-     * @param doc DOM document to parse
-     * @param brokenNodes a list of DOM nodes corresponding to layers that we were unable to load; this could be
+     * \param doc DOM document to parse
+     * \param brokenNodes a list of DOM nodes corresponding to layers that we were unable to load; this could be
      * because the layers were removed or re-located after the project was last saved
-     * @returns true if function worked; else is false
+     * \returns true if function worked; else is false
     */
     bool _getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes );
 
     /** Set error message from read/write operation
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void setError( const QString &errorMessage );
 
     /** Clear error message
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void clearError();
 
     //! Creates layer and adds it to maplayer registry
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void loadEmbeddedNodes( QgsLayerTreeGroup *group );
 
     QMap<QString, QgsMapLayer *> mMapLayers;
@@ -1005,7 +1005,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 };
 
 /** Return the version string found in the given DOM document
-   @returns the version string or an empty string if none found
+   \returns the version string or an empty string if none found
  */
 CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc );
 

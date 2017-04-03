@@ -34,7 +34,6 @@ class QgsCoordinateReferenceSystem;
 
 /** \ingroup core
  * Abstract base class for spatial data provider implementations.
- * @author Gary E.Sherman
  *
  * This object needs to inherit from QObject to enable event
  * processing in the Postgres/PostGIS provider (QgsPostgresProvider).
@@ -89,7 +88,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Set the data source specification. This may be a path or database
      * connection string
-     * @param uri source specification
+     * \param uri source specification
      */
     virtual void setDataSourceUri( const QString &uri )
     {
@@ -99,9 +98,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Get the data source specification. This may be a path or database
      * connection string
-     * @param expandAuthConfig Whether to expand any assigned authentication configuration
-     * @return data source specification
-     * @note The default authentication configuration expansion is FALSE. This keeps credentials
+     * \param expandAuthConfig Whether to expand any assigned authentication configuration
+     * \returns data source specification
+     * \note The default authentication configuration expansion is FALSE. This keeps credentials
      * out of layer data source URIs and project files. Expansion should be specifically done
      * only when needed within a provider
      */
@@ -121,7 +120,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
     /**
      * Returns the extent of the layer
-     * @return QgsRectangle containing the extent of the layer
+     * \returns QgsRectangle containing the extent of the layer
      */
     virtual QgsRectangle extent() const = 0;
 
@@ -244,7 +243,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * if more than one provider supports a given format, the user is able to
      * select a specific provider to open that file.
      *
-     * @note
+     * \note
      *
      * Instead of being pure virtual, might be better to generalize this
      * behavior and presume that none of the sub-classes are going to do
@@ -258,7 +257,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Return a terse string describing what the provider is.
      *
-     * @note
+     * \note
      *
      * Instead of being pure virtual, might be better to generalize this
      * behavior and presume that none of the sub-classes are going to do
@@ -275,7 +274,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * for those data providers that do not deal with plain files, such as
      * databases and servers.
      *
-     * @note It'd be nice to eventually be raster/vector neutral.
+     * \note It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileVectorFilters() const
     {
@@ -290,7 +289,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * for those data providers that do not deal with plain files, such as
      * databases and servers.
      *
-     * @note It'd be nice to eventually be raster/vector neutral.
+     * \note It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileRasterFilters() const
     {
@@ -336,7 +335,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * a concept of stack of calls that must be handled by the provider. Only the first
      * call to enterUpdateMode() will really turn update mode on.
      *
-     * @return true in case of success (or no-op implementation), false in case of failure.
+     * \returns true in case of success (or no-op implementation), false in case of failure.
      *
      * \since QGIS 2.16
      */
@@ -354,7 +353,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * a concept of stack of calls that must be handled by the provider. Only the last
      * call to leaveUpdateMode() will really turn update mode off.
      *
-     * @return true in case of success (or no-op implementation), false in case of failure.
+     * \returns true in case of success (or no-op implementation), false in case of failure.
      *
      * \since QGIS 2.16
      */

@@ -105,7 +105,7 @@ public:
        /**
         * Causes the an action associated with a hotspot to be triggered.
         *
-        * @param action The action to trigger.  This is
+        * \param action The action to trigger.  This is
         * typically empty ( in which case the default action should be performed ) or
         * one of the object names from the actions() list.  In which case the associated
         * action should be performed.
@@ -376,10 +376,10 @@ public:
     /**
      * Set the current terminal image to @p image.
      *
-     * @param image The terminal image
-     * @param lines The number of lines in the terminal image
-     * @param columns The number of columns in the terminal image
-     * @param lineProperties The line properties to set for image
+     * \param image The terminal image
+     * \param lines The number of lines in the terminal image
+     * \param columns The number of columns in the terminal image
+     * \param lineProperties The line properties to set for image
      */
     void setImage(const Character* const image , int lines , int columns,
                   const QVector<LineProperty>& lineProperties);

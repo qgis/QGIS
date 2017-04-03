@@ -43,28 +43,28 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     };
 
     /** Constructor for QgsCompoundColorWidget
-     * @param parent parent widget
-     * @param color initial color for dialog
-     * @param layout widget layout to use
+     * \param parent parent widget
+     * \param color initial color for dialog
+     * \param layout widget layout to use
      */
     QgsCompoundColorWidget( QWidget *parent = nullptr, const QColor &color = QColor(), Layout layout = LayoutDefault );
 
     ~QgsCompoundColorWidget();
 
     /** Returns the current color for the dialog
-     * @returns dialog color
+     * \returns dialog color
      */
     QColor color() const;
 
     /** Sets whether alpha modification (transparency) is permitted
      * for the color dialog. Defaults to true.
-     * @param allowAlpha set to false to disable alpha modification
+     * \param allowAlpha set to false to disable alpha modification
      */
     void setAllowAlpha( const bool allowAlpha );
 
     /** Sets whether the widget's color has been "discarded" and the selected color should not
      * be stored in the recent color list.
-     * @param discarded set to true to avoid adding color to recent color list on widget destruction.
+     * \param discarded set to true to avoid adding color to recent color list on widget destruction.
      * \since QGIS 3.0
      */
     void setDiscarded( bool discarded ) { mDiscarded = discarded; }
@@ -72,19 +72,19 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
   signals:
 
     /** Emitted when the dialog's color changes
-     * @param color current color
+     * \param color current color
      */
     void currentColorChanged( const QColor &color );
 
   public slots:
 
     /** Sets the current color for the dialog
-     * @param color desired color
+     * \param color desired color
      */
     void setColor( const QColor &color );
 
     /** Sets the color to show in an optional "previous color" section
-     * @param color previous color
+     * \param color previous color
      */
     void setPreviousColor( const QColor &color );
 
@@ -140,21 +140,21 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     void saveSettings();
 
     /** Ends a color picking operation
-     * @param eventPos global position of pixel to sample color from
-     * @param takeSample set to true to actually sample the color, false to just cancel
+     * \param eventPos global position of pixel to sample color from
+     * \param takeSample set to true to actually sample the color, false to just cancel
      * the color picking operation
      */
     void stopPicking( QPoint eventPos, const bool takeSample = true );
 
     /** Returns the average color from the pixels in an image
-     * @param image image to sample
-     * @returns average color from image
+     * \param image image to sample
+     * \returns average color from image
      */
     QColor averageColor( const QImage &image ) const;
 
     /** Samples a color from the desktop
-     * @param point position of color to sample
-     * @returns average color from sampled position
+     * \param point position of color to sample
+     * \returns average color from sampled position
      */
     QColor sampleColor( QPoint point ) const;
 

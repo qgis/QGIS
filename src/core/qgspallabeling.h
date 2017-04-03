@@ -438,7 +438,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /** Ordered list of predefined label positions for points. Positions earlier
      * in the list will be prioritized over later positions. Only used when the placement
      * is set to QgsPalLayerSettings::OrderedPositionsAroundPoint.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QVector< PredefinedPointPosition > predefinedPositionOrder;
 
@@ -509,12 +509,12 @@ class CORE_EXPORT QgsPalLayerSettings
     void calculateLabelSize( const QFontMetricsF *fm, QString text, double &labelX, double &labelY, QgsFeature *f = nullptr, QgsRenderContext *context = nullptr );
 
     /** Register a feature for labeling.
-     * @param f feature to label
-     * @param context render context. The QgsExpressionContext contained within the render context
+     * \param f feature to label
+     * \param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
-     * @param labelFeature if using QgsLabelingEngine, this will receive the label feature. Not available
+     * \param labelFeature if using QgsLabelingEngine, this will receive the label feature. Not available
      * in Python bindings.
-     * @param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
+     * \param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
      * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels. Not available
@@ -537,32 +537,32 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Returns a reference to the label's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setDataDefinedProperties()
+     * \see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the label's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setDataDefinedProperties()
+     * \see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the label's property collection, used for data defined overrides.
-     * @param collection property collection. Existing properties will be replaced.
+     * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
-     * @see dataDefinedProperties()
+     * \see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /** Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
-     * @see setFormat()
+     * \see setFormat()
      * \since QGIS 3.0
      */
     const QgsTextFormat &format() const { return mFormat; }
 
     /** Sets the label text formatting settings, e.g., font settings, buffer settings, etc.
-     * @param format label text format
-     * @see format()
+     * \param format label text format
+     * \see format()
      * \since QGIS 3.0
      */
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
@@ -628,7 +628,7 @@ class CORE_EXPORT QgsPalLayerSettings
     void parseDropShadow( QgsRenderContext &context );
 
     /** Checks if a feature is larger than a minimum size (in mm)
-    @return true if above size, false if below*/
+    \returns true if above size, false if below*/
     bool checkMinimumSizeMM( const QgsRenderContext &ct, const QgsGeometry &geom, double minSize ) const;
 
     /** Registers a feature as an obstacle only (no label rendered)
@@ -731,15 +731,15 @@ class CORE_EXPORT QgsPalLabeling
 
     /** Returns whether the engine will only draw the outline rectangles of labels,
      * not the label contents themselves. Used for debugging and testing purposes.
-     * @see setDrawLabelRectOnly
+     * \see setDrawLabelRectOnly
      * \since QGIS 2.12
      */
     bool drawLabelRectOnly() const;
 
     /** Sets whether the engine should only draw the outline rectangles of labels,
      * not the label contents themselves. Used for debugging and testing purposes.
-     * @param drawRect set to true to enable rect drawing only
-     * @see drawLabelRectOnly
+     * \param drawRect set to true to enable rect drawing only
+     * \see drawLabelRectOnly
      * \since QGIS 2.12
      */
     void setDrawLabelRectOnly( bool drawRect );
@@ -748,7 +748,7 @@ class CORE_EXPORT QgsPalLabeling
     //! \since QGIS 2.4
     static bool staticWillUseLayer( QgsVectorLayer *layer );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static void drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates = nullptr );
 
     //! load/save engine settings to project file
@@ -756,30 +756,30 @@ class CORE_EXPORT QgsPalLabeling
     void saveEngineSettings();
 
     /** Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
-     * @param geometry geometry to prepare
-     * @param context render context
-     * @param ct coordinate transform, or invalid transform if no transformation required
-     * @param clipGeometry geometry to clip features to, if applicable
-     * @returns prepared geometry
+     * \param geometry geometry to prepare
+     * \param context render context
+     * \param ct coordinate transform, or invalid transform if no transformation required
+     * \param clipGeometry geometry to clip features to, if applicable
+     * \returns prepared geometry
      * \since QGIS 2.9
      */
     static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr );
 
     /** Checks whether a geometry requires preparation before registration with PAL
-     * @param geometry geometry to prepare
-     * @param context render context
-     * @param ct coordinate transform, or invalid transform if no transformation required
-     * @param clipGeometry geometry to clip features to, if applicable
-     * @returns true if geometry requires preparation
+     * \param geometry geometry to prepare
+     * \param context render context
+     * \param ct coordinate transform, or invalid transform if no transformation required
+     * \param clipGeometry geometry to clip features to, if applicable
+     * \returns true if geometry requires preparation
      * \since QGIS 2.9
      */
     static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr );
 
     /** Splits a text string to a list of separate lines, using a specified wrap character.
      * The text string will be split on either newline characters or the wrap character.
-     * @param text text string to split
-     * @param wrapCharacter additional character to wrap on
-     * @returns list of text split to lines
+     * \param text text string to split
+     * \param wrapCharacter additional character to wrap on
+     * \returns list of text split to lines
      * \since QGIS 2.9
      */
     static QStringList splitToLines( const QString &text, const QString &wrapCharacter );
@@ -787,8 +787,8 @@ class CORE_EXPORT QgsPalLabeling
     /** Splits a text string to a list of graphemes, which are the smallest allowable character
      * divisions in the string. This accounts for scripts were individual characters are not
      * allowed to be split apart (e.g., Arabic and Indic based scripts)
-     * @param text string to split
-     * @returns list of graphemes
+     * \param text string to split
+     * \returns list of graphemes
      * \since QGIS 2.10
      */
     static QStringList splitToGraphemes( const QString &text );
@@ -820,10 +820,10 @@ class CORE_EXPORT QgsPalLabeling
     void deleteTemporaryData();
 
     /** Checks whether a geometry exceeds the minimum required size for a geometry to be labeled.
-     * @param context render context
-     * @param geom geometry
-     * @param minSize minimum size for geometry
-     * @returns true if geometry exceeds minimum size
+     * \param context render context
+     * \param geom geometry
+     * \param minSize minimum size for geometry
+     * \returns true if geometry exceeds minimum size
      * \since QGIS 2.9
      */
     static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );

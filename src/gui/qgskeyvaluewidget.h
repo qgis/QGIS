@@ -23,10 +23,10 @@
 
 ///@cond PRIVATE
 
-/** @ingroup gui
+/** \ingroup gui
  * Table model to edit a QVariantMap.
  * \since QGIS 3.0
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
 {
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsKeyValueWidget: public QgsTableWidgetBase
 
     /**
      * Get the edit value.
-     * @return the QVariantMap
+     * \returns the QVariantMap
      */
     QVariantMap map() const { return mModel.map(); }
 

@@ -77,7 +77,7 @@ class CORE_EXPORT QgsRenderChecker
      * The path of the rendered image can be retrieved through that method.
      * Will return the path set with setRenderedImage() or generated in runTest()
      *
-     * @return The path to the rendered image
+     * \returns The path to the rendered image
      */
     QString renderedImage() { return mRenderedImageFile; }
 
@@ -86,41 +86,41 @@ class CORE_EXPORT QgsRenderChecker
 
     /** Set tolerance for color components used by runTest() and compareImages().
      * Default value is 0.
-     * @param colorTolerance is maximum difference for each color component
+     * \param colorTolerance is maximum difference for each color component
      * including alpha to be considered correct.
      * \since QGIS 2.1
      */
     void setColorTolerance( unsigned int colorTolerance ) { mColorTolerance = colorTolerance; }
 
     /** Sets the largest allowable difference in size between the rendered and the expected image.
-     * @param xTolerance x tolerance in pixels
-     * @param yTolerance y tolerance in pixels
+     * \param xTolerance x tolerance in pixels
+     * \param yTolerance y tolerance in pixels
      * \since QGIS 2.12
      */
     void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
 
     /**
      * Test using renderer to generate the image to be compared.
-     * @param testName - to be used as the basis for writing a file to
+     * \param testName - to be used as the basis for writing a file to
      * e.g. /tmp/theTestName.png
-     * @param mismatchCount - defaults to 0 - the number of pixels that
+     * \param mismatchCount - defaults to 0 - the number of pixels that
      * are allowed to be different from the control image. In some cases
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
-     * @note make sure to call setExpectedImage and setMapRenderer first
+     * \note make sure to call setExpectedImage and setMapRenderer first
      */
     bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
 
     /**
      * Test using two arbitrary images (map renderer will not be used)
-     * @param testName - to be used as the basis for writing a file to
+     * \param testName - to be used as the basis for writing a file to
      * e.g. /tmp/theTestName.png
-     * @param mismatchCount - defaults to 0 - the number of pixels that
+     * \param mismatchCount - defaults to 0 - the number of pixels that
      * are allowed to be different from the control image. In some cases
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
-     * @param renderedImageFile to optionally override the output filename
-     * @note: make sure to call setExpectedImage and setRenderedImage first.
+     * \param renderedImageFile to optionally override the output filename
+     * \note: make sure to call setExpectedImage and setRenderedImage first.
      */
     bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = "" );
 
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsRenderChecker
      * mismatch), but where the output was still acceptable. If the render
      * diff matches one of these anomalies we will still consider it to be
      * acceptable.
-     * @return a bool indicating if the diff matched one of the anomaly files
+     * \returns a bool indicating if the diff matched one of the anomaly files
      */
     bool isKnownAnomaly( const QString &diffImageFile );
 
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsRenderChecker
     /**
      * Returns the path to the expected image file
      *
-     * @return Path to the expected image file
+     * \returns Path to the expected image file
      */
     QString expectedImageFile() const { return mExpectedImageFile; }
 
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsRenderChecker
      * dashMessages() to get access to the buffered messages. If disabled (default)
      * dash messages will be sent immediately.
      *
-     * @param enable Enable or disable buffering
+     * \param enable Enable or disable buffering
      */
     void enableDashBuffering( bool enable ) { mBufferDashMessages = enable; }
 
@@ -158,8 +158,8 @@ class CORE_EXPORT QgsRenderChecker
      * Get access to buffered dash messages.
      * Only will return something if you call enableDashBuffering( true ); before.
      *
-     * @return buffered dash messages
-     * @note not available in Python bindings
+     * \returns buffered dash messages
+     * \note not available in Python bindings
      */
     QVector<QgsDartMeasurement> dartMeasurements() const { return mDashMessages; }
 
@@ -189,10 +189,10 @@ class CORE_EXPORT QgsRenderChecker
 
 
 /** Compare two WKT strings with some tolerance
- * @param a first WKT string
- * @param b second WKT string
- * @param tolerance tolerance to use (optional, defaults to 0.000001)
- * @return bool indicating if the WKT are sufficiently equal
+ * \param a first WKT string
+ * \param b second WKT string
+ * \param tolerance tolerance to use (optional, defaults to 0.000001)
+ * \returns bool indicating if the WKT are sufficiently equal
  */
 
 inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0.000001 )

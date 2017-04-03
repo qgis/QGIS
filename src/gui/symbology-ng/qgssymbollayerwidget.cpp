@@ -2695,7 +2695,7 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( spinAngle )->setValue( mLayer->angle() );
 
   widgetChar->blockSignals( true );
-  widgetChar->updateFont( layerFont );
+  widgetChar->setFont( layerFont );
   widgetChar->setCharacter( mLayer->character() );
   widgetChar->blockSignals( false );
 
@@ -2746,7 +2746,7 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayerWidget::symbolLayer()
 void QgsFontMarkerSymbolLayerWidget::setFontFamily( const QFont &font )
 {
   mLayer->setFontFamily( font.family() );
-  widgetChar->updateFont( font );
+  widgetChar->setFont( font );
   emit changed();
 }
 

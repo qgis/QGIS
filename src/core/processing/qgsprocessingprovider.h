@@ -48,13 +48,13 @@ class CORE_EXPORT QgsProcessingProvider
 
     /**
      * Returns an icon for the provider.
-     * @see svgIconPath()
+     * \see svgIconPath()
      */
     virtual QIcon icon() const;
 
     /**
      * Returns a path to an SVG version of the provider's icon.
-     * @see icon()
+     * \see icon()
      */
     virtual QString svgIconPath() const;
 
@@ -62,14 +62,14 @@ class CORE_EXPORT QgsProcessingProvider
      * Returns the unique provider id, used for identifying the provider. This string
      * should be a unique, short, character only string, eg "qgis" or "gdal". This
      * string should not be localised.
-     * @see name()
+     * \see name()
      */
     virtual QString id() const = 0;
 
     /**
      * Returns the full provider name, which is used to describe the provider within the GUI.
      * This string should be localised.
-     * @see id()
+     * \see id()
      */
     virtual QString name() const = 0;
 

@@ -37,7 +37,6 @@ QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tole
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Helper simplification methods
 
-//! Returns the squared 2D-distance of the vector defined by the two points specified
 float QgsMapToPixelSimplifier::calculateLengthSquared2D( double x1, double y1, double x2, double y2 )
 {
   float vx = static_cast< float >( x2 - x1 );
@@ -46,7 +45,6 @@ float QgsMapToPixelSimplifier::calculateLengthSquared2D( double x1, double y1, d
   return ( vx * vx ) + ( vy * vy );
 }
 
-//! Returns whether the points belong to the same grid
 bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, double y2, double gridOriginX, double gridOriginY, float gridInverseSizeXY )
 {
   int grid_x1 = qRound( ( x1 - gridOriginX ) * gridInverseSizeXY );
@@ -114,7 +112,6 @@ static T *createEmptySameTypeGeom( const T &geom )
   return output;
 }
 
-//! Simplify the WKB-geometry using the specified tolerance
 QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   int simplifyFlags,
   SimplifyAlgorithm simplifyAlgorithm,
@@ -297,14 +294,12 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-//! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
 bool QgsMapToPixelSimplifier::isGeneralizableByMapBoundingBox( const QgsRectangle &envelope, double map2pixelTol )
 {
   // Can replace the geometry by its BBOX ?
   return envelope.width() < map2pixelTol && envelope.height() < map2pixelTol;
 }
 
-//! Returns a simplified version the specified geometry (Removing duplicated points) when is applied the specified map2pixel context
 QgsGeometry QgsMapToPixelSimplifier::simplify( const QgsGeometry &geometry ) const
 {
   if ( geometry.isNull() )

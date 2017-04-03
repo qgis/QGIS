@@ -377,7 +377,7 @@ void QgsVectorLayerProperties::insertFieldOrExpression()
   mMapTipWidget->insertText( expression );
 }
 
-//! @note in raster props, this method is called sync()
+// in raster props, this method is called sync()
 void QgsVectorLayerProperties::syncToLayer()
 {
   // populate the general information

@@ -164,29 +164,33 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgisApp( QgisApp const & ) = delete;
     QgisApp &operator=( QgisApp const & ) = delete;
 
-    /**
-     * Add a vector layer to the canvas, returns pointer to it
-     */
+    /** Add a vector layer directly without prompting user for location
+      The caller must provide information compatible with the provider plugin
+      using the vectorLayerPath and baseName. The provider can use these
+      parameters in any way necessary to initialize the layer. The baseName
+      parameter is used in the Map Legend so it should be formed in a meaningful
+      way.
+      */
     QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
 
     /** \brief overloaded version of the private addLayer method that takes a list of
      * file names instead of prompting user with a dialog.
-     @param enc encoding type for the layer
-    @param dataSourceType type of ogr datasource
-     @returns true if successfully added layer
+     \param enc encoding type for the layer
+    \param dataSourceType type of ogr datasource
+     \returns true if successfully added layer
      */
     bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
 
     /** Overloaded vesion of the private addRasterLayer()
       Method that takes a list of file names instead of prompting
       user with a dialog.
-      @returns true if successfully added layer(s)
+      \returns true if successfully added layer(s)
       */
     bool addRasterLayers( const QStringList &layerQStringList, bool guiWarning = true );
 
     /** Open a raster layer for the given file
-      @returns false if unable to open a raster layer for rasterFile
-      @note
+      \returns false if unable to open a raster layer for rasterFile
+      \note
       This is essentially a simplified version of the above
       */
     QgsRasterLayer *addRasterLayer( const QString &rasterFile, const QString &baseName, bool guiWarning = true );
@@ -208,7 +212,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       Used to process a commandline argument, FileOpen or Drop event.
       Set interactive to true if it is ok to ask the user for information (mostly for
       when a vector layer has sublayers and we want to ask which sublayers to use).
-      @returns true if the file is successfully opened
+      \returns true if the file is successfully opened
       */
     bool openLayer( const QString &fileName, bool allowInteractive = false );
 
@@ -223,7 +227,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void openTemplate( const QString &fileName );
 
     /** Opens a qgis project file
-      @returns false if unable to open the project
+      \returns false if unable to open the project
       */
     bool addProject( const QString &projectFile );
 
@@ -340,9 +344,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QSet<QgsComposer *> printComposers() const {return mPrintComposers;}
 
     /** Get a unique title from user for new and duplicate composers
-     * @param acceptEmpty whether to accept empty titles (one will be generated)
-     * @param currentTitle base name for initial title choice
-     * @return QString::null if user cancels input dialog
+     * \param acceptEmpty whether to accept empty titles (one will be generated)
+     * \param currentTitle base name for initial title choice
+     * \returns QString::null if user cancels input dialog
      */
     bool uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentTitle = QString() );
     //! Creates a new composer and returns a pointer to it
@@ -364,20 +368,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *createPopupMenu() override;
 
     /**
-     * Access the vector layer tools. This will be an instance of {@see QgsGuiVectorLayerTools}
+     * Access the vector layer tools. This will be an instance of {\see QgsGuiVectorLayerTools}
      * by default.
-     * @return  The vector layer tools
+     * \returns  The vector layer tools
      */
     QgsVectorLayerTools *vectorLayerTools() { return mVectorLayerTools; }
 
     /** Notify the user by using the system tray notifications
      *
-     * @note usage of the system tray notifications should be limited
+     * \note usage of the system tray notifications should be limited
      *       to long running tasks and to when the user needs to be notified
      *       about interaction with OS services, like the password manager.
      *
-     * @param title
-     * @param message
+     * \param title
+     * \param message
      */
     void showSystemNotification( const QString title, const QString message );
 
@@ -570,8 +574,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsPluginManager *pluginManager();
 
     /** Return vector layers in edit mode
-     * @param modified whether to return only layers that have been modified
-     * @returns list of layers in legend order, or empty list */
+     * \param modified whether to return only layers that have been modified
+     * \returns list of layers in legend order, or empty list */
     QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
 
     //! Get timeout for timed messages: default of 5 seconds
@@ -661,14 +665,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void saveActiveLayerEdits();
 
     /** Save edits of a layer
-     * @param leaveEditable leave the layer in editing mode when done
-     * @param triggerRepaint send layer signal to repaint canvas when done
+     * \param leaveEditable leave the layer in editing mode when done
+     * \param triggerRepaint send layer signal to repaint canvas when done
      */
     void saveEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
 
     /** Cancel edits for a layer
-      * @param leaveEditable leave the layer in editing mode when done
-      * @param triggerRepaint send layer signal to repaint canvas when done
+      * \param leaveEditable leave the layer in editing mode when done
+      * \param triggerRepaint send layer signal to repaint canvas when done
       */
     void cancelEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
 
@@ -771,7 +775,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent *event ) override;
 
-    //! Open a raster layer using the Raster Data Provider.
+    /** Add a raster layer directly without prompting user for location
+      The caller must provide information compatible with the provider plugin
+      using the uri and baseName. The provider can use these
+      parameters in any way necessary to initialize the layer. The baseName
+      parameter is used in the Map Legend so it should be formed in a meaningful
+      way.
+      */
     QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
 
     //! Open a plugin layer using its provider
@@ -987,11 +997,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Add a widget to the plugins toolbar.
-     * To remove this widget again, call {@link removeToolBarIcon}
+     * To remove this widget again, call removeToolBarIcon()
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \param widget widget to add. The toolbar will take ownership of this widget
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addPluginToolBarWidget( QWidget *widget );
     //! Remove an icon from the plugin toolbar
@@ -1001,11 +1011,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Add a widget to the raster toolbar.
-     * To remove this widget again, call {@link removeRasterToolBarIcon}
+     * To remove this widget again, call removeRasterToolBarIcon()
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \param widget widget to add. The toolbar will take ownership of this widget
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addRasterToolBarWidget( QWidget *widget );
     //! Remove an icon from the Raster toolbar
@@ -1015,11 +1025,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Add a widget to the vector toolbar.
-     * To remove this widget again, call {@link removeVectorToolBarIcon}
+     * To remove this widget again, call removeVectorToolBarIcon()
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \param widget widget to add. The toolbar will take ownership of this widget
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addVectorToolBarWidget( QWidget *widget );
     //! Remove an icon from the Vector toolbar
@@ -1029,11 +1039,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Add a widget to the database toolbar.
-     * To remove this widget again, call {@link removeDatabaseToolBarIcon}
+     * To remove this widget again, call removeDatabaseToolBarIcon()
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \param widget widget to add. The toolbar will take ownership of this widget
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addDatabaseToolBarWidget( QWidget *widget );
     //! Remove an icon from the Database toolbar
@@ -1043,11 +1053,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Add a widget to the web toolbar.
-     * To remove this widget again, call {@link removeWebToolBarIcon}
+     * To remove this widget again, call removeWebToolBarIcon()
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \param widget widget to add. The toolbar will take ownership of this widget
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addWebToolBarWidget( QWidget *widget );
     //! Remove an icon from the Web toolbar
@@ -1069,7 +1079,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void openProject( QAction *action );
 
     /** Attempts to run a Python script
-     * @param filePath full path to Python script
+     * \param filePath full path to Python script
      * \since QGIS 2.7
      */
     void runScript( const QString &filePath );
@@ -1475,7 +1485,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void keyPressed( QKeyEvent *e );
 
     /** Emitted when a project file is successfully read
-      @note
+      \note
       This is useful for plug-ins that store properties with project files.  A
       plug-in can connect to this signal.  When it is emitted, the plug-in
       knows to then check the project properties for any relevant state.
@@ -1483,7 +1493,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void projectRead();
 
     /** Emitted when starting an entirely new project
-      @note
+      \note
       This is similar to projectRead(); plug-ins might want to be notified
       that they're in a new project.  Yes, projectRead() could have been
       overloaded to be used in the case of new projects instead.  However,
@@ -1528,7 +1538,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, QString name );
 
     /** This method will open a dialog so the user can select GDAL sublayers to load
-     * @returns true if any items were loaded
+     * \returns true if any items were loaded
      */
     bool askUserForZipItemLayers( const QString &path );
 
@@ -1558,7 +1568,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.
      *
-     * @param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
+     * \param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
      */
     void saveRecentProjectPath( const QString &projectPath, bool savePreviewImage = true );
     //! Update project menu with the current list of recently accessed projects
@@ -1573,7 +1583,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool checkTasksDependOnProject();
 
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
-      @return empty geometry in case of error or if canceled */
+      \returns empty geometry in case of error or if canceled */
     QgsGeometry unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &featureList, bool &canceled );
 
     //! Deletes all the composer objects and clears mPrintComposers
@@ -1589,7 +1599,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Paste features from clipboard into a new memory layer.
      *  If no features are in clipboard an empty layer is returned.
-     *  @return pointer to a new layer or 0 if failed
+     *  \returns pointer to a new layer or 0 if failed
      */
     QgsVectorLayer *pasteToNewMemoryVector();
 

@@ -21,11 +21,6 @@
 #include "qgsvectorlayer.h"
 #include <QPainter>
 
-/*!
-  \class QgsRubberBand
-  \brief The QgsRubberBand class provides a transparent overlay widget
-  for tracking the mouse while drawing polylines or polygons.
-*/
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType )
   : QgsMapCanvasItem( mapCanvas )
   , mIconSize( 5 )
@@ -54,26 +49,17 @@ QgsRubberBand::QgsRubberBand()
 {
 }
 
-/*!
-  Set the stroke and fill color.
-  */
 void QgsRubberBand::setColor( const QColor &color )
 {
   setStrokeColor( color );
   setFillColor( color );
 }
 
-/*!
-  Set the fill color.
-  */
 void QgsRubberBand::setFillColor( const QColor &color )
 {
   mBrush.setColor( color );
 }
 
-/*!
-  Set the stroke
-  */
 void QgsRubberBand::setStrokeColor( const QColor &color )
 {
   mPen.setColor( color );
@@ -84,9 +70,6 @@ void QgsRubberBand::setSecondaryStrokeColor( const QColor &color )
   mSecondaryPen.setColor( color );
 }
 
-/*!
-  Set the stroke width.
-  */
 void QgsRubberBand::setWidth( int width )
 {
   mPen.setWidth( width );
@@ -112,9 +95,6 @@ void QgsRubberBand::setBrushStyle( Qt::BrushStyle brushStyle )
   mBrush.setStyle( brushStyle );
 }
 
-/*!
-  Remove all points from the shape being created.
-  */
 void QgsRubberBand::reset( QgsWkbTypes::GeometryType geometryType )
 {
   mPoints.clear();
@@ -123,9 +103,6 @@ void QgsRubberBand::reset( QgsWkbTypes::GeometryType geometryType )
   update();
 }
 
-/*!
-  Add a point to the shape being created.
-  */
 void QgsRubberBand::addPoint( const QgsPoint &p, bool doUpdate /* = true */, int geometryIndex )
 {
   if ( geometryIndex < 0 )
@@ -214,9 +191,6 @@ void QgsRubberBand::removeLastPoint( int geometryIndex, bool doUpdate/* = true*/
   removePoint( -1, doUpdate, geometryIndex );
 }
 
-/*!
-  Update the line between the last added point and the mouse position.
-  */
 void QgsRubberBand::movePoint( const QgsPoint &p, int geometryIndex )
 {
   if ( mPoints.size() < geometryIndex + 1 )
@@ -438,9 +412,6 @@ void QgsRubberBand::setToCanvasRectangle( QRect rect )
   addPoint( ul, true );
 }
 
-/*!
-  Paint the rubber band in response to an update event.
-  */
 void QgsRubberBand::paint( QPainter *p )
 {
   if ( !mPoints.isEmpty() )

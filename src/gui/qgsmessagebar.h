@@ -60,22 +60,22 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * and putting it in a stack.
      * The message bar will take ownership of the item.
      *
-     * @param item Item to display
+     * \param item Item to display
      */
     void pushItem( QgsMessageBarItem *item );
 
     /** Display a widget as a message on the bar after hiding the currently visible one
      *  and putting it in a stack.
-     * @param widget message widget to display
-     * @param level is QgsMessageBar::INFO, WARNING, CRITICAL or SUCCESS
-     * @param duration timeout duration of message in seconds, 0 value indicates no timeout
+     * \param widget message widget to display
+     * \param level is QgsMessageBar::INFO, WARNING, CRITICAL or SUCCESS
+     * \param duration timeout duration of message in seconds, 0 value indicates no timeout
      */
     QgsMessageBarItem *pushWidget( QWidget *widget, MessageLevel level = INFO, int duration = 0 );
 
     /** Remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar
-     *  @param item item to remove
-     *  @return true if the widget was removed, false otherwise
+     *  \param item item to remove
+     *  \returns true if the widget was removed, false otherwise
      */
     bool popWidget( QgsMessageBarItem *item );
 
@@ -104,43 +104,43 @@ class GUI_EXPORT QgsMessageBar: public QFrame
 
     /** Remove the currently displayed widget from the bar and
      *  display the next in the stack if any or hide the bar.
-     *  @return true if the widget was removed, false otherwise
+     *  \returns true if the widget was removed, false otherwise
      */
     bool popWidget();
 
     /** Remove all items from the bar's widget list
-     *  @return true if all items were removed, false otherwise
+     *  \returns true if all items were removed, false otherwise
      */
     bool clearWidgets();
 
     /**
      * Pushes a success message with default timeout to the message bar
-     * @param title title string for message
-     * @param message The message to be displayed
+     * \param title title string for message
+     * \param message The message to be displayed
      * \since QGIS 2.8
      */
     void pushSuccess( const QString &title, const QString &message );
 
     /**
      * Pushes a information message with default timeout to the message bar
-     * @param title title string for message
-     * @param message The message to be displayed
+     * \param title title string for message
+     * \param message The message to be displayed
      * \since QGIS 2.8
      */
     void pushInfo( const QString &title, const QString &message );
 
     /**
      * Pushes a warning with default timeout to the message bar
-     * @param title title string for message
-     * @param message The message to be displayed
+     * \param title title string for message
+     * \param message The message to be displayed
      * \since QGIS 2.8
      */
     void pushWarning( const QString &title, const QString &message );
 
     /**
      * Pushes a critical warning with default timeout to the message bar
-     * @param title title string for message
-     * @param message The message to be displayed
+     * \param title title string for message
+     * \param message The message to be displayed
      * \since QGIS 2.8
      */
     void pushCritical( const QString &title, const QString &message );

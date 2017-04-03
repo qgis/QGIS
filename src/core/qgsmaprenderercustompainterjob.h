@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     virtual bool usedCachedLabels() const override;
     virtual QgsLabelingResults *takeLabelingResults() override;
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     const LayerRenderJobs &jobs() const { return mLayerJobs; }
 
     /**

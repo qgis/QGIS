@@ -67,17 +67,17 @@ class PYTHON_EXPORT QgsPythonUtils
     /* console */
 
     //! run a statement, show an error message on error
-    //! @return true if no error occurred
+    //! \returns true if no error occurred
     virtual bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) = 0;
 
     //! run a statement, error reporting is not done
-    //! @return true if no error occurred
+    //! \returns true if no error occurred
     virtual bool runStringUnsafe( const QString &command, bool single = true ) = 0;
 
     virtual bool evalString( const QString &command, QString &result ) = 0;
 
     //! get information about error to the supplied arguments
-    //! @return false if there was no Python error
+    //! \returns false if there was no Python error
     virtual bool getError( QString &errorClassName, QString &errorText ) = 0;
 
     /* plugins */
@@ -98,7 +98,7 @@ class PYTHON_EXPORT QgsPythonUtils
     virtual bool startPlugin( const QString &packageName ) = 0;
 
     //! helper function to get some information about plugin
-    //! @param function one of these strings: name, tpye, version, description
+    //! \param function one of these strings: name, tpye, version, description
     virtual QString getPluginMetadata( const QString &pluginName, const QString &function ) = 0;
 
     //! confirm that the plugin can be uninstalled

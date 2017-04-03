@@ -78,60 +78,60 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void setNumUnitsPerSegment( double units );
 
     /** Returns the size mode for scale bar segments.
-     * @see setSegmentSizeMode
-     * @see minBarWidth
-     * @see maxBarWidth
+     * \see setSegmentSizeMode
+     * \see minBarWidth
+     * \see maxBarWidth
      * \since QGIS 2.9
      */
     SegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
 
     /** Sets the size mode for scale bar segments.
-     * @param mode size mode
-     * @see segmentSizeMode
-     * @see setMinBarWidth
-     * @see setMaxBarWidth
+     * \param mode size mode
+     * \see segmentSizeMode
+     * \see setMinBarWidth
+     * \see setMaxBarWidth
      * \since QGIS 2.9
      */
     void setSegmentSizeMode( SegmentSizeMode mode );
 
     /** Returns the minimum size (in millimeters) for scale bar segments. This
-     * property is only effective if the @link segmentSizeMode @endlink is set
-     * to @link SegmentSizeFitWidth @endlink.
-     * @see segmentSizeMode
-     * @see setMinBarWidth
-     * @see maxBarWidth
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
+     * \see segmentSizeMode
+     * \see setMinBarWidth
+     * \see maxBarWidth
      * \since QGIS 2.9
      */
     double minBarWidth() const { return mMinBarWidth; }
 
     /** Sets the minimum size (in millimeters) for scale bar segments. This
-     * property is only effective if the @link segmentSizeMode @endlink is set
-     * to @link SegmentSizeFitWidth @endlink.
-     * @param minWidth minimum width in millimeters
-     * @see minBarWidth
-     * @see setMaxBarWidth
-     * @see setSegmentSizeMode
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
+     * \param minWidth minimum width in millimeters
+     * \see minBarWidth
+     * \see setMaxBarWidth
+     * \see setSegmentSizeMode
      * \since QGIS 2.9
      */
     void setMinBarWidth( double minWidth );
 
     /** Returns the maximum size (in millimeters) for scale bar segments. This
-     * property is only effective if the @link segmentSizeMode @endlink is set
-     * to @link SegmentSizeFitWidth @endlink.
-     * @see segmentSizeMode
-     * @see setMaxBarWidth
-     * @see minBarWidth
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
+     * \see segmentSizeMode
+     * \see setMaxBarWidth
+     * \see minBarWidth
      * \since QGIS 2.9
      */
     double maxBarWidth() const { return mMaxBarWidth; }
 
     /** Sets the maximum size (in millimeters) for scale bar segments. This
-     * property is only effective if the @link segmentSizeMode @endlink is set
-     * to @link SegmentSizeFitWidth @endlink.
-     * @param maxWidth maximum width in millimeters
-     * @see minBarWidth
-     * @see setMaxBarWidth
-     * @see setSegmentSizeMode
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
+     * \param maxWidth maximum width in millimeters
+     * \see minBarWidth
+     * \see setMaxBarWidth
+     * \see setSegmentSizeMode
      * \since QGIS 2.9
      */
     void setMaxBarWidth( double maxWidth );
@@ -146,91 +146,91 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void setFont( const QFont &font );
 
     /** Returns the color used for drawing text in the scalebar.
-     * @returns font color for scalebar.
-     * @see setFontColor
-     * @see font
+     * \returns font color for scalebar.
+     * \see setFontColor
+     * \see font
      */
     QColor fontColor() const {return mFontColor;}
 
     /** Sets the color used for drawing text in the scalebar.
-     * @param c font color for scalebar.
-     * @see fontColor
-     * @see setFont
+     * \param c font color for scalebar.
+     * \see fontColor
+     * \see setFont
      */
     void setFontColor( const QColor &c ) {mFontColor = c;}
 
     /** Returns the color used for fills in the scalebar.
-     * @see setFillColor()
-     * @see fillColor2()
+     * \see setFillColor()
+     * \see fillColor2()
      * \since QGIS 3.0
      */
     QColor fillColor() const {return mFillColor;}
 
     /** Sets the color used for fills in the scalebar.
-     * @see fillColor()
-     * @see setFillColor2()
+     * \see fillColor()
+     * \see setFillColor2()
      * \since QGIS 3.0
      */
     void setFillColor( const QColor &color ) {mFillColor = color; mBrush.setColor( color ); }
 
     /** Returns the secondary color used for fills in the scalebar.
-     * @see setFillColor2()
-     * @see fillColor()
+     * \see setFillColor2()
+     * \see fillColor()
      * \since QGIS 3.0
      */
     QColor fillColor2() const {return mFillColor2;}
 
     /** Sets the secondary color used for fills in the scalebar.
-     * @see fillColor2()
-     * @see setFillColor2()
+     * \see fillColor2()
+     * \see setFillColor2()
      * \since QGIS 3.0
      */
     void setFillColor2( const QColor &color ) {mFillColor2 = color; mBrush2.setColor( color ); }
 
     /** Returns the color used for lines in the scalebar.
-     * @see setLineColor()
+     * \see setLineColor()
      * \since QGIS 3.0
      */
     QColor lineColor() const {return mLineColor;}
 
     /** Sets the color used for lines in the scalebar.
-     * @see lineColor()
+     * \see lineColor()
      * \since QGIS 3.0
      */
     void setLineColor( const QColor &color ) { mLineColor = color; mPen.setColor( mLineColor ); }
 
     /** Returns the line width in millimeters for lines in the scalebar.
-     * @see setLineWidth()
+     * \see setLineWidth()
      * \since QGIS 3.0
      */
     double lineWidth() const {return mLineWidth;}
 
     /** Sets the line width in millimeters for lines in the scalebar.
-     * @see lineWidth()
+     * \see lineWidth()
      * \since QGIS 3.0
      */
     void setLineWidth( double width ) { mLineWidth = width; mPen.setWidthF( width ); }
 
     /** Returns the pen used for drawing the scalebar.
-     * @returns QPen used for drawing the scalebar outlines.
-     * @see setPen
-     * @see brush
+     * \returns QPen used for drawing the scalebar outlines.
+     * \see setPen
+     * \see brush
      */
     QPen pen() const {return mPen;}
 
     /** Returns the primary brush for the scalebar.
-     * @returns QBrush used for filling the scalebar
-     * @see setBrush
-     * @see brush2
-     * @see pen
+     * \returns QBrush used for filling the scalebar
+     * \see setBrush
+     * \see brush2
+     * \see pen
      */
     QBrush brush() const {return mBrush;}
 
     /** Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
-     * @returns QBrush used for secondary color areas
-     * @see setBrush2
-     * @see brush
+     * \returns QBrush used for secondary color areas
+     * \see setBrush2
+     * \see brush
      */
     QBrush brush2() const {return mBrush2;}
 
@@ -258,32 +258,32 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void setUnits( ScaleBarUnits u );
 
     /** Returns the join style used for drawing lines in the scalebar
-     * @returns Join style for lines
-     * @note introduced in 2.3
-     * @see setLineJoinStyle
+     * \returns Join style for lines
+     * \since QGIS 2.3
+     * \see setLineJoinStyle
      */
     Qt::PenJoinStyle lineJoinStyle() const { return mLineJoinStyle; }
 
     /** Sets join style used when drawing the lines in the scalebar
-     * @param style Join style for lines
-     * @returns nothing
-     * @note introduced in 2.3
-     * @see lineJoinStyle
+     * \param style Join style for lines
+     * \returns nothing
+     * \since QGIS 2.3
+     * \see lineJoinStyle
      */
     void setLineJoinStyle( Qt::PenJoinStyle style );
 
     /** Returns the cap style used for drawing lines in the scalebar
-     * @returns Cap style for lines
-     * @note introduced in 2.3
-     * @see setLineCapStyle
+     * \returns Cap style for lines
+     * \since QGIS 2.3
+     * \see setLineCapStyle
      */
     Qt::PenCapStyle lineCapStyle() const { return mLineCapStyle; }
 
     /** Sets cap style used when drawing the lines in the scalebar
-     * @param style Cap style for lines
-     * @returns nothing
-     * @note introduced in 2.3
-     * @see lineCapStyle
+     * \param style Cap style for lines
+     * \returns nothing
+     * \since QGIS 2.3
+     * \see lineCapStyle
      */
     void setLineCapStyle( Qt::PenCapStyle style );
 
@@ -293,7 +293,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void applyDefaultSize( ScaleBarUnits u = Meters );
 
     /** Sets style by name
-     @param styleName (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*/
+     \param styleName (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*/
     void setStyle( const QString &styleName );
 
     //! Returns style name
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /** Returns the x - positions of the segment borders (in item coordinates) and the width
      * of the segment
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void segmentPositions( QList<QPair<double, double> > &posWidthList ) const;
 
@@ -315,14 +315,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QString firstLabelString() const;
 
     /** Stores state in Dom element
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc Dom document
+     * \param elem is Dom element corresponding to 'Composer' tag
+     * \param doc Dom document
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is Dom document
+     * \param itemElem is Dom node corresponding to item tag
+     * \param doc is Dom document
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 

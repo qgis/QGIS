@@ -42,7 +42,7 @@ class QDomDocument;
  * contain either QgsProjectPropertyKey or QgsProjectPropertyValues, thus describing an
  * hierarchy.  QgsProjectPropertyValues are always graph leaves.
  *
- * @note This class is used internally by QgsProject. It's generally recommended that the methods in
+ * \note This class is used internally by QgsProject. It's generally recommended that the methods in
  * QgsProject are used to modify project properties rather than using these low-level classes.
  * \since QGIS 3.0
 */
@@ -55,21 +55,21 @@ class CORE_EXPORT QgsProjectProperty
     /**
      * Dumps out the keys and values
      *
-     * @param tabs is number of tabs to print; used for pretty-printing hierarchy
+     * \param tabs is number of tabs to print; used for pretty-printing hierarchy
      */
     virtual void dump( int tabs = 0 ) const = 0;
 
     /**
      * Returns true if the property is a QgsProjectPropertyKey.
-     * @see isValue()
-     * @see isLeaf()
+     * \see isValue()
+     * \see isLeaf()
      */
     virtual bool isKey() const = 0;
 
     /**
      * Returns true if the property is a QgsProjectPropertyValue.
-     * @see isKey()
-     * @see isLeaf()
+     * \see isKey()
+     * \see isLeaf()
      */
     virtual bool isValue() const = 0;
 
@@ -95,9 +95,9 @@ class CORE_EXPORT QgsProjectProperty
      *
      * Used for saving properties to project file.
      *
-     * @param nodeName the tag name associated with this element
-     * @param element the parent (or encompassing) property element
-     * @param document the overall project file Dom document
+     * \param nodeName the tag name associated with this element
+     * \param element the parent (or encompassing) property element
+     * \param document the overall project file Dom document
      */
     virtual bool writeXml( const QString &nodeName,
                            QDomElement &element,
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 
     /**
      * The name of the property is used as identifier.
-     * @see setName()
+     * \see setName()
      */
     QString name() const { return mName; }
 
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
      * The name of the property is used as identifier.
      *
      * \since QGIS 3.0
-     * @see name()
+     * \see name()
      */
     void setName( const QString &name );
 
@@ -233,9 +233,9 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 
     /**
      * Sets the value associated with this key.
-     * @param name is the key name
-     * @param value is the value to set
-     * @return pointer to property value
+     * \param name is the key name
+     * \param value is the value to set
+     * \returns pointer to property value
      */
     QgsProjectPropertyValue *setValue( const QString &name, const QVariant &value )
     {
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 
     /** Set the value associated with this key
      *
-     * @note that the single value node associated with each key is always
+     * \note that the single value node associated with each key is always
      * stored keyed by the current key name
      */
     QgsProjectPropertyValue *setValue( const QVariant &value )
@@ -278,13 +278,13 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 
     /**
      * Returns any sub-keys contained by this property that do not contain other keys.
-     * @see subkeyList()
+     * \see subkeyList()
      */
     void entryList( QStringList &entries ) const;
 
     /**
      * Return any sub-keys contained by this property which themselves contain other keys.
-     * @see entryList()
+     * \see entryList()
      */
     void subkeyList( QStringList &entries ) const;
 
