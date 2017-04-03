@@ -29,7 +29,7 @@ class QgsPanelWidget;
  * \class QgsColorSwatchDelegate
  * A delegate for showing a color swatch in a list
  * @see QgsColorSchemeList
- * \note introduced in QGIS 2.5
+ * \since QGIS 2.5
  */
 class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
 {
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
  * \class QgsColorSchemeModel
  * A model for colors in a color scheme
  * @see QgsColorSchemeList
- * \note introduced in QGIS 2.5
+ * \since QGIS 2.5
  */
 class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
 {
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
  * \class QgsColorSchemeList
  * An editable list of color swatches, taken from an associated QgsColorScheme.
  * @see QgsColorSchemeList
- * \note introduced in QGIS 2.5
+ * \since QGIS 2.5
  */
 class GUI_EXPORT QgsColorSchemeList: public QTreeView
 {

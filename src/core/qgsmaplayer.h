@@ -409,7 +409,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QgsError error() const { return mError; }
 
     /** Returns the layer's spatial reference system.
-    \note This was introduced in QGIS 1.4
+    \since QGIS 1.4
      */
     QgsCoordinateReferenceSystem crs() const;
 

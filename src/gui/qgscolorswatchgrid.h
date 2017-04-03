@@ -25,7 +25,7 @@
  * A grid of color swatches, which allows for user selection. Colors are taken from an
  * associated QgsColorScheme.
  * @see QgsColorGridAction
- * \note introduced in QGIS 2.5
+ * \since QGIS 2.5
  */
 class GUI_EXPORT QgsColorSwatchGrid : public QWidget
 {
@@ -151,7 +151,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
  * \class QgsColorSwatchGridAction
  * A color swatch grid which can be embedded into a menu.
  * @see QgsColorSwatchGrid
- * \note introduced in QGIS 2.5
+ * \since QGIS 2.5
  */
 
 class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction

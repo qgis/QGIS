@@ -305,14 +305,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * are drawn over the map's contents.
      * @returns pointer to grid stack
      * @see grid()
-     * \note introduced in QGIS 2.5
+     * \since QGIS 2.5
      */
     QgsComposerMapGridStack *grids() { return mGridStack; }
 
     /** Returns the map item's first grid. This is a convenience function.
      * @returns pointer to first grid for map item
      * @see grids()
-     * \note introduced in QGIS 2.5
+     * \since QGIS 2.5
      */
     QgsComposerMapGrid *grid();
 
@@ -320,14 +320,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * are drawn over the map's contents.
      * @returns pointer to overview stack
      * @see overview()
-     * \note introduced in QGIS 2.5
+     * \since QGIS 2.5
      */
     QgsComposerMapOverviewStack *overviews() { return mOverviewStack; }
 
     /** Returns the map item's first overview. This is a convenience function.
      * @returns pointer to first overview for map item
      * @see overviews()
-     * \note introduced in QGIS 2.5
+     * \since QGIS 2.5
      */
     QgsComposerMapOverview *overview();
 

@@ -186,7 +186,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
  * \class QgsColorWidgetAction
  * An action containing a color widget, which can be embedded into a menu.
  * @see QgsColorWidget
- * \note introduced in QGIS 2.14
+ * \since QGIS 2.14
  */
 
 class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
