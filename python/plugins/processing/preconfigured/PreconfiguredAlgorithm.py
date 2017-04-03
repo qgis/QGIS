@@ -41,9 +41,16 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
             self.description = json.load(f)
         GeoAlgorithm.__init__(self)
         self._group = ''
+        self._name = ''
 
     def group(self):
         return self._group
+
+    def displayName(self):
+        return self._name
+
+    def name(self):
+        return os.path.splitext(os.path.basename(self.descriptionFile))[0].lower()
 
     def flags(self):
         return QgsProcessingAlgorithm.FlagHideFromModeler
@@ -52,12 +59,9 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
         newone = PreconfiguredAlgorithm(self.descriptionFile)
         newone.outputs = []
         newone.provider = self.provider
-        newone.name = self.name
+        newone._name = self._name
         newone._group = self._group
         return newone
-
-    def commandLineName(self):
-        return 'preconfigured:' + os.path.splitext(os.path.basename(self.descriptionFile))[0].lower()
 
     def defineCharacteristics(self):
         self.name = self.description["name"]
