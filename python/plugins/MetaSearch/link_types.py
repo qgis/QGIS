@@ -46,3 +46,13 @@ WCS_LINK_TYPES = [
     'urn:x-esri:specification:ServiceType:wcs:url',
     'urn:x-esri:specification:ServiceType:Gmd:URL.wcs'
 ]
+
+AMS_LINK_TYPES = [
+    'ESRI:ArcGIS:MapServer',
+    'Esri REST: Map Service'
+]
+
+AFS_LINK_TYPES = [
+    'ESRI:ArcGIS:FeatureServer',
+    'Esri REST: Feature Service'
+]
