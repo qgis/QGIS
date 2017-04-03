@@ -36,9 +36,7 @@ class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
 
 /** Property sheet for a raster map layer
-  *@author Tim Sutton
   */
-
 class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase
 {
     Q_OBJECT

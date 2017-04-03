@@ -41,7 +41,6 @@ const int PLUGMAN_TAB_INVALID = 5;
 
 /*!
  * \brief Plugin manager for browsing, (un)installing and (un)loading plugins
-@author Gary Sherman
 */
 class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManagerBase
 {

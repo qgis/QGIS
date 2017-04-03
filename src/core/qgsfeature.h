@@ -57,7 +57,6 @@ typedef qint64 QgsFeatureId;
  * The feature class encapsulates a single feature including its id,
  * geometry and a list of field/values attributes.
  * \note QgsFeature objects are implicitly shared.
- * @author Gary E.Sherman
  */
 class CORE_EXPORT QgsFeature
 {

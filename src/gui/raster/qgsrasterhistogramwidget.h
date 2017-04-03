@@ -35,7 +35,6 @@ typedef QPointF QwtDoublePoint;
 
 /** \ingroup gui
  * Histogram widget
-  *@author Etienne Tourigny
   */
 
 class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterHistogramWidgetBase

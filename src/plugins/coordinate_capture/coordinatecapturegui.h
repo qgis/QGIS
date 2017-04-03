@@ -16,7 +16,6 @@
 #include "qgshelp.h"
 
 /**
-@author Tim Sutton
 */
 class CoordinateCaptureGui : public QDialog
 {
