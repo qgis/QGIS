@@ -148,7 +148,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setRow( int row ) { mCombo->setCurrentIndex( row ); }
 
     //! sets the current field or expression in the widget
-    void setField( const QString &fieldName );
+    void setField( const QString &fieldName, bool allowEmptyFieldName = false );
 
     /**
      * Sets the current expression text and if applicable also the field.

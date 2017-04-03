@@ -99,7 +99,7 @@ class QgsFieldExpressionWidget : QWidget
     void setRow( int row );
 
     //! sets the current field or expression in the widget
-    void setField( const QString &fieldName );
+    void setField( const QString &fieldName, bool allowEmptyFieldName = false );
 
     /**
      * Sets the current expression text and if applicable also the field.

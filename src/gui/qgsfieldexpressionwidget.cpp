@@ -170,9 +170,9 @@ void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
     connect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), SLOT( reloadLayer() ), Qt::UniqueConnection );
 }
 
-void QgsFieldExpressionWidget::setField( const QString &fieldName )
+void QgsFieldExpressionWidget::setField( const QString &fieldName , bool allowEmptyFieldName )
 {
-  if ( fieldName.isEmpty() )
+  if ( !allowEmptyFieldName && fieldName.isEmpty() )
     return;
 
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
