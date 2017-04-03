@@ -179,7 +179,7 @@ while(!eof $header){
     }
     if ( $PRIVATE_SECTION == 1 ){
         if ( $SIP_RUN == 0){
-            if ( $line =~ m/^\s*(public|protected)( slots)?:.*$/ || $line =~ m/^\s*\};.*$/){
+            if ( $line =~ m/^\s*(public|protected)( slots)?:.*$/ || $line =~ m/^\};.*$/){
                 $PRIVATE_SECTION = 0;
             }
             else {

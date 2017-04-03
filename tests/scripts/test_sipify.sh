@@ -4,9 +4,9 @@
 
 DIR=$(git rev-parse --show-toplevel)
 
-pushd ${DIR}
+pushd ${DIR} > /dev/null
 outdiff=$(./scripts/sipify.pl tests/scripts/sipifyheader.h | diff tests/scripts/sipifyheader.expected.sip -)
-popd
+popd > /dev/null
 
 if [[ $outdiff ]]; then
   echo " *** sipify.pl did not output expected file"

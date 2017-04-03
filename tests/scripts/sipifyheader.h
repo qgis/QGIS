@@ -195,13 +195,26 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
 #ifdef SIP_RUN
     void privateMethodSIPRUNareShown();
 #endif
-
   public:
     void FallBackToPublic();
 
   private:
     void PrivateAgain();
 
+    struct ProcessFeatureWrapper
+    {
+      QgsGeometrySnapper *instance = nullptr;
+      double snapTolerance;
+      SnapMode mode;
+      explicit ProcessFeatureWrapper( QgsGeometrySnapper *_instance, double snapTolerance, SnapMode mode )
+        : instance( _instance )
+        , snapTolerance( snapTolerance )
+        , mode( mode )
+      {}
+      void operator()( QgsFeature &feature ) { return instance->processFeature( feature, snapTolerance, mode ); }
+    };
+
+    enum PointFlag { SnappedToRefNode, SnappedToRefSegment, Unsnapped };
 };
 
 /**
