@@ -72,7 +72,6 @@ const QString GEO_NONE = QStringLiteral( "NONE" );
 
 const double Qgis::DEFAULT_SEARCH_RADIUS_MM = 2.;
 
-//! Default threshold between map coordinates and device coordinates for map2pixel simplification
 const float Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
 
 const QColor Qgis::DEFAULT_HIGHLIGHT_COLOR = QColor( 255, 0, 0, 128 );

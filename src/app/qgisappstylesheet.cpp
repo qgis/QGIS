@@ -25,10 +25,6 @@
 #include <QFont>
 #include <QStyle>
 
-/** @class QgisAppStyleSheet
- * @brief Adjustable stylesheet for the Qgis application
- */
-
 QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
   : QObject( parent )
 {

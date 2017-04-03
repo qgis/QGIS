@@ -29,8 +29,6 @@ QgsAppPluginManagerInterface::~QgsAppPluginManagerInterface()
 {
 }
 
-
-//! show the Plugin Manager window and optionally open tab tabIndex
 void QgsAppPluginManagerInterface::showPluginManager( int tabIndex )
 {
   mPluginManager->getCppPluginsMetadata();
@@ -45,15 +43,11 @@ void QgsAppPluginManagerInterface::showPluginManager( int tabIndex )
   mPluginManager->exec();
 }
 
-
-//! remove python plugins from the metadata registry (c++ plugins stay)
 void QgsAppPluginManagerInterface::clearPythonPluginMetadata()
 {
   mPluginManager->clearPythonPluginMetadata();
 }
 
-
-//! add a single plugin to the metadata registry
 void QgsAppPluginManagerInterface::addPluginMetadata( const QMap<QString, QString> &metadata )
 {
   if ( metadata.isEmpty() || !metadata.contains( QStringLiteral( "id" ) ) )
@@ -64,36 +58,26 @@ void QgsAppPluginManagerInterface::addPluginMetadata( const QMap<QString, QStrin
   mPluginManager->addPluginMetadata( metadata.value( QStringLiteral( "id" ) ), metadata );
 }
 
-
-//! refresh plugin list model (and metadata browser content if necessary)
 void QgsAppPluginManagerInterface::reloadModel()
 {
   mPluginManager->reloadModelData();
 }
 
-
-//! return given plugin metadata
 const QMap<QString, QString> *QgsAppPluginManagerInterface::pluginMetadata( const QString &key ) const
 {
   return mPluginManager->pluginMetadata( key );
 }
 
-
-//! clear the repository listWidget
 void QgsAppPluginManagerInterface::clearRepositoryList()
 {
   mPluginManager->clearRepositoryList();
 }
 
-
-//! add repository to the repository listWidget
 void QgsAppPluginManagerInterface::addToRepositoryList( const QMap<QString, QString> &repository )
 {
   mPluginManager->addToRepositoryList( repository );
 }
 
-
-//! show the given message in the Plugin Manager internal message bar
 void QgsAppPluginManagerInterface::pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration )
 {
   mPluginManager->pushMessage( text, level, duration );

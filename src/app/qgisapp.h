@@ -164,9 +164,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgisApp( QgisApp const & ) = delete;
     QgisApp &operator=( QgisApp const & ) = delete;
 
-    /**
-     * Add a vector layer to the canvas, returns pointer to it
-     */
+    /** Add a vector layer directly without prompting user for location
+      The caller must provide information compatible with the provider plugin
+      using the vectorLayerPath and baseName. The provider can use these
+      parameters in any way necessary to initialize the layer. The baseName
+      parameter is used in the Map Legend so it should be formed in a meaningful
+      way.
+      */
     QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
 
     /** \brief overloaded version of the private addLayer method that takes a list of
@@ -771,7 +775,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent *event ) override;
 
-    //! Open a raster layer using the Raster Data Provider.
+    /** Add a raster layer directly without prompting user for location
+      The caller must provide information compatible with the provider plugin
+      using the uri and baseName. The provider can use these
+      parameters in any way necessary to initialize the layer. The baseName
+      parameter is used in the Map Legend so it should be formed in a meaningful
+      way.
+      */
     QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
 
     //! Open a plugin layer using its provider

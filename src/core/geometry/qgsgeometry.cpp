@@ -816,7 +816,6 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint> &splitLine, QList<QgsGeome
   return result;
 }
 
-//! Replaces a part of this geometry with another line
 int QgsGeometry::reshapeGeometry( const QList<QgsPoint> &reshapeWithLine )
 {
   if ( !d->geometry )

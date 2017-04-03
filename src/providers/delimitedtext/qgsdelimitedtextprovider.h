@@ -90,16 +90,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
-    /**
-     * Get feature type.
-     * \returns int representing the feature type
-     */
     virtual QgsWkbTypes::Type wkbType() const override;
 
-    /**
-     * Number of features in the layer
-     * \returns long containing number of features
-     */
     virtual long featureCount() const override;
 
     virtual QgsFields fields() const override;

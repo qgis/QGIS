@@ -114,13 +114,11 @@ void QgsScaleComboBox::showPopup()
   view()->setMinimumWidth( view()->sizeHintForColumn( 0 ) );
 }
 
-//! Function to read the selected scale as text
 QString QgsScaleComboBox::scaleString()
 {
   return toString( mScale );
 }
 
-//! Function to set the selected scale from text
 bool QgsScaleComboBox::setScaleString( const QString &scaleTxt )
 {
   bool ok;
@@ -147,19 +145,16 @@ bool QgsScaleComboBox::setScaleString( const QString &scaleTxt )
   }
 }
 
-//! Function to read the selected scale as double
 double QgsScaleComboBox::scale() const
 {
   return mScale;
 }
 
-//! Function to set the selected scale from double
 void QgsScaleComboBox::setScale( double scale )
 {
   setScaleString( toString( scale ) );
 }
 
-//! Slot called when QComboBox has changed
 void QgsScaleComboBox::fixupScale()
 {
   QStringList txtList = currentText().split( ':' );

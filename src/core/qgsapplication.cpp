@@ -618,21 +618,16 @@ QString QgsApplication::donorsFilePath()
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/DONORS" );
 }
 
-//! Returns the path to the sponsors file.
 QString QgsApplication::translatorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/TRANSLATORS" );
 }
 
-//! Returns the path to the licence file.
 QString QgsApplication::licenceFilePath()
 {
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/LICENSE" );
 }
 
-/*!
-  Returns the path to the help application.
-*/
 QString QgsApplication::helpAppPath()
 {
   QString helpAppPath;
@@ -647,9 +642,7 @@ QString QgsApplication::helpAppPath()
 #endif
   return helpAppPath;
 }
-/*!
-  Returns the path to the translation directory.
-*/
+
 QString QgsApplication::i18nPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
@@ -658,56 +651,36 @@ QString QgsApplication::i18nPath()
     return ABISYM( mPkgDataPath ) + QStringLiteral( "/i18n/" );
 }
 
-/*!
-  Returns the path to the master qgis.db file.
-*/
 QString QgsApplication::qgisMasterDatabaseFilePath()
 {
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/qgis.db" );
 }
 
-/*!
-  Returns the path to the settings directory in user's home dir
- */
 QString QgsApplication::qgisSettingsDirPath()
 {
   return ABISYM( mConfigPath );
 }
 
-/*!
-  Returns the path to the user qgis.db file.
-*/
 QString QgsApplication::qgisUserDatabaseFilePath()
 {
   return qgisSettingsDirPath() + QStringLiteral( "qgis.db" );
 }
 
-/*!
-  Returns the path to the user authentication database file: qgis-auth.db.
-*/
 QString QgsApplication::qgisAuthDatabaseFilePath()
 {
   return ABISYM( mAuthDbDirPath ) + QStringLiteral( "qgis-auth.db" );
 }
 
-/*!
-  Returns the path to the splash screen image directory.
-*/
 QString QgsApplication::splashPath()
 {
   return QStringLiteral( ":/images/splash/" );
 }
 
-/*!
-  Returns the path to the icons image directory.
-*/
 QString QgsApplication::iconsPath()
 {
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/images/icons/" );
 }
-/*!
-  Returns the path to the srs.db file.
-*/
+
 QString QgsApplication::srsDatabaseFilePath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
