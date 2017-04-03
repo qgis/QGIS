@@ -51,6 +51,14 @@ class QgsProcessingAlgorithm
  \see tags()
 %End
 
+    QString id() const;
+%Docstring
+ Returns the unique ID for the algorithm, which is a combination of the algorithm
+ provider's ID and the algorithms unique name (e.g. "qgis:mergelayers" ).
+ \see name()
+ \see provider()
+%End
+
     virtual QString displayName() const = 0;
 %Docstring
  Returns the translated algorithm name, which should be used for any user-visible display

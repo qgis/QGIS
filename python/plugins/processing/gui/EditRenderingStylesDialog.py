@@ -75,7 +75,7 @@ class EditRenderingStylesDialog(BASE, WIDGET):
                     self.tblStyles.setItem(i, 0, item)
                     item = RenderingStyleFilePanel()
                     style = \
-                        RenderingStyles.getStyle(self.alg.commandLineName(),
+                        RenderingStyles.getStyle(self.alg.id(),
                                                  output.name)
                     if style:
                         item.setText(str(style))
@@ -88,7 +88,7 @@ class EditRenderingStylesDialog(BASE, WIDGET):
         styles = {}
         for key in list(self.valueItems.keys()):
             styles[key] = str(self.valueItems[key].getValue())
-        RenderingStyles.addAlgStylesAndSave(self.alg.commandLineName(), styles)
+        RenderingStyles.addAlgStylesAndSave(self.alg.id(), styles)
 
         QDialog.accept(self)
 

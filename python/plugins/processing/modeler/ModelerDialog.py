@@ -186,7 +186,7 @@ class ModelerDialog(BASE, WIDGET):
             item = items[0]
             if isinstance(item, TreeAlgorithmItem):
                 mimeData = QMimeData()
-                mimeData.setText(item.alg.commandLineName())
+                mimeData.setText(item.alg.id())
             return mimeData
 
         self.algorithmTree.mimeData = _mimeDataAlgorithm
@@ -549,7 +549,7 @@ class ModelerDialog(BASE, WIDGET):
     def addAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = algList.getAlgorithm(item.alg.commandLineName())
+            alg = algList.getAlgorithm(item.alg.id())
             self._addAlgorithm(alg.getCopy())
 
     def _addAlgorithm(self, alg, pos=None):
@@ -611,7 +611,7 @@ class ModelerDialog(BASE, WIDGET):
             for alg in algs:
                 if alg.flags() & QgsProcessingAlgorithm.FlagHideFromModeler:
                     continue
-                if alg.commandLineName() == self.alg.commandLineName():
+                if alg.id() == self.alg.id():
                     continue
 
                 item_text = [alg.displayName().lower()]

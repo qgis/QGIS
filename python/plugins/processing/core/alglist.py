@@ -47,13 +47,13 @@ class AlgorithmList(QObject):
         for p in QgsApplication.processingRegistry().providers():
             if p.id() == provider_id:
                 p.refreshAlgorithms()
-                self.algs[p.id()] = {a.commandLineName(): a for a in p.algorithms()}
+                self.algs[p.id()] = {a.id(): a for a in p.algorithms()}
                 self.providerUpdated.emit(p.id())
                 break
 
     def addProvider(self, provider):
         if QgsApplication.processingRegistry().addProvider(provider):
-            self.algs[provider.id()] = {a.commandLineName(): a for a in provider.algorithms()}
+            self.algs[provider.id()] = {a.id(): a for a in provider.algorithms()}
 
     def getAlgorithm(self, name):
         for provider in list(self.algs.values()):

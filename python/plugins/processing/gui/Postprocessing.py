@@ -70,7 +70,7 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
                     else:
                         name = out.description
                     dataobjects.load(out.value, name, alg.crs,
-                                     RenderingStyles.getStyle(alg.commandLineName(),
+                                     RenderingStyles.getStyle(alg.id(),
                                                               out.name))
             except Exception:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,

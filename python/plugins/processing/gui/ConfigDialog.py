@@ -236,9 +236,9 @@ class ConfigDialog(BASE, WIDGET):
                 algItem.setIcon(icon)
                 algItem.setEditable(False)
                 try:
-                    settingMenu = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
-                    settingButton = ProcessingConfig.settings["BUTTON_" + alg.commandLineName()]
-                    settingIcon = ProcessingConfig.settings["ICON_" + alg.commandLineName()]
+                    settingMenu = ProcessingConfig.settings["MENU_" + alg.id()]
+                    settingButton = ProcessingConfig.settings["BUTTON_" + alg.id()]
+                    settingIcon = ProcessingConfig.settings["ICON_" + alg.id()]
                 except:
                     continue
                 self.items[settingMenu] = SettingItem(settingMenu)
@@ -269,8 +269,8 @@ class ConfigDialog(BASE, WIDGET):
         providers = Processing.providers
         for provider in providers:
             for alg in provider.algorithms():
-                d = defaultMenuEntries.get(alg.commandLineName(), "")
-                setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+                d = defaultMenuEntries.get(alg.id(), "")
+                setting = ProcessingConfig.settings["MENU_" + alg.id()]
                 item = self.items[setting]
                 item.setData(d, Qt.EditRole)
         self.saveMenus = True

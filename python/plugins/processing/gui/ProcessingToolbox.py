@@ -141,7 +141,7 @@ class ProcessingToolbox(BASE, WIDGET):
             # hide if every part of text is not contained somewhere in either the item text or item user role
             item_text = [item.text(0).lower(), item.data(0, Qt.UserRole).lower()]
             if isinstance(item, TreeAlgorithmItem):
-                item_text.append(item.alg.commandLineName())
+                item_text.append(item.alg.id())
                 item_text.extend(item.data(0, Qt.UserRole + 1))
 
             hide = bool(text) and not all(
@@ -227,14 +227,14 @@ class ProcessingToolbox(BASE, WIDGET):
     def editRenderingStyles(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = Processing.getAlgorithm(item.alg.commandLineName())
+            alg = Processing.getAlgorithm(item.alg.id())
             dlg = EditRenderingStylesDialog(alg)
             dlg.exec_()
 
     def executeAlgorithmAsBatchProcess(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = Processing.getAlgorithm(item.alg.commandLineName())
+            alg = Processing.getAlgorithm(item.alg.id())
             alg = alg.getCopy()
             dlg = BatchAlgorithmDialog(alg)
             dlg.show()
@@ -243,7 +243,7 @@ class ProcessingToolbox(BASE, WIDGET):
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = Processing.getAlgorithm(item.alg.commandLineName())
+            alg = Processing.getAlgorithm(item.alg.id())
             message = alg.checkBeforeOpeningParametersDialog()
             if message:
                 dlg = MessageDialog()

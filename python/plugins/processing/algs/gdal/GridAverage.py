@@ -57,16 +57,13 @@ class GridAverage(GdalAlgorithm):
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
     def name(self):
-        return 'gridmovingaverage'
+        return 'gridaverage'
 
     def displayName(self):
         return self.tr('Grid (Moving average)')
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
-
-    def commandLineName(self):
-        return "gdal:gridaverage"
 
     def group(self):
         return self.tr('Raster analysis')

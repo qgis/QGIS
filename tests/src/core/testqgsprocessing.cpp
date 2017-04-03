@@ -347,8 +347,10 @@ void TestQgsProcessing::algorithm()
 {
   DummyAlgorithm alg( "test" );
   DummyProvider *p = new DummyProvider( "p1" );
+  QCOMPARE( alg.id(), QString( "test" ) );
   alg.setProvider( p );
   QCOMPARE( alg.provider(), p );
+  QCOMPARE( alg.id(), QString( "p1:test" ) );
 
   QVERIFY( p->algorithms().isEmpty() );
 

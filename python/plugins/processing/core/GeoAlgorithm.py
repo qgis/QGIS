@@ -93,7 +93,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         return False, None
 
     def shortHelp(self):
-        text = shortHelp.get(self.commandLineName(), None)
+        text = shortHelp.get(self.id(), None)
         if text is not None:
             text = self._formatHelp(text)
         return text
@@ -461,9 +461,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         s += '\n'
         return s
 
-    def commandLineName(self):
-        return self.provider().id().lower() + ':' + self.name()
-
     def removeOutputFromName(self, name):
         for out in self.outputs:
             if out.name == name:
@@ -499,7 +496,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         console.
         """
 
-        s = 'processing.run("' + self.commandLineName() + '",'
+        s = 'processing.run("' + self.id() + '",'
         for param in self.parameters:
             s += param.getValueAsCommandLineParameter() + ','
         for out in self.outputs:

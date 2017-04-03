@@ -69,6 +69,14 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual QString name() const = 0;
 
     /**
+     * Returns the unique ID for the algorithm, which is a combination of the algorithm
+     * provider's ID and the algorithms unique name (e.g. "qgis:mergelayers" ).
+     * \see name()
+     * \see provider()
+     */
+    QString id() const;
+
+    /**
      * Returns the translated algorithm name, which should be used for any user-visible display
      * of the algorithm name.
      * \see name()

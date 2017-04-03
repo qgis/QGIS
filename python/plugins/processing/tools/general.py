@@ -51,7 +51,7 @@ def algorithmsList(text=None):
         sortedlist = sorted(list(provider.values()), key=lambda alg: alg.name())
         for alg in sortedlist:
             if text is None or text.lower() in alg.name().lower():
-                lst.append(alg.commandLineName())
+                lst.append(alg.id())
     return lst
 
 
@@ -66,7 +66,7 @@ def printAlgorithms(text=None):
         sortedlist = sorted(list(provider.values()), key=lambda alg: alg.name())
         for alg in sortedlist:
             if text is None or text.lower() in alg.name().lower():
-                s += '{}--->{}\n'.format(alg.name().ljust(50, '-'), alg.commandLineName())
+                s += '{}--->{}\n'.format(alg.name().ljust(50, '-'), alg.id())
     print(s)
 
 

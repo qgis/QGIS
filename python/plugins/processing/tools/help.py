@@ -38,7 +38,7 @@ def baseHelpForAlgorithm(alg, folder):
     groupName = alg.group().lower()
     groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')
     groupName = groupName.replace(' ', '_')
-    cmdLineName = alg.commandLineName()
+    cmdLineName = alg.id()
     algName = cmdLineName[cmdLineName.find(':') + 1:].lower()
     validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
     safeGroupName = ''.join(c for c in groupName if c in validChars)
@@ -89,7 +89,7 @@ def baseHelpForAlgorithm(alg, folder):
         f.write('Console usage\n')
         f.write('-------------\n')
         f.write('\n::\n\n')
-        cmd = "  processing.run('{}', ".format(alg.commandLineName())
+        cmd = "  processing.run('{}', ".format(alg.id())
         for p in alg.parameters:
             cmd += '{}, '.format(p.name.lower().strip())
 

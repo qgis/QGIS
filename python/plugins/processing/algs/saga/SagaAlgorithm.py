@@ -108,10 +108,6 @@ class SagaAlgorithm(GeoAlgorithm):
             else:
                 self.cmdname = self._name
                 self._display_name = QCoreApplication.translate("SAGAAlgorithm", str(self._name))
-            # _commandLineName is the name used in processing to call the algorithm
-            # Most of the time will be equal to the cmdname, but in same cases, several processing algorithms
-            # call the same SAGA one
-            self._commandLineName = self.createCommandLineName(self._name)
             self._name = decoratedAlgorithmName(self._name)
             self._display_name = QCoreApplication.translate("SAGAAlgorithm", str(self._name))
 
@@ -289,7 +285,7 @@ class SagaAlgorithm(GeoAlgorithm):
                         f.write(self.crs.toWkt())
 
     def preProcessInputs(self):
-        name = self.commandLineName().replace('.', '_')[len('saga:'):]
+        name = self.name().replace('.', '_')
         try:
             module = importlib.import_module('processing.algs.saga.ext.' + name)
         except ImportError:
@@ -299,9 +295,8 @@ class SagaAlgorithm(GeoAlgorithm):
             func(self)
 
     def editCommands(self, commands):
-        name = self.commandLineName()[len('saga:'):]
         try:
-            module = importlib.import_module('processing.algs.saga.ext.' + name)
+            module = importlib.import_module('processing.algs.saga.ext.' + self.name())
         except ImportError:
             return commands
         if hasattr(module, 'editCommands'):
@@ -373,11 +368,3 @@ class SagaAlgorithm(GeoAlgorithm):
                         extent2 = (layer.extent(), layer.height(), layer.width())
                         if extent != extent2:
                             return self.tr("Input layers do not have the same grid extent.")
-
-    def createCommandLineName(self, name):
-        validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
-        return 'saga:' + ''.join(c for c in name if c in validChars).lower()
-
-    def commandLineName(self):
-        return self._commandLineName

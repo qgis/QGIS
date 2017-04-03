@@ -541,12 +541,6 @@ class ModelerAlgorithm(GeoAlgorithm):
         else:
             return None
 
-    def commandLineName(self):
-        if self.descriptionFile is None:
-            return ''
-        else:
-            return 'modeler:' + os.path.basename(self.descriptionFile)[:-6].lower()
-
     def checkBeforeOpeningParametersDialog(self):
         for alg in list(self.algs.values()):
             algInstance = algList.getAlgorithm(alg.consoleName)

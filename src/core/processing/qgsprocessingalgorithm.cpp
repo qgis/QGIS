@@ -17,6 +17,15 @@
 
 #include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingprovider.h"
+
+QString QgsProcessingAlgorithm::id() const
+{
+  if ( mProvider )
+    return QString( "%1:%2" ).arg( mProvider->id(), name() );
+  else
+    return name();
+}
 
 QIcon QgsProcessingAlgorithm::icon() const
 {

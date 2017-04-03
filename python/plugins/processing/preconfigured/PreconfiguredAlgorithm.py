@@ -63,7 +63,7 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
         return newone
 
     def defineCharacteristics(self):
-        self.name = self.description["name"]
+        self._name = self.description["name"]
         self._group = self.description["group"]
 
     def execute(self, feedback):
