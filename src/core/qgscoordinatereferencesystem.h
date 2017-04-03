@@ -204,7 +204,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     ~QgsCoordinateReferenceSystem();
 
-    /*!
+    /**
      * Constructs a CRS object from a string definition using createFromString()
      *
      * It supports the following formats:

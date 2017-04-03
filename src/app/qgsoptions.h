@@ -73,7 +73,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_pbnEditPyramidsOptions_pressed();
     void editGdalDriver( const QString &driverName );
     void saveOptions();
-    /*!
+
+    /**
     * Slot to reset any temporarily applied options on dialog close/cancel */
     void rejectOptions();
     //! Slot to change the theme this is handled when the user

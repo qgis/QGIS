@@ -32,6 +32,9 @@ class QgsSymbol;
 
 /** \ingroup gui
  * A class for highlight features on the map.
+ *
+ * The QgsHighlight class provides a transparent overlay widget
+  for highlighting features on the map.
  */
 class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 {
@@ -68,7 +71,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
      * \since QGIS 2.3 */
     void setFillColor( const QColor &fillColor );
 
-    //! Set width. Ignored in feature mode.
+    //! Set stroke width. Ignored in feature mode.
     void setWidth( int width );
 
     /** Set line / stroke buffer in millimeters.

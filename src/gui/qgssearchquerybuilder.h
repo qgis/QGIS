@@ -74,13 +74,13 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
      */
     void on_btnTest_clicked();
 
-    /*!
+    /**
      * Get all distinct values for the field. Values are inserted
      * into the value list box
      */
     void on_btnGetAllValues_clicked();
 
-    /*!
+    /**
      * Get sample distinct values for the selected field. The sample size is
      * limited to an arbitrary value (currently set to 25). The values
      * are inserted into the values list box.
@@ -94,11 +94,12 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
 
   private:
 
-    /*!
+    /**
      * Populate the field list for the selected table
      */
     void populateFields();
-    /*!
+
+    /**
      * Setup models for listviews
      */
     void setupListViews();
@@ -108,7 +109,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
      */
     long countRecords( const QString &sql );
 
-    /*!
+    /**
      * populates list box with values of selected field
      * \param limit if not zero, inserts only this count of values
      */

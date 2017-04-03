@@ -104,19 +104,6 @@ const char *QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 
 QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullptr;
 
-/*!
-  \class QgsApplication
-  \brief The QgsApplication class manages application-wide information.
-
-  This is a subclass of QApplication and should be instantiated in place of
-  QApplication. Most methods are static in keeping with the design of QApplication.
-
-  This class hides platform-specific path information and provides
-  a portable way of referencing specific files and directories.
-  Ideally, hard-coded paths should appear only here and not in other modules
-  so that platform-conditional code is minimized and paths are easier
-  to change due to centralization.
-*/
 QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
 {
@@ -489,16 +476,11 @@ QPixmap QgsApplication::getThemePixmap( const QString &name )
   }
 }
 
-/*!
-  Set the theme path to the specified theme.
-*/
 void QgsApplication::setThemeName( const QString &themeName )
 {
   ABISYM( mThemeName ) = themeName;
 }
-/*!
- * Get the active theme name
- */
+
 QString QgsApplication::themeName()
 {
   return ABISYM( mThemeName );
@@ -583,16 +565,11 @@ QHash<QString, QString> QgsApplication::uiThemes()
   return mapping;
 }
 
-/*!
-  Returns the path to the authors file.
-*/
 QString QgsApplication::authorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/AUTHORS" );
 }
-/*!
-  Returns the path to the contributors file.
-*/
+
 QString QgsApplication::contributorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/CONTRIBUTORS" );
@@ -602,17 +579,11 @@ QString QgsApplication::developersMapFilePath()
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/developersmap.html" );
 }
 
-/*!
-  Returns the path to the sponsors file.
-*/
 QString QgsApplication::sponsorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/SPONSORS" );
 }
 
-/*!
-  Returns the path to the donors file.
-*/
 QString QgsApplication::donorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/DONORS" );
@@ -704,9 +675,6 @@ QString QgsApplication::srsDatabaseFilePath()
   }
 }
 
-/*!
-  Returns the paths to the svg directories.
-*/
 QStringList QgsApplication::svgPaths()
 {
   //local directories to search when looking for an SVG with a given basename
@@ -730,9 +698,6 @@ QStringList QgsApplication::svgPaths()
   return paths;
 }
 
-/*!
-  Returns the paths to the composer template directories.
-*/
 QStringList QgsApplication::composerTemplatePaths()
 {
   //local directories to search when looking for an SVG with a given basename

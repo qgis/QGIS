@@ -74,14 +74,14 @@ class CORE_EXPORT QgsCoordinateTransform
 
     ~QgsCoordinateTransform();
 
-    /*!
+    /**
      * Returns true if the coordinate transform is valid, ie both the source and destination
      * CRS have been set and are valid.
      * \since QGIS 3.0
      */
     bool isValid() const;
 
-    /*!
+    /**
      * Sets the source coordinate reference system.
      * \param crs CRS to transform coordinates from
      * \see sourceCrs()
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs );
 
-    /*!
+    /**
      * Sets the destination coordinate reference system.
      * \param crs CRS to transform coordinates to
      * \see destinationCrs()

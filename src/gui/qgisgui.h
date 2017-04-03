@@ -31,7 +31,7 @@ class QFont;
 namespace QgisGui
 {
 
-  /*!
+  /**
    * /var ModalDialogFlags
    * /brief Flags used to create a modal dialog (adapted from QMessageBox).
    *

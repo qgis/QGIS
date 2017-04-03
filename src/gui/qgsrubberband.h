@@ -28,7 +28,9 @@ class QPaintEvent;
 
 /** \ingroup gui
  * A class for drawing transient features (e.g. digitizing lines) on the map.
- * It may be used
+ *
+ * The QgsRubberBand class provides a transparent overlay widget
+  for tracking the mouse while drawing polylines or polygons.
  */
 class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 {

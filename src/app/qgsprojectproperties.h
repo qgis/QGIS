@@ -47,7 +47,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     ~QgsProjectProperties();
 
-    /*!
+    /**
        Every project has a title
      */
     QString title() const;
@@ -57,12 +57,13 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QString projectionWkt();
 
   public slots:
-    /*!
+
+    /**
      * Slot called when apply button is pressed or dialog is accepted
      */
     void apply();
 
-    /*!
+    /**
      * Slot to show the projections tab when the dialog is opened
      */
     void showProjectionsTab();
@@ -84,8 +85,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! A scale in the list of project scales changed
     void scaleItemChanged( QListWidgetItem *changedScaleItem );
 
-    /*!
-     * Slots for WMS project settings
+    /**
+     * Set WMS default extent to current canvas extent
      */
     void on_pbnWMSExtCanvas_clicked();
     void on_pbnWMSAddSRS_clicked();
@@ -98,24 +99,24 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void on_mWMSInspireScenario1_toggled( bool on );
     void on_mWMSInspireScenario2_toggled( bool on );
 
-    /*!
+    /**
      * Slots to select/deselect all the WFS layers
      */
     void on_pbnWFSLayersSelectAll_clicked();
     void on_pbnWFSLayersDeselectAll_clicked();
 
-    /*!
+    /**
      * Slots to select/deselect all the WCS layers
      */
     void on_pbnWCSLayersSelectAll_clicked();
     void on_pbnWCSLayersDeselectAll_clicked();
 
-    /*!
+    /**
      * Slots to launch OWS test
      */
     void on_pbnLaunchOWSChecker_clicked();
 
-    /*!
+    /**
      * Slots for Styles
      */
     void on_pbtnStyleManager_clicked();
@@ -126,22 +127,22 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void on_mTransparencySlider_valueChanged( int value );
     void on_mTransparencySpinBox_valueChanged( int value );
 
-    /*!
+    /**
      * Slot to show the context help for this dialog
      */
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#project-properties" ) ); }
 
-    /*!
+    /**
      * Slot to link WFS checkboxes
      */
     void cbxWFSPubliedStateChanged( int aIdx );
 
-    /*!
+    /**
      * Slot to link WCS checkboxes
      */
     void cbxWCSPubliedStateChanged( int aIdx );
 
-    /*!
+    /**
       * If user changes the CRS, set the corresponding map units
       */
     void srIdUpdated();
@@ -180,17 +181,17 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void populateStyles();
     void editSymbol( QComboBox *cbo );
 
-    /*!
+    /**
      * Function to save non-base dialog states
      */
     void saveState();
 
-    /*!
+    /**
      * Function to restore non-base dialog states
      */
     void restoreState();
 
-    /*!
+    /**
      * Reset the Python macros
      */
     void resetPythonMacros();

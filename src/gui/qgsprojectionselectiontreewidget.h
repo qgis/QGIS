@@ -154,7 +154,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      */
     void loadCrsList( QSet<QString> *crsFilter = nullptr );
 
-    /*!
+    /**
      * \brief Make the string safe for use in SQL statements.
      *  This involves escaping single quotes, double quotes, backslashes,
      *  and optionally, percentage symbols.  Percentage symbols are used
