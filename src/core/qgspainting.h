@@ -6,7 +6,7 @@
 #include "qgis_core.h"
 
 /**
- * @ingroup core
+ * \ingroup core
  * Misc painting enums and functions.
  *
  * \since QGIS 3.0

@@ -23,7 +23,7 @@
 
 ///@cond PRIVATE
 
-/** @ingroup gui
+/** \ingroup gui
  * Table model to edit a QVariantList.
  * \since QGIS 3.0
  * \note not available in Python bindings
