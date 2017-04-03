@@ -26,7 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsProcessingProvider
+from qgis.core import (QgsProcessingProvider,
+                       QgsVectorFileWriter)
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 from processing.tools import dataobjects
 
@@ -91,7 +92,7 @@ class AlgorithmProvider(QgsProcessingProvider):
         return ['tif']
 
     def getSupportedOutputVectorLayerExtensions(self):
-        return dataobjects.getSupportedOutputVectorLayerExtensions()
+        return QgsVectorFileWriter.supportedFormatExtensions()
 
     def getSupportedOutputTableExtensions(self):
         return ['csv']

@@ -432,8 +432,18 @@ class CORE_EXPORT QgsVectorFileWriter
     //! QgsVectorFileWriter cannot be copied.
     QgsVectorFileWriter &operator=( const QgsVectorFileWriter &rh ) = delete;
 
-    //! Returns map with format filter string as key and OGR format key as value
+    /**
+     * Returns a map with format filter string as key and OGR format key as value.
+     * \see supportedOutputVectorLayerExtensions()
+     */
     static QMap< QString, QString> supportedFiltersAndFormats();
+
+    /**
+     * Returns a list of file extensions for supported formats.
+     * \since QGIS 3.0
+     * \see supportedFiltersAndFormats()
+     */
+    static QStringList supportedFormatExtensions();
 
     /** Returns driver list that can be used for dialogs. It contains all OGR drivers
      * + some additional internal QGIS driver names to distinguish between more

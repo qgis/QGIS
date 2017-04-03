@@ -65,7 +65,7 @@ class TestFieldValueConverter(QgsVectorFileWriter.FieldValueConverter):
         return 'unexpected_idx'
 
 
-class TestQgsVectorLayer(unittest.TestCase):
+class TestQgsVectorFileWriter(unittest.TestCase):
 
     mMemoryLayer = None
 
@@ -655,6 +655,12 @@ class TestQgsVectorLayer(unittest.TestCase):
         del ds
 
         gdal.Unlink(filename)
+
+    def testSupportedFormatExtensions(self):
+        formats = QgsVectorFileWriter.supportedFormatExtensions()
+        self.assertTrue('gpkg' in formats)
+        self.assertFalse('exe' in formats)
+        self.assertEqual(formats[0], 'shp')
 
 
 if __name__ == '__main__':

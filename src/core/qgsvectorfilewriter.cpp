@@ -2604,6 +2604,35 @@ QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
   return resultMap;
 }
 
+QStringList QgsVectorFileWriter::supportedFormatExtensions()
+{
+  QgsStringMap formats = supportedFiltersAndFormats();
+  QStringList extensions;
+
+  QRegularExpression rx( "\\*\\.([a-zA-Z0-9]*)" );
+
+  QgsStringMap::const_iterator formatIt = formats.constBegin();
+  for ( ; formatIt != formats.constEnd(); ++formatIt )
+  {
+    QString ext = formatIt.key();
+    QRegularExpressionMatch match = rx.match( ext );
+    if ( !match.hasMatch() )
+      continue;
+
+    QString matched = match.captured( 1 );
+    if ( matched.compare( QStringLiteral( "shp" ), Qt::CaseInsensitive ) == 0 )
+      continue;
+
+    extensions << matched;
+  }
+
+  std::sort( extensions.begin(), extensions.end() );
+
+  // Make https://twitter.com/shapefiIe a happy little fellow
+  extensions.insert( 0, QStringLiteral( "shp" ) );
+  return extensions;
+}
+
 QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
 {
   QMap<QString, QString> resultMap;

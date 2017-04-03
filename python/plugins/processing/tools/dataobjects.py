@@ -65,20 +65,6 @@ def resetLoadedLayers():
     _loadedLayers = {}
 
 
-def getSupportedOutputVectorLayerExtensions():
-    formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-    exts = []
-    for extension in list(formats.keys()):
-        extension = str(extension)
-        extension = extension[extension.find('*.') + 2:]
-        extension = extension[:extension.find(' ')]
-        if extension.lower() != 'shp':
-            exts.append(extension)
-    exts.sort()
-    exts.insert(0, 'shp')  # shp is the default, should be the first
-    return exts
-
-
 def getSupportedOutputRasterLayerExtensions():
     allexts = []
     for exts in list(GdalUtils.getSupportedRasters().values()):

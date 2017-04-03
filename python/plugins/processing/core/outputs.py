@@ -38,7 +38,13 @@ from processing.tools.system import isWindows, getTempFilenameInTempFolder, getT
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
 
-from qgis.core import QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope, QgsProject, QgsSettings
+from qgis.core import (QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsExpression,
+                       QgsExpressionContextScope,
+                       QgsProject,
+                       QgsSettings,
+                       QgsVectorFileWriter)
 
 
 def _expressionContext(alg):
@@ -316,7 +322,7 @@ class OutputVector(Output):
         return dataobjects.canUseVectorLayer(self.base_layer, [-1])
 
     def getSupportedOutputVectorLayerExtensions(self):
-        exts = dataobjects.getSupportedOutputVectorLayerExtensions()
+        exts = QgsVectorFileWriter.supportedFormatExtensions()
         if not self.hasGeometry():
             exts = ['dbf'] + [ext for ext in exts if ext in VectorWriter.nogeometry_extensions]
         return exts

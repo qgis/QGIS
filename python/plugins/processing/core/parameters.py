@@ -40,7 +40,8 @@ from qgis.utils import iface
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem,
                        QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope,
-                       QgsProject)
+                       QgsProject,
+                       QgsVectorFileWriter)
 
 from processing.tools.vector import resolveFieldIndex, features
 from processing.tools import dataobjects
@@ -751,7 +752,7 @@ class ParameterMultipleInput(ParameterDataObject):
         elif self.datatype == dataobjects.TYPE_FILE:
             return self.tr('All files (*.*)', 'ParameterMultipleInput')
         else:
-            exts = dataobjects.getSupportedOutputVectorLayerExtensions()
+            exts = QgsVectorFileWriter.supportedFormatExtensions()
         for i in range(len(exts)):
             exts[i] = self.tr('{0} files (*.{1})', 'ParameterMultipleInput').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
@@ -1523,7 +1524,7 @@ class ParameterVector(ParameterDataObject):
         return self.exported
 
     def getFileFilter(self):
-        exts = dataobjects.getSupportedOutputVectorLayerExtensions()
+        exts = QgsVectorFileWriter.supportedFormatExtensions()
         for i in range(len(exts)):
             exts[i] = self.tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
