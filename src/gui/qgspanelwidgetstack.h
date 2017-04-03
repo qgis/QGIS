@@ -50,8 +50,8 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * \param panel The panel to set as the first widget in the stack.
      * \note a stack can have only one main panel. Any existing main panel
      * should be removed by first calling takeMainPanel().
-     * @see mainPanel()
-     * @see takeMainPanel()
+     * \see mainPanel()
+     * \see takeMainPanel()
      */
     void setMainPanel( QgsPanelWidget *panel );
 
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * The main panel widget that is set in the stack. The main widget can not be closed
      * and doesn't display a back button.
      * \returns The main QgsPanelWidget that is active in the stack.
-     * @see setMainPanel()
+     * \see setMainPanel()
      */
     QgsPanelWidget *mainPanel();
 
@@ -69,8 +69,8 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * \returns The main widget that is set in the stack.
      * \note Calling this will clear out any current stacked panels by accepting
      * each panel in turn.
-     * @see mainPanel()
-     * @see setMainPanel()
+     * \see mainPanel()
+     * \see setMainPanel()
      */
     QgsPanelWidget *takeMainPanel();
 
@@ -92,14 +92,14 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * Accept the current active widget in the stack.
      *
      * Calls the panelAccepeted signal on the active widget.
-     * @see acceptAllPanels()
+     * \see acceptAllPanels()
      */
     void acceptCurrentPanel();
 
     /**
      * Accepts all panel widgets open in the stack in turn until until only the mainPanel()
      * remains.
-     * @see acceptCurrentPanel();
+     * \see acceptCurrentPanel();
      * \since QGIS 3.0
      */
     void acceptAllPanels();

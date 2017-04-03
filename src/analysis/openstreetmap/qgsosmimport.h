@@ -44,13 +44,13 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
 
     /**
      * Sets the filename for the output database.
-     * @see outputDatabaseFileName()
+     * \see outputDatabaseFileName()
      */
     void setOutputDatabaseFileName( const QString &fileName ) { mDbFileName = fileName; }
 
     /**
      * Returns the filename for the output database.
-     * @see setOutputDatabaseFileName()
+     * \see setOutputDatabaseFileName()
      */
     QString outputDatabaseFileName() const { return mDbFileName; }
 

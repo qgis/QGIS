@@ -155,25 +155,25 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     /** Desired units for distance display.
      * \since QGIS 2.14
-     * @see displayAreaUnits()
+     * \see displayAreaUnits()
      */
     virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const;
 
     /** Desired units for area display.
      * \since QGIS 2.14
-     * @see displayDistanceUnits()
+     * \see displayDistanceUnits()
      */
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const;
 
     /** Format a distance into a suitable string for display to the user
      * \since QGIS 2.14
-     * @see formatArea()
+     * \see formatArea()
      */
     QString formatDistance( double distance ) const;
 
     /** Format a distance into a suitable string for display to the user
      * \since QGIS 2.14
-     * @see formatDistance()
+     * \see formatDistance()
      */
     QString formatArea( double area ) const;
 

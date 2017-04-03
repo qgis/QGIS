@@ -57,7 +57,7 @@ class CORE_EXPORT QgsOgrUtils
      * \param encoding text encoding
      * \param ok optional storage for success of retrieval
      * \returns attribute converted to a QVariant object
-     * @see readOgrFeatureAttributes()
+     * \see readOgrFeatureAttributes()
      */
     static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok = 0 );
 
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsOgrUtils
      * \param feature QgsFeature to store attributes in
      * \param encoding text encoding
      * \returns true if attribute read was successful
-     * @see getOgrFeatureAttribute()
+     * \see getOgrFeatureAttribute()
      */
     static bool readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature &feature, QTextCodec *encoding );
 
@@ -75,8 +75,8 @@ class CORE_EXPORT QgsOgrUtils
      * \param ogrFet OGR feature handle
      * \param feature QgsFeature to store geometry in
      * \returns true if geometry read was successful
-     * @see readOgrFeatureAttributes()
-     * @see ogrGeometryToQgsGeometry()
+     * \see readOgrFeatureAttributes()
+     * \see ogrGeometryToQgsGeometry()
      */
     static bool readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature &feature );
 
@@ -84,17 +84,17 @@ class CORE_EXPORT QgsOgrUtils
      * \param geom OGR geometry handle
      * \returns QgsGeometry object. If conversion was not successful the geometry
      * will be empty.
-     * @see readOgrFeatureGeometry()
+     * \see readOgrFeatureGeometry()
      */
     static QgsGeometry ogrGeometryToQgsGeometry( OGRGeometryH geom );
 
     /** Attempts to parse a string representing a collection of features using OGR. For example, this method can be
      * used to convert a GeoJSON encoded collection to a list of QgsFeatures.
      * \param string string to parse
-     * \param fields fields collection to use for parsed features (@see stringToFields())
+     * \param fields fields collection to use for parsed features (\see stringToFields())
      * \param encoding text encoding
      * \returns list of parsed features, or an empty list if no features could be parsed
-     * @see stringToFields()
+     * \see stringToFields()
      */
     static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding );
 
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsOgrUtils
      * \param string string to parse
      * \param encoding text encoding
      * \returns retrieved fields collection, or an empty list if no fields could be determined from the string
-     * @see stringToFeatureList()
+     * \see stringToFeatureList()
      */
     static QgsFields stringToFields( const QString &string, QTextCodec *encoding );
 };

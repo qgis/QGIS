@@ -36,7 +36,7 @@ class CORE_EXPORT QgsXmlUtils
     /** Decodes a distance unit from a DOM element.
      * \param element DOM element to decode
      * \returns distance units
-     * @see writeMapUnits()
+     * \see writeMapUnits()
      */
     static QgsUnitTypes::DistanceUnit readMapUnits( const QDomElement &element );
 
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsXmlUtils
      * \param units units to encode
      * \param doc DOM document
      * \returns element containing encoded units
-     * @see readMapUnits()
+     * \see readMapUnits()
      */
     static QDomElement writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument &doc );
 

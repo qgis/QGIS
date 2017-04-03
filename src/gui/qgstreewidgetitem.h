@@ -91,14 +91,14 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      * text will be used when sorting.
      * \param column column index
      * \param value sort value
-     * @see sortData()
+     * \see sortData()
      */
     void setSortData( int column, const QVariant &value );
 
     /** Returns the custom sort data for a specified column. If set, this value will be used when
      * sorting the item instead of the item's display text. If not set, the item's display
      * text will be used when sorting.
-     * @see setSortData()
+     * \see setSortData()
      */
     QVariant sortData( int column ) const;
 
@@ -106,14 +106,14 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      * sort column and sort or display value for the item.
      * \param priority priority for sorting always on top items. Items with a lower priority will
      * be placed above items with a higher priority.
-     * @see alwaysOnTopPriority()
+     * \see alwaysOnTopPriority()
      */
     void setAlwaysOnTopPriority( int priority );
 
     /** Returns the item's priority when it is set to show always on top. Items with a lower priority will
      * be placed above items with a higher priority.
      * \returns priority, or -1 if item is not set to show always on top
-     * @see setAlwaysOnTopPriority()
+     * \see setAlwaysOnTopPriority()
      */
     int alwaysOnTopPriority() const;
 

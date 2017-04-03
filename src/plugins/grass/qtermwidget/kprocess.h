@@ -230,7 +230,7 @@ public:
     /**
      * Start the process.
      *
-     * @see QProcess::start(const QString &, const QStringList &, OpenMode)
+     * \see QProcess::start(const QString &, const QStringList &, OpenMode)
      */
     void start();
 

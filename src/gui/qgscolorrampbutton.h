@@ -55,45 +55,45 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     virtual QSize sizeHint() const override;
 
     /** Return a copy of the current color ramp.
-     * @see setColorRamp()
+     * \see setColorRamp()
      */
     QgsColorRamp *colorRamp() const;
 
     /** Set the title for the color ramp dialog window.
      * \param title Title for the color ramp dialog
-     * @see colorRampDialogTitle
+     * \see colorRampDialogTitle
      */
     void setColorRampDialogTitle( const QString &title );
 
     /** Returns the title for the color ramp dialog window.
      * \returns title for the color ramp dialog
-     * @see setColorRampDialogTitle
+     * \see setColorRampDialogTitle
      */
     QString colorRampDialogTitle() const;
 
     /** Returns whether the button accepts live updates from QgsColorRampDialog.
      * \returns true if the button will be accepted immediately when the dialog's color ramp changes
-     * @see setAcceptLiveUpdates
+     * \see setAcceptLiveUpdates
      */
     bool acceptLiveUpdates() const { return mAcceptLiveUpdates; }
 
     /** Sets whether the button accepts live updates from QgsColorRampDialog. Live updates may cause changes
      * that are not undoable on QColorRampDialog cancel.
      * \param accept set to true to enable live updates
-     * @see acceptLiveUpdates
+     * \see acceptLiveUpdates
      */
     void setAcceptLiveUpdates( const bool accept ) { mAcceptLiveUpdates = accept; }
 
     /** Sets whether the drop down menu should be shown for the button. The default behavior is to
      * show the menu.
      * \param showMenu set to false to hide the drop down menu
-     * @see showMenu
+     * \see showMenu
      */
     void setShowMenu( const bool showMenu );
 
     /** Returns whether the drop down menu is shown for the button.
      * \returns true if drop down menu is shown
-     * @see setShowMenu
+     * \see setShowMenu
      */
     bool showMenu() const { return menu() ? true : false; }
 
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * "default color ramp" option.
      * \param colorramp default color ramp for the button. Set to a null pointer to disable the default color
      * ramp option. The ramp will be cloned and ownership is not transferred.
-     * @see defaultColorRamp
+     * \see defaultColorRamp
      */
     void setDefaultColorRamp( QgsColorRamp *colorramp );
 
@@ -109,43 +109,43 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * "default color ramp" option.
      * \returns default color ramp for the button. Returns a null pointer if the default color ramp
      * option is disabled.
-     * @see setDefaultColorRamp
+     * \see setDefaultColorRamp
      */
     QgsColorRamp *defaultColorRamp() const { return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr ; }
 
     /** Sets whether a random colors option is shown in the button's drop down menu.
      * \param showRandom set to true to show a random colors option
-     * @see showRandom()
+     * \see showRandom()
      */
     void setShowRandomColorRamp( bool showRandom ) { mShowRandomColorRamp = showRandom; }
 
     /** Returns whether random colors option is shown in the button's drop down menu.
-     * @see setShowRandom()
+     * \see setShowRandom()
      */
     bool showRandomColorRamp() const { return mShowRandomColorRamp; }
 
     /** Returns true if the current color is null.
-     * @see setShowNull()
-     * @see showNull()
+     * \see setShowNull()
+     * \see showNull()
      */
     bool isRandomColorRamp() const;
 
     /** Sets whether a set to null (clear) option is shown in the button's drop down menu.
      * \param showNull set to true to show a null option
-     * @see showNull()
-     * @see isNull()
+     * \see showNull()
+     * \see isNull()
      */
     void setShowNull( bool showNull );
 
     /** Returns whether the set to null (clear) option is shown in the button's drop down menu.
-     * @see setShowNull()
-     * @see isNull()
+     * \see setShowNull()
+     * \see isNull()
      */
     bool showNull() const;
 
     /** Returns true if the current color is null.
-     * @see setShowNull()
-     * @see showNull()
+     * \see setShowNull()
+     * \see showNull()
      */
     bool isNull() const;
 
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * preview icons shown in the button's drop down menu, to (eventually) allow them to customise their display colors
      * based on the context.
      * \param context context string for the color dialog button's color ramp preview icons
-     * @see context
+     * \see context
      */
     void setContext( const QString &context ) { mContext = context; }
 
@@ -161,29 +161,29 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * preview icons shown in the button's drop down menu, to (eventually) allow them to customise their display colors
      * based on the context.
      * \returns context context string for the color dialog button's color ramp preview icons
-     * @see setContext
+     * \see setContext
      */
     QString context() const { return mContext; }
 
     /** Sets whether the color ramp button only shows gradient type ramps
      * \param gradientonly set to true to show only gradient type ramps
-     * @see showGradientOnly
+     * \see showGradientOnly
      */
     void setShowGradientOnly( bool gradientonly ) { mShowGradientOnly = gradientonly; }
 
     /** Returns true if the color ramp button only shows gradient type ramps
-     * @see setShowGradientOnly
+     * \see setShowGradientOnly
      */
     bool showGradientOnly() const { return mShowGradientOnly; }
 
     /** Sets the name of the current color ramp when it's available in the style manager
      * \param name Name of the saved color ramp
-     * @see colorRampName
+     * \see colorRampName
      */
     void setColorRampName( const QString &name ) { mColorRampName = name; }
 
     /** Returns the name of the current color ramp when it's available in the style manager
-     * @see setColorRampName
+     * \see setColorRampName
      */
     QString colorRampName() const { return mColorRampName; }
 
@@ -192,20 +192,20 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /** Sets the current color ramp for the button. Will emit a colorRampChanged() signal if the color ramp is different
      * to the previous color ramp.
      * \param colorramp New color ramp for the button. The ramp will be cloned and ownership is not transferred.
-     * @see setRandomColorRamp, setColorRampFromName, colorRamp
+     * \see setRandomColorRamp, setColorRampFromName, colorRamp
      */
     void setColorRamp( QgsColorRamp *colorramp );
 
     /** Sets the current color ramp for the button to random colors. Will emit a colorRampChanged() signal
      * if the color ramp is different to the previous color ramp.
-     * @see setColorRamp, setColorRampFromName, colorRamp
+     * \see setColorRamp, setColorRampFromName, colorRamp
      */
     void setRandomColorRamp();
 
     /** Sets the current color ramp for the button using a saved color ramp name. Will emit a colorRampChanged() signal
      * if the color ramp is different to the previous color ramp.
      * \param name Name of saved color ramp
-     * @see setColorRamp, setRandomColorRamp, colorRamp
+     * \see setColorRamp, setRandomColorRamp, colorRamp
      */
     void setColorRampFromName( const QString &name = QString() );
 
@@ -216,14 +216,14 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     void setButtonBackground( QgsColorRamp *colorramp = nullptr );
 
     /** Sets color ramp to the button's default color ramp, if set.
-     * @see setDefaultColorRamp
-     * @see defaultColorRamp
-     * @see setToNull()
+     * \see setDefaultColorRamp
+     * \see defaultColorRamp
+     * \see setToNull()
      */
     void setToDefaultColorRamp();
 
     /** Sets color ramp to null.
-     * @see setToDefaultColorRamp()
+     * \see setToDefaultColorRamp()
      */
     void setToNull();
 

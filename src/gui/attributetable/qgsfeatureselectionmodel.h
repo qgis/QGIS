@@ -84,14 +84,14 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
     /**
      * Overwritten to do NOTHING (we handle selection ourselves)
      *
-     * @see selectFeatures( const QItemSelection&, SelectionFlags )
+     * \see selectFeatures( const QItemSelection&, SelectionFlags )
      */
     virtual void select( const QModelIndex &index, SelectionFlags command ) override { Q_UNUSED( index ); Q_UNUSED( command ); }
 
     /**
      * Overwritten to do NOTHING (we handle selection ourselves)
      *
-     * @see selectFeatures( const QItemSelection&, SelectionFlags )
+     * \see selectFeatures( const QItemSelection&, SelectionFlags )
      */
     virtual void select( const QItemSelection &selection, SelectionFlags command ) override { Q_UNUSED( selection ); Q_UNUSED( command ); }
 

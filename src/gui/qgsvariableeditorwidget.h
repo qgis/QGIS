@@ -57,13 +57,13 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * allows the widget to show all inherited variables for the context,
      * and highlight any overridden variables within scopes.
      * \param context expression context
-     * @see context()
+     * \see context()
      */
     void setContext( QgsExpressionContext *context );
 
     /** Returns the current expression context for the widget. QgsVariableEditorWidget widgets
      * are created with an empty context by default.
-     * @see setContext()
+     * \see setContext()
      */
     QgsExpressionContext *context() const { return mContext.get(); }
 
@@ -71,13 +71,13 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * be modified by users.
      * \param scopeIndex index of current editable scope. Set to -1 to disable
      * editing and make the widget read-only.
-     * @see editableScope()
+     * \see editableScope()
      */
     void setEditableScopeIndex( int scopeIndex );
 
     /** Returns the current editable scope for the widget.
      * \returns editable scope, or 0 if no editable scope is set
-     * @see setEditableScopeIndex()
+     * \see setEditableScopeIndex()
      */
     QgsExpressionContextScope *editableScope() const;
 
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
      * \param group setting group
-     * @see settingGroup()
+     * \see settingGroup()
      */
     void setSettingGroup( const QString &group ) { mSettingGroup = group; }
 
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
      * \returns setting group name
-     * @see setSettingGroup()
+     * \see setSettingGroup()
      */
     QString settingGroup() const { return mSettingGroup; }
 
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
     /** Reloads all scopes from the editor's current context. This method should be called
      * after adding or removing scopes from the attached context.
-     * @see context()
+     * \see context()
      */
     void reloadContext();
 

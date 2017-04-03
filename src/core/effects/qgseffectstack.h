@@ -79,7 +79,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     /** Appends an effect to the end of the stack.
      * \param effect QgsPaintEffect to append. Ownership of the effect will be
      * transferred to the stack object.
-     * @see insertEffect
+     * \see insertEffect
      */
     void appendEffect( QgsPaintEffect *effect );
 
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
      * \param index position to insert the effect
      * \param effect QgsPaintEffect to insert. Ownership of the effect will be
      * transferred to the stack object.
-     * @see appendEffect
+     * \see appendEffect
      */
     bool insertEffect( const int index, QgsPaintEffect *effect );
 

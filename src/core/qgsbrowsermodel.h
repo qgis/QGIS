@@ -146,14 +146,14 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     /**
      * Adds a directory to the favorites group.
      * \since QGIS 3.0
-     * @see removeFavorite()
+     * \see removeFavorite()
      */
     void addFavoriteDirectory( const QString &directory );
 
     /**
      * Removes a favorite directory from its corresponding model index.
      * \since QGIS 3.0
-     * @see addFavoriteDirectory()
+     * \see addFavoriteDirectory()
      */
     void removeFavorite( const QModelIndex &index );
 

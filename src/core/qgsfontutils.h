@@ -93,7 +93,7 @@ class CORE_EXPORT QgsFontUtils
      * \param elementName name for DOM element
      * \returns DOM element containing font settings
      * \since QGIS 2.10
-     * @see setFromXmlElement
+     * \see setFromXmlElement
      */
     static QDomElement toXmlElement( const QFont &font, QDomDocument &document, const QString &elementName );
 
@@ -103,8 +103,8 @@ class CORE_EXPORT QgsFontUtils
      * \param element DOM element
      * \returns true if properties were successfully read from element
      * \since QGIS 2.10
-     * @see toXmlElement
-     * @see setFromXmlChildNode
+     * \see toXmlElement
+     * \see setFromXmlChildNode
      */
     static bool setFromXmlElement( QFont &font, const QDomElement &element );
 
@@ -115,8 +115,8 @@ class CORE_EXPORT QgsFontUtils
      * \param childNode name of child node
      * \returns true if child node exists and properties were successfully read from node
      * \since QGIS 2.10
-     * @see setFromXmlElement
-     * @see toXmlElement
+     * \see setFromXmlElement
+     * \see toXmlElement
      */
     static bool setFromXmlChildNode( QFont &font, const QDomElement &element, const QString &childNode );
 
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsFontUtils
      * \param namedStyle a named style, i.e. "Bold", "Italic", etc
      * \returns The localized named style
      * \since QGIS 2.12
-     * @see untranslateNamedStyle
+     * \see untranslateNamedStyle
      */
     static QString translateNamedStyle( const QString &namedStyle );
 
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsFontUtils
      * \param namedStyle a localized named style, i.e. "Fett", "Kursiv", etc
      * \returns The english named style
      * \since QGIS 2.12
-     * @see translateNamedStyle
+     * \see translateNamedStyle
      */
     static QString untranslateNamedStyle( const QString &namedStyle );
 

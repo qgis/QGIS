@@ -41,12 +41,12 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual QgsCurve *clone() const override = 0;
 
     /** Returns the starting point of the curve.
-     * @see endPoint
+     * \see endPoint
      */
     virtual QgsPointV2 startPoint() const = 0;
 
     /** Returns the end point of the curve.
-     * @see startPoint
+     * \see startPoint
      */
     virtual QgsPointV2 endPoint() const = 0;
 
@@ -118,14 +118,14 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     /** Returns the x-coordinate of the specified node in the line string.
     * \param index index of node, where the first node in the line is 0
     * \returns x-coordinate of node, or 0.0 if index is out of bounds
-    * @see setXAt()
+    * \see setXAt()
     */
     virtual double xAt( int index ) const = 0;
 
     /** Returns the y-coordinate of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0
      * \returns y-coordinate of node, or 0.0 if index is out of bounds
-     * @see setYAt()
+     * \see setYAt()
      */
     virtual double yAt( int index ) const = 0;
 

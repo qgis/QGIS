@@ -28,7 +28,7 @@ class QgsVectorLayer;
  * @brief The QgsFieldComboBox is a combo box which displays the list of fields of a given layer.
  * It might be combined with a QgsMapLayerComboBox to automatically update fields according to a chosen layer.
  * If expression must be used, QgsFieldExpressionWidget shall be used instead.
- * @see QgsMapLayerComboBox
+ * \see QgsMapLayerComboBox
  * \since QGIS 2.3
  */
 class GUI_EXPORT QgsFieldComboBox : public QComboBox
@@ -54,14 +54,14 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
 
     /**
      * Sets whether an optional empty field ("not set") option is shown in the combo box.
-     * @see allowEmptyFieldName()
+     * \see allowEmptyFieldName()
      * \since QGIS 3.0
      */
     void setAllowEmptyFieldName( bool allowEmpty );
 
     /**
      * Returns true if the combo box allows the empty field ("not set") choice.
-     * @see setAllowEmptyFieldName()
+     * \see setAllowEmptyFieldName()
      * \since QGIS 3.0
      */
     bool allowEmptyFieldName() const;
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
 
     /**
      * Returns the layer currently associated with the combobox.
-     * @see setLayer()
+     * \see setLayer()
      */
     QgsVectorLayer *layer() const;
 
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     /**
      * Sets the layer for which fields are listed in the combobox. If no layer is set
      * or a non-vector layer is set then the combobox will be empty.
-     * @see layer()
+     * \see layer()
      */
     void setLayer( QgsMapLayer *layer );
 

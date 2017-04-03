@@ -41,13 +41,13 @@ class GUI_EXPORT QgsLimitedRandomColorRampWidget : public QgsPanelWidget, privat
     QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+     * \see setRamp()
      */
     QgsLimitedRandomColorRamp ramp() const { return mRamp; }
 
     /** Sets the color ramp to show in the dialog.
      * \param ramp color ramp
-     * @see ramp()
+     * \see ramp()
      */
     void setRamp( const QgsLimitedRandomColorRamp &ramp );
 
@@ -101,13 +101,13 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
     QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+     * \see setRamp()
      */
     QgsLimitedRandomColorRamp ramp() const { return mWidget->ramp(); }
 
     /** Sets the color ramp to show in the dialog.
      * \param ramp color ramp
-     * @see ramp()
+     * \see ramp()
      */
     void setRamp( const QgsLimitedRandomColorRamp &ramp ) { mWidget->setRamp( ramp ); }
 

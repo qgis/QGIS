@@ -133,7 +133,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
      * to this signal directly.
      * Connecting to this signal directly will cause the animation not to be started.
      *
-     * @see connectFrameChanged
+     * \see connectFrameChanged
      */
     void frameChanged();
 

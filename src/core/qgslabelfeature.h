@@ -53,13 +53,13 @@ class CORE_EXPORT QgsLabelFeature
      * point itself. It not set, the feature's geometry is used for obstacle detection.
      * Ownership of obstacle geometry is transferred.
      * \since QGIS 2.14
-     * @see obstacleGeometry()
+     * \see obstacleGeometry()
      */
     void setObstacleGeometry( GEOSGeometry *obstacleGeom );
 
     /** Returns the label's obstacle geometry, if different to the feature geometry.
      * \since QGIS 2.14
-     * @see setObstacleGeometry()
+     * \see setObstacleGeometry()
      */
     GEOSGeometry *obstacleGeometry() const { return mObstacleGeometry; }
 
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLabelFeature
      * \param geometry permissible zone geometry. If an invalid QgsGeometry is passed then no zone limit
      * will be applied to the label candidates (this is the default behavior).
      * \since QGIS 3.0
-     * @see permissibleZone()
+     * \see permissibleZone()
      */
     void setPermissibleZone( const QgsGeometry &geometry );
 
@@ -77,13 +77,13 @@ class CORE_EXPORT QgsLabelFeature
      * MUST be fully contained within this zone, and the feature will not be labeled if no candidates can be
      * generated which are not contained within the zone.
      * \since QGIS 3.0
-     * @see setPermissibleZone()
-     * @see permissibleZonePrepared()
+     * \see setPermissibleZone()
+     * \see permissibleZonePrepared()
      */
     QgsGeometry permissibleZone() const { return mPermissibleZone; }
 
     /** Returns a GEOS prepared geometry representing the label's permissibleZone().
-     * @see permissibleZone()
+     * \see permissibleZone()
      * \since QGIS 3.0
      */
     //TODO - remove when QgsGeometry caches GEOS preparedness
@@ -99,19 +99,19 @@ class CORE_EXPORT QgsLabelFeature
      * For instance, this can be used to place labels which sit above a point so that their baseline
      * rather then the descender of the label is at a preset distance from the point.
      * \param margin visual margins for label
-     * @see visualMargin()
+     * \see visualMargin()
      */
     void setVisualMargin( const QgsMargins &margin ) { mVisualMargin = margin; }
 
     /** Returns the visual margin for the label feature.
-     * @see setVisualMargin() for details
+     * \see setVisualMargin() for details
      */
     const QgsMargins &visualMargin() const { return mVisualMargin; }
 
     /** Sets the size of the rendered symbol associated with this feature. This size is taken into
      * account in certain label placement modes to avoid placing labels over the rendered
      * symbol for this feature.
-     * @see symbolSize()
+     * \see symbolSize()
      */
     void setSymbolSize( QSizeF size ) { mSymbolSize = size; }
 
@@ -119,14 +119,14 @@ class CORE_EXPORT QgsLabelFeature
      * This size is taken into account in certain label placement modes to avoid placing labels over
      * the rendered symbol for this feature. The size will only be set for labels associated
      * with a point feature.
-     * @see symbolSize()
+     * \see symbolSize()
      */
     const QSizeF &symbolSize() const { return mSymbolSize; }
 
     /** Returns the feature's labeling priority.
      * \returns feature's priority, as a value between 0 (highest priority)
      * and 1 (lowest priority). Returns -1.0 if feature will use the layer's default priority.
-     * @see setPriority
+     * \see setPriority
      */
     double priority() const { return mPriority; }
 
@@ -134,13 +134,13 @@ class CORE_EXPORT QgsLabelFeature
      * \param priority feature's priority, as a value between 0 (highest priority)
      * and 1 (lowest priority). Set to -1.0 to use the layer's default priority
      * for this feature.
-     * @see priority
+     * \see priority
      */
     void setPriority( double priority ) { mPriority = priority; }
 
     /** Returns the label's z-index. Higher z-index labels are rendered on top of lower
      * z-index labels.
-     * @see setZIndex()
+     * \see setZIndex()
      * \since QGIS 2.14
      */
     double zIndex() const { return mZIndex; }
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsLabelFeature
     /** Sets the label's z-index. Higher z-index labels are rendered on top of lower
      * z-index labels.
      * \param zIndex z-index for label
-     * @see zIndex()
+     * \see zIndex()
      * \since QGIS 2.14
      */
     void setZIndex( double zIndex ) { mZIndex = zIndex; }
@@ -173,15 +173,15 @@ class CORE_EXPORT QgsLabelFeature
 
     /** Returns whether the quadrant for the label is fixed.
      * Applies to "around point" placement strategy.
-     * @see setFixedQuadrant
-     * @see quadOffset
+     * \see setFixedQuadrant
+     * \see quadOffset
      */
     bool hasFixedQuadrant() const { return mHasFixedQuadrant; }
 
     /** Sets whether the quadrant for the label must be respected. This can be used
      * to fix the quadrant for specific features when using an "around point" placement.
-     * @see fixedQuadrant
-     * @see quadOffset
+     * \see fixedQuadrant
+     * \see quadOffset
      */
     void setHasFixedQuadrant( bool enabled ) { mHasFixedQuadrant = enabled; }
     //! Applies to "offset from point" placement strategy and "around point" (in case hasFixedQuadrant() returns true).
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsLabelFeature
     //! For Y coordinate, values -1, 0, 1 mean above, center, below.
     QPointF quadOffset() const { return mQuadOffset; }
     //! Set which side of the point to use
-    //! @see quadOffset
+    //! \see quadOffset
     void setQuadOffset( QPointF quadOffset ) { mQuadOffset = quadOffset; }
     //! Applies only to "offset from point" placement strategy.
     //! What offset (in map units) to use from the point
@@ -202,14 +202,14 @@ class CORE_EXPORT QgsLabelFeature
     /** Returns the offset type, which determines how offsets and distance to label
      * behaves. Support depends on which placement mode is used for generating
      * label candidates.
-     * @see setOffsetType()
+     * \see setOffsetType()
      */
     QgsPalLayerSettings::OffsetType offsetType() const { return mOffsetType; }
 
     /** Sets the offset type, which determines how offsets and distance to label
      * behaves. Support depends on which placement mode is used for generating
      * label candidates.
-     * @see offsetType()
+     * \see offsetType()
      */
     void setOffsetType( QgsPalLayerSettings::OffsetType type ) { mOffsetType = type; }
 
@@ -222,13 +222,13 @@ class CORE_EXPORT QgsLabelFeature
 
     /** Returns the priority ordered list of predefined positions for label candidates. This property
      * is only used for OrderedPositionsAroundPoint placements.
-     * @see setPredefinedPositionOrder()
+     * \see setPredefinedPositionOrder()
      */
     QVector< QgsPalLayerSettings::PredefinedPointPosition > predefinedPositionOrder() const { return mPredefinedPositionOrder; }
 
     /** Sets the priority ordered list of predefined positions for label candidates. This property
      * is only used for OrderedPositionsAroundPoint placements.
-     * @see predefinedPositionOrder()
+     * \see predefinedPositionOrder()
      */
     void setPredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition > &order ) { mPredefinedPositionOrder = order; }
 
@@ -246,19 +246,19 @@ class CORE_EXPORT QgsLabelFeature
 
     /** Returns whether the feature will act as an obstacle for labels.
      * \returns true if feature is an obstacle
-     * @see setIsObstacle
+     * \see setIsObstacle
      */
     bool isObstacle() const { return mIsObstacle; }
 
     /** Sets whether the feature will act as an obstacle for labels.
      * \param enabled whether feature will act as an obstacle
-     * @see isObstacle
+     * \see isObstacle
      */
     void setIsObstacle( bool enabled ) { mIsObstacle = enabled; }
 
     /** Returns the obstacle factor for the feature. The factor controls the penalty
      * for labels overlapping this feature.
-     * @see setObstacleFactor
+     * \see setObstacleFactor
      */
     double obstacleFactor() const { return mObstacleFactor; }
 
@@ -267,7 +267,7 @@ class CORE_EXPORT QgsLabelFeature
      * \param factor larger factors ( > 1.0 ) will result in labels
      * which are less likely to cover this feature, smaller factors ( < 1.0 ) mean labels
      * are more likely to cover this feature (where required)
-     * @see obstacleFactor
+     * \see obstacleFactor
      */
     void setObstacleFactor( double factor ) { mObstacleFactor = factor; }
 

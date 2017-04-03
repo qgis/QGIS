@@ -79,7 +79,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * \param displayExpression  The expression used to render the feature
      *
-     * @see QgsExpression
+     * \see QgsExpression
      */
     bool setDisplayExpression( const QString &displayExpression );
 
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * \returns A string containing the currend display expression
      *
-     * @see QgsExpression
+     * \see QgsExpression
      */
     const QString displayExpression() const;
 

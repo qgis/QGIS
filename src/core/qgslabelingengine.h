@@ -277,14 +277,14 @@ class CORE_EXPORT QgsLabelingUtils
     /** Encodes an ordered list of predefined point label positions to a string.
      * \param positions order list of positions
      * \returns list encoded to string
-     * @see decodePredefinedPositionOrder()
+     * \see decodePredefinedPositionOrder()
      */
     static QString encodePredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition > &positions );
 
     /** Decodes a string to an ordered list of predefined point label positions.
      * \param positionString encoded string of positions
      * \returns decoded list
-     * @see encodePredefinedPositionOrder()
+     * \see encodePredefinedPositionOrder()
      */
     static QVector< QgsPalLayerSettings::PredefinedPointPosition > decodePredefinedPositionOrder( const QString &positionString );
 

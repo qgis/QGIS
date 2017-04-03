@@ -74,12 +74,12 @@ class CORE_EXPORT QgsStringReplacement
     }
 
     /** Returns a map of the replacement properties.
-     * @see fromProperties()
+     * \see fromProperties()
      */
     QgsStringMap properties() const;
 
     /** Creates a new QgsStringReplacement from an encoded properties map.
-     * @see properties()
+     * \see properties()
      */
     static QgsStringReplacement fromProperties( const QgsStringMap &properties );
 
@@ -116,14 +116,14 @@ class CORE_EXPORT QgsStringReplacementCollection
     {}
 
     /** Returns the list of string replacements in this collection.
-     * @see setReplacements()
+     * \see setReplacements()
      */
     QList< QgsStringReplacement > replacements() const { return mReplacements; }
 
     /** Sets the list of string replacements in this collection.
      * \param replacements list of string replacements to apply. Replacements are applied in the
      * order they are specified here.
-     * @see replacements()
+     * \see replacements()
      */
     void setReplacements( const QList< QgsStringReplacement > &replacements )
     {
@@ -141,13 +141,13 @@ class CORE_EXPORT QgsStringReplacementCollection
     /** Writes the collection state to an XML element.
      * \param elem target DOM element
      * \param doc DOM document
-     * @see readXml()
+     * \see readXml()
      */
     void writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Reads the collection state from an XML element.
      * \param elem DOM element
-     * @see writeXml()
+     * \see writeXml()
      */
     void readXml( const QDomElement &elem );
 

@@ -43,13 +43,13 @@ class GUI_EXPORT QgsColorBrewerColorRampWidget : public QgsPanelWidget, private 
     QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+     * \see setRamp()
      */
     QgsColorBrewerColorRamp ramp() const { return mRamp; }
 
     /** Sets the color ramp to show in the dialog.
      * \param ramp color ramp
-     * @see ramp()
+     * \see ramp()
      */
     void setRamp( const QgsColorBrewerColorRamp &ramp );
 
@@ -90,13 +90,13 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
     QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+     * \see setRamp()
      */
     QgsColorBrewerColorRamp ramp() const { return mWidget->ramp(); }
 
     /** Sets the color ramp to show in the dialog.
      * \param ramp color ramp
-     * @see ramp()
+     * \see ramp()
      */
     void setRamp( const QgsColorBrewerColorRamp &ramp ) { mWidget->setRamp( ramp ); }
 

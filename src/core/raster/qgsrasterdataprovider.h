@@ -357,7 +357,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
      * By default providers are not editable. Use setEditable() method to enable/disable editing.
-     * @see setEditable(), writeBlock()
+     * \see setEditable(), writeBlock()
      * \since QGIS 3.0
      */
     virtual bool isEditable() const { return false; }
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * the underlying data source into editing mode, so it is necessary to check the return
      * value whether the operation was successful.
      * \returns true if the switch to/from editing mode was successful
-     * @see isEditable(), writeBlock()
+     * \see isEditable(), writeBlock()
      * \since QGIS 3.0
      */
     virtual bool setEditable( bool enabled ) { Q_UNUSED( enabled ); return false; }
@@ -397,7 +397,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *
      * Writing is supported only by some data providers. Provider has to be in editing mode
      * in order to allow write operations.
-     * @see isEditable(), setEditable()
+     * \see isEditable(), setEditable()
      * \returns true on success
      * \since QGIS 3.0
      */
@@ -447,14 +447,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Step width for raster iterations.
-     * @see stepHeight()
+     * \see stepHeight()
      * \since QGIS 3.0
      */
     virtual int stepWidth() const { return QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH; }
 
     /**
      * Step height for raster iterations.
-     * @see stepWidth()
+     * \see stepWidth()
      * \since QGIS 3.0
      */
     virtual int stepHeight() const { return QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT; }

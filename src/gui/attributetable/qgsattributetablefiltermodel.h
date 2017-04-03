@@ -45,7 +45,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
       ShowAll,          //!< Show all features
       ShowSelected,     //!< Show only selected features
       ShowVisible,      //!< Show only visible features (depends on the map canvas)
-      ShowFilteredList, //!< Show only features whose ids are on the filter list. {@see setFilteredFeatures}
+      ShowFilteredList, //!< Show only features whose ids are on the filter list. {\see setFilteredFeatures}
       ShowEdited        //!< Show only features which have unsaved changes
     };
 

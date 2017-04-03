@@ -47,26 +47,26 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
     /** Sets the marker symbol to use for rendering the point. Note - you may need to call
      * updateSize() after setting the symbol.
      * \param symbol marker symbol. Ownership is transferred to item.
-     * @see symbol()
-     * @see updateSize()
+     * \see symbol()
+     * \see updateSize()
      */
     void setSymbol( QgsMarkerSymbol *symbol );
 
     /** Returns the marker symbol used for rendering the point.
-     * @see setSymbol()
+     * \see setSymbol()
      */
     QgsMarkerSymbol *symbol();
 
     /** Sets the feature used for rendering the marker symbol. The feature's attributes
      * may affect the rendered symbol if data defined overrides are in place.
      * \param feature feature for symbol
-     * @see feature()
-     * @see updateSize()
+     * \see feature()
+     * \see updateSize()
      */
     void setFeature( const QgsFeature &feature );
 
     /** Returns the feature used for rendering the marker symbol.
-     * @see setFeature()
+     * \see setFeature()
      */
     QgsFeature feature() const { return mFeature; }
 
@@ -78,14 +78,14 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
     /** Sets the transparency for the marker.
      * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
-     * @see transparency()
+     * \see transparency()
      */
     void setTransparency( double transparency );
 
     /** Returns the transparency for the marker.
      * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
-     * @see setTransparency()
+     * \see setTransparency()
      */
     double transparency() const;
 

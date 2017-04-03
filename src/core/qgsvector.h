@@ -86,12 +86,12 @@ class CORE_EXPORT QgsVector
     double length() const;
 
     /** Returns the vector's x-component.
-     * @see y()
+     * \see y()
      */
     double x() const;
 
     /** Returns the vector's y-component.
-     * @see x()
+     * \see x()
      */
     double y() const;
 

@@ -58,7 +58,7 @@ class CORE_EXPORT QgsHistogram
     /** Calculates the optimal bin width using the Freedman-Diaconis rule. Bins widths are
      * determined by the inter-quartile range of values and the number of values.
      * \returns optimal width for bins
-     * @see optimalNumberBins
+     * \see optimalNumberBins
      * \note values must first be specified using @link setValues @endlink
      */
     double optimalBinWidth() const;
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsHistogram
      * Freedman-Diaconis rule. The number of bins are determined by the inter-quartile range
      * of values and the number of values.
      * \returns optimal number of bins
-     * @see optimalBinWidth
+     * \see optimalBinWidth
      * \note values must first be specified using @link setValues @endlink
      */
     int optimalNumberBins() const;

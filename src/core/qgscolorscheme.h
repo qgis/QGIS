@@ -86,7 +86,7 @@ class CORE_EXPORT QgsColorScheme
 
     /** Returns whether the color scheme is editable
      * \returns true if scheme is editable
-     * @see setColors
+     * \see setColors
      */
     virtual bool isEditable() const { return false; }
 
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsColorScheme
      * \param context to set colors for
      * \param baseColor base color to set colors for
      * \returns true if colors were set successfully
-     * @see isEditable
+     * \see isEditable
      */
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
@@ -204,13 +204,13 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
     /** Adds a color to the list of recent colors.
      * \param color color to add
      * \since QGIS 2.14
-     * @see lastUsedColor()
+     * \see lastUsedColor()
      */
     static void addRecentColor( const QColor &color );
 
     /** Returns the most recently used color.
      * \since QGIS 3.0
-     * @see addRecentColor()
+     * \see addRecentColor()
      */
     static QColor lastUsedColor();
 };

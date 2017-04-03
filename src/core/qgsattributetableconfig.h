@@ -147,27 +147,27 @@ class CORE_EXPORT QgsAttributeTableConfig
 
     /** Returns the width of a column, or -1 if column should use default width.
      * \param column column index
-     * @see setColumnWidth()
+     * \see setColumnWidth()
      */
     int columnWidth( int column ) const;
 
     /** Sets the width of a column.
      * \param column column index
      * \param width column width in pixels, or -1 if column should use default width
-     * @see columnWidth()
+     * \see columnWidth()
      */
     void setColumnWidth( int column, int width );
 
     /** Returns true if the specified column is hidden.
      * \param column column index
-     * @see setColumnHidden()
+     * \see setColumnHidden()
      */
     bool columnHidden( int column ) const;
 
     /** Sets whether the specified column should be hidden.
      * \param column column index
      * \param hidden set to true to hide column
-     * @see columnHidden()
+     * \see columnHidden()
      */
     void setColumnHidden( int column, bool hidden );
 

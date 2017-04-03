@@ -65,14 +65,14 @@ class CORE_EXPORT QgsStringStatisticalSummary
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., count).
-     * @see setStatistics
+     * \see setStatistics
      */
     Statistics statistics() const { return mStatistics; }
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., count).
      * \param stats flags for statistics to calculate
-     * @see statistics
+     * \see statistics
      */
     void setStatistics( Statistics stats ) { mStatistics = stats; }
 
@@ -82,16 +82,16 @@ class CORE_EXPORT QgsStringStatisticalSummary
 
     /** Calculates summary statistics for an entire list of strings at once.
      * \param values list of strings
-     * @see calculateFromVariants()
-     * @see addString()
+     * \see calculateFromVariants()
+     * \see addString()
      */
     void calculate( const QStringList &values );
 
     /** Calculates summary statistics for an entire list of variants at once. Any
      * non-string variants will be ignored.
      * \param values list of variants
-     * @see calculate()
-     * @see addValue()
+     * \see calculate()
+     * \see addValue()
      */
     void calculateFromVariants( const QVariantList &values );
 
@@ -104,9 +104,9 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * to clear the results from any previous calculations
      * \note finalize() must be called after adding the final string and before
      * retrieving calculated statistics.
-     * @see calculate()
-     * @see addValue()
-     * @see finalize()
+     * \see calculate()
+     * \see addValue()
+     * \see finalize()
      */
     void addString( const QString &string );
 
@@ -119,14 +119,14 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * to clear the results from any previous calculations
      * \note finalize() must be called after adding the final value and before
      * retrieving calculated statistics.
-     * @see calculateFromVariants()
-     * @see finalize()
+     * \see calculateFromVariants()
+     * \see finalize()
      */
     void addValue( const QVariant &value );
 
     /** Must be called after adding all strings with addString() and before retrieving
      * any calculated string statistics.
-     * @see addString()
+     * \see addString()
      */
     void finalize();
 
@@ -141,12 +141,12 @@ class CORE_EXPORT QgsStringStatisticalSummary
     int count() const { return mCount; }
 
     /** Returns the number of distinct string values.
-     * @see distinctValues()
+     * \see distinctValues()
      */
     int countDistinct() const { return mValues.count(); }
 
     /** Returns the set of distinct string values.
-     * @see countDistinct()
+     * \see countDistinct()
      */
     QSet< QString > distinctValues() const { return mValues; }
 

@@ -47,13 +47,13 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     ~QgsGradientColorRampDialog();
 
     /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+     * \see setRamp()
      */
     QgsGradientColorRamp ramp() const { return mRamp; }
 
     /** Sets the color ramp to show in the dialog.
      * \param ramp color ramp
-     * @see ramp()
+     * \see ramp()
      */
     void setRamp( const QgsGradientColorRamp &ramp );
 
@@ -65,12 +65,12 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
   public slots:
 
     /** Sets the start color for the gradient ramp.
-     * @see setColor2()
+     * \see setColor2()
      */
     void setColor1( const QColor &color );
 
     /** Sets the end color for the gradient ramp.
-     * @see setColor1()
+     * \see setColor1()
      */
     void setColor2( const QColor &color );
 

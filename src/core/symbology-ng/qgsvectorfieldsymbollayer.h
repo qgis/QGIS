@@ -93,12 +93,12 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 
     /** Sets the units for the distance.
      * \param unit distance units
-     * @see distanceUnit()
+     * \see distanceUnit()
     */
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceUnit = unit; }
 
     /** Returns the units for the distance.
-     * @see setDistanceUnit()
+     * \see setDistanceUnit()
     */
     QgsUnitTypes::RenderUnit distanceUnit() const { return mDistanceUnit; }
 

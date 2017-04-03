@@ -64,7 +64,7 @@ class CORE_EXPORT QgsDxfExport
     /**
      * Add layers to export
      * \param layers list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
-     * @see setLayerTitleAsName
+     * \see setLayerTitleAsName
      */
     void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
 
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsDxfExport
     /**
      * Retrieve reference scale for output
      * \returns reference scale
-     * @see setSymbologyScaleDenominator
+     * \see setSymbologyScaleDenominator
      */
     double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
 
@@ -97,14 +97,14 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Set destination CRS
-     * @see destinationCrs()
+     * \see destinationCrs()
      * \since QGIS 3.0
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Returns the destination CRS, or an invalid CRS if no reprojection will be done.
-     * @see setDestinationCrs()
+     * \see setDestinationCrs()
      * \since QGIS 3.0
      */
     QgsCoordinateReferenceSystem destinationCrs() const;
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsDxfExport
     /**
      * Get symbology export mode
      * \returns mode
-     * @see setSymbologyExport
+     * \see setSymbologyExport
      */
     SymbologyExport symbologyExport() const { return mSymbologyExport; }
 
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsDxfExport
     /**
      * Get extent of area to export
      * \returns area to export
-     * @see setExtent
+     * \see setExtent
      */
     QgsRectangle extent() const { return mExtent; }
 
@@ -139,14 +139,14 @@ class CORE_EXPORT QgsDxfExport
      * Enable use of title (where set) instead of layer name,
      * when attribute index of corresponding layer index is -1
      * \param layerTitleAsName flag
-     * @see addLayers
+     * \see addLayers
      */
     void setLayerTitleAsName( bool layerTitleAsName ) { mLayerTitleAsName = layerTitleAsName; }
 
     /**
      * Retrieve whether layer title (where set) instead of name shall be use
      * \returns flag
-     * @see setLayerTitleAsName
+     * \see setLayerTitleAsName
      */
     bool layerTitleAsName() { return mLayerTitleAsName; }
 
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsDxfExport
      * Get name for layer respecting the use layer title as layer name mode
      * \param vl the vector layer
      * \returns name of layer
-     * @see setLayerTitleAsName
+     * \see setLayerTitleAsName
      */
     QString layerName( QgsVectorLayer *vl ) const;
 

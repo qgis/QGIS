@@ -57,13 +57,13 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * - hiding a dock which is open and raised (ie, user visible) will cause the dock to
      * be closed
      * - hiding a dock which is closed has no effect and raises no signals
-     * @see isUserVisible()
+     * \see isUserVisible()
      */
     void setUserVisible( bool visible );
 
     /** Returns true if the dock is both opened and raised to the front (ie not hidden by
      * any other tabs.
-     * @see setUserVisible()
+     * \see setUserVisible()
      */
     bool isUserVisible() const;
 
@@ -75,28 +75,28 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
   signals:
 
     /** Emitted when dock widget is closed.
-     * @see closedStateChanged()
-     * @see opened()
+     * \see closedStateChanged()
+     * \see opened()
      */
     void closed();
 
     /** Emitted when dock widget is closed (or opened).
      * \param wasClosed will be true if dock widget was closed, or false if dock widget was opened
-     * @see closed()
-     * @see openedStateChanged()
+     * \see closed()
+     * \see openedStateChanged()
      */
     void closedStateChanged( bool wasClosed );
 
     /** Emitted when dock widget is opened.
-     * @see openedStateChanged()
-     * @see closed()
+     * \see openedStateChanged()
+     * \see closed()
      */
     void opened();
 
     /** Emitted when dock widget is opened (or closed).
      * \param wasOpened will be true if dock widget was opened, or false if dock widget was closed
-     * @see closedStateChanged()
-     * @see opened()
+     * \see closedStateChanged()
+     * \see opened()
      */
     void openedStateChanged( bool wasOpened );
 

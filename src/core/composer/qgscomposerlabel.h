@@ -98,16 +98,16 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      * value. The margins can be individually controlled using the setMarginX
      * and setMarginY methods.
      * \param m margin in mm
-     * @see setMarginX
-     * @see setMarginY
+     * \see setMarginX
+     * \see setMarginY
      */
     void setMargin( const double m );
 
     /** Sets the horizontal margin between the edge of the frame and the label
      * contents.
      * \param margin horizontal margin in mm
-     * @see setMargin
-     * @see setMarginY
+     * \see setMargin
+     * \see setMarginY
      * \since QGIS 2.7
      */
     void setMarginX( const double margin );
@@ -115,8 +115,8 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /** Sets the vertical margin between the edge of the frame and the label
      * contents.
      * \param margin vertical margin in mm
-     * @see setMargin
-     * @see setMarginX
+     * \see setMargin
+     * \see setMarginX
      * \since QGIS 2.7
      */
     void setMarginY( const double margin );

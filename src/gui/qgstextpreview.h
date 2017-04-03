@@ -54,38 +54,38 @@ class GUI_EXPORT QgsTextPreview : public QLabel
 
     /** Sets the text format for previewing in the widget.
      * \param format text format
-     * @see format()
+     * \see format()
      */
     void setFormat( const QgsTextFormat &format );
 
     /** Returns the text format used for previewing text in the widget.
-     * @see setFormat()
+     * \see setFormat()
      */
     QgsTextFormat format() const { return mFormat; }
 
     /** Sets the scale to use for previewing format sizes in map units.
      * \param scale preview map scale
-     * @see scale()
-     * @see setMapUnits()
+     * \see scale()
+     * \see setMapUnits()
      */
     void setScale( double scale );
 
     /** Returns the scale used for previewing format sizes in map units.
-     * @see setScale()
-     * @see mapUnits()
+     * \see setScale()
+     * \see mapUnits()
      */
     double scale() const { return mScale; }
 
     /** Sets the map unit type for previewing format sizes in map units.
      * \param unit map units
-     * @see mapUnits()
-     * @see setScale()
+     * \see mapUnits()
+     * \see setScale()
      */
     void setMapUnits( QgsUnitTypes::DistanceUnit unit );
 
     /** Returns the map unit type used for previewing format sizes in map units.
-     * @see setMapUnits()
-     * @see scale()
+     * \see setMapUnits()
+     * \see scale()
      */
     QgsUnitTypes::DistanceUnit mapUnits() const { return mMapUnits; }
 

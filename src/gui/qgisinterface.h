@@ -86,8 +86,8 @@ class GUI_EXPORT QgisInterface : public QObject
      * If menu argument is not empty, the action will be also added to a menu within the main window,
      * creating menu with the given name if it does not exist yet.
      *
-     * @see removeCustomActionForLayerType()
-     * @see addCustomActionForLayer()
+     * \see removeCustomActionForLayerType()
+     * \see addCustomActionForLayer()
      */
     virtual void addCustomActionForLayerType( QAction *action, QString menu,
         QgsMapLayer::LayerType type, bool allLayers ) = 0;
@@ -95,12 +95,12 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Add action to context menu for a specific layer in the layer tree.
      * It is necessary to first call addCustomActionForLayerType() with allLayers=false
      * in order for this method to have any effect.
-     * @see addCustomActionForLayerType()
+     * \see addCustomActionForLayerType()
      */
     virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;
 
     /** Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
-     * @see addCustomActionForLayerType()
+     * \see addCustomActionForLayerType()
      */
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
 
@@ -113,14 +113,14 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Create a new map canvas with the specified unique \a name.
      * \since QGIS 3.0
-     * @see closeMapCanvas()
+     * \see closeMapCanvas()
      */
     virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
 
     /**
      * Closes the additional map canvas with matching \a name.
      * \since QGIS 3.0
-     * @see createNewMapCanvas()
+     * \see createNewMapCanvas()
      */
     virtual void closeMapCanvas( const QString &name ) = 0;
 
@@ -281,7 +281,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * brings an already open composer window to the foreground if one
      * is already created for the composition.
      * \since QGIS 3.0
-     * @see closeComposer()
+     * \see closeComposer()
      */
     virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
 
@@ -289,7 +289,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Closes an open composer window showing the specified \a composition.
      * The composition remains unaffected.
      * \since QGIS 3.0
-     * @see openComposer()
+     * \see openComposer()
      */
     virtual void closeComposer( QgsComposition *composition ) = 0;
 
@@ -385,12 +385,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 2.16
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
-     * @see unregisterMapLayerPropertiesFactory() */
+     * \see unregisterMapLayerPropertiesFactory() */
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /** Unregister a previously registered tab in the vector layer properties dialog.
      * \since QGIS 2.16
-     * @see registerMapLayerPropertiesFactory()
+     * \see registerMapLayerPropertiesFactory()
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
@@ -398,12 +398,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.0
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
-     * @see unregisterOptionsWidgetFactory() */
+     * \see unregisterOptionsWidgetFactory() */
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /** Unregister a previously registered tab in the options dialog.
      * \since QGIS 3.0
-     * @see registerOptionsWidgetFactory()
+     * \see registerOptionsWidgetFactory()
     */
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
@@ -411,12 +411,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.0
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
-     * @see unregisterCustomDropHandler() */
+     * \see unregisterCustomDropHandler() */
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /** Unregister a previously registered custom drop handler.
      * \since QGIS 3.0
-     * @see registerCustomDropHandler() */
+     * \see registerCustomDropHandler() */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
@@ -661,7 +661,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * This signal is emitted when a new composer window has been opened.
      * \since QGIS 3.0
-     * @see composerWillBeClosed()
+     * \see composerWillBeClosed()
      */
     void composerOpened( QgsComposerInterface *composer );
 
@@ -669,16 +669,16 @@ class GUI_EXPORT QgisInterface : public QObject
      * This signal is emitted before a composer window is going to be closed
      * and deleted.
      * \since QGIS 3.0
-     * @see composerClosed()
-     * @see composerOpened()
+     * \see composerClosed()
+     * \see composerOpened()
      */
     void composerWillBeClosed( QgsComposerInterface *composer );
 
     /**
      * This signal is emitted after a composer window is closed.
      * \since QGIS 3.0
-     * @see composerWillBeClosed()
-     * @see composerOpened()
+     * \see composerWillBeClosed()
+     * \see composerOpened()
      */
     void composerClosed( QgsComposerInterface *composer );
 

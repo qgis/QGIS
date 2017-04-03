@@ -222,13 +222,13 @@ class CORE_EXPORT QgsWebPage : public QWebPage
      * log, and should be set to a user-friendly string so that users can identify which QgsWebPage has
      * logged the message.
      * \param identifier identifier string
-     * @see identifier()
+     * \see identifier()
      */
     void setIdentifier( const QString &identifier ) { mIdentifier = identifier; }
 
     /** Returns the QgsWebPage's identifier. The page's identifier is included in messages written to the
      * log so that users can identify which QgsWebPage has logged the message.
-     * @see setIdentifier()
+     * \see setIdentifier()
      */
     QString identifier() const { return mIdentifier; }
 

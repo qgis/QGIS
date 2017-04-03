@@ -50,26 +50,26 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * passed object.
      * \param object parent object containing actions and shortcuts to register
      * \param recursive set to true to recursively add child actions and shortcuts
-     * @see registerAllChildActions()
-     * @see registerAllChildShortcuts()
+     * \see registerAllChildActions()
+     * \see registerAllChildShortcuts()
      */
     void registerAllChildren( QObject *object, bool recursive = false );
 
     /** Automatically registers all QActions which are children of the passed object.
      * \param object parent object containing actions to register
      * \param recursive set to true to recursively add child actions
-     * @see registerAction()
-     * @see registerAllChildren()
-     * @see registerAllChildShortcuts()
+     * \see registerAction()
+     * \see registerAllChildren()
+     * \see registerAllChildShortcuts()
      */
     void registerAllChildActions( QObject *object, bool recursive = false );
 
     /** Automatically registers all QShortcuts which are children of the passed object.
      * \param object parent object containing shortcuts to register
      * \param recursive set to true to recursively add child shortcuts
-     * @see registerShortcut()
-     * @see registerAllChildren()
-     * @see registerAllChildActions()
+     * \see registerShortcut()
+     * \see registerAllChildren()
+     * \see registerAllChildActions()
      */
     void registerAllChildShortcuts( QObject *object, bool recursive = false );
 
@@ -78,9 +78,9 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * identification.
      * \param defaultShortcut default key sequence for action
      * \returns true if action was successfully registered
-     * @see registerShortcut()
-     * @see unregisterAction()
-     * @see registerAllChildActions()
+     * \see registerShortcut()
+     * \see unregisterAction()
+     * \see registerAllChildActions()
      */
     bool registerAction( QAction *action, const QString &defaultShortcut = QString() );
 
@@ -89,8 +89,8 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     * identification.
     * \param defaultSequence default key sequence for shortcut
     * \returns true if shortcut was successfully registered
-    * @see registerAction()
-    * @see registerAllChildShortcuts()
+    * \see registerAction()
+    * \see registerAllChildShortcuts()
     */
     bool registerShortcut( QShortcut *shortcut, const QString &defaultSequence = QString() );
 
@@ -98,8 +98,8 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * \param action action to remove
      * \returns true if action was previously registered in manager and has been removed, or
      * false if action was not previously registered in manager
-     * @see registerAction()
-     * @see unregisterShortcut()
+     * \see registerAction()
+     * \see unregisterShortcut()
      */
     bool unregisterAction( QAction *action );
 
@@ -107,47 +107,47 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * \param shortcut shortcut to remove
      * \returns true if shortcut was previously registered in manager and has been removed, or
      * false if shortcut was not previously registered in manager
-     * @see registerShortcut()
-     * @see unregisterAction()
+     * \see registerShortcut()
+     * \see unregisterAction()
      */
     bool unregisterShortcut( QShortcut *shortcut );
 
     /** Returns a list of all actions in the manager.
-     * @see listShortcuts()
-     * @see listAll()
+     * \see listShortcuts()
+     * \see listAll()
      */
     QList<QAction *> listActions() const;
 
     /** Returns a list of shortcuts in the manager.
-     * @see listActions()
-     * @see listAll()
+     * \see listActions()
+     * \see listAll()
      */
     QList<QShortcut *> listShortcuts() const;
 
     /** Returns a list of both actions and shortcuts in the manager.
-     * @see listAction()
-     * @see listShortcuts()
+     * \see listAction()
+     * \see listShortcuts()
      */
     QList<QObject *> listAll() const;
 
     /** Returns the default sequence for an object (either a QAction or QShortcut).
      * An empty return string indicates no shortcut.
      * \param object QAction or QShortcut to return default key sequence for
-     * @see defaultKeySequence()
+     * \see defaultKeySequence()
      */
     QString objectDefaultKeySequence( QObject *object ) const;
 
     /** Returns the default sequence for an action. An empty return string indicates
      * no default sequence.
      * \param action action to return default key sequence for
-     * @see objectDefaultKeySequence()
+     * \see objectDefaultKeySequence()
      */
     QString defaultKeySequence( QAction *action ) const;
 
     /** Returns the default sequence for a shortcut. An empty return string indicates
      * no default sequence.
      * \param shortcut shortcut to return default key sequence for
-     * @see objectDefaultKeySequence()
+     * \see objectDefaultKeySequence()
      */
     QString defaultKeySequence( QShortcut *shortcut ) const;
 
@@ -155,62 +155,62 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * \param name name of action or shortcut to modify. Must match the action's QAction::text() or the
      * shortcut's QObject::objectName()
      * \param sequence new shortcut key sequence
-     * @see setObjectKeySequence()
+     * \see setObjectKeySequence()
      */
     bool setKeySequence( const QString &name, const QString &sequence );
 
     /** Modifies an object's (either a QAction or a QShortcut) key sequence.
      * \param object QAction or QShortcut to modify
      * \param sequence new shortcut key sequence
-     * @see setKeySequence()
+     * \see setKeySequence()
      */
     bool setObjectKeySequence( QObject *object, const QString &sequence );
 
     /** Modifies an action's key sequence.
      * \param action action to modify
      * \param sequence new shortcut key sequence
-     * @see setObjectKeySequence()
+     * \see setObjectKeySequence()
      */
     bool setKeySequence( QAction *action, const QString &sequence );
 
     /** Modifies a shortcuts's key sequence.
      * \param shortcut QShortcut to modify
      * \param sequence new shortcut key sequence
-     * @see setObjectKeySequence()
+     * \see setObjectKeySequence()
      */
     bool setKeySequence( QShortcut *shortcut, const QString &sequence );
 
     /** Returns the object (QAction or QShortcut) matching the specified key sequence,
      * \param sequence key sequence to find
      * \returns object with matching sequence, or nullptr if not found
-     * @see actionForSequence()
-     * @see shortcutForSequence()
+     * \see actionForSequence()
+     * \see shortcutForSequence()
      */
     QObject *objectForSequence( const QKeySequence &sequence ) const;
 
     /** Returns the action which is associated for a shortcut sequence, or nullptr if no action is associated.
      * \param sequence shortcut key sequence
-     * @see objectForSequence()
-     * @see shortcutForSequence()
+     * \see objectForSequence()
+     * \see shortcutForSequence()
      */
     QAction *actionForSequence( const QKeySequence &sequence ) const;
 
     /** Returns the shortcut which is associated for a key sequence, or nullptr if no shortcut is associated.
      * \param sequence shortcut key sequence
-     * @see objectForSequence()
-     * @see actionForSequence()
+     * \see objectForSequence()
+     * \see actionForSequence()
      */
     QShortcut *shortcutForSequence( const QKeySequence &sequence ) const;
 
     /** Returns an action by its name, or nullptr if nothing found.
      * \param name action name. Must match QAction's text.
-     * @see shortcutByName()
+     * \see shortcutByName()
      */
     QAction *actionByName( const QString &name ) const;
 
     /** Returns a shortcut by its name, or nullptr if nothing found
      * \param name shortcut name. Must match QShortcut's QObject::objectName() property.
-     * @see actionByName()
+     * \see actionByName()
      */
     QShortcut *shortcutByName( const QString &name ) const;
 

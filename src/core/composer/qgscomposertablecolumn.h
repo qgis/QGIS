@@ -44,28 +44,28 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * \param columnElem an existing QDomElement in which to store the column's properties.
      * \param doc QDomDocument for the destination xml.
      * \since QGIS 2.3
-     * @see readXml
+     * \see readXml
      */
     virtual bool writeXml( QDomElement &columnElem, QDomDocument &doc ) const;
 
     /** Reads the column's properties from xml.
      * \param columnElem a QDomElement holding the column's desired properties.
      * \since QGIS 2.3
-     * @see writeXml
+     * \see writeXml
      */
     virtual bool readXml( const QDomElement &columnElem );
 
     /** Returns the width for a column.
      * \returns column width in mm, or 0 if column width is automatically calculated.
      * \since QGIS 2.5
-     * @see setWidth
+     * \see setWidth
      */
     double width() const { return mWidth; }
 
     /** Sets the width for a column.
      * \param width column width in mm, or 0 if column width is to be automatically calculated.
      * \since QGIS 2.5
-     * @see width
+     * \see width
      */
     void setWidth( const double width ) { mWidth = width; }
 
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * header cell.
      * \returns Heading for column.
      * \since QGIS 2.3
-     * @see setHeading
+     * \see setHeading
      */
     QString heading() const { return mHeading; }
 
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * header cell.
      * \param heading Heading for column.
      * \since QGIS 2.3
-     * @see heading
+     * \see heading
      */
     void setHeading( const QString &heading ) { mHeading = heading; }
 
@@ -89,8 +89,8 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * used for drawing column values within cells.
      * \returns horizontal alignment.
      * \since QGIS 2.3
-     * @see setHAlignment
-     * @see vAlignment
+     * \see setHAlignment
+     * \see vAlignment
      */
     Qt::AlignmentFlag hAlignment() const { return mHAlignment; }
 
@@ -98,8 +98,8 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * used for drawing column values within cells.
      * \param alignment horizontal alignment for cell.
      * \since QGIS 2.3
-     * @see hAlignment
-     * @see setVAlignment
+     * \see hAlignment
+     * \see setVAlignment
      */
     void setHAlignment( Qt::AlignmentFlag alignment ) { mHAlignment = alignment; }
 
@@ -107,8 +107,8 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * used for drawing column values within cells.
      * \returns vertical alignment.
      * \since QGIS 2.12
-     * @see setVAlignment
-     * @see hAlignment
+     * \see setVAlignment
+     * \see hAlignment
      */
     Qt::AlignmentFlag vAlignment() const { return mVAlignment; }
 
@@ -116,8 +116,8 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * used for drawing column values within cells.
      * \param alignment vertical alignment for cell.
      * \since QGIS 2.12
-     * @see vAlignment
-     * @see setHAlignment
+     * \see vAlignment
+     * \see setHAlignment
      */
     void setVAlignment( Qt::AlignmentFlag alignment ) { mVAlignment = alignment; }
 
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * \returns attribute name or expression text for column
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable
-     * @see setAttribute
+     * \see setAttribute
      */
     QString attribute() const { return mAttribute; }
 
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * \param attribute attribute name or expression text for column
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable
-     * @see attribute
+     * \see attribute
      */
     void setAttribute( const QString &attribute ) { mAttribute = attribute; }
 
@@ -144,8 +144,8 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * \returns sort order for column
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable
-     * @see setSortOrder
-     * @see sortByRank
+     * \see setSortOrder
+     * \see sortByRank
      */
     Qt::SortOrder sortOrder() const { return mSortOrder; }
 
@@ -154,8 +154,8 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * \param sortOrder sort order for column
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable
-     * @see sortOrder
-     * @see setSortByRank
+     * \see sortOrder
+     * \see setSortByRank
      */
     void setSortOrder( Qt::SortOrder sortOrder ) { mSortOrder = sortOrder; }
 
@@ -168,8 +168,8 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * sorted.
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable
-     * @see setSortByRank
-     * @see sortOrder
+     * \see setSortByRank
+     * \see sortOrder
      */
     int sortByRank() const { return mSortByRank; }
 
@@ -182,8 +182,8 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * sorted.
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable
-     * @see sortByRank
-     * @see setSortOrder
+     * \see sortByRank
+     * \see setSortOrder
      */
     void setSortByRank( int sortByRank ) { mSortByRank = sortByRank; }
 

@@ -59,13 +59,13 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     /**
      * Sets the title used in the expression builder dialog
      * \param title dialog title
-     * @see expressionDialogTitle()
+     * \see expressionDialogTitle()
      */
     void setExpressionDialogTitle( const QString &title );
 
     /**
      * Returns the title used for the expression dialog.
-     * @see setExpressionDialogTitle()
+     * \see setExpressionDialogTitle()
      */
     QString expressionDialogTitle() const { return mExpressionDialogTitle; }
 
@@ -88,13 +88,13 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
      * This will also automatically register the layer as expression context generator if
      * no generator has been set before or the previous layer has been used as generator.
      *
-     * @see registerExpressionContextGenerator
+     * \see registerExpressionContextGenerator
      */
     void setLayer( QgsVectorLayer *layer );
 
     /**
      * Returns the current expression shown in the widget.
-     * @see setExpression()
+     * \see setExpression()
      */
     QString expression() const;
 
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     /**
      * Sets the current expression to show in the widget.
      * \param expression expression string
-     * @see expression()
+     * \see expression()
      */
     void setExpression( const QString &expression );
 

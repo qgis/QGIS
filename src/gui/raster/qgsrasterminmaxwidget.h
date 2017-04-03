@@ -49,14 +49,14 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
      * map extent from the canvas. If a canvas is set it will take precedence over any extent
      * set from calling setExtent().
      * \param canvas map canvas
-     * @see mapCanvas()
+     * \see mapCanvas()
      * \since QGIS 2.16
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
     /** Returns the map canvas associated with the widget.
-     * @see setMapCanvas()
-     * @see canvasExtent()
+     * \see setMapCanvas()
+     * \see canvasExtent()
      * \since QGIS 2.16
      */
     QgsMapCanvas *mapCanvas();

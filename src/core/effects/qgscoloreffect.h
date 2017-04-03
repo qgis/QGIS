@@ -53,7 +53,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      * \param brightness Valid values are between -255 and 255, where 0 represents
      * no change, negative values indicate darkening and positive values indicate
      * lightening
-     * @see setBrightness
+     * \see setBrightness
      */
     void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
 
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      * \returns brightness value. Values are between -255 and 255, where 0 represents
      * no change, negative values indicate darkening and positive values indicate
      * lightening
-     * @see setBrightness
+     * \see setBrightness
      */
     int brightness() const { return mBrightness; }
 
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      * \param contrast Valid values are between -100 and 100, where 0 represents
      * no change, negative values indicate less contrast and positive values indicate
      * greater contrast
-     * @see setContrast
+     * \see setContrast
      */
     void setContrast( int contrast ) { mContrast = qBound( -100, contrast, 100 ); }
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      * \returns contrast value. Values are between -100 and 100, where 0 represents
      * no change, negative values indicate less contrast and positive values indicate
      * greater contrast
-     * @see setContrast
+     * \see setContrast
      */
     int contrast() const { return mContrast; }
 
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      * \param saturation Valid values are between 0 and 2.0, where 1.0 represents
      * no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
      * greater saturation
-     * @see saturation
+     * \see saturation
      */
     void setSaturation( double saturation ) { mSaturation = saturation; }
 
@@ -93,99 +93,99 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      * \returns saturation value. Values are between 0 and 2.0, where 1.0 represents
      * no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
      * greater saturation
-     * @see setSaturation
+     * \see setSaturation
      */
     double saturation() const { return mSaturation; }
 
     /** Sets whether the effect should convert a picture to grayscale.
      * \param grayscaleMode method for grayscale conversion
-     * @see grayscaleMode
+     * \see grayscaleMode
      */
     void setGrayscaleMode( QgsImageOperation::GrayscaleMode grayscaleMode ) { mGrayscaleMode = grayscaleMode; }
 
     /** Returns whether the effect will convert a picture to grayscale.
      * \returns method for grayscale conversion
-     * @see setGrayscaleMode
+     * \see setGrayscaleMode
      */
     QgsImageOperation::GrayscaleMode grayscaleMode() const { return mGrayscaleMode; }
 
     /** Sets whether the effect should colorize a picture.
      * \param colorizeOn set to true to enable colorization
-     * @see colorizeOn
-     * @see setColorizeColor
-     * @see setColorizeStrength
+     * \see colorizeOn
+     * \see setColorizeColor
+     * \see setColorizeStrength
      */
     void setColorizeOn( bool colorizeOn ) { mColorizeOn = colorizeOn; }
 
     /** Returns whether the effect will colorize a picture.
      * \returns true if colorization is enableds
-     * @see setColorizeOn
-     * @see colorizeColor
-     * @see colorizeStrength
+     * \see setColorizeOn
+     * \see colorizeColor
+     * \see colorizeStrength
      */
     bool colorizeOn() const { return mColorizeOn; }
 
     /** Sets the color used for colorizing a picture. This is only used if
      * @link setColorizeOn @endlink is set to true.
      * \param colorizeColor colorization color
-     * @see colorizeColor
-     * @see setColorizeOn
-     * @see setColorizeStrength
+     * \see colorizeColor
+     * \see setColorizeOn
+     * \see setColorizeStrength
      */
     void setColorizeColor( const QColor &colorizeColor );
 
     /** Returns the color used for colorizing a picture. This is only used if
      * @link colorizeOn @endlink is set to true.
      * \returns colorization color
-     * @see setColorizeColor
-     * @see colorizeOn
-     * @see colorizeStrength
+     * \see setColorizeColor
+     * \see colorizeOn
+     * \see colorizeStrength
      */
     QColor colorizeColor() const { return mColorizeColor; }
 
     /** Sets the strength for colorizing a picture. This is only used if
      * @link setColorizeOn @endlink is set to true.
      * \param colorizeStrength colorization strength, between 0 and 100
-     * @see colorizeStrength
-     * @see setColorizeOn
-     * @see setColorizeColor
+     * \see colorizeStrength
+     * \see setColorizeOn
+     * \see setColorizeColor
      */
     void setColorizeStrength( int colorizeStrength ) { mColorizeStrength = colorizeStrength; }
 
     /** Returns the strength used for colorizing a picture. This is only used if
      * @link setColorizeOn @endlink is set to true.
      * \returns colorization strength, between 0 and 100
-     * @see setColorizeStrengths
-     * @see colorizeOn
-     * @see colorizeColor
+     * \see setColorizeStrengths
+     * \see colorizeOn
+     * \see colorizeColor
      */
     int colorizeStrength() const { return mColorizeStrength; }
 
     /** Sets the transparency for the effect
      * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
-     * @see transparency
+     * \see transparency
      */
     void setTransparency( const double transparency ) { mTransparency = transparency; }
 
     /** Returns the transparency for the effect
      * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
-     * @see setTransparency
+     * \see setTransparency
      */
     double transparency() const { return mTransparency; }
 
     /** Sets the blend mode for the effect
      * \param mode blend mode used for drawing the effect on to a destination
      * paint device
-     * @see blendMode
+     * \see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
     /** Returns the blend mode for the effect
      * \returns blend mode used for drawing the effect on to a destination
      * paint device
-     * @see setBlendMode
+     * \see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 

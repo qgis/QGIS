@@ -42,13 +42,13 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
     static QgsFeatureRenderer *create( QDomElement &symbologyElem );
 
     /** Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
-     * @see setClusterSymbol()
+     * \see setClusterSymbol()
     */
     QgsMarkerSymbol *clusterSymbol();
 
     /** Sets the symbol for rendering clustered groups.
      * \param symbol new cluster symbol. Ownership is transferred to the renderer.
-     * @see clusterSymbol()
+     * \see clusterSymbol()
     */
     void setClusterSymbol( QgsMarkerSymbol *symbol );
 

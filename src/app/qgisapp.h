@@ -364,7 +364,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *createPopupMenu() override;
 
     /**
-     * Access the vector layer tools. This will be an instance of {@see QgsGuiVectorLayerTools}
+     * Access the vector layer tools. This will be an instance of {\see QgsGuiVectorLayerTools}
      * by default.
      * \returns  The vector layer tools
      */

@@ -92,7 +92,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * \param fieldIdx  The field index
      * \returns          True if the type is supported for this field
      *
-     * @see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
+     * \see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
      */
     inline bool supportsField( const QgsVectorLayer *vl, int fieldIdx ) { return fieldScore( vl, fieldIdx ) > 0; }
 
@@ -122,7 +122,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * \returns 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
      *      taken by default). The default implementation returns 5..
      *
-     * @see supportsField( QgsVectorLayer* vl, fieldIdx )
+     * \see supportsField( QgsVectorLayer* vl, fieldIdx )
      */
     virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const;
 

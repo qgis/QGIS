@@ -48,13 +48,13 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
 
     /**
      * Sets the file path for the source HTML file.
-     * @see sourceFile()
+     * \see sourceFile()
      */
     void setSourceFile( const QString &htmlFile );
 
     /**
      * Returns the file path for the source HTML file.
-     * @see setSourceFile()
+     * \see setSourceFile()
      */
     QString sourceFile() const { return mHtmlFile; }
 

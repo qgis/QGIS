@@ -134,42 +134,42 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
     virtual QgsStringMap properties() const override;
 
     /** Returns the gradient start color.
-     * @see setColor1()
-     * @see color2()
+     * \see setColor1()
+     * \see color2()
      */
     QColor color1() const { return mColor1; }
 
     /** Returns the gradient end color.
-     * @see setColor2()
-     * @see color1()
+     * \see setColor2()
+     * \see color1()
      */
     QColor color2() const { return mColor2; }
 
     /** Sets the gradient start color.
      * \param color start color
-     * @see color1()
-     * @see setColor2()
+     * \see color1()
+     * \see setColor2()
      */
     void setColor1( const QColor &color ) { mColor1 = color; }
 
     /** Sets the gradient end color.
      * \param color end color
-     * @see color2()
-     * @see setColor1()
+     * \see color2()
+     * \see setColor1()
      */
     void setColor2( const QColor &color ) { mColor2 = color; }
 
     /** Returns true if the gradient is using discrete interpolation, rather than
      * smoothly interpolating between colors.
-     * @see setDiscrete()
+     * \see setDiscrete()
      */
     bool isDiscrete() const { return mDiscrete; }
 
     /** Sets whether the gradient should use discrete interpolation, rather than
      * smoothly interpolating between colors.
      * \param discrete set to true to use discrete interpolation
-     * @see convertToDiscrete()
-     * @see isDiscrete()
+     * \see convertToDiscrete()
+     * \see isDiscrete()
      */
     void setDiscrete( bool discrete ) { mDiscrete = discrete; }
 
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
      * interpolation.
      * \param discrete set to true to convert the gradient stops to discrete,
      * or false to convert them to smooth interpolation
-     * @see isDiscrete()
+     * \see isDiscrete()
      */
     void convertToDiscrete( bool discrete );
 
@@ -185,23 +185,23 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
      * \param stops list of stops. Any existing color stops will be replaced. The stop
      * list will be automatically reordered so that stops are listed in ascending offset
      * order.
-     * @see stops()
+     * \see stops()
      */
     void setStops( const QgsGradientStopsList &stops );
 
     /** Returns the list of intermediate gradient stops for the ramp.
-     * @see setStops()
+     * \see setStops()
      */
     QgsGradientStopsList stops() const { return mStops; }
 
     /** Returns any additional info attached to the gradient ramp (e.g., authorship notes)
-     * @see setInfo()
+     * \see setInfo()
      */
     QgsStringMap info() const { return mInfo; }
 
     /** Sets additional info to attach to the gradient ramp (e.g., authorship notes)
      * \param info map of string info to attach
-     * @see info()
+     * \see info()
      */
     void setInfo( const QgsStringMap &info ) { mInfo = info; }
 
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
     /** Returns a new QgsLimitedRandomColorRamp color ramp created using the properties encoded in a string
      * map.
      * \param properties color ramp properties
-     * @see properties()
+     * \see properties()
      */
     static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
 
@@ -280,32 +280,32 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
     void updateColors();
 
     /** Returns the minimum hue for generated colors
-     * @see setHueMin()
+     * \see setHueMin()
      */
     int hueMin() const { return mHueMin; }
 
     /** Returns the maximum hue for generated colors
-     * @see setHueMax()
+     * \see setHueMax()
      */
     int hueMax() const { return mHueMax; }
 
     /** Returns the minimum saturation for generated colors
-     * @see setSatMin()
+     * \see setSatMin()
      */
     int satMin() const { return mSatMin; }
 
     /** Returns the maximum saturation for generated colors
-     * @see setSatMax()
+     * \see setSatMax()
      */
     int satMax() const { return mSatMax; }
 
     /** Returns the minimum value for generated colors
-     * @see setValMin()
+     * \see setValMin()
      */
     int valMin() const { return mValMin; }
 
     /** Returns the maximum value for generated colors
-     * @see setValMax()
+     * \see setValMax()
      */
     int valMax() const { return mValMax; }
 
@@ -314,32 +314,32 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
     void setCount( int val ) { mCount = val; }
 
     /** Sets the minimum hue for generated colors
-     * @see hueMin()
+     * \see hueMin()
      */
     void setHueMin( int val ) { mHueMin = val; }
 
     /** Sets the maximum hue for generated colors
-     * @see hueMax()
+     * \see hueMax()
      */
     void setHueMax( int val ) { mHueMax = val; }
 
     /** Sets the minimum saturation for generated colors
-     * @see satMin()
+     * \see satMin()
      */
     void setSatMin( int val ) { mSatMin = val; }
 
     /** Sets the maximum saturation for generated colors
-     * @see satMax()
+     * \see satMax()
      */
     void setSatMax( int val ) { mSatMax = val; }
 
     /** Sets the minimum value for generated colors
-     * @see valMin()
+     * \see valMin()
      */
     void setValMin( int val ) { mValMin = val; }
 
     /** Sets the maximum value for generated colors
-     * @see valMax()
+     * \see valMax()
      */
     void setValMax( int val ) { mValMax = val; }
 
@@ -411,18 +411,18 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
     /** Returns a new QgsPresetSchemeColorRamp color ramp created using the properties encoded in a string
      * map.
      * \param properties color ramp properties
-     * @see properties()
+     * \see properties()
      */
     static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
 
     /** Sets the list of colors used by the ramp.
      * \param colors list of colors
-     * @see colors()
+     * \see colors()
      */
     bool setColors( const QgsNamedColorList &colors, const QString & = QString(), const QColor & = QColor() ) override { mColors = colors; return true; }
 
     /** Returns the list of colors used by the ramp.
-     * @see setColors()
+     * \see setColors()
      */
     QList< QColor > colors() const;
 
@@ -471,7 +471,7 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
     /** Returns a new QgsColorBrewerColorRamp color ramp created using the properties encoded in a string
      * map.
      * \param properties color ramp properties
-     * @see properties()
+     * \see properties()
      */
     static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
 
@@ -484,38 +484,38 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
     virtual int count() const override { return mColors; }
 
     /** Returns the name of the color brewer color scheme.
-     * @see setSchemeName()
+     * \see setSchemeName()
      */
     QString schemeName() const { return mSchemeName; }
 
     /** Returns the number of colors in the ramp.
-     * @see setColors()
+     * \see setColors()
      */
     int colors() const { return mColors; }
 
     /** Sets the name of the color brewer color scheme.
      * \param schemeName scheme name, must match a valid color brewer scheme name
-     * @see schemeName()
-     * @see listSchemeNames()
+     * \see schemeName()
+     * \see listSchemeNames()
      */
     void setSchemeName( const QString &schemeName ) { mSchemeName = schemeName; loadPalette(); }
 
     /** Sets the number of colors in the ramp.
      * \param colors number of colors. Must match a valid value for the scheme,
      * which can be retrieved using listSchemeVariants()
-     * @see colors()
+     * \see colors()
      */
     void setColors( int colors ) { mColors = colors; loadPalette(); }
 
     /** Returns a list of all valid color brewer scheme names.
-     * @see listSchemeVariants()
+     * \see listSchemeVariants()
      */
     static QStringList listSchemeNames();
 
     /** Returns a list of the valid variants (numbers of colors) for a specified
      * color brewer scheme name
      * \param schemeName color brewer scheme name
-     * @see listSchemeNames()
+     * \see listSchemeNames()
      */
     static QList<int> listSchemeVariants( const QString &schemeName );
 

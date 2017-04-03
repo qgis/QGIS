@@ -76,14 +76,14 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 
     /** Sets the units for the symbol's width.
      * \param unit symbol units
-     * @see symbolWidthUnit()
-     * @see setSymbolHeightUnit()
+     * \see symbolWidthUnit()
+     * \see setSymbolHeightUnit()
     */
     void setSymbolWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolWidthUnit = unit; }
 
     /** Returns the units for the symbol's width.
-     * @see setSymbolWidthUnit()
-     * @see symbolHeightUnit()
+     * \see setSymbolWidthUnit()
+     * \see symbolHeightUnit()
     */
     QgsUnitTypes::RenderUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
 
@@ -92,14 +92,14 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 
     /** Sets the units for the symbol's height.
      * \param unit symbol units
-     * @see symbolHeightUnit()
-     * @see setSymbolWidthUnit()
+     * \see symbolHeightUnit()
+     * \see setSymbolWidthUnit()
     */
     void setSymbolHeightUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolHeightUnit = unit; }
 
     /** Returns the units for the symbol's height.
-     * @see setSymbolHeightUnit()
-     * @see symbolWidthUnit()
+     * \see setSymbolHeightUnit()
+     * \see symbolWidthUnit()
     */
     QgsUnitTypes::RenderUnit symbolHeightUnit() const { return mSymbolHeightUnit; }
 
@@ -108,12 +108,12 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 
     /** Sets the units for the symbol's stroke width.
      * \param unit symbol units
-     * @see strokeWidthUnit()
+     * \see strokeWidthUnit()
     */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /** Returns the units for the symbol's stroke width.
-     * @see setStrokeWidthUnit()
+     * \see setStrokeWidthUnit()
     */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 

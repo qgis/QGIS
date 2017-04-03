@@ -92,7 +92,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QString disabledMessage() const;
 
     /** The standard authentication database file in ~/.qgis3/ or defined location
-     * @see QgsApplication::qgisAuthDatabaseFilePath
+     * \see QgsApplication::qgisAuthDatabaseFilePath
      */
     const QString authenticationDatabasePath() const { return mAuthDbPath; }
 
@@ -500,7 +500,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Custom logging signal to relay to console output and QgsMessageLog
-     * @see QgsMessageLog
+     * \see QgsMessageLog
      * \param message Message to send
      * \param tag Associated tag (title)
      * \param level Message log level

@@ -205,13 +205,13 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
      * \param effect QgsPaintEffect for modification by the widget. If the effect
      * is not a QgsEffectStack, it will be automatically converted to an effect
      * stack consisting of the original effect
-     * @see paintEffect
+     * \see paintEffect
      */
     void setPaintEffect( QgsPaintEffect *effect );
 
     /** Returns paint effect attached to the widget
      * \returns QgsPaintEffect modified by the widget
-     * @see setPaintEffect
+     * \see setPaintEffect
      */
     QgsPaintEffect *paintEffect() const;
 

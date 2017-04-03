@@ -65,14 +65,14 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., count).
-     * @see setStatistics
+     * \see setStatistics
      */
     Statistics statistics() const { return mStatistics; }
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., count).
      * \param stats flags for statistics to calculate
-     * @see statistics
+     * \see statistics
      */
     void setStatistics( Statistics stats ) { mStatistics = stats; }
 
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     /** Calculates summary statistics for a list of variants. Any non-datetime variants will be
      * ignored.
      * \param values list of variants
-     * @see addValue()
+     * \see addValue()
      */
     void calculate( const QVariantList &values );
 
@@ -96,14 +96,14 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      * to clear the results from any previous calculations
      * \note finalize() must be called after adding the final value and before
      * retrieving calculated statistics.
-     * @see calculate()
-     * @see finalize()
+     * \see calculate()
+     * \see finalize()
      */
     void addValue( const QVariant &value );
 
     /** Must be called after adding all datetimes with addValue() and before retrieving
      * any calculated datetime statistics.
-     * @see addValue()
+     * \see addValue()
      */
     void finalize();
 

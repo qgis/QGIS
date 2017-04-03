@@ -152,7 +152,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
       QgsFeature feature;             //< one feature (for attriute-based rendering)
     };
     typedef QVector<CombinedFeature> FeatureCategoryVector;
-    //! Where features are stored, based on the index of their symbol category @see mSymbolCategories
+    //! Where features are stored, based on the index of their symbol category \see mSymbolCategories
     FeatureCategoryVector mFeaturesCategories;
 
     //! Maps a category to an index

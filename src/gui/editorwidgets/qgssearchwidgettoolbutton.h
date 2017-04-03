@@ -42,22 +42,22 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
      * (see activeFlags()) which are not present in the new available filter
      * flags will be cleared;
      * \param flags available flags to show in widget
-     * @see availableFlags()
-     * @see setActiveFlags()
-     * @see setDefaultFlags()
+     * \see availableFlags()
+     * \see setActiveFlags()
+     * \see setDefaultFlags()
      */
     void setAvailableFlags( QgsSearchWidgetWrapper::FilterFlags flags );
 
     /** Sets the default filter flags to show in the widget.
      * \param flags default flags to show in widget
-     * @see setAvailableFlags()
-     * @see setActiveFlags()
+     * \see setAvailableFlags()
+     * \see setActiveFlags()
      */
     void setDefaultFlags( QgsSearchWidgetWrapper::FilterFlags flags );
 
     /** Returns the available filter flags shown in the widget.
-     * @see setAvailableFlags()
-     * @see activeFlags()
+     * \see setAvailableFlags()
+     * \see activeFlags()
      */
     QgsSearchWidgetWrapper::FilterFlags availableFlags() const { return mAvailableFilterFlags; }
 
@@ -65,9 +65,9 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
      * which are not present in the available filter flags (see availableFlags())
      * will not be set.
      * \param flags active flags to show in widget
-     * @see toggleFlag()
-     * @see activeFlags()
-     * @see setAvailableFlags()
+     * \see toggleFlag()
+     * \see activeFlags()
+     * \see setAvailableFlags()
      */
     void setActiveFlags( QgsSearchWidgetWrapper::FilterFlags flags );
 
@@ -76,35 +76,35 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
      * will be ignore. Other flags may be cleared if they conflict with the newly
      * toggled flag.
      * \param flag flag to toggle
-     * @see setActiveFlags()
-     * @see activeFlags()
+     * \see setActiveFlags()
+     * \see activeFlags()
      */
     void toggleFlag( QgsSearchWidgetWrapper::FilterFlag flag );
 
     /** Returns the active filter flags shown in the widget.
-     * @see setActiveFlags()
-     * @see toggleFlag()
-     * @see availableFlags()
+     * \see setActiveFlags()
+     * \see toggleFlag()
+     * \see availableFlags()
      */
     QgsSearchWidgetWrapper::FilterFlags activeFlags() const { return mFilterFlags; }
 
     /** Returns true if the widget is set to be included in the search.
-     * @see setInactive()
-     * @see setActive()
+     * \see setInactive()
+     * \see setActive()
      */
     bool isActive() const;
 
   public slots:
 
     /** Sets the search widget as inactive, ie do not search the corresponding field.
-     * @see isActive()
-     * @see setActive()
+     * \see isActive()
+     * \see setActive()
      */
     void setInactive();
 
     /** Sets the search widget as active by selecting the first available search type.
-     * @see isActive()
-     * @see setInactive()
+     * \see isActive()
+     * \see setInactive()
      */
     void setActive();
 

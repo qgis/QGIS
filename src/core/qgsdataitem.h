@@ -90,13 +90,13 @@ class CORE_EXPORT QgsDataItem : public QObject
     /** Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
      * \param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
      * \param refresh - set to true to refresh populated item, emitting relevant signals to the model
-     * @see deleteChildItem()
+     * \see deleteChildItem()
      */
     virtual void addChildItem( QgsDataItem *child, bool refresh = false );
 
     /** Removes and deletes a child item, emitting relevant signals to the model.
      * \param child child to remove. Item must exist as a current child.
-     * @see addChildItem()
+     * \see addChildItem()
      */
     virtual void deleteChildItem( QgsDataItem *child );
 
@@ -119,27 +119,27 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /** Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
      * Subclasses should override this and handleDrop() to accept dropped layers.
-     * @see handleDrop()
+     * \see handleDrop()
      */
     virtual bool acceptDrop() { return false; }
 
     /** Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
      * accept dropped layers.
-     * @see acceptDrop()
+     * \see acceptDrop()
      */
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
 
     /** Returns true if the item may be dragged.
      * Default implementation returns false.
      * A draggable item has to implement mimeUri() that will be used to pass data.
-     * @see mimeUri()
+     * \see mimeUri()
      * \since QGIS 3.0
      */
     virtual bool hasDragEnabled() const { return false; }
 
     /** Return mime URI for the data item.
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
-     * @see hasDragEnabled()
+     * \see hasDragEnabled()
      * \since QGIS 3.0
      */
     virtual QgsMimeDataUtils::Uri mimeUri() const { return QgsMimeDataUtils::Uri(); }
@@ -512,13 +512,13 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 
     /**
      * Adds a new directory to the favorites group.
-     * @see removeDirectory()
+     * \see removeDirectory()
      */
     void addDirectory( const QString &directory );
 
     /**
      * Removes an existing directory from the favorites group.
-     * @see addDirectory()
+     * \see addDirectory()
      */
     void removeDirectory( QgsDirectoryItem *item );
 

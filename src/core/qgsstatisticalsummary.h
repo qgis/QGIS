@@ -75,14 +75,14 @@ class CORE_EXPORT QgsStatisticalSummary
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., sum, min and max).
-     * @see setStatistics
+     * \see setStatistics
      */
     Statistics statistics() const { return mStatistics; }
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., sum, min and max).
      * \param stats flags for statistics to calculate
-     * @see statistics
+     * \see statistics
      */
     void setStatistics( Statistics stats ) { mStatistics = stats; }
 
@@ -104,9 +104,9 @@ class CORE_EXPORT QgsStatisticalSummary
      * to clear the results from any previous calculations
      * \note finalize() must be called after adding the final value and before
      * retrieving calculated statistics.
-     * @see calculate()
-     * @see addVariant()
-     * @see finalize()
+     * \see calculate()
+     * \see addVariant()
+     * \see finalize()
      * \since QGIS 2.16
      */
     void addValue( double value );
@@ -120,17 +120,17 @@ class CORE_EXPORT QgsStatisticalSummary
      * to clear the results from any previous calculations
      * \note finalize() must be called after adding the final value and before
      * retrieving calculated statistics.
-     * @see addValue()
-     * @see calculate()
-     * @see finalize()
+     * \see addValue()
+     * \see calculate()
+     * \see finalize()
      * \since QGIS 2.16
      */
     void addVariant( const QVariant &value );
 
     /** Must be called after adding all values with addValues() and before retrieving
      * any calculated statistics.
-     * @see addValue()
-     * @see addVariant()
+     * \see addValue()
+     * \see addVariant()
      * \since QGIS 2.16
      */
     void finalize();
@@ -184,14 +184,14 @@ class CORE_EXPORT QgsStatisticalSummary
     /** Returns population standard deviation. This is only calculated if Statistic::StDev has
      * been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
      * be calculated.
-     * @see sampleStDev
+     * \see sampleStDev
      */
     double stDev() const { return mStdev; }
 
     /** Returns sample standard deviation. This is only calculated if Statistic::StDev has
      * been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
      * be calculated.
-     * @see stDev
+     * \see stDev
      */
     double sampleStDev() const { return mSampleStdev; }
 
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * This is only calculated if Statistic::Minority has been specified in the constructor
      * or via setStatistics. A NaN value may be returned if the minority cannot
      * be calculated.
-     * @see majority
+     * \see majority
      */
     double minority() const { return mMinority; }
 
@@ -213,31 +213,31 @@ class CORE_EXPORT QgsStatisticalSummary
      * This is only calculated if Statistic::Majority has been specified in the constructor
      * or via setStatistics. A NaN value may be returned if the majority cannot
      * be calculated.
-     * @see minority
+     * \see minority
      */
     double majority() const { return mMajority; }
 
     /** Returns the first quartile of the values. The quartile is calculated using the
      * "Tukey's hinges" method. A NaN value may be returned if the first quartile cannot
      * be calculated.
-     * @see thirdQuartile
-     * @see interQuartileRange
+     * \see thirdQuartile
+     * \see interQuartileRange
      */
     double firstQuartile() const { return mFirstQuartile; }
 
     /** Returns the third quartile of the values. The quartile is calculated using the
      * "Tukey's hinges" method. A NaN value may be returned if the third quartile cannot
      * be calculated.
-     * @see firstQuartile
-     * @see interQuartileRange
+     * \see firstQuartile
+     * \see interQuartileRange
      */
     double thirdQuartile() const { return mThirdQuartile; }
 
     /** Returns the inter quartile range of the values. The quartiles are calculated using the
      * "Tukey's hinges" method. A NaN value may be returned if the IQR cannot
      * be calculated.
-     * @see firstQuartile
-     * @see thirdQuartile
+     * \see firstQuartile
+     * \see thirdQuartile
      */
     double interQuartileRange() const { return qIsNaN( mThirdQuartile ) || qIsNaN( mFirstQuartile ) ? std::numeric_limits<double>::quiet_NaN() : mThirdQuartile - mFirstQuartile; }
 

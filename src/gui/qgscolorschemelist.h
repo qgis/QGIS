@@ -28,7 +28,7 @@ class QgsPanelWidget;
 /** \ingroup gui
  * \class QgsColorSwatchDelegate
  * A delegate for showing a color swatch in a list
- * @see QgsColorSchemeList
+ * \see QgsColorSchemeList
  * \since QGIS 2.5
  */
 class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
 /** \ingroup gui
  * \class QgsColorSchemeModel
  * A model for colors in a color scheme
- * @see QgsColorSchemeList
+ * \see QgsColorSchemeList
  * \since QGIS 2.5
  */
 class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
@@ -105,13 +105,13 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
 
     /** Get the current color scheme context for the model
      * \returns context string which is passed to scheme for color generation
-     * @see baseColor
+     * \see baseColor
      */
     QString context() const { return mContext; }
 
     /** Get the base color for the color scheme used by the model
      * \returns base color which is passed to scheme for color generation
-     * @see context
+     * \see context
      */
     QColor baseColor() const { return mBaseColor; }
 
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
 /** \ingroup gui
  * \class QgsColorSchemeList
  * An editable list of color swatches, taken from an associated QgsColorScheme.
- * @see QgsColorSchemeList
+ * \see QgsColorSchemeList
  * \since QGIS 2.5
  */
 class GUI_EXPORT QgsColorSchemeList: public QTreeView
@@ -170,13 +170,13 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
 
     /** Import colors from a GPL palette file to the list
      * \param file file to import
-     * @see exportColorsToGpl
+     * \see exportColorsToGpl
      */
     bool importColorsFromGpl( QFile &file );
 
     /** Export colors to a GPL palette file from the list
      * \param file destination file
-     * @see importColorsFromGpl
+     * \see importColorsFromGpl
      */
     bool exportColorsToGpl( QFile &file );
 
@@ -187,7 +187,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
 
     /** Returns the scheme currently selected in the list.
      * \since QGIS 3.0
-     * @see setScheme()
+     * \see setScheme()
      */
     QgsColorScheme *scheme();
 
@@ -197,7 +197,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      * \param scheme QgsColorScheme for colors to show in the list
      * \param context context string provided to color scheme
      * \param baseColor base color for color scheme
-     * @see scheme()
+     * \see scheme()
      */
     void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 
@@ -213,24 +213,24 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
     /** Pastes colors from clipboard to the list
-     * @see copyColors
+     * \see copyColors
      */
     void pasteColors();
 
     /** Copies colors from the list to the clipboard
-     * @see pasteColors
+     * \see pasteColors
      */
     void copyColors();
 
     /** Displays a file picker dialog allowing users to import colors into the list from a file.
      * \since QGIS 3.0
-     * @see showExportColorsDialog()
+     * \see showExportColorsDialog()
      */
     void showImportColorsDialog();
 
     /** Displays a file picker dialog allowing users to export colors from the list into a file.
      * \since QGIS 3.0
-     * @see showImportColorsDialog()
+     * \see showImportColorsDialog()
      */
     void showExportColorsDialog();
 

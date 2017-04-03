@@ -119,7 +119,7 @@ class CORE_EXPORT QgsTask : public QObject
      * time. Any subtasks owned by this task will also be canceled.
      * Derived classes must ensure that the base class implementation is called
      * from any overridden version.
-     * @see isCanceled()
+     * \see isCanceled()
      */
     virtual void cancel();
 
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsTask : public QObject
      * (ie it is already running or has finished) then calling this has no effect.
      * Calling this method only has an effect for tasks which are managed
      * by a QgsTaskManager.
-     * @see unhold()
+     * \see unhold()
      */
     void hold();
 
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsTask : public QObject
      * Releases the task from being held. For tasks managed by a QgsTaskManager
      * calling this will re-add them to the queue. If the
      * task in not currently being held then calling this has no effect.
-     * @see hold()
+     * \see hold()
      */
     void unhold();
 
@@ -173,14 +173,14 @@ class CORE_EXPORT QgsTask : public QObject
     /**
      * Sets a list of layers on which the task depends. The task will automatically
      * be canceled if any of these layers are about to be removed.
-     * @see dependentLayerIds()
+     * \see dependentLayerIds()
      */
     void setDependentLayers( const QList<QgsMapLayer *> &dependentLayers );
 
     /**
      * Returns the list of layers on which the task depends. The task will automatically
      * be canceled if any of these layers are about to be removed.
-     * @see setDependentLayers()
+     * \see setDependentLayers()
      */
     QList< QgsMapLayer * > dependentLayers() const;
 
@@ -432,24 +432,24 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * be canceled if any of these layers are above to be removed.
      * \param taskId task ID
      * \returns list of layers
-     * @see tasksDependentOnLayer()
+     * \see tasksDependentOnLayer()
      */
     QList< QgsMapLayer * > dependentLayers( long taskId ) const;
 
     /**
      * Returns a list of tasks which depend on a layer.
-     * @see dependentLayers()
+     * \see dependentLayers()
      */
     QList< QgsTask * > tasksDependentOnLayer( QgsMapLayer *layer ) const;
 
     /** Returns a list of the active (queued or running) tasks.
-     * @see countActiveTasks()
+     * \see countActiveTasks()
      */
     QList< QgsTask * > activeTasks() const;
 
     /** Returns the number of active (queued or running) tasks.
-     * @see activeTasks()
-     * @see countActiveTasksChanged()
+     * \see activeTasks()
+     * \see countActiveTasksChanged()
      */
     int countActiveTasks() const;
 
@@ -479,11 +479,11 @@ class CORE_EXPORT QgsTaskManager : public QObject
     void taskAboutToBeDeleted( long taskId );
 
     //! Emitted when all tasks are complete
-    //! @see countActiveTasksChanged()
+    //! \see countActiveTasksChanged()
     void allTasksFinished();
 
     //! Emitted when the number of active tasks changes
-    //! @see countActiveTasks()
+    //! \see countActiveTasks()
     void countActiveTasksChanged( int count );
 
   private slots:

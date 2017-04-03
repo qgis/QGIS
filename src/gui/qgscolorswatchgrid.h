@@ -24,7 +24,7 @@
  * \class QgsColorSwatchGrid
  * A grid of color swatches, which allows for user selection. Colors are taken from an
  * associated QgsColorScheme.
- * @see QgsColorGridAction
+ * \see QgsColorGridAction
  * \since QGIS 2.5
  */
 class GUI_EXPORT QgsColorSwatchGrid : public QWidget
@@ -48,25 +48,25 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
 
     /** Get the current context for the grid
      * \returns context string which is passed to scheme for color generation
-     * @see setContext
+     * \see setContext
      */
     QString context() const { return mContext; }
 
     /** Sets the current context for the grid
      * \param context string which is passed to scheme for color generation
-     * @see context
+     * \see context
      */
     void setContext( const QString &context );
 
     /** Get the base color for the widget
      * \returns base color which is passed to scheme for color generation
-     * @see setBaseColor
+     * \see setBaseColor
      */
     QColor baseColor() const { return mBaseColor; }
 
     /** Sets the base color for the widget
      * \param baseColor base color to pass to scheme for color generation
-     * @see baseColor
+     * \see baseColor
      */
     void setBaseColor( const QColor &baseColor );
 
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
 /** \ingroup gui
  * \class QgsColorSwatchGridAction
  * A color swatch grid which can be embedded into a menu.
- * @see QgsColorSwatchGrid
+ * \see QgsColorSwatchGrid
  * \since QGIS 2.5
  */
 
@@ -170,25 +170,25 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
 
     /** Sets the base color for the color grid
      * \param baseColor base color to pass to scheme for color generation
-     * @see baseColor
+     * \see baseColor
      */
     void setBaseColor( const QColor &baseColor );
 
     /** Get the base color for the color grid
      * \returns base color which is passed to scheme for color generation
-     * @see setBaseColor
+     * \see setBaseColor
      */
     QColor baseColor() const;
 
     /** Get the current context for the color grid
      * \returns context string which is passed to scheme for color generation
-     * @see setContext
+     * \see setContext
      */
     QString context() const;
 
     /** Sets the current context for the color grid
      * \param context string which is passed to scheme for color generation
-     * @see context
+     * \see context
      */
     void setContext( const QString &context );
 
@@ -197,14 +197,14 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * \param dismiss set to true (default) to immediately close the menu when a color is selected
      * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
      * stay open.
-     * @see dismissOnColorSelection()
+     * \see dismissOnColorSelection()
      * \since QGIS 2.14
      */
     void setDismissOnColorSelection( bool dismiss ) { mDismissOnColorSelection = dismiss; }
 
     /** Returns whether the parent menu will be dismissed after a color is selected from the
      * action's color widget.
-     * @see setDismissOnColorSelection
+     * \see setDismissOnColorSelection
      * \since QGIS 2.14
      */
     bool dismissOnColorSelection() const { return mDismissOnColorSelection; }

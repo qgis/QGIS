@@ -140,7 +140,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * Returns true if the render job was able to use a cached labeling solution.
      * If so, any previously stored labeling results (see takeLabelingResults())
      * should be retained.
-     * @see takeLabelingResults()
+     * \see takeLabelingResults()
      * \since QGIS 3.0
      */
     virtual bool usedCachedLabels() const = 0;
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     /**
      * Get pointer to internal labeling engine (in order to get access to the results).
      * This should not be used if cached labeling was redrawn - see usedCachedLabels().
-     * @see usedCachedLabels()
+     * \see usedCachedLabels()
      */
     virtual QgsLabelingResults *takeLabelingResults() = 0;
 

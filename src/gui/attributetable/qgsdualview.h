@@ -90,13 +90,13 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Change the current view mode.
      *
      * \param view The view mode to set
-     * @see view()
+     * \see view()
      */
     void setView( ViewMode view );
 
     /**
      * Returns the current view mode.
-     * @see setView()
+     * \see setView()
      * \since QGIS 2.16
      */
     ViewMode view() const;

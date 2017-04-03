@@ -106,14 +106,14 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * Enable or disable the caching of geometries
      *
      * \param cacheGeometry    Enable or disable the caching of geometries
-     * @see cacheGeometry()
+     * \see cacheGeometry()
      */
     void setCacheGeometry( bool cacheGeometry );
 
     /**
      * Returns true if the cache will fetch and cache feature geometries.
      * \since QGIS 3.0
-     * @see setCacheGeometry()
+     * \see setCacheGeometry()
      */
     bool cacheGeometry() const { return mCacheGeometry; }
 
@@ -143,14 +143,14 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * \param fullCache   True: enable full caching, False: disable full caching
      * \note when a cache is invalidated() (e.g. by adding an attribute to a layer) this setting
      * is reset. A full cache rebuild must be performed by calling setFullCache( true ) again.
-     * @see hasFullCache()
+     * \see hasFullCache()
      */
     void setFullCache( bool fullCache );
 
     /** Returns true if the cache is complete, ie it contains all features. This may happen as
      * a result of a call to setFullCache() or by through a feature request which resulted in
      * all available features being cached.
-     * @see setFullCache()
+     * \see setFullCache()
      * \since QGIS 3.0
      */
     bool hasFullCache() const { return mFullCache; }
@@ -215,13 +215,13 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * Check if a certain feature id is cached.
      * \param  fid The feature id to look for
      * \returns True if this id is in the cache
-     * @see cachedFeatureIds()
+     * \see cachedFeatureIds()
      */
     bool isFidCached( const QgsFeatureId fid ) const;
 
     /** Returns the set of feature IDs for features which are cached.
      * \since QGIS 3.0
-     * @see isFidCached()
+     * \see isFidCached()
      */
     QgsFeatureIds cachedFeatureIds() const { return mCache.keys().toSet(); }
 

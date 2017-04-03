@@ -87,7 +87,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     /**
      * Returns a QgsProperty object encapsulating the current state of the
      * widget.
-     * @see setToProperty()
+     * \see setToProperty()
      */
     QgsProperty toProperty() const;
 
@@ -121,27 +121,27 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     /**
      * Returns usage information for the property.
-     * @see setUsageInfo()
+     * \see setUsageInfo()
      */
     QString usageInfo() const { return mUsageInfo; }
 
     /**
      * Set the usage information for the property.
-     * @see usageInfo()
+     * \see usageInfo()
      */
     void setUsageInfo( const QString &info ) { mUsageInfo = info; updateGui(); }
 
     /**
      * Sets the vector layer associated with the button. This controls which fields are
      * displayed within the widget's pop up menu.
-     * @see vectorLayer()
+     * \see vectorLayer()
      */
     void setVectorLayer( const QgsVectorLayer *layer );
 
     /**
      * Returns the vector layer associated with the button. This controls which fields are
      * displayed within the widget's pop up menu.
-     * @see setVectorLayer()
+     * \see setVectorLayer()
      */
     const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 

@@ -238,55 +238,55 @@ class CORE_EXPORT QgsProperty
 
     /**
      * Returns whether the property is currently active.
-     * @see setActive()
+     * \see setActive()
      */
     bool isActive() const;
 
     /**
      * Sets whether the property is currently active.
-     * @see isActive()
+     * \see isActive()
      */
     void setActive( bool active );
 
     /**
      * Sets the static value for the property. Calling this will
      * transform the property into an StaticProperty.
-     * @see staticValue()
+     * \see staticValue()
      */
     void setStaticValue( const QVariant &value );
 
     /**
      * Returns the current static value for the property. If the property
      * is not a StaticProperty this will return an invalid variant.
-     * @see setStaticValue()
+     * \see setStaticValue()
      */
     QVariant staticValue() const;
 
     /**
      * Sets the field name the property references. Calling this will
      * transform the property into an FieldBasedProperty.
-     * @see field()
+     * \see field()
      */
     void setField( const QString &field );
 
     /**
      * Returns the current field name the property references. If the property
      * is not a FieldBasedProperty this will return an empty string.
-     * @see setField()
+     * \see setField()
      */
     QString field() const;
 
     /**
      * Sets the expression to use for the property value. Calling this will
      * transform the property into an ExpressionBasedProperty.
-     * @see expressionString()
+     * \see expressionString()
      */
     void setExpressionString( const QString &expression );
 
     /**
      * Returns the expression used for the property value. If the property
      * is not a ExpressionBasedProperty this will return an empty string.
-     * @see setExpressionString()
+     * \see setExpressionString()
      */
     QString expressionString() const;
 
@@ -317,11 +317,11 @@ class CORE_EXPORT QgsProperty
      * \param defaultValue default value to return if the property is not active or cannot be calculated
      * \param ok if specified, will be set to true if conversion was successful
      * \returns calculated value for property
-     * @see valueAsString()
-     * @see valueAsColor()
-     * @see valueAsDouble()
-     * @see valueAsInt()
-     * @see valueAsBool()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsInt()
+     * \see valueAsBool()
      */
     QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok = nullptr ) const;
 
@@ -331,11 +331,11 @@ class CORE_EXPORT QgsProperty
      * \param defaultString default string to return if the property cannot be calculated as a string
      * \param ok if specified, will be set to true if conversion was successful
      * \returns value parsed to string
-     * @see value()
-     * @see valueAsColor()
-     * @see valueAsDouble()
-     * @see valueAsInt()
-     * @see valueAsBool()
+     * \see value()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsInt()
+     * \see valueAsBool()
      */
     QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok = nullptr ) const;
 
@@ -345,11 +345,11 @@ class CORE_EXPORT QgsProperty
      * \param defaultColor default color to return if the property cannot be calculated as a color
      * \param ok if specified, will be set to true if conversion was successful
      * \returns value parsed to color
-     * @see value()
-     * @see valueAsString()
-     * @see valueAsDouble()
-     * @see valueAsInt()
-     * @see valueAsBool()
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsDouble()
+     * \see valueAsInt()
+     * \see valueAsBool()
      */
     QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok = nullptr ) const;
 
@@ -359,11 +359,11 @@ class CORE_EXPORT QgsProperty
      * \param defaultValue default double to return if the property cannot be calculated as a double
      * \param ok if specified, will be set to true if conversion was successful
      * \returns value parsed to double
-     * @see value()
-     * @see valueAsString()
-     * @see valueAsColor()
-     * @see valueAsInt()
-     * @see valueAsBool()
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsInt()
+     * \see valueAsBool()
      */
     double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok = nullptr ) const;
 
@@ -373,11 +373,11 @@ class CORE_EXPORT QgsProperty
      * \param defaultValue default integer to return if the property cannot be calculated as an integer
      * \param ok if specified, will be set to true if conversion was successful
      * \returns value parsed to integer
-     * @see value()
-     * @see valueAsString()
-     * @see valueAsColor()
-     * @see valueAsDouble()
-     * @see valueAsBool()
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsBool()
      */
     int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok = nullptr ) const;
 
@@ -387,11 +387,11 @@ class CORE_EXPORT QgsProperty
      * \param defaultValue default boolean to return if the property cannot be calculated as an boolean
      * \param ok if specified, will be set to true if conversion was successful
      * \returns value parsed to boolean
-     * @see value()
-     * @see valueAsString()
-     * @see valueAsColor()
-     * @see valueAsDouble()
-     * @see valueAsInt()
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsInt()
      */
     bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok = nullptr ) const;
 
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsProperty
      * Saves this property to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      *
-     * @see loadVariant()
+     * \see loadVariant()
      */
     QVariant toVariant() const;
 
@@ -407,7 +407,7 @@ class CORE_EXPORT QgsProperty
      * Loads this property from a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::readVariant to load it from an XML document.
      *
-     * @see toVariant()
+     * \see toVariant()
      */
     bool loadVariant( const QVariant &property );
 
@@ -415,13 +415,13 @@ class CORE_EXPORT QgsProperty
      * Sets an optional transformer to use for manipulating the calculated values for the property.
      * \param transformer transformer to install. Ownership is transferred to the property, and any
      * existing transformer will be deleted. Set to null to remove an existing transformer.
-     * @see transformer()
+     * \see transformer()
      */
     void setTransformer( QgsPropertyTransformer *transformer );
 
     /**
      * Returns the existing transformer used for manipulating the calculated values for the property, if set.
-     * @see setTransformer()
+     * \see setTransformer()
      */
     const QgsPropertyTransformer *transformer() const;
 

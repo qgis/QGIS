@@ -162,15 +162,15 @@ class CORE_EXPORT QgsExpressionContextScope
      * with the same name is already set then its value is overwritten, otherwise a new variable is added to the scope.
      * \param name variable name
      * \param value variable value
-     * @see addVariable()
+     * \see addVariable()
      */
     void setVariable( const QString &name, const QVariant &value );
 
     /** Adds a variable into the context scope. If a variable with the same name is already set then its
      * value is overwritten, otherwise a new variable is added to the scope.
      * \param variable definition of variable to insert
-     * @see setVariable()
-     * @see addFunction()
+     * \see setVariable()
+     * \see addFunction()
      */
     void addVariable( const QgsExpressionContextScope::StaticVariable &variable );
 
@@ -184,29 +184,29 @@ class CORE_EXPORT QgsExpressionContextScope
     /** Tests whether a variable with the specified name exists in the scope.
      * \param name variable name
      * \returns true if matching variable was found in the scope
-     * @see variable()
-     * @see hasFunction()
+     * \see variable()
+     * \see hasFunction()
      */
     bool hasVariable( const QString &name ) const;
 
     /** Retrieves a variable's value from the scope.
      * \param name variable name
      * \returns variable value, or invalid QVariant if matching variable could not be found
-     * @see hasVariable()
-     * @see function()
+     * \see hasVariable()
+     * \see function()
      */
     QVariant variable( const QString &name ) const;
 
     /** Returns a list of variable names contained within the scope.
-     * @see functionNames()
-     * @see filteredVariableNames()
+     * \see functionNames()
+     * \see filteredVariableNames()
      */
     QStringList variableNames() const;
 
     /** Returns a filtered and sorted list of variable names contained within the scope.
      * Hidden variable names will be excluded, and the list will be sorted so that
      * read only variables are listed first.
-     * @see variableNames()
+     * \see variableNames()
      */
     QStringList filteredVariableNames() const;
 
@@ -224,44 +224,44 @@ class CORE_EXPORT QgsExpressionContextScope
     /** Tests whether a function with the specified name exists in the scope.
      * \param name function name
      * \returns true if matching function was found in the scope
-     * @see function()
-     * @see hasFunction()
+     * \see function()
+     * \see hasFunction()
      */
     bool hasFunction( const QString &name ) const;
 
     /** Retrieves a function from the scope.
      * \param name function name
      * \returns function, or null if matching function could not be found
-     * @see hasFunction()
-     * @see functionNames()
-     * @see variable()
+     * \see hasFunction()
+     * \see functionNames()
+     * \see variable()
      */
     QgsExpression::Function *function( const QString &name ) const;
 
     /** Retrieves a list of names of functions contained in the scope.
-     * @see function()
-     * @see variableNames()
+     * \see function()
+     * \see variableNames()
      */
     QStringList functionNames() const;
 
     /** Adds a function to the scope.
      * \param name function name
      * \param function function to insert. Ownership is transferred to the scope.
-     * @see addVariable()
+     * \see addVariable()
      */
     void addFunction( const QString &name, QgsScopedExpressionFunction *function );
 
     /**
      * Returns true if the scope has a feature associated with it.
      * \since QGIS 3.0
-     * @see feature()
+     * \see feature()
      */
     bool hasFeature() const { return mHasFeature; }
 
     /**
      * Sets the feature associated with the scope.
-     * @see setFeature()
-     * @see hasFeature()
+     * \see setFeature()
+     * \see hasFeature()
      * \since QGIS 3.0
      */
     QgsFeature feature() const { return mFeature; }
@@ -269,16 +269,16 @@ class CORE_EXPORT QgsExpressionContextScope
     /** Convenience function for setting a feature for the scope. Any existing
      * feature set by the scope will be overwritten.
      * \param feature feature for scope
-     * @see removeFeature()
-     * @see feature()
+     * \see removeFeature()
+     * \see feature()
      */
     void setFeature( const QgsFeature &feature ) { mHasFeature = true; mFeature = feature; }
 
     /**
      * Removes any feature associated with the scope.
      * \since QGIS 3.0
-     * @see setFeature()
-     * @see hasFeature()
+     * \see setFeature()
+     * \see hasFeature()
      */
     void removeFeature() { mHasFeature = false; mFeature = QgsFeature(); }
 
@@ -335,8 +335,8 @@ class CORE_EXPORT QgsExpressionContext
     /** Check whether a variable is specified by any scope within the context.
      * \param name variable name
      * \returns true if variable is set
-     * @see variable()
-     * @see variableNames()
+     * \see variable()
+     * \see variableNames()
      */
     bool hasVariable( const QString &name ) const;
 
@@ -345,8 +345,8 @@ class CORE_EXPORT QgsExpressionContext
      * variable set.
      * \param name variable name
      * \returns variable value if matching variable exists in the context, otherwise an invalid QVariant
-     * @see hasVariable()
-     * @see variableNames()
+     * \see hasVariable()
+     * \see variableNames()
      */
     QVariant variable( const QString &name ) const;
 
@@ -361,14 +361,14 @@ class CORE_EXPORT QgsExpressionContext
      * user. This is used by the expression builder to more prominently display the
      * variable.
      * \param name variable name
-     * @see setHighlightedVariables()
+     * \see setHighlightedVariables()
      */
     bool isHighlightedVariable( const QString &name ) const;
 
     /** Sets the list of variable names within the context intended to be highlighted to the user. This
      * is used by the expression builder to more prominently display these variables.
      * \param variableNames variable names to highlight
-     * @see isHighlightedVariable()
+     * \see isHighlightedVariable()
      */
     void setHighlightedVariables( const QStringList &variableNames );
 
@@ -392,12 +392,12 @@ class CORE_EXPORT QgsExpressionContext
     /** Returns the scope at the specified index within the context.
      * \param index index of scope
      * \returns matching scope, or null if none found
-     * @see lastScope()
+     * \see lastScope()
      */
     QgsExpressionContextScope *scope( int index );
 
     /** Returns the last scope added to the context.
-     * @see scope()
+     * \see scope()
      */
     QgsExpressionContextScope *lastScope();
 
@@ -421,17 +421,17 @@ class CORE_EXPORT QgsExpressionContext
 
     /** Returns a list of variables names set by all scopes in the context.
      * \returns list of unique variable names
-     * @see filteredVariableNames
-     * @see functionNames
-     * @see hasVariable
-     * @see variable
+     * \see filteredVariableNames
+     * \see functionNames
+     * \see hasVariable
+     * \see variable
      */
     QStringList variableNames() const;
 
     /** Returns a filtered list of variables names set by all scopes in the context. The included
      * variables are those which should be seen by users.
      * \returns filtered list of unique variable names
-     * @see variableNames
+     * \see variableNames
      */
     QStringList filteredVariableNames() const;
 
@@ -445,13 +445,13 @@ class CORE_EXPORT QgsExpressionContext
     /** Checks whether a specified function is contained in the context.
      * \param name function name
      * \returns true if context provides a matching function
-     * @see function
+     * \see function
      */
     bool hasFunction( const QString &name ) const;
 
     /** Retrieves a list of function names contained in the context.
-     * @see function()
-     * @see variableNames()
+     * \see function()
+     * \see variableNames()
      */
     QStringList functionNames() const;
 
@@ -460,7 +460,7 @@ class CORE_EXPORT QgsExpressionContext
      * function set.
      * \param name function name
      * \returns function if contained by the context, otherwise null.
-     * @see hasFunction
+     * \see hasFunction
      */
     QgsExpression::Function *function( const QString &name ) const;
 
@@ -498,19 +498,19 @@ class CORE_EXPORT QgsExpressionContext
      * will be set within the last scope of the context, so will override any
      * existing features within the context.
      * \param feature feature for context
-     * @see feature()
+     * \see feature()
      */
     void setFeature( const QgsFeature &feature );
 
     /**
      * Returns true if the context has a feature associated with it.
      * \since QGIS 3.0
-     * @see feature()
+     * \see feature()
      */
     bool hasFeature() const;
 
     /** Convenience function for retrieving the feature for the context, if set.
-     * @see setFeature
+     * \see setFeature
      */
     QgsFeature feature() const;
 
@@ -518,12 +518,12 @@ class CORE_EXPORT QgsExpressionContext
      * will be set within the last scope of the context, so will override any
      * existing fields within the context.
      * \param fields fields for context
-     * @see fields()
+     * \see fields()
      */
     void setFields( const QgsFields &fields );
 
     /** Convenience function for retrieving the fields for the context, if set.
-     * @see setFields
+     * \see setFields
      */
     QgsFields fields() const;
 
@@ -539,18 +539,18 @@ class CORE_EXPORT QgsExpressionContext
      * expression context.
      * \param key unique key for retrieving cached value
      * \param value value to cache
-     * @see hasCachedValue()
-     * @see cachedValue()
-     * @see clearCachedValues()
+     * \see hasCachedValue()
+     * \see cachedValue()
+     * \see clearCachedValues()
      * \since QGIS 2.16
      */
     void setCachedValue( const QString &key, const QVariant &value ) const;
 
     /** Returns true if the expression context contains a cached value with a matching key.
      * \param key unique key used to store cached value
-     * @see setCachedValue()
-     * @see cachedValue()
-     * @see clearCachedValues()
+     * \see setCachedValue()
+     * \see cachedValue()
+     * \see clearCachedValues()
      * \since QGIS 2.16
      */
     bool hasCachedValue( const QString &key ) const;
@@ -559,17 +559,17 @@ class CORE_EXPORT QgsExpressionContext
      * of an expensive expression sub-calculation.
      * \param key unique key used to store cached value
      * \returns matching cached value, or invalid QVariant if not set
-     * @see setCachedValue()
-     * @see hasCachedValue()
-     * @see clearCachedValues()
+     * \see setCachedValue()
+     * \see hasCachedValue()
+     * \see clearCachedValues()
      * \since QGIS 2.16
      */
     QVariant cachedValue( const QString &key ) const;
 
     /** Clears all cached values from the context.
-     * @see setCachedValue()
-     * @see hasCachedValue()
-     * @see cachedValue()
+     * \see setCachedValue()
+     * \see hasCachedValue()
+     * \see cachedValue()
      * \since QGIS 2.16
      */
     void clearCachedValues() const;
@@ -618,7 +618,7 @@ class CORE_EXPORT QgsExpressionContextUtils
 
     /** Creates a new scope which contains variables and functions relating to the global QGIS context.
      * For instance, QGIS version numbers and variables specified through QGIS options.
-     * @see setGlobalVariable()
+     * \see setGlobalVariable()
      */
     static QgsExpressionContextScope *globalScope();
 
@@ -626,23 +626,23 @@ class CORE_EXPORT QgsExpressionContextUtils
      * globalScope().
      * \param name variable name
      * \param value variable value
-     * @see setGlobalVariable()
-     * @see globalScope()
+     * \see setGlobalVariable()
+     * \see globalScope()
      */
     static void setGlobalVariable( const QString &name, const QVariant &value );
 
     /** Sets all global context variables. Existing global variables will be removed and replaced
      * with the variables specified.
      * \param variables new set of global variables
-     * @see setGlobalVariable()
-     * @see globalScope()
+     * \see setGlobalVariable()
+     * \see globalScope()
      */
     static void setGlobalVariables( const QVariantMap &variables );
 
     /** Creates a new scope which contains variables and functions relating to a QGIS project.
      * For instance, project path and title, and variables specified through the project properties.
      * \param project What project to use
-     * @see setProjectVariable()
+     * \see setProjectVariable()
      */
     static QgsExpressionContextScope *projectScope( const QgsProject *project );
 
@@ -651,8 +651,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param project Project to apply changes to
      * \param name variable name
      * \param value variable value
-     * @see setProjectVariables()
-     * @see projectScope()
+     * \see setProjectVariables()
+     * \see projectScope()
      */
     static void setProjectVariable( QgsProject *project, const QString &name, const QVariant &value );
 
@@ -660,8 +660,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      * with the variables specified.
      * \param project Project to apply changes to
      * \param variables new set of project variables
-     * @see setProjectVariable()
-     * @see projectScope()
+     * \see setProjectVariable()
+     * \see projectScope()
      */
     static void setProjectVariables( QgsProject *project, const QVariantMap &variables );
 
@@ -680,8 +680,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param layer map layer
      * \param name variable name
      * \param value variable value
-     * @see setLayerVariables()
-     * @see layerScope()
+     * \see setLayerVariables()
+     * \see layerScope()
      */
     static void setLayerVariable( QgsMapLayer *layer, const QString &name, const QVariant &value );
 
@@ -689,8 +689,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      * with the variables specified.
      * \param layer map layer
      * \param variables new set of layer variables
-     * @see setLayerVariable()
-     * @see layerScope()
+     * \see setLayerVariable()
+     * \see layerScope()
      */
     static void setLayerVariables( QgsMapLayer *layer, const QVariantMap &variables );
 
@@ -718,8 +718,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param composition target composition
      * \param name variable name
      * \param value variable value
-     * @see setCompositionVariables()
-     * @see compositionScope()
+     * \see setCompositionVariables()
+     * \see compositionScope()
      */
     static void setCompositionVariable( QgsComposition *composition, const QString &name, const QVariant &value );
 
@@ -727,8 +727,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      * with the variables specified.
      * \param composition target composition
      * \param variables new set of layer variables
-     * @see setCompositionVariable()
-     * @see compositionScope()
+     * \see setCompositionVariable()
+     * \see compositionScope()
      */
     static void setCompositionVariables( QgsComposition *composition, const QVariantMap &variables );
 
@@ -749,8 +749,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param composerItem target composer item
      * \param name variable name
      * \param value variable value
-     * @see setComposerItemVariables()
-     * @see composerItemScope()
+     * \see setComposerItemVariables()
+     * \see composerItemScope()
      */
     static void setComposerItemVariable( QgsComposerItem *composerItem, const QString &name, const QVariant &value );
 
@@ -758,8 +758,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      * with the variables specified.
      * \param composerItem target composer item
      * \param variables new set of layer variables
-     * @see setComposerItemVariable()
-     * @see composerItemScope()
+     * \see setComposerItemVariable()
+     * \see composerItemScope()
      */
     static void setComposerItemVariables( QgsComposerItem *composerItem, const QVariantMap &variables );
 

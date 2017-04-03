@@ -76,7 +76,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     /** Returns a quoted column identifier, in the format expected by the provider.
      * Derived classes should override this if special handling of column identifiers
      * is required.
-     * @see quotedValue()
+     * \see quotedValue()
      */
     virtual QString quotedIdentifier( const QString &identifier );
 
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * Derived classes should override this if special handling of attribute values is required.
      * \param value value to quote
      * \param ok wil be set to true if value can be compiled
-     * @see quotedIdentifier()
+     * \see quotedIdentifier()
      */
     virtual QString quotedValue( const QVariant &value, bool &ok );
 

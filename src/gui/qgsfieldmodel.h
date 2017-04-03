@@ -66,27 +66,27 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 
     /**
      * Sets whether custom expressions are accepted and displayed in the model.
-     * @see allowExpression()
-     * @see setExpression()
+     * \see allowExpression()
+     * \see setExpression()
      */
     void setAllowExpression( bool allowExpression );
 
     /**
      * Returns true if the model allows custom expressions to be created and displayed.
-     * @see setAllowExpression()
+     * \see setAllowExpression()
      */
     bool allowExpression() { return mAllowExpression; }
 
     /**
      * Sets whether an optional empty field ("not set") option is present in the model.
-     * @see allowEmptyFieldName()
+     * \see allowEmptyFieldName()
      * \since QGIS 3.0
      */
     void setAllowEmptyFieldName( bool allowEmpty );
 
     /**
      * Returns true if the model allows the empty field ("not set") choice.
-     * @see setAllowEmptyFieldName()
+     * \see setAllowEmptyFieldName()
      * \since QGIS 3.0
      */
     bool allowEmptyFieldName() const { return mAllowEmpty; }
@@ -99,22 +99,22 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 
     /**
      * Sets a single expression to be added after the fields at the end of the model.
-     * @see setAllowExpression()
-     * @see allowExpression()
-     * @see removeExpression()
+     * \see setAllowExpression()
+     * \see allowExpression()
+     * \see removeExpression()
      */
     void setExpression( const QString &expression );
 
     /**
      * Removes any custom expression from the model.
-     * @see setExpression()
-     * @see allowExpression()
+     * \see setExpression()
+     * \see allowExpression()
      */
     void removeExpression();
 
     /**
      * Returns the layer associated with the model.
-     * @see setLayer()
+     * \see setLayer()
      */
     QgsVectorLayer *layer() { return mLayer; }
 
@@ -129,7 +129,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 
     /**
      * Set the layer from which fields are displayed.
-     * @see layer()
+     * \see layer()
      */
     void setLayer( QgsVectorLayer *layer );
 

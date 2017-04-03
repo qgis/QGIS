@@ -42,14 +42,14 @@ class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
     /**
      * Returns the text document which will be rendered
      * within the annotation.
-     * @see setDocument()
+     * \see setDocument()
      */
     const QTextDocument *document() const;
 
     /**
      * Sets the text document which will be rendered
      * within the annotation. Ownership is not transferred.
-     * @see document()
+     * \see document()
      */
     void setDocument( const QTextDocument *doc );
 

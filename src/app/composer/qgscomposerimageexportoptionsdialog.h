@@ -41,13 +41,13 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
 
     /** Sets the initial resolution displayed in the dialog.
      * \param resolution default resolution in DPI
-     * @see resolution()
+     * \see resolution()
      */
     void setResolution( int resolution );
 
     /** Returns the selected resolution from the dialog.
      * \returns image resolution in DPI
-     * @see setResolution()
+     * \see setResolution()
      */
     int resolution() const;
 
@@ -58,23 +58,23 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
     void setImageSize( QSizeF size );
 
     /** Returns the user-set image width in pixels.
-     * @see imageHeight
+     * \see imageHeight
      */
     int imageWidth() const;
 
     /** Returns the user-set image height in pixels.
-     * @see imageWidth
+     * \see imageWidth
      */
     int imageHeight() const;
 
     /** Sets whether the crop to contents option should be checked in the dialog
      * \param crop set to true to check crop to contents
-     * @see cropToContents()
+     * \see cropToContents()
      */
     void setCropToContents( bool crop );
 
     /** Returns whether the crop to contents option is checked in the dialog.
-     * @see setCropToContents()
+     * \see setCropToContents()
      */
     bool cropToContents() const;
 

@@ -257,22 +257,22 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     /** Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
      * the classes' color.
-     * @see setSourceSymbol()
-     * @see sourceColorRamp()
+     * \see setSourceSymbol()
+     * \see sourceColorRamp()
      */
     QgsSymbol *sourceSymbol();
 
     /** Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
      * the classes' color.
      * \param sym source symbol, ownership is transferred to the renderer
-     * @see sourceSymbol()
-     * @see setSourceColorRamp()
+     * \see sourceSymbol()
+     * \see setSourceColorRamp()
      */
     void setSourceSymbol( QgsSymbol *sym );
 
     /** Returns the source color ramp, from which each classes' color is derived.
-     * @see setSourceColorRamp()
-     * @see sourceSymbol()
+     * \see setSourceColorRamp()
+     * \see sourceSymbol()
      */
     QgsColorRamp *sourceColorRamp();
 
@@ -290,7 +290,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     /** Update all the symbols but leave breaks and colors. This method also sets the source
      * symbol for the renderer.
      * \param sym source symbol to use for classes. Ownership is not transferred.
-     * @see setSourceSymbol()
+     * \see setSourceSymbol()
      */
     void updateSymbols( QgsSymbol *sym );
 

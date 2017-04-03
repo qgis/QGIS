@@ -55,17 +55,17 @@ class CORE_EXPORT QgsLayerDefinition
      *  Layer definitions can be used to load a layer and styling all from a single file.
      *
      *  This is a low-level routine that does not write layer tree.
-     *  @see exportLayerDefinition()
+     *  \see exportLayerDefinition()
      */
     static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer *> &layers, const QgsPathResolver &pathResolver );
 
     //! Creates new layers from a layer definition document.
     //! This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
-    //! @see loadLayerDefinition()
+    //! \see loadLayerDefinition()
     static QList<QgsMapLayer *> loadLayerDefinitionLayers( QDomDocument &document, const QgsPathResolver &pathResolver );
     //! Creates new layers from a layer definition file (.QLR)
     //! This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
-    //! @see loadLayerDefinition()
+    //! \see loadLayerDefinition()
     static QList<QgsMapLayer *> loadLayerDefinitionLayers( const QString &qlrfile );
 
     /**

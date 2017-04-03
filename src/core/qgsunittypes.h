@@ -153,7 +153,7 @@ class CORE_EXPORT QgsUnitTypes
     /** Encodes a distance unit to a string.
      * \param unit unit to encode
      * \returns encoded string
-     * @see decodeDistanceUnit()
+     * \see decodeDistanceUnit()
      */
     Q_INVOKABLE static QString encodeUnit( QgsUnitTypes::DistanceUnit unit );
 
@@ -161,19 +161,19 @@ class CORE_EXPORT QgsUnitTypes
      * \param string string to decode
      * \param ok optional boolean, will be set to true if string was converted successfully
      * \returns decoded units
-     * @see encodeUnit()
+     * \see encodeUnit()
      */
     Q_INVOKABLE static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString &string, bool *ok = 0 );
 
     /** Returns a translated string representing a distance unit.
      * \param unit unit to convert to string
-     * @see stringToDistanceUnit()
+     * \see stringToDistanceUnit()
      */
     Q_INVOKABLE static QString toString( QgsUnitTypes::DistanceUnit unit );
 
     /** Returns a translated abbreviation representing a distance unit.
      * \param unit unit to convert to string
-     * @see stringToDistanceUnit()
+     * \see stringToDistanceUnit()
      *
      * \since QGIS 3.0
      */
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsUnitTypes
     /** Converts a translated string to a distance unit.
      * \param string string representing a distance unit
      * \param ok optional boolean, will be set to true if string was converted successfully
-     * @see toString()
+     * \see toString()
      */
     Q_INVOKABLE static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString &string, bool *ok = 0 );
 
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsUnitTypes
     /** Encodes an areal unit to a string.
      * \param unit unit to encode
      * \returns encoded string
-     * @see decodeAreaUnit()
+     * \see decodeAreaUnit()
     */
     Q_INVOKABLE static QString encodeUnit( AreaUnit unit );
 
@@ -210,19 +210,19 @@ class CORE_EXPORT QgsUnitTypes
      * \param string string to decode
      * \param ok optional boolean, will be set to true if string was converted successfully
      * \returns decoded units
-     * @see encodeUnit()
+     * \see encodeUnit()
     */
     Q_INVOKABLE static AreaUnit decodeAreaUnit( const QString &string, bool *ok = 0 );
 
     /** Returns a translated string representing an areal unit.
      * \param unit unit to convert to string
-     * @see stringToAreaUnit()
+     * \see stringToAreaUnit()
      */
     Q_INVOKABLE static QString toString( AreaUnit unit );
 
     /** Returns a translated abbreviation representing an areal unit.
      * \param unit unit to convert to string
-     * @see stringToAreaUnit()
+     * \see stringToAreaUnit()
      *
      * \since QGIS 3.0
      */
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsUnitTypes
     /** Converts a translated string to an areal unit.
      * \param string string representing an areal unit
      * \param ok optional boolean, will be set to true if string was converted successfully
-     * @see toString()
+     * \see toString()
      */
     Q_INVOKABLE static AreaUnit stringToAreaUnit( const QString &string, bool *ok = 0 );
 
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsUnitTypes
     /** Encodes an angular unit to a string.
      * \param unit unit to encode
      * \returns encoded string
-     * @see decodeAngleUnit()
+     * \see decodeAngleUnit()
     */
     Q_INVOKABLE static QString encodeUnit( AngleUnit unit );
 
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsUnitTypes
      * \param string string to decode
      * \param ok optional boolean, will be set to true if string was converted successfully
      * \returns decoded units
-     * @see encodeUnit()
+     * \see encodeUnit()
     */
     Q_INVOKABLE static AngleUnit decodeAngleUnit( const QString &string, bool *ok = 0 );
 
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsUnitTypes
      * kilometers
      * \returns formatted distance string
      * \since QGIS 3.0
-     * @see formatArea()
+     * \see formatArea()
      */
     Q_INVOKABLE static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
 
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsUnitTypes
      * square kilometers
      * \returns formatted area string
      * \since QGIS 3.0
-     * @see formatDistance()
+     * \see formatDistance()
      */
     Q_INVOKABLE static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
 
@@ -337,7 +337,7 @@ class CORE_EXPORT QgsUnitTypes
     /** Encodes a render unit to a string.
      * \param unit unit to encode
      * \returns encoded string
-     * @see decodeRenderUnit()
+     * \see decodeRenderUnit()
      */
     Q_INVOKABLE static QString encodeUnit( RenderUnit unit );
 
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsUnitTypes
      * \param string string to decode
      * \param ok optional boolean, will be set to true if string was converted successfully
      * \returns decoded units
-     * @see encodeUnit()
+     * \see encodeUnit()
      */
     Q_INVOKABLE static RenderUnit decodeRenderUnit( const QString &string, bool *ok = 0 );
 

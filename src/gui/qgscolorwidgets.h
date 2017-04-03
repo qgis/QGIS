@@ -62,21 +62,21 @@ class GUI_EXPORT QgsColorWidget : public QWidget
 
     /** Returns the current color for the widget
      * \returns current widget color
-     * @see setColor
+     * \see setColor
      */
     QColor color() const;
 
     /** Returns the color component which the widget controls
      * \returns color component for widget
-     * @see setComponent
+     * \see setComponent
      */
     ColorComponent component() const { return mComponent; }
 
     /** Returns the current value of the widget's color component
      * \returns value of color component, or -1 if widget has multiple components or an invalid color
      * set
-     * @see setComponentValue
-     * @see component
+     * \see setComponentValue
+     * \see component
      */
     int componentValue() const;
 
@@ -90,21 +90,21 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     /** Sets the color for the widget
      * \param color widget color
      * \param emitSignals set to true to emit the colorChanged signal after setting color
-     * @see color
+     * \see color
      */
     virtual void setColor( const QColor &color, const bool emitSignals = false );
 
     /** Sets the color component which the widget controls
      * \param component color component for widget
-     * @see component
+     * \see component
      */
     virtual void setComponent( const ColorComponent component );
 
     /** Alters the widget's color by setting the value for the widget's color component
      * \param value value for widget's color component. This value is automatically
      * clipped to the range of valid values for the color component.
-     * @see componentValue
-     * @see setComponent
+     * \see componentValue
+     * \see setComponent
      * \note this method has no effect if the widget is set to the QgsColorWidget::Multiple
      * component
      */
@@ -147,7 +147,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * handles hue values when the color has an ambiguous hue (e.g., black or white shades)
      * \param component color component to return
      * \returns value of color component, or -1 if widget has an invalid color set
-     * @see hue
+     * \see hue
      */
     int componentValue( const ColorComponent component ) const;
 
@@ -185,7 +185,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
 /** \ingroup gui
  * \class QgsColorWidgetAction
  * An action containing a color widget, which can be embedded into a menu.
- * @see QgsColorWidget
+ * \see QgsColorWidget
  * \since QGIS 2.14
  */
 
@@ -211,13 +211,13 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
      * \param dismiss set to true (default) to immediately close the menu when a color is selected
      * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
      * stay open.
-     * @see dismissOnColorSelection()
+     * \see dismissOnColorSelection()
      */
     void setDismissOnColorSelection( bool dismiss ) { mDismissOnColorSelection = dismiss; }
 
     /** Returns whether the parent menu will be dismissed after a color is selected from the
      * action's color widget.
-     * @see setDismissOnColorSelection
+     * \see setDismissOnColorSelection
      */
     bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
 
@@ -461,37 +461,37 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
 
     /** Sets the orientation for the color ramp
      * \param orientation new orientation for the ramp
-     * @see orientation
+     * \see orientation
      */
     void setOrientation( const Orientation orientation );
 
     /** Fetches the orientation for the color ramp
      * \returns orientation for the ramp
-     * @see setOrientation
+     * \see setOrientation
      */
     Orientation orientation() const { return mOrientation; }
 
     /** Sets the margin between the edge of the widget and the ramp
      * \param margin margin around the ramp
-     * @see interiorMargin
+     * \see interiorMargin
      */
     void setInteriorMargin( const int margin );
 
     /** Fetches the margin between the edge of the widget and the ramp
      * \returns margin around the ramp
-     * @see setInteriorMargin
+     * \see setInteriorMargin
      */
     int interiorMargin() const { return mMargin; }
 
     /** Sets whether the ramp should be drawn within a frame
      * \param showFrame set to true to draw a frame around the ramp
-     * @see showFrame
+     * \see showFrame
      */
     void setShowFrame( const bool showFrame );
 
     /** Fetches whether the ramp is drawn within a frame
      * \returns true if a frame is drawn around the ramp
-     * @see setShowFrame
+     * \see setShowFrame
      */
     bool showFrame() const { return mShowFrame; }
 
@@ -573,14 +573,14 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      * alpha values from 0-255 have little meaning to users, so we translate them to 0-100%
      * \param realValue actual value of the color component
      * \returns display value of color component
-     * @see convertDisplayToReal
+     * \see convertDisplayToReal
      */
     int convertRealToDisplay( const int realValue ) const;
 
     /** Converts the display value of a color component to a real value.
      * \param displayValue friendly display value of the color component
      * \returns real value of color component
-     * @see convertRealToDisplay
+     * \see convertRealToDisplay
      */
     int convertDisplayToReal( const int displayValue ) const;
 
@@ -683,8 +683,8 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     /** Returns the secondary color for the widget
      * \returns secondary widget color, or an invalid color if the widget
      * has no secondary color
-     * @see color
-     * @see setColor2
+     * \see color
+     * \see setColor2
      */
     QColor color2() const { return mColor2; }
 
@@ -693,8 +693,8 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     /** Sets the second color for the widget
      * \param color secondary widget color. Set to an invalid color to prevent
      * drawing of a secondary color
-     * @see setColor
-     * @see color2
+     * \see setColor
+     * \see color2
      */
     virtual void setColor2( const QColor &color );
 

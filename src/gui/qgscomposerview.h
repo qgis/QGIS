@@ -160,7 +160,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /** Sets whether a preview effect should be used to alter the view's appearance
      * \param enabled Set to true to enable the preview effect on the view
      * \since QGIS 2.3
-     * @see setPreviewMode
+     * \see setPreviewMode
      */
     void setPreviewModeEnabled( bool enabled );
 
@@ -168,20 +168,20 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
      * if setPreviewMode is set to true.
      * \param mode PreviewMode to be used to draw the view
      * \since QGIS 2.3
-     * @see setPreviewModeEnabled
+     * \see setPreviewModeEnabled
      */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
     /** Sets the map canvas associated with the view. This allows the
      * view to retrieve map settings from the canvas.
      * \since QGIS 3.0
-     * @see mapCanvas()
+     * \see mapCanvas()
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
      * Returns the map canvas associated with the view.
-     * @see setMapCanvas()
+     * \see setMapCanvas()
      * \since QGIS 3.0
      */
     QgsMapCanvas *mapCanvas() const;

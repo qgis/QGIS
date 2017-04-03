@@ -72,8 +72,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * of the exterior ring. For instance, setting a 2D exterior ring on a 3D CurvePolygon will drop the z dimension
      * from the CurvePolygon and all interior rings.
      * \param ring new exterior ring. Ownership is transferred to the CurvePolygon.
-     * @see setInteriorRings()
-     * @see exteriorRing()
+     * \see setInteriorRings()
+     * \see exteriorRing()
      */
     virtual void setExteriorRing( QgsCurve *ring );
 
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * Removes an interior ring from the polygon. The first interior ring has index 0.
      * The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
      * the function will return true.  It is not possible to remove the exterior ring using this method.
-     * @see removeInteriorRings()
+     * \see removeInteriorRings()
      */
     bool removeInteriorRing( int ringIndex );
 
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * parameter is specified then only rings smaller than this minimum
      * area will be removed.
      * \since QGIS 3.0
-     * @see removeInteriorRing()
+     * \see removeInteriorRing()
      */
     void removeInteriorRings( double minimumAllowedArea = -1 );
 

@@ -91,7 +91,7 @@ namespace pal
       QString name() const { return mName; }
 
       /** Returns the layer's arrangement policy.
-       * @see setArrangement
+       * \see setArrangement
        */
       QgsPalLayerSettings::Placement arrangement() const { return mArrangement; }
 
@@ -101,18 +101,18 @@ namespace pal
 
       /** Sets the layer's arrangement policy.
        * \param arrangement arrangement policy
-       * @see arrangement
+       * \see arrangement
        */
       void setArrangement( QgsPalLayerSettings::Placement arrangement ) { mArrangement = arrangement; }
 
       /** Returns the layer's arrangement flags.
-       * @see setArrangementFlags
+       * \see setArrangementFlags
        */
       LineArrangementFlags arrangementFlags() const { return mArrangementFlags; }
 
       /** Sets the layer's arrangement flags.
        * \param flags arrangement flags
-       * @see arrangementFlags
+       * \see arrangementFlags
        */
       void setArrangementFlags( LineArrangementFlags flags ) { mArrangementFlags = flags; }
 
@@ -124,84 +124,84 @@ namespace pal
        * labeling or as obstacles.
        *
        * \param active set to true to make the layer active, or false to deactivate the layer
-       * @see active
+       * \see active
        */
       void setActive( bool active ) { mActive = active; }
 
       /** Returns whether the layer is currently active.
-       * @see setActive
+       * \see setActive
        */
       bool active() const { return mActive; }
 
       /** Sets whether the layer will be labeled.
        * \note Layers are labelled if and only if labelLayer and active are true
        * \param toLabel set to false disable labeling this layer
-       * @see labelLayer
-       * @see setActive
+       * \see labelLayer
+       * \see setActive
        */
       void setLabelLayer( bool toLabel ) { mLabelLayer = toLabel; }
 
       /** Returns whether the layer will be labeled or not.
-       * @see setLabelLayer
+       * \see setLabelLayer
        */
       bool labelLayer() const { return mLabelLayer; }
 
       /** Returns the obstacle type, which controls how features within the layer
        * act as obstacles for labels.
-       * @see setObstacleType
+       * \see setObstacleType
        */
       QgsPalLayerSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
       /** Sets the obstacle type, which controls how features within the layer
        * act as obstacles for labels.
        * \param obstacleType new obstacle type
-       * @see obstacleType
+       * \see obstacleType
        */
       void setObstacleType( QgsPalLayerSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
 
       /** Sets the layer's priority.
        * \param priority layer priority, between 0 and 1. 0 corresponds to highest priority,
        * 1 to lowest priority.
-       * @see priority
+       * \see priority
        */
       void setPriority( double priority );
 
       /** Returns the layer's priority, between 0 and 1. 0 corresponds to highest priority,
        * 1 to lowest priority.
-       * @see setPriority
+       * \see setPriority
        */
       double priority() const { return mDefaultPriority; }
 
       /** Sets the layer's labeling mode.
        * \param mode label mode
-       * @see labelMode
+       * \see labelMode
        */
       void setLabelMode( LabelMode mode ) { mMode = mode; }
 
       /** Returns the layer's labeling mode.
-       * @see setLabelMode
+       * \see setLabelMode
        */
       LabelMode labelMode() const { return mMode; }
 
       /** Sets whether connected lines should be merged before labeling
        * \param merge set to true to merge connected lines
-       * @see mergeConnectedLines
+       * \see mergeConnectedLines
        */
       void setMergeConnectedLines( bool merge ) { mMergeLines = merge; }
 
       /** Returns whether connected lines will be merged before labeling.
-       * @see setMergeConnectedLines
+       * \see setMergeConnectedLines
        */
       bool mergeConnectedLines() const { return mMergeLines; }
 
       /** Sets how upside down labels will be handled within the layer.
        * \param ud upside down label handling mode
-       * @see upsideDownLabels
+       * \see upsideDownLabels
        */
       void setUpsidedownLabels( UpsideDownLabels ud ) { mUpsidedownLabels = ud; }
 
       /** Returns how upside down labels are handled within the layer.
-       * @see setUpsidedownLabels
+       * \see setUpsidedownLabels
        */
       UpsideDownLabels upsidedownLabels() const { return mUpsidedownLabels; }
 
@@ -209,13 +209,13 @@ namespace pal
        * are forced to be placed inside the feature's geometry.
        * \param forceInside set to true to force centroid labels to be within the
        * feature. If set to false then the centroid may fall outside the feature.
-       * @see centroidInside
+       * \see centroidInside
        */
       void setCentroidInside( bool forceInside ) { mCentroidInside = forceInside; }
 
       /** Returns whether labels placed at the centroid of features within the layer
        * are forced to be placed inside the feature's geometry.
-       * @see setCentroidInside
+       * \see setCentroidInside
        */
       bool centroidInside() const { return mCentroidInside; }
 

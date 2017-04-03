@@ -115,21 +115,21 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /**
      * Returns the diagram placement.
-     * @see setPlacement()
+     * \see setPlacement()
      * \since QGIS 2.16
      */
     Placement placement() const { return mPlacement; }
 
     /** Sets the diagram placement.
      * \param value placement value
-     * @see placement()
+     * \see placement()
      * \since QGIS 2.16
      */
     void setPlacement( Placement value ) { mPlacement = value; }
 
     /** Returns the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
-     * @see setLinePlacementFlags()
+     * \see setLinePlacementFlags()
      * \since QGIS 2.16
      */
     LinePlacementFlags linePlacementFlags() const { return mPlacementFlags; }
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /** Sets the the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
      * \param flags placement value
-     * @see getPlacement()
+     * \see getPlacement()
      * \since QGIS 2.16
      */
     void setLinePlacementFlags( LinePlacementFlags flags ) { mPlacementFlags = flags; }
@@ -146,14 +146,14 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * \returns diagram priority, where 0 = low and 10 = high
      * \note placement priority is shared with labeling, so diagrams with a high priority may displace labels
      * and vice-versa
-     * @see setPriority()
+     * \see setPriority()
      * \since QGIS 2.16
      */
     int priority() const { return mPriority; }
 
     /** Sets the diagram priority.
      * \param value priority, where 0 = low and 10 = high
-     * @see priority()
+     * \see priority()
      * \since QGIS 2.16
      */
     void setPriority( int value ) { mPriority = value; }
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * with a lower z-index.
      * \note z-index ordering is shared with labeling, so diagrams with a high z-index may be drawn over labels
      * with a low z-index and vice-versa
-     * @see setZIndex()
+     * \see setZIndex()
      * \since QGIS 2.16
      */
     double zIndex() const { return mZIndex; }
@@ -170,92 +170,92 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /** Sets the diagram z-index. Diagrams (or labels) with a higher z-index are drawn over diagrams
      * with a lower z-index.
      * \param index diagram z-index
-     * @see zIndex()
+     * \see zIndex()
      * \since QGIS 2.16
      */
     void setZIndex( double index ) { mZIndex = index; }
 
     /** Returns whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
-     * @see setIsObstacle()
+     * \see setIsObstacle()
      * \since QGIS 2.16
      */
     bool isObstacle() const { return mObstacle; }
 
     /** Sets whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
      * \param isObstacle set to true for feature to act as obstacle
-     * @see isObstacle()
+     * \see isObstacle()
      * \since QGIS 2.16
      */
     void setIsObstacle( bool isObstacle ) { mObstacle = isObstacle; }
 
     /** Returns the distance between the diagram and the feature (in mm).
-     * @see setDistance()
+     * \see setDistance()
      * \since QGIS 2.16
      */
     double distance() const { return mDistance; }
 
     /** Sets the distance between the diagram and the feature.
      * \param distance distance in mm
-     * @see distance()
+     * \see distance()
      * \since QGIS 2.16
      */
     void setDistance( double distance ) { mDistance = distance; }
 
     /** Returns the diagram renderer associated with the layer.
-     * @see setRenderer()
+     * \see setRenderer()
      * \since QGIS 2.16
      */
     QgsDiagramRenderer *renderer() { return mRenderer; }
 
     /** Returns the diagram renderer associated with the layer.
-     * @see setRenderer()
+     * \see setRenderer()
      * \since QGIS 2.16
      */
     const QgsDiagramRenderer *renderer() const { return mRenderer; }
 
     /** Sets the diagram renderer associated with the layer.
      * \param diagramRenderer diagram renderer. Ownership is transferred to the object.
-     * @see renderer()
+     * \see renderer()
      * \since QGIS 2.16
      */
     void setRenderer( QgsDiagramRenderer *diagramRenderer );
 
     /** Returns the coordinate transform associated with the layer, or an
      * invalid transform if no transformation is required.
-     * @see setCoordinateTransform()
+     * \see setCoordinateTransform()
      * \since QGIS 2.16
      */
     QgsCoordinateTransform coordinateTransform() const { return mCt; }
 
     /** Sets the coordinate transform associated with the layer.
      * \param transform coordinate transform. Ownership is transferred to the object.
-     * @see coordinateTransform()
+     * \see coordinateTransform()
      * \since QGIS 2.16
      */
     void setCoordinateTransform( const QgsCoordinateTransform &transform );
 
     /** Returns whether the layer should show all diagrams, including overlapping diagrams
-     * @see setShowAllDiagrams()
+     * \see setShowAllDiagrams()
      * \since QGIS 2.16
      */
     bool showAllDiagrams() const { return mShowAll; }
 
     /** Sets whether the layer should show all diagrams, including overlapping diagrams
      * \param showAllDiagrams set to true to show all diagrams
-     * @see showAllDiagrams()
+     * \see showAllDiagrams()
      * \since QGIS 2.16
      */
     void setShowAllDiagrams( bool showAllDiagrams ) { mShowAll = showAllDiagrams; }
 
     /**
      * Reads the diagram settings from a DOM element.
-     * @see writeXml()
+     * \see writeXml()
      */
     void readXml( const QDomElement &elem, const QgsVectorLayer *layer );
 
     /**
      * Writes the diagram settings to a DOM element.
-     * @see readXml()
+     * \see readXml()
      */
     void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
 
@@ -275,20 +275,20 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setDataDefinedProperties()
+     * \see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setProperties()
+     * \see setProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the diagram's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
-     * @see dataDefinedProperties()
+     * \see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
@@ -496,14 +496,14 @@ class CORE_EXPORT QgsDiagramRenderer
     /**
      * Reads diagram state from a DOM element. Subclasses should ensure that _readXml() is called
      * by their readXml implementation to restore the general QgsDiagramRenderer settings.
-     * @see writeXml()
+     * \see writeXml()
      */
     virtual void readXml( const QDomElement &elem, const QgsVectorLayer *layer ) = 0;
 
     /**
      * Writes diagram state to a DOM element. Subclasses should ensure that _writeXml() is called
      * by their writeXml implementation to save the general QgsDiagramRenderer settings.
-     * @see readXml()
+     * \see readXml()
      */
     virtual void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const = 0;
 
@@ -515,48 +515,48 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /** Returns true if renderer will show legend items for diagram attributes.
      * \since QGIS 2.16
-     * @see setAttributeLegend()
-     * @see sizeLegend()
+     * \see setAttributeLegend()
+     * \see sizeLegend()
      */
     bool attributeLegend() const { return mShowAttributeLegend; }
 
     /** Sets whether the renderer will show legend items for diagram attributes.
      * \param enabled set to true to show diagram attribute legend
      * \since QGIS 2.16
-     * @see attributeLegend()
-     * @see setSizeLegend()
+     * \see attributeLegend()
+     * \see setSizeLegend()
      */
     void setAttributeLegend( bool enabled ) { mShowAttributeLegend = enabled; }
 
     /** Returns true if renderer will show legend items for diagram sizes.
      * \since QGIS 2.16
-     * @see setSizeLegend()
-     * @see attributeLegend()
-     * @see sizeLegendSymbol()
+     * \see setSizeLegend()
+     * \see attributeLegend()
+     * \see sizeLegendSymbol()
      */
     bool sizeLegend() const { return mShowSizeLegend; }
 
     /** Sets whether the renderer will show legend items for diagram sizes.
      * \param enabled set to true to show diagram size legend
      * \since QGIS 2.16
-     * @see sizeLegend()
-     * @see setAttributeLegend()
-     * @see setSizeLegendSymbol()
+     * \see sizeLegend()
+     * \see setAttributeLegend()
+     * \see setSizeLegendSymbol()
      */
     void setSizeLegend( bool enabled ) { mShowSizeLegend = enabled; }
 
     /** Returns the marker symbol used for rendering the diagram size legend.
      * \since QGIS 2.16
-     * @see setSizeLegendSymbol()
-     * @see sizeLegend()
+     * \see setSizeLegendSymbol()
+     * \see sizeLegend()
      */
     QgsMarkerSymbol *sizeLegendSymbol() const { return mSizeLegendSymbol.get(); }
 
     /** Sets the marker symbol used for rendering the diagram size legend.
      * \param symbol marker symbol, ownership is transferred to the renderer.
      * \since QGIS 2.16
-     * @see sizeLegendSymbol()
-     * @see setSizeLegend()
+     * \see sizeLegendSymbol()
+     * \see setSizeLegend()
      */
     void setSizeLegendSymbol( QgsMarkerSymbol *symbol ) { mSizeLegendSymbol.reset( symbol ); }
 
@@ -584,13 +584,13 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /**
      * Reads internal QgsDiagramRenderer state from a DOM element.
-     * @see _writeXml()
+     * \see _writeXml()
      */
     void _readXml( const QDomElement &elem, const QgsVectorLayer *layer );
 
     /**
      * Writes internal QgsDiagramRenderer diagram state to a DOM element.
-     * @see _readXml()
+     * \see _readXml()
      */
     void _writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
 
@@ -674,14 +674,14 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     /**
      * Returns the field name used for interpolating the diagram size.
-     * @see setClassificationField()
+     * \see setClassificationField()
      * \since QGIS 3.0
      */
     QString classificationField() const { return mInterpolationSettings.classificationField; }
 
     /**
      * Sets the field name used for interpolating the diagram size.
-     * @see classificationField()
+     * \see classificationField()
      * \since QGIS 3.0
      */
     void setClassificationField( const QString &field ) { mInterpolationSettings.classificationField = field; }

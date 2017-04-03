@@ -75,23 +75,23 @@ class CORE_EXPORT QgsFieldConstraints
 
     /**
      * Returns any constraints which are present for the field.
-     * @see setConstraints()
-     * @see constraintOrigin()
+     * \see setConstraints()
+     * \see constraintOrigin()
      */
     Constraints constraints() const { return mConstraints; }
 
     /**
      * Returns the origin of a field constraint, or ConstraintOriginNotSet if the constraint
      * is not present on this field.
-     * @see constraints()
+     * \see constraints()
      */
     ConstraintOrigin constraintOrigin( Constraint constraint ) const;
 
     /**
      * Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
      * is not present on this field.
-     * @see constraints()
-     * @see setConstraintStrength()
+     * \see constraints()
+     * \see setConstraintStrength()
      */
     ConstraintStrength constraintStrength( Constraint constraint ) const;
 
@@ -99,46 +99,46 @@ class CORE_EXPORT QgsFieldConstraints
      * Sets the strength of a constraint. Note that the strength of constraints which originate
      * from a provider cannot be changed. Constraints default to ConstraintStrengthHard unless
      * explicitly changed.
-     * @see constraintStrength()
+     * \see constraintStrength()
      */
     void setConstraintStrength( Constraint constraint, ConstraintStrength strength );
 
     /**
      * Sets a constraint on the field.
-     * @see constraints()
-     * @see removeConstraint()
+     * \see constraints()
+     * \see removeConstraint()
      */
     void setConstraint( Constraint constraint, ConstraintOrigin origin = ConstraintOriginLayer );
 
     /**
      * Removes a constraint from the field.
-     * @see setConstraint()
-     * @see constraints()
+     * \see setConstraint()
+     * \see constraints()
      */
     void removeConstraint( Constraint constraint ) { mConstraints &= ~constraint; }
 
     /**
      * Returns the constraint expression for the field, if set.
-     * @see constraints()
-     * @see constraintDescription()
-     * @see setConstraintExpression()
+     * \see constraints()
+     * \see constraintDescription()
+     * \see setConstraintExpression()
      */
     QString constraintExpression() const;
 
     /**
      * Returns the descriptive name for the constraint expression.
-     * @see constraints()
-     * @see constraintExpression()
-     * @see setConstraintExpression()
+     * \see constraints()
+     * \see constraintExpression()
+     * \see setConstraintExpression()
      */
     QString constraintDescription() const { return mExpressionConstraintDescription; }
 
     /**
      * Set the constraint expression for the field. An optional descriptive name for the constraint
      * can also be set. Setting an empty expression will clear any existing expression constraint.
-     * @see constraintExpression()
-     * @see constraintDescription()
-     * @see constraints()
+     * \see constraintExpression()
+     * \see constraintDescription()
+     * \see constraints()
      */
     void setConstraintExpression( const QString &expression, const QString &description = QString() );
 

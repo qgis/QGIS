@@ -152,7 +152,7 @@ class CORE_EXPORT QgsAction
      * Action scopes may offer additional variables like the clicked
      * coordinate.
      *
-     * @see QgsActionScope
+     * \see QgsActionScope
      * \since QGIS 3.0
      */
     QSet<QString> actionScopes() const;

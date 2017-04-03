@@ -482,14 +482,14 @@ class CORE_EXPORT QgsVectorFileWriter
     /** Returns a list of the default dataset options for a specified driver.
      * \param driverName name of OGR driver
      * \since QGIS 3.0
-     * @see defaultLayerOptions()
+     * \see defaultLayerOptions()
      */
     static QStringList defaultDatasetOptions( const QString &driverName );
 
     /** Returns a list of the default layer options for a specified driver.
      * \param driverName name of OGR driver
      * \since QGIS 3.0
-     * @see defaultDatasetOptions()
+     * \see defaultDatasetOptions()
      */
     static QStringList defaultLayerOptions( const QString &driverName );
 

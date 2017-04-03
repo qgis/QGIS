@@ -45,10 +45,10 @@ class CORE_EXPORT QgsMargins
 
     /**
      * Constructs margins with the given \a left, \a top, \a right, \a bottom
-     * @see setLeft()
-     * @see setRight()
-     * @see setTop()
-     * @see setBottom()
+     * \see setLeft()
+     * \see setRight()
+     * \see setTop()
+     * \see setBottom()
      */
     QgsMargins( double left, double top, double right, double bottom )
       : mLeft( left )
@@ -67,49 +67,49 @@ class CORE_EXPORT QgsMargins
 
     /**
      * Returns the left margin.
-     * @see setLeft()
+     * \see setLeft()
      */
     double left() const { return mLeft; }
 
     /**
      * Returns the top margin.
-     * @see setTop()
+     * \see setTop()
      */
     double top() const { return mTop; }
 
     /**
      * Returns the right margin.
-     * @see setRight()
+     * \see setRight()
      */
     double right() const { return mRight; }
 
     /**
      * Returns the bottom margin.
-     * @see setBottom()
+     * \see setBottom()
      */
     double bottom() const { return mBottom; }
 
     /**
      * Sets the left margin to \a left.
-     * @see left()
+     * \see left()
      */
     void setLeft( double left ) { mLeft = left; }
 
     /**
      * Sets the top margin to \a top.
-     * @see top()
+     * \see top()
      */
     void setTop( double top ) { mTop = top; }
 
     /**
      * Sets the right margin to \a right.
-     * @see right()
+     * \see right()
      */
     void setRight( double right ) { mRight = right; }
 
     /**
      * Sets the bottom margin to \a bottom.
-     * @see bottom()
+     * \see bottom()
      */
     void setBottom( double bottom ) { mBottom = bottom; }
 
@@ -150,14 +150,14 @@ class CORE_EXPORT QgsMargins
 
     /**
      * Returns the margins encoded to a string.
-     * @see fromString()
+     * \see fromString()
      */
     QString toString() const;
 
     /**
      * Returns a QgsMargins object decoded from a string, or a null QgsMargins
      * if the string could not be interpreted as margins.
-     * @see toString()
+     * \see toString()
      */
     static QgsMargins fromString( const QString &string );
 

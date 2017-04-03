@@ -67,115 +67,115 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 
     /** Sets the width of the arrow head in mm
      * \param width width of arrow head
-     * @see arrowHeadWidth
+     * \see arrowHeadWidth
      */
     void setArrowHeadWidth( double width );
 
     /** Returns the width of the arrow head in mm
      * \returns width of arrow head
-     * @see setArrowHeadWidth
+     * \see setArrowHeadWidth
      */
     double arrowHeadWidth() const { return mArrowHeadWidth; }
 
     /** Sets the marker to draw at the start of the line
      * \param svgPath file path for svg marker graphic to draw
-     * @see startMarker
-     * @see setEndMarker
+     * \see startMarker
+     * \see setEndMarker
      */
     void setStartMarker( const QString &svgPath );
 
     /** Returns the marker drawn at the start of the line
      * \returns file path for svg marker graphic
-     * @see setStartMarker
-     * @see endMarker
+     * \see setStartMarker
+     * \see endMarker
      */
     QString startMarker() const { return mStartMarkerFile; }
 
     /** Sets the marker to draw at the end of the line
      * \param svgPath file path for svg marker graphic to draw
-     * @see endMarker
-     * @see setStartMarker
+     * \see endMarker
+     * \see setStartMarker
      */
     void setEndMarker( const QString &svgPath );
 
     /** Returns the marker drawn at the end of the line
      * \returns file path for svg marker graphic
-     * @see setEndMarker
-     * @see startMarker
+     * \see setEndMarker
+     * \see startMarker
      */
     QString endMarker() const { return mEndMarkerFile; }
 
     /** Returns the color used to draw stroke around the the arrow head.
      * \returns arrow head stroke color
-     * @see arrowHeadFillColor
-     * @see setArrowHeadStrokeColor
+     * \see arrowHeadFillColor
+     * \see setArrowHeadStrokeColor
      * \since QGIS 2.5
      */
     QColor arrowHeadStrokeColor() const { return mArrowHeadStrokeColor; }
 
     /** Sets the color used to draw the stroke around the arrow head.
      * \param color arrow head stroke color
-     * @see setArrowHeadFillColor
-     * @see arrowHeadStrokeColor
+     * \see setArrowHeadFillColor
+     * \see arrowHeadStrokeColor
      * \since QGIS 2.5
      */
     void setArrowHeadStrokeColor( const QColor &color );
 
     /** Returns the color used to fill the arrow head.
      * \returns arrow head fill color
-     * @see arrowHeadStrokeColor
-     * @see setArrowHeadFillColor
+     * \see arrowHeadStrokeColor
+     * \see setArrowHeadFillColor
      * \since QGIS 2.5
      */
     QColor arrowHeadFillColor() const { return mArrowHeadFillColor; }
 
     /** Sets the color used to fill the arrow head.
      * \param color arrow head fill color
-     * @see arrowHeadFillColor
-     * @see setArrowHeadStrokeColor
+     * \see arrowHeadFillColor
+     * \see setArrowHeadStrokeColor
      * \since QGIS 2.5
      */
     void setArrowHeadFillColor( const QColor &color );
 
     /** Sets the pen width for the stroke of the arrow head
      * \param width pen width for arrow head stroke
-     * @see arrowHeadStrokeWidth
-     * @see setArrowHeadStrokeColor
+     * \see arrowHeadStrokeWidth
+     * \see setArrowHeadStrokeColor
      * \since QGIS 2.5
      */
     void setArrowHeadStrokeWidth( const double width );
 
     /** Returns the pen width for the stroke of the arrow head
      * \returns pen width for arrow head stroke
-     * @see setArrowHeadStrokeWidth
-     * @see arrowHeadStrokeColor
+     * \see setArrowHeadStrokeWidth
+     * \see arrowHeadStrokeColor
      * \since QGIS 2.5
      */
     double arrowHeadStrokeWidth() const { return mArrowHeadStrokeWidth; }
 
     /** Sets the line symbol used for drawing the line portion of the arrow
      * \param symbol line symbol
-     * @see lineSymbol
+     * \see lineSymbol
      * \since QGIS 2.5
      */
     void setLineSymbol( QgsLineSymbol *symbol );
 
     /** Returns the line symbol used for drawing the line portion of the arrow
      * \returns line symbol
-     * @see setLineSymbol
+     * \see setLineSymbol
      * \since QGIS 2.5
      */
     QgsLineSymbol *lineSymbol() { return mLineSymbol; }
 
     /** Returns marker mode, which controls how the arrow endpoints are drawn
      * \returns marker mode
-     * @see setMarkerMode
+     * \see setMarkerMode
      */
     MarkerMode markerMode() const { return mMarkerMode; }
 
     /** Sets the marker mode, which controls how the arrow endpoints are drawn
      * \param mode marker mode
-     * @see setMarkerMode
+     * \see setMarkerMode
      */
     void setMarkerMode( MarkerMode mode );
 

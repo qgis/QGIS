@@ -113,13 +113,13 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /** Get the source color ramp
      * \since QGIS 3.0
-     * @see setSourceColorRamp()
+     * \see setSourceColorRamp()
      */
     QgsColorRamp *sourceColorRamp() const;
 
     /** Set the source color ramp. Ownership is transferred to the renderer.
      * \since QGIS 3.0
-     * @see sourceColorRamp()
+     * \see sourceColorRamp()
      */
     void setSourceColorRamp( QgsColorRamp *colorramp );
 
@@ -158,12 +158,12 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /** Sets whether the shader should not render values out of range.
      * \param clip set to true to clip values which are out of range.
-     * @see clip()
+     * \see clip()
      */
     void setClip( bool clip ) { mClip = clip; }
 
     /** Returns whether the shader will clip values which are out of range.
-     * @see setClip()
+     * \see setClip()
      */
     bool clip() const { return mClip; }
 

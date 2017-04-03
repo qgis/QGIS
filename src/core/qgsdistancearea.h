@@ -52,22 +52,22 @@ class CORE_EXPORT QgsDistanceArea
     /** Sets whether coordinates must be projected to ellipsoid before measuring
      * \note for calculations to use the ellipsoid, both the ellipsoid mode must be true
      * and an ellipse must be set
-     * @see setEllipsoid()
-     * @see willUseEllipsoid()
+     * \see setEllipsoid()
+     * \see willUseEllipsoid()
      */
     void setEllipsoidalMode( bool flag );
 
     /** Returns whether ellipsoidal calculations are enabled
-     * @see willUseEllipsoid()
-     * @see setEllipsoidalMode()
+     * \see willUseEllipsoid()
+     * \see setEllipsoidalMode()
      */
     bool ellipsoidalEnabled() const { return mEllipsoidalMode; }
 
     /** Returns whether calculations will use the ellipsoid. Calculations will only use the
      * ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
      * \since QGIS 2.14
-     * @see ellipsoidalEnabled()
-     * @see ellipsoid()
+     * \see ellipsoidalEnabled()
+     * \see ellipsoid()
      */
     bool willUseEllipsoid() const;
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Sets source spatial reference system (by QGIS CRS)
      * \note: missing in Python bindings in QGIS < 2.2
-     * @see sourceCrs()
+     * \see sourceCrs()
      */
     void setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS );
 
@@ -85,12 +85,12 @@ class CORE_EXPORT QgsDistanceArea
     void setSourceAuthId( const QString &authid );
 
     /** Returns the source spatial reference system.
-     * @see setSourceCrs()
+     * \see setSourceCrs()
      */
     QgsCoordinateReferenceSystem sourceCrs() const { return mCoordTransform.sourceCrs(); }
 
     /** Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
-     * @see setSourceCrs()
+     * \see setSourceCrs()
      * \since QGIS 2.14
      */
     long sourceCrsId() const { return mCoordTransform.sourceCrs().srsid(); }
@@ -101,27 +101,27 @@ class CORE_EXPORT QgsDistanceArea
     /** Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
      * both the ellipsoid has been set and ellipsoidalEnabled() is true.
      * \returns true if ellipsoid was successfully set
-     * @see ellipsoid()
-     * @see setEllipsoidalMode()
-     * @see willUseEllipsoid()
+     * \see ellipsoid()
+     * \see setEllipsoidalMode()
+     * \see willUseEllipsoid()
      */
     bool setEllipsoid( const QString &ellipsoid );
 
     /** Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
      * both the ellipsoid has been set and ellipsoidalEnabled() is true.
      * \returns true if ellipsoid was successfully set
-     * @see ellipsoid()
-     * @see setEllipsoidalMode()
-     * @see willUseEllipsoid()
+     * \see ellipsoid()
+     * \see setEllipsoidalMode()
+     * \see willUseEllipsoid()
      */
     // Inverse flattening is calculated with invf = a/(a-b)
     bool setEllipsoid( double semiMajor, double semiMinor );
 
     /** Returns ellipsoid's acronym. Calculations will only use the
      * ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
-     * @see setEllipsoid()
-     * @see ellipsoidalEnabled()
-     * @see willUseEllipsoid()
+     * \see setEllipsoid()
+     * \see ellipsoidalEnabled()
+     * \see willUseEllipsoid()
      */
     QString ellipsoid() const { return mEllipsoid; }
 
@@ -137,9 +137,9 @@ class CORE_EXPORT QgsDistanceArea
      * \returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
      * returned area can be retrieved by calling areaUnits().
      * \since QGIS 2.12
-     * @see measureLength()
-     * @see measurePerimeter()
-     * @see areaUnits()
+     * \see measureLength()
+     * \see measurePerimeter()
+     * \see areaUnits()
      */
     double measureArea( const QgsGeometry *geometry ) const;
 
@@ -148,9 +148,9 @@ class CORE_EXPORT QgsDistanceArea
      * \returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
      * returned area can be retrieved by calling areaUnits().
      * \since QGIS 2.12
-     * @see measureLength()
-     * @see measurePerimeter()
-     * @see areaUnits()
+     * \see measureLength()
+     * \see measurePerimeter()
+     * \see areaUnits()
      */
     double measureArea( const QgsGeometry &geometry ) const;
 
@@ -159,9 +159,9 @@ class CORE_EXPORT QgsDistanceArea
      * \returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
      * returned distance can be retrieved by calling lengthUnits().
      * \since QGIS 2.12
-     * @see lengthUnits()
-     * @see measureArea()
-     * @see measurePerimeter()
+     * \see lengthUnits()
+     * \see measureArea()
+     * \see measurePerimeter()
      */
     double measureLength( const QgsGeometry *geometry ) const;
 
@@ -170,9 +170,9 @@ class CORE_EXPORT QgsDistanceArea
      * \returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
      * returned distance can be retrieved by calling lengthUnits().
      * \since QGIS 2.12
-     * @see lengthUnits()
-     * @see measureArea()
-     * @see measurePerimeter()
+     * \see lengthUnits()
+     * \see measureArea()
+     * \see measurePerimeter()
      */
     double measureLength( const QgsGeometry &geometry ) const;
 
@@ -181,9 +181,9 @@ class CORE_EXPORT QgsDistanceArea
      * \returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
      * returned perimeter can be retrieved by calling lengthUnits().
      * \since QGIS 2.12
-     * @see lengthUnits()
-     * @see measureArea()
-     * @see measurePerimeter()
+     * \see lengthUnits()
+     * \see measureArea()
+     * \see measurePerimeter()
      */
     double measurePerimeter( const QgsGeometry *geometry ) const;
 
@@ -192,16 +192,16 @@ class CORE_EXPORT QgsDistanceArea
      * \returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
      * returned perimeter can be retrieved by calling lengthUnits().
      * \since QGIS 2.12
-     * @see lengthUnits()
-     * @see measureArea()
-     * @see measurePerimeter()
+     * \see lengthUnits()
+     * \see measureArea()
+     * \see measurePerimeter()
      */
     double measurePerimeter( const QgsGeometry &geometry ) const;
 
     /** Measures the length of a line with multiple segments.
      * \param points list of points in line
      * \returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
-     * @see lengthUnits()
+     * \see lengthUnits()
      */
     double measureLine( const QList<QgsPoint> &points ) const;
 
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param p1 start of line
      * \param p2 end of line
      * \returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
-     * @see lengthUnits()
+     * \see lengthUnits()
      */
     double measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const;
 
@@ -224,13 +224,13 @@ class CORE_EXPORT QgsDistanceArea
 
     /** Returns the units of distance for length calculations made by this object.
      * \since QGIS 2.14
-     * @see areaUnits()
+     * \see areaUnits()
      */
     QgsUnitTypes::DistanceUnit lengthUnits() const;
 
     /** Returns the units of area for areal calculations made by this object.
      * \since QGIS 2.14
-     * @see lengthUnits()
+     * \see lengthUnits()
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsDistanceArea
      * kilometers
      * \returns formatted distance string
      * \since QGIS 2.16
-     * @see formatArea()
+     * \see formatArea()
      */
     static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
 
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsDistanceArea
      * square kilometers
      * \returns formatted area string
      * \since QGIS 2.14
-     * @see formatDistance()
+     * \see formatDistance()
      */
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
 
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsDistanceArea
      * was calculated by this class, ie that its unit of length is equal to lengthUnits().
      * \param toUnits distance unit to convert measurement to
      * \returns converted distance
-     * @see convertAreaMeasurement()
+     * \see convertAreaMeasurement()
      * \since QGIS 2.14
      */
     double convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const;
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsDistanceArea
      * was calculated by this class, ie that its unit of area is equal to areaUnits().
      * \param toUnits area unit to convert measurement to
      * \returns converted area
-     * @see convertLengthMeasurement()
+     * \see convertLengthMeasurement()
      * \since QGIS 2.14
      */
     double convertAreaMeasurement( double area, QgsUnitTypes::AreaUnit toUnits ) const;

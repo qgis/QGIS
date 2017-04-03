@@ -45,13 +45,13 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context
-     * @see context()
+     * \see context()
      * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
+     * \see setContext()
      * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
      * Should be emitted whenever the sub symbol changed on this symbol layer configuration.
      * Normally {@link changed()} should be preferred.
      *
-     * @see {@link changed()}
+     * \see {@link changed()}
      */
     void symbolChanged();
 

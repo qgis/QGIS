@@ -51,16 +51,16 @@ class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsM
 
     /** Returns a QgsMapUnitScale representing the settings shown in the
      * widget.
-     * @see setMapUnitScale()
-     * @see mapUnitScaleChanged()
+     * \see setMapUnitScale()
+     * \see mapUnitScaleChanged()
      */
     QgsMapUnitScale mapUnitScale() const;
 
     /** Updates the widget to reflect the settings from the specified
      * QgsMapUnitScale object.
      * \param scale map unit scale to show in widget
-     * @see mapUnitScale()
-     * @see mapUnitScaleChanged()
+     * \see mapUnitScale()
+     * \see mapUnitScaleChanged()
      */
     void setMapUnitScale( const QgsMapUnitScale &scale );
 
@@ -110,14 +110,14 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog
 
     /** Returns a QgsMapUnitScale representing the settings shown in the
      * dialog.
-     * @see setMapUnitScale()
+     * \see setMapUnitScale()
      */
     QgsMapUnitScale getMapUnitScale() const;
 
     /** Updates the dialog to reflect the settings from the specified
      * QgsMapUnitScale object.
      * \param scale map unit scale to show in dialog
-     * @see mapUnitScale()
+     * \see mapUnitScale()
      */
     void setMapUnitScale( const QgsMapUnitScale &scale );
 

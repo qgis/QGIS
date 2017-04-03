@@ -218,20 +218,20 @@ class CORE_EXPORT QgsFeature
 
     /** Get the feature ID for this feature.
      * \returns feature ID
-     * @see setId()
+     * \see setId()
      */
     QgsFeatureId id() const;
 
     /** Sets the feature ID for this feature.
      * \param id feature id
-     * @see id
+     * \see id
      */
     void setId( QgsFeatureId id );
 
     /** Returns the feature's attributes.
      * @link attributes @endlink method.
      * \returns list of feature's attributes
-     * @see setAttributes
+     * \see setAttributes
      * \since QGIS 2.9
      * \note Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
      */
@@ -240,8 +240,8 @@ class CORE_EXPORT QgsFeature
     /** Sets the feature's attributes.
      * The feature will be valid after.
      * \param attrs attribute list
-     * @see setAttribute
-     * @see attributes
+     * \see setAttribute
+     * \see attributes
      */
     void setAttributes( const QgsAttributes &attrs );
 
@@ -252,7 +252,7 @@ class CORE_EXPORT QgsFeature
      * \returns false, if the field index does not exist
      * \note For Python: raises a KeyError exception instead of returning false
      * \note Alternatively in Python: @code feature[field] = attr @endcode
-     * @see setAttributes
+     * \see setAttributes
      */
 #ifndef SIP_RUN
     bool setAttribute( int field, const QVariant &attr );
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsFeature
 
     /** Deletes an attribute and its value.
      * \param field the index of the field
-     * @see setAttribute
+     * \see setAttribute
      * \note For Python: raises a KeyError exception if the field is not found
      * \note Alternatively in Python: @code del feature[field] @endcode
      */
@@ -307,39 +307,39 @@ class CORE_EXPORT QgsFeature
     /** Returns the validity of this feature. This is normally set by
      * the provider to indicate some problem that makes the feature
      * invalid or to indicate a null feature.
-     * @see setValid
+     * \see setValid
      */
     bool isValid() const;
 
     /** Sets the validity of the feature.
      * \param validity set to true if feature is valid
-     * @see isValid
+     * \see isValid
      */
     void setValid( bool validity );
 
     /** Returns true if the feature has an associated geometry.
-     * @see geometry()
+     * \see geometry()
      * \since QGIS 3.0.
      */
     bool hasGeometry() const;
 
     /** Returns the geometry associated with this feature. If the feature has no geometry,
      * an empty QgsGeometry object will be returned.
-     * @see hasGeometry()
-     * @see setGeometry()
+     * \see hasGeometry()
+     * \see setGeometry()
      */
     QgsGeometry geometry() const;
 
     /** Set the feature's geometry. The feature will be valid after.
      * \param geometry new feature geometry
-     * @see geometry()
-     * @see clearGeometry()
+     * \see geometry()
+     * \see clearGeometry()
      */
     void setGeometry( const QgsGeometry &geometry );
 
     /** Removes any geometry associated with the feature.
-     * @see setGeometry()
-     * @see hasGeometry()
+     * \see setGeometry()
+     * \see hasGeometry()
      * \since QGIS 3.0
      */
     void clearGeometry();
@@ -350,12 +350,12 @@ class CORE_EXPORT QgsFeature
      *                        C++: Defaults to false
      *                        Python: Defaults to true
      * \since QGIS 2.9
-     * @see fields
+     * \see fields
      */
     void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYDEFAULTVALUE( true ) );
 
     /** Returns the field map associated with the feature.
-     * @see setFields
+     * \see setFields
      */
     QgsFields fields() const;
 
@@ -367,7 +367,7 @@ class CORE_EXPORT QgsFeature
      *  \returns false if attribute name could not be converted to index (C++ only)
      *  \note For Python: raises a KeyError exception instead of returning false
      *  \note Alternatively in Python: @code feature[name] = attr @endcode
-     *  @see setFields
+     *  \see setFields
      */
 #ifndef SIP_RUN
     bool setAttribute( const QString &name, const QVariant &value );
@@ -400,7 +400,7 @@ class CORE_EXPORT QgsFeature
      *  \returns false if attribute name could not be converted to index (C++ only)
      *  \note For Python: raises a KeyError exception instead of returning false
      *  \note Alternatively in Python: @code del feature[name] @endcode
-     *  @see setFields
+     *  \see setFields
      */
     bool deleteAttribute( const QString &name );
 #ifdef SIP_RUN
@@ -426,7 +426,7 @@ class CORE_EXPORT QgsFeature
      *  \returns The value of the attribute (C++: Invalid variant if no such name exists )
      *  \note For Python: raises a KeyError exception if the field is not found
      *  \note Alternatively in Python: @code feature[name] @endcode
-     *  @see setFields
+     *  \see setFields
      */
 #ifndef SIP_RUN
     QVariant attribute( const QString &name ) const;
@@ -453,7 +453,7 @@ class CORE_EXPORT QgsFeature
      *  \returns The value of the attribute (C++: Invalid variant if no such index exists )
      *  \note For Python: raises a KeyError exception if the field is not found
      *  \note Alternatively in Python: @code feature[fieldIdx] @endcode
-     *  @see setFields
+     *  \see setFields
      */
 #ifndef SIP_RUN
     QVariant attribute( int fieldIdx ) const;
@@ -479,7 +479,7 @@ class CORE_EXPORT QgsFeature
      *  before this method can be used.
      *  \param fieldName name of field to get attribute index of
      *  \returns -1 if field does not exist or field map is not associated.
-     *  @see setFields
+     *  \see setFields
      */
     int fieldNameIndex( const QString &fieldName ) const;
 

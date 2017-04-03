@@ -51,14 +51,14 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     /** Sets the hint string for the dialog (the text shown above the name
      * input box).
      * \param hintString hint text
-     * @see hintString()
+     * \see hintString()
      * \since QGIS 2.12
      */
     void setHintString( const QString &hintString );
 
     /** Returns the hint string for the dialog (the text shown above the name
      * input box).
-     * @see setHintString()
+     * \see setHintString()
      * \since QGIS 2.12
      */
     QString hintString() const;
@@ -67,26 +67,26 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * the dialog will reflect that the new name will overwrite an existing name. If false,
      * then the dialog will not accept names which already exist.
      * \since QGIS 2.12
-     * @see overwriteEnabled()
+     * \see overwriteEnabled()
      */
     void setOverwriteEnabled( bool enabled );
 
     /** Returns whether users are permitted to overwrite existing names.
      * \since QGIS 2.12
-     * @see setOverwriteEnabled()
+     * \see setOverwriteEnabled()
      */
     bool overwriteEnabled() const { return mOverwriteEnabled; }
 
     /** Sets the string used for warning users if a conflicting name exists.
      * \param string warning string. If empty a default warning string will be used.
      * \since QGIS 2.12
-     * @see conflictingNameWarning()
+     * \see conflictingNameWarning()
      */
     void setConflictingNameWarning( const QString &string );
 
     /** Returns the string used for warning users if a conflicting name exists.
      * \since QGIS 2.12
-     * @see setConflictingNameWarning()
+     * \see setConflictingNameWarning()
      */
     QString conflictingNameWarning() const { return mConflictingNameWarning; }
 

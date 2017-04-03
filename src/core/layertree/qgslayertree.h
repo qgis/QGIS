@@ -102,9 +102,9 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Will only be used if the property hasCustomLayerOrder is true.
      * If you need the current layer order that is active, prefer using layerOrder().
      *
-     * @see setCustomLayerOrder
-     * @see layerOrder
-     * @see hasCustomLayerOrder
+     * \see setCustomLayerOrder
+     * \see layerOrder
+     * \see hasCustomLayerOrder
      *
      * \since QGIS 3.0
      */
@@ -115,9 +115,9 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Will only be used if the property hasCustomLayerOrder is true.
      * If you need the current layer order that is active, prefer using layerOrder().
      *
-     * @see customLayerOrder
-     * @see layerOrder
-     * @see hasCustomLayerOrder
+     * \see customLayerOrder
+     * \see layerOrder
+     * \see hasCustomLayerOrder
      *
      * \since QGIS 3.0
      */
@@ -128,9 +128,9 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Will only be used if the property hasCustomLayerOrder is true.
      * If you need the current layer order that is active, prefer using layerOrder().
      *
-     * @see customLayerOrder
-     * @see layerOrder
-     * @see hasCustomLayerOrder
+     * \see customLayerOrder
+     * \see layerOrder
+     * \see hasCustomLayerOrder
      *
      * \since QGIS 3.0
      */
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * customLayerOrder or the layer order derived from the tree.
      * This property is read only.
      *
-     * @see customLayerOrder
+     * \see customLayerOrder
      *
      * \since QGIS 3.0
      */
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Determines if the layer order should be derived from the layer tree
      * or if a custom override order shall be used instead.
      *
-     * @see customLayerOrder
+     * \see customLayerOrder
      *
      * \since QGIS 3.0
      */
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Determines if the layer order should be derived from the layer tree
      * or if a custom override order shall be used instead.
      *
-     * @see setCustomLayerOrder
+     * \see setCustomLayerOrder
      *
      * \since QGIS 3.0
      */
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     /**
      * Emitted when the hasCustomLayerOrder flag changes.
      *
-     * @see hasCustomLayerOrder
+     * \see hasCustomLayerOrder
      *
      * \since QGIS 3.0
      */

@@ -305,7 +305,7 @@ public:
      * Returns the characters which are considered part of a word for the
      * purpose of selecting words in the display with the mouse.
      *
-     * @see setWordCharacters()
+     * \see setWordCharacters()
      */
     QString wordCharacters() { return _wordCharacters; }
 
@@ -513,13 +513,13 @@ public slots:
 
     /**
      * Sets the background of the display to the specified color.
-     * @see setColorTable(), setForegroundColor()
+     * \see setColorTable(), setForegroundColor()
      */
     void setBackgroundColor(const QColor& color);
 
     /**
      * Sets the text of the display to the specified color.
-     * @see setColorTable(), setBackgroundColor()
+     * \see setColorTable(), setBackgroundColor()
      */
     void setForegroundColor(const QColor& color);
 

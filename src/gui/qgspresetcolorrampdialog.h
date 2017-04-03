@@ -41,13 +41,13 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
     QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+     * \see setRamp()
      */
     QgsPresetSchemeColorRamp ramp() const;
 
     /** Sets the color ramp to show in the dialog.
      * \param ramp color ramp
-     * @see ramp()
+     * \see ramp()
      */
     void setRamp( const QgsPresetSchemeColorRamp &ramp );
 
@@ -89,13 +89,13 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
     QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+     * \see setRamp()
      */
     QgsPresetSchemeColorRamp ramp() const { return mWidget->ramp(); }
 
     /** Sets the color ramp to show in the dialog.
      * \param ramp color ramp
-     * @see ramp()
+     * \see ramp()
      */
     void setRamp( const QgsPresetSchemeColorRamp &ramp ) { mWidget->setRamp( ramp ); }
 

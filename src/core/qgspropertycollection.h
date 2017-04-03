@@ -49,13 +49,13 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Returns the descriptive name of the property collection.
-     * @see setName()
+     * \see setName()
      */
     QString name() const { return mName; }
 
     /**
      * Sets the descriptive name for the property collection.
-     * @see name()
+     * \see name()
      */
     void setName( const QString &name ) { mName = name; }
 
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Returns true if the collection contains a property with the specified key.
      * \param key integer key for property. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @see property()
+     * \see property()
      */
     virtual bool hasProperty( int key ) const = 0;
 
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * \returns matching property, or null if no matching, active property found.
-     * @see hasProperty()
+     * \see hasProperty()
      */
     virtual QgsProperty property( int key ) const = 0;
 
@@ -94,11 +94,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param defaultValue default value to return if no matching, active property found or if the property value
      * cannot be calculated
      * \returns calculated property value, or default value if property could not be evaluated
-     * @see valueAsString()
-     * @see valueAsColor()
-     * @see valueAsDouble()
-     * @see valueAsInt()
-     * @see valueAsBool()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsInt()
+     * \see valueAsBool()
      */
     virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
 
@@ -110,11 +110,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param defaultString default string to return if the property cannot be calculated as a string
      * \param ok if specified, will be set to true if conversion was successful
      * \returns value parsed to string
-     * @see value()
-     * @see valueAsColor()
-     * @see valueAsDouble()
-     * @see valueAsInt()
-     * @see valueAsBool()
+     * \see value()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsInt()
+     * \see valueAsBool()
      */
     QString valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok = nullptr ) const;
 
@@ -126,11 +126,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param defaultColor default color to return if the property cannot be calculated as a color
      * \param ok if specified, will be set to true if conversion was successful
      * \returns value parsed to color
-     * @see value()
-     * @see valueAsString()
-     * @see valueAsDouble()
-     * @see valueAsInt()
-     * @see valueAsBool()
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsDouble()
+     * \see valueAsInt()
+     * \see valueAsBool()
      */
     QColor valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok = nullptr ) const;
 
@@ -142,11 +142,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param defaultValue default double to return if the property cannot be calculated as a double
      * \param ok if specified, will be set to true if conversion was successful
      * \returns value parsed to double
-     * @see value()
-     * @see valueAsString()
-     * @see valueAsColor()
-     * @see valueAsInt()
-     * @see valueAsBool()
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsInt()
+     * \see valueAsBool()
      */
     double valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok = nullptr ) const;
 
@@ -158,11 +158,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param defaultValue default integer to return if the property cannot be calculated as a integer
      * \param ok if specified, will be set to true if conversion was successful
      * \returns value parsed to integer
-     * @see value()
-     * @see valueAsString()
-     * @see valueAsColor()
-     * @see valueAsDouble()
-     * @see valueAsBool()
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsBool()
      */
     int valueAsInt( int key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok = nullptr ) const;
 
@@ -174,11 +174,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param defaultValue default boolean to return if the property cannot be calculated as a boolean
      * \param ok if specified, will be set to true if conversion was successful
      * \returns value parsed to bool
-     * @see value()
-     * @see valueAsString()
-     * @see valueAsColor()
-     * @see valueAsDouble()
-     * @see valueAsInt()
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsInt()
      */
     bool valueAsBool( int key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok = nullptr ) const;
 
@@ -205,14 +205,14 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     /**
      * Returns true if the collection has any active properties, or false if all properties
      * within the collection are deactivated.
-     * @see hasDynamicProperties()
+     * \see hasDynamicProperties()
      */
     virtual bool hasActiveProperties() const = 0;
 
     /**
      * Returns true if the collection has any active, non-static properties, or false if either all non-static properties
      * within the collection are deactivated or if the collection only contains static properties.
-     * @see hasActiveProperties()
+     * \see hasActiveProperties()
      */
     virtual bool hasDynamicProperties() const = 0;
 
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Writes the current state of the property collection into an XML element
      * \param collectionElem destination element for the property collection's state
      * \param definitions property definitions
-     * @see readXml()
+     * \see readXml()
     */
     virtual bool writeXml( QDomElement &collectionElem, const QgsPropertiesDefinition &definitions ) const;
 
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Reads property collection state from an XML element.
      * \param collectionElem source DOM element for property collection's state
      * \param definitions property definitions
-     * @see writeXml()
+     * \see writeXml()
     */
     virtual bool readXml( const QDomElement &collectionElem, const QgsPropertiesDefinition &definitions );
 
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Saves this property collection to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      *
-     * @see loadVariant()
+     * \see loadVariant()
      */
     virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const = 0;
 
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Loads this property collection from a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::readVariant to save it to an XML document.
      *
-     * @see toVariant()
+     * \see toVariant()
      */
     virtual bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) = 0;
 
@@ -296,7 +296,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * \returns matching property, or null if no matching, active property found.
-     * @see hasProperty()
+     * \see hasProperty()
      */
 
     virtual QgsProperty &property( int key );
@@ -405,15 +405,15 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     /**
      * Returns true if the collection has any active properties, or false if all properties
      * within the collection are deactivated.
-     * @see isActive()
-     * @see hasDynamicProperties()
+     * \see isActive()
+     * \see hasDynamicProperties()
      */
     bool hasActiveProperties() const override;
 
     /**
      * Returns true if the collection has any active, non-static properties, or false if either all non-static properties
      * within the collection are deactivated or if the collection only contains static properties.
-     * @see hasActiveProperties()
+     * \see hasActiveProperties()
      */
     bool hasDynamicProperties() const override;
 
@@ -421,7 +421,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * Returns true if the stack contains an active property with the specified key.
      * \param key integer key for property to test. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @see hasActiveProperties()
+     * \see hasActiveProperties()
      */
     bool isActive( int key ) const override;
 
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * \returns matching property, or null if no matching, active property found.
-     * @see hasActiveProperty()
+     * \see hasActiveProperty()
      */
     QgsProperty property( int key ) const override;
 

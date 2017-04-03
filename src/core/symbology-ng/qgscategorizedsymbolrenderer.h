@@ -93,7 +93,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     /** Update all the symbols but leave categories and colors. This method also sets the source
      * symbol for the renderer.
      * \param sym source symbol to use for categories. Ownership is not transferred.
-     * @see setSourceSymbol()
+     * \see setSourceSymbol()
      */
     void updateSymbols( QgsSymbol *sym );
 
@@ -137,29 +137,29 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     /** Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
      * the categories' color.
-     * @see setSourceSymbol()
-     * @see sourceColorRamp()
+     * \see setSourceSymbol()
+     * \see sourceColorRamp()
      */
     QgsSymbol *sourceSymbol();
 
     /** Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
      * the categories' color.
      * \param sym source symbol, ownership is transferred to the renderer
-     * @see sourceSymbol()
-     * @see setSourceColorRamp()
+     * \see sourceSymbol()
+     * \see setSourceColorRamp()
      */
     void setSourceSymbol( QgsSymbol *sym );
 
     /** Returns the source color ramp, from which each categories' color is derived.
-     * @see setSourceColorRamp()
-     * @see sourceSymbol()
+     * \see setSourceColorRamp()
+     * \see sourceSymbol()
      */
     QgsColorRamp *sourceColorRamp();
 
     /** Sets the source color ramp.
       * \param ramp color ramp. Ownership is transferred to the renderer
-      * @see sourceColorRamp()
-      * @see setSourceSymbol()
+      * \see sourceColorRamp()
+      * \see setSourceSymbol()
       */
     void setSourceColorRamp( QgsColorRamp *ramp );
 

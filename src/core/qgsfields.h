@@ -132,7 +132,7 @@ class CORE_EXPORT QgsFields
      * \param fieldName The name of the field.
      *
      * \returns The field index if found or -1 in case it cannot be found.
-     * @see lookupField For a more tolerant alternative.
+     * \see lookupField For a more tolerant alternative.
      */
     int indexFromName( const QString &fieldName ) const;
 
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsFields
      * \param fieldName The name of the field.
      *
      * \returns The field index if found or -1 in case it cannot be found.
-     * @see lookupField For a more tolerant alternative.
+     * \see lookupField For a more tolerant alternative.
      * \since QGIS 3.0
      */
     int indexOf( const QString &fieldName ) const;
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsFields
      * \param fieldName The name to look for.
      *
      * \returns The field index if found or -1 in case it cannot be found.
-     * @see indexFromName For a more performant and precise but less tolerant alternative.
+     * \see indexFromName For a more performant and precise but less tolerant alternative.
      * \since QGIS 2.4
      */
     int lookupField( const QString &fieldName ) const;

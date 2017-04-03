@@ -262,14 +262,14 @@ public:
      * Enables the given @p rendition flag.  Rendition flags control the appearance
      * of characters on the screen.
      *
-     * @see Character::rendition
+     * \see Character::rendition
      */
     void setRendition(int rendition);
     /**
      * Disables the given @p rendition flag.  Rendition flags control the appearance
      * of characters on the screen.
      *
-     * @see Character::rendition
+     * \see Character::rendition
      */
     void resetRendition(int rendition);
 
@@ -279,7 +279,7 @@ public:
      * \param color The new foreground color.  The meaning of this depends on
      * the color @p space used.
      *
-     * @see CharacterColor
+     * \see CharacterColor
      */
     void setForeColor(int space, int color);
     /**
@@ -288,7 +288,7 @@ public:
      * \param color The new background color.  The meaning of this depends on
      * the color @p space used.
      *
-     * @see CharacterColor
+     * \see CharacterColor
      */
     void setBackColor(int space, int color);
     /**
@@ -456,7 +456,7 @@ public:
     void writeLinesToStream(TerminalCharacterDecoder* decoder, int fromLine, int toLine) const;
 
     /**
-     * Copies the selected characters, set using @see setSelBeginXY and @see setSelExtentXY
+     * Copies the selected characters, set using \see setSelBeginXY and \see setSelExtentXY
      * into a stream.
      *
      * \param decoder A decoder which converts terminal characters into text.

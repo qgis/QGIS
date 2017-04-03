@@ -51,12 +51,12 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     /** Sets whether the widget will show a clear button. The clear button
      * allows users to reset the widget to a default or empty state.
      * \param showClearButton set to true to show the clear button, or false to hide it
-     * @see showClearButton()
+     * \see showClearButton()
      */
     void setShowClearButton( const bool showClearButton );
 
     /** Returns whether the widget is showing a clear button.
-     * @see setShowClearButton()
+     * \see setShowClearButton()
      */
     bool showClearButton() const {return mShowClearButton;}
 
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * Defines the clear value as a custom value and will automatically set the clear value mode to CustomValue.
      * \param customValue defines the numerical value used as the clear value
      * \param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
-     * @see setClearValue()
+     * \see setClearValue()
      */
     void setClearValue( double customValue, const QString &clearValueText = QString() );
 
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     void setClearValueMode( ClearValueMode mode, const QString &clearValueText = QString() );
 
     /** Returns the value used when clear() is called.
-     * @see setClearValue()
+     * \see setClearValue()
      */
     double clearValue() const;
 

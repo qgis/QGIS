@@ -81,7 +81,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * \returns QgsComposerTableColumn for specified index
      * \param index a QModelIndex
      * \since QGIS 2.3
-     * @see indexFromColumn
+     * \see indexFromColumn
      */
     QgsComposerTableColumn *columnFromIndex( const QModelIndex &index ) const;
 
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * \returns QModelIndex for specified QgsComposerTableColumn
      * \param column a QgsComposerTableColumn
      * \since QGIS 2.3
-     * @see columnFromIndex
+     * \see columnFromIndex
      */
     QModelIndex indexFromColumn( QgsComposerTableColumn *column );
 
@@ -98,8 +98,8 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * \param column a QgsComposerTableColumn
      * \param order sort order for column
      * \since QGIS 2.3
-     * @see removeColumnFromSort
-     * @see moveColumnInSortRank
+     * \see removeColumnFromSort
+     * \see moveColumnInSortRank
      */
     void setColumnAsSorted( QgsComposerTableColumn *column, Qt::SortOrder order );
 
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * removed from the sort rank list.
      * \param column a QgsComposerTableColumn
      * \since QGIS 2.3
-     * @see setColumnAsSorted
+     * \see setColumnAsSorted
      */
     void setColumnAsUnsorted( QgsComposerTableColumn *column );
 
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * \param column a QgsComposerTableColumn
      * \param direction direction to move the column in the sort rank list
      * \since QGIS 2.3
-     * @see setColumnAsSorted
+     * \see setColumnAsSorted
      */
     bool moveColumnInSortRank( QgsComposerTableColumn *column, ShiftDirection direction );
 
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      * \returns QgsComposerTableColumn for specified row
      * \param row a row number
      * \since QGIS 2.3
-     * @see columnFromIndex
+     * \see columnFromIndex
      */
     QgsComposerTableColumn *columnFromRow( int row );
 
@@ -170,8 +170,8 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      * \returns QgsComposerTableColumn for specified index
      * \param index a QModelIndex
      * \since QGIS 2.3
-     * @see columnFromRow
-     * @see columnFromSourceIndex
+     * \see columnFromRow
+     * \see columnFromSourceIndex
      */
     QgsComposerTableColumn *columnFromIndex( const QModelIndex &index ) const;
 
@@ -180,8 +180,8 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      * \returns QgsComposerTableColumn for specified index from QgsComposerAttributeTableColumnModel
      * \param sourceIndex a QModelIndex
      * \since QGIS 2.3
-     * @see columnFromRow
-     * @see columnFromIndex
+     * \see columnFromRow
+     * \see columnFromIndex
      */
     QgsComposerTableColumn *columnFromSourceIndex( const QModelIndex &sourceIndex ) const;
 

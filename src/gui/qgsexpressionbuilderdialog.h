@@ -41,7 +41,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 
     /** Returns the expression context for the dialog. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
-     * @see setExpressionContext
+     * \see setExpressionContext
      * \since QGIS 2.12
      */
     QgsExpressionContext expressionContext() const;
@@ -49,7 +49,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     /** Sets the expression context for the dialog. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
      * \param context expression context
-     * @see expressionContext
+     * \see expressionContext
      * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context );

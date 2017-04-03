@@ -246,7 +246,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Deletes one or more features from the provider. This requires the DeleteFeatures capability.
      * \param id list containing feature ids to delete
      * \returns true in case of success and false in case of failure
-     * @see truncate()
+     * \see truncate()
      */
     virtual bool deleteFeatures( const QgsFeatureIds &id );
 
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Providers with the FastTruncate capability will use an optimised method to truncate the layer.
      * \returns true in case of success and false in case of failure.
      * \since QGIS 3.0
-     * @see deleteFeatures()
+     * \see deleteFeatures()
      */
     virtual bool truncate();
 
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * is calculated as a result of a sequence). It is recommended that you instead use the methods
      * in QgsVectorLayerUtils such as QgsVectorLayerUtils::createFeature()
      * so that default value handling and validation is automatically carried out.
-     * @see defaultValueClause()
+     * \see defaultValueClause()
      */
     virtual QVariant defaultValue( int fieldIndex ) const;
 
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Returns any default value clauses which are present at the provider for a specified
      * field index. These clauses are usually SQL fragments which must be evaluated by the
      * provider, e.g., sequence values.
-     * @see defaultValue()
+     * \see defaultValue()
      * \since QGIS 3.0
      */
     virtual QString defaultValueClause( int fieldIndex ) const;
@@ -333,7 +333,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Returns any constraints which are present at the provider for a specified
      * field index.
      * \since QGIS 3.0
-     * @see skipConstraintCheck()
+     * \see skipConstraintCheck()
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
      * passed which can help refine the skip constraint check.
      * \since QGIS 3.0
-     * @see fieldConstraints()
+     * \see fieldConstraints()
      */
     virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const;
 

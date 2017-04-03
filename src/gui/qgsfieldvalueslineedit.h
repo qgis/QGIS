@@ -133,27 +133,27 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
 
     /** Sets the layer containing the field that values will be shown from.
      * \param layer vector layer
-     * @see layer()
-     * @see setAttributeIndex()
+     * \see layer()
+     * \see setAttributeIndex()
      */
     void setLayer( QgsVectorLayer *layer );
 
     /** Returns the layer containing the field that values will be shown from.
-     * @see setLayer()
-     * @see attributeIndex()
+     * \see setLayer()
+     * \see attributeIndex()
      */
     QgsVectorLayer *layer() const { return mLayer; }
 
     /** Sets the attribute index for the field containing values to show in the widget.
      * \param index index of attribute
-     * @see attributeIndex()
-     * @see setLayer()
+     * \see attributeIndex()
+     * \see setLayer()
      */
     void setAttributeIndex( int index );
 
     /** Returns the attribute index for the field containing values shown in the widget.
-     * @see setAttributeIndex()
-     * @see layer()
+     * \see setAttributeIndex()
+     * \see layer()
      */
     int attributeIndex() const { return mAttributeIndex; }
 

@@ -156,7 +156,7 @@ class CORE_EXPORT QgsEditFormConfig
      * \returns false if a field exists with the provided widgetName. In this case
      *          QgsVectorLayer::setEditorWidgetSetup should be used.
      *
-     * @see QgsVectorLayer::setEditorWidgetSetup() for field configurations.
+     * \see QgsVectorLayer::setEditorWidgetSetup() for field configurations.
      */
     bool setWidgetConfig( const QString &widgetName, const QVariantMap &config );
 

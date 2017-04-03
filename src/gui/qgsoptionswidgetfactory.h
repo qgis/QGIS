@@ -70,25 +70,25 @@ class GUI_EXPORT QgsOptionsWidgetFactory
     /**
      * @brief The icon that will be shown in the UI for the panel.
      * \returns A QIcon for the panel icon.
-     * @see setIcon()
+     * \see setIcon()
      */
     virtual QIcon icon() const { return mIcon; }
 
     /**
      * Set the \a icon to show in the interface for the factory object.
-     * @see icon()
+     * \see icon()
      */
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     /**
      * The title of the panel.
-     * @see setTitle()
+     * \see setTitle()
      */
     virtual QString title() const { return mTitle; }
 
     /**
      * Set the \a title for the interface.
-     * @see title()
+     * \see title()
      */
     void setTitle( const QString &title ) { mTitle = title; }
 

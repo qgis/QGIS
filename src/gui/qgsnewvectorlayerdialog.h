@@ -52,14 +52,14 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
 
     /**
      * Returns the selected CRS for the new layer.
-     * @see setCrs()
+     * \see setCrs()
      */
     QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets the \a crs value for the new layer in the dialog.
      * \since QGIS 3.0
-     * @see crs()
+     * \see crs()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 

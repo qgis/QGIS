@@ -537,32 +537,32 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Returns a reference to the label's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setDataDefinedProperties()
+     * \see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the label's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setDataDefinedProperties()
+     * \see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the label's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
-     * @see dataDefinedProperties()
+     * \see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /** Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
-     * @see setFormat()
+     * \see setFormat()
      * \since QGIS 3.0
      */
     const QgsTextFormat &format() const { return mFormat; }
 
     /** Sets the label text formatting settings, e.g., font settings, buffer settings, etc.
      * \param format label text format
-     * @see format()
+     * \see format()
      * \since QGIS 3.0
      */
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
@@ -731,7 +731,7 @@ class CORE_EXPORT QgsPalLabeling
 
     /** Returns whether the engine will only draw the outline rectangles of labels,
      * not the label contents themselves. Used for debugging and testing purposes.
-     * @see setDrawLabelRectOnly
+     * \see setDrawLabelRectOnly
      * \since QGIS 2.12
      */
     bool drawLabelRectOnly() const;
@@ -739,7 +739,7 @@ class CORE_EXPORT QgsPalLabeling
     /** Sets whether the engine should only draw the outline rectangles of labels,
      * not the label contents themselves. Used for debugging and testing purposes.
      * \param drawRect set to true to enable rect drawing only
-     * @see drawLabelRectOnly
+     * \see drawLabelRectOnly
      * \since QGIS 2.12
      */
     void setDrawLabelRectOnly( bool drawRect );

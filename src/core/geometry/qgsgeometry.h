@@ -101,21 +101,21 @@ class CORE_EXPORT QgsGeometry
 
     /** Returns the underlying geometry store.
     * \since QGIS 2.10
-    * @see setGeometry
+    * \see setGeometry
     */
     QgsAbstractGeometry *geometry() const;
 
     /** Sets the underlying geometry store. Ownership of geometry is transferred.
      * \since QGIS 2.10
-     * @see geometry
+     * \see geometry
      */
     void setGeometry( QgsAbstractGeometry *geometry );
 
     /** Returns true if the geometry is null (ie, contains no underlying geometry
      * accessible via @link geometry @endlink).
-     * @see geometry
+     * \see geometry
      * \since QGIS 2.10
-     * @see isEmpty()
+     * \see isEmpty()
      */
     bool isNull() const;
 
@@ -166,12 +166,12 @@ class CORE_EXPORT QgsGeometry
     GEOSGeometry *exportToGeos( double precision = 0 ) const;
 
     /** Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
-     * @see type
+     * \see type
      */
     QgsWkbTypes::Type wkbType() const;
 
     /** Returns type of the geometry as a QgsWkbTypes::GeometryType
-     * @see wkbType
+     * \see wkbType
      */
     QgsWkbTypes::GeometryType type() const;
 
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsGeometry
      * Returns true if the geometry is empty (eg a linestring with no vertices,
      * or a collection with no geometries). A null geometry will always
      * return true for isEmpty().
-     * @see isNull()
+     * \see isNull()
      */
     bool isEmpty() const;
 
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsGeometry
      * \param vertex vertex index to calculate bisector angle at
      * \returns bisector angle, in radians clockwise from north
      * \since QGIS 3.0
-     * @see interpolateAngle()
+     * \see interpolateAngle()
      */
     double angleAtVertex( int vertex ) const;
 
@@ -330,13 +330,13 @@ class CORE_EXPORT QgsGeometry
 
     /** Returns the nearest point on this geometry to another geometry.
      * \since QGIS 2.14
-     * @see shortestLine()
+     * \see shortestLine()
      */
     QgsGeometry nearestPoint( const QgsGeometry &other ) const;
 
     /** Returns the shortest line joining this geometry to another geometry.
      * \since QGIS 2.14
-     * @see nearestPoint()
+     * \see nearestPoint()
      */
     QgsGeometry shortestLine( const QgsGeometry &other ) const;
 
@@ -479,7 +479,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns the bounding box of the geometry.
-     * @see orientedMinimumBoundingBox()
+     * \see orientedMinimumBoundingBox()
      */
     QgsRectangle boundingBox() const;
 
@@ -488,7 +488,7 @@ class CORE_EXPORT QgsGeometry
      * rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
      * width and height of the rotated bounding box will also be returned.
      * \since QGIS 3.0
-     * @see boundingBox()
+     * \see boundingBox()
      */
     QgsGeometry orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const;
 
@@ -619,7 +619,7 @@ class CORE_EXPORT QgsGeometry
      * at the added nodes.
      * Curved geometry types are automatically segmentized by this routine.
      * \since QGIS 3.0
-     * @see densifyByDistance()
+     * \see densifyByDistance()
      */
     QgsGeometry densifyByCount( int extraNodesPerSegment ) const;
 
@@ -635,7 +635,7 @@ class CORE_EXPORT QgsGeometry
      * at the added nodes.
      * Curved geometry types are automatically segmentized by this routine.
      * \since QGIS 3.0
-     * @see densifyByCount()
+     * \see densifyByCount()
      */
     QgsGeometry densifyByDistance( double distance ) const;
 
@@ -643,8 +643,8 @@ class CORE_EXPORT QgsGeometry
      * Returns the center of mass of a geometry.
      * \note for line based geometries, the center point of the line is returned,
      * and for point based geometries, the point itself is returned
-     * @see pointOnSurface()
-     * @see poleOfInaccessibility()
+     * \see pointOnSurface()
+     * \see poleOfInaccessibility()
      */
     QgsGeometry centroid() const;
 
@@ -652,8 +652,8 @@ class CORE_EXPORT QgsGeometry
      * Returns a point guaranteed to lie on the surface of a geometry. While the centroid()
      * of a geometry may be located outside of the geometry itself (e.g., for concave shapes),
      * the point on surface will always be inside the geometry.
-     * @see centroid()
-     * @see poleOfInaccessibility()
+     * \see centroid()
+     * \see poleOfInaccessibility()
      */
     QgsGeometry pointOnSurface() const;
 
@@ -665,8 +665,8 @@ class CORE_EXPORT QgsGeometry
      * tolerance. More precise tolerances require more iterations and will take longer
      * to calculate.
      * Optionally, the distance to the polygon boundary from the pole can be stored.
-     * @see centroid()
-     * @see pointOnSurface()
+     * \see centroid()
+     * \see pointOnSurface()
      * \since QGIS 3.0
      */
     QgsGeometry poleOfInaccessibility( double precision, double *distanceToBoundary = nullptr ) const;
@@ -705,7 +705,7 @@ class CORE_EXPORT QgsGeometry
     /**
      * Return interpolated point on line at distance
      * \since QGIS 1.9
-     * @see lineLocatePoint()
+     * \see lineLocatePoint()
      */
     QgsGeometry interpolate( double distance ) const;
 
@@ -716,7 +716,7 @@ class CORE_EXPORT QgsGeometry
      * \param point point to seek proximity to
      * \returns distance along line, or -1 on error
      * \note only valid for linestring geometries
-     * @see interpolate()
+     * \see interpolate()
      * \since QGIS 3.0
      */
     double lineLocatePoint( const QgsGeometry &point ) const;
@@ -727,7 +727,7 @@ class CORE_EXPORT QgsGeometry
      * of the node is returned.
      * \param distance distance along geometry
      * \since QGIS 3.0
-     * @see angleAtVertex()
+     * \see angleAtVertex()
      */
     double interpolateAngle( double distance ) const;
 
@@ -930,14 +930,14 @@ class CORE_EXPORT QgsGeometry
 
     /** Converts the geometry to straight line segments, if it is a curved geometry type.
      * \since QGIS 2.10
-     * @see requiresConversionToStraightSegments
+     * \see requiresConversionToStraightSegments
      */
     void convertToStraightSegment();
 
     /** Returns true if the geometry is a curved geometry type which requires conversion to
      * display as straight line segments.
      * \since QGIS 2.10
-     * @see convertToStraightSegment
+     * \see convertToStraightSegment
      */
     bool requiresConversionToStraightSegments() const;
 
@@ -965,7 +965,7 @@ class CORE_EXPORT QgsGeometry
      * \param id reference to QgsVertexId for storing result
      * \returns true if vertex was found
      * \since QGIS 2.10
-     * @see vertexNrFromVertexId
+     * \see vertexNrFromVertexId
      */
     bool vertexIdFromVertexNr( int nr, QgsVertexId &id ) const;
 
@@ -973,7 +973,7 @@ class CORE_EXPORT QgsGeometry
      * \param i vertex id
      * \returns vertex number
      * \since QGIS 2.10
-     * @see vertexIdFromVertexNr
+     * \see vertexIdFromVertexNr
      */
     int vertexNrFromVertexId( QgsVertexId i ) const;
 
@@ -1000,14 +1000,14 @@ class CORE_EXPORT QgsGeometry
     /** Creates a QgsPolyline from a QPolygonF.
      * \param polygon source polygon
      * \returns QgsPolyline
-     * @see createPolygonFromQPolygonF
+     * \see createPolygonFromQPolygonF
      */
     static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon );
 
     /** Creates a QgsPolygon from a QPolygonF.
      * \param polygon source polygon
      * \returns QgsPolygon
-     * @see createPolylineFromQPolygonF
+     * \see createPolylineFromQPolygonF
      */
     static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon );
 

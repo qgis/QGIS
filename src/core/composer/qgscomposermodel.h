@@ -102,7 +102,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     /** Adds an item to the top of the composition z stack.
      * \param item item to add. The item must not already exist in the z-order list.
      * \since QGIS 2.5
-     * @see reorderItemToTop
+     * \see reorderItemToTop
      */
     void addItemAtTop( QgsComposerItem *item );
 
@@ -116,9 +116,9 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * \param item item to move
      * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the top of the z-order list.
-     * @see reorderItemDown
-     * @see reorderItemToTop
-     * @see reorderItemToBottom
+     * \see reorderItemDown
+     * \see reorderItemToTop
+     * \see reorderItemToBottom
      * \since QGIS 2.5
      */
     bool reorderItemUp( QgsComposerItem *item );
@@ -127,9 +127,9 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * \param item item to move
      * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the bottom of the z-order list.
-     * @see reorderItemUp
-     * @see reorderItemToTop
-     * @see reorderItemToBottom
+     * \see reorderItemUp
+     * \see reorderItemToTop
+     * \see reorderItemToBottom
      * \since QGIS 2.5
      */
     bool reorderItemDown( QgsComposerItem *item );
@@ -138,9 +138,9 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * \param item item to move
      * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the top of the z-order list.
-     * @see reorderItemUp
-     * @see reorderItemDown
-     * @see reorderItemToBottom
+     * \see reorderItemUp
+     * \see reorderItemDown
+     * \see reorderItemToBottom
      * \since QGIS 2.5
      */
     bool reorderItemToTop( QgsComposerItem *item );
@@ -149,9 +149,9 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * \param item item to move
      * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the bottom of the z-order list.
-     * @see reorderItemUp
-     * @see reorderItemDown
-     * @see reorderItemToTop
+     * \see reorderItemUp
+     * \see reorderItemDown
+     * \see reorderItemToTop
      * \since QGIS 2.5
      */
     bool reorderItemToBottom( QgsComposerItem *item );
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * \param item item to search above
      * \returns item above specified item. If no items were found, no item
      * will be returned.
-     * @see getComposerItemBelow
+     * \see getComposerItemBelow
      * \since QGIS 2.5
      */
     QgsComposerItem *getComposerItemAbove( QgsComposerItem *item ) const;
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * \param item item to search above
      * \returns item below specified item. If no items were found, no item
      * will be returned.
-     * @see getComposerItemAbove
+     * \see getComposerItemAbove
      * \since QGIS 2.5
      */
     QgsComposerItem *getComposerItemBelow( QgsComposerItem *item ) const;
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     /** Marks an item as removed from the composition. This must be called whenever an item
      * has been removed from the composition.
      * \param item to mark as removed from the composition
-     * @see setItemRestored
+     * \see setItemRestored
      * \since QGIS 2.5
      */
     void setItemRemoved( QgsComposerItem *item );
@@ -196,43 +196,43 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     /** Restores an item to the composition. This must be called whenever an item removed
      * from the composition is restored to the composition.
      * \param item to mark as restored to the composition
-     * @see setItemRemoved
+     * \see setItemRemoved
      * \since QGIS 2.5
      */
     void setItemRestored( QgsComposerItem *item );
 
     /** Must be called when an item's display name is modified
      * \param item item to update
-     * @see updateItemLockStatus
-     * @see updateItemVisibility
-     * @see updateItemSelectStatus
+     * \see updateItemLockStatus
+     * \see updateItemVisibility
+     * \see updateItemSelectStatus
      * \since QGIS 2.5
      */
     void updateItemDisplayName( QgsComposerItem *item );
 
     /** Must be called when an item's lock status changes
      * \param item item to update
-     * @see updateItemDisplayName
-     * @see updateItemVisibility
-     * @see updateItemSelectStatus
+     * \see updateItemDisplayName
+     * \see updateItemVisibility
+     * \see updateItemSelectStatus
      * \since QGIS 2.5
      */
     void updateItemLockStatus( QgsComposerItem *item );
 
     /** Must be called when an item's visibility changes
      * \param item item to update
-     * @see updateItemDisplayName
-     * @see updateItemLockStatus
-     * @see updateItemSelectStatus
+     * \see updateItemDisplayName
+     * \see updateItemLockStatus
+     * \see updateItemSelectStatus
      * \since QGIS 2.5
      */
     void updateItemVisibility( QgsComposerItem *item );
 
     /** Must be called when an item's selection status changes
      * \param item item to update
-     * @see updateItemDisplayName
-     * @see updateItemVisibility
-     * @see updateItemLockStatus
+     * \see updateItemDisplayName
+     * \see updateItemVisibility
+     * \see updateItemLockStatus
      * \since QGIS 2.5
      */
     void updateItemSelectStatus( QgsComposerItem *item );
@@ -277,13 +277,13 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * list and does not emit QAbstractItemModel signals. Accordingly, this method should
      * only be called when changes to the z-order list are known and QAbstractItemModel begin
      * signals have already been called.
-     * @see rebuildSceneItemList
+     * \see rebuildSceneItemList
      */
     void refreshItemsInScene();
 
     /** Steps through the item z-order list and rebuilds the items in composition list,
      * emitting QAbstractItemModel signals as required.
-     * @see refreshItemsInScene
+     * \see refreshItemsInScene
      */
     void rebuildSceneItemList();
 
@@ -311,25 +311,25 @@ class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
 
     /** Returns the current item type filter, or QgsComposerItem::ComposerItem if no
      * item type filter is set.
-     * @see setFilterType()
+     * \see setFilterType()
      */
     QgsComposerItem::ItemType filterType() const { return mItemTypeFilter; }
 
     /** Sets the item type filter. Only matching item types will be shown.
      * \param itemType type to filter. Set to QgsComposerItem::ComposerItem to show all
      * item types.
-     * @see filterType()
+     * \see filterType()
      */
     void setFilterType( QgsComposerItem::ItemType itemType );
 
     /** Sets a list of specific items to exclude from the model
      * \param exceptList list of items to exclude
-     * @see exceptedItemList()
+     * \see exceptedItemList()
      */
     void setExceptedItemList( const QList< QgsComposerItem * > &exceptList );
 
     /** Returns the list of specific items excluded from the model.
-     * @see setExceptedItemList()
+     * \see setExceptedItemList()
      */
     QList< QgsComposerItem * > exceptedItemList() const { return mExceptedList; }
 

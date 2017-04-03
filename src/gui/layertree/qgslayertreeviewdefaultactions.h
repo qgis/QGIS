@@ -32,7 +32,7 @@ class QgsMapLayer;
  * The QgsLayerTreeViewDefaultActions class serves as a factory of actions
  * that can be used together with a layer tree view.
  *
- * @see QgsLayerTreeView
+ * \see QgsLayerTreeView
  * \since QGIS 2.4
  */
 class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject

@@ -42,23 +42,23 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
 
     /** Sets the current ramp shown in the editor.
      * \param ramp color ramp
-     * @see gradientRamp()
+     * \see gradientRamp()
      */
     void setGradientRamp( const QgsGradientColorRamp &ramp );
 
     /** Returns the current ramp created by the editor.
-     * @see setGradientRamp()
+     * \see setGradientRamp()
      */
     QgsGradientColorRamp gradientRamp() const { return mGradient; }
 
     /** Sets the currently selected stop.
      * \param index index of stop, where 0 corresponds to the first stop
-     * @see selectedStop()
+     * \see selectedStop()
      */
     void selectStop( int index );
 
     /** Returns details about the currently selected stop.
-     * @see selectStop()
+     * \see selectStop()
      */
     QgsGradientStop selectedStop() const;
 
@@ -69,26 +69,26 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
 
     /** Sets the color for the current selected stop.
      * \param color new stop color
-     * @see setSelectedStopOffset()
-     * @see setSelectedStopDetails()
-     * @see setColor1()
-     * @see setColor2()
+     * \see setSelectedStopOffset()
+     * \see setSelectedStopDetails()
+     * \see setColor1()
+     * \see setColor2()
      */
     void setSelectedStopColor( const QColor &color );
 
     /** Sets the offset for the current selected stop. This slot has no effect if either the
      * first or last stop is selected, as they cannot be repositioned.
      * \param offset new stop offset
-     * @see setSelectedStopColor()
-     * @see setSelectedStopDetails()
+     * \see setSelectedStopColor()
+     * \see setSelectedStopDetails()
      */
     void setSelectedStopOffset( double offset );
 
     /** Sets the color and offset for the current selected stop.
      * \param color new stop color
      * \param offset new stop offset
-     * @see setSelectedStopColor()
-     * @see setSelectedStopOffset()
+     * \see setSelectedStopColor()
+     * \see setSelectedStopOffset()
      */
     void setSelectedStopDetails( const QColor &color, double offset );
 
@@ -99,15 +99,15 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
 
     /** Sets the color for the first stop.
      * \param color new stop color
-     * @see setColor2()
-     * @see setSelectedStopColor()
+     * \see setColor2()
+     * \see setSelectedStopColor()
      */
     void setColor1( const QColor &color );
 
     /** Sets the color for the last stop.
      * \param color new stop color
-     * @see setColor1()
-     * @see setSelectedStopColor()
+     * \see setColor1()
+     * \see setSelectedStopColor()
      */
     void setColor2( const QColor &color );
 

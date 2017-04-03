@@ -59,12 +59,12 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
     /**
      * Set flags that affect how fields are filtered in the model.
      * \param filters are Filter flags
-     * @see filters()
+     * \see filters()
      */
     QgsFieldProxyModel *setFilters( QgsFieldProxyModel::Filters filters );
 
     /** Returns the filters controlling displayed fields.
-     * @see setFilters()
+     * \see setFilters()
      */
     const Filters &filters() const { return mFilters; }
 

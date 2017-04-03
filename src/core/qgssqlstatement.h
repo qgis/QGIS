@@ -79,23 +79,23 @@ class CORE_EXPORT QgsSQLStatement
     QString dump() const;
 
     /** Returns a quoted column reference (in double quotes)
-     * @see quotedString(), quotedIdentifierIfNeeded()
+     * \see quotedString(), quotedIdentifierIfNeeded()
      */
     static QString quotedIdentifier( QString name );
 
     /** Returns a quoted column reference (in double quotes) if needed, or
      * otherwise the original string.
-     * @see quotedString(), quotedIdentifier()
+     * \see quotedString(), quotedIdentifier()
      */
     static QString quotedIdentifierIfNeeded( const QString &name );
 
     /** Remove double quotes from an identifier.
-     * @see quotedIdentifier()
+     * \see quotedIdentifier()
      */
     static QString stripQuotedIdentifier( QString text );
 
     /** Returns a quoted version of a string (in single quotes)
-     * @see quotedIdentifier(), quotedIdentifierIfNeeded()
+     * \see quotedIdentifier(), quotedIdentifierIfNeeded()
      */
     static QString quotedString( QString text );
 

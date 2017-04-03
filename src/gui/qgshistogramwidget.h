@@ -64,15 +64,15 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     ~QgsHistogramWidget();
 
     /** Returns the layer currently associated with the widget.
-     * @see setLayer
-     * @see sourceFieldExp
+     * \see setLayer
+     * \see sourceFieldExp
      */
     QgsVectorLayer *layer() { return mVectorLayer; }
 
     /** Returns the source field name or expression used to calculate values displayed
      * in the histogram.
-     * @see setSourceFieldExp
-     * @see layer
+     * \see setSourceFieldExp
+     * \see layer
      */
     QString sourceFieldExp() const { return mSourceFieldExp; }
 
@@ -80,68 +80,68 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * pen will be automatically calculated. If ranges have been set using @link setGraduatedRanges @endlink
      * then the pen and brush will have no effect.
      * \param pen histogram pen
-     * @see pen
-     * @see setBrush
+     * \see pen
+     * \see setBrush
      */
     void setPen( const QPen &pen ) { mPen = pen; }
 
     /** Returns the pen used when drawing histogram bars.
-     * @see setPen
-     * @see brush
+     * \see setPen
+     * \see brush
      */
     QPen pen() const { return mPen; }
 
     /** Sets the brush used for drawing histogram bars. If ranges have been set using @link setGraduatedRanges @endlink
      * then the pen and brush will have no effect.
      * \param brush histogram brush
-     * @see brush
-     * @see setPen
+     * \see brush
+     * \see setPen
      */
     void setBrush( const QBrush &brush ) { mBrush = brush; }
 
     /** Returns the brush used when drawing histogram bars.
-     * @see setBrush
-     * @see pen
+     * \see setBrush
+     * \see pen
      */
     QBrush brush() const { return mBrush; }
 
     /** Sets the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
      * bars and for showing vertical dividers at the histogram breaks.
      * \param ranges graduated range list
-     * @see graduatedRanges
+     * \see graduatedRanges
      */
     void setGraduatedRanges( const QgsRangeList &ranges );
 
     /** Returns the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
      * bars and for showing vertical dividers at the histogram breaks.
      * \returns graduated range list
-     * @see setGraduatedRanges
+     * \see setGraduatedRanges
      */
     QgsRangeList graduatedRanges() const { return mRanges; }
 
     /** Returns the title for the histogram's x-axis.
-     * @see setXAxisTitle
-     * @see yAxisTitle
+     * \see setXAxisTitle
+     * \see yAxisTitle
      */
     QString xAxisTitle() const { return mXAxisTitle; }
 
     /** Sets the title for the histogram's x-axis.
      * \param title x-axis title, or empty string to remove title
-     * @see xAxisTitle
-     * @see setYAxisTitle
+     * \see xAxisTitle
+     * \see setYAxisTitle
      */
     void setXAxisTitle( const QString &title ) { mXAxisTitle = title; }
 
     /** Returns the title for the histogram's y-axis.
-     * @see setYAxisTitle
-     * @see xAxisTitle
+     * \see setYAxisTitle
+     * \see xAxisTitle
      */
     QString yAxisTitle() const { return mYAxisTitle; }
 
     /** Sets the title for the histogram's y-axis.
      * \param title y-axis title, or empty string to remove title
-     * @see yAxisTitle
-     * @see setXAxisTitle
+     * \see yAxisTitle
+     * \see setXAxisTitle
      */
     void setYAxisTitle( const QString &title ) { mYAxisTitle = title; }
 
@@ -158,13 +158,13 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
     /** Sets the vector layer associated with the histogram.
      * \param layer source vector layer
-     * @see setSourceFieldExp
+     * \see setSourceFieldExp
      */
     void setLayer( QgsVectorLayer *layer );
 
     /** Sets the source field or expression to use for values in the histogram.
      * \param fieldOrExp field name or expression string
-     * @see setLayer
+     * \see setLayer
      */
     void setSourceFieldExp( const QString &fieldOrExp );
 

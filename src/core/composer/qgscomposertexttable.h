@@ -44,7 +44,7 @@ class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
 
     /** Sets the contents of the text table.
      * \param contents list of table rows
-     * @see addRow
+     * \see addRow
      */
     void setContents( const QList< QStringList > &contents );
 

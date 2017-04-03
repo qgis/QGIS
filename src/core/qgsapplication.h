@@ -218,25 +218,25 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /** Returns the user's operating system login account name.
      * \since QGIS 2.14
-     * @see userFullName()
+     * \see userFullName()
      */
     static QString userLoginName();
 
     /** Returns the user's operating system login account full display name.
      * \since QGIS 2.14
-     * @see userLoginName()
+     * \see userLoginName()
      */
     static QString userFullName();
 
     /** Returns a string name of the operating system QGIS is running on.
      * \since QGIS 2.14
-     * @see platform()
+     * \see platform()
      */
     static QString osName();
 
     /** Returns the QGIS platform name, e.g., "desktop" or "server".
      * \since QGIS 2.14
-     * @see osName()
+     * \see osName()
      */
     static QString platform();
 
@@ -369,9 +369,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QStringList skippedGdalDrivers() { return ABISYM( mGdalSkipList ); }
 
     /** Apply the skipped drivers list to gdal
-     * @see skipGdalDriver
-     * @see restoreGdalDriver
-     * @see skippedGdalDrivers */
+     * \see skipGdalDriver
+     * \see restoreGdalDriver
+     * \see skippedGdalDrivers */
     static void applyGdalSkippedDrivers();
 
     /** Get maximum concurrent thread count
@@ -572,7 +572,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString ABISYM( mBuildOutputPath );
 
     /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
-     * @see skipGdalDriver, restoreGdalDriver */
+     * \see skipGdalDriver, restoreGdalDriver */
     static QStringList ABISYM( mGdalSkipList );
 
     /**

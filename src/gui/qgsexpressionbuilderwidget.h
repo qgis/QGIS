@@ -163,7 +163,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /** Returns the expression context for the widget. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
-     * @see setExpressionContext
+     * \see setExpressionContext
      * \since QGIS 2.12
      */
     QgsExpressionContext expressionContext() const { return mExpressionContext; }
@@ -171,7 +171,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /** Sets the expression context for the widget. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
      * \param context expression context
-     * @see expressionContext
+     * \see expressionContext
      * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context );

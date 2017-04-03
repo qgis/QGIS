@@ -58,7 +58,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * \param grid QgsComposerMapGrid to add to the stack
      * \note after adding a grid to the stack, updateBoundingRect() and update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
-     * @see removeGrid
+     * \see removeGrid
      */
     void addGrid( QgsComposerMapGrid *grid );
 
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * \param gridId id for the QgsComposerMapGrid to remove
      * \note after removing a grid from the stack, updateBoundingRect() and update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
-     * @see addGrid
+     * \see addGrid
      */
     void removeGrid( const QString &gridId );
 
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * \param gridId id for the QgsComposerMapGrid to move up
      * \note after moving a grid within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new grid stack order
-     * @see moveGridDown
+     * \see moveGridDown
      */
     void moveGridUp( const QString &gridId );
 
@@ -82,36 +82,36 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * \param gridId id for the QgsComposerMapGrid to move down
      * \note after moving a grid within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new grid stack order
-     * @see moveGridUp
+     * \see moveGridUp
      */
     void moveGridDown( const QString &gridId );
 
     /** Returns a const reference to a grid within the stack
      * \param gridId id for the QgsComposerMapGrid to find
      * \returns const reference to grid, if found
-     * @see grid
+     * \see grid
      */
     const QgsComposerMapGrid *constGrid( const QString &gridId ) const;
 
     /** Returns a reference to a grid within the stack
      * \param gridId id for the QgsComposerMapGrid to find
      * \returns reference to grid if found
-     * @see constGrid
+     * \see constGrid
      */
     QgsComposerMapGrid *grid( const QString &gridId ) const;
 
     /** Returns a reference to a grid within the stack
      * \param index grid position in the stack
      * \returns reference to grid if found
-     * @see constGrid
+     * \see constGrid
      */
     QgsComposerMapGrid *grid( const int index ) const;
 
     /** Returns a reference to a grid within the stack
      * \param idx grid position in the stack
      * \returns reference to grid if found
-     * @see constGrid
-     * @see grid
+     * \see constGrid
+     * \see grid
      */
     QgsComposerMapGrid &operator[]( int idx );
 
@@ -124,14 +124,14 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * \param elem is DOM node corresponding to 'a ComposerMap' tag
      * \param doc DOM document
      * \returns true if read was successful
-     * @see writeXml
+     * \see writeXml
      */
     bool readXml( const QDomElement &elem, const QDomDocument &doc ) override;
 
     /** Calculates the maximum distance grids within the stack extend
      * beyond the QgsComposerMap's item rect
      * \returns maximum grid extension
-     * @see calculateMaxGridExtension()
+     * \see calculateMaxGridExtension()
      */
     double maxGridExtension() const;
 
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * \param bottom storage for bottom extension
      * \param left storage for left extension
      * \since QGIS 2.12
-     * @see maxGridExtension()
+     * \see maxGridExtension()
      */
     void calculateMaxGridExtension( double &top, double &right, double &bottom, double &left ) const;
 };
@@ -285,38 +285,38 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Stores grid state in DOM element
      * \param elem is DOM element corresponding to a 'ComposerMap' tag
      * \param doc DOM document
-     * @see readXml
+     * \see readXml
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets grid state from a DOM document
      * \param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
      * \param doc is DOM document
-     * @see writeXml
+     * \see writeXml
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /** Sets the CRS for the grid.
      * \param crs coordinate reference system for grid
-     * @see crs
+     * \see crs
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Retrieves the CRS for the grid.
      * \returns coordinate reference system for grid
-     * @see setCrs
+     * \see setCrs
      */
     QgsCoordinateReferenceSystem crs() const { return mCRS; }
 
     /** Sets the blending mode used for drawing the grid.
      * \param mode blending mode for grid
-     * @see blendMode
+     * \see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
     /** Retrieves the blending mode used for drawing the grid.
      * \returns blending mode for grid
-     * @see setBlendMode
+     * \see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
@@ -336,7 +336,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * \param bottom storage for bottom extension
      * \param left storage for left extension
      * \since QGIS 2.12
-     * @see maxExtension()
+     * \see maxExtension()
      */
     void calculateMaxExtension( double &top, double &right, double &bottom, double &left );
 
@@ -347,78 +347,78 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Sets the units to use for grid measurements such as the interval
      * and offset for grid lines.
      * \param unit unit for grid measurements
-     * @see units
+     * \see units
      */
     void setUnits( const GridUnit unit );
 
     /** Gets the units used for grid measurements such as the interval
      * and offset for grid lines.
      * \returns for grid measurements
-     * @see setUnits
+     * \see setUnits
      */
     GridUnit units() const { return mGridUnit; }
 
     /** Sets the interval between grid lines in the x-direction. The units
      * are controlled through the setUnits method
      * \param interval interval between horizontal grid lines
-     * @see setIntervalY
-     * @see intervalX
+     * \see setIntervalY
+     * \see intervalX
      */
     void setIntervalX( const double interval );
 
     /** Gets the interval between grid lines in the x-direction. The units
      * are retrieved through the units() method.
      * \returns interval between horizontal grid lines
-     * @see setIntervalX
-     * @see intervalY
+     * \see setIntervalX
+     * \see intervalY
      */
     double intervalX() const { return mGridIntervalX; }
 
     /** Sets the interval between grid lines in the y-direction. The units
      * are controlled through the setUnits method
      * \param interval interval between vertical grid lines
-     * @see setIntervalX
-     * @see intervalY
+     * \see setIntervalX
+     * \see intervalY
      */
     void setIntervalY( const double interval );
 
     /** Gets the interval between grid lines in the y-direction. The units
      * are retrieved through the units() method.
      * \returns interval between vertical grid lines
-     * @see setIntervalY
-     * @see intervalX
+     * \see setIntervalY
+     * \see intervalX
      */
     double intervalY() const { return mGridIntervalY; }
 
     /** Sets the offset for grid lines in the x-direction. The units
      * are controlled through the setUnits method
      * \param offset offset for horizontal grid lines
-     * @see setOffsetY
-     * @see offsetX
+     * \see setOffsetY
+     * \see offsetX
      */
     void setOffsetX( const double offset );
 
     /** Gets the offset for grid lines in the x-direction. The units
      * are retrieved through the units() method.
      * \returns offset for horizontal grid lines
-     * @see setOffsetX
-     * @see offsetY
+     * \see setOffsetX
+     * \see offsetY
      */
     double offsetX() const { return mGridOffsetX; }
 
     /** Sets the offset for grid lines in the y-direction. The units
      * are controlled through the setUnits method
      * \param offset offset for vertical grid lines
-     * @see setOffsetX
-     * @see offsetY
+     * \see setOffsetX
+     * \see offsetY
      */
     void setOffsetY( const double offset );
 
     /** Gets the offset for grid lines in the y-direction. The units
      * are retrieved through the units() method.
      * \returns offset for vertical grid lines
-     * @see setOffsetY
-     * @see offsetX
+     * \see setOffsetY
+     * \see offsetX
      */
     double offsetY() const { return mGridOffsetY; }
 
@@ -429,28 +429,28 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Sets the grid style, which controls how the grid is drawn
      * over the map's contents
      * \param style desired grid style
-     * @see style
+     * \see style
      */
     void setStyle( const GridStyle style );
 
     /** Gets the grid's style, which controls how the grid is drawn
      * over the map's contents
      * \returns current grid style
-     * @see setStyle
+     * \see setStyle
      */
     GridStyle style() const { return mGridStyle; }
 
     /** Sets the length of the cross segments drawn for the grid. This is only used for grids
      * with QgsComposerMapGrid::Cross styles
      * \param length cross length in millimeters
-     * @see crossLength
+     * \see crossLength
      */
     void setCrossLength( const double length ) { mCrossLength = length; }
 
     /** Retrieves the length of the cross segments drawn for the grid. This is only used for grids
      * with QgsComposerMapGrid::Cross styles
      * \returns cross length in millimeters
-     * @see setCrossLength
+     * \see setCrossLength
      */
     double crossLength() const { return mCrossLength; }
 
@@ -458,8 +458,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * or QgsComposerMapGrid::Cross styles. For more control over grid line appearance, use
      * setLineSymbol instead.
      * \param width grid line width
-     * @see setLineSymbol
-     * @see setGridLineColor
+     * \see setLineSymbol
+     * \see setGridLineColor
      */
     void setGridLineWidth( const double width );
 
@@ -467,26 +467,26 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * or QgsComposerMapGrid::Cross styles. For more control over grid line appearance, use
      * setLineSymbol instead.
      * \param color color of grid lines
-     * @see setLineSymbol
-     * @see setGridLineWidth
+     * \see setLineSymbol
+     * \see setGridLineWidth
      */
     void setGridLineColor( const QColor &color );
 
     /** Sets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
      * \param symbol line symbol for grid lines
-     * @see lineSymbol
-     * @see setMarkerSymbol
-     * @see setStyle
+     * \see lineSymbol
+     * \see setMarkerSymbol
+     * \see setStyle
      */
     void setLineSymbol( QgsLineSymbol *symbol );
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
      * \returns line symbol for grid lines
-     * @see setLineSymbol
-     * @see markerSymbol
-     * @see style
+     * \see setLineSymbol
+     * \see markerSymbol
+     * \see style
      * \note not available in Python bindings
      */
     const QgsLineSymbol *lineSymbol() const { return mGridLineSymbol; }
@@ -494,27 +494,27 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
      * \returns line symbol for grid lines
-     * @see setLineSymbol
-     * @see markerSymbol
-     * @see style
+     * \see setLineSymbol
+     * \see markerSymbol
+     * \see style
      */
     QgsLineSymbol *lineSymbol() { return mGridLineSymbol; }
 
     /** Sets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
      * \param symbol marker symbol for grid intersection points
-     * @see markerSymbol
-     * @see setLineSymbol
-     * @see setStyle
+     * \see markerSymbol
+     * \see setLineSymbol
+     * \see setStyle
      */
     void setMarkerSymbol( QgsMarkerSymbol *symbol );
 
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
      * \returns marker symbol for grid intersection points
-     * @see setMarkerSymbol
-     * @see lineSymbol
-     * @see style
+     * \see setMarkerSymbol
+     * \see lineSymbol
+     * \see style
      * \note not available in Python bindings
      */
     const QgsMarkerSymbol *markerSymbol() const { return mGridMarkerSymbol; }
@@ -522,9 +522,9 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
      * \returns marker symbol for grid intersection points
-     * @see setMarkerSymbol
-     * @see lineSymbol
-     * @see style
+     * \see setMarkerSymbol
+     * \see lineSymbol
+     * \see style
      */
     QgsMarkerSymbol *markerSymbol() { return mGridMarkerSymbol; }
 
@@ -534,49 +534,49 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     /** Sets whether annotations should be shown for the grid.
      * \param enabled set to true to draw annotations for the grid
-     * @see annotationEnabled
+     * \see annotationEnabled
      */
     void setAnnotationEnabled( const bool enabled ) { mShowGridAnnotation = enabled; }
 
     /** Gets whether annotations are shown for the grid.
      * \returns true if annotations are drawn for the grid
-     * @see setAnnotationEnabled
+     * \see setAnnotationEnabled
      */
     bool annotationEnabled() const { return mShowGridAnnotation; }
 
     /** Sets the font used for drawing grid annotations
      * \param font font for annotations
-     * @see annotationFont
+     * \see annotationFont
      */
     void setAnnotationFont( const QFont &font ) { mGridAnnotationFont = font; }
 
     /** Gets the font used for drawing grid annotations
      * \returns font for annotations
-     * @see setAnnotationFont
+     * \see setAnnotationFont
      */
     QFont annotationFont() const { return mGridAnnotationFont; }
 
     /** Sets the font color used for drawing grid annotations
      * \param color font color for annotations
-     * @see annotationFontColor
+     * \see annotationFontColor
      */
     void setAnnotationFontColor( const QColor &color ) { mGridAnnotationFontColor = color; }
 
     /** Gets the font color used for drawing grid annotations
      * \returns font color for annotations
-     * @see setAnnotationFontColor
+     * \see setAnnotationFontColor
      */
     QColor annotationFontColor() const { return mGridAnnotationFontColor; }
 
     /** Sets the coordinate precision for grid annotations
      * \param precision number of decimal places to show when drawing grid annotations
-     * @see annotationPrecision
+     * \see annotationPrecision
      */
     void setAnnotationPrecision( const int precision ) { mGridAnnotationPrecision = precision; }
 
     /** Returns the coordinate precision for grid annotations
      * \returns number of decimal places shown when drawing grid annotations
-     * @see setAnnotationPrecision
+     * \see setAnnotationPrecision
      */
     int annotationPrecision() const { return mGridAnnotationPrecision; }
 
@@ -584,7 +584,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * or whether grid annotations should be disabled for the side.
      * \param display display mode for annotations
      * \param border side of map for annotations
-     * @see annotationDisplay
+     * \see annotationDisplay
      * \since QGIS 2.7
      */
     void setAnnotationDisplay( const DisplayMode display, const BorderSide border );
@@ -594,7 +594,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * from a side of the map frame.
      * \param border side of map for annotations
      * \returns display mode for grid annotations
-     * @see setAnnotationDisplay
+     * \see setAnnotationDisplay
      * \since QGIS 2.7
      */
     DisplayMode annotationDisplay( const BorderSide border ) const;
@@ -603,7 +603,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * frame.
      * \param position position to draw grid annotations
      * \param border side of map for annotations
-     * @see annotationPosition
+     * \see annotationPosition
      */
     void setAnnotationPosition( const AnnotationPosition position, const BorderSide border );
 
@@ -611,58 +611,58 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * frame.
      * \param border side of map for annotations
      * \returns position that grid annotations are drawn in
-     * @see setAnnotationPosition
+     * \see setAnnotationPosition
      */
     AnnotationPosition annotationPosition( const BorderSide border ) const;
 
     /** Sets the distance between the map frame and annotations. Units are in millimeters.
      * \param distance margin between map frame and annotations
-     * @see annotationFrameDistance
+     * \see annotationFrameDistance
      */
     void setAnnotationFrameDistance( const double distance ) { mAnnotationFrameDistance = distance; }
 
     /** Gets the distance between the map frame and annotations. Units are in millimeters.
      * \returns margin between map frame and annotations
-     * @see setAnnotationFrameDistance
+     * \see setAnnotationFrameDistance
      */
     double annotationFrameDistance() const { return mAnnotationFrameDistance; }
 
     /** Sets the direction for drawing frame annotations.
      * \param direction direction for frame annotations
      * \param border side of map for annotations
-     * @see annotationDirection
+     * \see annotationDirection
      */
     void setAnnotationDirection( const AnnotationDirection direction, const BorderSide border );
 
     /** Sets the direction for drawing all frame annotations.
      * \param direction direction for frame annotations
-     * @see annotationDirection
+     * \see annotationDirection
      */
     void setAnnotationDirection( const AnnotationDirection direction );
 
     /** Gets the direction for drawing frame annotations.
      * \param border side of map for annotations
      * \returns direction for frame annotations
-     * @see setAnnotationDirection
+     * \see setAnnotationDirection
      */
     AnnotationDirection annotationDirection( const BorderSide border ) const;
 
     /** Sets the format for drawing grid annotations.
      * \param format format for grid annotations
-     * @see annotationFormat
+     * \see annotationFormat
      */
     void setAnnotationFormat( const AnnotationFormat format ) { mGridAnnotationFormat = format; }
 
     /** Gets the format for drawing grid annotations.
      * \returns format for grid annotations
-     * @see setAnnotationFormat
+     * \see setAnnotationFormat
      */
     AnnotationFormat annotationFormat() const { return mGridAnnotationFormat; }
 
     /** Sets the expression used for drawing grid annotations. This is only used when annotationFormat()
      * is QgsComposerMapGrid::CustomFormat.
      * \param expression expression for evaluating custom grid annotations
-     * @see annotationExpression
+     * \see annotationExpression
      * \since QGIS 2.12
      */
     void setAnnotationExpression( const QString &expression ) { mGridAnnotationExpressionString = expression; mGridAnnotationExpression.reset(); }
@@ -670,7 +670,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Returns the expression used for drawing grid annotations. This is only used when annotationFormat()
      * is QgsComposerMapGrid::CustomFormat.
      * \returns expression for evaluating custom grid annotations
-     * @see setAnnotationExpression
+     * \see setAnnotationExpression
      * \since QGIS 2.12
      */
     QString annotationExpression() const { return mGridAnnotationExpressionString; }
@@ -681,20 +681,20 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     /** Sets the grid frame style.
      * \param style style for grid frame
-     * @see frameStyle
+     * \see frameStyle
      */
     void setFrameStyle( const FrameStyle style ) { mGridFrameStyle = style; }
 
     /** Gets the grid frame style.
      * \returns style for grid frame
-     * @see setFrameStyle
+     * \see setFrameStyle
      */
     FrameStyle frameStyle() const { return mGridFrameStyle; }
 
     /** Sets what type of grid divisions should be used for frames on a specified side of the map.
      * \param divisions grid divisions for frame
      * \param border side of map for frame
-     * @see frameDivisions
+     * \see frameDivisions
      * \since QGIS 2.7
      */
     void setFrameDivisions( const DisplayMode divisions, const BorderSide border );
@@ -702,7 +702,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Gets the type of grid divisions which are used for frames on a specified side of the map.
      * \param border side of map for frame
      * \returns grid divisions for frame
-     * @see setFrameDivisions
+     * \see setFrameDivisions
      * \since QGIS 2.7
      */
     DisplayMode frameDivisions( const BorderSide border ) const;
@@ -710,27 +710,27 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Sets flags for grid frame sides. Setting these flags controls which sides
      * of the map item the grid frame is drawn on.
      * \param flags flags for grid frame sides
-     * @see setFrameSideFlag
-     * @see frameSideFlags
-     * @see testFrameSideFlag
+     * \see setFrameSideFlag
+     * \see frameSideFlags
+     * \see testFrameSideFlag
      */
     void setFrameSideFlags( QgsComposerMapGrid::FrameSideFlags flags );
 
     /** Sets whether the grid frame is drawn for a certain side of the map item.
      * \param flag flag for grid frame side
      * \param on set to true to draw grid frame on that side of the map
-     * @see setFrameSideFlags
-     * @see frameSideFlags
-     * @see testFrameSideFlag
+     * \see setFrameSideFlags
+     * \see frameSideFlags
+     * \see testFrameSideFlag
      */
     void setFrameSideFlag( const FrameSideFlag flag, bool on = true );
 
     /** Returns the flags which control which sides of the map item the grid frame
      * is drawn on.
      * \returns flags for side of map grid is drawn on
-     * @see setFrameSideFlags
-     * @see setFrameSideFlag
-     * @see testFrameSideFlag
+     * \see setFrameSideFlags
+     * \see setFrameSideFlag
+     * \see testFrameSideFlag
      */
     FrameSideFlags frameSideFlags() const;
 
@@ -738,9 +738,9 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * item.
      * \param flag flag for grid frame side
      * \returns true if grid frame should be drawn for that side of the map
-     * @see setFrameSideFlags
-     * @see setFrameSideFlag
-     * @see frameSideFlags
+     * \see setFrameSideFlags
+     * \see setFrameSideFlag
+     * \see frameSideFlags
      */
     bool testFrameSideFlag( const FrameSideFlag flag ) const;
 
@@ -748,7 +748,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * The size of the line outlines drawn in the frame is controlled through the
      * setFramePenSize method.
      * \param width width of grid frame in millimeters
-     * @see frameWidth
+     * \see frameWidth
      */
     void setFrameWidth( const double width ) { mGridFrameWidth = width; }
 
@@ -756,71 +756,71 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * The size of the line outlines drawn in the frame can be retrieved via the
      * framePenSize method.
      * \returns width of grid frame in millimeters
-     * @see setFrameWidth
+     * \see setFrameWidth
      */
     double frameWidth() const { return mGridFrameWidth; }
 
     /** Sets the width of the stroke drawn in the grid frame.
      * \param width width of grid frame stroke
-     * @see framePenSize
-     * @see setFramePenColor
+     * \see framePenSize
+     * \see setFramePenColor
      */
     void setFramePenSize( const double width ) { mGridFramePenThickness = width; }
 
     /** Retrieves the width of the stroke drawn in the grid frame.
      * \returns width of grid frame stroke
-     * @see setFramePenSize
-     * @see framePenColor
+     * \see setFramePenSize
+     * \see framePenColor
      */
     double framePenSize() const { return mGridFramePenThickness; }
 
     /** Sets the color of the stroke drawn in the grid frame.
      * \param color color of grid frame stroke
-     * @see framePenColor
-     * @see setFramePenSize
-     * @see setFrameFillColor1
-     * @see setFrameFillColor2
+     * \see framePenColor
+     * \see setFramePenSize
+     * \see setFrameFillColor1
+     * \see setFrameFillColor2
      */
     void setFramePenColor( const QColor &color ) { mGridFramePenColor = color; }
 
     /** Retrieves the color of the stroke drawn in the grid frame.
      * \returns color of grid frame stroke
-     * @see setFramePenColor
-     * @see framePenSize
-     * @see frameFillColor1
-     * @see frameFillColor2
+     * \see setFramePenColor
+     * \see framePenSize
+     * \see frameFillColor1
+     * \see frameFillColor2
      */
     QColor framePenColor() const {return mGridFramePenColor;}
 
     /** Sets the first fill color used for the grid frame.
      * \param color first fill color for grid frame
-     * @see frameFillColor1
-     * @see setFramePenColor
-     * @see setFrameFillColor2
+     * \see frameFillColor1
+     * \see setFramePenColor
+     * \see setFrameFillColor2
      */
     void setFrameFillColor1( const QColor &color ) { mGridFrameFillColor1 = color; }
 
     /** Retrieves the first fill color for the grid frame.
      * \returns first fill color for grid frame
-     * @see setFrameFillColor1
-     * @see framePenColor
-     * @see frameFillColor2
+     * \see setFrameFillColor1
+     * \see framePenColor
+     * \see frameFillColor2
      */
     QColor frameFillColor1() const { return mGridFrameFillColor1; }
 
     /** Sets the second fill color used for the grid frame.
      * \param color second fill color for grid frame
-     * @see frameFillColor2
-     * @see setFramePenColor
-     * @see setFrameFillColor1
+     * \see frameFillColor2
+     * \see setFramePenColor
+     * \see setFrameFillColor1
      */
     void setFrameFillColor2( const QColor &color ) { mGridFrameFillColor2 = color; }
 
     /** Retrieves the second fill color for the grid frame.
      * \returns second fill color for grid frame
-     * @see setFrameFillColor2
-     * @see framePenColor
-     * @see frameFillColor1
+     * \see setFrameFillColor2
+     * \see framePenColor
+     * \see frameFillColor1
      */
     QColor frameFillColor2() const { return mGridFrameFillColor2; }
 

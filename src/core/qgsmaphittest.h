@@ -53,7 +53,7 @@ class CORE_EXPORT QgsMapHitTest
      * \param symbol symbol to find
      * \param layer vector layer
      * \since QGIS 2.12
-     * @see legendKeyVisible()
+     * \see legendKeyVisible()
      */
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsMapHitTest
      * \param ruleKey legend rule key
      * \param layer vector layer
      * \since QGIS 2.14
-     * @see symbolVisible()
+     * \see symbolVisible()
      */
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
 

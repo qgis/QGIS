@@ -182,7 +182,7 @@ class CORE_EXPORT QgsExpression
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
-     * @see referencedAttributeIndexes()
+     * \see referencedAttributeIndexes()
      */
     QSet<QString> referencedColumns() const;
 
@@ -261,9 +261,9 @@ class CORE_EXPORT QgsExpression
 
     /** Return calculator used for distance and area calculations
      * (used by $length, $area and $perimeter functions only)
-     * @see setGeomCalculator()
-     * @see distanceUnits()
-     * @see areaUnits()
+     * \see setGeomCalculator()
+     * \see distanceUnits()
+     * \see areaUnits()
      */
     QgsDistanceArea *geomCalculator();
 
@@ -273,39 +273,39 @@ class CORE_EXPORT QgsExpression
      * cartesian methods (ie no ellipsoidal calculations).
      * \param calc geometry calculator. Ownership is not transferred. Set to a nullptr to force
      * cartesian calculations.
-     * @see geomCalculator()
+     * \see geomCalculator()
      */
     void setGeomCalculator( const QgsDistanceArea *calc );
 
     /** Returns the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * \note distances are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
-     * @see setDistanceUnits()
-     * @see areaUnits()
+     * \see setDistanceUnits()
+     * \see areaUnits()
      */
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 
     /** Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * \note distances are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
-     * @see distanceUnits()
-     * @see setAreaUnits()
+     * \see distanceUnits()
+     * \see setAreaUnits()
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
     /** Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * \note areas are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
-     * @see setAreaUnits()
-     * @see distanceUnits()
+     * \see setAreaUnits()
+     * \see distanceUnits()
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
     /** Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * \note areas are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
-     * @see areaUnits()
-     * @see setDistanceUnits()
+     * \see areaUnits()
+     * \see setDistanceUnits()
      */
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
@@ -606,7 +606,7 @@ class CORE_EXPORT QgsExpression
 
         /** Returns a list of the groups the function belongs to.
          * \since QGIS 3.0
-         * @see group()
+         * \see group()
         */
         QStringList groups() const { return mGroups; }
 
@@ -762,13 +762,13 @@ class CORE_EXPORT QgsExpression
      * \param function function to register
      * \param transferOwnership set to true to transfer ownership of function to expression engine
      * \returns true on successful registration
-     * @see unregisterFunction
+     * \see unregisterFunction
      */
     static bool registerFunction( Function *function, bool transferOwnership = false );
 
     /** Unregisters a function from the expression engine. The function will no longer be usable in expressions.
      * \param name function name
-     * @see registerFunction
+     * \see registerFunction
      */
     static bool unregisterFunction( const QString &name );
 
@@ -793,14 +793,14 @@ class CORE_EXPORT QgsExpression
     static int functionCount();
 
     /** Returns a quoted column reference (in double quotes)
-     * @see quotedString()
-     * @see quotedValue()
+     * \see quotedString()
+     * \see quotedValue()
      */
     static QString quotedColumnRef( QString name );
 
     /** Returns a quoted version of a string (in single quotes)
-     * @see quotedValue()
-     * @see quotedColumnRef()
+     * \see quotedValue()
+     * \see quotedColumnRef()
      */
     static QString quotedString( QString text );
 
@@ -808,8 +808,8 @@ class CORE_EXPORT QgsExpression
      * quotations where required.
      * \param value value to convert to a string representation
      * \since QGIS 2.14
-     * @see quotedString()
-     * @see quotedColumnRef()
+     * \see quotedString()
+     * \see quotedColumnRef()
      */
     static QString quotedValue( const QVariant &value );
 
@@ -818,8 +818,8 @@ class CORE_EXPORT QgsExpression
      * \param value value to convert to a string representation
      * \param type value type
      * \since QGIS 2.14
-     * @see quotedString()
-     * @see quotedColumnRef()
+     * \see quotedString()
+     * \see quotedColumnRef()
      */
     static QString quotedValue( const QVariant &value, QVariant::Type type );
 
@@ -1232,7 +1232,7 @@ class CORE_EXPORT QgsExpression
 
     /** Returns the help text for a specified function.
      * \param name function name
-     * @see variableHelpText()
+     * \see variableHelpText()
      */
     static QString helpText( QString name );
 
@@ -1240,7 +1240,7 @@ class CORE_EXPORT QgsExpression
      * \param variableName name of variable
      * \param showValue set to true to include current value of variable in help text
      * \param value current value of variable to show in help text
-     * @see helpText()
+     * \see helpText()
      * \since QGIS 2.12
      */
     static QString variableHelpText( const QString &variableName, bool showValue = true, const QVariant &value = QVariant() );

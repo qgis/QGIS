@@ -127,7 +127,7 @@ class CORE_EXPORT QgsRasterBlock
 
     /** True if the block has no data value.
      * \returns true if the block has no data value
-     * @see noDataValue(), setNoDataValue(), resetNoDataValue()
+     * \see noDataValue(), setNoDataValue(), resetNoDataValue()
      */
     bool hasNoDataValue() const { return mHasNoDataValue; }
 
@@ -139,21 +139,21 @@ class CORE_EXPORT QgsRasterBlock
 
     /** Sets cell value that will be considered as "no data".
      * \since QGIS 3.0
-     * @see noDataValue(), hasNoDataValue(), resetNoDataValue()
+     * \see noDataValue(), hasNoDataValue(), resetNoDataValue()
      */
     void setNoDataValue( double noDataValue );
 
     /** Reset no data value: if there was a no data value previously set,
      * it will be discarded.
      * \since QGIS 3.0
-     * @see noDataValue(), hasNoDataValue(), setNoDataValue()
+     * \see noDataValue(), hasNoDataValue(), setNoDataValue()
      */
     void resetNoDataValue();
 
     /** Return no data value. If the block does not have a no data value the
      *  returned value is undefined.
      * \returns No data value
-     * @see hasNoDataValue(), setNoDataValue(), resetNoDataValue()
+     * \see hasNoDataValue(), setNoDataValue(), resetNoDataValue()
      */
     double noDataValue() const { return mNoDataValue; }
 
@@ -362,13 +362,13 @@ class CORE_EXPORT QgsRasterBlock
     static QRect subRect( const QgsRectangle &extent, int width, int height, const QgsRectangle &subExtent );
 
     /** Returns the width (number of columns) of the raster block.
-     * @see height
+     * \see height
      * \since QGIS 2.10
      */
     int width() const { return mWidth; }
 
     /** Returns the height (number of rows) of the raster block.
-     * @see width
+     * \see width
      * \since QGIS 2.10
      */
     int height() const { return mHeight; }

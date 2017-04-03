@@ -73,7 +73,7 @@ namespace QgsMapToolSelectUtils
     \param e MouseEvents are used to determine the current selection
     operations (add, subtract, contains)
     \since QGIS 2.16
-    @see selectSingleFeature()
+    \see selectSingleFeature()
   */
   void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, QMouseEvent *e );
 
@@ -85,7 +85,7 @@ namespace QgsMapToolSelectUtils
     must be in terms of the canvas coordinate system.
     \param e MouseEvents are used to determine the current selection
     operations (add, subtract, contains)
-    @see selectMultipleFeatures()
+    \see selectMultipleFeatures()
   */
   void selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, QMouseEvent *e );
 

@@ -63,90 +63,90 @@ class CORE_EXPORT QgsInterval
     QgsInterval( double seconds );
 
     /** Returns the interval duration in years (based on an average year length)
-     * @see setYears()
+     * \see setYears()
      */
     double years() const { return mSeconds / YEARS; }
 
     /** Sets the interval duration in years.
      * \param years duration in years (based on average year length)
-     * @see years()
+     * \see years()
      */
     void setYears( double years ) { mSeconds = years * YEARS; mValid = true; }
 
     /** Returns the interval duration in months (based on a 30 day month).
-     * @see setMonths()
+     * \see setMonths()
      */
     double months() const { return mSeconds / MONTHS; }
 
     /** Sets the interval duration in months.
      * \param months duration in months (based on a 30 day month)
-     * @see months()
+     * \see months()
      */
     void setMonths( double months ) { mSeconds = months * MONTHS; mValid = true; }
 
     /** Returns the interval duration in weeks.
-     * @see setWeeks()
+     * \see setWeeks()
      */
     double weeks() const { return mSeconds / WEEKS; }
 
     /** Sets the interval duration in weeks.
      * \param weeks duration in weeks
-     * @see weeks()
+     * \see weeks()
      */
     void setWeeks( double weeks ) { mSeconds = weeks * WEEKS; mValid = true; }
 
     /** Returns the interval duration in days.
-     * @see setDays()
+     * \see setDays()
      */
     double days() const { return mSeconds / DAY; }
 
     /** Sets the interval duration in days.
      * \param days duration in days
-     * @see days()
+     * \see days()
      */
     void setDays( double days ) { mSeconds = days * DAY; mValid = true; }
 
     /** Returns the interval duration in hours.
-     * @see setHours()
+     * \see setHours()
      */
     double hours() const { return mSeconds / HOUR; }
 
     /** Sets the interval duration in hours.
      * \param hours duration in hours
-     * @see hours()
+     * \see hours()
      */
     void setHours( double hours ) { mSeconds = hours * HOUR; mValid = true; }
 
     /** Returns the interval duration in minutes.
-     * @see setMinutes()
+     * \see setMinutes()
      */
     double minutes() const { return mSeconds / MINUTE; }
 
     /** Sets the interval duration in minutes.
      * \param minutes duration in minutes
-     * @see minutes()
+     * \see minutes()
      */
     void setMinutes( double minutes ) { mSeconds = minutes * MINUTE; mValid = true; }
 
     /** Returns the interval duration in seconds.
-     * @see setSeconds()
+     * \see setSeconds()
      */
     double seconds() const { return mSeconds; }
 
     /** Sets the interval duration in seconds.
      * \param seconds duration in seconds
-     * @see seconds()
+     * \see seconds()
      */
     void setSeconds( double seconds ) { mSeconds = seconds; mValid = true; }
 
     /** Returns true if the interval is valid.
-     * @see setValid()
+     * \see setValid()
      */
     bool isValid() const { return mValid; }
 
     /** Sets whether the interval is valid.
      * \param valid set to true to set the interval as valid.
-     * @see isValid()
+     * \see isValid()
      */
     void setValid( bool valid ) { mValid = valid; }
 

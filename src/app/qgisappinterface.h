@@ -296,12 +296,12 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * \since QGIS 3.0
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
-     * @see unregisterCustomDropHandler() */
+     * \see unregisterCustomDropHandler() */
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
     /** Unregister a previously registered custom drop handler.
      * \since QGIS 3.0
-     * @see registerCustomDropHandler() */
+     * \see registerCustomDropHandler() */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
     /** Accessors for inserting items into menus and toolbars.

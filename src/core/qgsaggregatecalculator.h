@@ -74,14 +74,14 @@ class CORE_EXPORT QgsAggregateCalculator
 
       /** Optional filter for calculating aggregate over a subset of features, or an
        * empty string to use all features.
-       * @see QgsAggregateCalculator::setFilter()
-       * @see QgsAggregateCalculator::filter()
+       * \see QgsAggregateCalculator::setFilter()
+       * \see QgsAggregateCalculator::filter()
        */
       QString filter;
 
       /** Delimiter to use for joining values with the StringConcatenate aggregate.
-       * @see QgsAggregateCalculator::setDelimiter()
-       * @see QgsAggregateCalculator::delimiter()
+       * \see QgsAggregateCalculator::setDelimiter()
+       * \see QgsAggregateCalculator::delimiter()
        */
       QString delimiter;
     };
@@ -102,23 +102,23 @@ class CORE_EXPORT QgsAggregateCalculator
 
     /** Sets a filter to limit the features used during the aggregate calculation.
      * \param filterExpression expression for filtering features, or empty string to remove filter
-     * @see filter()
+     * \see filter()
      */
     void setFilter( const QString &filterExpression ) { mFilterExpression = filterExpression; }
 
     /** Returns the filter which limits the features used during the aggregate calculation.
-     * @see setFilter()
+     * \see setFilter()
      */
     QString filter() const { return mFilterExpression; }
 
     /** Sets the delimiter to use for joining values with the StringConcatenate aggregate.
      * \param delimiter string delimiter
-     * @see delimiter()
+     * \see delimiter()
      */
     void setDelimiter( const QString &delimiter ) { mDelimiter = delimiter; }
 
     /** Returns the delimiter used for joining values with the StringConcatenate aggregate.
-     * @see setDelimiter()
+     * \see setDelimiter()
      */
     QString delimiter() const { return mDelimiter; }
 

@@ -180,13 +180,13 @@ class CORE_EXPORT QgsMapToPixel
     QTransform transform() const;
 
     /** Returns the center x-coordinate for the transform.
-     * @see yCenter()
+     * \see yCenter()
      * \since QGIS 3.0
      */
     double xCenter() const { return mXCenter; }
 
     /** Returns the center y-coordinate for the transform.
-     * @see xCenter()
+     * \see xCenter()
      * \since QGIS 3.0
      */
     double yCenter() const { return mYCenter; }

@@ -66,55 +66,55 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     int band() const { return mBand; }
 
     /** Sets the band used by the renderer.
-     * @see band
+     * \see band
      */
     void setBand( int bandNo );
 
     /**
      * Returns the direction of the light over the raster between 0-360.
-     * @see setAzimuth()
+     * \see setAzimuth()
      */
     double azimuth() const { return mLightAzimuth; }
 
     /** Returns the angle of the light source over the raster.
-     * @see setAltitude()
+     * \see setAltitude()
      */
     double altitude()  const { return mLightAngle; }
 
     /** Returns the Z scaling factor.
-     * @see setZFactor()
+     * \see setZFactor()
      */
     double zFactor()  const { return mZFactor; }
 
     /** Returns true if the renderer is using multi-directional hillshading.
-     * @see setMultiDirectional()
+     * \see setMultiDirectional()
      */
     bool multiDirectional() const { return mMultiDirectional; }
 
     /**
      * @brief Set the azimuth of the light source.
      * \param azimuth The azimuth of the light source, between 0 and 360.0
-     * @see azimuth()
+     * \see azimuth()
      */
     void setAzimuth( double azimuth ) { mLightAzimuth = azimuth; }
 
     /**
      * @brief Set the altitude of the light source
      * \param altitude the altitude
-     * @see altitude()
+     * \see altitude()
      */
     void setAltitude( double altitude ) { mLightAngle = altitude; }
 
     /**
      * @brief Set the Z scaling factor of the result image.
      * \param zfactor The z factor
-     * @see zFactor()
+     * \see zFactor()
      */
     void setZFactor( double zfactor ) { mZFactor = zfactor; }
 
     /** Sets whether to render using a multi-directional hillshade algorithm.
      * \param isMultiDirectional set to true to use multi directional rendering
-     * @see multiDirectional()
+     * \see multiDirectional()
      */
     void setMultiDirectional( bool isMultiDirectional ) { mMultiDirectional = isMultiDirectional; }
 

@@ -73,7 +73,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param index index of node, where the first node in the line is 0
      * \returns z-coordinate of node, or 0.0 if index is out of bounds or the line
      * does not have a z dimension
-     * @see setZAt()
+     * \see setZAt()
      */
     double zAt( int index ) const;
 
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param index index of node, where the first node in the line is 0
      * \returns m value of node, or 0.0 if index is out of bounds or the line
      * does not have m values
-     * @see setMAt()
+     * \see setMAt()
      */
     double mAt( int index ) const;
 
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string.
      * \param x x-coordinate of node
-     * @see xAt()
+     * \see xAt()
      */
     void setXAt( int index, double x );
 
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string.
      * \param y y-coordinate of node
-     * @see yAt()
+     * \see yAt()
      */
     void setYAt( int index, double y );
 
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string, and the line string must have z-dimension.
      * \param z z-coordinate of node
-     * @see zAt()
+     * \see zAt()
      */
     void setZAt( int index, double z );
 
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string, and the line string must have m values.
      * \param m m value of node
-     * @see mAt()
+     * \see mAt()
      */
     void setMAt( int index, double m );
 

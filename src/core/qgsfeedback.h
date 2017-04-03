@@ -64,8 +64,8 @@ class CORE_EXPORT QgsFeedback : public QObject
     /**
      * Sets the current progress for the feedback object. The \a progress
      * argument is in percentage and valid values range from 0-100.
-     * @see progress()
-     * @see progressChanged()
+     * \see progress()
+     * \see progressChanged()
      * \since QGIS 3.0
      */
     void setProgress( double progress ) { mProgress = progress; emit progressChanged( mProgress ); }
@@ -74,8 +74,8 @@ class CORE_EXPORT QgsFeedback : public QObject
      * Returns the current progress reported by the feedback object. Depending on how the
      * feedback object is used progress reporting may not be supported. The returned value
      * is in percentage and ranges from 0-100.
-     * @see setProgress()
-     * @see progressChanged()
+     * \see setProgress()
+     * \see progressChanged()
      * \since QGIS 3.0
      */
     double progress() const { return mProgress; }
@@ -89,8 +89,8 @@ class CORE_EXPORT QgsFeedback : public QObject
      * feedback object is used progress reporting may not be supported. The \a progress
      * argument is in percentage and ranges from 0-100.
      * \since QGIS 3.0
-     * @see setProgress()
-     * @see progress()
+     * \see setProgress()
+     * \see progress()
      */
     void progressChanged( double progress );
 

@@ -61,15 +61,15 @@ class CORE_EXPORT QgsProjectProperty
 
     /**
      * Returns true if the property is a QgsProjectPropertyKey.
-     * @see isValue()
-     * @see isLeaf()
+     * \see isValue()
+     * \see isLeaf()
      */
     virtual bool isKey() const = 0;
 
     /**
      * Returns true if the property is a QgsProjectPropertyValue.
-     * @see isKey()
-     * @see isLeaf()
+     * \see isKey()
+     * \see isLeaf()
      */
     virtual bool isValue() const = 0;
 
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 
     /**
      * The name of the property is used as identifier.
-     * @see setName()
+     * \see setName()
      */
     QString name() const { return mName; }
 
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
      * The name of the property is used as identifier.
      *
      * \since QGIS 3.0
-     * @see name()
+     * \see name()
      */
     void setName( const QString &name );
 
@@ -278,13 +278,13 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 
     /**
      * Returns any sub-keys contained by this property that do not contain other keys.
-     * @see subkeyList()
+     * \see subkeyList()
      */
     void entryList( QStringList &entries ) const;
 
     /**
      * Return any sub-keys contained by this property which themselves contain other keys.
-     * @see entryList()
+     * \see entryList()
      */
     void subkeyList( QStringList &entries ) const;
 

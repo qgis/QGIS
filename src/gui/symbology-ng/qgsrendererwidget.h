@@ -53,13 +53,13 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 
     /** Sets the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context
-     * @see context()
+     * \see context()
      * \since QGIS 3.0
      */
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
+     * \see setContext()
      * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
@@ -157,13 +157,13 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context
-     * @see context()
+     * \see context()
      * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
+     * \see setContext()
      * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;

@@ -114,7 +114,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 
     /**
      * Returns the layer currently associated with the widget.
-     * @see setLayer()
+     * \see setLayer()
      */
     QgsVectorLayer *layer() const;
 
@@ -140,7 +140,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 
     /**
      * Sets the layer used to display the fields and expression.
-     * @see layer()
+     * \see layer()
      */
     void setLayer( QgsMapLayer *layer );
 

@@ -79,30 +79,30 @@ class CORE_EXPORT QgsAbstractGeometry
     //virtual int coordDim() const { return mCoordDimension; }
 
     /** Returns a unique string representing the geometry type.
-     * @see wkbType
-     * @see wktTypeStr
+     * \see wkbType
+     * \see wktTypeStr
      */
     virtual QString geometryType() const = 0;
 
     /** Returns the WKB type of the geometry.
-     * @see geometryType
-     * @see wktTypeStr
+     * \see geometryType
+     * \see wktTypeStr
      */
     QgsWkbTypes::Type wkbType() const { return mWkbType; }
 
     /** Returns the WKT type string of the geometry.
-     * @see geometryType
-     * @see wkbType
+     * \see geometryType
+     * \see wkbType
      */
     QString wktTypeStr() const;
 
     /** Returns true if the geometry is 3D and contains a z-value.
-     * @see isMeasure
+     * \see isMeasure
      */
     bool is3D() const;
 
     /** Returns true if the geometry contains m values.
-     * @see is3D
+     * \see is3D
      */
     bool isMeasure() const;
 
@@ -127,32 +127,32 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /** Sets the geometry from a WKB string.
      * After successful read the wkb argument will be at the position where the reading has stopped.
-     * @see fromWkt
+     * \see fromWkt
      */
     virtual bool fromWkb( QgsConstWkbPtr &wkb ) = 0;
 
     /** Sets the geometry from a WKT string.
-     * @see fromWkb
+     * \see fromWkb
      */
     virtual bool fromWkt( const QString &wkt ) = 0;
 
     //export
 
     /** Returns a WKB representation of the geometry.
-     * @see asWkt
-     * @see asGML2
-     * @see asGML3
-     * @see asJSON
+     * \see asWkt
+     * \see asGML2
+     * \see asGML3
+     * \see asJSON
      * \since QGIS 3.0
      */
     virtual QByteArray asWkb() const = 0;
 
     /** Returns a WKT representation of the geometry.
      * \param precision number of decimal places for coordinates
-     * @see asWkb
-     * @see asGML2
-     * @see asGML3
-     * @see asJSON
+     * \see asWkb
+     * \see asGML2
+     * \see asGML3
+     * \see asJSON
      */
     virtual QString asWkt( int precision = 17 ) const = 0;
 
@@ -160,10 +160,10 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param doc DOM document
      * \param precision number of decimal places for coordinates
      * \param ns XML namespace
-     * @see asWkb
-     * @see asWkt
-     * @see asGML3
-     * @see asJSON
+     * \see asWkb
+     * \see asWkt
+     * \see asGML3
+     * \see asJSON
      */
     virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 
@@ -171,19 +171,19 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param doc DOM document
      * \param precision number of decimal places for coordinates
      * \param ns XML namespace
-     * @see asWkb
-     * @see asWkt
-     * @see asGML2
-     * @see asJSON
+     * \see asWkb
+     * \see asWkt
+     * \see asGML2
+     * \see asJSON
      */
     virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 
     /** Returns a GeoJSON representation of the geometry.
      * \param precision number of decimal places for coordinates
-     * @see asWkb
-     * @see asWkt
-     * @see asGML2
-     * @see asGML3
+     * \see asWkb
+     * \see asWkt
+     * \see asGML2
+     * \see asGML3
      */
     virtual QString asJSON( int precision = 17 ) const = 0;
 
@@ -253,8 +253,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param position vertex id for position of inserted vertex
      * \param vertex vertex to insert
      * \returns true if insert was successful
-     * @see moveVertex
-     * @see deleteVertex
+     * \see moveVertex
+     * \see deleteVertex
      */
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) = 0;
 
@@ -262,34 +262,34 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param position vertex id for vertex to move
      * \param newPos new position of vertex
      * \returns true if move was successful
-     * @see insertVertex
-     * @see deleteVertex
+     * \see insertVertex
+     * \see deleteVertex
      */
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) = 0;
 
     /** Deletes a vertex within the geometry
      * \param position vertex id for vertex to delete
      * \returns true if delete was successful
-     * @see insertVertex
-     * @see moveVertex
+     * \see insertVertex
+     * \see moveVertex
      */
     virtual bool deleteVertex( QgsVertexId position ) = 0;
 
     /** Returns the length of the geometry.
-     * @see area()
-     * @see perimeter()
+     * \see area()
+     * \see perimeter()
      */
     virtual double length() const { return 0.0; }
 
     /** Returns the perimeter of the geometry.
-     * @see area()
-     * @see length()
+     * \see area()
+     * \see length()
      */
     virtual double perimeter() const { return 0.0; }
 
     /** Returns the area of the geometry.
-     * @see length()
-     * @see perimeter()
+     * \see length()
+     * \see perimeter()
      */
     virtual double area() const { return 0.0; }
 
@@ -336,8 +336,8 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual int ringCount( int part = 0 ) const = 0;
 
     /** Returns count of parts contained in the geometry.
-     * @see vertexCount
-     * @see ringCount
+     * \see vertexCount
+     * \see ringCount
      */
     virtual int partCount() const = 0;
 
@@ -345,8 +345,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param zValue initial z-value for all nodes
      * \returns true on success
      * \since QGIS 2.12
-     * @see dropZValue()
-     * @see addMValue()
+     * \see dropZValue()
+     * \see addMValue()
      */
     virtual bool addZValue( double zValue = 0 ) = 0;
 
@@ -354,23 +354,23 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param mValue initial m-value for all nodes
      * \returns true on success
      * \since QGIS 2.12
-     * @see dropMValue()
-     * @see addZValue()
+     * \see dropMValue()
+     * \see addZValue()
      */
     virtual bool addMValue( double mValue = 0 ) = 0;
 
     /** Drops any z-dimensions which exist in the geometry.
      * \returns true if Z values were present and have been removed
-     * @see addZValue()
-     * @see dropMValue()
+     * \see addZValue()
+     * \see dropMValue()
      * \since QGIS 2.14
      */
     virtual bool dropZValue() = 0;
 
     /** Drops any measure values which exist in the geometry.
      * \returns true if m-values were present and have been removed
-     * @see addMValue()
-     * @see dropZValue()
+     * \see addMValue()
+     * \see dropZValue()
      * \since QGIS 2.14
      */
     virtual bool dropMValue() = 0;

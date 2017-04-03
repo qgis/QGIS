@@ -74,8 +74,8 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * the frame size is not fixed in that direction and frames can have variable width
      * or height accordingly.
      * \since QGIS 2.5
-     * @see minFrameSize
-     * @see recalculateFrameRects
+     * \see minFrameSize
+     * \see recalculateFrameRects
      */
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const { Q_UNUSED( frameIndex ); return QSizeF( 0, 0 ); }
 
@@ -86,8 +86,8 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * \returns minimum size for frame. If the size has a width or height of 0, then
      * the frame size has no minimum in that direction.
      * \since QGIS 2.5
-     * @see fixedFrameSize
-     * @see recalculateFrameRects
+     * \see fixedFrameSize
+     * \see recalculateFrameRects
      */
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const { Q_UNUSED( frameIndex ); return QSizeF( 0, 0 ); }
 
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     /** Adds a frame to the multiframe.
      * \param frame frame to add
      * \param recalcFrameSizes set to true to force recalculation of all existing frame sizes
-     * @see removeFrame
+     * \see removeFrame
      */
     virtual void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true ) = 0;
 
@@ -118,25 +118,25 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * composition.
      * \param i index of frame to remove
      * \param removeEmptyPages set to true to remove pages which are empty after the frame is removed
-     * @see addFrame
-     * @see deleteFrames
+     * \see addFrame
+     * \see deleteFrames
      */
     void removeFrame( int i, const bool removeEmptyPages = false );
 
     /** Removes and deletes all child frames.
-     * @see removeFrame
+     * \see removeFrame
      */
     void deleteFrames();
 
     /** Sets the resize mode for the multiframe, and recalculates frame sizes to match.
      * \param mode resize mode
-     * @see resizeMode
+     * \see resizeMode
      */
     void setResizeMode( ResizeMode mode );
 
     /** Returns the resize mode for the multiframe.
      * \returns resize mode
-     * @see setResizeMode
+     * \see setResizeMode
      */
     ResizeMode resizeMode() const { return mResizeMode; }
 
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * \param elem is DOM element
      * \param doc is the DOM document
      * \param ignoreFrames set to false to avoid writing state information about child frames into DOM
-     * @see _writeXML
+     * \see _writeXML
      */
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const = 0;
 
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * \param elem is DOM element
      * \param doc is the DOM document
      * \param ignoreFrames set to false to avoid writing state information about child frames into DOM
-     * @see writeXml
+     * \see writeXml
      */
     bool _writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const;
 
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * \param itemElem is DOM element
      * \param doc is the DOM document
      * \param ignoreFrames set to false to avoid read state information about child frames from DOM
-     * @see _readXML
+     * \see _readXML
      */
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) = 0;
 
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * \param itemElem is DOM element
      * \param doc is the DOM document
      * \param ignoreFrames set to false to avoid reading state information about child frames from DOM
-     * @see readXml
+     * \see readXml
      */
     bool _readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false );
 
@@ -183,13 +183,13 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
     /** Returns whether undo commands should be created for interactions with the multiframe.
      * \returns true if undo commands should be created
-     * @see setCreateUndoCommands
+     * \see setCreateUndoCommands
      */
     bool createUndoCommands() const { return mCreateUndoCommands; }
 
     /** Sets whether undo commands should be created for interactions with the multiframe.
      * \param enabled set to true if undo commands should be created
-     * @see createUndoCommands
+     * \see createUndoCommands
      */
     void setCreateUndoCommands( bool enabled ) { mCreateUndoCommands = enabled; }
 
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     /** Returns a child frame from the multiframe.
      * \param i index of frame
      * \returns child frame if found
-     * @see frameIndex
+     * \see frameIndex
      */
     QgsComposerFrame *frame( int i ) const;
 
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * \param frame frame to find index of
      * \returns index for frame if found, -1 if frame not found in multiframe
      * \since QGIS 2.5
-     * @see frame
+     * \see frame
      */
     int frameIndex( QgsComposerFrame *frame ) const;
 
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * component frames. If the resize mode is set to anything but UseExistingFrames then
      * this may cause new frames to be added or frames to be removed, in order to fit
      * the current size of the multiframe's content.
-     * @see recalculateFrameRects
+     * \see recalculateFrameRects
      */
     virtual void recalculateFrameSizes();
 
@@ -247,9 +247,9 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * method is useful for multiframes which implement a minFrameSize() or
      * fixedFrameSize() method.
      * \since QGIS 2.5
-     * @see minFrameSize()
-     * @see fixedFrameSize()
-     * @see recalculateFrameSizes
+     * \see minFrameSize()
+     * \see fixedFrameSize()
+     * \see recalculateFrameSizes
      */
     void recalculateFrameRects();
 

@@ -175,25 +175,25 @@ namespace pal
       }
 
       /** Returns the candidate label position's geographical cost.
-       * @see setCost
+       * \see setCost
        */
       double cost() const { return mCost; }
 
       /** Sets the candidate label position's geographical cost.
        * \param newCost new cost for position
-       * @see cost
+       * \see cost
       */
       void setCost( double newCost ) { mCost = newCost; }
 
       /** Sets whether the position is marked as conflicting with an obstacle feature.
        * \param conflicts set to true to mark candidate as being in conflict
        * \note This method applies to all label parts for the candidate position.
-       * @see conflictsWithObstacle
+       * \see conflictsWithObstacle
        */
       void setConflictsWithObstacle( bool conflicts );
 
       /** Returns whether the position is marked as conflicting with an obstacle feature.
-       * @see setConflictsWithObstacle
+       * \see setConflictsWithObstacle
        */
       bool conflictsWithObstacle() const { return mHasObstacleConflict; }
 

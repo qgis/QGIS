@@ -48,13 +48,13 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
 
     /** Returns the unique string representing the paint effect class
      * \returns unique string
-     * @see visibleName
+     * \see visibleName
      */
     QString name() const { return mName; }
 
     /** Returns the user visible string representing the paint effect class
      * \returns friendly user visible string
-     * @see name
+     * \see name
      */
     QString visibleName() const { return mVisibleName; }
 
@@ -114,14 +114,14 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
     /** Returns the paint effect properties widget creation function for the paint effect class
      * \returns widget creation function
      * \note not available in Python bindings
-     * @see setWidgetFunction
+     * \see setWidgetFunction
      */
     QgsPaintEffectWidgetFunc widgetFunction() const { return mWidgetFunc; }
 
     /** Sets the paint effect properties widget creation function for the paint effect class
      * \param f widget creation function
      * \note not available in Python bindings
-     * @see widgetFunction
+     * \see widgetFunction
      */
     void setWidgetFunction( QgsPaintEffectWidgetFunc f ) { mWidgetFunc = f; }
 
@@ -129,14 +129,14 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \param map string map of effect properties
      * \returns new paint effect
      * \note not available in Python bindings
-     * @see createWidget
+     * \see createWidget
      */
     virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
 
     /** Creates a new paint effect properties widget for the metadata's effect class
      * \returns effect properties widget
      * \note not available in Python bindings
-     * @see createWidget
+     * \see createWidget
      */
     virtual QgsPaintEffectWidget *createWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }
 
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * effects. All effects except the standard draw source effect are disabled,
      * but are included so that they can be easily drawn just by enabling the effect.
      * \returns default effects stack
-     * @see isDefaultStack()
+     * \see isDefaultStack()
      */
     static QgsPaintEffect *defaultStack();
 
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \param effect paint effect to test
      * \returns true if effect is default stack
      * \since QGIS 2.12
-     * @see defaultStack()
+     * \see defaultStack()
      */
     static bool isDefaultStack( QgsPaintEffect *effect );
 

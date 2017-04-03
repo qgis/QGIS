@@ -216,7 +216,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * If no prefix is specified, WKT definition is assumed.
      * \param definition A String containing a coordinate reference system definition.
-     * @see createFromString()
+     * \see createFromString()
      */
     // TODO QGIS 3: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
     explicit QgsCoordinateReferenceSystem( const QString &definition );
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Returns a list of all valid SRS IDs present in the CRS database. Any of the
      * returned values can be safely passed to fromSrsId() to create a new, valid
      * QgsCoordinateReferenceSystem object.
-     * @see fromSrsId()
+     * \see fromSrsId()
      * \since QGIS 3.0
      */
     static QList< long > validSrsIds();
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param ogcCrs OGR compliant CRS definition, e.g., "EPSG:4326"
      * \returns matching CRS, or an invalid CRS if string could not be matched
      * \since QGIS 3.0
-     * @see createFromOgcWmsCrs()
+     * \see createFromOgcWmsCrs()
     */
     static QgsCoordinateReferenceSystem fromOgcWmsCrs( const QString &ogcCrs );
 
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param proj4 proj4 format string
      * \returns matching CRS, or an invalid CRS if string could not be matched
      * \since QGIS 3.0
-     * @see createFromProj4()
+     * \see createFromProj4()
     */
     static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 );
 
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param wkt WKT for the desired spatial reference system.
      * \returns matching CRS, or an invalid CRS if string could not be matched
      * \since QGIS 3.0
-     * @see createFromWkt()
+     * \see createFromWkt()
     */
     static QgsCoordinateReferenceSystem fromWkt( const QString &wkt );
 
@@ -282,8 +282,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param srsId internal QGIS SRS ID
      * \returns matching CRS, or an invalid CRS if ID could not be found
      * \since QGIS 3.0
-     * @see createFromSrsId()
-     * @see validSrsIds()
+     * \see createFromSrsId()
+     * \see validSrsIds()
     */
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
 
@@ -306,7 +306,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * and refer to QGIS internal CRS IDs.
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \returns True on success else false
-     * @see fromOgcWmsCrs()
+     * \see fromOgcWmsCrs()
      */
     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
     bool createFromOgcWmsCrs( const QString &crs );
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \param wkt The WKT for the desired spatial reference system.
      * \returns True on success else false
-     * @see fromWkt()
+     * \see fromWkt()
      */
     bool createFromWkt( const QString &wkt );
 
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \param srsId The internal QGIS CRS ID for the desired spatial reference system.
      * \returns True on success else false
-     * @see fromSrsId()
+     * \see fromSrsId()
      */
     bool createFromSrsId( const long srsId );
 
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \param projString A proj4 format string
      * \returns True on success else false
-     * @see fromProj4()
+     * \see fromProj4()
      */
     bool createFromProj4( const QString &projString );
 
@@ -420,7 +420,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \note It is not usually necessary to use this function, unless you
      * are trying to force this CRS to be valid.
-     * @see setCustomCrsValidation(), customCrsValidation()
+     * \see setCustomCrsValidation(), customCrsValidation()
      */
     void validate();
 
@@ -492,7 +492,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * If CRS object is a custom CRS (not found in database), the method will return
      * internal QGIS CRS ID with "QGIS" authority, for example "QGIS:100005"
      * \returns the authority identifier for this CRS
-     * @see description()
+     * \see description()
      */
     QString authid() const;
 
@@ -501,27 +501,27 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * user.
      * \returns descriptive name of the CRS
      * \note an empty string will be returned if the description is not available for the CRS
-     * @see authid()
+     * \see authid()
      */
     QString description() const;
 
     /** Returns the projection acronym for the projection used by the CRS.
      * \returns the official proj4 acronym for the projection family
      * \note an empty string will be returned if the projectionAcronym is not available for the CRS
-     * @see ellipsoidAcronym()
+     * \see ellipsoidAcronym()
      */
     QString projectionAcronym() const;
 
     /** Returns the ellipsoid acronym for the ellipsoid used by the CRS.
      * \returns the official proj4 acronym for the ellipoid
      * \note an empty string will be returned if the ellipsoidAcronym is not available for the CRS
-     * @see projectionAcronym()
+     * \see projectionAcronym()
      */
     QString ellipsoidAcronym() const;
 
     /** Returns a WKT representation of this CRS.
      * \returns string containing WKT of the CRS
-     * @see toProj4()
+     * \see toProj4()
      */
     QString toWkt() const;
 
@@ -532,7 +532,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * overridden with these.
      * \returns Proj4 format string that defines this CRS.
      * \note an empty string will be returned if the CRS could not be represented by a Proj4 string
-     * @see toWkt()
+     * \see toWkt()
      */
     QString toProj4() const;
 

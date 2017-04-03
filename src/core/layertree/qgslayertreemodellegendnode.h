@@ -187,7 +187,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QSize minimumIconSize( QgsRenderContext *context ) const;
 
     /** Returns the symbol used by the legend node.
-     * @see setSymbol()
+     * \see setSymbol()
      * \since QGIS 2.14
      */
     const QgsSymbol *symbol() const;
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     /** Sets the symbol to be used by the legend node. The symbol change is also propagated
      * to the associated vector layer's renderer.
      * \param symbol new symbol for node. Ownership is transferred.
-     * @see symbol()
+     * \see symbol()
      * \since QGIS 2.14
      */
     void setSymbol( QgsSymbol *symbol );
@@ -204,13 +204,13 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     /** Checks all items belonging to the same layer as this node.
      * \since QGIS 2.14
-     * @see uncheckAllItems()
+     * \see uncheckAllItems()
      */
     void checkAllItems();
 
     /** Unchecks all items belonging to the same layer as this node.
      * \since QGIS 2.14
-     * @see checkAllItems()
+     * \see checkAllItems()
      */
     void uncheckAllItems();
 

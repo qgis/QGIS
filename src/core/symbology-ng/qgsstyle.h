@@ -117,7 +117,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /** Returns a list of all tags in the style database
      *
      * \since QGIS 2.16
-     * @see addTag()
+     * \see addTag()
      */
     QStringList tags() const;
 

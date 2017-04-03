@@ -316,20 +316,20 @@ class CORE_EXPORT QgsFeatureRenderer
     /** Returns the current paint effect for the renderer.
      * \returns paint effect
      * \since QGIS 2.9
-     * @see setPaintEffect
+     * \see setPaintEffect
      */
     QgsPaintEffect *paintEffect() const;
 
     /** Sets the current paint effect for the renderer.
      * \param effect paint effect. Ownership is transferred to the renderer.
      * \since QGIS 2.9
-     * @see paintEffect
+     * \see paintEffect
      */
     void setPaintEffect( QgsPaintEffect *effect );
 
     /** Returns whether the renderer must render as a raster.
      * \since QGIS 2.12
-     * @see setForceRasterRender
+     * \see setForceRasterRender
      */
     bool forceRasterRender() const { return mForceRaster; }
 
@@ -337,7 +337,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * \param forceRaster set to true if renderer must be drawn on a raster surface.
      * This may be desirable for highly detailed layers where rendering as a vector
      * would result in a large, complex vector output.
-     * @see forceRasterRender
+     * \see forceRasterRender
      * \since QGIS 2.12
      */
     void setForceRasterRender( bool forceRaster ) { mForceRaster = forceRaster; }
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Get the order in which features shall be processed by this renderer.
      * \since QGIS 2.14
      * \note this property has no effect if orderByEnabled() is false
-     * @see orderByEnabled()
+     * \see orderByEnabled()
      */
     QgsFeatureRequest::OrderBy orderBy() const;
 
@@ -354,15 +354,15 @@ class CORE_EXPORT QgsFeatureRenderer
      * Define the order in which features shall be processed by this renderer.
      * \note this property has no effect if orderByEnabled() is false
      * \since QGIS 2.14
-     * @see setOrderByEnabled()
+     * \see setOrderByEnabled()
      */
     void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
 
     /**
      * Returns whether custom ordering will be applied before features are processed by this renderer.
      * \since QGIS 2.14
-     * @see orderBy()
-     * @see setOrderByEnabled()
+     * \see orderBy()
+     * \see setOrderByEnabled()
      */
     bool orderByEnabled() const;
 
@@ -370,22 +370,22 @@ class CORE_EXPORT QgsFeatureRenderer
      * Sets whether custom ordering should be applied before features are processed by this renderer.
      * \param enabled set to true to enable custom feature ordering
      * \since QGIS 2.14
-     * @see setOrderBy()
-     * @see orderByEnabled()
+     * \see setOrderBy()
+     * \see orderByEnabled()
      */
     void setOrderByEnabled( bool enabled );
 
     /** Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
      * does nothing with subrenderers, but individual derived classes can use these to modify their behavior.
      * \param subRenderer the embedded renderer. Ownership will be transferred.
-     * @see embeddedRenderer()
+     * \see embeddedRenderer()
      * \since QGIS 2.16
      */
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer ) { delete subRenderer; }
 
     /** Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
      * implementation does not use subrenderers and will always return null.
-     * @see setEmbeddedRenderer()
+     * \see setEmbeddedRenderer()
      * \since QGIS 2.16
      */
     virtual const QgsFeatureRenderer *embeddedRenderer() const { return nullptr; }

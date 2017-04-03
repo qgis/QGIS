@@ -120,13 +120,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     /** Returns the closest point on the geometry to the other geometry.
      * \since QGIS 2.14
-     * @see shortestLine()
+     * \see shortestLine()
      */
     QgsGeometry closestPoint( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
     /** Returns the shortest line joining this geometry to the other geometry.
      * \since QGIS 2.14
-     * @see closestPoint()
+     * \see closestPoint()
      */
     QgsGeometry shortestLine( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 

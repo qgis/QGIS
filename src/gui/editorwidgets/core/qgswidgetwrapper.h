@@ -124,7 +124,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * \returns The layer
      *
-     * @see field()
+     * \see field()
      */
     QgsVectorLayer *layer() const;
 
@@ -151,20 +151,20 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 
     /** Returns a reference to the editor widget's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setDataDefinedProperties()
+     * \see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mPropertyCollection; }
 
     /** Returns a reference to the editor widget's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setDataDefinedProperties()
+     * \see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mPropertyCollection; }
 
     /** Sets the editor widget's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
-     * @see dataDefinedProperties()
+     * \see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mPropertyCollection = collection; }
 

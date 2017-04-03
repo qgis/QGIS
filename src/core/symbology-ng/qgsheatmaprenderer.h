@@ -64,101 +64,101 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
 
     /** Returns the color ramp used for shading the heatmap.
      * \returns color ramp for heatmap
-     * @see setColorRamp
+     * \see setColorRamp
      */
     QgsColorRamp *colorRamp() const { return mGradientRamp; }
 
     /** Sets the color ramp to use for shading the heatmap.
      * \param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
-     * @see colorRamp
+     * \see colorRamp
      */
     void setColorRamp( QgsColorRamp *ramp );
 
     /** Returns the radius for the heatmap
      * \returns heatmap radius
-     * @see setRadius
-     * @see radiusUnit
-     * @see radiusMapUnitScale
+     * \see setRadius
+     * \see radiusUnit
+     * \see radiusMapUnitScale
      */
     double radius() const { return mRadius; }
 
     /** Sets the radius for the heatmap
      * \param radius heatmap radius
-     * @see radius
-     * @see setRadiusUnit
-     * @see setRadiusMapUnitScale
+     * \see radius
+     * \see setRadiusUnit
+     * \see setRadiusMapUnitScale
      */
     void setRadius( const double radius ) { mRadius = radius; }
 
     /** Returns the units used for the heatmap's radius
      * \returns units for heatmap radius
-     * @see radius
-     * @see setRadiusUnit
-     * @see radiusMapUnitScale
+     * \see radius
+     * \see setRadiusUnit
+     * \see radiusMapUnitScale
      */
     QgsUnitTypes::RenderUnit radiusUnit() const { return mRadiusUnit; }
 
     /** Sets the units used for the heatmap's radius
      * \param unit units for heatmap radius
-     * @see radiusUnit
-     * @see setRadius
-     * @see radiusMapUnitScale
+     * \see radiusUnit
+     * \see setRadius
+     * \see radiusMapUnitScale
      */
     void setRadiusUnit( const QgsUnitTypes::RenderUnit unit ) { mRadiusUnit = unit; }
 
     /** Returns the map unit scale used for the heatmap's radius
      * \returns map unit scale for heatmap's radius
-     * @see radius
-     * @see radiusUnit
-     * @see setRadiusMapUnitScale
+     * \see radius
+     * \see radiusUnit
+     * \see setRadiusMapUnitScale
      */
     const QgsMapUnitScale &radiusMapUnitScale() const { return mRadiusMapUnitScale; }
 
     /** Sets the map unit scale used for the heatmap's radius
      * \param scale map unit scale for heatmap's radius
-     * @see setRadius
-     * @see setRadiusUnit
-     * @see radiusMapUnitScale
+     * \see setRadius
+     * \see setRadiusUnit
+     * \see radiusMapUnitScale
      */
     void setRadiusMapUnitScale( const QgsMapUnitScale &scale ) { mRadiusMapUnitScale = scale; }
 
     /** Returns the maximum value used for shading the heatmap.
      * \returns maximum value for heatmap shading. If 0, then maximum value will be automatically
      * calculated.
-     * @see setMaximumValue
+     * \see setMaximumValue
      */
     double maximumValue() const { return mExplicitMax; }
 
     /** Sets the maximum value used for shading the heatmap.
      * \param value maximum value for heatmap shading. Set to 0 for automatic calculation of
      * maximum value.
-     * @see maximumValue
+     * \see maximumValue
      */
     void setMaximumValue( const double value ) { mExplicitMax = value; }
 
     /** Returns the render quality used for drawing the heatmap.
      * \returns render quality. A value of 1 indicates maximum quality, and increasing the
      * value will result in faster drawing but lower quality rendering.
-     * @see setRenderQuality
+     * \see setRenderQuality
      */
     double renderQuality() const { return mRenderQuality; }
 
     /** Sets the render quality used for drawing the heatmap.
      * \param quality render quality. A value of 1 indicates maximum quality, and increasing the
      * value will result in faster drawing but lower quality rendering.
-     * @see renderQuality
+     * \see renderQuality
      */
     void setRenderQuality( const int quality ) { mRenderQuality = quality; }
 
     /** Returns the expression used for weighting points when generating the heatmap.
      * \returns point weight expression. If empty, all points are equally weighted.
-     * @see setWeightExpression
+     * \see setWeightExpression
      */
     QString weightExpression() const { return mWeightExpressionString; }
 
     /** Sets the expression used for weighting points when generating the heatmap.
      * \param expression point weight expression. If set to empty, all points are equally weighted.
-     * @see weightExpression
+     * \see weightExpression
      */
     void setWeightExpression( const QString &expression ) { mWeightExpressionString = expression; }
 

@@ -73,8 +73,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * picture source may override this value. The path can either be a local path
      * or a remote (http) path.
      * \param path path for the source image
-     * @see usePictureExpression
-     * @see picturePath
+     * \see usePictureExpression
+     * \see picturePath
      * \since QGIS 2.5
      */
     void setPicturePath( const QString &path );
@@ -82,8 +82,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Returns the path of the source image. Data defined picture source may override
      * this value. The path can either be a local path or a remote (http) path.
      * \returns path for the source image
-     * @see usePictureExpression
-     * @see setPicturePath
+     * \see usePictureExpression
+     * \see setPicturePath
      * \since QGIS 2.5
      */
     QString picturePath() const;
@@ -108,8 +108,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Returns the rotation used for drawing the picture within the item's frame
      * \returns picture rotation in degrees
      * \since QGIS 2.2
-     * @see setPictureRotation
-     * @see rotationMap
+     * \see setPictureRotation
+     * \see rotationMap
      */
     double pictureRotation() const { return mPictureRotation; }
 
@@ -118,8 +118,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * amount as the specified map object. This is useful especially for
      * syncing north arrows with a map item.
      * \param composerMapId composer map id to sync rotation with
-     * @see setPictureRotation
-     * @see rotationMap
+     * \see setPictureRotation
+     * \see rotationMap
      */
     void setRotationMap( int composerMapId );
 
@@ -127,46 +127,46 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * disabled.  If this is set then the picture is rotated by the same amount
      * as the specified map object.
      * \returns id of map object
-     * @see setRotationMap
-     * @see useRotationMap
+     * \see setRotationMap
+     * \see useRotationMap
      */
     int rotationMap() const;
 
     /** True if the picture rotation is matched to a map item.
      * \returns true if rotation map is in use
-     * @see rotationMap
-     * @see setRotationMap
+     * \see rotationMap
+     * \see setRotationMap
      */
     bool useRotationMap() const { return mRotationMap; }
 
     /**
      * Returns the mode used to align the picture to a map's North.
-     * @see setNorthMode()
-     * @see northOffset()
+     * \see setNorthMode()
+     * \see northOffset()
      * \since QGIS 2.18
      */
     NorthMode northMode() const { return mNorthMode; }
 
     /**
      * Sets the mode used to align the picture to a map's North.
-     * @see northMode()
-     * @see setNorthOffset()
+     * \see northMode()
+     * \see setNorthOffset()
      * \since QGIS 2.18
      */
     void setNorthMode( NorthMode mode );
 
     /**
      * Returns the offset added to the picture's rotation from a map's North.
-     * @see setNorthOffset()
-     * @see northMode()
+     * \see setNorthOffset()
+     * \see northMode()
      * \since QGIS 2.18
      */
     double northOffset() const { return mNorthOffset; }
 
     /**
      * Sets the offset added to the picture's rotation from a map's North.
-     * @see northOffset()
-     * @see setNorthMode()
+     * \see northOffset()
+     * \see setNorthMode()
      * \since QGIS 2.18
      */
     void setNorthOffset( double offset );
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * item's frame.
      * \returns resize mode of picture
      * \since QGIS 2.3
-     * @see setResizeMode
+     * \see setResizeMode
      */
     ResizeMode resizeMode() const { return mResizeMode; }
 
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * within the picture item's frame.
      * \param anchor anchor point for picture
      * \since QGIS 2.3
-     * @see pictureAnchor
+     * \see pictureAnchor
      */
     void setPictureAnchor( QgsComposerItem::ItemPositionMode anchor );
 
@@ -191,13 +191,13 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * within the picture item's frame.
      * \returns anchor point for picture
      * \since QGIS 2.3
-     * @see setPictureAnchor
+     * \see setPictureAnchor
      */
     ItemPositionMode pictureAnchor() const { return mPictureAnchor; }
 
     /** Returns the fill color used for parametrized SVG files.
-     * @see setSvgFillColor()
-     * @see svgStrokeColor()
+     * \see setSvgFillColor()
+     * \see svgStrokeColor()
      * \since QGIS 2.14.1
      */
     QColor svgFillColor() const { return mSvgFillColor; }
@@ -206,15 +206,15 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * \param color fill color.
      * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * @see svgFillColor()
-     * @see setSvgStrokeColor()
+     * \see svgFillColor()
+     * \see setSvgStrokeColor()
      * \since QGIS 2.14.1
      */
     void setSvgFillColor( const QColor &color );
 
     /** Returns the stroke color used for parametrized SVG files.
-     * @see setSvgStrokeColor()
-     * @see svgFillColor()
+     * \see setSvgStrokeColor()
+     * \see svgFillColor()
      * \since QGIS 2.14.1
      */
     QColor svgStrokeColor() const { return mSvgStrokeColor; }
@@ -223,15 +223,15 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * \param color stroke color.
      * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * @see svgStrokelColor()
-     * @see setSvgFillColor()
+     * \see svgStrokelColor()
+     * \see setSvgFillColor()
      * \since QGIS 2.14.1
      */
     void setSvgStrokeColor( const QColor &color );
 
     /** Returns the stroke width (in mm) used for parametrized SVG files.
-     * @see setSvgStrokeWidth()
-     * @see svgStrokeColor()
+     * \see setSvgStrokeWidth()
+     * \see svgStrokeColor()
      * \since QGIS 2.14.1
      */
     double svgStrokeWidth() const { return mSvgStrokeWidth; }
@@ -240,8 +240,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * \param width stroke width in mm
      * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * @see svgStrokeWidth()
-     * @see setSvgStrokeColor()
+     * \see svgStrokeWidth()
+     * \see setSvgStrokeColor()
      * \since QGIS 2.14.1
      */
     void setSvgStrokeWidth( double width );
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Sets the picture rotation within the item bounds. This does not affect
      * the item's frame, only the way the picture is drawn within the item.
      * \param r rotation in degrees clockwise
-     * @see pictureRotation
+     * \see pictureRotation
      * \since QGIS 2.2
      */
     virtual void setPictureRotation( double r );
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Sets the resize mode used for drawing the picture within the item bounds.
      * \param mode ResizeMode to use for image file
      * \since QGIS 2.3
-     * @see resizeMode
+     * \see resizeMode
      */
     virtual void setResizeMode( ResizeMode mode );
 

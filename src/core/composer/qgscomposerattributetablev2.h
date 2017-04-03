@@ -75,7 +75,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * \param elem an existing QDomElement in which to store the attribute table's properties.
      * \param doc QDomDocument for the destination xml.
      * \param ignoreFrames ignore frames
-     * @see readXml
+     * \see readXml
      */
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const override;
 
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * \param itemElem a QDomElement holding the attribute table's desired properties.
      * \param doc QDomDocument for the source xml.
      * \param ignoreFrames ignore frames
-     * @see writeXml
+     * \see writeXml
      */
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) override;
 
@@ -91,13 +91,13 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
     /** Sets the source for attributes to show in table body.
      * \param source content source
-     * @see source
+     * \see source
      */
     void setSource( const ContentSource source );
 
     /** Returns the source for attributes shown in the table body.
      * \returns content source
-     * @see setSource
+     * \see setSource
      */
     ContentSource source() const { return mSource; }
 
@@ -111,34 +111,34 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
     /** Sets the vector layer from which to display feature attributes
      * \param layer Vector layer for attribute table
-     * @see vectorLayer
+     * \see vectorLayer
      */
     void setVectorLayer( QgsVectorLayer *layer );
 
     /** Returns the vector layer the attribute table is currently using
      * \returns attribute table's current vector layer
-     * @see setVectorLayer
+     * \see setVectorLayer
      */
     QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 
     /** Sets the relation id from which to display child features
      * \param relationId id for relation to display child features from
-     * @see relationId
-     * @see setSource
+     * \see relationId
+     * \see setSource
      * \note only used if table source is set to RelationChildren
      */
     void setRelationId( const QString &relationId );
 
     /** Returns the relation id which the table displays child features from
      * \returns relation id
-     * @see setRelationId
-     * @see source
+     * \see setRelationId
+     * \see source
      * \note only used if table source is set to RelationChildren
      */
     QString relationId() const { return mRelationId; }
 
     /** Resets the attribute table's columns to match the vector layer's fields
-     * @see setVectorLayer
+     * \see setVectorLayer
      */
     void resetColumns();
 
@@ -148,16 +148,16 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * vector layer, and may result in the table changing size to accommodate the new displayed
      * feature attributes.
      * \param map QgsComposerMap which drives the extents of the table's features
-     * @see composerMap
-     * @see setDisplayOnlyVisibleFeatures
+     * \see composerMap
+     * \see setDisplayOnlyVisibleFeatures
      */
     void setComposerMap( const QgsComposerMap *map );
 
     /** Returns the composer map whose extents are controlling the features shown in the
      * table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
      * \returns composer map controlling the attribute table
-     * @see setComposerMap
-     * @see displayOnlyVisibleFeatures
+     * \see setComposerMap
+     * \see displayOnlyVisibleFeatures
      */
     const QgsComposerMap *composerMap() const { return mComposerMap; }
 
@@ -165,27 +165,27 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * in the attribute table changing its size to accommodate the new number of rows, and requires
      * the table to refetch features from its vector layer.
      * \param features maximum number of features to show in the table
-     * @see maximumNumberOfFeatures
+     * \see maximumNumberOfFeatures
      */
     void setMaximumNumberOfFeatures( const int features );
 
     /** Returns the maximum number of features to be shown by the table.
      * \returns maximum number of features
-     * @see setMaximumNumberOfFeatures
+     * \see setMaximumNumberOfFeatures
      */
     int maximumNumberOfFeatures() const { return mMaximumNumberOfFeatures; }
 
     /** Sets attribute table to only show unique rows.
      * \param uniqueOnly set to true to show only unique rows. Duplicate rows
      * will be stripped from the table.
-     * @see uniqueRowsOnly
+     * \see uniqueRowsOnly
      */
     void setUniqueRowsOnly( const bool uniqueOnly );
 
     /** Returns true if the table is set to show only unique rows.
      * \returns true if table only shows unique rows and is stripping out
      * duplicate rows.
-     * @see setUniqueRowsOnly
+     * \see setUniqueRowsOnly
      */
     bool uniqueRowsOnly() const { return mShowUniqueRowsOnly; }
 
@@ -193,16 +193,16 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * this setting forces the table to refetch features from its vector layer, and may result in
      * the table changing size to accommodate the new displayed feature attributes.
      * \param visibleOnly set to true to show only visible features
-     * @see displayOnlyVisibleFeatures
-     * @see setComposerMap
+     * \see displayOnlyVisibleFeatures
+     * \see setComposerMap
      */
     void setDisplayOnlyVisibleFeatures( const bool visibleOnly );
 
     /** Returns true if the table is set to show only features visible on a corresponding
      * composer map item.
      * \returns true if table only shows visible features
-     * @see composerMap
-     * @see setDisplayOnlyVisibleFeatures
+     * \see composerMap
+     * \see setDisplayOnlyVisibleFeatures
      */
     bool displayOnlyVisibleFeatures() const { return mShowOnlyVisibleFeatures; }
 
@@ -210,21 +210,21 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * feature.
      * \param filterToAtlas set to true to show only features which intersect
      * the atlas feature
-     * @see filterToAtlasFeature
+     * \see filterToAtlasFeature
      */
     void setFilterToAtlasFeature( const bool filterToAtlas );
 
     /** Returns true if the table is set to only show features which intersect the current atlas
      * feature.
      * \returns true if table only shows features which intersect the atlas feature
-     * @see setFilterToAtlasFeature
+     * \see setFilterToAtlasFeature
      */
     bool filterToAtlasFeature() const { return mFilterToAtlasIntersection; }
 
     /** Returns true if a feature filter is active on the attribute table
      * \returns bool state of the feature filter
-     * @see setFilterFeatures
-     * @see featureFilter
+     * \see setFilterFeatures
+     * \see featureFilter
      */
     bool filterFeatures() const { return mFilterFeatures; }
 
@@ -232,16 +232,16 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * this setting forces the table to refetch features from its vector layer, and may result in
      * the table changing size to accommodate the new displayed feature attributes.
      * \param filter Set to true to enable the feature filter
-     * @see filterFeatures
-     * @see setFeatureFilter
+     * \see filterFeatures
+     * \see setFeatureFilter
      */
     void setFilterFeatures( const bool filter );
 
     /** Returns the current expression used to filter features for the table. The filter is only
      * active if filterFeatures() is true.
      * \returns feature filter expression
-     * @see setFeatureFilter
-     * @see filterFeatures
+     * \see setFeatureFilter
+     * \see filterFeatures
      */
     QString featureFilter() const { return mFeatureFilter; }
 
@@ -250,8 +250,8 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * to refetch features from its vector layer, and may result in
      * the table changing size to accommodate the new displayed feature attributes.
      * \param expression filter to use for selecting which features to display in the table
-     * @see featureFilter
-     * @see setFilterFeatures
+     * \see featureFilter
+     * \see setFilterFeatures
      */
     void setFeatureFilter( const QString &expression );
 
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * be replaced by a line break.
      * \param wrapString string to replace with line break
      * \since QGIS 2.12
-     * @see wrapString
+     * \see wrapString
      */
     void setWrapString( const QString &wrapString );
 
@@ -285,7 +285,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * be replaced by a line break.
      * \returns string which will be replaced with line break
      * \since QGIS 2.12
-     * @see setWrapString
+     * \see setWrapString
      */
     QString wrapString() const { return mWrapString; }
 

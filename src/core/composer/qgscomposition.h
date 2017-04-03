@@ -131,14 +131,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /**
      * Returns the composition's name.
-     * @see setName()
+     * \see setName()
      * \since QGIS 3.0
      */
     QString name() const { return mName; }
 
     /**
      * Sets the composition's name.
-     * @see name()
+     * \see name()
      * \since QGIS 3.0
      */
     void setName( const QString &name );
@@ -148,23 +148,23 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param height page height in mm
      * \param keepRelativeItemPosition if true, all items and guides will be moved so that they retain
      * their same relative position to the top left corner of their current page.
-     * @see paperHeight
-     * @see paperWidth
+     * \see paperHeight
+     * \see paperWidth
      */
     void setPaperSize( double width, double height,
                        bool keepRelativeItemPosition = true );
 
     /** Height of paper item
      * \returns height in mm
-     * @see paperWidth
-     * @see setPaperSize
+     * \see paperWidth
+     * \see setPaperSize
      */
     double paperHeight() const;
 
     /** Width of paper item
      * \returns width in mm
-     * @see paperHeight
-     * @see setPaperSize
+     * \see paperHeight
+     * \see setPaperSize
      */
     double paperWidth() const;
 
@@ -178,8 +178,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param marginBottom bottom margin  (millimeters)
      * \param marginLeft left margin (millimeters)
      * \since QGIS 2.12
-     * @see setResizeToContentsMargins()
-     * @see resizeToContentsMargins()
+     * \see setResizeToContentsMargins()
+     * \see resizeToContentsMargins()
      */
     void resizePageToContents( double marginTop = 0.0, double marginRight = 0.0,
                                double marginBottom = 0.0, double marginLeft = 0.0 );
@@ -191,8 +191,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param marginBottom bottom margin  (millimeters)
      * \param marginLeft left margin (millimeters)
      * \since QGIS 2.12
-     * @see resizePageToContents()
-     * @see resizeToContentsMargins()
+     * \see resizePageToContents()
+     * \see resizeToContentsMargins()
      */
     void setResizeToContentsMargins( double marginTop, double marginRight,
                                      double marginBottom, double marginLeft );
@@ -204,8 +204,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param marginBottom reference for bottom margin  (millimeters)
      * \param marginLeft reference for left margin (millimeters)
      * \since QGIS 2.12
-     * @see resizePageToContents()
-     * @see setResizeToContentsMargins()
+     * \see resizePageToContents()
+     * \see setResizeToContentsMargins()
      */
     void resizeToContentsMargins( double &marginTop, double &marginRight,
                                   double &marginBottom, double &marginLeft ) const;
@@ -217,13 +217,13 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Sets the number of pages for the composition.
      * \param pages number of pages
-     * @see numPages
+     * \see numPages
      */
     void setNumPages( const int pages );
 
     /** Returns the number of pages in the composition.
      * \returns number of pages
-     * @see setNumPages
+     * \see setNumPages
      */
     int numPages() const;
 
@@ -232,9 +232,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param page page number, starting with 1
      * \returns true if page is empty
      * \since QGIS 2.5
-     * @see numPages
-     * @see setNumPages
-     * @see shouldExportPage
+     * \see numPages
+     * \see setNumPages
+     * \see shouldExportPage
      */
     bool pageIsEmpty( const int page ) const;
 
@@ -242,8 +242,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param page page number, starting with 1
      * \returns true if page should be exported
      * \since QGIS 2.5
-     * @see numPages
-     * @see pageIsEmpty
+     * \see numPages
+     * \see pageIsEmpty
      */
     bool shouldExportPage( const int page ) const;
 
@@ -293,7 +293,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * will also prevent them from being rendered in composition exports.
      * \param visible set to true to show pages, false to hide pages
      * \since QGIS 2.12
-     * @see pagesVisible()
+     * \see pagesVisible()
      */
     void setPagesVisible( bool visible );
 
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * effects both display of the page boundaries in composer views and
      * whether they will be rendered in composition exports.
      * \since QGIS 2.12
-     * @see setPagesVisible()
+     * \see setPagesVisible()
      */
     bool pagesVisible() const { return mPagesVisible; }
 
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
      * and the edges and centers of other items.
      * \param snapTolerance snap tolerance in pixels
-     * @see alignmentSnapTolerance
+     * \see alignmentSnapTolerance
      * \since QGIS 2.5
      */
     void setSnapTolerance( const int snapTolerance ) { mSnapTolerance = snapTolerance; }
@@ -334,21 +334,21 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
      * and the edges and centers of other items.
      * \returns snap tolerance in pixels
-     * @see setAlignmentSnapTolerance
+     * \see setAlignmentSnapTolerance
      * \since QGIS 2.5
      */
     int snapTolerance() const { return mSnapTolerance; }
 
     /** Sets whether selection bounding boxes should be shown in the composition
      * \param boundsVisible set to true to show selection bounding box
-     * @see boundingBoxesVisible
+     * \see boundingBoxesVisible
      * \since QGIS 2.7
      */
     void setBoundingBoxesVisible( const bool boundsVisible );
 
     /** Returns whether selection bounding boxes should be shown in the composition
      * \returns true if selection bounding boxes should be shown
-     * @see setBoundingBoxesVisible
+     * \see setBoundingBoxesVisible
      * \since QGIS 2.7
      */
     bool boundingBoxesVisible() const { return mBoundingBoxesVisible; }
@@ -427,32 +427,32 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Returns true if the composition will generate corresponding world files when pages
      * are exported.
-     * @see setGenerateWorldFile()
-     * @see referenceMap()
+     * \see setGenerateWorldFile()
+     * \see referenceMap()
      */
     bool generateWorldFile() const { return mGenerateWorldFile; }
 
     /** Sets whether the composition will generate corresponding world files when pages
      * are exported.
      * \param enabled set to true to generate world files
-     * @see generateWorldFile()
-     * @see setReferenceMap()
+     * \see generateWorldFile()
+     * \see setReferenceMap()
      */
     void setGenerateWorldFile( bool enabled ) { mGenerateWorldFile = enabled; }
 
     /** Returns the map item which will be used to generate corresponding world files when the
      * composition is exported. If no map was explicitly set via setReferenceMap(), the largest
      * map in the composition will be returned (or nullptr if there are no maps in the composition).
-     * @see setReferenceMap()
-     * @see generateWorldFile()
+     * \see setReferenceMap()
+     * \see generateWorldFile()
      */
     QgsComposerMap *referenceMap() const;
 
     /** Sets the map item which will be used to generate corresponding world files when the
      * composition is exported.
      * \param map composer map item
-     * @see referenceMap()
-     * @see setGenerateWorldFile()
+     * \see referenceMap()
+     * \see setGenerateWorldFile()
      */
     void setReferenceMap( QgsComposerMap *map );
 
@@ -664,8 +664,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param dpi optional dpi override, or 0 to use default composition print resolution. This
      * parameter has no effect if imageSize is specified.
      * \returns rendered image, or null image if image does not fit into available memory
-     * @see renderRectAsRaster()
-     * @see renderPage()
+     * \see renderRectAsRaster()
+     * \see renderPage()
      */
     QImage printPageAsRaster( int page, QSize imageSize = QSize(), int dpi = 0 );
 
@@ -679,16 +679,16 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * parameter has no effect if imageSize is specified.
      * \returns rendered image, or null image if image does not fit into available memory
      * \since QGIS 2.12
-     * @see printPageAsRaster()
-     * @see renderRect()
+     * \see printPageAsRaster()
+     * \see renderRect()
      */
     QImage renderRectAsRaster( const QRectF &rect, QSize imageSize = QSize(), int dpi = 0 );
 
     /** Renders a full page to a paint device.
      * \param p destination painter
      * \param page page number, 0 based such that the first page is page 0
-     * @see renderRect()
-     * @see printPageAsRaster()
+     * \see renderRect()
+     * \see printPageAsRaster()
      */
     void renderPage( QPainter *p, int page );
 
@@ -697,8 +697,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param p destination painter
      * \param rect region of composition to render
      * \since QGIS 2.12
-     * @see renderPage()
-     * @see renderRectAsRaster()
+     * \see renderPage()
+     * \see renderRectAsRaster()
      */
     void renderRect( QPainter *p, const QRectF &rect );
 
@@ -735,14 +735,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Returns the current atlas mode of the composition
      * \returns current atlas mode
-     * @see setAtlasMode
+     * \see setAtlasMode
      */
     QgsComposition::AtlasMode atlasMode() const { return mAtlasMode; }
 
     /** Sets the current atlas mode of the composition.
      * \param mode atlas mode to switch to
      * \returns false if the mode could not be changed.
-     * @see atlasMode
+     * \see atlasMode
      */
     bool setAtlasMode( const QgsComposition::AtlasMode mode );
 
@@ -761,9 +761,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Set a custom property for the composition.
      * \param key property key. If a property with the same key already exists it will be overwritten.
      * \param value property value
-     * @see customProperty()
-     * @see removeCustomProperty()
-     * @see customProperties()
+     * \see customProperty()
+     * \see removeCustomProperty()
+     * \see customProperties()
      * \since QGIS 2.12
      */
     void setCustomProperty( const QString &key, const QVariant &value );
@@ -772,26 +772,26 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param key property key
      * \param defaultValue default value to return if property with matching key does not exist
      * \returns value of matching property
-     * @see setCustomProperty()
-     * @see removeCustomProperty()
-     * @see customProperties()
+     * \see setCustomProperty()
+     * \see removeCustomProperty()
+     * \see customProperties()
      * \since QGIS 2.12
      */
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 
     /** Remove a custom property from the composition.
      * \param key property key
-     * @see setCustomProperty()
-     * @see customProperty()
-     * @see customProperties()
+     * \see setCustomProperty()
+     * \see customProperty()
+     * \see customProperties()
      * \since QGIS 2.12
      */
     void removeCustomProperty( const QString &key );
 
     /** Return list of keys stored in custom properties for composition.
-     * @see setCustomProperty()
-     * @see customProperty()
-     * @see removeCustomProperty()
+     * \see setCustomProperty()
+     * \see customProperty()
+     * \see removeCustomProperty()
      * \since QGIS 2.12
      */
     QStringList customProperties() const;
@@ -853,20 +853,20 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Returns a reference to the composition's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setDataDefinedProperties()
+     * \see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the composition's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setDataDefinedProperties()
+     * \see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the composition's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
-     * @see dataDefinedProperties()
+     * \see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
@@ -1015,7 +1015,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /**
      * Emitted when the composition's name is changed.
      * \since QGIS 3.0
-     * @see setName()
+     * \see setName()
      */
     void nameChanged( const QString &name );
 

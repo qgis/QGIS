@@ -42,13 +42,13 @@ class CORE_EXPORT QgsLegendSettings
 
     /** Returns the alignment of the legend title
      * \returns Qt::AlignmentFlag for the legend title
-     * @see setTitleAlignment
+     * \see setTitleAlignment
      */
     Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
 
     /** Sets the alignment of the legend title
      * \param alignment Text alignment for drawing the legend title
-     * @see titleAlignment
+     * \see titleAlignment
      */
     void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
 
@@ -83,27 +83,27 @@ class CORE_EXPORT QgsLegendSettings
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
     /** Returns whether a stroke will be drawn around raster symbol items.
-     * @see setDrawRasterStroke()
-     * @see rasterStrokeColor()
-     * @see rasterStrokeWidth()
+     * \see setDrawRasterStroke()
+     * \see rasterStrokeColor()
+     * \see rasterStrokeWidth()
      * \since QGIS 2.12
      */
     bool drawRasterStroke() const { return mRasterSymbolStroke; }
 
     /** Sets whether a stroke will be drawn around raster symbol items.
      * \param enabled set to true to draw borders
-     * @see drawRasterStroke()
-     * @see setRasterStrokeColor()
-     * @see setRasterStrokeWidth()
+     * \see drawRasterStroke()
+     * \see setRasterStrokeColor()
+     * \see setRasterStrokeWidth()
      * \since QGIS 2.12
      */
     void setDrawRasterStroke( bool enabled ) { mRasterSymbolStroke = enabled; }
 
     /** Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @see setRasterStrokeColor()
-     * @see drawRasterStroke()
-     * @see rasterStrokeWidth()
+     * \see setRasterStrokeColor()
+     * \see drawRasterStroke()
+     * \see rasterStrokeWidth()
      * \since QGIS 2.12
      */
     QColor rasterStrokeColor() const { return mRasterStrokeColor; }
@@ -111,18 +111,18 @@ class CORE_EXPORT QgsLegendSettings
     /** Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
      * \param color stroke color
-     * @see rasterStrokeColor()
-     * @see setDrawRasterStroke()
-     * @see setRasterStrokeWidth()
+     * \see rasterStrokeColor()
+     * \see setDrawRasterStroke()
+     * \see setRasterStrokeWidth()
      * \since QGIS 2.12
      */
     void setRasterStrokeColor( const QColor &color ) { mRasterStrokeColor = color; }
 
     /** Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @see setRasterStrokeWidth()
-     * @see drawRasterStroke()
-     * @see rasterStrokeColor()
+     * \see setRasterStrokeWidth()
+     * \see drawRasterStroke()
+     * \see rasterStrokeColor()
      * \since QGIS 2.12
      */
     double rasterStrokeWidth() const { return mRasterStrokeWidth; }
@@ -130,9 +130,9 @@ class CORE_EXPORT QgsLegendSettings
     /** Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
      * \param width stroke width in millimeters
-     * @see rasterStrokeWidth()
-     * @see setDrawRasterStroke()
-     * @see setRasterStrokeColor()
+     * \see rasterStrokeWidth()
+     * \see setDrawRasterStroke()
+     * \see setRasterStrokeColor()
      * \since QGIS 2.12
      */
     void setRasterStrokeWidth( double width ) { mRasterStrokeWidth = width; }

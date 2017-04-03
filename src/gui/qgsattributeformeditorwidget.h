@@ -75,12 +75,12 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     /** Sets the current mode for the widget. The widget will adapt its state and visible widgets to
      * reflect the updated mode. For example, showing multi edit tool buttons if the mode is set to MultiEditMode.
      * \param mode widget mode
-     * @see mode()
+     * \see mode()
      */
     void setMode( Mode mode );
 
     /** Returns the current mode for the widget.
-     * @see setMode()
+     * \see setMode()
      */
     Mode mode() const { return mMode; }
 
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     void initialize( const QVariant &initialValue, bool mixedValues = false );
 
     /** Returns true if the widget's value has been changed since it was initialized.
-     * @see initialize()
+     * \see initialize()
      */
     bool hasChanged() const { return mIsChanged; }
 

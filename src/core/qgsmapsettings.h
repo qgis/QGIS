@@ -93,13 +93,13 @@ class CORE_EXPORT QgsMapSettings
      * Set the magnification factor.
      * \param factor the factor of magnification
      * \since QGIS 2.16
-     * @see magnificationFactor()
+     * \see magnificationFactor()
      */
     void setMagnificationFactor( double factor );
 
     //! Return the magnification factor.
     //! \since QGIS 2.16
-    //! @see setMagnificationFactor()
+    //! \see setMagnificationFactor()
     double magnificationFactor() const;
 
     //! Get list of layer IDs for map rendering
@@ -122,14 +122,14 @@ class CORE_EXPORT QgsMapSettings
     /** Get custom rendering flags. Layers might honour these to alter their rendering.
      *  \returns custom flags strings, separated by ';'
      * \since QGIS 2.16
-     * @see setCustomRenderFlags()
+     * \see setCustomRenderFlags()
      */
     QString customRenderFlags() const { return mCustomRenderFlags; }
 
     /** Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * \param customRenderFlags custom flags strings, separated by ';'
      * \since QGIS 2.16
-     * @see customRenderFlags()
+     * \see customRenderFlags()
      */
     void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
 
@@ -196,14 +196,14 @@ class CORE_EXPORT QgsMapSettings
 
     /** Sets the expression context. This context is used for all expression evaluation
      * associated with this map settings.
-     * @see expressionContext()
+     * \see expressionContext()
      * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
     /** Gets the expression context. This context should be used for all expression evaluation
      * associated with this map settings.
-     * @see setExpressionContext()
+     * \see setExpressionContext()
      * \since QGIS 2.12
      */
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
@@ -225,14 +225,14 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * @brief transform bounding box from layer's CRS to output CRS
-     * @see layerToMapCoordinates( QgsMapLayer* layer, QgsRectangle rect ) if you want to transform a rectangle
+     * \see layerToMapCoordinates( QgsMapLayer* layer, QgsRectangle rect ) if you want to transform a rectangle
      * \returns a bounding box (aligned rectangle) containing the transformed extent
      */
     QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 
     /**
      * @brief transform bounding box from output CRS to layer's CRS
-     * @see mapToLayerCoordinates( QgsMapLayer* layer,QgsRectangle rect ) if you want to transform a rectangle
+     * \see mapToLayerCoordinates( QgsMapLayer* layer,QgsRectangle rect ) if you want to transform a rectangle
      * \returns a bounding box (aligned rectangle) containing the transformed extent
      */
     QgsRectangle outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * @brief transform rectangle from layer's CRS to output CRS
-     * @see layerExtentToOutputExtent() if you want to transform a bounding box
+     * \see layerExtentToOutputExtent() if you want to transform a bounding box
      * \returns the transformed rectangle
      */
     QgsRectangle layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * @brief transform rectangle from output CRS to layer's CRS
-     * @see outputExtentToLayerExtent() if you want to transform a bounding box
+     * \see outputExtentToLayerExtent() if you want to transform a bounding box
      * \returns the transformed rectangle
      */
     QgsRectangle mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;

@@ -43,116 +43,116 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     /** Sets blur level (strength) for the shadow.
      * \param level blur level. Values between 0 and 16 are valid, with larger
      * values indicating greater blur strength.
-     * @see blurLevel
+     * \see blurLevel
      */
     void setBlurLevel( const int level ) { mBlurLevel = level; }
 
     /** Returns the blur level (strength) for the shadow.
      * \returns blur level. Value will be between 0 and 16, with larger
      * values indicating greater blur strength.
-     * @see setBlurLevel
+     * \see setBlurLevel
      */
     int blurLevel() const { return mBlurLevel; }
 
     /** Sets the angle for offsetting the shadow.
      * \param angle offset angle in degrees clockwise from North
-     * @see offsetAngle
-     * @see setOffsetDistance
+     * \see offsetAngle
+     * \see setOffsetDistance
      */
     void setOffsetAngle( const int angle ) { mOffsetAngle = angle; }
 
     /** Returns the angle used for offsetting the shadow.
      * \returns offset angle in degrees clockwise from North
-     * @see setOffsetAngle
-     * @see offsetDistance
+     * \see setOffsetAngle
+     * \see offsetDistance
      */
     int offsetAngle() const { return mOffsetAngle; }
 
     /** Sets the distance for offsetting the shadow.
      * \param distance offset distance. Units are specified via @link setOffsetUnit @endlink
-     * @see offsetDistance
-     * @see setOffsetUnit
-     * @see setOffsetMapUnitScale
+     * \see offsetDistance
+     * \see setOffsetUnit
+     * \see setOffsetMapUnitScale
      */
     void setOffsetDistance( const double distance ) { mOffsetDist = distance; }
 
     /** Returns the distance used for offsetting the shadow.
      * \returns offset distance. Distance units are retrieved via @link offsetUnit @endlink
-     * @see setOffsetDistance
-     * @see offsetUnit
-     * @see offsetMapUnitScale
+     * \see setOffsetDistance
+     * \see offsetUnit
+     * \see offsetMapUnitScale
      */
     double offsetDistance() const { return mOffsetDist; }
 
     /** Sets the units used for the shadow offset distance.
      * \param unit units for offset distance
-     * @see offsetUnit
-     * @see setOffsetDistance
-     * @see setOffsetMapUnitScale
+     * \see offsetUnit
+     * \see setOffsetDistance
+     * \see setOffsetMapUnitScale
      */
     void setOffsetUnit( const QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /** Returns the units used for the shadow offset distance.
      * \returns units for offset distance
-     * @see setOffsetUnit
-     * @see offsetDistance
-     * @see offsetMapUnitScale
+     * \see setOffsetUnit
+     * \see offsetDistance
+     * \see offsetMapUnitScale
      */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /** Sets the map unit scale used for the shadow offset distance.
      * \param scale map unit scale for offset distance
-     * @see offsetMapUnitScale
-     * @see setOffsetDistance
-     * @see setOffsetUnit
+     * \see offsetMapUnitScale
+     * \see setOffsetDistance
+     * \see setOffsetUnit
      */
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
 
     /** Returns the map unit scale used for the shadow offset distance.
      * \returns map unit scale for offset distance
-     * @see setOffsetMapUnitScale
-     * @see offsetDistance
-     * @see offsetUnit
+     * \see setOffsetMapUnitScale
+     * \see offsetDistance
+     * \see offsetUnit
      */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     /** Sets the color for the shadow.
      * \param color shadow color
-     * @see color
+     * \see color
      */
     void setColor( const QColor &color ) { mColor = color; }
 
     /** Returns the color used for the shadow.
      * \returns shadow color
-     * @see setColor
+     * \see setColor
      */
     QColor color() const { return mColor; }
 
     /** Sets the transparency for the effect
      * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
-     * @see transparency
+     * \see transparency
      */
     void setTransparency( const double transparency ) { mTransparency = transparency; }
 
     /** Returns the transparency for the effect
      * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
-     * @see setTransparency
+     * \see setTransparency
      */
     double transparency() const { return mTransparency; }
 
     /** Sets the blend mode for the effect
      * \param mode blend mode used for drawing the effect on to a destination
      * paint device
-     * @see blendMode
+     * \see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
     /** Returns the blend mode for the effect
      * \returns blend mode used for drawing the effect on to a destination
      * paint device
-     * @see setBlendMode
+     * \see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 

@@ -132,29 +132,29 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
 
     /** Returns a reference to the object's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setDataDefinedProperties()
+     * \see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the object's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * @see setDataDefinedProperties()
+     * \see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the objects's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
-     * @see dataDefinedProperties()
+     * \see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /** Set a custom property for the object.
      * \param key property key. If a property with the same key already exists it will be overwritten.
      * \param value property value
-     * @see customProperty()
-     * @see removeCustomProperty()
-     * @see customProperties()
+     * \see customProperty()
+     * \see removeCustomProperty()
+     * \see customProperties()
      * \since QGIS 2.12
      */
     void setCustomProperty( const QString &key, const QVariant &value );
@@ -163,26 +163,26 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * \param key property key
      * \param defaultValue default value to return if property with matching key does not exist
      * \returns value of matching property
-     * @see setCustomProperty()
-     * @see removeCustomProperty()
-     * @see customProperties()
+     * \see setCustomProperty()
+     * \see removeCustomProperty()
+     * \see customProperties()
      * \since QGIS 2.12
      */
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 
     /** Remove a custom property from the object.
      * \param key property key
-     * @see setCustomProperty()
-     * @see customProperty()
-     * @see customProperties()
+     * \see setCustomProperty()
+     * \see customProperty()
+     * \see customProperties()
      * \since QGIS 2.12
      */
     void removeCustomProperty( const QString &key );
 
     /** Return list of keys stored in custom properties for the object.
-     * @see setCustomProperty()
-     * @see customProperty()
-     * @see removeCustomProperty()
+     * \see setCustomProperty()
+     * \see customProperty()
+     * \see removeCustomProperty()
      * \since QGIS 2.12
      */
     QStringList customProperties() const;

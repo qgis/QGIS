@@ -69,7 +69,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      * Return reference to identifiers of selected features
      *
      * \returns A list of { @link QgsFeatureId } 's
-     * @see selectedFeatures()
+     * \see selectedFeatures()
      */
     virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
 

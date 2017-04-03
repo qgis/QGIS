@@ -55,7 +55,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     /**
      * @brief QgsExternalResourceWidget creates a widget with a file widget and a document viewer
      * Both part of the widget are optional.
-     * @see QgsFileWidget
+     * \see QgsFileWidget
      */
     explicit QgsExternalResourceWidget( QWidget *parent = 0 );
 

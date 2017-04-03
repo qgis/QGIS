@@ -47,17 +47,17 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 
     //! Whether the raster provider should return only data that are already available
     //! without waiting for full result. By default this flag is not enabled.
-    //! @see setPreviewOnly()
+    //! \see setPreviewOnly()
     bool isPreviewOnly() const { return mPreviewOnly; }
     //! set flag whether the block request is for preview purposes only
-    //! @see isPreviewOnly()
+    //! \see isPreviewOnly()
     void setPreviewOnly( bool preview ) { mPreviewOnly = preview; }
 
     //! Whether our painter is drawing to a temporary image used just by this layer
-    //! @see setRenderPartialOutput()
+    //! \see setRenderPartialOutput()
     bool renderPartialOutput() const { return mRenderPartialOutput; }
     //! Set whether our painter is drawing to a temporary image used just by this layer
-    //! @see renderPartialOutput()
+    //! \see renderPartialOutput()
     void setRenderPartialOutput( bool enable ) { mRenderPartialOutput = enable; }
 
   private:

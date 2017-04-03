@@ -26,7 +26,7 @@ class QgsSymbol;
  * The class stores information about one class/rule of a vector layer renderer in a unified way
  * that can be used by legend model for rendering of legend.
  *
- * @see QgsSymbolLegendNode
+ * \see QgsSymbolLegendNode
  * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendSymbolItem

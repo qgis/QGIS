@@ -42,37 +42,37 @@ class CORE_EXPORT QgsColorSchemeRegistry
     virtual ~QgsColorSchemeRegistry();
 
     /** Adds all color schemes from the global instance to this color scheme.
-     * @see addDefaultSchemes
-     * @see addColorScheme
+     * \see addDefaultSchemes
+     * \see addColorScheme
      */
     void populateFromInstance();
 
     /** Adds all default color schemes to this color scheme.
-     * @see populateFromInstance
-     * @see addColorScheme
-     * @see addUserSchemes
+     * \see populateFromInstance
+     * \see addColorScheme
+     * \see addUserSchemes
      */
     void addDefaultSchemes();
 
     /** Creates schemes for all gpl palettes in the user's palettes folder.
-     * @see populateFromInstance
-     * @see addDefaultSchemes
-     * @see addColorScheme
+     * \see populateFromInstance
+     * \see addDefaultSchemes
+     * \see addColorScheme
      */
     void addUserSchemes();
 
     /** Adds a color scheme to the registry. Ownership of the scheme is transferred
      * to the registry.
      * \param scheme color scheme to add
-     * @see populateFromInstance
-     * @see removeColorScheme
+     * \see populateFromInstance
+     * \see removeColorScheme
      */
     void addColorScheme( QgsColorScheme *scheme );
 
     /** Removes all matching color schemes from the registry
      * \param scheme color scheme to remove
      * \returns true if scheme was found and removed
-     * @see addColorScheme
+     * \see addColorScheme
      */
     bool removeColorScheme( QgsColorScheme *scheme );
 

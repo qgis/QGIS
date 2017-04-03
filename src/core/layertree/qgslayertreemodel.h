@@ -48,7 +48,7 @@ class QgsLayerTree;
  * Behavior of the model can be customized with flags. For example, whether to show legend or
  * whether to allow changes to the layer tree.
  *
- * @see QgsLayerTreeView
+ * \see QgsLayerTreeView
  * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
@@ -127,12 +127,12 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
     //! \since QGIS 2.6
     //! \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
-    //! @see layerOriginalLegendNodes()
+    //! \see layerOriginalLegendNodes()
     QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false );
 
     //! Return original (unfiltered) list of legend nodes attached to a particular layer node
     //! \since QGIS 2.14
-    //! @see layerLegendNodes()
+    //! \see layerLegendNodes()
     QList<QgsLayerTreeModelLegendNode *> layerOriginalLegendNodes( QgsLayerTreeLayer *nodeLayer );
 
     //! Return legend node that may be embedded in parent (i.e. its icon will be used for layer's icon).

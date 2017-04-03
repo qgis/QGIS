@@ -91,13 +91,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
                                     QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     /** Returns the shape for the rendered marker symbol.
-     * @see setShape()
+     * \see setShape()
      */
     Shape shape() const { return mShape; }
 
     /** Sets the rendered marker shape.
      * \param shape new marker shape
-     * @see shape()
+     * \see shape()
      */
     void setShape( Shape shape ) { mShape = shape; }
 
@@ -106,14 +106,14 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \param name encoded shape name
      * \param ok if specified, will be set to true if shape was successfully decoded
      * \returns decoded name
-     * @see encodeShape()
+     * \see encodeShape()
      */
     static Shape decodeShape( const QString &name, bool *ok = nullptr );
 
     /** Encodes a shape to its string representation.
      * \param shape shape to encode
      * \returns encoded string
-     * @see decodeShape()
+     * \see decodeShape()
      */
     static QString encodeShape( Shape shape );
 
@@ -241,96 +241,96 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     // new methods
 
     /** Returns the marker's stroke color.
-     * @see setStrokeColor()
-     * @see strokeStyle()
-     * @see penJoinStyle()
+     * \see setStrokeColor()
+     * \see strokeStyle()
+     * \see penJoinStyle()
      */
     QColor strokeColor() const override { return mStrokeColor; }
 
     /** Sets the marker's stroke color.
      * \param color stroke color
-     * @see strokeColor()
-     * @see setStrokeStyle()
-     * @see setPenJoinStyle()
+     * \see strokeColor()
+     * \see setStrokeStyle()
+     * \see setPenJoinStyle()
      */
     void setStrokeColor( const QColor &color ) override { mStrokeColor = color; }
 
     /** Returns the marker's stroke style (e.g., solid, dashed, etc)
      * \since QGIS 2.4
-     * @see setStrokeStyle()
-     * @see strokeColor()
-     * @see penJoinStyle()
+     * \see setStrokeStyle()
+     * \see strokeColor()
+     * \see penJoinStyle()
     */
     Qt::PenStyle strokeStyle() const { return mStrokeStyle; }
 
     /** Sets the marker's stroke style (e.g., solid, dashed, etc)
      * \param strokeStyle style
      * \since QGIS 2.4
-     * @see strokeStyle()
-     * @see setStrokeColor()
-     * @see setPenJoinStyle()
+     * \see strokeStyle()
+     * \see setStrokeColor()
+     * \see setPenJoinStyle()
     */
     void setStrokeStyle( Qt::PenStyle strokeStyle ) { mStrokeStyle = strokeStyle; }
 
     /** Returns the marker's stroke join style (e.g., miter, bevel, etc).
      * \since QGIS 2.16
-     * @see setPenJoinStyle()
-     * @see strokeColor()
-     * @see strokeStyle()
+     * \see setPenJoinStyle()
+     * \see strokeColor()
+     * \see strokeStyle()
     */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
     /** Sets the marker's stroke join style (e.g., miter, bevel, etc).
      * \param style join style
      * \since QGIS 2.16
-     * @see penJoinStyle()
-     * @see setStrokeColor()
-     * @see setStrokeStyle()
+     * \see penJoinStyle()
+     * \see setStrokeColor()
+     * \see setStrokeStyle()
     */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
     /** Returns the width of the marker's stroke.
-     * @see setStrokeWidth()
-     * @see strokeWidthUnit()
-     * @see strokeWidthMapUnitScale()
+     * \see setStrokeWidth()
+     * \see strokeWidthUnit()
+     * \see strokeWidthMapUnitScale()
      */
     double strokeWidth() const { return mStrokeWidth; }
 
     /** Sets the width of the marker's stroke.
      * \param w stroke width. See strokeWidthUnit() for units.
-     * @see strokeWidth()
-     * @see setStrokeWidthUnit()
-     * @see setStrokeWidthMapUnitScale()
+     * \see strokeWidth()
+     * \see setStrokeWidthUnit()
+     * \see setStrokeWidthMapUnitScale()
      */
     void setStrokeWidth( double w ) { mStrokeWidth = w; }
 
     /** Sets the unit for the width of the marker's stroke.
      * \param u stroke width unit
-     * @see strokeWidthUnit()
-     * @see setStrokeWidth()
-     * @see setStrokeWidthMapUnitScale()
+     * \see strokeWidthUnit()
+     * \see setStrokeWidth()
+     * \see setStrokeWidthMapUnitScale()
      */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit u ) { mStrokeWidthUnit = u; }
 
     /** Returns the unit for the width of the marker's stroke.
-     * @see setStrokeWidthUnit()
-     * @see strokeWidth()
-     * @see strokeWidthMapUnitScale()
+     * \see setStrokeWidthUnit()
+     * \see strokeWidth()
+     * \see strokeWidthMapUnitScale()
      */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
     /** Sets the map scale for the width of the marker's stroke.
      * \param scale stroke width map unit scale
-     * @see strokeWidthMapUnitScale()
-     * @see setStrokeWidth()
-     * @see setStrokeWidthUnit()
+     * \see strokeWidthMapUnitScale()
+     * \see setStrokeWidth()
+     * \see setStrokeWidthUnit()
      */
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
 
     /** Returns the map scale for the width of the marker's stroke.
-     * @see setStrokeWidthMapUnitScale()
-     * @see strokeWidth()
-     * @see strokeWidthUnit()
+     * \see setStrokeWidthMapUnitScale()
+     * \see strokeWidth()
+     * \see strokeWidthUnit()
      */
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
@@ -483,12 +483,12 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     /** Sets the units for the stroke width.
      * \param unit width units
-     * @see strokeWidthUnit()
+     * \see strokeWidthUnit()
     */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /** Returns the units for the stroke width.
-     * @see strokeWidthUnit()
+     * \see strokeWidthUnit()
     */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 

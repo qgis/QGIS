@@ -45,12 +45,12 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
 
     /** Sets the list of substitutions to show in the widget.
      * \param substitutions substitution list
-     * @see substitutions()
+     * \see substitutions()
      */
     void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 
     /** Returns the list of substitutions currently defined by the widget.
-     * @see setSubstitutions()
+     * \see setSubstitutions()
      */
     QgsStringReplacementCollection substitutions() const;
 
@@ -94,12 +94,12 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
 
     /** Sets the list of substitutions to show in the dialog.
      * \param substitutions substitution list
-     * @see substitutions()
+     * \see substitutions()
      */
     void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 
     /** Returns the list of substitutions currently defined by the dialog.
-     * @see setSubstitutions()
+     * \see setSubstitutions()
      */
     QgsStringReplacementCollection substitutions() const;
 

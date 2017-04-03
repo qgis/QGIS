@@ -29,7 +29,7 @@ class QgsPropertyOverrideButton;
  *
  * It implements the GUI configuration widget and transforms this to/from a configuration.
  *
- * It will only be instantiated by {@see QgsEditorWidgetFactory}
+ * It will only be instantiated by {\see QgsEditorWidgetFactory}
  */
 
 class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionContextGenerator

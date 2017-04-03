@@ -82,7 +82,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * \param id The id to search for
      *
      * \returns A relation. Invalid if not found.
-     * @see relationsByName()
+     * \see relationsByName()
      */
     Q_INVOKABLE QgsRelation relation( const QString &id ) const;
 
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * \param name relation name to search for. Searching is case insensitive.
      * \returns a list of matching relations
      * \since QGIS 2.16
-     * @see relation()
+     * \see relation()
      */
     QList<QgsRelation> relationsByName( const QString &name ) const;
 

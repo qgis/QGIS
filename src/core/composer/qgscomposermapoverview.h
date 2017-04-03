@@ -52,7 +52,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * \param overview QgsComposerMapOverview to add to the stack
      * \note after adding a overview to the stack, update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
-     * @see removeOverview
+     * \see removeOverview
      */
     void addOverview( QgsComposerMapOverview *overview );
 
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * \param overviewId id for the QgsComposerMapOverview to remove
      * \note after removing an overview from the stack, update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
-     * @see addOverview
+     * \see addOverview
      */
     void removeOverview( const QString &overviewId );
 
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * \param overviewId id for the QgsComposerMapOverview to move up
      * \note after moving an overview within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new overview stack order
-     * @see moveOverviewDown
+     * \see moveOverviewDown
      */
     void moveOverviewUp( const QString &overviewId );
 
@@ -76,36 +76,36 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * \param overviewId id for the QgsComposerMapOverview to move down
      * \note after moving an overview within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new overview stack order
-     * @see moveOverviewUp
+     * \see moveOverviewUp
      */
     void moveOverviewDown( const QString &overviewId );
 
     /** Returns a const reference to an overview within the stack
      * \param overviewId id for the QgsComposerMapOverview to find
      * \returns const reference to overview, if found
-     * @see overview
+     * \see overview
      */
     const QgsComposerMapOverview *constOverview( const QString &overviewId ) const;
 
     /** Returns a reference to an overview within the stack
      * \param overviewId id for the QgsComposerMapOverview to find
      * \returns reference to overview if found
-     * @see constOverview
+     * \see constOverview
      */
     QgsComposerMapOverview *overview( const QString &overviewId ) const;
 
     /** Returns a reference to an overview within the stack
      * \param index overview position in the stack
      * \returns reference to overview if found
-     * @see constOverview
+     * \see constOverview
      */
     QgsComposerMapOverview *overview( const int index ) const;
 
     /** Returns a reference to an overview within the stack
      * \param idx overview position in the stack
      * \returns reference to overview if found
-     * @see constOverview
-     * @see overview
+     * \see constOverview
+     * \see overview
      */
     QgsComposerMapOverview &operator[]( int idx );
 
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * \param elem is DOM node corresponding to a 'ComposerMap' tag
      * \param doc DOM document
      * \returns true if read was successful
-     * @see writeXml
+     * \see writeXml
      */
     bool readXml( const QDomElement &elem, const QDomDocument &doc ) override;
 
@@ -153,14 +153,14 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     /** Stores overview state in DOM element
      * \param elem is DOM element corresponding to a 'ComposerMap' tag
      * \param doc DOM document
-     * @see readXml
+     * \see readXml
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets overview state from a DOM document
      * \param itemElem is DOM node corresponding to a 'ComposerMapOverview' tag
      * \param doc is DOM document
-     * @see writeXml
+     * \see writeXml
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
 
     /** Sets overview frame map.
      * \param mapId source map id. -1 disables the overview frame
-     * @see frameMapId
+     * \see frameMapId
      */
     void setFrameMap( const int mapId );
 
@@ -179,58 +179,58 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
 
     /** Sets the fill symbol used for drawing the overview extent.
      * \param symbol fill symbol for overview
-     * @see frameSymbol
+     * \see frameSymbol
      */
     void setFrameSymbol( QgsFillSymbol *symbol );
 
     /** Gets the fill symbol used for drawing the overview extent.
      * \returns fill symbol for overview
-     * @see setFrameSymbol
+     * \see setFrameSymbol
      */
     QgsFillSymbol *frameSymbol() { return mFrameSymbol; }
 
     /** Gets the fill symbol used for drawing the overview extent.
      * \returns fill symbol for overview
-     * @see setFrameSymbol
+     * \see setFrameSymbol
      * \note not available in Python bindings
      */
     const QgsFillSymbol *frameSymbol() const { return mFrameSymbol; }
 
     /** Retrieves the blending mode used for drawing the overview.
      * \returns blending mode for overview
-     * @see setBlendMode
+     * \see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
     /** Sets the blending mode used for drawing the overview.
      * \param blendMode blending mode for overview
-     * @see blendMode
+     * \see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode blendMode );
 
     /** Returns whether the overview frame is inverted, ie, whether the shaded area is drawn outside
      * the extent of the overview map.
      * \returns true if overview frame is inverted
-     * @see setInverted
+     * \see setInverted
      */
     bool inverted() const { return mInverted; }
 
     /** Sets whether the overview frame is inverted, ie, whether the shaded area is drawn outside
      * the extent of the overview map.
      * \param inverted set to true if overview frame is to be inverted
-     * @see inverted
+     * \see inverted
      */
     void setInverted( const bool inverted );
 
     /** Returns whether the extent of the map is forced to center on the overview
      * \returns true if map will be centered on overview
-     * @see setCentered
+     * \see setCentered
      */
     bool centered() const { return mCentered; }
 
     /** Sets whether the extent of the map is forced to center on the overview
      * \param centered set to true if map will be centered on overview
-     * @see centered
+     * \see centered
      */
     void setCentered( const bool centered );
 

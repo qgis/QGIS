@@ -93,15 +93,15 @@ class CORE_EXPORT QgsField
     bool operator!=( const QgsField &other ) const;
 
     /** Returns the name of the field.
-     * @see setName()
-     * @see displayName()
+     * \see setName()
+     * \see displayName()
      */
     QString name() const;
 
     /** Returns the name to use when displaying this field. This will be the
      * field alias if set, otherwise the field name.
-     * @see name()
-     * @see alias()
+     * \see name()
+     * \see alias()
      * \since QGIS 3.0
      */
     QString displayName() const;
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsField
      * \returns expression evaluated when calculating default values for field, or an
      * empty string if no default is set
      * \since QGIS 3.0
-     * @see setDefaultValueExpression()
+     * \see setDefaultValueExpression()
      */
     QString defaultValueExpression() const;
 
@@ -204,34 +204,34 @@ class CORE_EXPORT QgsField
      * \param expression expression to evaluate when calculating default values for field. Pass
      * an empty expression to clear the default.
      * \since QGIS 3.0
-     * @see defaultValueExpression()
+     * \see defaultValueExpression()
      */
     void setDefaultValueExpression( const QString &expression );
 
     /**
      * Returns constraints which are present for the field.
      * \since QGIS 3.0
-     * @see setConstraints()
+     * \see setConstraints()
      */
     const QgsFieldConstraints &constraints() const;
 
     /**
      * Sets constraints which are present for the field.
      * \since QGIS 3.0
-     * @see constraints()
+     * \see constraints()
      */
     void setConstraints( const QgsFieldConstraints &constraints );
 
     /** Returns the alias for the field (the friendly displayed name of the field ),
      * or an empty string if there is no alias.
-     * @see setAlias()
+     * \see setAlias()
      * \since QGIS 3.0
      */
     QString alias() const;
 
     /** Sets the alias for the field (the friendly displayed name of the field ).
      * \param alias field alias, or empty string to remove an existing alias
-     * @see alias()
+     * \see alias()
      * \since QGIS 3.0
      */
     void setAlias( const QString &alias );

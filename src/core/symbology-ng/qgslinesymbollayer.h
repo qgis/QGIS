@@ -90,12 +90,12 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 
     /** Sets the units for lengths used in the custom dash pattern.
      * \param unit length units
-     * @see customDashPatternUnit()
+     * \see customDashPatternUnit()
     */
     void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit ) { mCustomDashPatternUnit = unit; }
 
     /** Returns the units for lengths used in the custom dash pattern.
-     * @see setCustomDashPatternUnit()
+     * \see setCustomDashPatternUnit()
     */
     QgsUnitTypes::RenderUnit customDashPatternUnit() const { return mCustomDashPatternUnit; }
 
@@ -231,16 +231,16 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 
     /**
      * Returns the interval between individual markers. Units are specified through intervalUnits().
-     * @see setInterval()
-     * @see intervalUnit()
+     * \see setInterval()
+     * \see intervalUnit()
      */
     double interval() const { return mInterval; }
 
     /**
      * Sets the interval between individual markers.
      * \param interval interval size. Units are specified through setIntervalUnits()
-     * @see interval()
-     * @see setIntervalUnits()
+     * \see interval()
+     * \see setIntervalUnits()
      */
     void setInterval( double interval ) { mInterval = interval; }
 
@@ -260,9 +260,9 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      * This setting has no effect for Vertex or CentralPoint placements.
      * \returns The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
      * \since QGIS 2.3
-     * @see setOffsetAlongLine
-     * @see offsetAlongLineUnit
-     * @see placement
+     * \see setOffsetAlongLine
+     * \see offsetAlongLineUnit
+     * \see placement
      */
     double offsetAlongLine() const { return mOffsetAlongLine; }
 
@@ -273,23 +273,23 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      * \param offsetAlongLine Distance to offset markers along the line. The offset
      * unit is set via setOffsetAlongLineUnit.
      * \since QGIS 2.3
-     * @see offsetAlongLine
-     * @see setOffsetAlongLineUnit
-     * @see setPlacement
+     * \see offsetAlongLine
+     * \see setOffsetAlongLineUnit
+     * \see setPlacement
      */
     void setOffsetAlongLine( double offsetAlongLine ) { mOffsetAlongLine = offsetAlongLine; }
 
     /** Returns the unit used for calculating the offset along line for markers.
      * \returns Offset along line unit type.
-     * @see setOffsetAlongLineUnit
-     * @see offsetAlongLine
+     * \see setOffsetAlongLineUnit
+     * \see offsetAlongLine
      */
     QgsUnitTypes::RenderUnit offsetAlongLineUnit() const { return mOffsetAlongLineUnit; }
 
     /** Sets the unit used for calculating the offset along line for markers.
      * \param unit Offset along line unit type.
-     * @see offsetAlongLineUnit
-     * @see setOffsetAlongLine
+     * \see offsetAlongLineUnit
+     * \see setOffsetAlongLine
      */
     void setOffsetAlongLineUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetAlongLineUnit = unit; }
 
@@ -305,14 +305,14 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 
     /** Sets the units for the interval between markers.
      * \param unit interval units
-     * @see intervalUnit()
-     * @see setInterval()
+     * \see intervalUnit()
+     * \see setInterval()
     */
     void setIntervalUnit( QgsUnitTypes::RenderUnit unit ) { mIntervalUnit = unit; }
 
     /** Returns the units for the interval between markers.
-     * @see setIntervalUnit()
-     * @see interval()
+     * \see setIntervalUnit()
+     * \see interval()
     */
     QgsUnitTypes::RenderUnit intervalUnit() const { return mIntervalUnit; }
 
@@ -356,8 +356,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      * moving forward along the line. If distance is negative, offset is calculated moving backward
      * along the line's vertices.
      * \param context render context
-     * @see setoffsetAlongLine
-     * @see setOffsetAlongLineUnit
+     * \see setoffsetAlongLine
+     * \see setOffsetAlongLineUnit
      */
     void renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context );
 };

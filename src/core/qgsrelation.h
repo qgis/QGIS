@@ -141,8 +141,8 @@ class CORE_EXPORT QgsRelation
      * \param feature A feature from the referenced (parent) layer
      *
      * \returns An iterator with all the referenced features
-     * @see getRelatedFeaturesRequest()
-     * @see getRelatedFeaturesFilter()
+     * \see getRelatedFeaturesRequest()
+     * \see getRelatedFeaturesFilter()
      */
     QgsFeatureIterator getRelatedFeatures( const QgsFeature &feature ) const;
 
@@ -153,8 +153,8 @@ class CORE_EXPORT QgsRelation
      * \param feature A feature from the referenced (parent) layer
      *
      * \returns A request for all the referencing features
-     * @see getRelatedFeatures()
-     * @see getRelatedFeaturesFilter()
+     * \see getRelatedFeatures()
+     * \see getRelatedFeaturesFilter()
      */
     QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature &feature ) const;
 
@@ -163,8 +163,8 @@ class CORE_EXPORT QgsRelation
      * \param feature A feature from the referenced (parent) layer
      * \returns expression filter string for all the referencing features
      * \since QGIS 2.16
-     * @see getRelatedFeatures()
-     * @see getRelatedFeaturesRequest()
+     * \see getRelatedFeatures()
+     * \see getRelatedFeaturesRequest()
      */
     QString getRelatedFeaturesFilter( const QgsFeature &feature ) const;
 
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsRelation
     /**
      * Returns a human readable name for this relation. Mostly used as title for the children.
      *
-     * @see id()
+     * \see id()
      *
      * \returns A name
      */

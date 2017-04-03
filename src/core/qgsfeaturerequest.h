@@ -270,16 +270,16 @@ class CORE_EXPORT QgsFeatureRequest
     //! Get feature IDs that should be fetched.
     const QgsFeatureIds &filterFids() const { return mFilterFids; }
 
-    /** Set the filter expression. {@see QgsExpression}
+    /** Set the filter expression. {\see QgsExpression}
      * \param expression expression string
-     * @see filterExpression
-     * @see setExpressionContext
+     * \see filterExpression
+     * \see setExpressionContext
      */
     QgsFeatureRequest &setFilterExpression( const QString &expression );
 
     /** Returns the filter expression if set.
-     * @see setFilterExpression
-     * @see expressionContext
+     * \see setFilterExpression
+     * \see expressionContext
      */
     QgsExpression *filterExpression() const { return mFilterExpression.get(); }
 
@@ -292,15 +292,15 @@ class CORE_EXPORT QgsFeatureRequest
 
     /** Returns the expression context used to evaluate filter expressions.
      * \since QGIS 2.12
-     * @see setExpressionContext
-     * @see filterExpression
+     * \see setExpressionContext
+     * \see filterExpression
      */
     QgsExpressionContext *expressionContext() { return &mExpressionContext; }
 
     /** Sets the expression context used to evaluate filter expressions.
      * \since QGIS 2.12
-     * @see expressionContext
-     * @see setFilterExpression
+     * \see expressionContext
+     * \see setFilterExpression
      */
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 
@@ -354,13 +354,13 @@ class CORE_EXPORT QgsFeatureRequest
 
     /** Set the maximum number of features to request.
      * \param limit maximum number of features, or -1 to request all features.
-     * @see limit()
+     * \see limit()
      * \since QGIS 2.14
      */
     QgsFeatureRequest &setLimit( long limit );
 
     /** Returns the maximum number of features to request, or -1 if no limit set.
-     * @see setLimit
+     * \see setLimit
      * \since QGIS 2.14
      */
     long limit() const { return mLimit; }

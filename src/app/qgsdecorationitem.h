@@ -49,12 +49,12 @@ class APP_EXPORT QgsDecorationItem: public QObject
     bool enabled() const { return mEnabled; }
 
     /** Returns the current placement for the item.
-     * @see setPlacement()
+     * \see setPlacement()
      */
     Placement placement() const { return mPlacement; }
 
     /** Sets the placement of the item.
-     * @see placement()
+     * \see placement()
      */
     void setPlacement( Placement placement ) { mPlacement = placement; }
 

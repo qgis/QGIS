@@ -130,7 +130,7 @@ class CORE_EXPORT Qgis
 /** \ingroup core
  * RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
- * @see whileBlocking()
+ * \see whileBlocking()
  * \since QGIS 2.16
  * \note not available in Python bindings
  */
@@ -171,7 +171,7 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
  * No signals will be emitted when calling these methods.
  *
  * \since QGIS 2.16
- * @see QgsSignalBlocker
+ * \see QgsSignalBlocker
  * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
@@ -250,7 +250,7 @@ inline double qgsRound( double number, double places )
  * \param ok will be set to true if conversion was successful
  * \returns string converted to double if possible
  * \since QGIS 2.9
- * @see permissiveToInt
+ * \see permissiveToInt
  */
 CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
 
@@ -260,20 +260,20 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
  * \param ok will be set to true if conversion was successful
  * \returns string converted to int if possible
  * \since QGIS 2.9
- * @see permissiveToDouble
+ * \see permissiveToDouble
  */
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
-//! @see qgsVariantGreaterThan()
+//! \see qgsVariantGreaterThan()
 CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 
 //! Compares two QVariant values and returns whether the first is greater than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
-//! @see qgsVariantLessThan()
+//! \see qgsVariantLessThan()
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
 CORE_EXPORT QString qgsVsiPrefix( const QString &path );

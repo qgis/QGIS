@@ -170,26 +170,26 @@ class CORE_EXPORT QgsPoint
     QString wellKnownText() const;
 
     /** Returns the squared distance between this point a specified x, y coordinate.
-     * @see distance()
+     * \see distance()
     */
     double sqrDist( double x, double y ) const;
 
     /** Returns the squared distance between this point another point.
-     * @see distance()
+     * \see distance()
     */
     double sqrDist( const QgsPoint &other ) const;
 
     /** Returns the distance between this point and a specified x, y coordinate.
      * \param x x-coordniate
      * \param y y-coordinate
-     * @see sqrDist()
+     * \see sqrDist()
      * \since QGIS 2.16
     */
     double distance( double x, double y ) const;
 
     /** Returns the distance between this point and another point.
      * \param other other point
-     * @see sqrDist()
+     * \see sqrDist()
      * \since QGIS 2.16
     */
     double distance( const QgsPoint &other ) const;

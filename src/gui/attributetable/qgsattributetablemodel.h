@@ -43,7 +43,7 @@ class QgsFieldFormatter;
  * Is able to generate editor widgets for its QModelIndexes as well.
  * Is mostly referred to as "master model" within this doc and the source.
  *
- * @see <a href="http://doc.qt.digia.com/qt/model-view-programming.html">Qt Model View Programming</a>
+ * \see <a href="http://doc.qt.digia.com/qt/model-view-programming.html">Qt Model View Programming</a>
  */
 class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 {

@@ -79,7 +79,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * \returns The index of the field you are working on
      *
-     * @see layer()
+     * \see layer()
      */
     int fieldIdx() const;
 
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * \returns The field you are working on
      *
-     * @see layer()
+     * \see layer()
      */
     QgsField field() const;
 
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * \returns the default value of the field
      *
-     * @see layer()
+     * \see layer()
      */
     QVariant defaultValue() const;
 
@@ -142,8 +142,8 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \returns true if the constraint is valid or if there's no constraint,
      * false otherwise
      * \since QGIS 2.16
-     * @see constraintFailureReason()
-     * @see isBlockingCommit()
+     * \see constraintFailureReason()
+     * \see isBlockingCommit()
      */
     bool isValidConstraint() const;
 
@@ -151,14 +151,14 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Returns true if the widget is preventing the feature from being committed. This may be true as a result
      * of attribute values failing enforced field constraints.
      * \since QGIS 3.0
-     * @see isValidConstraint()
+     * \see isValidConstraint()
      */
     bool isBlockingCommit() const;
 
     /**
      * Returns the reason why a constraint check has failed (or an empty string
      * if constraint check was successful).
-     * @see isValidConstraint()
+     * \see isValidConstraint()
      * \since QGIS 3.0
      */
     QString constraintFailureReason() const;

@@ -80,7 +80,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     int band() const { return mBand; }
 
     /** Sets the band used by the renderer.
-     * @see band
+     * \see band
      * \since QGIS 2.10
      */
     void setBand( int bandNo );

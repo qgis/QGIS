@@ -84,30 +84,30 @@ class CORE_EXPORT QgsCoordinateTransform
     /*!
      * Sets the source coordinate reference system.
      * \param crs CRS to transform coordinates from
-     * @see sourceCrs()
-     * @see setDestinationCrs()
+     * \see sourceCrs()
+     * \see setDestinationCrs()
      */
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs );
 
     /*!
      * Sets the destination coordinate reference system.
      * \param crs CRS to transform coordinates to
-     * @see destinationCrs()
-     * @see setSourceCrs()
+     * \see destinationCrs()
+     * \see setSourceCrs()
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Returns the source coordinate reference system, which the transform will
      * transform coordinates from.
-     * @see setSourceCrs()
-     * @see destinationCrs()
+     * \see setSourceCrs()
+     * \see destinationCrs()
      */
     QgsCoordinateReferenceSystem sourceCrs() const;
 
     /** Returns the destination coordinate reference system, which the transform will
      * transform coordinates to.
-     * @see setDestinationCrs()
-     * @see sourceCrs()
+     * \see setDestinationCrs()
+     * \see sourceCrs()
      */
     QgsCoordinateReferenceSystem destinationCrs() const;
 
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsCoordinateTransform
     /** Restores state from the given Dom node.
      * \param node The node from which state will be restored
      * \returns bool True on success, False on failure
-     * @see writeXml()
+     * \see writeXml()
      */
     bool readXml( const QDomNode &node );
 
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param node The node in which state will be restored
      * \param document The document in which state will be stored
      * \returns bool True on success, False on failure
-     * @see readXml()
+     * \see readXml()
      */
     bool writeXml( QDomNode &node, QDomDocument &document ) const;
 

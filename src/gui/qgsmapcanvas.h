@@ -94,7 +94,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * empty string before setLayers() calls can be made.
      *
      * \since QGIS 3.0
-     * @see layers()
+     * \see layers()
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
@@ -255,7 +255,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Return the list of layers shown within the map canvas.
-     * @see setLayers()
+     * \see setLayers()
      */
     QList<QgsMapLayer *> layers() const;
 
@@ -264,26 +264,26 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * responding to events while layers are being added/removed etc.
      * \param frozen Boolean specifying if the canvas should be frozen (true) or
      * thawed (false). Default is true.
-     * @see isFrozen()
-     * @see setRenderFlag(). freeze() should be used to programmatically halt map updates,
+     * \see isFrozen()
+     * \see setRenderFlag(). freeze() should be used to programmatically halt map updates,
      * while setRenderFlag() should only be used when users disable rendering via GUI.
      */
     void freeze( bool frozen = true );
 
     /**
      * Returns true if canvas is frozen.
-     * @see renderFlag(). isFrozen() should be used to determine whether map updates
+     * \see renderFlag(). isFrozen() should be used to determine whether map updates
      * have been halted programmatically, while renderFlag() should be used to
      * determine whether a user has disabled rendering via GUI.
-     * @see freeze()
+     * \see freeze()
      */
     bool isFrozen() const;
 
     /**
      * Returns true if canvas render is disabled as a result of user disabling
      * renders via the GUI.
-     * @see setRenderFlag()
-     * @see isFrozen(). isFrozen() should be used to determine whether map updates
+     * \see setRenderFlag()
+     * \see isFrozen(). isFrozen() should be used to determine whether map updates
      * have been halted programmatically, while renderFlag() should be used to
      * determine whether a user has disabled rendering via GUI.
      */
@@ -298,7 +298,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Returns the stored overrides of styles for layers.
      * \since QGIS 2.12
-     * @see setLayerStyleOverrides().
+     * \see setLayerStyleOverrides().
      */
     QMap<QString, QString> layerStyleOverrides() const;
 
@@ -311,7 +311,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * empty string before setLayerStyleOverrides() calls can be made.
      *
      * \since QGIS 2.12
-     * @see layerStyleOverrides()
+     * \see layerStyleOverrides()
      */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
@@ -331,14 +331,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * If an empty string is passed then the current theme association will be
      * cleared.
      * \since QGIS 3.0
-     * @see theme()
+     * \see theme()
      */
     void setTheme( const QString &theme );
 
     /**
      * Returns the map's theme shown in the canvas, if set.
      * \since QGIS 3.0
-     * @see setTheme()
+     * \see setTheme()
      */
     QString theme() const { return mTheme; }
 
@@ -370,7 +370,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Returns whether the scale is locked, so zooming can be performed using magnication.
     //! \since QGIS 2.16
-    //! @see setScaleLocked()
+    //! \see setScaleLocked()
     bool scaleLocked() const { return mScaleLocked;}
 
     //! used to determine if anti-aliasing is enabled or not
@@ -395,31 +395,31 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Enables a preview mode for the map canvas
      * \param previewEnabled set to true to enable a preview mode
-     * @see setPreviewMode
+     * \see setPreviewMode
      * \since QGIS 2.3 */
     void setPreviewModeEnabled( bool previewEnabled );
 
     /** Returns whether a preview mode is enabled for the map canvas
      * \returns true if a preview mode is currently enabled
-     * @see setPreviewModeEnabled
-     * @see previewMode
+     * \see setPreviewModeEnabled
+     * \see previewMode
      * \since QGIS 2.3 */
     bool previewModeEnabled() const;
 
     /** Sets a preview mode for the map canvas. This setting only has an effect if
      * previewModeEnabled is true.
      * \param mode preview mode for the canvas
-     * @see previewMode
-     * @see setPreviewModeEnabled
-     * @see previewModeEnabled
+     * \see previewMode
+     * \see setPreviewModeEnabled
+     * \see previewModeEnabled
      * \since QGIS 2.3 */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
     /** Returns the current preview mode for the map canvas. This setting only has an effect if
      * previewModeEnabled is true.
      * \returns preview mode for map canvas
-     * @see setPreviewMode
-     * @see previewModeEnabled
+     * \see setPreviewMode
+     * \see previewModeEnabled
      * \since QGIS 2.3 */
     QgsPreviewEffect::PreviewMode previewMode() const;
 
@@ -447,7 +447,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * context scope for the canvas.
      * \param scope new expression context scope
      * \since QGIS 2.12
-     * @see expressionContextScope()
+     * \see expressionContextScope()
      */
     void setExpressionContextScope( const QgsExpressionContextScope &scope ) { mExpressionContextScope = scope; }
 
@@ -455,13 +455,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * into the expression context used for rendering the map, and can be used to apply specific variable
      * overrides for expression evaluation for the map canvas render.
      * \since QGIS 2.12
-     * @see setExpressionContextScope()
+     * \see setExpressionContextScope()
      */
     QgsExpressionContextScope &expressionContextScope() { return mExpressionContextScope; }
 
     /** Returns a const reference to the expression context scope for the map canvas.
      * \since QGIS 2.12
-     * @see setExpressionContextScope()
+     * \see setExpressionContextScope()
      * \note not available in Python bindings
      */
     const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; }
@@ -483,14 +483,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Returns true if annotations are visible within the map canvas.
      * \since QGIS 3.0
-     * @see setAnnotationsVisible()
+     * \see setAnnotationsVisible()
      */
     bool annotationsVisible() const { return mAnnotationsVisible; }
 
     /**
      * Sets whether annotations are \a visible in the canvas.
      * \since QGIS 3.0
-     * @see annotationsVisible()
+     * \see annotationsVisible()
      */
     void setAnnotationsVisible( bool visible );
 
@@ -514,8 +514,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Sets whether a user has disabled canvas renders via the GUI.
      * \param flag set to false to indicate that user has disabled renders
-     * @see renderFlag()
-     * @see freeze(). freeze() should be used to programmatically halt map updates,
+     * \see renderFlag()
+     * \see freeze(). freeze() should be used to programmatically halt map updates,
      * while setRenderFlag() should only be used when users disable rendering via GUI.
      */
     void setRenderFlag( bool flag );
@@ -541,7 +541,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Lock the scale, so zooming can be performed using magnication
     //! \since QGIS 2.16
-    //! @see scaleLocked()
+    //! \see scaleLocked()
     void setScaleLocked( bool isLocked );
 
     //! Zoom in with fixed factor
@@ -641,7 +641,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Emitted when the canvas has been assigned a different map theme.
-     * @see setTheme()
+     * \see setTheme()
      * \since QGIS 3.0
      */
     void themeChanged( const QString &theme );

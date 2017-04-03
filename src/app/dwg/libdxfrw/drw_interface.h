@@ -56,7 +56,7 @@ class DRW_Interface
      * Called for every block. Note: all entities added after this
      * command go into this block until endBlock() is called.
      *
-     * @see endBlock()
+     * \see endBlock()
      */
     virtual void addBlock( const DRW_Block &data ) = 0;
 
