@@ -32,13 +32,13 @@ class QgsHtmlAnnotation: QgsAnnotation
     void setSourceFile( const QString &htmlFile );
 %Docstring
  Sets the file path for the source HTML file.
- @see sourceFile()
+ \see sourceFile()
 %End
 
     QString sourceFile() const;
 %Docstring
  Returns the file path for the source HTML file.
- @see setSourceFile()
+ \see setSourceFile()
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const;

@@ -43,8 +43,8 @@ class QgsAnnotationManager : QObject
 %Docstring
  Adds an annotation to the manager. Ownership of the annotation is transferred to the manager.
  Returns true if the addition was successful, or false if the annotation could not be added.
- @see removeAnnotation()
- @see annotationAdded()
+ \see removeAnnotation()
+ \see annotationAdded()
 %End
 
     bool removeAnnotation( QgsAnnotation *annotation );
@@ -52,16 +52,16 @@ class QgsAnnotationManager : QObject
  Removes an annotation from the manager. The annotation is deleted.
  Returns true if the removal was successful, or false if the removal failed (eg as a result
  of removing an annotation which is not contained in the manager).
- @see addAnnotation()
- @see compositionRemoved()
- @see compositionAboutToBeRemoved()
- @see clear()
+ \see addAnnotation()
+ \see compositionRemoved()
+ \see compositionAboutToBeRemoved()
+ \see clear()
 %End
 
     void clear();
 %Docstring
  Removes and deletes all annotations from the manager.
- @see removeAnnotation()
+ \see removeAnnotation()
 %End
 
     QList< QgsAnnotation * > annotations() const;
@@ -73,13 +73,13 @@ class QgsAnnotationManager : QObject
 %Docstring
  Reads the manager's state from a DOM element, restoring all annotations
  present in the XML document.
- @see writeXml()
+ \see writeXml()
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
  Returns a DOM element representing the state of the manager.
- @see readXml()
+ \see readXml()
 %End
 
   signals:

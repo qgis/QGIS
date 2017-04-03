@@ -31,14 +31,14 @@ class QgsTextAnnotation: QgsAnnotation
 %Docstring
  Returns the text document which will be rendered
  within the annotation.
- @see setDocument()
+ \see setDocument()
 %End
 
     void setDocument( const QTextDocument *doc );
 %Docstring
  Sets the text document which will be rendered
  within the annotation. Ownership is not transferred.
- @see document()
+ \see document()
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const;
