@@ -57,28 +57,14 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      */
     QgsPointV2 pointN( int i ) const;
 
-    /**
-     * @copydoc QgsCurve::points()
-     */
     void points( QgsPointSequence &pts ) const override;
 
     /** Sets the circular string's points
      */
     void setPoints( const QgsPointSequence &points );
 
-    /**
-     * @copydoc QgsAbstractGeometry::length()
-     */
     virtual double length() const override;
-
-    /**
-     * @copydoc QgsCurve::startPoint()
-     */
     virtual QgsPointV2 startPoint() const override;
-
-    /**
-     * @copydoc QgsCurve::endPoint()
-     */
     virtual QgsPointV2 endPoint() const override;
 
     /** Returns a new line string geometry corresponding to a segmentized approximation
@@ -93,9 +79,6 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     void transform( const QTransform &t ) override;
     void addToPainterPath( QPainterPath &path ) const override;
 
-    /**
-     * @copydoc QgsCurve::drawAsPolygon()
-     */
     void drawAsPolygon( QPainter &p ) const override;
 
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
@@ -104,19 +87,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const override;
 
-    /**
-     * @copydoc QgsCurve::pointAt()
-     */
     bool pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const override;
-
-    /**
-     * @copydoc QgsCurve::sumUpArea()
-     */
     void sumUpArea( double &sum ) const override;
-
-    /**
-     * @copydoc QgsAbstractGeometry::hasCurvedSegments()
-     */
     bool hasCurvedSegments() const override { return true; }
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
