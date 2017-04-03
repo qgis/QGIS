@@ -42,6 +42,8 @@ my $comment = '';
 my $nesting_index = 0;
 my $private_section_line = '';
 my $line;
+my $classname = '';
+my %qflag_hash;
 
 print  "/************************************************************************\n";
 print  " * This file has been generated automatically from                      *\n";
@@ -220,12 +222,12 @@ while(!eof $header){
     }
 
     # class declaration started
-    if ( $line =~ m/^(\s*class)\s*([A-Z]+_EXPORT)?(\s+\w+)(\s*\:.*)?$/ ){
+    if ( $line =~ m/^(\s*class)\s*([A-Z]+_EXPORT)?\s+(\w+)(\s*\:.*)?$/ ){
         do {no warnings 'uninitialized';
-            my $classname = $3;
+            $classname = $3;
             $line =~ m/\b[A-Z]+_EXPORT\b/ or die "Class$classname in $headerfile should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.";
         };
-        $line = "$1$3";
+        $line = "$1 $3";
         # Inheritance
         if ($4){
             my $m = $4;
@@ -270,6 +272,17 @@ while(!eof $header){
         print $line;
         # enums don't have Docstring apparently
         next;
+    }
+
+    # catch Q_DECLARE_FLAGS
+    if ( $line =~ m/^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$/ ){
+        $line = "$1typedef QFlags<$classname::$3> $2;\n";
+        $qflag_hash{"$classname::$2"} = "$classname::$3";
+    }
+    # catch Q_DECLARE_OPERATORS_FOR_FLAGS
+    if ( $line =~ m/^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$/ ){
+        my $flag = $qflag_hash{$2};
+        $line = "$1QFlags<$flag> operator|($flag f1, QFlags<$flag> f2);\n";
     }
 
     do {no warnings 'uninitialized';

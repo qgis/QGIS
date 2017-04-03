@@ -99,6 +99,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
       Success = 0, //!< Edit operation was successful
       NoSuccess = 1, //!< Edit operation resulted in an empty geometry
     };
+    Q_DECLARE_FLAGS( Flags, MyEnum )
 
     //! A constructor with definition in header
     explicit QgsSipifyHeader()
@@ -218,6 +219,8 @@ class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass
     }
 
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSipifyHeader::Flags )
 
 
 #endif

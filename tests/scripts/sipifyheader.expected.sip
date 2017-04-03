@@ -62,6 +62,7 @@ class QgsSipifyHeader : QtClass<QVariant>
       Success,
       NoSuccess,
     };
+    typedef QFlags<QgsSipifyHeader::MyEnum> Flags;
 
     explicit QgsSipifyHeader();
 %Docstring
@@ -176,6 +177,8 @@ A constructor with definition in header on several lines
 %End
 
 }
+
+QFlags<QgsSipifyHeader::MyEnum> operator|(QgsSipifyHeader::MyEnum f1, QFlags<QgsSipifyHeader::MyEnum> f2);
 
 
 /************************************************************************
