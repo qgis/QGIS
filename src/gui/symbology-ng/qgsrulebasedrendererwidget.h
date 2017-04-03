@@ -195,7 +195,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
 
     /**
      * Return the current set rule.
-     * @return The current rule.
+     * \return The current rule.
      */
     QgsRuleBasedRenderer::Rule *rule() { return mRule; }
 

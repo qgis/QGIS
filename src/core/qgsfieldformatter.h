@@ -55,7 +55,7 @@ class CORE_EXPORT QgsFieldFormatter
     /**
      * Create a pretty String representation of the value.
      *
-     * @return By default the string representation of the provided value as implied by the field definition is returned.
+     * \return By default the string representation of the provided value as implied by the field definition is returned.
      *
      * \since QGIS 3.0
      */
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsFieldFormatter
     /**
      * If the default sort order should be overwritten for this widget, you can transform the value in here.
      *
-     * @returns an unmodified value by default.
+     * \returns an unmodified value by default.
      *
      * \since QGIS 3.0
      */

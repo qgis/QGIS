@@ -75,7 +75,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
 
     /**
      * @brief Returns the current state of null value injection
-     * @return If a NULL value is added
+     * \return If a NULL value is added
      * \since QGIS 2.9
      */
     bool injectNull();
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
 
     /**
      *  \param  expression   A {@link QgsExpression} compatible string.
-     *  @return true if the expression could be set, false if there was a parse error.
+     *  \return true if the expression could be set, false if there was a parse error.
      *          If it fails, the old expression will still be applied. Call {@link parserErrorString()}
      *          for a meaningful error message.
      */
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
 
     /**
      * @brief Returns a detailed message about errors while parsing a QgsExpression.
-     * @return A message containing information about the parser error.
+     * \return A message containing information about the parser error.
      */
     QString parserErrorString();
 

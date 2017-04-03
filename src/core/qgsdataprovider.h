@@ -100,7 +100,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Get the data source specification. This may be a path or database
      * connection string
      * \param expandAuthConfig Whether to expand any assigned authentication configuration
-     * @return data source specification
+     * \return data source specification
      * \note The default authentication configuration expansion is FALSE. This keeps credentials
      * out of layer data source URIs and project files. Expansion should be specifically done
      * only when needed within a provider
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
     /**
      * Returns the extent of the layer
-     * @return QgsRectangle containing the extent of the layer
+     * \return QgsRectangle containing the extent of the layer
      */
     virtual QgsRectangle extent() const = 0;
 
@@ -336,7 +336,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * a concept of stack of calls that must be handled by the provider. Only the first
      * call to enterUpdateMode() will really turn update mode on.
      *
-     * @return true in case of success (or no-op implementation), false in case of failure.
+     * \return true in case of success (or no-op implementation), false in case of failure.
      *
      * \since QGIS 2.16
      */
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * a concept of stack of calls that must be handled by the provider. Only the last
      * call to leaveUpdateMode() will really turn update mode off.
      *
-     * @return true in case of success (or no-op implementation), false in case of failure.
+     * \return true in case of success (or no-op implementation), false in case of failure.
      *
      * \since QGIS 2.16
      */

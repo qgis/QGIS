@@ -155,14 +155,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
                        bool keepRelativeItemPosition = true );
 
     /** Height of paper item
-     * @returns height in mm
+     * \returns height in mm
      * @see paperWidth
      * @see setPaperSize
      */
     double paperHeight() const;
 
     /** Width of paper item
-     * @returns width in mm
+     * \returns width in mm
      * @see paperHeight
      * @see setPaperSize
      */
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
                                   double &marginBottom, double &marginLeft ) const;
 
     /** Returns the vertical space between pages in a composer view
-     * @returns space between pages in mm
+     * \returns space between pages in mm
      */
     double spaceBetweenPages() const { return mSpaceBetweenPages; }
 
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setNumPages( const int pages );
 
     /** Returns the number of pages in the composition.
-     * @returns number of pages
+     * \returns number of pages
      * @see setNumPages
      */
     int numPages() const;
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Returns whether a page is empty, ie, it contains no items except for the background
      * paper item.
      * \param page page number, starting with 1
-     * @returns true if page is empty
+     * \returns true if page is empty
      * \since QGIS 2.5
      * @see numPages
      * @see setNumPages
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Returns whether a specified page number should be included in exports of the composition.
      * \param page page number, starting with 1
-     * @returns true if page should be exported
+     * \returns true if page should be exported
      * \since QGIS 2.5
      * @see numPages
      * @see pageIsEmpty
@@ -333,7 +333,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
      * and the edges and centers of other items.
-     * @returns snap tolerance in pixels
+     * \returns snap tolerance in pixels
      * @see setAlignmentSnapTolerance
      * \since QGIS 2.5
      */
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setBoundingBoxesVisible( const bool boundsVisible );
 
     /** Returns whether selection bounding boxes should be shown in the composition
-     * @returns true if selection bounding boxes should be shown
+     * \returns true if selection bounding boxes should be shown
      * @see setBoundingBoxesVisible
      * \since QGIS 2.7
      */
@@ -359,7 +359,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Returns the topmost composer item at a specified position. Ignores paper items.
      * \param position point to search for item at
      * \param ignoreLocked set to true to ignore locked items
-     * @returns composer item at position
+     * \returns composer item at position
      */
     QgsComposerItem *composerItemAt( QPointF position, const bool ignoreLocked = false ) const;
 
@@ -367,7 +367,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param position point to search for item at
      * \param belowItem item to search below
      * \param ignoreLocked set to true to ignore locked items
-     * @returns composer item at position which is below specified item
+     * \returns composer item at position which is below specified item
      */
     QgsComposerItem *composerItemAt( QPointF position, const QgsComposerItem *belowItem, const bool ignoreLocked = false ) const;
 
@@ -379,7 +379,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Returns list of selected composer items
      * \param includeLockedItems set to true to include locked items in list
-     * @returns list of selected items
+     * \returns list of selected items
      */
     QList<QgsComposerItem *> selectedComposerItems( const bool includeLockedItems = true );
 
@@ -403,14 +403,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     template<class T> void composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const;
 
     /** Returns the composer map with specified id
-     * @return QgsComposerMap or 0 pointer if the composer map item does not exist
+     * \return QgsComposerMap or 0 pointer if the composer map item does not exist
      */
     const QgsComposerMap *getComposerMapById( const int id ) const;
 
     /** Returns a composer item given its text identifier.
      *  Ids are not necessarely unique, but this function returns only one element.
      * \param id - A QString representing the identifier of the item to retrieve.
-     * @return QgsComposerItem pointer or 0 pointer if no such item exists.
+     * \return QgsComposerItem pointer or 0 pointer if no such item exists.
      */
     const QgsComposerItem *getComposerItemById( const QString &id ) const;
 
@@ -533,7 +533,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Creates a new group from a list of composer items and adds it to the composition.
      * \param items items to include in group
-     * @returns QgsComposerItemGroup of grouped items, if grouping was possible
+     * \returns QgsComposerItemGroup of grouped items, if grouping was possible
      * \since QGIS 2.6
      */
     QgsComposerItemGroup *groupItems( QList<QgsComposerItem *> items );
@@ -541,7 +541,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Ungroups items by removing them from an item group and removing the group from the
      * composition.
      * \param group item group to ungroup
-     * @returns list of items removed from the group, or an empty list if ungrouping
+     * \returns list of items removed from the group, or an empty list if ungrouping
      * was not successful
      * \since QGIS 2.6
      */
@@ -646,12 +646,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void doPrint( QPrinter &printer, QPainter &painter, bool startNewPage = false );
 
     /** Convenience function that prepares the printer and prints
-     * @returns true if print was successful
+     * \returns true if print was successful
      */
     bool print( QPrinter &printer, const bool evaluateDDPageSize = false );
 
     /** Convenience function that prepares the printer for printing in PDF and prints
-     * @returns true if export was successful
+     * \returns true if export was successful
      */
     bool exportAsPDF( const QString &file );
 #endif
@@ -663,7 +663,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * page size.
      * \param dpi optional dpi override, or 0 to use default composition print resolution. This
      * parameter has no effect if imageSize is specified.
-     * @returns rendered image, or null image if image does not fit into available memory
+     * \returns rendered image, or null image if image does not fit into available memory
      * @see renderRectAsRaster()
      * @see renderPage()
      */
@@ -677,7 +677,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * region of the composition.
      * \param dpi optional dpi override, or 0 to use default composition print resolution. This
      * parameter has no effect if imageSize is specified.
-     * @returns rendered image, or null image if image does not fit into available memory
+     * \returns rendered image, or null image if image does not fit into available memory
      * \since QGIS 2.12
      * @see printPageAsRaster()
      * @see renderRect()
@@ -734,14 +734,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     QgsAtlasComposition &atlasComposition() { return mAtlasComposition; }
 
     /** Returns the current atlas mode of the composition
-     * @returns current atlas mode
+     * \returns current atlas mode
      * @see setAtlasMode
      */
     QgsComposition::AtlasMode atlasMode() const { return mAtlasMode; }
 
     /** Sets the current atlas mode of the composition.
      * \param mode atlas mode to switch to
-     * @returns false if the mode could not be changed.
+     * \returns false if the mode could not be changed.
      * @see atlasMode
      */
     bool setAtlasMode( const QgsComposition::AtlasMode mode );
@@ -753,7 +753,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     QList< QgsPaperItem * > pages() { return mPages; }
 
     /** Returns the items model attached to the composition
-     * @returns QgsComposerModel for composition
+     * \returns QgsComposerModel for composition
      * \since QGIS 2.5
      */
     QgsComposerModel *itemsModel() { return mItemsModel; }
@@ -771,7 +771,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Read a custom property from the composition.
      * \param key property key
      * \param defaultValue default value to return if property with matching key does not exist
-     * @returns value of matching property
+     * \returns value of matching property
      * @see setCustomProperty()
      * @see removeCustomProperty()
      * @see customProperties()
@@ -960,7 +960,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void updateZValues( const bool addUndoCommands = true );
 
     /** Returns the bounding rectangle of the selected items in scene coordinates
-     @return 0 in case of success*/
+     \return 0 in case of success*/
     int boundingRectOfSelectedItems( QRectF &bRect );
 
     //! Loads default composer settings
@@ -990,7 +990,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void refreshPageSize( const QgsExpressionContext *context = nullptr );
 
     /** Check whether any data defined page settings are active.
-     * @returns true if any data defined page settings are active.
+     * \returns true if any data defined page settings are active.
      * \since QGIS 2.5
      */
     bool ddPageSizeActive() const;

@@ -111,7 +111,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Get the filter mode
      *
-     * @return the filter mode
+     * \return the filter mode
      */
     QgsAttributeTableFilterModel::FilterMode filterMode() { return mFilterModel->filterMode(); }
 
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Returns the number of features on the layer.
      *
-     * @return Number of features
+     * \return Number of features
      */
     int featureCount();
 
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Returns the number of features which are currently visible, according to the
      * filter restrictions
      *
-     * @return Number of features
+     * \return Number of features
      */
     int filteredFeatureCount();
 
@@ -154,7 +154,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Returns the model which has the information about all features (not only filtered)
      *
-     * @return The master model
+     * \return The master model
      */
     QgsAttributeTableModel *masterModel() const { return mMasterModel; }
 
@@ -175,7 +175,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Returns the table view
      *
-     * @return The table view
+     * \return The table view
      */
     QgsAttributeTableView *tableView() { return mTableView; }
 
@@ -214,7 +214,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * @brief saveEditChanges
      *
-     * @return true if the saving was ok. false is possible due to connected
+     * \return true if the saving was ok. false is possible due to connected
      *         validation logic.
      */
     bool saveEditChanges();

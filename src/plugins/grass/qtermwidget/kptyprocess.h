@@ -109,7 +109,7 @@ public:
     /**
      * Query to which channels the PTY is assigned.
      *
-     * @return the output channel handling mode
+     * \return the output channel handling mode
      */
     PtyChannels ptyChannels() const;
 
@@ -129,14 +129,14 @@ public:
     /**
      * Get whether to register the process as a TTY login in utmp.
      *
-     * @return whether to register in utmp
+     * \return whether to register in utmp
      */
     bool isUseUtmp() const;
 
     /**
      * Get the PTY device of this process.
      *
-     * @return the PTY device
+     * \return the PTY device
      */
     KPtyDevice *pty() const;
 

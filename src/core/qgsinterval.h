@@ -154,7 +154,7 @@ class CORE_EXPORT QgsInterval
 
     /** Converts a string to an interval
      * \param string string to parse
-     * @returns interval, or invalid interval if string could not be parsed
+     * \returns interval, or invalid interval if string could not be parsed
      */
     static QgsInterval fromString( const QString &string );
 

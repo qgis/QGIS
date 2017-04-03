@@ -70,7 +70,7 @@ class CORE_EXPORT QgsProviderRegistry
     /** Create an instance of the provider
         \param providerKey identificator of the provider
         \param dataSource  string containing data source for the provider
-        @return instance of provider or NULL on error
+        \return instance of provider or NULL on error
      */
     QgsDataProvider *provider( const QString &providerKey,
                                const QString &dataSource );
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsProviderRegistry
     /** Get pointer to provider function
         \param providerKey identificator of the provider
         \param functionName name of function
-        @return pointer to function or NULL on error
+        \return pointer to function or NULL on error
      */
     QFunctionPointer function( const QString &providerKey,
                                const QString &functionName );
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \param name could be a file, URI
      * \param provider is the key for the dataprovider used to open name
-     * @return NULL if unable to open vector data source
+     * \return NULL if unable to open vector data source
      *
      * Temporarily always returns false until finished implementing.
      *

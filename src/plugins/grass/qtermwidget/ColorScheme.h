@@ -324,7 +324,7 @@ public:
      * findColorScheme() methods after this call if loaded successfully.
      *
      * \param[in] path The path to KDE 4 .colorscheme or KDE 3 .schema.
-     * @return Whether the color scheme is loaded successfully.
+     * \return Whether the color scheme is loaded successfully.
      */
     bool loadCustomColorScheme(const QString& path);
 private:

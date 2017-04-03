@@ -104,7 +104,7 @@ class SERVER_EXPORT QgsServerResponse
      * Write chunk of data
      * This is a convenient method that will write directly
      * to the underlying I/O device
-     * @return the number of bytes that were actually written
+     * \return the number of bytes that were actually written
      */
     virtual qint64 write( const QByteArray &byteArray );
 
@@ -113,7 +113,7 @@ class SERVER_EXPORT QgsServerResponse
      *
      * This is a convenient method that will write directly
      * to the underlying I/O device
-     * @return the number of bytes written
+     * \return the number of bytes written
      *
      *  \note not available in Python bindings
      */
@@ -124,7 +124,7 @@ class SERVER_EXPORT QgsServerResponse
      *
      * This is a convenient method that will write directly
      * to the underlying I/O device
-     * @return the number of bytes written
+     * \return the number of bytes written
      *
      * \note not available in Python bindings
      */

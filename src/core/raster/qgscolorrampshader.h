@@ -61,7 +61,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * \param type interpolation type used
      * \param classificationMode method used to classify the color ramp shader
      * \param colorRamp vector color ramp used to classify the color ramp shader
-     * @returns new QgsColorRampShader
+     * \returns new QgsColorRampShader
      */
     QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp = nullptr, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
 

@@ -83,7 +83,7 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
     void setTransparency( double transparency );
 
     /** Returns the transparency for the marker.
-     * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
+     * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see setTransparency()
      */

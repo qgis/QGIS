@@ -34,7 +34,7 @@ class ANALYSIS_EXPORT QgsPointSample
     QgsPointSample( QgsVectorLayer *inputLayer, const QString &outputLayer, const QString &nPointsAttribute, const QString &minDistAttribute = QString() );
 
     /** Starts calculation of random points
-        @return 0 in case of success*/
+        \return 0 in case of success*/
     int createRandomPoints( QProgressDialog *pd );
 
   private:

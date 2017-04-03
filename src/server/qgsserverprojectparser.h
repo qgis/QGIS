@@ -51,7 +51,7 @@ class SERVER_EXPORT QgsServerProjectParser
     QString convertToAbsolutePath( const QString &file ) const;
 
     /** Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
-    @return the maplayer or 0 in case of error*/
+    \return the maplayer or 0 in case of error*/
     QgsMapLayer *createLayerFromElement( const QDomElement &elem, bool useCache = true ) const;
 
     QgsMapLayer *mapLayerFromLayerId( const QString &lId, bool useCache = true ) const;
@@ -102,7 +102,7 @@ class SERVER_EXPORT QgsServerProjectParser
     QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const;
 
     /** Returns the text of the <layername> element for a layer element
-    @return name or a null string in case of error*/
+    \return name or a null string in case of error*/
     QString layerName( const QDomElement &layerElem ) const;
 
     QStringList wfsLayers() const;
@@ -116,11 +116,11 @@ class SERVER_EXPORT QgsServerProjectParser
     void addGetFeatureLayers( const QDomElement &layerElem ) const;
 
     /** Returns the text of the <id> element for a layer element
-    @return id or a null string in case of error*/
+    \return id or a null string in case of error*/
     QString layerId( const QDomElement &layerElem ) const;
 
     /** Returns the text of the <id> element for a layer element
-    @return id or a null string in case of error*/
+    \return id or a null string in case of error*/
     QString layerShortName( const QDomElement &layerElem ) const;
 
     QgsRectangle projectExtent() const;

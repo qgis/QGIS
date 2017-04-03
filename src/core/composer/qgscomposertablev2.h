@@ -157,7 +157,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setCellMargin( const double margin );
 
     /** Returns the margin distance between cell borders and their contents.
-     * @returns margin for cell contents
+     * \returns margin for cell contents
      * @see setCellMargin
      */
     double cellMargin() const { return mCellMargin; }
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 
     /** Returns the behavior mode for empty tables. This property controls
      * how the table is drawn if it contains no content rows.
-     * @returns behavior mode for empty tables
+     * \returns behavior mode for empty tables
      * @see setEmptyTableBehavior
      */
     EmptyTableMode emptyTableBehavior() const { return mEmptyTableMode; }
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     /** Returns the message for empty tables with no content rows. This message
      * is displayed in the table body if the empty table behavior is
      * set to ShowMessage
-     * @returns message to show for empty tables
+     * \returns message to show for empty tables
      * @see setEmptyTableMessage
      * @see emptyTableBehavior
      */
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setShowEmptyRows( const bool showEmpty );
 
     /** Returns whether empty rows are drawn in the table
-     * @returns true if empty rows are drawn
+     * \returns true if empty rows are drawn
      * @see setShowEmptyRows
      */
     bool showEmptyRows() const { return mShowEmptyRows; }
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setHeaderFont( const QFont &font );
 
     /** Returns the font used to draw header text in the table.
-     * @returns font for header cells
+     * \returns font for header cells
      * @see setHeaderFont
      * @see contentFont
      */
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setHeaderFontColor( const QColor &color );
 
     /** Returns the color used to draw header text in the table.
-     * @returns color for header text
+     * \returns color for header text
      * @see setHeaderFontColor
      * @see headerFont
      * @see contentFontColor
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setHeaderHAlignment( const HeaderHAlignment alignment );
 
     /** Returns the horizontal alignment for table headers
-     * @returns Horizontal alignment for table header cells
+     * \returns Horizontal alignment for table header cells
      * @see setHeaderHAlignment
      */
     HeaderHAlignment headerHAlignment() const { return mHeaderHAlignment; }
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 
     /** Returns the display mode for headers in the table. This property controls
      * if and where headers are shown in the table.
-     * @returns display mode for headers
+     * \returns display mode for headers
      * @see setHeaderMode
      */
     HeaderMode headerMode() const { return mHeaderMode; }
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setContentFont( const QFont &font );
 
     /** Returns the font used to draw text in table body cells.
-     * @returns font for table cells
+     * \returns font for table cells
      * @see setContentFont
      * @see headerFont
      */
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setContentFontColor( const QColor &color );
 
     /** Returns the color used to draw text in table body cells.
-     * @returns text color for table cells
+     * \returns text color for table cells
      * @see setContentFontColor
      * @see contentFont
      * @see headerFontColor
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setShowGrid( const bool showGrid );
 
     /** Returns whether grid lines are drawn in the table
-     * @returns true if grid lines are shown
+     * \returns true if grid lines are shown
      * @see setShowGrid
      * @see gridStrokeWidth
      * @see gridColor
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setGridStrokeWidth( const double width );
 
     /** Returns the width of grid lines in the table.
-     * @returns grid line width
+     * \returns grid line width
      * @see setGridStrokeWidth
      * @see showGrid
      * @see gridColor
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setGridColor( const QColor &color );
 
     /** Returns the color used for grid lines in the table.
-     * @returns grid line color
+     * \returns grid line color
      * @see setGridColor
      * @see showGrid
      * @see gridStrokeWidth
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setHorizontalGrid( const bool horizontalGrid );
 
     /** Returns whether the grid's horizontal lines are drawn in the table
-     * @returns true if grid's horizontal lines are drawn
+     * \returns true if grid's horizontal lines are drawn
      * @see setShowGrid
      * @see setGridStrokeWidth
      * @see setGridColor
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setVerticalGrid( const bool verticalGrid );
 
     /** Returns whether the grid's vertical lines are drawn in the table
-     * @returns true if grid's vertical lines are drawn
+     * \returns true if grid's vertical lines are drawn
      * @see setShowGrid
      * @see setGridStrokeWidth
      * @see setGridColor
@@ -387,7 +387,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void setBackgroundColor( const QColor &color );
 
     /** Returns the color used for the background of the table.
-     * @returns table background color
+     * \returns table background color
      * @see setBackgroundColor
      * @see gridColor
      */
@@ -403,14 +403,14 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 
     /** Returns the wrap behavior for the table, which controls how text within cells is
      * automatically wrapped.
-     * @returns current wrap behavior
+     * \returns current wrap behavior
      * @see setWrapBehavior
      * \since QGIS 2.12
      */
     WrapBehavior wrapBehavior() const { return mWrapBehavior; }
 
     /** Returns a pointer to the list of QgsComposerTableColumns shown in the table
-     * @returns pointer to list of columns in table
+     * \returns pointer to list of columns in table
      * @see setColumns
      */
     QgsComposerTableColumns *columns() { return &mColumns; }
@@ -438,21 +438,21 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     const QgsComposerTableStyle *cellStyle( CellStyleGroup group ) const;
 
     /** Returns the text used in the column headers for the table.
-     * @returns QMap of int to QString, where the int is the column index (starting at 0),
+     * \returns QMap of int to QString, where the int is the column index (starting at 0),
      * and the string is the text to use for the column's header
      * \note not available in Python bindings
      */
     virtual QMap<int, QString> headerLabels() const;
 
     /** Fetches the contents used for the cells in the table.
-     * @returns true if table contents were successfully retrieved.
+     * \returns true if table contents were successfully retrieved.
      * \param contents QgsComposerTableContents to store retrieved row data in
      * \note not available in Python bindings
      */
     virtual bool getTableContents( QgsComposerTableContents &contents ) = 0;
 
     /** Returns the current contents of the table. Excludes header cells.
-     * @returns table contents
+     * \returns table contents
      */
     QgsComposerTableContents *contents() { return &mTableContents; }
 
@@ -555,14 +555,14 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     virtual bool calculateMaxRowHeights();
 
     /** Returns total width of table contents.
-     * @returns table width
+     * \returns table width
      * @see totalHeight
      */
     //not const, as needs to call calculateMaxColumnWidths()
     double totalWidth();
 
     /** Returns total height of table contents.
-     * @returns total height
+     * \returns total height
      * @see totalWidth
      */
     //not const, as needs to call calculateMaxRowHeights()
@@ -576,7 +576,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * \param includeEmptyRows set to true to also include rows which would be empty in the returned count. For instance,
      * if the frame would include all table content rows and have space left for extra rows then setting this parameter
      * to true would also include a count of these extra blank rows.
-     * @returns number of visible content rows (excluding header row)
+     * \returns number of visible content rows (excluding header row)
      * \since QGIS 2.12
      */
     int rowsVisible( double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const;
@@ -587,14 +587,14 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * \param includeEmptyRows set to true to also include rows which would be empty in the returned count. For instance,
      * if the frame would include all table content rows and have space left for extra rows then setting this parameter
      * to true would also include a count of these extra blank rows.
-     * @returns number of visible content rows (excludes header rows)
+     * \returns number of visible content rows (excludes header rows)
      * \since QGIS 2.12
      */
     int rowsVisible( int frameIndex, int firstRow, bool includeEmptyRows ) const;
 
     /** Calculates a range of rows which should be visible in a given frame.
      * \param frameIndex index number for frame
-     * @returns row range
+     * \returns row range
      * \since QGIS 2.12
      */
     QPair<int, int> rowRange( const int frameIndex ) const;
@@ -634,7 +634,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     /** Checks whether a table contents contains a given row
      * \param contents table contents to check
      * \param row row to check for
-     * @returns true if contents contains rows
+     * \returns true if contents contains rows
      */
     bool contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const;
 
@@ -652,7 +652,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     /** Returns the calculated background color for a row and column combination.
      * \param row row number, where -1 is the header row, and 0 is the first body row
      * \param column column number, where 0 is the first column
-     * @returns background color, or invalid QColor if no background should be drawn
+     * \returns background color, or invalid QColor if no background should be drawn
      */
     QColor backgroundColor( int row, int column ) const;
 

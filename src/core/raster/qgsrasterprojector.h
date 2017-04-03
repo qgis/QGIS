@@ -127,7 +127,7 @@ class ProjectorData
 
     /** \brief Get source row and column indexes for current source extent and resolution
         If source pixel is outside source extent srcRow and srcCol are left unchanged.
-        @return true if inside source
+        \return true if inside source
      */
     bool srcRowCol( int destRow, int destCol, int *srcRow, int *srcCol );
 

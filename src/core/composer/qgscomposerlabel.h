@@ -58,37 +58,37 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     void setFont( const QFont &f );
 
     /** Accessor for the vertical alignment of the label
-     * @returns Qt::AlignmentFlag
+     * \returns Qt::AlignmentFlag
      */
     Qt::AlignmentFlag vAlign() const { return mVAlignment; }
 
     /** Accessor for the horizontal alignment of the label
-     * @returns Qt::AlignmentFlag
+     * \returns Qt::AlignmentFlag
      */
     Qt::AlignmentFlag hAlign() const { return mHAlignment; }
 
     /** Mutator for the horizontal alignment of the label
      * \param a alignment
-     * @returns void
+     * \returns void
      */
     void setHAlign( Qt::AlignmentFlag a ) {mHAlignment = a;}
 
     /** Mutator for the vertical alignment of the label
      * \param a alignment
-     * @returns void
+     * \returns void
      */
     void setVAlign( Qt::AlignmentFlag a ) { mVAlignment = a; }
 
     /** Returns the horizontal margin between the edge of the frame and the label
      * contents.
-     * @returns horizontal margin in mm
+     * \returns horizontal margin in mm
      * \since QGIS 2.7
      */
     double marginX() const { return mMarginX; }
 
     /** Returns the vertical margin between the edge of the frame and the label
      * contents.
-     * @returns vertical margin in mm
+     * \returns vertical margin in mm
      * \since QGIS 2.7
      */
     double marginY() const { return mMarginY; }

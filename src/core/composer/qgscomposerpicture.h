@@ -81,7 +81,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Returns the path of the source image. Data defined picture source may override
      * this value. The path can either be a local path or a remote (http) path.
-     * @returns path for the source image
+     * \returns path for the source image
      * @see usePictureExpression
      * @see setPicturePath
      * \since QGIS 2.5
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /** Returns the rotation used for drawing the picture within the item's frame
-     * @returns picture rotation in degrees
+     * \returns picture rotation in degrees
      * \since QGIS 2.2
      * @see setPictureRotation
      * @see rotationMap
@@ -126,14 +126,14 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Returns the id of the rotation map.  A value of -1 means map rotation is
      * disabled.  If this is set then the picture is rotated by the same amount
      * as the specified map object.
-     * @returns id of map object
+     * \returns id of map object
      * @see setRotationMap
      * @see useRotationMap
      */
     int rotationMap() const;
 
     /** True if the picture rotation is matched to a map item.
-     * @returns true if rotation map is in use
+     * \returns true if rotation map is in use
      * @see rotationMap
      * @see setRotationMap
      */
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Returns the resize mode used for drawing the picture within the composer
      * item's frame.
-     * @returns resize mode of picture
+     * \returns resize mode of picture
      * \since QGIS 2.3
      * @see setResizeMode
      */
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Returns the picture's current anchor, which controls how it is placed
      * within the picture item's frame.
-     * @returns anchor point for picture
+     * \returns anchor point for picture
      * \since QGIS 2.3
      * @see setPictureAnchor
      */
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     void setSvgStrokeWidth( double width );
 
     /** Returns the current picture mode (image format).
-     * @returns picture mode
+     * \returns picture mode
      * \since QGIS 2.3
      */
     Mode mode() const { return mMode; }

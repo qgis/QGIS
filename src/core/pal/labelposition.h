@@ -311,7 +311,7 @@ namespace pal
       int partCount() const;
 
       /** Calculates the polygon intersection cost for a single label position part
-       * @returns double between 0 - 12
+       * \returns double between 0 - 12
        */
       double polygonIntersectionCostForParts( PointSet *polygon ) const;
 

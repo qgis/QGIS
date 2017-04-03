@@ -84,7 +84,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * need to implement!!
      *
      * \param f The feature to write to
-     * @return  true if a feature was written to f
+     * \return  true if a feature was written to f
      */
     virtual bool fetchFeature( QgsFeature &f ) = 0;
 
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * redirect this call to fetchFeature so the default check will be omitted.
      *
      * \param f The feature to write to
-     * @return  true if a feature was written to f
+     * \return  true if a feature was written to f
      */
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
 
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * so the default check will be omitted.
      *
      * \param f The feature to write to
-     * @return  true if a feature was written to f
+     * \return  true if a feature was written to f
      */
     virtual bool nextFeatureFilterFids( QgsFeature &f );
 

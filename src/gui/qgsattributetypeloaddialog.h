@@ -52,14 +52,14 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
 
     /**
      * Getter to value map which is currently active
-     * @return value map of vlues selected from layer
+     * \return value map of vlues selected from layer
      */
     QMap<QString, QVariant> &valueMap();
 
     /**
      * Returns true if the "Add NULL value" checkbox has been checked.
      *
-     * @return true if the "Add NULL value" checkbox has been checked.
+     * \return true if the "Add NULL value" checkbox has been checked.
      */
     bool insertNull();
 

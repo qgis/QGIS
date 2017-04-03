@@ -109,7 +109,7 @@ namespace pal
        * \param width candidate width
        * \param height candidate height
        * \param alpha candidate angle
-       * @returns true if candidate is totally contained
+       * \returns true if candidate is totally contained
        */
       static bool containsCandidate( const GEOSPreparedGeometry *geom, double x, double y, double width, double height, double alpha );
 

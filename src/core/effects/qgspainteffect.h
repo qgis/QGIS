@@ -69,18 +69,18 @@ class CORE_EXPORT QgsPaintEffect
     virtual ~QgsPaintEffect();
 
     /** Returns the effect type.
-     * @returns unique string representation of the effect type
+     * \returns unique string representation of the effect type
      */
     virtual QString type() const = 0;
 
     /** Duplicates an effect by creating a deep copy of the effect
-     * @returns clone of paint effect
+     * \returns clone of paint effect
      */
     virtual QgsPaintEffect *clone() const = 0;
 
     /** Returns the properties describing the paint effect encoded in a
      * string format.
-     * @returns string map of properties, in the form property key, value
+     * \returns string map of properties, in the form property key, value
      * @see readProperties
      * @see saveProperties
      */
@@ -98,14 +98,14 @@ class CORE_EXPORT QgsPaintEffect
      * @link properties @endlink.
      * \param doc destination DOM document
      * \param element destination DOM element
-     * @returns true if save was successful
+     * \returns true if save was successful
      * @see readProperties
      */
     virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const;
 
     /** Restores the effect to the state described by a DOM element.
      * \param element DOM element describing an effect's state
-     * @returns true if read was successful
+     * \returns true if read was successful
      * @see saveProperties
      */
     virtual bool readProperties( const QDomElement &element );
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsPaintEffect
     virtual void end( QgsRenderContext &context );
 
     /** Returns whether the effect is enabled
-     * @returns true if effect is enabled
+     * \returns true if effect is enabled
      * @see setEnabled
      */
     bool enabled() const { return mEnabled; }
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsPaintEffect
 
     /** Returns the draw mode for the effect. This property only has an
      * effect if the paint effect is used in a @link QgsEffectStack @endlink
-     * @returns draw mode for effect
+     * \returns draw mode for effect
      * @see setDrawMode
      */
     DrawMode drawMode() const { return mDrawMode; }
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsPaintEffect
 
     /** Returns the source QPicture. The @link draw @endlink member can utilize this when
      * drawing the effect.
-     * @returns source QPicture
+     * \returns source QPicture
      * @see drawSource
      * @see sourceAsImage
      */
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsPaintEffect
      * utilize this when drawing the effect. The image will be padded or cropped from the original
      * source QPicture by the results of the @link boundingRect @endlink method.
      * The result is cached to speed up subsequent calls to sourceAsImage.
-     * @returns source QPicture rendered to an image
+     * \returns source QPicture rendered to an image
      * @see drawSource
      * @see source
      * @see imageOffset
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsPaintEffect
     /** Returns the offset which should be used when drawing the source image on to a destination
      * render context.
      * \param context destination render context
-     * @returns point offset for image top left corner
+     * \returns point offset for image top left corner
      * @see sourceAsImage
      */
     QPointF imageOffset( const QgsRenderContext &context ) const;
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsPaintEffect
      * effects.
      * \param rect original source bounding rect
      * \param context destination render context
-     * @returns modified bounding rect
+     * \returns modified bounding rect
      * @see sourceAsImage
      */
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
@@ -262,7 +262,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
 
     /** Creates a new QgsDrawSource effect from a properties string map.
      * \param map encoded properties string map
-     * @returns new QgsDrawSourceEffect
+     * \returns new QgsDrawSourceEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map );
 
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
     void setTransparency( const double transparency ) { mTransparency = transparency; }
 
     /** Returns the transparency for the effect
-     * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
+     * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see setTransparency
      */
@@ -293,7 +293,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
     /** Returns the blend mode for the effect
-     * @returns blend mode used for drawing the source on to a destination
+     * \returns blend mode used for drawing the source on to a destination
      * paint device
      * @see setBlendMode
      */

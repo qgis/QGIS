@@ -69,7 +69,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory
 
     /**
      * @brief The icon that will be shown in the UI for the panel.
-     * @return A QIcon for the panel icon.
+     * \return A QIcon for the panel icon.
      * @see setIcon()
      */
     virtual QIcon icon() const { return mIcon; }
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory
     /**
      * @brief Factory function to create the widget on demand as needed by the options dialog.
      * \param parent The parent of the widget.
-     * @return A new widget to show as a page in the options dialog.
+     * \return A new widget to show as a page in the options dialog.
      */
     virtual QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const = 0;
 

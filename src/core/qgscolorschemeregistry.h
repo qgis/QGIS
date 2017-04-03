@@ -71,19 +71,19 @@ class CORE_EXPORT QgsColorSchemeRegistry
 
     /** Removes all matching color schemes from the registry
      * \param scheme color scheme to remove
-     * @returns true if scheme was found and removed
+     * \returns true if scheme was found and removed
      * @see addColorScheme
      */
     bool removeColorScheme( QgsColorScheme *scheme );
 
     /** Returns all color schemes in the registry
-     * @returns list of color schemes
+     * \returns list of color schemes
      */
     QList<QgsColorScheme *> schemes() const;
 
     /** Returns all color schemes in the registry which have a specified flag set
      * \param flag flag to match
-     * @returns list of color schemes with flag set
+     * \returns list of color schemes with flag set
      */
     QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
 

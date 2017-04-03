@@ -79,7 +79,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Determines if scale based labeling is active
          *
-         * @return True if scale based labeling is active
+         * \return True if scale based labeling is active
          */
         bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
 
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * E.g. Denominator 1000 is a scale of 1:1000, where a rule with minimum denominator
          * of 900 will not be applied while a rule with 2000 will be applied.
          *
-         * @return The minimum scale denominator
+         * \return The minimum scale denominator
          */
         int scaleMinDenom() const { return mScaleMinDenom; }
 
@@ -99,34 +99,34 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * E.g. Denominator 1000 is a scale of 1:1000, where a rule with maximum denominator
          * of 900 will be applied while a rule with 2000 will not be applied.
          *
-         * @return The maximum scale denominator
+         * \return The maximum scale denominator
          */
         int scaleMaxDenom() const { return mScaleMaxDenom; }
 
         /**
          * A filter that will check if this rule applies
-         * @return An expression
+         * \return An expression
          */
         QString filterExpression() const { return mFilterExp; }
 
         /**
          * A human readable description for this rule
          *
-         * @return Description
+         * \return Description
          */
         QString description() const { return mDescription; }
 
         /**
          * Returns if this rule is active
          *
-         * @return True if the rule is active
+         * \return True if the rule is active
          */
         bool active() const { return mIsActive; }
 
         /**
          * Check if this rule is an ELSE rule
          *
-         * @return True if this rule is an else rule
+         * \return True if this rule is an else rule
          */
         bool isElse() const { return mElseRule; }
 
@@ -187,35 +187,35 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Return all children rules of this rule
          *
-         * @return A list of rules
+         * \return A list of rules
          */
         const RuleList &children() const { return mChildren; }
 
         /**
          * Return all children rules of this rule
          *
-         * @return A list of rules
+         * \return A list of rules
          */
         RuleList &children() { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
-         * @return A list of descendant rules
+         * \return A list of descendant rules
          */
         RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
 
         /**
          * The parent rule
          *
-         * @return Parent rule
+         * \return Parent rule
          */
         const Rule *parent() const { return mParent; }
 
         /**
          * The parent rule
          *
-         * @return Parent rule
+         * \return Parent rule
          */
         Rule *parent() { return mParent; }
 
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Create a rule from an XML definition
          * \param ruleElem  The XML rule element
-         * @return A new rule
+         * \return A new rule
          */
         static Rule *create( const QDomElement &ruleElem );
 
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \param f         The feature to test
          * \param context   The context in which the rendering happens
-         * @return          True if the feature shall be rendered
+         * \return          True if the feature shall be rendered
          */
         bool isFilterOK( QgsFeature &f, QgsRenderContext &context ) const;
 
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * Check if this rule applies for a given scale
          * \param scale The scale to check. If set to 0, it will always return true.
          *
-         * @return If the rule will be evaluated at this scale
+         * \return If the rule will be evaluated at this scale
          */
         bool isScaleOK( double scale ) const;
 

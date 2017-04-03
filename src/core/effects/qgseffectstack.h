@@ -47,7 +47,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     /** Creates a new QgsEffectStack effect. This method ignores
      * the map parameter, and always returns an empty effect stack.
      * \param map unused encoded properties string map
-     * @returns new QgsEffectStack
+     * \returns new QgsEffectStack
      */
     static QgsPaintEffect *create( const QgsStringMap &map );
 
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     /** Creates a new QgsEffectStack effect from a single initial effect.
      * \param effect initial effect to add to the stack. The effect will
      * be cloned, so ownership is not transferred to the stack.
-     * @returns new QgsEffectStack containing initial effect
+     * \returns new QgsEffectStack containing initial effect
      */
     explicit QgsEffectStack( const QgsPaintEffect &effect );
 
@@ -105,18 +105,18 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
 
     /** Returns a pointer to the list of effects currently contained by
      * the stack
-     * @returns list of QgsPaintEffects within the stack
+     * \returns list of QgsPaintEffects within the stack
      */
     QList< QgsPaintEffect * > *effectList();
 
     /** Returns count of effects contained by the stack
-     * @returns count of effects
+     * \returns count of effects
      */
     int count() const { return mEffectList.count(); }
 
     /** Returns a pointer to the effect at a specified index within the stack
      * \param index position of effect to return
-     * @returns QgsPaintEffect at specified position
+     * \returns QgsPaintEffect at specified position
      */
     QgsPaintEffect *effect( int index ) const;
 

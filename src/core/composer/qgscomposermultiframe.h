@@ -63,14 +63,14 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     virtual ~QgsComposerMultiFrame();
 
     /** Returns the total size of the multiframe's content.
-     * @returns total size required for content
+     * \returns total size required for content
      */
     virtual QSizeF totalSize() const = 0;
 
     /** Returns the fixed size for a frame, if desired. If the fixed frame size changes,
      * the sizes of all frames can be recalculated by calling recalculateFrameRects().
      * \param frameIndex frame number
-     * @returns fixed size for frame. If the size has a width or height of 0, then
+     * \returns fixed size for frame. If the size has a width or height of 0, then
      * the frame size is not fixed in that direction and frames can have variable width
      * or height accordingly.
      * \since QGIS 2.5
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * size changes, the sizes of all frames can be recalculated by calling
      * recalculateFrameRects().
      * \param frameIndex frame number
-     * @returns minimum size for frame. If the size has a width or height of 0, then
+     * \returns minimum size for frame. If the size has a width or height of 0, then
      * the frame size has no minimum in that direction.
      * \since QGIS 2.5
      * @see fixedFrameSize
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
     /** Finds the optimal position to break a frame at.
      * \param yPos maximum vertical position for break
-     * @returns the optimal breakable position which occurs in the multi frame close
+     * \returns the optimal breakable position which occurs in the multi frame close
      * to and before the specified yPos
      * \since QGIS 2.3
      */
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     void setResizeMode( ResizeMode mode );
 
     /** Returns the resize mode for the multiframe.
-     * @returns resize mode
+     * \returns resize mode
      * @see setResizeMode
      */
     ResizeMode resizeMode() const { return mResizeMode; }
@@ -177,12 +177,12 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     bool _readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false );
 
     /** Returns the parent composition for the multiframe.
-     * @returns composition
+     * \returns composition
      */
     QgsComposition *composition() { return mComposition; }
 
     /** Returns whether undo commands should be created for interactions with the multiframe.
-     * @returns true if undo commands should be created
+     * \returns true if undo commands should be created
      * @see setCreateUndoCommands
      */
     bool createUndoCommands() const { return mCreateUndoCommands; }
@@ -194,20 +194,20 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     void setCreateUndoCommands( bool enabled ) { mCreateUndoCommands = enabled; }
 
     /** Returns the number of frames associated with this multiframe.
-     * @returns number of child frames
+     * \returns number of child frames
     **/
     int frameCount() const { return mFrameItems.size(); }
 
     /** Returns a child frame from the multiframe.
      * \param i index of frame
-     * @returns child frame if found
+     * \returns child frame if found
      * @see frameIndex
      */
     QgsComposerFrame *frame( int i ) const;
 
     /** Returns the index of a frame within the multiframe
      * \param frame frame to find index of
-     * @returns index for frame if found, -1 if frame not found in multiframe
+     * \returns index for frame if found, -1 if frame not found in multiframe
      * \since QGIS 2.5
      * @see frame
      */
@@ -218,13 +218,13 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * and general frame properties (e.g., frame style, background, rendering settings).
      * \param pos position of top-left corner of the new frame
      * \param size size of the new frame
-     * @returns new QgsComposerFrame
+     * \returns new QgsComposerFrame
      * \since QGIS 2.3
      */
     QgsComposerFrame *createNewFrame( QgsComposerFrame *currentFrame, QPointF pos, QSizeF size );
 
     /** Get multiframe display name.
-     * @returns display name for item
+     * \returns display name for item
      * \since QGIS 2.5
      */
     virtual QString displayName() const;

@@ -276,7 +276,7 @@ class QgsPostgresConn : public QObject
      * \param searchPublicOnly
      * \param allowGeometrylessTables
      * \param schema restrict layers to layers within specified schema
-     * @returns true if layers were fetched successfully
+     * \returns true if layers were fetched successfully
      */
     bool supportedLayers( QVector<QgsPostgresLayerProperty> &layers,
                           bool searchGeometryColumnsOnly = true,
@@ -286,7 +286,7 @@ class QgsPostgresConn : public QObject
 
     /** Get the list of database schemas
      * \param schemas list to store schemas in
-     * @returns true if schemas where fetched successfully
+     * \returns true if schemas where fetched successfully
      * \since QGIS 2.7
      */
     bool getSchemas( QList<QgsPostgresSchemaProperty> &schemas );
@@ -299,7 +299,7 @@ class QgsPostgresConn : public QObject
      * \param searchPublicOnly
      * \param allowGeometrylessTables
      * \param schema restrict tables to those within specified schema
-     * @returns true if tables were successfully queried
+     * \returns true if tables were successfully queried
      */
     bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables,
                        const QString &schema = QString() );

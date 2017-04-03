@@ -47,7 +47,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     virtual QSize sizeHint() const override;
 
     /** Get the current context for the grid
-     * @returns context string which is passed to scheme for color generation
+     * \returns context string which is passed to scheme for color generation
      * @see setContext
      */
     QString context() const { return mContext; }
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     void setContext( const QString &context );
 
     /** Get the base color for the widget
-     * @returns base color which is passed to scheme for color generation
+     * \returns base color which is passed to scheme for color generation
      * @see setBaseColor
      */
     QColor baseColor() const { return mBaseColor; }
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     void setBaseColor( const QColor &baseColor );
 
     /** Gets the list of colors shown in the grid
-     * @returns list of colors currently shown in the grid
+     * \returns list of colors currently shown in the grid
      */
     QgsNamedColorList *colors() { return &mColors; }
 
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     bool mPressedOnWidget;
 
     /** Calculate height of widget based on number of colors
-     * @returns required height of widget in pixels
+     * \returns required height of widget in pixels
      */
     int calculateHeight() const;
 
@@ -131,7 +131,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
 
     /** Calculate swatch corresponding to a position within the widget
      * \param position position
-     * @returns swatch number (starting at 0), or -1 if position is outside a swatch
+     * \returns swatch number (starting at 0), or -1 if position is outside a swatch
      */
     int swatchForPosition( QPoint position ) const;
 
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     void updateTooltip( const int colorIdx );
 
     /** Generates a checkboard pattern for transparent color backgrounds
-     * @returns checkboard pixmap
+     * \returns checkboard pixmap
      */
     QPixmap transparentBackground();
 };
@@ -175,13 +175,13 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
     void setBaseColor( const QColor &baseColor );
 
     /** Get the base color for the color grid
-     * @returns base color which is passed to scheme for color generation
+     * \returns base color which is passed to scheme for color generation
      * @see setBaseColor
      */
     QColor baseColor() const;
 
     /** Get the current context for the color grid
-     * @returns context string which is passed to scheme for color generation
+     * \returns context string which is passed to scheme for color generation
      * @see setContext
      */
     QString context() const;

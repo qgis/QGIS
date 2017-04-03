@@ -65,7 +65,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
      * Load the native module from path
      *
      * \param location QString location holding the module relalive path
-     * @return a qgsservicemodule instance
+     * \return a qgsservicemodule instance
      */
     QgsServiceModule *loadNativeModule( const QString &location );
 
@@ -76,7 +76,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
     /**
      * Find module
      * \param path the module path
-     * @return a module hook entry
+     * \return a module hook entry
      */
     QgsServiceNativeModuleEntry *findModuleEntry( const QString &path );
 

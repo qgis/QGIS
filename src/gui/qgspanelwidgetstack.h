@@ -58,7 +58,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
     /**
      * The main panel widget that is set in the stack. The main widget can not be closed
      * and doesn't display a back button.
-     * @return The main QgsPanelWidget that is active in the stack.
+     * \return The main QgsPanelWidget that is active in the stack.
      * @see setMainPanel()
      */
     QgsPanelWidget *mainPanel();
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
     /**
      * Removes the main panel widget from the stack and transfers ownsership to the
      * caller.
-     * @return The main widget that is set in the stack.
+     * \return The main widget that is set in the stack.
      * \note Calling this will clear out any current stacked panels by accepting
      * each panel in turn.
      * @see mainPanel()

@@ -156,7 +156,7 @@ class CORE_EXPORT QgsImageOperation
      * quality blur.
      * \param image QImage to blur
      * \param radius blur radius in pixels
-     * @returns blurred image
+     * \returns blurred image
      * \note for fastest operation, ensure the source image is ARGB32_Premultiplied
      */
     static QImage *gaussianBlur( QImage &image, const int radius );

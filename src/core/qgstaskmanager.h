@@ -381,7 +381,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * the task. The priority argument can be used to control the run queue's
      * order of execution, with larger numbers
      * taking precedence over lower priority numbers.
-     * @returns unique task ID
+     * \returns unique task ID
      */
     long addTask( QgsTask *task, int priority = 0 );
 
@@ -391,13 +391,13 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * manager will be responsible for starting the task. The priority argument can
      * be used to control the run queue's order of execution, with larger numbers
      * taking precedence over lower priority numbers.
-     * @returns unique task ID
+     * \returns unique task ID
      */
     long addTask( const TaskDefinition &task, int priority = 0 );
 
     /** Returns the task with matching ID.
      * \param id task ID
-     * @returns task if found, or nullptr
+     * \returns task if found, or nullptr
      */
     QgsTask *task( long id ) const;
 
@@ -410,7 +410,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     /** Returns the unique task ID corresponding to a task managed by the class.
      * \param task task to find
-     * @returns task ID, or -1 if task not found
+     * \returns task ID, or -1 if task not found
      */
     long taskId( QgsTask *task ) const;
 
@@ -431,7 +431,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     /** Returns a list of layers on which as task is dependent. The task will automatically
      * be canceled if any of these layers are above to be removed.
      * \param taskId task ID
-     * @returns list of layers
+     * \returns list of layers
      * @see tasksDependentOnLayer()
      */
     QList< QgsMapLayer * > dependentLayers( long taskId ) const;

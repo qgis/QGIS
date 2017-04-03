@@ -199,7 +199,7 @@ public:
      * \param length This variable is set to the length of the
      * character sequence.
      *
-     * @return A unicode character sequence of size @p length.
+     * \return A unicode character sequence of size @p length.
      */
     ushort* lookupExtendedChar(ushort hash , ushort& length) const;
 

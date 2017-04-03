@@ -49,7 +49,7 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
     QWidget *mParent = nullptr;
 
     /** Generates a checkboard pattern for transparent color backgrounds
-     * @returns checkboard pixmap
+     * \returns checkboard pixmap
      */
     QPixmap transparentBackground() const;
 };
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
     /** Returns a list of colors shown in the widget
-     * @returns colors shown in the widget
+     * \returns colors shown in the widget
      */
     QgsNamedColorList colors() const { return mColors; }
 
@@ -104,13 +104,13 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     /** Get the current color scheme context for the model
-     * @returns context string which is passed to scheme for color generation
+     * \returns context string which is passed to scheme for color generation
      * @see baseColor
      */
     QString context() const { return mContext; }
 
     /** Get the base color for the color scheme used by the model
-     * @returns base color which is passed to scheme for color generation
+     * \returns base color which is passed to scheme for color generation
      * @see context
      */
     QColor baseColor() const { return mBaseColor; }
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
     /** Returns whether the color scheme model has been modified
-     * @returns true if colors have been modified
+     * \returns true if colors have been modified
      */
     bool isDirty() const { return mIsDirty; }
 
@@ -181,7 +181,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     bool exportColorsToGpl( QFile &file );
 
     /** Returns whether the color scheme list has been modified
-     * @returns true if colors have been modified
+     * \returns true if colors have been modified
      */
     bool isDirty() const;
 

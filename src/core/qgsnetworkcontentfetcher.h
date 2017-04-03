@@ -50,12 +50,12 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     void fetchContent( const QUrl &url );
 
     /** Returns a reference to the network reply
-     * @returns QNetworkReply for fetched URL content
+     * \returns QNetworkReply for fetched URL content
      */
     QNetworkReply *reply();
 
     /** Returns the fetched content as a string
-     * @returns string containing network content
+     * \returns string containing network content
      */
     QString contentAsString() const;
 
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
 
     /** Tries to create a text codec for decoding html content. Works around bugs in Qt's built in method.
      * \param array input html byte array
-     * @returns QTextCodec for html content, if detected
+     * \returns QTextCodec for html content, if detected
      */
     QTextCodec *codecForHtml( QByteArray &array ) const;
 

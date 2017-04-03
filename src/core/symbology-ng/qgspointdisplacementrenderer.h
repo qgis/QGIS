@@ -114,7 +114,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
 
     /** Creates a QgsPointDisplacementRenderer from an existing renderer.
      * \since QGIS 2.5
-     * @returns a new renderer if the conversion was possible, otherwise nullptr.
+     * \returns a new renderer if the conversion was possible, otherwise nullptr.
      */
     static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 

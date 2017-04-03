@@ -44,7 +44,7 @@ class CORE_EXPORT QgsGeometryUtils
     /** Returns the distance along a geometry from its first vertex to the specified vertex.
      * \param geom geometry
      * \param id vertex id to find distance to
-     * @returns distance to vertex (following geometry)
+     * \returns distance to vertex (following geometry)
      * \since QGIS 2.16
      */
     static double distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id );
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param previousVertex will be set to previous vertex ID
      * \param nextVertex will be set to next vertex ID
      * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
-     * @returns true if vertices were successfully retrieved
+     * \returns true if vertices were successfully retrieved
      * \since QGIS 3.0
      */
     static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param q1 Point on the second line
      * \param w Direction vector of the second line
      * \param inter Output parameter, the intersection point
-     * @return Whether the lines intersect
+     * \return Whether the lines intersect
      */
     static bool lineIntersection( const QgsPointV2 &p1, QgsVector v, const QgsPointV2 &q1, QgsVector w, QgsPointV2 &inter );
 
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param q2 Second segment end point
      * \param inter Output parameter, the intersection point
      * \param tolerance The tolerance to use
-     * @return  Whether the segments intersect
+     * \return  Whether the segments intersect
      */
     static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2 &inter, double tolerance );
 
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param p The point
      * \param s1 The segment start point
      * \param s2 The segment end point
-     * @return The projection of the point on the segment
+     * \return The projection of the point on the segment
      */
     static QgsPointV2 projPointOnSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 )
     {
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param part The part of the geometry to check
      * \param ring The ring of the geometry part to check
      * \param tolerance The tolerance to use
-     * @return The list of self intersections
+     * \return The list of self intersections
      * \note not available in Python bindings
      * \since QGIS 2.12
      */
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsGeometryUtils
 
     /** Ensures that an angle is in the range 0 <= angle < 2 pi.
      * \param angle angle in radians
-     * @returns equivalent angle within the range [0, 2 pi)
+     * \returns equivalent angle within the range [0, 2 pi)
      */
     static double normalizedAngle( double angle );
 
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param y1 y-coordinate of line start
      * \param x2 x-coordinate of line end
      * \param y2 y-coordinate of line end
-     * @returns angle in radians. Returned value is undefined if start and end point are the same.
+     * \returns angle in radians. Returned value is undefined if start and end point are the same.
      */
     static double lineAngle( double x1, double y1, double x2, double y2 );
 
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param y2 y-coordinate of point b
      * \param x3 x-coordinate of point c
      * \param y3 y-coordinate of point c
-     * @returns angle between lines in radians. Returned value is undefined if two or more points are equal.
+     * \returns angle between lines in radians. Returned value is undefined if two or more points are equal.
      */
     static double angleBetweenThreePoints( double x1, double y1, double x2, double y2,
                                            double x3, double y3 );
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param y1 y-coordinate of line start
      * \param x2 x-coordinate of line end
      * \param y2 y-coordinate of line end
-     * @returns angle in radians. Returned value is undefined if start and end point are the same.
+     * \returns angle in radians. Returned value is undefined if start and end point are the same.
      */
     static double linePerpendicularAngle( double x1, double y1, double x2, double y2 );
 
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsGeometryUtils
     /** Averages two angles, correctly handling negative angles and ensuring the result is between 0 and 2 pi.
      * \param a1 first angle (in radians)
      * \param a2 second angle (in radians)
-     * @returns average angle (in radians)
+     * \returns average angle (in radians)
      */
     static double averageAngle( double a1, double a2 );
 
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsGeometryUtils
      * Parses a WKT string and returns of list of blocks contained in the WKT.
      * \param wkt WKT string in the format "TYPE1 (contents1), TYPE2 (TYPE3 (contents3), TYPE4 (contents4))"
      * \param defaultType default geometry type for children
-     * @returns list of WKT child block strings, e.g., List("TYPE1 (contents1)", "TYPE2 (TYPE3 (contents3), TYPE4 (contents4))")
+     * \returns list of WKT child block strings, e.g., List("TYPE1 (contents1)", "TYPE2 (TYPE3 (contents3), TYPE4 (contents4))")
      * \note not available in Python bindings
      */
     static QStringList wktGetChildBlocks( const QString &wkt, const QString &defaultType = "" );
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsGeometryUtils
      * M value is computed if one of this point have M.
      * \param pt1 first point.
      * \param pt2 second point.
-     * @return New point at middle between points pt1 and pt2.
+     * \return New point at middle between points pt1 and pt2.
      * * Example:
      * \code{.py}
      *   p = QgsPointV2( 4, 6 ) # 2D point
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsGeometryUtils
     /** Return the gradient of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
      * \param pt2 second point.
-     * @return The gradient of this linear entity, or infinity if vertical
+     * \return The gradient of this linear entity, or infinity if vertical
      * \since QGIS 3.0
      */
     static double gradient( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param p The point
      * \param s1 The segment start point
      * \param s2 The segment end point
-     * @return A line (segment) from p to perpendicular point on segment [s1, s2]
+     * \return A line (segment) from p to perpendicular point on segment [s1, s2]
      */
     static QgsLineString perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 );
 

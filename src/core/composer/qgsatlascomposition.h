@@ -48,7 +48,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QgsAtlasComposition( QgsComposition *composition );
 
     /** Returns whether the atlas generation is enabled
-     * @returns true if atlas is enabled
+     * \returns true if atlas is enabled
      * @see setEnabled
      */
     bool enabled() const { return mEnabled; }
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void setEnabled( bool enabled );
 
     /** Returns true if the atlas is set to hide the coverage layer
-     * @returns true if coverage layer is hidden
+     * \returns true if coverage layer is hidden
      * @see setHideCoverage
      */
     bool hideCoverage() const { return mHideCoverage; }
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Returns the filename expression used for generating output filenames for each
      * atlas page.
-     * @returns filename pattern
+     * \returns filename pattern
      * @see setFilenamePattern
      * @see filenamePatternErrorString
      * \note This property has no effect when exporting to PDF if singleFile() is true
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Sets the filename expression used for generating output filenames for each
      * atlas page.
-     * @returns true if filename expression could be successful set, false if expression is invalid
+     * \returns true if filename expression could be successful set, false if expression is invalid
      * \param pattern expression to use for output filenames
      * @see filenamePattern
      * @see filenamePatternErrorString
@@ -91,14 +91,14 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     bool setFilenamePattern( const QString &pattern );
 
     /** Returns an error string from parsing the filename expression.
-     * @returns filename pattern parser error
+     * \returns filename pattern parser error
      * @see setFilenamePattern
      * @see filenamePattern
      */
     QString filenamePatternErrorString() const { return mFilenameParserError; }
 
     /** Returns the coverage layer used for the atlas features
-     * @returns atlas coverage layer
+     * \returns atlas coverage layer
      * @see setCoverageLayer
      */
     QgsVectorLayer *coverageLayer() const { return mCoverageLayer; }
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void setCoverageLayer( QgsVectorLayer *layer );
 
     /** Returns the expression used for calculating the page name.
-     * @returns expression string, or field name from coverage layer
+     * \returns expression string, or field name from coverage layer
      * @see setPageNameExpression
      * @see nameForPage
      * \since QGIS 2.12
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Returns the calculated name for a specified atlas page number.
      * \param pageNumber number of page, where 0 = first page
-     * @returns page name
+     * \returns page name
      * @see pageNameExpression
      * \since QGIS 2.12
      */
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Returns whether the atlas will be exported to a single file. This is only
      * applicable for PDF exports.
-     * @returns true if atlas will be exported to a single file
+     * \returns true if atlas will be exported to a single file
      * @see setSingleFile
      * \note This property is only used for PDF exports.
      */
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void setFeatureFilter( const QString &expression ) { mFeatureFilter = expression; }
 
     /** Returns an error string from parsing the feature filter expression.
-     * @returns filename pattern parser error
+     * \returns filename pattern parser error
      * @see setFilenamePattern
      * @see filenamePattern
      */
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Returns the current list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
-     * @returns a vector of doubles representing predefined scales
+     * \returns a vector of doubles representing predefined scales
      * @see setPredefinedScales
      * @see QgsComposerMap::atlasScalingMode
      */
@@ -198,12 +198,12 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
      * \param i feature number
      * \param updateMaps set to true to redraw maps and recalculate their extent
-     * @returns true if feature was successfully prepared
+     * \returns true if feature was successfully prepared
      */
     bool prepareForFeature( const int i, const bool updateMaps = true );
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
-     * @returns true if feature was successfully prepared
+     * \returns true if feature was successfully prepared
      */
     bool prepareForFeature( const QgsFeature *feat );
 
@@ -290,12 +290,12 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
   private:
 
     /** Updates the filename expression.
-     * @returns true if expression was successfully parsed, false if expression is invalid
+     * \returns true if expression was successfully parsed, false if expression is invalid
      */
     bool updateFilenameExpression();
 
     /** Evaluates filename for current feature
-     * @returns true if feature filename was successfully evaluated
+     * \returns true if feature filename was successfully evaluated
      */
     bool evalFeatureFilename( const QgsExpressionContext &context );
 

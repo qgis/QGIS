@@ -52,7 +52,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     ~QgsCompoundColorWidget();
 
     /** Returns the current color for the dialog
-     * @returns dialog color
+     * \returns dialog color
      */
     QColor color() const;
 
@@ -148,13 +148,13 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
     /** Returns the average color from the pixels in an image
      * \param image image to sample
-     * @returns average color from image
+     * \returns average color from image
      */
     QColor averageColor( const QImage &image ) const;
 
     /** Samples a color from the desktop
      * \param point position of color to sample
-     * @returns average color from sampled position
+     * \returns average color from sampled position
      */
     QColor sampleColor( QPoint point ) const;
 

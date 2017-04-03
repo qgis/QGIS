@@ -225,7 +225,7 @@ namespace pal
        *
        * @throws PalException::FeatureExists
        *
-       * @return true on success (i.e. valid geometry)
+       * \return true on success (i.e. valid geometry)
        */
       bool registerFeature( QgsLabelFeature *label );
 
@@ -234,7 +234,7 @@ namespace pal
 
       /** Returns the connected feature ID for a label feature ID, which is unique for all features
        * which have been joined as a result of joinConnectedFeatures()
-       * @returns connected feature ID, or -1 if feature was not joined
+       * \returns connected feature ID, or -1 if feature was not joined
        */
       int connectedFeatureId( QgsFeatureId featureId ) const;
 

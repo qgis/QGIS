@@ -70,7 +70,7 @@ class QgsExpressionItem : public QStandardItem
 
     /** Get the help text that is associated with this expression item.
       *
-      * @return The help text.
+      * \return The help text.
       */
     QString getHelpText() const { return mHelpText; }
 
@@ -82,7 +82,7 @@ class QgsExpressionItem : public QStandardItem
 
     /** Get the type of expression item, e.g., header, field, ExpressionNode.
       *
-      * @return The QgsExpressionItem::ItemType
+      * \return The QgsExpressionItem::ItemType
       */
     QgsExpressionItem::ItemType getItemType() const { return mType; }
 
@@ -155,7 +155,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setGeomCalculator( const QgsDistanceArea &da );
 
     /** Gets the expression string that has been set in the expression area.
-      * @returns The expression as a string. */
+      * \returns The expression as a string. */
     QString expressionText();
 
     //! Sets the expression string for the widget

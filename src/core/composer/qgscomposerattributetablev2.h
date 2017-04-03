@@ -96,7 +96,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     void setSource( const ContentSource source );
 
     /** Returns the source for attributes shown in the table body.
-     * @returns content source
+     * \returns content source
      * @see setSource
      */
     ContentSource source() const { return mSource; }
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * if the table is set to atlas feature mode, then the source layer will be the
      * atlas coverage layer. If the table is set to layer attributes mode, then
      * the source layer will be the user specified vector layer.
-     * @returns actual source layer
+     * \returns actual source layer
      */
     QgsVectorLayer *sourceLayer();
 
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     void setVectorLayer( QgsVectorLayer *layer );
 
     /** Returns the vector layer the attribute table is currently using
-     * @returns attribute table's current vector layer
+     * \returns attribute table's current vector layer
      * @see setVectorLayer
      */
     QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     void setRelationId( const QString &relationId );
 
     /** Returns the relation id which the table displays child features from
-     * @returns relation id
+     * \returns relation id
      * @see setRelationId
      * @see source
      * \note only used if table source is set to RelationChildren
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
     /** Returns the composer map whose extents are controlling the features shown in the
      * table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
-     * @returns composer map controlling the attribute table
+     * \returns composer map controlling the attribute table
      * @see setComposerMap
      * @see displayOnlyVisibleFeatures
      */
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     void setMaximumNumberOfFeatures( const int features );
 
     /** Returns the maximum number of features to be shown by the table.
-     * @returns maximum number of features
+     * \returns maximum number of features
      * @see setMaximumNumberOfFeatures
      */
     int maximumNumberOfFeatures() const { return mMaximumNumberOfFeatures; }
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     void setUniqueRowsOnly( const bool uniqueOnly );
 
     /** Returns true if the table is set to show only unique rows.
-     * @returns true if table only shows unique rows and is stripping out
+     * \returns true if table only shows unique rows and is stripping out
      * duplicate rows.
      * @see setUniqueRowsOnly
      */
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
     /** Returns true if the table is set to show only features visible on a corresponding
      * composer map item.
-     * @returns true if table only shows visible features
+     * \returns true if table only shows visible features
      * @see composerMap
      * @see setDisplayOnlyVisibleFeatures
      */
@@ -216,13 +216,13 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
     /** Returns true if the table is set to only show features which intersect the current atlas
      * feature.
-     * @returns true if table only shows features which intersect the atlas feature
+     * \returns true if table only shows features which intersect the atlas feature
      * @see setFilterToAtlasFeature
      */
     bool filterToAtlasFeature() const { return mFilterToAtlasIntersection; }
 
     /** Returns true if a feature filter is active on the attribute table
-     * @returns bool state of the feature filter
+     * \returns bool state of the feature filter
      * @see setFilterFeatures
      * @see featureFilter
      */
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
     /** Returns the current expression used to filter features for the table. The filter is only
      * active if filterFeatures() is true.
-     * @returns feature filter expression
+     * \returns feature filter expression
      * @see setFeatureFilter
      * @see filterFeatures
      */
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     void setDisplayedFields( const QStringList &fields, bool refresh = true );
 
     /** Returns the attributes used to sort the table's features.
-     * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and
+     * \returns a QList of integer/bool pairs, where the integer refers to the attribute index and
      * the bool to the sort order for the attribute. If true the attribute is sorted ascending,
      * if false, the attribute is sorted in descending order.
      * \note not available in Python bindings
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
     /** Returns the string used to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.
-     * @returns string which will be replaced with line break
+     * \returns string which will be replaced with line break
      * \since QGIS 2.12
      * @see setWrapString
      */
@@ -291,7 +291,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
     /** Queries the attribute table's vector layer for attributes to show in the table.
      * \param contents table content
-     * @returns true if attributes were successfully fetched
+     * \returns true if attributes were successfully fetched
      * \note not available in Python bindings
      */
     bool getTableContents( QgsComposerTableContents &contents ) override;

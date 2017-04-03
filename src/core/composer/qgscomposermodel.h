@@ -88,7 +88,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
     /** Returns the size of the z-order list, which includes items which may
      * have been removed from the composition.
-     * @returns size of z-order list
+     * \returns size of z-order list
      * \since QGIS 2.5
      */
     int zOrderListSize() const;
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
     /** Moves an item up the z-order list.
      * \param item item to move
-     * @returns true if item was moved. Returns false if item was not found
+     * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the top of the z-order list.
      * @see reorderItemDown
      * @see reorderItemToTop
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
     /** Moves an item down the z-order list.
      * \param item item to move
-     * @returns true if item was moved. Returns false if item was not found
+     * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the bottom of the z-order list.
      * @see reorderItemUp
      * @see reorderItemToTop
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
     /** Moves an item to the top of the z-order list.
      * \param item item to move
-     * @returns true if item was moved. Returns false if item was not found
+     * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the top of the z-order list.
      * @see reorderItemUp
      * @see reorderItemDown
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
     /** Moves an item to the bottom of the z-order list.
      * \param item item to move
-     * @returns true if item was moved. Returns false if item was not found
+     * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the bottom of the z-order list.
      * @see reorderItemUp
      * @see reorderItemDown
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * items which are currently in the composition, and ignores items which have been
      * removed from the composition.
      * \param item item to search above
-     * @returns item above specified item. If no items were found, no item
+     * \returns item above specified item. If no items were found, no item
      * will be returned.
      * @see getComposerItemBelow
      * \since QGIS 2.5
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * items which are currently in the composition, and ignores items which have been
      * removed from the composition.
      * \param item item to search above
-     * @returns item below specified item. If no items were found, no item
+     * \returns item below specified item. If no items were found, no item
      * will be returned.
      * @see getComposerItemAbove
      * \since QGIS 2.5
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
     /** Returns the item z-order list. This list includes both items currently in the
      * composition and items which have been removed from the composition.
-     * @returns item z-order list
+     * \returns item z-order list
      * \since QGIS 2.5
      */
     QList<QgsComposerItem *> *zOrderList();
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     /** Returns the QModelIndex corresponding to a QgsComposerItem, if possible
      * \param item QgsComposerItem to find index for
      * \param column column number for created QModelIndex
-     * @returns QModelIndex corresponding to item and specified column
+     * \returns QModelIndex corresponding to item and specified column
      */
     QModelIndex indexForItem( QgsComposerItem *item, const int column = 0 );
 
@@ -267,7 +267,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
     /** Returns the QgsComposerItem corresponding to a QModelIndex, if possible
      * \param index QModelIndex for item
-     * @returns item corresponding to index
+     * \returns item corresponding to index
      */
     QgsComposerItem *itemFromIndex( const QModelIndex &index ) const;
 
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
     /** Returns the QgsComposerItem corresponding to an index from the source
      * QgsComposerModel model.
      * \param sourceIndex a QModelIndex
-     * @returns QgsComposerItem for specified index from QgsComposerModel
+     * \returns QgsComposerItem for specified index from QgsComposerModel
      */
     QgsComposerItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
 

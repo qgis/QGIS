@@ -77,7 +77,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * \param action action to register. The action must have a unique text string for
      * identification.
      * \param defaultShortcut default key sequence for action
-     * @returns true if action was successfully registered
+     * \returns true if action was successfully registered
      * @see registerShortcut()
      * @see unregisterAction()
      * @see registerAllChildActions()
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     * \param shortcut QShortcut to register. The shortcut must have a unique QObject::objectName() for
     * identification.
     * \param defaultSequence default key sequence for shortcut
-    * @returns true if shortcut was successfully registered
+    * \returns true if shortcut was successfully registered
     * @see registerAction()
     * @see registerAllChildShortcuts()
     */
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
 
     /** Removes an action from the manager.
      * \param action action to remove
-     * @returns true if action was previously registered in manager and has been removed, or
+     * \returns true if action was previously registered in manager and has been removed, or
      * false if action was not previously registered in manager
      * @see registerAction()
      * @see unregisterShortcut()
@@ -105,7 +105,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
 
     /** Removes a shortcut from the manager.
      * \param shortcut shortcut to remove
-     * @returns true if shortcut was previously registered in manager and has been removed, or
+     * \returns true if shortcut was previously registered in manager and has been removed, or
      * false if shortcut was not previously registered in manager
      * @see registerShortcut()
      * @see unregisterAction()
@@ -182,7 +182,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
 
     /** Returns the object (QAction or QShortcut) matching the specified key sequence,
      * \param sequence key sequence to find
-     * @returns object with matching sequence, or nullptr if not found
+     * \returns object with matching sequence, or nullptr if not found
      * @see actionForSequence()
      * @see shortcutForSequence()
      */

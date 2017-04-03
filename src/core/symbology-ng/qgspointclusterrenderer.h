@@ -53,7 +53,7 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
     void setClusterSymbol( QgsMarkerSymbol *symbol );
 
     /** Creates a QgsPointClusterRenderer from an existing renderer.
-     * @returns a new renderer if the conversion was possible, otherwise nullptr.
+     * \returns a new renderer if the conversion was possible, otherwise nullptr.
      */
     static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 

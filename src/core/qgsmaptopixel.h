@@ -57,7 +57,7 @@ class CORE_EXPORT QgsMapToPixel
      * \param scale map scale
      * \param dpi screen DPI
      * \param mapUnits map units
-     * @returns matching QgsMapToPixel
+     * \returns matching QgsMapToPixel
      * \since QGIS 3.0
      */
     static QgsMapToPixel fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi = 96 );
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsMapToPixel
     /**
      * Transform the point from map (world) coordinates to device coordinates
      * \param p Point to transform
-     * @return QgsPoint in device coordinates
+     * \return QgsPoint in device coordinates
      */
     QgsPoint transform( const QgsPoint &p ) const;
 
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsMapToPixel
      * coordinates to device coordinates
      * \param x x cordinate o point to transform
      * \param y y coordinate of point to transform
-     * @return QgsPoint in device coordinates
+     * \return QgsPoint in device coordinates
      */
     QgsPoint transform( qreal x, qreal y ) const;
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsMapToPixel
     /**
      * Transform device coordinates to map (world) coordinates
      * \param p Point to be converted to map cooordinates
-     * @return QgsPoint in map coorndiates
+     * \return QgsPoint in map coorndiates
      */
     QgsPoint toMapCoordinates( QPoint p ) const;
 

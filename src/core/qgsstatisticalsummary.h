@@ -137,7 +137,7 @@ class CORE_EXPORT QgsStatisticalSummary
 
     /** Returns the value of a specified statistic
      * \param stat statistic to return
-     * @returns calculated value of statistic. A NaN value may be returned for invalid
+     * \returns calculated value of statistic. A NaN value may be returned for invalid
      * statistics.
      */
     double statistic( Statistic stat ) const;

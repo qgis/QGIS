@@ -157,7 +157,7 @@ class CORE_EXPORT QgsJSONExporter
      * \param extraProperties map of extra attributes to include in feature's properties
      * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
-     * @returns GeoJSON string
+     * \returns GeoJSON string
      * @see exportFeatures()
      */
     QString exportFeature( const QgsFeature &feature,
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsJSONExporter
 
     /** Returns a GeoJSON string representation of a list of features (feature collection).
      * \param features features to convert
-     * @returns GeoJSON string
+     * \returns GeoJSON string
      * @see exportFeature()
      */
     QString exportFeatures( const QgsFeatureList &features ) const;
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsJSONUtils
      * \param string GeoJSON string to parse
      * \param fields fields collection to use for parsed features
      * \param encoding text encoding
-     * @returns list of parsed features, or an empty list if no features could be parsed
+     * \returns list of parsed features, or an empty list if no features could be parsed
      * @see stringToFields()
      * \note this function is a wrapper around QgsOgrUtils::stringToFeatureList()
      */
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsJSONUtils
     /** Attempts to retrieve the fields from a GeoJSON string representing a collection of features.
      * \param string GeoJSON string to parse
      * \param encoding text encoding
-     * @returns retrieved fields collection, or an empty list if no fields could be determined from the string
+     * \returns retrieved fields collection, or an empty list if no fields could be determined from the string
      * @see stringToFeatureList()
      * \note this function is a wrapper around QgsOgrUtils::stringToFields()
      */
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsJSONUtils
     /** Encodes a value to a JSON string representation, adding appropriate quotations and escaping
      * where required.
      * \param value value to encode
-     * @returns encoded value
+     * \returns encoded value
      */
     static QString encodeValue( const QVariant &value );
 

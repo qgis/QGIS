@@ -927,7 +927,7 @@ class CORE_EXPORT QgsTextFormat
     /** Returns a font with the size scaled to match the format's size settings (including
      * units and map unit scale) for a specified render context.
      * \param context destination render context
-     * @returns font with scaled size
+     * \returns font with scaled size
      * @see font()
      * @see size()
      */
@@ -1133,7 +1133,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param c rendercontext
      * \param unit size units
      * \param mapUnitScale a mapUnitScale clamper
-     * @return font pixel size
+     * \return font pixel size
      */
     static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 

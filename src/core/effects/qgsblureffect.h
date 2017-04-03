@@ -44,7 +44,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
 
     /** Creates a new QgsBlurEffect effect from a properties string map.
      * \param map encoded properties string map
-     * @returns new QgsBlurEffect
+     * \returns new QgsBlurEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map );
 
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     void setBlurLevel( const int level ) { mBlurLevel = level; }
 
     /** Returns the blur level (strength)
-     * @returns blur level. Depending on the current @link blurMethod @endlink, this parameter
+     * \returns blur level. Depending on the current @link blurMethod @endlink, this parameter
      * has different effects
      * @see setBlurLevel
      * @see blurMethod
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     void setBlurMethod( const BlurMethod method ) { mBlurMethod = method; }
 
     /** Returns the blur method (algorithm) used for performing the blur.
-     * @returns blur method
+     * \returns blur method
      * @see setBlurMethod
      */
     BlurMethod blurMethod() const { return mBlurMethod; }
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     void setTransparency( const double transparency ) { mTransparency = transparency; }
 
     /** Returns the transparency for the effect
-     * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
+     * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see setTransparency
      */
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
     /** Returns the blend mode for the effect
-     * @returns blend mode used for drawing the effect on to a destination
+     * \returns blend mode used for drawing the effect on to a destination
      * paint device
      * @see setBlendMode
      */

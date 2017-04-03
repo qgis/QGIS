@@ -46,7 +46,7 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
     void setResolution( int resolution );
 
     /** Returns the selected resolution from the dialog.
-     * @returns image resolution in DPI
+     * \returns image resolution in DPI
      * @see setResolution()
      */
     int resolution() const;

@@ -69,7 +69,7 @@ class GUI_EXPORT QgsMapCanvasSnapper
      * \param p start point of the snap (in pixel coordinates)
      * \param results snapped points
      * \param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
-     * @return 0 in case of success
+     * \return 0 in case of success
      */
     int snapToBackgroundLayers( QPoint p, QList<QgsSnappingResult> &results, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() );
 

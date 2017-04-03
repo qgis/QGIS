@@ -612,7 +612,7 @@ class CORE_EXPORT QgsWkbTypes
 
     /** Returns the inherent dimension of the geometry type as an integer. Returned value will
      * always be less than or equal to the coordinate dimension.
-     * @returns 0 for point geometries, 1 for line geometries, 2 for polygon geometries
+     * \returns 0 for point geometries, 1 for line geometries, 2 for polygon geometries
      * Invalid geometry types will return a dimension of 0.
      * @see coordDimensions()
      */
@@ -747,7 +747,7 @@ class CORE_EXPORT QgsWkbTypes
     static QString geometryDisplayString( GeometryType type );
 
     /** Tests whether a WKB type contains the z-dimension.
-     * @returns true if type has z values
+     * \returns true if type has z values
      * @see addZ()
      * @see hasM()
      */
@@ -796,7 +796,7 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     /** Tests whether a WKB type contains m values.
-     * @returns true if type has m values
+     * \returns true if type has m values
      * @see addM()
      * @see hasZ()
      */
@@ -930,7 +930,7 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * Will convert the 25D version of the flat type if supported or Unknown if not supported.
      * \param type The type to convert
-     * @return the 25D version of the type or Unknown
+     * \return the 25D version of the type or Unknown
      */
     static Type to25D( Type type )
     {

@@ -96,14 +96,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     /**
      * Returns the layer for which this form is shown
      *
-     * @return  Layer
+     * \return  Layer
      */
     QgsVectorLayer *layer() { return mLayer; }
 
     /**
      * Returns if the form is currently in editable mode.
      *
-     * @return Editable mode of this form
+     * \return Editable mode of this form
      */
     bool editable();
 
@@ -133,7 +133,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \param object   The object for which the event has been sent
      * \param event    The event which is being filtered
      *
-     * @return         true if the event has been handled (key was ESC)
+     * \return         true if the event has been handled (key was ESC)
      */
     bool eventFilter( QObject *object, QEvent *event ) override;
 
@@ -218,7 +218,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     /**
      * Save all the values from the editors to the layer.
      *
-     * @return True if successful
+     * \return True if successful
      */
     bool save();
 

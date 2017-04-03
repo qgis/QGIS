@@ -64,13 +64,13 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
     virtual void setComposerMap( QgsComposerMap *map );
 
     /** Get composer map for the item
-     * @returns composer map
+     * \returns composer map
      * @see setComposerMap
      */
     virtual const QgsComposerMap *composerMap() const { return mComposerMap; }
 
     /** Get the unique id for the map item
-     * @returns unique id
+     * \returns unique id
      */
     QString id() const { return mUuid; }
 
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
     virtual void setName( const QString &name ) { mName = name; }
 
     /** Get friendly display name for the item
-     * @returns display name
+     * \returns display name
      * @see setName
      */
     virtual QString name() const { return mName; }
@@ -93,13 +93,13 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
     virtual void setEnabled( const bool enabled ) { mEnabled = enabled; }
 
     /** Returns whether the item will be drawn
-     * @returns true if item will be drawn on the map
+     * \returns true if item will be drawn on the map
      * @see setEnabled
      */
     virtual bool enabled() const { return mEnabled; }
 
     /** Returns true if the item is drawn using advanced effects, such as blend modes.
-     * @returns true if item uses advanced effects
+     * \returns true if item uses advanced effects
      */
     virtual bool usesAdvancedEffects() const { return false; }
 
@@ -141,14 +141,14 @@ class CORE_EXPORT QgsComposerMapItemStack
     virtual ~QgsComposerMapItemStack();
 
     /** Returns the number of items in the stack
-     * @returns number of items in the stack
+     * \returns number of items in the stack
      */
     int size() const { return mItems.size(); }
 
     /** Stores the state of the item stack in a DOM node
      * \param elem is DOM element corresponding to a 'ComposerMap' tag
      * \param doc DOM document
-     * @returns true if write was successful
+     * \returns true if write was successful
      * @see readXml
      */
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsComposerMapItemStack
     /** Sets the item stack's state from a DOM document
      * \param elem is DOM node corresponding to 'a ComposerMap' tag
      * \param doc DOM document
-     * @returns true if read was successful
+     * \returns true if read was successful
      * @see writeXml
      */
     virtual bool readXml( const QDomElement &elem, const QDomDocument &doc ) = 0;
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsComposerMapItemStack
 
     /** Returns whether any items within the stack contain advanced effects,
      * such as blending modes
-     * @returns true if item stack contains advanced effects
+     * \returns true if item stack contains advanced effects
      */
     bool containsAdvancedEffects() const;
 
@@ -210,28 +210,28 @@ class CORE_EXPORT QgsComposerMapItemStack
 
     /** Returns a const reference to an item within the stack
      * \param itemId id for the QgsComposerMapItem to find
-     * @returns const reference to item, if found
+     * \returns const reference to item, if found
      * @see item
      */
     const QgsComposerMapItem *constItem( const QString &itemId ) const;
 
     /** Returns a reference to an item within the stack
      * \param itemId id for the QgsComposerMapItem to find
-     * @returns reference to item if found
+     * \returns reference to item if found
      * @see constItem
      */
     QgsComposerMapItem *item( const QString &itemId ) const;
 
     /** Returns a reference to an item within the stack
      * \param index item position in the stack
-     * @returns reference to item if found
+     * \returns reference to item if found
      * @see constItem
      */
     QgsComposerMapItem *item( const int index ) const;
 
     /** Returns a reference to an item within the stack
      * \param idx item position in the stack
-     * @returns reference to item if found
+     * \returns reference to item if found
      * @see constItem
      * @see item
      * \note not available in Python bindings
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsComposerMapItemStack
     QgsComposerMapItem &operator[]( int idx );
 
     /** Returns a list of QgsComposerMapItems contained by the stack
-     * @returns list of items
+     * \returns list of items
      */
     QList< QgsComposerMapItem * > asList() const;
 

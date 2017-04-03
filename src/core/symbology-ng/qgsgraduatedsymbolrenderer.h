@@ -179,13 +179,13 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void moveClass( int from, int to );
 
     /** Tests whether classes assigned to the renderer have ranges which overlap.
-     * @returns true if ranges overlap
+     * \returns true if ranges overlap
      * \since QGIS 2.10
      */
     bool rangesOverlap() const;
 
     /** Tests whether classes assigned to the renderer have gaps between the ranges.
-     * @returns true if ranges have gaps
+     * \returns true if ranges have gaps
      * \since QGIS 2.10
      */
     bool rangesHaveGaps() const;
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param symbol base symbol
      * \param ramp color ramp for classes
      * \param legendFormat
-     * @returns new QgsGraduatedSymbolRenderer object
+     * \returns new QgsGraduatedSymbolRenderer object
      */
     static QgsGraduatedSymbolRenderer *createRenderer(
       QgsVectorLayer *vlayer,
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     //! creates a QgsGraduatedSymbolRenderer from an existing renderer.
     //! \since QGIS 2.6
-    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    //! \returns a new renderer if the conversion was possible, otherwise 0.
     static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   protected:

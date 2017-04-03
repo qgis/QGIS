@@ -370,7 +370,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setBlurRadius( int blurRadius ) { mBlurRadius = blurRadius; }
 
     /** Returns the blur radius, which controls the amount of blurring applied to the fill.
-     * @returns Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
+     * \returns Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
      * \since QGIS 2.3
      * @see setBlurRadius
      */
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setUseWholeShape( bool useWholeShape ) { mUseWholeShape = useWholeShape; }
 
     /** Returns whether the shapeburst fill is set to cover the entire shape.
-     * @returns True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
+     * \returns True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
      * \since QGIS 2.3
      * @see setUseWholeShape
      * @see maxDistance
@@ -403,7 +403,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setMaxDistance( double maxDistance ) { mMaxDistance = maxDistance; }
 
     /** Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
-     * @returns the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
+     * \returns the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
      * \since QGIS 2.3
      * @see useWholeShape
      * @see setMaxDistance
@@ -420,7 +420,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceUnit = unit; }
 
     /** Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
-     * @returns distance unit for the maximum distance
+     * \returns distance unit for the maximum distance
      * \since QGIS 2.3
      * @see maxDistance
      * @see setDistanceUnit
@@ -443,7 +443,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /** Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
      * or by simply specificing a start and end color.
-     * @returns current color mode used for the shapeburst fill
+     * \returns current color mode used for the shapeburst fill
      * \since QGIS 2.3
      * @see setColorType
      * @see color
@@ -461,7 +461,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setColorRamp( QgsColorRamp *ramp );
 
     /** Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
-     * @returns a QgsColorRamp color ramp
+     * \returns a QgsColorRamp color ramp
      * \since QGIS 2.3
      * @see setColorRamp
      * @see colorType
@@ -477,7 +477,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setColor2( const QColor &color2 ) { mColor2 = color2; }
 
     /** Returns the color used for the endpoint of the shapeburst fill. This color is only used if the colorType is set to ShapeburstColorType::SimpleTwoColor
-     * @returns a QColor indicating the color of the endpoint of the gradient
+     * \returns a QColor indicating the color of the endpoint of the gradient
      * \since QGIS 2.3
      * @see setColor2
      * @see colorType
@@ -493,7 +493,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setIgnoreRings( bool ignoreRings ) { mIgnoreRings = ignoreRings; }
 
     /** Returns whether the shapeburst fill is set to ignore polygon interior rings.
-     * @returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
+     * \returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
      * \since QGIS 2.3
      * @see setIgnoreRings
      */
@@ -508,7 +508,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setOffset( QPointF offset ) { mOffset = offset; }
 
     /** Returns the offset for the shapeburst fill.
-     * @returns a QPointF indicating the horizontal/vertical offset amount
+     * \returns a QPointF indicating the horizontal/vertical offset amount
      * \since QGIS 2.3
      * @see setOffset
      * @see offsetUnit
@@ -524,7 +524,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /** Returns the units used for the offset of the shapeburst fill.
-     * @returns units used for the fill offset
+     * \returns units used for the fill offset
      * \since QGIS 2.3
      * @see offset
      * @see setOffsetUnit
@@ -674,7 +674,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     void setImageFilePath( const QString &imagePath );
 
     /** The path to the raster image used for the fill.
-     * @returns path to image file
+     * \returns path to image file
      * @see setImageFilePath
      */
     QString imageFilePath() const { return mImageFilePath; }
@@ -688,7 +688,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     /** Coordinate mode for fill. Controls how the top left corner of the image
      * fill is positioned relative to the feature.
-     * @returns coordinate mode
+     * \returns coordinate mode
      * @see setCoordinateMode
      */
     FillCoordinateMode coordinateMode() const { return mCoordinateMode; }
@@ -700,7 +700,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     void setAlpha( const double alpha );
 
     /** The opacity for the raster image used in the fill.
-     * @returns opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \returns opacity value between 0 (fully transparent) and 1 (fully opaque)
      * @see setAlpha
      */
     double alpha() const { return mAlpha; }
@@ -714,7 +714,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOffset( QPointF offset ) { mOffset = offset; }
 
     /** Returns the offset for the fill.
-     * @returns offset for fill
+     * \returns offset for fill
      * @see setOffset
      * @see offsetUnit
      * @see offsetMapUnitScale
@@ -730,7 +730,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOffsetUnit( const QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /** Returns the units for the fill's offset.
-     * @returns units for offset
+     * \returns units for offset
      * @see setOffsetUnit
      * @see offset
      * @see offsetMapUnitScale
@@ -746,7 +746,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
 
     /** Returns the map unit scale for the fill's offset.
-     * @returns map unit scale for offset
+     * \returns map unit scale for offset
      * @see setOffsetMapUnitScale
      * @see offset
      * @see offsetUnit
@@ -764,7 +764,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     /** Returns the width used for scaling the image used in the fill. The image's height is
      * scaled to maintain the image's aspect ratio.
-     * @returns width used for scaling the image
+     * \returns width used for scaling the image
      * @see setWidth
      * @see widthUnit
      * @see widthMapUnitScale
@@ -780,7 +780,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     void setWidthUnit( const QgsUnitTypes::RenderUnit unit ) { mWidthUnit = unit; }
 
     /** Returns the units for the image's width.
-     * @returns units for width
+     * \returns units for width
      * @see setWidthUnit
      * @see width
      * @see widthMapUnitScale
@@ -796,7 +796,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     void setWidthMapUnitScale( const QgsMapUnitScale &scale ) { mWidthMapUnitScale = scale; }
 
     /** Returns the map unit scale for the image's width.
-     * @returns map unit scale for width
+     * \returns map unit scale for width
      * @see setWidthMapUnitScale
      * @see width
      * @see widthUnit

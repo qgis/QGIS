@@ -97,7 +97,7 @@ namespace QgisGui
    * \param parent widget that should act as the parent for the file dialog
    * \param message the message to display to the user
    * \param defaultFilename default file name (empty by default)
-   * @return QPair<QString, QString> where first is the file name and second is
+   * \return QPair<QString, QString> where first is the file name and second is
    * the file type
    */
   QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *parent, const QString &message, const QString &defaultFilename = QString::null );
@@ -116,7 +116,7 @@ namespace QgisGui
    * Create file filters suitable for use with QFileDialog
    *
    * \param format extension e.g. "png"
-   * @return QString e.g. "PNG format (*.png, *.PNG)"
+   * \return QString e.g. "PNG format (*.png, *.PNG)"
    */
   QString GUI_EXPORT createFileFilter_( QString const &format );
 
@@ -125,7 +125,7 @@ namespace QgisGui
    * \param ok true on ok, false on cancel
    * \param initial initial font
    * \param title optional dialog title
-   * @return QFont the selected fon
+   * \return QFont the selected fon
    */
   QFont GUI_EXPORT getFont( bool &ok, const QFont &initial, const QString &title = QString() );
 }

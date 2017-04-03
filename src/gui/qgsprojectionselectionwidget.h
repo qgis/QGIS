@@ -54,12 +54,12 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     /** Returns a pointer to the projection selector dialog used by the widget.
      * Can be used to modify how the projection selector dialog behaves.
-     * @returns projection selector dialog
+     * \returns projection selector dialog
      */
     QgsProjectionSelectionDialog *dialog() { return mDialog; }
 
     /** Returns the currently selected CRS for the widget
-     * @returns current CRS
+     * \returns current CRS
      */
     QgsCoordinateReferenceSystem crs() const;
 

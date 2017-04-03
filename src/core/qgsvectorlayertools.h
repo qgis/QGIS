@@ -48,7 +48,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param defaultValues   Default values for the feature to add
      * \param defaultGeometry A default geometry to add to the feature
      * \param feature         Updated feature after adding will be written back to this
-     * @return                True in case of success, False if the operation failed/was aborted
+     * \return                True in case of success, False if the operation failed/was aborted
      *
      * TODO QGIS 3: remove const qualifier
      */
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      *
      * \param layer  The layer on which to start an edit session
      *
-     * @return       True, if the editing session was started
+     * \return       True, if the editing session was started
      *
      * TODO QGIS 3: remove const qualifier
      */
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      *
      * \param layer       The layer to commit
      * \param allowCancel True if a cancel button should be offered
-     * @return            True if successful
+     * \return            True if successful
      *
      * TODO QGIS 3: remove const qualifier
      */
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * Should be called, when the features should be committed but the editing session is not ended.
      *
      * \param layer       The layer to commit
-     * @return            True if successful
+     * \return            True if successful
      *
      * TODO QGIS 3: remove const qualifier
      */
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param dx The translation on x
      * \param dy The translation on y
      * \param errorMsg If given, it will contain the error message
-     * @return True if all features could be copied.
+     * \return True if all features could be copied.
      *
      * TODO QGIS 3: remove const qualifier
      */

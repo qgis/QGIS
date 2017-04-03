@@ -137,7 +137,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
   private:
 
     /** Generates a checkboard pattern pixmap for use as a background to transparent colors
-     * @returns checkerboard pixmap
+     * \returns checkerboard pixmap
      */
     QPixmap transparentBackground();
 

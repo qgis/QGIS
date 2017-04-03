@@ -173,7 +173,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \param properties A property map to deserialize saved information from properties()
      *
-     * @return A new MarkerLineSymbolLayerV2
+     * \return A new MarkerLineSymbolLayerV2
      */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
 
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \param element An SLD XML DOM element
      *
-     * @return A new MarkerLineSymbolLayerV2
+     * \return A new MarkerLineSymbolLayerV2
      */
     static QgsSymbolLayer *createFromSld( QDomElement &element );
 
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     /**
      * Shall the marker be rotated.
      *
-     * @return True if the marker should be rotated.
+     * \return True if the marker should be rotated.
      */
     bool rotateMarker() const { return mRotateMarker; }
 
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
      * distance between the marker and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
-     * @returns The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
+     * \returns The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
      * \since QGIS 2.3
      * @see setOffsetAlongLine
      * @see offsetAlongLineUnit
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     void setOffsetAlongLine( double offsetAlongLine ) { mOffsetAlongLine = offsetAlongLine; }
 
     /** Returns the unit used for calculating the offset along line for markers.
-     * @returns Offset along line unit type.
+     * \returns Offset along line unit type.
      * @see setOffsetAlongLineUnit
      * @see offsetAlongLine
      */
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     void setOffsetAlongLineUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetAlongLineUnit = unit; }
 
     /** Returns the map unit scale used for calculating the offset in map units along line for markers.
-     * @returns Offset along line map unit scale.
+     * \returns Offset along line map unit scale.
      */
     const QgsMapUnitScale &offsetAlongLineMapUnitScale() const { return mOffsetAlongLineMapUnitScale; }
 

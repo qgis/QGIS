@@ -114,7 +114,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
     /** Returns the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
      * bars and for showing vertical dividers at the histogram breaks.
-     * @returns graduated range list
+     * \returns graduated range list
      * @see setGraduatedRanges
      */
     QgsRangeList graduatedRanges() const { return mRanges; }

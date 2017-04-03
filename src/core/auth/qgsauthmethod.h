@@ -83,7 +83,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * \param authcfg Authentication configuration ID
      * \param dataprovider Textual key for a data provider, e.g. 'postgres', that allows
      * for custom updater code specific to the provider
-     * @return Whether the update succeeded
+     * \return Whether the update succeeded
      */
     virtual bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
                                        const QString &dataprovider = QString() )
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * \param authcfg Authentication configuration ID
      * \param dataprovider Textual key for a data provider, e.g. 'postgres', that allows
      * for custom updater code specific to the provider
-     * @return Whether the update succeeded
+     * \return Whether the update succeeded
      */
     virtual bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
                                      const QString &dataprovider = QString() )
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * \param authcfg Authentication configuration ID
      * \param dataprovider Textual key for a data provider, e.g. 'postgres', that allows
      * for custom updater code specific to the provider
-     * @return Whether the update succeeded
+     * \return Whether the update succeeded
      */
     virtual bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
                                            const QString &dataprovider = QString() )

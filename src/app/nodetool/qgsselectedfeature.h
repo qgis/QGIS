@@ -97,19 +97,19 @@ class QgsSelectedFeature: public QObject
     /**
      * Tells if vertex is selected
      * \param vertexNr number of vertex for which we are getting info
-     * @return true if vertex is selected, false otherwise
+     * \return true if vertex is selected, false otherwise
      */
     bool isSelected( int vertexNr );
 
     /**
      * Getting feature Id of feature selected
-     * @return feature id of selected feature
+     * \return feature id of selected feature
      */
     QgsFeatureId featureId();
 
     /**
      * Getting vertex map of vertexes
-     * @return currently used vertex map
+     * \return currently used vertex map
      */
     QList<QgsVertexEntry *> &vertexMap();
 
@@ -120,7 +120,7 @@ class QgsSelectedFeature: public QObject
 
     /**
      * Get the layer of the selected feature
-     * @return used vector layer
+     * \return used vector layer
      */
     QgsVectorLayer *vlayer();
 

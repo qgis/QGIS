@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * @brief The icon that will be shown in the UI for the panel.
-     * @return A QIcon for the panel icon.
+     * \return A QIcon for the panel icon.
      */
     virtual QIcon icon() const { return mIcon; }
 
@@ -55,7 +55,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     /**
      * @brief The title of the panel.
      * \note This may or may not be shown to the user.
-     * @return Title of the panel
+     * \return Title of the panel
      */
     virtual QString title() const { return mTitle; }
 
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * Flag if widget is supported for use in style dock.
-     * @return True if supported
+     * \return True if supported
      */
     virtual bool supportsStyleDock() const { return false; }
 
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * Flag if widget is supported for use in layer properties dialog.
-     * @return True if supported
+     * \return True if supported
      */
     virtual bool supportLayerPropertiesDialog() const { return false; }
 
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * @brief Check if the layer is supported for this widget.
-     * @return True if this layer is supported for this widget
+     * \return True if this layer is supported for this widget
      */
     virtual bool supportsLayer( QgsMapLayer *layer ) const;
 
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * \param canvas The map canvas.
      * \param dockWidget True of the widget will be shown a dock style widget.
      * \param parent The parent of the widget.
-     * @return A new QgsMapStylePanel which is shown in the map style dock.
+     * \return A new QgsMapStylePanel which is shown in the map style dock.
      */
     virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent = 0 ) const = 0;
 

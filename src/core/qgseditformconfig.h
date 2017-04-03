@@ -153,7 +153,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * \param widgetName  The name of the widget to configure
      * \param config      The config to set for this widget
-     * @returns false if a field exists with the provided widgetName. In this case
+     * \returns false if a field exists with the provided widgetName. In this case
      *          QgsVectorLayer::setEditorWidgetSetup should be used.
      *
      * @see QgsVectorLayer::setEditorWidgetSetup() for field configurations.
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * \param widgetName The name of the widget.
      *
-     * @return The configuration for the editor widget or an empty config if the field does not exist
+     * \return The configuration for the editor widget or an empty config if the field does not exist
      */
     QVariantMap widgetConfig( const QString &widgetName ) const;
 
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * \param widgetName The name of the widget.
      *
-     * @return true if a configuration has been removed
+     * \return true if a configuration has been removed
      */
     bool removeWidgetConfig( const QString &widgetName );
 

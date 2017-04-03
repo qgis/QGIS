@@ -256,7 +256,7 @@ class QgsConnectionPool
     }
 
     //! Try to acquire a connection: if no connections are available, the thread will get blocked.
-    //! @return initialized connection or null on error
+    //! \return initialized connection or null on error
     T acquireConnection( const QString &connInfo )
     {
       mMutex.lock();

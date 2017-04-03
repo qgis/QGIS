@@ -58,7 +58,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     ~QgsEffectStackPropertiesWidget();
 
     /** Returns effect stack attached to the widget
-     * @returns QgsEffectStack modified by the widget
+     * \returns QgsEffectStack modified by the widget
      */
     QgsEffectStack *stack() { return mStack; }
 
@@ -159,7 +159,7 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
     QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
 
     /** Returns effect stack attached to the dialog
-     * @returns QgsEffectStack modified by the dialog
+     * \returns QgsEffectStack modified by the dialog
      */
     QgsEffectStack *stack();
 
@@ -210,7 +210,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
     void setPaintEffect( QgsPaintEffect *effect );
 
     /** Returns paint effect attached to the widget
-     * @returns QgsPaintEffect modified by the widget
+     * \returns QgsPaintEffect modified by the widget
      * @see setPaintEffect
      */
     QgsPaintEffect *paintEffect() const;

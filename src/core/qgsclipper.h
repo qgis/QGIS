@@ -100,7 +100,7 @@ class CORE_EXPORT QgsClipper
     /** Takes a linestring and clips it to clipExtent
      * \param curve the linestring
      * \param clipExtent clipping bounds
-     * @return clipped line coordinates
+     * \return clipped line coordinates
      */
     static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
 

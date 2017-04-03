@@ -61,7 +61,7 @@ class CORE_EXPORT QgsStringReplacement
 
     /** Processes a given input string, applying any valid replacements which should be made.
      * \param input input string
-     * @returns input string with any matches replaced by replacement string
+     * \returns input string with any matches replaced by replacement string
      */
     QString process( const QString &input ) const;
 
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsStringReplacementCollection
      * using QgsStringReplacement objects contained by this collection. Replacements
      * are made in order of the QgsStringReplacement objects contained in the collection.
      * \param input input string
-     * @returns input string with any matches replaced by replacement string
+     * \returns input string with any matches replaced by replacement string
      */
     QString process( const QString &input ) const;
 
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsStringUtils
     /** Converts a string by applying capitalization rules to the string.
      * \param string input string
      * \param capitalization capitalization type to apply
-     * @return capitalized string
+     * \return capitalized string
      * \since QGIS 3.0
      */
     static QString capitalize( const QString &string, Capitalization capitalization );
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsStringUtils
      * \param string1 first string
      * \param string2 second string
      * \param caseSensitive set to true for case sensitive comparison
-     * @returns edit distance. Lower distances indicate more similar strings.
+     * \returns edit distance. Lower distances indicate more similar strings.
      */
     static int levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
 
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsStringUtils
      * \param string1 first string
      * \param string2 second string
      * \param caseSensitive set to true for case sensitive comparison
-     * @returns longest common substring
+     * \returns longest common substring
      */
     static QString longestCommonSubstring( const QString &string1, const QString &string2, bool caseSensitive = false );
 
@@ -211,14 +211,14 @@ class CORE_EXPORT QgsStringUtils
      * \param string1 first string
      * \param string2 second string
      * \param caseSensitive set to true for case sensitive comparison
-     * @returns Hamming distance between strings, or -1 if strings are different lengths.
+     * \returns Hamming distance between strings, or -1 if strings are different lengths.
      */
     static int hammingDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
 
     /** Returns the Soundex representation of a string. Soundex is a phonetic matching algorithm,
      * so strings with similar sounds should be represented by the same Soundex code.
      * \param string input string
-     * @returns 4 letter Soundex code
+     * \returns 4 letter Soundex code
      */
     static QString soundex( const QString &string );
 
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsStringUtils
      * links.
      * \param string string to insert links into
      * \param foundLinks if specified, will be set to true if any links were inserted into the string
-     * @returns string with inserted links
+     * \returns string with inserted links
      * \since QGIS 3.0
      */
     static QString insertLinks( const QString &string, bool *foundLinks = nullptr );

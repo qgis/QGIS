@@ -57,7 +57,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     void setContentMode( ContentMode mode ) { mContentMode = mode; }
 
     /** Returns the source mode for item's HTML content.
-     * @returns ContentMode for the item's source
+     * \returns ContentMode for the item's source
      * @see setContentMode
      * @see url
      * @see html
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     /** Returns the URL of the content displayed in the item if the item is using
      * the QgsComposerHtml::Url mode.
-     * @returns url for content displayed in item
+     * \returns url for content displayed in item
      * @see setUrl
      * @see contentMode
      */
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     /** Returns the HTML source displayed in the item if the item is using
      * the QgsComposerHtml::ManualHtml mode.
-     * @returns HTML displayed in item
+     * \returns HTML displayed in item
      * @see setHtml
      * @see contentMode
      * \since QGIS 2.5
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * the HTML content. If set, any content inside [% %] tags will be
      * treated as a QGIS expression and evaluated against the current atlas
      * feature.
-     * @returns true if html item will evaluate expressions in the content
+     * \returns true if html item will evaluate expressions in the content
      * @see setEvaluateExpressions
      * \since QGIS 2.5
      */
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     /** Returns whether html item is using smart breaks. Smart breaks prevent
      * the html frame contents from breaking mid-way though a line of text.
-     * @returns true if html item is using smart breaks
+     * \returns true if html item is using smart breaks
      * @see setUseSmartBreaks
      */
     bool useSmartBreaks() const { return mUseSmartBreaks; }
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * in the html. This distance is the maximum amount of empty space allowed
      * at the bottom of a frame after calculating the optimum break location. This setting
      * is only effective if useSmartBreaks is true.
-     * @returns maximum amount of empty space to leave when calculating page break locations
+     * \returns maximum amount of empty space to leave when calculating page break locations
      * \since QGIS 2.3
      * @see setMaxBreakDistance
      * @see useSmartBreaks
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     /** Returns the user stylesheet CSS rules used while rendering the HTML content. These
      * overriding the styles specified within the HTML source.
-     * @returns CSS rules for user stylesheet
+     * \returns CSS rules for user stylesheet
      * @see setUserStylesheet
      * @see userStylesheetEnabled
      * \since QGIS 2.5
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     void setUserStylesheetEnabled( const bool stylesheetEnabled );
 
     /** Returns whether user stylesheets are enabled for the HTML content.
-     * @returns true if user stylesheets are enabled
+     * \returns true if user stylesheets are enabled
      * @see setUserStylesheetEnabled
      * @see userStylesheet
      * \since QGIS 2.5

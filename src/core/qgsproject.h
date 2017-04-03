@@ -174,12 +174,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Reads given project file from the given file.
      * \param filename name of project file to read
-     * @returns true if project file has been read successfully
+     * \returns true if project file has been read successfully
      */
     bool read( const QString &filename );
 
     /** Reads the project from its currently associated file (see fileName() ).
-     * @returns true if project file has been read successfully
+     * \returns true if project file has been read successfully
      */
     bool read();
 
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param filename destination file
      * \note calling this implicitly sets the project's filename (see setFileName() )
      * \note isDirty() will be set to false if project is successfully written
-     * @returns true if project was written successfully
+     * \returns true if project was written successfully
      *
      * \since QGIS 3.0
      */
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Writes the project to its current associated file (see fileName() ).
      * \note isDirty() will be set to false if project is successfully written
-     * @returns true if project was written successfully
+     * \returns true if project was written successfully
      */
     bool write();
 
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString layerIsEmbedded( const QString &id ) const;
 
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
-     * @return the layer or 0 in case of error
+     * \return the layer or 0 in case of error
      * \note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
@@ -374,7 +374,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
     /** Return project's home path
-      @return home path of project (or QString::null if not set) */
+      \return home path of project (or QString::null if not set) */
     QString homePath() const;
 
     QgsRelationManager *relationManager() const;
@@ -520,7 +520,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Retrieve a pointer to a registered layer by layer ID.
      * \param layerId ID of layer to retrieve
-     * @returns matching layer, or nullptr if no matching layer found
+     * \returns matching layer, or nullptr if no matching layer found
      * @see mapLayersByName()
      * @see mapLayers()
      */
@@ -528,7 +528,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Retrieve a list of matching registered layers by layer name.
      * \param layerName name of layers to match
-     * @returns list of matching layers
+     * \returns list of matching layers
      * @see mapLayer()
      * @see mapLayers()
      */
@@ -582,7 +582,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *                      If you specify false here you have take care of deleting
      *                      the layers yourself. Not available in Python.
      *
-     * @return a list of the map layers that were added
+     * \return a list of the map layers that were added
      *         successfully. If a layer is invalid, or already exists in the registry,
      *         it will not be part of the returned QList.
      *
@@ -613,7 +613,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *                      If you specify false here you have take care of deleting
      *                      the layer yourself. Not available in Python.
      *
-     * @return nullptr if unable to add layer, otherwise pointer to newly added layer
+     * \return nullptr if unable to add layer, otherwise pointer to newly added layer
      *
      * @see addMapLayers
      *
@@ -941,7 +941,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param doc DOM document to parse
      * \param brokenNodes a list of DOM nodes corresponding to layers that we were unable to load; this could be
      * because the layers were removed or re-located after the project was last saved
-     * @returns true if function worked; else is false
+     * \returns true if function worked; else is false
     */
     bool _getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes );
 
@@ -1005,7 +1005,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 };
 
 /** Return the version string found in the given DOM document
-   @returns the version string or an empty string if none found
+   \returns the version string or an empty string if none found
  */
 CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc );
 

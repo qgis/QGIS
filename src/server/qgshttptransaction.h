@@ -74,7 +74,7 @@ class QgsHttpTransaction : public QObject
         \param postData data to send with the http message. This is only used for HTTP POST. If
         0 then the request is done with HTTP GET.
 
-        @return true in case of success
+        \return true in case of success
      */
     bool getSynchronously( QByteArray &respondedContent, int redirections = 0, const QByteArray *postData = nullptr );
 
@@ -89,7 +89,7 @@ class QgsHttpTransaction : public QObject
     QString errorString();
 
     /** Apply proxy settings from QSettings to a http object
-    @return true if proxy settings was applied, false else*/
+    \return true if proxy settings was applied, false else*/
     static bool applyProxySettings( QHttp &http, const QString &url );
 
     //! Set the credentials (username and password)

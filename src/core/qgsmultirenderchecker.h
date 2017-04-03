@@ -107,13 +107,13 @@ class CORE_EXPORT QgsMultiRenderChecker
     /**
      * Returns a report for this test
      *
-     * @return A report
+     * \return A report
      */
     QString report() const { return mReport; }
 
     /**
      * @brief controlImagePath
-     * @return
+     * \return
      */
     QString controlImagePath() const;
 

@@ -215,7 +215,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Returns number of vertices in feature part
      *  \param geometryIndex The index of the feature part (in case of multipart geometries)
-     *  @return number of vertices
+     *  \return number of vertices
      */
     int partSize( int geometryIndex ) const;
 
@@ -257,13 +257,13 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /**
      * Returns number of geometries
-     *  @return number of geometries
+     *  \return number of geometries
      */
     int size() const;
 
     /**
      * Returns count of vertices in all lists of mPoint
-     *  @return The total number of vertices
+     *  \return The total number of vertices
      */
     int numberOfVertices() const;
 
@@ -276,7 +276,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /**
      * Returns the rubberband as a Geometry
-     *  @return A geometry object which reflects the current state of the rubberband.
+     *  \return A geometry object which reflects the current state of the rubberband.
      */
     QgsGeometry asGeometry() const;
 

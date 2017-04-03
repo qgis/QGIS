@@ -132,13 +132,13 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         /**
          * Dump for debug purpose
          * \param indent How many characters to indent. Will increase by two with every of the recursive calls
-         * @return A string representing this rule
+         * \return A string representing this rule
          */
         QString dump( int indent = 0 ) const;
 
         /**
          * Return the attributes used to evaluate the expression of this rule
-         * @return A set of attribute names
+         * \return A set of attribute names
          */
         QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \param f         The feature to test
          * \param context   The context in which the rendering happens
-         * @return          True if the feature shall be rendered
+         * \return          True if the feature shall be rendered
          */
         bool isFilterOK( QgsFeature &f, QgsRenderContext *context = nullptr ) const;
 
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * Check if this rule applies for a given scale
          * \param scale The scale to check. If set to 0, it will always return true.
          *
-         * @return If the rule will be evaluated at this scale
+         * \return If the rule will be evaluated at this scale
          */
         bool isScaleOK( double scale ) const;
 
@@ -181,27 +181,27 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         /**
          * A filter that will check if this rule applies
-         * @return An expression
+         * \return An expression
          */
         QgsExpression *filter() const { return mFilter; }
 
         /**
          * A filter that will check if this rule applies
-         * @return An expression
+         * \return An expression
          */
         QString filterExpression() const { return mFilterExp; }
 
         /**
          * A human readable description for this rule
          *
-         * @return Description
+         * \return Description
          */
         QString description() const { return mDescription; }
 
         /**
          * Returns if this rule is active
          *
-         * @return True if the rule is active
+         * \return True if the rule is active
          */
         bool active() const { return mIsActive; }
 
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * \param featToRender The feature to render
          * \param context      The rendering context
          * \param renderQueue  The rendering queue to which the feature should be added
-         * @return             The result of the rendering. In explicit if the feature is added to the queue or
+         * \return             The result of the rendering. In explicit if the feature is added to the queue or
          *                     the reason for not rendering the feature.
          */
         RenderResult renderFeature( FeatureToRender &featToRender, QgsRenderContext &context, RenderQueue &renderQueue );
@@ -312,28 +312,28 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * \param ruleElem  The XML rule element
          * \param symbolMap Symbol map
          *
-         * @return A new rule
+         * \return A new rule
          */
         static Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap );
 
         /**
          * Return all children rules of this rule
          *
-         * @return A list of rules
+         * \return A list of rules
          */
         RuleList &children() { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
-         * @return A list of descendant rules
+         * \return A list of descendant rules
          */
         RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
 
         /**
          * The parent rule
          *
-         * @return Parent rule
+         * \return Parent rule
          */
         Rule *parent() { return mParent; }
 
@@ -369,7 +369,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         /**
          * Check if this rule is an ELSE rule
          *
-         * @return True if this rule is an else rule
+         * \return True if this rule is an else rule
          */
         bool isElse() { return mElseRule; }
 
@@ -467,7 +467,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     //! creates a QgsRuleBasedRenderer from an existing renderer.
     //! \since QGIS 2.5
-    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    //! \returns a new renderer if the conversion was possible, otherwise 0.
     static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology

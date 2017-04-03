@@ -107,7 +107,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * \param settings Legend layout configuration
      * \param ctx Context for rendering - may be null if only doing layout without actual rendering
      * \param itemHeight Minimal height of the legend item - used for correct positioning when rendering
-     * @return Real size of the symbol (may be bigger than "normal" symbol size from settings)
+     * \return Real size of the symbol (may be bigger than "normal" symbol size from settings)
      */
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * \param settings Legend layout configuration
      * \param ctx Context for rendering - may be null if only doing layout without actual rendering
      * \param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
-     * @return Size of the label (may span multiple lines)
+     * \return Size of the label (may span multiple lines)
      */
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 

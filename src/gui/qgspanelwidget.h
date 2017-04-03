@@ -42,7 +42,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 
     /**
      * The title of the panel.
-     * @return The title pf the panel.
+     * \return The title pf the panel.
      */
     QString panelTitle() { return mPanelTitle; }
 
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 
     /**
      * Return the dock mode state.
-     * @return True if in dock mode.  If in dock mode the widget
+     * \return True if in dock mode.  If in dock mode the widget
      * will emit the showPanel signal to handle panel opening
      * If false it will open dialogs when openPanel is called.
      */
@@ -91,14 +91,14 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * The the auto delete property on the widget. True by default.
      * When auto delete is enabled when a panel is removed from the stack
      * it will be deleted.
-     * @returns The auto delete value for the widget.
+     * \returns The auto delete value for the widget.
      */
     bool autoDelete() { return mAutoDelete; }
 
     /** Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
      * widget.
      * \param widget widget which may be contained within a panel widget
-     * @returns parent panel widget if found, otherwise nullptr
+     * \returns parent panel widget if found, otherwise nullptr
      * \since QGIS 3.0
      */
     static QgsPanelWidget *findParentPanel( QWidget *widget );
@@ -190,7 +190,7 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
 
     /**
      * Returns the internal widget that is wrapped in this panel.
-     * @return The internal widget. Can be nullptr.
+     * \return The internal widget. Can be nullptr.
      */
     QWidget *widget() { return mWidget; }
 

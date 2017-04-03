@@ -82,42 +82,42 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
 
     /** Returns a const reference to an overview within the stack
      * \param overviewId id for the QgsComposerMapOverview to find
-     * @returns const reference to overview, if found
+     * \returns const reference to overview, if found
      * @see overview
      */
     const QgsComposerMapOverview *constOverview( const QString &overviewId ) const;
 
     /** Returns a reference to an overview within the stack
      * \param overviewId id for the QgsComposerMapOverview to find
-     * @returns reference to overview if found
+     * \returns reference to overview if found
      * @see constOverview
      */
     QgsComposerMapOverview *overview( const QString &overviewId ) const;
 
     /** Returns a reference to an overview within the stack
      * \param index overview position in the stack
-     * @returns reference to overview if found
+     * \returns reference to overview if found
      * @see constOverview
      */
     QgsComposerMapOverview *overview( const int index ) const;
 
     /** Returns a reference to an overview within the stack
      * \param idx overview position in the stack
-     * @returns reference to overview if found
+     * \returns reference to overview if found
      * @see constOverview
      * @see overview
      */
     QgsComposerMapOverview &operator[]( int idx );
 
     /** Returns a list of QgsComposerMapOverviews contained by the stack
-     * @returns list of overviews
+     * \returns list of overviews
      */
     QList< QgsComposerMapOverview * > asList() const;
 
     /** Sets the overview stack's state from a DOM document
      * \param elem is DOM node corresponding to a 'ComposerMap' tag
      * \param doc DOM document
-     * @returns true if read was successful
+     * \returns true if read was successful
      * @see writeXml
      */
     bool readXml( const QDomElement &elem, const QDomDocument &doc ) override;
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     void setFrameMap( const int mapId );
 
     /** Returns id of source map.
-     * @returns source map id, or -1 if no source map set
+     * \returns source map id, or -1 if no source map set
      */
     int frameMapId() const { return mFrameMapId; }
 
@@ -184,20 +184,20 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     void setFrameSymbol( QgsFillSymbol *symbol );
 
     /** Gets the fill symbol used for drawing the overview extent.
-     * @returns fill symbol for overview
+     * \returns fill symbol for overview
      * @see setFrameSymbol
      */
     QgsFillSymbol *frameSymbol() { return mFrameSymbol; }
 
     /** Gets the fill symbol used for drawing the overview extent.
-     * @returns fill symbol for overview
+     * \returns fill symbol for overview
      * @see setFrameSymbol
      * \note not available in Python bindings
      */
     const QgsFillSymbol *frameSymbol() const { return mFrameSymbol; }
 
     /** Retrieves the blending mode used for drawing the overview.
-     * @returns blending mode for overview
+     * \returns blending mode for overview
      * @see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
 
     /** Returns whether the overview frame is inverted, ie, whether the shaded area is drawn outside
      * the extent of the overview map.
-     * @returns true if overview frame is inverted
+     * \returns true if overview frame is inverted
      * @see setInverted
      */
     bool inverted() const { return mInverted; }
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     void setInverted( const bool inverted );
 
     /** Returns whether the extent of the map is forced to center on the overview
-     * @returns true if map will be centered on overview
+     * \returns true if map will be centered on overview
      * @see setCentered
      */
     bool centered() const { return mCentered; }

@@ -102,7 +102,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /** Removes a child item and returns it without deleting it. Emits relevant signals to model as required.
      * \param child child to remove
-     * @returns pointer to the removed item or null if no such item was found
+     * \returns pointer to the removed item or null if no such item was found
      */
     virtual QgsDataItem *removeChildItem( QgsDataItem *child );
 
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconRaster();
     static QIcon iconDefault();
 
-    //! @return the layer name
+    //! \return the layer name
     virtual QString layerName() const { return name(); }
 };
 

@@ -43,7 +43,7 @@ class CORE_EXPORT QgsCoordinateTransformCache
         \param destAuthId auth id string of dest crs
         \param srcDatumTransform id of source's datum transform
         \param destDatumTransform id of destinations's datum transform
-        @returns matching transform, or an invalid transform if none could be created
+        \returns matching transform, or an invalid transform if none could be created
      */
     QgsCoordinateTransform transform( const QString &srcAuthId, const QString &destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
 

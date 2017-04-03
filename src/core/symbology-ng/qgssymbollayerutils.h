@@ -121,7 +121,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /** Encodes a render unit into an SLD unit of measure string.
      * \param unit unit to encode
      * \param scaleFactor if specified, will be set to scale factor for unit of measure
-     * @returns encoded string
+     * \returns encoded string
      * @see decodeSldUom()
      */
     static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor );
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /** Decodes a SLD unit of measure string to a render unit.
      * \param str string to decode
      * \param scaleFactor if specified, will be set to scale factor for unit of measure
-     * @returns matching render unit
+     * \returns matching render unit
      * @see encodeSldUom()
      */
     static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor );
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param units size units
      * \param size target size of preview picture
      * \param scale map unit scale for preview
-     * @returns QPicture containing symbol layer preview
+     * \returns QPicture containing symbol layer preview
      * \since QGIS 2.9
      * @see symbolLayerPreviewIcon()
      */
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param u size units
      * \param size target size of preview icon
      * \param scale map unit scale for preview
-     * @returns icon containing symbol layer preview
+     * \returns icon containing symbol layer preview
      * @see symbolLayerPreviewPicture()
      */
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
@@ -201,14 +201,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /** Attempts to load a symbol from a DOM element
      * \param element DOM element representing symbol
-     * @returns decoded symbol, if possible
+     * \returns decoded symbol, if possible
      */
     static QgsSymbol *loadSymbol( const QDomElement &element );
 
     /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
      * \param element DOM element representing symbol
-     * @returns decoded symbol cast to specified type, if possible
+     * \returns decoded symbol cast to specified type, if possible
      * \note not available in Python bindings
      */
     template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element )
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param doc The document owning the element
      * \param element The element parent
      * \param function The expression to be encoded
-     * @return
+     * \return
      */
     static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString &function );
     static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function );
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /** Creates a color ramp from the settings encoded in an XML element
      * \param element DOM element
-     * @returns new color ramp. Caller takes responsibility for deleting the returned value.
+     * \returns new color ramp. Caller takes responsibility for deleting the returned value.
      * @see saveColorRamp()
      */
     static QgsColorRamp *loadColorRamp( QDomElement &element );
@@ -359,7 +359,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param name name of ramp
      * \param ramp color ramp to save
      * \param doc XML document
-     * @returns DOM element representing state of color ramp
+     * \returns DOM element representing state of color ramp
      * @see loadColorRamp()
      */
     static QDomElement saveColorRamp( const QString &name, QgsColorRamp *ramp, QDomDocument &doc );
@@ -383,7 +383,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Returns a friendly display name for a color
      * \param color source color
-     * @returns display name for color
+     * \returns display name for color
      * \since QGIS 2.5
      */
     static QString colorToName( const QColor &color );
@@ -392,7 +392,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Attempts to parse a string as a list of colors using a variety of common formats, including hex
      * codes, rgb and rgba strings.
      * \param colorStr string representing the color list
-     * @returns list of parsed colors
+     * \returns list of parsed colors
      * \since QGIS 2.5
      */
     static QList< QColor > parseColorList( const QString &colorStr );
@@ -411,7 +411,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param data mime data to parse
      * \param hasAlpha will be set to true if mime data was interpreted as a color containing
      * an explicit alpha value
-     * @returns valid color if mimedata could be interpreted as a color, otherwise an
+     * \returns valid color if mimedata could be interpreted as a color, otherwise an
      * invalid color
      * \since QGIS 2.5
      */
@@ -420,7 +420,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Attempts to parse mime data as a list of named colors
      * \param data mime data to parse
-     * @returns list of parsed colors
+     * \returns list of parsed colors
      * \since QGIS 2.5
      */
     static QgsNamedColorList colorListFromMimeData( const QMimeData *data );
@@ -429,7 +429,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Creates mime data from a list of named colors
      * \param colorList list of named colors
      * \param allFormats set to true to include additional mime formats, include text/plain and application/x-color
-     * @returns mime data containing encoded colors
+     * \returns mime data containing encoded colors
      * \since QGIS 2.5
      */
     static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true );
@@ -439,7 +439,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param file destination file
      * \param paletteName name of palette, which is stored in gpl file
      * \param colors colors to export
-     * @returns true if export was successful
+     * \returns true if export was successful
      * @see importColorsFromGpl
      */
     static bool saveColorsToGpl( QFile &file, const QString &paletteName, const QgsNamedColorList &colors );
@@ -449,7 +449,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param file source gpl file
      * \param ok will be true if file was successfully read
      * \param name will be set to palette name from gpl file, if present
-     * @returns list of imported colors
+     * \returns list of imported colors
      * @see saveColorsToGpl
      */
     static QgsNamedColorList importColorsFromGpl( QFile &file, bool &ok, QString &name );
@@ -459,7 +459,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * codes, rgb and rgba strings.
      * \param colorStr string representing the color
      * \param strictEval set to true for stricter color parsing rules
-     * @returns parsed color
+     * \returns parsed color
      * \since QGIS 2.3
      */
     static QColor parseColor( const QString &colorStr, bool strictEval = false );
@@ -470,7 +470,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param colorStr string representing the color
      * \param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to true
      * \param strictEval set to true for stricter color parsing rules
-     * @returns parsed color
+     * \returns parsed color
      * \since QGIS 2.3
      */
     static QColor parseColorWithAlpha( const QString &colorStr, bool &containsAlpha, bool strictEval = false );

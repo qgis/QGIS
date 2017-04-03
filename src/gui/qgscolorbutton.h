@@ -68,7 +68,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     virtual QSize sizeHint() const override;
 
     /** Return the currently selected color.
-     * @returns currently selected color
+     * \returns currently selected color
      * @see setColor
      */
     QColor color() const;
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Returns whether alpha modification (transparency) is permitted
      * for the color.
-     * @returns true if alpha modification is allowed
+     * \returns true if alpha modification is allowed
      * @see setAllowAlpha
      */
     bool allowAlpha() const { return mAllowAlpha; }
@@ -94,13 +94,13 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void setColorDialogTitle( const QString &title );
 
     /** Returns the title for the color chooser dialog window.
-     * @returns title for the color chooser dialog
+     * \returns title for the color chooser dialog
      * @see setColorDialogTitle
      */
     QString colorDialogTitle() const;
 
     /** Returns whether the button accepts live updates from QColorDialog.
-     * @returns true if the button will be accepted immediately when the dialog's color changes
+     * \returns true if the button will be accepted immediately when the dialog's color changes
      * @see setAcceptLiveUpdates
      */
     bool acceptLiveUpdates() const { return mAcceptLiveUpdates; }
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void setShowMenu( const bool showMenu );
 
     /** Returns whether the drop down menu is shown for the button.
-     * @returns true if drop down menu is shown
+     * \returns true if drop down menu is shown
      * @see setShowMenu
      */
     bool showMenu() const { return menu() ? true : false; }
@@ -133,7 +133,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void setBehavior( const Behavior behavior );
 
     /** Returns the behavior for when the button is clicked.
-     * @returns behavior when button is clicked
+     * \returns behavior when button is clicked
      * @see setBehavior
      */
     Behavior behavior() const { return mBehavior; }
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Returns the default color for the button, which is shown in the button's drop down menu for the
      * "default color" option.
-     * @returns default color for the button. Returns an invalid QColor if the default color
+     * \returns default color for the button. Returns an invalid QColor if the default color
      * option is disabled.
      * @see setDefaultColor
      */
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Returns whether the "no color" option is shown in the button's drop down menu. If selected,
      * the "no color" option sets the color button's color to a totally transparent color.
-     * @returns true if the no color option is shown.
+     * \returns true if the no color option is shown.
      * @see setShowNoColor
      * @see noColorString
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
@@ -206,7 +206,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     bool isNull() const;
 
     /** Returns the string used for the "no color" option in the button's drop down menu.
-     * @returns string used for the "no color" menu option
+     * \returns string used for the "no color" menu option
      * @see setNoColorString
      * @see showNoColor
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
@@ -225,7 +225,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /** Returns the context string for the color button. The context string is passed to all color swatch
      * grids shown in the button's drop down menu, to allow them to customise their display colors
      * based on the context.
-     * @returns context string for the color button's color swatch grids
+     * \returns context string for the color button's color swatch grids
      * @see setContext
      */
     QString context() const { return mContext; }
@@ -240,7 +240,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Returns the color scheme registry for the button, which controls the color swatch grids
      * that are shown in the button's drop down menu.
-     * @returns color scheme registry for the button. If returned value is 0 then all color
+     * \returns color scheme registry for the button. If returned value is 0 then all color
      * swatch grids are hidden from the button's drop down menu.
      * @see setColorSchemeRegistry
      */
@@ -388,7 +388,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
-     * @returns true if mime data could be intrepreted as a color
+     * \returns true if mime data could be intrepreted as a color
      * \param mimeData mime data
      * \param resultColor QColor to store evaluated color
      * @see createColorMimeData

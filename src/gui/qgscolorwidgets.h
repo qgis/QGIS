@@ -61,19 +61,19 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     QgsColorWidget( QWidget *parent = nullptr, const ColorComponent component = Multiple );
 
     /** Returns the current color for the widget
-     * @returns current widget color
+     * \returns current widget color
      * @see setColor
      */
     QColor color() const;
 
     /** Returns the color component which the widget controls
-     * @returns color component for widget
+     * \returns color component for widget
      * @see setComponent
      */
     ColorComponent component() const { return mComponent; }
 
     /** Returns the current value of the widget's color component
-     * @returns value of color component, or -1 if widget has multiple components or an invalid color
+     * \returns value of color component, or -1 if widget has multiple components or an invalid color
      * set
      * @see setComponentValue
      * @see component
@@ -134,26 +134,26 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     int mExplicitHue;
 
     /** Returns the range of valid values for the color widget's component
-     * @returns maximum value allowed for color component, or -1 if widget has multiple components
+     * \returns maximum value allowed for color component, or -1 if widget has multiple components
      */
     int componentRange() const;
 
     /** Returns the range of valid values a color component
-     * @returns maximum value allowed for color component
+     * \returns maximum value allowed for color component
      */
     int componentRange( const ColorComponent component ) const;
 
     /** Returns the value of a component of the widget's current color. This method correctly
      * handles hue values when the color has an ambiguous hue (e.g., black or white shades)
      * \param component color component to return
-     * @returns value of color component, or -1 if widget has an invalid color set
+     * \returns value of color component, or -1 if widget has an invalid color set
      * @see hue
      */
     int componentValue( const ColorComponent component ) const;
 
     /** Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
      * as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
-     * @returns explicitly set hue for widget
+     * \returns explicitly set hue for widget
      */
     int hue() const;
 
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     void alterColor( QColor &color, const QgsColorWidget::ColorComponent component, const int newValue ) const;
 
     /** Generates a checkboard pattern pixmap for use as a background to transparent colors
-     * @returns checkerboard pixmap
+     * \returns checkerboard pixmap
      */
     static const QPixmap &transparentBackground();
 
@@ -393,12 +393,12 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     void createBox();
 
     /** Returns the range of permissible values along the x axis
-     * @returns maximum color component value for x axis
+     * \returns maximum color component value for x axis
      */
     int valueRangeX() const;
 
     /** Returns the range of permissible values along the y axis
-     * @returns maximum color component value for y axis
+     * \returns maximum color component value for y axis
      */
     int valueRangeY() const;
 
@@ -466,7 +466,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     void setOrientation( const Orientation orientation );
 
     /** Fetches the orientation for the color ramp
-     * @returns orientation for the ramp
+     * \returns orientation for the ramp
      * @see setOrientation
      */
     Orientation orientation() const { return mOrientation; }
@@ -478,7 +478,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     void setInteriorMargin( const int margin );
 
     /** Fetches the margin between the edge of the widget and the ramp
-     * @returns margin around the ramp
+     * \returns margin around the ramp
      * @see setInteriorMargin
      */
     int interiorMargin() const { return mMargin; }
@@ -490,7 +490,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     void setShowFrame( const bool showFrame );
 
     /** Fetches whether the ramp is drawn within a frame
-     * @returns true if a frame is drawn around the ramp
+     * \returns true if a frame is drawn around the ramp
      * @see setShowFrame
      */
     bool showFrame() const { return mShowFrame; }
@@ -572,14 +572,14 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
     /** Converts the real value of a color component to a friendly display value. For instance,
      * alpha values from 0-255 have little meaning to users, so we translate them to 0-100%
      * \param realValue actual value of the color component
-     * @returns display value of color component
+     * \returns display value of color component
      * @see convertDisplayToReal
      */
     int convertRealToDisplay( const int realValue ) const;
 
     /** Converts the display value of a color component to a real value.
      * \param displayValue friendly display value of the color component
-     * @returns real value of color component
+     * \returns real value of color component
      * @see convertRealToDisplay
      */
     int convertDisplayToReal( const int displayValue ) const;
@@ -681,7 +681,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     virtual QSize sizeHint() const override;
 
     /** Returns the secondary color for the widget
-     * @returns secondary widget color, or an invalid color if the widget
+     * \returns secondary widget color, or an invalid color if the widget
      * has no secondary color
      * @see color
      * @see setColor2

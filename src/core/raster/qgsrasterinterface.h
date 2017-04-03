@@ -120,7 +120,7 @@ class CORE_EXPORT QgsRasterInterface
 
     /**
      * Get the extent of the interface.
-     * @return QgsRectangle containing the extent of the layer
+     * \returns QgsRectangle containing the extent of the layer
      */
     virtual QgsRectangle extent() const { return mInput ? mInput->extent() : QgsRectangle(); }
 
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsRasterInterface
      * \param extent Extent used to calc statistics, if empty, whole raster extent is used.
      * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      * \param feedback optional feedback object
-     * @return Band statistics.
+     * \returns Band statistics.
      */
     virtual QgsRasterBandStats bandStatistics( int bandNo,
         int stats = QgsRasterBandStats::All,
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsRasterInterface
         int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr );
 
     /** \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
-     * @return true if statistics are available (ready to use)
+     * \return true if statistics are available (ready to use)
      */
     virtual bool hasStatistics( int bandNo,
                                 int stats = QgsRasterBandStats::All,

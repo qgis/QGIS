@@ -108,7 +108,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * If an invalid variant is returned this will be interpreted as no change.
      * Be sure to return a NULL QVariant if it should be set to NULL.
      *
-     * @return The current value the widget represents
+     * \return The current value the widget represents
      */
     virtual QString expression() = 0;
 
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     /** Creates a filter expression based on the current state of the search widget
      * and the specified filter flags.
      * \param flags filter flags
-     * @returns filter expression
+     * \returns filter expression
      * \since QGIS 2.16
      */
     // TODO QGIS 3.0 - make pure virtual

@@ -143,7 +143,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * and rule key.
      * \param layerId map layer ID
      * \param ruleKey legend node rule key
-     * @returns QgsLayerTreeModelLegendNode if found
+     * \returns QgsLayerTreeModelLegendNode if found
      * \since QGIS 2.14
      */
     QgsLayerTreeModelLegendNode *findLegendNode( const QString &layerId, const QString &ruleKey ) const;

@@ -101,7 +101,7 @@ class CORE_EXPORT QgsSymbol
     // symbol layers handling
 
     /** Returns list of symbol layers contained in the symbol.
-     * @returns symbol layers list
+     * \returns symbol layers list
      * \since QGIS 2.7
      * @see symbolLayer
      * @see symbolLayerCount
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsSymbol
 
     /** Returns a specific symbol layers contained in the symbol.
      * \param layer layer number
-     * @returns corresponding symbol layer
+     * \returns corresponding symbol layer
      * \since QGIS 2.7
      * @see symbolLayers
      * @see symbolLayerCount
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsSymbol
     QgsSymbolLayer *symbolLayer( int layer );
 
     /** Returns total number of symbol layers contained in the symbol.
-     * @returns count of symbol layers
+     * \returns count of symbol layers
      * \since QGIS 2.7
      * @see symbolLayers
      * @see symbolLayer
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsSymbol
      * Ownership will be transferred.
      * \param index The index at which the layer should be added
      * \param layer The symbol layer to add
-     * @return True if the layer is added, False if the index or the layer is bad
+     * \return True if the layer is added, False if the index or the layer is bad
      */
     bool insertSymbolLayer( int index, QgsSymbolLayer *layer );
 
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsSymbol
      * Append symbol layer at the end of the list
      * Ownership will be transferred.
      * \param layer The layer to add
-     * @return True if the layer is added, False if the layer is bad
+     * \return True if the layer is added, False if the layer is bad
      */
     bool appendSymbolLayer( QgsSymbolLayer *layer );
 
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsSymbol
      * Remove symbol layer from the list and return pointer to it.
      * Ownership is handed to the caller.
      * \param index The index of the layer to remove
-     * @return A pointer to the removed layer
+     * \return A pointer to the removed layer
      */
     QgsSymbolLayer *takeSymbolLayer( int index );
 
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsSymbol
      * symbol layer definitions will interpret this in different ways, e.g., a marker symbol
      * may use it to specify the units for the marker size, while a line symbol
      * may use it to specify the units for the line width.
-     * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol contains mixed units
+     * \returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol contains mixed units
      * @see setOutputUnit()
      */
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsSymbol
      * extent. If this option is enabled then features which are partially outside the extent
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
-     * @returns true if features will be clipped
+     * \returns true if features will be clipped
      * \since QGIS 2.9
      * @see setClipFeaturesToExtent
      */
@@ -285,7 +285,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Returns the symbol render context. Only valid between startRender and stopRender calls.
      *
-     * @return The symbol render context
+     * \return The symbol render context
      */
     QgsSymbolRenderContext *symbolRenderContext();
 
@@ -486,7 +486,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     /**
      * This scope is always available when a symbol of this type is being rendered.
      *
-     * @return An expression scope for details about this symbol
+     * \return An expression scope for details about this symbol
      */
     QgsExpressionContextScope *expressionContextScope();
 
@@ -558,7 +558,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     void setDataDefinedAngle( const QgsProperty &property );
 
     /** Returns data defined angle for whole symbol (including all symbol layers).
-     * @returns data defined angle, or invalid property if angle is not set
+     * \returns data defined angle, or invalid property if angle is not set
      * at the marker level.
      * \since QGIS 3.0
      * @see setDataDefinedAngle()
@@ -600,7 +600,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     void setSizeUnit( QgsUnitTypes::RenderUnit unit );
 
     /** Returns the size units for the whole symbol (including all symbol layers).
-     * @returns size units, or mixed units if symbol layers have different units
+     * \returns size units, or mixed units if symbol layers have different units
      * \since QGIS 2.16
      * @see setSizeUnit()
      * @see sizeMapUnitScale()
@@ -634,7 +634,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     void setDataDefinedSize( const QgsProperty &property );
 
     /** Returns data defined size for whole symbol (including all symbol layers).
-     * @returns data defined size, or invalid property if size is not set
+     * \returns data defined size, or invalid property if size is not set
      * at the marker level.
      * \since QGIS 3.0
      * @see setDataDefinedSize
@@ -653,7 +653,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \param context render context
      * \param feature feature being rendered at point (optional). If not specified, the bounds calculation will not
      * include data defined parameters such as offset and rotation
-     * @returns approximate symbol bounds, in painter units
+     * \returns approximate symbol bounds, in painter units
      * \since QGIS 2.14
     */
     QRectF bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
@@ -691,7 +691,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
     void setDataDefinedWidth( const QgsProperty &property );
 
     /** Returns data defined width for whole symbol (including all symbol layers).
-     * @returns data defined width, or invalid property if size is not set
+     * \returns data defined width, or invalid property if size is not set
      * at the line level. Caller takes responsibility for deleting the returned object.
      * \since QGIS 3.0
      * @see setDataDefinedWidth

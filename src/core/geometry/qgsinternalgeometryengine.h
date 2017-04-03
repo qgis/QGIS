@@ -46,7 +46,7 @@ class QgsInternalGeometryEngine
      *
      * \param x offset in x direction
      * \param y offset in y direction
-     * @return an extruded polygon
+     * \return an extruded polygon
      */
     QgsGeometry extrude( double x, double y ) const;
 

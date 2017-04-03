@@ -72,7 +72,7 @@ class CORE_EXPORT QgsDxfExport
      * Export to a dxf file in the given encoding
      * \param d device
      * \param codec encoding
-     * @returns 0 on success, 1 on invalid device, 2 when devices is not writable
+     * \returns 0 on success, 1 on invalid device, 2 when devices is not writable
      */
     int writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
@@ -84,14 +84,14 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Retrieve reference scale for output
-     * @returns reference scale
+     * \returns reference scale
      * @see setSymbologyScaleDenominator
      */
     double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
 
     /**
      * Retrieve map units
-     * @returns unit
+     * \returns unit
      */
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Get symbology export mode
-     * @returns mode
+     * \returns mode
      * @see setSymbologyExport
      */
     SymbologyExport symbologyExport() const { return mSymbologyExport; }
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Get extent of area to export
-     * @returns area to export
+     * \returns area to export
      * @see setExtent
      */
     QgsRectangle extent() const { return mExtent; }
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Retrieve whether layer title (where set) instead of name shall be use
-     * @returns flag
+     * \returns flag
      * @see setLayerTitleAsName
      */
     bool layerTitleAsName() { return mLayerTitleAsName; }
@@ -160,14 +160,14 @@ class CORE_EXPORT QgsDxfExport
      * Get layer name for feature
      * \param id layer id of layer
      * \param f feature of layer
-     * @returns layer name for feature
+     * \returns layer name for feature
      */
     QString layerName( const QString &id, const QgsFeature &f ) const;
 
     /**
      * Get name for layer respecting the use layer title as layer name mode
      * \param vl the vector layer
-     * @returns name of layer
+     * \returns name of layer
      * @see setLayerTitleAsName
      */
     QString layerName( QgsVectorLayer *vl ) const;
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsDxfExport
      * Write a tuple of group code and a handle
      * \param code group code to use
      * \param handle handle to use (0 generates a new handle)
-     * @returns the used handle
+     * \returns the used handle
      */
     int writeHandle( int code = 5, int handle = 0 );
 

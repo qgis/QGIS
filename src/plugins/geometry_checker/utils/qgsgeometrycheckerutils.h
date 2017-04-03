@@ -35,7 +35,7 @@ namespace QgsGeometryCheckerUtils
   /**
    * @brief Return the number of points in a polyline, accounting for duplicate start and end point if the polyline is closed
    * \param polyLine The polyline
-   * @return The number of distinct points of the polyline
+   * \return The number of distinct points of the polyline
    */
   inline int polyLineSize( const QgsAbstractGeometry *geom, int iPart, int iRing, bool *isClosed = nullptr )
   {
@@ -64,7 +64,7 @@ namespace QgsGeometryCheckerUtils
      * \param p1 The first point
      * \param p2 The second point
      * \param tol The tolerance
-     * @return Whether the points are equal
+     * \return Whether the points are equal
      */
   inline bool pointsFuzzyEqual( const QgsPointV2 &p1, const QgsPointV2 &p2, double tol )
   {

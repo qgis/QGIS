@@ -60,7 +60,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * \param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
      * \param parent   The parent for the wrapper class and any created widget.
      *
-     * @return         A new widget wrapper
+     * \return         A new widget wrapper
      */
     virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const = 0;
 
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
     /**
      * Return The human readable identifier name of this widget type
      *
-     * @return a name
+     * \return a name
      */
     QString name();
 
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * \param fieldIdx The field index for which the widget will be created
      * \param parent   The parent widget of the created config widget
      *
-     * @return         A configuration widget
+     * \return         A configuration widget
      */
     virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0;
 
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * \param vl        The layer
      * \param fieldIdx  The field index
-     * @return          True if the type is supported for this field
+     * \return          True if the type is supported for this field
      *
      * @see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
      */
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * Each widget type can have a priority value attached, the factory with the highest one
      * will be used.
      *
-     * @return A map of widget type names and weight values
+     * \return A map of widget type names and weight values
      * \note not available in Python bindings
      */
     virtual QHash<const char *, int> supportedWidgetTypes() { return QHash<const char *, int>(); }
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * \param vl
      * \param fieldIdx
-     * @return 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
+     * \return 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
      *      taken by default). The default implementation returns 5..
      *
      * @see supportsField( QgsVectorLayer* vl, fieldIdx )

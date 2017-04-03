@@ -109,7 +109,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
 
     /** Returns the value of a specified statistic
      * \param stat statistic to return
-     * @returns calculated value of statistic
+     * \returns calculated value of statistic
      */
     QVariant statistic( Statistic stat ) const;
 

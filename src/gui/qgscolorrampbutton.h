@@ -66,13 +66,13 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     void setColorRampDialogTitle( const QString &title );
 
     /** Returns the title for the color ramp dialog window.
-     * @returns title for the color ramp dialog
+     * \returns title for the color ramp dialog
      * @see setColorRampDialogTitle
      */
     QString colorRampDialogTitle() const;
 
     /** Returns whether the button accepts live updates from QgsColorRampDialog.
-     * @returns true if the button will be accepted immediately when the dialog's color ramp changes
+     * \returns true if the button will be accepted immediately when the dialog's color ramp changes
      * @see setAcceptLiveUpdates
      */
     bool acceptLiveUpdates() const { return mAcceptLiveUpdates; }
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     void setShowMenu( const bool showMenu );
 
     /** Returns whether the drop down menu is shown for the button.
-     * @returns true if drop down menu is shown
+     * \returns true if drop down menu is shown
      * @see setShowMenu
      */
     bool showMenu() const { return menu() ? true : false; }
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
     /** Returns a copy of the default color ramp for the button, which is shown in the button's drop down menu for the
      * "default color ramp" option.
-     * @returns default color ramp for the button. Returns a null pointer if the default color ramp
+     * \returns default color ramp for the button. Returns a null pointer if the default color ramp
      * option is disabled.
      * @see setDefaultColorRamp
      */
@@ -160,7 +160,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /** Returns the context string for the color ramp button. The context string is passed to all color ramp
      * preview icons shown in the button's drop down menu, to (eventually) allow them to customise their display colors
      * based on the context.
-     * @returns context context string for the color dialog button's color ramp preview icons
+     * \returns context context string for the color dialog button's color ramp preview icons
      * @see setContext
      */
     QString context() const { return mContext; }

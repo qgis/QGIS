@@ -100,7 +100,7 @@ class CORE_EXPORT QgsDistanceArea
 
     /** Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
      * both the ellipsoid has been set and ellipsoidalEnabled() is true.
-     * @returns true if ellipsoid was successfully set
+     * \returns true if ellipsoid was successfully set
      * @see ellipsoid()
      * @see setEllipsoidalMode()
      * @see willUseEllipsoid()
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsDistanceArea
 
     /** Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
      * both the ellipsoid has been set and ellipsoidalEnabled() is true.
-     * @returns true if ellipsoid was successfully set
+     * \returns true if ellipsoid was successfully set
      * @see ellipsoid()
      * @see setEllipsoidalMode()
      * @see willUseEllipsoid()
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsDistanceArea
 
     /** Measures the area of a geometry.
      * \param geometry geometry to measure
-     * @returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
+     * \returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
      * returned area can be retrieved by calling areaUnits().
      * \since QGIS 2.12
      * @see measureLength()
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsDistanceArea
 
     /** Measures the area of a geometry.
      * \param geometry geometry to measure
-     * @returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
+     * \returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
      * returned area can be retrieved by calling areaUnits().
      * \since QGIS 2.12
      * @see measureLength()
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsDistanceArea
 
     /** Measures the length of a geometry.
      * \param geometry geometry to measure
-     * @returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
+     * \returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
      * returned distance can be retrieved by calling lengthUnits().
      * \since QGIS 2.12
      * @see lengthUnits()
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsDistanceArea
 
     /** Measures the length of a geometry.
      * \param geometry geometry to measure
-     * @returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
+     * \returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
      * returned distance can be retrieved by calling lengthUnits().
      * \since QGIS 2.12
      * @see lengthUnits()
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsDistanceArea
 
     /** Measures the perimeter of a polygon geometry.
      * \param geometry geometry to measure
-     * @returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
+     * \returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
      * returned perimeter can be retrieved by calling lengthUnits().
      * \since QGIS 2.12
      * @see lengthUnits()
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsDistanceArea
 
     /** Measures the perimeter of a polygon geometry.
      * \param geometry geometry to measure
-     * @returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
+     * \returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
      * returned perimeter can be retrieved by calling lengthUnits().
      * \since QGIS 2.12
      * @see lengthUnits()
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsDistanceArea
 
     /** Measures the length of a line with multiple segments.
      * \param points list of points in line
-     * @returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
+     * \returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
      * @see lengthUnits()
      */
     double measureLine( const QList<QgsPoint> &points ) const;
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsDistanceArea
     /** Measures length of a line with one segment.
      * \param p1 start of line
      * \param p2 end of line
-     * @returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
+     * \returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
      * @see lengthUnits()
      */
     double measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const;
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param p1 start of line
      * \param p2 end of line
      * \param units will be set to units of measure
-     * @returns calculated distance between points. Distance units are stored in units parameter.
+     * \returns calculated distance between points. Distance units are stored in units parameter.
      * \since QGIS 2.12
      */
     double measureLine( const QgsPoint &p1, const QgsPoint &p2, QgsUnitTypes::DistanceUnit &units ) const;
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param unit unit of distance
      * \param keepBaseUnit set to false to allow conversion of large distances to more suitable units, e.g., meters to
      * kilometers
-     * @returns formatted distance string
+     * \returns formatted distance string
      * \since QGIS 2.16
      * @see formatArea()
      */
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param unit unit of area
      * \param keepBaseUnit set to false to allow conversion of large areas to more suitable units, e.g., square meters to
      * square kilometers
-     * @returns formatted area string
+     * \returns formatted area string
      * \since QGIS 2.14
      * @see formatDistance()
      */
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param length length value calculated by this class to convert. It is assumed that the length
      * was calculated by this class, ie that its unit of length is equal to lengthUnits().
      * \param toUnits distance unit to convert measurement to
-     * @returns converted distance
+     * \returns converted distance
      * @see convertAreaMeasurement()
      * \since QGIS 2.14
      */
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param area area value calculated by this class to convert. It is assumed that the area
      * was calculated by this class, ie that its unit of area is equal to areaUnits().
      * \param toUnits area unit to convert measurement to
-     * @returns converted area
+     * \returns converted area
      * @see convertLengthMeasurement()
      * \since QGIS 2.14
      */
@@ -299,7 +299,7 @@ class CORE_EXPORT QgsDistanceArea
      *
      * \note if course1 is not NULL, bearing (in radians) from first point is calculated
      * (the same for course2)
-     * @return distance in meters
+     * \return distance in meters
      */
     double computeDistanceBearing( const QgsPoint &p1, const QgsPoint &p2,
                                    double *course1 = nullptr, double *course2 = nullptr ) const;

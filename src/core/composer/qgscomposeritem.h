@@ -126,7 +126,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Returns whether this item has been removed from the composition. Items removed
      * from the composition are not deleted so that they can be restored via an undo
      * command.
-     * @returns true if the item has been removed from the composition
+     * \returns true if the item has been removed from the composition
      * \since QGIS 2.5
      * @see setIsRemoved
      */
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) { Q_UNUSED( factor ); Q_UNUSED( point ); Q_UNUSED( mode ); }
 
     /** Gets the page the item is currently on.
-     * @returns page number for item, beginning on page 1
+     * \returns page number for item, beginning on page 1
      * @see pagePos
      * @see updatePagePos
      * \since QGIS 2.4
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     int page() const;
 
     /** Returns the item's position relative to its current page.
-     * @returns position relative to the page's top left corner.
+     * \returns position relative to the page's top left corner.
      * @see page
      * @see updatePagePos
      * \since QGIS 2.4
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool _readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     /** Whether this item has a frame or not.
-     * @returns true if there is a frame around this item, otherwise false.
+     * \returns true if there is a frame around this item, otherwise false.
      * @see setFrameEnabled
      * @see frameStrokeWidth
      * @see frameJoinStyle
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void setFrameStrokeColor( const QColor &color );
 
     /** Returns the frame's stroke color. Only used if hasFrame is true.
-     * @returns frame stroke color
+     * \returns frame stroke color
      * \since QGIS 2.6
      * @see hasFrame
      * @see setFrameStrokeColor
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void setFrameStrokeWidth( const double strokeWidth );
 
     /** Returns the frame's stroke width. Only used if hasFrame is true.
-     * @returns Frame stroke width
+     * \returns Frame stroke width
      * \since QGIS 2.3
      * @see hasFrame
      * @see setFrameStrokeWidth
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     double frameStrokeWidth() const { return mFrameWidth; }
 
     /** Returns the join style used for drawing the item's frame
-     * @returns Join style for stroke frame
+     * \returns Join style for stroke frame
      * \since QGIS 2.3
      * @see hasFrame
      * @see setFrameJoinStyle
@@ -322,7 +322,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual QRectF rectWithFrame() const;
 
     /** Whether this item has a Background or not.
-     * @returns true if there is a Background around this item, otherwise false.
+     * \returns true if there is a Background around this item, otherwise false.
      * @see setBackgroundEnabled
      * @see backgroundColor
      */
@@ -330,14 +330,14 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Set whether this item has a Background drawn around it or not.
      * \param drawBackground draw Background
-     * @returns nothing
+     * \returns nothing
      * @see hasBackground
      * @see setBackgroundColor
      */
     void setBackgroundEnabled( const bool drawBackground ) { mBackground = drawBackground; }
 
     /** Gets the background color for this item
-     * @returns background color
+     * \returns background color
      * @see setBackgroundColor
      * @see hasBackground
      */
@@ -345,14 +345,14 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Sets the background color for this item
      * \param backgroundColor new background color
-     * @returns nothing
+     * \returns nothing
      * @see backgroundColor
      * @see setBackgroundEnabled
      */
     void setBackgroundColor( const QColor &backgroundColor );
 
     /** Returns the item's composition blending mode.
-     * @returns item blending mode
+     * \returns item blending mode
      * @see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
@@ -364,7 +364,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void setBlendMode( const QPainter::CompositionMode blendMode );
 
     /** Returns the item's transparency
-     * @returns transparency as integer between 0 (transparent) and 255 (opaque)
+     * \returns transparency as integer between 0 (transparent) and 255 (opaque)
      * @see setTransparency
      */
     int transparency() const { return mTransparency; }
@@ -376,7 +376,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void setTransparency( const int transparency );
 
     /** Returns whether effects (e.g., blend modes) are enabled for the item
-     * @returns true if effects are enabled
+     * \returns true if effects are enabled
      * @see setEffectsEnabled
      * @see transparency
      * @see blendMode
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool positionLock() const { return mItemPositionLocked; }
 
     /** Returns the current rotation for the composer item.
-     * @returns rotation for composer item
+     * \returns rotation for composer item
      * \param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
@@ -440,7 +440,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void updateItem();
 
     /** Get item's id (which is not necessarly unique)
-     * @returns item id
+     * \returns item id
      * @see setId
      */
     QString id() const { return mId; }
@@ -452,7 +452,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void setId( const QString &id );
 
     /** Get item identification name
-     * @returns unique item identification string
+     * \returns unique item identification string
      * \note there is not setter since one can't manually set the id
      * @see id
      * @see setId
@@ -461,7 +461,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Get item display name. This is the item's id if set, and if
      * not, a user-friendly string identifying item type.
-     * @returns display name for item
+     * \returns display name for item
      * @see id
      * @see setId
      * \since QGIS 2.5
@@ -480,7 +480,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Returns whether the item should be excluded from composer exports and prints
      * \param valueType controls whether the returned value is the user specified value,
      * or the current evaluated value (which may be affected by data driven settings).
-     * @returns true if item should be excluded
+     * \returns true if item should be excluded
      * \since QGIS 2.5
      * @see setExcludeFromExports
      */
@@ -494,7 +494,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void setExcludeFromExports( const bool exclude );
 
     /** Returns whether this item is part of a group
-     * @returns true if item is in a group
+     * \returns true if item is in a group
      * \since QGIS 2.5
      * @see setIsGroupMember
      */
@@ -508,7 +508,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void setIsGroupMember( const bool isGroupMember );
 
     /** Get the number of layers that this item requires for exporting as layers
-     * @returns 0 if this item is to be placed on the same layer as the previous item,
+     * \returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
      * \since QGIS 2.4
      * @see setCurrentExportLayer
@@ -659,7 +659,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     double rectHandlerBorderTolerance() const;
 
     /** Returns the zoom factor of the graphics view.
-     * @return the factor or -1 in case of error (e.g. graphic view does not exist)
+     * \return the factor or -1 in case of error (e.g. graphic view does not exist)
      */
     double horizontalViewScaleFactor() const;
 
@@ -680,14 +680,14 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * the position of the returned rect will be adjusted to account for the item's
      * position mode
      * \param context expression context for evaluating data defined expressions
-     * @returns bounding box rectangle for item after data defined size and position have been
+     * \returns bounding box rectangle for item after data defined size and position have been
      * set and position mode has been accounted for
      * \since QGIS 2.5
      */
     QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false, const QgsExpressionContext *context = nullptr );
 
     /** Returns whether the item should be drawn in the current context
-     * @returns true if item should be drawn
+     * \returns true if item should be drawn
      * \since QGIS 2.5
      */
     bool shouldDrawItem() const;

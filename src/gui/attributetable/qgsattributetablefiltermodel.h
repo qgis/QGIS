@@ -98,7 +98,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Returns if selected features are currently shown on top
      *
-     * @return True if selected are shown on top
+     * \return True if selected are shown on top
      */
     bool selectedOnTop();
 
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Get a list of currently filtered feature ids
      *
-     * @return A list of feature ids
+     * \return A list of feature ids
      */
     QgsFeatureIds filteredFeatures();
 
@@ -132,21 +132,21 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Returns the layer this filter acts on.
      *
-     * @return Abovementioned layer
+     * \return Abovementioned layer
      */
     inline QgsVectorLayer *layer() const { return masterModel()->layer(); }
 
     /**
      * Returns the layerCache this filter acts on.
      *
-     * @return The layer cache
+     * \return The layer cache
      */
     inline QgsVectorLayerCache *layerCache() const { return masterModel()->layerCache(); }
 
     /**
      * Returns the table model this filter is using
      *
-     * @return the table model in quesion
+     * \return the table model in quesion
      */
     inline QgsAttributeTableModel *masterModel() const { return mTableModel; }
 
@@ -155,7 +155,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      *
      * \param row A model index of the row in question
      *
-     * @return The feature id of the feature visible in the provided row
+     * \return The feature id of the feature visible in the provided row
      */
     QgsFeatureId rowToId( const QModelIndex &row );
 

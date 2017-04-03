@@ -125,7 +125,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     /**
      * Getter for constraint expression description
-     * @return the expression description
+     * \return the expression description
      * \since QGIS 2.16
      **/
     QString constraintExpressionDescription();

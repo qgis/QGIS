@@ -95,7 +95,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \return the QAction you can use to remove this widget from the toolbar
      */
     QAction *addToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the plugin toolbar
@@ -109,7 +109,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \return the QAction you can use to remove this widget from the toolbar
      */
     QAction *addRasterToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Raster toolbar
@@ -123,7 +123,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \return the QAction you can use to remove this widget from the toolbar
      */
     QAction *addVectorToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Vector toolbar
@@ -137,7 +137,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \return the QAction you can use to remove this widget from the toolbar
      */
     QAction *addDatabaseToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Database toolbar
@@ -151,7 +151,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \return the QAction you can use to remove this widget from the toolbar
      */
     QAction *addWebToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Web toolbar
@@ -459,7 +459,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * \param layer   The layer for which the dialog will be created
      * \param feature The feature for which the dialog will be created
      *
-     * @return A feature form
+     * \return A feature form
      */
     virtual QgsAttributeDialog *getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature ) override;
 
@@ -468,7 +468,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * With the help of this you can access methods like addFeature, startEditing
      * or stopEditing while giving the user the appropriate dialogs.
      *
-     * @return An instance of the vector layer tools
+     * \return An instance of the vector layer tools
      */
     virtual QgsVectorLayerTools *vectorLayerTools() override;
 
@@ -487,7 +487,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     /** Return vector layers in edit mode
      * \param modified whether to return only layers that have been modified
-     * @returns list of layers in legend order, or empty list
+     * \returns list of layers in legend order, or empty list
      */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const override;
 

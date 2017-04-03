@@ -134,14 +134,14 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     /** Check if a database row exists
      *   \param cat
      *   \param error set to error if happens
-     *   @return true if cat is orphan
+     *   \return true if cat is orphan
      */
     bool recordExists( int cat, QString &error );
 
     /** Check if a database row exists and it is orphan (no more lines with that category)
      *   \param cat
      *   \param error set to error if happens
-     *   @return true if cat is orphan
+     *   \return true if cat is orphan
      */
     bool isOrphan( int cat, QString &error );
 

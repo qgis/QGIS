@@ -66,7 +66,7 @@ class CORE_EXPORT QgsVectorLayerImport
      * \param skipAttributeCreation set to true to skip exporting feature attributes
      * \param options optional provider dataset options
      * \param progress optional progress dialog to show progress of export
-     * @returns NoError for a successful export, or encountered error
+     * \returns NoError for a successful export, or encountered error
      */
     static ImportError importLayer( QgsVectorLayer *layer,
                                     const QString &uri,

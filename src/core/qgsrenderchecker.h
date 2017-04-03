@@ -77,7 +77,7 @@ class CORE_EXPORT QgsRenderChecker
      * The path of the rendered image can be retrieved through that method.
      * Will return the path set with setRenderedImage() or generated in runTest()
      *
-     * @return The path to the rendered image
+     * \return The path to the rendered image
      */
     QString renderedImage() { return mRenderedImageFile; }
 
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsRenderChecker
      * mismatch), but where the output was still acceptable. If the render
      * diff matches one of these anomalies we will still consider it to be
      * acceptable.
-     * @return a bool indicating if the diff matched one of the anomaly files
+     * \return a bool indicating if the diff matched one of the anomaly files
      */
     bool isKnownAnomaly( const QString &diffImageFile );
 
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsRenderChecker
     /**
      * Returns the path to the expected image file
      *
-     * @return Path to the expected image file
+     * \return Path to the expected image file
      */
     QString expectedImageFile() const { return mExpectedImageFile; }
 
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsRenderChecker
      * Get access to buffered dash messages.
      * Only will return something if you call enableDashBuffering( true ); before.
      *
-     * @return buffered dash messages
+     * \return buffered dash messages
      * \note not available in Python bindings
      */
     QVector<QgsDartMeasurement> dartMeasurements() const { return mDashMessages; }
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsRenderChecker
  * \param a first WKT string
  * \param b second WKT string
  * \param tolerance tolerance to use (optional, defaults to 0.000001)
- * @return bool indicating if the WKT are sufficiently equal
+ * \return bool indicating if the WKT are sufficiently equal
  */
 
 inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0.000001 )

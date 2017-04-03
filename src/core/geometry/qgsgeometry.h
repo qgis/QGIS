@@ -224,7 +224,7 @@ class CORE_EXPORT QgsGeometry
      * \param afterVertex will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
      * not present.
      * \param sqrDist will be set to the square distance between the closest vertex and the specified point
-     * @returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
+     * \returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
      */
     //TODO QGIS 3.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
     QgsPoint closestVertex( const QgsPoint &point, int &atVertex, int &beforeVertex, int &afterVertex, double &sqrDist ) const;
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns the distance along this geometry from its first vertex to the specified vertex.
      * \param vertex vertex index to calculate distance to
-     * @returns distance to vertex (following geometry), or -1 for invalid vertex numbers
+     * \returns distance to vertex (following geometry), or -1 for invalid vertex numbers
      * \since QGIS 2.16
      */
     double distanceToVertex( int vertex ) const;
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns the bisector angle for this geometry at the specified vertex.
      * \param vertex vertex index to calculate bisector angle at
-     * @returns bisector angle, in radians clockwise from north
+     * \returns bisector angle, in radians clockwise from north
      * \since QGIS 3.0
      * @see interpolateAngle()
      */
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsGeometry
     /**
      *  Returns coordinates of a vertex.
      *  \param atVertex index of the vertex
-     *  @return Coordinates of the vertex or QgsPoint(0,0) on error
+     *  \return Coordinates of the vertex or QgsPoint(0,0) on error
      */
     QgsPoint vertexAt( int atVertex ) const;
 
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsGeometry
      * Searches for the closest vertex in this geometry to the given point.
      * \param point Specifiest the point for search
      * \param atVertex Receives index of the closest vertex
-     * @return The squared cartesian distance is also returned in sqrDist, negative number on error
+     * \return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
     double closestVertexWithContext( const QgsPoint &point, int &atVertex ) const;
 
@@ -356,18 +356,18 @@ class CORE_EXPORT QgsGeometry
      * before the closest segment is always afterVertex - 1
      * \param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
      * \param epsilon epsilon for segment snapping (added in 1.8)
-     * @return The squared cartesian distance is also returned in sqrDist, negative number on error
+     * \return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
     double closestSegmentWithContext( const QgsPoint &point, QgsPoint &minDistPoint, int &afterVertex, double *leftOf = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-     @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
+     \return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( const QList<QgsPoint> &ring );
 
     /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-     @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
+     \return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( QgsCurve *ring );
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsGeometry
     /** Adds a new part to a the geometry.
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
-     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     * \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsGeometry
     /** Adds a new part to a the geometry.
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
-     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     * \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
@@ -393,7 +393,7 @@ class CORE_EXPORT QgsGeometry
     /** Adds a new part to this geometry.
      * \param part part to add (ownership is transferred)
      * \param geomType default geometry type to create if no existing geometry
-     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     * \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
@@ -401,7 +401,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Adds a new island polygon to a multipolygon feature
      * \param newPart part to add. Ownership is NOT transferred.
-     * @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     * \return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      * \note not available in Python bindings
      */
@@ -409,7 +409,7 @@ class CORE_EXPORT QgsGeometry
     int addPart( GEOSGeometry *newPart );
 
     /** Adds a new island polygon to a multipolygon feature
-     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     \return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature
      \note available in Python bindings as addPartGeometry
      \since QGIS 2.2
@@ -426,23 +426,23 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry removeInteriorRings( double minimumAllowedArea = -1 ) const;
 
     /** Translate this geometry by dx, dy
-     @return 0 in case of success*/
+     \return 0 in case of success*/
     int translate( double dx, double dy );
 
     /** Transform this geometry as described by CoordinateTransform ct
-     @return 0 in case of success*/
+     \return 0 in case of success*/
     int transform( const QgsCoordinateTransform &ct );
 
     /** Transform this geometry as described by QTransform ct
      \since QGIS 2.8
-     @return 0 in case of success*/
+     \return 0 in case of success*/
     int transform( const QTransform &ct );
 
     /** Rotate this geometry around the Z axis
          \since QGIS 2.8
          \param rotation clockwise rotation in degrees
          \param center rotation center
-         @return 0 in case of success*/
+         \return 0 in case of success*/
     int rotate( double rotation, const QgsPoint &center );
 
     /** Splits this geometry according to a given line.
@@ -450,7 +450,7 @@ class CORE_EXPORT QgsGeometry
     \param[out] newGeometries list of new geometries that have been created with the split
     \param topological true if topological editing is enabled
     \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-    @return 0 in case of success, 1 if geometry has not been split, error else*/
+    \return 0 in case of success, 1 if geometry has not been split, error else*/
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitGeometry( const QList<QgsPoint> &splitLine,
                        QList<QgsGeometry> &newGeometries,
@@ -458,21 +458,21 @@ class CORE_EXPORT QgsGeometry
                        QList<QgsPoint> &topologyTestPoints );
 
     /** Replaces a part of this geometry with another line
-     * @return 0 in case of success
+     * \return 0 in case of success
      * \since QGIS 1.3
      */
     int reshapeGeometry( const QList<QgsPoint> &reshapeWithLine );
 
     /** Changes this geometry such that it does not intersect the other geometry
      * \param other geometry that should not be intersect
-     * @return 0 in case of success
+     * \return 0 in case of success
      */
     int makeDifference( const QgsGeometry *other );
 
     /** Returns the geometry formed by modifying this geometry such that it does not
      * intersect the other geometry.
      * \param other geometry that should not be intersect
-     * @return difference geometry, or empty geometry if difference could not be calculated
+     * \return difference geometry, or empty geometry if difference could not be calculated
      * \since QGIS 3.0
      */
     QgsGeometry makeDifference( const QgsGeometry &other ) const;
@@ -593,7 +593,7 @@ class CORE_EXPORT QgsGeometry
      * \param side side of geometry to buffer
      * \param joinStyle join style for corners
      * \param mitreLimit limit on the mitre ratio used for very sharp corners
-     * @return buffered geometry, or an empty geometry if buffer could not be
+     * \return buffered geometry, or an empty geometry if buffer could not be
      * calculated
      * \since QGIS 3.0
      */
@@ -714,7 +714,7 @@ class CORE_EXPORT QgsGeometry
      * how far along this linestring you need to traverse to get to the closest location
      * where this linestring comes to the specified point.
      * \param point point to seek proximity to
-     * @return distance along line, or -1 on error
+     * \return distance along line, or -1 on error
      * \note only valid for linestring geometries
      * @see interpolate()
      * \since QGIS 3.0
@@ -742,7 +742,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Merges any connected lines in a LineString/MultiLineString geometry and
      * converts them to single line strings.
-     * @returns a LineString or MultiLineString geometry, with any connected lines
+     * \returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * MultiLineString geometry.
      * \since QGIS 3.0
@@ -765,12 +765,12 @@ class CORE_EXPORT QgsGeometry
 
     /** Exports the geometry to WKT
      *  \note precision parameter added in QGIS 2.4
-     *  @return true in case of success and false else
+     *  \return true in case of success and false else
      */
     QString exportToWkt( int precision = 17 ) const;
 
     /** Exports the geometry to GeoJSON
-     *  @return a QString representing the geometry as GeoJSON
+     *  \return a QString representing the geometry as GeoJSON
      *  \since QGIS 1.8
      *  \note Available in Python bindings since QGIS 1.9
      *  \note precision parameter added in QGIS 2.4
@@ -780,7 +780,7 @@ class CORE_EXPORT QgsGeometry
     /** Try to convert the geometry to the requested type
      * \param destType the geometry type to be converted to
      * \param destMultipart determines if the output geometry will be multipart or not
-     * @return the converted geometry or nullptr if the conversion fails.
+     * \return the converted geometry or nullptr if the conversion fails.
      * \since QGIS 2.2
      */
     QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const;
@@ -833,12 +833,12 @@ class CORE_EXPORT QgsGeometry
 
     /** Delete a ring in polygon or multipolygon.
       Ring 0 is outer ring and can't be deleted.
-      @return true on success
+      \return true on success
       \since QGIS 1.2 */
     bool deleteRing( int ringNum, int partNum = 0 );
 
     /** Delete part identified by the part number
-      @return true on success
+      \return true on success
       \since QGIS 1.2 */
     bool deletePart( int partNum );
 
@@ -848,7 +848,7 @@ class CORE_EXPORT QgsGeometry
      * If it is already a multipart geometry, it will return true and
      * not change the geometry.
      *
-     * @return true in case of success and false else
+     * \return true in case of success and false else
      */
     bool convertToMultiType();
 
@@ -859,12 +859,12 @@ class CORE_EXPORT QgsGeometry
      * If it is already a single part geometry, it will return true and
      * not change the geometry.
      *
-     * @return true in case of success and false else
+     * \return true in case of success and false else
      */
     bool convertToSingleType();
 
     /** Modifies geometry to avoid intersections with the layers specified in project properties
-     *  @return 0 in case of success,
+     *  \return 0 in case of success,
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
@@ -884,7 +884,7 @@ class CORE_EXPORT QgsGeometry
      * of lower-to-equal dimension geometries or a geometry of lower dimension.
      * Single polygons may become multi-geometries in case of self-intersections.
      * It preserves Z values, but M values will be dropped.
-     * @return new valid QgsGeometry or null geometry on error
+     * \return new valid QgsGeometry or null geometry on error
      * \since QGIS 3.0
      */
     QgsGeometry makeValid();
@@ -963,7 +963,7 @@ class CORE_EXPORT QgsGeometry
     /** Calculates the vertex ID from a vertex number
      * \param nr vertex number
      * \param id reference to QgsVertexId for storing result
-     * @returns true if vertex was found
+     * \returns true if vertex was found
      * \since QGIS 2.10
      * @see vertexNrFromVertexId
      */
@@ -971,7 +971,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Returns the vertex number corresponding to a vertex idd
      * \param i vertex id
-     * @returns vertex number
+     * \returns vertex number
      * \since QGIS 2.10
      * @see vertexIdFromVertexNr
      */
@@ -999,14 +999,14 @@ class CORE_EXPORT QgsGeometry
 
     /** Creates a QgsPolyline from a QPolygonF.
      * \param polygon source polygon
-     * @returns QgsPolyline
+     * \returns QgsPolyline
      * @see createPolygonFromQPolygonF
      */
     static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon );
 
     /** Creates a QgsPolygon from a QPolygonF.
      * \param polygon source polygon
-     * @returns QgsPolygon
+     * \returns QgsPolygon
      * @see createPolylineFromQPolygonF
      */
     static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon );
@@ -1015,7 +1015,7 @@ class CORE_EXPORT QgsGeometry
      * \param p1 first polyline
      * \param p2 second polyline
      * \param epsilon maximum difference for coordinates between the polylines
-     * @returns true if polylines have the same number of points and all
+     * \returns true if polylines have the same number of points and all
      * points are equal within the specified tolerance
      * \since QGIS 2.9
      */
@@ -1025,7 +1025,7 @@ class CORE_EXPORT QgsGeometry
      * \param p1 first polygon
      * \param p2 second polygon
      * \param epsilon maximum difference for coordinates between the polygons
-     * @returns true if polygons have the same number of rings, and each ring has the same
+     * \returns true if polygons have the same number of rings, and each ring has the same
      * number of points and all points are equal within the specified tolerance
      * \since QGIS 2.9
      */
@@ -1035,7 +1035,7 @@ class CORE_EXPORT QgsGeometry
      * \param p1 first multipolygon
      * \param p2 second multipolygon
      * \param epsilon maximum difference for coordinates between the multipolygons
-     * @returns true if multipolygons have the same number of polygons, the polygons have the same number
+     * \returns true if multipolygons have the same number of polygons, the polygons have the same number
      * of rings, and each ring has the same number of points and all points are equal within the specified
      * tolerance
      * \since QGIS 2.9

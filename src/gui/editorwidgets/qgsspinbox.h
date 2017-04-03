@@ -69,7 +69,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
 
     /** Returns whether the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
-     * @returns true if spin box allows expression entry
+     * \returns true if spin box allows expression entry
      * \since QGIS 2.7
      */
     bool expressionsEnabled() const {return mExpressionsEnabled;}

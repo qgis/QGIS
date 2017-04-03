@@ -116,7 +116,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * otherwise points are transformed from destination to source CRS.
      * \param point point to transform
      * \param direction transform direction (defaults to ForwardTransform)
-     * @return transformed point
+     * \return transformed point
      */
     QgsPoint transform( const QgsPoint &point, TransformDirection direction = ForwardTransform ) const;
 
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param x x coordinate of point to transform
      * \param y y coordinate of point to transform
      * \param direction transform direction (defaults to ForwardTransform)
-     * @return transformed point
+     * \return transformed point
      */
     QgsPoint transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
 
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \param handle180Crossover set to true if destination CRS is geographic and handling of extents
      * crossing the 180 degree longitude line is required
-     * @return rectangle in destination CRS
+     * \return rectangle in destination CRS
      */
     QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const;
 
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * otherwise points are transformed from destination to source CRS.
      * \param rectangle rectangle to transform
      * \param direction transform direction (defaults to ForwardTransform)
-     * @return transformed rectangle
+     * \return transformed rectangle
      */
     QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const;
 
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsCoordinateTransform
     static QString datumTransformString( int datumTransform );
 
     /** Gets name of source and dest geographical CRS (to show in a tooltip)
-        @return epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
+        \return epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
     static bool datumTransformCrsInfo( int datumTransform, int &epsgNr, QString &srcProjection, QString &dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
 
     int sourceDatumTransform() const;
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsCoordinateTransform
 
     /** Restores state from the given Dom node.
      * \param node The node from which state will be restored
-     * @return bool True on success, False on failure
+     * \return bool True on success, False on failure
      * @see writeXml()
      */
     bool readXml( const QDomNode &node );
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsCoordinateTransform
     /** Stores state to the given Dom node in the given document
      * \param node The node in which state will be restored
      * \param document The document in which state will be stored
-     * @return bool True on success, False on failure
+     * \return bool True on success, False on failure
      * @see readXml()
      */
     bool writeXml( QDomNode &node, QDomDocument &document ) const;

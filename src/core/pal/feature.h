@@ -133,7 +133,7 @@ namespace pal
        * \param y y coordinate of the point
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param angle orientation of the label
-       * @returns the number of generated candidates
+       * \returns the number of generated candidates
        */
       int createCandidatesAroundPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
@@ -142,7 +142,7 @@ namespace pal
        * \param y y coordinate of the point
        * \param lPos pointer to an array of candidates, will be filled by generated candidate
        * \param angle orientation of the label
-       * @returns the number of generated candidates (always 1)
+       * \returns the number of generated candidates (always 1)
        */
       int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
@@ -151,14 +151,14 @@ namespace pal
        * \param y y coordinate of the point
        * \param lPos pointer to an array of candidates, will be filled by generated candidate
        * \param angle orientation of the label
-       * @returns the number of generated candidates
+       * \returns the number of generated candidates
        */
       int createCandidatesAtOrderedPositionsOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
       /** Generate candidates for line feature.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the line
-       * @returns the number of generated candidates
+       * \returns the number of generated candidates
        */
       int createCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape );
 
@@ -166,7 +166,7 @@ namespace pal
        * straightish segments of the line. Segments closer to horizontal are preferred over vertical segments.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the line
-       * @returns the number of generated candidates
+       * \returns the number of generated candidates
        */
       int createCandidatesAlongLineNearStraightSegments( QList<LabelPosition *> &lPos, PointSet *mapShape );
 
@@ -176,7 +176,7 @@ namespace pal
        * \param mapShape a pointer to the line
        * \param initialCost initial cost for candidates generated using this method. If set, cost can be increased
        * by a preset amount.
-       * @returns the number of generated candidates
+       * \returns the number of generated candidates
        */
       int createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &lPos, PointSet *mapShape, double initialCost = 0.0 );
 
@@ -188,7 +188,7 @@ namespace pal
        * \param distance distance to offset label along curve by
        * \param reversed if true label is reversed from lefttoright to righttoleft
        * \param flip if true label is placed on the other side of the line
-       * @returns calculated label position
+       * \returns calculated label position
        */
       LabelPosition *curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
                                               int &orientation, int index, double distance, bool &reversed, bool &flip );
@@ -196,7 +196,7 @@ namespace pal
       /** Generate curved candidates for line features.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the line
-       * @returns the number of generated candidates
+       * \returns the number of generated candidates
        */
       int createCurvedCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape );
 
@@ -210,7 +210,7 @@ namespace pal
       /** Tests whether this feature part belongs to the same QgsLabelFeature as another
        * feature part.
        * \param part part to compare to
-       * @returns true if both parts belong to same QgsLabelFeature
+       * \returns true if both parts belong to same QgsLabelFeature
        */
       bool hasSameLabelFeatureAs( FeaturePart *part ) const;
 

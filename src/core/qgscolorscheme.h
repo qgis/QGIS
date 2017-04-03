@@ -62,12 +62,12 @@ class CORE_EXPORT QgsColorScheme
     virtual ~QgsColorScheme() = default;
 
     /** Gets the name for the color scheme
-     * @returns color scheme name
+     * \returns color scheme name
      */
     virtual QString schemeName() const = 0;
 
     /** Returns the current flags for the color scheme.
-     * @returns current flags
+     * \returns current flags
      */
     virtual SchemeFlags flags() const { return ShowInColorDialog; }
 
@@ -79,13 +79,13 @@ class CORE_EXPORT QgsColorScheme
      * \param baseColor base color for the scheme's colors. Some color schemes
      * may take advantage of this to filter or modify their returned colors
      * to colors related to the base color.
-     * @returns a list of QPairs of color and color name
+     * \returns a list of QPairs of color and color name
      */
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) = 0;
 
     /** Returns whether the color scheme is editable
-     * @returns true if scheme is editable
+     * \returns true if scheme is editable
      * @see setColors
      */
     virtual bool isEditable() const { return false; }
@@ -94,13 +94,13 @@ class CORE_EXPORT QgsColorScheme
      * \param colors list of colors for the scheme
      * \param context to set colors for
      * \param baseColor base color to set colors for
-     * @returns true if colors were set successfully
+     * \returns true if colors were set successfully
      * @see isEditable
      */
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     /** Clones a color scheme
-     * @returns copy of color scheme
+     * \returns copy of color scheme
      */
     virtual QgsColorScheme *clone() const = 0;
 };
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
   protected:
 
     /** Returns the file path for the associated gpl palette file
-     * @returns gpl file path
+     * \returns gpl file path
      */
     virtual QString gplFilePath() = 0;
 
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
     void setName( const QString &name ) { mName = name; }
 
     /** Erases the associated gpl palette file from the users "palettes" folder
-     * @returns true if erase was successful
+     * \returns true if erase was successful
      */
     bool erase();
 

@@ -45,7 +45,7 @@ class CORE_EXPORT QgsCoordinateUtils
      * between adjacent pixels.
      * \param mapUnitsPerPixel number of map units per pixel
      * \param mapCrs CRS of map
-     * @returns optimal number of decimal places for coordinates
+     * \returns optimal number of decimal places for coordinates
      */
     static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs );
 

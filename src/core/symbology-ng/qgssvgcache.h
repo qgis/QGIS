@@ -141,7 +141,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * \param stroke color of stroke
      * \param strokeWidth width of stroke
      * \param widthScaleFactor width scale factor
-     * @returns viewbox size set in SVG file
+     * \returns viewbox size set in SVG file
      * \since QGIS 2.14
      */
     QSizeF svgViewboxSize( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,

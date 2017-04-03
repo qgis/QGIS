@@ -44,7 +44,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /** Adds a feature
         \param f feature to add
-        @return True in case of success and False in case of error
+        \return True in case of success and False in case of error
      */
     virtual bool addFeature( QgsFeature &f );
 

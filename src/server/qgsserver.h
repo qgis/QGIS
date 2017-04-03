@@ -79,7 +79,7 @@ class SERVER_EXPORT QgsServer
      * variable.
      *
      * \param queryString QString containing the query string
-     * @return the response headers and body QPair of QByteArray
+     * \return the response headers and body QPair of QByteArray
      */
     QPair<QByteArray, QByteArray> handleRequest( const QString &queryString );
 

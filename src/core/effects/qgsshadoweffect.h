@@ -48,7 +48,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void setBlurLevel( const int level ) { mBlurLevel = level; }
 
     /** Returns the blur level (strength) for the shadow.
-     * @returns blur level. Value will be between 0 and 16, with larger
+     * \returns blur level. Value will be between 0 and 16, with larger
      * values indicating greater blur strength.
      * @see setBlurLevel
      */
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void setOffsetAngle( const int angle ) { mOffsetAngle = angle; }
 
     /** Returns the angle used for offsetting the shadow.
-     * @returns offset angle in degrees clockwise from North
+     * \returns offset angle in degrees clockwise from North
      * @see setOffsetAngle
      * @see offsetDistance
      */
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void setOffsetDistance( const double distance ) { mOffsetDist = distance; }
 
     /** Returns the distance used for offsetting the shadow.
-     * @returns offset distance. Distance units are retrieved via @link offsetUnit @endlink
+     * \returns offset distance. Distance units are retrieved via @link offsetUnit @endlink
      * @see setOffsetDistance
      * @see offsetUnit
      * @see offsetMapUnitScale
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void setOffsetUnit( const QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /** Returns the units used for the shadow offset distance.
-     * @returns units for offset distance
+     * \returns units for offset distance
      * @see setOffsetUnit
      * @see offsetDistance
      * @see offsetMapUnitScale
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
 
     /** Returns the map unit scale used for the shadow offset distance.
-     * @returns map unit scale for offset distance
+     * \returns map unit scale for offset distance
      * @see setOffsetMapUnitScale
      * @see offsetDistance
      * @see offsetUnit
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void setColor( const QColor &color ) { mColor = color; }
 
     /** Returns the color used for the shadow.
-     * @returns shadow color
+     * \returns shadow color
      * @see setColor
      */
     QColor color() const { return mColor; }
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void setTransparency( const double transparency ) { mTransparency = transparency; }
 
     /** Returns the transparency for the effect
-     * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
+     * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see setTransparency
      */
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
     /** Returns the blend mode for the effect
-     * @returns blend mode used for drawing the effect on to a destination
+     * \returns blend mode used for drawing the effect on to a destination
      * paint device
      * @see setBlendMode
      */
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
 
     /** Specifies whether the shadow is drawn outside the picture or within
      * the picture.
-     * @returns true if shadow is to be drawn outside the picture, or false
+     * \returns true if shadow is to be drawn outside the picture, or false
      * to draw shadow within the picture
      */
     virtual bool exteriorShadow() const = 0;
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
 
     /** Creates a new QgsDropShadowEffect effect from a properties string map.
      * \param map encoded properties string map
-     * @returns new QgsDropShadowEffect
+     * \returns new QgsDropShadowEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map );
 
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect
 
     /** Creates a new QgsInnerShadowEffect effect from a properties string map.
      * \param map encoded properties string map
-     * @returns new QgsInnerShadowEffect
+     * \returns new QgsInnerShadowEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map );
 

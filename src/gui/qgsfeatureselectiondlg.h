@@ -34,7 +34,7 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
     /**
      * Get the selected features
      *
-     * @return The selected feature ids
+     * \return The selected feature ids
      */
     const QgsFeatureIds &selectedFeatures();
 

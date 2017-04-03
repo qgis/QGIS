@@ -308,7 +308,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \param width context width
      * \param height context height
      * \param dpi context dpi
-     * @return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
+     * \return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
      *         (WMS) - TODO: it is not consistent with QgsRaster::IdentifyFormatValue.
@@ -367,7 +367,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \note Only some providers support editing mode and even those may fail to turn
      * the underlying data source into editing mode, so it is necessary to check the return
      * value whether the operation was successful.
-     * @returns true if the switch to/from editing mode was successful
+     * \returns true if the switch to/from editing mode was successful
      * @see isEditable(), writeBlock()
      * \since QGIS 3.0
      */
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Writing is supported only by some data providers. Provider has to be in editing mode
      * in order to allow write operations.
      * @see isEditable(), setEditable()
-     * @returns true on success
+     * \returns true on success
      * \since QGIS 3.0
      */
     bool writeBlock( QgsRasterBlock *block, int band, int xOffset = 0, int yOffset = 0 );

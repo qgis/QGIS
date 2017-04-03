@@ -211,11 +211,11 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     void drawAnnotation( QPainter *p, QPointF pos, int rotation, const QString &annotationText );
 
     /** Returns the grid lines with associated coordinate value
-        @return 0 in case of success*/
+        \return 0 in case of success*/
     int xGridLines( QList< QPair< qreal, QLineF > > &lines ) const;
 
     /** Returns the grid lines for the y-coordinates. Not vertical in case of rotation
-        @return 0 in case of success*/
+        \return 0 in case of success*/
     int yGridLines( QList< QPair< qreal, QLineF > > &lines ) const;
     //! Returns the item border of a point (in item coordinates)
     Border borderForLineCoord( QPointF point, QPainter *p ) const;

@@ -80,7 +80,7 @@ namespace pal
       /** Tests whether point set contains a specified point.
        * \param x x-coordinate of point
        * \param y y-coordinate of point
-       * @returns true if point set contains a specified point
+       * \returns true if point set contains a specified point
        */
       bool containsPoint( double x, double y ) const;
 
@@ -90,7 +90,7 @@ namespace pal
        * \param width label width
        * \param height label height
        * \param alpha label angle
-       * @returns true if point set completely contains candidate label
+       * \returns true if point set completely contains candidate label
        */
       bool containsLabelCandidate( double x, double y, double width, double height, double alpha = 0 ) const;
 
@@ -108,7 +108,7 @@ namespace pal
        * \param py y coordinate of the points
        * \param rx pointer to x coorinates of the nearest point (can be NULL)
        * \param ry pointer to y coorinates of the nearest point (can be NULL)
-       * @returns minimum distance
+       * \returns minimum distance
        */
       double minDistanceToPoint( double px, double py, double *rx = nullptr, double *ry = nullptr ) const;
 

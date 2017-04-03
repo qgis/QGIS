@@ -219,7 +219,7 @@ class CORE_EXPORT QgsSymbolLayer
      * symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
      * layer may use it to specify the units for the marker size, while a line symbol
      * layer may use it to specify the units for the line width.
-     * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol layer contains mixed units
+     * \returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol layer contains mixed units
      * @see setOutputUnit()
      */
     virtual QgsUnitTypes::RenderUnit outputUnit() const { return QgsUnitTypes::RenderUnknownUnit; }
@@ -272,7 +272,7 @@ class CORE_EXPORT QgsSymbolLayer
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
     /** Returns the current paint effect for the layer.
-     * @returns paint effect
+     * \returns paint effect
      * \since QGIS 2.9
      * @see setPaintEffect
      */
@@ -570,7 +570,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 
     /** Returns the approximate bounding box of the marker symbol layer, taking into account
      * any data defined overrides and offsets which are set for the marker layer.
-     * @returns approximate symbol bounds, in painter units
+     * \returns approximate symbol bounds, in painter units
      * \since QGIS 2.14
      */
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) = 0;
@@ -610,7 +610,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     /** Adjusts a marker offset to account for rotation.
      * \param offset offset prior to rotation
      * \param angle rotation angle in degrees clockwise from north
-     * @return adjusted offset
+     * \return adjusted offset
      */
     static QPointF _rotatedOffset( QPointF offset, double angle );
 

@@ -95,7 +95,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     /** Replaces category symbols with the symbols from a style that have a matching
      * name.
      * \param style style containing symbols to match with
-     * @return number of symbols matched
+     * \return number of symbols matched
      * @see matchToSymbolsFromLibrary
      * @see matchToSymbolsFromXml
      * \since QGIS 2.9

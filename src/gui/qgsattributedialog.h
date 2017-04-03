@@ -76,7 +76,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     /**
      * Is this dialog editable?
      *
-     * @return returns true, if this dialog was created in an editable manner.
+     * \return returns true, if this dialog was created in an editable manner.
      */
     bool editable() { return mAttributeForm->editable(); }
 
@@ -99,7 +99,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      *
      * \param e The event
      *
-     * @return The same as the parent QDialog
+     * \return The same as the parent QDialog
      */
     virtual bool event( QEvent *e ) override;
 

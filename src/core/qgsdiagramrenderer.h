@@ -143,7 +143,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     void setLinePlacementFlags( LinePlacementFlags flags ) { mPlacementFlags = flags; }
 
     /** Returns the diagram priority.
-     * @returns diagram priority, where 0 = low and 10 = high
+     * \returns diagram priority, where 0 = low and 10 = high
      * \note placement priority is shared with labeling, so diagrams with a high priority may displace labels
      * and vice-versa
      * @see setPriority()

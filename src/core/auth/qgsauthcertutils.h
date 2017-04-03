@@ -122,7 +122,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * \param keypath File path to private key
      * \param keypass Passphrase for private key
      * \param reencrypt Whether to re-encrypt the private key with the passphrase
-     * @return certificate, private key, key's algorithm type
+     * \return certificate, private key, key's algorithm type
      */
     static QStringList certKeyBundleToPem( const QString &certpath,
                                            const QString &keypath,
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * \param bundlepath File path to the PKCS bundle
      * \param bundlepass Passphrase for bundle
      * \param reencrypt Whether to re-encrypt the private key with the passphrase
-     * @return certificate, private key, key's algorithm type
+     * \return certificate, private key, key's algorithm type
      */
     static QStringList pkcs12BundleToPem( const QString &bundlepath,
                                           const QString &bundlepass = QString(),
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsAuthCertUtils
     /** Write a temporary file for a PEM text of cert/key/CAs bundle component
      * \param pemtext Component content as PEM text
      * \param name Name of file
-     * @return File path to temporary file
+     * \return File path to temporary file
      */
     static QString pemTextToTempFile( const QString &name, const QByteArray &pemtext );
 

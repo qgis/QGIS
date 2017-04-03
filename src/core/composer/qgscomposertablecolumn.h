@@ -56,7 +56,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     virtual bool readXml( const QDomElement &columnElem );
 
     /** Returns the width for a column.
-     * @returns column width in mm, or 0 if column width is automatically calculated.
+     * \returns column width in mm, or 0 if column width is automatically calculated.
      * \since QGIS 2.5
      * @see setWidth
      */
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     /** Returns the heading for a column, which is the value displayed in the columns
      * header cell.
-     * @returns Heading for column.
+     * \returns Heading for column.
      * \since QGIS 2.3
      * @see setHeading
      */
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     /** Returns the horizontal alignment for a column, which controls the alignment
      * used for drawing column values within cells.
-     * @returns horizontal alignment.
+     * \returns horizontal alignment.
      * \since QGIS 2.3
      * @see setHAlignment
      * @see vAlignment
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     /** Returns the vertical alignment for a column, which controls the alignment
      * used for drawing column values within cells.
-     * @returns vertical alignment.
+     * \returns vertical alignment.
      * \since QGIS 2.12
      * @see setVAlignment
      * @see hAlignment
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     /** Returns the attribute name or expression used for the column's values. This property
      * is only used when the column is part of a QgsComposerAttributeTable.
-     * @returns attribute name or expression text for column
+     * \returns attribute name or expression text for column
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable
      * @see setAttribute
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     /** Returns the sort order for the column. This property is only used when the column
      * is part of a QgsComposerAttributeTable and when sortByRank is > 0.
-     * @returns sort order for column
+     * \returns sort order for column
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable
      * @see setSortOrder
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * column when the table is sorted by multiple columns, with lower sort ranks
      * having higher priority. This property is only used when the column
      * is part of a QgsComposerAttributeTable.
-     * @returns sort rank for column. If sort rank is <= 0 then the column is not being
+     * \returns sort rank for column. If sort rank is <= 0 then the column is not being
      * sorted.
      * \since QGIS 2.3
      * \note only applicable when used in a QgsComposerAttributeTable
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     void setSortByRank( int sortByRank ) { mSortByRank = sortByRank; }
 
     /** Creates a duplicate column which is a deep copy of this column.
-     * @returns a new QgsComposerTableColumn with same properties as this column.
+     * \returns a new QgsComposerTableColumn with same properties as this column.
      * \since QGIS 2.3
      */
     QgsComposerTableColumn *clone();

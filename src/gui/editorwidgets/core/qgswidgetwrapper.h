@@ -68,7 +68,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     /**
      * @brief Access the widget managed by this wrapper
      *
-     * @return The widget
+     * \return The widget
      */
     QWidget *widget();
 
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * @brief Access the widget managed by this wrapper and cast it to a given type
      * Example: QPushButton* pb = wrapper->widget<QPushButton*>();
      *
-     * @return The widget as template type or NULL, if it cannot be cast to this type.
+     * \return The widget as template type or NULL, if it cannot be cast to this type.
      */
     template <class T>
     T *widget() { return dynamic_cast<T>( mWidget ); }
@@ -101,28 +101,28 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * \param key         The configuration option you want to load
      * \param defaultVal  Default value
      *
-     * @return the value assigned to this configuration option
+     * \return the value assigned to this configuration option
      */
     QVariant config( const QString &key, const QVariant &defaultVal = QVariant() ) const;
 
     /**
      * Returns the whole config
      *
-     * @return The configuration
+     * \return The configuration
      */
     QVariantMap config() const;
 
     /**
      * Returns information about the context in which this widget is shown
      *
-     * @return context information
+     * \return context information
      */
     const QgsAttributeEditorContext &context() const;
 
     /**
      * Access the QgsVectorLayer, you are working on
      *
-     * @return The layer
+     * \return The layer
      *
      * @see field()
      */
@@ -131,7 +131,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     /**
      * Will return a wrapper for a given widget
      * \param widget The widget which was created by a wrapper
-     * @return The wrapper for the widget or NULL
+     * \return The wrapper for the widget or NULL
      */
     static QgsWidgetWrapper *fromWidget( QWidget *widget );
 
@@ -142,7 +142,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * If it cannot be used this is a hint to the caller that he may try to find
      * another suitable widget type instead.
      *
-     * @return Validity status of this widget.
+     * \return Validity status of this widget.
      *
      * \since QGIS 2.12
      */
@@ -179,7 +179,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * in {@link initWidget(QWidget*)}.
      *
      * \param parent You should set this parent on the created widget.
-     * @return A new widget
+     * \return A new widget
      */
     virtual QWidget *createWidget( QWidget *parent ) = 0;
 

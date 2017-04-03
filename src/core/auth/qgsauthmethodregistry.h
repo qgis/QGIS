@@ -63,7 +63,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
 
     /** Create an instance of the auth method
         \param authMethodKey identificator of the auth method
-        @return instance of auth method or nullptr on error
+        \return instance of auth method or nullptr on error
      */
     QgsAuthMethod *authMethod( const QString &authMethodKey );
 
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
     /** Get pointer to auth method function
         \param authMethodKey identificator of the auth method
         \param functionName name of function
-        @return pointer to function or nullptr on error
+        \return pointer to function or nullptr on error
      */
     QFunctionPointer function( const QString &authMethodKey,
                                const QString &functionName );

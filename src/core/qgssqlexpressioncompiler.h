@@ -91,14 +91,14 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     /** Compiles an expression node and returns the result of the compilation.
      * \param node expression node to compile
      * \param str string representing compiled node should be stored in this parameter
-     * @returns result of node compilation
+     * \returns result of node compilation
      */
     virtual Result compileNode( const QgsExpression::Node *node, QString &str );
 
     /** Return the SQL function for the expression function.
      * Derived classes should override this to help compile functions
      * \param fnName expression function name
-     * @returns the SQL function name
+     * \returns the SQL function name
      */
     virtual QString sqlFunctionFromFunctionName( const QString &fnName ) const;
 
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * Derived classes should override this to help compile functions
      * \param fnName expression function name
      * \param fnArgs arguments from expression
-     * @returns the arguments updated for SQL Function
+     * \returns the arguments updated for SQL Function
      */
     virtual QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const;
 

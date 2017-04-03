@@ -236,7 +236,7 @@ class CORE_EXPORT QgsExpression
      * \param text string to test
      * \param context optional expression context
      * \param errorMessage will be filled with any error message from the validation
-     * @returns true if string is a valid expression
+     * \returns true if string is a valid expression
      * \since QGIS 2.12
      */
     static bool checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage );
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsExpression
      * value.
      * \param text text to evaluate as expression
      * \param fallbackValue value to return if text can not be evaluated as a double
-     * @returns evaluated double value, or fallback value
+     * \returns evaluated double value, or fallback value
      * \since QGIS 2.7
      * \note this method is inefficient for bulk evaluation of expressions, it is intended
      * for one-off evaluations only.
@@ -568,7 +568,7 @@ class CORE_EXPORT QgsExpression
 
         /** Returns a list of possible aliases for the function. These include
          * other permissible names for the function, e.g., deprecated names.
-         * @return list of known aliases
+         * \return list of known aliases
          * \since QGIS 2.9
          */
         virtual QStringList aliases() const { return QStringList(); }
@@ -617,7 +617,7 @@ class CORE_EXPORT QgsExpression
          * \param values list of values passed to the function
          * \param context context expression is being evaluated against
          * \param parent parent expression
-         * @returns result of function
+         * \returns result of function
          */
         virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) = 0;
 
@@ -728,7 +728,7 @@ class CORE_EXPORT QgsExpression
          * \param values list of values passed to the function
          * \param context context expression is being evaluated against
          * \param parent parent expression
-         * @returns result of function
+         * \returns result of function
          */
         virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) override
         {
@@ -761,7 +761,7 @@ class CORE_EXPORT QgsExpression
     /** Registers a function to the expression engine. This is required to allow expressions to utilize the function.
      * \param function function to register
      * \param transferOwnership set to true to transfer ownership of function to expression engine
-     * @returns true on successful registration
+     * \returns true on successful registration
      * @see unregisterFunction
      */
     static bool registerFunction( Function *function, bool transferOwnership = false );
@@ -788,7 +788,7 @@ class CORE_EXPORT QgsExpression
     static int functionIndex( const QString &name );
 
     /** Returns the number of functions defined in the parser
-     *  @return The number of function defined in the parser.
+     *  \return The number of function defined in the parser.
      */
     static int functionCount();
 
@@ -846,7 +846,7 @@ class CORE_EXPORT QgsExpression
         /**
          * Abstract virtual that returns the type of this node.
          *
-         * @return The type of this node
+         * \return The type of this node
          */
         virtual NodeType nodeType() const = 0;
 
@@ -867,7 +867,7 @@ class CORE_EXPORT QgsExpression
         /**
          * Abstract virtual dump method
          *
-         * @return An expression which represents this node as string
+         * \return An expression which represents this node as string
          */
         virtual QString dump() const = 0;
 
@@ -877,7 +877,7 @@ class CORE_EXPORT QgsExpression
          * generated in prepare and context related.
          * Ownership is transferred to the caller.
          *
-         * @return a deep copy of this node.
+         * \return a deep copy of this node.
          */
         virtual Node *clone() const = 0;
 
@@ -889,7 +889,7 @@ class CORE_EXPORT QgsExpression
          * evaluate this node and in addition recursively collect all the columns required
          * to evaluate child nodes.
          *
-         * @return A list of columns required to evaluate this expression
+         * \return A list of columns required to evaluate this expression
          */
         virtual QSet<QString> referencedColumns() const = 0;
 
@@ -904,7 +904,7 @@ class CORE_EXPORT QgsExpression
          *
          * This needs to call `needsGeometry()` recursively on any child nodes.
          *
-         * @return true if a geometry is required to evaluate this expression
+         * \return true if a geometry is required to evaluate this expression
          */
         virtual bool needsGeometry() const = 0;
     };
@@ -1253,7 +1253,7 @@ class CORE_EXPORT QgsExpression
     /** Formats an expression result for friendly display to the user. Truncates the result to a sensible
      * length, and presents text representations of non numeric/text types (e.g., geometries and features).
      * \param value expression result to format
-     * @returns formatted string, may contain HTML formatting characters
+     * \returns formatted string, may contain HTML formatting characters
      * \since QGIS 2.14
      */
     static QString formatPreviewString( const QVariant &value );

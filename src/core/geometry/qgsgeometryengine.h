@@ -64,7 +64,7 @@ class CORE_EXPORT QgsGeometryEngine
      * relationship between the geometries.
      * \param geom geometry to relate to
      * \param errorMsg destination storage for any error message
-     * @returns DE-9IM string for relationship, or an empty string if an error occurred
+     * \returns DE-9IM string for relationship, or an empty string if an error occurred
      * \since QGIS 2.12
      */
     virtual QString relate( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsGeometryEngine
      * \param geom geometry to relate to
      * \param pattern DE-9IM pattern for match
      * \param errorMsg destination storage for any error message
-     * @returns true if geometry relationship matches with pattern
+     * \returns true if geometry relationship matches with pattern
      * \since QGIS 2.14
      */
     virtual bool relatePattern( const QgsAbstractGeometry &geom, const QString &pattern, QString *errorMsg = nullptr ) const = 0;

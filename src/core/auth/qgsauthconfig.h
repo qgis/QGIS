@@ -123,7 +123,7 @@ class CORE_EXPORT QgsAuthMethodConfig
     /**
      * Remove a config from map
      * \param key Config to remove
-     * @return Number of keys removed (should always be 1 or 0)
+     * \return Number of keys removed (should always be 1 or 0)
      */
     int removeConfig( const QString &key );
 

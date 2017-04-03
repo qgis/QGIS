@@ -81,7 +81,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Returns a matching property from the collection, if one exists.
      * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @returns matching property, or null if no matching, active property found.
+     * \returns matching property, or null if no matching, active property found.
      * @see hasProperty()
      */
     virtual QgsProperty property( int key ) const = 0;
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param context expression context to evaluate property against
      * \param defaultValue default value to return if no matching, active property found or if the property value
      * cannot be calculated
-     * @returns calculated property value, or default value if property could not be evaluated
+     * \returns calculated property value, or default value if property could not be evaluated
      * @see valueAsString()
      * @see valueAsColor()
      * @see valueAsDouble()
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultString default string to return if the property cannot be calculated as a string
      * \param ok if specified, will be set to true if conversion was successful
-     * @returns value parsed to string
+     * \returns value parsed to string
      * @see value()
      * @see valueAsColor()
      * @see valueAsDouble()
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultColor default color to return if the property cannot be calculated as a color
      * \param ok if specified, will be set to true if conversion was successful
-     * @returns value parsed to color
+     * \returns value parsed to color
      * @see value()
      * @see valueAsString()
      * @see valueAsDouble()
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default double to return if the property cannot be calculated as a double
      * \param ok if specified, will be set to true if conversion was successful
-     * @returns value parsed to double
+     * \returns value parsed to double
      * @see value()
      * @see valueAsString()
      * @see valueAsColor()
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default integer to return if the property cannot be calculated as a integer
      * \param ok if specified, will be set to true if conversion was successful
-     * @returns value parsed to integer
+     * \returns value parsed to integer
      * @see value()
      * @see valueAsString()
      * @see valueAsColor()
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default boolean to return if the property cannot be calculated as a boolean
      * \param ok if specified, will be set to true if conversion was successful
-     * @returns value parsed to bool
+     * \returns value parsed to bool
      * @see value()
      * @see valueAsString()
      * @see valueAsColor()
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * Returns a reference to a matching property from the collection, if one exists.
      * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @returns matching property, or null if no matching, active property found.
+     * \returns matching property, or null if no matching, active property found.
      * @see hasProperty()
      */
 
@@ -384,21 +384,21 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     /**
      * Returns the collection at the corresponding index from the stack.
      * \param index position of collection, 0 based
-     * @returns collection if one exists at the specified index
+     * \returns collection if one exists at the specified index
      */
     QgsPropertyCollection *at( int index );
 
     /**
      * Returns the collection at the corresponding index from the stack.
      * \param index position of collection, 0 based
-     * @returns collection if one exists at the specified index
+     * \returns collection if one exists at the specified index
      */
     const QgsPropertyCollection *at( int index ) const;
 
     /**
      * Returns the first collection with a matching name from the stack.
      * \param name name of collection to find
-     * @returns collection if one exists with the specified name
+     * \returns collection if one exists with the specified name
      */
     QgsPropertyCollection *collection( const QString &name );
 
@@ -429,7 +429,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * Returns the highest priority property with a matching key from within the stack.
      * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @returns matching property, or null if no matching, active property found.
+     * \returns matching property, or null if no matching, active property found.
      * @see hasActiveProperty()
      */
     QgsProperty property( int key ) const override;
@@ -441,7 +441,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * \param context expression context to evaluate property against
      * \param defaultValue default value to return if no matching, active property found or if the property value
      * cannot be calculated
-     * @returns calculated property value, or default value if property could not be evaluated
+     * \returns calculated property value, or default value if property could not be evaluated
      */
     QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
 

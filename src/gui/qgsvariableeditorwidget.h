@@ -76,7 +76,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
     void setEditableScopeIndex( int scopeIndex );
 
     /** Returns the current editable scope for the widget.
-     * @returns editable scope, or 0 if no editable scope is set
+     * \returns editable scope, or 0 if no editable scope is set
      * @see setEditableScopeIndex()
      */
     QgsExpressionContextScope *editableScope() const;
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
     /** Returns the setting group for the widget. QgsVariableEditorWidget widgets with
      * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
-     * @returns setting group name
+     * \returns setting group name
      * @see setSettingGroup()
      */
     QString settingGroup() const { return mSettingGroup; }

@@ -111,7 +111,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     virtual ~QgsComposerObject() = default;
 
     /** Returns the composition the item is attached to.
-     * @returns QgsComposition for item.
+     * \returns QgsComposition for item.
      */
     const QgsComposition *composition() const { return mComposition; }
 
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     /** Read a custom property from the object.
      * \param key property key
      * \param defaultValue default value to return if property with matching key does not exist
-     * @returns value of matching property
+     * \returns value of matching property
      * @see setCustomProperty()
      * @see removeCustomProperty()
      * @see customProperties()

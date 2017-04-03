@@ -246,14 +246,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Store an authentication config in the database
      * \param mconfig Associated authentication config id
-     * @return Whether operation succeeded
+     * \return Whether operation succeeded
      */
     bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig );
 
     /**
      * Update an authentication config in the database
      * \param config Associated authentication config id
-     * @return Whether operation succeeded
+     * \return Whether operation succeeded
      */
     bool updateAuthenticationConfig( const QgsAuthMethodConfig &config );
 
@@ -262,26 +262,26 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param authcfg Associated authentication config id
      * \param mconfig Subclassed config to load into
      * \param full Whether to decrypt and populate all sensitive data in subclass
-     * @return Whether operation succeeded
+     * \return Whether operation succeeded
      */
     bool loadAuthenticationConfig( const QString &authcfg, QgsAuthMethodConfig &mconfig, bool full = false );
 
     /**
      * Remove an authentication config in the database
      * \param authcfg Associated authentication config id
-     * @return Whether operation succeeded
+     * \return Whether operation succeeded
      */
     bool removeAuthenticationConfig( const QString &authcfg );
 
     /**
      * Clear all authentication configs from table in database and from provider caches
-     * @return Whether operation succeeded
+     * \return Whether operation succeeded
      */
     bool removeAllAuthenticationConfigs();
 
     /**
      * Close connection to current authentication database and back it up
-     * @return Path to backup
+     * \return Path to backup
      */
     bool backupAuthenticationDatabase( QString *backuppath = nullptr );
 
@@ -289,7 +289,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Erase all rows from all tables in authentication database
      * \param backup Whether to backup of current database
      * \param backuppath Where the backup is locate
-     * @return Whether operation succeeded
+     * \return Whether operation succeeded
      */
     bool eraseAuthenticationDatabase( bool backup, QString *backuppath = nullptr );
 
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param request The QNetworkRequest
      * \param authcfg Associated authentication config id
      * \param dataprovider Provider key filter, offering logic branching in authentication method
-     * @return Whether operation succeeded
+     * \return Whether operation succeeded
      */
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
                                const QString &dataprovider = QString() );
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param reply The QNetworkReply
      * \param authcfg Associated authentication config id
      * \param dataprovider Provider key filter, offering logic branching in authentication method
-     * @return Whether operation succeeded
+     * \return Whether operation succeeded
      */
     bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
                              const QString &dataprovider = QString() );
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param connectionItems The connection items, e.g. username=myname, of QgsDataSourceUri
      * \param authcfg Associated authentication config id
      * \param dataprovider Provider key filter, offering logic branching in authentication method
-     * @return Whether operation succeeded
+     * \return Whether operation succeeded
      */
     bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
                                    const QString &dataprovider = QString() );
@@ -451,7 +451,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy );
 
     /** Get a whether certificate is trusted by user
-        @return DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+        \return DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
      */
     QgsAuthCertUtils::CertTrustPolicy getCertTrustPolicy( const QSslCertificate &cert );
 

@@ -628,7 +628,7 @@ class CORE_EXPORT QgsPalLayerSettings
     void parseDropShadow( QgsRenderContext &context );
 
     /** Checks if a feature is larger than a minimum size (in mm)
-    @return true if above size, false if below*/
+    \return true if above size, false if below*/
     bool checkMinimumSizeMM( const QgsRenderContext &ct, const QgsGeometry &geom, double minSize ) const;
 
     /** Registers a feature as an obstacle only (no label rendered)
@@ -760,7 +760,7 @@ class CORE_EXPORT QgsPalLabeling
      * \param context render context
      * \param ct coordinate transform, or invalid transform if no transformation required
      * \param clipGeometry geometry to clip features to, if applicable
-     * @returns prepared geometry
+     * \returns prepared geometry
      * \since QGIS 2.9
      */
     static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr );
@@ -770,7 +770,7 @@ class CORE_EXPORT QgsPalLabeling
      * \param context render context
      * \param ct coordinate transform, or invalid transform if no transformation required
      * \param clipGeometry geometry to clip features to, if applicable
-     * @returns true if geometry requires preparation
+     * \returns true if geometry requires preparation
      * \since QGIS 2.9
      */
     static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr );
@@ -779,7 +779,7 @@ class CORE_EXPORT QgsPalLabeling
      * The text string will be split on either newline characters or the wrap character.
      * \param text text string to split
      * \param wrapCharacter additional character to wrap on
-     * @returns list of text split to lines
+     * \returns list of text split to lines
      * \since QGIS 2.9
      */
     static QStringList splitToLines( const QString &text, const QString &wrapCharacter );
@@ -788,7 +788,7 @@ class CORE_EXPORT QgsPalLabeling
      * divisions in the string. This accounts for scripts were individual characters are not
      * allowed to be split apart (e.g., Arabic and Indic based scripts)
      * \param text string to split
-     * @returns list of graphemes
+     * \returns list of graphemes
      * \since QGIS 2.10
      */
     static QStringList splitToGraphemes( const QString &text );
@@ -823,7 +823,7 @@ class CORE_EXPORT QgsPalLabeling
      * \param context render context
      * \param geom geometry
      * \param minSize minimum size for geometry
-     * @returns true if geometry exceeds minimum size
+     * \returns true if geometry exceeds minimum size
      * \since QGIS 2.9
      */
     static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );

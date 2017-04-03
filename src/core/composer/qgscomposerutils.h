@@ -46,7 +46,7 @@ class CORE_EXPORT QgsComposerUtils
      * starting from a line from north to south)
      * \param p1 start point of line
      * \param p2 end point of line
-     * @returns angle in degrees, clockwise from south
+     * \returns angle in degrees, clockwise from south
      */
     static double angle( QPointF p1, QPointF p2 );
 
@@ -59,14 +59,14 @@ class CORE_EXPORT QgsComposerUtils
 
     /** Ensures that an angle is in the range 0 <= angle < 360
      * \param angle angle in degrees
-     * @returns equivalent angle within the range [0, 360)
+     * \returns equivalent angle within the range [0, 360)
      * @see snappedAngle
      */
     static double normalizedAngle( const double angle );
 
     /** Snaps an angle to its closest 45 degree angle
      * \param angle angle in degrees
-     * @returns angle snapped to 0, 45/90/135/180/225/270 or 315 degrees
+     * \returns angle snapped to 0, 45/90/135/180/225/270 or 315 degrees
      */
     static double snappedAngle( const double angle );
 
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsComposerUtils
      * \param originalRect QRectF to be rotated and scaled
      * \param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
      * \param rotation the rotation in degrees to be applied to the rectangle
-     * @returns largest scaled version of the rectangle possible
+     * \returns largest scaled version of the rectangle possible
      */
     static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation );
 
@@ -106,14 +106,14 @@ class CORE_EXPORT QgsComposerUtils
      * \param beforeMax maximum value in before range
      * \param afterMin minimum value in after range
      * \param afterMax maximum value in after range
-     * @returns position scaled to range specified by afterMin and afterMax
+     * \returns position scaled to range specified by afterMin and afterMax
      */
     static double relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax );
 
     /** Decodes a string representing a paper orientation
      * \param orientationString string to decode
      * \param ok will be true if string could be decoded
-     * @returns decoded paper orientation
+     * \returns decoded paper orientation
      */
     static QgsComposition::PaperOrientation decodePaperOrientation( const QString &orientationString, bool &ok );
 
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsComposerUtils
      * \param presetString string to decode
      * \param width double for decoded paper width
      * \param height double for decoded paper height
-     * @returns true if string could be decoded successfully
+     * \returns true if string could be decoded successfully
      */
     static bool decodePresetPaperSize( const QString &presetString, double &width, double &height );
 
@@ -142,14 +142,14 @@ class CORE_EXPORT QgsComposerUtils
     /** Returns a font where size is set in pixels and the size has been upscaled with FONT_WORKAROUND_SCALE
      * to workaround QT font rendering bugs
      * \param font source font with size set in points
-     * @returns font with size set in pixels
+     * \returns font with size set in pixels
      * \since QGIS 2.5
      */
     static QFont scaledFontPixelSize( const QFont &font );
 
     /** Calculate font ascent in millimeters, including workarounds for QT font rendering issues
      * \param font input font
-     * @returns font ascent in millimeters
+     * \returns font ascent in millimeters
      * \since QGIS 2.5
      * @see fontDescentMM
      * @see fontHeightMM
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsComposerUtils
 
     /** Calculate font descent in millimeters, including workarounds for QT font rendering issues
      * \param font input font
-     * @returns font descent in millimeters
+     * \returns font descent in millimeters
      * \since QGIS 2.5
      * @see fontAscentMM
      * @see fontHeightMM
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsComposerUtils
     /** Calculate font height in millimeters, including workarounds for QT font rendering issues
      * The font height is the font ascent + descent + 1 (for the baseline).
      * \param font input font
-     * @returns font height in millimeters
+     * \returns font height in millimeters
      * \since QGIS 2.5
      * @see fontAscentMM
      * @see fontDescentMM
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsComposerUtils
      * rendering issues
      * \param font input font
      * \param character character to calculate height for
-     * @returns character height in millimeters
+     * \returns character height in millimeters
      * \since QGIS 2.5
      * @see fontAscentMM
      * @see fontDescentMM
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsComposerUtils
      * rendering issues
      * \param font input font
      * \param text string to calculate width of
-     * @returns string width in millimeters
+     * \returns string width in millimeters
      * \since QGIS 2.5
      * @see fontAscentMM
      * @see fontDescentMM
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsComposerUtils
      * \param font input font
      * \param text string to calculate height of
      * \param multiLineHeight line spacing factor
-     * @returns string height in millimeters
+     * \returns string height in millimeters
      * \since QGIS 2.12
      * @see textWidthMM
      */

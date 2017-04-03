@@ -156,14 +156,14 @@ class APP_EXPORT QgsClipboard : public QObject
     void setSystemClipboard();
 
     /** Creates a text representation of the clipboard features.
-     * @returns clipboard text, respecting user export format
+     * \returns clipboard text, respecting user export format
      */
     QString generateClipboardText() const;
 
     /** Attempts to convert a string to a list of features, by parsing the string as WKT and GeoJSON
      * \param string string to convert
      * \param fields fields for resultant features
-     * @returns list of features if conversion was successful
+     * \returns list of features if conversion was successful
      */
     QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields ) const;
 

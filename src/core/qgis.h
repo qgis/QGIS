@@ -248,7 +248,7 @@ inline double qgsRound( double number, double places )
  * numbers of digits between thousand separators
  * \param string string to convert
  * \param ok will be set to true if conversion was successful
- * @returns string converted to double if possible
+ * \returns string converted to double if possible
  * \since QGIS 2.9
  * @see permissiveToInt
  */
@@ -258,7 +258,7 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
  * numbers of digits between thousand separators
  * \param string string to convert
  * \param ok will be set to true if conversion was successful
- * @returns string converted to int if possible
+ * \returns string converted to int if possible
  * \since QGIS 2.9
  * @see permissiveToDouble
  */

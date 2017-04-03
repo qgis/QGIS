@@ -153,7 +153,7 @@ class CORE_EXPORT QgsRenderContext
     QColor selectionColor() const { return mSelectionColor; }
 
     /** Returns true if vector selections should be shown in the rendered map
-     * @returns true if selections should be shown
+     * \returns true if selections should be shown
      * @see setShowSelection
      * @see selectionColor
      * \since QGIS v2.4
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsRenderContext
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp );
 
     /** Get the filter feature provider used for additional filtering of rendered features.
-     * @return the filter feature provider
+     * \return the filter feature provider
      * \since QGIS 2.14
      * @see setFeatureFilterProvider()
      */

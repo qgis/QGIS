@@ -132,13 +132,13 @@ class CORE_EXPORT QgsFeatureRequest
 
         /**
          * The expression
-         * @return the expression
+         * \return the expression
          */
         QgsExpression expression() const;
 
         /**
          * Order ascending
-         * @return If ascending order is requested
+         * \return If ascending order is requested
          */
         bool ascending() const;
 
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsFeatureRequest
 
         /**
          * Set if NULLS should be returned first
-         * @return if NULLS should be returned first
+         * \return if NULLS should be returned first
          */
         bool nullsFirst() const;
 
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Return the filter type which is currently set on this request
      *
-     * @return Filter type
+     * \return Filter type
      */
     FilterType filterType() const { return mFilter; }
 
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsFeatureRequest
      * Disables filter conditions.
      * The spatial filter (filterRect) will be kept in place.
      *
-     * @return The object the method is called on for chaining
+     * \return The object the method is called on for chaining
      *
      * \since QGIS 2.12
      */
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * Return the subset of attributes which at least need to be fetched
-     * @return A list of attributes to be fetched
+     * \return A list of attributes to be fetched
      */
     QgsAttributeList subsetOfAttributes() const { return mAttrs; }
 
@@ -397,7 +397,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \param feature  The feature which will be tested
      *
-     * @return true, if the filter accepts the feature
+     * \return true, if the filter accepts the feature
      *
      * \since QGIS 2.1
      */
@@ -435,7 +435,7 @@ class CORE_EXPORT QgsAbstractFeatureSource
     /**
      * Get an iterator for features matching the specified request
      * \param request The request
-     * @return A feature iterator
+     * \return A feature iterator
      */
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) = 0;
 

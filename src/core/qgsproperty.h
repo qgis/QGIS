@@ -316,7 +316,7 @@ class CORE_EXPORT QgsProperty
      * is able to respond to the current environment, layers and features within QGIS.
      * \param defaultValue default value to return if the property is not active or cannot be calculated
      * \param ok if specified, will be set to true if conversion was successful
-     * @returns calculated value for property
+     * \returns calculated value for property
      * @see valueAsString()
      * @see valueAsColor()
      * @see valueAsDouble()
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsProperty
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultString default string to return if the property cannot be calculated as a string
      * \param ok if specified, will be set to true if conversion was successful
-     * @returns value parsed to string
+     * \returns value parsed to string
      * @see value()
      * @see valueAsColor()
      * @see valueAsDouble()
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsProperty
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultColor default color to return if the property cannot be calculated as a color
      * \param ok if specified, will be set to true if conversion was successful
-     * @returns value parsed to color
+     * \returns value parsed to color
      * @see value()
      * @see valueAsString()
      * @see valueAsDouble()
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsProperty
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default double to return if the property cannot be calculated as a double
      * \param ok if specified, will be set to true if conversion was successful
-     * @returns value parsed to double
+     * \returns value parsed to double
      * @see value()
      * @see valueAsString()
      * @see valueAsColor()
@@ -372,7 +372,7 @@ class CORE_EXPORT QgsProperty
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default integer to return if the property cannot be calculated as an integer
      * \param ok if specified, will be set to true if conversion was successful
-     * @returns value parsed to integer
+     * \returns value parsed to integer
      * @see value()
      * @see valueAsString()
      * @see valueAsColor()
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsProperty
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default boolean to return if the property cannot be calculated as an boolean
      * \param ok if specified, will be set to true if conversion was successful
-     * @returns value parsed to boolean
+     * \returns value parsed to boolean
      * @see value()
      * @see valueAsString()
      * @see valueAsColor()

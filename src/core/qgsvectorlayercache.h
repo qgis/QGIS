@@ -98,7 +98,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * Returns the maximum number of features this cache will hold.
      * In case full caching is enabled, this number can change, as new features get added.
      *
-     * @return int
+     * \return int
      */
     int cacheSize();
 
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * If it's not possible to fully satisfy the request from the cache, part or all of the features
      * will be requested from the data provider.
      * \param featureRequest  The request specifying filter and required data.
-     * @return An iterator over the requested data.
+     * \return An iterator over the requested data.
      */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &featureRequest = QgsFeatureRequest() );
 
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * Check if a certain feature id is cached.
      * \param  fid The feature id to look for
-     * @return True if this id is in the cache
+     * \return True if this id is in the cache
      * @see cachedFeatureIds()
      */
     bool isFidCached( const QgsFeatureId fid ) const;
@@ -230,14 +230,14 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * \param featureId The id of the feature to query
      * \param feature   The result of the operation will be written to this feature
      * \param skipCache Will query the layer regardless if the feature is in the cache already
-     * @return true in case of success
+     * \return true in case of success
      */
     bool featureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
 
     /**
      * Removes the feature identified by fid from the cache if present.
      * \param fid The id of the feature to delete
-     * @return true if the feature was removed, false if the feature id was not found in the cache
+     * \return true if the feature was removed, false if the feature id was not found in the cache
      */
     bool removeCachedFeature( QgsFeatureId fid );
 
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      *
      * \param featureRequest  The {@link QgsFeatureRequest} to be answered
-     * @return                True if the information is being cached, false if not
+     * \return                True if the information is being cached, false if not
      */
     bool checkInformationCovered( const QgsFeatureRequest &featureRequest );
 
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /** Returns true if the cache contains all the features required for a specified request.
      * \param featureRequest feature request
      * \param it will be set to iterator for matching features
-     * @returns true if cache can satisfy request
+     * \returns true if cache can satisfy request
      * \note this method only checks for available features, not whether the cache
      * contains required attributes or geometry. For that, use checkInformationCovered()
      */

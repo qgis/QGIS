@@ -124,7 +124,7 @@ class CORE_EXPORT QgsLabelFeature
     const QSizeF &symbolSize() const { return mSymbolSize; }
 
     /** Returns the feature's labeling priority.
-     * @returns feature's priority, as a value between 0 (highest priority)
+     * \returns feature's priority, as a value between 0 (highest priority)
      * and 1 (lowest priority). Returns -1.0 if feature will use the layer's default priority.
      * @see setPriority
      */
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsLabelFeature
     void setAlwaysShow( bool enabled ) { mAlwaysShow = enabled; }
 
     /** Returns whether the feature will act as an obstacle for labels.
-     * @returns true if feature is an obstacle
+     * \returns true if feature is an obstacle
      * @see setIsObstacle
      */
     bool isObstacle() const { return mIsObstacle; }

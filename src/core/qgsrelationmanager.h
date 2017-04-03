@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     /**
      * Get access to the relations managed by this class.
      *
-     * @return A QMap where the key is the relation id, the value the relation object.
+     * \return A QMap where the key is the relation id, the value the relation object.
      */
     QMap<QString, QgsRelation> relations() const;
 
@@ -81,14 +81,14 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * \param id The id to search for
      *
-     * @return A relation. Invalid if not found.
+     * \return A relation. Invalid if not found.
      * @see relationsByName()
      */
     Q_INVOKABLE QgsRelation relation( const QString &id ) const;
 
     /** Returns a list of relations with matching names.
      * \param name relation name to search for. Searching is case insensitive.
-     * @returns a list of matching relations
+     * \returns a list of matching relations
      * \since QGIS 2.16
      * @see relation()
      */
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * \param layer     The layer which should be searched for.
      * \param fieldIdx  The field which should be part of the foreign key. If not set will return all relations.
      *
-     * @return A list of relations matching the given layer and fieldIdx.
+     * \return A list of relations matching the given layer and fieldIdx.
      */
     QList<QgsRelation> referencingRelations( const QgsVectorLayer *layer = nullptr, int fieldIdx = -2 ) const;
 
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * \param layer   The layer which should be searched for.
      *
-     * @return A list of relations where the specified layer is the referenced part.
+     * \return A list of relations where the specified layer is the referenced part.
      */
     QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = nullptr ) const;
 
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * \param existingRelations the existing relations to filter them out
      * \param layers the current layers
-     * @return the list of discovered relations
+     * \return the list of discovered relations
      * \since QGIS 3.0
      */
     static QList<QgsRelation> discoverRelations( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers );

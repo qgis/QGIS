@@ -67,17 +67,17 @@ class PYTHON_EXPORT QgsPythonUtils
     /* console */
 
     //! run a statement, show an error message on error
-    //! @return true if no error occurred
+    //! \return true if no error occurred
     virtual bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) = 0;
 
     //! run a statement, error reporting is not done
-    //! @return true if no error occurred
+    //! \return true if no error occurred
     virtual bool runStringUnsafe( const QString &command, bool single = true ) = 0;
 
     virtual bool evalString( const QString &command, QString &result ) = 0;
 
     //! get information about error to the supplied arguments
-    //! @return false if there was no Python error
+    //! \return false if there was no Python error
     virtual bool getError( QString &errorClassName, QString &errorText ) = 0;
 
     /* plugins */

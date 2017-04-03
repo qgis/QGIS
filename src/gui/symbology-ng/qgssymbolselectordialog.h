@@ -114,7 +114,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
     /**
      * @brief Return the symbol that is currently active in the widget. Can be null.
-     * @return The active symbol.
+     * \return The active symbol.
      */
     QgsSymbol *symbol() { return mSymbol; }
 
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
     /**
      * The current symbol layer that is active in the interface.
-     * @return The active symbol layer.
+     * \return The active symbol layer.
      */
     QgsSymbolLayer *currentLayer();
 
@@ -268,7 +268,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 
     /**
      * @brief Return the symbol that is currently active in the widget. Can be null.
-     * @return The active symbol.
+     * \return The active symbol.
      */
     QgsSymbol *symbol();
 

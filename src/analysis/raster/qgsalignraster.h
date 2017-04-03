@@ -145,7 +145,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     {
       //! Method to be overridden for progress reporting.
       //! \param complete Overall progress of the alignment operation
-      //! @return false if the execution should be canceled, true otherwise
+      //! \return false if the execution should be canceled, true otherwise
       virtual bool progress( double complete ) = 0;
 
       virtual ~ProgressHandler() = default;
@@ -194,14 +194,14 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! If a custom CRS is provided, suggested reprojection is calculated first (using GDAL) in order
     //! to determine suitable defaults for cell size and grid offset.
     //!
-    //! @return true on success (may fail if it is not possible to reproject raster to given CRS)
+    //! \return true on success (may fail if it is not possible to reproject raster to given CRS)
     bool setParametersFromRaster( const RasterInfo &rasterInfo, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
     //! Overridden variant for convenience, taking filename instead RasterInfo object.
     //! See the other variant for details.
     bool setParametersFromRaster( const QString &filename, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
 
     //! Determine destination extent from the input rasters and calculate derived values
-    //! @return true on success, sets error on error (see errorMessage())
+    //! \return true on success, sets error on error (see errorMessage())
     bool checkInputParameters();
 
     //! Return expected size of the resulting aligned raster
@@ -212,7 +212,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     QgsRectangle alignedRasterExtent() const;
 
     //! Run the alignment process
-    //! @return true on success, sets error on error (see errorMessage())
+    //! \return true on success, sets error on error (see errorMessage())
     bool run();
 
     //! Return error from a previous run() call.

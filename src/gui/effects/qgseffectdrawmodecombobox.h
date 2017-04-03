@@ -36,7 +36,7 @@ class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox
     QgsEffectDrawModeComboBox( QWidget *parent = nullptr );
 
     /** Returns the currently selected draw mode for the combo box
-     * @returns current draw mode
+     * \returns current draw mode
      */
     QgsPaintEffect::DrawMode drawMode() const;
 

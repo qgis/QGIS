@@ -72,7 +72,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void setArrowHeadWidth( double width );
 
     /** Returns the width of the arrow head in mm
-     * @returns width of arrow head
+     * \returns width of arrow head
      * @see setArrowHeadWidth
      */
     double arrowHeadWidth() const { return mArrowHeadWidth; }
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void setStartMarker( const QString &svgPath );
 
     /** Returns the marker drawn at the start of the line
-     * @returns file path for svg marker graphic
+     * \returns file path for svg marker graphic
      * @see setStartMarker
      * @see endMarker
      */
@@ -99,14 +99,14 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void setEndMarker( const QString &svgPath );
 
     /** Returns the marker drawn at the end of the line
-     * @returns file path for svg marker graphic
+     * \returns file path for svg marker graphic
      * @see setEndMarker
      * @see startMarker
      */
     QString endMarker() const { return mEndMarkerFile; }
 
     /** Returns the color used to draw stroke around the the arrow head.
-     * @returns arrow head stroke color
+     * \returns arrow head stroke color
      * @see arrowHeadFillColor
      * @see setArrowHeadStrokeColor
      * \since QGIS 2.5
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void setArrowHeadStrokeColor( const QColor &color );
 
     /** Returns the color used to fill the arrow head.
-     * @returns arrow head fill color
+     * \returns arrow head fill color
      * @see arrowHeadStrokeColor
      * @see setArrowHeadFillColor
      * \since QGIS 2.5
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void setArrowHeadStrokeWidth( const double width );
 
     /** Returns the pen width for the stroke of the arrow head
-     * @returns pen width for arrow head stroke
+     * \returns pen width for arrow head stroke
      * @see setArrowHeadStrokeWidth
      * @see arrowHeadStrokeColor
      * \since QGIS 2.5
@@ -161,14 +161,14 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void setLineSymbol( QgsLineSymbol *symbol );
 
     /** Returns the line symbol used for drawing the line portion of the arrow
-     * @returns line symbol
+     * \returns line symbol
      * @see setLineSymbol
      * \since QGIS 2.5
      */
     QgsLineSymbol *lineSymbol() { return mLineSymbol; }
 
     /** Returns marker mode, which controls how the arrow endpoints are drawn
-     * @returns marker mode
+     * \returns marker mode
      * @see setMarkerMode
      */
     MarkerMode markerMode() const { return mMarkerMode; }

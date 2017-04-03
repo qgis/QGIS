@@ -146,7 +146,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void setFont( const QFont &font );
 
     /** Returns the color used for drawing text in the scalebar.
-     * @returns font color for scalebar.
+     * \returns font color for scalebar.
      * @see setFontColor
      * @see font
      */
@@ -212,14 +212,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void setLineWidth( double width ) { mLineWidth = width; mPen.setWidthF( width ); }
 
     /** Returns the pen used for drawing the scalebar.
-     * @returns QPen used for drawing the scalebar outlines.
+     * \returns QPen used for drawing the scalebar outlines.
      * @see setPen
      * @see brush
      */
     QPen pen() const {return mPen;}
 
     /** Returns the primary brush for the scalebar.
-     * @returns QBrush used for filling the scalebar
+     * \returns QBrush used for filling the scalebar
      * @see setBrush
      * @see brush2
      * @see pen
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /** Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
-     * @returns QBrush used for secondary color areas
+     * \returns QBrush used for secondary color areas
      * @see setBrush2
      * @see brush
      */
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void setUnits( ScaleBarUnits u );
 
     /** Returns the join style used for drawing lines in the scalebar
-     * @returns Join style for lines
+     * \returns Join style for lines
      * \since QGIS 2.3
      * @see setLineJoinStyle
      */
@@ -266,14 +266,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /** Sets join style used when drawing the lines in the scalebar
      * \param style Join style for lines
-     * @returns nothing
+     * \returns nothing
      * \since QGIS 2.3
      * @see lineJoinStyle
      */
     void setLineJoinStyle( Qt::PenJoinStyle style );
 
     /** Returns the cap style used for drawing lines in the scalebar
-     * @returns Cap style for lines
+     * \returns Cap style for lines
      * \since QGIS 2.3
      * @see setLineCapStyle
      */
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /** Sets cap style used when drawing the lines in the scalebar
      * \param style Cap style for lines
-     * @returns nothing
+     * \returns nothing
      * \since QGIS 2.3
      * @see lineCapStyle
      */

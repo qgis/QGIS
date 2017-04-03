@@ -49,7 +49,7 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
     void setMode( PreviewMode mode );
 
     /** Returns the mode used for the preview effect.
-     * @returns PreviewMode currently used by the effect
+     * \returns PreviewMode currently used by the effect
      * \since QGIS 2.3
      * @see setMode
      */

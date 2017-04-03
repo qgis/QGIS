@@ -160,7 +160,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Returns a pointer to the current map extent, which is either the original user specified
      * extent or the temporary atlas-driven feature extent depending on the current atlas state
      * of the composition. Both a const and non-const version are included.
-     * @returns pointer to current map extent
+     * \returns pointer to current map extent
      * @see visibleExtentPolygon
      */
     const QgsRectangle *currentMapExtent() const;
@@ -303,14 +303,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Returns the map item's grid stack, which is used to control how grids
      * are drawn over the map's contents.
-     * @returns pointer to grid stack
+     * \returns pointer to grid stack
      * @see grid()
      * \since QGIS 2.5
      */
     QgsComposerMapGridStack *grids() { return mGridStack; }
 
     /** Returns the map item's first grid. This is a convenience function.
-     * @returns pointer to first grid for map item
+     * \returns pointer to first grid for map item
      * @see grids()
      * \since QGIS 2.5
      */
@@ -318,14 +318,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Returns the map item's overview stack, which is used to control how overviews
      * are drawn over the map's contents.
-     * @returns pointer to overview stack
+     * \returns pointer to overview stack
      * @see overview()
      * \since QGIS 2.5
      */
     QgsComposerMapOverviewStack *overviews() { return mOverviewStack; }
 
     /** Returns the map item's first overview. This is a convenience function.
-     * @returns pointer to first overview for map item
+     * \returns pointer to first overview for map item
      * @see overviews()
      * \since QGIS 2.5
      */
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setMapRotation( double r );
 
     /** Returns the rotation used for drawing the map within the composer item
-     * @returns rotation for map
+     * \returns rotation for map
      * \param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void assignFreeId();
 
     /** Returns whether the map extent is set to follow the current atlas feature.
-     * @returns true if map will follow the current atlas feature.
+     * \returns true if map will follow the current atlas feature.
      * @see setAtlasDriven
      * @see atlasScalingMode
      */
@@ -389,7 +389,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Returns the current atlas scaling mode. This controls how the map's extents
      * are calculated for the current atlas feature when an atlas composition
      * is enabled.
-     * @returns the current scaling mode
+     * \returns the current scaling mode
      * \note this parameter is only used if atlasDriven() is true
      * @see setAtlasScalingMode
      * @see atlasDriven
@@ -410,7 +410,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * \param valueType controls whether the returned value is the user specified atlas margin,
      * or the current evaluated atlas margin (which may be affected by data driven atlas margin
      * settings).
-     * @returns margin size in percentage to leave around the atlas feature's extent
+     * \returns margin size in percentage to leave around the atlas feature's extent
      * \note this is only used if atlasScalingMode() is Auto.
      * @see atlasScalingMode
      * @see setAtlasMargin
@@ -426,7 +426,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
 
     /** Get the number of layers that this item requires for exporting as layers
-     * @returns 0 if this item is to be placed on the same layer as the previous item,
+     * \returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
      * \since QGIS 2.4
      */
@@ -434,7 +434,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Returns a polygon representing the current visible map extent, considering map extents and rotation.
      * If the map rotation is 0, the result is the same as currentMapExtent
-     * @returns polygon with the four corner points representing the visible map extent. The points are
+     * \returns polygon with the four corner points representing the visible map extent. The points are
      * clockwise, starting at the top-left point
      * @see currentMapExtent
      */

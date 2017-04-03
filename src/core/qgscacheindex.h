@@ -71,7 +71,7 @@ class CORE_EXPORT QgsAbstractCacheIndex
      *                         value is true.
      * \param featureRequest   The feature request, for which this index is queried.
      *
-     * @return   True, if this index holds the information to answer the request.
+     * \return   True, if this index holds the information to answer the request.
      *
      */
     virtual bool getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest ) = 0;

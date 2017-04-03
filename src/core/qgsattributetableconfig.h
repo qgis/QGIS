@@ -87,7 +87,7 @@ class CORE_EXPORT QgsAttributeTableConfig
 
     /** Maps a visible column index to its original column index.
      * \param visibleColumn index of visible column
-     * @returns corresponding index when hidden columns are considered
+     * \returns corresponding index when hidden columns are considered
      */
     int mapVisibleColumnToIndex( int visibleColumn ) const;
 

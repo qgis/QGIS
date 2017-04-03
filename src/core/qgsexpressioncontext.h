@@ -176,14 +176,14 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /** Removes a variable from the context scope, if found.
      * \param name name of variable to remove
-     * @returns true if variable was removed from the scope, false if matching variable was not
+     * \returns true if variable was removed from the scope, false if matching variable was not
      * found within the scope
      */
     bool removeVariable( const QString &name );
 
     /** Tests whether a variable with the specified name exists in the scope.
      * \param name variable name
-     * @returns true if matching variable was found in the scope
+     * \returns true if matching variable was found in the scope
      * @see variable()
      * @see hasFunction()
      */
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /** Retrieves a variable's value from the scope.
      * \param name variable name
-     * @returns variable value, or invalid QVariant if matching variable could not be found
+     * \returns variable value, or invalid QVariant if matching variable could not be found
      * @see hasVariable()
      * @see function()
      */
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsExpressionContextScope
     /** Tests whether the specified variable is read only and should not be editable
      * by users.
      * \param name variable name
-     * @returns true if variable is read only
+     * \returns true if variable is read only
      */
     bool isReadOnly( const QString &name ) const;
 
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /** Tests whether a function with the specified name exists in the scope.
      * \param name function name
-     * @returns true if matching function was found in the scope
+     * \returns true if matching function was found in the scope
      * @see function()
      * @see hasFunction()
      */
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /** Retrieves a function from the scope.
      * \param name function name
-     * @returns function, or null if matching function could not be found
+     * \returns function, or null if matching function could not be found
      * @see hasFunction()
      * @see functionNames()
      * @see variable()
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsExpressionContext
 
     /** Check whether a variable is specified by any scope within the context.
      * \param name variable name
-     * @returns true if variable is set
+     * \returns true if variable is set
      * @see variable()
      * @see variableNames()
      */
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsExpressionContext
      * from the last scope contained within the context which has a matching
      * variable set.
      * \param name variable name
-     * @returns variable value if matching variable exists in the context, otherwise an invalid QVariant
+     * \returns variable value if matching variable exists in the context, otherwise an invalid QVariant
      * @see hasVariable()
      * @see variableNames()
      */
@@ -376,7 +376,7 @@ class CORE_EXPORT QgsExpressionContext
      * As scopes later in the stack override earlier contexts, this will be the last matching
      * scope which contains a matching variable.
      * \param name variable name
-     * @returns matching scope containing variable, or null if none found
+     * \returns matching scope containing variable, or null if none found
      */
     QgsExpressionContextScope *activeScopeForVariable( const QString &name );
 
@@ -384,14 +384,14 @@ class CORE_EXPORT QgsExpressionContext
      * As scopes later in the stack override earlier contexts, this will be the last matching
      * scope which contains a matching variable.
      * \param name variable name
-     * @returns matching scope containing variable, or null if none found
+     * \returns matching scope containing variable, or null if none found
      * \note not available in Python bindings
      */
     const QgsExpressionContextScope *activeScopeForVariable( const QString &name ) const;
 
     /** Returns the scope at the specified index within the context.
      * \param index index of scope
-     * @returns matching scope, or null if none found
+     * \returns matching scope, or null if none found
      * @see lastScope()
      */
     QgsExpressionContextScope *scope( int index );
@@ -402,25 +402,25 @@ class CORE_EXPORT QgsExpressionContext
     QgsExpressionContextScope *lastScope();
 
     /** Returns a list of scopes contained within the stack.
-     * @returns list of pointers to scopes
+     * \returns list of pointers to scopes
      */
     QList< QgsExpressionContextScope * > scopes() { return mStack; }
 
     /** Returns the index of the specified scope if it exists within the context.
      * \param scope scope to find
-     * @returns index of scope, or -1 if scope was not found within the context.
+     * \returns index of scope, or -1 if scope was not found within the context.
      */
     int indexOfScope( QgsExpressionContextScope *scope ) const;
 
     /** Returns the index of the first scope with a matching name within the context.
      * \param scopeName name of scope to find
-     * @returns index of scope, or -1 if scope was not found within the context.
+     * \returns index of scope, or -1 if scope was not found within the context.
      * \since QGIS 3.0
      */
     int indexOfScope( const QString &scopeName ) const;
 
     /** Returns a list of variables names set by all scopes in the context.
-     * @returns list of unique variable names
+     * \returns list of unique variable names
      * @see filteredVariableNames
      * @see functionNames
      * @see hasVariable
@@ -430,21 +430,21 @@ class CORE_EXPORT QgsExpressionContext
 
     /** Returns a filtered list of variables names set by all scopes in the context. The included
      * variables are those which should be seen by users.
-     * @returns filtered list of unique variable names
+     * \returns filtered list of unique variable names
      * @see variableNames
      */
     QStringList filteredVariableNames() const;
 
     /** Returns whether a variable is read only, and should not be modifiable by users.
      * \param name variable name
-     * @returns true if variable is read only. Read only status will be taken from last
+     * \returns true if variable is read only. Read only status will be taken from last
      * matching scope which contains a matching variable.
      */
     bool isReadOnly( const QString &name ) const;
 
     /** Checks whether a specified function is contained in the context.
      * \param name function name
-     * @returns true if context provides a matching function
+     * \returns true if context provides a matching function
      * @see function
      */
     bool hasFunction( const QString &name ) const;
@@ -459,7 +459,7 @@ class CORE_EXPORT QgsExpressionContext
      * from the last scope contained within the context which has a matching
      * function set.
      * \param name function name
-     * @returns function if contained by the context, otherwise null.
+     * \returns function if contained by the context, otherwise null.
      * @see hasFunction
      */
     QgsExpression::Function *function( const QString &name ) const;
@@ -558,7 +558,7 @@ class CORE_EXPORT QgsExpressionContext
     /** Returns the matching cached value, if set. This can be used to retrieve the previously stored results
      * of an expensive expression sub-calculation.
      * \param key unique key used to store cached value
-     * @returns matching cached value, or invalid QVariant if not set
+     * \returns matching cached value, or invalid QVariant if not set
      * @see setCachedValue()
      * @see hasCachedValue()
      * @see clearCachedValues()

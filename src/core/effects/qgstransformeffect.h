@@ -39,7 +39,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
 
     /** Creates a new QgsTransformEffect effect from a properties string map.
      * \param map encoded properties string map
-     * @returns new QgsTransformEffect
+     * \returns new QgsTransformEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map );
 
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     void setTranslateX( const double translateX ) { mTranslateX = translateX; }
 
     /** Returns the transform x translation.
-     * @returns X distance translated along the x axis
+     * \returns X distance translated along the x axis
      * @see setTranslateX
      * @see translateY
      * @see translateUnit
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     void setTranslateY( const double translateY ) { mTranslateY = translateY; }
 
     /** Returns the transform y translation.
-     * @returns Y distance translated along the y axis
+     * \returns Y distance translated along the y axis
      * @see setTranslateY
      * @see translateX
      * @see translateUnit
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     void setTranslateUnit( const QgsUnitTypes::RenderUnit unit ) { mTranslateUnit = unit; }
 
     /** Returns the units used for the transform translation.
-     * @returns units for translation
+     * \returns units for translation
      * @see setTranslateUnit
      * @see translateX
      * @see translateY
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     void setTranslateMapUnitScale( const QgsMapUnitScale &scale ) { mTranslateMapUnitScale = scale; }
 
     /** Returns the map unit scale used for the transform translation.
-     * @returns map unit scale for translation
+     * \returns map unit scale for translation
      * @see setTranslateMapUnitScale
      * @see translateX
      * @see translateY
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     void setScaleX( const double scaleX ) { mScaleX = scaleX; }
 
     /** Returns the x axis scaling factor.
-     * @returns x axis scaling factor, where 1.0 = no scaling
+     * \returns x axis scaling factor, where 1.0 = no scaling
      * @see setScaleX
      * @see scaleY
      */
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     void setScaleY( const double scaleY ) { mScaleY = scaleY; }
 
     /** Returns the y axis scaling factor.
-     * @returns y axis scaling factor, where 1.0 = no scaling
+     * \returns y axis scaling factor, where 1.0 = no scaling
      * @see setScaleY
      * @see scaleX
      */
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     void setRotation( const double rotation ) { mRotation = rotation; }
 
     /** Returns the transform rotation.
-     * @returns rotation in degrees clockwise
+     * \returns rotation in degrees clockwise
      * @see setRotation
      */
     double rotation() const { return mRotation; }
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     void setShearX( const double shearX ) { mShearX = shearX; }
 
     /** Returns the x axis shearing factor.
-     * @returns x axis shearing
+     * \returns x axis shearing
      * @see setShearX
      * @see shearY
      */
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     void setShearY( const double shearY ) { mShearY = shearY; }
 
     /** Returns the y axis shearing factor.
-     * @returns y axis shearing
+     * \returns y axis shearing
      * @see setShearY
      * @see shearX
      */
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     void setReflectX( const bool reflectX ) { mReflectX = reflectX; }
 
     /** Returns whether transform will be reflected along the x-axis
-     * @returns true if transform will reflect horizontally
+     * \returns true if transform will reflect horizontally
      * @see setReflectX
      * @see reflectY
      */
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     void setReflectY( const bool reflectY ) { mReflectY = reflectY; }
 
     /** Returns whether transform will be reflected along the y-axis
-     * @returns true if transform will reflect horizontally
+     * \returns true if transform will reflect horizontally
      * @see setReflectY
      * @see reflectX
      */

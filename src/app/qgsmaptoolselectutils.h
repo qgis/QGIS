@@ -41,7 +41,7 @@ namespace QgsMapToolSelectUtils
    * \param doContains features will only be selected if fully contained within
     the selection rubber band (otherwise intersection is enough).
    * \param singleSelect only selects the closest feature to the selectGeometry.
-   * @returns list of features which match search geometry and parameters
+   * \returns list of features which match search geometry and parameters
    * \since QGIS 2.16
    */
   QgsFeatureIds getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect );
@@ -92,7 +92,7 @@ namespace QgsMapToolSelectUtils
   /**
     Get the current selected canvas map layer. Returns nullptr if it is not a vector layer
     \param canvas The map canvas used for getting the current layer
-    @return QgsVectorLayer The layer
+    \return QgsVectorLayer The layer
   */
   QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas );
 

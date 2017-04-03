@@ -87,7 +87,7 @@ class CORE_EXPORT QgsDiagram
      *  \param s    The settings that specify the size type
      *  \param c    The rendering specifying the proper scale units for pixel conversion
      *
-     *  @return The converted size for rendering
+     *  \return The converted size for rendering
      */
     QSizeF sizePainterUnits( QSizeF size, const QgsDiagramSettings &s, const QgsRenderContext &c );
 
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsDiagram
      *  \param s    Unused
      *  \param c    The rendering specifying the proper scale units for pixel conversion
      *
-     *  @return The converted length for rendering
+     *  \return The converted length for rendering
      */
     double sizePainterUnits( double l, const QgsDiagramSettings &s, const QgsRenderContext &c );
 
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsDiagram
      *  \param s    The settings that contain the font size and size type
      *  \param c    The rendering specifying the proper scale units for pixel conversion
      *
-     *  @return The properly scaled font for rendering
+     *  \return The properly scaled font for rendering
      */
     QFont scaledFont( const QgsDiagramSettings &s, const QgsRenderContext &c );
 

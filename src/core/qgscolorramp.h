@@ -43,7 +43,7 @@ class CORE_EXPORT QgsColorRamp
 
     /** Returns the color corresponding to a specified value.
      * \param value value between [0, 1] inclusive
-     * @returns color for value
+     * \returns color for value
      */
     virtual QColor color( double value ) const = 0;
 

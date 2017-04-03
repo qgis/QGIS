@@ -102,7 +102,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     void setName( const QString &name ) { mName = name; }
 
     /** Return full name (map@mapset)
-     * @return full name or empty string if map name is empty */
+     * \return full name or empty string if map name is empty */
     QString fullName() const;
 
     /** Parse full name in map@mapset form and set map and mapset. If mapset is not
@@ -236,7 +236,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static void setMapset( const QgsGrassObject &grassObject );
 
     /** Check if mapset is in search pat set by g.mapsets
-     *  @return true if in search path
+     *  \return true if in search path
      */
     bool isMapsetInSearchPath( const QString &mapset );
 
@@ -392,7 +392,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
                               struct Cell_head *target );
 
     /** Initialize GRASS library. This has to be called before any other function is used.
-     * @return true if successfully initialized */
+     * \return true if successfully initialized */
     static bool init( void );
 
     //! test if the directory is location
@@ -410,7 +410,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Find a module trying to append .bat, .py and .exe on Windows. The module may be a full path
      * without extension or just a module name in which case it is searched in grassModulesPaths().
      * \param module module name or path to module without extension
-     * @return full path including extension or empty string */
+     * \return full path including extension or empty string */
     static QString findModule( QString module );
 
     /** Start a GRASS module in any gisdbase/location/mapset.
@@ -494,7 +494,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static bool deleteObject( const QgsGrassObject &object );
 
     /** Ask user confirmation to delete a map
-     *  @return true if confirmed
+     *  \return true if confirmed
      */
     static bool deleteObjectDialog( const QgsGrassObject &object );
 
@@ -522,7 +522,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** Get GRASS vector type from name
      * \param point,centroid,line,boundary,area,face,kernel
-     * @returns type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE,GV_KERNEL  */
+     * \returns type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE,GV_KERNEL  */
     static int vectorType( const QString &name );
 
     /** Get name for vector primitive type

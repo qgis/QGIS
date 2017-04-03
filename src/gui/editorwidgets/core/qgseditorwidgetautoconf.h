@@ -41,7 +41,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
      * \param fieldName The field name on the specified layer for which this widget will be created
      * \param score     Where the score is returned (default to 0)
      *
-     * @return and integer value rating how good is the setup provided by this plugin.
+     * \return and integer value rating how good is the setup provided by this plugin.
      */
     virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const = 0;
 
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConf
      * \param vl        The vector layer for which this widget will be created
      * \param fieldName The field name on the specified layer for which this widget will be created
      *
-     * @return The best widget setup that was found
+     * \return The best widget setup that was found
      */
     QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName ) const;
 

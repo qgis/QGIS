@@ -235,7 +235,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
      * Sets the value associated with this key.
      * \param name is the key name
      * \param value is the value to set
-     * @return pointer to property value
+     * \return pointer to property value
      */
     QgsProjectPropertyValue *setValue( const QString &name, const QVariant &value )
     {

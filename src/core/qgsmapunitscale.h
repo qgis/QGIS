@@ -67,7 +67,7 @@ class CORE_EXPORT QgsMapUnitScale
     /** Computes a map units per pixel scaling factor, respecting the minimum and maximum scales
      * set for the object.
      * \param c render context
-     * @returns map units per pixel, limited between minimum and maximum scales
+     * \returns map units per pixel, limited between minimum and maximum scales
      */
     double computeMapUnitsPerPixel( const QgsRenderContext &c ) const;
 

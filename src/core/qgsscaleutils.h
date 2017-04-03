@@ -32,7 +32,7 @@ class CORE_EXPORT QgsScaleUtils
      * \param scales the list of scales to save
      * \param errorMessage it will contain the error message if something
      * went wrong
-     * @return true on success and false if failed
+     * \return true on success and false if failed
      */
     static bool saveScaleList( const QString &fileName, const QStringList &scales, QString &errorMessage );
 
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsScaleUtils
      * \param scales it will contain loaded scales
      * \param errorMessage it will contain the error message if something
      * went wrong
-     * @return true on success and false if failed
+     * \return true on success and false if failed
      */
     static bool loadScaleList( const QString &fileName, QStringList &scales, QString &errorMessage );
 };

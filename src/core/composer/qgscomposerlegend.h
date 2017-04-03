@@ -123,7 +123,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QString title() const;
 
     /** Returns the alignment of the legend title
-     * @returns Qt::AlignmentFlag for the legend title
+     * \returns Qt::AlignmentFlag for the legend title
      * \since QGIS 2.3
      * @see setTitleAlignment
      */

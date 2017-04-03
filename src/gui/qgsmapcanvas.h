@@ -400,7 +400,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setPreviewModeEnabled( bool previewEnabled );
 
     /** Returns whether a preview mode is enabled for the map canvas
-     * @returns true if a preview mode is currently enabled
+     * \returns true if a preview mode is currently enabled
      * @see setPreviewModeEnabled
      * @see previewMode
      * \since QGIS 2.3 */
@@ -417,7 +417,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Returns the current preview mode for the map canvas. This setting only has an effect if
      * previewModeEnabled is true.
-     * @returns preview mode for map canvas
+     * \returns preview mode for map canvas
      * @see setPreviewMode
      * @see previewModeEnabled
      * \since QGIS 2.3 */
@@ -833,7 +833,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
         \param layer the layer
         \param bbox out: bounding box
         \param errorMsg error message in case of error
-        @return true in case of success*/
+        \return true in case of success*/
     bool boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorLayer *layer, QgsRectangle &bbox, QString &errorMsg ) const;
 
     void setLayersPrivate( const QList<QgsMapLayer *> &layers );

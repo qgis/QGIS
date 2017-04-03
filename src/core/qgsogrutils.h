@@ -39,14 +39,14 @@ class CORE_EXPORT QgsOgrUtils
      * \param ogrFet OGR feature handle
      * \param fields fields collection corresponding to feature
      * \param encoding text encoding
-     * @return valid feature if read was successful
+     * \return valid feature if read was successful
      */
     static QgsFeature readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding );
 
     /** Reads an OGR feature and returns a corresponding fields collection.
      * \param ogrFet OGR feature handle
      * \param encoding text encoding
-     * @returns fields collection if read was successful
+     * \returns fields collection if read was successful
      */
     static QgsFields readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding );
 
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsOgrUtils
      * \param attIndex index of attribute to retrieve
      * \param encoding text encoding
      * \param ok optional storage for success of retrieval
-     * @returns attribute converted to a QVariant object
+     * \returns attribute converted to a QVariant object
      * @see readOgrFeatureAttributes()
      */
     static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok = 0 );
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsOgrUtils
      * \param fields fields collection corresponding to feature
      * \param feature QgsFeature to store attributes in
      * \param encoding text encoding
-     * @returns true if attribute read was successful
+     * \returns true if attribute read was successful
      * @see getOgrFeatureAttribute()
      */
     static bool readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature &feature, QTextCodec *encoding );
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsOgrUtils
     /** Reads the geometry from an OGR feature into a QgsFeature.
      * \param ogrFet OGR feature handle
      * \param feature QgsFeature to store geometry in
-     * @returns true if geometry read was successful
+     * \returns true if geometry read was successful
      * @see readOgrFeatureAttributes()
      * @see ogrGeometryToQgsGeometry()
      */
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsOgrUtils
 
     /** Converts an OGR geometry representation to a QgsGeometry object
      * \param geom OGR geometry handle
-     * @returns QgsGeometry object. If conversion was not successful the geometry
+     * \returns QgsGeometry object. If conversion was not successful the geometry
      * will be empty.
      * @see readOgrFeatureGeometry()
      */
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsOgrUtils
      * \param string string to parse
      * \param fields fields collection to use for parsed features (@see stringToFields())
      * \param encoding text encoding
-     * @returns list of parsed features, or an empty list if no features could be parsed
+     * \returns list of parsed features, or an empty list if no features could be parsed
      * @see stringToFields()
      */
     static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding );
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsOgrUtils
     /** Attempts to retrieve the fields from a string representing a collection of features using OGR.
      * \param string string to parse
      * \param encoding text encoding
-     * @returns retrieved fields collection, or an empty list if no fields could be determined from the string
+     * \returns retrieved fields collection, or an empty list if no fields could be determined from the string
      * @see stringToFeatureList()
      */
     static QgsFields stringToFields( const QString &string, QTextCodec *encoding );

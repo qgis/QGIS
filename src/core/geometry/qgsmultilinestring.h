@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     virtual bool addGeometry( QgsAbstractGeometry *g ) override;
 
     /** Returns the geometry converted to the more generic curve type QgsMultiCurve
-    @return the converted geometry. Caller takes ownership*/
+    \return the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry *toCurveType() const override;
 
   protected:

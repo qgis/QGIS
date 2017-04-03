@@ -169,7 +169,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
     int getUnit() const { return mUnitCombo->currentIndex(); }
 
     /** Returns the current predefined selected unit (if applicable).
-     * @returns selected output unit, or QgsUnitTypes::RenderUnknownUnit if the widget was populated with custom unit types
+     * \returns selected output unit, or QgsUnitTypes::RenderUnknownUnit if the widget was populated with custom unit types
      * \since QGIS 2.9
      */
     QgsUnitTypes::RenderUnit unit() const;

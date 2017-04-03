@@ -61,7 +61,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      * \param layer the symbol layer to render, if that makes sense
      * \param selected whether this feature has been selected (this will add decorations)
      * \param drawVertexMarker whether this feature has vertex markers (in edit mode usually)
-     * @returns true if the rendering was ok
+     * \returns true if the rendering was ok
      */
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     virtual bool legendSymbolItemChecked( const QString &key ) override;
     virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
 
-    //! @returns true if the geometries are to be preprocessed (merged with an union) before rendering.
+    //! \returns true if the geometries are to be preprocessed (merged with an union) before rendering.
     bool preprocessingEnabled() const { return mPreprocessingEnabled; }
 
     /**
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 
     /** Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
      * \since QGIS 2.5
-     * @returns a new renderer if the conversion was possible, otherwise 0.
+     * \returns a new renderer if the conversion was possible, otherwise 0.
      */
     static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 

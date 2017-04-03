@@ -76,7 +76,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     /**
      * @brief The default presets for the widget.  Normally set when the widget is
      * created however called setPresets will override the default styles.
-     * @return List of default presets.
+     * \return List of default presets.
      */
     QList<QgsConditionalStyle> defaultPresets() const;
 

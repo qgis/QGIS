@@ -80,7 +80,7 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! \param group the tree group where layers are (can be the root group)
     //! \param refLayer the reference layer
     //! \param layerToInsert the new layer to insert just below the reference layer
-    //! @returns the new tree layer
+    //! \returns the new tree layer
     static QgsLayerTreeLayer *insertLayerBelow( QgsLayerTreeGroup *group, const QgsMapLayer *refLayer, QgsMapLayer *layerToInsert );
 };
 

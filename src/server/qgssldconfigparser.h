@@ -176,15 +176,15 @@ class SERVER_EXPORT QgsSLDConfigParser : public QgsWmsConfigParser
     QgsFeatureRenderer *rendererFromUserStyle( const QDomElement &userStyleElement, QgsVectorLayer *vec ) const;
 
     /** Searches for a <TextSymbolizer> element and applies the settings to the vector layer
-     @return true if settings have been applied, false in case of <TextSymbolizer> element not present or error*/
+     \return true if settings have been applied, false in case of <TextSymbolizer> element not present or error*/
     bool labelSettingsFromUserStyle( const QDomElement &userStyleElement, QgsVectorLayer *vec ) const;
 
     /** Searches for a <RasterSymbolizer> element and applies the settings to the raster layer
-     @return true if settings have been applied, false in case of error*/
+     \return true if settings have been applied, false in case of error*/
     bool rasterSymbologyFromUserStyle( const QDomElement &userStyleElement, QgsRasterLayer *r ) const;
 
     /** Creates a line layer (including renderer) from contour symboliser
-     @return the layer or 0 if no layer could be created*/
+     \return the layer or 0 if no layer could be created*/
     QgsVectorLayer *contourLayerFromRaster( const QDomElement &userStyleElem, QgsRasterLayer *rasterLayer ) const;
 
     //! Returns the <UserLayer> dom node or a null node in case of failure
@@ -192,7 +192,7 @@ class SERVER_EXPORT QgsSLDConfigParser : public QgsWmsConfigParser
 
     /** Creates a vector layer from a <UserLayer> tag.
        \param layerName the WMS layer name. This is only necessary for the fallback SLD parser
-       @return 0 in case of error.
+       \return 0 in case of error.
        Delegates the work to specific methods for <SendedVDS>, <HostedVDS> or <RemoteOWS>*/
     QgsMapLayer *mapLayerFromUserLayer( const QDomElement &userLayerElem, const QString &layerName, bool allowCaching = true ) const;
 

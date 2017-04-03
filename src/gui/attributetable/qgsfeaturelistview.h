@@ -55,7 +55,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
 
     /**
      * Returns the layer cache
-     * @return the layer cache used as backend
+     * \return the layer cache used as backend
      */
     QgsVectorLayerCache *layerCache();
 
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Get the featureListModel used by this view
      *
-     * @return The model in use
+     * \return The model in use
      */
     QgsFeatureListModel *featureListModel() { return mModel; }
 
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Returns the expression which is currently used to render the features.
      *
-     * @return A string containing the currend display expression
+     * \return A string containing the currend display expression
      *
      * @see QgsExpression
      */
@@ -95,14 +95,14 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Returns a detailed message about errors while parsing a QgsExpression.
      *
-     * @return A message containing information about the parser error.
+     * \return A message containing information about the parser error.
      */
     QString parserErrorString();
 
     /**
      * Get the currentEditSelection
      *
-     * @return A list of edited feature ids
+     * \return A list of edited feature ids
      */
     QgsFeatureIds currentEditSelection();
 

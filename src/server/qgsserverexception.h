@@ -37,14 +37,14 @@ class SERVER_EXPORT QgsServerException : public QgsException
     QgsServerException( const QString &message, int responseCode = 500 );
 
     /**
-     * @return the return HTTP response code associated with this exception
+     * \return the return HTTP response code associated with this exception
      */
     int responseCode() const { return mResponseCode; }
 
     /** Format the exception for sending to client
      *
      * \param responseFormat QString to store the content type of the response format.
-     * @return QByteArray the fermatted response.
+     * \return QByteArray the fermatted response.
      *
      * The defaolt implementation return text/xml format.
      */
@@ -70,13 +70,13 @@ class SERVER_EXPORT QgsOgcServiceException : public QgsServerException
     QgsOgcServiceException( const QString &code, const QString &message, const QString &locator = QString(),
                             int responseCode = 200, const QString &version = QStringLiteral( "1.3.0" ) );
 
-    //! @return message
+    //! \return message
     QString message() const { return mMessage; }
 
-    //! @return code
+    //! \return code
     QString code()    const { return mCode; }
 
-    //! @return locator
+    //! \return locator
     QString locator() const { return mLocator; }
 
     //!return exception version

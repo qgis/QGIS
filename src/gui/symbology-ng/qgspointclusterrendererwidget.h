@@ -39,7 +39,7 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, privat
      * \param layer associated vector layer
      * \param style style collection
      * \param renderer source QgsPointClusterRenderer renderer
-     * @returns new QgsRendererWidget
+     * \returns new QgsRendererWidget
      */
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 

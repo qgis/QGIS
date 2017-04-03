@@ -110,7 +110,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         \param vertex the vertex id
-        @return rotation in radians, clockwise from north*/
+        \return rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
 
     virtual QgsCompoundCurve *reversed() const override;
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     QList< QgsCurve * > mCurves;
 
     /** Turns a vertex id for the compound curve into one or more ids for the subcurves
-        @return the index of the subcurve or -1 in case of error*/
+        \return the index of the subcurve or -1 in case of error*/
     QList< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;
 
 };

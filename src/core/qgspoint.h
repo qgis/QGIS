@@ -113,7 +113,7 @@ class CORE_EXPORT QgsPoint
     }
 
     /** Get the x value of the point
-     * @return x coordinate
+     * \return x coordinate
      */
     double x() const
     {
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsPoint
     }
 
     /** Get the y value of the point
-     * @return y coordinate
+     * \return y coordinate
      */
     double y() const
     {
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsPoint
     }
 
     /** Converts a point to a QPointF
-     * @returns QPointF with same x and y values
+     * \returns QPointF with same x and y values
      * \since QGIS 2.7
      */
     QPointF toQPointF() const;
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsPoint
 
     /** Return the well known text representation for the point.
      * The wkt is created without an SRID.
-     * @return Well known text in the form POINT(x y)
+     * \return Well known text in the form POINT(x y)
      */
     QString wellKnownText() const;
 
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsPoint
     /** Compares this point with another point with a fuzzy tolerance
      * \param other point to compare with
      * \param epsilon maximum difference for coordinates between the points
-     * @returns true if points are equal within specified tolerance
+     * \returns true if points are equal within specified tolerance
      * \since QGIS 2.9
      */
     bool compare( const QgsPoint &other, double epsilon = 4 * DBL_EPSILON ) const;
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsPoint
     void multiply( double scalar );
 
     //! Test if this point is on the segment defined by points a, b
-    //! @return 0 if this point is not on the open ray through a and b,
+    //! \return 0 if this point is not on the open ray through a and b,
     //! 1 if point is on open ray a, 2 if point is within line segment,
     //! 3 if point is on open ray b.
     int onSegment( const QgsPoint &a, const QgsPoint &b ) const;

@@ -94,7 +94,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * handle NULL values for certain types (like int).
      *
      * \param v The attributes to compare
-     * @return True if v is equal
+     * \return True if v is equal
      */
     bool operator==( const QgsAttributes &v ) const
     {

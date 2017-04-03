@@ -112,7 +112,7 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 
     /** Returns the item's priority when it is set to show always on top. Items with a lower priority will
      * be placed above items with a higher priority.
-     * @returns priority, or -1 if item is not set to show always on top
+     * \returns priority, or -1 if item is not set to show always on top
      * @see setAlwaysOnTopPriority()
      */
     int alwaysOnTopPriority() const;

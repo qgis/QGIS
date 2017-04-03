@@ -75,7 +75,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 
     /** Returns true if a symbol shape has a fill.
      * \param shape shape to test
-     * @returns true if shape uses a fill, or false if shape uses lines only
+     * \returns true if shape uses a fill, or false if shape uses lines only
      */
     static bool shapeIsFilled( Shape shape );
 
@@ -105,14 +105,14 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * shape.
      * \param name encoded shape name
      * \param ok if specified, will be set to true if shape was successfully decoded
-     * @return decoded name
+     * \return decoded name
      * @see encodeShape()
      */
     static Shape decodeShape( const QString &name, bool *ok = nullptr );
 
     /** Encodes a shape to its string representation.
      * \param shape shape to encode
-     * @returns encoded string
+     * \returns encoded string
      * @see decodeShape()
      */
     static QString encodeShape( Shape shape );
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     /** Creates a polygon representing the specified shape.
      * \param shape shape to create
      * \param polygon destination polygon for shape
-     * @returns true if shape was successfully stored in polygon
+     * \returns true if shape was successfully stored in polygon
      * \note not available in Python bindings
      */
     bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     /** Calculates the desired size of the marker, considering data defined size overrides.
      * \param context symbol render context
      * \param hasDataDefinedSize will be set to true if marker uses data defined sizes
-     * @returns marker size, in original size units
+     * \returns marker size, in original size units
      * \note not available in Python bindings
      */
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
@@ -208,13 +208,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
     /** Creates a new QgsSimpleMarkerSymbolLayer.
      * \param properties a property map containing symbol properties (see properties())
-     * @returns new QgsSimpleMarkerSymbolLayer
+     * \returns new QgsSimpleMarkerSymbolLayer
      */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
 
     /** Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
      * \param element XML element containing SLD definition of symbol
-     * @returns new QgsSimpleMarkerSymbolLayer
+     * \returns new QgsSimpleMarkerSymbolLayer
      */
     static QgsSymbolLayer *createFromSld( QDomElement &element );
 
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void drawMarker( QPainter *p, QgsSymbolRenderContext &context );
 
     /** Prepares cache image
-     * @returns true in case of success, false if cache image size too large
+     * \returns true in case of success, false if cache image size too large
     */
     bool prepareCache( QgsSymbolRenderContext &context );
 
@@ -407,7 +407,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
     /** Creates a new QgsFilledMarkerSymbolLayer.
      * \param properties a property map containing symbol properties (see properties())
-     * @returns new QgsFilledMarkerSymbolLayer
+     * \returns new QgsFilledMarkerSymbolLayer
      */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
 

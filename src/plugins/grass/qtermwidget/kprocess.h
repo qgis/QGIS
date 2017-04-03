@@ -100,7 +100,7 @@ public:
     /**
      * Query how the output channels of the child process are handled.
      *
-     * @return the output channel handling mode
+     * \return the output channel handling mode
      */
     OutputChannelMode outputChannelMode() const;
 
@@ -180,7 +180,7 @@ public:
      * This function must be called before starting the process, obviously.
      *
      * \param arg the argument to add
-     * @return a reference to this KProcess
+     * \return a reference to this KProcess
      */
     KProcess &operator<<(const QString& arg);
 
@@ -188,7 +188,7 @@ public:
      * @overload
      *
      * \param args the arguments to add
-     * @return a reference to this KProcess
+     * \return a reference to this KProcess
      */
     KProcess &operator<<(const QStringList& args);
 
@@ -222,7 +222,7 @@ public:
     /**
      * Obtain the currently set program and arguments.
      *
-     * @return a list, the first element being the program, the remaining ones
+     * \return a list, the first element being the program, the remaining ones
      *  being command line arguments to the program.
      */
     QStringList program() const;
@@ -248,7 +248,7 @@ public:
      * so the process can be parametrized properly and talked to.
      *
      * \param msecs time to wait for process to exit before killing it
-     * @return -2 if the process could not be started, -1 if it crashed,
+     * \return -2 if the process could not be started, -1 if it crashed,
      *  otherwise its exit code
      */
     int execute(int msecs = -1);
@@ -260,7 +260,7 @@ public:
      * \param args the command line arguments for the program,
      *   one per list element
      * \param msecs time to wait for process to exit before killing it
-     * @return -2 if the process could not be started, -1 if it crashed,
+     * \return -2 if the process could not be started, -1 if it crashed,
      *  otherwise its exit code
      */
     static int execute(const QString &exe, const QStringList &args = QStringList(), int msecs = -1);
@@ -271,7 +271,7 @@ public:
      * \param argv the program to execute and the command line arguments
      *   for the program, one per list element
      * \param msecs time to wait for process to exit before killing it
-     * @return -2 if the process could not be started, -1 if it crashed,
+     * \return -2 if the process could not be started, -1 if it crashed,
      *  otherwise its exit code
      */
     static int execute(const QStringList &argv, int msecs = -1);
@@ -288,7 +288,7 @@ public:
      * The KProcess object may be re-used immediately after calling this
      * function.
      *
-     * @return the PID of the started process or 0 on error
+     * \return the PID of the started process or 0 on error
      */
     int startDetached();
 
@@ -298,7 +298,7 @@ public:
      * \param exe the program to start
      * \param args the command line arguments for the program,
      *   one per list element
-     * @return the PID of the started process or 0 on error
+     * \return the PID of the started process or 0 on error
      */
     static int startDetached(const QString &exe, const QStringList &args = QStringList());
 
@@ -307,7 +307,7 @@ public:
      *
      * \param argv the program to start and the command line arguments
      *   for the program, one per list element
-     * @return the PID of the started process or 0 on error
+     * \return the PID of the started process or 0 on error
      */
     static int startDetached(const QStringList &argv);
 
@@ -319,7 +319,7 @@ public:
      * This function can be called only while the process is running.
      * It cannot be applied to detached processes.
      *
-     * @return the process ID
+     * \return the process ID
      */
     int pid() const;
 
