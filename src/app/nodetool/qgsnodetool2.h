@@ -112,6 +112,8 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
     void addDragMiddleBand( const QgsPoint &v1, const QgsPoint &v2, const QgsVector &offset1, const QgsVector &offset2 );
 
+    void addDragCircularBand( const QgsPoint &v0, const QgsPoint &v1, const QgsPoint &v2, bool moving0, bool moving1, bool moving2, const QgsPoint &mapPoint );
+
     void clearDragBands();
 
     void mouseMoveDraggingVertex( QgsMapMouseEvent *e );
@@ -231,6 +233,21 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     //! companion array to mDragMiddleBands: for each rubber band it keeps offset of both
     //! first and second point (in map units) from the position of the main vertex (mDraggingVertex)
     QList< QPair<QgsVector, QgsVector> > mDragMiddleBandsOffset;
+
+    //! structure to keep information about a rubber band used for dragging of a circular segment
+    struct CircularBand
+    {
+      QgsRubberBand *band = nullptr;        //!< Pointer to the actual rubber band
+      QgsPoint p0, p1, p2;                  //!< What are the original positions of points (in map units)
+      bool moving0, moving1, moving2;       //!< Which points of the band are moving with mouse cursor
+      QgsVector offset0, offset1, offset2;  //!< If the point is moving, what is the offset from the mouse cursor
+
+      //! update geometry of the rubber band band on the current mouse cursor position (in map units)
+      void updateRubberBand( const QgsPoint &mapPoint );
+    };
+
+    //! list of active rubber bands for circular segments
+    QList<CircularBand> mDragCircularBands;
     //! instance of Vertex that is being currently moved or nothing
     std::unique_ptr<Vertex> mDraggingVertex;
     //! whether moving a vertex or adding one

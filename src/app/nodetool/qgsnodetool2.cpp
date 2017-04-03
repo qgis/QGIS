@@ -18,6 +18,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
+#include "qgsgeometryutils.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmulticurve.h"
@@ -236,6 +237,24 @@ void QgsNodeTool2::addDragMiddleBand( const QgsPoint &v1, const QgsPoint &v2, co
   mDragMiddleBandsOffset << qMakePair( offset1, offset2 );
 }
 
+void QgsNodeTool2::addDragCircularBand( const QgsPoint &v0, const QgsPoint &v1, const QgsPoint &v2, bool moving0, bool moving1, bool moving2, const QgsPoint &mapPoint )
+{
+  CircularBand b;
+  b.band = createRubberBand( QgsWkbTypes::LineGeometry, true );
+  b.p0 = v0;
+  b.p1 = v1;
+  b.p2 = v2;
+  b.moving0 = moving0;
+  b.moving1 = moving1;
+  b.moving2 = moving2;
+  b.offset0 = v0 - mapPoint;
+  b.offset1 = v1 - mapPoint;
+  b.offset2 = v2 - mapPoint;
+  b.updateRubberBand( mapPoint );
+
+  mDragCircularBands << b;
+}
+
 void QgsNodeTool2::clearDragBands()
 {
   qDeleteAll( mDragBands );
@@ -249,6 +268,10 @@ void QgsNodeTool2::clearDragBands()
   qDeleteAll( mDragPointMarkers );
   mDragPointMarkers.clear();
   mDragPointMarkersOffset.clear();
+
+  Q_FOREACH ( const CircularBand &b, mDragCircularBands )
+    delete b.band;
+  mDragCircularBands.clear();
 }
 
 void QgsNodeTool2::cadCanvasPressEvent( QgsMapMouseEvent *e )
@@ -443,6 +466,12 @@ void QgsNodeTool2::mouseMoveDraggingVertex( QgsMapMouseEvent *e )
     const QPair<QgsVector, QgsVector> &offset = mDragMiddleBandsOffset[i];
     band->movePoint( 0, e->mapPoint() + offset.first );
     band->movePoint( 1, e->mapPoint() + offset.second );
+  }
+
+  for ( int i = 0; i < mDragCircularBands.count(); ++i )
+  {
+    CircularBand &b = mDragCircularBands[i];
+    b.updateRubberBand( e->mapPoint() );
   }
 
   // in case of moving of standalone point geometry
@@ -867,44 +896,117 @@ void QgsNodeTool2::startDraggingMoveVertex( const QgsPoint &mapPoint, const QgsP
 
   QgsPoint dragVertexMapPoint = m.point();
 
+  // set of middle vertices that are already in a circular rubber band
+  // i.e. every circular band is defined by its middle circular vertex
+  QSet<Vertex> verticesInCircularBands;
+
   Q_FOREACH ( const Vertex &v, movingVertices )
   {
     int v0idx, v1idx;
     QgsGeometry geom = cachedGeometry( v.layer, v.fid );
     QgsPoint pt = geom.vertexAt( v.vertexId );
+
     geom.adjacentVertices( v.vertexId, v0idx, v1idx );
+
+    QgsVertexId vid;
+    if ( v0idx != -1 && v1idx != -1 && geom.vertexIdFromVertexNr( v.vertexId, vid ) && vid.type == QgsVertexId::CurveVertex )
+    {
+      // the vertex is in the middle of a curved segment
+      qDebug( "middle point curve vertex" );
+      if ( !verticesInCircularBands.contains( v ) )
+      {
+        addDragCircularBand( geom.vertexAt( v0idx ),
+                             pt,
+                             geom.vertexAt( v1idx ),
+                             movingVertices.contains( Vertex( v.layer, v.fid, v0idx ) ),
+                             true,
+                             movingVertices.contains( Vertex( v.layer, v.fid, v1idx ) ),
+                             dragVertexMapPoint );
+        verticesInCircularBands << v;
+      }
+
+      // skip the rest - no need for further straight of circular bands for this vertex
+      // because our circular rubber band spans both towards left and right
+      continue;
+    }
+
     if ( v0idx != -1 )
     {
-      Vertex v0( v.layer, v.fid, v0idx );
-      QgsPoint otherPoint0 = geom.vertexAt( v0idx );
-      QgsPoint otherMapPoint0 = toMapCoordinates( v.layer, otherPoint0 );
-      if ( !movingVertices.contains( v0 ) )
+      // there is another vertex to the left - let's build a rubber band for it
+      QgsVertexId v0id;
+      if ( geom.vertexIdFromVertexNr( v0idx, v0id ) && v0id.type == QgsVertexId::CurveVertex )
       {
-        // rubber band that is fixed on one side and moving with mouse cursor on the other
-        addDragBand( otherMapPoint0, pt, pt - dragVertexMapPoint );
+        // circular segment to the left
+        Vertex v0( v.layer, v.fid, v0idx );
+        if ( !verticesInCircularBands.contains( v0 ) )
+        {
+          addDragCircularBand( geom.vertexAt( v0idx - 1 ),
+                               geom.vertexAt( v0idx ),
+                               pt,
+                               movingVertices.contains( Vertex( v.layer, v.fid, v0idx - 1 ) ),
+                               movingVertices.contains( Vertex( v.layer, v.fid, v0idx ) ),
+                               true,
+                               dragVertexMapPoint );
+          verticesInCircularBands << v0;
+        }
       }
       else
       {
-        // rubber band that has both endpoints moving with mouse cursor
-        if ( v0idx > v.vertexId )
-          addDragMiddleBand( otherMapPoint0, pt, otherMapPoint0 - dragVertexMapPoint, pt - dragVertexMapPoint );
+        // straight segment to the left
+        Vertex v0( v.layer, v.fid, v0idx );
+        QgsPoint otherPoint0 = geom.vertexAt( v0idx );
+        QgsPoint otherMapPoint0 = toMapCoordinates( v.layer, otherPoint0 );
+        if ( !movingVertices.contains( v0 ) )
+        {
+          // rubber band that is fixed on one side and moving with mouse cursor on the other
+          addDragBand( otherMapPoint0, pt, pt - dragVertexMapPoint );
+        }
+        else
+        {
+          // rubber band that has both endpoints moving with mouse cursor
+          if ( v0idx > v.vertexId )
+            addDragMiddleBand( otherMapPoint0, pt, otherMapPoint0 - dragVertexMapPoint, pt - dragVertexMapPoint );
+        }
       }
     }
+
     if ( v1idx != -1 )
     {
-      Vertex v1( v.layer, v.fid, v1idx );
-      QgsPoint otherPoint1 = geom.vertexAt( v1idx );
-      QgsPoint otherMapPoint1 = toMapCoordinates( v.layer, otherPoint1 );
-      if ( !movingVertices.contains( v1 ) )
+      // there is another vertex to the right - let's build a rubber band for it
+      QgsVertexId v1id;
+      if ( geom.vertexIdFromVertexNr( v1idx, v1id ) && v1id.type == QgsVertexId::CurveVertex )
       {
-        // rubber band that is fixed on one side and moving with mouse cursor on the other
-        addDragBand( otherMapPoint1, pt, pt - dragVertexMapPoint );
+        // circular segment to the right
+        Vertex v1( v.layer, v.fid, v1idx );
+        if ( !verticesInCircularBands.contains( v1 ) )
+        {
+          addDragCircularBand( pt,
+                               geom.vertexAt( v1idx ),
+                               geom.vertexAt( v1idx + 1 ),
+                               true,
+                               movingVertices.contains( Vertex( v.layer, v.fid, v1idx ) ),
+                               movingVertices.contains( Vertex( v.layer, v.fid, v1idx + 1 ) ),
+                               dragVertexMapPoint );
+          verticesInCircularBands << v1;
+        }
       }
       else
       {
-        // rubber band that has both endpoints moving with mouse cursor
-        if ( v1idx > v.vertexId )
-          addDragMiddleBand( otherMapPoint1, pt, otherMapPoint1 - dragVertexMapPoint, pt - dragVertexMapPoint );
+        // straight segment to the right
+        Vertex v1( v.layer, v.fid, v1idx );
+        QgsPoint otherPoint1 = geom.vertexAt( v1idx );
+        QgsPoint otherMapPoint1 = toMapCoordinates( v.layer, otherPoint1 );
+        if ( !movingVertices.contains( v1 ) )
+        {
+          // rubber band that is fixed on one side and moving with mouse cursor on the other
+          addDragBand( otherMapPoint1, pt, pt - dragVertexMapPoint );
+        }
+        else
+        {
+          // rubber band that has both endpoints moving with mouse cursor
+          if ( v1idx > v.vertexId )
+            addDragMiddleBand( otherMapPoint1, pt, otherMapPoint1 - dragVertexMapPoint, pt - dragVertexMapPoint );
+        }
       }
     }
 
@@ -1384,4 +1486,17 @@ bool QgsNodeTool2::matchEdgeCenterTest( const QgsPointLocator::Match &m, const Q
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
   bool isNearCenter = distFromEdgeCenter < tol;
   return isNearCenter;
+}
+
+void QgsNodeTool2::CircularBand::updateRubberBand( const QgsPoint &mapPoint )
+{
+  QgsPointSequence points;
+  QgsPoint v0 = moving0 ? mapPoint + offset0 : p0;
+  QgsPoint v1 = moving1 ? mapPoint + offset1 : p1;
+  QgsPoint v2 = moving2 ? mapPoint + offset2 : p2;
+  QgsGeometryUtils::segmentizeArc( QgsPointV2( v0 ), QgsPointV2( v1 ), QgsPointV2( v2 ), points );
+  // it would be useful to have QgsRubberBand::setPoints() call
+  band->reset();
+  Q_FOREACH ( const QgsPointV2 &p, points )
+    band->addPoint( p );
 }
