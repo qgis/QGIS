@@ -144,7 +144,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /** Returns the diagram priority.
      * @returns diagram priority, where 0 = low and 10 = high
-     * @note placement priority is shared with labeling, so diagrams with a high priority may displace labels
+     * \note placement priority is shared with labeling, so diagrams with a high priority may displace labels
      * and vice-versa
      * @see setPriority()
      * \since QGIS 2.16
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /** Returns the diagram z-index. Diagrams (or labels) with a higher z-index are drawn over diagrams
      * with a lower z-index.
-     * @note z-index ordering is shared with labeling, so diagrams with a high z-index may be drawn over labels
+     * \note z-index ordering is shared with labeling, so diagrams with a high z-index may be drawn over labels
      * with a low z-index and vice-versa
      * @see setZIndex()
      * \since QGIS 2.16
@@ -304,7 +304,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     LinePlacementFlags mPlacementFlags = OnLine;
 
     //! Placement priority, where 0 = low and 10 = high
-    //! @note placement priority is shared with labeling, so diagrams with a high priority may displace labels
+    //! \note placement priority is shared with labeling, so diagrams with a high priority may displace labels
     //! and vice-versa
     int mPriority = 5;
 
@@ -425,7 +425,7 @@ class CORE_EXPORT QgsDiagramSettings
     void writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
 
     /** Returns list of legend nodes for the diagram
-     * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
+     * \note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
      * \since QGIS 2.10
      */
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const;
@@ -508,7 +508,7 @@ class CORE_EXPORT QgsDiagramRenderer
     virtual void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const = 0;
 
     /** Returns list of legend nodes for the diagram
-     * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
+     * \note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
      * \since QGIS 2.10
      */
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const;

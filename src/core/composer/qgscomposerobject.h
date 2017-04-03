@@ -115,7 +115,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      */
     const QgsComposition *composition() const { return mComposition; }
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsComposition *composition() { return mComposition; }
 
     /** Stores item state in DOM element

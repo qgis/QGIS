@@ -440,14 +440,14 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     /** Returns the text used in the column headers for the table.
      * @returns QMap of int to QString, where the int is the column index (starting at 0),
      * and the string is the text to use for the column's header
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     virtual QMap<int, QString> headerLabels() const;
 
     /** Fetches the contents used for the cells in the table.
      * @returns true if table contents were successfully retrieved.
      * @param contents QgsComposerTableContents to store retrieved row data in
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     virtual bool getTableContents( QgsComposerTableContents &contents ) = 0;
 
@@ -619,10 +619,10 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * table, then the default row height will be used for the remaining rows.
      * @param hasHeader set to true if table frame includes header cells
      * @param mergeCells set to true to merge table content cells
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      * @see drawVerticalGridLines
      * @see calculateMaxColumnWidths
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      * \since QGIS 2.12
      */
     void drawVerticalGridLines( QPainter *painter, const QMap<int, double> &maxWidthMap, int firstRow, int lastRow, bool hasHeader, bool mergeCells = false ) const;

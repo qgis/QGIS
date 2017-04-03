@@ -76,7 +76,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     QSslSocket::PeerVerifyMode sslPeerVerifyMode();
 
     /** Get the client's peer verify depth for connections
-     * @note Value of 0 = unlimited
+     * \note Value of 0 = unlimited
      */
     int sslPeerVerifyDepth();
 

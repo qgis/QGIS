@@ -101,7 +101,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * connection string
      * @param expandAuthConfig Whether to expand any assigned authentication configuration
      * @return data source specification
-     * @note The default authentication configuration expansion is FALSE. This keeps credentials
+     * \note The default authentication configuration expansion is FALSE. This keeps credentials
      * out of layer data source URIs and project files. Expansion should be specifically done
      * only when needed within a provider
      */
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * if more than one provider supports a given format, the user is able to
      * select a specific provider to open that file.
      *
-     * @note
+     * \note
      *
      * Instead of being pure virtual, might be better to generalize this
      * behavior and presume that none of the sub-classes are going to do
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Return a terse string describing what the provider is.
      *
-     * @note
+     * \note
      *
      * Instead of being pure virtual, might be better to generalize this
      * behavior and presume that none of the sub-classes are going to do
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * for those data providers that do not deal with plain files, such as
      * databases and servers.
      *
-     * @note It'd be nice to eventually be raster/vector neutral.
+     * \note It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileVectorFilters() const
     {
@@ -290,7 +290,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * for those data providers that do not deal with plain files, such as
      * databases and servers.
      *
-     * @note It'd be nice to eventually be raster/vector neutral.
+     * \note It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileRasterFilters() const
     {

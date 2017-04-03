@@ -82,7 +82,7 @@ class CORE_EXPORT QgsJSONExporter
     /** Sets whether to include attributes of features linked via references in the JSON exports.
      * @param includeRelated set to true to include attributes for any related child features
      * within the exported properties element.
-     * @note associated vector layer must be set with setVectorLayer()
+     * \note associated vector layer must be set with setVectorLayer()
      * @see includeRelated()
      */
     void setIncludeRelated( bool includeRelated ) { mIncludeRelatedAttributes = includeRelated; }
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsJSONExporter
     /** Sets the source CRS for feature geometries. The source CRS must be set if geometries are to be
      * correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
      * @param crs source CRS for input feature geometries
-     * @note the source CRS will be overwritten when a vector layer is specified via setVectorLayer()
+     * \note the source CRS will be overwritten when a vector layer is specified via setVectorLayer()
      * @see sourceCrs()
      */
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs );
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsJSONExporter
      * attributes
      * @see attributes()
      * @see setExcludedAttributes()
-     * @note Attributes excluded via setExcludedAttributes() take precedence over
+     * \note Attributes excluded via setExcludedAttributes() take precedence over
      * attributes specified by this method.
      */
     void setAttributes( const QgsAttributeList &attributes ) { mAttributeIndexes = attributes; }
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsJSONExporter
      * an empty list if all attributes will be included.
      * @see setAttributes()
      * @see excludedAttributes()
-     * @note Attributes excluded via excludedAttributes() take precedence over
+     * \note Attributes excluded via excludedAttributes() take precedence over
      * attributes returned by this method.
      */
     QgsAttributeList attributes() const { return mAttributeIndexes; }
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsJSONUtils
      * @param encoding text encoding
      * @returns list of parsed features, or an empty list if no features could be parsed
      * @see stringToFields()
-     * @note this function is a wrapper around QgsOgrUtils::stringToFeatureList()
+     * \note this function is a wrapper around QgsOgrUtils::stringToFeatureList()
      */
     static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding );
 
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsJSONUtils
      * @param encoding text encoding
      * @returns retrieved fields collection, or an empty list if no fields could be determined from the string
      * @see stringToFeatureList()
-     * @note this function is a wrapper around QgsOgrUtils::stringToFields()
+     * \note this function is a wrapper around QgsOgrUtils::stringToFields()
      */
     static QgsFields stringToFields( const QString &string, QTextCodec *encoding );
 

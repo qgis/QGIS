@@ -147,7 +147,7 @@ class CORE_EXPORT QgsImageOperation
      * @param image QImage to blur
      * @param radius blur radius in pixels, maximum value of 16
      * @param alphaOnly set to true to blur only the alpha component of the image
-     * @note for fastest operation, ensure the source image is ARGB32_Premultiplied if
+     * \note for fastest operation, ensure the source image is ARGB32_Premultiplied if
      * alphaOnly is set to false, or ARGB32 if alphaOnly is true
      */
     static void stackBlur( QImage &image, const int radius, const bool alphaOnly = false );
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsImageOperation
      * @param image QImage to blur
      * @param radius blur radius in pixels
      * @returns blurred image
-     * @note for fastest operation, ensure the source image is ARGB32_Premultiplied
+     * \note for fastest operation, ensure the source image is ARGB32_Premultiplied
      */
     static QImage *gaussianBlur( QImage &image, const int radius );
 

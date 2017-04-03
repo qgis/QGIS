@@ -169,7 +169,7 @@ class APP_EXPORT QgsClipboard : public QObject
 
     /** Attempts to parse the clipboard contents and return a QgsFields object representing the fields
      * present in the clipboard.
-     * @note Only valid for text based clipboard contents
+     * \note Only valid for text based clipboard contents
      */
     QgsFields retrieveFields() const;
 

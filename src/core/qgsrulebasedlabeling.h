@@ -34,8 +34,8 @@ class QgsRuleBasedLabelProvider;
 
 /** \ingroup core
  * @class QgsRuleBasedLabeling
- * @note not available in Python bindings
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \note not available in Python bindings
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */
 
 class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
@@ -48,8 +48,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     /**
      * \ingroup core
      * @class QgsRuleBasedLabeling::Rule
-     * @note not available in Python bindings
-     * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
+     * \note not available in Python bindings
+     * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
      */
     class CORE_EXPORT Rule
     {
@@ -341,8 +341,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
 /** \ingroup core
  * @class QgsRuleBasedLabelProvider
- * @note not available in Python bindings
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \note not available in Python bindings
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */
 class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 {

@@ -46,7 +46,7 @@ class CORE_EXPORT QgsOgcUtils
   public:
 
     /** GML version
-     *  @note not available in Python bindings
+     *  \note not available in Python bindings
      */
     typedef enum
     {
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsOgcUtils
     static QDomElement expressionToOgcFilter( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
 
     /** OGC filter version
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     typedef enum
     {
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsOgcUtils
      * @return valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QDomElement expressionToOgcFilter( const QgsExpression &exp,
         QDomDocument &doc,
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsOgcUtils
     /** \ingroup core
      * Layer properties. Used by SQLStatementToOgcFilter().
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     class LayerProperties
     {
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsOgcUtils
      * @return valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QDomElement SQLStatementToOgcFilter( const QgsSQLStatement &statement,
         QDomDocument &doc,
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsOgcUtils
 
 /** \ingroup core
  * Internal use by QgsOgcUtils
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class QgsOgcUtilsExprToFilter
 {
@@ -338,7 +338,7 @@ class QgsOgcUtilsExprToFilter
 
 /** \ingroup core
  * Internal use by QgsOgcUtils
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class QgsOgcUtilsSQLStatementToFilter
 {

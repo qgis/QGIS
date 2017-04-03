@@ -181,7 +181,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     virtual void populateLayerList();
 
     //! create an item including possible parents
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsTreeWidgetItem *createItem( int id,
                                    const QStringList &names,
                                    QMap<int, QgsTreeWidgetItem *> &items,

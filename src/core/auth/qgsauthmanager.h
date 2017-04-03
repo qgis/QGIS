@@ -67,7 +67,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     };
 
     /** Enforce singleton pattern
-     * @note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
+     * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
      */
     static QgsAuthManager *instance();
 
@@ -97,20 +97,20 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QString authenticationDatabasePath() const { return mAuthDbPath; }
 
     /** Main call to initially set or continually check master password is set
-     * @note If it is not set, the user is asked for its input
+     * \note If it is not set, the user is asked for its input
      * @param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( bool verify = false );
 
     /** Overloaded call to reset master password or set it initially without user interaction
-     * @note Only use this in trusted reset functions, unit tests or user/app setup scripts!
+     * \note Only use this in trusted reset functions, unit tests or user/app setup scripts!
      * @param pass Password to use
      * @param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( const QString &pass, bool verify = false );
 
     /** Verify the supplied master password against any existing hash in authentication database
-     * @note Do not emit verification signals when only comparing
+     * \note Do not emit verification signals when only comparing
      * @param compare Password to compare against
      */
     bool verifyMasterPassword( const QString &compare = QString::null );
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool masterPasswordHashInDatabase() const;
 
     /** Clear supplied master password
-     * @note This will not necessarily clear authenticated connections cached in network connection managers
+     * \note This will not necessarily clear authenticated connections cached in network connection managers
      */
     void clearMasterPassword() { mMasterPass = QString(); }
 
@@ -141,12 +141,12 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath = nullptr );
 
     /** Whether there is a scheduled opitonal erase of authentication database.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     bool scheduledAuthDatabaseErase() { return mScheduledDbErase; }
 
     /** Schedule an optional erase of authentication database, starting when mutex is lockable.
-     * @note When an erase is scheduled, any attempt to set the master password,
+     * \note When an erase is scheduled, any attempt to set the master password,
      * e.g. password input dialog, is effectively canceled.
      * For example: In a GUI app, this keeps excess password input dialogs from popping
      * up when a user has initiated an erase, from a password input dialog, because
@@ -154,12 +154,12 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * The created schedule timer will emit a request to gain access to the user,
      * through the given application, to prompt the erase operation (e.g. via a dialog);
      * if no access to user interaction occurs wihtin 90 seconds, it cancels the schedule.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void setScheduledAuthDatabaseErase( bool scheduleErase );
 
     /** Re-emit a signal to schedule an optional erase of authentication database.
-     * @note This can be called from the slot connected to a previously emitted scheduling signal,
+     * \note This can be called from the slot connected to a previously emitted scheduling signal,
      * so that the slot can ask for another emit later, if the slot noticies the current GUI
      * processing state is not ready for interacting with the user, e.g. project is still loading
      * @param emitted Setting to false will cause signal to be emitted by the schedule timer.
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Get available authentication methods mapped to their key
      * @param dataprovider Provider key filter, returning only methods that support a particular provider
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() );
 
@@ -353,7 +353,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QSslCertificate getCertIdentity( const QString &id );
 
     /** Get a certificate identity bundle by id (sha hash).
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QPair<QSslCertificate, QSslKey> getCertIdentityBundle( const QString &id );
 
@@ -392,7 +392,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool removeSslCertCustomConfig( const QString &id, const QString &hostport );
 
     /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; }
 
@@ -437,7 +437,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QMap<QString, QSslCertificate> getMappedDatabaseCAs();
 
     /** Get all CA certs mapped to their sha1 from cache.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > getCaCertsCache()
     {

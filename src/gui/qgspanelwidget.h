@@ -108,9 +108,9 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     /**
      * Emitted when the panel is accepted by the user.
      * @param panel The panel widget that was accepted.
-     * @note This argument is normally raised with emit panelAccepted(this)
+     * \note This argument is normally raised with emit panelAccepted(this)
      * so that callers can retrieve the widget easier in calling code.
-     * @note this is emitted only when this panel is accepted, and is not emitted for
+     * \note this is emitted only when this panel is accepted, and is not emitted for
      * child panels. For example, if this panel opens a second stacked panel, then this panel
      * will not emit panelAccepted when the second panel is accepted.
      */
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     /**
      * Emit when you require a panel to be show in the interface.
      * @param panel The panel widget to show.
-     * @note If you are connected to this signal you should also connect
+     * \note If you are connected to this signal you should also connect
      * given panels showPanel signal as they can be nested.
      */
     void showPanel( QgsPanelWidget *panel );
@@ -172,7 +172,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
  * @brief Wrapper widget for existing widgets which can't have
  * the inheritance tree changed, e.g dialogs.
  *
- * @note Generally you should use the QgsPanelWidget class if you can
+ * \note Generally you should use the QgsPanelWidget class if you can
  * and only use this wrapper if you can't update your code.
  */
 class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget

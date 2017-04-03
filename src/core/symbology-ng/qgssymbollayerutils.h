@@ -209,7 +209,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * type.
      * @param element DOM element representing symbol
      * @returns decoded symbol cast to specified type, if possible
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element )
     {
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static bool fillFromSld( QDomElement &element,
                              Qt::BrushStyle &brushStyle, QColor &color );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static void lineToSld( QDomDocument &doc, QDomElement &element,
                            Qt::PenStyle penStyle, const QColor &color, double width = -1,
                            const Qt::PenJoinStyle *penJoinStyle = nullptr, const Qt::PenCapStyle *penCapStyle = nullptr,
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
                                       const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle,
                                       double strokeWidth = -1, double size = -1 );
 
-    //! @note available in Python as wellKnownMarkerFromSld2
+    //! \note available in Python as wellKnownMarkerFromSld2
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
                                         double &strokeWidth, double &size );

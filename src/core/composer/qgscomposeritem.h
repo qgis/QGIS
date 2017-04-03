@@ -211,7 +211,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false, int page = -1 );
 
     /** Returns item's last used position mode.
-      @note: This property has no effect on actual's item position, which is always the top-left corner. */
+      \note: This property has no effect on actual's item position, which is always the top-left corner. */
     ItemPositionMode lastUsedPositionMode() { return mLastUsedPositionMode; }
 
     /** Sets this items bound in scene coordinates such that 1 item size units
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Sets frame stroke color
      * @param color new color for stroke frame
-     * @note introduced in 2.6
+     * \note introduced in 2.6
      * @see frameStrokeColor
      * @see setFrameEnabled
      * @see setFrameJoinStyle
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Returns the frame's stroke color. Only used if hasFrame is true.
      * @returns frame stroke color
-     * @note introduced in 2.6
+     * \note introduced in 2.6
      * @see hasFrame
      * @see setFrameStrokeColor
      * @see frameJoinStyle
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Sets frame stroke width
      * @param strokeWidth new width for stroke frame
-     * @note introduced in 2.2
+     * \note introduced in 2.2
      * @see frameStrokeWidth
      * @see setFrameEnabled
      * @see setFrameJoinStyle
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Returns the frame's stroke width. Only used if hasFrame is true.
      * @returns Frame stroke width
-     * @note introduced in 2.3
+     * \note introduced in 2.3
      * @see hasFrame
      * @see setFrameStrokeWidth
      * @see frameJoinStyle
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Returns the join style used for drawing the item's frame
      * @returns Join style for stroke frame
-     * @note introduced in 2.3
+     * \note introduced in 2.3
      * @see hasFrame
      * @see setFrameJoinStyle
      * @see frameStrokeWidth
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Sets join style used when drawing the item's frame
      * @param style Join style for stroke frame
-     * @note introduced in 2.3
+     * \note introduced in 2.3
      * @see setFrameEnabled
      * @see frameJoinStyle
      * @see setFrameStrokeWidth
@@ -306,7 +306,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * actual rectangle. For instance, if the item has a 2mm frame stroke, then
      * 1mm of this frame is drawn outside the item's rect. In this case the
      * return value will be 1.0
-     * @note introduced in 2.2
+     * \note introduced in 2.2
      * @see rectWithFrame
      */
     virtual double estimatedFrameBleed() const;
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      *  more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
      *  function, as rect() makes no allowances for the portion of outlines which are drawn
      *  outside of the item.
-     * @note introduced in 2.2
+     * \note introduced in 2.2
      * @see estimatedFrameBleed
      */
     virtual QRectF rectWithFrame() const;
@@ -453,7 +453,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Get item identification name
      * @returns unique item identification string
-     * @note there is not setter since one can't manually set the id
+     * \note there is not setter since one can't manually set the id
      * @see id
      * @see setId
      */
@@ -470,7 +470,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Sets visibility for item.
      * @param visible set to true to show item, false to hide item
-     * @note QGraphicsItem::setVisible should not be called directly
+     * \note QGraphicsItem::setVisible should not be called directly
      * on a QgsComposerItem, as some item types (e.g., groups) need to override
      * the visibility toggle.
      * \since QGIS 2.5
@@ -638,7 +638,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool mIsGroupMember;
 
     /** The layer that needs to be exported
-     * @note: if -1, all layers are to be exported
+     * \note: if -1, all layers are to be exported
      * \since QGIS 2.4
      */
     int mCurrentExportLayer;
@@ -699,12 +699,12 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void sizeChanged();
 
     /** Emitted if the item's frame style changes
-     * @note: this function was introduced in version 2.2
+     * \note: this function was introduced in version 2.2
      */
     void frameChanged();
 
     /** Emitted if the item's lock status changes
-     * @note: this function was introduced in version 2.5
+     * \note: this function was introduced in version 2.5
      */
     void lockChanged();
 

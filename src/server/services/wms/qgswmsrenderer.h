@@ -181,7 +181,7 @@ namespace QgsWms
       /** Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
        * @param layerList list of layer IDs to filter
        * @param originalFilters hash of layer ID to original filter string
-       * @note It is strongly recommended that this method be called alongside use of QgsOWSServerFilterRestorer
+       * \note It is strongly recommended that this method be called alongside use of QgsOWSServerFilterRestorer
        * to ensure that the original filters are always correctly restored, regardless of whether exceptions
        * are thrown or functions are terminated early.
        */

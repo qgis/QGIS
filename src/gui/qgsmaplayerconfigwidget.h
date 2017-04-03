@@ -39,7 +39,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
        * @param layer The layer active in the dock.
        * @param canvas The canvas object.
        * @param parent The parent of the widget.
-       * @note The widget is created each time the panel is selected in the dock.
+       * \note The widget is created each time the panel is selected in the dock.
        * Keep the loading light as possible for speed in the UI.
        */
     QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );

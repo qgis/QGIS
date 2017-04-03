@@ -121,7 +121,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * @return model index, invalid if item not found */
     QModelIndex findPath( const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static QModelIndex findPath( QAbstractItemModel *model, const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     void connectItem( QgsDataItem *item );

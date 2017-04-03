@@ -107,7 +107,7 @@ class CORE_EXPORT QgsRenderChecker
      * are allowed to be different from the control image. In some cases
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
-     * @note make sure to call setExpectedImage and setMapRenderer first
+     * \note make sure to call setExpectedImage and setMapRenderer first
      */
     bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
 
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsRenderChecker
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
      * @param renderedImageFile to optionally override the output filename
-     * @note: make sure to call setExpectedImage and setRenderedImage first.
+     * \note: make sure to call setExpectedImage and setRenderedImage first.
      */
     bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = "" );
 
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsRenderChecker
      * Only will return something if you call enableDashBuffering( true ); before.
      *
      * @return buffered dash messages
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QVector<QgsDartMeasurement> dartMeasurements() const { return mDashMessages; }
 

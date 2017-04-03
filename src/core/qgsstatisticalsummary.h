@@ -100,9 +100,9 @@ class CORE_EXPORT QgsStatisticalSummary
      * quantities of values this may be more efficient then first adding all the
      * values to a list and calling calculate().
      * @param value value to add
-     * @note call reset() before adding the first value using this method
+     * \note call reset() before adding the first value using this method
      * to clear the results from any previous calculations
-     * @note finalize() must be called after adding the final value and before
+     * \note finalize() must be called after adding the final value and before
      * retrieving calculated statistics.
      * @see calculate()
      * @see addVariant()
@@ -116,9 +116,9 @@ class CORE_EXPORT QgsStatisticalSummary
      * quantities of values this may be more efficient then first adding all the
      * values to a list and calling calculate().
      * @param value variant containing to add. Non-numeric values are treated as null.
-     * @note call reset() before adding the first value using this method
+     * \note call reset() before adding the first value using this method
      * to clear the results from any previous calculations
-     * @note finalize() must be called after adding the final value and before
+     * \note finalize() must be called after adding the final value and before
      * retrieving calculated statistics.
      * @see addValue()
      * @see calculate()

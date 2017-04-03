@@ -26,7 +26,7 @@
 /** @ingroup gui
  * Table model to edit a QVariantList.
  * \since QGIS 3.0
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class GUI_EXPORT QgsListModel : public QAbstractTableModel
 {

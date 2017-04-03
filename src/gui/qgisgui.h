@@ -76,7 +76,7 @@ namespace QgisGui
     @param enc        encoding?
     @param title      the title for the dialog
     @param cancelAll  add button to cancel further requests
-    @note
+    \note
 
     Stores persistent settings under /UI/.  The sub-keys will be
     filterName and filterName + "Dir".

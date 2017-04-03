@@ -176,7 +176,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
 
     /** Sets the selected unit index
      * @param unitIndex index of unit to set as current
-     * @note available in Python bindings as setUnitIndex
+     * \note available in Python bindings as setUnitIndex
      */
     void setUnit( int unitIndex );
 

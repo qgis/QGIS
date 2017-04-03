@@ -65,7 +65,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 
     /**
      * @brief snapPoint will snap the points using the map canvas snapping utils configuration
-     * @note if snapping did not succeeded, the map point will be reset to its original position
+     * \note if snapping did not succeeded, the map point will be reset to its original position
      */
     QgsPoint snapPoint( SnappingMode snappingMode );
 

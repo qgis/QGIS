@@ -86,7 +86,7 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry( const QgsGeometry & );
 
     /** Assignments will prompt a deep copy of the object
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QgsGeometry &operator=( QgsGeometry const &rhs );
 
@@ -141,14 +141,14 @@ class CORE_EXPORT QgsGeometry
     /**
      * Set the geometry, feeding in a geometry in GEOS format.
      * This class will take ownership of the buffer.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void fromGeos( GEOSGeometry *geos );
 
     /**
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
       This class will take ownership of the buffer.
-      @note not available in Python bindings
+      \note not available in Python bindings
      */
     void fromWkb( unsigned char *wkb, int length );
 
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsGeometry
     /** Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
      *  @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      *  \since QGIS 3.0
-     *  @note not available in Python bindings
+     *  \note not available in Python bindings
      */
     GEOSGeometry *exportToGeos( double precision = 0 ) const;
 
@@ -403,7 +403,7 @@ class CORE_EXPORT QgsGeometry
      * @param newPart part to add. Ownership is NOT transferred.
      * @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( GEOSGeometry *newPart );
@@ -641,7 +641,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns the center of mass of a geometry.
-     * @note for line based geometries, the center point of the line is returned,
+     * \note for line based geometries, the center point of the line is returned,
      * and for point based geometries, the point itself is returned
      * @see pointOnSurface()
      * @see poleOfInaccessibility()
@@ -715,7 +715,7 @@ class CORE_EXPORT QgsGeometry
      * where this linestring comes to the specified point.
      * @param point point to seek proximity to
      * @return distance along line, or -1 on error
-     * @note only valid for linestring geometries
+     * \note only valid for linestring geometries
      * @see interpolate()
      * \since QGIS 3.0
      */
@@ -736,7 +736,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Returns a geometry representing all the points in this geometry and other (a
      * union geometry operation).
-     * @note this operation is not called union since its a reserved word in C++.
+     * \note this operation is not called union since its a reserved word in C++.
      */
     QgsGeometry combine( const QgsGeometry &geometry ) const;
 
@@ -878,7 +878,7 @@ class CORE_EXPORT QgsGeometry
     /**
      * Attempts to make an invalid geometry valid without losing vertices.
      *
-     * @note Ported from PostGIS ST_MakeValid() and it should return equivalent results.
+     * \note Ported from PostGIS ST_MakeValid() and it should return equivalent results.
      * Already-valid geometries are returned without further intervention.
      * In case of full or partial dimensional collapses, the output geometry may be a collection
      * of lower-to-equal dimension geometries or a geometry of lower dimension.
@@ -979,7 +979,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Return GEOS context handle
      * \since QGIS 2.6
-     * @note not available in Python
+     * \note not available in Python
      */
     static GEOSContextHandle_t getGEOSHandler();
 

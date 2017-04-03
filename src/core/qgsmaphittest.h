@@ -67,10 +67,10 @@ class CORE_EXPORT QgsMapHitTest
 
   protected:
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     typedef QSet<QString> SymbolSet;
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     typedef QMap<QgsVectorLayer *, SymbolSet> HitTest;
 
     /** Runs test for visible symbols within a layer
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsMapHitTest
      * @param usedSymbolsRuleKey set of storage of visible legend rule keys
      * @param context render context
      * \since QGIS 2.12
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context );
 

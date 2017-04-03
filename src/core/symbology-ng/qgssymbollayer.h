@@ -597,11 +597,11 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * @param height marker height
      * @param offsetX will be set to required horizontal offset (in painter units)
      * @param offsetY will be set to required vertical offset (in painter units)
-     * @note available in Python as markerOffsetWithWidthAndHeight
+     * \note available in Python as markerOffsetWithWidthAndHeight
      */
     void markerOffset( QgsSymbolRenderContext &context, double width, double height, double &offsetX, double &offsetY ) const;
 
-    //! @note available in Python bindings as markerOffset2
+    //! \note available in Python bindings as markerOffset2
     void markerOffset( QgsSymbolRenderContext &context, double width, double height,
                        QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
                        double &offsetX, double &offsetY,

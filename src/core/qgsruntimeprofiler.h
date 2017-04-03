@@ -46,7 +46,7 @@ class CORE_EXPORT QgsRuntimeProfiler
     /**
      * @brief Return all the current profile times.
      * @return A list of profile event names and times.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QList<QPair<QString, double > > profileTimes() const { return mProfileTimes; }
 

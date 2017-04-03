@@ -92,9 +92,9 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      * quantities of dates this may be more efficient then first adding all the
      * variants to a list and calling calculate().
      * @param value datetime to add. Any non-datetime variants will be ignored.
-     * @note call reset() before adding the first datetime using this method
+     * \note call reset() before adding the first datetime using this method
      * to clear the results from any previous calculations
-     * @note finalize() must be called after adding the final value and before
+     * \note finalize() must be called after adding the final value and before
      * retrieving calculated statistics.
      * @see calculate()
      * @see finalize()

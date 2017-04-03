@@ -233,7 +233,7 @@ class CORE_EXPORT QgsFeature
      * @returns list of feature's attributes
      * @see setAttributes
      * \since QGIS 2.9
-     * @note Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
+     * \note Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
      */
     QgsAttributes attributes() const;
 
@@ -250,8 +250,8 @@ class CORE_EXPORT QgsFeature
      * @param field the index of the field to set
      * @param attr the value of the attribute
      * @return false, if the field index does not exist
-     * @note For Python: raises a KeyError exception instead of returning false
-     * @note Alternatively in Python: @code feature[field] = attr @endcode
+     * \note For Python: raises a KeyError exception instead of returning false
+     * \note Alternatively in Python: @code feature[field] = attr @endcode
      * @see setAttributes
      */
 #ifndef SIP_RUN
@@ -288,8 +288,8 @@ class CORE_EXPORT QgsFeature
     /** Deletes an attribute and its value.
      * @param field the index of the field
      * @see setAttribute
-     * @note For Python: raises a KeyError exception if the field is not found
-     * @note Alternatively in Python: @code del feature[field] @endcode
+     * \note For Python: raises a KeyError exception if the field is not found
+     * \note Alternatively in Python: @code del feature[field] @endcode
      */
     void deleteAttribute( int field );
 #ifdef SIP_RUN
@@ -365,8 +365,8 @@ class CORE_EXPORT QgsFeature
      *  @param name The name of the field to set
      *  @param value The value to set
      *  @return false if attribute name could not be converted to index (C++ only)
-     *  @note For Python: raises a KeyError exception instead of returning false
-     *  @note Alternatively in Python: @code feature[name] = attr @endcode
+     *  \note For Python: raises a KeyError exception instead of returning false
+     *  \note Alternatively in Python: @code feature[name] = attr @endcode
      *  @see setFields
      */
 #ifndef SIP_RUN
@@ -398,8 +398,8 @@ class CORE_EXPORT QgsFeature
      *  before this method can be used.
      *  @param name The name of the field to delete
      *  @return false if attribute name could not be converted to index (C++ only)
-     *  @note For Python: raises a KeyError exception instead of returning false
-     *  @note Alternatively in Python: @code del feature[name] @endcode
+     *  \note For Python: raises a KeyError exception instead of returning false
+     *  \note Alternatively in Python: @code del feature[name] @endcode
      *  @see setFields
      */
     bool deleteAttribute( const QString &name );
@@ -424,8 +424,8 @@ class CORE_EXPORT QgsFeature
      *  before this method can be used.
      *  @param name The name of the attribute to get
      *  @return The value of the attribute (C++: Invalid variant if no such name exists )
-     *  @note For Python: raises a KeyError exception if the field is not found
-     *  @note Alternatively in Python: @code feature[name] @endcode
+     *  \note For Python: raises a KeyError exception if the field is not found
+     *  \note Alternatively in Python: @code feature[name] @endcode
      *  @see setFields
      */
 #ifndef SIP_RUN
@@ -451,8 +451,8 @@ class CORE_EXPORT QgsFeature
      *  before this method can be used.
      *  @param fieldIdx The index of the attribute to get
      *  @return The value of the attribute (C++: Invalid variant if no such index exists )
-     *  @note For Python: raises a KeyError exception if the field is not found
-     *  @note Alternatively in Python: @code feature[fieldIdx] @endcode
+     *  \note For Python: raises a KeyError exception if the field is not found
+     *  \note Alternatively in Python: @code feature[fieldIdx] @endcode
      *  @see setFields
      */
 #ifndef SIP_RUN

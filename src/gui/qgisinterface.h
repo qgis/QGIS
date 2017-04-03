@@ -383,7 +383,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /** Register a new tab in the vector layer properties dialog.
      * \since QGIS 2.16
-     * @note Ownership of the factory is not transferred, and the factory must
+     * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterMapLayerPropertiesFactory() */
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
@@ -396,7 +396,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /** Register a new tab in the options dialog.
      * \since QGIS 3.0
-     * @note Ownership of the factory is not transferred, and the factory must
+     * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterOptionsWidgetFactory() */
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
@@ -409,7 +409,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /** Register a new custom drop handler.
      * \since QGIS 3.0
-     * @note Ownership of the factory is not transferred, and the factory must
+     * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterCustomDropHandler() */
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
@@ -688,7 +688,7 @@ class GUI_EXPORT QgisInterface : public QObject
     void initializationCompleted();
 
     /** Emitted when a project file is successfully read
-     * @note
+     * \note
      * This is useful for plug-ins that store properties with project files.  A
      * plug-in can connect to this signal.  When it is emitted, the plug-in
      * knows to then check the project properties for any relevant state.
@@ -696,7 +696,7 @@ class GUI_EXPORT QgisInterface : public QObject
     void projectRead();
 
     /** Emitted when starting an entirely new project
-     * @note
+     * \note
      * This is similar to projectRead(); plug-ins might want to be notified
      * that they're in a new project.  Yes, projectRead() could have been
      * overloaded to be used in the case of new projects instead.  However,
@@ -706,7 +706,7 @@ class GUI_EXPORT QgisInterface : public QObject
     void newProjectCreated();
 
     /** This signal is emitted when a layer has been saved using save as
-     * @note
+     * \note
      * added in version 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );

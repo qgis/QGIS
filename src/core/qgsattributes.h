@@ -51,7 +51,7 @@ typedef QMap<int, QgsField> QgsFieldMap;
 
 /** \ingroup core
  * A vector of attributes. Mostly equal to QVector<QVariant>.
- @note QgsAttributes is implemented as a Python list of Python objects.
+ \note QgsAttributes is implemented as a Python list of Python objects.
  */
 #ifndef SIP_RUN
 class CORE_EXPORT QgsAttributes : public QVector<QVariant>
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * Returns a QgsAttributeMap of the attribute values. Null values are
      * excluded from the map.
      * \since QGIS 3.0
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QgsAttributeMap toMap() const SIP_SKIP;
 

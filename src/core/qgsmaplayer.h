@@ -354,7 +354,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Sets state from Dom document
        @param layerElement The Dom element corresponding to ``maplayer'' tag
        @param pathResolver object for conversion between relative and absolute paths
-       @note
+       \note
 
        The Dom node corresponds to a Dom document project file XML element read
        by QgsProject.
@@ -372,7 +372,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @param layerElement is a Dom element corresponding to ``maplayer'' tag
      * @param document is a the dom document being written
      * @param pathResolver object for conversion between relative and absolute paths
-     * @note
+     * \note
      *
      * The Dom node corresponds to a Dom document project file XML element to be
      * written by QgsProject.
@@ -409,7 +409,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QgsError error() const { return mError; }
 
     /** Returns the layer's spatial reference system.
-    @note This was introduced in QGIS 1.4
+    \note This was introduced in QGIS 1.4
      */
     QgsCoordinateReferenceSystem crs() const;
 
@@ -547,7 +547,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
      * \since QGIS 2.16
-     * @note To be implemented in subclasses. Default implementation does nothing and returns false.
+     * \note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
     virtual bool readStyle( const QDomNode &node, QString &errorMessage );
 
@@ -565,7 +565,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  @param errorMessage reference to string that will be updated with any error messages
      *  @return true in case of success.
      *  \since QGIS 2.16
-     *  @note To be implemented in subclasses. Default implementation does nothing and returns false.
+     *  \note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
 
@@ -716,7 +716,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * If \a deferredUpdate is true then the layer will only be repainted when the canvas is next
      * re-rendered, and will not trigger any canvas redraws itself.
      *
-     * @note in 2.6 function moved from vector/raster subclasses to QgsMapLayer
+     * \note in 2.6 function moved from vector/raster subclasses to QgsMapLayer
      */
     void triggerRepaint( bool deferredUpdate = false );
 
@@ -971,14 +971,14 @@ Q_DECLARE_METATYPE( QgsMapLayer * )
 /**
  * Weak pointer for QgsMapLayer
  * \since QGIS 3.0
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 typedef QPointer< QgsMapLayer > QgsWeakMapLayerPointer;
 
 /**
  * A list of weak pointers to QgsMapLayers.
  * \since QGIS 3.0
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 typedef QList< QgsWeakMapLayerPointer > QgsWeakMapLayerPointerList;
 

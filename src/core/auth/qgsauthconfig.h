@@ -53,7 +53,7 @@ class CORE_EXPORT QgsAuthMethodConfig
 
     /**
      * Get 'authcfg' 7-character alphanumeric ID of the config
-     * @note This is set by QgsAuthManager when the config is initially stored
+     * \note This is set by QgsAuthManager when the config is initially stored
      */
     const QString id() const { return mId; }
     //! Set auth config ID
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsAuthMethodConfig
 
     /**
      * The extended configuration, as stored and retrieved from the authentication database
-     * @note This is an internal construct used by QgsAuthManager that should generally not be set by client code
+     * \note This is an internal construct used by QgsAuthManager that should generally not be set by client code
      */
     const QString configString() const;
 
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsAuthMethodConfig
 
     /**
      * Set a single config value per key in the map
-     * @note if key exists, it is replaced
+     * \note if key exists, it is replaced
      * @param key Config key
      * @param value Config value
      */
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsAuthMethodConfig
 
     /**
      * Set a multiple config values per key in the map
-     * @note if key exists, it is replaced
+     * \note if key exists, it is replaced
      * @param key Config key
      * @param value Config value
      */
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsAuthMethodConfig
     /**
      * A utility function for generating a resource from a URL to be compared
      * against the config's uri() for auto-selecting authentication configs to use
-     * @note Essentially strips the URL query variables, and by default, strips the path as well
+     * \note Essentially strips the URL query variables, and by default, strips the path as well
      * @param accessurl A URL to process
      * @param resource Output variable for result
      * @param withpath Whether to include the URI's path in output
@@ -328,12 +328,12 @@ class CORE_EXPORT QgsAuthConfigSslServer
     void setSslPeerVerifyMode( QSslSocket::PeerVerifyMode mode ) { mSslPeerVerifyMode = mode; }
 
     /** Number or SSL client's peer to verify in connections
-     * @note When set to 0 = unlimited depth
+     * \note When set to 0 = unlimited depth
      */
     int sslPeerVerifyDepth() const { return mSslPeerVerifyDepth; }
 
     /** Set number or SSL client's peer to verify in connections
-     * @note When set to 0 = unlimited depth
+     * \note When set to 0 = unlimited depth
      */
     void setSslPeerVerifyDepth( int depth ) { mSslPeerVerifyDepth = depth; }
 

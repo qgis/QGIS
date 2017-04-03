@@ -124,7 +124,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      * Reload the current symbol in the view.
      */
     void loadSymbol();
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
 
     /**
      * Load the given symbol into the widget..
@@ -143,7 +143,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      */
     void updateLockButton();
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     SymbolLayerItem *currentLayerItem();
 
     /**
@@ -221,7 +221,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     //! Slot to update tree when a new symbol from style
     void symbolChanged();
     //! alters tree and sets proper widget when Layer Type is changed
-    //! @note: The layer is received from the LayerPropertiesWidget
+    //! \note: The layer is received from the LayerPropertiesWidget
     void changeLayer( QgsSymbolLayer *layer );
 
 
@@ -277,14 +277,14 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     void keyPressEvent( QKeyEvent *e ) override;
 
     void loadSymbol();
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent );
 
     void updateUi();
 
     void updateLockButton();
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     SymbolLayerItem *currentLayerItem();
     QgsSymbolLayer *currentLayer();
 
@@ -316,7 +316,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     //! Slot to update tree when a new symbol from style
     void symbolChanged();
     //! alters tree and sets proper widget when Layer Type is changed
-    //! @note: The layer is received from the LayerPropertiesWidget
+    //! \note: The layer is received from the LayerPropertiesWidget
     void changeLayer( QgsSymbolLayer *layer );
 
   private:

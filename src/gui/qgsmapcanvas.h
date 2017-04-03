@@ -462,7 +462,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Returns a const reference to the expression context scope for the map canvas.
      * \since QGIS 2.12
      * @see setExpressionContextScope()
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; }
 
@@ -720,7 +720,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /// this class is non-copyable
 
     /**
-       @note
+       \note
 
        Otherwise QScopedPointer would pass the object responsibility on to the
        copy like a hot potato leaving the copyer in a weird state.

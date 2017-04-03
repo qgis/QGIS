@@ -63,14 +63,14 @@ class SERVER_EXPORT QgsServerInterface
     /**
      * Set the request handler
      * @param requestHandler request handler
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     virtual void setRequestHandler( QgsRequestHandler *requestHandler ) = 0;
 
     /**
      * Clear the request handler
      *
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     virtual void clearRequestHandler() = 0;
 
@@ -151,7 +151,7 @@ class SERVER_EXPORT QgsServerInterface
      * Return the server settings
      * @return QgsServerSettings
      *
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     virtual QgsServerSettings *serverSettings() = 0;
 

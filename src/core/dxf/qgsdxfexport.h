@@ -176,7 +176,7 @@ class CORE_EXPORT QgsDxfExport
      * Write a tuple of group code and integer value
      * @param code group code
      * @param i integer value
-     * @note available in Python bindings as writeGroupInt
+     * \note available in Python bindings as writeGroupInt
      */
     void writeGroup( int code, int i );
 
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsDxfExport
      * Write a group code with a floating point value
      * @param code group code
      * @param d floating point value
-     * @note available in Python bindings as writeGroupDouble
+     * \note available in Python bindings as writeGroupDouble
      */
     void writeGroup( int code, double d );
 
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsDxfExport
      * Write a group code with a point
      * @param code group code
      * @param p point value
-     * @note available in Python bindings as writeGroupPointV2
+     * \note available in Python bindings as writeGroupPointV2
      * \since QGIS 2.15
      */
     void writeGroup( int code, const QgsPointV2 &p );
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsDxfExport
      * @param exactMatch group code to use if the color has an exact match in the dxf palette
      * @param rgbCode group code to use if the color doesn't have an exact match or has a transparency component
      * @param transparencyCode group code to use for transparency component
-     * @note available in Python bindings as writeGroupPoint
+     * \note available in Python bindings as writeGroupPoint
      */
     void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
 
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsDxfExport
      * @param lineStyleName line type to use
      * @param color color to use
      * @param width line width to use
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      * \since QGIS 2.15
      */
     void writePolyline( const QgsPointSequence &line, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsDxfExport
      * @param layer layer name to use
      * @param hatchPattern hatchPattern to use
      * @param color color to use
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      * \since QGIS 2.15
      */
     void writePolygon( const QgsRingSequence &polygon, const QString &layer, const QString &hatchPattern, const QColor &color );
@@ -274,27 +274,27 @@ class CORE_EXPORT QgsDxfExport
     void writeLine( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
 
     //! Write point
-    //! @note available in Python bindings as writePointV2
+    //! \note available in Python bindings as writePointV2
     //! \since QGIS 2.15
     void writePoint( const QString &layer, const QColor &color, const QgsPointV2 &pt );
 
     //! Write filled circle (as hatch)
-    //! @note available in Python bindings as writePointV2
+    //! \note available in Python bindings as writePointV2
     //! \since QGIS 2.15
     void writeFilledCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius );
 
     //! Write circle (as polyline)
-    //! @note available in Python bindings as writeCircleV2
+    //! \note available in Python bindings as writeCircleV2
     //! \since QGIS 2.15
     void writeCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width );
 
     //! Write text (TEXT)
-    //! @note available in Python bindings as writeTextV2
+    //! \note available in Python bindings as writeTextV2
     //! \since QGIS 2.15
     void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor &color );
 
     //! Write mtext (MTEXT)
-    //! @note available in Python bindings as writeMTextV2
+    //! \note available in Python bindings as writeMTextV2
     //! \since QGIS 2.15
     void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor &color );
 
@@ -315,7 +315,7 @@ class CORE_EXPORT QgsDxfExport
      * @param context render context
      * @param label position of label
      * @param settings label settings
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings );
 

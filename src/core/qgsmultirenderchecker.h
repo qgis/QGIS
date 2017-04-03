@@ -100,7 +100,7 @@ class CORE_EXPORT QgsMultiRenderChecker
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
      *
-     * @note make sure to call setExpectedImage and setMapSettings first
+     * \note make sure to call setExpectedImage and setMapSettings first
      */
     bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
 

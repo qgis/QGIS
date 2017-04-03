@@ -548,7 +548,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     QStringList getZipFileList();
 
-    //! @note not available via Python bindings
+    //! \note not available via Python bindings
     static QVector<dataItem_t *> sDataItemPtr;
     static QStringList sProviderNames;
 
@@ -561,7 +561,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 
     /**
     * Creates a new data item from the specified path.
-    * @note available in Python as itemFromFilePath
+    * \note available in Python as itemFromFilePath
     */
     static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &filePath, const QString &name, const QString &path );
 

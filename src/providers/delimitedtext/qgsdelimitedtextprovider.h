@@ -125,7 +125,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      *  if more than one provider supports a given format, the user is able to
      *  select a specific provider to open that file.
      *
-     *  @note
+     *  \note
      *
      *  Instead of being pure virtual, might be better to generalize this
      *  behavior and presume that none of the sub-classes are going to do
@@ -137,7 +137,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      *
      *  Return a terse string describing what the provider is.
      *
-     *  @note
+     *  \note
      *
      *  Instead of being pure virtual, might be better to generalize this
      *  behavior and presume that none of the sub-classes are going to do

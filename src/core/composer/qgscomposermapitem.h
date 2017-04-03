@@ -178,7 +178,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * The item will be added to the end of the stack, and rendered
      * above any existing map items already present in the stack.
      * @param item QgsComposerMapItem to add to the stack
-     * @note after adding an item to the stack update()
+     * \note after adding an item to the stack update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see removeItem
      */
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsComposerMapItemStack
 
     /** Removes an item from the stack and deletes the corresponding QgsComposerMapItem
      * @param itemId id for the QgsComposerMapItem to remove
-     * @note after removing an item from the stack, update()
+     * \note after removing an item from the stack, update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see addItem
      */
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsComposerMapItemStack
 
     /** Moves an item up the stack, causing it to be rendered above other items
      * @param itemId id for the QgsComposerMapItem to move up
-     * @note after moving an item within the stack, update() should be
+     * \note after moving an item within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new item stack order
      * @see moveItemDown
      */
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsComposerMapItemStack
 
     /** Moves an item up the stack, causing it to be rendered above other items
      * @param itemId id for the QgsComposerMapItem to move down
-     * @note after moving an item within the stack, update() should be
+     * \note after moving an item within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new item stack order
      * @see moveItemUp
      */
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * @returns reference to item if found
      * @see constItem
      * @see item
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QgsComposerMapItem &operator[]( int idx );
 

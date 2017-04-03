@@ -68,14 +68,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Hides the button box (Ok/Cancel) and enables auto-commit
-     * @note set Embed in QgsAttributeEditorContext in constructor instead
+     * \note set Embed in QgsAttributeEditorContext in constructor instead
      */
     // TODO QGIS 3.0 - make private
     void hideButtonBox();
 
     /**
      * Shows the button box (Ok/Cancel) and disables auto-commit
-     * @note set Embed in QgsAttributeEditorContext in constructor instead
+     * \note set Embed in QgsAttributeEditorContext in constructor instead
      */
     // TODO QGIS 3.0 - make private
     void showButtonBox();
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * If you want the form to be saved, leave the parameter untouched.
      *
      * @param ok  Set this parameter to false if you don't want the form to be saved
-     * @note not available  in Python bindings
+     * \note not available  in Python bindings
      */
     void beforeSave( bool &ok );
 

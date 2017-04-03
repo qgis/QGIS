@@ -26,7 +26,7 @@ class QgsAbstractGeometry;
  * The methods are available via QgsGeometry::[geometryfunction]
  * and therefore this does not need to be accessed directly.
  *
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 
 class QgsInternalGeometryEngine

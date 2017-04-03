@@ -96,7 +96,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
 
     //! Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)
-    //! @note RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only
+    //! \note RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only
     enum ResampleAlg
     {
       RA_NearestNeighbour = 0, //!< Nearest neighbour (select on one input pixel)
@@ -205,10 +205,10 @@ class ANALYSIS_EXPORT QgsAlignRaster
     bool checkInputParameters();
 
     //! Return expected size of the resulting aligned raster
-    //! @note first need to run checkInputParameters() which returns with success
+    //! \note first need to run checkInputParameters() which returns with success
     QSize alignedRasterSize() const;
     //! Return expected extent of the resulting aligned raster
-    //! @note first need to run checkInputParameters() which returns with success
+    //! \note first need to run checkInputParameters() which returns with success
     QgsRectangle alignedRasterExtent() const;
 
     //! Run the alignment process

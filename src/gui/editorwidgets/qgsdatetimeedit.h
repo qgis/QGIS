@@ -39,19 +39,19 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     /**
      * @brief setDateTime set the date time in the widget and handles null date times.
-     * @note since QDateTimeEdit::setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
+     * \note since QDateTimeEdit::setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
      */
     void setDateTime( const QDateTime &dateTime );
 
     /**
      * @brief dateTime returns the date time which can eventually be a null date/time
-     * @note since QDateTimeEdit::dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
+     * \note since QDateTimeEdit::dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
      */
     QDateTime dateTime() const;
 
     /**
      * Set the current date as NULL
-     * @note if the widget is not configured to accept NULL dates, this will have no effect
+     * \note if the widget is not configured to accept NULL dates, this will have no effect
      */
     virtual void clear() override;
 

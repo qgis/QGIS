@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRelation
      * Often, a relation is only defined by just one FieldPair with the name of the foreign key
      * column of the referencing (child) table as first element and the name of the primary key column
      * of the referenced (parent) table as the second element.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     class FieldPair : public QPair< QString, QString >
     {
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsRelation
      * The second element of each pair are the field names of the matching primary key.
      *
      * @param fieldPair A pair of two strings
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void addFieldPair( const FieldPair &fieldPair );
 
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsRelation
      * @param attributes An attribute vector containing the foreign key
      *
      * @return A request the referenced feature
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;
 

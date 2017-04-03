@@ -58,7 +58,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Cast node to a group. No type checking is done - use isGroup() to find out whether this operation is legal.
      *
      * \since QGIS 2.4
-     * @note Not available in Python bindings, because cast is automatic.
+     * \note Not available in Python bindings, because cast is automatic.
      */
     static inline QgsLayerTreeGroup *toGroup( QgsLayerTreeNode *node )
     {
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Cast node to a layer. No type checking is done - use isLayer() to find out whether this operation is legal.
      *
      * \since QGIS 2.4
-     * @note Not available in Python bindings, because cast is automatic.
+     * \note Not available in Python bindings, because cast is automatic.
      */
     static inline QgsLayerTreeLayer *toLayer( QgsLayerTreeNode *node )
     {
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Cast node to a layer. No type checking is done - use isLayer() to find out whether this operation is legal.
      *
      * \since QGIS 2.4
-     * @note Not available in Python bindings, because cast is automatic.
+     * \note Not available in Python bindings, because cast is automatic.
      */
     static inline const QgsLayerTreeLayer *toLayer( const QgsLayerTreeNode *node )
     {

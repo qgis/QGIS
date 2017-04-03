@@ -178,7 +178,7 @@ class CORE_EXPORT QgsExpression
     /**
      * Get list of columns referenced by the expression.
      *
-     * @note If the returned list contains the QgsFeatureRequest::AllAttributes constant then
+     * \note If the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
@@ -208,14 +208,14 @@ class CORE_EXPORT QgsExpression
     // evaluation
 
     /** Evaluate the feature and return the result.
-     * @note this method does not expect that prepare() has been called on this instance
+     * \note this method does not expect that prepare() has been called on this instance
      * \since QGIS 2.12
      */
     QVariant evaluate();
 
     /** Evaluate the expression against the specified context and return the result.
      * @param context context for evaluating expression
-     * @note prepare() should be called before calling this method.
+     * \note prepare() should be called before calling this method.
      * \since QGIS 2.12
      */
     QVariant evaluate( const QgsExpressionContext *context );
@@ -278,7 +278,7 @@ class CORE_EXPORT QgsExpression
     void setGeomCalculator( const QgsDistanceArea *calc );
 
     /** Returns the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
-     * @note distances are only converted when a geomCalculator() has been set
+     * \note distances are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
      * @see setDistanceUnits()
      * @see areaUnits()
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsExpression
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 
     /** Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
-     * @note distances are only converted when a geomCalculator() has been set
+     * \note distances are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
      * @see distanceUnits()
      * @see setAreaUnits()
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsExpression
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
     /** Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
-     * @note areas are only converted when a geomCalculator() has been set
+     * \note areas are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
      * @see setAreaUnits()
      * @see distanceUnits()
@@ -302,7 +302,7 @@ class CORE_EXPORT QgsExpression
     QgsUnitTypes::AreaUnit areaUnits() const;
 
     /** Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
-     * @note areas are only converted when a geomCalculator() has been set
+     * \note areas are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
      * @see areaUnits()
      * @see setDistanceUnits()
@@ -328,14 +328,14 @@ class CORE_EXPORT QgsExpression
      * @param fallbackValue value to return if text can not be evaluated as a double
      * @returns evaluated double value, or fallback value
      * \since QGIS 2.7
-     * @note this method is inefficient for bulk evaluation of expressions, it is intended
+     * \note this method is inefficient for bulk evaluation of expressions, it is intended
      * for one-off evaluations only.
      */
     static double evaluateToDouble( const QString &text, const double fallbackValue );
 
     /**
      * @brief list of unary operators
-     * @note if any change is made here, the definition of QgsExpression::UnaryOperatorText[] must be adapted.
+     * \note if any change is made here, the definition of QgsExpression::UnaryOperatorText[] must be adapted.
      */
     enum UnaryOperator
     {
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsExpression
 
     /**
      * @brief list of binary operators
-     * @note if any change is made here, the definition of QgsExpression::BinaryOperatorText[] must be adapted.
+     * \note if any change is made here, the definition of QgsExpression::BinaryOperatorText[] must be adapted.
      */
     enum BinaryOperator
     {
@@ -394,10 +394,10 @@ class CORE_EXPORT QgsExpression
       soWithin,
     };
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static const char *BINARY_OPERATOR_TEXT[];
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static const char *UNARY_OPERATOR_TEXT[];
 
     /** \ingroup core
@@ -600,7 +600,7 @@ class CORE_EXPORT QgsExpression
         virtual bool isDeprecated() const { return mGroups.isEmpty() ? false : mGroups.contains( QStringLiteral( "deprecated" ) ); }
 
         /** Returns the first group which the function belongs to.
-         * @note consider using groups() instead, as some functions naturally belong in multiple groups
+         * \note consider using groups() instead, as some functions naturally belong in multiple groups
         */
         QString group() const { return mGroups.isEmpty() ? QString() : mGroups.at( 0 ); }
 
@@ -750,11 +750,11 @@ class CORE_EXPORT QgsExpression
         QSet<QString> mReferencedColumns;
     };
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static QList<Function *> sFunctions;
     static const QList<Function *> &Functions();
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static QStringList sBuiltinFunctions;
     static const QStringList &BuiltinFunctions();
 
@@ -773,7 +773,7 @@ class CORE_EXPORT QgsExpression
     static bool unregisterFunction( const QString &name );
 
     //! List of functions owned by the expression engine
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static QList<Function *> sOwnedFunctions;
 
     /** Deletes all registered functions whose ownership have been transferred to the expression engine.
@@ -1338,7 +1338,7 @@ class CORE_EXPORT QgsExpression
      * Helper for implicit sharing. When called will create
      * a new deep copy of this expression.
      *
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void detach();
 
@@ -1348,9 +1348,9 @@ class CORE_EXPORT QgsExpression
     static QHash<QString, QString> sVariableHelpTexts;
     static QHash<QString, QString> sGroups;
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static void initFunctionHelp();
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static void initVariableHelp();
 
     friend class QgsOgcUtils;

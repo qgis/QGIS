@@ -22,7 +22,7 @@
 /** @ingroup gui
  * Factory for widgets for editing a QVariantList or a QStringList
  * \since QGIS 3.0
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class GUI_EXPORT QgsListWidgetFactory : public QgsEditorWidgetFactory
 {

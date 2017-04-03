@@ -54,14 +54,14 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * @brief The title of the panel.
-     * @note This may or may not be shown to the user.
+     * \note This may or may not be shown to the user.
      * @return Title of the panel
      */
     virtual QString title() const { return mTitle; }
 
     /**
      * Set the title for the interface
-     * @note Not all users may show this as a label
+     * \note Not all users may show this as a label
      * e.g style dock uses this as a tooltip.
      * @param title The title to set.
      */
@@ -99,7 +99,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * @brief Factory function to create the widget on demand as needed by the dock.
-     * @note This function is called each time the panel is selected. Keep it light for better UX.
+     * \note This function is called each time the panel is selected. Keep it light for better UX.
      * @param layer The active layer in the dock.
      * @param canvas The map canvas.
      * @param dockWidget True of the widget will be shown a dock style widget.

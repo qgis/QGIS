@@ -270,7 +270,7 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol );
 
     //! return a list of item text / symbol
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" );
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
@@ -345,14 +345,14 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * Get the order in which features shall be processed by this renderer.
      * \since QGIS 2.14
-     * @note this property has no effect if orderByEnabled() is false
+     * \note this property has no effect if orderByEnabled() is false
      * @see orderByEnabled()
      */
     QgsFeatureRequest::OrderBy orderBy() const;
 
     /**
      * Define the order in which features shall be processed by this renderer.
-     * @note this property has no effect if orderByEnabled() is false
+     * \note this property has no effect if orderByEnabled() is false
      * \since QGIS 2.14
      * @see setOrderByEnabled()
      */
@@ -436,12 +436,12 @@ class CORE_EXPORT QgsFeatureRenderer
 
     bool mForceRaster;
 
-    /** @note this function is used to convert old sizeScale expressions to symbol
+    /** \note this function is used to convert old sizeScale expressions to symbol
      * level DataDefined size
      */
     static void convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field );
 
-    /** @note this function is used to convert old rotations expressions to symbol
+    /** \note this function is used to convert old rotations expressions to symbol
      * level DataDefined angle
      */
     static void convertSymbolRotation( QgsSymbol *symbol, const QString &field );

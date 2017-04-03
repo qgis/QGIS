@@ -189,7 +189,7 @@ class CORE_EXPORT QgsTask : public QObject
     /**
      * Will be emitted by task when its progress changes.
      * @param progress percent of progress, from 0.0 - 100.0
-     * @note derived classes should not emit this signal directly, instead they should call
+     * \note derived classes should not emit this signal directly, instead they should call
      * setProgress()
      */
     void progressChanged( double progress );
@@ -197,21 +197,21 @@ class CORE_EXPORT QgsTask : public QObject
     /**
      * Will be emitted by task when its status changes.
      * @param status new task status
-     * @note derived classes should not emit this signal directly, it will automatically
+     * \note derived classes should not emit this signal directly, it will automatically
      * be emitted
      */
     void statusChanged( int status );
 
     /**
      * Will be emitted by task to indicate its commencement.
-     * @note derived classes should not emit this signal directly, it will automatically
+     * \note derived classes should not emit this signal directly, it will automatically
      * be emitted when the task begins
      */
     void begun();
 
     /**
      * Will be emitted by task to indicate its successful completion.
-     * @note derived classes should not emit this signal directly, it will automatically
+     * \note derived classes should not emit this signal directly, it will automatically
      * be emitted
      */
     void taskCompleted();
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsTask : public QObject
      * Will be emitted by task if it has terminated for any reason
      * other then completion (e.g., when a task has been canceled or encountered
      * an internal error).
-     * @note derived classes should not emit this signal directly, it will automatically
+     * \note derived classes should not emit this signal directly, it will automatically
      * be emitted
      */
     void taskTerminated();
@@ -425,7 +425,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     bool dependenciesSatisfied( long taskId ) const;
 
     //! Returns the set of task IDs on which a task is dependent
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QSet< long > dependencies( long taskId ) const;
 
     /** Returns a list of layers on which as task is dependent. The task will automatically

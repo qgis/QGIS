@@ -82,7 +82,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * Add vertex to the graph
      * @param id vertex identifier
      * @param pt vertex coordinates
-     * @note id and pt are redundant. You can use pt or id to identify the vertex
+     * \note id and pt are redundant. You can use pt or id to identify the vertex
      */
     virtual void addVertex( int id, const QgsPoint &pt )
     {
@@ -97,7 +97,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * @param pt2id second vertex identificator
      * @param pt2   second vertex coordinates
      * @param strategies optimization strategies
-     * @note pt1id, pt1 and pt2id, pt2 is a redundant interface. You can use vertex coordinates or their identificators.
+     * \note pt1id, pt1 and pt2id, pt2 is a redundant interface. You can use vertex coordinates or their identificators.
      */
     virtual void addEdge( int pt1id, const QgsPoint &pt1, int pt2id, const QgsPoint &pt2, const QVector< QVariant > &strategies )
     {

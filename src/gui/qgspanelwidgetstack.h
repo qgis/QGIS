@@ -48,7 +48,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * The main widget can not be closed and only the showPanel signal is attached
      * to handle children widget opening panels.
      * @param panel The panel to set as the first widget in the stack.
-     * @note a stack can have only one main panel. Any existing main panel
+     * \note a stack can have only one main panel. Any existing main panel
      * should be removed by first calling takeMainPanel().
      * @see mainPanel()
      * @see takeMainPanel()
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * Removes the main panel widget from the stack and transfers ownsership to the
      * caller.
      * @return The main widget that is set in the stack.
-     * @note Calling this will clear out any current stacked panels by accepting
+     * \note Calling this will clear out any current stacked panels by accepting
      * each panel in turn.
      * @see mainPanel()
      * @see setMainPanel()

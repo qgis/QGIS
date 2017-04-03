@@ -159,7 +159,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
     QgsAuthCertInfo *certInfoWidget() { return mCertInfoWdgt; }
 
     /** Whether the trust cache has been rebuilt
-     * @note This happens when a trust policy has been adjusted for any cert in the hierarchy
+     * \note This happens when a trust policy has been adjusted for any cert in the hierarchy
      */
     bool trustCacheRebuilt() { return mCertInfoWdgt->trustCacheRebuilt(); }
 

@@ -113,7 +113,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGrou
     /**
      * @brief Increases the reference count on the connection pool for the specified connection.
      * @param connInfo The connection string.
-     * @note
+     * \note
      *     Any user of the connection pool needs to increase the reference count
      *     before it acquires any connections and decrease the reference count after
      *     releasing all acquired connections to ensure that all open OGR handles

@@ -41,8 +41,8 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * supported by an authentication method. These equate to the 'update*()' virtual functions
      * below, and allow for update point code to skip calling an unused update by a method, because
      * the base virtual function will always return true, giving a false impression an update occurred.
-     * @note When adding an 'update' member function, also add the corresponding Expansion flag.
-     * @note These flags will be added to as new update points are added
+     * \note When adding an 'update' member function, also add the corresponding Expansion flag.
+     * \note These flags will be added to as new update points are added
      */
     enum Expansion
     {
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
     /** Flags that represent the update points (where authentication configurations are expanded)
      * supported by an authentication method.
-     * @note These should directly correlate to existing 'update*()' member functions
+     * \note These should directly correlate to existing 'update*()' member functions
      */
     QgsAuthMethod::Expansions supportedExpansions() const { return mExpansions; }
 
@@ -127,14 +127,14 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     }
 
     /** Clear any cached configuration. Called when the QgsAuthManager deletes an authentication configuration (authcfg).
-     * @note It is highly recommended that a cache of authentication components (per requested authcfg)
+     * \note It is highly recommended that a cache of authentication components (per requested authcfg)
      * be implemented, to avoid excessive queries on the auth database. Such a cache could be as
      * simple as a QHash or QMap of authcfg -> QgsAuthMethodConfig. See 'Basic' auth method plugin for example.
      */
     virtual void clearCachedConfig( const QString &authcfg ) = 0;
 
     /** Update an authentication configuration in place
-     * @note Useful for updating previously stored authcfgs, when an authentication method has been significantly updated
+     * \note Useful for updating previously stored authcfgs, when an authentication method has been significantly updated
      */
     virtual void updateMethodConfig( QgsAuthMethodConfig &mconfig ) = 0;
 
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
     /**
      * Construct a default authentication method
-     * @note Non-public since this is an abstract base class
+     * \note Non-public since this is an abstract base class
      */
     explicit QgsAuthMethod()
       : mExpansions( QgsAuthMethod::Expansions( nullptr ) )

@@ -54,14 +54,14 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 
   private:
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static void renderLayerStatic( LayerRenderJob &job );
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static void renderLabelsStatic( QgsMapRendererParallelJob *self );
 
     QImage mFinalImage;
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     enum { Idle, RenderingLayers, RenderingLabels } mStatus;
 
     QFuture<void> mFuture;

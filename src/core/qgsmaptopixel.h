@@ -94,14 +94,14 @@ class CORE_EXPORT QgsMapToPixel
      */
     void transformInPlace( double &x, double &y ) const;
 
-    // @note not available in Python bindings
+    // \note not available in Python bindings
     void transformInPlace( float &x, float &y ) const;
 
     /**
      * Transform device coordinates to map coordinates. Modifies the
      * given coordinates in place. Intended as a fast way to do the
      * transform.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     template <class T>
     void transformInPlace( QVector<T> &x, QVector<T> &y ) const

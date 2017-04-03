@@ -46,7 +46,7 @@ class QgsVectorLayerDiagramProvider;
 
 /** \ingroup core
  * Interruption checker used by QgsVectorLayerRenderer::render()
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
 {
@@ -62,7 +62,7 @@ class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
  * Implementation of threaded rendering for vector layers.
  *
  * \since QGIS 2.4
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
@@ -73,7 +73,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     virtual bool render() override;
 
     //! where to save the cached geometries
-    //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
+    //! \note The way how geometries are cached is really suboptimal - this method may be removed in future releases
     void setGeometryCachePointer( QgsGeometryCache *cache );
 
   private:

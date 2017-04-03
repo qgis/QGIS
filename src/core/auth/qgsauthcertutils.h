@@ -86,7 +86,7 @@ class CORE_EXPORT QgsAuthCertUtils
     static QMap<QString, QSslCertificate> mapDigestToCerts( const QList<QSslCertificate> &certs );
 
     /** Map certificates to their oraganization.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QMap< QString, QList<QSslCertificate> > certsGroupedByOrg( const QList<QSslCertificate> &certs );
 
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsAuthCertUtils
     static QMap<QString, QgsAuthConfigSslServer> mapDigestToSslConfigs( const QList<QgsAuthConfigSslServer> &configs );
 
     /** Map SSL custom configs' certificates to their oraganization.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer> &configs );
 
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * @param qcert Qt SSL cert object
      * @param acert QCA SSL cert object to add more info to the output
      * @param issuer Whether to return cert's subject or issuer combined name
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QString getCertDistinguishedName( const QSslCertificate &qcert,
         const QCA::Certificate &acert = QCA::Certificate(),
@@ -178,37 +178,37 @@ class CORE_EXPORT QgsAuthCertUtils
     static QString shaHexForCert( const QSslCertificate &cert, bool formatted = false );
 
     /** Convert a QSslCertificate to a QCA::Certificate.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QCA::Certificate qtCertToQcaCert( const QSslCertificate &cert );
 
     /** Convert a QList of QSslCertificate to a QCA::CertificateCollection.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QCA::CertificateCollection qtCertsToQcaCollection( const QList<QSslCertificate> &certs );
 
     /** PKI key/cert bundle from file path, e.g. from .p12 or pfx files.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QCA::KeyBundle qcaKeyBundle( const QString &path, const QString &pass );
 
     /** Certificate validity check messages per enum.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QString qcaValidityMessage( QCA::Validity validity );
 
     /** Certificate signature algorithm strings per enum.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QString qcaSignatureAlgorithm( QCA::SignatureAlgorithm algorithm );
 
     /** Certificate well-known constraint strings per enum.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QString qcaKnownConstraint( QCA::ConstraintTypeKnown constraint );
 
     /** Certificate usage type strings per enum
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QString certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype );
 
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsAuthCertUtils
     static QString sslErrorEnumString( QSslError::SslError errenum );
 
     /** Get short strings describing SSL errors.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings();
 

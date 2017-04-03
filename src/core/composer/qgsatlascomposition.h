@@ -37,7 +37,7 @@ class QgsExpressionContext;
  * Class used to render an Atlas, iterating over geometry features.
  * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
  * This class is used for printing, exporting to PDF and images.
- * @note This class should not be created directly. For the atlas to function correctly
+ * \note This class should not be created directly. For the atlas to function correctly
  * the atlasComposition() property for QgsComposition should be used to retrieve a
  * QgsAtlasComposition which is automatically created and attached to the composition.
  */
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @returns filename pattern
      * @see setFilenamePattern
      * @see filenamePatternErrorString
-     * @note This property has no effect when exporting to PDF if singleFile() is true
+     * \note This property has no effect when exporting to PDF if singleFile() is true
      */
     QString filenamePattern() const { return mFilenamePattern; }
 
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @param pattern expression to use for output filenames
      * @see filenamePattern
      * @see filenamePatternErrorString
-     * @note This method has no effect when exporting to PDF if singleFile() is true
+     * \note This method has no effect when exporting to PDF if singleFile() is true
      */
     bool setFilenamePattern( const QString &pattern );
 
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * applicable for PDF exports.
      * @returns true if atlas will be exported to a single file
      * @see setSingleFile
-     * @note This property is only used for PDF exports.
+     * \note This property is only used for PDF exports.
      */
     bool singleFile() const { return mSingleFile; }
 
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * applicable for PDF exports.
      * @param single set to true to export atlas to a single file.
      * @see singleFile
-     * @note This method is only used for PDF exports.
+     * \note This method is only used for PDF exports.
      */
     void setSingleFile( bool single ) { mSingleFile = single; }
 
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @param elem a QDomElement holding the atlas properties.
      * @param doc QDomDocument for the source xml.
      * @see readXMLMapSettings
-     * @note This method should be called before restoring composer item properties
+     * \note This method should be called before restoring composer item properties
      */
     void readXml( const QDomElement &elem, const QDomDocument &doc );
 

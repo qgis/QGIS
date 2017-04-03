@@ -141,7 +141,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * be used for slow data sources, be aware, that the call to this method might take a long time.
      *
      * @param fullCache   True: enable full caching, False: disable full caching
-     * @note when a cache is invalidated() (e.g. by adding an attribute to a layer) this setting
+     * \note when a cache is invalidated() (e.g. by adding an attribute to a layer) this setting
      * is reset. A full cache rebuild must be performed by calling setFullCache( true ) again.
      * @see hasFullCache()
      */
@@ -289,7 +289,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param i       The number of already fetched features
      * @param cancel  A reference to a boolean variable. Set to true and the operation will be canceled.
      *
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void progress( int i, bool &cancel );
 
@@ -362,7 +362,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param featureRequest feature request
      * @param it will be set to iterator for matching features
      * @returns true if cache can satisfy request
-     * @note this method only checks for available features, not whether the cache
+     * \note this method only checks for available features, not whether the cache
      * contains required attributes or geometry. For that, use checkInformationCovered()
      */
     bool canUseCacheForRequest( const QgsFeatureRequest &featureRequest, QgsFeatureIterator &it );

@@ -63,7 +63,7 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Remove subtree of embedded groups and replaces it with a custom property embedded-visible-layers
     static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *group );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup *group, const QgsProject *project );
 
     //! get invisible layers

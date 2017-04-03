@@ -54,7 +54,7 @@ class CORE_EXPORT QgsRasterDrawer
      * @param topLeftCol Left position relative to left border of viewport
      * @param topLeftRow Top position relative to top border of viewport
      * @param mapToPixel map to device coordinate transformation info
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void drawImage( QPainter *p, QgsRasterViewPort *viewPort, const QImage &img, int topLeftCol, int topLeftRow, const QgsMapToPixel *mapToPixel = nullptr ) const;
 

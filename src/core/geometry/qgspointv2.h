@@ -91,7 +91,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Using a reference makes it possible to directly manipulate x in place.
      * @see x()
      * @see setX()
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     double &rx() { clearCache(); return mX; }
 
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Using a reference makes it possible to directly manipulate y in place.
      * @see y()
      * @see setY()
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     double &ry() { clearCache(); return mY; }
 
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Using a reference makes it possible to directly manipulate z in place.
      * @see z()
      * @see setZ()
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     double &rz() { clearCache(); return mZ; }
 
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Using a reference makes it possible to directly manipulate m in place.
      * @see m()
      * @see setM()
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     double &rm() { clearCache(); return mM; }
 
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     void setY( double y ) { clearCache(); mY = y; }
 
     /** Sets the point's z-coordinate.
-     * @note calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
+     * \note calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
      * add a z value and force the point to have a z dimension.
      * @see z()
      * @see rz()
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     void setZ( double z ) { clearCache(); mZ = z; }
 
     /** Sets the point's m-value.
-     * @note calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
+     * \note calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
      * add a m value and force the point to have an m dimension.
      * @see m()
      * @see rm()

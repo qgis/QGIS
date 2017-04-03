@@ -404,7 +404,7 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
 
     /** Constructor for QgsPresetColorRamp.
      * @param colors list of named colors in ramp
-     * @note not available in Python bindings - use setColors instead
+     * \note not available in Python bindings - use setColors instead
      */
     QgsPresetSchemeColorRamp( const QgsNamedColorList &colors );
 

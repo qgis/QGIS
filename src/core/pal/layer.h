@@ -134,7 +134,7 @@ namespace pal
       bool active() const { return mActive; }
 
       /** Sets whether the layer will be labeled.
-       * @note Layers are labelled if and only if labelLayer and active are true
+       * \note Layers are labelled if and only if labelLayer and active are true
        * @param toLabel set to false disable labeling this layer
        * @see labelLayer
        * @see setActive

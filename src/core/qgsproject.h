@@ -62,7 +62,7 @@ class QgsLayerTree;
 /** \ingroup core
  * Reads and writes project states.
  *
-  @note
+  \note
 
   Has two general kinds of state to make persistent.  (I.e., to read and
   write.)  First, QGIS proprietary information.  Second plug-in information.
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Reads the layer described in the associated DOM node.
      *
-     * @note This method is mainly for use by QgsProjectBadLayerHandler subclasses
+     * \note This method is mainly for use by QgsProjectBadLayerHandler subclasses
      * that may fix definition of bad layers with the user's help in GUI. Calling
      * this method with corrected DOM node adds the layer back to the project.
      *
@@ -196,8 +196,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Writes the project to a file.
      * @param filename destination file
-     * @note calling this implicitly sets the project's filename (see setFileName() )
-     * @note isDirty() will be set to false if project is successfully written
+     * \note calling this implicitly sets the project's filename (see setFileName() )
+     * \note isDirty() will be set to false if project is successfully written
      * @returns true if project was written successfully
      *
      * \since QGIS 3.0
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool write( const QString &filename );
 
     /** Writes the project to its current associated file (see fileName() ).
-     * @note isDirty() will be set to false if project is successfully written
+     * \note isDirty() will be set to false if project is successfully written
      * @returns true if project was written successfully
      */
     bool write();
@@ -216,8 +216,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
-     * @note The key string must be valid xml tag names in order to be saved to the file.
-     * @note available in Python bindings as writeEntryBool
+     * \note The key string must be valid xml tag names in order to be saved to the file.
+     * \note available in Python bindings as writeEntryBool
      */
     bool writeEntry( const QString &scope, const QString &key, bool value );
 
@@ -227,8 +227,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
-     * @note The key string must be valid xml tag names in order to be saved to the file.
-     * @note available in Python bindings as writeEntryDouble
+     * \note The key string must be valid xml tag names in order to be saved to the file.
+     * \note available in Python bindings as writeEntryDouble
      */
     bool writeEntry( const QString &scope, const QString &key, double value );
 
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
-     * @note The key string must be valid xml tag names in order to be saved to the file.
+     * \note The key string must be valid xml tag names in order to be saved to the file.
      */
     bool writeEntry( const QString &scope, const QString &key, int value );
 
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
-     * @note The key string must be valid xml tag names in order to be saved to the file.
+     * \note The key string must be valid xml tag names in order to be saved to the file.
      */
     bool writeEntry( const QString &scope, const QString &key, const QString &value );
 
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
-     * @note The key string must be valid xml tag names in order to be saved to the file.
+     * \note The key string must be valid xml tag names in order to be saved to the file.
      */
     bool writeEntry( const QString &scope, const QString &key, const QStringList &value );
 
@@ -282,13 +282,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Return keys with values -- do not return keys that contain other keys
      *
-     * @note equivalent to QgsSettings entryList()
+     * \note equivalent to QgsSettings entryList()
      */
     QStringList entryList( const QString &scope, const QString &key ) const;
 
     /** Return keys with keys -- do not return keys that contain only values
      *
-     * @note equivalent to QgsSettings subkeyList()
+     * \note equivalent to QgsSettings subkeyList()
      */
     QStringList subkeyList( const QString &scope, const QString &key ) const;
 
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
      * @return the layer or 0 in case of error
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
                               bool saveFlag = true );
@@ -405,7 +405,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Returns pointer to the project's map theme collection.
      * \since QGIS 2.12
-     * @note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
+     * \note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
     QgsMapThemeCollection *mapThemeCollection();
 
@@ -456,7 +456,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * QPair( providerKey, connString ) -> transactionGroup
      *
      * \since QGIS 2.16
-     * @note Not available in Python bindings
+     * \note Not available in Python bindings
      */
     QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups();
 
@@ -547,7 +547,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      *     QVector<QgsVectorLayer*> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer*>();
      *
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      * \since QGIS 2.16
      * @see mapLayers()
      */
@@ -586,8 +586,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *         successfully. If a layer is invalid, or already exists in the registry,
      *         it will not be part of the returned QList.
      *
-     * @note As a side-effect QgsProject is made dirty.
-     * @note takeOwnership is not available in the Python bindings - the registry will always
+     * \note As a side-effect QgsProject is made dirty.
+     * \note takeOwnership is not available in the Python bindings - the registry will always
      * take ownership
      * \since QGIS 1.8
      * @see addMapLayer()
@@ -617,9 +617,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * @see addMapLayers
      *
-     * @note As a side-effect QgsProject is made dirty.
-     * @note Use addMapLayers if adding more than one layer at a time
-     * @note takeOwnership is not available in the Python bindings - the registry will always
+     * \note As a side-effect QgsProject is made dirty.
+     * \note Use addMapLayers if adding more than one layer at a time
+     * \note takeOwnership is not available in the Python bindings - the registry will always
      * take ownership
      * @see addMapLayers()
      */
@@ -634,7 +634,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * @param layerIds list of IDs of the layers to remove
      *
-     * @note As a side-effect the QgsProject instance is marked dirty.
+     * \note As a side-effect the QgsProject instance is marked dirty.
      * \since QGIS 1.8
      * @see removeMapLayer()
      * @see removeAllMapLayers()
@@ -650,7 +650,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * @param layers A list of layers to remove. Null pointers are ignored.
      *
-     * @note As a side-effect the QgsProject instance is marked dirty.
+     * \note As a side-effect the QgsProject instance is marked dirty.
      * @see removeMapLayer()
      * @see removeAllMapLayers()
      */
@@ -666,7 +666,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * @param layerId ID of the layer to remove
      *
-     * @note As a side-effect the QgsProject instance is marked dirty.
+     * \note As a side-effect the QgsProject instance is marked dirty.
      * @see removeMapLayers()
      * @see removeAllMapLayers()
      */
@@ -681,7 +681,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * @param layer The layer to remove. Null pointers are ignored.
      *
-     * @note As a side-effect the QgsProject instance is marked dirty.
+     * \note As a side-effect the QgsProject instance is marked dirty.
      * @see removeMapLayers()
      * @see removeAllMapLayers()
      */
@@ -691,8 +691,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Removes all registered layers. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
-     * @note As a side-effect the QgsProject instance is marked dirty.
-     * @note Calling this method will cause the removeAll() signal to
+     * \note As a side-effect the QgsProject instance is marked dirty.
+     * \note Calling this method will cause the removeAll() signal to
      * be emitted.
      * @see removeMapLayer()
      * @see removeMapLayers()
@@ -834,7 +834,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * @param layerId The ID of the layer to be removed.
      *
-     * @note Consider using {@link layersWillBeRemoved()} instead
+     * \note Consider using {@link layersWillBeRemoved()} instead
      * @see layersWillBeRemoved()
      * @see layerRemoved()
      */
@@ -845,7 +845,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * @param layer The layer to be removed.
      *
-     * @note Consider using {@link layersWillBeRemoved()} instead
+     * \note Consider using {@link layersWillBeRemoved()} instead
      * @see layersWillBeRemoved()
      * @see layerRemoved()
      */
@@ -864,7 +864,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * @param layerId The ID of the layer removed.
      *
-     * @note Consider using {@link layersRemoved()} instead
+     * \note Consider using {@link layersRemoved()} instead
      * @see layerWillBeRemoved()
      */
     void layerRemoved( const QString &layerId );
@@ -893,7 +893,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when a layer was added to the registry.
      *
-     * @note Consider using {@link layersAdded()} instead
+     * \note Consider using {@link layersAdded()} instead
      * @see layersAdded()
      */
     void layerWasAdded( QgsMapLayer *layer );
@@ -922,7 +922,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * be asked to save changes to the project before closing the current project.
      *
      * \since QGIS 2.4
-     * @note promoted to public slot in 2.16
+     * \note promoted to public slot in 2.16
      */
     void setDirty( bool b = true );
 
@@ -946,23 +946,23 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool _getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes );
 
     /** Set error message from read/write operation
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void setError( const QString &errorMessage );
 
     /** Clear error message
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void clearError();
 
     //! Creates layer and adds it to maplayer registry
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void loadEmbeddedNodes( QgsLayerTreeGroup *group );
 
     QMap<QString, QgsMapLayer *> mMapLayers;

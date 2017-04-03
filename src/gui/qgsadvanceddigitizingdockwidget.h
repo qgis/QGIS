@@ -84,7 +84,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /** \ingroup gui
      * @brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
-     * @note Relative is not mandatory since it is not used for distance.
+     * \note Relative is not mandatory since it is not used for distance.
      */
     class GUI_EXPORT CadConstraint
     {
@@ -197,7 +197,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     };
 
     //! performs the intersection of a circle and a line
-    //! @note from the two solutions, the intersection will be set to the closest point
+    //! \note from the two solutions, the intersection will be set to the closest point
     static bool lineCircleIntersection( const QgsPoint &center, const double radius, const QList<QgsPoint> &segment, QgsPoint &intersection );
 
     /**
@@ -419,7 +419,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void clearPoints();
 
     //! filters key press
-    //! @note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
+    //! \note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
     bool filterKeyPress( QKeyEvent *e );
 
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)

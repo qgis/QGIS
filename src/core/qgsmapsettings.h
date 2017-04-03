@@ -210,7 +210,7 @@ class CORE_EXPORT QgsMapSettings
 
     // -- utility functions --
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     const QgsDatumTransformStore &datumTransformStore() const { return mDatumTransformStore; }
     QgsDatumTransformStore &datumTransformStore() { return mDatumTransformStore; }
 

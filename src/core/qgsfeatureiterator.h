@@ -24,7 +24,7 @@
  * Interface that can be optionally attached to an iterator so its
  * nextFeature() implementaton can check if it must stop as soon as possible.
  * \since QGIS 2.16
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class CORE_EXPORT QgsInterruptionChecker
 {
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * WFS provider. When nextFeature()/fetchFeature() is reasonably fast, it is not necessary
      * to implement this method. The default implementation does nothing.
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
 
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsFeatureIterator
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider.
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
 

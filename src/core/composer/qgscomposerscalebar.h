@@ -259,7 +259,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /** Returns the join style used for drawing lines in the scalebar
      * @returns Join style for lines
-     * @note introduced in 2.3
+     * \note introduced in 2.3
      * @see setLineJoinStyle
      */
     Qt::PenJoinStyle lineJoinStyle() const { return mLineJoinStyle; }
@@ -267,14 +267,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /** Sets join style used when drawing the lines in the scalebar
      * @param style Join style for lines
      * @returns nothing
-     * @note introduced in 2.3
+     * \note introduced in 2.3
      * @see lineJoinStyle
      */
     void setLineJoinStyle( Qt::PenJoinStyle style );
 
     /** Returns the cap style used for drawing lines in the scalebar
      * @returns Cap style for lines
-     * @note introduced in 2.3
+     * \note introduced in 2.3
      * @see setLineCapStyle
      */
     Qt::PenCapStyle lineCapStyle() const { return mLineCapStyle; }
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /** Sets cap style used when drawing the lines in the scalebar
      * @param style Cap style for lines
      * @returns nothing
-     * @note introduced in 2.3
+     * \note introduced in 2.3
      * @see lineCapStyle
      */
     void setLineCapStyle( Qt::PenCapStyle style );
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /** Returns the x - positions of the segment borders (in item coordinates) and the width
      * of the segment
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void segmentPositions( QList<QPair<double, double> > &posWidthList ) const;
 

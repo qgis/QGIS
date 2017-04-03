@@ -441,7 +441,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorDataProvider *dataProvider();
 
     /** Returns the data provider in a const-correct manner
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QgsVectorDataProvider *dataProvider() const SIP_SKIP;
 
@@ -453,7 +453,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /** Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field
-      @note since 2.6 returns bool indicating whether the join can be added */
+      \note since 2.6 returns bool indicating whether the join can be added */
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 
     /** Removes a vector layer join
@@ -665,7 +665,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsFeatureRenderer *renderer() { return mRenderer; }
 
     /** Return const renderer.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QgsFeatureRenderer *renderer() const SIP_SKIP { return mRenderer; }
 
@@ -688,12 +688,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QString providerType() const;
 
     /** Reads vector layer specific state from project file Dom node.
-     * @note Called by QgsMapLayer::readXml().
+     * \note Called by QgsMapLayer::readXml().
      */
     virtual bool readXml( const QDomNode &layer_node ) override;
 
     /** Write vector layer specific state to project file Dom node.
-     * @note Called by QgsMapLayer::writeXml().
+     * \note Called by QgsMapLayer::writeXml().
      */
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const override;
 
@@ -914,7 +914,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Moves the vertex at the given position number,
      * ring and item (first number is index 0), and feature
      * to the given coordinates
-     * @note available in Python as moveVertexV2
+     * \note available in Python as moveVertexV2
      */
     bool moveVertex( const QgsPointV2 &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
 
@@ -953,7 +953,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  1 problem with feature type
      *  2 ring not closed
      *  6 layer not editable
-     * @note available in Python as addCurvedRing
+     * \note available in Python as addCurvedRing
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( QgsCurve *ring SIP_TRANSFER, QgsFeatureId *featureId = nullptr ) SIP_PYNAME( addCurvedRing );
@@ -982,12 +982,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *   5 if several features are selected,
      *   6 if selected geometry not found
      *   7 layer not editable
-     * @note available in Python bindings as addPartV2
+     * \note available in Python bindings as addPartV2
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QgsPointSequence &ring ) SIP_PYNAME( addPartV2 );
 
-    //! @note available in Python as addCurvedPart
+    //! \note available in Python as addCurvedPart
     int addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
 
     /** Translates feature by dx, dy
@@ -1020,7 +1020,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
-     * @note geom is not going to be modified by the function
+     * \note geom is not going to be modified by the function
      * @return 0 in case of success
      */
     int addTopologicalPoints( const QgsGeometry &geom );
@@ -1043,13 +1043,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /** Access to labeling configuration.
      * \since QGIS 2.12
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
 
     /** Set labeling configuration. Takes ownership of the object.
      * \since QGIS 2.12
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void setLabeling( QgsAbstractVectorLayerLabeling *labeling )  SIP_SKIP;
 
@@ -1296,7 +1296,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorLayerEditBuffer *editBuffer() { return mEditBuffer; }
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     const QgsVectorLayerEditBuffer *editBuffer() const SIP_SKIP { return mEditBuffer; }
 
     /**
@@ -1528,7 +1528,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     QString metadata() const override;
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     inline QgsGeometryCache *cache() SIP_SKIP { return mCache; }
 
     /** Set the simplification settings for fast rendering of features
@@ -1542,7 +1542,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     inline const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /** Returns whether the VectorLayer can apply the specified simplification hint
-     *  @note Do not use in 3rd party code - may be removed in future version!
+     *  \note Do not use in 3rd party code - may be removed in future version!
      *  \since QGIS 2.2
      */
     bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
@@ -1823,14 +1823,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Signal emitted, when an edit command successfully ended
-     * @note This does not mean it is also committed, only that it is written
+     * \note This does not mean it is also committed, only that it is written
      * to the edit buffer. See {@link beforeCommitChanges()}
      */
     void editCommandEnded();
 
     /**
      * Signal emitted, whan an edit command is destroyed
-     * @note This is not a rollback, it is only related to the current edit command.
+     * \note This is not a rollback, it is only related to the current edit command.
      * See {@link beforeRollBack()}
      */
     void editCommandDestroyed();

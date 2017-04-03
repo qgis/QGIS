@@ -40,7 +40,7 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
 
     /** Sets the extent to use for minimum and maximum value calculation.
      * @param extent extent in raster layer's CRS
-     * @note if a map canvas is set using setMapCanvas(), its extent will take
+     * \note if a map canvas is set using setMapCanvas(), its extent will take
      * precedence over any extent set using this method.
      */
     void setExtent( const QgsRectangle &extent ) { mExtent = extent; }

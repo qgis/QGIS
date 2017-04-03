@@ -101,7 +101,7 @@ class SERVER_EXPORT QgsRequestHandler
     void removeParameter( const QString &key );
 
     /** Parses the input and creates a request neutral Parameter/Value map
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void parseInput();
 

@@ -95,7 +95,7 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * @param visibleName user visible name representing paint effect class
      * @param pfCreate paint effect creation function
      * @param pfWidget widget creation function
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QgsPaintEffectMetadata( const QString &name, const QString &visibleName,
                             QgsPaintEffectCreateFunc pfCreate,
@@ -107,20 +107,20 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
 
     /** Returns the paint effect creation function for the paint effect class
      * @returns creation function
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QgsPaintEffectCreateFunc createFunction() const { return mCreateFunc; }
 
     /** Returns the paint effect properties widget creation function for the paint effect class
      * @returns widget creation function
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      * @see setWidgetFunction
      */
     QgsPaintEffectWidgetFunc widgetFunction() const { return mWidgetFunc; }
 
     /** Sets the paint effect properties widget creation function for the paint effect class
      * @param f widget creation function
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      * @see widgetFunction
      */
     void setWidgetFunction( QgsPaintEffectWidgetFunc f ) { mWidgetFunc = f; }
@@ -128,14 +128,14 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
     /** Creates a new paint effect of the metadata's effect class
      * @param map string map of effect properties
      * @returns new paint effect
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      * @see createWidget
      */
     virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
 
     /** Creates a new paint effect properties widget for the metadata's effect class
      * @returns effect properties widget
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      * @see createWidget
      */
     virtual QgsPaintEffectWidget *createWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }

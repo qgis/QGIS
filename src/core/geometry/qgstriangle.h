@@ -80,7 +80,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     void addInteriorRing( QgsCurve *ring ) override;
 
     /** Inherited method not used. You cannot add an interior ring into a triangle.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void setInteriorRings( const QList< QgsCurve *> &rings ) = delete;
     //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always false.
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      * @param p2 second point
      * @param p3 third point
      * @return True if the points can create a triangle, otherwise false.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     bool validateGeom( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 );
 

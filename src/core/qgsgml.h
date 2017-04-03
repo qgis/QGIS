@@ -39,7 +39,7 @@ class QgsCoordinateReferenceSystem;
  * as soon it has new content from the source. At any point, it can call
  * getAndStealReadyFeatures() to collect the features that have been completely
  * parsed.
- * @note not available in Python bindings
+ * \note not available in Python bindings
  * \since QGIS 2.16
  */
 class CORE_EXPORT QgsGmlStreamingParser
@@ -349,7 +349,7 @@ class CORE_EXPORT QgsGml : public QObject
      *  @param password password for authentication
      *  @param authcfg authentication configuration id
      *  @return 0 in case of success
-     *  @note available in Python as getFeaturesUri
+     *  \note available in Python as getFeaturesUri
      */
     int getFeatures( const QString &uri,
                      QgsWkbTypes::Type *wkbType,

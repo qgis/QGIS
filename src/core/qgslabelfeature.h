@@ -28,9 +28,9 @@ class QgsGeometry;
  * Individual label providers may create subclasses of QgsLabelFeature in order to add
  * more data to the instances that will be later used for drawing of labels.
  *
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \since QGIS 2.12
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class CORE_EXPORT QgsLabelFeature
 {

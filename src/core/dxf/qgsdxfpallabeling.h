@@ -30,7 +30,7 @@ class QgsRuleBasedLabeling;
  * Implements a derived label provider internally used for DXF export
  *
  * Internal class, not in public API. Added in QGIS 2.12
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
 {
@@ -61,7 +61,7 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
  * for DXF export
  *
  * Internal class, not in public API. Added in QGIS 2.15
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
 {

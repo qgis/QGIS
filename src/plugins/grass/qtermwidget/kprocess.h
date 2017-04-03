@@ -282,7 +282,7 @@ public:
      *
      * Unlike the other startDetached() variants this method is not static,
      * so the process can be parametrized properly.
-     * @note Currently, only the setProgram()/setShellCommand() and
+     * \note Currently, only the setProgram()/setShellCommand() and
      * setWorkingDirectory() parametrizations are supported.
      *
      * The KProcess object may be re-used immediately after calling this

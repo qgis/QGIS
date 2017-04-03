@@ -114,7 +114,7 @@ class CORE_EXPORT QgsProviderRegistry
       This walks through all data providers appending calls to their
       fileVectorFilters to a string, which is then returned.
 
-      @note
+      \note
 
       It'd be nice to eventually be raster/vector neutral.
      */
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsProviderRegistry
       This walks through all data providers appending calls to their
       buildSupportedRasterFileFilter to a string, which is then returned.
 
-      @note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
+      \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
      */
     virtual QString fileRasterFilters() const;
     //! Return a string containing the available database drivers

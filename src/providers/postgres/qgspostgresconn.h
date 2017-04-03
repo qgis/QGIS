@@ -395,7 +395,7 @@ class QgsPostgresConn : public QObject
     /**
      * Flag indicating whether data from binary cursors must undergo an
      * endian conversion prior to use
-     @note
+     \note
 
      XXX Umm, it'd be helpful to know what we're swapping from and to.
      XXX Presumably this means swapping from big-endian (network) byte order

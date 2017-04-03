@@ -121,7 +121,7 @@ class CORE_EXPORT QgsRaster
      * @param value
      * @param dataType
      * \since QGIS 2.16
-     *  @note not available in Python bindings */
+     *  \note not available in Python bindings */
     static bool isRepresentableValue( double value, Qgis::DataType dataType );
 
     /** Get value representable by given data type.

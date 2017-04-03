@@ -36,7 +36,7 @@ class QgsRasterLayerRenderer;
  * Implementation of threaded rendering for raster layers.
  *
  * \since QGIS 2.4
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class QgsRasterLayerRenderer : public QgsMapLayerRenderer
 {
@@ -60,7 +60,7 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     /** \ingroup core
      * Specific internal feedback class to provide preview of raster layer rendering.
      * \since QGIS 3.0
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     class Feedback : public QgsRasterBlockFeedback
     {

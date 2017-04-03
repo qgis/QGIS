@@ -186,7 +186,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Open a raster layer for the given file
       @returns false if unable to open a raster layer for rasterFile
-      @note
+      \note
       This is essentially a simplified version of the above
       */
     QgsRasterLayer *addRasterLayer( const QString &rasterFile, const QString &baseName, bool guiWarning = true );
@@ -372,7 +372,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Notify the user by using the system tray notifications
      *
-     * @note usage of the system tray notifications should be limited
+     * \note usage of the system tray notifications should be limited
      *       to long running tasks and to when the user needs to be notified
      *       about interaction with OS services, like the password manager.
      *
@@ -1475,7 +1475,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void keyPressed( QKeyEvent *e );
 
     /** Emitted when a project file is successfully read
-      @note
+      \note
       This is useful for plug-ins that store properties with project files.  A
       plug-in can connect to this signal.  When it is emitted, the plug-in
       knows to then check the project properties for any relevant state.
@@ -1483,7 +1483,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void projectRead();
 
     /** Emitted when starting an entirely new project
-      @note
+      \note
       This is similar to projectRead(); plug-ins might want to be notified
       that they're in a new project.  Yes, projectRead() could have been
       overloaded to be used in the case of new projects instead.  However,

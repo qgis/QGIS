@@ -265,7 +265,7 @@ class CORE_EXPORT QgsRasterBlock
      * owned by the QgsRasterBlock, therefore it is only valid while the QgsRasterBlock object
      * still exists. Writing to the returned QByteArray will not affect the original data:
      * a deep copy of the data will be made and only the local copy will be modified.
-     * @note in Python the method returns ordinary bytes object as the
+     * \note in Python the method returns ordinary bytes object as the
      * \since QGIS 3.0
      */
     QByteArray data() const;
@@ -284,20 +284,20 @@ class CORE_EXPORT QgsRasterBlock
      *  @param row row index
      *  @param column column index
      *  @return pointer to data
-     *  @note not available in Python bindings
+     *  \note not available in Python bindings
      */
     char *bits( int row, int column );
 
     /** \brief Get pointer to data
      *  @param index data matrix index (long type in Python)
      *  @return pointer to data
-     *  @note not available in Python bindings
+     *  \note not available in Python bindings
      */
     char *bits( qgssize index );
 
     /** \brief Get pointer to data
      *  @return pointer to data
-     *  @note not available in Python bindings
+     *  \note not available in Python bindings
      */
     char *bits();
 
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param value the value to be printed
      *  @return string representing the value
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QString printValue( float value );
 
@@ -330,10 +330,10 @@ class CORE_EXPORT QgsRasterBlock
      *  @return true on success */
     bool setImage( const QImage *image );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     inline static double readValue( void *data, Qgis::DataType type, qgssize index );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     inline static void writeValue( void *data, Qgis::DataType type, qgssize index, double value );
 
     void applyNoDataValues( const QgsRasterRangeList &rangeList );

@@ -94,7 +94,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * @param row optional row number to calculate for calculating result by rows, or -1 to
      * calculate entire result
      * \since QGIS 2.10
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     bool calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row = -1 ) const;
 

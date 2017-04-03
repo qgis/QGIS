@@ -72,7 +72,7 @@ class CORE_EXPORT QgsRasterHistogram
     bool includeOutOfRange;
 
     /** \brief Store the histogram for a given layer
-      * @note not available via Python binding
+      * \note not available via Python binding
       */
     HistogramVector histogramVector;
 

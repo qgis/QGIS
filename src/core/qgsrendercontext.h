@@ -147,7 +147,7 @@ class CORE_EXPORT QgsRenderContext
     double rendererScale() const {return mRendererScale;}
 
     //! Get access to new labeling engine (may be nullptr)
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; }
 
     QColor selectionColor() const { return mSelectionColor; }
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsRenderContext
     void setForceVectorOutput( bool force );
 
     //! Assign new labeling engine
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void setLabelingEngine( QgsLabelingEngine *engine2 ) { mLabelingEngine = engine2; }
     void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
 
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsRenderContext
      * associated with this render context.
      * @see setExpressionContext()
      * \since QGIS 2.12
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
 

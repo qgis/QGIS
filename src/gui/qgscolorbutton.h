@@ -159,7 +159,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @param showNoColorOption set to true to show the no color option. This is disabled by default.
      * @see showNoColor
      * @see setNoColorString
-     * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
+     * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
      * dialog (see setColorDialogOptions)
      */
     void setShowNoColor( const bool showNoColorOption ) { mShowNoColorOption = showNoColorOption; }
@@ -169,7 +169,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @returns true if the no color option is shown.
      * @see setShowNoColor
      * @see noColorString
-     * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
+     * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
      * dialog (see setColorDialogOptions)
      */
     bool showNoColor() const { return mShowNoColorOption; }
@@ -178,7 +178,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @param noColorString string to use for the "no color" menu option
      * @see noColorString
      * @see setShowNoColor
-     * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
+     * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
      * dialog (see setColorDialogOptions)
      */
     void setNoColorString( const QString &noColorString ) { mNoColorString = noColorString; }
@@ -209,7 +209,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @returns string used for the "no color" menu option
      * @see setNoColorString
      * @see showNoColor
-     * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
+     * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
      * dialog (see setColorDialogOptions)
      */
     QString noColorString() const { return mNoColorString; }
@@ -280,7 +280,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void activatePicker();
 
     /** Sets color to a totally transparent color.
-     * @note If the color button is not set to show an alpha channel in the color
+     * \note If the color button is not set to show an alpha channel in the color
      * dialog (see setColorDialogOptions) then the color will not be changed.
      * @see setToNull()
      */

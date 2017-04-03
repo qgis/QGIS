@@ -30,8 +30,8 @@ class QgsSymbol;
  * custom properties or from the given settings.
  *
  * \since QGIS 2.12
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
- * @note not available in Python bindings
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \note not available in Python bindings
  */
 class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 {

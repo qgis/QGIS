@@ -33,7 +33,7 @@ class QgsLayerTreeGroup;
 
 /** Dialog to set project level properties
 
-  @note actual state is stored in QgsProject singleton instance
+  \note actual state is stored in QgsProject singleton instance
 
  */
 class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase

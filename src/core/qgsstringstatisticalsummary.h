@@ -100,9 +100,9 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * quantities of strings this may be more efficient then first adding all the
      * strings to a list and calling calculate().
      * @param string string to add
-     * @note call reset() before adding the first string using this method
+     * \note call reset() before adding the first string using this method
      * to clear the results from any previous calculations
-     * @note finalize() must be called after adding the final string and before
+     * \note finalize() must be called after adding the final string and before
      * retrieving calculated statistics.
      * @see calculate()
      * @see addValue()
@@ -115,9 +115,9 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * quantities of variants this may be more efficient then first adding all the
      * variants to a list and calling calculateFromVariants().
      * @param value variant to add
-     * @note call reset() before adding the first string using this method
+     * \note call reset() before adding the first string using this method
      * to clear the results from any previous calculations
-     * @note finalize() must be called after adding the final value and before
+     * \note finalize() must be called after adding the final value and before
      * retrieving calculated statistics.
      * @see calculateFromVariants()
      * @see finalize()

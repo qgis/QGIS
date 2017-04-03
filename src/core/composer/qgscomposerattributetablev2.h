@@ -125,7 +125,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @param relationId id for relation to display child features from
      * @see relationId
      * @see setSource
-     * @note only used if table source is set to RelationChildren
+     * \note only used if table source is set to RelationChildren
      */
     void setRelationId( const QString &relationId );
 
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @returns relation id
      * @see setRelationId
      * @see source
-     * @note only used if table source is set to RelationChildren
+     * \note only used if table source is set to RelationChildren
      */
     QString relationId() const { return mRelationId; }
 
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and
      * the bool to the sort order for the attribute. If true the attribute is sorted ascending,
      * if false, the attribute is sorted in descending order.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QList<QPair<int, bool> > sortAttributes() const;
 
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /** Queries the attribute table's vector layer for attributes to show in the table.
      * @param contents table content
      * @returns true if attributes were successfully fetched
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     bool getTableContents( QgsComposerTableContents &contents ) override;
 
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     QString mWrapString;
 
     /** Returns a list of attribute indices corresponding to displayed fields in the table.
-     * @note kept for compatibility with 2.0 api only
+     * \note kept for compatibility with 2.0 api only
      */
     QList<int> fieldsToDisplay() const;
 

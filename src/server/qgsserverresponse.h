@@ -115,7 +115,7 @@ class SERVER_EXPORT QgsServerResponse
      * to the underlying I/O device
      * @return the number of bytes written
      *
-     *  @note not available in Python bindings
+     *  \note not available in Python bindings
      */
     virtual qint64 write( const char *data, qint64 maxsize );
 
@@ -126,7 +126,7 @@ class SERVER_EXPORT QgsServerResponse
      * to the underlying I/O device
      * @return the number of bytes written
      *
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     virtual qint64 write( const char *data );
 

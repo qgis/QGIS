@@ -272,7 +272,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void modelChanged();
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void progress( int i, bool &cancel );
     void finished();
 

@@ -119,7 +119,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     void updateUi();
 
     /** Returns the currently selected effect within the stack.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     EffectItem *currentEffectItem();
 

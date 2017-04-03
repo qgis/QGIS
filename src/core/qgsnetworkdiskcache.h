@@ -27,7 +27,7 @@ class QNetworkDiskCache;
  * Wrapper implementation of QNetworkDiskCache with all methods guarded by a
  * mutex soly for internal use of QgsNetworkAccessManagers
  *
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class QgsNetworkDiskCache : public QNetworkDiskCache
 {

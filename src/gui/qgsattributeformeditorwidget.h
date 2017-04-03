@@ -143,7 +143,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
   protected:
 
     /** Returns a pointer to the search widget tool button in the widget.
-     * @note this method is in place for unit testing only, and is not considered
+     * \note this method is in place for unit testing only, and is not considered
      * stable API
      */
     QgsSearchWidgetToolButton *searchWidgetToolButton();
@@ -151,23 +151,23 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     /** Sets the search widget wrapper for the widget used when the form is in
      * search mode.
      * @param wrapper search widget wrapper.
-     * @note the search widget wrapper should be created using searchWidgetFrame()
+     * \note the search widget wrapper should be created using searchWidgetFrame()
      * as its parent
-     * @note this method is in place for unit testing only, and is not considered
+     * \note this method is in place for unit testing only, and is not considered
      * stable AP
      */
     void setSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
 
     /** Returns the widget which should be used as a parent during construction
      * of the search widget wrapper.
-     * @note this method is in place for unit testing only, and is not considered
+     * \note this method is in place for unit testing only, and is not considered
      * stable AP
      */
     QWidget *searchWidgetFrame();
 
     /** Returns the search widget wrapper used in this widget. The wrapper must
      * first be created using createSearchWidgetWrapper()
-     * @note this method is in place for unit testing only, and is not considered
+     * \note this method is in place for unit testing only, and is not considered
      * stable AP
      */
     QList< QgsSearchWidgetWrapper * > searchWidgetWrappers();

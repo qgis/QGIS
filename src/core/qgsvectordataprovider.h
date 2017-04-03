@@ -365,7 +365,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual bool createAttributeIndex( int field );
 
     /** Returns flags containing the supported capabilities
-        @note, some capabilities may change depending on whether
+        \note, some capabilities may change depending on whether
         a spatial filter is active on this provider, so it may
         be prudent to check this value per intended operation.
      */

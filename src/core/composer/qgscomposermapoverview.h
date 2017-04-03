@@ -50,7 +50,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * The overview will be added to the end of the stack, and rendered
      * above any existing map overviews already present in the stack.
      * @param overview QgsComposerMapOverview to add to the stack
-     * @note after adding a overview to the stack, update()
+     * \note after adding a overview to the stack, update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see removeOverview
      */
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
 
     /** Removes an overview from the stack and deletes the corresponding QgsComposerMapOverview
      * @param overviewId id for the QgsComposerMapOverview to remove
-     * @note after removing an overview from the stack, update()
+     * \note after removing an overview from the stack, update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see addOverview
      */
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
 
     /** Moves an overview up the stack, causing it to be rendered above other overviews
      * @param overviewId id for the QgsComposerMapOverview to move up
-     * @note after moving an overview within the stack, update() should be
+     * \note after moving an overview within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new overview stack order
      * @see moveOverviewDown
      */
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
 
     /** Moves an overview down the stack, causing it to be rendered below other overviews
      * @param overviewId id for the QgsComposerMapOverview to move down
-     * @note after moving an overview within the stack, update() should be
+     * \note after moving an overview within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new overview stack order
      * @see moveOverviewUp
      */
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     /** Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview
      * @see setFrameSymbol
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QgsFillSymbol *frameSymbol() const { return mFrameSymbol; }
 

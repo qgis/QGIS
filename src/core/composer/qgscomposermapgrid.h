@@ -56,7 +56,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * The grid will be added to the end of the stack, and rendered
      * above any existing map grids already present in the stack.
      * @param grid QgsComposerMapGrid to add to the stack
-     * @note after adding a grid to the stack, updateBoundingRect() and update()
+     * \note after adding a grid to the stack, updateBoundingRect() and update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see removeGrid
      */
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
 
     /** Removes a grid from the stack and deletes the corresponding QgsComposerMapGrid
      * @param gridId id for the QgsComposerMapGrid to remove
-     * @note after removing a grid from the stack, updateBoundingRect() and update()
+     * \note after removing a grid from the stack, updateBoundingRect() and update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see addGrid
      */
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
 
     /** Moves a grid up the stack, causing it to be rendered above other grids
      * @param gridId id for the QgsComposerMapGrid to move up
-     * @note after moving a grid within the stack, update() should be
+     * \note after moving a grid within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new grid stack order
      * @see moveGridDown
      */
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
 
     /** Moves a grid down the stack, causing it to be rendered below other grids
      * @param gridId id for the QgsComposerMapGrid to move down
-     * @note after moving a grid within the stack, update() should be
+     * \note after moving a grid within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new grid stack order
      * @see moveGridUp
      */
@@ -487,7 +487,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setLineSymbol
      * @see markerSymbol
      * @see style
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QgsLineSymbol *lineSymbol() const { return mGridLineSymbol; }
 
@@ -515,7 +515,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setMarkerSymbol
      * @see lineSymbol
      * @see style
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QgsMarkerSymbol *markerSymbol() const { return mGridMarkerSymbol; }
 

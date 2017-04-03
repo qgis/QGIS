@@ -63,7 +63,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
      * makes sure the annimation is started.
      *
      * \since QGIS 3.0
-     * @note Available in Python bindings as
+     * \note Available in Python bindings as
      *       bool connectFrameChanged( const QObject *receiver, const char *method );.
      */
     template <typename Func1>
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
      * Convenience function to disconnect the same style that the frame change connection was established.
      *
      * \since QGIS 3.0
-     * @note Available in Python bindings as
+     * \note Available in Python bindings as
      *       bool disconnectFrameChanged( const QObject *receiver, const char *method );.
      */
     template <typename Func1>

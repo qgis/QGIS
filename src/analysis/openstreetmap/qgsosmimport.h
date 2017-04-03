@@ -71,7 +71,7 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
     bool createDatabase();
     bool closeDatabase();
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void deleteStatement( sqlite3_stmt *&stmt );
 
     bool createIndexes();

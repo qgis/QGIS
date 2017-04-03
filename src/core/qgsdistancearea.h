@@ -50,7 +50,7 @@ class CORE_EXPORT QgsDistanceArea
     QgsDistanceArea &operator=( const QgsDistanceArea &origDA );
 
     /** Sets whether coordinates must be projected to ellipsoid before measuring
-     * @note for calculations to use the ellipsoid, both the ellipsoid mode must be true
+     * \note for calculations to use the ellipsoid, both the ellipsoid mode must be true
      * and an ellipse must be set
      * @see setEllipsoid()
      * @see willUseEllipsoid()
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsDistanceArea
 
     /**
      * Sets source spatial reference system (by QGIS CRS)
-     * @note: missing in Python bindings in QGIS < 2.2
+     * \note: missing in Python bindings in QGIS < 2.2
      * @see sourceCrs()
      */
     void setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS );
@@ -288,7 +288,7 @@ class CORE_EXPORT QgsDistanceArea
 
   protected:
     //! measures polygon area and perimeter, vertices are extracted from WKB
-    // @note not available in Python bindings
+    // \note not available in Python bindings
     QgsConstWkbPtr measurePolygon( QgsConstWkbPtr feature, double *area, double *perimeter, bool hasZptr = false ) const;
 
     /**
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsDistanceArea
      *
      * Points p1 and p2 are expected to be in degrees and in currently used ellipsoid
      *
-     * @note if course1 is not NULL, bearing (in radians) from first point is calculated
+     * \note if course1 is not NULL, bearing (in radians) from first point is calculated
      * (the same for course2)
      * @return distance in meters
      */

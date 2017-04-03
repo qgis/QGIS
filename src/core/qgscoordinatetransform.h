@@ -165,7 +165,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
      * @param direction transform direction (defaults to ForwardTransform)
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void transformInPlace( float &x, float &y, double &z, TransformDirection direction = ForwardTransform ) const;
 
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
      * @param direction transform direction (defaults to ForwardTransform)
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void transformInPlace( float &x, float &y, float &z, TransformDirection direction = ForwardTransform ) const;
 
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
      * @param direction transform direction (defaults to ForwardTransform)
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void transformInPlace( QVector<float> &x, QVector<float> &y, QVector<float> &z,
                            TransformDirection direction = ForwardTransform ) const;
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
      * @param direction transform direction (defaults to ForwardTransform)
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void transformInPlace( QVector<double> &x, QVector<double> &y, QVector<double> &z,
                            TransformDirection direction = ForwardTransform ) const;
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsCoordinateTransform
     bool isShortCircuited() const;
 
     /** Returns list of datum transformations for the given src and dest CRS
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destinationCrs );
     static QString datumTransformString( int datumTransform );

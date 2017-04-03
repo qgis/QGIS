@@ -58,7 +58,7 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
 
     /**
      * Construct widget to edit an authentication method configuration
-     * @note Non-public since this is an abstract base class
+     * \note Non-public since this is an abstract base class
      * @param parent Parent widget
      */
     explicit QgsAuthMethodEdit( QWidget *parent = nullptr )

@@ -101,7 +101,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * @brief list of unary operators
-     * @note if any change is made here, the definition of QgsSQLStatement::UnaryOperatorText[] must be adapted.
+     * \note if any change is made here, the definition of QgsSQLStatement::UnaryOperatorText[] must be adapted.
      */
     enum UnaryOperator
     {
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * @brief list of binary operators
-     * @note if any change is made here, the definition of QgsSQLStatement::BinaryOperatorText[] must be adapted.
+     * \note if any change is made here, the definition of QgsSQLStatement::BinaryOperatorText[] must be adapted.
      */
     enum BinaryOperator
     {
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * @brief list of join types
-     * @note if any change is made here, the definition of QgsSQLStatement::JoinTypeText[] must be adapted.
+     * \note if any change is made here, the definition of QgsSQLStatement::JoinTypeText[] must be adapted.
      */
     enum JoinType
     {
@@ -162,13 +162,13 @@ class CORE_EXPORT QgsSQLStatement
       jtFull
     };
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static const char *BINARY_OPERATOR_TEXT[];
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static const char *UNARY_OPERATOR_TEXT[];
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static const char *JOIN_TYPE_TEXT[];
 
     //////

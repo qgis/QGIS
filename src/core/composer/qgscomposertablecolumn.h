@@ -125,7 +125,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * is only used when the column is part of a QgsComposerAttributeTable.
      * @returns attribute name or expression text for column
      * \since QGIS 2.3
-     * @note only applicable when used in a QgsComposerAttributeTable
+     * \note only applicable when used in a QgsComposerAttributeTable
      * @see setAttribute
      */
     QString attribute() const { return mAttribute; }
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * is only used when the column is part of a QgsComposerAttributeTable.
      * @param attribute attribute name or expression text for column
      * \since QGIS 2.3
-     * @note only applicable when used in a QgsComposerAttributeTable
+     * \note only applicable when used in a QgsComposerAttributeTable
      * @see attribute
      */
     void setAttribute( const QString &attribute ) { mAttribute = attribute; }
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * is part of a QgsComposerAttributeTable and when sortByRank is > 0.
      * @returns sort order for column
      * \since QGIS 2.3
-     * @note only applicable when used in a QgsComposerAttributeTable
+     * \note only applicable when used in a QgsComposerAttributeTable
      * @see setSortOrder
      * @see sortByRank
      */
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * is part of a QgsComposerAttributeTable and when sortByRank is > 0.
      * @param sortOrder sort order for column
      * \since QGIS 2.3
-     * @note only applicable when used in a QgsComposerAttributeTable
+     * \note only applicable when used in a QgsComposerAttributeTable
      * @see sortOrder
      * @see setSortByRank
      */
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @returns sort rank for column. If sort rank is <= 0 then the column is not being
      * sorted.
      * \since QGIS 2.3
-     * @note only applicable when used in a QgsComposerAttributeTable
+     * \note only applicable when used in a QgsComposerAttributeTable
      * @see setSortByRank
      * @see sortOrder
      */
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @param sortByRank sort rank for column. If sort rank is <= 0 then the column is not being
      * sorted.
      * \since QGIS 2.3
-     * @note only applicable when used in a QgsComposerAttributeTable
+     * \note only applicable when used in a QgsComposerAttributeTable
      * @see sortByRank
      * @see setSortOrder
      */

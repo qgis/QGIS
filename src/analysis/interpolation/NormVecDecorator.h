@@ -55,7 +55,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     bool getTriangle( double x, double y, Point3D *p1, Vector3D *v1, Point3D *p2, Vector3D *v2, Point3D *p3, Vector3D *v3 );
 
     /** This function behaves similar to the one above. Additionally, the numbers of the points are returned (ptn1, ptn2, ptn3) as well as the PointStates of the triangle points (state1, state2, state3)
-      * @note not available in Python bindings
+      * \note not available in Python bindings
      */
     bool getTriangle( double x, double y, Point3D *p1, int *ptn1, Vector3D *v1, PointState *state1, Point3D *p2, int *ptn2, Vector3D *v2, PointState *state2, Point3D *p3, int *ptn3, Vector3D *v3, PointState *state3 );
     //! Returns the state of the point with the number 'pointno'

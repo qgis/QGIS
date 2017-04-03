@@ -37,7 +37,7 @@ class CORE_EXPORT QgsFontUtils
     /** Check whether font family is on system in a quick manner, which does not compare [foundry]
      * @param family The family to test
      * @returns Whether family was found on system
-     * @note This is good for use in loops of large lists, e.g. registering many features for labeling
+     * \note This is good for use in loops of large lists, e.g. registering many features for labeling
      */
     static bool fontFamilyOnSystem( const QString &family );
 
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsFontUtils
      * @param fontstyle The style to try and switch the font to
      * @param fallback If no matching fontstyle found for font, assign most similar or first style found to font
      * @returns Whether the font was updated (also returns true if the requested style matches font's current style)
-     * @note This is a more featured replacement for a Qt 4.8+ function: void QFont::setStyleName ( const QString & styleName )
+     * \note This is a more featured replacement for a Qt 4.8+ function: void QFont::setStyleName ( const QString & styleName )
      */
     static bool updateFontViaStyle( QFont &f, const QString &fontstyle, bool fallback = false );
 
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsFontUtils
     /** Loads standard test fonts from filesystem or qrc resource
      * @param loadstyles List of styles to load, e.g. All, Roman, Oblique, Bold, Bold Oblique
      * @returns Whether any font was loaded
-     * @note Done by default on debug app/server startup to ensure fonts available for unit tests (Roman and Bold)
+     * \note Done by default on debug app/server startup to ensure fonts available for unit tests (Roman and Bold)
      * \since QGIS 2.1
      */
     static bool loadStandardTestFonts( const QStringList &loadstyles );

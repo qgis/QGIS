@@ -272,7 +272,7 @@ class CORE_EXPORT QgsSymbol
      */
     bool hasDataDefinedProperties() const;
 
-    //! @note the layer will be NULL after stopRender
+    //! \note the layer will be NULL after stopRender
     void setLayer( const QgsVectorLayer *layer ) { mLayer = layer; }
     const QgsVectorLayer *layer() const { return mLayer; }
 

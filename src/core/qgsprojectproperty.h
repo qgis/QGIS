@@ -42,7 +42,7 @@ class QDomDocument;
  * contain either QgsProjectPropertyKey or QgsProjectPropertyValues, thus describing an
  * hierarchy.  QgsProjectPropertyValues are always graph leaves.
  *
- * @note This class is used internally by QgsProject. It's generally recommended that the methods in
+ * \note This class is used internally by QgsProject. It's generally recommended that the methods in
  * QgsProject are used to modify project properties rather than using these low-level classes.
  * \since QGIS 3.0
 */
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 
     /** Set the value associated with this key
      *
-     * @note that the single value node associated with each key is always
+     * \note that the single value node associated with each key is always
      * stored keyed by the current key name
      */
     QgsProjectPropertyValue *setValue( const QVariant &value )

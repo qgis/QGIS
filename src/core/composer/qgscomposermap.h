@@ -76,11 +76,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Predefined, /*!< A scale is chosen from the predefined scales. The smallest scale from
                     the list of scales where the atlas feature is fully visible is chosen.
                     @see QgsAtlasComposition::setPredefinedScales.
-                    @note This mode is only valid for polygon or line atlas coverage layers
+                    \note This mode is only valid for polygon or line atlas coverage layers
                 */
       Auto        /*!< The extent is adjusted so that each feature is fully visible.
                     A margin is applied around the center @see setAtlasMargin
-                    @note This mode is only valid for polygon or line atlas coverage layers*/
+                    \note This mode is only valid for polygon or line atlas coverage layers*/
     };
 
     /** \brief Draw to paint device
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     const QgsRectangle *currentMapExtent() const;
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsRectangle *currentMapExtent();
 
     /**
@@ -305,14 +305,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * are drawn over the map's contents.
      * @returns pointer to grid stack
      * @see grid()
-     * @note introduced in QGIS 2.5
+     * \note introduced in QGIS 2.5
      */
     QgsComposerMapGridStack *grids() { return mGridStack; }
 
     /** Returns the map item's first grid. This is a convenience function.
      * @returns pointer to first grid for map item
      * @see grids()
-     * @note introduced in QGIS 2.5
+     * \note introduced in QGIS 2.5
      */
     QgsComposerMapGrid *grid();
 
@@ -320,14 +320,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * are drawn over the map's contents.
      * @returns pointer to overview stack
      * @see overview()
-     * @note introduced in QGIS 2.5
+     * \note introduced in QGIS 2.5
      */
     QgsComposerMapOverviewStack *overviews() { return mOverviewStack; }
 
     /** Returns the map item's first overview. This is a convenience function.
      * @returns pointer to first overview for map item
      * @see overviews()
-     * @note introduced in QGIS 2.5
+     * \note introduced in QGIS 2.5
      */
     QgsComposerMapOverview *overview();
 
@@ -390,7 +390,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * are calculated for the current atlas feature when an atlas composition
      * is enabled.
      * @returns the current scaling mode
-     * @note this parameter is only used if atlasDriven() is true
+     * \note this parameter is only used if atlasDriven() is true
      * @see setAtlasScalingMode
      * @see atlasDriven
      */
@@ -400,7 +400,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * are calculated for the current atlas feature when an atlas composition
      * is enabled.
      * @param mode atlas scaling mode to set
-     * @note this parameter is only used if atlasDriven() is true
+     * \note this parameter is only used if atlasDriven() is true
      * @see atlasScalingMode
      * @see atlasDriven
      */
@@ -411,7 +411,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * or the current evaluated atlas margin (which may be affected by data driven atlas margin
      * settings).
      * @returns margin size in percentage to leave around the atlas feature's extent
-     * @note this is only used if atlasScalingMode() is Auto.
+     * \note this is only used if atlasScalingMode() is Auto.
      * @see atlasScalingMode
      * @see setAtlasMargin
      */
@@ -419,7 +419,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets the margin size (percentage) used when the map is in atlas mode.
      * @param margin size in percentage to leave around the atlas feature's extent
-     * @note this is only used if atlasScalingMode() is Auto.
+     * \note this is only used if atlasScalingMode() is Auto.
      * @see atlasScalingMode
      * @see atlasMargin
      */

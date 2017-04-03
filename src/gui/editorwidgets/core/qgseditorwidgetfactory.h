@@ -102,7 +102,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * will be used.
      *
      * @return A map of widget type names and weight values
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     virtual QHash<const char *, int> supportedWidgetTypes() { return QHash<const char *, int>(); }
 

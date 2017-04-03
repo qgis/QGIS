@@ -132,7 +132,7 @@ class CORE_EXPORT Qgis
  * for the lifetime of QgsSignalBlocker object.
  * @see whileBlocking()
  * \since QGIS 2.16
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
 template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
@@ -172,7 +172,7 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
  *
  * \since QGIS 2.16
  * @see QgsSignalBlocker
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
 template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object )

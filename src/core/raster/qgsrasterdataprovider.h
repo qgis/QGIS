@@ -60,7 +60,7 @@ class CORE_EXPORT QgsImageFetcher : public QObject
     QgsImageFetcher( QObject *parent = 0 ) : QObject( parent ) {}
 
     /** Starts the image download
-     * @note Make sure to connect to "finish" and "error" before starting */
+     * \note Make sure to connect to "finish" and "error" before starting */
     virtual void start() = 0;
 
   signals:
@@ -364,7 +364,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** Turns on/off editing mode of the provider. When in editing mode, it is possible
      * to overwrite data of the provider using writeBlock() calls.
-     * @note Only some providers support editing mode and even those may fail to turn
+     * \note Only some providers support editing mode and even those may fail to turn
      * the underlying data source into editing mode, so it is necessary to check the return
      * value whether the operation was successful.
      * @returns true if the switch to/from editing mode was successful
@@ -427,14 +427,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     static QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
 
     /** Validates creation options for a specific dataset and destination format.
-     * @note used by GDAL provider only
-     * @note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only
+     * \note used by GDAL provider only
+     * \note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only
      */
     virtual QString validateCreationOptions( const QStringList &createOptions, const QString &format )
     { Q_UNUSED( createOptions ); Q_UNUSED( format ); return QString(); }
 
     /** Validates pyramid creation options for a specific dataset and destination format
-     * @note used by GDAL provider only
+     * \note used by GDAL provider only
      */
     virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
         const QStringList &configOptions, const QString &fileFormat )
@@ -469,13 +469,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
   protected:
 
     /** Read block of data
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data )
     { Q_UNUSED( bandNo ); Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); }
 
     /** Read block of data using give extent and size
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     virtual void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr )
     { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); }
@@ -486,7 +486,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     //! Copy member variables from other raster data provider. Useful for implementation of clone() method in subclasses
     void copyBaseSettings( const QgsRasterDataProvider &other );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static QStringList cStringList2Q_( char **stringList );
 
     static QString makeTableCell( const QString &value );

@@ -249,7 +249,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @param context destination render context
      * @param labelShifts displacement for individual label positions
      * @param group group of clustered features to label
-     * @note may not be available in Python bindings on some platforms
+     * \note may not be available in Python bindings on some platforms
      */
     void drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group );
 

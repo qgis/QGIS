@@ -218,7 +218,7 @@ class CORE_EXPORT QgsRasterInterface
      * @param includeOutOfRange include out of range values
      * @param feedback optional feedback object
      * @return Vector of non NULL cell counts for each bin.
-     * @note binCount, minimum and maximum not optional in Python bindings
+     * \note binCount, minimum and maximum not optional in Python bindings
      */
     virtual QgsRasterHistogram histogram( int bandNo,
                                           int binCount = 0,
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsRasterInterface
                                           bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr );
 
     /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()
-     * @note binCount, minimum and maximum not optional in Python bindings
+     * \note binCount, minimum and maximum not optional in Python bindings
      */
     virtual bool hasHistogram( int bandNo,
                                int binCount,
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsRasterInterface
     bool mOn;
 
     /** Fill in histogram defaults if not specified
-     * @note binCount, minimum and maximum not optional in Python bindings
+     * \note binCount, minimum and maximum not optional in Python bindings
      */
     void initHistogram( QgsRasterHistogram &histogram, int bandNo,
                         int binCount = 0,

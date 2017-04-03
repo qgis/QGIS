@@ -31,7 +31,7 @@ class QgsRendererWidget;
 /** \ingroup core
  Stores metadata about one renderer class.
 
- @note It's necessary to implement createRenderer() function.
+ \note It's necessary to implement createRenderer() function.
    In C++ you can use QgsRendererMetadata convenience class.
  */
 class CORE_EXPORT QgsRendererAbstractMetadata
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
   public:
 
     //! Construct metadata
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsRendererMetadata( const QString &name,
                          const QString &visibleName,
                          QgsRendererCreateFunc pfCreate,
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
       , mLayerTypes( layerTypes )
     {}
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsRendererMetadata( const QString &name,
                          const QString &visibleName,
                          QgsRendererCreateFunc pfCreate,
@@ -146,14 +146,14 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) override
     { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsRendererCreateFunc createFunction() const { return mCreateFunc; }
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsRendererWidgetFunc widgetFunction() const { return mWidgetFunc; }
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QgsRendererCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void setWidgetFunction( QgsRendererWidgetFunc f ) { mWidgetFunc = f; }
 
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const override { return mLayerTypes; }

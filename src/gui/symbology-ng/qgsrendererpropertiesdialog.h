@@ -84,7 +84,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     /**
      * Emit when you require a panel to be show in the interface.
      * @param panel The panel widget to show.
-     * @note If you are connected to this signal you should also connect
+     * \note If you are connected to this signal you should also connect
      * given panels showPanel signal as they can be nested.
      */
     void showPanel( QgsPanelWidget *panel );

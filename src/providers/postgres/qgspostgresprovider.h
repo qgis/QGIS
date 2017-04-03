@@ -84,7 +84,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsWkbTypes::Type wkbType() const override;
 
     /** Return the number of layers for the current data source
-     * @note Should this be subLayerCount() instead?
+     * \note Should this be subLayerCount() instead?
      */
     size_t layerCount() const;
 
@@ -262,7 +262,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param fld the field to determine PK type of
      * @return the PrimaryKeyType
      *
-     * @note that this only makes sense for single-field primary keys,
+     * \note that this only makes sense for single-field primary keys,
      *       whereas multi-field keys always need the PktFidMap
      *       primary key type.
      */

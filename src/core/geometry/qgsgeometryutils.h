@@ -55,7 +55,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param distance distance to traverse along geometry
      * @param previousVertex will be set to previous vertex ID
      * @param nextVertex will be set to next vertex ID
-     * @note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
+     * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * @returns true if vertices were successfully retrieved
      * \since QGIS 3.0
      */
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsGeometryUtils
       return t < 0. ? s1 : t > 1. ? s2 : QgsPointV2( s1.x() + ( s2.x() - s1.x() ) * t, s1.y() + ( s2.y() - s1.y() ) * t );
     }
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     struct SelfIntersection
     {
       int segment1;
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param ring The ring of the geometry part to check
      * @param tolerance The tolerance to use
      * @return The list of self intersections
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      * \since QGIS 2.12
      */
     static QList<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance );
@@ -172,37 +172,37 @@ class CORE_EXPORT QgsGeometryUtils
     static double circleTangentDirection( const QgsPointV2 &tangentPoint, const QgsPointV2 &cp1, const QgsPointV2 &cp2, const QgsPointV2 &cp3 );
 
     /** Returns a list of points contained in a WKT string.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QgsPointSequence pointsFromWKT( const QString &wktCoordinateList, bool is3D, bool isMeasure );
 
     /**
      * Returns a LinearRing { uint32 numPoints; Point points[numPoints]; }
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static void pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure );
 
     /**
      * Returns a WKT coordinate list
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QString pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure );
 
     /**
      * Returns a gml::coordinates DOM element.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns );
 
     /**
      * Returns a gml::posList DOM element.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D );
 
     /**
      * Returns a geoJSON coordinates string.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QString pointsToJSON( const QgsPointSequence &points, int precision );
 
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Parses a WKT block of the format "TYPE( contents )" and returns a pair of geometry type to contents ("Pair(wkbType, "contents")")
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QPair<QgsWkbTypes::Type, QString> wktReadBlock( const QString &wkt );
 
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param wkt WKT string in the format "TYPE1 (contents1), TYPE2 (TYPE3 (contents3), TYPE4 (contents4))"
      * @param defaultType default geometry type for children
      * @returns list of WKT child block strings, e.g., List("TYPE1 (contents1)", "TYPE2 (TYPE3 (contents3), TYPE4 (contents4))")
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     static QStringList wktGetChildBlocks( const QString &wkt, const QString &defaultType = "" );
 
@@ -318,7 +318,7 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsLineString perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     enum ComponentType
     {
       Vertex,
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsGeometryUtils
       Part
     };
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon )
     {
       double minDist = std::numeric_limits<double>::max();

@@ -271,7 +271,7 @@ class CORE_EXPORT QgsFields
      * Returns a const STL-style iterator pointing to the first item in the list.
      *
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const_iterator constBegin() const noexcept;
 
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsFields
      * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
      *
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const_iterator constEnd() const noexcept;
 
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsFields
      * Returns a const STL-style iterator pointing to the first item in the list.
      *
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const_iterator begin() const noexcept;
 
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsFields
      * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
      *
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const_iterator end() const noexcept;
 
@@ -303,7 +303,7 @@ class CORE_EXPORT QgsFields
      * Returns an STL-style iterator pointing to the first item in the list.
      *
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     iterator begin();
 
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsFields
      * Returns an STL-style iterator pointing to the imaginary item after the last item in the list.
      *
      * \since QGIS 2.16
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     iterator end();
 

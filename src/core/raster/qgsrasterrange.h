@@ -58,7 +58,7 @@ class CORE_EXPORT QgsRasterRange
      *  @param value value
      *  @param rangeList list of ranges
      *  @return true if value is in at least one of ranges
-     *  @note not available in Python bindings
+     *  \note not available in Python bindings
      */
     static bool contains( double value, const QgsRasterRangeList &rangeList );
 

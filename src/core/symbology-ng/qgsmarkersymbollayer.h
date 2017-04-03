@@ -125,18 +125,18 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
   protected:
 
     //! Prepares the layer for drawing the specified shape (QPolygonF version)
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     bool prepareMarkerShape( Shape shape );
 
     //! Prepares the layer for drawing the specified shape (QPainterPath version)
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     bool prepareMarkerPath( Shape symbol );
 
     /** Creates a polygon representing the specified shape.
      * @param shape shape to create
      * @param polygon destination polygon for shape
      * @returns true if shape was successfully stored in polygon
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
 
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * @param context symbol render context
      * @param hasDataDefinedSize will be set to true if marker uses data defined sizes
      * @returns marker size, in original size units
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
 
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * @param hasDataDefinedRotation will be set to true if marker has data defined rotation
      * @param offset will be set to calculated marker offset (in painter units)
      * @param angle will be set to calculated marker angle
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
 
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     /** Draws the marker shape in the specified painter.
      * @param p destination QPainter
      * @param context symbol context
-     * @note this method does not handle setting the painter pen or brush to match the symbol's fill or stroke
+     * \note this method does not handle setting the painter pen or brush to match the symbol's fill or stroke
      */
     void drawMarker( QPainter *p, QgsSymbolRenderContext &context );
 

@@ -122,7 +122,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         void addLayerRecord( const MapThemeLayerRecord &record );
 
         //! Return set with only records for valid layers
-        //! @note not available in Python bindings
+        //! \note not available in Python bindings
         QHash<QgsMapLayer *, MapThemeLayerRecord> validLayerRecords() const;
 
       private:
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     /**
      * Returns the list of layer IDs that are visible for the specified map theme.
      *
-     * @note The order of the returned list is not guaranteed to reflect the order of layers
+     * \note The order of the returned list is not guaranteed to reflect the order of layers
      * in the canvas.
      * \since QGIS 3.0
      */
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     /**
      * Returns the list of layers that are visible for the specified map theme.
      *
-     * @note The order of the returned list is not guaranteed to reflect the order of layers
+     * \note The order of the returned list is not guaranteed to reflect the order of layers
      * in the canvas.
      * \since QGIS 3.0
      */

@@ -76,7 +76,7 @@ class QgsExpressionItem : public QStandardItem
 
     /** Set the help text for the current item
       *
-      * @note The help text can be set as a html string.
+      * \note The help text can be set as a html string.
       */
     void setHelpText( const QString &helpText ) { mHelpText = helpText; }
 
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     ~QgsExpressionBuilderWidget();
 
     /** Sets layer in order to get the fields and values
-      * @note this needs to be called before calling loadFieldNames().
+      * \note this needs to be called before calling loadFieldNames().
       */
     void setLayer( QgsVectorLayer *layer );
 
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadFieldNames( const QgsFields &fields );
 
     /** Loads field names and values from the specified map.
-     *  @note The field values must be quoted appropriately if they are strings.
+     *  \note The field values must be quoted appropriately if they are strings.
      *  \since QGIS 2.12
      */
     void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues );

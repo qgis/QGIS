@@ -28,7 +28,7 @@ class QPaintEngine;
 
 /** \ingroup core
  * A paint device for drawing into dxf files.
- * @note not available in Python bindings
+ * \note not available in Python bindings
 */
 
 class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice

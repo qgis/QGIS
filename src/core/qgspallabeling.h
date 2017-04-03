@@ -438,7 +438,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /** Ordered list of predefined label positions for points. Positions earlier
      * in the list will be prioritized over later positions. Only used when the placement
      * is set to QgsPalLayerSettings::OrderedPositionsAroundPoint.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     QVector< PredefinedPointPosition > predefinedPositionOrder;
 
@@ -748,7 +748,7 @@ class CORE_EXPORT QgsPalLabeling
     //! \since QGIS 2.4
     static bool staticWillUseLayer( QgsVectorLayer *layer );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     static void drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates = nullptr );
 
     //! load/save engine settings to project file

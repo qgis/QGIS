@@ -84,7 +84,7 @@ class CORE_EXPORT QgsActionManager
 
     /** Does the given action. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
-     *  @note available in Python bindings as doActionFeature
+     *  \note available in Python bindings as doActionFeature
      */
     void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0 ) SIP_PYNAME( doActionFeature );
 

@@ -204,7 +204,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Sets the fill color used for parametrized SVG files.
      * @param color fill color.
-     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
      * @see svgFillColor()
      * @see setSvgStrokeColor()
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Sets the stroke color used for parametrized SVG files.
      * @param color stroke color.
-     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
      * @see svgStrokelColor()
      * @see setSvgFillColor()
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Sets the stroke width used for parametrized SVG files.
      * @param width stroke width in mm
-     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
      * @see svgStrokeWidth()
      * @see setSvgStrokeColor()
