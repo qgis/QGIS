@@ -431,16 +431,16 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** \brief Get info string from qgis.g.info module
      * \param info info type
-     * @gisdbase GISBASE path
-     * @location location name
-     * @mapset mapset name
-     * @map map name
-     * @type map type
-     * @x x coordinate for query
-     * @y y coordinate for query
-     * @extent extent for statistics
-     * @sampleSize sample size for statistics
-     * @timeOut timeout
+     * \param gisdbase GISBASE path
+     * \param location location name
+     * \param mapset mapset name
+     * \param map map name
+     * \param type map type
+     * \param x x coordinate for query
+     * \param y y coordinate for query
+     * \param extent extent for statistics
+     * \param sampleSize sample size for statistics
+     * \param timeOut timeout
      */
     static QString getInfo( const QString  &info, const QString  &gisdbase,
                             const QString &location, const QString  &mapset = "PERMANENT",

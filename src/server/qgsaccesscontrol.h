@@ -125,7 +125,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
 
     /** Register an access control filter
      * \param accessControl the access control to add
-     * @priority the priority used to define the order
+     * \param priority the priority used to define the order
      */
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 );
 

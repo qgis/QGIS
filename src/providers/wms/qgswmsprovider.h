@@ -346,7 +346,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /** Return the full url to request legend graphic
      * The visibleExtent isi only used if provider supports contextual
      * legends according to the QgsWmsSettings
-     * @added in 2.8
+     * \since QGIS 2.8
      */
     QUrl getLegendGraphicFullURL( double scale, const QgsRectangle &visibleExtent );
 

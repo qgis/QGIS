@@ -338,8 +338,10 @@ class CORE_EXPORT QgsRasterBlock
 
     void applyNoDataValues( const QgsRasterRangeList &rangeList );
 
-    /** Apply band scale and offset to raster block values
-     * @\since QGIS 2.3 */
+    /**
+     * Apply band scale and offset to raster block values
+     * \since QGIS 2.3
+    */
     void applyScaleOffset( double scale, double offset );
 
     //! \brief Get error
