@@ -54,7 +54,7 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'snapgeometriestolayer'
+        return 'snapgeometries'
 
     def displayName(self):
         return self.tr('Snap geometries to layer')
