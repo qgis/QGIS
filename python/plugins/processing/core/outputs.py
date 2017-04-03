@@ -233,11 +233,11 @@ class OutputRaster(Output):
         """
 
         ext = self.value[self.value.rfind('.') + 1:]
-        if ext in alg.provider.getSupportedOutputRasterLayerExtensions():
+        if ext in alg.provider.supportedOutputRasterLayerExtensions():
             return self.value
         else:
             if self.compatible is None:
-                supported = alg.provider.getSupportedOutputRasterLayerExtensions()
+                supported = alg.provider.supportedOutputRasterLayerExtensions()
                 default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT, True)
                 ext = default if default in supported else supported[0]
                 self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
@@ -275,12 +275,12 @@ class OutputTable(Output):
         """
 
         ext = self.value[self.value.rfind('.') + 1:]
-        if ext in alg.provider.getSupportedOutputTableExtensions():
+        if ext in alg.provider.supportedOutputTableExtensions():
             return self.value
         else:
             if self.compatible is None:
                 self.compatible = getTempFilenameInTempFolder(
-                    self.name + '.' + alg.provider.getSupportedOutputTableExtensions()[0])
+                    self.name + '.' + alg.provider.supportedOutputTableExtensions()[0])
             return self.compatible
 
     def getTableWriter(self, fields):
@@ -350,12 +350,12 @@ class OutputVector(Output):
         generate the output result.
         """
         ext = self.value[self.value.rfind('.') + 1:]
-        if ext in alg.provider.getSupportedOutputVectorLayerExtensions():
+        if ext in alg.provider.supportedOutputVectorLayerExtensions():
             return self.value
         else:
             if self.compatible is None:
                 default = self.getDefaultFileExtension()
-                supported = alg.provider.getSupportedOutputVectorLayerExtensions()
+                supported = alg.provider.supportedOutputVectorLayerExtensions()
                 ext = default if default in supported else supported[0]
                 self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
             return self.compatible

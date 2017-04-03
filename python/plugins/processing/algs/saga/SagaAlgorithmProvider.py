@@ -110,10 +110,10 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def id(self):
         return 'saga'
 
-    def getSupportedOutputVectorLayerExtensions(self):
+    def supportedOutputVectorLayerExtensions(self):
         return ['shp']
 
-    def getSupportedOutputRasterLayerExtensions(self):
+    def supportedOutputRasterLayerExtensions(self):
         return ['sdat']
 
     def getSupportedOutputTableLayerExtensions(self):

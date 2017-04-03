@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingregistry.h"
+#include "qgsvectorfilewriter.h"
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
@@ -67,3 +68,4 @@ QgsProcessingProvider *QgsProcessingRegistry::providerById( const QString &id )
 {
   return mProviders.value( id, nullptr );
 }
+

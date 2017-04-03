@@ -17,6 +17,7 @@
 
 #include "qgsprocessingprovider.h"
 #include "qgsapplication.h"
+#include "qgsvectorfilewriter.h"
 
 QIcon QgsProcessingProvider::icon() const
 {
@@ -26,4 +27,9 @@ QIcon QgsProcessingProvider::icon() const
 QString QgsProcessingProvider::svgIconPath() const
 {
   return QgsApplication::iconPath( "processingAlgorithm.svg" );
+}
+
+QStringList QgsProcessingProvider::supportedOutputVectorLayerExtensions() const
+{
+  return QgsVectorFileWriter::supportedFormatExtensions();
 }

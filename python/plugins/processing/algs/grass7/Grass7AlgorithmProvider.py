@@ -110,11 +110,8 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGrass.svg")
 
-    def getSupportedOutputVectorLayerExtensions(self):
+    def supportedOutputVectorLayerExtensions(self):
         return ['shp']
-
-    def getSupportedOutputRasterLayerExtensions(self):
-        return ['tif']
 
     def canBeActivated(self):
         return not bool(Grass7Utils.checkGrass7IsInstalled())
