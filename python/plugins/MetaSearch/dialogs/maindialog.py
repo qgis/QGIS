@@ -392,7 +392,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """set bounding box from map extent"""
 
         crs = self.map.mapSettings().destinationCrs()
-        crsid = int(crs.authid().split(':')[1])
+        try:
+            crsid = int(crs.authid().split(':')[1])
+        except IndexError:  # no projection
+            crsid = 4326
 
         extent = self.map.extent()
 
@@ -570,7 +573,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             if points is not None:
                 src = QgsCoordinateReferenceSystem(4326)
                 dst = self.map.mapSettings().destinationCrs()
-                geom = QgsGeometry.fromPolygon(points)
+                geom = QgsGeometry.fromWkt(points)
                 if src.postgisSrid() != dst.postgisSrid():
                     ctr = QgsCoordinateTransform(src, dst)
                     try:
@@ -953,11 +956,6 @@ def bbox_to_polygon(bbox):
         maxx = float(bbox.maxx)
         maxy = float(bbox.maxy)
 
-        return [[
-            QgsPoint(minx, miny),
-            QgsPoint(minx, maxy),
-            QgsPoint(maxx, maxy),
-            QgsPoint(maxx, miny)
-        ]]
+        return 'POLYGON((%.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f))' % (minx, miny, minx, maxy, maxx, maxy, maxx, miny, minx, miny)  # noqa
     else:
         return None
