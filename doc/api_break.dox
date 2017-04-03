@@ -374,6 +374,16 @@ from a project, the new QgsProject.instance().layoutManager() class should be us
 Additionally, the new interface methods work with QgsComposerInterface objects instead
 of QgsComposerView objects.
 
+CharacterWidget        {#qgis_api_break_3_0_CharacterWidget}
+-------------------
+
+- getColumns() was renamed to columns()
+- getSquareSize() was renamed to squareSize()
+- updateFont() was renamed to setFont()
+- updateSize() was renamed to setFontSize()
+- updateStyle() was renamed to setFontStyle()
+- updateColumns() was renamed to setColumns()
+
 
 QgsAbstractGeometry        {#qgis_api_break_3_0_QgsAbstractGeometry}
 -------------------
