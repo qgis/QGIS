@@ -58,7 +58,6 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
     def getCopy(self):
         newone = PreconfiguredAlgorithm(self.descriptionFile)
         newone.outputs = []
-        newone.provider = self.provider
         newone._name = self._name
         newone._group = self._group
         return newone

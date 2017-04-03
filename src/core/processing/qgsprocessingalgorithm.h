@@ -23,6 +23,8 @@
 #include <QVariant>
 #include <QIcon>
 
+class QgsProcessingProvider;
+
 /**
  * \class QgsProcessingAlgorithm
  * \ingroup core
@@ -97,6 +99,24 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Returns the flags indicating how and when the algorithm operates and should be exposed to users.
      */
     virtual Flags flags() const;
+
+    /**
+     * Returns the provider to which this algorithm belongs.
+     */
+    QgsProcessingProvider *provider() const;
+
+  private:
+
+    /**
+     * Associates this algorithm with its provider. No transfer of ownership is involved.
+     */
+    void setProvider( QgsProcessingProvider *provider );
+
+    QgsProcessingProvider *mProvider = nullptr;
+
+    // friend class to access setProvider() - we do not want this public!
+    friend class QgsProcessingProvider;
+    friend class TestQgsProcessing;
 
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingAlgorithm::Flags )

@@ -18,10 +18,23 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingutils.h"
+#include "qgsprocessingalgorithm.h"
 #include <QObject>
 #include "qgstest.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
+
+class DummyAlgorithm : public QgsProcessingAlgorithm
+{
+  public:
+
+    DummyAlgorithm( const QString &name ) : mName( name ) {}
+
+    QString name() const override { return mName; }
+    QString displayName() const override { return mName; }
+
+    QString mName;
+};
 
 //dummy provider for testing
 class DummyProvider : public QgsProcessingProvider
@@ -33,6 +46,22 @@ class DummyProvider : public QgsProcessingProvider
     virtual QString id() const override { return mId; }
 
     virtual QString name() const override { return "dummy"; }
+
+
+  protected:
+
+    virtual void loadAlgorithms() override
+    {
+      QVERIFY( addAlgorithm( new DummyAlgorithm( "alg1" ) ) );
+      QVERIFY( addAlgorithm( new DummyAlgorithm( "alg2" ) ) );
+
+      //dupe name
+      QgsProcessingAlgorithm *a = new DummyAlgorithm( "alg1" );
+      QVERIFY( !addAlgorithm( a ) );
+      delete a;
+
+      QVERIFY( !addAlgorithm( nullptr ) );
+    }
 
     QString mId;
 
@@ -54,6 +83,7 @@ class TestQgsProcessing: public QObject
     void compatibleLayers();
     void normalizeLayerSource();
     void mapLayerFromString();
+    void algorithm();
 
   private:
 
@@ -311,6 +341,34 @@ void TestQgsProcessing::mapLayerFromString()
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
   delete l;
+}
+
+void TestQgsProcessing::algorithm()
+{
+  DummyAlgorithm alg( "test" );
+  DummyProvider *p = new DummyProvider( "p1" );
+  alg.setProvider( p );
+  QCOMPARE( alg.provider(), p );
+
+  QVERIFY( p->algorithms().isEmpty() );
+
+  p->refreshAlgorithms();
+
+  for ( int i = 0; i < 2; ++i )
+  {
+    QCOMPARE( p->algorithms().size(), 2 );
+    QCOMPARE( p->algorithm( "alg1" )->name(), QStringLiteral( "alg1" ) );
+    QCOMPARE( p->algorithm( "alg1" )->provider(), p );
+    QCOMPARE( p->algorithm( "alg2" )->provider(), p );
+    QCOMPARE( p->algorithm( "alg2" )->name(), QStringLiteral( "alg2" ) );
+    QVERIFY( !p->algorithm( "aaaa" ) );
+    QVERIFY( p->algorithms().contains( p->algorithm( "alg1" ) ) );
+    QVERIFY( p->algorithms().contains( p->algorithm( "alg2" ) ) );
+
+    // reload, then retest on next loop
+    // must be safe for providers to reload their algorithms
+    p->refreshAlgorithms();
+  }
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

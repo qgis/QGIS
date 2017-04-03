@@ -51,11 +51,12 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         self.actions = [CreateNewModelAction(), AddModelFromFileAction(), GetModelsAction()]
         self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
 
-    def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
+    def load(self):
+        AlgorithmProvider.load(self)
         ProcessingConfig.addSetting(Setting(self.name(),
                                             ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
                                             ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
+        return True
 
     def modelsFolder(self):
         return ModelerUtils.modelsFolders()[0]
@@ -72,9 +73,8 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
     def svgIconPath(self):
         return QgsApplication.iconPath("processingModel.svg")
 
-    def _loadAlgorithms(self):
+    def loadAlgorithms(self):
         folders = ModelerUtils.modelsFolders()
-        self.algs = []
         for f in folders:
             self.loadFromFolder(f)
 
@@ -88,9 +88,8 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
                         fullpath = os.path.join(path, descriptionFile)
                         alg = ModelerAlgorithm.fromFile(fullpath)
                         if alg.name():
-                            alg.provider = self
                             alg.descriptionFile = fullpath
-                            self.algs.append(alg)
+                            self.addAlgorithm(alg)
                         else:
                             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                    self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile))

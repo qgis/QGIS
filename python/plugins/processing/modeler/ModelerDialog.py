@@ -270,9 +270,6 @@ class ModelerDialog(BASE, WIDGET):
             evt.accept()
 
     def editHelp(self):
-        if self.alg.provider is None:
-            # Might happen if model is opened from modeler dialog
-            self.alg.provider = QgsApplication.processingRegistry().providerById('model')
         alg = self.alg.getCopy()
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
@@ -285,9 +282,6 @@ class ModelerDialog(BASE, WIDGET):
             self.bar.pushMessage("", "Model doesn't contain any algorithm and/or parameter and can't be executed", level=QgsMessageBar.WARNING, duration=5)
             return
 
-        if self.alg.provider is None:
-            # Might happen if model is opened from modeler dialog
-            self.alg.provider = QgsApplication.processingRegistry().providerById('model')
         alg = self.alg.getCopy()
         dlg = AlgorithmDialog(alg)
         dlg.exec_()

@@ -67,9 +67,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         # loading output layers
         self.crs = None
 
-        # To be set by the provider when it loads the algorithm
-        self.provider = None
-
         # If the algorithm is run as part of a model, the parent model
         # can be set in this variable, to allow for customized
         # behavior, in case some operations should be run differently
@@ -465,7 +462,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         return s
 
     def commandLineName(self):
-        return self.provider.id().lower() + ':' + self.name()
+        return self.provider().id().lower() + ':' + self.name()
 
     def removeOutputFromName(self, name):
         for out in self.outputs:

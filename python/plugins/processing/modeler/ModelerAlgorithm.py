@@ -228,7 +228,6 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def getCopy(self):
         newone = ModelerAlgorithm()
-        newone.provider = self.provider
 
         newone.algs = {}
         for algname, alg in self.algs.items():

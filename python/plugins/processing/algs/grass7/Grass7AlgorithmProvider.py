@@ -44,10 +44,9 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
-        self.createAlgsList()
 
-    def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
+    def load(self):
+        AlgorithmProvider.load(self)
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting(
                 self.name(),
@@ -66,6 +65,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
             Grass7Utils.GRASS_HELP_PATH,
             self.tr('Location of GRASS docs'),
             Grass7Utils.grassHelpPath()))
+        return True
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -76,14 +76,14 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
 
     def createAlgsList(self):
-        self.preloadedAlgs = []
+        algs = []
         folder = Grass7Utils.grassDescriptionPath()
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
                 try:
                     alg = Grass7Algorithm(os.path.join(folder, descriptionFile))
                     if alg.name().strip() != '':
-                        self.preloadedAlgs.append(alg)
+                        algs.append(alg)
                     else:
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
@@ -92,10 +92,12 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
                     ProcessingLog.addToLog(
                         ProcessingLog.LOG_ERROR,
                         self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)))
-        self.preloadedAlgs.append(nviz7())
+        algs.append(nviz7())
+        return algs
 
-    def _loadAlgorithms(self):
-        self.algs = self.preloadedAlgs
+    def loadAlgorithms(self):
+        for a in self.createAlgsList():
+            self.addAlgorithm(a)
 
     def name(self):
         version = Grass7Utils.installedVersion()

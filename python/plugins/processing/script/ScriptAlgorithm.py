@@ -73,7 +73,6 @@ class ScriptAlgorithm(GeoAlgorithm):
 
     def getCopy(self):
         newone = ScriptAlgorithm(self.descriptionFile)
-        newone.provider = self.provider
         return newone
 
     def icon(self):

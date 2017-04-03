@@ -51,21 +51,7 @@ class AlgorithmProvider(QgsProcessingProvider):
         self.actions = []
         self.contextMenuActions = []
 
-    def loadAlgorithms(self):
-        self.algs = []
-        self._loadAlgorithms()
-        for alg in self.algs:
-            alg.provider = self
-
-    # Methods to be overridden.
-    def _loadAlgorithms(self):
-        """Algorithm loading should take place here, filling self.algs,
-        which is a list of elements of class GeoAlgorithm. Use that
-        class to create your own algorithms.
-        """
-        pass
-
-    def initializeSettings(self):
+    def load(self):
         """This is the place where you should add config parameters
         using the ProcessingConfig class.
 
@@ -77,6 +63,7 @@ class AlgorithmProvider(QgsProcessingProvider):
         name = 'ACTIVATE_' + self.id().upper().replace(' ', '_')
         ProcessingConfig.addSetting(Setting(self.name(), name,
                                             self.tr('Activate'), self.activate))
+        return True
 
     def unload(self):
         """Do here anything that you want to be done when the provider

@@ -71,7 +71,6 @@ class RAlgorithm(GeoAlgorithm):
 
     def getCopy(self):
         newone = RAlgorithm(self.descriptionFile)
-        newone.provider = self.provider
         return newone
 
     def __init__(self, descriptionFile, script=None):

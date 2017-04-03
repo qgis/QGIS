@@ -87,13 +87,13 @@ class Processing(object):
         if provider.id() in [p.id() for p in QgsApplication.processingRegistry().providers()]:
             return
         try:
-            provider.initializeSettings()
-            Processing.providers.append(provider)
-            ProcessingConfig.readSettings()
-            provider.loadAlgorithms()
-            Processing.actions[provider.id()] = provider.actions
-            Processing.contextMenuActions.extend(provider.contextMenuActions)
-            algList.addProvider(provider)
+            if provider.load():
+                Processing.providers.append(provider)
+                ProcessingConfig.readSettings()
+                provider.refreshAlgorithms()
+                Processing.actions[provider.id()] = provider.actions
+                Processing.contextMenuActions.extend(provider.contextMenuActions)
+                algList.addProvider(provider)
         except:
             ProcessingLog.addToLog(
                 ProcessingLog.LOG_ERROR,

@@ -40,12 +40,7 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         # Deactivate provider by default
         self.activate = False
 
-        # Load algorithms
-        self.alglist = [ExampleAlgorithm()]
-        for alg in self.alglist:
-            alg.provider = self
-
-    def initializeSettings(self):
+    def load(self):
         """In this method we add settings needed to configure our
         provider.
 
@@ -53,10 +48,11 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         or automatically adding a setting for activating or
         deactivating the algorithms in the provider.
         """
-        AlgorithmProvider.initializeSettings(self)
+        AlgorithmProvider.load(self)
         ProcessingConfig.addSetting(Setting('Example algorithms',
                                             ExampleAlgorithmProvider.MY_DUMMY_SETTING,
                                             'Example setting', 'Default value'))
+        return True
 
     def unload(self):
         """Setting should be removed here, so they do not appear anymore
@@ -84,7 +80,7 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         """
         return AlgorithmProvider.icon(self)
 
-    def _loadAlgorithms(self):
+    def loadAlgorithms(self):
         """Here we fill the list of algorithms in self.algs.
 
         This method is called whenever the list of algorithms should
@@ -98,4 +94,5 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         even if the list does not change, since the self.algs list is
         cleared before calling this method.
         """
-        self.algs = self.alglist
+        for alg in [ExampleAlgorithm()]:
+            self.addAlgorithm(alg)

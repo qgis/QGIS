@@ -113,7 +113,7 @@ defaultMenuEntries.update({'gdal:buildvirtualraster': miscMenu,
 
 def initializeMenus():
     for provider in QgsApplication.processingRegistry().providers():
-        for alg in provider.algs:
+        for alg in provider.algorithms():
             d = defaultMenuEntries.get(alg.commandLineName(), "")
             setting = Setting(menusSettingsGroup, "MENU_" + alg.commandLineName(),
                               "Menu path", d)

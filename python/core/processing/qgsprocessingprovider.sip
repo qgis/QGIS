@@ -95,6 +95,53 @@ class QgsProcessingProvider
  \see supportedOutputVectorLayerExtensions()
 %End
 
+    virtual bool load();
+%Docstring
+ Loads the provider. This will be called when the plugin is being loaded, and any general
+ setup actions should occur in an overridden version of this method.
+ Subclasses should not load any algorithms in their load() implementations, as that must
+ occur within the loadAlgorithms() method.
+ \returns true if provider could be successfully loaded
+ \see unload()
+%End
+
+    virtual void unload();
+%Docstring
+ Unloads the provider. Any tear-down steps required by the provider should be implemented here.
+ \see load()
+%End
+
+    void refreshAlgorithms();
+%Docstring
+ Refreshes the algorithms available from the provider, causing it to re-populate with all associated algorithms.
+%End
+
+    QList< QgsProcessingAlgorithm * > algorithms() const;
+%Docstring
+ Returns a list of algorithms supplied by this provider.
+ \see algorithm()
+%End
+
+    QgsProcessingAlgorithm *algorithm( const QString &name ) const;
+%Docstring
+ Returns the matching algorithm by name, or a nullptr if no matching
+ algorithm is contained by this provider.
+ \see algorithms()
+%End
+
+  protected:
+
+    virtual void loadAlgorithms() = 0;
+%Docstring
+ Loads all algorithms belonging to this provider. Subclasses should implement this, calling
+ addAlgorithm() to register all their associated algorithms.
+%End
+
+    bool addAlgorithm( QgsProcessingAlgorithm *algorithm /Transfer/ );
+%Docstring
+ Adds an algorithm to the provider. Ownership of the algorithm is transferred to the provider.
+%End
+
   private:
     QgsProcessingProvider( const QgsProcessingProvider &other );
 };

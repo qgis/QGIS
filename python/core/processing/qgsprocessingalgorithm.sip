@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProcessingAlgorithm
 {
 %Docstring
@@ -83,6 +84,11 @@ class QgsProcessingAlgorithm
     virtual Flags flags() const;
 %Docstring
  Returns the flags indicating how and when the algorithm operates and should be exposed to users.
+%End
+
+    QgsProcessingProvider *provider() const;
+%Docstring
+ Returns the provider to which this algorithm belongs.
 %End
 
 };

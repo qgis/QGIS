@@ -98,7 +98,6 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def getCopy(self):
         newone = Grass7Algorithm(self.descriptionFile)
-        newone.provider = self.provider
         return newone
 
     def name(self):

@@ -46,6 +46,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
+        self.folder_algorithms = []
         self.actions.extend([CreateNewScriptAction('Create new script',
                                                    CreateNewScriptAction.SCRIPT_PYTHON),
                              AddScriptFromFileAction(),
@@ -55,12 +56,13 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
 
-    def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
+    def load(self):
+        AlgorithmProvider.load(self)
         ProcessingConfig.addSetting(Setting(self.name(),
                                             ScriptUtils.SCRIPTS_FOLDER,
                                             self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
                                             ScriptUtils.defaultScriptsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
+        return True
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -78,11 +80,14 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
     def name(self):
         return self.tr('Scripts', 'ScriptAlgorithmProvider')
 
-    def _loadAlgorithms(self):
+    def loadAlgorithms(self):
         folders = ScriptUtils.scriptsFolders()
-        self.algs = []
+        algs = []
         for f in folders:
-            self.algs.extend(ScriptUtils.loadFromFolder(f))
+            algs.extend(ScriptUtils.loadFromFolder(f))
+        algs.extend(self.folder_algorithms)
+        for a in algs:
+            self.addAlgorithm(a)
 
     def addAlgorithmsFromFolder(self, folder):
-        self.algs.extend(ScriptUtils.loadFromFolder(folder))
+        self.folder_algorithms.extend(ScriptUtils.loadFromFolder(folder))

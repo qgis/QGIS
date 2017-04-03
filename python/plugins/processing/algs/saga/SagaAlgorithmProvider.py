@@ -47,7 +47,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         super().__init__()
         self.activate = True
 
-    def initializeSettings(self):
+    def load(self):
+        AlgorithmProvider.load(self)
         if (isWindows() or isMac()):
             ProcessingConfig.addSetting(Setting("SAGA",
                                                 SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'),
@@ -62,9 +63,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(Setting("SAGA",
                                             SagaUtils.SAGA_LOG_CONSOLE,
                                             self.tr('Log console output'), True))
-        ProcessingConfig.settingIcons["SAGA"] = self.icon()
-        ProcessingConfig.addSetting(Setting("SAGA", "ACTIVATE_SAGA",
-                                            self.tr('Activate'), self.activate))
+        return True
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -74,8 +73,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
 
-    def _loadAlgorithms(self):
-        self.algs = []
+    def loadAlgorithms(self):
         version = SagaUtils.getInstalledVersion(True)
         if version is None:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
@@ -93,7 +91,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                 try:
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name().strip() != '':
-                        self.algs.append(alg)
+                        self.addAlgorithm(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                self.tr('Could not open SAGA algorithm: {}'.format(descriptionFile)))
@@ -101,7 +99,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                            self.tr('Could not open SAGA algorithm: {}\n{}'.format(descriptionFile, str(e))))
 
-        self.algs.append(SplitRGBBands())
+        self.addAlgorithm(SplitRGBBands())
 
     def name(self):
         version = SagaUtils.getInstalledVersion()

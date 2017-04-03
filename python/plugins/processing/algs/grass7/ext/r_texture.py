@@ -53,7 +53,7 @@ def processOutputs(alg):
     else:
         angles = ['']
 
-    ext = alg.provider.supportedOutputRasterLayerExtensions()[0]
+    ext = alg.provider().getSupportedOutputRasterLayerExtensions()[0]
     for method in methodList:
         out = alg.getOutputValue(u'output')
         for angle in angles:

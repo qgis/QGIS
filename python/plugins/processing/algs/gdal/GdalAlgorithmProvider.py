@@ -98,15 +98,15 @@ class GdalAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
-        self.createAlgsList()
 
-    def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
+    def load(self):
+        AlgorithmProvider.load(self)
         ProcessingConfig.addSetting(Setting(
             self.name(),
             GdalUtils.GDAL_HELP_PATH,
             self.tr('Location of GDAL docs'),
             GdalUtils.gdalHelpPath()))
+        return True
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -125,27 +125,23 @@ class GdalAlgorithmProvider(AlgorithmProvider):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGdal.svg")
 
-    def _loadAlgorithms(self):
-        self.algs = self.preloadedAlgs
-
-    def createAlgsList(self):
-        # First we populate the list of algorithms with those created
-        # extending GeoAlgorithm directly (those that execute GDAL
-        # using the console)
-        self.preloadedAlgs = [nearblack(), information(), warp(), translate(),
-                              rgb2pct(), pct2rgb(), merge(), buildvrt(), polygonize(), gdaladdo(),
-                              ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
-                              sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
-                              hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
-                              ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
-                              GridDataMetrics(), gdaltindex(), gdalcalc(), rasterize_over(),
-                              retile(), gdal2tiles(), AssignProjection(),
-                              # ----- OGR tools -----
-                              OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
-                              Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
-                              Ogr2OgrBuffer(), Ogr2OgrDissolve(), OneSideBuffer(),
-                              OffsetCurve(), Ogr2OgrTableToPostGisList(), OgrSql(),
-                              ]
+    def loadAlgorithms(self):
+        algs = [nearblack(), information(), warp(), translate(),
+                rgb2pct(), pct2rgb(), merge(), buildvrt(), polygonize(), gdaladdo(),
+                ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
+                sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
+                hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
+                ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
+                GridDataMetrics(), gdaltindex(), gdalcalc(), rasterize_over(),
+                retile(), gdal2tiles(), AssignProjection(),
+                # ----- OGR tools -----
+                OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
+                Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
+                Ogr2OgrBuffer(), Ogr2OgrDissolve(), OneSideBuffer(),
+                OffsetCurve(), Ogr2OgrTableToPostGisList(), OgrSql(),
+                ]
+        for a in algs:
+            self.addAlgorithm(a)
 
     def supportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()

@@ -192,68 +192,70 @@ class QGISAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
+        self.externalAlgs = []
 
-        self.alglist = [SumLines(), PointsInPolygon(),
-                        PointsInPolygonWeighted(), PointsInPolygonUnique(),
-                        BasicStatisticsStrings(), BasicStatisticsNumbers(),
-                        NearestNeighbourAnalysis(), MeanCoords(),
-                        LinesIntersection(), UniqueValues(), PointDistance(),
-                        ReprojectLayer(), ExportGeometryInfo(), Centroids(),
-                        Delaunay(), VoronoiPolygons(), SimplifyGeometries(),
-                        DensifyGeometries(), DensifyGeometriesInterval(),
-                        MultipartToSingleparts(), SinglePartsToMultiparts(),
-                        PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
-                        ConvexHull(), FixedDistanceBuffer(),
-                        VariableDistanceBuffer(), Dissolve(), Difference(),
-                        Intersection(), Union(), Clip(), ExtentFromLayer(),
-                        RandomSelection(), RandomSelectionWithinSubsets(),
-                        SelectByLocation(), RandomExtract(), DeleteHoles(),
-                        RandomExtractWithinSubsets(), ExtractByLocation(),
-                        SpatialJoin(), RegularPoints(), SymmetricalDifference(),
-                        VectorSplit(), VectorGridLines(), VectorGridPolygons(),
-                        DeleteColumn(), DeleteDuplicateGeometries(), TextToFloat(),
-                        ExtractByAttribute(), SelectByAttribute(), GridPolygon(),
-                        GridLine(), Gridify(), HubDistancePoints(),
-                        HubDistanceLines(), HubLines(), Merge(),
-                        GeometryConvert(), AddTableField(), FieldsCalculator(),
-                        SaveSelectedFeatures(), JoinAttributes(),
-                        AutoincrementalField(), Explode(), FieldsPyculator(),
-                        EquivalentNumField(), PointsLayerFromTable(),
-                        StatisticsByCategories(), ConcaveHull(),
-                        RasterLayerStatistics(), PointsDisplacement(),
-                        ZonalStatistics(), PointsFromPolygons(),
-                        PointsFromLines(), RandomPointsExtent(),
-                        RandomPointsLayer(), RandomPointsPolygonsFixed(),
-                        RandomPointsPolygonsVariable(),
-                        RandomPointsAlongLines(), PointsToPaths(),
-                        SpatialiteExecuteSQL(), ImportIntoSpatialite(),
-                        PostGISExecuteSQL(), ImportIntoPostGIS(),
-                        SetVectorStyle(), SetRasterStyle(),
-                        SelectByExpression(), HypsometricCurves(),
-                        SplitWithLines(), SplitLinesWithLines(), CreateConstantRaster(),
-                        FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
-                        CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
-                        ReverseLineDirection(), SpatialIndex(), DefineProjection(),
-                        RectanglesOvalsDiamondsVariable(),
-                        RectanglesOvalsDiamondsFixed(), MergeLines(),
-                        BoundingBox(), Boundary(), PointOnSurface(),
-                        OffsetLine(), PolygonCentroids(), Translate(),
-                        SingleSidedBuffer(), PointsAlongGeometry(),
-                        Aspect(), Slope(), Ruggedness(), Hillshade(),
-                        Relief(), ZonalStatisticsQgis(),
-                        IdwInterpolation(), TinInterpolation(),
-                        RemoveNullGeometry(), ExtractByExpression(),
-                        ExtendLines(), ExtractSpecificNodes(),
-                        GeometryByExpression(), SnapGeometriesToLayer(),
-                        PoleOfInaccessibility(), CreateAttributeIndex(),
-                        DropGeometry(), BasicStatisticsForField(),
-                        RasterCalculator(), Heatmap(), Orthogonalize(),
-                        ShortestPathPointToPoint(), ShortestPathPointToLayer(),
-                        ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
-                        ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
-                        FixGeometry(), ExecuteSQL(), FindProjection(),
-                        TopoColor(), EliminateSelection()
-                        ]
+    def getAlgs(self):
+        algs = [SumLines(), PointsInPolygon(),
+                PointsInPolygonWeighted(), PointsInPolygonUnique(),
+                BasicStatisticsStrings(), BasicStatisticsNumbers(),
+                NearestNeighbourAnalysis(), MeanCoords(),
+                LinesIntersection(), UniqueValues(), PointDistance(),
+                ReprojectLayer(), ExportGeometryInfo(), Centroids(),
+                Delaunay(), VoronoiPolygons(), SimplifyGeometries(),
+                DensifyGeometries(), DensifyGeometriesInterval(),
+                MultipartToSingleparts(), SinglePartsToMultiparts(),
+                PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
+                ConvexHull(), FixedDistanceBuffer(),
+                VariableDistanceBuffer(), Dissolve(), Difference(),
+                Intersection(), Union(), Clip(), ExtentFromLayer(),
+                RandomSelection(), RandomSelectionWithinSubsets(),
+                SelectByLocation(), RandomExtract(), DeleteHoles(),
+                RandomExtractWithinSubsets(), ExtractByLocation(),
+                SpatialJoin(), RegularPoints(), SymmetricalDifference(),
+                VectorSplit(), VectorGridLines(), VectorGridPolygons(),
+                DeleteColumn(), DeleteDuplicateGeometries(), TextToFloat(),
+                ExtractByAttribute(), SelectByAttribute(), GridPolygon(),
+                GridLine(), Gridify(), HubDistancePoints(),
+                HubDistanceLines(), HubLines(), Merge(),
+                GeometryConvert(), AddTableField(), FieldsCalculator(),
+                SaveSelectedFeatures(), JoinAttributes(),
+                AutoincrementalField(), Explode(), FieldsPyculator(),
+                EquivalentNumField(), PointsLayerFromTable(),
+                StatisticsByCategories(), ConcaveHull(),
+                RasterLayerStatistics(), PointsDisplacement(),
+                ZonalStatistics(), PointsFromPolygons(),
+                PointsFromLines(), RandomPointsExtent(),
+                RandomPointsLayer(), RandomPointsPolygonsFixed(),
+                RandomPointsPolygonsVariable(),
+                RandomPointsAlongLines(), PointsToPaths(),
+                SpatialiteExecuteSQL(), ImportIntoSpatialite(),
+                PostGISExecuteSQL(), ImportIntoPostGIS(),
+                SetVectorStyle(), SetRasterStyle(),
+                SelectByExpression(), HypsometricCurves(),
+                SplitWithLines(), SplitLinesWithLines(), CreateConstantRaster(),
+                FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
+                CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
+                ReverseLineDirection(), SpatialIndex(), DefineProjection(),
+                RectanglesOvalsDiamondsVariable(),
+                RectanglesOvalsDiamondsFixed(), MergeLines(),
+                BoundingBox(), Boundary(), PointOnSurface(),
+                OffsetLine(), PolygonCentroids(), Translate(),
+                SingleSidedBuffer(), PointsAlongGeometry(),
+                Aspect(), Slope(), Ruggedness(), Hillshade(),
+                Relief(), ZonalStatisticsQgis(),
+                IdwInterpolation(), TinInterpolation(),
+                RemoveNullGeometry(), ExtractByExpression(),
+                ExtendLines(), ExtractSpecificNodes(),
+                GeometryByExpression(), SnapGeometriesToLayer(),
+                PoleOfInaccessibility(), CreateAttributeIndex(),
+                DropGeometry(), BasicStatisticsForField(),
+                RasterCalculator(), Heatmap(), Orthogonalize(),
+                ShortestPathPointToPoint(), ShortestPathPointToLayer(),
+                ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
+                ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
+                FixGeometry(), ExecuteSQL(), FindProjection(),
+                TopoColor(), EliminateSelection()
+                ]
 
         if hasPlotly:
             from .VectorLayerHistogram import VectorLayerHistogram
@@ -263,24 +265,18 @@ class QGISAlgorithmProvider(AlgorithmProvider):
             from .BarPlot import BarPlot
             from .PolarPlot import PolarPlot
 
-            self.alglist.extend([VectorLayerHistogram(), RasterLayerHistogram(),
-                                 VectorLayerScatterplot(), MeanAndStdDevPlot(),
-                                 BarPlot(), PolarPlot()])
+            algs.extend([VectorLayerHistogram(), RasterLayerHistogram(),
+                         VectorLayerScatterplot(), MeanAndStdDevPlot(),
+                         BarPlot(), PolarPlot()])
 
         # to store algs added by 3rd party plugins as scripts
-        self.externalAlgs = []
-
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)
         for script in scripts:
             script.allowEdit = False
-        self.alglist.extend(scripts)
+        algs.extend(scripts)
 
-    def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
-
-    def unload(self):
-        AlgorithmProvider.unload(self)
+        return algs
 
     def id(self):
         return 'qgis'
@@ -294,8 +290,11 @@ class QGISAlgorithmProvider(AlgorithmProvider):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
-    def _loadAlgorithms(self):
-        self.algs = list(self.alglist) + self.externalAlgs
+    def loadAlgorithms(self):
+        for a in self.getAlgs():
+            self.addAlgorithm(a)
+        for a in self.externalAlgs:
+            self.addAlgorithm(a)
 
     def supportsNonFileBasedOutput(self):
         return True

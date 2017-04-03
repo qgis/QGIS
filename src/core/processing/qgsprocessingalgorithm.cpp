@@ -32,3 +32,13 @@ QgsProcessingAlgorithm::Flags QgsProcessingAlgorithm::flags() const
 {
   return FlagSupportsBatch;
 }
+
+QgsProcessingProvider *QgsProcessingAlgorithm::provider() const
+{
+  return mProvider;
+}
+
+void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
+{
+  mProvider = provider;
+}

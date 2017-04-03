@@ -231,7 +231,7 @@ class ConfigDialog(BASE, WIDGET):
             groupItem.setIcon(icon)
             groupItem.setEditable(False)
 
-            for alg in provider.algs:
+            for alg in provider.algorithms():
                 algItem = QStandardItem(alg.displayName())
                 algItem.setIcon(icon)
                 algItem.setEditable(False)
@@ -268,7 +268,7 @@ class ConfigDialog(BASE, WIDGET):
     def resetMenusToDefaults(self):
         providers = Processing.providers
         for provider in providers:
-            for alg in provider.algs:
+            for alg in provider.algorithms():
                 d = defaultMenuEntries.get(alg.commandLineName(), "")
                 setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
                 item = self.items[setting]

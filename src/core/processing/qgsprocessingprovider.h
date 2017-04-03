@@ -19,6 +19,8 @@
 #define QGSPROCESSINGPROVIDER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
+#include "qgsprocessingalgorithm.h"
 #include <QIcon>
 
 /**
@@ -39,7 +41,7 @@ class CORE_EXPORT QgsProcessingProvider
      */
     QgsProcessingProvider() = default;
 
-    virtual ~QgsProcessingProvider() = default;
+    virtual ~QgsProcessingProvider();
 
     //! Providers cannot be copied
     QgsProcessingProvider( const QgsProcessingProvider &other ) = delete;
@@ -108,7 +110,56 @@ class CORE_EXPORT QgsProcessingProvider
      */
     virtual bool supportsNonFileBasedOutput() const { return false; }
 
+    /**
+     * Loads the provider. This will be called when the plugin is being loaded, and any general
+     * setup actions should occur in an overridden version of this method.
+     * Subclasses should not load any algorithms in their load() implementations, as that must
+     * occur within the loadAlgorithms() method.
+     * \returns true if provider could be successfully loaded
+     * \see unload()
+     */
+    virtual bool load() { return true; }
+
+    /**
+     * Unloads the provider. Any tear-down steps required by the provider should be implemented here.
+     * \see load()
+     */
+    virtual void unload() {}
+
+    /**
+     * Refreshes the algorithms available from the provider, causing it to re-populate with all associated algorithms.
+     */
+    void refreshAlgorithms();
+
+    /**
+     * Returns a list of algorithms supplied by this provider.
+     * \see algorithm()
+     */
+    QList< QgsProcessingAlgorithm * > algorithms() const;
+
+    /**
+     * Returns the matching algorithm by \a name, or a nullptr if no matching
+     * algorithm is contained by this provider.
+     * \see algorithms()
+     */
+    QgsProcessingAlgorithm *algorithm( const QString &name ) const;
+
+  protected:
+
+    /**
+     * Loads all algorithms belonging to this provider. Subclasses should implement this, calling
+     * addAlgorithm() to register all their associated algorithms.
+     */
+    virtual void loadAlgorithms() = 0;
+
+    /**
+     * Adds an \a algorithm to the provider. Ownership of the algorithm is transferred to the provider.
+     */
+    bool addAlgorithm( QgsProcessingAlgorithm *algorithm SIP_TRANSFER );
+
   private:
+
+    QMap< QString, QgsProcessingAlgorithm * > mAlgorithms;
 
 #ifdef SIP_RUN
     QgsProcessingProvider( const QgsProcessingProvider &other );

@@ -60,7 +60,7 @@ def updateTranslations():
             f.write('''
         """{}"""
     '''.format(provider.__class__.__name__))
-            for alg in provider.algs:
+            for alg in provider.algorithms():
                 display_name = alg.name()
                 f.write("    QCoreApplication.translate(\"{}\", \"{}\")\n"
                         .format(alg.__class__.__name__,

@@ -58,8 +58,8 @@ class RAlgorithmProvider(AlgorithmProvider):
             [EditScriptAction(EditScriptAction.SCRIPT_R),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_R)]
 
-    def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
+    def load(self):
+        AlgorithmProvider.load(self)
         ProcessingConfig.addSetting(Setting(
             self.name(), RUtils.RSCRIPTS_FOLDER,
             self.tr('R Scripts folder'), RUtils.defaultRScriptsFolder(),
@@ -76,6 +76,7 @@ class RAlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.addSetting(Setting(
                 self.name(),
                 RUtils.R_USE64, self.tr('Use 64 bit version'), False))
+        return True
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -97,9 +98,9 @@ class RAlgorithmProvider(AlgorithmProvider):
     def id(self):
         return 'r'
 
-    def _loadAlgorithms(self):
+    def loadAlgorithms(self):
         folders = RUtils.RScriptsFolders()
-        self.algs = []
+
         for f in folders:
             self.loadFromFolder(f)
 
@@ -116,10 +117,11 @@ class RAlgorithmProvider(AlgorithmProvider):
                         fullpath = os.path.join(path, descriptionFile)
                         alg = RAlgorithm(fullpath)
                         if alg.name().strip() != '':
-                            self.algs.append(alg)
+                            self.addAlgorithm(alg)
                     except WrongScriptException as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
                     except Exception as e:
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
                             self.tr('Could not load R script: {0}\n{1}').format(descriptionFile, str(e)))
+        return
