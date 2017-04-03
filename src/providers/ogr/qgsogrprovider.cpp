@@ -378,7 +378,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
   , ogrDriver( nullptr )
   , mValid( false )
   , mOGRGeomType( wkbUnknown )
-  , mFeaturesCounted( -1 )
+  , mFeaturesCounted( QgsVectorDataProvider::Uncounted )
   , mWriteAccess( false )
   , mWriteAccessPossible( false )
   , mDynamicWriteAccess( false )
@@ -450,7 +450,7 @@ bool QgsOgrProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   if ( !ogrDataSource )
     return false;
 
-  if ( theSQL == mSubsetString && mFeaturesCounted >= 0 )
+  if ( theSQL == mSubsetString && mFeaturesCounted != QgsVectorDataProvider::Uncounted )
     return true;
 
   OGRLayerH prevLayer = ogrLayer;
@@ -3300,7 +3300,7 @@ void QgsOgrProvider::recalculateFeatureCount()
 {
   if ( !ogrLayer )
   {
-    mFeaturesCounted = 0;
+    mFeaturesCounted = QgsVectorDataProvider::Uncounted;
     return;
   }
 
@@ -3316,6 +3316,10 @@ void QgsOgrProvider::recalculateFeatureCount()
   if ( mOgrGeometryTypeFilter == wkbUnknown )
   {
     mFeaturesCounted = OGR_L_GetFeatureCount( ogrLayer, true );
+    if ( mFeaturesCounted == -1 )
+    {
+      mFeaturesCounted = QgsVectorDataProvider::UnknownCount;
+    }
   }
   else
   {
