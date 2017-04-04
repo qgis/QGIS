@@ -548,34 +548,34 @@ QgsFeatureRenderer *QgsGraduatedSymbolRendererWidget::renderer()
 
 void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
 {
-  connect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ), this, SLOT( classifyGraduated() ) );
-  connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classifyGraduated() ) );
+  connect( spinGraduatedClasses, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  connect( cboGraduatedMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGraduatedSymbolRendererWidget::reapplyColorRamp );
-  connect( spinPrecision, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
-  connect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
-  connect( txtLegendFormat, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
-  connect( minSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( reapplySizes() ) );
-  connect( maxSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( reapplySizes() ) );
+  connect( spinPrecision, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
+  connect( cbxTrimTrailingZeroes, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
+  connect( txtLegendFormat, &QLineEdit::textChanged, this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
+  connect( minSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
+  connect( maxSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
 
-  connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
-  connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged() ) );
+  connect( mModel, &QgsGraduatedSymbolRendererModel::rowsMoved, this, &QgsGraduatedSymbolRendererWidget::rowsMoved );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsGraduatedSymbolRendererWidget::modelDataChanged );
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
 
 void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 {
-  disconnect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ), this, SLOT( classifyGraduated() ) );
-  disconnect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classifyGraduated() ) );
+  disconnect( spinGraduatedClasses, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  disconnect( cboGraduatedMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGraduatedSymbolRendererWidget::reapplyColorRamp );
-  disconnect( spinPrecision, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
-  disconnect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
-  disconnect( txtLegendFormat, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
-  disconnect( minSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( reapplySizes() ) );
-  disconnect( maxSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( reapplySizes() ) );
+  disconnect( spinPrecision, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
+  disconnect( cbxTrimTrailingZeroes, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
+  disconnect( txtLegendFormat, &QLineEdit::textChanged, this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
+  disconnect( minSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
+  disconnect( maxSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
 
-  disconnect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
-  disconnect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged() ) );
+  disconnect( mModel, &QgsGraduatedSymbolRendererModel::rowsMoved, this, &QgsGraduatedSymbolRendererWidget::rowsMoved );
+  disconnect( mModel, &QAbstractItemModel::dataChanged, this, &QgsGraduatedSymbolRendererWidget::modelDataChanged );
 }
 
 void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
@@ -862,8 +862,8 @@ void QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol()
   QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
   dlg->setContext( mContext );
 
-  connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
-  connect( dlg, SIGNAL( accepted( QgsPanelWidget * ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget * ) ) );
+  connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );
+  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector );
   openPanel( dlg );
 }
 
@@ -940,8 +940,8 @@ void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
   QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
   dlg->setContext( mContext );
 
-  connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
-  connect( dlg, SIGNAL( accepted( QgsPanelWidget * ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget * ) ) );
+  connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );
+  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector );
   openPanel( dlg );
 }
 

@@ -116,14 +116,14 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
   int idx = cboLayerType->findData( mLayer->layerType() );
   cboLayerType->setCurrentIndex( idx );
 
-  connect( mEnabledCheckBox, SIGNAL( toggled( bool ) ), mEnabledDDBtn, SLOT( setEnabled( bool ) ) );
+  connect( mEnabledCheckBox, &QAbstractButton::toggled, mEnabledDDBtn, &QWidget::setEnabled );
   mEnabledCheckBox->setChecked( mLayer->enabled() );
 
   // set the corresponding widget
   updateSymbolLayerWidget( layer );
-  connect( cboLayerType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( layerTypeChanged() ) );
+  connect( cboLayerType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayerPropertiesWidget::layerTypeChanged );
 
-  connect( mEffectWidget, SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
+  connect( mEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsLayerPropertiesWidget::emitSignalChanged );
 
   this->connectChildPanel( mEffectWidget );
 
@@ -180,7 +180,8 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayer *layer )
   if ( stackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    disconnect( stackedWidget->currentWidget(), SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
+    if ( QgsSymbolLayerWidget *w = qobject_cast< QgsSymbolLayerWidget * >( stackedWidget->currentWidget() ) )
+      disconnect( w, &QgsSymbolLayerWidget::changed, this, &QgsLayerPropertiesWidget::emitSignalChanged );
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }
 
@@ -198,8 +199,8 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayer *layer )
       stackedWidget->addWidget( w );
       stackedWidget->setCurrentWidget( w );
       // start receiving updates from widget
-      connect( w, SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
-      connect( w, SIGNAL( symbolChanged() ), this, SLOT( reloadLayer() ) );
+      connect( w, &QgsSymbolLayerWidget::changed, this, &QgsLayerPropertiesWidget::emitSignalChanged );
+      connect( w, &QgsSymbolLayerWidget::symbolChanged, this, &QgsLayerPropertiesWidget::reloadLayer );
       return;
     }
   }

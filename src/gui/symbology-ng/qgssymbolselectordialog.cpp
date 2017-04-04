@@ -252,18 +252,18 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   layersTree->setHeaderHidden( true );
 
   QItemSelectionModel *selModel = layersTree->selectionModel();
-  connect( selModel, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( layerChanged() ) );
+  connect( selModel, &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
 
   loadSymbol( symbol, static_cast<SymbolLayerItem *>( model->invisibleRootItem() ) );
   updatePreview();
 
-  connect( btnUp, SIGNAL( clicked() ), this, SLOT( moveLayerUp() ) );
-  connect( btnDown, SIGNAL( clicked() ), this, SLOT( moveLayerDown() ) );
-  connect( btnAddLayer, SIGNAL( clicked() ), this, SLOT( addLayer() ) );
-  connect( btnRemoveLayer, SIGNAL( clicked() ), this, SLOT( removeLayer() ) );
-  connect( btnLock, SIGNAL( clicked() ), this, SLOT( lockLayer() ) );
-  connect( btnDuplicate, SIGNAL( clicked() ), this, SLOT( duplicateLayer() ) );
-  connect( this, SIGNAL( symbolModified() ), this, SIGNAL( widgetChanged() ) );
+  connect( btnUp, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::moveLayerUp );
+  connect( btnDown, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::moveLayerDown );
+  connect( btnAddLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::addLayer );
+  connect( btnRemoveLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::removeLayer );
+  connect( btnLock, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::lockLayer );
+  connect( btnDuplicate, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::duplicateLayer );
+  connect( this, &QgsSymbolSelectorWidget::symbolModified, this, &QgsPanelWidget::widgetChanged );
 
   updateUi();
 
@@ -424,10 +424,10 @@ void QgsSymbolSelectorWidget::layerChanged()
     layerProp->setDockMode( this->dockMode() );
     layerProp->setContext( mContext );
     setWidget( layerProp );
-    connect( layerProp, SIGNAL( changed() ), mDataDefineRestorer.get(), SLOT( restore() ) );
-    connect( layerProp, SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
+    connect( layerProp, &QgsLayerPropertiesWidget::changed, mDataDefineRestorer.get(), &DataDefinedRestorer::restore );
+    connect( layerProp, &QgsLayerPropertiesWidget::changed, this, &QgsSymbolSelectorWidget::updateLayerPreview );
     // This connection when layer type is changed
-    connect( layerProp, SIGNAL( changeLayer( QgsSymbolLayer * ) ), this, SLOT( changeLayer( QgsSymbolLayer * ) ) );
+    connect( layerProp, &QgsLayerPropertiesWidget::changeLayer, this, &QgsSymbolSelectorWidget::changeLayer );
 
     connectChildPanel( layerProp );
   }
@@ -441,7 +441,7 @@ void QgsSymbolSelectorWidget::layerChanged()
     symbolsList->setContext( mContext );
 
     setWidget( symbolsList );
-    connect( symbolsList, SIGNAL( changed() ), this, SLOT( symbolChanged() ) );
+    connect( symbolsList, &QgsSymbolsListWidget::changed, this, &QgsSymbolSelectorWidget::symbolChanged );
   }
   updateLockButton();
 }
@@ -452,7 +452,7 @@ void QgsSymbolSelectorWidget::symbolChanged()
   if ( !currentItem || currentItem->isLayer() )
     return;
   // disconnect to avoid recreating widget
-  disconnect( layersTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( layerChanged() ) );
+  disconnect( layersTree->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
   if ( currentItem->parent() )
   {
     // it is a sub-symbol
@@ -472,7 +472,7 @@ void QgsSymbolSelectorWidget::symbolChanged()
   }
   updatePreview();
   // connect it back once things are set
-  connect( layersTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( layerChanged() ) );
+  connect( layersTree->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
 }
 
 void QgsSymbolSelectorWidget::setWidget( QWidget *widget )
@@ -682,8 +682,8 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   mSelectorWidget = new QgsSymbolSelectorWidget( symbol, style, vl, this );
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
 
-  connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   layout()->addWidget( mSelectorWidget );
   layout()->addWidget( mButtonBox );

@@ -37,7 +37,7 @@ QgsSmartGroupCondition::QgsSmartGroupCondition( int id, QWidget *parent ) : QWid
 
   mRemoveBtn->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
-  connect( mRemoveBtn, SIGNAL( clicked() ), this, SLOT( destruct() ) );
+  connect( mRemoveBtn, &QAbstractButton::clicked, this, &QgsSmartGroupCondition::destruct );
 }
 
 void QgsSmartGroupCondition::destruct()
@@ -88,7 +88,7 @@ QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *
   mLayout = new QGridLayout( mConditionsBox );
   addCondition();
 
-  connect( mAddConditionBtn, SIGNAL( clicked() ), this, SLOT( addCondition() ) );
+  connect( mAddConditionBtn, &QAbstractButton::clicked, this, &QgsSmartGroupEditorDialog::addCondition );
 }
 
 QString QgsSmartGroupEditorDialog::smartgroupName()
@@ -109,7 +109,7 @@ void QgsSmartGroupEditorDialog::addCondition()
   QgsSmartGroupCondition *cond = new QgsSmartGroupCondition( mCondCount, this );
   mLayout->addWidget( cond, mCondCount, 0, 1, 1 );
 
-  connect( cond, SIGNAL( removed( int ) ), this, SLOT( removeCondition( int ) ) );
+  connect( cond, &QgsSmartGroupCondition::removed, this, &QgsSmartGroupEditorDialog::removeCondition );
   if ( mConditionMap.isEmpty() )
   {
     cond->hideRemoveButton( true );
@@ -174,7 +174,7 @@ void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap &map
       cond->setConstraint( constr );
       cond->setParameter( param );
 
-      connect( cond, SIGNAL( removed( int ) ), this, SLOT( removeCondition( int ) ) );
+      connect( cond, &QgsSmartGroupCondition::removed, this, &QgsSmartGroupEditorDialog::removeCondition );
 
       mConditionMap.insert( mCondCount, cond );
       ++mCondCount;

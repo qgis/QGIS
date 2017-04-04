@@ -215,7 +215,7 @@ QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent )
   , mSvgLoader( new QgsSvgSelectorLoader( this ) )
 {
   mSvgLoader->setPath( QString() );
-  connect( mSvgLoader, SIGNAL( foundSvgs( QStringList ) ), this, SLOT( addSvgs( QStringList ) ) );
+  connect( mSvgLoader, &QgsSvgSelectorLoader::foundSvgs, this, &QgsSvgSelectorListModel::addSvgs );
   mSvgLoader->start();
 }
 
@@ -224,7 +224,7 @@ QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString
   , mSvgLoader( new QgsSvgSelectorLoader( this ) )
 {
   mSvgLoader->setPath( path );
-  connect( mSvgLoader, SIGNAL( foundSvgs( QStringList ) ), this, SLOT( addSvgs( QStringList ) ) );
+  connect( mSvgLoader, &QgsSvgSelectorLoader::foundSvgs, this, &QgsSvgSelectorListModel::addSvgs );
   mSvgLoader->start();
 }
 
@@ -336,7 +336,7 @@ QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject *parent )
     QgsDebugMsg( QString( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
   }
   mLoader->setParentPaths( parentPaths );
-  connect( mLoader, SIGNAL( foundPath( QString, QString ) ), this, SLOT( addPath( QString, QString ) ) );
+  connect( mLoader, &QgsSvgGroupLoader::foundPath, this, &QgsSvgSelectorGroupsModel::addPath );
   mLoader->start();
 }
 
@@ -374,10 +374,10 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   mGroupsTreeView->setHeaderHidden( true );
   populateList();
 
-  connect( mImagesListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
-           this, SLOT( svgSelectionChanged( const QModelIndex & ) ) );
-  connect( mGroupsTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
-           this, SLOT( populateIcons( const QModelIndex & ) ) );
+  connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged,
+           this, &QgsSvgSelectorWidget::svgSelectionChanged );
+  connect( mGroupsTreeView->selectionModel(), &QItemSelectionModel::currentChanged,
+           this, &QgsSvgSelectorWidget::populateIcons );
 
   QgsSettings settings;
   bool useRelativePath = ( QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false )
@@ -463,8 +463,8 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex &idx )
   mImagesListView->setModel( m );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 
-  connect( mImagesListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
-           this, SLOT( svgSelectionChanged( const QModelIndex & ) ) );
+  connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged,
+           this, &QgsSvgSelectorWidget::svgSelectionChanged );
 
 }
 
@@ -548,8 +548,8 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
 
   // create buttonbox
   mButtonBox = new QDialogButtonBox( buttons, orientation, this );
-  connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   setMinimumSize( 480, 320 );
 

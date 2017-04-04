@@ -227,7 +227,7 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
     context.setAdditionalExpressionContextScopes( scopes );
     w->setContext( context );
 
-    connect( w, SIGNAL( widgetChanged() ), this, SLOT( updateRendererFromWidget() ) );
+    connect( w, &QgsPanelWidget::widgetChanged, this, &QgsPointDisplacementRendererWidget::updateRendererFromWidget );
     openPanel( w );
   }
 }
@@ -375,7 +375,7 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   context.setAdditionalExpressionContextScopes( scopes );
   dlg->setContext( context );
 
-  connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateCenterSymbolFromWidget() ) );
+  connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsPointDisplacementRendererWidget::updateCenterSymbolFromWidget );
   connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsPointDisplacementRendererWidget::cleanUpSymbolSelector );
   openPanel( dlg );
 }

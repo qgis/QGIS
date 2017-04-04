@@ -38,7 +38,7 @@ QgsConfigCache *QgsConfigCache::instance()
 
 QgsConfigCache::QgsConfigCache()
 {
-  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString & ) ), this, SLOT( removeChangedEntry( const QString & ) ) );
+  QObject::connect( &mFileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &QgsConfigCache::removeChangedEntry );
 }
 
 QgsServerProjectParser *QgsConfigCache::serverConfiguration( const QString &filePath )

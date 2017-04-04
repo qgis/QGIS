@@ -59,7 +59,7 @@ QgsHelpViewer::QgsHelpViewer( QWidget *parent, Qt::WindowFlags fl )
   mThread = new QgsReaderThread();
   mThread->start();
 
-  connect( mThread, SIGNAL( helpRead( QString ) ), this, SLOT( showHelp( QString ) ) );
+  connect( mThread, &QgsReaderThread::helpRead, this, &QgsHelpViewer::showHelp );
 }
 
 QgsHelpViewer::~QgsHelpViewer()

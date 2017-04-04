@@ -124,7 +124,7 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
   if ( m )
   {
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRenderer *>( mRenderer->embeddedRenderer() )->clone() ) );
-    connect( mEmbeddedRendererWidget.get(), SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+    connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::widgetChanged, this, &QgsInvertedPolygonRendererWidget::widgetChanged );
     mEmbeddedRendererWidget->setContext( mContext );
 
     if ( layout()->count() > 2 )

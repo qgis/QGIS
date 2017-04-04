@@ -131,8 +131,8 @@ QgsBench::QgsBench( int width, int height, int iterations )
 
   QgsDebugMsg( QString( "mIterations = %1" ).arg( mIterations ) );
 
-  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
-           this, SLOT( readProject( const QDomDocument & ) ) );
+  connect( QgsProject::instance(), &QgsProject::readProject,
+           this, &QgsBench::readProject );
 }
 
 QgsBench::~QgsBench()

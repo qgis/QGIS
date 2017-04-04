@@ -124,7 +124,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
 
   mWeightExpressionWidget->setLayer( layer );
   mWeightExpressionWidget->setField( mRenderer->weightExpression() );
-  connect( mWeightExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( weightExpressionChanged( QString ) ) );
+  connect( mWeightExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsHeatmapRendererWidget::weightExpressionChanged );
 }
 
 QgsFeatureRenderer *QgsHeatmapRendererWidget::renderer()

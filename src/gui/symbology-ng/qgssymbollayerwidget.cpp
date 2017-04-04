@@ -154,16 +154,16 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorL
   if ( vectorLayer() )
     mPenWidthDDBtn->setSymbol( mAssistantPreviewSymbol );
 
-  connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
-  connect( btnChangeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( colorChanged( const QColor & ) ) );
-  connect( cboPenStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
-  connect( spinOffset, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
-  connect( cboCapStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
-  connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
+  connect( spinWidth, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineSymbolLayerWidget::penWidthChanged );
+  connect( btnChangeColor, &QgsColorButton::colorChanged, this, &QgsSimpleLineSymbolLayerWidget::colorChanged );
+  connect( cboPenStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineSymbolLayerWidget::penStyleChanged );
+  connect( spinOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineSymbolLayerWidget::offsetChanged );
+  connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineSymbolLayerWidget::penStyleChanged );
+  connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineSymbolLayerWidget::penStyleChanged );
 
   updatePatternIcon();
 
-  connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
+  connect( this, &QgsSymbolLayerWidget::changed, this, &QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol );
 }
 
 void QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol()
@@ -412,15 +412,15 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
     delete lyr;
   }
 
-  connect( lstNames, SIGNAL( currentRowChanged( int ) ), this, SLOT( setShape() ) );
-  connect( btnChangeColorStroke, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColorStroke( const QColor & ) ) );
-  connect( btnChangeColorFill, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColorFill( const QColor & ) ) );
-  connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
-  connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize() ) );
-  connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle() ) );
-  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
-  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
-  connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
+  connect( lstNames, &QListWidget::currentRowChanged, this, &QgsSimpleMarkerSymbolLayerWidget::setShape );
+  connect( btnChangeColorStroke, &QgsColorButton::colorChanged, this, &QgsSimpleMarkerSymbolLayerWidget::setColorStroke );
+  connect( btnChangeColorFill, &QgsColorButton::colorChanged, this, &QgsSimpleMarkerSymbolLayerWidget::setColorFill );
+  connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::penJoinStyleChanged );
+  connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setSize );
+  connect( spinAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setAngle );
+  connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setOffset );
+  connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setOffset );
+  connect( this, &QgsSymbolLayerWidget::changed, this, &QgsSimpleMarkerSymbolLayerWidget::updateAssistantSymbol );
 }
 
 void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -664,14 +664,14 @@ QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( const QgsVectorL
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
 
-  connect( btnChangeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor( const QColor & ) ) );
-  connect( cboFillStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setBrushStyle() ) );
-  connect( btnChangeStrokeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setStrokeColor( const QColor & ) ) );
-  connect( spinStrokeWidth, SIGNAL( valueChanged( double ) ), this, SLOT( strokeWidthChanged() ) );
-  connect( cboStrokeStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( strokeStyleChanged() ) );
-  connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( strokeStyleChanged() ) );
-  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
-  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
+  connect( btnChangeColor, &QgsColorButton::colorChanged, this, &QgsSimpleFillSymbolLayerWidget::setColor );
+  connect( cboFillStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleFillSymbolLayerWidget::setBrushStyle );
+  connect( btnChangeStrokeColor, &QgsColorButton::colorChanged, this, &QgsSimpleFillSymbolLayerWidget::setStrokeColor );
+  connect( spinStrokeWidth, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleFillSymbolLayerWidget::strokeWidthChanged );
+  connect( cboStrokeStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleFillSymbolLayerWidget::strokeStyleChanged );
+  connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleFillSymbolLayerWidget::strokeStyleChanged );
+  connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleFillSymbolLayerWidget::offsetChanged );
+  connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleFillSymbolLayerWidget::offsetChanged );
 }
 
 void QgsSimpleFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -827,12 +827,12 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVec
     delete lyr;
   }
 
-  connect( lstNames, SIGNAL( currentRowChanged( int ) ), this, SLOT( setShape() ) );
-  connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize() ) );
-  connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle() ) );
-  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
-  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
-  connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
+  connect( lstNames, &QListWidget::currentRowChanged, this, &QgsFilledMarkerSymbolLayerWidget::setShape );
+  connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFilledMarkerSymbolLayerWidget::setSize );
+  connect( spinAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFilledMarkerSymbolLayerWidget::setAngle );
+  connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFilledMarkerSymbolLayerWidget::setOffset );
+  connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFilledMarkerSymbolLayerWidget::setOffset );
+  connect( this, &QgsSymbolLayerWidget::changed, this, &QgsFilledMarkerSymbolLayerWidget::updateAssistantSymbol );
 }
 
 void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -988,21 +988,21 @@ QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( const QgsVec
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
 
-  connect( btnChangeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor( const QColor & ) ) );
-  connect( btnChangeColor2, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor2( const QColor & ) ) );
+  connect( btnChangeColor, &QgsColorButton::colorChanged, this, &QgsGradientFillSymbolLayerWidget::setColor );
+  connect( btnChangeColor2, &QgsColorButton::colorChanged, this, &QgsGradientFillSymbolLayerWidget::setColor2 );
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGradientFillSymbolLayerWidget::applyColorRamp );
-  connect( cboGradientType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setGradientType( int ) ) );
-  connect( cboCoordinateMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setCoordinateMode( int ) ) );
-  connect( cboGradientSpread, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setGradientSpread( int ) ) );
-  connect( radioTwoColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
-  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
-  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
-  connect( spinRefPoint1X, SIGNAL( valueChanged( double ) ), this, SLOT( referencePointChanged() ) );
-  connect( spinRefPoint1Y, SIGNAL( valueChanged( double ) ), this, SLOT( referencePointChanged() ) );
-  connect( checkRefPoint1Centroid, SIGNAL( toggled( bool ) ), this, SLOT( referencePointChanged() ) );
-  connect( spinRefPoint2X, SIGNAL( valueChanged( double ) ), this, SLOT( referencePointChanged() ) );
-  connect( spinRefPoint2Y, SIGNAL( valueChanged( double ) ), this, SLOT( referencePointChanged() ) );
-  connect( checkRefPoint2Centroid, SIGNAL( toggled( bool ) ), this, SLOT( referencePointChanged() ) );
+  connect( cboGradientType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGradientFillSymbolLayerWidget::setGradientType );
+  connect( cboCoordinateMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGradientFillSymbolLayerWidget::setCoordinateMode );
+  connect( cboGradientSpread, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGradientFillSymbolLayerWidget::setGradientSpread );
+  connect( radioTwoColor, &QAbstractButton::toggled, this, &QgsGradientFillSymbolLayerWidget::colorModeChanged );
+  connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGradientFillSymbolLayerWidget::offsetChanged );
+  connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGradientFillSymbolLayerWidget::offsetChanged );
+  connect( spinRefPoint1X, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGradientFillSymbolLayerWidget::referencePointChanged );
+  connect( spinRefPoint1Y, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGradientFillSymbolLayerWidget::referencePointChanged );
+  connect( checkRefPoint1Centroid, &QAbstractButton::toggled, this, &QgsGradientFillSymbolLayerWidget::referencePointChanged );
+  connect( spinRefPoint2X, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGradientFillSymbolLayerWidget::referencePointChanged );
+  connect( spinRefPoint2Y, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGradientFillSymbolLayerWidget::referencePointChanged );
+  connect( checkRefPoint2Centroid, &QAbstractButton::toggled, this, &QgsGradientFillSymbolLayerWidget::referencePointChanged );
 }
 
 void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -1326,14 +1326,14 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( const Qg
 
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsShapeburstFillSymbolLayerWidget::applyColorRamp );
 
-  connect( btnChangeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor( const QColor & ) ) );
-  connect( btnChangeColor2, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor2( const QColor & ) ) );
-  connect( radioTwoColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
-  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
-  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
+  connect( btnChangeColor, &QgsColorButton::colorChanged, this, &QgsShapeburstFillSymbolLayerWidget::setColor );
+  connect( btnChangeColor2, &QgsColorButton::colorChanged, this, &QgsShapeburstFillSymbolLayerWidget::setColor2 );
+  connect( radioTwoColor, &QAbstractButton::toggled, this, &QgsShapeburstFillSymbolLayerWidget::colorModeChanged );
+  connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsShapeburstFillSymbolLayerWidget::offsetChanged );
+  connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsShapeburstFillSymbolLayerWidget::offsetChanged );
 
-  connect( mBlurSlider, SIGNAL( valueChanged( int ) ), mSpinBlurRadius, SLOT( setValue( int ) ) );
-  connect( mSpinBlurRadius, SIGNAL( valueChanged( int ) ), mBlurSlider, SLOT( setValue( int ) ) );
+  connect( mBlurSlider, &QAbstractSlider::valueChanged, mSpinBlurRadius, &QSpinBox::setValue );
+  connect( mSpinBlurRadius, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mBlurSlider, &QAbstractSlider::setValue );
 }
 
 void QgsShapeburstFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -1561,16 +1561,16 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( const QgsVectorL
 
   spinOffset->setClearValue( 0.0 );
 
-  connect( spinInterval, SIGNAL( valueChanged( double ) ), this, SLOT( setInterval( double ) ) );
-  connect( mSpinOffsetAlongLine, SIGNAL( valueChanged( double ) ), this, SLOT( setOffsetAlongLine( double ) ) );
-  connect( chkRotateMarker, SIGNAL( clicked() ), this, SLOT( setRotate() ) );
-  connect( spinOffset, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
-  connect( radInterval, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
-  connect( radVertex, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
-  connect( radVertexLast, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
-  connect( radVertexFirst, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
-  connect( radCentralPoint, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
-  connect( radCurvePoint, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
+  connect( spinInterval, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setInterval );
+  connect( mSpinOffsetAlongLine, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setOffsetAlongLine );
+  connect( chkRotateMarker, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setRotate );
+  connect( spinOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setOffset );
+  connect( radInterval, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( radVertex, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( radVertexLast, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( radVertexFirst, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( radCentralPoint, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( radCurvePoint, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
 }
 
 void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -1738,13 +1738,13 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
 
   populateList();
 
-  connect( viewImages->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setName( const QModelIndex & ) ) );
-  connect( viewGroups->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( populateIcons( const QModelIndex & ) ) );
-  connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize() ) );
-  connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle() ) );
-  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
-  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
-  connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
+  connect( viewImages->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgMarkerSymbolLayerWidget::setName );
+  connect( viewGroups->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgMarkerSymbolLayerWidget::populateIcons );
+  connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setSize );
+  connect( spinAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setAngle );
+  connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setOffset );
+  connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setOffset );
+  connect( this, &QgsSymbolLayerWidget::changed, this, &QgsSvgMarkerSymbolLayerWidget::updateAssistantSymbol );
 
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
@@ -1789,7 +1789,7 @@ void QgsSvgMarkerSymbolLayerWidget::populateIcons( const QModelIndex &idx )
   viewImages->setModel( m );
   delete oldModel;
 
-  connect( viewImages->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setName( const QModelIndex & ) ) );
+  connect( viewImages->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgMarkerSymbolLayerWidget::setName );
 }
 
 void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer )
@@ -2119,8 +2119,8 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer *
   mChangeStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
   mChangeStrokeColorButton->setContext( QStringLiteral( "symbology" ) );
 
-  connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setFile( const QModelIndex & ) ) );
-  connect( mSvgTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( populateIcons( const QModelIndex & ) ) );
+  connect( mSvgListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSVGFillSymbolLayerWidget::setFile );
+  connect( mSvgTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSVGFillSymbolLayerWidget::populateIcons );
 }
 
 void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -2279,7 +2279,7 @@ void QgsSVGFillSymbolLayerWidget::populateIcons( const QModelIndex &idx )
   mSvgListView->setModel( m );
   delete oldModel;
 
-  connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setFile( const QModelIndex & ) ) );
+  connect( mSvgListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSVGFillSymbolLayerWidget::setFile );
 }
 
 
@@ -2664,17 +2664,17 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorL
   if ( vectorLayer() )
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 
-  connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont & ) ) );
-  connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );
-  connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
-  connect( btnColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor( const QColor & ) ) );
-  connect( btnStrokeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColorStroke( const QColor & ) ) );
-  connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
-  connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle( double ) ) );
-  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
-  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
-  connect( widgetChar, SIGNAL( characterSelected( const QChar & ) ), this, SLOT( setCharacter( const QChar & ) ) );
-  connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
+  connect( cboFont, &QFontComboBox::currentFontChanged, this, &QgsFontMarkerSymbolLayerWidget::setFontFamily );
+  connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFontMarkerSymbolLayerWidget::setSize );
+  connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFontMarkerSymbolLayerWidget::penJoinStyleChanged );
+  connect( btnColor, &QgsColorButton::colorChanged, this, &QgsFontMarkerSymbolLayerWidget::setColor );
+  connect( btnStrokeColor, &QgsColorButton::colorChanged, this, &QgsFontMarkerSymbolLayerWidget::setColorStroke );
+  connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFontMarkerSymbolLayerWidget::penJoinStyleChanged );
+  connect( spinAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFontMarkerSymbolLayerWidget::setAngle );
+  connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFontMarkerSymbolLayerWidget::setOffset );
+  connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFontMarkerSymbolLayerWidget::setOffset );
+  connect( widgetChar, &CharacterWidget::characterSelected, this, &QgsFontMarkerSymbolLayerWidget::setCharacter );
+  connect( this, &QgsSymbolLayerWidget::changed, this, &QgsFontMarkerSymbolLayerWidget::updateAssistantSymbol );
 }
 
 void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -2919,9 +2919,9 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorL
   mSpinOffsetX->setClearValue( 0.0 );
   mSpinOffsetY->setClearValue( 0.0 );
 
-  connect( cboCoordinateMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setCoordinateMode( int ) ) );
-  connect( mSpinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
-  connect( mSpinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
+  connect( cboCoordinateMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterFillSymbolLayerWidget::setCoordinateMode );
+  connect( mSpinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::offsetChanged );
+  connect( mSpinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::offsetChanged );
 }
 
 void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -3193,8 +3193,8 @@ QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( co
   cbxGeometryType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon / MultiPolygon" ), QgsSymbol::Fill );
   cbxGeometryType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "LineString / MultiLineString" ), QgsSymbol::Line );
   cbxGeometryType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point / MultiPoint" ), QgsSymbol::Marker );
-  connect( modificationExpressionSelector, SIGNAL( expressionChanged( QString ) ), this, SLOT( updateExpression( QString ) ) );
-  connect( cbxGeometryType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateSymbolType() ) );
+  connect( modificationExpressionSelector, &QgsExpressionLineEdit::expressionChanged, this, &QgsGeometryGeneratorSymbolLayerWidget::updateExpression );
+  connect( cbxGeometryType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType );
 }
 
 void QgsGeometryGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *l )
