@@ -31,6 +31,7 @@ import re
 import json
 from qgis.core import (QgsExpressionContextUtils,
                        QgsExpressionContext,
+                       QgsProcessingAlgorithm,
                        QgsProject,
                        QgsApplication)
 
@@ -56,6 +57,10 @@ class ScriptAlgorithm(GeoAlgorithm):
 
         GeoAlgorithm.__init__(self)
         self._icon = QgsApplication.getThemeIcon("/processingScript.svg")
+        self._name = ''
+        self._display_name = ''
+        self._group = ''
+        self._flags = 0
 
         self.script = script
         self.allowEdit = True
@@ -74,12 +79,27 @@ class ScriptAlgorithm(GeoAlgorithm):
     def icon(self):
         return self._icon
 
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._display_name
+
+    def group(self):
+        return self._group
+
+    def flags(self):
+        return self._flags
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingScript.svg")
+
     def defineCharacteristicsFromFile(self):
         self.error = None
         self.script = ''
         filename = os.path.basename(self.descriptionFile)
-        self.name = filename[:filename.rfind('.')].replace('_', ' ')
-        self.group = self.tr('User scripts', 'ScriptAlgorithm')
+        self._name = filename[:filename.rfind('.')].replace('_', ' ')
+        self._group = self.tr('User scripts', 'ScriptAlgorithm')
         with open(self.descriptionFile) as lines:
             line = lines.readline()
             while line != '':
@@ -91,14 +111,14 @@ class ScriptAlgorithm(GeoAlgorithm):
                                              'Problem with line: {0}', 'ScriptAlgorithm').format(line)
                 self.script += line
                 line = lines.readline()
-        if self.group == self.tr('[Test scripts]', 'ScriptAlgorithm'):
-            self.showInModeler = False
-            self.showInToolbox = False
+        if self._group == self.tr('[Test scripts]', 'ScriptAlgorithm'):
+            self._flags = QgsProcessingAlgorithm.FlagHideFromToolbox | QgsProcessingAlgorithm.FlagHideFromModeler
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
-        self.name, self.i18n_name = self.trAlgorithm('[Unnamed algorithm]', 'ScriptAlgorithm')
-        self.group, self.i18n_group = self.trAlgorithm('User scripts', 'ScriptAlgorithm')
+        self._name = '[Unnamed algorithm]'
+        self._display_name = self.tr('[Unnamed algorithm]', 'ScriptAlgorithm')
+        self._group = self.tr('User scripts', 'ScriptAlgorithm')
         for line in lines:
             if line.startswith('##'):
                 try:
@@ -123,7 +143,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         line = line.replace('#', '')
 
         if line == "nomodeler":
-            self.showInModeler = False
+            self._flags = self._flags | QgsProcessingAlgorithm.FlagHideFromModeler
             return
         if line == "nocrswarning":
             self.noCRSWarning = True
@@ -131,10 +151,10 @@ class ScriptAlgorithm(GeoAlgorithm):
         tokens = line.split('=', 1)
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
-            self.group = self.i18n_group = tokens[0]
+            self._group = tokens[0]
             return
         if tokens[1].lower().strip() == 'name':
-            self.name = self.i18n_name = tokens[0]
+            self._name = self._display_name = tokens[0]
             return
 
         out = getOutputFromString(line)

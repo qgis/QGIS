@@ -77,28 +77,41 @@ class RAlgorithm(GeoAlgorithm):
     def __init__(self, descriptionFile, script=None):
         GeoAlgorithm.__init__(self)
         self.script = script
+        self._name = ''
+        self._display_name = ''
+        self._group = ''
         self.descriptionFile = descriptionFile
         if script is not None:
             self.defineCharacteristicsFromScript()
         if descriptionFile is not None:
             self.defineCharacteristicsFromFile()
-        self._icon = None
 
-    def getIcon(self):
-        if self._icon is None:
-            self._icon = QgsApplication.getThemeIcon("/providerR.svg")
-        return self._icon
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerR.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerR.svg")
+
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._display_name
+
+    def group(self):
+        return self._group
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
-        self.name, self.i18n_name = self.trAlgorithm('[Unnamed algorithm]')
-        self.group, self.i18n_group = self.trAlgorithm('User R scripts')
+        self._name = 'unnamedalgorithm'
+        self._display_name = self.trAlgorithm('[Unnamed algorithm]')
+        self._group = self.tr('User R scripts')
         self.parseDescription(iter(lines))
 
     def defineCharacteristicsFromFile(self):
         filename = os.path.basename(self.descriptionFile)
         self.name = filename[:filename.rfind('.')].replace('_', ' ')
-        self.group, self.i18n_group = self.trAlgorithm('User R scripts')
+        self._group = self.tr('User R scripts')
         with open(self.descriptionFile, 'r') as f:
             lines = [line.strip() for line in f]
         self.parseDescription(iter(lines))
@@ -161,10 +174,14 @@ class RAlgorithm(GeoAlgorithm):
         tokens = line.split('=')
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
-            self.group = self.i18n_group = tokens[0]
+            self._group = tokens[0]
             return
         if tokens[1].lower().strip() == 'name':
-            self.name = self.i18n_name = tokens[0]
+            self._name = self._display_name = tokens[0]
+            self._name = self._name.lower()
+            validChars = \
+                'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+            self._name = ''.join(c for c in self._name if c in validChars)
             return
 
         out = getOutputFromString(line)

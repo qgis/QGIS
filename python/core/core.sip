@@ -273,6 +273,7 @@
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include layertree/qgslayertreeutils.sip
 
+%Include processing/qgsprocessingalgorithm.sip
 %Include processing/qgsprocessingfeedback.sip
 %Include processing/qgsprocessingprovider.sip
 %Include processing/qgsprocessingregistry.sip

@@ -49,7 +49,7 @@ class ScriptSelector(BASE, WIDGET):
         allScripts = defaultdict(list)
         alglist = QgsApplication.processingRegistry().providerById("script").algs
         for script in alglist:
-            allScripts[script.group].append(script)
+            allScripts[script.group()].append(script)
 
         for group, groupScripts in list(allScripts.items()):
             groupItem = QTreeWidgetItem()

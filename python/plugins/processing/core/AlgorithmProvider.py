@@ -88,18 +88,6 @@ class AlgorithmProvider(QgsProcessingProvider):
         name = 'ACTIVATE_' + self.id().upper().replace(' ', '_')
         ProcessingConfig.removeSetting(name)
 
-    def getSupportedOutputRasterLayerExtensions(self):
-        return ['tif']
-
-    def getSupportedOutputVectorLayerExtensions(self):
-        return QgsVectorFileWriter.supportedFormatExtensions()
-
-    def getSupportedOutputTableExtensions(self):
-        return ['csv']
-
-    def supportsNonFileBasedOutput(self):
-        return False
-
     def tr(self, string, context=''):
         if context == '':
             context = self.__class__.__name__

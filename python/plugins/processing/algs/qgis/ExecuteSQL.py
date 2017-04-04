@@ -26,8 +26,11 @@ __copyright__ = '(C) 2016, Hugo Mercier'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
-                       QgsVirtualLayerDefinition, QgsVectorLayer,
-                       QgsCoordinateReferenceSystem, QgsWkbTypes)
+                       QgsVirtualLayerDefinition,
+                       QgsVectorLayer,
+                       QgsCoordinateReferenceSystem,
+                       QgsWkbTypes,
+                       QgsApplication)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -53,10 +56,22 @@ class ExecuteSQL(GeoAlgorithm):
     INPUT_GEOMETRY_CRS = 'INPUT_GEOMETRY_CRS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Execute SQL')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'executesql'
+
+    def displayName(self):
+        return self.tr('Execute SQL')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterMultipleInput(name=self.INPUT_DATASOURCES,
                                                  description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
                                                  optional=True))

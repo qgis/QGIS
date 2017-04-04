@@ -44,14 +44,22 @@ class PolygonsToLines(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'to_lines.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polygons to lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('line,polygon,convert')
+    def tags(self):
+        return self.tr('line,polygon,convert').split(',')
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'polygonstolines'
+
+    def displayName(self):
+        return self.tr('Polygons to lines')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
 

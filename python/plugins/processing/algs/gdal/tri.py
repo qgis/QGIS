@@ -46,9 +46,16 @@ class tri(GdalAlgorithm):
     COMPUTE_EDGES = 'COMPUTE_EDGES'
     OUTPUT = 'OUTPUT'
 
+    def name(self):
+        return 'triterrainruggednessindex'
+
+    def displayName(self):
+        return self.tr('TRI (Terrain Ruggedness Index)')
+
+    def group(self):
+        return self.tr('Raster analysis')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('TRI (Terrain Ruggedness Index)')
-        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
                                           self.tr('Band number'), 1, 99, 1))

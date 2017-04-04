@@ -79,6 +79,35 @@ class CORE_EXPORT QgsProcessingProvider
      */
     virtual bool canBeActivated() const { return true; }
 
+    /**
+     * Returns a list of the raster format file extensions supported by this provider.
+     * \see supportedOutputVectorLayerExtensions()
+     * \see supportedOutputTableExtensions()
+     */
+    virtual QStringList supportedOutputRasterLayerExtensions() const { return QStringList() << QStringLiteral( "tif" ); }
+
+    /**
+     * Returns a list of the vector format file extensions supported by this provider.
+     * \see supportedOutputRasterLayerExtensions()
+     * \see supportedOutputTableExtensions()
+     * \see supportsNonFileBasedOutput()
+     */
+    virtual QStringList supportedOutputVectorLayerExtensions() const;
+
+    /**
+     * Returns a list of the table format file extensions supported by this provider.
+     * \see supportedOutputRasterLayerExtensions()
+     * \see supportedOutputVectorLayerExtensions()
+     */
+    virtual QStringList supportedOutputTableExtensions() const { return QStringList() << QStringLiteral( "csv" ); }
+
+    /**
+     * Returns true if the provider supports non-file based outputs (such as memory layers
+     * or direct database outputs).
+     * \see supportedOutputVectorLayerExtensions()
+     */
+    virtual bool supportsNonFileBasedOutput() const { return false; }
+
   private:
 
 #ifdef SIP_RUN

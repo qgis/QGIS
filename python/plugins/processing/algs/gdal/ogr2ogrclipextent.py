@@ -45,10 +45,16 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
     CLIP_EXTENT = 'CLIP_EXTENT'
     OPTIONS = 'OPTIONS'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Clip vectors by extent')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geoprocessing')
+    def name(self):
+        return 'clipvectorsbyextent'
 
+    def displayName(self):
+        return self.tr('Clip vectors by extent')
+
+    def group(self):
+        return self.tr('Vector geoprocessing')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterExtent(self.CLIP_EXTENT,

@@ -903,7 +903,7 @@ class ParameterNumber(Parameter):
         variables = {}
         layer = getObject(element.value)
         if layer is not None:
-            name = element.name if alg is None else "%s_%s" % (alg.name, element.name)
+            name = element.name if alg is None else "%s_%s" % (alg.name(), element.name)
             variables['@%s_minx' % name] = layer.extent().xMinimum()
             variables['@%s_miny' % name] = layer.extent().yMinimum()
             variables['@%s_maxx' % name] = layer.extent().yMaximum()
@@ -929,7 +929,7 @@ class ParameterNumber(Parameter):
         for alg in list(model.algs.values()):
             for out in alg.algorithm.outputs:
                 if isinstance(out, OutputNumber):
-                    variables["@%s_%s" % (alg.name, out.name)] = out.value
+                    variables["@%s_%s" % (alg.name(), out.name)] = out.value
                 if isinstance(out, (OutputRaster, OutputVector)):
                     variables.update(self._layerVariables(out, alg))
         for k, v in list(variables.items()):

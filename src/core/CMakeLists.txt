@@ -84,6 +84,7 @@ SET(QGIS_CORE_SRCS
   annotations/qgssvgannotation.cpp
   annotations/qgstextannotation.cpp
 
+  processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
 
@@ -835,6 +836,7 @@ SET(QGIS_CORE_HDRS
   composer/qgssingleboxscalebarstyle.h
   composer/qgsticksscalebarstyle.h
 
+  processing/qgsprocessingalgorithm.h
   processing/qgsprocessingprovider.h
 
   raster/qgsbilinearrasterresampler.h

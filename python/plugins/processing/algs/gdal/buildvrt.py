@@ -51,12 +51,19 @@ class buildvrt(GdalAlgorithm):
 
     RESOLUTION_OPTIONS = ['average', 'highest', 'lowest']
 
-    def getIcon(self):
+    def name(self):
+        return 'buildvirtualraster'
+
+    def displayName(self):
+        return self.tr('Build Virtual Raster')
+
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'vrt.png'))
 
+    def group(self):
+        return self.tr('Raster miscellaneous')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Build Virtual Raster')
-        self.group, self.i18n_group = self.trAlgorithm('Raster miscellaneous')
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'), dataobjects.TYPE_RASTER))
         self.addParameter(ParameterSelection(self.RESOLUTION,

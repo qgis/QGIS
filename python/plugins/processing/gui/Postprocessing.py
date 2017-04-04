@@ -77,7 +77,7 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
                                        "Error loading result layer:\n" + traceback.format_exc())
                 wrongLayers.append(out.description)
         elif isinstance(out, OutputHTML):
-            resultsList.addResult(alg.getIcon(), out.description, out.value)
+            resultsList.addResult(alg.icon(), out.description, out.value)
         i += 1
 
     QApplication.restoreOverrideCursor()

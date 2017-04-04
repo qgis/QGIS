@@ -73,40 +73,57 @@ class SagaAlgorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self._icon = None
+        self._name = ''
+        self._display_name = ''
+        self._group = ''
 
     def getCopy(self):
         newone = SagaAlgorithm(self.descriptionFile)
         newone.provider = self.provider
         return newone
 
-    def getIcon(self):
+    def icon(self):
         if self._icon is None:
             self._icon = QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
         return self._icon
 
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._display_name
+
+    def group(self):
+        return self._group
+
     def defineCharacteristicsFromFile(self):
         with open(self.descriptionFile) as lines:
             line = lines.readline().strip('\n').strip()
-            self.name = line
-            if '|' in self.name:
-                tokens = self.name.split('|')
-                self.name = tokens[0]
+            self._name = line
+            if '|' in self._name:
+                tokens = self._name.split('|')
+                self._name = tokens[0]
                 # cmdname is the name of the algorithm in SAGA, that is, the name to use to call it in the console
                 self.cmdname = tokens[1]
 
             else:
-                self.cmdname = self.name
-                self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", str(self.name))
+                self.cmdname = self._name
+                self._display_name = QCoreApplication.translate("SAGAAlgorithm", str(self._name))
             # _commandLineName is the name used in processing to call the algorithm
             # Most of the time will be equal to the cmdname, but in same cases, several processing algorithms
             # call the same SAGA one
-            self._commandLineName = self.createCommandLineName(self.name)
-            self.name = decoratedAlgorithmName(self.name)
-            self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", str(self.name))
+            self._commandLineName = self.createCommandLineName(self._name)
+            self._name = decoratedAlgorithmName(self._name)
+            self._display_name = QCoreApplication.translate("SAGAAlgorithm", str(self._name))
+
+            self._name = self._name.lower()
+            validChars = \
+                'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+            self._name = ''.join(c for c in self._name if c in validChars)
+
             line = lines.readline().strip('\n').strip()
             self.undecoratedGroup = line
-            self.group = decoratedGroupName(self.undecoratedGroup)
-            self.i18n_group = QCoreApplication.translate("SAGAAlgorithm", self.group)
+            self._group = QCoreApplication.translate("SAGAAlgorithm", decoratedGroupName(self.undecoratedGroup))
             line = lines.readline().strip('\n').strip()
             while line != '':
                 if line.startswith('Hardcoded'):

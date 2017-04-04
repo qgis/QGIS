@@ -104,7 +104,7 @@ class ModelerParametersDialog(QDialog):
         hLayout.setMargin(0)
         descriptionLabel = QLabel(self.tr("Description"))
         self.descriptionBox = QLineEdit()
-        self.descriptionBox.setText(self._alg.name)
+        self.descriptionBox.setText(self._alg.displayName())
         hLayout.addWidget(descriptionLabel)
         hLayout.addWidget(self.descriptionBox)
         self.verticalLayout.addLayout(hLayout)
@@ -180,7 +180,7 @@ class ModelerParametersDialog(QDialog):
         self.verticalLayout.addStretch(1000)
 
         self.setPreviousValues()
-        self.setWindowTitle(self._alg.name)
+        self.setWindowTitle(self._alg.displayName())
         self.verticalLayout2 = QVBoxLayout()
         self.verticalLayout2.setSpacing(2)
         self.verticalLayout2.setMargin(0)
@@ -238,7 +238,7 @@ class ModelerParametersDialog(QDialog):
             dependent = self.model.getDependentAlgorithms(self._algName)
         opts = []
         for alg in list(self.model.algs.values()):
-            if alg.name not in dependent:
+            if alg.modeler_name not in dependent:
                 opts.append(alg)
         return opts
 
@@ -280,13 +280,13 @@ class ModelerParametersDialog(QDialog):
         else:
             dependent = self.model.getDependentAlgorithms(self._algName)
         for alg in list(self.model.algs.values()):
-            if alg.name not in dependent:
+            if alg.modeler_name not in dependent:
                 for out in alg.algorithm.outputs:
                     if isinstance(out, outType):
                         if dataType is not None and out.datatype in dataType:
-                            values.append(ValueFromOutput(alg.name, out.name))
+                            values.append(ValueFromOutput(alg.modeler_name, out.name))
                         else:
-                            values.append(ValueFromOutput(alg.name, out.name))
+                            values.append(ValueFromOutput(alg.modeler_name, out.name))
 
         return values
 

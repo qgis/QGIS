@@ -24,7 +24,9 @@ __copyright__ = '(C) 2014, Michael Douchin'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsExpression, QgsVectorLayer
+from qgis.core import (QgsApplication,
+                       QgsExpression,
+                       QgsVectorLayer)
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -41,10 +43,22 @@ class SelectByExpression(GeoAlgorithm):
     RESULT = 'RESULT'
     METHOD = 'METHOD'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Select by expression')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector selection tools')
+
+    def name(self):
+        return 'selectbyexpression'
+
+    def displayName(self):
+        return self.tr('Select by expression')
+
+    def defineCharacteristics(self):
         self.methods = [self.tr('creating new selection'),
                         self.tr('adding to current selection'),
                         self.tr('removing from current selection'),

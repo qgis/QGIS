@@ -80,11 +80,13 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
+        self._name = ''
+        self._display_name = ''
+        self._group = ''
         self.hardcodedStrings = []
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
-        self._icon = None
         self.uniqueSuffix = str(uuid.uuid4()).replace('-', '')
 
         # Use the ext mechanism
@@ -99,10 +101,20 @@ class Grass7Algorithm(GeoAlgorithm):
         newone.provider = self.provider
         return newone
 
-    def getIcon(self):
-        if self._icon is None:
-            self._icon = QgsApplication.getThemeIcon("/providerGrass.svg")
-        return self._icon
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._display_name
+
+    def group(self):
+        return self._group
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerGrass.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerGrass.svg")
 
     def help(self):
         helpPath = Grass7Utils.grassHelpPath()
@@ -138,14 +150,16 @@ class Grass7Algorithm(GeoAlgorithm):
             line = lines.readline().strip('\n').strip()
             self.grass7Name = line
             line = lines.readline().strip('\n').strip()
-            self.name = line
-            self.i18n_name = QCoreApplication.translate("GrassAlgorithm", line)
-            if " - " not in self.name:
-                self.name = self.grass7Name + " - " + self.name
-                self.i18n_name = self.grass7Name + " - " + self.i18n_name
+            self._name = line
+            self._display_name = QCoreApplication.translate("GrassAlgorithm", line)
+            if " - " not in self._name:
+                self._name = self.grass7Name + " - " + self._name
+                self._display_name = self.grass7Name + " - " + self._display_name
+
+            self._name = self._name[:self._name.find(' ')].lower()
+
             line = lines.readline().strip('\n').strip()
-            self.group = line
-            self.i18n_group = QCoreApplication.translate("GrassAlgorithm", line)
+            self._group = QCoreApplication.translate("GrassAlgorithm", line)
             hasRasterOutput = False
             hasVectorInput = False
             vectorOutputs = 0
@@ -562,7 +576,7 @@ class Grass7Algorithm(GeoAlgorithm):
         return system.getTempFilename()
 
     def commandLineName(self):
-        return 'grass7:' + self.name[:self.name.find(' ')]
+        return 'grass7:' + self.name()
 
     def checkBeforeOpeningParametersDialog(self):
         return Grass7Utils.checkGrass7IsInstalled()

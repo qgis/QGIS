@@ -46,12 +46,12 @@ class GdalAlgorithm(GeoAlgorithm):
 
     def __init__(self):
         GeoAlgorithm.__init__(self)
-        self._icon = None
 
-    def getIcon(self):
-        if self._icon is None:
-            self._icon = QgsApplication.getThemeIcon("/providerGdal.svg")
-        return self._icon
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerGdal.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerGdal.svg")
 
     def getCustomParametersDialog(self):
         return GdalAlgorithmDialog(self)

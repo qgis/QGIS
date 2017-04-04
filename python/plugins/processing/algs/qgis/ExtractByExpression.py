@@ -24,7 +24,9 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsExpression, QgsFeatureRequest
+from qgis.core import (QgsExpression,
+                       QgsFeatureRequest,
+                       QgsApplication)
 
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -40,11 +42,25 @@ class ExtractByExpression(GeoAlgorithm):
     EXPRESSION = 'EXPRESSION'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extract by expression')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
-        self.tags = self.tr('extract,filter,expression,field')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('extract,filter,expression,field').split(',')
+
+    def group(self):
+        return self.tr('Vector selection tools')
+
+    def name(self):
+        return 'extractbyexpression'
+
+    def displayName(self):
+        return self.tr('Extract by expression')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterExpression(self.EXPRESSION,

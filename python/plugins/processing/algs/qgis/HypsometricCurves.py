@@ -26,13 +26,14 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-
 import os
 
 import numpy
 from osgeo import gdal, ogr, osr
 
-from qgis.core import QgsRectangle, QgsGeometry
+from qgis.core import (QgsRectangle,
+                       QgsGeometry,
+                       QgsApplication)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -52,10 +53,22 @@ class HypsometricCurves(GeoAlgorithm):
     USE_PERCENTAGE = 'USE_PERCENTAGE'
     OUTPUT_DIRECTORY = 'OUTPUT_DIRECTORY'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Hypsometric curves')
-        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Raster tools')
+
+    def name(self):
+        return 'hypsometriccurves'
+
+    def displayName(self):
+        return self.tr('Hypsometric curves')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_DEM,
                                           self.tr('DEM to analyze')))
         self.addParameter(ParameterVector(self.BOUNDARY_LAYER,

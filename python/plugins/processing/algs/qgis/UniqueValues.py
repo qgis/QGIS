@@ -50,12 +50,19 @@ class UniqueValues(GeoAlgorithm):
     UNIQUE_VALUES = 'UNIQUE_VALUES'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'unique.png'))
 
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'listuniquevalues'
+
+    def displayName(self):
+        return self.tr('List unique values')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('List unique values')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,

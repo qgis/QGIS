@@ -32,7 +32,8 @@ import os
 import time
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsRasterLayer
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsRasterLayer)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterMultipleInput
@@ -55,16 +56,22 @@ class nviz7(GeoAlgorithm):
     GRASS_REGION_EXTENT_PARAMETER = 'GRASS_REGION_PARAMETER'
     GRASS_REGION_CELLSIZE_PARAMETER = 'GRASS_REGION_CELLSIZE_PARAMETER'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
-        self.showInModeler = False
-
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
+    def flags(self):
+        return QgsProcessingAlgorithm.FlagHideFromModeler
+
+    def name(self):
+        return 'nviz7'
+
+    def displayName(self):
+        return self.tr('nviz7')
+
+    def group(self):
+        return self.tr('Visualization(NVIZ)')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('nviz7')
-        self.group, self.i18n_group = self.trAlgorithm('Visualization(NVIZ)')
         self.addParameter(ParameterMultipleInput(
             nviz7.ELEVATION,
             self.tr('Raster file(s) for elevation'),

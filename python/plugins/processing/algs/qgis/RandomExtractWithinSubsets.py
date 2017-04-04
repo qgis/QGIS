@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 import random
 
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
@@ -46,10 +47,22 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random extract within subsets')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector selection tools')
+
+    def name(self):
+        return 'randomextractwithinsubsets'
+
+    def displayName(self):
+        return self.tr('Random extract within subsets')
+
+    def defineCharacteristics(self):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 

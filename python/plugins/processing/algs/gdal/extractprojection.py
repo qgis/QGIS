@@ -44,12 +44,19 @@ class ExtractProjection(GdalAlgorithm):
     INPUT = 'INPUT'
     PRJ_FILE = 'PRJ_FILE'
 
-    def getIcon(self):
+    def name(self):
+        return 'extractprojection'
+
+    def displayName(self):
+        return self.tr('Extract projection')
+
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'projection-export.png'))
 
+    def group(self):
+        return self.tr('Raster projections')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extract projection')
-        self.group, self.i18n_group = self.trAlgorithm('Raster projections')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input file')))
         self.addParameter(ParameterBoolean(self.PRJ_FILE,
                                            self.tr('Create also .prj file'), False))

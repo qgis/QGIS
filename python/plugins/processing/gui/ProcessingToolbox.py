@@ -33,7 +33,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingAlgorithm)
 
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.Processing import Processing
@@ -116,7 +117,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
                 if not ProcessingConfig.getSetting(name):
                     for alg in list(provider.values()):
-                        if text in alg.name:
+                        if text in alg.name():
                             self.disabledWithMatchingAlgs.append(provider_id)
                             break
             showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)
@@ -193,7 +194,7 @@ class ProcessingToolbox(BASE, WIDGET):
             executeAction = QAction(self.tr('Execute'), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
-            if alg.canRunInBatchMode:
+            if alg.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
                 executeBatchAction = QAction(
                     self.tr('Execute as batch process'),
                     self.algorithmTree)
@@ -350,14 +351,15 @@ class TreeAlgorithmItem(QTreeWidgetItem):
     def __init__(self, alg):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
-        icon = alg.getIcon()
-        nameEn, name = alg.displayNames()
+        icon = alg.icon()
+        nameEn = alg.name()
+        name = alg.displayName()
         name = name if name != '' else nameEn
         self.setIcon(0, icon)
         self.setToolTip(0, name)
         self.setText(0, name)
         self.setData(0, Qt.UserRole, nameEn)
-        self.setData(0, Qt.UserRole + 1, alg.tags.split(','))
+        self.setData(0, Qt.UserRole + 1, alg.tags())
 
 
 class TreeActionItem(QTreeWidgetItem):
@@ -397,18 +399,18 @@ class TreeProviderItem(QTreeWidgetItem):
 
         # Add algorithms
         for alg in algs:
-            if not alg.showInToolbox:
+            if alg.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
                 continue
-            if alg.group in groups:
-                groupItem = groups[alg.group]
+            if alg.group() in groups:
+                groupItem = groups[alg.group()]
             else:
                 groupItem = QTreeWidgetItem()
-                name = alg.i18n_group or alg.group
+                name = alg.group()
                 if not active:
                     groupItem.setForeground(0, Qt.darkGray)
                 groupItem.setText(0, name)
                 groupItem.setToolTip(0, name)
-                groups[alg.group] = groupItem
+                groups[alg.group()] = groupItem
             algItem = TreeAlgorithmItem(alg)
             if not active:
                 algItem.setForeground(0, Qt.darkGray)

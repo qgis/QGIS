@@ -25,7 +25,10 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeatureRequest, QgsWkbTypes, QgsCoordinateReferenceSystem
+from qgis.core import (QgsFeatureRequest,
+                       QgsWkbTypes,
+                       QgsCoordinateReferenceSystem,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -37,11 +40,25 @@ class DropGeometry(GeoAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_TABLE = 'OUTPUT_TABLE'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Drop geometries')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
-        self.tags = self.tr('remove,drop,delete,geometry,objects')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('remove,drop,delete,geometry,objects').split(',')
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'dropgeometries'
+
+    def displayName(self):
+        return self.tr('Drop geometries')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT,
                                                                    dataobjects.TYPE_VECTOR_LINE,

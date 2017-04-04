@@ -28,8 +28,13 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 
 __revision__ = '$Format:%H$'
 
-
-from qgis.core import QgsField, QgsExpression, QgsDistanceArea, QgsProject, QgsFeature, GEO_NONE
+from qgis.core import (QgsField,
+                       QgsExpression,
+                       QgsDistanceArea,
+                       QgsProject,
+                       QgsFeature,
+                       GEO_NONE,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterTable
@@ -48,9 +53,22 @@ class FieldsMapper(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
         self.mapping = None
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'refactorfields'
+
+    def displayName(self):
+        return self.tr('Refactor fields')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Refactor fields')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input layer'),
                                          False))

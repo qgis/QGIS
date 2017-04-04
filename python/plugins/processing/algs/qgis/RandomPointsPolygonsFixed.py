@@ -52,13 +52,19 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
     STRATEGY = 'STRATEGY'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random points inside polygons (fixed)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+    def group(self):
+        return self.tr('Vector creation tools')
 
+    def name(self):
+        return 'randompointsinsidepolygonsfixed'
+
+    def displayName(self):
+        return self.tr('Random points inside polygons (fixed)')
+
+    def defineCharacteristics(self):
         self.strategies = [self.tr('Points count'),
                            self.tr('Points density')]
 

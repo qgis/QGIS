@@ -192,7 +192,6 @@ class QGISAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
-        self._icon = QgsApplication.getThemeIcon("/providerQgis.svg")
 
         self.alglist = [SumLines(), PointsInPolygon(),
                         PointsInPolygonWeighted(), PointsInPolygonUnique(),
@@ -276,8 +275,6 @@ class QGISAlgorithmProvider(AlgorithmProvider):
         for script in scripts:
             script.allowEdit = False
         self.alglist.extend(scripts)
-        for alg in self.alglist:
-            alg._icon = self._icon
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

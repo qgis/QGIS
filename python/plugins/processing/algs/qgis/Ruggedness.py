@@ -46,13 +46,19 @@ class Ruggedness(GeoAlgorithm):
     Z_FACTOR = 'Z_FACTOR'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Ruggedness index')
-        self.group, self.i18n_group = self.trAlgorithm('Raster terrain analysis')
+    def group(self):
+        return self.tr('Raster terrain analysis')
 
+    def name(self):
+        return 'ruggednessindex'
+
+    def displayName(self):
+        return self.tr('Ruggedness index')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Elevation layer')))
         self.addParameter(ParameterNumber(self.Z_FACTOR,

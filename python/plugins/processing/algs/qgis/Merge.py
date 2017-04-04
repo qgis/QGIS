@@ -44,13 +44,19 @@ class Merge(GeoAlgorithm):
     LAYERS = 'LAYERS'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'merge_shapes.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Merge vector layers')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def group(self):
+        return self.tr('Vector general tools')
 
+    def name(self):
+        return 'mergevectorlayers'
+
+    def displayName(self):
+        return self.tr('Merge vector layers')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterMultipleInput(self.LAYERS,
                                                  self.tr('Layers to merge'),
                                                  datatype=dataobjects.TYPE_VECTOR_ANY))

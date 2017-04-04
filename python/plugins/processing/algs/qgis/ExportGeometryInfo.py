@@ -48,14 +48,22 @@ class ExportGeometryInfo(GeoAlgorithm):
     METHOD = 'CALC_METHOD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'export_geometry.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Export/Add geometry columns')
-        self.tags = self.tr('export,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+    def tags(self):
+        return self.tr('export,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons').split(',')
 
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'exportaddgeometrycolumns'
+
+    def displayName(self):
+        return self.tr('Export/Add geometry columns')
+
+    def defineCharacteristics(self):
         self.calc_methods = [self.tr('Layer CRS'),
                              self.tr('Project CRS'),
                              self.tr('Ellipsoidal')]

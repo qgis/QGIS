@@ -49,9 +49,16 @@ class slope(GdalAlgorithm):
     SCALE = 'SCALE'
     OUTPUT = 'OUTPUT'
 
+    def group(self):
+        return self.tr('Raster analysis')
+
+    def name(self):
+        return 'slope'
+
+    def displayName(self):
+        return self.tr('Slope')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Slope')
-        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
                                           self.tr('Band number'), 1, 99, 1))

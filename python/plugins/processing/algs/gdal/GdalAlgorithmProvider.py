@@ -147,5 +147,5 @@ class GdalAlgorithmProvider(AlgorithmProvider):
                               OffsetCurve(), Ogr2OgrTableToPostGisList(), OgrSql(),
                               ]
 
-    def getSupportedOutputRasterLayerExtensions(self):
+    def supportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()

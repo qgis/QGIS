@@ -64,13 +64,19 @@ class TinInterpolation(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     TRIANULATION_FILE = 'TRIANULATION_FILE'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('TIN interpolation')
-        self.group, self.i18n_group = self.trAlgorithm('Interpolation')
+    def group(self):
+        return self.tr('Interpolation')
 
+    def name(self):
+        return 'tininterpolation'
+
+    def displayName(self):
+        return self.tr('TIN interpolation')
+
+    def defineCharacteristics(self):
         self.METHODS = [self.tr('Linear'),
                         self.tr('Clough-Toucher (cubic)')
                         ]

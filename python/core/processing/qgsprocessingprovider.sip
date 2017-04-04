@@ -66,6 +66,35 @@ class QgsProcessingProvider
  missing external dependencies).
 %End
 
+    virtual QStringList supportedOutputRasterLayerExtensions() const;
+%Docstring
+ Returns a list of the raster format file extensions supported by this provider.
+ \see supportedOutputVectorLayerExtensions()
+ \see supportedOutputTableExtensions()
+%End
+
+    virtual QStringList supportedOutputVectorLayerExtensions() const;
+%Docstring
+ Returns a list of the vector format file extensions supported by this provider.
+ \see supportedOutputRasterLayerExtensions()
+ \see supportedOutputTableExtensions()
+ \see supportsNonFileBasedOutput()
+%End
+
+    virtual QStringList supportedOutputTableExtensions() const;
+%Docstring
+ Returns a list of the table format file extensions supported by this provider.
+ \see supportedOutputRasterLayerExtensions()
+ \see supportedOutputVectorLayerExtensions()
+%End
+
+    virtual bool supportsNonFileBasedOutput() const;
+%Docstring
+ Returns true if the provider supports non-file based outputs (such as memory layers
+ or direct database outputs).
+ \see supportedOutputVectorLayerExtensions()
+%End
+
   private:
     QgsProcessingProvider( const QgsProcessingProvider &other );
 };

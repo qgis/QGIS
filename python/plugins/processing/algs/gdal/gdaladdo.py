@@ -63,15 +63,19 @@ class gdaladdo(GdalAlgorithm):
     FORMATS = ['Internal (if possible)', 'External (GTiff .ovr)',
                'External (ERDAS Imagine .aux)']
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-overview.png'))
 
-    def commandLineName(self):
-        return "gdal:overviews"
+    def name(self):
+        return 'overviews'
+
+    def displayName(self):
+        return self.tr('Build overviews (pyramids)')
+
+    def group(self):
+        return self.tr('Raster miscellaneous')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Build overviews (pyramids)')
-        self.group, self.i18n_group = self.trAlgorithm('Raster miscellaneous')
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.LEVELS,

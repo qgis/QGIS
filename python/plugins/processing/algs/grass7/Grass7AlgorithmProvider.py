@@ -82,7 +82,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
             if descriptionFile.endswith('txt'):
                 try:
                     alg = Grass7Algorithm(os.path.join(folder, descriptionFile))
-                    if alg.name.strip() != '':
+                    if alg.name().strip() != '':
                         self.preloadedAlgs.append(alg)
                     else:
                         ProcessingLog.addToLog(
@@ -110,11 +110,8 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGrass.svg")
 
-    def getSupportedOutputVectorLayerExtensions(self):
+    def supportedOutputVectorLayerExtensions(self):
         return ['shp']
-
-    def getSupportedOutputRasterLayerExtensions(self):
-        return ['tif']
 
     def canBeActivated(self):
         return not bool(Grass7Utils.checkGrass7IsInstalled())

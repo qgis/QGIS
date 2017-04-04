@@ -53,13 +53,19 @@ class EliminateSelection(GeoAlgorithm):
     MODE_SMALLEST_AREA = 1
     MODE_BOUNDARY = 2
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Eliminate selected polygons')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry tools')
 
+    def name(self):
+        return 'eliminateselectedpolygons'
+
+    def displayName(self):
+        return self.tr('Eliminate selected polygons')
+
+    def defineCharacteristics(self):
         self.modes = [self.tr('Largest area'),
                       self.tr('Smallest Area'),
                       self.tr('Largest common boundary')]
@@ -78,7 +84,7 @@ class EliminateSelection(GeoAlgorithm):
 
         if inLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   self.tr('{0}: (No selection in input layer "{1}")').format(self.commandLineName(), self.getParameterValue(self.INPUT)))
+                                   self.tr('{0}: (No selection in input layer "{1}")').format(self.displayName(), self.getParameterValue(self.INPUT)))
 
         featToEliminate = []
         selFeatIds = inLayer.selectedFeatureIds()

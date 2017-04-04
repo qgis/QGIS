@@ -49,15 +49,19 @@ class rasterize_over(GdalAlgorithm):
     INPUT_RASTER = 'INPUT_RASTER'
     FIELD = 'FIELD'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
-    def commandLineName(self):
-        return "gdal:rasterize_over"
+    def name(self):
+        return 'rasterize_over'
+
+    def displayName(self):
+        return self.tr('Rasterize (write over existing raster)')
+
+    def group(self):
+        return self.tr('Vector conversion')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Rasterize (write over existing raster)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector conversion')
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Attribute field'), self.INPUT))

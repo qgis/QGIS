@@ -51,7 +51,7 @@ class EditRenderingStylesDialog(BASE, WIDGET):
         self.alg = alg.getCopy()
 
         self.tblStyles.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.setWindowTitle(self.alg.name)
+        self.setWindowTitle(self.alg.displayName())
 
         self.valueItems = {}
         self.dependentItems = {}

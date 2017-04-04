@@ -47,10 +47,16 @@ class OgrSql(GdalAlgorithm):
     SQL = 'SQL'
     DIALECT = 'DIALECT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Execute SQL')
-        self.group, self.i18n_group = self.trAlgorithm('Vector miscellaneous')
+    def name(self):
+        return 'executesql'
 
+    def displayName(self):
+        return self.tr('Execute SQL')
+
+    def group(self):
+        return self.tr('Vector miscellaneous')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input layer or table')))
         self.addParameter(ParameterString(self.SQL, self.tr('SQL'), ''))
 

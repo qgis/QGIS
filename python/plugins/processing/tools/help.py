@@ -35,7 +35,7 @@ def baseHelpForAlgorithm(alg, folder):
     baseDir = os.path.join(folder, alg.provider.id().lower())
     mkdir(baseDir)
 
-    groupName = alg.group.lower()
+    groupName = alg.group().lower()
     groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')
     groupName = groupName.replace(' ', '_')
     cmdLineName = alg.commandLineName()
@@ -49,8 +49,8 @@ def baseHelpForAlgorithm(alg, folder):
     filePath = os.path.join(dirName, safeAlgName + '.rst')
 
     with codecs.open(filePath, 'w', encoding='utf-8') as f:
-        f.write('{}\n'.format(alg.name))
-        f.write('{}\n\n'.format('=' * len(alg.name)))
+        f.write('{}\n'.format(alg.name()))
+        f.write('{}\n\n'.format('=' * len(alg.name())))
         f.write('Description\n')
         f.write('-----------\n\n<put algorithm description here>\n\n')
 

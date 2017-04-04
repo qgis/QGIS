@@ -35,7 +35,10 @@ except:
     hasSciPy = False
 
 from osgeo import gdal, ogr, osr
-from qgis.core import QgsRectangle, QgsGeometry, QgsFeature
+from qgis.core import (QgsApplication,
+                       QgsRectangle,
+                       QgsGeometry,
+                       QgsFeature)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -57,10 +60,22 @@ class ZonalStatistics(GeoAlgorithm):
     GLOBAL_EXTENT = 'GLOBAL_EXTENT'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Zonal Statistics')
-        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Raster tools')
+
+    def name(self):
+        return 'zonalstatistics'
+
+    def displayName(self):
+        return self.tr('Zonal Statistics')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterNumber(self.RASTER_BAND,

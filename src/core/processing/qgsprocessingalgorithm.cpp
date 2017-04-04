@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsprocessingprovider.cpp
+                         qgsprocessingalgorithm.cpp
                          --------------------------
     begin                : December 2016
     copyright            : (C) 2016 by Nyall Dawson
@@ -15,21 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsprocessingprovider.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
-#include "qgsvectorfilewriter.h"
 
-QIcon QgsProcessingProvider::icon() const
+QIcon QgsProcessingAlgorithm::icon() const
 {
   return QgsApplication::getThemeIcon( "/processingAlgorithm.svg" );
 }
 
-QString QgsProcessingProvider::svgIconPath() const
+QString QgsProcessingAlgorithm::svgIconPath() const
 {
   return QgsApplication::iconPath( "processingAlgorithm.svg" );
 }
 
-QStringList QgsProcessingProvider::supportedOutputVectorLayerExtensions() const
+QgsProcessingAlgorithm::Flags QgsProcessingAlgorithm::flags() const
 {
-  return QgsVectorFileWriter::supportedFormatExtensions();
+  return FlagSupportsBatch;
 }

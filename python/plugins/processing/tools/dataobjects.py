@@ -76,11 +76,6 @@ def getSupportedOutputRasterLayerExtensions():
     return allexts
 
 
-def getSupportedOutputTableExtensions():
-    exts = ['csv']
-    return exts
-
-
 def getRasterLayers(sorting=True):
     layers = QgsProject.instance().layerTreeRoot().findLayers()
     raster = [lay.layer() for lay in layers if lay.layer() is not None and canUseRasterLayer(lay.layer())]

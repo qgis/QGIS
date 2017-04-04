@@ -49,14 +49,22 @@ class PointsAlongGeometry(GeoAlgorithm):
     START_OFFSET = 'START_OFFSET'
     END_OFFSET = 'END_OFFSET'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'extract_nodes.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Points along lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('create,interpolate,points,lines')
+    def tags(self):
+        return self.tr('create,interpolate,points,lines').split(',')
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'pointsalonglines'
+
+    def displayName(self):
+        return self.tr('Points along lines')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))

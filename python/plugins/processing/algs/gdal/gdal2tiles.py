@@ -60,13 +60,16 @@ class gdal2tiles(GdalAlgorithm):
     RESAMPLINGS = ['average', 'near', 'bilinear', 'cubic', 'cubicspline', 'lanczos', 'antialias']
     WEBVIEWERS = ['all', 'google', 'openlayers', 'leaflet', 'none']
 
-    def commandLineName(self):
-        return "gdal:gdal2tiles"
+    def name(self):
+        return 'gdal2tiles'
+
+    def displayName(self):
+        return self.tr('gdal2tiles')
+
+    def group(self):
+        return self.tr('Raster miscellaneous')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('gdal2tiles')
-        self.group, self.i18n_group = self.trAlgorithm('Raster miscellaneous')
-
         # Required parameters
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
 
