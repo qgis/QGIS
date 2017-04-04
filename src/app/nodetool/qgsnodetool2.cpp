@@ -451,19 +451,24 @@ void QgsNodeTool2::mouseMoveDraggingVertex( QgsMapMouseEvent *e )
 
   mEdgeCenterMarker->setVisible( false );
 
+  moveDragBands( e->mapPoint() );
+}
+
+void QgsNodeTool2::moveDragBands( const QgsPoint &mapPoint )
+{
   for ( int i = 0; i < mDragStraightBands.count(); ++i )
   {
     StraightBand &b = mDragStraightBands[i];
     if ( b.moving0 )
-      b.band->movePoint( 0, e->mapPoint() + b.offset0 );
+      b.band->movePoint( 0, mapPoint + b.offset0 );
     if ( b.moving1 )
-      b.band->movePoint( 1, e->mapPoint() + b.offset1 );
+      b.band->movePoint( 1, mapPoint + b.offset1 );
   }
 
   for ( int i = 0; i < mDragCircularBands.count(); ++i )
   {
     CircularBand &b = mDragCircularBands[i];
-    b.updateRubberBand( e->mapPoint() );
+    b.updateRubberBand( mapPoint );
   }
 
   // in case of moving of standalone point geometry
@@ -471,7 +476,7 @@ void QgsNodeTool2::mouseMoveDraggingVertex( QgsMapMouseEvent *e )
   {
     QgsVertexMarker *marker = mDragPointMarkers[i];
     QgsVector offset = mDragPointMarkersOffset[i];
-    marker->setCenter( e->mapPoint() + offset );
+    marker->setCenter( mapPoint + offset );
   }
 
   // make sure the temporary feature rubber band is not visible
@@ -483,32 +488,9 @@ void QgsNodeTool2::mouseMoveDraggingEdge( QgsMapMouseEvent *e )
   mSnapMarker->setVisible( false );
   mEdgeCenterMarker->setVisible( false );
 
-  const QgsVectorLayer *dragLayer = mDraggingEdge->layer;
-  QgsFeatureId dragFid = mDraggingEdge->fid;
-  int dragVertex0 = mDraggingEdge->edgeVertex0;
-  QgsPoint dragStartPoint = mDraggingEdge->startMapPoint;
   QgsPoint mapPoint = toMapCoordinates( e->pos() );  // do not use e.mapPoint() as it may be snapped
 
-  double diffX = mapPoint.x() - dragStartPoint.x();
-  double diffY = mapPoint.y() - dragStartPoint.y();
-
-  QgsGeometry geom( cachedGeometry( dragLayer, dragFid ) );
-  QgsPoint origMapPoint0 = toMapCoordinates( dragLayer, geom.vertexAt( dragVertex0 ) );
-  QgsPoint origMapPoint1 = toMapCoordinates( dragLayer, geom.vertexAt( dragVertex0 + 1 ) );
-  QgsPoint newMapPoint0 = QgsPoint( origMapPoint0.x() + diffX, origMapPoint0.y() + diffY );
-  QgsPoint newMapPoint1 = QgsPoint( origMapPoint1.x() + diffX, origMapPoint1.y() + diffY );
-
-  mDraggingEdge->band0to1->movePoint( 0, newMapPoint0 );
-  mDraggingEdge->band0to1->movePoint( 1, newMapPoint1 );
-
-  Q_FOREACH ( QgsRubberBand *band, mDraggingEdge->bandsTo0 )
-    band->movePoint( 1, newMapPoint0 );
-
-  Q_FOREACH ( QgsRubberBand *band, mDraggingEdge->bandsTo1 )
-    band->movePoint( 1, newMapPoint1 );
-
-  // make sure the temporary feature rubber band is not visible
-  removeTemporaryRubberBands();
+  moveDragBands( mapPoint );
 }
 
 void QgsNodeTool2::canvasDoubleClickEvent( QgsMapMouseEvent *e )
@@ -1089,27 +1071,20 @@ void QgsNodeTool2::startDraggingEdge( const QgsPointLocator::Match &m, const Qgs
   m.edgePoints( edge_p0, edge_p1 );
   QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
 
-  // add drag bands
-  addDragBand( edge_p0, edge_p1 );
+  addDragStraightBand( edge_p0, edge_p1, true, true, mapPoint );
+
   int v0idx, v1idx, vidxUnused;
   geom.adjacentVertices( m.vertexIndex(), v0idx, vidxUnused );
   geom.adjacentVertices( m.vertexIndex() + 1, vidxUnused, v1idx );
+
   if ( v0idx != -1 )
   {
-    QgsPoint layerPoint0 = geom.vertexAt( v0idx );
-    QgsPoint mapPoint0 = toMapCoordinates( m.layer(), layerPoint0 );
-    addDragBand( mapPoint0, edge_p0 );
-    mDraggingEdge->bandsTo0 << mDragStraightBands.last().band;
+    addDragStraightBand( geom.vertexAt( v0idx ), edge_p0, false, true, mapPoint );
   }
   if ( v1idx != -1 )
   {
-    QgsPoint layerPoint1 = geom.vertexAt( v1idx );
-    QgsPoint mapPoint1 = toMapCoordinates( m.layer(), layerPoint1 );
-    addDragBand( mapPoint1, edge_p1 );
-    mDraggingEdge->bandsTo1 << mDragStraightBands.last().band;
+    addDragStraightBand( edge_p1, geom.vertexAt( v1idx ), true, false, mapPoint );
   }
-
-  mDraggingEdge->band0to1 = mDragStraightBands.first().band;
 
   mOverrideCadPoints.clear();
   mOverrideCadPoints << m.point() << m.point();

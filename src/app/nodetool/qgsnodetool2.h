@@ -64,13 +64,6 @@ struct Edge
   QgsFeatureId fid;
   int edgeVertex0;    //!< First vertex (with lower index)
   QgsPoint startMapPoint;  //!< Map point where edge drag started
-
-  //! rubber band between the edge's endpoints (owned by mDragBands, not this instance)
-  QgsRubberBand *band0to1 = nullptr;
-  //! rubber bands from other edges to our edge's first endpoint (owned by mDragBands, not this instance)
-  QList<QgsRubberBand *> bandsTo0;
-  //! rubber bands from other edges to our edge's second endpoint (owned by mDragBands, not this instance)
-  QList<QgsRubberBand *> bandsTo1;
 };
 
 
@@ -113,6 +106,8 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     void addDragStraightBand( const QgsPoint &v0, const QgsPoint &v1, bool moving0, bool moving1, const QgsPoint &mapPoint );
 
     void addDragCircularBand( const QgsPoint &v0, const QgsPoint &v1, const QgsPoint &v2, bool moving0, bool moving1, bool moving2, const QgsPoint &mapPoint );
+
+    void moveDragBands( const QgsPoint &mapPoint );
 
     void clearDragBands();
 
