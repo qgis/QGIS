@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rm="http://qgis.org/resource-metadata/1.0" targetNamespace="http://qgis.org/resource-metadata/1.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+    <xs:element name="ResourceMetadata" type="rm:ResourceMetadataType">
+        <xs:annotation>
+            <xs:documentation>Comment describing your root element</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="ResourceMetadataType">
+        <xs:sequence>
+            <xs:element name="identifier" type="xs:string"/>
+            <xs:element name="parentidentifier" type="xs:string" minOccurs="0"/>
+            <xs:element name="language" type="xs:string"/>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="title" type="xs:string"/>
+            <xs:element name="abstract" type="xs:string"/>
+            <xs:element name="keywords" type="rm:keywordsType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="fees" type="xs:string" minOccurs="0"/>
+            <xs:element name="constraints" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="rights" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="encoding" type="xs:string" minOccurs="0"/>
+            <xs:element name="crs" type="xs:string"/>
+            <xs:element name="extent" type="rm:extentType" maxOccurs="1"/>
+            <xs:element name="contact" type="rm:contactType" maxOccurs="unbounded"/>
+            <xs:element name="links" type="rm:linksType"/>
+        </xs:sequence>
+        <xs:attribute name="version" use="required" fixed="1.0"/>
+    </xs:complexType>
+    <xs:complexType name="keywordsType">
+        <xs:sequence>
+            <xs:element name="keyword" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="vocabulary" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="extentType">
+            <xs:sequence>
+                <xs:element name="spatial" type="rm:spatialType" maxOccurs="unbounded"/>
+                <xs:element name="temporal" type="rm:temporalType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="spatialType">
+        <xs:attribute name="dimensions" type="xs:integer" default="2"/>
+        <xs:attribute name="crs" type="xs:string" use="required"/>
+        <xs:attribute name="minx" type="xs:decimal" use="required"/>
+        <xs:attribute name="miny" type="xs:decimal" use="required"/>
+        <xs:attribute name="minz" type="xs:decimal" use="optional"/>
+        <xs:attribute name="maxx" type="xs:decimal" use="required"/>
+        <xs:attribute name="maxy" type="xs:decimal" use="required"/>
+        <xs:attribute name="maxz" type="xs:decimal" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="temporalType">
+        <xs:choice>
+            <xs:element name="instant" type="xs:dateTime"/>
+            <xs:element name="period" type="rm:periodType"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="periodType">
+        <xs:sequence>
+            <xs:element name="start" type="xs:dateTime"/>
+            <xs:element name="end" type="xs:dateTime" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="indeterminatePosition" type="xs:boolean"/>
+    </xs:complexType>
+    <xs:complexType name="contactType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="organization" type="xs:string" minOccurs="0"/>
+            <xs:element name="position" type="xs:string" minOccurs="0"/>
+            <xs:element name="address" type="rm:addressType" minOccurs="0"/>
+            <xs:element name="voice" type="xs:string" minOccurs="0"/>
+            <xs:element name="fax" type="xs:string" minOccurs="0"/>
+            <xs:element name="email" type="xs:string" minOccurs="0"/>
+            <xs:element name="role" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="addressType">
+        <xs:sequence>
+            <xs:element name="type" type="xs:string" minOccurs="0"/>
+            <xs:element name="address" type="xs:string" minOccurs="0"/>
+            <xs:element name="city" type="xs:string" minOccurs="0"/>
+            <xs:element name="administrativearea" type="xs:string" minOccurs="0"/>
+            <xs:element name="postalcode" type="xs:string" minOccurs="0"/>
+            <xs:element name="country" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="linksType">
+        <xs:sequence>
+            <xs:element name="link" type="rm:linkType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="linkType">
+        <xs:attributeGroup ref="rm:linkAttrs"/>
+    </xs:complexType>
+    <xs:attributeGroup name="linkAttrs">
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="type" type="xs:string"/>
+        <xs:attribute name="description" type="xs:string" use="optional"/>
+        <xs:attribute name="url" type="xs:anyURI" use="required"/>
+        <xs:attribute name="format" type="xs:string" use="optional"/>
+        <xs:attribute name="mimeType" type="xs:string" use="optional"/>
+        <xs:attribute name="size" type="xs:string" use="optional"/>
+    </xs:attributeGroup>
+</xs:schema>
