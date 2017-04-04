@@ -25,7 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProcessingProvider)
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
@@ -72,8 +71,3 @@ class AlgorithmProvider(QgsProcessingProvider):
         """
         name = 'ACTIVATE_' + self.id().upper().replace(' ', '_')
         ProcessingConfig.removeSetting(name)
-
-    def tr(self, string, context=''):
-        if context == '':
-            context = self.__class__.__name__
-        return QCoreApplication.translate(context, string)

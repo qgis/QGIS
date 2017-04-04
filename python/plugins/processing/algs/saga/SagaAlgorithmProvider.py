@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
@@ -123,3 +124,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'SagaAlgorithmProvider'
+        return QCoreApplication.translate(context, string)

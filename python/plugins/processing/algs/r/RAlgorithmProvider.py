@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
@@ -128,3 +129,8 @@ class RAlgorithmProvider(AlgorithmProvider):
                             ProcessingLog.LOG_ERROR,
                             self.tr('Could not load R script: {0}\n{1}').format(descriptionFile, str(e)))
         return
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'RAlgorithmProvider'
+        return QCoreApplication.translate(context, string)

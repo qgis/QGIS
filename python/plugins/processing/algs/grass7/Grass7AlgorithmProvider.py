@@ -27,6 +27,7 @@ __copyright__ = '(C) 2014, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -119,3 +120,8 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
 
     def canBeActivated(self):
         return not bool(Grass7Utils.checkGrass7IsInstalled())
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'Grass7AlgorithmProvider'
+        return QCoreApplication.translate(context, string)

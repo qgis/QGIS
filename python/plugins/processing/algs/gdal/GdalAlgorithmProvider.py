@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
@@ -146,3 +147,8 @@ class GdalAlgorithmProvider(AlgorithmProvider):
 
     def supportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'GdalAlgorithmProvider'
+        return QCoreApplication.translate(context, string)
