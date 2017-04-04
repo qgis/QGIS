@@ -1,354 +1,343 @@
-/***************************************************************************
-  qgsattributeeditorelement.sip - QgsAttributeEditorElement
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsattributeeditorelement.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
- ---------------------
- begin                : 18.8.2016
- copyright            : (C) 2016 by Matthias Kuhn
- email                : matthias@opengis.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/** \ingroup core
- * This is an abstract base class for any elements of a drag and drop form.
- *
- * This can either be a container which will be represented on the screen
- * as a tab widget or ca collapsible group box. Or it can be a field which will
- * then be represented based on the QgsEditorWidget type and configuration.
- * Or it can be a relation and embed the form of several children of another
- * layer.
- */
 
-class QgsAttributeEditorElement /Abstract/
+
+class QgsAttributeEditorElement
 {
+
 %TypeHeaderCode
-#include <qgsattributeeditorelement.h>
+#include "qgsattributeeditorelement.h"
 %End
 
 %ConvertToSubClassCode
-switch( sipCpp->type() )
-{
-  case QgsAttributeEditorElement::AeTypeContainer:
-    sipType = sipType_QgsAttributeEditorContainer;
-    break;
-  case QgsAttributeEditorElement::AeTypeField:
-    sipType = sipType_QgsAttributeEditorField;
-    break;
-  case QgsAttributeEditorElement::AeTypeRelation:
-    sipType = sipType_QgsAttributeEditorRelation;
-    break;
-  default:
-    sipType = nullptr;
-    break;
-}
+    switch ( sipCpp->type() )
+    {
+      case QgsAttributeEditorElement::AeTypeContainer:
+        sipType = sipType_QgsAttributeEditorContainer;
+        break;
+      case QgsAttributeEditorElement::AeTypeField:
+        sipType = sipType_QgsAttributeEditorField;
+        break;
+      case QgsAttributeEditorElement::AeTypeRelation:
+        sipType = sipType_QgsAttributeEditorRelation;
+        break;
+      default:
+        sipType = 0;
+        break;
+    }
 %End
   public:
     enum AttributeEditorType
     {
-      AeTypeContainer, //!< A container
-      AeTypeField,     //!< A field
-      AeTypeRelation,  //!< A relation
-      AeTypeInvalid    //!< Invalid
+      AeTypeContainer,
+      AeTypeField,
+      AeTypeRelation,
+      AeTypeInvalid
     };
 
-    /**
-     * Constructor
-     *
-     * @param type The type of the new element. Should never
-     * @param name
-     * @param parent
-     */
-    QgsAttributeEditorElement( AttributeEditorType type, const QString& name, QgsAttributeEditorElement* parent = nullptr );
+    QgsAttributeEditorElement( AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = 0 );
+%Docstring
+ Constructor
 
-    /**
-     * Return the name of this element
-     *
-     * @return The name for this element
-     */
+ \param type The type of the new element. Should never
+ \param name
+ \param parent
+%End
+
+
+    virtual ~QgsAttributeEditorElement();
+
     QString name() const;
+%Docstring
+ Return the name of this element
 
-    /**
-     * The type of this element
-     *
-     * @return The type
-     */
-    AttributeEditorType type();
+ \returns The name for this element
+%End
 
-    /**
-     * Get the parent of this element.
-     *
-     * @note Added in QGIS 3.0
-     */
-    QgsAttributeEditorElement* parent() const;
+    AttributeEditorType type() const;
+%Docstring
+ The type of this element
 
-    /**
-     * Get the XML Dom element to save this element.
-     *
-     * @param doc The QDomDocument which is used to create new XML elements
-     *
-     * @return A DOM element to serialize this element
-     */
-    QDomElement toDomElement( QDomDocument& doc ) const;
+ \returns The type
+%End
 
-    /**
-     * Returns a clone of this element. To be implemented by subclasses.
-     *
-     * @note Added in QGIS 3.0
-     */
-    virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const = 0 /Factory/;
+    QgsAttributeEditorElement *parent() const;
+%Docstring
+ Get the parent of this element.
 
-    /**
-     * Controls if this element should be labeled with a title (field, relation or groupname).
-     *
-     * @note Added in QGIS 2.18
-     */
+.. versionadded:: 3.0
+%End
+
+    QDomElement toDomElement( QDomDocument &doc ) const;
+%Docstring
+ Get the XML Dom element to save this element.
+
+ \param doc The QDomDocument which is used to create new XML elements
+
+ \returns A DOM element to serialize this element
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const = 0 /Factory/;
+%Docstring
+ Returns a clone of this element. To be implemented by subclasses.
+
+.. versionadded:: 3.0
+%End
+
     bool showLabel() const;
+%Docstring
+ Controls if this element should be labeled with a title (field, relation or groupname).
 
-    /**
-     * Controls if this element should be labeled with a title (field, relation or groupname).
-     *
-     * @note Added in QGIS 2.18
-     */
+.. versionadded:: 2.18
+%End
+
     void setShowLabel( bool showLabel );
+%Docstring
+ Controls if this element should be labeled with a title (field, relation or groupname).
+
+.. versionadded:: 2.18
+%End
+
+  protected:
 
 };
 
 
-/** \ingroup core
- * This is a container for attribute editors, used to group them visually in the
- * attribute form if it is set to the drag and drop designer.
- */
 class QgsAttributeEditorContainer : QgsAttributeEditorElement
 {
-%TypeHeaderCode
-#include <qgsattributeeditorelement.h>
+%Docstring
+ This is a container for attribute editors, used to group them visually in the
+ attribute form if it is set to the drag and drop designer.
 %End
+
+%TypeHeaderCode
+#include "qgsattributeeditorelement.h"
+%End
+
 %ConvertToSubClassCode
-  switch ( sipCpp->type() )
-  {
-    case QgsAttributeEditorElement::AeTypeContainer: sipType = sipType_QgsAttributeEditorContainer; break;
-    case QgsAttributeEditorElement::AeTypeField:     sipType = sipType_QgsAttributeEditorField; break;
-    case QgsAttributeEditorElement::AeTypeRelation:  sipType = sipType_QgsAttributeEditorRelation; break;
-  }
+    switch ( sipCpp->type() )
+    {
+      case QgsAttributeEditorElement::AeTypeContainer: sipType = sipType_QgsAttributeEditorContainer; break;
+      case QgsAttributeEditorElement::AeTypeField:     sipType = sipType_QgsAttributeEditorField; break;
+      case QgsAttributeEditorElement::AeTypeRelation:  sipType = sipType_QgsAttributeEditorRelation; break;
+    }
 %End
   public:
-    /**
-     * Creates a new attribute editor container
-     *
-     * @param name   The name to show as title
-     * @param parent The parent. May be another container.
-     */
-    QgsAttributeEditorContainer( const QString& name, QgsAttributeEditorElement* parent );
 
-    /**
-     * Will serialize this containers information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const;
+    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent );
+%Docstring
+ Creates a new attribute editor container
 
-    /**
-     * Add a child element to this container. This may be another container, a field or a relation.
-     *
-     * @param element The element to add as child
-     */
-    virtual void addChildElement( QgsAttributeEditorElement* element /Transfer/ );
+ \param name   The name to show as title
+ \param parent The parent. May be another container.
+%End
 
-    /**
-     * Determines if this container is rendered as collapsible group box or tab in a tabwidget
-     *
-     * @param isGroupBox If true, this will be a group box
-     */
+
+    virtual ~QgsAttributeEditorContainer();
+
+    virtual void addChildElement( QgsAttributeEditorElement *element );
+%Docstring
+ Add a child element to this container. This may be another container, a field or a relation.
+
+ \param element The element to add as child
+%End
+
     virtual void setIsGroupBox( bool isGroupBox );
+%Docstring
+ Determines if this container is rendered as collapsible group box or tab in a tabwidget
 
-    /**
-     * Returns if this container is going to be rendered as a group box
-     *
-     * @return True if it will be a group box, false if it will be a tab
-     */
+ \param isGroupBox If true, this will be a group box
+%End
+
     virtual bool isGroupBox() const;
+%Docstring
+ Returns if this container is going to be rendered as a group box
 
-    /**
-     * Get a list of the children elements of this container
-     *
-     * @return A list of elements
-     */
-    QList<QgsAttributeEditorElement*> children() const;
+ \returns True if it will be a group box, false if it will be a tab
+%End
 
-    /**
-     * Traverses the element tree to find any element of the specified type
-     *
-     * @param type The type which should be searched
-     *
-     * @return A list of elements of the type which has been searched for
-     */
-    virtual QList<QgsAttributeEditorElement*> findElements( AttributeEditorType type ) const;
+    QList<QgsAttributeEditorElement *> children() const;
+%Docstring
+ Get a list of the children elements of this container
 
-    /**
-     * Clear all children from this container.
-     */
+ \returns A list of elements
+%End
+
+    virtual QList<QgsAttributeEditorElement *> findElements( AttributeEditorType type ) const;
+%Docstring
+ Traverses the element tree to find any element of the specified type
+
+ \param type The type which should be searched
+
+ \returns A list of elements of the type which has been searched for
+%End
+
     void clear();
+%Docstring
+ Clear all children from this container.
+%End
 
-    /**
-     * Change the name of this container
-     */
-    void setName( const QString& name );
+    void setName( const QString &name );
+%Docstring
+ Change the name of this container
+%End
 
-    /**
-     * Get the number of columns in this group
-     */
     int columnCount() const;
+%Docstring
+ Get the number of columns in this group
+%End
 
-    /**
-     * Set the number of columns in this group
-     */
     void setColumnCount( int columnCount );
+%Docstring
+ Set the number of columns in this group
+%End
 
-    /**
-     * Creates a deep copy of this element. To be implemented by subclasses.
-     *
-     * @note Added in QGIS 3.0
-     */
-    virtual QgsAttributeEditorElement* clone(QgsAttributeEditorElement* parent) const /Factory/;
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+%Docstring
+ Creates a deep copy of this element. To be implemented by subclasses.
 
-    /**
-     * The visibility expression is used in the attribute form to
-     * show or hide this container based on an expression incorporating
-     * the field value controlled by editor widgets.
-     *
-     * @note Added in QGIS 3.0
-     */
+.. versionadded:: 3.0
+%End
+
     QgsOptionalExpression visibilityExpression() const;
+%Docstring
+ The visibility expression is used in the attribute form to
+ show or hide this container based on an expression incorporating
+ the field value controlled by editor widgets.
 
-    /**
-     * The visibility expression is used in the attribute form to
-     * show or hide this container based on an expression incorporating
-     * the field value controlled by editor widgets.
-     *
-     * @note Added in QGIS 3.0
-     */
-    void setVisibilityExpression( const QgsOptionalExpression& visibilityExpression );
+.. versionadded:: 3.0
+%End
+
+    void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
+%Docstring
+ The visibility expression is used in the attribute form to
+ show or hide this container based on an expression incorporating
+ the field value controlled by editor widgets.
+
+.. versionadded:: 3.0
+%End
+
 };
 
-/** \ingroup core
- * This element will load a field's widget onto the form.
- */
-class QgsAttributeEditorField : public QgsAttributeEditorElement
+class QgsAttributeEditorField : QgsAttributeEditorElement
 {
+%Docstring
+ This element will load a field's widget onto the form.
+%End
+
 %TypeHeaderCode
-#include <qgsattributeeditorelement.h>
+#include "qgsattributeeditorelement.h"
 %End
   public:
-    /**
-     * Creates a new attribute editor element which represents a field
-     *
-     * @param name   The name of the element
-     * @param idx    The index of the field which should be embedded
-     * @param parent The parent of this widget (used as container)
-     */
-    QgsAttributeEditorField( const QString& name, int idx, QgsAttributeEditorElement *parent );
 
-    /**
-     * Will serialize this elements information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const;
+    QgsAttributeEditorField( const QString &name, int idx, QgsAttributeEditorElement *parent );
+%Docstring
+ Creates a new attribute editor element which represents a field
 
-    /**
-     * Return the index of the field
-     * @return
-     */
+ \param name   The name of the element
+ \param idx    The index of the field which should be embedded
+ \param parent The parent of this widget (used as container)
+%End
+
     int idx() const;
+%Docstring
+ Return the index of the field
+ \returns
+%End
 
-    virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const /Factory/;
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
 };
 
-/** \ingroup core
- * This element will load a relation editor onto the form.
- */
 class QgsAttributeEditorRelation : QgsAttributeEditorElement
 {
+%Docstring
+ This element will load a relation editor onto the form.
+%End
+
 %TypeHeaderCode
-#include <qgsattributeeditorelement.h>
+#include "qgsattributeeditorelement.h"
 %End
   public:
-    /**
-     * Creates a new element which embeds a relation.
-     *
-     * @param name         The name of this element
-     * @param relationId   The id of the relation to embed
-     * @param parent       The parent (used as container)
-     */
-    QgsAttributeEditorRelation( const QString& name, const QString &relationId, QgsAttributeEditorElement* parent );
 
-    /**
-     * Creates a new element which embeds a relation.
-     *
-     * @param name         The name of this element
-     * @param relation     The relation to embed
-     * @param parent       The parent (used as container)
-     */
-    QgsAttributeEditorRelation( const QString& name, const QgsRelation& relation, QgsAttributeEditorElement* parent );
+    QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent );
+%Docstring
+ Creates a new element which embeds a relation.
 
-    /**
-     * Will serialize this elements information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const;
+ \param name         The name of this element
+ \param relationId   The id of the relation to embed
+ \param parent       The parent (used as container)
+%End
 
-    /**
-     * Get the id of the relation which shall be embedded
-     *
-     * @return the id
-     */
-    const QgsRelation& relation() const;
+    QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent );
+%Docstring
+ Creates a new element which embeds a relation.
 
-    /**
-     * Initializes the relation from the id
-     *
-     * @param relManager The relation manager to use for the initialization
-     * @return true if the relation was found in the relationmanager
-     */
-    bool init( QgsRelationManager* relManager );
+ \param name         The name of this element
+ \param relation     The relation to embed
+ \param parent       The parent (used as container)
+%End
 
-    virtual QgsAttributeEditorElement* clone(QgsAttributeEditorElement* parent) const /Factory/;
+    const QgsRelation &relation() const;
+%Docstring
+ Get the id of the relation which shall be embedded
 
-    /**
-     * Determines if the "link feature" button should be shown
-     *
-     * @note Added in QGIS 2.18
-     */
+ \returns the id
+%End
+
+    bool init( QgsRelationManager *relManager );
+%Docstring
+ Initializes the relation from the id
+
+ \param relManager The relation manager to use for the initialization
+ \returns true if the relation was found in the relationmanager
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
     bool showLinkButton() const;
-    /**
-     * Determines if the "link feature" button should be shown
-     *
-     * @note Added in QGIS 2.18
-     */
-    void setShowLinkButton( bool showLinkButton );
+%Docstring
+ Determines if the "link feature" button should be shown
 
-    /**
-     * Determines if the "unlink feature" button should be shown
-     *
-     * @note Added in QGIS 2.18
-     */
+.. versionadded:: 2.18
+%End
+
+    void setShowLinkButton( bool showLinkButton );
+%Docstring
+ Determines if the "link feature" button should be shown
+
+.. versionadded:: 2.18
+%End
+
     bool showUnlinkButton() const;
-    /**
-     * Determines if the "unlink feature" button should be shown
-     *
-     * @note Added in QGIS 2.18
-     */
+%Docstring
+ Determines if the "unlink feature" button should be shown
+
+.. versionadded:: 2.18
+%End
+
     void setShowUnlinkButton( bool showUnlinkButton );
+%Docstring
+ Determines if the "unlink feature" button should be shown
+
+.. versionadded:: 2.18
+%End
+
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsattributeeditorelement.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

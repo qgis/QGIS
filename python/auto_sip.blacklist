@@ -2,9 +2,6 @@ core/conversions.sip
 core/qgsexception.sip
 core/qgis.sip
 core/qgsapplication.sip
-core/qgsaggregatecalculator.sip
-core/qgsattributetableconfig.sip
-core/qgsattributeeditorelement.sip
 core/qgsbearingutils.sip
 core/qgsbrowsermodel.sip
 core/qgscolorramp.sip
