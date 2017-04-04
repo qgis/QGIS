@@ -389,7 +389,7 @@ while(!eof $header){
     }
 
     # write comment
-    if ( $line =~ m/^\s*$/ || $line =~ m/\/\// || $line =~ m/\s*typedef / ){
+    if ( $line =~ m/^\s*$/ || $line =~ m/\/\// || $line =~ m/\s*typedef / || $line =~ m/\s*struct / ){
         $comment = '';
     }
     elsif ( $comment !~ m/^\s*$/ ){

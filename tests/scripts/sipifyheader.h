@@ -105,6 +105,16 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     };
     Q_DECLARE_FLAGS( Flags, MyEnum )
 
+    /**
+     * Docstring headers for structs are not supported by sip (as of 4.18) and
+     * therefore this docstring must not to be copied to the sipfile.
+     */
+    struct Data
+    {
+      QString name;
+      int count;
+    };
+
     //! A constructor with definition in header
     explicit QgsSipifyHeader()
       : QtClass<QVariant>()
