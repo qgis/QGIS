@@ -30,8 +30,7 @@ import re
 
 from qgis.PyQt.QtCore import QUrl
 
-from qgis.core import (QgsApplication,
-                       QgsVectorFileWriter)
+from qgis.core import QgsApplication
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
@@ -59,7 +58,7 @@ class GdalAlgorithm(GeoAlgorithm):
     def processAlgorithm(self, feedback):
         commands = self.getConsoleCommands()
         layers = dataobjects.getVectorLayers()
-        supported = QgsVectorFileWriter.supportedFormatExtensions()
+        supported = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i, c in enumerate(commands):
             for layer in layers:
                 if layer.source() in c:
