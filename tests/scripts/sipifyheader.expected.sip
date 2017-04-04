@@ -58,6 +58,7 @@ class QgsSipifyHeader : QtClass<QVariant>
     else
       sipType = sipType_QgsStandardSipifyHeader;
 %End
+
   public:
     enum MyEnum
     {

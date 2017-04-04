@@ -136,6 +136,7 @@ class QgsPropertyTransformer
     else
       sipType = sipType_QgsPropertyTransformer;
 %End
+
   public:
 
     enum Type

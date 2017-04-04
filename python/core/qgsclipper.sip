@@ -13,6 +13,7 @@
 
 %Feature ARM // Some parts are not available in sip bindings on ARM because of qreal double vs. float issues
 
+
 class QgsClipper
 {
 %Docstring
@@ -47,6 +48,7 @@ class QgsClipper
     };
 
 %If (!ARM) // Not available on ARM sip bindings because of qreal issues
+
     static void trimFeature( QVector<double> &x,
                              QVector<double> &y,
                              bool shapeOpen );
@@ -62,6 +64,7 @@ class QgsClipper
 %End
 
 %End
+
     static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );
 
     static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
