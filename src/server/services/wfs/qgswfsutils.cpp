@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 #include "qgswfsutils.h"
+#include "qgsogcutils.h"
 #include "qgsconfigcache.h"
 #include "qgsserverprojectutils.h"
 
@@ -69,6 +70,82 @@ namespace QgsWfs
     }
 
     return  href;
+  }
+
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem )
+  {
+    QgsFeatureRequest request;
+
+    QDomNodeList fidNodes = filterElem.elementsByTagName( QStringLiteral( "FeatureId" ) );
+    if ( !fidNodes.isEmpty() )
+    {
+      QgsFeatureIds fids;
+      QDomElement fidElem;
+      for ( int f = 0; f < fidNodes.size(); f++ )
+      {
+        fidElem = fidNodes.at( f ).toElement();
+        if ( !fidElem.hasAttribute( QStringLiteral( "fid" ) ) )
+        {
+          throw QgsRequestNotWellFormedException( "FeatureId element without fid attribute" );
+        }
+
+        QString fid = fidElem.attribute( QStringLiteral( "fid" ) );
+        if ( fid.contains( QLatin1String( "." ) ) )
+        {
+          if ( fid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
+            continue;
+          fid = fid.section( QStringLiteral( "." ), 1, 1 );
+        }
+        fids.insert( fid.toInt() );
+      }
+
+      if ( fids.size() > 0 )
+      {
+        request.setFilterFids( fids );
+      }
+      request.setFlags( QgsFeatureRequest::NoFlags );
+      return request;
+    }
+    else if ( filterElem.firstChildElement().tagName() == QLatin1String( "BBOX" ) )
+    {
+      QDomElement bboxElem = filterElem.firstChildElement();
+      QDomElement childElem = bboxElem.firstChildElement();
+
+      while ( !childElem.isNull() )
+      {
+        if ( childElem.tagName() == QLatin1String( "Box" ) )
+        {
+          request.setFilterRect( QgsOgcUtils::rectangleFromGMLBox( childElem ) );
+        }
+        else if ( childElem.tagName() != QLatin1String( "PropertyName" ) )
+        {
+          QgsGeometry geom = QgsOgcUtils::geometryFromGML( childElem );
+          request.setFilterRect( geom.boundingBox() );
+        }
+        childElem = childElem.nextSiblingElement();
+      }
+      request.setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoFlags );
+      return request;
+    }
+    else
+    {
+      std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+      if ( filter )
+      {
+        if ( filter->hasParserError() )
+        {
+          throw QgsRequestNotWellFormedException( filter->parserErrorString() );
+        }
+
+        if ( filter->needsGeometry() )
+        {
+          request.setFlags( QgsFeatureRequest::NoFlags );
+        }
+        request.setFilterExpression( filter->expression() );
+        return request;
+      }
+    }
+    return request;
   }
 
 } // namespace QgsWfs

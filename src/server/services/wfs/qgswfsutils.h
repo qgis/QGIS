@@ -53,6 +53,10 @@ namespace QgsWfs
    */
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project );
 
+  /** Transform a Filter element to a feature request
+   */
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem );
+
   // Define namespaces used in WFS documents
   const QString WFS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wfs" );
   const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );

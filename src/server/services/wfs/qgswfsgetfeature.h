@@ -24,6 +24,39 @@
 
 namespace QgsWfs
 {
+  struct getFeatureQuery
+  {
+    QString typeName;
+
+    QgsFeatureRequest featureRequest;
+
+    QStringList propertyList;
+  };
+
+  struct getFeatureRequest
+  {
+    long maxFeatures;
+
+    long startIndex;
+
+    QString outputFormat;
+
+    QList< getFeatureQuery > queries;
+
+    QString geometryName;
+  };
+
+  /** Transform Query element to getFeatureQuery
+   */
+  getFeatureQuery parseQueryElement( QDomElement &queryElem );
+
+  /** Transform RequestBody root element to getFeatureRequest
+   */
+  getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem );
+
+  /** Transform parameters to getFeatureRequest
+   */
+  getFeatureRequest parseGetFeatureParameters( QgsServerRequest::Parameters parameters );
 
   /** Output WFS  GetFeature response
    */
