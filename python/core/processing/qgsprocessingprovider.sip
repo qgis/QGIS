@@ -105,8 +105,9 @@ class QgsProcessingProvider : QObject
 %Docstring
  Loads the provider. This will be called when the plugin is being loaded, and any general
  setup actions should occur in an overridden version of this method.
- Subclasses should not load any algorithms in their load() implementations, as that must
- occur within the loadAlgorithms() method.
+ Subclasses should not individually load any algorithms in their load() implementations, as that must
+ occur within the loadAlgorithms() method. Instead, subclasses should call refreshAlgorithms()
+ from any overloaded load() method to trigger an initial load of the provider's algorithms.
  \returns true if provider could be successfully loaded
  \see unload()
 %End

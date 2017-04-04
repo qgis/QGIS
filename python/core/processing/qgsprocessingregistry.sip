@@ -46,6 +46,8 @@ class QgsProcessingRegistry : QObject
  and the provider's parent will be set to the registry.
  Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
  in the registry).
+ Adding a provider to the registry automatically triggers the providers QgsProcessingProvider::load()
+ method to populate the provider with algorithms.
  \see removeProvider()
 %End
 
