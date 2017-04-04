@@ -108,9 +108,9 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
   private:
 
-    void addDragBand( const QgsPoint &v1, const QgsPoint &v2, const QgsVector &offset = QgsVector() );
+    void addDragBand( const QgsPoint &v1, const QgsPoint &v2 );
 
-    void addDragMiddleBand( const QgsPoint &v1, const QgsPoint &v2, const QgsVector &offset1, const QgsVector &offset2 );
+    void addDragStraightBand( const QgsPoint &v0, const QgsPoint &v1, bool moving0, bool moving1, const QgsPoint &mapPoint );
 
     void addDragCircularBand( const QgsPoint &v0, const QgsPoint &v1, const QgsPoint &v2, bool moving0, bool moving1, bool moving2, const QgsPoint &mapPoint );
 
@@ -221,18 +221,15 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     //! companion array to mDragPointMarkers: for each marker it keeps offset
     //! (in map units) from the position of the main vertex
     QList<QgsVector> mDragPointMarkersOffset;
-    //! list of QgsRubberBand instances used when dragging. All rubber bands
-    //! have two points: first point is fixed, the other one is moved as mouse moves
-    QList<QgsRubberBand *> mDragBands;
-    //! companion array to mDragBands: for each rubber band it keeps offset of the second
-    //! point (in map units) from the position of the main vertex (mDraggingVertex)
-    QList<QgsVector> mDragBandsOffset;
-    //! list of QgsRubberBand instances used when dragging multiple vertices - these rubber bands
-    //! compared to mDragBands have both points moving together with mouse cursor
-    QList<QgsRubberBand *> mDragMiddleBands;
-    //! companion array to mDragMiddleBands: for each rubber band it keeps offset of both
-    //! first and second point (in map units) from the position of the main vertex (mDraggingVertex)
-    QList< QPair<QgsVector, QgsVector> > mDragMiddleBandsOffset;
+
+    //! structure to keep information about a rubber band user for dragging of a straight line segment
+    struct StraightBand
+    {
+      QgsRubberBand *band = nullptr;       //!< Pointer to the actual rubber band
+      QgsPoint p0, p1;                     //!< What are the original positions of points (in map units)
+      bool moving0, moving1;               //!< Which points of the band are moving with mouse cursor
+      QgsVector offset0, offset1;          //!< If the point is moving, what is the offset from the mouse cursor
+    };
 
     //! structure to keep information about a rubber band used for dragging of a circular segment
     struct CircularBand
@@ -246,6 +243,8 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
       void updateRubberBand( const QgsPoint &mapPoint );
     };
 
+    //! list of active straight line rubber bands
+    QList<StraightBand> mDragStraightBands;
     //! list of active rubber bands for circular segments
     QList<CircularBand> mDragCircularBands;
     //! instance of Vertex that is being currently moved or nothing
