@@ -139,7 +139,6 @@ class Processing(object):
         for script in scripts:
             script.allowEdit = False
             script._icon = provider._icon
-            script.provider = provider
         provider.externalAlgs.extend(scripts)
         provider.refreshAlgorithms()
 

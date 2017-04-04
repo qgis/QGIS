@@ -226,7 +226,7 @@ class ModelerAlgorithm(GeoAlgorithm):
     CANVAS_SIZE = 4000
 
     def getCopy(self):
-        newone = ModelerAlgorithm()
+        newone = self
 
         newone.algs = {}
         for algname, alg in self.algs.items():

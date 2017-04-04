@@ -78,8 +78,7 @@ class SagaAlgorithm(GeoAlgorithm):
         self._group = ''
 
     def getCopy(self):
-        newone = SagaAlgorithm(self.descriptionFile)
-        return newone
+        return self
 
     def icon(self):
         if self._icon is None:

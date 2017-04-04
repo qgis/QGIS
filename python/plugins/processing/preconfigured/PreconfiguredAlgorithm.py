@@ -56,7 +56,7 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
         return QgsProcessingAlgorithm.FlagHideFromModeler
 
     def getCopy(self):
-        newone = PreconfiguredAlgorithm(self.descriptionFile)
+        newone = self
         newone.outputs = []
         newone._name = self._name
         newone._group = self._group
