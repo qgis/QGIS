@@ -59,6 +59,8 @@ class Grass7Utils(object):
 
     version = None
 
+    command = None
+
     @staticmethod
     def grassBatchJobFilename():
         '''This is used in Linux. This is the batch job that we assign to
@@ -445,4 +447,10 @@ class Grass7Utils(object):
                         helpPath = os.path.abspath(path)
                         break
 
-        return helpPath if helpPath is not None else 'http://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)
+        if helpPath is not None:
+            return helpPath
+        elif Grass7Utils.command:
+            return 'http://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)
+        else:
+            # grass not available!
+            return 'http://grass.osgeo.org/72/manuals/'
