@@ -56,7 +56,7 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *
             double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
             if ( dist < minLength )
             {
-              errors.append( new QgsGeometryCheckError( this, layerId, featureid, QgsPoint( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) ), QgsVertexId( iPart, iRing, iVert ), dist, QgsGeometryCheckError::ValueLength ) );
+              errors.append( new QgsGeometryCheckError( this, layerId, featureid, QgsPoint( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) ), QgsVertexId( iPart, iRing, iVert ), dist / mapToLayerUnits, QgsGeometryCheckError::ValueLength ) );
             }
           }
         }

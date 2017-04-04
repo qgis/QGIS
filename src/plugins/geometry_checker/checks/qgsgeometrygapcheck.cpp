@@ -29,7 +29,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
   for ( const QString &layerId : featureIds.keys() )
   {
     QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
-    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( featurePool->getLayer()->crs().authid(), mContext->crs );
+    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( featurePool->getLayer()->crs().authid(), mContext->mapCrs );
     if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;

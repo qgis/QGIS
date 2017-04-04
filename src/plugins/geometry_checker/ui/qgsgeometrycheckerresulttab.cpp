@@ -137,20 +137,7 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
   int row = ui.tableWidgetErrors->rowCount();
   int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
-  double layerToMap = 1. / mChecker->getContext()->featurePools[error->layerId()]->getMapToLayerUnits();
-  QVariant value;
-  if ( error->valueType() == QgsGeometryCheckError::ValueLength )
-  {
-    value = QVariant::fromValue( error->value().toDouble() * layerToMap );
-  }
-  else if ( error->valueType() == QgsGeometryCheckError::ValueArea )
-  {
-    value = QVariant::fromValue( error->value().toDouble() * layerToMap * layerToMap );
-  }
-  else
-  {
-    value = error->value();
-  }
+
   ui.tableWidgetErrors->insertRow( row );
   QTableWidgetItem *idItem = new QTableWidgetItem();
   idItem->setData( Qt::EditRole, error->featureId() != FEATUREID_NULL ? QVariant( error->featureId() ) : QVariant() );
@@ -158,7 +145,7 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
   ui.tableWidgetErrors->setItem( row, 1, new QTableWidgetItem( error->description() ) );
   ui.tableWidgetErrors->setItem( row, 2, new QTableWidgetItem( posStr ) );
   QTableWidgetItem *valueItem = new QTableWidgetItem();
-  valueItem->setData( Qt::EditRole, value );
+  valueItem->setData( Qt::EditRole, error->value() );
   ui.tableWidgetErrors->setItem( row, 3, valueItem );
   ui.tableWidgetErrors->setItem( row, 4, new QTableWidgetItem( QLatin1String( "" ) ) );
   ui.tableWidgetErrors->item( row, 0 )->setData( Qt::UserRole, QVariant::fromValue( error ) );
@@ -185,22 +172,9 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
   int row = mErrorMap.value( error ).row();
   int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
-  double layerToMap = 1. / mChecker->getContext()->featurePools[error->layerId()]->getMapToLayerUnits();
-  QVariant value;
-  if ( error->valueType() == QgsGeometryCheckError::ValueLength )
-  {
-    value = QVariant::fromValue( error->value().toDouble() * layerToMap );
-  }
-  else if ( error->valueType() == QgsGeometryCheckError::ValueArea )
-  {
-    value = QVariant::fromValue( error->value().toDouble() * layerToMap * layerToMap );
-  }
-  else
-  {
-    value = error->value();
-  }
+
   ui.tableWidgetErrors->item( row, 2 )->setText( posStr );
-  ui.tableWidgetErrors->item( row, 3 )->setData( Qt::EditRole, value );
+  ui.tableWidgetErrors->item( row, 3 )->setData( Qt::EditRole, error->value() );
   if ( error->status() == QgsGeometryCheckError::StatusFixed )
   {
     setRowStatus( row, Qt::green, tr( "Fixed: %1" ).arg( error->resolutionMessage() ), true );

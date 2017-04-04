@@ -32,10 +32,10 @@ class QgsFeaturePool;
 
 struct QgsGeometryCheckerContext
 {
-  QgsGeometryCheckerContext( int _precision, const QString &_crs, const QMap<QString, QgsFeaturePool *> &_featurePools );
+  QgsGeometryCheckerContext( int _precision, const QString &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools );
   const double tolerance;
   const double reducedTolerance;
-  const QString crs;
+  const QString mapCrs;
   const QMap<QString, QgsFeaturePool *> featurePools;
 };
 
@@ -113,9 +113,11 @@ class QgsGeometryCheckError
     const QString &layerId() const { return mLayerId; }
     QgsFeatureId featureId() const { return mFeatureId; }
     virtual QgsAbstractGeometry *geometry() const;
+    // In map units
     virtual QgsRectangle affectedAreaBBox() const;
     virtual QString description() const { return mCheck->errorDescription(); }
     const QgsPoint &location() const { return mErrorLocation; }
+    // Lengths, areas in map units
     QVariant value() const { return mValue; }
     ValueType valueType() const { return mValueType; }
     QgsVertexId vidx() const { return mVidx; }

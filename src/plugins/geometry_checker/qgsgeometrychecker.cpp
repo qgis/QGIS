@@ -113,7 +113,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   {
     const QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>> &layerChanges = changes[layerId];
     QgsFeaturePool *featurePool = mContext->featurePools[layerId];
-    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( featurePool->getLayer()->crs().authid(), mContext->crs );
+    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( featurePool->getLayer()->crs().authid(), mContext->mapCrs );
     for ( QgsFeatureId id : layerChanges.keys() )
     {
       bool removed = false;
@@ -152,7 +152,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   for ( const QString &layerId : mContext->featurePools.keys() )
   {
     QgsFeaturePool *featurePool = mContext->featurePools[layerId];
-    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( mContext->crs, featurePool->getLayer()->crs().authid() );
+    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( mContext->mapCrs, featurePool->getLayer()->crs().authid() );
     recheckAreaFeatures[layerId] = featurePool->getIntersects( t.transform( recheckArea ) );
     // If only selected features were checked, confine the recheck areas to the selected features
     if ( featurePool->getSelectedOnly() )

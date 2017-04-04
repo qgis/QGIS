@@ -67,20 +67,6 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeome
 {
   int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
-  double layerToMap = 1. / mChecker->getContext()->featurePools[error->layerId()]->getMapToLayerUnits();
-  QVariant value;
-  if ( error->valueType() == QgsGeometryCheckError::ValueLength )
-  {
-    value = QVariant::fromValue( error->value().toDouble() * layerToMap );
-  }
-  else if ( error->valueType() == QgsGeometryCheckError::ValueArea )
-  {
-    value = QVariant::fromValue( error->value().toDouble() * layerToMap * layerToMap );
-  }
-  else
-  {
-    value = error->value();
-  }
 
   int row = table->rowCount();
   table->insertRow( row );
@@ -91,7 +77,7 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeome
   table->setItem( row, 1, new QTableWidgetItem( error->description() ) );
   table->setItem( row, 2, new QTableWidgetItem( posStr ) );
   QTableWidgetItem *valueItem = new QTableWidgetItem();
-  valueItem->setData( Qt::EditRole, value );
+  valueItem->setData( Qt::EditRole, error->value() );
   table->setItem( row, 3, valueItem );
 }
 

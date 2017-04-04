@@ -183,14 +183,6 @@ void QgsGeometryCheckerSetupTab::validateInput()
       nApplicable += factory->checkApplicability( ui, nPoint, nLineString, nPolygon );
     }
   }
-  QString prevCrs = ui.comboBoxTopologyCrs->currentText();
-  ui.comboBoxTopologyCrs->clear();
-  ui.comboBoxTopologyCrs->addItems( layerCrs );
-  ui.comboBoxTopologyCrs->setCurrentIndex( ui.comboBoxTopologyCrs->findText( prevCrs ) );
-  if ( ui.comboBoxTopologyCrs->currentIndex() == -1 )
-  {
-    ui.comboBoxTopologyCrs->setCurrentIndex( 0 );
-  }
 
   bool outputOk = ui.radioButtonOutputModifyInput->isChecked() || !ui.lineEditOutputDirectory->text().isEmpty();
   mRunButton->setEnabled( !layers.isEmpty() && nApplicable > 0 && outputOk );
@@ -408,7 +400,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     featurePools.insert( layer->id(), new QgsFeaturePool( layer, mapToLayerUnits, selectedOnly ) );
   }
 
-  QgsGeometryCheckerContext *context = new QgsGeometryCheckerContext( ui.spinBoxTolerance->value(), ui.comboBoxTopologyCrs->currentText(), featurePools );
+  QgsGeometryCheckerContext *context = new QgsGeometryCheckerContext( ui.spinBoxTolerance->value(), mIface->mapCanvas()->mapSettings().destinationCrs().authid(), featurePools );
 
   QList<QgsGeometryCheck *> checks;
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )

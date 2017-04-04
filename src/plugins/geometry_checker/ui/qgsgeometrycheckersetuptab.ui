@@ -41,9 +41,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-106</y>
+        <y>0</y>
         <width>626</width>
-        <height>832</height>
+        <height>820</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -478,8 +478,25 @@
              <property name="spacing">
               <number>2</number>
              </property>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="checkBoxDuplicates">
+               <property name="text">
+                <string>Check for duplicates</string>
+               </property>
+              </widget>
+             </item>
              <item row="2" column="1">
               <widget class="QDoubleSpinBox" name="doubleSpinBoxOverlapArea">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxGapArea">
                <property name="decimals">
                 <number>6</number>
                </property>
@@ -514,27 +531,17 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
-              <widget class="QDoubleSpinBox" name="doubleSpinBoxGapArea">
-               <property name="decimals">
-                <number>6</number>
-               </property>
-               <property name="maximum">
-                <double>999999999.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="checkBoxDuplicates">
-               <property name="text">
-                <string>Check for duplicates</string>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="0">
               <widget class="QCheckBox" name="checkBoxCovered">
                <property name="text">
                 <string>Check for features within other features</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" colspan="2">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>&lt;i&gt;Note: Topology checks are performed in the current map CRS.&lt;/i&gt;</string>
                </property>
               </widget>
              </item>
@@ -584,16 +591,6 @@
                <string>Tolerance</string>
               </property>
              </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="labelTopologyCrs">
-              <property name="text">
-               <string>CRS for topology checks:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QComboBox" name="comboBoxTopologyCrs"/>
             </item>
            </layout>
           </item>

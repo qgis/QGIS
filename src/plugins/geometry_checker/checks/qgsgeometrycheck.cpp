@@ -19,13 +19,14 @@
 #include "qgsgeometrycheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-
-QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QString &_crs, const QMap<QString, QgsFeaturePool *> &_featurePools )
+QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QString &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools )
   : tolerance( qPow( 10, -_precision ) )
   , reducedTolerance( qPow( 10, -_precision / 2 ) )
-  , crs( _crs )
+  , mapCrs( _mapCrs )
   , featurePools( _featurePools )
-{}
+{
+
+}
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId,
     QgsFeatureId featureId,
@@ -62,7 +63,7 @@ QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
     return QgsRectangle();
   }
   QString srcCrs = mCheck->getContext()->featurePools[ layerId() ]->getLayer()->crs().authid();
-  QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( srcCrs, mCheck->getContext()->crs );
+  QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( srcCrs, mCheck->getContext()->mapCrs );
   QgsRectangle rect = t.transformBoundingBox( geom->boundingBox() );
   delete geom;
   return rect;

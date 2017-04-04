@@ -24,6 +24,7 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
   for ( const QString &layerId : featureIds.keys() )
   {
     QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    double mapToLayerUnits = featurePool->getMapToLayerUnits();
     if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
@@ -47,7 +48,7 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
           double value;
           if ( checkThreshold( featurePool->getMapToLayerUnits(), multiGeom->geometryN( i ), value ) )
           {
-            errors.append( new QgsGeometryCheckError( this, layerId, featureid, multiGeom->geometryN( i )->centroid(), QgsVertexId( i ), value, QgsGeometryCheckError::ValueArea ) );
+            errors.append( new QgsGeometryCheckError( this, layerId, featureid, multiGeom->geometryN( i )->centroid(), QgsVertexId( i ), value / ( mapToLayerUnits * mapToLayerUnits ), QgsGeometryCheckError::ValueArea ) );
           }
         }
       }
@@ -56,7 +57,7 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
         double value;
         if ( checkThreshold( featurePool->getMapToLayerUnits(), geom, value ) )
         {
-          errors.append( new QgsGeometryCheckError( this, layerId, featureid, geom->centroid(), QgsVertexId( 0 ), value, QgsGeometryCheckError::ValueArea ) );
+          errors.append( new QgsGeometryCheckError( this, layerId, featureid, geom->centroid(), QgsVertexId( 0 ), value / ( mapToLayerUnits * mapToLayerUnits ), QgsGeometryCheckError::ValueArea ) );
         }
       }
     }
