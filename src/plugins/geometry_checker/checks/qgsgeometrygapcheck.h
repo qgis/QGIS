@@ -25,7 +25,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
     QgsGeometryGapCheckError( const QgsGeometryCheck *check,
                               const QString &layerId,
                               QgsAbstractGeometry *geometry,
-                              const QgsFeatureIds &neighbors,
+                              const QMap<QString, QgsFeatureIds> &neighbors,
                               double area,
                               const QgsRectangle &gapAreaBBox )
       : QgsGeometryCheckError( check, layerId, FEATUREID_NULL, geometry->centroid(), QgsVertexId(), area, ValueArea )
@@ -40,7 +40,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
     }
 
     QgsAbstractGeometry *geometry() const override { return mGeometry->clone(); }
-    const QgsFeatureIds &neighbors() const { return mNeighbors; }
+    const QMap<QString, QgsFeatureIds> &neighbors() const { return mNeighbors; }
 
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
@@ -76,7 +76,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
     }
 
   private:
-    QgsFeatureIds mNeighbors;
+    QMap<QString, QgsFeatureIds> mNeighbors;
     QgsRectangle mGapAreaBBox;
     QgsAbstractGeometry *mGeometry = nullptr;
 };

@@ -24,6 +24,8 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
 {
   if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
 
+  QList<QgsAbstractGeometry *> geomList;
+
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   // Collect geometries, build spatial index
   for ( const QString &layerId : featureIds.keys() )
@@ -34,86 +36,95 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
     {
       continue;
     }
-    double mapToLayerUnits = featurePool->getMapToLayerUnits();
-    double gapAreaThreshold = mThresholdMapUnits * mapToLayerUnits * mapToLayerUnits;
-    QList<QgsAbstractGeometry *> geomList;
     for ( QgsFeatureId id : featureIds[layerId] )
     {
       QgsFeature feature;
       if ( featurePool->get( id, feature ) )
       {
-        geomList.append( feature.geometry().geometry()->clone() );
+        QgsAbstractGeometry *geometry = feature.geometry().geometry()->clone();
+        geometry->transform( t );
+        geomList.append( geometry );
       }
     }
+  }
 
-    if ( geomList.isEmpty() )
+  if ( geomList.isEmpty() )
+  {
+    return;
+  }
+
+  QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( nullptr, mContext->tolerance );
+
+  // Create union of geometry
+  QString errMsg;
+  QgsAbstractGeometry *unionGeom = geomEngine->combine( geomList, &errMsg );
+  qDeleteAll( geomList );
+  delete geomEngine;
+  if ( !unionGeom )
+  {
+    messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
+    return;
+  }
+
+  // Get envelope of union
+  geomEngine = QgsGeometryCheckerUtils::createGeomEngine( unionGeom, mContext->tolerance );
+  QgsAbstractGeometry *envelope = geomEngine->envelope( &errMsg );
+  delete geomEngine;
+  if ( !envelope )
+  {
+    messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
+    delete unionGeom;
+    return;
+  }
+
+  // Buffer envelope
+  geomEngine = QgsGeometryCheckerUtils::createGeomEngine( envelope, mContext->tolerance );
+  QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, GEOSBUF_CAP_SQUARE, GEOSBUF_JOIN_MITRE, 4. );
+  delete geomEngine;
+  delete envelope;
+  envelope = bufEnvelope;
+
+  // Compute difference between envelope and union to obtain gap polygons
+  geomEngine = QgsGeometryCheckerUtils::createGeomEngine( envelope, mContext->tolerance );
+  QgsAbstractGeometry *diffGeom = geomEngine->difference( *unionGeom, &errMsg );
+  delete geomEngine;
+  if ( !diffGeom )
+  {
+    messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
+    delete unionGeom;
+    delete diffGeom;
+    return;
+  }
+
+  // For each gap polygon which does not lie on the boundary, get neighboring polygons and add error
+  for ( int iPart = 0, nParts = diffGeom->partCount(); iPart < nParts; ++iPart )
+  {
+    QgsAbstractGeometry *gapGeom = QgsGeometryCheckerUtils::getGeomPart( diffGeom, iPart )->clone();
+    // Skip the gap between features and boundingbox
+    if ( gapGeom->boundingBox() == envelope->boundingBox() )
     {
-      return;
+      continue;
     }
 
-    QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( nullptr, mContext->tolerance );
-
-    // Create union of geometry
-    QString errMsg;
-    QgsAbstractGeometry *unionGeom = geomEngine->combine( geomList, &errMsg );
-    qDeleteAll( geomList );
-    delete geomEngine;
-    if ( !unionGeom )
+    // Skip gaps above threshold
+    if ( gapGeom->area() > mThresholdMapUnits || gapGeom->area() < mContext->reducedTolerance )
     {
-      messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
-      return;
+      continue;
     }
 
-    // Get envelope of union
-    geomEngine = QgsGeometryCheckerUtils::createGeomEngine( unionGeom, mContext->tolerance );
-    QgsAbstractGeometry *envelope = geomEngine->envelope( &errMsg );
-    delete geomEngine;
-    if ( !envelope )
+    QgsRectangle gapAreaBBox = gapGeom->boundingBox();
+
+    // Get neighboring polygons
+    QMap<QString, QgsFeatureIds> neighboringIds;
+    for ( const QString &layerId : featureIds.keys() )
     {
-      messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
-      delete unionGeom;
-      return;
-    }
+      QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+      QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( mContext->mapCrs, featurePool->getLayer()->crs().authid() );
+      QgsRectangle gapAreaLayerBBox = t.transform( gapGeom->boundingBox() ); // Don't use gapAreaBBox since it is updated below
 
-    // Buffer envelope
-    geomEngine = QgsGeometryCheckerUtils::createGeomEngine( envelope, mContext->tolerance );
-    QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, GEOSBUF_CAP_SQUARE, GEOSBUF_JOIN_MITRE, 4. );
-    delete geomEngine;
-    delete envelope;
-    envelope = bufEnvelope;
-
-    // Compute difference between envelope and union to obtain gap polygons
-    geomEngine = QgsGeometryCheckerUtils::createGeomEngine( envelope, mContext->tolerance );
-    QgsAbstractGeometry *diffGeom = geomEngine->difference( *unionGeom, &errMsg );
-    delete geomEngine;
-    if ( !diffGeom )
-    {
-      messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
-      delete unionGeom;
-      delete diffGeom;
-      return;
-    }
-
-    // For each gap polygon which does not lie on the boundary, get neighboring polygons and add error
-    for ( int iPart = 0, nParts = diffGeom->partCount(); iPart < nParts; ++iPart )
-    {
-      QgsAbstractGeometry *geom = QgsGeometryCheckerUtils::getGeomPart( diffGeom, iPart )->clone();
-      // Skip the gap between features and boundingbox
-      if ( geom->boundingBox() == envelope->boundingBox() )
-      {
-        continue;
-      }
-
-      // Skip gaps above threshold
-      if ( geom->area() > gapAreaThreshold || geom->area() < mContext->reducedTolerance )
-      {
-        continue;
-      }
-
-      // Get neighboring polygons
-      QgsFeatureIds neighboringIds;
-      QgsRectangle gapAreaBBox = t.transform( geom->boundingBox() );
-      QgsFeatureIds intersectIds = featurePool->getIntersects( geom->boundingBox() );
+      QgsFeatureIds intersectIds = featurePool->getIntersects( gapAreaLayerBBox );
+      QgsAbstractGeometry *gapLayerGeom = gapGeom->clone();
+      gapLayerGeom->transform( t );
 
       for ( QgsFeatureId id : intersectIds )
       {
@@ -122,23 +133,24 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
         {
           continue;
         }
-        QgsGeometry featureGeom = feature.geometry();
-        QgsAbstractGeometry *geom2 = featureGeom.geometry();
-        if ( QgsGeometryCheckerUtils::sharedEdgeLength( geom, geom2, mContext->reducedTolerance ) > 0 )
+        QgsAbstractGeometry *featureGeom = feature.geometry().geometry();
+        if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapLayerGeom, featureGeom, mContext->reducedTolerance ) > 0 )
         {
-          neighboringIds.insert( feature.id() );
-          gapAreaBBox.unionRect( t.transform( geom2->boundingBox() ) );
+          neighboringIds[layerId].insert( feature.id() );
+          gapAreaLayerBBox.unionRect( featureGeom->boundingBox() );
         }
+        gapAreaBBox.unionRect( t.transform( gapAreaLayerBBox, QgsCoordinateTransform::ReverseTransform ) );
       }
-      if ( neighboringIds.isEmpty() )
-      {
-        delete geom;
-        continue;
-      }
-
-      // Add error
-      errors.append( new QgsGeometryGapCheckError( this, layerId, geom, neighboringIds, geom->area(), gapAreaBBox ) );
+      delete gapLayerGeom;
     }
+    if ( neighboringIds.isEmpty() )
+    {
+      delete gapGeom;
+      continue;
+    }
+
+    // Add error
+    errors.append( new QgsGeometryGapCheckError( this, "", gapGeom, neighboringIds, gapGeom->area(), gapAreaBBox ) );
 
     delete unionGeom;
     delete envelope;
@@ -172,33 +184,43 @@ void QgsGeometryGapCheck::fixError( QgsGeometryCheckError *error, int method, co
 
 bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Changes &changes, QString &errMsg ) const
 {
-  QgsFeaturePool *featurePool = mContext->featurePools[ err->layerId() ];
   double maxVal = 0.;
+  QString mergeLayerId;
   QgsFeature mergeFeature;
   int mergePartIdx = -1;
 
   QgsAbstractGeometry *errGeometry = QgsGeometryCheckerUtils::getGeomPart( err->geometry(), 0 );
 
   // Search for touching neighboring geometries
-  for ( QgsFeatureId testId : err->neighbors() )
+  for ( const QString &layerId : err->neighbors().keys() )
   {
-    QgsFeature testFeature;
-    if ( !featurePool->get( testId, testFeature ) )
+    QgsFeaturePool *featurePool = mContext->featurePools[ err->layerId() ];
+    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( mContext->mapCrs, featurePool->getLayer()->crs().authid() );
+    QgsAbstractGeometry *errLayerGeom = errGeometry->clone();
+    errLayerGeom->transform( t );
+
+    for ( QgsFeatureId testId : err->neighbors()[layerId] )
     {
-      continue;
-    }
-    QgsGeometry featureGeom = testFeature.geometry();
-    QgsAbstractGeometry *testGeom = featureGeom.geometry();
-    for ( int iPart = 0, nParts = testGeom->partCount(); iPart < nParts; ++iPart )
-    {
-      double len = QgsGeometryCheckerUtils::sharedEdgeLength( errGeometry, QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart ), mContext->reducedTolerance );
-      if ( len > maxVal )
+      QgsFeature testFeature;
+      if ( !featurePool->get( testId, testFeature ) )
       {
-        maxVal = len;
-        mergeFeature = testFeature;
-        mergePartIdx = iPart;
+        continue;
+      }
+      QgsGeometry featureGeom = testFeature.geometry();
+      QgsAbstractGeometry *testGeom = featureGeom.geometry();
+      for ( int iPart = 0, nParts = testGeom->partCount(); iPart < nParts; ++iPart )
+      {
+        double len = QgsGeometryCheckerUtils::sharedEdgeLength( errLayerGeom, QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart ), mContext->reducedTolerance );
+        if ( len > maxVal )
+        {
+          maxVal = len;
+          mergeFeature = testFeature;
+          mergePartIdx = iPart;
+          mergeLayerId = layerId;
+        }
       }
     }
+    delete errLayerGeom;
   }
 
   if ( maxVal == 0. )
@@ -207,11 +229,16 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Chan
   }
 
   // Merge geometries
+  QgsFeaturePool *featurePool = mContext->featurePools[ mergeLayerId ];
+  QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( mContext->mapCrs, featurePool->getLayer()->crs().authid() );
+  QgsAbstractGeometry *errLayerGeom = errGeometry->clone();
+  errLayerGeom->transform( t );
   QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.geometry();
-  QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errGeometry, mContext->tolerance );
+  QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom, mContext->tolerance );
   QgsAbstractGeometry *combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), &errMsg );
   delete geomEngine;
+  delete errLayerGeom;
   if ( !combinedGeom || combinedGeom->isEmpty() )
   {
     delete combinedGeom;

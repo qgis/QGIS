@@ -324,7 +324,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   for ( QTableWidgetItem *item : items )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( item->row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
-    QgsVectorLayer *layer = mChecker->getContext()->featurePools[error->layerId()]->getLayer();
+    QgsVectorLayer *layer = !error->layerId().isEmpty() ? mChecker->getContext()->featurePools[error->layerId()]->getLayer() : nullptr;
 
     QgsAbstractGeometry *geometry = error->geometry();
     if ( ui.checkBoxHighlight->isChecked() && geometry )
