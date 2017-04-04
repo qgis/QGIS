@@ -69,6 +69,12 @@ class QgsSipifyHeader : QtClass<QVariant>
     };
     typedef QFlags<QgsSipifyHeader::MyEnum> Flags;
 
+    struct Data
+    {
+      QString name;
+      int count;
+    };
+
     explicit QgsSipifyHeader();
 %Docstring
 A constructor with definition in header
