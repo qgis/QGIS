@@ -186,6 +186,10 @@ class CORE_EXPORT QWebPage : public QObject
 
     void loadFinished( bool ok );
 
+    void downloadRequested( const QNetworkRequest &request );
+
+    void unsupportedContent( QNetworkReply *reply );
+
   public slots:
 
   protected:

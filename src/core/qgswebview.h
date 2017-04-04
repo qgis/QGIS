@@ -47,8 +47,8 @@ class CORE_EXPORT QgsWebView : public QWebView
 #else
 #include "qgswebpage.h"
 #include <QTextBrowser>
-class QPrinter;
 
+class QPrinter;
 
 /** \ingroup core
  * \brief The QgsWebView class is a collection of stubs to mimic the API of QWebView on systems where the real
@@ -69,8 +69,8 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       , mSettings( new QWebSettings() )
       , mPage( new QWebPage( this ) )
     {
-      connect( this, SIGNAL( anchorClicked( const QUrl & ) ), this, SIGNAL( linkClicked( const QUrl & ) ) );
-      connect( this, SIGNAL( pageLoadFinished( bool ) ), mPage, SIGNAL( loadFinished( bool ) ) );
+      connect( this, &QTextBrowser::anchorClicked, this, &QgsWebView::linkClicked );
+      connect( this, &QgsWebView::pageLoadFinished, mPage, &QWebPage::loadFinished );
     }
 
     ~QgsWebView()
