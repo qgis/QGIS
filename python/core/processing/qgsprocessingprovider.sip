@@ -24,7 +24,7 @@ class QgsProcessingProvider : QObject
 
   public:
 
-    QgsProcessingProvider( QObject* parent /TransferThis/ = 0 );
+    QgsProcessingProvider( QObject *parent /TransferThis/ = 0 );
 %Docstring
  Constructor for QgsProcessingProvider.
 %End
@@ -64,6 +64,12 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
  missing external dependencies).
+ \see isActive()
+%End
+
+    virtual bool isActive() const;
+%Docstring
+ Returns true if the provider is active and able to run algorithms.
 %End
 
     virtual QStringList supportedOutputRasterLayerExtensions() const;

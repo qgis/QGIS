@@ -79,8 +79,14 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     /**
      * Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
      * missing external dependencies).
+     * \see isActive()
      */
     virtual bool canBeActivated() const { return true; }
+
+    /**
+     * Returns true if the provider is active and able to run algorithms.
+     */
+    virtual bool isActive() const { return true; }
 
     /**
      * Returns a list of the raster format file extensions supported by this provider.

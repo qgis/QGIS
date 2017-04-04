@@ -53,7 +53,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         self.algs = []
 
     def load(self):
-        AlgorithmProvider.load(self)
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
         ProcessingConfig.addSetting(Setting(self.name(),
                                             ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
                                             ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))

@@ -46,11 +46,12 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
-        self.activate = True
         self.algs = []
 
     def load(self):
-        AlgorithmProvider.load(self)
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        ProcessingConfig.addSetting(Setting("SAGA", 'ACTIVATE_SAGA',
+                                            self.tr('Activate'), True))
         if (isWindows() or isMac()):
             ProcessingConfig.addSetting(Setting("SAGA",
                                                 SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'),
@@ -68,12 +69,18 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         return True
 
     def unload(self):
-        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting('ACTIVATE_SAGA')
         if (isWindows() or isMac()):
             ProcessingConfig.removeSetting(SagaUtils.SAGA_FOLDER)
 
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
+
+    def isActive(self):
+        return ProcessingConfig.getSetting('ACTIVATE_SAGA')
+
+    def setActive(self, active):
+        ProcessingConfig.setSettingValue('ACTIVATE_SAGA', active)
 
     def loadAlgorithms(self):
         version = SagaUtils.getInstalledVersion(True)

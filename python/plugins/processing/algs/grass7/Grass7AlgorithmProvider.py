@@ -48,7 +48,9 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         self.algs = []
 
     def load(self):
-        AlgorithmProvider.load(self)
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GRASS7',
+                                            self.tr('Activate'), True))
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting(
                 self.name(),
@@ -70,12 +72,18 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         return True
 
     def unload(self):
-        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting('ACTIVATE_GRASS7')
         if isWindows() or isMac():
             ProcessingConfig.removeSetting(Grass7Utils.GRASS_FOLDER)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
+
+    def isActive(self):
+        return ProcessingConfig.getSetting('ACTIVATE_GRASS7')
+
+    def setActive(self, active):
+        ProcessingConfig.setSettingValue('ACTIVATE_GRASS7', active)
 
     def createAlgsList(self):
         algs = []

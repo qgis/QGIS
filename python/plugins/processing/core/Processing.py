@@ -111,11 +111,14 @@ class Processing(object):
     @staticmethod
     def activateProvider(providerOrName, activate=True):
         provider_id = providerOrName.id() if isinstance(providerOrName, AlgorithmProvider) else providerOrName
-        name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
-        ProcessingConfig.setSettingValue(name, activate)
         provider = QgsApplication.processingRegistry().providerById(provider_id)
-        if provider:
+        try:
+            provider.setActive(True)
             provider.refreshAlgorithms()
+        except:
+            # provider could not be activated
+            QgsMessageLog.logMessage(Processing.tr('Error: Provider {0} could not be activated\n').format(provider_id),
+                                     Processing.tr("Processing"))
 
     @staticmethod
     def initialize():

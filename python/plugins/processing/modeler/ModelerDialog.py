@@ -599,8 +599,7 @@ class ModelerDialog(BASE, WIDGET):
         text = str(self.searchBox.text())
         search_strings = text.split(' ')
         for provider in QgsApplication.processingRegistry().providers():
-            name = 'ACTIVATE_' + provider.id().upper().replace(' ', '_')
-            if not ProcessingConfig.getSetting(name):
+            if not provider.isActive():
                 continue
             groups = {}
 

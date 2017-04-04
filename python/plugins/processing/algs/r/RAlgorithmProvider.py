@@ -52,7 +52,6 @@ class RAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         super().__init__()
         self.algs = []
-        self.activate = False
         self.actions.append(CreateNewScriptAction(
             'Create new R script', CreateNewScriptAction.SCRIPT_R))
         self.actions.append(GetRScriptsAction())
@@ -61,7 +60,9 @@ class RAlgorithmProvider(AlgorithmProvider):
              DeleteScriptAction(DeleteScriptAction.SCRIPT_R)]
 
     def load(self):
-        AlgorithmProvider.load(self)
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_R',
+                                            self.tr('Activate'), False))
         ProcessingConfig.addSetting(Setting(
             self.name(), RUtils.RSCRIPTS_FOLDER,
             self.tr('R Scripts folder'), RUtils.defaultRScriptsFolder(),
@@ -81,12 +82,18 @@ class RAlgorithmProvider(AlgorithmProvider):
         return True
 
     def unload(self):
-        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting('ACTIVATE_R')
         ProcessingConfig.removeSetting(RUtils.RSCRIPTS_FOLDER)
         if isWindows():
             ProcessingConfig.removeSetting(RUtils.R_FOLDER)
             ProcessingConfig.removeSetting(RUtils.R_LIBS_USER)
             ProcessingConfig.removeSetting(RUtils.R_USE64)
+
+    def isActive(self):
+        return ProcessingConfig.getSetting('ACTIVATE_R')
+
+    def setActive(self, active):
+        ProcessingConfig.setSettingValue('ACTIVATE_R', active)
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerR.svg")

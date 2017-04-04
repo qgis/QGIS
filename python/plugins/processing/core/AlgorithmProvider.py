@@ -26,7 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessingProvider)
-from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
 
 class AlgorithmProvider(QgsProcessingProvider):
@@ -40,34 +39,5 @@ class AlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
-        # Indicates if the provider should be active by default.
-        # For provider relying on an external software, this should be
-        # False, so the user should activate them manually and install
-        # the required software in advance.
-        self.activate = True
         self.actions = []
         self.contextMenuActions = []
-
-    def load(self):
-        """This is the place where you should add config parameters
-        using the ProcessingConfig class.
-
-        This method is called when a provider is added to the
-        Processing framework. By default it just adds a setting to
-        activate or deactivate algorithms from the provider.
-        """
-        ProcessingConfig.settingIcons[self.name()] = self.icon()
-        name = 'ACTIVATE_' + self.id().upper().replace(' ', '_')
-        ProcessingConfig.addSetting(Setting(self.name(), name,
-                                            self.tr('Activate'), self.activate))
-        return True
-
-    def unload(self):
-        """Do here anything that you want to be done when the provider
-        is removed from the list of available ones.
-
-        This method is called when you remove the provider from
-        Processing. Removal of config setting should be done here.
-        """
-        name = 'ACTIVATE_' + self.id().upper().replace(' ', '_')
-        ProcessingConfig.removeSetting(name)

@@ -37,18 +37,14 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         super().__init__()
 
-        # Deactivate provider by default
-        self.activate = False
-
     def load(self):
         """In this method we add settings needed to configure our
         provider.
-
-        Do not forget to call the parent method, since it takes care
-        or automatically adding a setting for activating or
-        deactivating the algorithms in the provider.
         """
-        AlgorithmProvider.load(self)
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        # Deactivate provider by default
+        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_EXAMPLE',
+                                            'Activate', False))
         ProcessingConfig.addSetting(Setting('Example algorithms',
                                             ExampleAlgorithmProvider.MY_DUMMY_SETTING,
                                             'Example setting', 'Default value'))
@@ -58,9 +54,16 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         """Setting should be removed here, so they do not appear anymore
         when the plugin is unloaded.
         """
-        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting('ACTIVATE_EXAMPLE')
         ProcessingConfig.removeSetting(
             ExampleAlgorithmProvider.MY_DUMMY_SETTING)
+
+    def isActive(self):
+        """Return True if the provider is activated and ready to run algorithms"""
+        return ProcessingConfig.getSetting('ACTIVATE_EXAMPLE')
+
+    def setActive(self, active):
+        ProcessingConfig.setSettingValue('ACTIVATE_EXAMPLE', active)
 
     def id(self):
         """This is the name that will appear on the toolbox group.
@@ -68,10 +71,10 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         It is also used to create the command line name of all the
         algorithms from this provider.
         """
-        return 'Example provider'
+        return 'example'
 
     def name(self):
-        """This is the provired full name.
+        """This is the localised full name.
         """
         return 'Example algorithms'
 

@@ -58,7 +58,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
 
     def load(self):
-        AlgorithmProvider.load(self)
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
         ProcessingConfig.addSetting(Setting(self.name(),
                                             ScriptUtils.SCRIPTS_FOLDER,
                                             self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
@@ -66,7 +66,6 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         return True
 
     def unload(self):
-        AlgorithmProvider.unload(self)
         ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
 
     def icon(self):

@@ -98,9 +98,9 @@ class ProcessingToolbox(BASE, WIDGET):
             return False
 
         for provider in QgsApplication.processingRegistry().providers():
-            name = 'ACTIVATE_' + provider.id().upper().replace(' ', '_')
-            if not ProcessingConfig.getSetting(name):
+            if not provider.isActive():
                 return True
+
         return False
 
     def textChanged(self):
@@ -112,8 +112,7 @@ class ProcessingToolbox(BASE, WIDGET):
             self.algorithmTree.expandAll()
             self.disabledWithMatchingAlgs = []
             for provider in QgsApplication.processingRegistry().providers():
-                name = 'ACTIVATE_' + provider.id().upper().replace(' ', '_')
-                if not ProcessingConfig.getSetting(name):
+                if not provider.isActive():
                     for alg in provider.algorithms():
                         if text in alg.name():
                             self.disabledWithMatchingAlgs.append(provider.id())
@@ -153,15 +152,21 @@ class ProcessingToolbox(BASE, WIDGET):
             return False
 
     def activateProvider(self, id):
-        name = 'ACTIVATE_' + id.upper().replace(' ', '_')
-        ProcessingConfig.setSettingValue(name, True)
-        self.fillTree()
-        self.textChanged()
-        self.showDisabled()
         provider = QgsApplication.processingRegistry().providerById(id)
         if not provider.canBeActivated():
-            QMessageBox.warning(self, "Activate provider",
-                                "The provider has been activated, but it might need additional configuration.")
+            QMessageBox.warning(self, self.tr("Activate provider"),
+                                self.tr("The provider has been activated, but it might need additional configuration."))
+            return
+
+        try:
+            # not part of the base class - only some providers have a setActive member
+            provider.setActive(True)
+            self.fillTree()
+            self.textChanged()
+            self.showDisabled()
+        except:
+            QMessageBox.warning(self, self.tr("Activate provider"),
+                                self.tr("The provider could not be activated."))
 
     def updateProvider(self):
         provider = self.sender()
@@ -316,9 +321,8 @@ class ProcessingToolbox(BASE, WIDGET):
 
     def addProvider(self, provider_id):
         provider = QgsApplication.processingRegistry().providerById(provider_id)
-        name = 'ACTIVATE_' + provider.id().upper().replace(' ', '_')
         providerItem = TreeProviderItem(provider, self.algorithmTree, self)
-        if not ProcessingConfig.getSetting(name):
+        if not provider.isActive():
             providerItem.setHidden(True)
             self.disabledProviderItems[provider.id()] = providerItem
 
@@ -335,8 +339,7 @@ class ProcessingToolbox(BASE, WIDGET):
         self.disabledProviderItems = {}
         disabled = []
         for provider in QgsApplication.processingRegistry().providers():
-            name = 'ACTIVATE_' + provider.id().upper().replace(' ', '_')
-            if ProcessingConfig.getSetting(name):
+            if provider.isActive():
                 providerItem = TreeProviderItem(provider, self.algorithmTree, self)
             else:
                 disabled.append(provider)
@@ -391,9 +394,7 @@ class TreeProviderItem(QTreeWidgetItem):
         groups = {}
         count = 0
         algs = self.provider.algorithms()
-
-        name = 'ACTIVATE_' + self.provider.id().upper().replace(' ', '_')
-        active = ProcessingConfig.getSetting(name)
+        active = self.provider.isActive()
 
         # Add algorithms
         for alg in algs:

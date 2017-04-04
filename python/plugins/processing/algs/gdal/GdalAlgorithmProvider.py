@@ -102,7 +102,9 @@ class GdalAlgorithmProvider(AlgorithmProvider):
         self.algs = []
 
     def load(self):
-        AlgorithmProvider.load(self)
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GDAL',
+                                            self.tr('Activate'), True))
         ProcessingConfig.addSetting(Setting(
             self.name(),
             GdalUtils.GDAL_HELP_PATH,
@@ -111,8 +113,14 @@ class GdalAlgorithmProvider(AlgorithmProvider):
         return True
 
     def unload(self):
-        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting('ACTIVATE_GDAL')
         ProcessingConfig.removeSetting(GdalUtils.GDAL_HELP_PATH)
+
+    def isActive(self):
+        return ProcessingConfig.getSetting('ACTIVATE_GDAL')
+
+    def setActive(self, active):
+        ProcessingConfig.setSettingValue('ACTIVATE_GDAL', active)
 
     def name(self):
         version = GdalUtils.readableVersion()
