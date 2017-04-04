@@ -37,7 +37,8 @@ from processing.gui.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.ScriptUtils import ScriptUtils
 from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
 from processing.gui.GetScriptsAndModels import GetScriptsAction
-from processing.gui.ProviderActions import ProviderActions
+from processing.gui.ProviderActions import (ProviderActions,
+                                            ProviderContextMenuActions)
 from processing.script.CreateScriptCollectionPluginAction import CreateScriptCollectionPluginAction
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -65,11 +66,13 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
                                             self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
                                             ScriptUtils.defaultScriptsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
         ProviderActions.registerProviderActions(self, self.actions)
+        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
         return True
 
     def unload(self):
         ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
         ProviderActions.deregisterProviderActions(self)
+        ProviderContextMenuActions.deregisterProviderContextMenuActions(self.contextMenuActions)
 
     def icon(self):
         return QgsApplication.getThemeIcon("/processingScript.svg")

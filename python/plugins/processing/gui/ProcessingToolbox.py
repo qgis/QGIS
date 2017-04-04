@@ -47,7 +47,8 @@ from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 from processing.gui.ConfigDialog import ConfigDialog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
-from processing.gui.ProviderActions import ProviderActions
+from processing.gui.ProviderActions import (ProviderActions,
+                                            ProviderContextMenuActions)
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -216,7 +217,7 @@ class ProcessingToolbox(BASE, WIDGET):
 
         if isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
             data = item.alg if isinstance(item, TreeAlgorithmItem) else item.action
-            actions = Processing.contextMenuActions
+            actions = ProviderContextMenuActions.actions
             if len(actions) > 0:
                 popupmenu.addSeparator()
             for action in actions:

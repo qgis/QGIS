@@ -27,11 +27,28 @@ class ProviderActions(object):
 
     @staticmethod
     def registerProviderActions(provider, actions):
-        """ Adds menu actions for a provider """
+        """ Adds actions for a provider """
         ProviderActions.actions[provider.id()] = actions
 
     @staticmethod
     def deregisterProviderActions(provider):
-        """ Removes menu actions for a provider """
+        """ Removes actions for a provider """
         if provider.id() in ProviderActions.actions:
             del ProviderActions.actions[provider.id()]
+
+
+class ProviderContextMenuActions(object):
+
+    # All the registered context menu actions for the toolbox
+    actions = []
+
+    @staticmethod
+    def registerProviderContextMenuActions(actions):
+        """ Adds context menu actions for a provider """
+        ProviderContextMenuActions.actions.extend(actions)
+
+    @staticmethod
+    def deregisterProviderContextMenuActions(actions):
+        """ Removes context menu actions for a provider """
+        for act in actions:
+            ProviderContextMenuActions.actions.remove(act)

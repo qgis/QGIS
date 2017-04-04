@@ -66,9 +66,6 @@ PROVIDERS = []
 
 class Processing(object):
 
-    # All the registered context menu actions for the toolbox
-    contextMenuActions = []
-
     @staticmethod
     def addProvider(provider):
         """Use this method to add algorithms from external providers.
@@ -79,7 +76,6 @@ class Processing(object):
             if provider.load():
                 ProcessingConfig.readSettings()
                 provider.refreshAlgorithms()
-                Processing.contextMenuActions.extend(provider.contextMenuActions)
                 QgsApplication.processingRegistry().addProvider(provider)
                 PROVIDERS.append(provider)
         except:
@@ -99,8 +95,6 @@ class Processing(object):
         contributes a provider.
         """
         provider.unload()
-        for act in provider.contextMenuActions:
-            Processing.contextMenuActions.remove(act)
         QgsApplication.processingRegistry().removeProvider(provider.id())
 
     @staticmethod

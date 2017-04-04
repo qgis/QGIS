@@ -40,7 +40,8 @@ from processing.modeler.CreateNewModelAction import CreateNewModelAction
 from processing.modeler.DeleteModelAction import DeleteModelAction
 from processing.modeler.AddModelFromFileAction import AddModelFromFileAction
 from processing.gui.GetScriptsAndModels import GetModelsAction
-from processing.gui.ProviderActions import ProviderActions
+from processing.gui.ProviderActions import (ProviderActions,
+                                            ProviderContextMenuActions)
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -59,10 +60,12 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
                                             ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
                                             ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
         ProviderActions.registerProviderActions(self, self.actions)
+        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
         return True
 
     def unload(self):
         ProviderActions.deregisterProviderActions(self)
+        ProviderContextMenuActions.deregisterProviderContextMenuActions(self.contextMenuActions)
 
     def modelsFolder(self):
         return ModelerUtils.modelsFolders()[0]

@@ -32,6 +32,7 @@ from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsF
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.preconfigured.NewPreconfiguredAlgorithmAction import NewPreconfiguredAlgorithmAction
 from processing.preconfigured.DeletePreconfiguredAlgorithmAction import DeletePreconfiguredAlgorithmAction
+from processing.gui.ProviderActions import ProviderContextMenuActions
 
 
 class PreconfiguredAlgorithmProvider(AlgorithmProvider):
@@ -53,6 +54,12 @@ class PreconfiguredAlgorithmProvider(AlgorithmProvider):
                     self.algs.append(alg)
         for a in self.algs:
             self.addAlgorithm(a)
+
+    def load(self):
+        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+
+    def unload(self):
+        ProviderContextMenuActions.deregisterProviderContextMenuActions(self.contextMenuActions)
 
     def id(self):
         return 'preconfigured'
