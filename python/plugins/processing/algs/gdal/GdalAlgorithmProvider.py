@@ -98,6 +98,7 @@ class GdalAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
+        self.algs = []
 
     def load(self):
         AlgorithmProvider.load(self)
@@ -126,21 +127,21 @@ class GdalAlgorithmProvider(AlgorithmProvider):
         return QgsApplication.iconPath("providerGdal.svg")
 
     def loadAlgorithms(self):
-        algs = [nearblack(), information(), warp(), translate(),
-                rgb2pct(), pct2rgb(), merge(), buildvrt(), polygonize(), gdaladdo(),
-                ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
-                sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
-                hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
-                ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
-                GridDataMetrics(), gdaltindex(), gdalcalc(), rasterize_over(),
-                retile(), gdal2tiles(), AssignProjection(),
-                # ----- OGR tools -----
-                OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
-                Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
-                Ogr2OgrBuffer(), Ogr2OgrDissolve(), OneSideBuffer(),
-                OffsetCurve(), Ogr2OgrTableToPostGisList(), OgrSql(),
-                ]
-        for a in algs:
+        self.algs = [nearblack(), information(), warp(), translate(),
+                     rgb2pct(), pct2rgb(), merge(), buildvrt(), polygonize(), gdaladdo(),
+                     ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
+                     sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
+                     hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
+                     ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
+                     GridDataMetrics(), gdaltindex(), gdalcalc(), rasterize_over(),
+                     retile(), gdal2tiles(), AssignProjection(),
+                     # ----- OGR tools -----
+                     OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
+                     Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
+                     Ogr2OgrBuffer(), Ogr2OgrDissolve(), OneSideBuffer(),
+                     OffsetCurve(), Ogr2OgrTableToPostGisList(), OgrSql(),
+                     ]
+        for a in self.algs:
             self.addAlgorithm(a)
 
     def supportedOutputRasterLayerExtensions(self):

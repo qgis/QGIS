@@ -38,17 +38,21 @@ class PreconfiguredAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
+        self.algs = []
         self.contextMenuActions = \
             [NewPreconfiguredAlgorithmAction(), DeletePreconfiguredAlgorithmAction()]
 
     def loadAlgorithms(self):
+        self.algs = []
         folder = preconfiguredAlgorithmsFolder()
         for path, subdirs, files in os.walk(folder):
             for descriptionFile in files:
                 if descriptionFile.endswith('json'):
                     fullpath = os.path.join(path, descriptionFile)
                     alg = PreconfiguredAlgorithm(fullpath)
-                    self.addAlgorithm(alg)
+                    self.algs.append(alg)
+        for a in self.algs:
+            self.addAlgorithm(a)
 
     def id(self):
         return 'preconfigured'

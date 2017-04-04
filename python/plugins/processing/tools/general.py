@@ -35,45 +35,16 @@ try:
 except ImportError:
     import configparser as configparser
 
+from qgis.core import QgsApplication
 from processing.core.Processing import Processing
-from processing.core.alglist import algList
 from processing.core.parameters import ParameterSelection
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 
-def algorithmsList(text=None):
-    """Returns list of all available Processing algorithms or list
-    of algorithms which names contains given text.
-    Returned list contains algorithm command-line names.
-    """
-    lst = []
-    for provider in list(algList.algs.values()):
-        sortedlist = sorted(list(provider.values()), key=lambda alg: alg.name())
-        for alg in sortedlist:
-            if text is None or text.lower() in alg.name().lower():
-                lst.append(alg.id())
-    return lst
-
-
-def printAlgorithms(text=None):
-    """Print list of all available Processing algorithms or list
-    of algorithms which names contains given text.
-    Prints algorithms user-friendly names as well as command-line
-    names.
-    """
-    s = ''
-    for provider in list(algList.algs.values()):
-        sortedlist = sorted(list(provider.values()), key=lambda alg: alg.name())
-        for alg in sortedlist:
-            if text is None or text.lower() in alg.name().lower():
-                s += '{}--->{}\n'.format(alg.name().ljust(50, '-'), alg.id())
-    print(s)
-
-
-def algorithmOptions(name):
+def algorithmOptions(id):
     """Prints all algorithm options with their values.
     """
-    alg = Processing.getAlgorithm(name)
+    alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
         opts = ''
         for param in alg.parameters:
@@ -83,20 +54,20 @@ def algorithmOptions(name):
                     opts += '\t{} - {}\n'.format(option[0], option[1])
         print(opts)
     else:
-        print('Algorithm "{}" not found.'.format(name))
+        print('Algorithm "{}" not found.'.format(id))
 
 
-def algorithmHelp(name):
+def algorithmHelp(id):
     """Prints algorithm parameters with their types. Also
     provides information about options if any.
     """
-    alg = Processing.getAlgorithm(name)
+    alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
         alg = alg.getCopy()
         print(str(alg))
-        algorithmOptions(name)
+        algorithmOptions(id)
     else:
-        print('Algorithm "{}" not found.'.format(name))
+        print('Algorithm "{}" not found.'.format(id))
 
 
 def run(algOrName, *args, **kwargs):

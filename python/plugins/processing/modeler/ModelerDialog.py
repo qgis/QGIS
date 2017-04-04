@@ -50,7 +50,6 @@ from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.WrongModelException import WrongModelException
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -111,7 +110,7 @@ class ModelerDialog(BASE, WIDGET):
                 if text in ModelerParameterDefinitionDialog.paramTypes:
                     self.addInputOfType(text, event.pos())
                 else:
-                    alg = algList.getAlgorithm(text)
+                    alg = QgsApplication.processingRegistry().algorithmById(text)
                     if alg is not None:
                         self._addAlgorithm(alg.getCopy(), event.pos())
                 event.accept()
@@ -549,7 +548,7 @@ class ModelerDialog(BASE, WIDGET):
     def addAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = algList.getAlgorithm(item.alg.id())
+            alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
             self._addAlgorithm(alg.getCopy())
 
     def _addAlgorithm(self, alg, pos=None):
@@ -599,16 +598,14 @@ class ModelerDialog(BASE, WIDGET):
         self.algorithmTree.clear()
         text = str(self.searchBox.text())
         search_strings = text.split(' ')
-        allAlgs = algList.algs
-        for provider_id in list(allAlgs.keys()):
-            name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
+        for provider in QgsApplication.processingRegistry().providers():
+            name = 'ACTIVATE_' + provider.id().upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 continue
             groups = {}
-            algs = list(allAlgs[provider_id].values())
 
             # Add algorithms
-            for alg in algs:
+            for alg in provider.algorithms():
                 if alg.flags() & QgsProcessingAlgorithm.FlagHideFromModeler:
                     continue
                 if alg.id() == self.alg.id():

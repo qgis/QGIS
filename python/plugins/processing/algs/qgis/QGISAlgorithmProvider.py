@@ -192,6 +192,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
+        self.algs = []
         self.externalAlgs = []
 
     def getAlgs(self):
@@ -291,7 +292,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
         return QgsApplication.iconPath("providerQgis.svg")
 
     def loadAlgorithms(self):
-        for a in self.getAlgs():
+        self.algs = self.getAlgs()
+        for a in self.algs:
             self.addAlgorithm(a)
         for a in self.externalAlgs:
             self.addAlgorithm(a)

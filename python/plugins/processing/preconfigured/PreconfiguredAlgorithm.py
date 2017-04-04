@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 
 import os
-from qgis.core import (QgsProcessingAlgorithm)
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.alglist import algList
 import json
 
 
@@ -67,7 +67,7 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
         self._group = self.description["group"]
 
     def execute(self, feedback):
-        self.alg = algList.getAlgorithm(self.description["algname"]).getCopy()
+        self.alg = QgsApplication.processingRegistry().algorithmById(self.description["algname"]).getCopy()
         for name, value in list(self.description["parameters"].items()):
             self.alg.setParameterValue(name, value)
         for name, value in list(self.description["outputs"].items()):

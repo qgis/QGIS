@@ -24,6 +24,7 @@ __copyright__ = '(C) 2015, Arnaud Morvan'
 __revision__ = '$Format:%H$'
 
 import os
+from qgis.core import QgsApplication
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmClassification import (
     loadClassification, getClassificationEn)
@@ -56,7 +57,7 @@ def updateTranslations():
     def translationShadow():
     ''')
         groups = {}
-        for provider in Processing.providers:
+        for provider in QgsApplication.processingRegsitry().providers():
             f.write('''
         """{}"""
     '''.format(provider.__class__.__name__))

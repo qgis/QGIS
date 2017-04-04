@@ -62,10 +62,10 @@ from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # 
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
 from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
 
+# workaround SIP bindings losing subclasses during transfer to QgsProcessingRegistry
+PROVIDERS = []
 
 class Processing(object):
-
-    providers = []
 
     # Same structure as algs in algList
     actions = {}
@@ -74,26 +74,19 @@ class Processing(object):
     contextMenuActions = []
 
     @staticmethod
-    def algs():
-        """Use this method to get algorithms for wps4server.
-        """
-        return algList.algs
-
-    @staticmethod
-    def addProvider(provider, updateList=True):
+    def addProvider(provider):
         """Use this method to add algorithms from external providers.
         """
-
-        if provider.id() in [p.id() for p in QgsApplication.processingRegistry().providers()]:
+        if QgsApplication.processingRegistry().providerById(provider.id()):
             return
         try:
             if provider.load():
-                Processing.providers.append(provider)
                 ProcessingConfig.readSettings()
                 provider.refreshAlgorithms()
                 Processing.actions[provider.id()] = provider.actions
                 Processing.contextMenuActions.extend(provider.contextMenuActions)
-                algList.addProvider(provider)
+                QgsApplication.processingRegistry().addProvider(provider)
+                PROVIDERS.append(provider)
         except:
             ProcessingLog.addToLog(
                 ProcessingLog.LOG_ERROR,
@@ -110,22 +103,12 @@ class Processing(object):
         This method should be called when unloading a plugin that
         contributes a provider.
         """
-        try:
-            provider.unload()
-            for p in Processing.providers:
-                if p.id() == provider.id():
-                    Processing.providers.remove(p)
-            algList.removeProvider(provider.id())
-            if provider.id() in Processing.actions:
-                del Processing.actions[provider.id()]
-            for act in provider.contextMenuActions:
-                Processing.contextMenuActions.remove(act)
-        except:
-            # This try catch block is here to avoid problems if the
-            # plugin with a provider is unloaded after the Processing
-            # framework itself has been unloaded. It is a quick fix
-            # before I find out how to properly avoid that.
-            pass
+        provider.unload()
+        if provider.id() in Processing.actions:
+            del Processing.actions[provider.id()]
+        for act in provider.contextMenuActions:
+            Processing.contextMenuActions.remove(act)
+        QgsApplication.processingRegistry().removeProvider(provider.id())
 
     @staticmethod
     def activateProvider(providerOrName, activate=True):
@@ -136,7 +119,7 @@ class Processing(object):
 
     @staticmethod
     def initialize():
-        if "model" in [p.id() for p in Processing.providers]:
+        if "model" in [p.id() for p in QgsApplication.processingRegistry().providers()]:
             return
         # Add the basic providers
         for c in AlgorithmProvider.__subclasses__():
@@ -145,6 +128,7 @@ class Processing(object):
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
+        Processing.updateAlgsList()
 
     @staticmethod
     def addScripts(folder):
@@ -177,7 +161,7 @@ class Processing(object):
         update.
         """
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        for p in Processing.providers:
+        for p in QgsApplication.processingRegistry().providers():
             Processing.reloadProvider(p.id())
         QApplication.restoreOverrideCursor()
 
@@ -185,16 +169,13 @@ class Processing(object):
     def reloadProvider(provider_id):
         algList.reloadProvider(provider_id)
 
-    @staticmethod
-    def getAlgorithm(name):
-        return algList.getAlgorithm(name)
 
     @staticmethod
     def runAlgorithm(algOrName, onFinish, *args, **kwargs):
         if isinstance(algOrName, GeoAlgorithm):
             alg = algOrName
         else:
-            alg = Processing.getAlgorithm(algOrName)
+            alg = QgsApplication.processingRegistry().algorithmById(algOrName)
         if alg is None:
             # fix_print_with_import
             print('Error: Algorithm not found\n')

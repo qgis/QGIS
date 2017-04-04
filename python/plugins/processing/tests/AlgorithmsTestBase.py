@@ -58,7 +58,10 @@ from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  #
 from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
 
 
-from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsProject
+from qgis.core import (QgsVectorLayer,
+                       QgsRasterLayer,
+                       QgsProject,
+                       QgsApplication)
 
 from qgis.testing import _UnexpectedSuccess
 
@@ -97,7 +100,7 @@ class AlgorithmsTest(object):
             filePath = os.path.join(processingTestDataPath(), 'scripts', '{}.py'.format(defs['algorithm'][len('script:'):]))
             alg = ScriptAlgorithm(filePath)
         else:
-            alg = processing.Processing.getAlgorithm(defs['algorithm']).getCopy()
+            alg = QgsApplication.processingRegistry().algorithmById(defs['algorithm']).getCopy()
 
         if isinstance(params, list):
             for param in zip(alg.parameters, params):

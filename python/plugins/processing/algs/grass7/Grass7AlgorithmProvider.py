@@ -44,6 +44,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
+        self.algs = []
 
     def load(self):
         AlgorithmProvider.load(self)
@@ -96,7 +97,8 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         return algs
 
     def loadAlgorithms(self):
-        for a in self.createAlgsList():
+        self.algs = self.createAlgsList()
+        for a in self.algs:
             self.addAlgorithm(a)
 
     def name(self):

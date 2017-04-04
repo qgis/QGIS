@@ -83,6 +83,19 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
     QgsProcessingProvider *providerById( const QString &id );
 
+    /**
+     * Returns a list of all available algorithms from registered providers.
+     * \see algorithmById()
+     */
+    QList< QgsProcessingAlgorithm * > algorithms() const;
+
+    /**
+     * Finds an algorithm by its ID. If no matching algorithm is found, a nullptr
+     * is returned.
+     * \see algorithms()
+     */
+    QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
+
   signals:
 
     //! Emitted when a provider has been added to the registry.

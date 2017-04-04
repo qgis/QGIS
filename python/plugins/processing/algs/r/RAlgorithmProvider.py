@@ -50,6 +50,7 @@ class RAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
+        self.algs = []
         self.activate = False
         self.actions.append(CreateNewScriptAction(
             'Create new R script', CreateNewScriptAction.SCRIPT_R))
@@ -100,12 +101,14 @@ class RAlgorithmProvider(AlgorithmProvider):
 
     def loadAlgorithms(self):
         folders = RUtils.RScriptsFolders()
-
+        self.algs = []
         for f in folders:
             self.loadFromFolder(f)
 
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         self.loadFromFolder(folder)
+        for a in self.algs:
+            self.addAlgorithm(a)
 
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):
@@ -117,7 +120,7 @@ class RAlgorithmProvider(AlgorithmProvider):
                         fullpath = os.path.join(path, descriptionFile)
                         alg = RAlgorithm(fullpath)
                         if alg.name().strip() != '':
-                            self.addAlgorithm(alg)
+                            self.algs.append(alg)
                     except WrongScriptException as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
                     except Exception as e:

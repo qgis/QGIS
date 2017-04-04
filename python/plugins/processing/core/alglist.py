@@ -33,32 +33,12 @@ class AlgorithmList(QObject):
 
     providerUpdated = pyqtSignal(str)
 
-    # A dictionary of algorithms. Keys are names of providers
-    # and values are list with all algorithms from that provider
-    algs = {}
-
-    def removeProvider(self, provider_id):
-        if provider_id in self.algs:
-            del self.algs[provider_id]
-
-        QgsApplication.processingRegistry().removeProvider(provider_id)
-
     def reloadProvider(self, provider_id):
         for p in QgsApplication.processingRegistry().providers():
             if p.id() == provider_id:
                 p.refreshAlgorithms()
-                self.algs[p.id()] = {a.id(): a for a in p.algorithms()}
                 self.providerUpdated.emit(p.id())
                 break
-
-    def addProvider(self, provider):
-        if QgsApplication.processingRegistry().addProvider(provider):
-            self.algs[provider.id()] = {a.id(): a for a in provider.algorithms()}
-
-    def getAlgorithm(self, name):
-        for provider in list(self.algs.values()):
-            if name in provider:
-                return provider[name]
 
 
 algList = AlgorithmList()

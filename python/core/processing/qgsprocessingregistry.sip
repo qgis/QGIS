@@ -67,6 +67,19 @@ class QgsProcessingRegistry : QObject
  Returns a matching provider by provider ID.
 %End
 
+    QList< QgsProcessingAlgorithm * > algorithms() const;
+%Docstring
+ Returns a list of all available algorithms from registered providers.
+ \see algorithmById()
+%End
+
+    QgsProcessingAlgorithm * algorithmById( const QString& id ) const;
+%Docstring
+ Finds an algorithm by its ID. If no matching algorithm is found, a nullptr
+ is returned.
+ \see algorithms()
+%End
+
   signals:
 
     void providerAdded( const QString &id );

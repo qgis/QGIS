@@ -371,6 +371,18 @@ void TestQgsProcessing::algorithm()
     // must be safe for providers to reload their algorithms
     p->refreshAlgorithms();
   }
+
+  QgsProcessingRegistry r;
+  r.addProvider( p );
+  QCOMPARE( r.algorithms().size(), 2 );
+  QVERIFY( r.algorithms().contains( p->algorithm( "alg1" ) ) );
+  QVERIFY( r.algorithms().contains( p->algorithm( "alg2" ) ) );
+
+  // algorithmById
+  QCOMPARE( r.algorithmById( "p1:alg1" ), p->algorithm( "alg1" ) );
+  QCOMPARE( r.algorithmById( "p1:alg2" ), p->algorithm( "alg2" ) );
+  QVERIFY( !r.algorithmById( "p1:alg3" ) );
+  QVERIFY( !r.algorithmById( "px:alg1" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

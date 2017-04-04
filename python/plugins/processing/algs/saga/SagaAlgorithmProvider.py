@@ -46,6 +46,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         super().__init__()
         self.activate = True
+        self.algs = []
 
     def load(self):
         AlgorithmProvider.load(self)
@@ -85,13 +86,14 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                                    self.tr('Problem with SAGA installation: unsupported SAGA version found.'))
             return
 
+        self.algs = []
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
                 try:
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name().strip() != '':
-                        self.addAlgorithm(alg)
+                        self.algs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                self.tr('Could not open SAGA algorithm: {}'.format(descriptionFile)))
@@ -99,7 +101,9 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                            self.tr('Could not open SAGA algorithm: {}\n{}'.format(descriptionFile, str(e))))
 
-        self.addAlgorithm(SplitRGBBands())
+        self.algs.append(SplitRGBBands())
+        for a in self.algs:
+            self.addAlgorithm(a)
 
     def name(self):
         version = SagaUtils.getInstalledVersion()

@@ -223,8 +223,7 @@ class ConfigDialog(BASE, WIDGET):
         widget.setLayout(layout)
         self.tree.setIndexWidget(emptyItem.index(), widget)
 
-        providers = Processing.providers
-        for provider in providers:
+        for provider in QgsApplication.processingRegistry().providers():
             providerDescription = provider.name()
             groupItem = QStandardItem(providerDescription)
             icon = provider.icon()
@@ -266,8 +265,7 @@ class ConfigDialog(BASE, WIDGET):
         self.adjustColumns()
 
     def resetMenusToDefaults(self):
-        providers = Processing.providers
-        for provider in providers:
+        for provider in QgsApplication.processingRegistry().providers():
             for alg in provider.algorithms():
                 d = defaultMenuEntries.get(alg.id(), "")
                 setting = ProcessingConfig.settings["MENU_" + alg.id()]
@@ -289,6 +287,7 @@ class ConfigDialog(BASE, WIDGET):
                                             self.tr('Wrong value for parameter "{0}":\n\n{1}').format(setting.description, str(e)))
                         return
                 setting.save(qsettings)
+
         Processing.updateAlgsList()
         settingsWatcher.settingsChanged.emit()
 

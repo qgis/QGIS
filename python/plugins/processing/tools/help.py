@@ -26,6 +26,7 @@ __revision__ = '$Format:%H$'
 import os
 import codecs
 
+from qgis.core import QgsApplication
 from processing.core.Processing import Processing
 from processing.core.parameters import ParameterMultipleInput, ParameterTableField, ParameterVector, ParameterSelection
 from processing.tools.system import mkdir
@@ -113,5 +114,5 @@ def createBaseHelpFiles(folder):
 
 
 def createAlgorithmHelp(algName, folder):
-    alg = Processing.getAlgorithm(algName)
+    alg = QgsApplication.processingRegistry().algorithmById(algName)
     baseHelpForAlgorithm(alg, folder)

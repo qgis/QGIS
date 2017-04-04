@@ -46,6 +46,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
+        self.algs = []
         self.folder_algorithms = []
         self.actions.extend([CreateNewScriptAction('Create new script',
                                                    CreateNewScriptAction.SCRIPT_PYTHON),
@@ -81,12 +82,12 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         return self.tr('Scripts', 'ScriptAlgorithmProvider')
 
     def loadAlgorithms(self):
+        self.algs = []
         folders = ScriptUtils.scriptsFolders()
-        algs = []
         for f in folders:
-            algs.extend(ScriptUtils.loadFromFolder(f))
-        algs.extend(self.folder_algorithms)
-        for a in algs:
+            self.algs.extend(ScriptUtils.loadFromFolder(f))
+        self.algs.extend(self.folder_algorithms)
+        for a in self.algs:
             self.addAlgorithm(a)
 
     def addAlgorithmsFromFolder(self, folder):

@@ -52,7 +52,6 @@ from processing.core.parameters import (Parameter,
                                         ParameterDataObject)
 
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -115,7 +114,7 @@ class Algorithm(object):
     @property
     def algorithm(self):
         if self._algInstance is None:
-            self._algInstance = algList.getAlgorithm(self.consoleName).getCopy()
+            self._algInstance = QgsApplication.processingRegistry().algorithmById(self.consoleName).getCopy()
         return self._algInstance
 
     def setName(self, model):
@@ -543,7 +542,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def checkBeforeOpeningParametersDialog(self):
         for alg in list(self.algs.values()):
-            algInstance = algList.getAlgorithm(alg.consoleName)
+            algInstance = QgsApplication.processingRegistry().algorithmById(alg.consoleName)
             if algInstance is None:
                 return self.tr("The model you are trying to run contains an algorithm that is not available: <i>{0}</i>").format(alg.consoleName)
 

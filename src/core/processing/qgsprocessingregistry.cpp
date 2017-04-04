@@ -69,3 +69,26 @@ QgsProcessingProvider *QgsProcessingRegistry::providerById( const QString &id )
   return mProviders.value( id, nullptr );
 }
 
+QList< QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithms() const
+{
+  QList< QgsProcessingAlgorithm * > algs;
+  QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
+  for ( ; it != mProviders.constEnd(); ++it )
+  {
+    algs.append( it.value()->algorithms() );
+  }
+  return algs;
+}
+
+QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QString &id ) const
+{
+  QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
+  for ( ; it != mProviders.constEnd(); ++it )
+  {
+    Q_FOREACH ( QgsProcessingAlgorithm *alg, it.value()->algorithms() )
+      if ( alg->id() == id )
+        return alg;
+  }
+  return nullptr;
+}
+
