@@ -64,11 +64,11 @@ while(!eof $header){
     #print $line;
 
     if ($line =~ m/^\s*SIP_FEATURE\( (\w+) \)(.*)$/){
-        print "%Feature $1$2";
+        print "%Feature $1$2\n";
         next;
     }
     if ($line =~ m/^\s*SIP_IF_FEATURE\( (\!?\w+) \)(.*)$/){
-        print "%If ($1)$2";
+        print "%If ($1)$2\n";
         next;
     }
     if ($line =~ m/^\s*SIP_CONVERT_TO_SUBCLASS_CODE(.*)$/){
@@ -77,7 +77,7 @@ while(!eof $header){
     }
 
     if ($line =~ m/^\s*SIP_END(.*)$/){
-        print "%End$1";
+        print "%End$1\n";
         next;
     }
 
