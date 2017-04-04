@@ -100,7 +100,7 @@ class AlgorithmsTest(object):
             filePath = os.path.join(processingTestDataPath(), 'scripts', '{}.py'.format(defs['algorithm'][len('script:'):]))
             alg = ScriptAlgorithm(filePath)
         else:
-            alg = QgsApplication.processingRegistry().algorithmById(defs['algorithm']).getCopy()
+            alg = QgsApplication.processingRegistry().algorithmById(defs['algorithm'])
 
         if isinstance(params, list):
             for param in zip(alg.parameters, params):

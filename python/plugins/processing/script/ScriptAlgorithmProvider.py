@@ -72,7 +72,7 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
         return True
 
     def unload(self):
-        ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
+        ProcessingConfig.removeSetting(ScriptUtils.SCRIPTS_FOLDER)
         ProviderActions.deregisterProviderActions(self)
         ProviderContextMenuActions.deregisterProviderContextMenuActions(self.contextMenuActions)
 

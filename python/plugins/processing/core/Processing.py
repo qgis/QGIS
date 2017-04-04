@@ -61,10 +61,10 @@ from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # 
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
 from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
 
-# workaround SIP bindings losing subclasses during transfer to QgsProcessingRegistry
-PROVIDERS = []
 
 class Processing(object):
+
+    BASIC_PROVIDERS = []
 
     @staticmethod
     def activateProvider(providerOrName, activate=True):
@@ -85,7 +85,7 @@ class Processing(object):
         # Add the basic providers
         for c in QgsProcessingProvider.__subclasses__():
             p = c()
-            PROVIDERS.append(p)
+            Processing.BASIC_PROVIDERS.append(p)
             QgsApplication.processingRegistry().addProvider(p)
         # And initialize
         ProcessingConfig.initialize()
@@ -94,8 +94,10 @@ class Processing(object):
 
     @staticmethod
     def deinitialize():
-        for p in PROVIDERS:
+        for p in Processing.BASIC_PROVIDERS:
             QgsApplication.processingRegistry().removeProvider(p)
+
+        Processing.BASIC_PROVIDERS = []
 
     @staticmethod
     def addScripts(folder):
