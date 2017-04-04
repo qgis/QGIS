@@ -57,6 +57,8 @@ class PreconfiguredAlgorithmProvider(QgsProcessingProvider):
 
     def load(self):
         ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+        self.refreshAlgorithms()
+        return True
 
     def unload(self):
         ProviderContextMenuActions.deregisterProviderContextMenuActions(self.contextMenuActions)

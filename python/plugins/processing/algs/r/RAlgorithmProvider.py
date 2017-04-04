@@ -84,6 +84,8 @@ class RAlgorithmProvider(QgsProcessingProvider):
                 RUtils.R_USE64, self.tr('Use 64 bit version'), False))
         ProviderActions.registerProviderActions(self, self.actions)
         ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
         return True
 
     def unload(self):

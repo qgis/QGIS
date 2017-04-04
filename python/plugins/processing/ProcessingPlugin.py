@@ -163,6 +163,7 @@ class ProcessingPlugin(object):
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
 
         removeMenus()
+        Processing.deinitialize()
 
     def openCommander(self):
         if self.commander is None:

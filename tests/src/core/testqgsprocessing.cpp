@@ -48,6 +48,9 @@ class DummyProvider : public QgsProcessingProvider
 
     virtual QString name() const override { return "dummy"; }
 
+    void unload() override { if ( unloaded ) { *unloaded = true; } }
+
+    bool *unloaded = nullptr;
 
   protected:
 
@@ -65,6 +68,20 @@ class DummyProvider : public QgsProcessingProvider
     }
 
     QString mId;
+
+
+};
+
+class DummyProviderNoLoad : public DummyProvider
+{
+  public:
+
+    DummyProviderNoLoad( const QString &id ) : DummyProvider( id ) {}
+
+    bool load() override
+    {
+      return false;
+    }
 
 };
 
@@ -136,6 +153,13 @@ void TestQgsProcessing::addProvider()
   QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
   delete p3;
+
+  // test that adding a provider which does not load means it is not added to registry
+  DummyProviderNoLoad *p4 = new DummyProviderNoLoad( "p4" );
+  QVERIFY( !r.addProvider( p4 ) );
+  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
+  QCOMPARE( spyProviderAdded.count(), 2 );
+  delete p4;
 }
 
 void TestQgsProcessing::providerById()
@@ -177,10 +201,15 @@ void TestQgsProcessing::removeProvider()
   QVERIFY( r.addProvider( p2 ) );
 
   // remove one by pointer
+  bool unloaded = false;
+  p->unloaded = &unloaded;
   QVERIFY( r.removeProvider( p ) );
   QCOMPARE( spyProviderRemoved.count(), 1 );
   QCOMPARE( spyProviderRemoved.last().at( 0 ).toString(), QString( "p1" ) );
   QCOMPARE( r.providers(), QList< QgsProcessingProvider * >() << p2 );
+
+  //test that provider was unloaded
+  QVERIFY( unloaded );
 
   // should fail, already removed
   QVERIFY( !r.removeProvider( "p1" ) );
@@ -387,6 +416,18 @@ void TestQgsProcessing::algorithm()
   QCOMPARE( r.algorithmById( "p1:alg2" ), p->algorithm( "alg2" ) );
   QVERIFY( !r.algorithmById( "p1:alg3" ) );
   QVERIFY( !r.algorithmById( "px:alg1" ) );
+
+  //test that loading a provider triggers an algorithm refresh
+  DummyProvider *p2 = new DummyProvider( "p2" );
+  QVERIFY( p2->algorithms().isEmpty() );
+  p2->load();
+  QCOMPARE( p2->algorithms().size(), 2 );
+
+  // test that adding a provider to the registry automatically refreshes algorithms (via load)
+  DummyProvider *p3 = new DummyProvider( "p3" );
+  QVERIFY( p3->algorithms().isEmpty() );
+  r.addProvider( p3 );
+  QCOMPARE( p3->algorithms().size(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

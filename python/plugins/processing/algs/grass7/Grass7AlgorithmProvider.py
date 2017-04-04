@@ -69,6 +69,8 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             Grass7Utils.GRASS_HELP_PATH,
             self.tr('Location of GRASS docs'),
             Grass7Utils.grassHelpPath()))
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
         return True
 
     def unload(self):

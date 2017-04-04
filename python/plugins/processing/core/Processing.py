@@ -67,37 +67,6 @@ PROVIDERS = []
 class Processing(object):
 
     @staticmethod
-    def addProvider(provider):
-        """Use this method to add algorithms from external providers.
-        """
-        if QgsApplication.processingRegistry().providerById(provider.id()):
-            return
-        try:
-            if provider.load():
-                ProcessingConfig.readSettings()
-                provider.refreshAlgorithms()
-                QgsApplication.processingRegistry().addProvider(provider)
-                PROVIDERS.append(provider)
-        except:
-            ProcessingLog.addToLog(
-                ProcessingLog.LOG_ERROR,
-                Processing.tr('Could not load provider: {0}\n{0}').format(
-                    provider.name(), traceback.format_exc()
-                )
-            )
-            Processing.removeProvider(provider)
-
-    @staticmethod
-    def removeProvider(provider):
-        """Use this method to remove a provider.
-
-        This method should be called when unloading a plugin that
-        contributes a provider.
-        """
-        provider.unload()
-        QgsApplication.processingRegistry().removeProvider(provider.id())
-
-    @staticmethod
     def activateProvider(providerOrName, activate=True):
         provider_id = providerOrName.id() if isinstance(providerOrName, QgsProcessingProvider) else providerOrName
         provider = QgsApplication.processingRegistry().providerById(provider_id)
@@ -115,11 +84,18 @@ class Processing(object):
             return
         # Add the basic providers
         for c in QgsProcessingProvider.__subclasses__():
-            Processing.addProvider(c())
+            p = c()
+            PROVIDERS.append(p)
+            QgsApplication.processingRegistry().addProvider(p)
         # And initialize
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
+
+    @staticmethod
+    def deinitialize():
+        for p in PROVIDERS:
+            QgsApplication.processingRegistry().removeProvider(p)
 
     @staticmethod
     def addScripts(folder):

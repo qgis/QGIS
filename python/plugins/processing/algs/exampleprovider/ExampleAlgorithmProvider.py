@@ -48,6 +48,8 @@ class ExampleAlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.addSetting(Setting('Example algorithms',
                                             ExampleAlgorithmProvider.MY_DUMMY_SETTING,
                                             'Example setting', 'Default value'))
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
         return True
 
     def unload(self):

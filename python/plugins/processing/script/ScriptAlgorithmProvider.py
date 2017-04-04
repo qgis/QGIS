@@ -67,6 +67,8 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
                                             ScriptUtils.defaultScriptsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
         ProviderActions.registerProviderActions(self, self.actions)
         ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
         return True
 
     def unload(self):

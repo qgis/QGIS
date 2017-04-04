@@ -110,6 +110,8 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             GdalUtils.GDAL_HELP_PATH,
             self.tr('Location of GDAL docs'),
             GdalUtils.gdalHelpPath()))
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
         return True
 
     def unload(self):

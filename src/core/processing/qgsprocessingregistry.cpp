@@ -38,6 +38,9 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
   if ( mProviders.contains( provider->id() ) )
     return false;
 
+  if ( !provider->load() )
+    return false;
+
   provider->setParent( this );
   mProviders[ provider->id()] = provider;
   emit providerAdded( provider->id() );
@@ -53,6 +56,8 @@ bool QgsProcessingRegistry::removeProvider( QgsProcessingProvider *provider )
 
   if ( !mProviders.contains( id ) )
     return false;
+
+  provider->unload();
 
   delete mProviders.take( id );
   emit providerRemoved( id );
