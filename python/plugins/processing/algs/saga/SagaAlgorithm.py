@@ -212,7 +212,9 @@ class SagaAlgorithm(GeoAlgorithm):
                 command += ' -' + param.name + ' "' + s + '"'
             elif isinstance(param, ParameterBoolean):
                 if param.value:
-                    command += ' -' + param.name
+                    command += ' -' + param.name.strip() + " true"
+                else:
+                    command += ' -' + param.name.strip() + " false"
             elif isinstance(param, ParameterFixedTable):
                 tempTableFile = getTempFilename('txt')
                 with open(tempTableFile, 'w') as f:
@@ -325,7 +327,7 @@ class SagaAlgorithm(GeoAlgorithm):
         destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        return 'io_gdal 0 -TRANSFORM -RESAMPLING 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
+        return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
 
     def checkParameterValuesBeforeExecuting(self):
         """
