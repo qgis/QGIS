@@ -51,21 +51,6 @@ struct Vertex
 //! qHash implementation - we use Vertex in QSet
 uint qHash( const Vertex &v );
 
-//! helper structure for an edge being dragged
-struct Edge
-{
-  Edge( QgsVectorLayer *layer, QgsFeatureId fid, int vertexId, const QgsPoint &startMapPoint )
-    : layer( layer )
-    , fid( fid )
-    , edgeVertex0( vertexId )
-    , startMapPoint( startMapPoint ) {}
-
-  QgsVectorLayer *layer = nullptr;
-  QgsFeatureId fid;
-  int edgeVertex0;    //!< First vertex (with lower index)
-  QgsPoint startMapPoint;  //!< Map point where edge drag started
-};
-
 
 
 class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
@@ -100,6 +85,8 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
 
   private:
+
+    void buildDragBandsForVertices( const QSet<Vertex> &movingVertices, const QgsPoint &dragVertexMapPoint );
 
     void addDragBand( const QgsPoint &v1, const QgsPoint &v2 );
 
@@ -157,6 +144,12 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     void moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::Match *mapPointMatch );
 
     void deleteVertex();
+
+    typedef QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > NodeEdits;
+
+    void addExtraVerticesToEdits( NodeEdits &edits, const QgsPoint &mapPoint, QgsVectorLayer *dragLayer = nullptr, const QgsPoint &layerPoint = QgsPoint() );
+
+    void applyEditsToLayers( NodeEdits &edits );
 
     void setHighlightedNodes( const QList<Vertex> &listNodes );
 
@@ -246,8 +239,8 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     std::unique_ptr<Vertex> mDraggingVertex;
     //! whether moving a vertex or adding one
     DraggingVertexType mDraggingVertexType = NotDragging;
-    //! instance of Edge that is being currently moved or nothing
-    std::unique_ptr<Edge> mDraggingEdge;
+    //! whether we are currently dragging an edge
+    bool mDraggingEdge = false;
     //! list of Vertex instances of further vertices that are dragged together with
     //! the main vertex (mDraggingVertex) - either topologically connected points
     //! (if topo editing is allowed) or the ones coming from the highlight

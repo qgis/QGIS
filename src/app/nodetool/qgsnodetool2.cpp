@@ -98,6 +98,15 @@ int adjacentVertexIndexToEndpoint( const QgsGeometry &geom, int vertexIndex )
   return -1;
 }
 
+
+//! Determine whether a vertex is in the middle of a circular edge or not
+//! (wrapper for slightly awkward API)
+static bool isCircularVertex( const QgsGeometry &geom, int vertexIndex )
+{
+  QgsVertexId vid;
+  return geom.vertexIdFromVertexNr( vertexIndex, vid ) && vid.type == QgsVertexId::CurveVertex;
+}
+
 //
 // snapping match filters
 //
@@ -625,10 +634,7 @@ void QgsNodeTool2::mouseMoveNotDragging( QgsMapMouseEvent *e )
     bool isCircular = false;
     if ( m.layer() )
     {
-      QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
-      QgsVertexId v_id;
-      if ( geom.vertexIdFromVertexNr( m.vertexIndex(), v_id ) )
-        isCircular = ( v_id.type == QgsVertexId::CurveVertex );
+      isCircular = isCircularVertex( cachedGeometry( m.layer(), m.featureId() ), m.vertexIndex() );
     }
 
     mVertexBand->setIcon( isCircular ? QgsRubberBand::ICON_FULL_BOX : QgsRubberBand::ICON_CIRCLE );
@@ -662,18 +668,49 @@ void QgsNodeTool2::mouseMoveNotDragging( QgsMapMouseEvent *e )
   if ( m.type() == QgsPointLocator::Edge )
   {
     QgsPoint mapPoint = toMapCoordinates( e->pos() );
+    bool isCircularEdge = false;
+
+    QgsPoint p0, p1;
+    m.edgePoints( p0, p1 );
+
+    QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
+    if ( isCircularVertex( geom, m.vertexIndex() ) )
+    {
+      // circular edge at the first vertex
+      isCircularEdge = true;
+      QgsPoint pX = geom.vertexAt( m.vertexIndex() - 1 );
+      QgsPointSequence points;
+      QgsGeometryUtils::segmentizeArc( QgsPointV2( pX ), QgsPointV2( p0 ), QgsPointV2( p1 ), points );
+      mEdgeBand->reset();
+      Q_FOREACH ( const QgsPointV2 &pt, points )
+        mEdgeBand->addPoint( pt );
+    }
+    else if ( isCircularVertex( geom, m.vertexIndex() + 1 ) )
+    {
+      // circular edge at the second vertex
+      isCircularEdge = true;
+      QgsPoint pX = geom.vertexAt( m.vertexIndex() + 2 );
+      QgsPointSequence points;
+      QgsGeometryUtils::segmentizeArc( QgsPointV2( p0 ), QgsPointV2( p1 ), QgsPointV2( pX ), points );
+      mEdgeBand->reset();
+      Q_FOREACH ( const QgsPointV2 &pt, points )
+        mEdgeBand->addPoint( pt );
+    }
+    else
+    {
+      // straight edge
+      QgsPolyline points;
+      points << p0 << p1;
+      mEdgeBand->setToGeometry( QgsGeometry::fromPolyline( points ), nullptr );
+    }
+
     QgsPoint edgeCenter;
     bool isNearCenter = matchEdgeCenterTest( m, mapPoint, &edgeCenter );
     mEdgeCenterMarker->setCenter( edgeCenter );
     mEdgeCenterMarker->setColor( isNearCenter ? Qt::red : Qt::gray );
-    mEdgeCenterMarker->setVisible( true );
+    mEdgeCenterMarker->setVisible( !isCircularEdge );  // currently not supported for circular edges
     mEdgeCenterMarker->update();
 
-    QgsPoint p0, p1;
-    m.edgePoints( p0, p1 );
-    QgsPolyline points;
-    points << p0 << p1;
-    mEdgeBand->setToGeometry( QgsGeometry::fromPolyline( points ), nullptr );
     mEdgeBand->setVisible( !isNearCenter );
   }
   else
@@ -870,6 +907,11 @@ void QgsNodeTool2::startDraggingMoveVertex( const QgsPoint &mapPoint, const QgsP
 
   QgsPoint dragVertexMapPoint = m.point();
 
+  buildDragBandsForVertices( movingVertices, dragVertexMapPoint );
+}
+
+void QgsNodeTool2::buildDragBandsForVertices( const QSet<Vertex> &movingVertices, const QgsPoint &dragVertexMapPoint )
+{
   QSet<Vertex> verticesInStraightBands;  // always the vertex with lower index
 
   // set of middle vertices that are already in a circular rubber band
@@ -884,8 +926,7 @@ void QgsNodeTool2::startDraggingMoveVertex( const QgsPoint &mapPoint, const QgsP
 
     geom.adjacentVertices( v.vertexId, v0idx, v1idx );
 
-    QgsVertexId vid;
-    if ( v0idx != -1 && v1idx != -1 && geom.vertexIdFromVertexNr( v.vertexId, vid ) && vid.type == QgsVertexId::CurveVertex )
+    if ( v0idx != -1 && v1idx != -1 && isCircularVertex( geom, v.vertexId ) )
     {
       // the vertex is in the middle of a curved segment
       qDebug( "middle point curve vertex" );
@@ -910,8 +951,7 @@ void QgsNodeTool2::startDraggingMoveVertex( const QgsPoint &mapPoint, const QgsP
     {
       // there is another vertex to the left - let's build a rubber band for it
       Vertex v0( v.layer, v.fid, v0idx );
-      QgsVertexId v0id;
-      if ( geom.vertexIdFromVertexNr( v0idx, v0id ) && v0id.type == QgsVertexId::CurveVertex )
+      if ( isCircularVertex( geom, v0idx ) )
       {
         // circular segment to the left
         if ( !verticesInCircularBands.contains( v0 ) )
@@ -945,8 +985,7 @@ void QgsNodeTool2::startDraggingMoveVertex( const QgsPoint &mapPoint, const QgsP
     {
       // there is another vertex to the right - let's build a rubber band for it
       Vertex v1( v.layer, v.fid, v1idx );
-      QgsVertexId v1id;
-      if ( geom.vertexIdFromVertexNr( v1idx, v1id ) && v1id.type == QgsVertexId::CurveVertex )
+      if ( isCircularVertex( geom, v1idx ) )
       {
         // circular segment to the right
         if ( !verticesInCircularBands.contains( v1 ) )
@@ -1063,27 +1102,32 @@ void QgsNodeTool2::startDraggingEdge( const QgsPointLocator::Match &m, const Qgs
   // activate advanced digitizing
   setMode( CaptureLine );
 
-  mDraggingEdge.reset( new Edge( m.layer(), m.featureId(), m.vertexIndex(), mapPoint ) );
+  mDraggingEdge = true;
   mDraggingExtraVertices.clear();
   mDraggingExtraVerticesOffset.clear();
 
-  QgsPoint edge_p0, edge_p1;
-  m.edgePoints( edge_p0, edge_p1 );
   QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
 
-  addDragStraightBand( edge_p0, edge_p1, true, true, mapPoint );
+  QSet<Vertex> movingVertices;
+  movingVertices << Vertex( m.layer(), m.featureId(), m.vertexIndex() );
+  movingVertices << Vertex( m.layer(), m.featureId(), m.vertexIndex() + 1 );
 
-  int v0idx, v1idx, vidxUnused;
-  geom.adjacentVertices( m.vertexIndex(), v0idx, vidxUnused );
-  geom.adjacentVertices( m.vertexIndex() + 1, vidxUnused, v1idx );
-
-  if ( v0idx != -1 )
+  // add an extra vertex if it is circular edge - so that we move the whole edge and not just one part of it
+  if ( isCircularVertex( geom, m.vertexIndex() ) )
   {
-    addDragStraightBand( geom.vertexAt( v0idx ), edge_p0, false, true, mapPoint );
+    movingVertices << Vertex( m.layer(), m.featureId(), m.vertexIndex() - 1 );
   }
-  if ( v1idx != -1 )
+  else if ( isCircularVertex( geom, m.vertexIndex() + 1 ) )
   {
-    addDragStraightBand( edge_p1, geom.vertexAt( v1idx ), true, false, mapPoint );
+    movingVertices << Vertex( m.layer(), m.featureId(), m.vertexIndex() + 2 );
+  }
+
+  buildDragBandsForVertices( movingVertices, mapPoint );
+
+  Q_FOREACH ( const Vertex &v, movingVertices )
+  {
+    mDraggingExtraVertices << v;
+    mDraggingExtraVerticesOffset << ( geom.vertexAt( v.vertexId ) - mapPoint );
   }
 
   mOverrideCadPoints.clear();
@@ -1106,7 +1150,7 @@ void QgsNodeTool2::stopDragging()
 
   mDraggingVertex.reset();
   mDraggingVertexType = NotDragging;
-  mDraggingEdge.reset();
+  mDraggingEdge = false;
   clearDragBands();
 
   setHighlightedNodesVisible( true );  // highlight can be shown again
@@ -1129,37 +1173,14 @@ QgsPoint QgsNodeTool2::matchToLayerPoint( const QgsVectorLayer *destLayer, const
 
 void QgsNodeTool2::moveEdge( const QgsPoint &mapPoint )
 {
-  QgsVectorLayer *dragLayer = mDraggingEdge->layer;
-  QgsFeatureId dragFid = mDraggingEdge->fid;
-  int dragVertex0 = mDraggingEdge->edgeVertex0;
-  QgsPoint dragStartPoint = mDraggingEdge->startMapPoint;
-
   stopDragging();
 
-  double diffX = mapPoint.x() - dragStartPoint.x();
-  double diffY = mapPoint.y() - dragStartPoint.y();
-
-  QgsGeometry geom = cachedGeometry( dragLayer, dragFid );
+  NodeEdits edits;
+  addExtraVerticesToEdits( edits, mapPoint );
 
   // TODO: move topo points (?)
 
-  dragLayer->beginEditCommand( tr( "Moved edge" ) );
-
-  // move first endpoint
-  QgsPoint origMapPoint0 = toMapCoordinates( dragLayer, geom.vertexAt( dragVertex0 ) );
-  QgsPoint newMapPoint0 = QgsPoint( origMapPoint0.x() + diffX, origMapPoint0.y() + diffY );
-  mDraggingVertex.reset( new Vertex( dragLayer, dragFid, dragVertex0 ) );
-  mDraggingVertexType = MovingVertex;
-  moveVertex( newMapPoint0, nullptr );
-
-  // move second endpoint
-  QgsPoint origMapPoint1 = toMapCoordinates( dragLayer, geom.vertexAt( dragVertex0 + 1 ) );
-  QgsPoint newMapPoint1 = QgsPoint( origMapPoint1.x() + diffX, origMapPoint1.y() + diffY );
-  mDraggingVertex.reset( new Vertex( dragLayer, dragFid, dragVertex0 + 1 ) );
-  mDraggingVertexType = MovingVertex;
-  moveVertex( newMapPoint1, nullptr );
-
-  dragLayer->endEditCommand();
+  applyEditsToLayers( edits );
 }
 
 void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::Match *mapPointMatch )
@@ -1209,9 +1230,24 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
 
   geom.setGeometry( geomTmp );
 
-  QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > edits; // dict { layer : { fid : geom } }
+  NodeEdits edits; // dict { layer : { fid : geom } }
   edits[dragLayer][dragFid] = geom;
 
+  addExtraVerticesToEdits( edits, mapPoint, dragLayer, layerPoint );
+
+  // TODO: topo editing: add points when adding a vertex on a common edge
+
+  // TODO: add topological points: when moving vertex - if snapped to something
+
+  applyEditsToLayers( edits );
+
+  setHighlightedNodes( mSelectedNodes );  // update positions of existing highlighted nodes
+  setHighlightedNodesVisible( true );  // time to show highlighted nodes again
+}
+
+
+void QgsNodeTool2::addExtraVerticesToEdits( QgsNodeTool2::NodeEdits &edits, const QgsPoint &mapPoint, QgsVectorLayer *dragLayer, const QgsPoint &layerPoint )
+{
   Q_ASSERT( mDraggingExtraVertices.count() == mDraggingExtraVerticesOffset.count() );
   // add moved vertices from other layers
   for ( int i = 0; i < mDraggingExtraVertices.count(); ++i )
@@ -1227,8 +1263,8 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
       topoGeom = QgsGeometry( cachedGeometryForVertex( topo ) );
 
     QgsPoint point;
-    if ( topo.layer->crs() == dragLayer->crs() )
-      point = layerPoint;
+    if ( dragLayer && topo.layer->crs() == dragLayer->crs() )
+      point = layerPoint;  // this point may come from exact match so it may be more precise
     else
       point = toLayerCoordinates( topo.layer, mapPoint );
 
@@ -1244,12 +1280,11 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
     }
     edits[topo.layer][topo.fid] = topoGeom;
   }
+}
 
-  // TODO: topo editing: add points when adding a vertex on a common edge
 
-  // TODO: add topological points: when moving vertex - if snapped to something
-
-  // do the changes to layers
+void QgsNodeTool2::applyEditsToLayers( QgsNodeTool2::NodeEdits &edits )
+{
   QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> >::iterator it = edits.begin();
   for ( ; it != edits.end(); ++it )
   {
@@ -1262,10 +1297,8 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
     layer->endEditCommand();
     layer->triggerRepaint();
   }
-
-  setHighlightedNodes( mSelectedNodes );  // update positions of existing highlighted nodes
-  setHighlightedNodesVisible( true );  // time to show highlighted nodes again
 }
+
 
 void QgsNodeTool2::deleteVertex()
 {
@@ -1423,6 +1456,10 @@ bool QgsNodeTool2::matchEdgeCenterTest( const QgsPointLocator::Match &m, const Q
 {
   QgsPoint p0, p1;
   m.edgePoints( p0, p1 );
+
+  QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
+  if ( isCircularVertex( geom, m.vertexIndex() ) || isCircularVertex( geom, m.vertexIndex() + 1 ) )
+    return false;  // currently not supported for circular edges
 
   QgsRectangle visible_extent = canvas()->mapSettings().visibleExtent();
   if ( !visible_extent.contains( p0 ) || !visible_extent.contains( p1 ) )
