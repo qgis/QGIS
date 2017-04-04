@@ -58,7 +58,7 @@ class CORE_EXPORT QgsAttributeTableConfig
 
       bool operator== ( const ColumnConfig &other ) const;
 
-      Type type;    //!< The type of this column.
+      QgsAttributeTableConfig::Type type;    //!< The type of this column.
       QString name; //!< The name of the attribute if this column represents a field
       bool hidden;  //!< Flag that controls if the column is hidden
       int width; //!< Width of column, or -1 for default width
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      * Get the list with all columns and their configuration.
      * The list order defines the order of appearance.
      */
-    QVector<ColumnConfig> columns() const;
+    QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
 
     /** Returns true if the configuration is empty, ie it contains no columns.
      */
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      * Set the list of columns visible in the attribute table.
      * The list order defines the order of appearance.
      */
-    void setColumns( const QVector<ColumnConfig> &columns );
+    void setColumns( const QVector<QgsAttributeTableConfig::ColumnConfig> &columns );
 
     /**
      * Update the configuration with the given fields.

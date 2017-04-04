@@ -34,6 +34,26 @@ class QgsRelationManager;
 
 class CORE_EXPORT QgsAttributeEditorElement
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    switch ( sipCpp->type() )
+    {
+      case QgsAttributeEditorElement::AeTypeContainer:
+        sipType = sipType_QgsAttributeEditorContainer;
+        break;
+      case QgsAttributeEditorElement::AeTypeField:
+        sipType = sipType_QgsAttributeEditorField;
+        break;
+      case QgsAttributeEditorElement::AeTypeRelation:
+        sipType = sipType_QgsAttributeEditorRelation;
+        break;
+      default:
+        sipType = nullptr;
+        break;
+    }
+    SIP_END
+#endif
   public:
     enum AttributeEditorType
     {
@@ -95,7 +115,7 @@ class CORE_EXPORT QgsAttributeEditorElement
      *
      * \since QGIS 3.0
      */
-    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const = 0;
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const = 0 SIP_FACTORY;
 
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
@@ -112,10 +132,12 @@ class CORE_EXPORT QgsAttributeEditorElement
     void setShowLabel( bool showLabel );
 
   protected:
+#ifndef SIP_RUN
     AttributeEditorType mType;
     QString mName;
     QgsAttributeEditorElement *mParent = nullptr;
     bool mShowLabel;
+#endif
 
   private:
 
@@ -142,6 +164,17 @@ class CORE_EXPORT QgsAttributeEditorElement
  */
 class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    switch ( sipCpp->type() )
+    {
+      case QgsAttributeEditorElement::AeTypeContainer: sipType = sipType_QgsAttributeEditorContainer; break;
+      case QgsAttributeEditorElement::AeTypeField:     sipType = sipType_QgsAttributeEditorField; break;
+      case QgsAttributeEditorElement::AeTypeRelation:  sipType = sipType_QgsAttributeEditorRelation; break;
+    }
+    SIP_END
+#endif
   public:
 
     /**
@@ -221,7 +254,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \since QGIS 3.0
      */
-    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override;
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
     /**
      * The visibility expression is used in the attribute form to
@@ -276,7 +309,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
      */
     int idx() const { return mIdx; }
 
-    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override;
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
   private:
     void saveConfiguration( QDomElement &elem ) const override;
@@ -335,7 +368,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     bool init( QgsRelationManager *relManager );
 
-    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override;
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
     /**
      * Determines if the "link feature" button should be shown
