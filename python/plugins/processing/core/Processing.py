@@ -51,7 +51,6 @@ from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
-from processing.core.alglist import algList
 
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
@@ -67,7 +66,6 @@ PROVIDERS = []
 
 class Processing(object):
 
-    # Same structure as algs in algList
     actions = {}
 
     # All the registered context menu actions for the toolbox
@@ -115,7 +113,9 @@ class Processing(object):
         provider_id = providerOrName.id() if isinstance(providerOrName, AlgorithmProvider) else providerOrName
         name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
         ProcessingConfig.setSettingValue(name, activate)
-        algList.providerUpdated.emit(provider_id)
+        provider = QgsApplication.processingRegistry().providerById(provider_id)
+        if provider:
+            provider.refreshAlgorithms()
 
     @staticmethod
     def initialize():
@@ -128,7 +128,6 @@ class Processing(object):
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
-        Processing.updateAlgsList()
 
     @staticmethod
     def addScripts(folder):
@@ -142,7 +141,7 @@ class Processing(object):
             script._icon = provider._icon
             script.provider = provider
         provider.externalAlgs.extend(scripts)
-        Processing.reloadProvider("qgis")
+        provider.refreshAlgorithms()
 
     @staticmethod
     def removeScripts(folder):
@@ -151,23 +150,7 @@ class Processing(object):
             path = os.path.dirname(alg.descriptionFile)
             if path == folder:
                 provider.externalAlgs.remove(alg)
-        Processing.reloadProvider("qgis")
-
-    @staticmethod
-    def updateAlgsList():
-        """Call this method when there has been any change that
-        requires the list of algorithms to be created again from
-        algorithm providers. Use reloadProvider() for a more fine-grained
-        update.
-        """
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        for p in QgsApplication.processingRegistry().providers():
-            Processing.reloadProvider(p.id())
-        QApplication.restoreOverrideCursor()
-
-    @staticmethod
-    def reloadProvider(provider_id):
-        algList.reloadProvider(provider_id)
+        provider.refreshAlgorithms()
 
 
     @staticmethod

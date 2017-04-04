@@ -47,7 +47,6 @@ from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 from processing.gui.ConfigDialog import ConfigDialog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -85,7 +84,6 @@ class ProcessingToolbox(BASE, WIDGET):
 
         QgsApplication.processingRegistry().providerRemoved.connect(self.removeProvider)
         QgsApplication.processingRegistry().providerAdded.connect(self.addProvider)
-        algList.providerUpdated.connect(self.updateProvider)
         settingsWatcher.settingsChanged.connect(self.fillTree)
 
     def showDisabled(self):
@@ -165,8 +163,9 @@ class ProcessingToolbox(BASE, WIDGET):
             QMessageBox.warning(self, "Activate provider",
                                 "The provider has been activated, but it might need additional configuration.")
 
-    def updateProvider(self, provider_id):
-        item = self._providerItem(provider_id)
+    def updateProvider(self):
+        provider = self.sender()
+        item = self._providerItem(provider.id())
         if item is not None:
             item.refresh()
             item.sortChildren(0, Qt.AscendingOrder)
@@ -329,6 +328,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 if child.text(0) > providerItem.text(0):
                     break
         self.algorithmTree.insertTopLevelItem(i, providerItem)
+        provider.algorithmsLoaded.connect(self.updateProvider)
 
     def fillTreeUsingProviders(self):
         self.algorithmTree.clear()

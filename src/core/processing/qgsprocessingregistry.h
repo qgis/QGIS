@@ -57,7 +57,8 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QList<QgsProcessingProvider *> providers() const { return mProviders.values(); }
 
     /**
-     * Add a processing provider to the registry. Ownership of the provider is transferred to the registry.
+     * Add a processing provider to the registry. Ownership of the provider is transferred to the registry,
+     * and the provider's parent will be set to the registry.
      * Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
      * in the registry).
      * \see removeProvider()

@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.core import QgsApplication
 from processing.gui.ContextAction import ContextAction
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
-from processing.core.alglist import algList
 
 
 class DeletePreconfiguredAlgorithmAction(ContextAction):
@@ -49,4 +49,4 @@ class DeletePreconfiguredAlgorithmAction(ContextAction):
                                      QMessageBox.No)
         if reply == QMessageBox.Yes:
             os.remove(self.itemData.descriptionFile)
-            algList.reloadProvider('preconfigured')
+            QgsApplication.processingRegistry().providerById('preconfigured').refreshAlgorithms()

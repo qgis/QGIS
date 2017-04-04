@@ -9,7 +9,7 @@
 
 
 
-class QgsProcessingProvider
+class QgsProcessingProvider : QObject
 {
 %Docstring
  Abstract base class for processing providers. An algorithm provider is a set of
@@ -24,7 +24,7 @@ class QgsProcessingProvider
 
   public:
 
-    QgsProcessingProvider();
+    QgsProcessingProvider( QObject* parent /TransferThis/ = 0 );
 %Docstring
  Constructor for QgsProcessingProvider.
 %End
@@ -127,6 +127,15 @@ class QgsProcessingProvider
  Returns the matching algorithm by name, or a nullptr if no matching
  algorithm is contained by this provider.
  \see algorithms()
+%End
+
+  signals:
+
+    void algorithmsLoaded();
+%Docstring
+ Emitted when the provider has loaded (or refreshed) its list of available
+ algorithms.
+ \see refreshAlgorithms()
 %End
 
   protected:

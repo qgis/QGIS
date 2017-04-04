@@ -42,7 +42,8 @@ class QgsProcessingRegistry : QObject
 
     bool addProvider( QgsProcessingProvider *provider /Transfer/ );
 %Docstring
- Add a processing provider to the registry. Ownership of the provider is transferred to the registry.
+ Add a processing provider to the registry. Ownership of the provider is transferred to the registry,
+ and the provider's parent will be set to the registry.
  Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
  in the registry).
  \see removeProvider()
@@ -73,7 +74,7 @@ class QgsProcessingRegistry : QObject
  \see algorithmById()
 %End
 
-    QgsProcessingAlgorithm * algorithmById( const QString& id ) const;
+    QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
 %Docstring
  Finds an algorithm by its ID. If no matching algorithm is found, a nullptr
  is returned.

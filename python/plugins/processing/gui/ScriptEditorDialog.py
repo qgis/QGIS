@@ -46,7 +46,6 @@ from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -178,9 +177,9 @@ class ScriptEditorDialog(BASE, WIDGET):
     def updateProviders(self):
         if self.update:
             if self.algType == self.SCRIPT_PYTHON:
-                algList.reloadProvider('script')
+                QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
             elif self.algType == self.SCRIPT_R:
-                algList.reloadProvider('r')
+                QgsApplication.processingRegistry().providerById('r').refreshAlgorithms()
 
     def editHelp(self):
         if self.alg is None:

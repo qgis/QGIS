@@ -38,6 +38,7 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
   if ( mProviders.contains( provider->id() ) )
     return false;
 
+  provider->setParent( this );
   mProviders[ provider->id()] = provider;
   emit providerAdded( provider->id() );
   return true;

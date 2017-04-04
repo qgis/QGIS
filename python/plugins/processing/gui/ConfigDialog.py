@@ -40,10 +40,12 @@ from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QToolButton,
                                  QHBoxLayout,
                                  QComboBox,
-                                 QPushButton)
+                                 QPushButton,
+                                 QApplication)
 from qgis.PyQt.QtGui import (QIcon,
                              QStandardItemModel,
-                             QStandardItem)
+                             QStandardItem,
+                             QCursor)
 
 from qgis.gui import (QgsDoubleSpinBox,
                       QgsSpinBox,
@@ -288,7 +290,11 @@ class ConfigDialog(BASE, WIDGET):
                         return
                 setting.save(qsettings)
 
-        Processing.updateAlgsList()
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        for p in QgsApplication.processingRegistry().providers():
+            p.refreshAlgorithms()
+        QApplication.restoreOverrideCursor()
+
         settingsWatcher.settingsChanged.emit()
 
     def itemExpanded(self, idx):

@@ -31,15 +31,16 @@
  * to a common area of analysis.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingProvider
+class CORE_EXPORT QgsProcessingProvider : public QObject
 {
+    Q_OBJECT
 
   public:
 
     /**
      * Constructor for QgsProcessingProvider.
      */
-    QgsProcessingProvider() = default;
+    QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual ~QgsProcessingProvider();
 
@@ -143,6 +144,15 @@ class CORE_EXPORT QgsProcessingProvider
      * \see algorithms()
      */
     QgsProcessingAlgorithm *algorithm( const QString &name ) const;
+
+  signals:
+
+    /**
+     * Emitted when the provider has loaded (or refreshed) its list of available
+     * algorithms.
+     * \see refreshAlgorithms()
+     */
+    void algorithmsLoaded();
 
   protected:
 

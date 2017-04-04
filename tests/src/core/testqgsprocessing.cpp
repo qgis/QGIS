@@ -20,6 +20,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsprocessingalgorithm.h"
 #include <QObject>
+#include <QtTest/QSignalSpy>
 #include "qgstest.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
@@ -354,7 +355,9 @@ void TestQgsProcessing::algorithm()
 
   QVERIFY( p->algorithms().isEmpty() );
 
+  QSignalSpy providerRefreshed( p, &DummyProvider::algorithmsLoaded );
   p->refreshAlgorithms();
+  QCOMPARE( providerRefreshed.count(), 1 );
 
   for ( int i = 0; i < 2; ++i )
   {
@@ -370,6 +373,7 @@ void TestQgsProcessing::algorithm()
     // reload, then retest on next loop
     // must be safe for providers to reload their algorithms
     p->refreshAlgorithms();
+    QCOMPARE( providerRefreshed.count(), 2 + i );
   }
 
   QgsProcessingRegistry r;

@@ -19,6 +19,11 @@
 #include "qgsapplication.h"
 #include "qgsvectorfilewriter.h"
 
+QgsProcessingProvider::QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS )
+  : QObject( parent )
+{}
+
+
 QgsProcessingProvider::~QgsProcessingProvider()
 {
   qDeleteAll( mAlgorithms );
@@ -45,6 +50,7 @@ void QgsProcessingProvider::refreshAlgorithms()
   {
     it.value()->setProvider( this );
   }
+  emit algorithmsLoaded();
 }
 
 QList<QgsProcessingAlgorithm *> QgsProcessingProvider::algorithms() const
@@ -73,3 +79,4 @@ QStringList QgsProcessingProvider::supportedOutputVectorLayerExtensions() const
 {
   return QgsVectorFileWriter::supportedFormatExtensions();
 }
+

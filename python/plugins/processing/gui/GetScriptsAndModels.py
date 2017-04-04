@@ -44,7 +44,6 @@ from qgis.core import (QgsNetworkAccessManager,
                        QgsApplication)
 from qgis.gui import QgsMessageBar
 
-from processing.core.alglist import algList
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui import Help2Html
@@ -77,7 +76,7 @@ class GetScriptsAction(ToolboxAction):
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.SCRIPTS)
         dlg.exec_()
         if dlg.updateProvider:
-            algList.reloadProvider('script')
+            QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
 
 
 class GetRScriptsAction(ToolboxAction):
@@ -123,7 +122,7 @@ class GetModelsAction(ToolboxAction):
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.MODELS)
         dlg.exec_()
         if dlg.updateProvider:
-            algList.reloadProvider('model')
+            QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
 
 
 class GetScriptsAndModelsDialog(BASE, WIDGET):
