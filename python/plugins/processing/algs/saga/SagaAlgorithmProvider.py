@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
-from processing.core.AlgorithmProvider import AlgorithmProvider
+from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isWindows, isMac
@@ -42,7 +42,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class SagaAlgorithmProvider(AlgorithmProvider):
+class SagaAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()

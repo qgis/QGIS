@@ -29,10 +29,10 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
@@ -49,7 +49,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class RAlgorithmProvider(AlgorithmProvider):
+class RAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()

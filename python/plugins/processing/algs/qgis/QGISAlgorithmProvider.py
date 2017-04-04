@@ -33,9 +33,9 @@ try:
 except:
     hasPlotly = False
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider)
 
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
 
 from .RegularPoints import RegularPoints
@@ -188,7 +188,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class QGISAlgorithmProvider(AlgorithmProvider):
+class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()

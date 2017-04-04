@@ -25,12 +25,12 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from processing.core.AlgorithmProvider import AlgorithmProvider
+from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 from exampleprovider.ExampleAlgorithm import ExampleAlgorithm
 
 
-class ExampleAlgorithmProvider(AlgorithmProvider):
+class ExampleAlgorithmProvider(QgsProcessingProvider):
 
     MY_DUMMY_SETTING = 'MY_DUMMY_SETTING'
 
@@ -81,7 +81,7 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
     def icon(self):
         """We return the default icon.
         """
-        return AlgorithmProvider.icon(self)
+        return QgsProcessingProvider.icon(self)
 
     def loadAlgorithms(self):
         """Here we fill the list of algorithms in self.algs.

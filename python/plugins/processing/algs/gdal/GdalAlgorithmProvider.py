@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsApplication
-from processing.core.AlgorithmProvider import AlgorithmProvider
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from .GdalUtils import GdalUtils
 
@@ -88,7 +88,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class GdalAlgorithmProvider(AlgorithmProvider):
+class GdalAlgorithmProvider(QgsProcessingProvider):
 
     """This provider incorporates GDAL-based algorithms into the
     Processing framework.

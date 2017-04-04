@@ -28,9 +28,9 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
 from .Grass7Utils import Grass7Utils
 from .Grass7Algorithm import Grass7Algorithm
@@ -41,7 +41,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class Grass7AlgorithmProvider(AlgorithmProvider):
+class Grass7AlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()

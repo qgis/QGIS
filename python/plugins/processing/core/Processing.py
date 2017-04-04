@@ -38,10 +38,10 @@ from qgis.PyQt.QtGui import QCursor
 
 from qgis.utils import iface
 from qgis.core import (QgsMessageLog,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingProvider)
 
 import processing
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -99,7 +99,7 @@ class Processing(object):
 
     @staticmethod
     def activateProvider(providerOrName, activate=True):
-        provider_id = providerOrName.id() if isinstance(providerOrName, AlgorithmProvider) else providerOrName
+        provider_id = providerOrName.id() if isinstance(providerOrName, QgsProcessingProvider) else providerOrName
         provider = QgsApplication.processingRegistry().providerById(provider_id)
         try:
             provider.setActive(True)
@@ -114,7 +114,7 @@ class Processing(object):
         if "model" in [p.id() for p in QgsApplication.processingRegistry().providers()]:
             return
         # Add the basic providers
-        for c in AlgorithmProvider.__subclasses__():
+        for c in QgsProcessingProvider.__subclasses__():
             Processing.addProvider(c())
         # And initialize
         ProcessingConfig.initialize()

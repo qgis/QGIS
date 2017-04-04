@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider)
 
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -46,7 +46,7 @@ from processing.gui.ProviderActions import (ProviderActions,
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class ModelerAlgorithmProvider(AlgorithmProvider):
+class ModelerAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()

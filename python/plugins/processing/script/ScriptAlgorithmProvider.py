@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
@@ -44,7 +44,7 @@ from processing.script.CreateScriptCollectionPluginAction import CreateScriptCol
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class ScriptAlgorithmProvider(AlgorithmProvider):
+class ScriptAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()

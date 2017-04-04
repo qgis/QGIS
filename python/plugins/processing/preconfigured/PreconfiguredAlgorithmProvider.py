@@ -27,15 +27,15 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import QgsProcessingProvider
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsFolder
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.preconfigured.NewPreconfiguredAlgorithmAction import NewPreconfiguredAlgorithmAction
 from processing.preconfigured.DeletePreconfiguredAlgorithmAction import DeletePreconfiguredAlgorithmAction
 from processing.gui.ProviderActions import ProviderContextMenuActions
 
 
-class PreconfiguredAlgorithmProvider(AlgorithmProvider):
+class PreconfiguredAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
