@@ -37,6 +37,7 @@ from processing.gui.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.ScriptUtils import ScriptUtils
 from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
 from processing.gui.GetScriptsAndModels import GetScriptsAction
+from processing.gui.ProviderActions import ProviderActions
 from processing.script.CreateScriptCollectionPluginAction import CreateScriptCollectionPluginAction
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -48,11 +49,11 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         super().__init__()
         self.algs = []
         self.folder_algorithms = []
-        self.actions.extend([CreateNewScriptAction('Create new script',
-                                                   CreateNewScriptAction.SCRIPT_PYTHON),
-                             AddScriptFromFileAction(),
-                             GetScriptsAction(),
-                             CreateScriptCollectionPluginAction()])
+        self.actions = [CreateNewScriptAction('Create new script',
+                                              CreateNewScriptAction.SCRIPT_PYTHON),
+                        AddScriptFromFileAction(),
+                        GetScriptsAction(),
+                        CreateScriptCollectionPluginAction()]
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
@@ -63,10 +64,12 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
                                             ScriptUtils.SCRIPTS_FOLDER,
                                             self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
                                             ScriptUtils.defaultScriptsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
+        ProviderActions.registerProviderActions(self, self.actions)
         return True
 
     def unload(self):
         ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
+        ProviderActions.deregisterProviderActions(self)
 
     def icon(self):
         return QgsApplication.getThemeIcon("/processingScript.svg")

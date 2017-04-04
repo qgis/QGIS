@@ -66,8 +66,6 @@ PROVIDERS = []
 
 class Processing(object):
 
-    actions = {}
-
     # All the registered context menu actions for the toolbox
     contextMenuActions = []
 
@@ -81,7 +79,6 @@ class Processing(object):
             if provider.load():
                 ProcessingConfig.readSettings()
                 provider.refreshAlgorithms()
-                Processing.actions[provider.id()] = provider.actions
                 Processing.contextMenuActions.extend(provider.contextMenuActions)
                 QgsApplication.processingRegistry().addProvider(provider)
                 PROVIDERS.append(provider)
@@ -102,8 +99,6 @@ class Processing(object):
         contributes a provider.
         """
         provider.unload()
-        if provider.id() in Processing.actions:
-            del Processing.actions[provider.id()]
         for act in provider.contextMenuActions:
             Processing.contextMenuActions.remove(act)
         QgsApplication.processingRegistry().removeProvider(provider.id())

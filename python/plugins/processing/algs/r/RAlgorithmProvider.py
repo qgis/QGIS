@@ -38,6 +38,7 @@ from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.WrongScriptException import WrongScriptException
 from processing.gui.GetScriptsAndModels import GetRScriptsAction
+from processing.gui.ProviderActions import ProviderActions
 from processing.tools.system import isWindows
 
 from .RUtils import RUtils
@@ -52,6 +53,7 @@ class RAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         super().__init__()
         self.algs = []
+        self.actions = []
         self.actions.append(CreateNewScriptAction(
             'Create new R script', CreateNewScriptAction.SCRIPT_R))
         self.actions.append(GetRScriptsAction())
@@ -79,6 +81,7 @@ class RAlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.addSetting(Setting(
                 self.name(),
                 RUtils.R_USE64, self.tr('Use 64 bit version'), False))
+        ProviderActions.registerProviderActions(self, self.actions)
         return True
 
     def unload(self):
@@ -88,6 +91,7 @@ class RAlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.removeSetting(RUtils.R_FOLDER)
             ProcessingConfig.removeSetting(RUtils.R_LIBS_USER)
             ProcessingConfig.removeSetting(RUtils.R_USE64)
+        ProviderActions.deregisterProviderActions(self)
 
     def isActive(self):
         return ProcessingConfig.getSetting('ACTIVATE_R')

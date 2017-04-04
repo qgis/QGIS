@@ -47,6 +47,7 @@ from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 from processing.gui.ConfigDialog import ConfigDialog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
+from processing.gui.ProviderActions import ProviderActions
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -416,8 +417,8 @@ class TreeProviderItem(QTreeWidgetItem):
             groupItem.addChild(algItem)
             count += 1
 
-        if self.provider.id() in Processing.actions:
-            actions = Processing.actions[self.provider.id()]
+        if self.provider.id() in ProviderActions.actions:
+            actions = ProviderActions.actions[self.provider.id()]
             for action in actions:
                 if action.group in groups:
                     groupItem = groups[action.group]
