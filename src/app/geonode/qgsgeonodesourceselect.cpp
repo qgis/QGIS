@@ -30,8 +30,7 @@ enum
 {
   MODEL_IDX_TITLE,
   MODEL_IDX_NAME,
-  MODEL_IDX_TYPE,
-  MODEL_IDX_UUID
+  MODEL_IDX_TYPE
 };
 
 QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
@@ -59,6 +58,7 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
   connect( btnSave, SIGNAL( clicked() ), this, SLOT( saveGeonodeConnection() ) );
   connect( btnLoad, SIGNAL( clicked() ), this, SLOT( loadGeonodeConnection() ) );
   connect( lineFilter, SIGNAL( textChanged( QString ) ), this, SLOT( filterChanged( QString ) ) );
+  connect( treeView, SIGNAL( clicked( QModelIndex ) ), this, SLOT( treeViewSelectionChanged( QModelIndex ) ) );
 
   mItemDelegate = new QgsGeonodeItemDelegate( treeView );
   treeView->setItemDelegate( mItemDelegate );
@@ -67,7 +67,6 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
   mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( QStringLiteral( "Title" ) ) );
   mModel->setHorizontalHeaderItem( MODEL_IDX_NAME, new QStandardItem( QStringLiteral( "Name" ) ) );
   mModel->setHorizontalHeaderItem( MODEL_IDX_TYPE, new QStandardItem( QStringLiteral( "Service Type" ) ) );
-  mModel->setHorizontalHeaderItem( MODEL_IDX_UUID, new QStandardItem( QStringLiteral( "UUID" ) ) );
 
   mModelProxy = new QSortFilterProxyModel( this );
   mModelProxy->setSourceModel( mModel );
@@ -177,6 +176,7 @@ void QgsGeoNodeSourceSelect::setConnectionListPosition()
 
 void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 {
+  qDebug() << "Connect";
   QgsGeoNodeConnection connection( cmbConnections->currentText() );
   QVariantList layers = connection.getLayers();
   QVariantList maps = connection.getMaps();
@@ -193,9 +193,10 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
       QStandardItem *titleItem = new QStandardItem( layer.toMap()["title"].toString() );
       QStandardItem *nameItem = new QStandardItem( layer.toMap()["name"].toString() );
       QStandardItem *serviceTypeItem = new QStandardItem( "Feature Service" );
-      QStandardItem *uuidItem = new QStandardItem( layer.toMap()["uuid"].toString() );
+
+      titleItem->setData( layer.toMap()["uuid"],  Qt::UserRole + 1 );
       typedef QList< QStandardItem * > StandardItemList;
-      mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << uuidItem );
+      mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem );
     }
   }
 
@@ -215,9 +216,8 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
       QStandardItem *titleItem = new QStandardItem( map.toMap()["title"].toString() );
       QStandardItem *nameItem = new QStandardItem( "-" );
       QStandardItem *serviceTypeItem = new QStandardItem( "Map Service" );
-      QStandardItem *uuidItem = new QStandardItem( map.toMap()["uuid"].toString() );
       typedef QList< QStandardItem * > StandardItemList;
-      mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << uuidItem );
+      mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem );
     }
   }
 
@@ -269,4 +269,23 @@ void QgsGeoNodeSourceSelect::filterChanged( const QString &text )
   QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
   mModelProxy->setFilterRegExp( myRegExp );
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
+}
+
+void QgsGeoNodeSourceSelect::treeViewSelectionChanged( QModelIndex modelIndex )
+{
+  qDebug() << "Treeview clicked";
+  int row = modelIndex.row();
+  QString uuid = mModel->item( row, 0 )->data( Qt::UserRole + 1 ).toString();
+  QString layerName = mModel->item( row, 0 )->text();
+  qDebug() << layerName;
+
+  QgsGeoNodeConnection connection( cmbConnections->currentText() );
+  QString wmsURL = connection.wmsUrl( uuid );
+  qDebug() << wmsURL;
+
+  QgsDataSourceUri uri = wmsURL;
+  uri.setParam( QStringLiteral( "layers" ), layerName );
+//  uri.setParam( QStringLiteral( "format" ), format );
+
+  emit addRasterLayer( uri.encodedUri(), layerName, QStringLiteral( "wms" ) );
 }
