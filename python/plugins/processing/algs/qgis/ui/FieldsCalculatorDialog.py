@@ -37,7 +37,7 @@ from qgis.core import (QgsExpressionContextUtils,
                        QgsProcessingFeedback,
                        QgsSettings,
                        QgsProcessingUtils,
-                       QgsProject)
+                       QgsMapLayerProxyModel)
 from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -77,7 +77,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         self.alg = alg
         self.layer = None
 
-        self.cmbInputLayer.currentIndexChanged.connect(self.updateLayer)
+        self.cmbInputLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.cmbInputLayer.layerChanged.connect(self.updateLayer)
         self.btnBrowse.clicked.connect(self.selectFile)
         self.mNewFieldGroupBox.toggled.connect(self.toggleExistingGroup)
         self.mUpdateExistingGroupBox.toggled.connect(self.toggleNewGroup)
@@ -101,17 +102,10 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         for t in self.alg.type_names:
             self.mOutputFieldTypeComboBox.addItem(t)
         self.mOutputFieldTypeComboBox.blockSignals(False)
-
-        self.cmbInputLayer.blockSignals(True)
-        layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
-        for layer in layers:
-            self.cmbInputLayer.addItem(layer.name())
-        self.cmbInputLayer.blockSignals(False)
-
         self.builder.loadRecent('fieldcalc')
 
         self.initContext()
-        self.updateLayer()
+        self.updateLayer(self.cmbInputLayer.currentLayer())
 
     def initContext(self):
         exp_context = self.builder.expressionContext()
@@ -120,8 +114,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         exp_context.setHighlightedVariables(["row_number"])
         self.builder.setExpressionContext(exp_context)
 
-    def updateLayer(self):
-        self.layer = dataobjects.getObject(self.cmbInputLayer.currentText())
+    def updateLayer(self, layer):
+        self.layer = layer
         self.builder.setLayer(self.layer)
         self.builder.loadFieldNames()
         self.populateFields()
@@ -202,7 +196,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         else:
             fieldName = self.mOutputFieldNameLineEdit.text()
 
-        layer = dataobjects.getObjectFromName(self.cmbInputLayer.currentText())
+        layer = self.cmbInputLayer.currentLayer()
 
         self.alg.setParameterValue('INPUT_LAYER', layer)
         self.alg.setParameterValue('FIELD_NAME', fieldName)

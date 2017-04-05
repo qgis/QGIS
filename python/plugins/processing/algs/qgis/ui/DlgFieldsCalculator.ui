@@ -148,7 +148,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cmbInputLayer">
+      <widget class="QgsMapLayerComboBox" name="cmbInputLayer">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -223,6 +223,12 @@
    <extends>QWidget</extends>
    <header>qgis.gui</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+   <container>0</container>
   </customwidget>
  </customwidgets>
  <tabstops>
