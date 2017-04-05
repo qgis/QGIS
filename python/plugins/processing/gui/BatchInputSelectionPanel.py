@@ -33,7 +33,10 @@ from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QWidget, QHBoxLayout, QMenu, QPushButton, QLineEdit, QSizePolicy, QAction, QFileDialog
 from qgis.PyQt.QtGui import QCursor
 
-from qgis.core import QgsMapLayer, QgsSettings
+from qgis.core import (QgsMapLayer,
+                       QgsSettings,
+                       QgsProject,
+                       QgsProcessingUtils)
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 
@@ -99,15 +102,18 @@ class BatchInputSelectionPanel(QWidget):
         if (isinstance(self.param, ParameterRaster) or
                 (isinstance(self.param, ParameterMultipleInput) and
                  self.param.datatype == dataobjects.TYPE_RASTER)):
-            layers = dataobjects.getRasterLayers()
+            layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         elif isinstance(self.param, ParameterTable):
-            layers = dataobjects.getTables()
+            layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         else:
             if isinstance(self.param, ParameterVector):
                 datatype = self.param.datatype
             else:
                 datatype = [self.param.datatype]
-            layers = dataobjects.getVectorLayers(datatype)
+            if datatype != dataobjects.TYPE_VECTOR_ANY:
+                layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [datatype])
+            else:
+                layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
 
         dlg = MultipleInputDialog([layer.name() for layer in layers])
         dlg.exec_()

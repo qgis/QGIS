@@ -87,6 +87,7 @@ SET(QGIS_CORE_SRCS
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
+  processing/qgsprocessingutils.cpp
 
   qgis.cpp
   qgsapplication.cpp
@@ -838,6 +839,7 @@ SET(QGIS_CORE_HDRS
 
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingprovider.h
+  processing/qgsprocessingutils.h
 
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h

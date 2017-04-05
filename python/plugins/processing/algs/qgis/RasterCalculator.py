@@ -34,7 +34,9 @@ from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
 from processing.algs.gdal.GdalUtils import GdalUtils
 from qgis.core import (QgsApplication,
-                       QgsRectangle)
+                       QgsRectangle,
+                       QgsProcessingUtils,
+                       QgsProject)
 from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.algs.qgis.ui.RasterCalculatorWidgets import LayersListWidgetWrapper, ExpressionWidgetWrapper
@@ -108,7 +110,7 @@ class RasterCalculator(GeoAlgorithm):
             layers = [dataobjects.getObjectFromUri(f) for f in layersValue.split(";")]
             layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
 
-        for lyr in dataobjects.getRasterLayers():
+        for lyr in QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance()):
             name = lyr.name()
             if (name + "@") in expression:
                 layersDict[name] = lyr

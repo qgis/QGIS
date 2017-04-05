@@ -35,7 +35,9 @@ from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QApplication, QMessageBox
 from qgis.PyQt.QtGui import QCursor
 from qgis.core import (QgsExpressionContextUtils,
                        QgsProcessingFeedback,
-                       QgsSettings)
+                       QgsSettings,
+                       QgsProcessingUtils,
+                       QgsProject)
 from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -101,7 +103,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         self.mOutputFieldTypeComboBox.blockSignals(False)
 
         self.cmbInputLayer.blockSignals(True)
-        layers = dataobjects.getVectorLayers()
+        layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         for layer in layers:
             self.cmbInputLayer.addItem(layer.name())
         self.cmbInputLayer.blockSignals(False)

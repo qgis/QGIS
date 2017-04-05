@@ -30,7 +30,8 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout, QSizePolicy
 from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
-from qgis.core import QgsProject
+from qgis.core import (QgsProject,
+                       QgsProcessingUtils)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 
@@ -113,7 +114,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
         unmatchingCRS = False
         hasExtent = False
         projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
-        layers = dataobjects.getAllLayers()
+        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for param in self.alg.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:

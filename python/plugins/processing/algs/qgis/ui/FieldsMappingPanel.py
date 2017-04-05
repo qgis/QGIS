@@ -35,7 +35,10 @@ from qgis.PyQt.QtGui import QBrush
 from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QSpacerItem, QMessageBox, QSpinBox, QStyledItemDelegate
 from qgis.PyQt.QtCore import QItemSelectionModel, QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
 
-from qgis.core import QgsExpression, QgsProject, QgsApplication
+from qgis.core import (QgsExpression,
+                       QgsProject,
+                       QgsApplication,
+                       QgsProcessingUtils)
 from qgis.gui import QgsFieldExpressionWidget
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_MODELER
@@ -473,8 +476,7 @@ class FieldsMappingPanel(BASE, WIDGET):
             self.model.index(end, self.model.columnCount() - 1))
 
     def updateLayerCombo(self):
-        layers = dataobjects.getTables()
-        layers.sort(key=lambda lay: lay.name())
+        layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         for layer in layers:
             self.layerCombo.addItem(layer.name(), layer)
 
@@ -496,7 +498,7 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
             if wrapper.param.name == self.param.parent:
                 wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
                 break
-        layers = dataobjects.getTables()
+        layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         if len(layers) > 0:
             # as first item in combobox is already selected
             self.widget.setLayer(layers[0])

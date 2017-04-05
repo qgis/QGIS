@@ -319,7 +319,7 @@ class OutputVector(Output):
     def hasGeometry(self):
         if self.base_layer is None:
             return True
-        return dataobjects.canUseVectorLayer(self.base_layer, [-1])
+        return self.base_layer.hasGeometryType()
 
     def getSupportedOutputVectorLayerExtensions(self):
         exts = QgsVectorFileWriter.supportedFormatExtensions()
