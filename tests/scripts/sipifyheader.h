@@ -259,6 +259,28 @@ class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass
 
 }
 
+/**
+ * \class AbstractClass
+ * \ingroup core
+ * Documentation goes here
+ */
+class CORE_EXPORT AbstractClass SIP_ABSTRACT
+{
+  public:
+    //! A constructor
+    explicit AbstractClass()
+    {
+    }
+
+  private:
+
+    /**
+     * This method should be overridden by subclasses but not exposed to the public
+     * or protected API.
+     */
+    virtual QString reason() = 0;
+}
+
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSipifyHeader::Flags )
 
 
