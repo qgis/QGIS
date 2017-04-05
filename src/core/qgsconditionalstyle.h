@@ -198,7 +198,7 @@ class CORE_EXPORT QgsConditionalStyle
      * \brief Find and return the matching styles for the value and feature.
      * If no match is found a invalid QgsConditionalStyle is return.
      *
-     * \returns A condtional style that matches the value and feature.
+     * \returns A conditional style that matches the value and feature.
      * Check with QgsConditionalStyle::isValid()
      */
     static QList<QgsConditionalStyle> matchingConditionalStyles( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsConditionalStyle
      * \brief Find and return the matching style for the value and feature.
      * If no match is found a invalid QgsConditionalStyle is return.
      *
-     * \returns A condtional style that matches the value and feature.
+     * \returns A conditional style that matches the value and feature.
      * Check with QgsConditionalStyle::isValid()
      */
     static QgsConditionalStyle matchingConditionalStyle( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
