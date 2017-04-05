@@ -411,7 +411,7 @@ void QgsNodeTool2::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
                               toCanvasCoordinates( pt ),
                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QgsMapMouseEvent me( canvas(), &mouseEvent );
-      cadDockWidget()->canvasReleaseEvent( &me, QgsAdvancedDigitizingDockWidget::TwoPoints );  // TODO: correct second flag?
+      cadDockWidget()->canvasReleaseEvent( &me, QgsAdvancedDigitizingDockWidget::ManyPoints );
     }
 
     mOverrideCadPoints.clear();
@@ -1146,7 +1146,7 @@ void QgsNodeTool2::stopDragging()
                           QPoint(),
                           Qt::RightButton, Qt::RightButton, Qt::NoModifier );
   QgsMapMouseEvent me( canvas(), &mouseEvent );
-  cadDockWidget()->canvasReleaseEvent( &me, QgsAdvancedDigitizingDockWidget::SinglePoint ); // TODO: correct second arg?
+  cadDockWidget()->canvasReleaseEvent( &me, QgsAdvancedDigitizingDockWidget::SinglePoint );
 
   mDraggingVertex.reset();
   mDraggingVertexType = NotDragging;
