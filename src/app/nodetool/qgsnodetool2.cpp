@@ -1132,8 +1132,6 @@ void QgsNodeTool2::startDraggingEdge( const QgsPointLocator::Match &m, const Qgs
 
   mOverrideCadPoints.clear();
   mOverrideCadPoints << m.point() << m.point();
-
-  // TODO: add topo points (?)
 }
 
 void QgsNodeTool2::stopDragging()
@@ -1177,8 +1175,6 @@ void QgsNodeTool2::moveEdge( const QgsPoint &mapPoint )
 
   NodeEdits edits;
   addExtraVerticesToEdits( edits, mapPoint );
-
-  // TODO: move topo points (?)
 
   applyEditsToLayers( edits );
 }
@@ -1235,11 +1231,21 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
 
   addExtraVerticesToEdits( edits, mapPoint, dragLayer, layerPoint );
 
-  // TODO: topo editing: add points when adding a vertex on a common edge
-
-  // TODO: add topological points: when moving vertex - if snapped to something
-
   applyEditsToLayers( edits );
+
+  if ( QgsProject::instance()->topologicalEditing() && mapPointMatch->hasEdge() && mapPointMatch->layer() )
+  {
+    // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
+    // this requires that the snapping match is to a segment and the segment layer's CRS
+    // is the same (otherwise we would need to reproject the point and it will not be coincident)
+    Q_FOREACH ( QgsVectorLayer *layer, edits.keys() )
+    {
+      if ( layer->crs() == mapPointMatch->layer()->crs() )
+      {
+        layer->addTopologicalPoints( layerPoint );
+      }
+    }
+  }
 
   setHighlightedNodes( mSelectedNodes );  // update positions of existing highlighted nodes
   setHighlightedNodesVisible( true );  // time to show highlighted nodes again
