@@ -9,7 +9,7 @@
 
 
 
-class QgsAttributeEditorElement
+class QgsAttributeEditorElement /Abstract/
 {
 
 %TypeHeaderCode
@@ -50,7 +50,6 @@ class QgsAttributeEditorElement
  \param name
  \param parent
 %End
-
 
     virtual ~QgsAttributeEditorElement();
 
@@ -119,15 +118,6 @@ class QgsAttributeEditorContainer : QgsAttributeEditorElement
 
 %TypeHeaderCode
 #include "qgsattributeeditorelement.h"
-%End
-
-%ConvertToSubClassCode
-    switch ( sipCpp->type() )
-    {
-      case QgsAttributeEditorElement::AeTypeContainer: sipType = sipType_QgsAttributeEditorContainer; break;
-      case QgsAttributeEditorElement::AeTypeField:     sipType = sipType_QgsAttributeEditorField; break;
-      case QgsAttributeEditorElement::AeTypeRelation:  sipType = sipType_QgsAttributeEditorRelation; break;
-    }
 %End
   public:
 
