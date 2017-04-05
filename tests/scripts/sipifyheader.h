@@ -193,6 +193,9 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
   protected:
     bool thisShouldBeListed();
 
+    Whatever skipMember;
+    Whatever::Something *alsoSkipMember = nullptr;
+
   private:
     void privateMethodAreNotShown();
 #ifdef SIP_RUN

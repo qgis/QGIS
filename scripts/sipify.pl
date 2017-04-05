@@ -276,6 +276,11 @@ while(!eof $header){
         next;
     }
 
+    # skip non-method member declaration (e.g. in protected sections)
+    if ( $SIP_RUN != 1 && $line =~ m/^\s*\w+(::\w+)? \*?\w+( = \w+(\([^()]+\))?)?;/){
+        next;
+    }
+
     # catch Q_DECLARE_FLAGS
     if ( $line =~ m/^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$/ ){
         $line = "$1typedef QFlags<$classname::$3> $2;\n";
