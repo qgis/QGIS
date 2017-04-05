@@ -82,7 +82,7 @@ typedef QVector<QVariant> QgsSuperClass;
  * \since QGIS 3.0
  * \note some other note
  */
-class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseClass
+class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBaseClass
 {
 
 #ifdef SIP_RUN

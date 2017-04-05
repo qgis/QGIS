@@ -234,7 +234,7 @@ while(!eof $header){
         if ($4){
             my $m = $4;
             $m =~ s/public //g;
-            $m =~ s/,?\s*private \w+//;
+            $m =~ s/,?\s*private \w+(::\w+)?//;
             $m =~ s/(\s*:)?\s*$//;
             $line .= $m;
         }
