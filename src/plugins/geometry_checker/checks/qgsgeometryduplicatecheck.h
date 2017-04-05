@@ -25,11 +25,11 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
                                     const QString &layerId,
                                     QgsFeatureId featureId,
                                     const QgsPoint &errorLocation,
-                                    const QList<QgsFeatureId> &duplicates )
+                                    const QMap<QString, QList<QgsFeatureId>> &duplicates )
       : QgsGeometryCheckError( check, layerId, featureId, errorLocation, QgsVertexId(), duplicatesString( duplicates ) )
       , mDuplicates( duplicates )
     { }
-    QList<QgsFeatureId> duplicates() const { return mDuplicates; }
+    QMap<QString, QList<QgsFeatureId>> duplicates() const { return mDuplicates; }
 
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
@@ -41,16 +41,22 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
     }
 
   private:
-    QList<QgsFeatureId> mDuplicates;
+    QMap<QString, QList<QgsFeatureId>> mDuplicates;
 
-    static inline QString duplicatesString( const QList<QgsFeatureId> &duplicates )
+    static inline QString duplicatesString( const QMap<QString, QList<QgsFeatureId>> &duplicates )
     {
       QStringList str;
-      for ( QgsFeatureId id : duplicates )
+      for ( const QString &layerId : duplicates.keys() )
       {
-        str.append( QString::number( id ) );
+        str.append( layerId + ": " );
+        QStringList ids;
+        for ( QgsFeatureId id : duplicates[layerId] )
+        {
+          ids.append( QString::number( id ) );
+        }
+        str.append( ids.join( ", " ) );
       }
-      return str.join( QStringLiteral( ", " ) );
+      return str.join( QStringLiteral( "; " ) );
     }
 };
 
