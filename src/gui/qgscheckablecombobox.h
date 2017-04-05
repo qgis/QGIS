@@ -19,10 +19,13 @@
 #define QGSCHECKABLECOMBOBOX_H
 
 #include <QComboBox>
+#include <QMenu>
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
 
 #include "qgis_gui.h"
+
+class QEvent;
 
 /** \class QgsCheckableItemModel
  * \ingroup gui
@@ -178,6 +181,10 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      */
     virtual void hidePopup();
 
+    /** Filters events to enable context menu
+     */
+    virtual bool eventFilter( QObject *object, QEvent *event ) override;
+
   signals:
 
     /** This signal is emitted whenever the checked items list changed.
@@ -198,12 +205,31 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      */
     virtual void resizeEvent( QResizeEvent *event );
 
+  protected slots:
+
+    /** Display context menu which allows to select/deselect
+     * all items at once.
+     */
+    void showContextMenu( const QPoint &pos );
+
+    /** Selects all items.
+     */
+    void selectAllOptions();
+
+    /** Removes selection from all items.
+     */
+    void deselectAllOptions();
+
   private:
     void updateCheckedItems();
     void updateDisplayText();
 
     QString mSeparator;
     QString mDefaultText;
+
+    QMenu *mContextMenu = nullptr;
+    QAction *mSelectAllAction = nullptr;
+    QAction *mDeselectAllAction = nullptr;
 };
 
 #endif // QGSCHECKABLECOMBOBOX_H

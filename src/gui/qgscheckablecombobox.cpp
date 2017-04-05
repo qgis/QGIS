@@ -17,7 +17,10 @@
 
 #include "qgscheckablecombobox.h"
 
+#include <QEvent>
+#include <QMouseEvent>
 #include <QLineEdit>
+#include <QPoint>
 #include <QAbstractItemView>
 
 
@@ -80,6 +83,16 @@ QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   QLineEdit *lineEdit = new QLineEdit( this );
   lineEdit->setReadOnly( true );
   setLineEdit( lineEdit );
+
+  mContextMenu = new QMenu( this );
+  mSelectAllAction = mContextMenu->addAction( tr( "Select all" ) );
+  mDeselectAllAction = mContextMenu->addAction( tr( "Deselect all" ) );
+  connect( mSelectAllAction, &QAction::triggered, this, &QgsCheckableComboBox::selectAllOptions );
+  connect( mDeselectAllAction, &QAction::triggered, this, &QgsCheckableComboBox::deselectAllOptions );
+
+  view()->viewport()->installEventFilter( this );
+  view()->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( view(), &QAbstractItemView::customContextMenuRequested, this, &QgsCheckableComboBox::showContextMenu );
 
   QgsCheckableItemModel *myModel = qobject_cast<QgsCheckableItemModel *>( model() );
   connect( myModel, &QgsCheckableItemModel::itemCheckStateChanged, this, &QgsCheckableComboBox::updateCheckedItems );
@@ -162,6 +175,49 @@ void QgsCheckableComboBox::hidePopup()
   }
 }
 
+void QgsCheckableComboBox::showContextMenu( const QPoint &pos )
+{
+  Q_UNUSED( pos );
+
+  mContextMenu->exec( QCursor::pos() );
+}
+
+void QgsCheckableComboBox::selectAllOptions()
+{
+  blockSignals( true );
+  for ( int i;  i < count(); i++ )
+  {
+    setItemData( i, Qt::Checked, Qt::CheckStateRole );
+  }
+  blockSignals( false );
+  updateCheckedItems();
+}
+
+void QgsCheckableComboBox::deselectAllOptions()
+{
+  blockSignals( true );
+  for ( int i;  i < count(); i++ )
+  {
+    setItemData( i, Qt::Unchecked, Qt::CheckStateRole );
+  }
+  blockSignals( false );
+  updateCheckedItems();
+}
+
+bool QgsCheckableComboBox::eventFilter( QObject *object, QEvent *event )
+{
+  Q_UNUSED( object );
+
+  if ( event->type() == QEvent::MouseButtonRelease )
+  {
+    if ( static_cast<QMouseEvent *>( event )->button() == Qt::RightButton )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 void QgsCheckableComboBox::setCheckedItems( const QStringList &items )
 {
   Q_FOREACH ( const QString &text, items )
@@ -202,3 +258,4 @@ void QgsCheckableComboBox::updateDisplayText()
   text = fontMetrics.elidedText( text, Qt::ElideRight, rect.width() );
   setEditText( text );
 }
+

@@ -72,6 +72,10 @@ class QgsCheckableComboBox : QComboBox
      */
     virtual void hidePopup();
 
+    /** Filters events to enable context menu
+     */
+    virtual bool eventFilter( QObject *object, QEvent *event );
+
   signals:
 
     /** This signal is emitted whenever the checked items list changed.
@@ -90,4 +94,18 @@ class QgsCheckableComboBox : QComboBox
     /** Handler for widget resizing
      */
     virtual void resizeEvent( QResizeEvent *event );
+
+  protected slots:
+    /** Display context menu which allows to select/deselect
+     * all items at once.
+     */
+    void showContextMenu( const QPoint &pos );
+
+    /** Selects all items.
+     */
+    void selectAllOptions();
+
+    /** Removes selection from all items.
+     */
+    void deselectAllOptions();
 };
