@@ -29,7 +29,9 @@
 enum
 {
   MODEL_IDX_TITLE,
-  MODEL_IDX_TYPE
+  MODEL_IDX_NAME,
+  MODEL_IDX_TYPE,
+  MODEL_IDX_UUID
 };
 
 QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
@@ -63,7 +65,9 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
 
   mModel = new QStandardItemModel();
   mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( QStringLiteral( "Title" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_NAME, new QStandardItem( QStringLiteral( "Name" ) ) );
   mModel->setHorizontalHeaderItem( MODEL_IDX_TYPE, new QStandardItem( QStringLiteral( "Service Type" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_UUID, new QStandardItem( QStringLiteral( "UUID" ) ) );
 
   mModelProxy = new QSortFilterProxyModel( this );
   mModelProxy->setSourceModel( mModel );
@@ -187,9 +191,11 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
     Q_FOREACH ( const QVariant &layer, layers )
     {
       QStandardItem *titleItem = new QStandardItem( layer.toMap()["title"].toString() );
+      QStandardItem *nameItem = new QStandardItem( layer.toMap()["name"].toString() );
       QStandardItem *serviceTypeItem = new QStandardItem( "Feature Service" );
+      QStandardItem *uuidItem = new QStandardItem( layer.toMap()["uuid"].toString() );
       typedef QList< QStandardItem * > StandardItemList;
-      mModel->appendRow( StandardItemList() << titleItem << serviceTypeItem );
+      mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << uuidItem );
     }
   }
 
@@ -207,9 +213,11 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
     Q_FOREACH ( const QVariant &map, maps )
     {
       QStandardItem *titleItem = new QStandardItem( map.toMap()["title"].toString() );
+      QStandardItem *nameItem = new QStandardItem( "-" );
       QStandardItem *serviceTypeItem = new QStandardItem( "Map Service" );
+      QStandardItem *uuidItem = new QStandardItem( map.toMap()["uuid"].toString() );
       typedef QList< QStandardItem * > StandardItemList;
-      mModel->appendRow( StandardItemList() << titleItem << serviceTypeItem );
+      mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << uuidItem );
     }
   }
 
