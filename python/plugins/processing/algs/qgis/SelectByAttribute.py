@@ -105,7 +105,7 @@ class SelectByAttribute(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         fileName = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(fileName)
+        layer = dataobjects.getLayerFromString(fileName)
         fieldName = self.getParameterValue(self.FIELD)
         operator = self.OPERATORS[self.getParameterValue(self.OPERATOR)]
         value = self.getParameterValue(self.VALUE)

@@ -87,9 +87,9 @@ class ExtractByLocation(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)
+        layer = dataobjects.getLayerFromString(filename)
         filename = self.getParameterValue(self.INTERSECT)
-        selectLayer = dataobjects.getObjectFromUri(filename)
+        selectLayer = dataobjects.getLayerFromString(filename)
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)
 

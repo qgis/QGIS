@@ -105,8 +105,8 @@ class ZonalStatisticsQgis(GeoAlgorithm):
         columnPrefix = self.getParameterValue(self.COLUMN_PREFIX)
         st = self.getParameterValue(self.STATISTICS)
 
-        vectorLayer = dataobjects.getObjectFromUri(vectorPath)
-        rasterLayer = dataobjects.getObjectFromUri(rasterPath)
+        vectorLayer = dataobjects.getLayerFromString(vectorPath)
+        rasterLayer = dataobjects.getLayerFromString(rasterPath)
 
         keys = list(self.STATS.keys())
         selectedStats = 0

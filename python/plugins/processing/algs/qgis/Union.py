@@ -75,8 +75,8 @@ class Union(GeoAlgorithm):
         self.addOutput(OutputVector(Union.OUTPUT, self.tr('Union')))
 
     def processAlgorithm(self, feedback):
-        vlayerA = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT))
-        vlayerB = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT2))
+        vlayerA = dataobjects.getLayerFromString(self.getParameterValue(Union.INPUT))
+        vlayerB = dataobjects.getLayerFromString(self.getParameterValue(Union.INPUT2))
 
         geomType = vlayerA.wkbType()
         fields = vector.combineVectorFields(vlayerA, vlayerB)

@@ -147,10 +147,10 @@ class ShortestPathPointToLayer(GeoAlgorithm):
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_VECTOR))
         startPoint = self.getParameterValue(self.START_POINT)
-        endPoints = dataobjects.getObjectFromUri(
+        endPoints = dataobjects.getLayerFromString(
             self.getParameterValue(self.END_POINTS))
         strategy = self.getParameterValue(self.STRATEGY)
 

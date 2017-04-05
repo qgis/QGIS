@@ -95,10 +95,10 @@ class SelectByLocation(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
-        inputLayer = dataobjects.getObjectFromUri(filename)
+        inputLayer = dataobjects.getLayerFromString(filename)
         method = self.getParameterValue(self.METHOD)
         filename2 = self.getParameterValue(self.INTERSECT)
-        selectLayer = dataobjects.getObjectFromUri(filename2)
+        selectLayer = dataobjects.getLayerFromString(filename2)
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)
 

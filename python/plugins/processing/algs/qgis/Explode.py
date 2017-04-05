@@ -63,7 +63,7 @@ class Explode(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, feedback):
-        vlayer = dataobjects.getObjectFromUri(
+        vlayer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         fields = vlayer.fields()

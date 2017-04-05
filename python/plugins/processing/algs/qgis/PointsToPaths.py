@@ -88,7 +88,7 @@ class PointsToPaths(GeoAlgorithm):
         self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.VECTOR))
         groupField = self.getParameterValue(self.GROUP_FIELD)
         orderField = self.getParameterValue(self.ORDER_FIELD)

@@ -68,7 +68,7 @@ class Smooth(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Smoothed')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         iterations = self.getParameterValue(self.ITERATIONS)
         offset = self.getParameterValue(self.OFFSET)

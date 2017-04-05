@@ -65,7 +65,7 @@ class DeleteColumn(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
 
         fields_to_delete = self.getParameterValue(self.COLUMNS).split(';')
         fields = layer.fields()

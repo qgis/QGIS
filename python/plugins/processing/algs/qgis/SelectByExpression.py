@@ -74,7 +74,7 @@ class SelectByExpression(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.LAYERNAME)
-        layer = dataobjects.getObjectFromUri(filename)
+        layer = dataobjects.getLayerFromString(filename)
         method = self.getParameterValue(self.METHOD)
 
         if method == 0:

@@ -83,10 +83,10 @@ class JoinAttributes(GeoAlgorithm):
         field = self.getParameterValue(self.TABLE_FIELD)
         field2 = self.getParameterValue(self.TABLE_FIELD_2)
 
-        layer = dataobjects.getObjectFromUri(input)
+        layer = dataobjects.getLayerFromString(input)
         joinField1Index = layer.fields().lookupField(field)
 
-        layer2 = dataobjects.getObjectFromUri(input2)
+        layer2 = dataobjects.getLayerFromString(input2)
         joinField2Index = layer2.fields().lookupField(field2)
 
         outFields = vector.combineVectorFields(layer, layer2)

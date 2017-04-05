@@ -69,8 +69,8 @@ class rasterize_over(GdalAlgorithm):
                                           self.tr('Existing raster layer'), False))
 
     def getConsoleCommands(self):
-        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        inRasterLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_RASTER))
+        inLayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+        inRasterLayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_RASTER))
 
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         ogrRasterLayer = ogrConnectionString(inRasterLayer)[1:-1]

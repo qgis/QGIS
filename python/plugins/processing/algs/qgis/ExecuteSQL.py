@@ -115,7 +115,7 @@ class ExecuteSQL(GeoAlgorithm):
         layerIdx = 1
         if layers:
             for layerSource in layers.split(';'):
-                layer = dataobjects.getObjectFromUri(layerSource)
+                layer = dataobjects.getLayerFromString(layerSource)
                 if layer:
                     df.addSource('input{}'.format(layerIdx), layer.id())
                 layerIdx += 1

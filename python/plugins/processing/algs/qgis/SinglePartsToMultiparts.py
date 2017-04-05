@@ -67,7 +67,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
 
         geomType = QgsWkbTypes.multiType(layer.wkbType())

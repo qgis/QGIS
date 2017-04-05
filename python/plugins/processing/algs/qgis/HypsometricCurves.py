@@ -83,7 +83,7 @@ class HypsometricCurves(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         rasterPath = self.getParameterValue(self.INPUT_DEM)
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.BOUNDARY_LAYER))
         step = self.getParameterValue(self.STEP)
         percentage = self.getParameterValue(self.USE_PERCENTAGE)

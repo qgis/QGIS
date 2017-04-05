@@ -88,10 +88,10 @@ class ExampleAlgorithm(GeoAlgorithm):
         output = self.getOutputValue(self.OUTPUT_LAYER)
 
         # Input layers vales are always a string with its location.
-        # That string can be converted into a QGIS object (a
+        # That string can be converted into a QGIS layer (a
         # QgsVectorLayer in this case) using the
-        # processing.getObjectFromUri() method.
-        vectorLayer = dataobjects.getObjectFromUri(inputFilename)
+        # dataobjects.getLayerFromString() method.
+        vectorLayer = dataobjects.getLayerFromString(inputFilename)
 
         # And now we can process
 

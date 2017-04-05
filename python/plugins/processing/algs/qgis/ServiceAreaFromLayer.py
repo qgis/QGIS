@@ -150,9 +150,9 @@ class ServiceAreaFromLayer(GeoAlgorithm):
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_VECTOR))
-        startPoints = dataobjects.getObjectFromUri(
+        startPoints = dataobjects.getLayerFromString(
             self.getParameterValue(self.START_POINTS))
         strategy = self.getParameterValue(self.STRATEGY)
         travelCost = self.getParameterValue(self.TRAVEL_COST)

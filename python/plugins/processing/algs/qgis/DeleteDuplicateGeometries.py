@@ -59,7 +59,7 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
 
         fields = layer.fields()

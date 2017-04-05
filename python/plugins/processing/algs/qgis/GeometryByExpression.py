@@ -85,7 +85,7 @@ class GeometryByExpression(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Modified geometry')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 
         geometry_type = self.getParameterValue(self.OUTPUT_GEOMETRY)

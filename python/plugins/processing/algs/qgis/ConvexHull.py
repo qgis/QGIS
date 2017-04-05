@@ -77,7 +77,7 @@ class ConvexHull(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         useField = self.getParameterValue(self.METHOD) == 1
         fieldName = self.getParameterValue(self.FIELD)

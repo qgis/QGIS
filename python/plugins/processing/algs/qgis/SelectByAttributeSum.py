@@ -72,7 +72,7 @@ class SelectByAttributeSum(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         fileName = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(fileName)
+        layer = dataobjects.getLayerFromString(fileName)
         fieldName = self.getParameterValue(self.FIELD)
         value = self.getParameterValue(self.VALUE)
 

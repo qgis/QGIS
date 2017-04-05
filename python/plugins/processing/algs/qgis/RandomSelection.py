@@ -75,7 +75,7 @@ class RandomSelection(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)
+        layer = dataobjects.getLayerFromString(filename)
         method = self.getParameterValue(self.METHOD)
 
         featureCount = layer.featureCount()

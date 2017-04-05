@@ -115,7 +115,7 @@ class FieldsMapper(GeoAlgorithm):
         mapping = self.getParameterValue(self.FIELDS_MAPPING)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = dataobjects.getObjectFromUri(layer)
+        layer = dataobjects.getLayerFromString(layer)
         fields = []
         expressions = []
 

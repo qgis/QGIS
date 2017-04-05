@@ -73,7 +73,7 @@ class GeometryConvert(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         index = self.getParameterValue(self.TYPE)
 

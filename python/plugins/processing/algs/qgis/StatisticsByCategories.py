@@ -70,7 +70,7 @@ class StatisticsByCategories(GeoAlgorithm):
         self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics by category')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_LAYER))
         valuesFieldName = self.getParameterValue(self.VALUES_FIELD_NAME)
         categoriesFieldName = self.getParameterValue(self.CATEGORIES_FIELD_NAME)
 

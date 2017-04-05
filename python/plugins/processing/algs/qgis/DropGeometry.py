@@ -66,7 +66,7 @@ class DropGeometry(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_TABLE, self.tr('Dropped geometry')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         writer = self.getOutputFromName(
             self.OUTPUT_TABLE).getVectorWriter(

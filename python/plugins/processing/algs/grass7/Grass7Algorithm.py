@@ -229,7 +229,7 @@ class Grass7Algorithm(GeoAlgorithm):
                     if isinstance(param.value, QgsRasterLayer):
                         layer = param.value
                     else:
-                        layer = dataobjects.getObjectFromUri(param.value)
+                        layer = dataobjects.getLayerFromString(param.value)
                     cellsize = max(cellsize, (layer.extent().xMaximum() -
                                               layer.extent().xMinimum()) /
                                    layer.width())
@@ -237,7 +237,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getObjectFromUri(layername)
+                        layer = dataobjects.getLayerFromString(layername)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (
                                 layer.extent().xMaximum() -
@@ -515,11 +515,11 @@ class Grass7Algorithm(GeoAlgorithm):
         # but the functionality of v.in.ogr could be used for this.
         # We also export if there is a selection
         if not os.path.exists(orgFilename) or not orgFilename.endswith('shp'):
-            layer = dataobjects.getObjectFromUri(orgFilename, False)
+            layer = dataobjects.getLayerFromString(orgFilename, False)
             if layer:
                 filename = dataobjects.exportVectorLayer(layer)
         else:
-            layer = dataobjects.getObjectFromUri(orgFilename, False)
+            layer = dataobjects.getLayerFromString(orgFilename, False)
             if layer:
                 useSelection = \
                     ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
@@ -553,7 +553,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def setSessionProjectionFromLayer(self, layer, commands):
         if not Grass7Utils.projectionSet:
-            qGisLayer = dataobjects.getObjectFromUri(layer)
+            qGisLayer = dataobjects.getLayerFromString(layer)
             if qGisLayer:
                 proj4 = str(qGisLayer.crs().toProj4())
                 command = 'g.proj'

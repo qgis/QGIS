@@ -128,7 +128,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                 if layer.crs() != projectCRS:
                                     unmatchingCRS = True
 
-                        p = dataobjects.getObjectFromUri(inputlayer)
+                        p = dataobjects.getLayerFromString(inputlayer)
                         if p is not None:
                             if p.crs() != projectCRS:
                                 unmatchingCRS = True

@@ -94,7 +94,7 @@ class ZonalStatistics(GeoAlgorithm):
             https://gist.github.com/perrygeo/5667173
         """
 
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
         bandNumber = self.getParameterValue(self.RASTER_BAND)

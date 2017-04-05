@@ -101,7 +101,7 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.addOutput(OutputNumber(self.MAX_VALUE, self.tr('Maximum string value')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
 

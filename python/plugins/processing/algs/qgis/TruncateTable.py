@@ -64,7 +64,7 @@ class TruncateTable(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         file_name = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(file_name)
+        layer = dataobjects.getLayerFromString(file_name)
         provider = layer.dataProvider()
 
         if not provider.truncate():

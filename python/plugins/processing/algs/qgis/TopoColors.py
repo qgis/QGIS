@@ -93,7 +93,7 @@ class TopoColor(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Colored'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         min_colors = self.getParameterValue(self.MIN_COLORS)
         balance_by = self.getParameterValue(self.BALANCE)

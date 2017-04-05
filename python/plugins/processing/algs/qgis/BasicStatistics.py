@@ -121,7 +121,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         field_name = self.getParameterValue(self.FIELD_NAME)
         field = layer.fields().at(layer.fields().lookupField(field_name))

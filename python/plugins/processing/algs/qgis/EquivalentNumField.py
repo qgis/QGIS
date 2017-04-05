@@ -67,7 +67,7 @@ class EquivalentNumField(GeoAlgorithm):
     def processAlgorithm(self, feedback):
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputFromName(self.OUTPUT)
-        vlayer = dataobjects.getObjectFromUri(
+        vlayer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         fieldindex = vlayer.fields().lookupField(fieldname)
         fields = vlayer.fields()

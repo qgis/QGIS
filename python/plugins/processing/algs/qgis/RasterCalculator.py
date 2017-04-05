@@ -107,7 +107,7 @@ class RasterCalculator(GeoAlgorithm):
         layersValue = self.getParameterValue(self.LAYERS)
         layersDict = {}
         if layersValue:
-            layers = [dataobjects.getObjectFromUri(f) for f in layersValue.split(";")]
+            layers = [dataobjects.getLayerFromString(f) for f in layersValue.split(";")]
             layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
 
         for lyr in QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance()):

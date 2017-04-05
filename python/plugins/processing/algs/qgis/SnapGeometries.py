@@ -76,8 +76,8 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped geometries')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        reference_layer = dataobjects.getObjectFromUri(self.getParameterValue(self.REFERENCE_LAYER))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+        reference_layer = dataobjects.getLayerFromString(self.getParameterValue(self.REFERENCE_LAYER))
         tolerance = self.getParameterValue(self.TOLERANCE)
         mode = self.getParameterValue(self.BEHAVIOR)
 

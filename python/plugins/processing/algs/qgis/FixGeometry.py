@@ -68,7 +68,7 @@ class FixGeometry(GeoAlgorithm):
                                     self.tr('Layer with fixed geometries')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(

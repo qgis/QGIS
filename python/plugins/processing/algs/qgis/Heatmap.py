@@ -131,7 +131,7 @@ class Heatmap(GeoAlgorithm):
                                     self.tr('Heatmap')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 
         radius = self.getParameterValue(self.RADIUS)

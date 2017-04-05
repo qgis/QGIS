@@ -77,6 +77,34 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
 
+
+    /**
+     * Interprets a \a string as a map layer from a project.
+     *
+     * This method attempts to match a string to a project map layer, using
+     * first the layer ID, then layer names, and finally layer source.
+     * If the string matches a normalized version of any layer source
+     * for layers in the specified \a project, then those matching layers will be
+     * returned.
+     * \see mapLayerFromString()
+     */
+    static QgsMapLayer *mapLayerFromProject( const QString &string, QgsProject *project );
+
+    /**
+     * Interprets a string as a map layer. The method will attempt to
+     * load a layer matching the passed \a string. E.g. if the string is a file path,
+     * then the layer at this file path will be loaded.
+     * The caller takes responsibility for deleting the returned map layer.
+     * \see mapLayerFromProject()
+     */
+    static QgsMapLayer *mapLayerFromString( const QString &string ) SIP_FACTORY;
+
+    /**
+     * Normalizes a layer \a source string for safe comparison across different
+     * operating system environments.
+     */
+    static QString normalizeLayerSource( const QString &source );
+
   private:
 
     static bool canUseLayer( const QgsRasterLayer *layer );

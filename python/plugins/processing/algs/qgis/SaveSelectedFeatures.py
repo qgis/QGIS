@@ -63,7 +63,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        vectorLayer = dataobjects.getObjectFromUri(inputFilename)
+        vectorLayer = dataobjects.getLayerFromString(inputFilename)
 
         writer = output.getVectorWriter(vectorLayer.fields(),
                                         vectorLayer.wkbType(), vectorLayer.crs())

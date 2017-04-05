@@ -77,7 +77,7 @@ class DensifyGeometries(GeoAlgorithm):
                                     self.tr('Densified')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         vertices = self.getParameterValue(self.VERTICES)
 
