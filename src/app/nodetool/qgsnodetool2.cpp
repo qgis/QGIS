@@ -230,11 +230,18 @@ void QgsNodeTool2::deactivate()
 
 void QgsNodeTool2::addDragBand( const QgsPoint &v1, const QgsPoint &v2 )
 {
-  addDragStraightBand( v1, v2, false, true, v2 );
+  addDragStraightBand( nullptr, v1, v2, false, true, v2 );
 }
 
-void QgsNodeTool2::addDragStraightBand( const QgsPoint &v0, const QgsPoint &v1, bool moving0, bool moving1, const QgsPoint &mapPoint )
+void QgsNodeTool2::addDragStraightBand( QgsVectorLayer *layer, QgsPoint v0, QgsPoint v1, bool moving0, bool moving1, const QgsPoint &mapPoint )
 {
+  // if layer is not null, the input coordinates are coming in the layer's CRS rather than map CRS
+  if ( layer )
+  {
+    v0 = toMapCoordinates( layer, v0 );
+    v1 = toMapCoordinates( layer, v1 );
+  }
+
   StraightBand b;
   b.band = createRubberBand( QgsWkbTypes::LineGeometry, true );
   b.p0 = v0;
@@ -250,8 +257,16 @@ void QgsNodeTool2::addDragStraightBand( const QgsPoint &v0, const QgsPoint &v1, 
   mDragStraightBands << b;
 }
 
-void QgsNodeTool2::addDragCircularBand( const QgsPoint &v0, const QgsPoint &v1, const QgsPoint &v2, bool moving0, bool moving1, bool moving2, const QgsPoint &mapPoint )
+void QgsNodeTool2::addDragCircularBand( QgsVectorLayer *layer, QgsPoint v0, QgsPoint v1, QgsPoint v2, bool moving0, bool moving1, bool moving2, const QgsPoint &mapPoint )
 {
+  // if layer is not null, the input coordinates are coming in the layer's CRS rather than map CRS
+  if ( layer )
+  {
+    v0 = toMapCoordinates( layer, v0 );
+    v1 = toMapCoordinates( layer, v1 );
+    v2 = toMapCoordinates( layer, v2 );
+  }
+
   CircularBand b;
   b.band = createRubberBand( QgsWkbTypes::LineGeometry, true );
   b.p0 = v0;
@@ -597,6 +612,10 @@ QgsPoint QgsNodeTool2::positionForEndpointMarker( const QgsPointLocator::Match &
 
   QgsPoint pt0 = geom.vertexAt( adjacentVertexIndexToEndpoint( geom, match.vertexIndex() ) );
   QgsPoint pt1 = geom.vertexAt( match.vertexIndex() );
+
+  pt0 = toMapCoordinates( match.layer(), pt0 );
+  pt1 = toMapCoordinates( match.layer(), pt1 );
+
   double dx = pt1.x() - pt0.x();
   double dy = pt1.y() - pt0.y();
   double dist = 15 * canvas()->mapSettings().mapUnitsPerPixel();
@@ -678,7 +697,7 @@ void QgsNodeTool2::mouseMoveNotDragging( QgsMapMouseEvent *e )
     {
       // circular edge at the first vertex
       isCircularEdge = true;
-      QgsPoint pX = geom.vertexAt( m.vertexIndex() - 1 );
+      QgsPoint pX = toMapCoordinates( m.layer(), geom.vertexAt( m.vertexIndex() - 1 ) );
       QgsPointSequence points;
       QgsGeometryUtils::segmentizeArc( QgsPointV2( pX ), QgsPointV2( p0 ), QgsPointV2( p1 ), points );
       mEdgeBand->reset();
@@ -689,7 +708,7 @@ void QgsNodeTool2::mouseMoveNotDragging( QgsMapMouseEvent *e )
     {
       // circular edge at the second vertex
       isCircularEdge = true;
-      QgsPoint pX = geom.vertexAt( m.vertexIndex() + 2 );
+      QgsPoint pX = toMapCoordinates( m.layer(), geom.vertexAt( m.vertexIndex() + 2 ) );
       QgsPointSequence points;
       QgsGeometryUtils::segmentizeArc( QgsPointV2( p0 ), QgsPointV2( p1 ), QgsPointV2( pX ), points );
       mEdgeBand->reset();
@@ -862,9 +881,11 @@ void QgsNodeTool2::startDraggingMoveVertex( const QgsPoint &mapPoint, const QgsP
   {
     if ( v != *mDraggingVertex )
     {
-      // TODO: convert offset to destination layer's CRS
       QgsPoint origPointV = cachedGeometryForVertex( v ).vertexAt( v.vertexId );
-      QgsVector offset( origPointV.x() - origDraggingVertexPoint.x(), origPointV.y() - origDraggingVertexPoint.y() );
+      QgsPoint origPointLayer = origDraggingVertexPoint;
+      if ( v.layer->crs() != mDraggingVertex->layer->crs() )  // reproject if necessary
+        origPointLayer = toLayerCoordinates( v.layer, toMapCoordinates( m.layer(), origDraggingVertexPoint ) );
+      QgsVector offset = origPointV - origPointLayer;
 
       mDraggingExtraVertices << v;
       mDraggingExtraVerticesOffset << offset;
@@ -929,10 +950,10 @@ void QgsNodeTool2::buildDragBandsForVertices( const QSet<Vertex> &movingVertices
     if ( v0idx != -1 && v1idx != -1 && isCircularVertex( geom, v.vertexId ) )
     {
       // the vertex is in the middle of a curved segment
-      qDebug( "middle point curve vertex" );
       if ( !verticesInCircularBands.contains( v ) )
       {
-        addDragCircularBand( geom.vertexAt( v0idx ),
+        addDragCircularBand( v.layer,
+                             geom.vertexAt( v0idx ),
                              pt,
                              geom.vertexAt( v1idx ),
                              movingVertices.contains( Vertex( v.layer, v.fid, v0idx ) ),
@@ -956,7 +977,8 @@ void QgsNodeTool2::buildDragBandsForVertices( const QSet<Vertex> &movingVertices
         // circular segment to the left
         if ( !verticesInCircularBands.contains( v0 ) )
         {
-          addDragCircularBand( geom.vertexAt( v0idx - 1 ),
+          addDragCircularBand( v.layer,
+                               geom.vertexAt( v0idx - 1 ),
                                geom.vertexAt( v0idx ),
                                pt,
                                movingVertices.contains( Vertex( v.layer, v.fid, v0idx - 1 ) ),
@@ -971,7 +993,8 @@ void QgsNodeTool2::buildDragBandsForVertices( const QSet<Vertex> &movingVertices
         // straight segment to the left
         if ( !verticesInStraightBands.contains( v0 ) )
         {
-          addDragStraightBand( geom.vertexAt( v0idx ),
+          addDragStraightBand( v.layer,
+                               geom.vertexAt( v0idx ),
                                pt,
                                movingVertices.contains( v0 ),
                                true,
@@ -990,7 +1013,8 @@ void QgsNodeTool2::buildDragBandsForVertices( const QSet<Vertex> &movingVertices
         // circular segment to the right
         if ( !verticesInCircularBands.contains( v1 ) )
         {
-          addDragCircularBand( pt,
+          addDragCircularBand( v.layer,
+                               pt,
                                geom.vertexAt( v1idx ),
                                geom.vertexAt( v1idx + 1 ),
                                true,
@@ -1005,7 +1029,8 @@ void QgsNodeTool2::buildDragBandsForVertices( const QSet<Vertex> &movingVertices
         // straight segment to the right
         if ( !verticesInStraightBands.contains( v ) )
         {
-          addDragStraightBand( pt,
+          addDragStraightBand( v.layer,
+                               pt,
                                geom.vertexAt( v1idx ),
                                true,
                                movingVertices.contains( v1 ),
@@ -1020,14 +1045,15 @@ void QgsNodeTool2::buildDragBandsForVertices( const QSet<Vertex> &movingVertices
       // this is a standalone point - we need to use a marker for it
       // to give some feedback to the user
 
+      QgsPoint ptMapPoint = toMapCoordinates( v.layer, pt );
       QgsVertexMarker *marker = new QgsVertexMarker( mCanvas );
       marker->setIconType( QgsVertexMarker::ICON_X );
       marker->setColor( Qt::red );
       marker->setPenWidth( 3 );
       marker->setVisible( true );
-      marker->setCenter( toMapCoordinates( v.layer, pt ) );
+      marker->setCenter( ptMapPoint );
       mDragPointMarkers << marker;
-      mDragPointMarkersOffset << ( pt - dragVertexMapPoint );
+      mDragPointMarkersOffset << ( ptMapPoint - dragVertexMapPoint );
     }
   }
 }
@@ -1124,10 +1150,12 @@ void QgsNodeTool2::startDraggingEdge( const QgsPointLocator::Match &m, const Qgs
 
   buildDragBandsForVertices( movingVertices, mapPoint );
 
+  QgsPoint layerPoint = toLayerCoordinates( m.layer(), mapPoint );
+
   Q_FOREACH ( const Vertex &v, movingVertices )
   {
     mDraggingExtraVertices << v;
-    mDraggingExtraVerticesOffset << ( geom.vertexAt( v.vertexId ) - mapPoint );
+    mDraggingExtraVerticesOffset << ( geom.vertexAt( v.vertexId ) - layerPoint );
   }
 
   mOverrideCadPoints.clear();
@@ -1408,7 +1436,7 @@ void QgsNodeTool2::setHighlightedNodes( const QList<Vertex> &listNodes )
     marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
     marker->setPenWidth( 3 );
     marker->setColor( Qt::blue );
-    marker->setCenter( geom.vertexAt( node.vertexId ) );
+    marker->setCenter( toMapCoordinates( node.layer, geom.vertexAt( node.vertexId ) ) );
     mSelectedNodesMarkers.append( marker );
   }
   mSelectedNodes = listNodes;

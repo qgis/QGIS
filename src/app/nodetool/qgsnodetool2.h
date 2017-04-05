@@ -90,9 +90,9 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
     void addDragBand( const QgsPoint &v1, const QgsPoint &v2 );
 
-    void addDragStraightBand( const QgsPoint &v0, const QgsPoint &v1, bool moving0, bool moving1, const QgsPoint &mapPoint );
+    void addDragStraightBand( QgsVectorLayer *layer, QgsPoint v0, QgsPoint v1, bool moving0, bool moving1, const QgsPoint &mapPoint );
 
-    void addDragCircularBand( const QgsPoint &v0, const QgsPoint &v1, const QgsPoint &v2, bool moving0, bool moving1, bool moving2, const QgsPoint &mapPoint );
+    void addDragCircularBand( QgsVectorLayer *layer, QgsPoint v0, QgsPoint v1, QgsPoint v2, bool moving0, bool moving1, bool moving2, const QgsPoint &mapPoint );
 
     void moveDragBands( const QgsPoint &mapPoint );
 
