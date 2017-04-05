@@ -21,6 +21,7 @@
 
 #include "ui_qgsrendererv2propsdialogbase.h"
 
+#include "qgis.h"
 #include "qgsfeaturerequest.h"
 #include "qgis_gui.h"
 
@@ -49,7 +50,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * than shown as a dialog by itself
      * \param parent parent widget
      */
-    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent = nullptr );
+    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsRendererPropertiesDialog();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -131,7 +132,11 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * \param widgets The list of widgets to check.
      * \param slot The slot to connect to the signals.
      */
-    void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
+#ifndef SIP_RUN
+    void connectValueChanged( const QList<QWidget *> &widgets, void ( QgsRendererPropertiesDialog::*slot )() );
+#else
+    void connectValueChanged( const QList<QWidget *> &widgets, void ( QgsRendererPropertiesDialog::*slot )() );
+#endif
 
     // Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent *event ) override;
