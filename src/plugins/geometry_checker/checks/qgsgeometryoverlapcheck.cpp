@@ -13,73 +13,92 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscrscache.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometryoverlapcheck.h"
 #include "../utils/qgsfeaturepool.h"
 
 void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
+  double overlapThreshold = mThresholdMapUnits;
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  for ( const QString &layerId : featureIds.keys() )
+  QList<QString> layerIds = featureIds.keys();
+  for ( int i = 0, n = layerIds.length(); i < n; ++i )
   {
-    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
-    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
+    QString layerIdA = layerIds[i];
+    QgsFeaturePool *featurePoolA = mContext->featurePools[ layerIdA ];
+    if ( !getCompatibility( featurePoolA->getLayer()->geometryType() ) )
     {
       continue;
     }
-    double mapToLayerUnits = featurePool->getMapToLayerUnits();
-    double overlapThreshold = mThresholdMapUnits * mapToLayerUnits * mapToLayerUnits;
-    for ( QgsFeatureId featureid : featureIds[layerId] )
+    QgsCoordinateTransform crstA = QgsCoordinateTransformCache::instance()->transform( featurePoolA->getLayer()->crs().authid(), mContext->mapCrs );
+
+    for ( QgsFeatureId featureIdA : featureIds[layerIdA] )
     {
       if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-      QgsFeature feature;
-      if ( !featurePool->get( featureid, feature ) )
+      QgsFeature featureA;
+      if ( !featurePoolA->get( featureIdA, featureA ) )
       {
         continue;
       }
-      QgsGeometry featureGeom = feature.geometry();
-      QgsAbstractGeometry *geom = featureGeom.geometry();
-      QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( geom, mContext->tolerance );
 
-      QgsFeatureIds ids = featurePool->getIntersects( feature.geometry().boundingBox() );
-      for ( QgsFeatureId otherid : ids )
+      QgsAbstractGeometry *featureGeomA = featureA.geometry().geometry()->clone();
+      featureGeomA->transform( crstA );
+      QgsGeometryEngine *geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( featureGeomA, mContext->tolerance );
+      QgsRectangle bboxA = featureGeomA->boundingBox();
+
+      for ( int j = i; j < n; ++j )
       {
-        // >= : only report overlaps once
-        if ( otherid >= featureid )
+        QString layerIdB = layerIds[j];
+        QgsFeaturePool *featurePoolB = mContext->featurePools[ layerIdA ];
+        if ( !getCompatibility( featurePoolB->getLayer()->geometryType() ) )
         {
           continue;
         }
+        QgsCoordinateTransform crstB = QgsCoordinateTransformCache::instance()->transform( featurePoolB->getLayer()->crs().authid(), mContext->mapCrs );
 
-        QgsFeature otherFeature;
-        if ( !featurePool->get( otherid, otherFeature ) )
+        QgsFeatureIds idsB = featurePoolB->getIntersects( crstB.transform( bboxA, QgsCoordinateTransform::ReverseTransform ) );
+        for ( QgsFeatureId featureIdB : idsB )
         {
-          continue;
-        }
-
-        QString errMsg;
-        if ( geomEngine->overlaps( *otherFeature.geometry().geometry(), &errMsg ) )
-        {
-          QgsAbstractGeometry *interGeom = geomEngine->intersection( *otherFeature.geometry().geometry() );
-          if ( interGeom && !interGeom->isEmpty() )
+          // > : only report overlaps within same layer once
+          if ( layerIdA == layerIdB && featureIdB >= featureIdA )
           {
-            QgsGeometryCheckerUtils::filter1DTypes( interGeom );
-            for ( int iPart = 0, nParts = interGeom->partCount(); iPart < nParts; ++iPart )
+            continue;
+          }
+          QgsFeature featureB;
+          if ( !featurePoolB->get( featureIdB, featureB ) )
+          {
+            continue;
+          }
+          QgsAbstractGeometry *featureGeomB = featureB.geometry().geometry()->clone();
+          featureGeomB->transform( crstB );
+          QString errMsg;
+          if ( geomEngineA->overlaps( *featureGeomB, &errMsg ) )
+          {
+            QgsAbstractGeometry *interGeom = geomEngineA->intersection( *featureGeomB );
+            if ( interGeom && !interGeom->isEmpty() )
             {
-              double area = QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart )->area();
-              if ( area > mContext->reducedTolerance && area < overlapThreshold )
+              QgsGeometryCheckerUtils::filter1DTypes( interGeom );
+              for ( int iPart = 0, nParts = interGeom->partCount(); iPart < nParts; ++iPart )
               {
-                errors.append( new QgsGeometryOverlapCheckError( this, layerId, featureid, QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart )->centroid(), area, otherid ) );
+                double area = QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart )->area();
+                if ( area > mContext->reducedTolerance && area < overlapThreshold )
+                {
+                  errors.append( new QgsGeometryOverlapCheckError( this, layerIdA, featureIdA, QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart )->centroid(), area, qMakePair( layerIdB, featureIdB ) ) );
+                }
               }
             }
+            else if ( !errMsg.isEmpty() )
+            {
+              messages.append( tr( "Overlap check between features %1:%2 and %3:%4 %5" ).arg( layerIdA ).arg( featureIdA ).arg( layerIdB ).arg( featureIdB ).arg( errMsg ) );
+            }
+            delete interGeom;
           }
-          else if ( !errMsg.isEmpty() )
-          {
-            messages.append( tr( "Overlap check between features %1 and %2: %3" ).arg( feature.id() ).arg( otherFeature.id() ).arg( errMsg ) );
-          }
-          delete interGeom;
+          delete featureGeomB;
         }
       }
-      delete geomEngine;
+      delete geomEngineA;
+      delete featureGeomA;
     }
   }
 }
@@ -89,30 +108,41 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   QString errMsg;
   QgsGeometryOverlapCheckError *overlapError = static_cast<QgsGeometryOverlapCheckError *>( error );
 
-  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
-  QgsFeature feature;
-  QgsFeature otherFeature;
-  if ( !featurePool->get( error->featureId(), feature ) ||
-       !featurePool->get( overlapError->otherId(), otherFeature ) )
+  QgsFeaturePool *featurePoolA = mContext->featurePools[ overlapError->layerId() ];
+  QgsFeaturePool *featurePoolB = mContext->featurePools[ overlapError->overlappedFeature().first ];
+  QgsFeature featureA;
+  QgsFeature featureB;
+  if ( !featurePoolA->get( overlapError->featureId(), featureA ) ||
+       !featurePoolB->get( overlapError->overlappedFeature().second, featureB ) )
   {
     error->setObsolete();
     return;
   }
-  QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry *geom = featureGeom.geometry();
-  QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( geom, mContext->tolerance );
+  QgsCoordinateTransform crstA = QgsCoordinateTransformCache::instance()->transform( featurePoolA->getLayer()->crs().authid(), mContext->mapCrs );
+  QgsCoordinateTransform crstB = QgsCoordinateTransformCache::instance()->transform( featurePoolB->getLayer()->crs().authid(), mContext->mapCrs );
 
   // Check if error still applies
-  if ( !geomEngine->overlaps( otherFeature.geometry().geometry() ) )
+  QgsAbstractGeometry *featureGeomA = featureA.geometry().geometry()->clone();
+  featureGeomA->transform( crstA );
+  QgsGeometryEngine *geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( featureGeomA, mContext->reducedTolerance );
+
+  QgsAbstractGeometry *featureGeomB = featureB.geometry().geometry()->clone();
+  featureGeomB->transform( crstB );
+
+  if ( !geomEngineA->overlaps( *featureGeomB ) )
   {
-    delete geomEngine;
+    delete geomEngineA;
+    delete featureGeomA;
+    delete featureGeomB;
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometry *interGeom = geomEngine->intersection( otherFeature.geometry().geometry(), &errMsg );
-  delete geomEngine;
+  QgsAbstractGeometry *interGeom = geomEngineA->intersection( *featureGeomB, &errMsg );
   if ( !interGeom )
   {
+    delete geomEngineA;
+    delete featureGeomA;
+    delete featureGeomB;
     error->setFixFailed( tr( "Failed to compute intersection between overlapping features: %1" ).arg( errMsg ) );
     return;
   }
@@ -132,6 +162,9 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   if ( !interPart || interPart->isEmpty() )
   {
     delete interGeom;
+    delete geomEngineA;
+    delete featureGeomA;
+    delete featureGeomB;
     error->setObsolete();
     return;
   }
@@ -143,9 +176,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   }
   else if ( method == Subtract )
   {
-    geomEngine = QgsGeometryCheckerUtils::createGeomEngine( geom, mContext->reducedTolerance );
-    QgsAbstractGeometry *diff1 = geomEngine->difference( *interPart, &errMsg );
-    delete geomEngine;
+    QgsAbstractGeometry *diff1 = geomEngineA->difference( *interPart, &errMsg );
     if ( !diff1 || diff1->isEmpty() )
     {
       delete diff1;
@@ -155,10 +186,9 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
     {
       QgsGeometryCheckerUtils::filter1DTypes( diff1 );
     }
-    QgsGeometry otherFeatureGeom = otherFeature.geometry();
-    QgsGeometryEngine *otherGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( otherFeatureGeom.geometry(), mContext->reducedTolerance );
-    QgsAbstractGeometry *diff2 = otherGeomEngine->difference( *interPart, &errMsg );
-    delete otherGeomEngine;
+    QgsGeometryEngine *geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( featureGeomB, mContext->reducedTolerance );
+    QgsAbstractGeometry *diff2 = geomEngineB->difference( *interPart, &errMsg );
+    delete geomEngineB;
     if ( !diff2 || diff2->isEmpty() )
     {
       delete diff2;
@@ -178,19 +208,19 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
     {
       if ( shared1 < shared2 )
       {
-        feature.setGeometry( QgsGeometry( diff1 ) );
+        featureA.setGeometry( QgsGeometry( diff1 ) );
 
-        changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
-        featurePool->updateFeature( feature );
+        changes[error->layerId()][featureA.id()].append( Change( ChangeFeature, ChangeChanged ) );
+        featurePoolA->updateFeature( featureA );
 
         delete diff2;
       }
       else
       {
-        otherFeature.setGeometry( QgsGeometry( diff2 ) );
+        featureB.setGeometry( QgsGeometry( diff2 ) );
 
-        changes[error->layerId()][otherFeature.id()].append( Change( ChangeFeature, ChangeChanged ) );
-        featurePool->updateFeature( otherFeature );
+        changes[overlapError->overlappedFeature().first][featureB.id()].append( Change( ChangeFeature, ChangeChanged ) );
+        featurePoolB->updateFeature( featureB );
 
         delete diff1;
       }
@@ -203,6 +233,9 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
     error->setFixFailed( tr( "Unknown method" ) );
   }
   delete interGeom;
+  delete geomEngineA;
+  delete featureGeomA;
+  delete featureGeomB;
 }
 
 QStringList QgsGeometryOverlapCheck::getResolutionMethods() const

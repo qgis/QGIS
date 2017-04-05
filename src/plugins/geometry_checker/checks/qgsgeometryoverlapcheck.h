@@ -26,11 +26,11 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
                                   QgsFeatureId featureId,
                                   const QgsPoint &errorLocation,
                                   const QVariant &value,
-                                  QgsFeatureId otherId )
+                                  const QPair<QString, QgsFeatureId> &overlappedFeature )
       : QgsGeometryCheckError( check, layerId, featureId, errorLocation, QgsVertexId(), value, ValueArea )
-      , mOtherId( otherId )
+      , mOverlappedFeature( overlappedFeature )
     { }
-    QgsFeatureId otherId() const { return mOtherId; }
+    const QPair<QString, QgsFeatureId> &overlappedFeature() const { return mOverlappedFeature; }
 
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
@@ -38,7 +38,7 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
       return err &&
              other->layerId() == layerId() &&
              other->featureId() == featureId() &&
-             err->otherId() == otherId() &&
+             err->overlappedFeature() == overlappedFeature() &&
              QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), mCheck->getContext()->reducedTolerance ) &&
              qAbs( value().toDouble() - other->value().toDouble() ) < mCheck->getContext()->reducedTolerance;
     }
@@ -46,13 +46,13 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
     bool closeMatch( QgsGeometryCheckError *other ) const override
     {
       QgsGeometryOverlapCheckError *err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
-      return err && other->layerId() == layerId() && other->featureId() == featureId() && err->otherId() == otherId();
+      return err && other->layerId() == layerId() && other->featureId() == featureId() && err->overlappedFeature() == overlappedFeature();
     }
 
-    virtual QString description() const override { return QApplication::translate( "QgsGeometryTypeCheckError", "Overlap with %1" ).arg( otherId() ); }
+    virtual QString description() const override { return QApplication::translate( "QgsGeometryTypeCheckError", "Overlap with %1:%2" ).arg( mOverlappedFeature.first ).arg( mOverlappedFeature.second ); }
 
   private:
-    QgsFeatureId mOtherId;
+    QPair<QString, QgsFeatureId> mOverlappedFeature;
 };
 
 class QgsGeometryOverlapCheck : public QgsGeometryCheck
