@@ -25,24 +25,24 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
                                     const QString &layerId,
                                     QgsFeatureId featureId,
                                     const QgsPoint &errorLocation,
-                                    QgsFeatureId otherId
+                                    const QPair<QString, QgsFeatureId> &containingFeature
                                   )
-      : QgsGeometryCheckError( check, layerId, featureId, errorLocation, QgsVertexId(), otherId, ValueOther )
-      , mOtherId( otherId )
+      : QgsGeometryCheckError( check, layerId, featureId, errorLocation, QgsVertexId(), QString( "%1:%2" ).arg( containingFeature.first ).arg( containingFeature.second ), ValueOther )
+      , mContainingFeature( containingFeature )
     { }
-    QgsFeatureId otherId() const { return mOtherId; }
+    const QPair<QString, QgsFeatureId> &containingFeature() const { return mContainingFeature; }
 
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
       return other->check() == check() &&
              other->featureId() == featureId() &&
-             static_cast<QgsGeometryContainedCheckError *>( other )->otherId() == otherId();
+             static_cast<QgsGeometryContainedCheckError *>( other )->containingFeature() == containingFeature();
     }
 
-    virtual QString description() const override { return QApplication::translate( "QgsGeometryContainedCheckError", "Within %1" ).arg( otherId() ); }
+    virtual QString description() const override { return QApplication::translate( "QgsGeometryContainedCheckError", "Within %1:%2" ).arg( mContainingFeature.first ).arg( mContainingFeature.second ); }
 
   private:
-    QgsFeatureId mOtherId;
+    QPair<QString, QgsFeatureId> mContainingFeature;
 };
 
 class QgsGeometryContainedCheck : public QgsGeometryCheck
