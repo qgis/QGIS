@@ -13,7 +13,9 @@ class QgsRubberBand: QgsMapCanvasItem
       ICON_X,
       ICON_BOX,
       ICON_CIRCLE,
-      ICON_FULL_BOX
+      ICON_FULL_BOX,
+      ICON_DIAMOND,
+      ICON_FULL_DIAMOND
     };
 
     QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );

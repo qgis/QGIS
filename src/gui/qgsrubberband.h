@@ -66,7 +66,19 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
       /**
        * A full box is used to highlight points (■)
        */
-      ICON_FULL_BOX
+      ICON_FULL_BOX,
+
+      /**
+       * A diamond is used to highlight points (◇)
+       * @note added in QGIS 3.0
+       */
+      ICON_DIAMOND,
+
+      /**
+       * A diamond is used to highlight points (◆)
+       * @note added in QGIS 3.0
+       */
+      ICON_FULL_DIAMOND,
     };
 
     /**

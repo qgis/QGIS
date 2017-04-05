@@ -656,7 +656,7 @@ void QgsNodeTool2::mouseMoveNotDragging( QgsMapMouseEvent *e )
       isCircular = isCircularVertex( cachedGeometry( m.layer(), m.featureId() ), m.vertexIndex() );
     }
 
-    mVertexBand->setIcon( isCircular ? QgsRubberBand::ICON_FULL_BOX : QgsRubberBand::ICON_CIRCLE );
+    mVertexBand->setIcon( isCircular ? QgsRubberBand::ICON_FULL_DIAMOND : QgsRubberBand::ICON_CIRCLE );
     // if we are at an endpoint, let's show also the endpoint indicator
     // so user can possibly add a new vertex at the end
     if ( isMatchAtEndpoint( m ) )
@@ -1436,6 +1436,7 @@ void QgsNodeTool2::setHighlightedNodes( const QList<Vertex> &listNodes )
     marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
     marker->setPenWidth( 3 );
     marker->setColor( Qt::blue );
+    marker->setFillColor( Qt::blue );
     marker->setCenter( toMapCoordinates( node.layer, geom.vertexAt( node.vertexId ) ) );
     mSelectedNodesMarkers.append( marker );
   }

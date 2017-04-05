@@ -519,6 +519,22 @@ void QgsRubberBand::drawShape( QPainter *p, QVector<QPointF> &pts )
           case ICON_CIRCLE:
             p->drawEllipse( x - s, y - s, mIconSize, mIconSize );
             break;
+
+          case ICON_DIAMOND:
+          case ICON_FULL_DIAMOND:
+          {
+            QPointF pts[] =
+            {
+              QPointF( x, y - s ),
+              QPointF( x + s, y ),
+              QPointF( x, y + s ),
+              QPointF( x - s, y )
+            };
+            if ( mIconType == ICON_FULL_DIAMOND )
+              p->drawPolygon( pts, 4 );
+            else
+              p->drawPolyline( pts, 4 );
+          }
         }
       }
     }
