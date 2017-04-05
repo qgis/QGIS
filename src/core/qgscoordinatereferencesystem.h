@@ -236,6 +236,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Assignment operator
     QgsCoordinateReferenceSystem &operator=( const QgsCoordinateReferenceSystem &srs );
 
+    //! Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
     /**
      * Returns a list of all valid SRS IDs present in the CRS database. Any of the
      * returned values can be safely passed to fromSrsId() to create a new, valid
@@ -713,6 +719,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     friend class TestQgsCoordinateReferenceSystem;
 };
 
+Q_DECLARE_METATYPE( QgsCoordinateReferenceSystem )
 
 //! Output stream operator
 inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateReferenceSystem &r )

@@ -183,6 +183,7 @@ class QgsCoordinateReferenceSystem
     // TODO QGIS 3: remove type and always use EPSG code
     QgsCoordinateReferenceSystem( const long id, CrsType type = PostgisCrsId );
 
+    operator QVariant() const;
     static QList< long > validSrsIds();
 
     // static creators
