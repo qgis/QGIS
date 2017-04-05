@@ -64,6 +64,34 @@ class QgsProcessingUtils
  \see compatibleVectorLayers()
 %End
 
+
+    static QgsMapLayer *mapLayerFromProject( const QString &string, QgsProject *project );
+%Docstring
+ Interprets a string as a map layer from a project.
+
+ This method attempts to match a string to a project map layer, using
+ first the layer ID, then layer names, and finally layer source.
+ If the string matches a normalized version of any layer source
+ for layers in the specified project, then those matching layers will be
+ returned.
+ \see mapLayerFromString()
+%End
+
+    static QgsMapLayer *mapLayerFromString( const QString &string ) /Factory/;
+%Docstring
+ Interprets a string as a map layer. The method will attempt to
+ load a layer matching the passed string. E.g. if the string is a file path,
+ then the layer at this file path will be loaded.
+ The caller takes responsibility for deleting the returned map layer.
+ \see mapLayerFromProject()
+%End
+
+    static QString normalizeLayerSource( const QString &source );
+%Docstring
+ Normalizes a layer source string for safe comparison across different
+ operating system environments.
+%End
+
 };
 
 

@@ -6,8 +6,9 @@
 from processing.tools.vector import TableWriter
 from collections import defaultdict
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.tools import dataobjects
 
-layer = processing.getObject(Input)
+layer = dataobjects.getLayerFromString(Input)
 inputFields = layer.fields()
 fieldIdxs = []
 fields = Fields.split(',')

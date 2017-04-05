@@ -90,7 +90,7 @@ class AddTableField(GeoAlgorithm):
         fieldPrecision = self.getParameterValue(self.FIELD_PRECISION)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 
         fields = layer.fields()

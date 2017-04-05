@@ -83,7 +83,7 @@ class PointsLayerFromTable(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         source = self.getParameterValue(self.INPUT)
-        vlayer = dataobjects.getObjectFromUri(source)
+        vlayer = dataobjects.getLayerFromString(source)
         output = self.getOutputFromName(self.OUTPUT)
 
         fields = vlayer.fields()

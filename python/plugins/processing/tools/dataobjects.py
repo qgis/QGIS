@@ -58,13 +58,6 @@ TYPE_RASTER = 3
 TYPE_FILE = 4
 TYPE_TABLE = 5
 
-_loadedLayers = {}
-
-
-def resetLoadedLayers():
-    global _loadedLayers
-    _loadedLayers = {}
-
 
 def getSupportedOutputRasterLayerExtensions():
     allexts = []
@@ -81,7 +74,7 @@ def extent(layers):
     first = True
     for layer in layers:
         if not isinstance(layer, (QgsMapLayer.QgsRasterLayer, QgsMapLayer.QgsVectorLayer)):
-            layer = getObjectFromUri(layer)
+            layer = getLayerFromString(layer)
             if layer is None:
                 continue
         if first:
@@ -152,66 +145,25 @@ def load(fileName, name=None, crs=None, style=None):
     return qgslayer
 
 
-def getObjectFromName(name):
-    layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance(), False)
-    for layer in layers:
-        if layer.name() == name:
-            return layer
-
-
-def getObject(uriorname):
-    ret = getObjectFromName(uriorname)
-    if ret is None:
-        ret = getObjectFromUri(uriorname)
-    return ret
-
-
-def normalizeLayerSource(source):
-    if isWindows():
-        source = source.replace('\\', '/')
-    source = source.replace('"', "'")
-    return source
-
-
-def getObjectFromUri(uri, forceLoad=True):
+def getLayerFromString(string, forceLoad=True):
     """Returns an object (layer/table) given a source definition.
 
     if forceLoad is true, it tries to load it if it is not currently open
     Otherwise, it will return the object only if it is loaded in QGIS.
     """
 
-    if uri is None:
+    if string is None:
         return None
-    if uri in _loadedLayers:
-        return _loadedLayers[uri]
-    layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance(), False)
-    for layer in layers:
-        if normalizeLayerSource(layer.source()) == normalizeLayerSource(uri):
-            return layer
-    if forceLoad and os.path.exists(uri):
-        settings = QgsSettings()
-        prjSetting = settings.value('/Projections/defaultBehavior')
-        settings.setValue('/Projections/defaultBehavior', '')
 
-        # If is not opened, we open it
-        name = os.path.basename(uri)
-        for provider in ['ogr', 'postgres', 'spatialite', 'virtual']:
-            layer = QgsVectorLayer(uri, name, provider)
-            if layer.isValid():
-                if prjSetting:
-                    settings.setValue('/Projections/defaultBehavior', prjSetting)
-                _loadedLayers[normalizeLayerSource(layer.source())] = layer
-                return layer
-        layer = QgsRasterLayer(uri, name)
-        if layer.isValid():
-            if prjSetting:
-                settings.setValue('/Projections/defaultBehavior', prjSetting)
-            _loadedLayers[normalizeLayerSource(layer.source())] = layer
-            return layer
-        if prjSetting:
-            settings.setValue('/Projections/defaultBehavior', prjSetting)
-    else:
+    # prefer project layers
+    layer = QgsProcessingUtils.mapLayerFromProject(string, QgsProject.instance())
+    if layer:
+        return layer
+
+    if not forceLoad:
         return None
+
+    return QgsProcessingUtils.mapLayerFromString(string)
 
 
 def exportVectorLayer(layer, supported=None):

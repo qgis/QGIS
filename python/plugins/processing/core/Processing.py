@@ -190,11 +190,6 @@ class Processing(object):
         return algList.getAlgorithm(name)
 
     @staticmethod
-    def getObject(uri):
-        """Returns the QGIS object identified by the given URI."""
-        return dataobjects.getObjectFromUri(uri)
-
-    @staticmethod
     def runAlgorithm(algOrName, onFinish, *args, **kwargs):
         if isinstance(algOrName, GeoAlgorithm):
             alg = algOrName

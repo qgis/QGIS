@@ -67,7 +67,7 @@ class SetVectorStyle(GeoAlgorithm):
         filename = self.getParameterValue(self.INPUT)
 
         style = self.getParameterValue(self.STYLE)
-        layer = dataobjects.getObjectFromUri(filename, False)
+        layer = dataobjects.getLayerFromString(filename, False)
         if layer is None:
             dataobjects.load(filename, os.path.basename(filename), style=style)
             self.getOutputFromName(self.OUTPUT).open = False

@@ -76,7 +76,7 @@ class Orthogonalize(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Orthogonalized')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         max_iterations = self.getParameterValue(self.MAX_ITERATIONS)
         angle_tolerance = self.getParameterValue(self.ANGLE_TOLERANCE)

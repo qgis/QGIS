@@ -74,8 +74,8 @@ class PointsInPolygonUnique(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Unique count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
+        polyLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POLYGONS))
+        pointLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 

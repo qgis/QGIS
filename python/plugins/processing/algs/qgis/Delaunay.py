@@ -70,7 +70,7 @@ class Delaunay(GeoAlgorithm):
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
 
         fields = [QgsField('POINTA', QVariant.Double, '', 24, 15),

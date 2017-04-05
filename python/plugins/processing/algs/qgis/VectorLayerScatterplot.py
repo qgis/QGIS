@@ -75,7 +75,7 @@ class VectorLayerScatterplot(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         xfieldname = self.getParameterValue(self.XFIELD)
         yfieldname = self.getParameterValue(self.YFIELD)

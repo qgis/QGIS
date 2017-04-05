@@ -66,9 +66,9 @@ class Clip(GeoAlgorithm):
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
 
     def processAlgorithm(self, feedback):
-        source_layer = dataobjects.getObjectFromUri(
+        source_layer = dataobjects.getLayerFromString(
             self.getParameterValue(Clip.INPUT))
-        mask_layer = dataobjects.getObjectFromUri(
+        mask_layer = dataobjects.getLayerFromString(
             self.getParameterValue(Clip.OVERLAY))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(

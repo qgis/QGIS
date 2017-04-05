@@ -950,7 +950,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
     def setLayer(self, layer):
         if isinstance(layer, str):
-            layer = dataobjects.getObjectFromUri(_resolveLayers(layer))
+            layer = dataobjects.getLayerFromString(_resolveLayers(layer))
         self.widget.setLayer(layer)
 
     def setValue(self, value):
@@ -1118,7 +1118,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
 
     def setLayer(self, layer):
         if isinstance(layer, str):
-            layer = dataobjects.getObjectFromUri(_resolveLayers(layer))
+            layer = dataobjects.getLayerFromString(_resolveLayers(layer))
         self._layer = layer
         self.refreshItems()
 

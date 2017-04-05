@@ -68,7 +68,7 @@ class SetRasterStyle(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)
+        layer = dataobjects.getLayerFromString(filename)
 
         style = self.getParameterValue(self.STYLE)
         if layer is None:

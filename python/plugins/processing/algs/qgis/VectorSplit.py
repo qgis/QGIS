@@ -66,7 +66,7 @@ class VectorSplit(GeoAlgorithm):
         self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
         directory = self.getOutputValue(self.OUTPUT)

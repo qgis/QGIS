@@ -47,7 +47,6 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
 from processing.tools.vector import resolveFieldIndex, features
 from processing.tools import dataobjects
 from processing.core.outputs import OutputNumber, OutputRaster, OutputVector
-from processing.tools.dataobjects import getObject
 
 
 def parseBool(s):
@@ -278,7 +277,7 @@ class ParameterCrs(Parameter):
             self.value = value.crs().authid()
             return True
         try:
-            layer = dataobjects.getObjectFromUri(value)
+            layer = dataobjects.getLayerFromString(value)
             if layer is not None:
                 self.value = layer.crs().authid()
                 return True
@@ -322,7 +321,7 @@ class ParameterDataObject(Parameter):
         if self.value is None:
             return str(None)
         else:
-            s = dataobjects.normalizeLayerSource(str(self.value))
+            s = QgsProcessingUtils.normalizeLayerSource(str(self.value))
             s = '"%s"' % s
             return s
 
@@ -357,7 +356,7 @@ class ParameterExtent(Parameter):
             return True
 
         try:
-            layer = dataobjects.getObjectFromUri(value)
+            layer = dataobjects.getLayerFromString(value)
             if layer is not None:
                 rect = layer.extent()
                 self.value = '{},{},{},{}'.format(
@@ -414,7 +413,7 @@ class ParameterExtent(Parameter):
                                                 QgsVectorLayer)):
                         layer = param.value
                     else:
-                        layer = dataobjects.getObject(param.value)
+                        layer = dataobjects.getLayerFromString(param.value)
                     if layer:
                         found = True
                         self.addToRegion(layer, first)
@@ -422,7 +421,7 @@ class ParameterExtent(Parameter):
                 elif isinstance(param, ParameterMultipleInput):
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getObject(layername)
+                        layer = dataobjects.getLayerFromString(layername)
                         if layer:
                             found = True
                             self.addToRegion(layer, first)
@@ -707,7 +706,7 @@ class ParameterMultipleInput(ParameterDataObject):
             return self.value
         if self.datatype == dataobjects.TYPE_RASTER:
             for layerfile in layers:
-                layer = dataobjects.getObjectFromUri(layerfile, False)
+                layer = dataobjects.getLayerFromString(layerfile, False)
                 if layer:
                     filename = dataobjects.exportRasterLayer(layer)
                     self.exported = self.exported.replace(layerfile, filename)
@@ -716,7 +715,7 @@ class ParameterMultipleInput(ParameterDataObject):
             return self.value
         else:
             for layerfile in layers:
-                layer = dataobjects.getObjectFromUri(layerfile, False)
+                layer = dataobjects.getLayerFromString(layerfile, False)
                 if layer:
                     filename = dataobjects.exportVectorLayer(layer)
                     self.exported = self.exported.replace(layerfile, filename)
@@ -1022,7 +1021,7 @@ class ParameterRaster(ParameterDataObject):
 
         if self.exported:
             return self.exported
-        layer = dataobjects.getObjectFromUri(self.value, False)
+        layer = dataobjects.getLayerFromString(self.value, False)
         if layer:
             self.exported = dataobjects.exportRasterLayer(layer)
         else:
@@ -1352,7 +1351,7 @@ class ParameterTable(ParameterDataObject):
 
         if self.exported:
             return self.exported
-        table = dataobjects.getObjectFromUri(self.value, False)
+        table = dataobjects.getLayerFromString(self.value, False)
         if table:
             self.exported = dataobjects.exportTable(table)
         else:
@@ -1520,7 +1519,7 @@ class ParameterVector(ParameterDataObject):
 
         if self.exported:
             return self.exported
-        layer = dataobjects.getObjectFromUri(self.value, False)
+        layer = dataobjects.getLayerFromString(self.value, False)
         if layer:
             self.exported = dataobjects.exportVectorLayer(layer)
         else:

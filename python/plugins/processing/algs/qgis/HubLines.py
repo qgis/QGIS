@@ -75,9 +75,9 @@ class HubLines(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, feedback):
-        layerHub = dataobjects.getObjectFromUri(
+        layerHub = dataobjects.getLayerFromString(
             self.getParameterValue(self.HUBS))
-        layerSpoke = dataobjects.getObjectFromUri(
+        layerSpoke = dataobjects.getLayerFromString(
             self.getParameterValue(self.SPOKES))
 
         fieldHub = self.getParameterValue(self.HUB_FIELD)

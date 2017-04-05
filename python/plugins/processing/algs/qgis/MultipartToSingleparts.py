@@ -61,7 +61,7 @@ class MultipartToSingleparts(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Single parts')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         geomType = QgsWkbTypes.singleType(layer.wkbType())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(

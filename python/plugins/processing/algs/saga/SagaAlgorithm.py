@@ -162,7 +162,7 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterVector):
                 if param.value is None:
                     continue
-                layer = dataobjects.getObjectFromUri(param.value, False)
+                layer = dataobjects.getLayerFromString(param.value, False)
                 if layer:
                     filename = dataobjects.exportVectorLayer(layer)
                     self.exportedLayers[param.value] = filename
@@ -172,7 +172,7 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterTable):
                 if param.value is None:
                     continue
-                table = dataobjects.getObjectFromUri(param.value, False)
+                table = dataobjects.getLayerFromString(param.value, False)
                 if table:
                     filename = dataobjects.exportTable(table)
                     self.exportedLayers[param.value] = filename
@@ -200,7 +200,7 @@ class SagaAlgorithm(GeoAlgorithm):
                                         dataobjects.TYPE_VECTOR_POLYGON,
                                         dataobjects.TYPE_VECTOR_POINT]:
                     for layerfile in layers:
-                        layer = dataobjects.getObjectFromUri(layerfile, False)
+                        layer = dataobjects.getLayerFromString(layerfile, False)
                         if layer:
                             filename = dataobjects.exportVectorLayer(layer)
                             self.exportedLayers[layerfile] = filename
@@ -332,7 +332,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 return None
             else:
                 del sessionExportedLayers[source]
-        layer = dataobjects.getObjectFromUri(source, False)
+        layer = dataobjects.getLayerFromString(source, False)
         if layer:
             filename = str(layer.name())
         else:
@@ -361,7 +361,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if param.value is not None:
                     files = param.value.split(";")
             for f in files:
-                layer = dataobjects.getObjectFromUri(f)
+                layer = dataobjects.getLayerFromString(f)
                 if layer is None:
                     continue
                 if layer.bandCount() > 1:

@@ -4,6 +4,7 @@ from builtins import range
 ##To_keep=number 1
 ##Biggest parts=output vector
 
+from processing.tools import dataobjects
 from qgis.core import QgsGeometry, QgsWkbTypes
 from operator import itemgetter
 
@@ -13,7 +14,7 @@ if To_keep < 1:
     To_keep = 1
 
 
-polyLayer = processing.getObject(Polygons)
+polyLayer = dataobjects.getLayerFromString(Polygons)
 polyPrder = polyLayer.dataProvider()
 count = polyLayer.featureCount()
 writer = processing.VectorWriter(Results, None, polyPrder.fields(),

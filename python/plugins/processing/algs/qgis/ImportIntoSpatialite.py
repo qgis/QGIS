@@ -98,7 +98,7 @@ class ImportIntoSpatialite(GeoAlgorithm):
         encoding = self.getParameterValue(self.ENCODING)
 
         layerUri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(layerUri)
+        layer = dataobjects.getLayerFromString(layerUri)
 
         table = self.getParameterValue(self.TABLENAME)
         if table:

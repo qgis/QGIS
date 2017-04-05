@@ -184,10 +184,16 @@ class TinInterpolation(GeoAlgorithm):
         bbox = QgsRectangle(xMin, yMin, xMax, yMax)
 
         layerData = []
+        layers = []
         for row in interpolationData.split(';'):
             v = row.split(',')
             data = QgsInterpolator.LayerData()
-            data.vectorLayer = dataobjects.getObjectFromUri(v[0])
+
+            # need to keep a reference until interpolation is complete
+            layer = dataobjects.getLayerFromString(v[0])
+            data.vectorLayer = layer
+            layers.append(layer)
+
             data.zCoordInterpolation = bool(v[1])
             data.interpolationAttribute = int(v[2])
             if v[3] == '0':

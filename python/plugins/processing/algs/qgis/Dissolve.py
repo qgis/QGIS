@@ -76,7 +76,7 @@ class Dissolve(GeoAlgorithm):
     def processAlgorithm(self, feedback):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         field_names = self.getParameterValue(Dissolve.FIELD)
-        vlayerA = dataobjects.getObjectFromUri(
+        vlayerA = dataobjects.getLayerFromString(
             self.getParameterValue(Dissolve.INPUT))
 
         writer = self.getOutputFromName(

@@ -68,7 +68,7 @@ class CreateAttributeIndex(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         file_name = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(file_name)
+        layer = dataobjects.getLayerFromString(file_name)
         field = self.getParameterValue(self.FIELD)
         provider = layer.dataProvider()
 

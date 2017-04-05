@@ -72,7 +72,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 
         isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry

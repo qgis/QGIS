@@ -52,6 +52,8 @@ class TestQgsProcessing: public QObject
     void providerById();
     void removeProvider();
     void compatibleLayers();
+    void normalizeLayerSource();
+    void mapLayerFromString();
 
   private:
 
@@ -255,6 +257,60 @@ void TestQgsProcessing::compatibleLayers()
   Q_FOREACH ( QgsMapLayer *l, QgsProcessingUtils::compatibleLayers( &p, false ) )
     lIds << l->name();
   QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" );
+}
+
+void TestQgsProcessing::normalizeLayerSource()
+{
+  QCOMPARE( QgsProcessingUtils::normalizeLayerSource( "data\\layers\\test.shp" ), QString( "data/layers/test.shp" ) );
+  QCOMPARE( QgsProcessingUtils::normalizeLayerSource( "data\\layers \"new\"\\test.shp" ), QString( "data/layers 'new'/test.shp" ) );
+}
+
+void TestQgsProcessing::mapLayerFromString()
+{
+  // test mapLayerFromProject
+
+  QgsProject p;
+
+  // add a bunch of layers to a project
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString raster1 = testDataDir + "tenbytenraster.asc";
+  QString raster2 = testDataDir + "landsat.tif";
+  QFileInfo fi1( raster1 );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  QVERIFY( r1->isValid() );
+  QFileInfo fi2( raster2 );
+  QgsRasterLayer *r2 = new QgsRasterLayer( fi2.filePath(), "ar2" );
+  QVERIFY( r2->isValid() );
+
+  QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V4", "memory" );
+  QgsVectorLayer *v2 = new QgsVectorLayer( "Point", "v1", "memory" );
+  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << v1 << v2 );
+
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromProject( QString(), nullptr ) );
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromProject( QStringLiteral( "v1" ), nullptr ) );
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromProject( QString(), &p ) );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( raster1, &p ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( raster2, &p ), r2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( "R1", &p ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( "ar2", &p ), r2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( "V4", &p ), v1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( "v1", &p ), v2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( r1->id(), &p ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( v1->id(), &p ), v1 );
+
+  // test mapLayerFromString
+  QgsMapLayer *l = QgsProcessingUtils::mapLayerFromString( raster2 );
+  QVERIFY( l->isValid() );
+  QCOMPARE( l->type(), QgsMapLayer::RasterLayer );
+  delete l;
+  l = QgsProcessingUtils::mapLayerFromString( QString() );
+  QVERIFY( !l );
+  l = QgsProcessingUtils::mapLayerFromString( QStringLiteral( "so much room for activities!" ) );
+  QVERIFY( !l );
+  l = QgsProcessingUtils::mapLayerFromString( testDataDir + "multipoint.shp" );
+  QVERIFY( l->isValid() );
+  QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
+  delete l;
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

@@ -66,9 +66,9 @@ class Difference(GeoAlgorithm):
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
     def processAlgorithm(self, feedback):
-        layerA = dataobjects.getObjectFromUri(
+        layerA = dataobjects.getLayerFromString(
             self.getParameterValue(Difference.INPUT))
-        layerB = dataobjects.getObjectFromUri(
+        layerB = dataobjects.getLayerFromString(
             self.getParameterValue(Difference.OVERLAY))
 
         geomType = QgsWkbTypes.multiType(layerA.wkbType())

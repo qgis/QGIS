@@ -77,7 +77,7 @@ class PointsDisplacement(GeoAlgorithm):
         horizontal = self.getParameterValue(self.HORIZONTAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_LAYER))
 
         writer = output.getVectorWriter(layer.fields(),
                                         layer.wkbType(), layer.crs())

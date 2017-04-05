@@ -83,7 +83,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
         output = self.getOutputValue(self.OUTPUT)
 
         spatialIndex = vector.spatialindex(layer)

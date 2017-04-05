@@ -75,7 +75,7 @@ class RandomExtract(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)
+        layer = dataobjects.getLayerFromString(filename)
         method = self.getParameterValue(self.METHOD)
 
         features = vector.features(layer)

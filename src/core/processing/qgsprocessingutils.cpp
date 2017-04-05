@@ -17,6 +17,7 @@
 
 #include "qgsprocessingutils.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -83,6 +84,74 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   return layers;
 }
 
+QgsMapLayer *QgsProcessingUtils::mapLayerFromProject( const QString &string, QgsProject *project )
+{
+  if ( string.isEmpty() )
+    return nullptr;
+
+  QList< QgsMapLayer * > layers = compatibleLayers( project, false );
+  Q_FOREACH ( QgsMapLayer *l, layers )
+  {
+    if ( l->id() == string )
+      return l;
+  }
+  Q_FOREACH ( QgsMapLayer *l, layers )
+  {
+    if ( l->name() == string )
+      return l;
+  }
+  Q_FOREACH ( QgsMapLayer *l, layers )
+  {
+    if ( normalizeLayerSource( l->source() ) == normalizeLayerSource( string ) )
+      return l;
+  }
+  return nullptr;
+}
+///@cond PRIVATE
+class ProjectionSettingRestorer
+{
+  public:
+
+    ProjectionSettingRestorer()
+    {
+      QgsSettings settings;
+      previousSetting = settings.value( QStringLiteral( "/Projections/defaultBehavior" ) ).toString();
+      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), QString() );
+    }
+
+    ~ProjectionSettingRestorer()
+    {
+      QgsSettings settings;
+      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), previousSetting );
+    }
+
+    QString previousSetting;
+};
+///@endcond PRIVATE
+
+QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string )
+{
+  if ( QFileInfo::exists( string ) )
+  {
+    // TODO - remove when there is a cleaner way to block the unknown projection dialog!
+    ProjectionSettingRestorer restorer;
+    ( void )restorer; // no warnings
+
+    // brute force attempt to load a matching layer
+    std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, QStringLiteral( "temp" ), QStringLiteral( "ogr" ), false ) );
+    if ( layer->isValid() )
+    {
+      return layer.release();
+    }
+    std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, QStringLiteral( "temp" ), QStringLiteral( "gdal" ), false ) );
+    if ( rasterLayer->isValid() )
+    {
+      return rasterLayer.release();
+    }
+  }
+  return nullptr;
+}
+
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
 {
   // only gdal file-based layers
@@ -93,5 +162,13 @@ bool QgsProcessingUtils::canUseLayer( const QgsVectorLayer *layer, const QList<Q
 {
   return layer &&
          ( geometryTypes.isEmpty() || geometryTypes.contains( layer->geometryType() ) );
+}
+
+QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
+{
+  QString normalized = source;
+  normalized.replace( '\\', '/' );
+  normalized.replace( '"', "'" );
+  return normalized.trimmed();
 }
 

@@ -65,7 +65,7 @@ class DeleteHoles(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         min_area = self.getParameterValue(self.MIN_AREA)
         if min_area is not None:
