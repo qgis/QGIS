@@ -35,7 +35,9 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
                        QgsProcessingFeedback,
                        QgsSettings,
-                       QgsProcessingAlgorithm)
+                       QgsProcessingAlgorithm,
+                       QgsProject,
+                       QgsProcessingUtils)
 
 from builtins import str
 from builtins import object
@@ -339,7 +341,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             raise GeoAlgorithmExecutionException(str(e))
 
     def setOutputCRS(self):
-        layers = dataobjects.getAllLayers()
+        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:
@@ -365,7 +367,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             pass
 
     def resolveDataObjects(self):
-        layers = dataobjects.getAllLayers()
+        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
                                   ParameterMultipleInput)):

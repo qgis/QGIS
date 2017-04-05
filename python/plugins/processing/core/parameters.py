@@ -36,6 +36,7 @@ from inspect import isclass
 from copy import deepcopy
 import numbers
 
+from qgis.core import QgsProcessingUtils
 from qgis.utils import iface
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem,
@@ -90,7 +91,7 @@ def _expressionContext():
 
 
 def _resolveLayers(value):
-    layers = dataobjects.getAllLayers()
+    layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
     if value:
         inputlayers = value.split(';')
         for i, inputlayer in enumerate(inputlayers):
@@ -727,7 +728,7 @@ class ParameterMultipleInput(ParameterDataObject):
                 return str(value.dataProvider().dataSourceUri())
             else:
                 s = str(value)
-                layers = dataobjects.getRasterLayers()
+                layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
                 for layer in layers:
                     if layer.name() == s:
                         return str(layer.dataProvider().dataSourceUri())
@@ -740,7 +741,10 @@ class ParameterMultipleInput(ParameterDataObject):
                 return str(value.source())
             else:
                 s = str(value)
-                layers = dataobjects.getVectorLayers([self.datatype])
+                if self.datatype != dataobjects.TYPE_VECTOR_ANY:
+                    layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.datatype], False)
+                else:
+                    layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 for layer in layers:
                     if layer.name() == s:
                         return str(layer.source())
@@ -1317,7 +1321,7 @@ class ParameterTable(ParameterDataObject):
             return True
         else:
             self.value = str(obj)
-            layers = dataobjects.getTables()
+            layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
             for layer in layers:
                 if layer.name() == self.value or layer.source() == self.value:
                     source = str(layer.source())

@@ -37,7 +37,8 @@ from qgis.core import (QgsVectorFileWriter,
                        QgsVectorLayer,
                        QgsProject,
                        QgsCoordinateReferenceSystem,
-                       QgsSettings)
+                       QgsSettings,
+                       QgsProcessingUtils)
 from qgis.gui import QgsSublayersDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -74,60 +75,6 @@ def getSupportedOutputRasterLayerExtensions():
     allexts.sort()
     allexts.insert(0, 'tif')  # tif is the default, should be the first
     return allexts
-
-
-def getRasterLayers(sorting=True):
-    layers = QgsProject.instance().layerTreeRoot().findLayers()
-    raster = [lay.layer() for lay in layers if lay.layer() is not None and canUseRasterLayer(lay.layer())]
-    if sorting:
-        return sorted(raster, key=lambda layer: layer.name().lower())
-    else:
-        return raster
-
-
-def getVectorLayers(shapetype=[-1], sorting=True):
-    layers = QgsProject.instance().layerTreeRoot().findLayers()
-    vector = [lay.layer() for lay in layers if canUseVectorLayer(lay.layer(), shapetype)]
-    if sorting:
-        return sorted(vector, key=lambda layer: layer.name().lower())
-    else:
-        return vector
-
-
-def canUseVectorLayer(layer, shapetype):
-    if layer.type() == QgsMapLayer.VectorLayer and layer.dataProvider().name() != "grass":
-        if (layer.hasGeometryType() and
-                (shapetype == ALL_TYPES or layer.geometryType() in shapetype)):
-            return True
-    return False
-
-
-def canUseRasterLayer(layer):
-    if layer.type() == QgsMapLayer.RasterLayer:
-        if layer.providerType() == 'gdal':  # only gdal file-based layers
-            return True
-
-    return False
-
-
-def getAllLayers():
-    layers = []
-    layers += getRasterLayers()
-    layers += getVectorLayers()
-    return sorted(layers, key=lambda layer: layer.name().lower())
-
-
-def getTables(sorting=True):
-    layers = QgsProject.instance().layerTreeRoot().findLayers()
-    tables = []
-    for layer in layers:
-        mapLayer = layer.layer()
-        if mapLayer.type() == QgsMapLayer.VectorLayer:
-            tables.append(mapLayer)
-    if sorting:
-        return sorted(tables, key=lambda table: table.name().lower())
-    else:
-        return tables
 
 
 def extent(layers):
@@ -206,7 +153,7 @@ def load(fileName, name=None, crs=None, style=None):
 
 
 def getObjectFromName(name):
-    layers = getAllLayers()
+    layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance(), False)
     for layer in layers:
         if layer.name() == name:
             return layer
@@ -237,18 +184,10 @@ def getObjectFromUri(uri, forceLoad=True):
         return None
     if uri in _loadedLayers:
         return _loadedLayers[uri]
-    layers = getRasterLayers()
+    layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance(), False)
     for layer in layers:
         if normalizeLayerSource(layer.source()) == normalizeLayerSource(uri):
             return layer
-    layers = getVectorLayers()
-    for layer in layers:
-        if normalizeLayerSource(layer.source()) == normalizeLayerSource(uri):
-            return layer
-    tables = getTables()
-    for table in tables:
-        if normalizeLayerSource(table.source()) == normalizeLayerSource(uri):
-            return table
     if forceLoad and os.path.exists(uri):
         settings = QgsSettings()
         prjSetting = settings.value('/Projections/defaultBehavior')

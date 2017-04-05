@@ -277,6 +277,7 @@
 %Include processing/qgsprocessingfeedback.sip
 %Include processing/qgsprocessingprovider.sip
 %Include processing/qgsprocessingregistry.sip
+%Include processing/qgsprocessingutils.sip
 
 %Include raster/qgsbilinearrasterresampler.sip
 %Include raster/qgsbrightnesscontrastfilter.sip
