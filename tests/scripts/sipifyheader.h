@@ -77,6 +77,8 @@ typedef QVector<QVariant> QgsSuperClass;
 
 /** \ingroup core
  * Documentation goes here
+ *
+ * Here's some comment mentioning another class QgsAutoAwesomemater::makeAwesome.
  * \since QGIS 3.0
  * \note some other note
  */
@@ -157,6 +159,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
      * \brief some brief
      * My long doc \a string
      * is not very interesting!
+     * Here's some comment mentioning another class QgsAutoAwesomemater::makeLessAwesome.
      */
     void LongDocStringMethodWithBrief();
 

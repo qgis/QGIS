@@ -16,7 +16,7 @@ class QgsProcessingRegistry : QObject
  and various parameters and outputs.
 
  QgsProcessingRegistry is not usually directly created, but rather accessed through
- QgsApplication::processingRegistry().
+ QgsApplication.processingRegistry().
 .. versionadded:: 3.0
 %End
 

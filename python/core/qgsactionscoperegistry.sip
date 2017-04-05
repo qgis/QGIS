@@ -18,7 +18,7 @@ class QgsActionScopeRegistry : QObject
  To get access use the QgsApplication:
 
  ```
- QgsApplication::actionScopeRegistry()
+ QgsApplication.actionScopeRegistry()
  ```
 
 .. versionadded:: 3.0
@@ -34,7 +34,7 @@ class QgsActionScopeRegistry : QObject
 %Docstring
  Create a new QgsActionScopeRegistry.
  QGIS already creates a central registry. You will normally
- want to use QgsApplication::actionScopeRegistry() to get access
+ want to use QgsApplication.actionScopeRegistry() to get access
  to that one instead.
 
 .. versionadded:: 3.0

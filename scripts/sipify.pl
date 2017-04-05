@@ -12,6 +12,8 @@ sub processDoxygenLine
     my $line = $_[0];
     # remove \a formatting
     $line =~ s/\\a //g;
+    # replace :: with . (changes c++ style namespace/class directives to Python style)
+    $line =~ s/::/./g;
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
         return ""
     }

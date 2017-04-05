@@ -203,7 +203,7 @@ class QgsConditionalStyle
  If no match is found a invalid QgsConditionalStyle is return.
 
  \returns A condtional style that matches the value and feature.
- Check with QgsConditionalStyle::isValid()
+ Check with QgsConditionalStyle.isValid()
 %End
 
     static QgsConditionalStyle matchingConditionalStyle( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
@@ -212,7 +212,7 @@ class QgsConditionalStyle
  If no match is found a invalid QgsConditionalStyle is return.
 
  \returns A condtional style that matches the value and feature.
- Check with QgsConditionalStyle::isValid()
+ Check with QgsConditionalStyle.isValid()
 %End
 
     static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle> &styles );

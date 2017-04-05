@@ -19,7 +19,7 @@ class QgsAnnotationManager : QObject
 
  QgsAnnotationManager handles the storage, serializing and deserializing
  of QgsAnnotations. Usually this class is not constructed directly, but
- rather accessed through a QgsProject via QgsProject::annotationManager().
+ rather accessed through a QgsProject via QgsProject.annotationManager().
 
  QgsAnnotationManager retains ownership of all the annotations contained
  in the manager.

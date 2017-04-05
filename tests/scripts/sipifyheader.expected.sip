@@ -40,6 +40,8 @@ class QgsSipifyHeader : QtClass<QVariant>
 {
 %Docstring
  Documentation goes here
+
+ Here's some comment mentioning another class QgsAutoAwesomemater.makeAwesome.
 .. versionadded:: 3.0
 .. note::
 
@@ -126,6 +128,7 @@ Factory annotation
  some brief
  My long doc string
  is not very interesting!
+ Here's some comment mentioning another class QgsAutoAwesomemater.makeLessAwesome.
 %End
 
     bool isOKwithErrMesg( QString &ErrMsg /Out/ );

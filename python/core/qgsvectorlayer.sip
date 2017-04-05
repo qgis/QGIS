@@ -55,7 +55,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
 
  - crs=definition
    Defines the coordinate reference system to use for the layer.
-   definition is any string accepted by QgsCoordinateReferenceSystem::createFromString()
+   definition is any string accepted by QgsCoordinateReferenceSystem.createFromString()
 
  - index=yes
    Specifies that the layer will be constructed with a spatial index
@@ -257,7 +257,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
  - crs=crsstring
 
    Defines the coordinate reference system used for the layer.  This can be
-   any string accepted by QgsCoordinateReferenceSystem::createFromString()
+   any string accepted by QgsCoordinateReferenceSystem.createFromString()
 
  -subsetIndex=(yes|no)
 
@@ -663,7 +663,7 @@ Return the provider type for this layer
  Reads vector layer specific state from project file Dom node.
 .. note::
 
-   Called by QgsMapLayer::readXml().
+   Called by QgsMapLayer.readXml().
 %End
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const;
@@ -671,7 +671,7 @@ Return the provider type for this layer
  Write vector layer specific state to project file Dom node.
 .. note::
 
-   Called by QgsMapLayer::writeXml().
+   Called by QgsMapLayer.writeXml().
 %End
 
     void resolveReferences( QgsProject *project );
@@ -815,7 +815,7 @@ Return the provider type for this layer
     virtual QString subsetString() const;
 %Docstring
  Get the string (typically sql) used to define a subset of the layer
- \returns The subset string or QString::null if not implemented by the provider
+ \returns The subset string or QString.null if not implemented by the provider
 %End
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
@@ -1711,7 +1711,7 @@ Is emitted, before changes are rolled back
     void attributeAdded( int idx );
 %Docstring
  Will be emitted, when a new attribute has been added to this vector layer.
- Applies only to types QgsFields::OriginEdit, QgsFields::OriginProvider and QgsFields::OriginExpression
+ Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFields.OriginExpression
 
  \param idx The index of the new attribute
 
@@ -1721,7 +1721,7 @@ Is emitted, before changes are rolled back
     void beforeAddingExpressionField( const QString &fieldName );
 %Docstring
  Will be emitted, when an expression field is going to be added to this vector layer.
- Applies only to types QgsFields::OriginExpression
+ Applies only to types QgsFields.OriginExpression
 
  \param fieldName The name of the attribute to be added
 %End
@@ -1729,7 +1729,7 @@ Is emitted, before changes are rolled back
     void attributeDeleted( int idx );
 %Docstring
  Will be emitted, when an attribute has been deleted from this vector layer.
- Applies only to types QgsFields::OriginEdit, QgsFields::OriginProvider and QgsFields::OriginExpression
+ Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFields.OriginExpression
 
  \param idx The index of the deleted attribute
 
@@ -1739,7 +1739,7 @@ Is emitted, before changes are rolled back
     void beforeRemovingExpressionField( int idx );
 %Docstring
  Will be emitted, when an expression field is going to be deleted from this vector layer.
- Applies only to types QgsFields::OriginExpression
+ Applies only to types QgsFields.OriginExpression
 
  \param idx The index of the attribute to be deleted
 %End
