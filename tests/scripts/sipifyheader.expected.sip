@@ -201,8 +201,20 @@ A constructor with definition in header on several lines
 
 }
 
-QFlags<QgsSipifyHeader::MyEnum> operator|(QgsSipifyHeader::MyEnum f1, QFlags<QgsSipifyHeader::MyEnum> f2);
+class AbstractClass /Abstract/
+{
+%Docstring
+ Documentation goes here
+%End
 
+%TypeHeaderCode
+#include "sipifyheader.h"
+%End
+  public:
+    explicit AbstractClass();
+%Docstring
+A constructor
+%End
 
 /************************************************************************
  * This file has been generated automatically from                      *

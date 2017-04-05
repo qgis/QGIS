@@ -472,3 +472,8 @@ typedef unsigned long long qgssize;
  * Will insert a `%End` directive in sip files
  */
 #define SIP_END
+
+/*
+ * Class level annotation for abstract classes
+ */
+#define SIP_ABSTRACT

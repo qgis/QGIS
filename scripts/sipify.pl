@@ -227,7 +227,7 @@ while(!eof $header){
     }
 
     # class declaration started
-    if ( $line =~ m/^(\s*class)\s*([A-Z]+_EXPORT)?\s+(\w+)(\s*\:.*)?$/ ){
+    if ( $line =~ m/^(\s*class)\s*([A-Z]+_EXPORT)?\s+(\w+)(\s*\:.*)?(\s*SIP_ABSTRACT)?$/ ){
         do {no warnings 'uninitialized';
             $classname = $3;
             $line =~ m/\b[A-Z]+_EXPORT\b/ or die "Class$classname in $headerfile should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.";
@@ -240,6 +240,9 @@ while(!eof $header){
             $m =~ s/,?\s*private \w+(::\w+)?//;
             $m =~ s/(\s*:)?\s*$//;
             $line .= $m;
+        }
+        if ($5) {
+            $line .= ' /Abstract/';
         }
 
         $line .= "\n{\n";
