@@ -32,7 +32,7 @@ class QgsRelationManager;
  * layer.
  */
 
-class CORE_EXPORT QgsAttributeEditorElement
+class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 {
 
 #ifdef SIP_RUN
@@ -76,7 +76,6 @@ class CORE_EXPORT QgsAttributeEditorElement
       , mParent( parent )
       , mShowLabel( true )
     {}
-
 
     virtual ~QgsAttributeEditorElement() = default;
 
@@ -164,17 +163,6 @@ class CORE_EXPORT QgsAttributeEditorElement
  */
 class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
-
-#ifdef SIP_RUN
-    SIP_CONVERT_TO_SUBCLASS_CODE
-    switch ( sipCpp->type() )
-    {
-      case QgsAttributeEditorElement::AeTypeContainer: sipType = sipType_QgsAttributeEditorContainer; break;
-      case QgsAttributeEditorElement::AeTypeField:     sipType = sipType_QgsAttributeEditorField; break;
-      case QgsAttributeEditorElement::AeTypeRelation:  sipType = sipType_QgsAttributeEditorRelation; break;
-    }
-    SIP_END
-#endif
   public:
 
     /**
