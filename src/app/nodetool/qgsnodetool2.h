@@ -20,9 +20,11 @@
 
 #include "qgis_app.h"
 #include "qgsmaptooladvanceddigitizing.h"
+#include "qgsgeometry.h"
 
 class QRubberBand;
 
+class QgsGeometryValidator;
 class QgsNodeEditor;
 class QgsSelectedFeature;
 class QgsVertexMarker;
@@ -87,6 +89,10 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     void showNodeEditor();
 
     void deleteNodeEditorSelection();
+
+    void validationErrorFound( QgsGeometry::Error e );
+
+    void validationFinished();
 
   private:
 
@@ -177,6 +183,9 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     bool matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPoint &mapPoint, QgsPoint *edgeCenterPtr = nullptr );
 
     void cleanupNodeEditor();
+
+    //! Run validation on a geometry (in a background thread)
+    void validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId );
 
   private:
 
@@ -305,6 +314,26 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     std::unique_ptr<QgsSelectedFeature> mSelectedFeature;
     //! Dock widget which allows editing vertices
     std::unique_ptr<QgsNodeEditor> mNodeEditor;
+
+    // suport for validation of geometries
+
+    //! data structure for validation of one geometry of a vector layer
+    struct GeometryValidation
+    {
+      QgsNodeTool2 *tool = nullptr;               //!< Pointer to the parent node tool (for connections / canvas)
+      QgsVectorLayer *layer = nullptr;            //!< Pointer to the layer of the validated geometry (for reporojection)
+      QgsGeometryValidator *validator = nullptr;  //!< Object that does validation. Non-null if active
+      QList<QgsVertexMarker *> errorMarkers;      //!< Markers created by validation
+      QString errors;                             //!< Full error text from validation
+
+      void start( QgsGeometry &geom, QgsNodeTool2 *tool, QgsVectorLayer *l );  //!< Start validation
+      void addError( QgsGeometry::Error e );  //!< Add another error to the validation
+      void cleanup(); //!< Delete everything
+    };
+
+    //! data structure to keep validation details
+    QHash< QPair<QgsVectorLayer *, QgsFeatureId>, GeometryValidation> mValidations;
+
 };
 
 

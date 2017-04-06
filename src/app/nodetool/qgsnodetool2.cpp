@@ -19,12 +19,14 @@
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometryutils.h"
+#include "qgsgeometryvalidator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmulticurve.h"
 #include "qgspointlocator.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgssettings.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
@@ -845,6 +847,9 @@ void QgsNodeTool2::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry 
 
   // refresh highlighted nodes - their position may have changed
   setHighlightedNodes( mSelectedNodes );
+
+  // re-run validation for the feature
+  validateGeometry( layer, fid );
 }
 
 void QgsNodeTool2::onCachedGeometryDeleted( QgsFeatureId fid )
@@ -1521,7 +1526,6 @@ void QgsNodeTool2::deleteVertex()
       setHighlightedNodes( nodes_new );
     }
   }
-
 }
 
 void QgsNodeTool2::setHighlightedNodes( QList<Vertex> listNodes )
@@ -1634,4 +1638,107 @@ void QgsNodeTool2::CircularBand::updateRubberBand( const QgsPoint &mapPoint )
   band->reset();
   Q_FOREACH ( const QgsPointV2 &p, points )
     band->addPoint( p );
+}
+
+
+void QgsNodeTool2::validationErrorFound( QgsGeometry::Error e )
+{
+  QgsGeometryValidator *validator = qobject_cast<QgsGeometryValidator *>( sender() );
+  if ( !validator )
+    return;
+
+  QHash< QPair<QgsVectorLayer *, QgsFeatureId>, GeometryValidation>::iterator it = mValidations.begin();
+  for ( ; it != mValidations.end(); ++it )
+  {
+    GeometryValidation &validation = *it;
+    if ( validation.validator == validator )
+    {
+      validation.addError( e );
+      break;
+    }
+  }
+}
+
+void QgsNodeTool2::validationFinished()
+{
+  QgsGeometryValidator *validator = qobject_cast<QgsGeometryValidator *>( sender() );
+  if ( !validator )
+    return;
+
+  QHash< QPair<QgsVectorLayer *, QgsFeatureId>, GeometryValidation>::iterator it = mValidations.begin();
+  for ( ; it != mValidations.end(); ++it )
+  {
+    GeometryValidation &validation = *it;
+    if ( validation.validator == validator )
+    {
+      QStatusBar *sb = QgisApp::instance()->statusBar();
+      sb->showMessage( tr( "Validation finished (%n error(s) found).", "number of geometry errors", validation.errorMarkers.size() ) );
+    }
+  }
+}
+
+void QgsNodeTool2::GeometryValidation::start( QgsGeometry &geom, QgsNodeTool2 *t, QgsVectorLayer *l )
+{
+  tool = t;
+  layer = l;
+  validator = new QgsGeometryValidator( &geom );
+  connect( validator, &QgsGeometryValidator::errorFound, tool, &QgsNodeTool2::validationErrorFound );
+  connect( validator, &QThread::finished, tool, &QgsNodeTool2::validationFinished );
+  validator->start();
+}
+
+void QgsNodeTool2::GeometryValidation::addError( QgsGeometry::Error e )
+{
+  if ( !errors.isEmpty() )
+    errors += '\n';
+  errors += e.what();
+
+  if ( e.hasWhere() )
+  {
+    QgsVertexMarker *marker = new QgsVertexMarker( tool->canvas() );
+    marker->setCenter( tool->canvas()->mapSettings().layerToMapCoordinates( layer, e.where() ) );
+    marker->setIconType( QgsVertexMarker::ICON_X );
+    marker->setColor( Qt::green );
+    marker->setZValue( marker->zValue() + 1 );
+    marker->setPenWidth( 2 );
+    marker->setToolTip( e.what() );
+    errorMarkers << marker;
+  }
+
+  QStatusBar *sb = QgisApp::instance()->statusBar();
+  sb->showMessage( e.what() );
+  sb->setToolTip( errors );
+}
+
+void QgsNodeTool2::GeometryValidation::cleanup()
+{
+  if ( validator )
+  {
+    validator->stop();
+    validator->wait();
+    validator->deleteLater();
+    validator = nullptr;
+  }
+
+  qDeleteAll( errorMarkers );
+  errorMarkers.clear();
+}
+
+void QgsNodeTool2::validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId )
+{
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
+    return;
+
+  QPair<QgsVectorLayer *, QgsFeatureId> id( layer, featureId );
+  if ( mValidations.contains( id ) )
+  {
+    mValidations[id].cleanup();
+    mValidations.remove( id );
+  }
+
+  GeometryValidation validation;
+  QgsGeometry geom = cachedGeometry( layer, featureId );
+  validation.start( geom, this, layer );
+  mValidations.insert( id, validation );
 }
