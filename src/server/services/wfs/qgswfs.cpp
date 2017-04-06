@@ -82,7 +82,7 @@ namespace QgsWfs
         }
         else if ( QSTR_COMPARE( req, "Transaction" ) )
         {
-          writeTransaction( mServerIface, versionString, request, response );
+          writeTransaction( mServerIface, project, versionString, request, response );
         }
         else
         {
