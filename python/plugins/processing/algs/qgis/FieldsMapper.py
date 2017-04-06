@@ -153,30 +153,33 @@ class FieldsMapper(GeoAlgorithm):
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         features = vector.features(layer)
-        total = 100.0 / len(features)
-        for current, inFeat in enumerate(features):
-            rownum = current + 1
+        if len(features):
+            total = 100.0 / len(features)
+            for current, inFeat in enumerate(features):
+                rownum = current + 1
 
-            geometry = inFeat.geometry()
-            outFeat.setGeometry(geometry)
+                geometry = inFeat.geometry()
+                outFeat.setGeometry(geometry)
 
-            attrs = []
-            for i in range(0, len(mapping)):
-                field_def = mapping[i]
-                expression = expressions[i]
-                exp_context.setFeature(inFeat)
-                exp_context.lastScope().setVariable("row_number", rownum)
-                value = expression.evaluate(exp_context)
-                if expression.hasEvalError():
-                    error_exp = expression
-                    break
+                attrs = []
+                for i in range(0, len(mapping)):
+                    field_def = mapping[i]
+                    expression = expressions[i]
+                    exp_context.setFeature(inFeat)
+                    exp_context.lastScope().setVariable("row_number", rownum)
+                    value = expression.evaluate(exp_context)
+                    if expression.hasEvalError():
+                        error_exp = expression
+                        break
 
-                attrs.append(value)
-            outFeat.setAttributes(attrs)
+                    attrs.append(value)
+                outFeat.setAttributes(attrs)
 
-            writer.addFeature(outFeat)
+                writer.addFeature(outFeat)
 
-            feedback.setProgress(int(current * total))
+                feedback.setProgress(int(current * total))
+        else:
+            feedback.setProgress(100)
 
         del writer
 
