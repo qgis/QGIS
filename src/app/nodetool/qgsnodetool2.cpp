@@ -258,6 +258,12 @@ void QgsNodeTool2::deactivate()
   setHighlightedNodes( QList<Vertex>() );
   removeTemporaryRubberBands();
   cleanupNodeEditor();
+
+  QHash< QPair<QgsVectorLayer *, QgsFeatureId>, GeometryValidation>::iterator it = mValidations.begin();
+  for ( ; it != mValidations.end(); ++it )
+    it->cleanup();
+  mValidations.clear();
+
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
@@ -1701,6 +1707,13 @@ void QgsNodeTool2::validationFinished()
     {
       QStatusBar *sb = QgisApp::instance()->statusBar();
       sb->showMessage( tr( "Validation finished (%n error(s) found).", "number of geometry errors", validation.errorMarkers.size() ) );
+      if ( validation.errorMarkers.isEmpty() )
+      {
+        // not needed anymore (no markers to keep displayed)
+        validation.cleanup();
+        mValidations.remove( it.key() );
+      }
+      break;
     }
   }
 }
