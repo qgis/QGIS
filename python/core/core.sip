@@ -298,6 +298,7 @@
 %Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterdrawer.sip
 %Include raster/qgsrasterfilewriter.sip
+%Include raster/qgsrasterfilewritertask.sip
 %Include raster/qgsrasterhistogram.sip
 %Include raster/qgsrasteridentifyresult.sip
 %Include raster/qgsrasterinterface.sip

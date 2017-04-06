@@ -24,7 +24,7 @@
 
 #include "qgsraster.h"
 
-class QProgressDialog;
+class QgsRasterBlockFeedback;
 class QgsRasterIterator;
 class QgsRasterPipe;
 class QgsRectangle;
@@ -39,8 +39,8 @@ class CORE_EXPORT QgsRasterFileWriter
   public:
     enum Mode
     {
-      Raw = 0, // Raw data
-      Image = 1 // Rendered image
+      Raw = 0, //!< Raw data
+      Image = 1 //!< Rendered image
     };
     enum WriterError
     {
@@ -49,8 +49,8 @@ class CORE_EXPORT QgsRasterFileWriter
       DestProviderError = 2,
       CreateDatasourceError = 3,
       WriteError = 4,
-      // Internal error if a value used for 'no data' was found in input
-      NoDataConflict = 5
+      NoDataConflict = 5, //!< Internal error if a value used for 'no data' was found in input
+      WriteCanceled = 6, //!< Writing was manually canceled
     };
 
     QgsRasterFileWriter( const QString &outputUrl );
@@ -73,9 +73,16 @@ class CORE_EXPORT QgsRasterFileWriter
         \param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
         \param outputExtent extent to output
         \param crs crs to reproject to
-        \param p dialog to show progress in */
+        \param feedback optional feedback object for progress reports
+    */
     WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-                             const QgsCoordinateReferenceSystem &crs, QProgressDialog *p = nullptr );
+                             const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = nullptr );
+
+    /**
+     * Returns the output URL for the raster.
+     * \since QGIS 3.0
+     */
+    QString outputUrl() const { return mOutputUrl; }
 
     void setOutputFormat( const QString &format ) { mOutputFormat = format; }
     QString outputFormat() const { return mOutputFormat; }
@@ -113,7 +120,7 @@ class CORE_EXPORT QgsRasterFileWriter
   private:
     QgsRasterFileWriter(); //forbidden
     WriterError writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-                                 const QgsCoordinateReferenceSystem &crs, QProgressDialog *progressDialog = nullptr );
+                                 const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = nullptr );
 
     // Helper method used by previous one
     WriterError writeDataRaster( const QgsRasterPipe *pipe,
@@ -125,10 +132,11 @@ class CORE_EXPORT QgsRasterFileWriter
                                  const QList<bool> &destHasNoDataValueList,
                                  const QList<double> &destNoDataValueList,
                                  QgsRasterDataProvider *destProvider,
-                                 QProgressDialog *progressDialog );
+                                 QgsRasterBlockFeedback *feedback = nullptr );
 
     WriterError writeImageRaster( QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-                                  const QgsCoordinateReferenceSystem &crs, QProgressDialog *progressDialog = nullptr );
+                                  const QgsCoordinateReferenceSystem &crs,
+                                  QgsRasterBlockFeedback *feedback = nullptr );
 
     /** \brief Initialize vrt member variables
      *  \param xSize width of vrt
@@ -194,7 +202,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QDomDocument mVRTDocument;
     QList<QDomElement> mVRTBands;
 
-    QProgressDialog *mProgressDialog = nullptr;
+    QgsRasterBlockFeedback *mFeedback = nullptr;
 
     const QgsRasterPipe *mPipe = nullptr;
     const QgsRasterInterface *mInput = nullptr;

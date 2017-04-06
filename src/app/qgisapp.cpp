@@ -219,6 +219,7 @@
 #include "qgsquerybuilder.h"
 #include "qgsrastercalcdialog.h"
 #include "qgsrasterfilewriter.h"
+#include "qgsrasterfilewritertask.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
@@ -6453,13 +6454,6 @@ void QgisApp::saveAsRasterFile()
     fileWriter.setMaxTileHeight( d.maximumTileSizeY() );
   }
 
-  QProgressDialog pd( QString(), tr( "Abort..." ), 0, 0 );
-  // Show the dialo immediately because cloning pipe can take some time (WCS)
-  pd.setLabelText( tr( "Reading raster" ) );
-  pd.setWindowTitle( tr( "Saving raster" ) );
-  pd.show();
-  pd.setWindowModality( Qt::WindowModal );
-
   // TODO: show error dialogs
   // TODO: this code should go somewhere else, but probably not into QgsRasterFileWriter
   // clone pipe/provider is not really necessary, ready for threads
@@ -6525,34 +6519,50 @@ void QgisApp::saveAsRasterFile()
   fileWriter.setPyramidsFormat( d.pyramidsFormat() );
   fileWriter.setPyramidsConfigOptions( d.pyramidsConfigOptions() );
 
-  QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe.get(), d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
-  if ( err != QgsRasterFileWriter::NoError )
-  {
-    QMessageBox::warning( this, tr( "Error" ),
-                          tr( "Cannot write raster error code: %1" ).arg( err ),
-                          QMessageBox::Ok );
+  bool tileMode = d.tileMode();
+  bool addToCanvas = d.addToCanvas();
+  QPointer< QgsRasterLayer > rlWeakPointer( rasterLayer );
 
-  }
-  else
+  QgsRasterFileWriterTask *writerTask = new QgsRasterFileWriterTask( fileWriter, pipe.release(), d.nColumns(), d.nRows(),
+      d.outputRectangle(), d.outputCrs() );
+
+  // when writer is successful:
+
+  connect( writerTask, &QgsRasterFileWriterTask::writeComplete, this, [this, tileMode, addToCanvas, rlWeakPointer ]( const QString & newFilename )
   {
-    QString fileName( d.outputFileName() );
-    if ( d.tileMode() )
+    QString fileName = newFilename;
+    if ( tileMode )
     {
       QFileInfo outputInfo( fileName );
       fileName = QStringLiteral( "%1/%2.vrt" ).arg( fileName, outputInfo.fileName() );
     }
 
-    if ( d.addToCanvas() )
+    if ( addToCanvas )
     {
       addRasterLayers( QStringList( fileName ) );
     }
+    if ( rlWeakPointer )
+      emit layerSavedAs( rlWeakPointer, fileName );
 
-    emit layerSavedAs( rasterLayer, fileName );
     messageBar()->pushMessage( tr( "Saving done" ),
                                tr( "Export to raster file has been completed" ),
                                QgsMessageBar::INFO, messageTimeout() );
-  }
+  } );
+
+  // when an error occurs:
+  connect( writerTask, &QgsRasterFileWriterTask::errorOccurred, this, [ = ]( int error )
+  {
+    if ( error != QgsRasterFileWriter::WriteCanceled )
+    {
+      QMessageBox::warning( this, tr( "Error" ),
+                            tr( "Cannot write raster error code: %1" ).arg( error ),
+                            QMessageBox::Ok );
+    }
+  } );
+
+  QgsApplication::taskManager()->addTask( writerTask );
 }
+
 
 void QgisApp::saveAsFile()
 {
