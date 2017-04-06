@@ -117,32 +117,35 @@ class FieldsMapper(GeoAlgorithm):
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         features = vector.features(layer)
-        total = 100.0 / len(features)
-        for current, inFeat in enumerate(features):
-            rownum = current + 1
+        if len(features):
+            total = 100.0 / len(features)
+            for current, inFeat in enumerate(features):
+                rownum = current + 1
 
-            geometry = inFeat.geometry()
-            if geometry is not None:
-                outFeat.setGeometry(geometry)
+                geometry = inFeat.geometry()
+                if geometry is not None:
+                    outFeat.setGeometry(geometry)
 
-            attrs = []
-            for i in xrange(0, len(mapping)):
-                field_def = mapping[i]
-                expression = expressions[i]
-                exp_context.setFeature(inFeat)
-                exp_context.lastScope().setVariable("row_number", rownum)
-                value = expression.evaluate(exp_context)
-                if expression.hasEvalError():
-                    calculationSuccess = False
-                    error = expression.evalErrorString()
-                    break
+                attrs = []
+                for i in xrange(0, len(mapping)):
+                    field_def = mapping[i]
+                    expression = expressions[i]
+                    exp_context.setFeature(inFeat)
+                    exp_context.lastScope().setVariable("row_number", rownum)
+                    value = expression.evaluate(exp_context)
+                    if expression.hasEvalError():
+                        calculationSuccess = False
+                        error = expression.evalErrorString()
+                        break
 
-                attrs.append(value)
-            outFeat.setAttributes(attrs)
+                    attrs.append(value)
+                outFeat.setAttributes(attrs)
 
-            writer.addFeature(outFeat)
+                writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+                progress.setPercentage(int(current * total))
+        else:
+            progress.setPercentage(100)
 
         del writer
 
