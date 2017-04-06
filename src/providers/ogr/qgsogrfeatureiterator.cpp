@@ -102,8 +102,16 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   if ( !mRequest.filterRect().isNull() )
   {
     const QgsRectangle &rect = mRequest.filterRect();
-
+#if 0
+    QgsRectangle rect2;
+    //rect2.set( rect.xMinimum(), rect.yMinimum(), rect.xMaximum(), rect.yMaximum() );
+    rect2.scale(01);
+    rect2.set( qRound(rect.xMinimum()), qRound(rect.yMinimum()), qRound(rect.xMaximum()), qRound(rect.yMaximum()) );
+    qDebug() << QString( "-I-> QgsOgrFeatureIterator: [%1] filter[%2] width[%3] height[%4]" ).arg( mSource->mGeometryName ).arg(rect2.asWktPolygon()).arg(rect.width()).arg(rect.height());
+    OGR_L_SetSpatialFilterRect( ogrLayer, rect2.xMinimum(), rect2.yMinimum(), rect2.xMaximum(), rect2.yMaximum() );
+#else
     OGR_L_SetSpatialFilterRect( ogrLayer, rect.xMinimum(), rect.yMinimum(), rect.xMaximum(), rect.yMaximum() );
+#endif
   }
   else
   {
@@ -182,10 +190,8 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   feature.setValid( false );
-
   if ( mClosed || !ogrLayer )
     return false;
-
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
     bool result = fetchFeatureWithId( mRequest.filterFid(), feature );
@@ -198,23 +204,22 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
     {
       QgsFeatureId nextId = *mFilterFidsIt;
       mFilterFidsIt++;
-
       if ( fetchFeatureWithId( nextId, feature ) )
+      {
         return true;
+      }
     }
     close();
     return false;
   }
 
   OGRFeatureH fet;
-
   while ( ( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
     if ( !readFeature( fet, feature ) )
       continue;
     else
       OGR_F_Destroy( fet );
-
     if ( !mRequest.filterRect().isNull() && !feature.hasGeometry() )
       continue;
 

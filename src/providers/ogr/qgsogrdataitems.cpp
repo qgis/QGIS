@@ -117,7 +117,15 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-  OGRwkbGeometryType ogrType = QgsOgrProviderUtils::getOgrGeomType( hLayer );
+  QStringList sa_list_sublayer = name.split( ":" );
+  int i_field_geometry=0;
+  //  'layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type'
+  if ( sa_list_sublayer.size() > 5 )
+  { // Some Layers (GML) may contain more than 1 geometry
+    bool ok;
+    i_field_geometry = sa_list_sublayer[5].toInt( &ok );
+  }
+  OGRwkbGeometryType ogrType = QgsOgrProviderUtils::getOgrGeomType( hLayer, i_field_geometry );
   switch ( ogrType )
   {
     case wkbUnknown:

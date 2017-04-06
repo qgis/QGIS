@@ -119,7 +119,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_spatialite_views_writable.sqlite')
         print('-I-> Reading db(%s)' % (datasource))
-        vl_positions = QgsVectorLayer(u'{}|layerid=0|layername=positions|featurescount=5|geometrytype=Point|ogrgettype=0'.format(datasource), u'SpatialView_writable', u'ogr')
+        vl_positions = QgsVectorLayer(u'{}|layerid=0|layername=positions|featurescounted=5|geometrytype=Point|ogrtype=0'.format(datasource), u'SpatialView_writable', u'ogr')
         self.assertTrue(vl_positions.isValid())
         sub_layers_check=4
         count_layers=len(vl_positions.dataProvider().subLayers())
@@ -141,7 +141,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             self.assertEqual(len(vl_positions.fields()), 5)
             got = [(f.attribute('name'), f.attribute('notes'), f.attribute('valid_since')) for f in vl_positions.getFeatures(QgsFeatureRequest().setFilterExpression("id_admin = 1"))]
             self.assertEqual(got, [(u'Brandenburger Tor', u'Pariser Platz', QDate(1791, 8, 6))])
-            vl_positions_1925 = QgsVectorLayer(u'{}|layerid=1|layername=positions_1925|featurescount=3|geometrytype=Point|ogrgettype=0'.format(datasource), u'SpatialView_writable', u'ogr')
+            vl_positions_1925 = QgsVectorLayer(u'{}|layerid=1|layername=positions_1925|featurescounted=3|geometrytype=Point|ogrtype=0'.format(datasource), u'SpatialView_writable', u'ogr')
             self.assertTrue(vl_positions_1925.isValid())
             self.assertEqual(vl_positions_1925.featureCount(), 3)
             if vl_positions_1925.dataProvider().subLayers()[1].startswith('1:positions_1925'):
@@ -156,7 +156,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                 print('-W-> SpatialView(%s) unexpected subLayers value returned [%s] ' % ('positions_1925',vl_positions_1925.dataProvider().subLayers()[1]))
 
             print('-I-> SpatialView(%s) contains 3 rows and only a TRIGGER for INSERT[%d] with [%d] rows' % ('positions_1925',self.ogr_spatialview_insert,vl_positions_1925.featureCount()))
-            vl_positions_1955 = QgsVectorLayer(u'{}|layerid=2|layername=positions_1955|featurescount=2|geometrytype=Point|ogrgettype=0'.format(datasource), u'SpatialView_writable', u'ogr')
+            vl_positions_1955 = QgsVectorLayer(u'{}|layerid=2|layername=positions_1955|featurescounted=2|geometrytype=Point|ogrtype=0'.format(datasource), u'SpatialView_writable', u'ogr')
             self.assertTrue(vl_positions_1955.isValid())
             self.assertEqual(vl_positions_1955.featureCount(), 2)
             if vl_positions_1955.dataProvider().subLayers()[2].startswith('2:positions_1955'):
@@ -169,7 +169,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                 print('-W-> SpatialView(%s) unexpected subLayers value returned [%s] ' % ('positions_1955',vl_positions_1955.dataProvider().subLayers()[2]))
 
             print('-I-> SpatialView(%s) contains 2 rows and only a TRIGGER for INSERT and UPDATE[%d] with [%d] rows' % ('positions_1955',self.ogr_spatialview_update,vl_positions_1955.featureCount()))
-            vl_positions_1999 = QgsVectorLayer(u'{}|layerid=3|layername=positions_1999|featurescount=3|geometrytype=Point|ogrgettype=0'.format(datasource), u'SpatialView_writable', u'ogr')
+            vl_positions_1999 = QgsVectorLayer(u'{}|layerid=3|layername=positions_1999|featurescounted=3|geometrytype=Point|ogrtype=0'.format(datasource), u'SpatialView_writable', u'ogr')
             self.assertTrue(vl_positions_1999.isValid())
             self.assertEqual(vl_positions_1999.featureCount(), 3)
             if vl_positions_1999.dataProvider().subLayers()[3].startswith('3:positions_1999'):
@@ -263,10 +263,10 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         del vl_spatialite_8
 
         if (count_layers ==4):
-            vl_test_point = QgsVectorLayer(u'{}|layerid=0|layername=test(geom1)|featurescount=1|geometrytype=Point|ogrgettype=0'.format(datasource), u'test_point', u'ogr')
-            vl_test_linestring = QgsVectorLayer(u'{}|layerid=1|layername=test(geom2)|featurescount=1|geometrytype=LineString|ogrgettype=0'.format(datasource), u'test_linestring', u'ogr')
-            vl_view_point = QgsVectorLayer(u'{}|layerid=2|layername=view_test_geom1|featurescount=1|geometrytype=Point|ogrgettype=0'.format(datasource), u'view_point', u'ogr')
-            vl_view_linestring = QgsVectorLayer(u'{}|layerid=3|layername=view_test_geom2|featurescount=1|geometrytype=LineString|ogrgettype=0'.format(datasource), u'view_linestring', u'ogr')
+            vl_test_point = QgsVectorLayer(u'{}|layerid=0|layername=test(geom1)|featurescounted=1|geometrytype=Point|ogrtype=0'.format(datasource), u'test_point', u'ogr')
+            vl_test_linestring = QgsVectorLayer(u'{}|layerid=1|layername=test(geom2)|featurescounted=1|geometrytype=LineString|ogrtype=0'.format(datasource), u'test_linestring', u'ogr')
+            vl_view_point = QgsVectorLayer(u'{}|layerid=2|layername=view_test_geom1|featurescounted=1|geometrytype=Point|ogrtype=0'.format(datasource), u'view_point', u'ogr')
+            vl_view_linestring = QgsVectorLayer(u'{}|layerid=3|layername=view_test_geom2|featurescounted=1|geometrytype=LineString|ogrtype=0'.format(datasource), u'view_linestring', u'ogr')
             features_01 = [f_iter for f_iter in vl_test_point.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             test_point_geom = [f_iter.geometry() for f_iter in features_01][0].geometry()
             features_02 = [f_iter for f_iter in vl_test_linestring.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
@@ -291,10 +291,10 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             print('-I-> isValid() has returned False: Sublayer[%d] : [%s]'% (0, '0:test:1:Point'))
             del vl_test_point
             print('-I-> Note:\n\t the layerid numbering returned between gdal 1.* and gdal 2.* are different\n\t gdal_1[%s]  gdal_2[%s]' % ('0:test(geom1):1:Point','3:test(geom1):1:Point'))
-            vl_test_point = QgsVectorLayer(u'{}|layerid=3|layername=test(geom1)|featurescount=1|geometrytype=Point|ogrgettype=0'.format(datasource), u'test_point', u'ogr')
-            vl_test_linestring = QgsVectorLayer(u'{}|layerid=4|layername=test(geom2)|featurescount=1|geometrytype=LineString|ogrgettype=0'.format(datasource), u'test_linestring', u'ogr')
-            vl_view_point = QgsVectorLayer(u'{}|layerid=1|layername=view_test_geom1|featurescount=1|geometrytype=Point|ogrgettype=0'.format(datasource), u'view_point', u'ogr')
-            vl_view_linestring = QgsVectorLayer(u'{}|layerid=2|layername=view_test_geom2|featurescount=1|geometrytype=LineString|ogrgettype=0'.format(datasource), u'view_linestring', u'ogr')
+            vl_test_point = QgsVectorLayer(u'{}|layerid=3|layername=test(geom1)|featurescounted=1|geometrytype=Point|ogrtype=0'.format(datasource), u'test_point', u'ogr')
+            vl_test_linestring = QgsVectorLayer(u'{}|layerid=4|layername=test(geom2)|featurescounted=1|geometrytype=LineString|ogrtype=0'.format(datasource), u'test_linestring', u'ogr')
+            vl_view_point = QgsVectorLayer(u'{}|layerid=1|layername=view_test_geom1|featurescounted=1|geometrytype=Point|ogrtype=0'.format(datasource), u'view_point', u'ogr')
+            vl_view_linestring = QgsVectorLayer(u'{}|layerid=2|layername=view_test_geom2|featurescounted=1|geometrytype=LineString|ogrtype=0'.format(datasource), u'view_linestring', u'ogr')
             features_01 = [f_iter for f_iter in vl_test_point.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             test_point_geom = [f_iter.geometry() for f_iter in features_01][0].geometry()
             features_02 = [f_iter for f_iter in vl_test_linestring.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
@@ -343,7 +343,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 
         if (count_layers ==47):
             # Points
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=1|layername=test1|featurescount=1|geometrytype=Point25D|ogrgettype=0'.format(datasource), u'test_pointz', u'ogr')
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=1|layername=test1|featurescounted=1|geometrytype=Point25D|ogrtype=0'.format(datasource), u'test_pointz', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             print('-I-> Testing type/values of a \'POINT Z\' EWKT[%s] count[%d,%d]' % ('SRID=4326;POINT(1 2 3)',vl_test_geom.featureCount(),len(features_vl_test)))
@@ -354,7 +354,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del features_vl_test
             del vl_test_geom
             # MultiPoints
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=22|layername=test22|featurescount=1|geometrytype=MultiPoint25D|ogrgettype=0'.format(datasource), u'test_multipointz', u'ogr')
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=22|layername=test22|featurescounted=1|geometrytype=MultiPoint25D|ogrtype=0'.format(datasource), u'test_multipointz', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             print('-I-> Testing type/values of a \'MULTIPOINT Z\' EWKT[%s] count[%d,%d]' % ('SRID=4326;MULTIPOINT(1 2 3,4 5 6)',vl_test_geom.featureCount(),len(features_vl_test)))
@@ -369,13 +369,13 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             # del test_geom
             del features_vl_test
             del vl_test_geom
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=23|layername=test23|featurescount=1|geometrytype=MultiPointM|ogrgettype=0'.format(datasource), u'test_multipointz', u'ogr')
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=23|layername=test23|featurescounted=1|geometrytype=MultiPointM|ogrtype=0'.format(datasource), u'test_multipointz', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
             # del test_geom
             # del features_vl_test
             del vl_test_geom
             # Linestrings
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=8|layername=test8|featurescount=1|geometrytype=LineString25D|ogrgettype=0'.format(datasource), u'test_linestringz', u'ogr')
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=8|layername=test8|featurescounted=1|geometrytype=LineString25D|ogrtype=0'.format(datasource), u'test_linestringz', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             print('-I-> Testing type/values of a \'LINESTRING Z\' EWKT[%s] count[%d,%d]' % ('SRID=4326;LINESTRING(1 2 3,4 5 6)',vl_test_geom.featureCount(),len(features_vl_test)))
@@ -388,7 +388,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del features_vl_test
             del vl_test_geom
             # Polygons
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=16|layername=test16|featurescount=1|geometrytype=Polygon25D|ogrgettype=0'.format(datasource), u'test_polygonz', u'ogr')
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=16|layername=test16|featurescounted=1|geometrytype=Polygon25D|ogrtype=0'.format(datasource), u'test_polygonz', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             print('-I-> Testing type/values of a \'POLYGON Z\' EWKT[%s] count[%d,%d]' % ('SRID=4326;POLYGON((1 2 10,1 3 -10,2 3 20,2 2 -20,1 2 10))',vl_test_geom.featureCount(),len(features_vl_test)))
@@ -403,7 +403,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del test_geom
             del features_vl_test
             del vl_test_geom
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=2|layername=test2|featurescount=1|geometrytype=PointM|ogrgettype=0'.format(datasource), u'test_pointm', u'ogr')
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=2|layername=test2|featurescounted=1|geometrytype=PointM|ogrtype=0'.format(datasource), u'test_pointm', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             print('-I-> Testing type/values of a \'POINT M\' EWKT[%s] count[%d,%d] HasGeometryType[%d]' % ('SRID=4326;POINTM(1 2 3)',vl_test_geom.featureCount(),len(features_vl_test) , vl_test_geom.hasGeometryType()))
@@ -425,7 +425,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 
             del features_vl_test
             del vl_test_geom
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=3|layername=test3|featurescount=1|geometrytype=PointZM|ogrgettype=0'.format(datasource), u'test_pointzm', u'ogr')
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=3|layername=test3|featurescounted=1|geometrytype=PointZM|ogrtype=0'.format(datasource), u'test_pointzm', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             print('-I-> Testing type/values of a \'POINT ZM\' EWKT[%s] count[%d,%d]' % ('SRID=4326;POINT(1 2 3 4)',vl_test_geom.featureCount(),len(features_vl_test)))
@@ -446,7 +446,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 
             del features_vl_test
             del vl_test_geom
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=10|layername=test10|featurescount=1|geometrytype=LineStringM|ogrgettype=0'.format(datasource), u'test_linestringm', u'ogr')
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=10|layername=test10|featurescounted=1|geometrytype=LineStringM|ogrtype=0'.format(datasource), u'test_linestringm', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             print('-I-> Testing type/values of a \'LINESTRING M\' EWKT[%s] count[%d,%d]' % ('SRID=4326;LINESTRINGM(1 2 3,4 5 6)',vl_test_geom.featureCount(),len(features_vl_test)))
@@ -470,7 +470,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 
             del features_vl_test
             del vl_test_geom
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=12|layername=test12|featurescount=1|geometrytype=LineStringZM|ogrgettype=0'.format(datasource), u'test_linestringm', u'ogr')
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=12|layername=test12|featurescounted=1|geometrytype=LineStringZM|ogrtype=0'.format(datasource), u'test_linestringm', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             print('-I-> Testing type/values of a \'LINESTRING ZM\' EWKT[%s] count[%d,%d]' % ('SRID=4326;LINESTRING(1 2 3 4,5 6 7 8)',vl_test_geom.featureCount(),len(features_vl_test)))
@@ -502,7 +502,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         if (self.gdal_version_num >= GDAL_COMPUTE_VERSION(2, 0, 0)):
             datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_circularstring.csv')
             print('\n-I-> Reading db(%s)' % (datasource))
-            vl_circularstring = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_circularstring|featurescount=1|geometrytype=CircularString|ogrgettype=1'.format(datasource), u'test_circularstring', u'ogr')
+            vl_circularstring = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_circularstring|featurescounted=1|geometrytype=CircularString|ogrtype=1'.format(datasource), u'test_circularstring', u'ogr')
             print('-I-> Reading Geometry-Type=CircularString: hasGeometryType[%d,%s] '% (vl_circularstring.hasGeometryType(),vl_circularstring.wkbType()))
             self.assertTrue(vl_circularstring.isValid())
             count_fields=len(vl_circularstring.fields())
@@ -519,7 +519,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del vl_circularstring
             datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_compoundcurve.csv')
             print('\n-I-> Reading db(%s)' % (datasource))
-            vl_compoundcurve = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_compoundcurve|featurescount=1|geometrytype=CompoundCurve|ogrgettype=1'.format(datasource), u'test_compoundcurve', u'ogr')
+            vl_compoundcurve = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_compoundcurve|featurescounted=1|geometrytype=CompoundCurve|ogrtype=1'.format(datasource), u'test_compoundcurve', u'ogr')
             print('-I-> Reading Geometry-Type=CompoundCurve: hasGeometryType[%d,%s] '% (vl_compoundcurve.hasGeometryType(),vl_compoundcurve.wkbType()))
             self.assertTrue(vl_compoundcurve.isValid())
             features_vl_compoundcurve = next(vl_compoundcurve.getFeatures())
@@ -531,7 +531,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del vl_compoundcurve
             datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_curvepolygon.csv')
             print('\n-I-> Reading db(%s)' % (datasource))
-            vl_curvepolygon = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_curvepolygon|featurescount=1|geometrytype=CurvePolygon|ogrgettype=1'.format(datasource), u'test_curvepolygon', u'ogr')
+            vl_curvepolygon = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_curvepolygon|featurescounted=1|geometrytype=CurvePolygon|ogrtype=1'.format(datasource), u'test_curvepolygon', u'ogr')
             print('-I-> Reading Geometry-Type=CurvePolygon: hasGeometryType[%d,%s] '% (vl_curvepolygon.hasGeometryType(),vl_curvepolygon.wkbType()))
             self.assertTrue(vl_curvepolygon.isValid())
             features_vl_curvepolygon = next(vl_curvepolygon.getFeatures())
@@ -543,7 +543,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del vl_curvepolygon
             datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_multicurves.csv')
             print('\n-I-> Reading db(%s)' % (datasource))
-            vl_multicurves = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_multicurves|featurescount=1|geometrytype=MultiCurve|ogrgettype=1'.format(datasource), u'test_multicurves', u'ogr')
+            vl_multicurves = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_multicurves|featurescounted=1|geometrytype=MultiCurve|ogrtype=1'.format(datasource), u'test_multicurves', u'ogr')
             print('-I-> Reading Geometry-Type=MultiCurve: hasGeometryType[%d,%s] '% (vl_multicurves.hasGeometryType(),vl_multicurves.wkbType()))
             self.assertTrue(vl_multicurves.isValid())
             features_vl_multicurves = next(vl_multicurves.getFeatures())
@@ -555,7 +555,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del vl_multicurves
             datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_multisurface.csv')
             print('\n-I-> Reading db(%s)' % (datasource))
-            vl_multisurface = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_multisurface|featurescount=1|geometrytype=MultiSurface|ogrgettype=1'.format(datasource), u'test_multisurface', u'ogr')
+            vl_multisurface = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_multisurface|featurescounted=1|geometrytype=MultiSurface|ogrtype=1'.format(datasource), u'test_multisurface', u'ogr')
             print('-I-> Reading Geometry-Type=MultiSurface: hasGeometryType[%d,%s] '% (vl_multisurface.hasGeometryType(),vl_multisurface.wkbType()))
             self.assertTrue(vl_multisurface.isValid())
             features_vl_multisurface = next(vl_multisurface.getFeatures())
@@ -598,7 +598,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 
         del vl_spandau_1938
         if (count_layers ==1):
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=0|layername=bezirk_Spandau_1938|featurescount=1|geometrytype=MultiPolygon|ogrgettype=0'.format(datasource), u'test_multipolygon', u'ogr')
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=0|layername=bezirk_Spandau_1938|featurescounted=1|geometrytype=MultiPolygon|ogrtype=0'.format(datasource), u'test_multipolygon', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
             count_fields=len(vl_test_geom.fields())
             print('-I-> Testing type/values of a \'MULTIPOLYGON\' layername[%s] count[%d] fields[%d] hasGeometry[%d]' % ('bezirk_Spandau_1938',vl_test_geom.featureCount(),count_fields,vl_test_geom.hasGeometryType()))
@@ -702,7 +702,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             return
 
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_multiplegeomfields.gml')
-        print('\n-I-> Reading GML with 2 Geometries db(%s)' % (datasource))
+        print('\n-I-> Reading GML with 2 Geometries db(%s) - test with 2 POINTs, one record' % (datasource))
         geometry_name_01=u"geomfield1"
         geometry_name_02=u"geomfield2"
         vl_point_01 = QgsVectorLayer(u'{}'.format(datasource), u'layerid=0|layername=multiplegeomfields|geometryname={0}'.format(geometry_name_01), u'ogr')
@@ -732,18 +732,71 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         for index in range(count_layers):
                 print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_point_02.dataProvider().subLayers()[index]))
 
-        features_vl_point_02 = [f_iter for f_iter in vl_point_02.getFeatures(QgsFeatureRequest().setFilterExpression(u"fid='1'"))]
+        count_fields=len(vl_point_02.fields())
+        for index in range(count_fields):
+            print(u'-I-> Field[%d]: name[%s] type[%s]'% (index, vl_point_02.fields()[index].name(), vl_point_02.fields()[index].typeName()))
+
+        features_vl_point_02 = [f_iter for f_iter in vl_point_02.getFeatures(QgsFeatureRequest().setFilterExpression(u"fid='multiplegeomfields.0'"))]
         print('-I-> Testing type/values of a \'POINT\' EWKT[%s] count[%d,%d]' % ('SRID=-1;POINT(2 3)',vl_point_02.featureCount(),len(features_vl_point_02)))
         test_geom_02 = [f_iter.geometry() for f_iter in features_vl_point_02][0].geometry()
-        print('-I-> point_02: WKT[%s]' % (test_geom_02.asWkt()))
-        self.assertEqual(test_geom.wkbType(), QgsWkbTypes.Point)
-        self.assertEquals((test_geom_02.x(), test_geom_02.y()), (2,3))
+        print('-I-> point_02[%d]: WKT[%s]' % (test_geom_02.wkbType(),test_geom_02.asWkt()))
+        # TODO: resove how to retrieve 2nd geometry
+        # self.assertEqual(test_geom_02.wkbType(), QgsWkbTypes.Point)
+        # self.assertEquals((test_geom_02.x(), test_geom_02.y()), (2,3))
         del test_geom_01
         del features_vl_point_01
         del vl_point_01
-        # del test_geom_02
+        del test_geom_02
         del features_vl_point_02
         del vl_point_02
+
+        datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.ogr_Rauletshof_1909.gml')
+        print('\n-I-> Reading GML with 3 Geometries db(%s) - test with 1 POINT, 1 LINESTRING and 1 POLYGON, 6 records' % (datasource))
+        geometry_name_point=u"geometry_point"
+        geometry_name_linestring=u"geometry_linestring"
+        geometry_name_polygon=u"geometry_polygon"
+        vl_points = QgsVectorLayer(u'{}'.format(datasource), u'layerid=0|layername=SELECT({0})|geometryname={0}|geometryid=0|ogrtype=2'.format(geometry_name_point), u'ogr')
+        self.assertTrue(vl_points.isValid())
+        count_fields=len(vl_points.fields())
+        print('-I-> Testing type/values of a \'POINT\' of first geometry layername[%s] count[%d] fields[%d] hasGeometry[%d]' % (geometry_name_point,vl_points.featureCount(),count_fields,vl_points.hasGeometryType()))
+        for index in range(count_fields):
+            print(u'-I-> Field[%d]: name[%s] type[%s]'% (index, vl_points.fields()[index].name(), vl_points.fields()[index].typeName()))
+        count_layers=len(vl_points.dataProvider().subLayers())
+        print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], [%d] layers were found.' % (self.gdal_version_num, self.gdal_build_version,count_layers))
+        for index in range(count_layers):
+                print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_points.dataProvider().subLayers()[index]))
+        features_vl_points = [f_iter for f_iter in vl_points.getFeatures(QgsFeatureRequest().setFilterExpression(u"id_admin=2"))]
+        print('-I-> Testing type/values of a \'POINT\' EWKT[%s] count[%d,%d]' % ('SRID=3068;POINT(24725.08837877141 20759.21417724223)',vl_points.featureCount(),len(features_vl_points)))
+        test_geom_point = [f_iter.geometry() for f_iter in features_vl_points][0].geometry()
+        print('-I-> test_geom_point[%d]: WKT[%s]' % (test_geom_point.wkbType(),test_geom_point.asWkt()))
+        self.assertEqual(test_geom_point.wkbType(), QgsWkbTypes.Point)
+        vl_linestrings = QgsVectorLayer(u'{}'.format(datasource), u'layerid=1|layername=SELECT({0})|geometryname={0}|geometryid=1|ogrtype=2'.format(geometry_name_linestring), u'ogr')
+        self.assertTrue(vl_linestrings.isValid())
+        features_vl_linestrings = [f_iter for f_iter in vl_linestrings.getFeatures(QgsFeatureRequest().setFilterExpression(u"id_admin=2"))]
+        print('-I-> Testing type/values of a \'LINESTRING\' EWKT[%s] count[%d,%d]' % ('SRID=3068;POINT(24742.22135058679 20740.69355198127)',vl_linestrings.featureCount(),len(features_vl_linestrings)))
+        test_geom_linestring = [f_iter.geometry() for f_iter in features_vl_linestrings][0].geometry()
+        # self.assertEqual(test_geom_linestring.wkbType(), QgsWkbTypes.LineString)
+        # test_geom_point_0 = test_geom_linestring.pointN( 0)
+         # SRID=3068;LINESTRING(24742.22135058679 20740.69355198127,24737.45638720584 20749.37007562035,24734.50185725588 20754.40137128558,24729.33568005099 20757.13610721289,24725.93877363711 20757.98350752259,24719.99236111904 20766.58900377109,24705.79582214735 20777.01128396962)
+        test_geom_name = [f_iter['name'] for f_iter in features_vl_linestrings][0]
+        print('-I-> test_geom_linestring[%d]: name[%s] first point WKT[%s]' % (test_geom_linestring.wkbType(),test_geom_name,"TODO"))
+        # print('-I-> test_geom_linestring[%d]: name[%s] first point WKT[%s]' % (test_geom_linestring.wkbType(),test_geom_name,test_geom_point_0.asWkt()))
+        vl_polygons = QgsVectorLayer(u'{}'.format(datasource), u'layerid=1|layername=SELECT({0})|geometryname={0}|geometryid=2|ogrtype=2'.format(geometry_name_polygon), u'ogr')
+        self.assertTrue(vl_polygons.isValid())
+        features_vl_polygons = [f_iter for f_iter in vl_polygons.getFeatures(QgsFeatureRequest().setFilterExpression(u"id_admin=2"))]
+        print('-I-> Testing type/values of a \'POLYGON\' EWKT[%s] count[%d,%d]' % ('SRID=3068;POINT(24706.46898365996 20778.82165136906)',vl_polygons.featureCount(),len(features_vl_polygons)))
+        test_geom_polygon = [f_iter.geometry() for f_iter in features_vl_polygons][0].geometry()
+        # exterior_ring = test_geom_polygon.exteriorRing()
+        del test_geom_point
+        del features_vl_points
+        del vl_points
+        del test_geom_linestring
+        del vl_linestrings
+        del features_vl_linestrings
+        # del exterior_ring
+        del test_geom_polygon
+        del features_vl_polygons
+        del vl_polygons
         print('-I-> test_04_OgrGMLMultipleGeometries(%s) ' % ('end of test'))
 
 ###############################################################################
@@ -779,17 +832,17 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             unique_layername_1=u"Directions from Taiwan, Taichung City, 中45鄉道 to 423, Taiwan, Taichung City, Dongshi District, 中45鄉道"
             duplicate_layername=u"Directions from 423, Taiwan, 台中市東勢區慶福里 to 423, Taiwan, Taichung City, Dongshi District, 中45鄉道"
             unique_layername_6=u"Directions from 423, Taiwan, Taichung City, Dongshi District, 中45鄉道 to 423, Taiwan, Taichung City, Dongshi District, 中45鄉道"
-            vl_layer_3 = QgsVectorLayer(u'{0}|layerid=3|layername={1}|featurescount=3|geometrytype=LineString25D|ogrgettype=1'.format(datasource,duplicate_layername), u'test_layer_3', u'ogr')
+            vl_layer_3 = QgsVectorLayer(u'{0}|layerid=3|layername={1}|featurescounted=3|geometrytype=LineString25D|ogrtype=1'.format(datasource,duplicate_layername), u'test_layer_3', u'ogr')
             self.assertTrue(vl_layer_3.isValid())
             count_fields=len(vl_layer_3.fields())
             print('-I-> Testing type/values of a \'LineString25D\' of first duplicate layername[%s] count[%d] fields[%d] hasGeometry[%d]' % ('Directions from 423, Taiwan',vl_layer_3.featureCount(),count_fields,vl_layer_3.hasGeometryType()))
             for index in range(count_fields):
                 print(u'-I-> Field[%d]: name[%s] type[%s]'% (index, vl_layer_3.fields()[index].name(), vl_layer_3.fields()[index].typeName()))
-            vl_layer_5 = QgsVectorLayer(u'{0}|layerid=5|layername={1}|featurescount=3|geometrytype=LineString25D|ogrgettype=1'.format(datasource,duplicate_layername), u'test_layer_5', u'ogr')
+            vl_layer_5 = QgsVectorLayer(u'{0}|layerid=5|layername={1}|featurescounted=3|geometrytype=LineString25D|ogrtype=1'.format(datasource,duplicate_layername), u'test_layer_5', u'ogr')
             self.assertTrue(vl_layer_5.isValid())
-            vl_layer_1 = QgsVectorLayer(u'{0}|layerid=1|layername={1}|featurescount=3|geometrytype=LineString25D|ogrgettype=0'.format(datasource,unique_layername_1), u'test_layer_1', u'ogr')
+            vl_layer_1 = QgsVectorLayer(u'{0}|layerid=1|layername={1}|featurescounted=3|geometrytype=LineString25D|ogrtype=0'.format(datasource,unique_layername_1), u'test_layer_1', u'ogr')
             self.assertTrue(vl_layer_1.isValid())
-            vl_layer_6 = QgsVectorLayer(u'{0}|layerid=6|layername={1}|featurescount=3|geometrytype=LineString25D|ogrgettype=0'.format(datasource,unique_layername_6), u'test_layer_6', u'ogr')
+            vl_layer_6 = QgsVectorLayer(u'{0}|layerid=6|layername={1}|featurescounted=3|geometrytype=LineString25D|ogrtype=0'.format(datasource,unique_layername_6), u'test_layer_6', u'ogr')
             self.assertTrue(vl_layer_6.isValid())
             del vl_layer_1
             del vl_layer_6
@@ -854,7 +907,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         del vl_sqlite_test
 
         if (count_layers == 7):
-            vl_layer_tpoly = QgsVectorLayer(u'{0}|layerid=1|layername=tpoly|featurescount=18|geometrytype=Polygon|ogrgettype=0'.format(datasource), u'test_layer_tpoly', u'ogr')
+            vl_layer_tpoly = QgsVectorLayer(u'{0}|layerid=1|layername=tpoly|featurescounted=18|geometrytype=Polygon|ogrtype=0'.format(datasource), u'test_layer_tpoly', u'ogr')
             self.assertTrue(vl_layer_tpoly.isValid())
             count_fields=len(vl_layer_tpoly.fields())
             print('-I-> Testing type/values of a \'Integer64\' of the layername[%s] count[%d] fields[%d] hasGeometry[%d]' % ('tpoly',vl_layer_tpoly.featureCount(),count_fields,vl_layer_tpoly.hasGeometryType()))

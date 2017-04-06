@@ -121,6 +121,16 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual size_t layerCount() const;
     virtual long featureCount() const override;
     virtual QgsFields fields() const override;
+
+    /** Extent OGR Layer
+     * @note
+     * For Layers that contain more than one Geometry
+     * - OGR_L_GetExtentEx must be used with the value of mGeometryIndex
+     * -> otherwise the extent of the first Geometry will be returned
+     * - if mGeometryIndex < 0: OGR_L_GetExtent will be used
+     * @see mGeometryIndex
+     * @returns mExtentRect QgsRectangle
+     */
     virtual QgsRectangle extent() const override;
     QVariant defaultValue( int fieldId ) const override;
     virtual void updateExtents() override;
@@ -449,10 +459,15 @@ class QgsOgrProviderUtils
      * Logic changes:
      * The Layer name will be used to insure that the correct feature is being searched for
      * - avoiding a LINESTRING being set as a POLYGON, when a POLYGON was found first
-     * Some ogr drivers (KML) may contain differen Geometry-Types in 1 Layer
+     * Some ogr drivers (KML) may contain different Geometry-Types in 1 Layer
      * - the first one found will be used
+     * @note
+     * Some ogr drivers (GML)  must read the first row to determin the GeometryType
+     * - some may contain more than 1 geometry
+     * @param ogrLayer Layer containing the Geometry
+     * @param geomIndex Geometry-index in Layer to be retrieved
      */
-    static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
+    static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer, int geomIndex );
     static QString wkbGeometryTypeName( OGRwkbGeometryType type );
     static OGRwkbGeometryType wkbGeometryTypeFromName( const QString &typeName ) ;
     //! Get single flatten geometry type
