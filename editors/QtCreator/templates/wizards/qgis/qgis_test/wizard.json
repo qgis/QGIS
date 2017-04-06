@@ -13,7 +13,7 @@
     "options":
     [
         { "key": "TargetPath", "value": "Test%{Path}" },
-        { "key": "SrcPath", "value": "%{Path}/%{SrcFileName}" },
+        { "key": "SrcPath", "value": "%{Path}/%{Area}/%{SrcFileName}" },
         { "key": "CN", "value": "%{JS: Cpp.className('%{Class}')}" }
     ],
 
@@ -33,9 +33,34 @@
                     "data": { "validator": "(?:(?:[a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*|)" }
                 },
                 {
+                    "name": "Area",
+                    "trDisplayName": "API Area",
+                    "type": "ComboBox",
+                    "data":
+                    {
+                        "items": [
+                            "analysis",
+                            "app",
+                            "core",
+                            "gui",
+                            "providers"
+                        ]
+                    }
+                },
+                {
                     "name": "Sp1",
                     "type": "Spacer",
                     "data": { "factor": 2 }
+                },
+                {
+                    "name": "LabelQQC_1_0",
+                    "type": "Label",
+                    "span": true,
+                    "data":
+                    {
+                        "wordWrap": true,
+                        "trText": "Area selected above will be added to the final path to put the test in the correct location. You shouldn't need to change anything in here generally."
+                    }
                 },
                 {
                     "name": "SrcFileName",
@@ -52,8 +77,8 @@
                     "data":
                     {
                         "kind": "existingDirectory",
-                        "basePath": "%{CurrentProject:Path}\\tests\\src\\",
-                        "path": "%{CurrentProject:Path}\\tests\\src\\"
+                        "basePath": "%{CurrentProject:Path}/tests/src/",
+                        "path": "%{CurrentProject:Path}/tests/src/"
                     }
                 }
             ]
