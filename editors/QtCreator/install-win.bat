@@ -11,7 +11,7 @@ IF NOT EXIST "%TEMPLATES%\qgis" (
 )
 
 IF NOT EXIST "%CODESTYLES%" (
-   mkdir "%COESTYLES%"
+   mkdir "%CODESTYLES%"
 )
 
 IF NOT EXIST "%CODESTYLES%\qgis_code_style.xml" (
