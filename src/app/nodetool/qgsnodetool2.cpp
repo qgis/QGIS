@@ -601,11 +601,11 @@ QgsPointLocator::Match QgsNodeTool2::snapToEditableLayer( QgsMapMouseEvent *e )
   Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( !vlayer || !vlayer->isEditable() )
+    if ( !vlayer )
       continue;
 
     config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
-                                         true, QgsSnappingConfig::VertexAndSegment, tol, QgsTolerance::ProjectUnits ) );
+                                         vlayer->isEditable(), QgsSnappingConfig::VertexAndSegment, tol, QgsTolerance::ProjectUnits ) );
   }
 
   QgsSnappingUtils *snapUtils = canvas()->snappingUtils();
