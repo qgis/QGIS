@@ -65,7 +65,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
         int width, int height,
         const QgsRectangle &extent,
-        const QgsCoordinateReferenceSystem &crs );
+        const QgsCoordinateReferenceSystem &crs ) SIP_FACTORY;
 
     /** Write raster file
         \param pipe raster pipe

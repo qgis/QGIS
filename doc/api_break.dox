@@ -1681,6 +1681,15 @@ QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 - The progress and progressUpdate signals were removed. Methods which previously emitted these
 signals now accept a QgsRasterBlockFeedback argument for reporting progress updates.
 
+
+QgsRasterFileWriter        {#qgis_api_break_3_0_QgsRasterFileWriter}
+------------------
+
+- writeRaster now uses a QgsRasterBlockFeedback object instead of a QProgressDialog argument. Any use of the old
+QProgressDialog argument will need to be updated using manually created connections between QgsRasterBlockFeedback's
+signals and the updates to the progress dialog.
+
+
 QgsRasterInterface        {#qgis_api_break_3_0_QgsRasterInterface}
 ------------------
 

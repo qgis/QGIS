@@ -155,6 +155,11 @@ complex default value and type (i.e. containing commas) should be given as a str
     void removeProxyFactory( QNetworkProxyFactory *factory /TransferBack/ );
 
     bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl );
+    QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
+%Docstring
+Removing function body with namespaced return value
+%End
+
 
     virtual int overriddenProperty();
   protected:

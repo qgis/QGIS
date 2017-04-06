@@ -186,6 +186,9 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl ) { doSomething; return true; }   // some comments
 
+    //! Removing function body with namespaced return value
+    QgsRaster::RasterBuildPyramids buildPyramidsFlag() const { return mBuildPyramidsFlag; }
+
     bool deletedFunction() = delete; // some comments
 
     virtual int overriddenProperty() override { return 42; } // if in doubt, comment it out

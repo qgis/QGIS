@@ -252,7 +252,6 @@ core/raster/qgsrasterblock.sip
 core/raster/qgsrasterchecker.sip
 core/raster/qgsrasterdataprovider.sip
 core/raster/qgsrasterdrawer.sip
-core/raster/qgsrasterfilewriter.sip
 core/raster/qgsrasterhistogram.sip
 core/raster/qgsrasteridentifyresult.sip
 core/raster/qgsrasterinterface.sip
