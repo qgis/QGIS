@@ -29,7 +29,14 @@
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
 
+#include "qgisapp.h"
+#include "qgsselectedfeature.h"
+#include "qgsnodeeditor.h"
+#include "qgsvertexentry.h"
+
+#include <QMenu>
 #include <QRubberBand>
+
 
 uint qHash( const Vertex &v )
 {
@@ -225,6 +232,7 @@ void QgsNodeTool2::deactivate()
 {
   setHighlightedNodes( QList<Vertex>() );
   removeTemporaryRubberBands();
+  cleanupNodeEditor();
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
@@ -300,6 +308,8 @@ void QgsNodeTool2::clearDragBands()
 
 void QgsNodeTool2::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
+  cleanupNodeEditor();
+
   if ( !mDraggingVertex && !mSelectedNodes.isEmpty() )
   {
     // only remove highlight if not clicked on one of highlighted nodes
@@ -338,6 +348,20 @@ void QgsNodeTool2::cadCanvasPressEvent( QgsMapMouseEvent *e )
     // the user may have started dragging a rect to select vertices
     if ( !mDraggingVertex && !mDraggingEdge )
       mSelectionRectStartPos.reset( new QPoint( e->pos() ) );
+  }
+
+  if ( e->button() == Qt::RightButton )
+  {
+    if ( !mSelectionRect && !mDraggingVertex && !mDraggingEdge )
+    {
+      // show popup menu - if we are on top of a feature
+      if ( mLastMouseMoveMatch.isValid() && mLastMouseMoveMatch.layer() )
+      {
+        QMenu menu;
+        menu.addAction( "Node editor", this, &QgsNodeTool2::showNodeEditor );
+        menu.exec( mCanvas->mapToGlobal( e->pos() ) );
+      }
+    }
   }
 }
 
@@ -645,6 +669,8 @@ void QgsNodeTool2::mouseMoveNotDragging( QgsMapMouseEvent *e )
   // do not use snap from mouse event, use our own with any editable layer
   QgsPointLocator::Match m = snapToEditableLayer( e );
 
+  mLastMouseMoveMatch = m;
+
   // possibility to move a node
   if ( m.type() == QgsPointLocator::Vertex )
   {
@@ -826,6 +852,74 @@ void QgsNodeTool2::onCachedGeometryDeleted( QgsFeatureId fid )
   if ( layerCache.contains( fid ) )
     layerCache.remove( fid );
 }
+
+
+void QgsNodeTool2::showNodeEditor()
+{
+  QgsPointLocator::Match m = mLastMouseMoveMatch;
+  if ( !m.isValid() || !m.layer() )
+    return;
+
+  mSelectedFeature.reset( new QgsSelectedFeature( m.featureId(), m.layer(), mCanvas ) );
+  mNodeEditor.reset( new QgsNodeEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
+  QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mNodeEditor.get() );
+  connect( mNodeEditor.get(), &QgsNodeEditor::deleteSelectedRequested, this, &QgsNodeTool2::deleteNodeEditorSelection );
+}
+
+void QgsNodeTool2::cleanupNodeEditor()
+{
+  mSelectedFeature.reset();
+  mNodeEditor.reset();
+}
+
+static int _firstSelectedVertex( QgsSelectedFeature &selectedFeature )
+{
+  QList<QgsVertexEntry *> &vertexMap = selectedFeature.vertexMap();
+  for ( int i = 0, n = vertexMap.size(); i < n; ++i )
+  {
+    if ( vertexMap[i]->isSelected() )
+    {
+      return i;
+    }
+  }
+  return -1;
+}
+
+static void _safeSelectVertex( QgsSelectedFeature &selectedFeature, int vertexNr )
+{
+  int n = selectedFeature.vertexMap().size();
+  selectedFeature.selectVertex( ( vertexNr + n ) % n );
+}
+
+void QgsNodeTool2::deleteNodeEditorSelection()
+{
+  if ( !mSelectedFeature )
+    return;
+
+  int firstSelectedIndex = _firstSelectedVertex( *mSelectedFeature );
+  if ( firstSelectedIndex == -1 )
+    return;
+
+  mSelectedFeature->deleteSelectedVertexes();
+
+  if ( mSelectedFeature->geometry()->isNull() )
+  {
+    emit messageEmitted( tr( "Geometry has been cleared. Use the add part tool to set geometry for this feature." ) );
+  }
+  else
+  {
+    int nextVertexToSelect = firstSelectedIndex;
+    if ( mSelectedFeature->geometry()->type() == QgsWkbTypes::LineGeometry )
+    {
+      // for lines we don't wrap around vertex selection when deleting nodes from end of line
+      nextVertexToSelect = qMin( nextVertexToSelect, mSelectedFeature->geometry()->geometry()->nCoordinates() - 1 );
+    }
+
+    _safeSelectVertex( *mSelectedFeature, nextVertexToSelect );
+  }
+  mSelectedFeature->vlayer()->triggerRepaint();
+}
+
 
 void QgsNodeTool2::startDragging( QgsMapMouseEvent *e )
 {

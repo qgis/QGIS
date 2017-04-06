@@ -23,8 +23,9 @@
 
 class QRubberBand;
 
+class QgsNodeEditor;
+class QgsSelectedFeature;
 class QgsVertexMarker;
-
 
 //! helper structure for a vertex being dragged
 struct Vertex
@@ -83,6 +84,9 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
     void onCachedGeometryDeleted( QgsFeatureId fid );
 
+    void showNodeEditor();
+
+    void deleteNodeEditorSelection();
 
   private:
 
@@ -172,6 +176,7 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     //! center of the edge and whether we are close enough to the center
     bool matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPoint &mapPoint, QgsPoint *edgeCenterPtr = nullptr );
 
+    void cleanupNodeEditor();
 
   private:
 
@@ -291,6 +296,15 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
     //! Geometry cache for fast access to geometries
     QHash<const QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > mCache;
+
+    // support for node editor
+
+    //! most recent match when moving mouse
+    QgsPointLocator::Match mLastMouseMoveMatch;
+    //! Selected feature for the node editor
+    std::unique_ptr<QgsSelectedFeature> mSelectedFeature;
+    //! Dock widget which allows editing vertices
+    std::unique_ptr<QgsNodeEditor> mNodeEditor;
 };
 
 
