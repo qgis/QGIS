@@ -1,9 +1,9 @@
-% {Cpp: LicenseTemplate}\
+%{Cpp:LicenseTemplate}
 #include "qgstest.h"
 #include <QObject>
 #include <qgsapplication.h>
 
-class % {CN}: public QObject
+class %{CN}: public QObject
 {
 
   Q_OBJECT
@@ -17,25 +17,25 @@ private slots:
   // Add your test methods here
 };
 
-void % {CN}::initTestCase()
+void %{CN}::initTestCase()
 {
 
 }
 
-void % {CN}::cleanupTestCase()
+void %{CN}::cleanupTestCase()
 {
 
 }
 
-void % {CN}::init()
+void %{CN}::init()
 {
 
 }
 
-void % {CN}::cleanup()
+void %{CN}::cleanup()
 {
 
 }
 
-QGSTEST_MAIN( % {CN} )
+QGSTEST_MAIN( %{CN} )
 #include "%{JS: Cpp.classToFileName('%{Class}', '.moc')}"
