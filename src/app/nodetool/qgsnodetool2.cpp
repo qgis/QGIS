@@ -842,6 +842,9 @@ void QgsNodeTool2::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry 
   QHash<QgsFeatureId, QgsGeometry> &layerCache = mCache[layer];
   if ( layerCache.contains( fid ) )
     layerCache[fid] = geom;
+
+  // refresh highlighted nodes - their position may have changed
+  setHighlightedNodes( mSelectedNodes );
 }
 
 void QgsNodeTool2::onCachedGeometryDeleted( QgsFeatureId fid )
@@ -851,6 +854,9 @@ void QgsNodeTool2::onCachedGeometryDeleted( QgsFeatureId fid )
   QHash<QgsFeatureId, QgsGeometry> &layerCache = mCache[layer];
   if ( layerCache.contains( fid ) )
     layerCache.remove( fid );
+
+  // refresh highlighted nodes - some may have been deleted
+  setHighlightedNodes( mSelectedNodes );
 }
 
 
@@ -1518,23 +1524,27 @@ void QgsNodeTool2::deleteVertex()
 
 }
 
-void QgsNodeTool2::setHighlightedNodes( const QList<Vertex> &listNodes )
+void QgsNodeTool2::setHighlightedNodes( QList<Vertex> listNodes )
 {
   qDeleteAll( mSelectedNodesMarkers );
   mSelectedNodesMarkers.clear();
+  mSelectedNodes.clear();
 
   Q_FOREACH ( const Vertex &node, listNodes )
   {
     QgsGeometry geom = cachedGeometryForVertex( node );
+    QgsVertexId vid;
+    if ( !geom.vertexIdFromVertexNr( node.vertexId, vid ) )
+      continue;  // node may not exist anymore
     QgsVertexMarker *marker = new QgsVertexMarker( canvas() );
     marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
     marker->setPenWidth( 3 );
     marker->setColor( Qt::blue );
     marker->setFillColor( Qt::blue );
     marker->setCenter( toMapCoordinates( node.layer, geom.vertexAt( node.vertexId ) ) );
+    mSelectedNodes.append( node );
     mSelectedNodesMarkers.append( marker );
   }
-  mSelectedNodes = listNodes;
 }
 
 void QgsNodeTool2::setHighlightedNodesVisible( bool visible )
