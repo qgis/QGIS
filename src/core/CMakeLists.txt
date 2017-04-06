@@ -336,6 +336,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasterblock.cpp
   raster/qgsrasterchecker.cpp
   raster/qgsrasterdataprovider.cpp
+  raster/qgsrasterfilewritertask.cpp
   raster/qgsrasteridentifyresult.cpp
   raster/qgsrasterinterface.cpp
   raster/qgsrasteriterator.cpp
@@ -597,6 +598,7 @@ SET(QGIS_CORE_MOC_HDRS
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingregistry.h
 
+  raster/qgsrasterfilewritertask.h
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
 
