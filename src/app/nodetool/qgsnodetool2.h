@@ -315,7 +315,7 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     //! Dock widget which allows editing vertices
     std::unique_ptr<QgsNodeEditor> mNodeEditor;
 
-    // suport for validation of geometries
+    // support for validation of geometries
 
     //! data structure for validation of one geometry of a vector layer
     struct GeometryValidation
