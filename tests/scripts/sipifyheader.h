@@ -163,6 +163,11 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
      */
     void LongDocStringMethodWithBrief();
 
+    /**
+     * I return a pointer. If something bad happens, I return nullptr.
+     */
+    MyPointer *pointerReturnValue();
+
     bool isOKwithErrMesg( QString &ErrMsg SIP_OUT );
 
     void InOutParam( bool &ok = true SIP_INOUT );

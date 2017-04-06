@@ -14,6 +14,9 @@ sub processDoxygenLine
     $line =~ s/\\a //g;
     # replace :: with . (changes c++ style namespace/class directives to Python style)
     $line =~ s/::/./g;
+	# replace nullptr with None (nullptr means nothing to Python devs)
+	$line =~ s/\bnullptr\b/None/g;
+
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
         return ""
     }

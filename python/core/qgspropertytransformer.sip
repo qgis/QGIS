@@ -261,7 +261,7 @@ class QgsPropertyTransformer
  \param fieldName will be set to a field name which is used to calculate the input
  to the property transformer. This will be set to an
  empty string if an expression is the transformer input.
- \returns corresponding property transformer, or nullptr if expression could not
+ \returns corresponding property transformer, or None if expression could not
  be parsed to a transformer.
 %End
 
@@ -323,7 +323,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
  \param fieldName will be set to a field name which is used to calculate the input
  to the property transformer. This will be set to an
  empty string if an expression is the transformer input.
- \returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
+ \returns corresponding QgsSizeScaleTransformer, or None if expression could not
  be parsed to a size scale transformer.
 %End
 
@@ -449,7 +449,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
  \param fieldName will be set to a field name which is used to calculate the input
  to the property transformer. This will be set to an
  empty string if an expression is the transformer input.
- \returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
+ \returns corresponding QgsSizeScaleTransformer, or None if expression could not
  be parsed to a size scale transformer.
 %End
 

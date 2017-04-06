@@ -131,6 +131,11 @@ Factory annotation
  Here's some comment mentioning another class QgsAutoAwesomemater.makeLessAwesome.
 %End
 
+    MyPointer *pointerReturnValue();
+%Docstring
+ I return a pointer. If something bad happens, I return None.
+%End
+
     bool isOKwithErrMesg( QString &ErrMsg /Out/ );
 
     void InOutParam( bool &ok = true /In,Out/ );

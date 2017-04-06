@@ -48,7 +48,7 @@ class QgsRasterFileWriter
 .. note::
 
    Does not work with tiled mode enabled.
- \returns Instance of data provider in editing mode (on success) or null on error.
+ \returns Instance of data provider in editing mode (on success) or None on error.
 .. versionadded:: 3.0
 %End
 
