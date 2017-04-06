@@ -360,7 +360,8 @@ void QgsNodeTool2::cadCanvasPressEvent( QgsMapMouseEvent *e )
       if ( mLastMouseMoveMatch.isValid() && mLastMouseMoveMatch.layer() )
       {
         QMenu menu;
-        menu.addAction( "Node editor", this, &QgsNodeTool2::showNodeEditor );
+        QAction *actionNodeEditor = menu.addAction( "Node editor" );
+        connect( actionNodeEditor, &QAction::triggered, this, &QgsNodeTool2::showNodeEditor );
         menu.exec( mCanvas->mapToGlobal( e->pos() ) );
       }
     }
