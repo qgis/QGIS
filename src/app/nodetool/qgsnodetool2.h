@@ -198,6 +198,8 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     QgsVertexMarker *mEdgeCenterMarker = nullptr;
     //! rubber band for highlight of a whole feature on mouse over and not dragging anything
     QgsRubberBand *mFeatureBand = nullptr;
+    //! rubber band for highlight of all vertices of a feature on mouse over and not dragging anything
+    QgsRubberBand *mFeatureBandMarkers = nullptr;
     //! source layer for mFeatureBand (null if mFeatureBand is null)
     const QgsVectorLayer *mFeatureBandLayer = nullptr;
     //! source feature id for mFeatureBand (zero if mFeatureBand is null)

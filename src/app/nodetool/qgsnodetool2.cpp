@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmulticurve.h"
+#include "qgsmultipoint.h"
 #include "qgspointlocator.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
@@ -116,6 +117,21 @@ static bool isCircularVertex( const QgsGeometry &geom, int vertexIndex )
   return geom.vertexIdFromVertexNr( vertexIndex, vid ) && vid.type == QgsVertexId::CurveVertex;
 }
 
+
+//! Create a multi-point geometry that can be used to highlight vertices of a feature
+static QgsGeometry geometryToMultiPoint( const QgsGeometry &geom )
+{
+  QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
+  QgsGeometry outputGeom( multiPoint );
+  QgsAbstractGeometry *g = geom.geometry();
+  for ( int i = 0; i < g->partCount(); ++i )
+    for ( int j = 0; j < g->ringCount( i ); ++j )
+      for ( int k = 0; k < g->vertexCount( i, j ); ++k )
+        multiPoint->addGeometry( new QgsPointV2( g->vertexAt( QgsVertexId( i, j, k ) ) ) );
+  return outputGeom;
+}
+
+
 //
 // snapping match filters
 //
@@ -200,6 +216,12 @@ QgsNodeTool2::QgsNodeTool2( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidge
   mFeatureBand->setVisible( false );
 
   QColor color = digitizingStrokeColor();
+  mFeatureBandMarkers = new QgsRubberBand( canvas );
+  mFeatureBandMarkers->setIcon( QgsRubberBand::ICON_CIRCLE );
+  mFeatureBandMarkers->setColor( color );
+  mFeatureBandMarkers->setIconSize( 8 );
+  mFeatureBandMarkers->setVisible( false );
+
   mVertexBand = new QgsRubberBand( canvas );
   mVertexBand->setIcon( QgsRubberBand::ICON_CIRCLE );
   mVertexBand->setColor( color );
@@ -225,6 +247,7 @@ QgsNodeTool2::~QgsNodeTool2()
   delete mSnapMarker;
   delete mEdgeCenterMarker;
   delete mFeatureBand;
+  delete mFeatureBandMarkers;
   delete mVertexBand;
   delete mEdgeBand;
   delete mEndpointMarker;
@@ -556,6 +579,7 @@ void QgsNodeTool2::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 void QgsNodeTool2::removeTemporaryRubberBands()
 {
   mFeatureBand->setVisible( false );
+  mFeatureBandMarkers->setVisible( false );
   mFeatureBandLayer = nullptr;
   mFeatureBandFid = QgsFeatureId();
   mVertexBand->setVisible( false );
@@ -773,6 +797,8 @@ void QgsNodeTool2::mouseMoveNotDragging( QgsMapMouseEvent *e )
     if ( mFeatureBandLayer == m.layer() && mFeatureBandFid == m.featureId() )
       return;  // skip regeneration of rubber band if not needed
     QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
+    mFeatureBandMarkers->setToGeometry( geometryToMultiPoint( geom ), m.layer() );
+    mFeatureBandMarkers->setVisible( true );
     if ( QgsWkbTypes::isCurvedType( geom.geometry()->wkbType() ) )
       geom = QgsGeometry( geom.geometry()->segmentize() );
     mFeatureBand->setToGeometry( geom, m.layer() );
@@ -783,6 +809,7 @@ void QgsNodeTool2::mouseMoveNotDragging( QgsMapMouseEvent *e )
   else
   {
     mFeatureBand->setVisible( false );
+    mFeatureBandMarkers->setVisible( false );
     mFeatureBandLayer = nullptr;
     mFeatureBandFid = QgsFeatureId();
   }
