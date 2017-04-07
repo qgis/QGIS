@@ -169,10 +169,11 @@ void QgsCheckableComboBox::toggleItemCheckState( int index )
 
 void QgsCheckableComboBox::hidePopup()
 {
-  if ( !view()->underMouse() )
+  if ( !mSkipHide )
   {
     QComboBox::hidePopup();
   }
+  mSkipHide = false;
 }
 
 void QgsCheckableComboBox::showContextMenu( const QPoint &pos )
@@ -206,7 +207,11 @@ void QgsCheckableComboBox::deselectAllOptions()
 
 bool QgsCheckableComboBox::eventFilter( QObject *object, QEvent *event )
 {
-  Q_UNUSED( object );
+  if ( ( event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease )
+       && object == view()->viewport() )
+  {
+    mSkipHide = true;
+  }
 
   if ( event->type() == QEvent::MouseButtonRelease )
   {

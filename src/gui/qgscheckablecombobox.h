@@ -227,6 +227,8 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     QString mSeparator;
     QString mDefaultText;
 
+    bool mSkipHide = false;
+
     QMenu *mContextMenu = nullptr;
     QAction *mSelectAllAction = nullptr;
     QAction *mDeselectAllAction = nullptr;
