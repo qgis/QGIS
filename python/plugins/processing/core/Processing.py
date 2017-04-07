@@ -20,7 +20,6 @@ from __future__ import print_function
 from builtins import str
 from builtins import object
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -63,7 +62,6 @@ from processing.preconfigured.PreconfiguredAlgorithmProvider import Preconfigure
 
 
 class Processing(object):
-
     BASIC_PROVIDERS = []
 
     @staticmethod
@@ -121,7 +119,6 @@ class Processing(object):
                 provider.externalAlgs.remove(alg)
         provider.refreshAlgorithms()
 
-
     @staticmethod
     def runAlgorithm(algOrName, onFinish, *args, **kwargs):
         if isinstance(algOrName, GeoAlgorithm):
@@ -131,7 +128,8 @@ class Processing(object):
         if alg is None:
             # fix_print_with_import
             print('Error: Algorithm not found\n')
-            QgsMessageLog.logMessage(Processing.tr('Error: Algorithm {0} not found\n').format(algOrName), Processing.tr("Processing"))
+            QgsMessageLog.logMessage(Processing.tr('Error: Algorithm {0} not found\n').format(algOrName),
+                                     Processing.tr("Processing"))
             return
         alg = alg.getCopy()
 
@@ -149,7 +147,9 @@ class Processing(object):
                     continue
                 # fix_print_with_import
                 print('Error: Wrong parameter value %s for parameter %s.' % (value, name))
-                QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name), Processing.tr("Processing"))
+                QgsMessageLog.logMessage(
+                    Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name),
+                    Processing.tr("Processing"))
                 ProcessingLog.addToLog(
                     ProcessingLog.LOG_ERROR,
                     Processing.tr('Error in {0}. Wrong parameter value {1} for parameter {2}.').format(
@@ -163,7 +163,9 @@ class Processing(object):
                     if not param.setDefaultValue():
                         # fix_print_with_import
                         print('Error: Missing parameter value for parameter %s.' % param.name)
-                        QgsMessageLog.logMessage(Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name), Processing.tr("Processing"))
+                        QgsMessageLog.logMessage(
+                            Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name),
+                            Processing.tr("Processing"))
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
                             Processing.tr('Error in {0}. Missing parameter value for parameter {1}.').format(
@@ -174,7 +176,8 @@ class Processing(object):
             if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
                 # fix_print_with_import
                 print('Error: Wrong number of parameters')
-                QgsMessageLog.logMessage(Processing.tr('Error: Wrong number of parameters'), Processing.tr("Processing"))
+                QgsMessageLog.logMessage(Processing.tr('Error: Wrong number of parameters'),
+                                         Processing.tr("Processing"))
                 processing.algorithmHelp(algOrName)
                 return
             i = 0
@@ -183,7 +186,8 @@ class Processing(object):
                     if not param.setValue(args[i]):
                         # fix_print_with_import
                         print('Error: Wrong parameter value: ' + str(args[i]))
-                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value: ') + str(args[i]), Processing.tr("Processing"))
+                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value: ') + str(args[i]),
+                                                 Processing.tr("Processing"))
                         return
                     i = i + 1
 
@@ -192,7 +196,8 @@ class Processing(object):
                     if not output.setValue(args[i]):
                         # fix_print_with_import
                         print('Error: Wrong output value: ' + str(args[i]))
-                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong output value: ') + str(args[i]), Processing.tr("Processing"))
+                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong output value: ') + str(args[i]),
+                                                 Processing.tr("Processing"))
                         return
                     i = i + 1
 
@@ -200,13 +205,16 @@ class Processing(object):
         if msg:
             # fix_print_with_import
             print('Unable to execute algorithm\n' + str(msg))
-            QgsMessageLog.logMessage(Processing.tr('Unable to execute algorithm\n{0}').format(msg), Processing.tr("Processing"))
+            QgsMessageLog.logMessage(Processing.tr('Unable to execute algorithm\n{0}').format(msg),
+                                     Processing.tr("Processing"))
             return
 
         if not alg.checkInputCRS():
             print('Warning: Not all input layers use the same CRS.\n' +
                   'This can cause unexpected results.')
-            QgsMessageLog.logMessage(Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'), Processing.tr("Processing"))
+            QgsMessageLog.logMessage(
+                Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'),
+                Processing.tr("Processing"))
 
         # Don't set the wait cursor twice, because then when you
         # restore it, it will still be a wait cursor.
@@ -231,7 +239,8 @@ class Processing(object):
             if onFinish is not None:
                 onFinish(alg, feedback)
         else:
-            QgsMessageLog.logMessage(Processing.tr("There were errors executing the algorithm."), Processing.tr("Processing"))
+            QgsMessageLog.logMessage(Processing.tr("There were errors executing the algorithm."),
+                                     Processing.tr("Processing"))
 
         if overrideCursor:
             QApplication.restoreOverrideCursor()
