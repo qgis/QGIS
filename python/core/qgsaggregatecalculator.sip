@@ -15,7 +15,7 @@ class QgsAggregateCalculator
 {
 %Docstring
  Utility class for calculating aggregates for a field (or expression) over the features
- from a vector layer. It is recommended that QgsVectorLayer::aggregate() is used rather then
+ from a vector layer. It is recommended that QgsVectorLayer.aggregate() is used rather then
  directly using this class, as the QgsVectorLayer method can handle delegating aggregate calculation
  to a data provider for remote calculation.
 .. versionadded:: 2.16
@@ -57,15 +57,15 @@ class QgsAggregateCalculator
 %Docstring
  Optional filter for calculating aggregate over a subset of features, or an
  empty string to use all features.
- \see QgsAggregateCalculator::setFilter()
- \see QgsAggregateCalculator::filter()
+ \see QgsAggregateCalculator.setFilter()
+ \see QgsAggregateCalculator.filter()
 %End
 
       QString delimiter;
 %Docstring
  Delimiter to use for joining values with the StringConcatenate aggregate.
- \see QgsAggregateCalculator::setDelimiter()
- \see QgsAggregateCalculator::delimiter()
+ \see QgsAggregateCalculator.setDelimiter()
+ \see QgsAggregateCalculator.delimiter()
 %End
     };
 

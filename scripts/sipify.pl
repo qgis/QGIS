@@ -3,6 +3,10 @@ use strict;
 use warnings;
 use File::Basename;
 
+use constant PRIVATE => 0;
+use constant PROTECTED => 1;
+use constant PUBLIC => 2;
+
 # TODO add contexts for
 # "multiline function signatures"
 # docustrings for QgsFeature::QgsAttributes
@@ -40,7 +44,7 @@ open(my $header, "<", $headerfile) || die "Couldn't open '".$headerfile."' for r
 # contexts
 my $SIP_RUN = 0;
 my $HEADER_CODE = 0;
-my $PRIVATE_SECTION = 0;
+my $ACCESS = PUBLIC;
 my $MULTILINE_DEFINITION = 0;
 
 my $comment = '';
@@ -85,8 +89,8 @@ while(!eof $header){
     if ($line =~ m/^\s*#/){
         if ( $line =~ m/^\s*#ifdef SIP_RUN/){
             $SIP_RUN = 1;
-            if ($PRIVATE_SECTION == 1){
-                print $private_section_line;
+            if ($ACCESS == PRIVATE){
+                print $private_section_line
             }
             next;
         }
@@ -133,7 +137,7 @@ while(!eof $header){
                 }
                 elsif ( $line =~ m/^\s*#else/ && $nesting_index == 0 ){
                     # code here will be printed out
-                    if ($PRIVATE_SECTION == 1){
+                    if ($ACCESS == PRIVATE){
                         print $private_section_line;
                     }
                     $SIP_RUN = 1;
@@ -178,21 +182,22 @@ while(!eof $header){
 
     # Private members (exclude SIP_RUN)
     if ( $line =~ m/^\s*private( slots)?:/ ){
-        $PRIVATE_SECTION = 1;
+        $ACCESS = PRIVATE;
         $private_section_line = $line;
         next;
     }
-    if ( $PRIVATE_SECTION == 1 ){
-        if ( $SIP_RUN == 0){
-            if ( $line =~ m/^\s*(public|protected)( slots)?:.*$/ || $line =~ m/^\};.*$/){
-                $PRIVATE_SECTION = 0;
-            }
-            else {
-                next;
-            }
-        }
+    elsif ( $line =~ m/^\s*(public)( slots)?:.*$/ ){
+        $ACCESS = PUBLIC;
     }
-
+    elsif ( $line =~ m/^\};.*$/ ) {
+        $ACCESS = PUBLIC;
+    }
+    elsif ( $line =~ m/^\s*(protected)( slots)?:.*$/ ){
+        $ACCESS = PROTECTED;
+    }
+    elsif ( $ACCESS == PRIVATE && $SIP_RUN == 0 ) {
+      next;
+    }
     # Skip assignment operator
     if ( $line =~ m/operator=\s*\(/ ){
         print "// $line";
@@ -224,6 +229,10 @@ while(!eof $header){
             $comment = processDoxygenLine( $line );
             next;
         }
+    }
+
+    if ( $line =~ m/^(\s*struct)\s+(\w+)$/ ) {
+      $ACCESS = PUBLIC;
     }
 
     # class declaration started
@@ -260,6 +269,7 @@ while(!eof $header){
 
         $comment = '';
         $HEADER_CODE = 1;
+        $ACCESS = PRIVATE;
         next;
     }
 
@@ -282,8 +292,8 @@ while(!eof $header){
         next;
     }
 
-    # skip non-method member declaration (e.g. in protected sections)
-    if ( $SIP_RUN != 1 && $line =~ m/^\s*\w+(::\w+)? \*?\w+( = \w+(\([^()]+\))?)?;/){
+    # skip non-method member declaration (in non-public sections)
+    if ( $SIP_RUN != 1 && $ACCESS != PUBLIC && $line =~ m/^\s*\w+(::\w+)? \*?\w+( = \w+(\([^()]+\))?)?;/){
         next;
     }
 

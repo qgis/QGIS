@@ -23,7 +23,6 @@ class QgsProcessingRegistry : QObject
 %TypeHeaderCode
 #include "qgsprocessingregistry.h"
 %End
-
   public:
 
     QgsProcessingRegistry( QObject *parent /TransferThis/ = 0 );

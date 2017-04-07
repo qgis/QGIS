@@ -23,7 +23,6 @@ class QgsProcessingFeedback : QgsFeedback
 %TypeHeaderCode
 #include "qgsprocessingfeedback.h"
 %End
-
   public:
 
     virtual void setProgressText( const QString &text );

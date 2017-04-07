@@ -22,7 +22,6 @@ class QgsRasterFileWriterTask : QgsTask
 %TypeHeaderCode
 #include "qgsrasterfilewritertask.h"
 %End
-
   public:
 
     QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe /Transfer/,

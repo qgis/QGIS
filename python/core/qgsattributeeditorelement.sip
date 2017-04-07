@@ -15,7 +15,6 @@ class QgsAttributeEditorElement /Abstract/
 %TypeHeaderCode
 #include "qgsattributeeditorelement.h"
 %End
-
 %ConvertToSubClassCode
     switch ( sipCpp->type() )
     {
