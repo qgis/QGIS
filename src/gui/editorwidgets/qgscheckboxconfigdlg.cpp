@@ -22,6 +22,15 @@ QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 
   connect( leCheckedState, &QLineEdit::textEdited, this, &QgsEditorConfigWidget::changed );
   connect( leUncheckedState, &QLineEdit::textEdited, this, &QgsEditorConfigWidget::changed );
+
+  if ( vl->fields().at( fieldIdx ).type() == QVariant::Bool )
+  {
+    leCheckedState->setEnabled( false );
+    leUncheckedState->setEnabled( false );
+
+    leCheckedState->setPlaceholderText( QStringLiteral( "TRUE" ) );
+    leUncheckedState->setPlaceholderText( QStringLiteral( "FALSE" ) );
+  }
 }
 
 QVariantMap QgsCheckBoxConfigDlg::config()
@@ -36,6 +45,9 @@ QVariantMap QgsCheckBoxConfigDlg::config()
 
 void QgsCheckBoxConfigDlg::setConfig( const QVariantMap &config )
 {
-  leCheckedState->setText( config.value( QStringLiteral( "CheckedState" ) ).toString() );
-  leUncheckedState->setText( config.value( QStringLiteral( "UncheckedState" ) ).toString() );
+  if ( layer()->fields().at( field() ).type() != QVariant::Bool )
+  {
+    leCheckedState->setText( config.value( QStringLiteral( "CheckedState" ) ).toString() );
+    leUncheckedState->setText( config.value( QStringLiteral( "UncheckedState" ) ).toString() );
+  }
 }

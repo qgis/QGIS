@@ -27,12 +27,21 @@ QVariant QgsCheckboxWidgetWrapper::value() const
 {
   QVariant v;
 
-  if ( mGroupBox )
-    v = mGroupBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
+  if ( field().type() == QVariant::Bool )
+  {
+    if ( mGroupBox )
+      v = mGroupBox->isChecked();
+    else if ( mCheckBox )
+      v = mCheckBox->isChecked();
+  }
+  else
+  {
+    if ( mGroupBox )
+      v = mGroupBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
 
-  if ( mCheckBox )
-    v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
-
+    else if ( mCheckBox )
+      v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
+  }
 
   return v;
 }
@@ -68,7 +77,16 @@ bool QgsCheckboxWidgetWrapper::valid() const
 
 void QgsCheckboxWidgetWrapper::setValue( const QVariant &value )
 {
-  bool state = ( value == config( QStringLiteral( "CheckedState" ) ) );
+  bool state = false;
+
+  if ( field().type() == QVariant::Bool )
+  {
+    state = value.toBool();
+  }
+  else
+  {
+    state = ( value == config( QStringLiteral( "CheckedState" ) ) );
+  }
   if ( mGroupBox )
   {
     mGroupBox->setChecked( state );
