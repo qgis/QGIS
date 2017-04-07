@@ -51,14 +51,12 @@ class QgsSipifyHeader : QtClass<QVariant>
 %TypeHeaderCode
 #include "sipifyheader.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->headerType() == QgsSipifyHeader::Special )
       sipType = sipType_QgsSpecialSipifyHeader;
     else
       sipType = sipType_QgsStandardSipifyHeader;
 %End
-
   public:
     enum MyEnum
     {
@@ -194,12 +192,13 @@ class ClassWithPrivateInheritanceOnly
 %TypeHeaderCode
 #include "sipifyheader.h"
 %End
+  public:
     explicit ClassWithPrivateInheritanceOnly();
 %Docstring
 A constructor with definition in header on several lines
 %End
 
-}
+};
 
 class AbstractClass /Abstract/
 {

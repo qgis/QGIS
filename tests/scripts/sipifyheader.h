@@ -248,6 +248,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
  */
 class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass
 {
+  public:
     //! A constructor with definition in header on several lines
     explicit ClassWithPrivateInheritanceOnly()
       : QtClass<QVariant>()
@@ -257,7 +258,7 @@ class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass
       haveFun();
     }
 
-}
+};
 
 /**
  * \class AbstractClass
