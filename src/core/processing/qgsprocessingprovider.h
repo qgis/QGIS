@@ -143,14 +143,14 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Returns a list of algorithms supplied by this provider.
      * \see algorithm()
      */
-    QList< QgsProcessingAlgorithm * > algorithms() const;
+    QList< const QgsProcessingAlgorithm * > algorithms() const;
 
     /**
      * Returns the matching algorithm by \a name, or a nullptr if no matching
      * algorithm is contained by this provider.
      * \see algorithms()
      */
-    QgsProcessingAlgorithm *algorithm( const QString &name ) const;
+    const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
 
   signals:
 
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
 
   private:
 
-    QMap< QString, QgsProcessingAlgorithm * > mAlgorithms;
+    QMap< QString, const QgsProcessingAlgorithm * > mAlgorithms;
 
 #ifdef SIP_RUN
     QgsProcessingProvider( const QgsProcessingProvider &other );

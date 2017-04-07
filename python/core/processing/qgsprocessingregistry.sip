@@ -46,7 +46,7 @@ class QgsProcessingRegistry : QObject
  and the provider's parent will be set to the registry.
  Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
  in the registry).
- Adding a provider to the registry automatically triggers the providers QgsProcessingProvider::load()
+ Adding a provider to the registry automatically triggers the providers QgsProcessingProvider.load()
  method to populate the provider with algorithms.
  \see removeProvider()
 %End
@@ -70,15 +70,15 @@ class QgsProcessingRegistry : QObject
  Returns a matching provider by provider ID.
 %End
 
-    QList< QgsProcessingAlgorithm * > algorithms() const;
+    QList< const QgsProcessingAlgorithm *> algorithms() const;
 %Docstring
  Returns a list of all available algorithms from registered providers.
  \see algorithmById()
 %End
 
-    QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
+    const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
 %Docstring
- Finds an algorithm by its ID. If no matching algorithm is found, a nullptr
+ Finds an algorithm by its ID. If no matching algorithm is found, a None
  is returned.
  \see algorithms()
 %End

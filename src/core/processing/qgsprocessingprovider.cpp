@@ -44,21 +44,15 @@ void QgsProcessingProvider::refreshAlgorithms()
   qDeleteAll( mAlgorithms );
   mAlgorithms.clear();
   loadAlgorithms();
-
-  QMap< QString, QgsProcessingAlgorithm * >::const_iterator it = mAlgorithms.constBegin();
-  for ( ; it != mAlgorithms.constEnd(); ++it )
-  {
-    it.value()->setProvider( this );
-  }
   emit algorithmsLoaded();
 }
 
-QList<QgsProcessingAlgorithm *> QgsProcessingProvider::algorithms() const
+QList<const QgsProcessingAlgorithm *> QgsProcessingProvider::algorithms() const
 {
   return mAlgorithms.values();
 }
 
-QgsProcessingAlgorithm *QgsProcessingProvider::algorithm( const QString &name ) const
+const QgsProcessingAlgorithm *QgsProcessingProvider::algorithm( const QString &name ) const
 {
   return mAlgorithms.value( name );
 }
@@ -71,6 +65,7 @@ bool QgsProcessingProvider::addAlgorithm( QgsProcessingAlgorithm *algorithm )
   if ( mAlgorithms.contains( algorithm->name() ) )
     return false;
 
+  algorithm->setProvider( this );
   mAlgorithms.insert( algorithm->name(), algorithm );
   return true;
 }

@@ -123,15 +123,15 @@ class QgsProcessingProvider : QObject
  Refreshes the algorithms available from the provider, causing it to re-populate with all associated algorithms.
 %End
 
-    QList< QgsProcessingAlgorithm * > algorithms() const;
+    QList< const QgsProcessingAlgorithm * > algorithms() const;
 %Docstring
  Returns a list of algorithms supplied by this provider.
  \see algorithm()
 %End
 
-    QgsProcessingAlgorithm *algorithm( const QString &name ) const;
+    const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
 %Docstring
- Returns the matching algorithm by name, or a nullptr if no matching
+ Returns the matching algorithm by name, or a None if no matching
  algorithm is contained by this provider.
  \see algorithms()
 %End

@@ -90,14 +90,14 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      * Returns a list of all available algorithms from registered providers.
      * \see algorithmById()
      */
-    QList< QgsProcessingAlgorithm * > algorithms() const;
+    QList< const QgsProcessingAlgorithm *> algorithms() const;
 
     /**
      * Finds an algorithm by its ID. If no matching algorithm is found, a nullptr
      * is returned.
      * \see algorithms()
      */
-    QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
+    const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
 
   signals:
 

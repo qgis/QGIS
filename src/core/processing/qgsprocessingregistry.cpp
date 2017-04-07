@@ -75,9 +75,9 @@ QgsProcessingProvider *QgsProcessingRegistry::providerById( const QString &id )
   return mProviders.value( id, nullptr );
 }
 
-QList< QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithms() const
+QList< const QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithms() const
 {
-  QList< QgsProcessingAlgorithm * > algs;
+  QList< const QgsProcessingAlgorithm * > algs;
   QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
   for ( ; it != mProviders.constEnd(); ++it )
   {
@@ -86,12 +86,12 @@ QList< QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithms() const
   return algs;
 }
 
-QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QString &id ) const
+const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QString &id ) const
 {
   QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
   for ( ; it != mProviders.constEnd(); ++it )
   {
-    Q_FOREACH ( QgsProcessingAlgorithm *alg, it.value()->algorithms() )
+    Q_FOREACH ( const QgsProcessingAlgorithm *alg, it.value()->algorithms() )
       if ( alg->id() == id )
         return alg;
   }
