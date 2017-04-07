@@ -90,16 +90,14 @@ class Grass7Algorithm(GeoAlgorithm):
         self.uniqueSuffix = str(uuid.uuid4()).replace('-', '')
 
         # Use the ext mechanism
-        name = self.commandLineName().replace('.', '_')[len('grass7:'):]
+        name = self.name().replace('.', '_')
         try:
             self.module = importlib.import_module('processing.algs.grass7.ext.' + name)
         except ImportError:
             self.module = None
 
     def getCopy(self):
-        newone = Grass7Algorithm(self.descriptionFile)
-        newone.provider = self.provider
-        return newone
+        return self
 
     def name(self):
         return self._name
@@ -574,9 +572,6 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def getTempFilename(self):
         return system.getTempFilename()
-
-    def commandLineName(self):
-        return 'grass7:' + self.name()
 
     def checkBeforeOpeningParametersDialog(self):
         return Grass7Utils.checkGrass7IsInstalled()

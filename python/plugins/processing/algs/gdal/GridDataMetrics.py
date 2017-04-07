@@ -70,9 +70,6 @@ class GridDataMetrics(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
-    def commandLineName(self):
-        return "gdal:griddatametrics"
-
     def group(self):
         return self.tr('Raster analysis')
 

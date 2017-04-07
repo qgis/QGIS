@@ -33,11 +33,11 @@ from processing.preconfigured.PreconfiguredUtils import algAsDict
 from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsFolder
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-from processing.core.alglist import algList
 
 from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QLabel, QLineEdit, QWidget
 from qgis.PyQt.QtGui import QPalette, QColor
 
+from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 
 
@@ -71,7 +71,7 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
             filepath = os.path.join(preconfiguredAlgorithmsFolder(), filename)
             with open(filepath, "w") as f:
                 json.dump(description, f)
-            algList.reloadProvider('preconfigured')
+            QgsApplication.processingRegistry().providerById('preconfigured').refreshAlgorithms()
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
                 self.buttonBox.accepted.connect(lambda: e.widget.setPalette(QPalette()))

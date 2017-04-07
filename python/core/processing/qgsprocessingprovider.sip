@@ -9,7 +9,7 @@
 
 
 
-class QgsProcessingProvider
+class QgsProcessingProvider : QObject
 {
 %Docstring
  Abstract base class for processing providers. An algorithm provider is a set of
@@ -24,7 +24,7 @@ class QgsProcessingProvider
 
   public:
 
-    QgsProcessingProvider();
+    QgsProcessingProvider( QObject *parent /TransferThis/ = 0 );
 %Docstring
  Constructor for QgsProcessingProvider.
 %End
@@ -64,6 +64,12 @@ class QgsProcessingProvider
 %Docstring
  Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
  missing external dependencies).
+ \see isActive()
+%End
+
+    virtual bool isActive() const;
+%Docstring
+ Returns true if the provider is active and able to run algorithms.
 %End
 
     virtual QStringList supportedOutputRasterLayerExtensions() const;
@@ -93,6 +99,63 @@ class QgsProcessingProvider
  Returns true if the provider supports non-file based outputs (such as memory layers
  or direct database outputs).
  \see supportedOutputVectorLayerExtensions()
+%End
+
+    virtual bool load();
+%Docstring
+ Loads the provider. This will be called when the plugin is being loaded, and any general
+ setup actions should occur in an overridden version of this method.
+ Subclasses should not individually load any algorithms in their load() implementations, as that must
+ occur within the loadAlgorithms() method. Instead, subclasses should call refreshAlgorithms()
+ from any overloaded load() method to trigger an initial load of the provider's algorithms.
+ \returns true if provider could be successfully loaded
+ \see unload()
+%End
+
+    virtual void unload();
+%Docstring
+ Unloads the provider. Any tear-down steps required by the provider should be implemented here.
+ \see load()
+%End
+
+    void refreshAlgorithms();
+%Docstring
+ Refreshes the algorithms available from the provider, causing it to re-populate with all associated algorithms.
+%End
+
+    QList< const QgsProcessingAlgorithm * > algorithms() const;
+%Docstring
+ Returns a list of algorithms supplied by this provider.
+ \see algorithm()
+%End
+
+    const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
+%Docstring
+ Returns the matching algorithm by name, or a None if no matching
+ algorithm is contained by this provider.
+ \see algorithms()
+%End
+
+  signals:
+
+    void algorithmsLoaded();
+%Docstring
+ Emitted when the provider has loaded (or refreshed) its list of available
+ algorithms.
+ \see refreshAlgorithms()
+%End
+
+  protected:
+
+    virtual void loadAlgorithms() = 0;
+%Docstring
+ Loads all algorithms belonging to this provider. Subclasses should implement this, calling
+ addAlgorithm() to register all their associated algorithms.
+%End
+
+    bool addAlgorithm( QgsProcessingAlgorithm *algorithm /Transfer/ );
+%Docstring
+ Adds an algorithm to the provider. Ownership of the algorithm is transferred to the provider.
 %End
 
   private:

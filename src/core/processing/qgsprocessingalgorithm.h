@@ -23,6 +23,8 @@
 #include <QVariant>
 #include <QIcon>
 
+class QgsProcessingProvider;
+
 /**
  * \class QgsProcessingAlgorithm
  * \ingroup core
@@ -50,6 +52,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     virtual ~QgsProcessingAlgorithm() = default;
 
+    //! Algorithms cannot be copied
+    QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other ) = delete;
+    //! Algorithms cannot be copied
+    QgsProcessingAlgorithm &operator=( const QgsProcessingAlgorithm &other ) = delete;
+
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string
      * should be fixed for the algorithm, and must not be localised. The name should
@@ -60,6 +67,14 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see tags()
     */
     virtual QString name() const = 0;
+
+    /**
+     * Returns the unique ID for the algorithm, which is a combination of the algorithm
+     * provider's ID and the algorithms unique name (e.g. "qgis:mergelayers" ).
+     * \see name()
+     * \see provider()
+     */
+    QString id() const;
 
     /**
      * Returns the translated algorithm name, which should be used for any user-visible display
@@ -97,6 +112,28 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Returns the flags indicating how and when the algorithm operates and should be exposed to users.
      */
     virtual Flags flags() const;
+
+    /**
+     * Returns the provider to which this algorithm belongs.
+     */
+    QgsProcessingProvider *provider() const;
+
+  private:
+
+    /**
+     * Associates this algorithm with its provider. No transfer of ownership is involved.
+     */
+    void setProvider( QgsProcessingProvider *provider );
+
+    QgsProcessingProvider *mProvider = nullptr;
+
+    // friend class to access setProvider() - we do not want this public!
+    friend class QgsProcessingProvider;
+    friend class TestQgsProcessing;
+
+#ifdef SIP_RUN
+    QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
+#endif
 
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingAlgorithm::Flags )

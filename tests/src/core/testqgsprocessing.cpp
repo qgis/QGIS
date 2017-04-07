@@ -18,10 +18,24 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingutils.h"
+#include "qgsprocessingalgorithm.h"
 #include <QObject>
+#include <QtTest/QSignalSpy>
 #include "qgstest.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
+
+class DummyAlgorithm : public QgsProcessingAlgorithm
+{
+  public:
+
+    DummyAlgorithm( const QString &name ) : mName( name ) {}
+
+    QString name() const override { return mName; }
+    QString displayName() const override { return mName; }
+
+    QString mName;
+};
 
 //dummy provider for testing
 class DummyProvider : public QgsProcessingProvider
@@ -34,7 +48,40 @@ class DummyProvider : public QgsProcessingProvider
 
     virtual QString name() const override { return "dummy"; }
 
+    void unload() override { if ( unloaded ) { *unloaded = true; } }
+
+    bool *unloaded = nullptr;
+
+  protected:
+
+    virtual void loadAlgorithms() override
+    {
+      QVERIFY( addAlgorithm( new DummyAlgorithm( "alg1" ) ) );
+      QVERIFY( addAlgorithm( new DummyAlgorithm( "alg2" ) ) );
+
+      //dupe name
+      QgsProcessingAlgorithm *a = new DummyAlgorithm( "alg1" );
+      QVERIFY( !addAlgorithm( a ) );
+      delete a;
+
+      QVERIFY( !addAlgorithm( nullptr ) );
+    }
+
     QString mId;
+
+
+};
+
+class DummyProviderNoLoad : public DummyProvider
+{
+  public:
+
+    DummyProviderNoLoad( const QString &id ) : DummyProvider( id ) {}
+
+    bool load() override
+    {
+      return false;
+    }
 
 };
 
@@ -54,6 +101,7 @@ class TestQgsProcessing: public QObject
     void compatibleLayers();
     void normalizeLayerSource();
     void mapLayerFromString();
+    void algorithm();
 
   private:
 
@@ -105,6 +153,13 @@ void TestQgsProcessing::addProvider()
   QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
   delete p3;
+
+  // test that adding a provider which does not load means it is not added to registry
+  DummyProviderNoLoad *p4 = new DummyProviderNoLoad( "p4" );
+  QVERIFY( !r.addProvider( p4 ) );
+  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
+  QCOMPARE( spyProviderAdded.count(), 2 );
+  delete p4;
 }
 
 void TestQgsProcessing::providerById()
@@ -146,10 +201,15 @@ void TestQgsProcessing::removeProvider()
   QVERIFY( r.addProvider( p2 ) );
 
   // remove one by pointer
+  bool unloaded = false;
+  p->unloaded = &unloaded;
   QVERIFY( r.removeProvider( p ) );
   QCOMPARE( spyProviderRemoved.count(), 1 );
   QCOMPARE( spyProviderRemoved.last().at( 0 ).toString(), QString( "p1" ) );
   QCOMPARE( r.providers(), QList< QgsProcessingProvider * >() << p2 );
+
+  //test that provider was unloaded
+  QVERIFY( unloaded );
 
   // should fail, already removed
   QVERIFY( !r.removeProvider( "p1" ) );
@@ -311,6 +371,63 @@ void TestQgsProcessing::mapLayerFromString()
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
   delete l;
+}
+
+void TestQgsProcessing::algorithm()
+{
+  DummyAlgorithm alg( "test" );
+  DummyProvider *p = new DummyProvider( "p1" );
+  QCOMPARE( alg.id(), QString( "test" ) );
+  alg.setProvider( p );
+  QCOMPARE( alg.provider(), p );
+  QCOMPARE( alg.id(), QString( "p1:test" ) );
+
+  QVERIFY( p->algorithms().isEmpty() );
+
+  QSignalSpy providerRefreshed( p, &DummyProvider::algorithmsLoaded );
+  p->refreshAlgorithms();
+  QCOMPARE( providerRefreshed.count(), 1 );
+
+  for ( int i = 0; i < 2; ++i )
+  {
+    QCOMPARE( p->algorithms().size(), 2 );
+    QCOMPARE( p->algorithm( "alg1" )->name(), QStringLiteral( "alg1" ) );
+    QCOMPARE( p->algorithm( "alg1" )->provider(), p );
+    QCOMPARE( p->algorithm( "alg2" )->provider(), p );
+    QCOMPARE( p->algorithm( "alg2" )->name(), QStringLiteral( "alg2" ) );
+    QVERIFY( !p->algorithm( "aaaa" ) );
+    QVERIFY( p->algorithms().contains( p->algorithm( "alg1" ) ) );
+    QVERIFY( p->algorithms().contains( p->algorithm( "alg2" ) ) );
+
+    // reload, then retest on next loop
+    // must be safe for providers to reload their algorithms
+    p->refreshAlgorithms();
+    QCOMPARE( providerRefreshed.count(), 2 + i );
+  }
+
+  QgsProcessingRegistry r;
+  r.addProvider( p );
+  QCOMPARE( r.algorithms().size(), 2 );
+  QVERIFY( r.algorithms().contains( p->algorithm( "alg1" ) ) );
+  QVERIFY( r.algorithms().contains( p->algorithm( "alg2" ) ) );
+
+  // algorithmById
+  QCOMPARE( r.algorithmById( "p1:alg1" ), p->algorithm( "alg1" ) );
+  QCOMPARE( r.algorithmById( "p1:alg2" ), p->algorithm( "alg2" ) );
+  QVERIFY( !r.algorithmById( "p1:alg3" ) );
+  QVERIFY( !r.algorithmById( "px:alg1" ) );
+
+  //test that loading a provider triggers an algorithm refresh
+  DummyProvider *p2 = new DummyProvider( "p2" );
+  QVERIFY( p2->algorithms().isEmpty() );
+  p2->load();
+  QCOMPARE( p2->algorithms().size(), 2 );
+
+  // test that adding a provider to the registry automatically refreshes algorithms (via load)
+  DummyProvider *p3 = new DummyProvider( "p3" );
+  QVERIFY( p3->algorithms().isEmpty() );
+  r.addProvider( p3 );
+  QCOMPARE( p3->algorithms().size(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

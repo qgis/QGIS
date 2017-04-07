@@ -40,7 +40,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 class ScriptUtils(object):
 
     SCRIPTS_FOLDER = 'SCRIPTS_FOLDER'
-    ACTIVATE_SCRIPTS = 'ACTIVATE_SCRIPTS'
 
     @staticmethod
     def defaultScriptsFolder():

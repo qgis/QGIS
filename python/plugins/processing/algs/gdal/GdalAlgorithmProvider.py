@@ -27,8 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsApplication
-from processing.core.AlgorithmProvider import AlgorithmProvider
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from .GdalUtils import GdalUtils
 
@@ -87,7 +88,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class GdalAlgorithmProvider(AlgorithmProvider):
+class GdalAlgorithmProvider(QgsProcessingProvider):
 
     """This provider incorporates GDAL-based algorithms into the
     Processing framework.
@@ -98,19 +99,30 @@ class GdalAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
-        self.createAlgsList()
+        self.algs = []
 
-    def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
+    def load(self):
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GDAL',
+                                            self.tr('Activate'), True))
         ProcessingConfig.addSetting(Setting(
             self.name(),
             GdalUtils.GDAL_HELP_PATH,
             self.tr('Location of GDAL docs'),
             GdalUtils.gdalHelpPath()))
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
+        return True
 
     def unload(self):
-        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting('ACTIVATE_GDAL')
         ProcessingConfig.removeSetting(GdalUtils.GDAL_HELP_PATH)
+
+    def isActive(self):
+        return ProcessingConfig.getSetting('ACTIVATE_GDAL')
+
+    def setActive(self, active):
+        ProcessingConfig.setSettingValue('ACTIVATE_GDAL', active)
 
     def name(self):
         version = GdalUtils.readableVersion()
@@ -125,27 +137,28 @@ class GdalAlgorithmProvider(AlgorithmProvider):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGdal.svg")
 
-    def _loadAlgorithms(self):
-        self.algs = self.preloadedAlgs
-
-    def createAlgsList(self):
-        # First we populate the list of algorithms with those created
-        # extending GeoAlgorithm directly (those that execute GDAL
-        # using the console)
-        self.preloadedAlgs = [nearblack(), information(), warp(), translate(),
-                              rgb2pct(), pct2rgb(), merge(), buildvrt(), polygonize(), gdaladdo(),
-                              ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
-                              sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
-                              hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
-                              ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
-                              GridDataMetrics(), gdaltindex(), gdalcalc(), rasterize_over(),
-                              retile(), gdal2tiles(), AssignProjection(),
-                              # ----- OGR tools -----
-                              OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
-                              Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
-                              Ogr2OgrBuffer(), Ogr2OgrDissolve(), OneSideBuffer(),
-                              OffsetCurve(), Ogr2OgrTableToPostGisList(), OgrSql(),
-                              ]
+    def loadAlgorithms(self):
+        self.algs = [nearblack(), information(), warp(), translate(),
+                     rgb2pct(), pct2rgb(), merge(), buildvrt(), polygonize(), gdaladdo(),
+                     ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
+                     sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
+                     hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
+                     ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
+                     GridDataMetrics(), gdaltindex(), gdalcalc(), rasterize_over(),
+                     retile(), gdal2tiles(), AssignProjection(),
+                     # ----- OGR tools -----
+                     OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
+                     Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
+                     Ogr2OgrBuffer(), Ogr2OgrDissolve(), OneSideBuffer(),
+                     OffsetCurve(), Ogr2OgrTableToPostGisList(), OgrSql(),
+                     ]
+        for a in self.algs:
+            self.addAlgorithm(a)
 
     def supportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'GdalAlgorithmProvider'
+        return QCoreApplication.translate(context, string)

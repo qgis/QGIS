@@ -60,7 +60,8 @@ class TestGdalOgr2OgrToPostgis(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # start_app()
-        pass
+        from processing.core.Processing import Processing
+        Processing.initialize()
 
     @classmethod
     def tearDownClass(cls):

@@ -321,7 +321,7 @@ class ModelerParametersDialog(QDialog):
             self.dependenciesPanel.setSelectedItems(selected)
 
     def createAlgorithm(self):
-        alg = Algorithm(self._alg.commandLineName())
+        alg = Algorithm(self._alg.id())
         alg.setName(self.model)
         alg.description = self.descriptionBox.text()
         params = self._alg.parameters

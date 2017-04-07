@@ -17,6 +17,15 @@
 
 #include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingprovider.h"
+
+QString QgsProcessingAlgorithm::id() const
+{
+  if ( mProvider )
+    return QString( "%1:%2" ).arg( mProvider->id(), name() );
+  else
+    return name();
+}
 
 QIcon QgsProcessingAlgorithm::icon() const
 {
@@ -31,4 +40,14 @@ QString QgsProcessingAlgorithm::svgIconPath() const
 QgsProcessingAlgorithm::Flags QgsProcessingAlgorithm::flags() const
 {
   return FlagSupportsBatch;
+}
+
+QgsProcessingProvider *QgsProcessingAlgorithm::provider() const
+{
+  return mProvider;
+}
+
+void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
+{
+  mProvider = provider;
 }

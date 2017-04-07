@@ -67,9 +67,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         # loading output layers
         self.crs = None
 
-        # To be set by the provider when it loads the algorithm
-        self.provider = None
-
         # If the algorithm is run as part of a model, the parent model
         # can be set in this variable, to allow for customized
         # behavior, in case some operations should be run differently
@@ -90,13 +87,13 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
     # methods to overwrite when creating a custom geoalgorithm
 
     def _formatHelp(self, text):
-        return "<h2>%s</h2>%s" % (self.name(), "".join(["<p>%s</p>" % s for s in text.split("\n")]))
+        return "<h2>%s</h2>%s" % (self.displayName(), "".join(["<p>%s</p>" % s for s in text.split("\n")]))
 
     def help(self):
         return False, None
 
     def shortHelp(self):
-        text = shortHelp.get(self.commandLineName(), None)
+        text = shortHelp.get(self.id(), None)
         if text is not None:
             text = self._formatHelp(text)
         return text
@@ -464,9 +461,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         s += '\n'
         return s
 
-    def commandLineName(self):
-        return self.provider.id().lower() + ':' + self.name()
-
     def removeOutputFromName(self, name):
         for out in self.outputs:
             if out.name == name:
@@ -502,7 +496,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         console.
         """
 
-        s = 'processing.run("' + self.commandLineName() + '",'
+        s = 'processing.run("' + self.id() + '",'
         for param in self.parameters:
             s += param.getValueAsCommandLineParameter() + ','
         for out in self.outputs:

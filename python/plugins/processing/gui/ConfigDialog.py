@@ -40,10 +40,12 @@ from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QToolButton,
                                  QHBoxLayout,
                                  QComboBox,
-                                 QPushButton)
+                                 QPushButton,
+                                 QApplication)
 from qgis.PyQt.QtGui import (QIcon,
                              QStandardItemModel,
-                             QStandardItem)
+                             QStandardItem,
+                             QCursor)
 
 from qgis.gui import (QgsDoubleSpinBox,
                       QgsSpinBox,
@@ -223,22 +225,21 @@ class ConfigDialog(BASE, WIDGET):
         widget.setLayout(layout)
         self.tree.setIndexWidget(emptyItem.index(), widget)
 
-        providers = Processing.providers
-        for provider in providers:
+        for provider in QgsApplication.processingRegistry().providers():
             providerDescription = provider.name()
             groupItem = QStandardItem(providerDescription)
             icon = provider.icon()
             groupItem.setIcon(icon)
             groupItem.setEditable(False)
 
-            for alg in provider.algs:
+            for alg in provider.algorithms():
                 algItem = QStandardItem(alg.displayName())
                 algItem.setIcon(icon)
                 algItem.setEditable(False)
                 try:
-                    settingMenu = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
-                    settingButton = ProcessingConfig.settings["BUTTON_" + alg.commandLineName()]
-                    settingIcon = ProcessingConfig.settings["ICON_" + alg.commandLineName()]
+                    settingMenu = ProcessingConfig.settings["MENU_" + alg.id()]
+                    settingButton = ProcessingConfig.settings["BUTTON_" + alg.id()]
+                    settingIcon = ProcessingConfig.settings["ICON_" + alg.id()]
                 except:
                     continue
                 self.items[settingMenu] = SettingItem(settingMenu)
@@ -266,11 +267,10 @@ class ConfigDialog(BASE, WIDGET):
         self.adjustColumns()
 
     def resetMenusToDefaults(self):
-        providers = Processing.providers
-        for provider in providers:
-            for alg in provider.algs:
-                d = defaultMenuEntries.get(alg.commandLineName(), "")
-                setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+        for provider in QgsApplication.processingRegistry().providers():
+            for alg in provider.algorithms():
+                d = defaultMenuEntries.get(alg.id(), "")
+                setting = ProcessingConfig.settings["MENU_" + alg.id()]
                 item = self.items[setting]
                 item.setData(d, Qt.EditRole)
         self.saveMenus = True
@@ -289,7 +289,12 @@ class ConfigDialog(BASE, WIDGET):
                                             self.tr('Wrong value for parameter "{0}":\n\n{1}').format(setting.description, str(e)))
                         return
                 setting.save(qsettings)
-        Processing.updateAlgsList()
+
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        for p in QgsApplication.processingRegistry().providers():
+            p.refreshAlgorithms()
+        QApplication.restoreOverrideCursor()
+
         settingsWatcher.settingsChanged.emit()
 
     def itemExpanded(self, idx):

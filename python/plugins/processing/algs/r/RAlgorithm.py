@@ -70,9 +70,7 @@ class RAlgorithm(GeoAlgorithm):
     RPLOTS = 'RPLOTS'
 
     def getCopy(self):
-        newone = RAlgorithm(self.descriptionFile)
-        newone.provider = self.provider
-        return newone
+        return self
 
     def __init__(self, descriptionFile, script=None):
         GeoAlgorithm.__init__(self)

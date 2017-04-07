@@ -50,7 +50,6 @@ from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.WrongModelException import WrongModelException
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -111,7 +110,7 @@ class ModelerDialog(BASE, WIDGET):
                 if text in ModelerParameterDefinitionDialog.paramTypes:
                     self.addInputOfType(text, event.pos())
                 else:
-                    alg = algList.getAlgorithm(text)
+                    alg = QgsApplication.processingRegistry().algorithmById(text)
                     if alg is not None:
                         self._addAlgorithm(alg.getCopy(), event.pos())
                 event.accept()
@@ -186,7 +185,7 @@ class ModelerDialog(BASE, WIDGET):
             item = items[0]
             if isinstance(item, TreeAlgorithmItem):
                 mimeData = QMimeData()
-                mimeData.setText(item.alg.commandLineName())
+                mimeData.setText(item.alg.id())
             return mimeData
 
         self.algorithmTree.mimeData = _mimeDataAlgorithm
@@ -270,9 +269,6 @@ class ModelerDialog(BASE, WIDGET):
             evt.accept()
 
     def editHelp(self):
-        if self.alg.provider is None:
-            # Might happen if model is opened from modeler dialog
-            self.alg.provider = QgsApplication.processingRegistry().providerById('model')
         alg = self.alg.getCopy()
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
@@ -285,9 +281,6 @@ class ModelerDialog(BASE, WIDGET):
             self.bar.pushMessage("", "Model doesn't contain any algorithm and/or parameter and can't be executed", level=QgsMessageBar.WARNING, duration=5)
             return
 
-        if self.alg.provider is None:
-            # Might happen if model is opened from modeler dialog
-            self.alg.provider = QgsApplication.processingRegistry().providerById('model')
         alg = self.alg.getCopy()
         dlg = AlgorithmDialog(alg)
         dlg.exec_()
@@ -555,7 +548,7 @@ class ModelerDialog(BASE, WIDGET):
     def addAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = algList.getAlgorithm(item.alg.commandLineName())
+            alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
             self._addAlgorithm(alg.getCopy())
 
     def _addAlgorithm(self, alg, pos=None):
@@ -605,19 +598,16 @@ class ModelerDialog(BASE, WIDGET):
         self.algorithmTree.clear()
         text = str(self.searchBox.text())
         search_strings = text.split(' ')
-        allAlgs = algList.algs
-        for provider_id in list(allAlgs.keys()):
-            name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
-            if not ProcessingConfig.getSetting(name):
+        for provider in QgsApplication.processingRegistry().providers():
+            if not provider.isActive():
                 continue
             groups = {}
-            algs = list(allAlgs[provider_id].values())
 
             # Add algorithms
-            for alg in algs:
+            for alg in provider.algorithms():
                 if alg.flags() & QgsProcessingAlgorithm.FlagHideFromModeler:
                     continue
-                if alg.commandLineName() == self.alg.commandLineName():
+                if alg.id() == self.alg.id():
                     continue
 
                 item_text = [alg.displayName().lower()]
@@ -641,7 +631,6 @@ class ModelerDialog(BASE, WIDGET):
 
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
-                provider = QgsApplication.processingRegistry().providerById(provider_id)
                 providerItem.setText(0, provider.name())
                 providerItem.setToolTip(0, provider.name())
                 providerItem.setIcon(0, provider.icon())

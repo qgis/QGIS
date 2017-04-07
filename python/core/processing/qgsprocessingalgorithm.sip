@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProcessingAlgorithm
 {
 %Docstring
@@ -37,6 +38,8 @@ class QgsProcessingAlgorithm
 
     virtual ~QgsProcessingAlgorithm();
 
+//     QgsProcessingAlgorithm &operator=( const QgsProcessingAlgorithm &other ) = delete;
+
     virtual QString name() const = 0;
 %Docstring
  Returns the algorithm name, used for identifying the algorithm. This string
@@ -46,6 +49,14 @@ class QgsProcessingAlgorithm
  \see displayName()
  \see group()
  \see tags()
+%End
+
+    QString id() const;
+%Docstring
+ Returns the unique ID for the algorithm, which is a combination of the algorithm
+ provider's ID and the algorithms unique name (e.g. "qgis:mergelayers" ).
+ \see name()
+ \see provider()
 %End
 
     virtual QString displayName() const = 0;
@@ -85,6 +96,13 @@ class QgsProcessingAlgorithm
  Returns the flags indicating how and when the algorithm operates and should be exposed to users.
 %End
 
+    QgsProcessingProvider *provider() const;
+%Docstring
+ Returns the provider to which this algorithm belongs.
+%End
+
+  private:
+    QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
 };
 QFlags<QgsProcessingAlgorithm::Flag> operator|(QgsProcessingAlgorithm::Flag f1, QFlags<QgsProcessingAlgorithm::Flag> f2);
 

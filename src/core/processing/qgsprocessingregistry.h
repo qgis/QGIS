@@ -57,9 +57,12 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QList<QgsProcessingProvider *> providers() const { return mProviders.values(); }
 
     /**
-     * Add a processing provider to the registry. Ownership of the provider is transferred to the registry.
+     * Add a processing provider to the registry. Ownership of the provider is transferred to the registry,
+     * and the provider's parent will be set to the registry.
      * Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
      * in the registry).
+     * Adding a provider to the registry automatically triggers the providers QgsProcessingProvider::load()
+     * method to populate the provider with algorithms.
      * \see removeProvider()
      */
     bool addProvider( QgsProcessingProvider *provider SIP_TRANSFER );
@@ -82,6 +85,19 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      * Returns a matching provider by provider ID.
      */
     QgsProcessingProvider *providerById( const QString &id );
+
+    /**
+     * Returns a list of all available algorithms from registered providers.
+     * \see algorithmById()
+     */
+    QList< const QgsProcessingAlgorithm *> algorithms() const;
+
+    /**
+     * Finds an algorithm by its ID. If no matching algorithm is found, a nullptr
+     * is returned.
+     * \see algorithms()
+     */
+    const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
 
   signals:
 

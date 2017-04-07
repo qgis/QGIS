@@ -46,7 +46,6 @@ from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
-from processing.core.alglist import algList
 from processing.core.ProcessingResults import resultsList
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
@@ -164,6 +163,7 @@ class ProcessingPlugin(object):
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
 
         removeMenus()
+        Processing.deinitialize()
 
     def openCommander(self):
         if self.commander is None:
@@ -185,7 +185,8 @@ class ProcessingPlugin(object):
         dlg.show()
 
     def updateModel(self):
-        algList.reloadProvider('model')
+        model_provider = QgsApplication.processingRegistry().providerById('model')
+        model_provider.refreshAlgorithms()
 
     def openResults(self):
         if self.resultsDock.isVisible():

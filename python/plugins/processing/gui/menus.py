@@ -3,7 +3,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QMenu
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QApplication
-from processing.core.alglist import algList
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -113,15 +112,15 @@ defaultMenuEntries.update({'gdal:buildvirtualraster': miscMenu,
 
 def initializeMenus():
     for provider in QgsApplication.processingRegistry().providers():
-        for alg in provider.algs:
-            d = defaultMenuEntries.get(alg.commandLineName(), "")
-            setting = Setting(menusSettingsGroup, "MENU_" + alg.commandLineName(),
+        for alg in provider.algorithms():
+            d = defaultMenuEntries.get(alg.id(), "")
+            setting = Setting(menusSettingsGroup, "MENU_" + alg.id(),
                               "Menu path", d)
             ProcessingConfig.addSetting(setting)
-            setting = Setting(menusSettingsGroup, "BUTTON_" + alg.commandLineName(),
+            setting = Setting(menusSettingsGroup, "BUTTON_" + alg.id(),
                               "Add button", False)
             ProcessingConfig.addSetting(setting)
-            setting = Setting(menusSettingsGroup, "ICON_" + alg.commandLineName(),
+            setting = Setting(menusSettingsGroup, "ICON_" + alg.id(),
                               "Icon", "", valuetype=Setting.FILE)
             ProcessingConfig.addSetting(setting)
 
@@ -135,33 +134,31 @@ def updateMenus():
 
 
 def createMenus():
-    for provider in list(algList.algs.values()):
-        for alg in list(provider.values()):
-            menuPath = ProcessingConfig.getSetting("MENU_" + alg.commandLineName())
-            addButton = ProcessingConfig.getSetting("BUTTON_" + alg.commandLineName())
-            icon = ProcessingConfig.getSetting("ICON_" + alg.commandLineName())
-            if icon and os.path.exists(icon):
-                icon = QIcon(icon)
-            else:
-                icon = None
-            if menuPath:
-                paths = menuPath.split("/")
-                addAlgorithmEntry(alg, paths[0], paths[-1], addButton=addButton, icon=icon)
+    for alg in QgsApplication.processingRegistry().algorithms():
+        menuPath = ProcessingConfig.getSetting("MENU_" + alg.id())
+        addButton = ProcessingConfig.getSetting("BUTTON_" + alg.id())
+        icon = ProcessingConfig.getSetting("ICON_" + alg.id())
+        if icon and os.path.exists(icon):
+            icon = QIcon(icon)
+        else:
+            icon = None
+        if menuPath:
+            paths = menuPath.split("/")
+            addAlgorithmEntry(alg, paths[0], paths[-1], addButton=addButton, icon=icon)
 
 
 def removeMenus():
-    for provider in list(algList.algs.values()):
-        for alg in list(provider.values()):
-            menuPath = ProcessingConfig.getSetting("MENU_" + alg.commandLineName())
-            if menuPath:
-                paths = menuPath.split("/")
-                removeAlgorithmEntry(alg, paths[0], paths[-1])
+    for alg in QgsApplication.processingRegistry().algorithms():
+        menuPath = ProcessingConfig.getSetting("MENU_" + alg.id())
+        if menuPath:
+            paths = menuPath.split("/")
+            removeAlgorithmEntry(alg, paths[0], paths[-1])
 
 
 def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, addButton=False):
     action = QAction(icon or alg.icon(), actionText or alg.displayName(), iface.mainWindow())
     action.triggered.connect(lambda: _executeAlgorithm(alg))
-    action.setObjectName("mProcessingUserMenu_%s" % alg.commandLineName())
+    action.setObjectName("mProcessingUserMenu_%s" % alg.id())
 
     if menuName:
         menu = getMenu(menuName, iface.mainWindow().menuBar())
