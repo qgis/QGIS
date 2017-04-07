@@ -175,6 +175,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     /**
      * I return a pointer. If something bad happens, I return nullptr.
+    * \returns pointer to something cool
      */
     MyPointer *pointerReturnValue();
 
@@ -191,7 +192,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     //! complex default value and type (i.e. containing commas) should be given as a string with single quotes
     void complexDefaultValueAndType( QList<QPair<QgsFeatureId SIP_PYTYPE( qint64 ), QMap<int, QString>>> list = QList<QPair<QgsFeatureId, QMap<int, QString>>>() SIP_PYDEFAULTVALUE( 'QList<QPair<qint64, QMap<int, QString>>>()' ) );
 
-    inline inlineKeyWordShouldNotAppear();
+    inline int inlineKeyWordShouldNotAppear();
 
     QString labelForRange( double lower, double upper ) const SIP_PYNAME( labelForLowerUpper );
 
@@ -207,6 +208,18 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     bool deletedFunction() = delete; // some comments
 
     virtual int overriddenProperty() override { return 42; } // if in doubt, comment it out
+
+    QString returnTypeString() const;
+
+    double returnTypeDouble() const;
+
+    QList< QgsAnnotation * > returnTypeList();
+
+    QVector< QgsAnnotation > returnTypeVector();
+
+    QStringList returnTypeStringList();
+
+    QSet<QgsActionScope> returnTypeSet();
 
   protected:
     bool thisShouldBeListed();

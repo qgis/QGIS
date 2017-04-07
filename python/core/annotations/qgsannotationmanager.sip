@@ -44,6 +44,7 @@ class QgsAnnotationManager : QObject
  Returns true if the addition was successful, or false if the annotation could not be added.
  \see removeAnnotation()
  \see annotationAdded()
+ :rtype: bool
 %End
 
     bool removeAnnotation( QgsAnnotation *annotation );
@@ -55,6 +56,7 @@ class QgsAnnotationManager : QObject
  \see compositionRemoved()
  \see compositionAboutToBeRemoved()
  \see clear()
+ :rtype: bool
 %End
 
     void clear();
@@ -66,6 +68,7 @@ class QgsAnnotationManager : QObject
     QList< QgsAnnotation * > annotations() const;
 %Docstring
  Returns a list of all annotations contained in the manager.
+ :rtype: list of QgsAnnotation
 %End
 
     bool readXml( const QDomElement &element, const QDomDocument &doc );
@@ -73,12 +76,14 @@ class QgsAnnotationManager : QObject
  Reads the manager's state from a DOM element, restoring all annotations
  present in the XML document.
  \see writeXml()
+ :rtype: bool
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
  Returns a DOM element representing the state of the manager.
  \see readXml()
+ :rtype: QDomElement
 %End
 
   signals:

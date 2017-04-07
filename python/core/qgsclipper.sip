@@ -72,7 +72,8 @@ class QgsClipper
  Takes a linestring and clips it to clipExtent
  \param curve the linestring
  \param clipExtent clipping bounds
- \returns clipped line coordinates
+ :return: clipped line coordinates
+ :rtype: QPolygonF
 %End
 
 };

@@ -20,6 +20,8 @@ sub processDoxygenLine
     $line =~ s/::/./g;
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
+	# replace \returns with :return:
+	$line =~ s/\\return(s)?/:return:/g;
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
         return ""
@@ -52,6 +54,7 @@ my $nesting_index = 0;
 my $private_section_line = '';
 my $line;
 my $classname = '';
+my $return_type = '';
 my %qflag_hash;
 
 print  "/************************************************************************\n";
@@ -344,7 +347,7 @@ while(!eof $header){
         }
 
         # remove function bodies
-        if ( $line =~  m/^(\s*)?(const )?(virtual |static )?(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+|operator.)\(.*?(\(.*\))*.*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
+        if ( $line =~  m/^(\s*)?(const )?(virtual |static )?(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
             my $newline = "$1$2$3$4;\n";
             if ($line !~ m/\{.*?\}$/){
                 $line = readline $header;
@@ -359,10 +362,29 @@ while(!eof $header){
             }
             $line = $newline;
         }
+
+        if ( $line =~  m/^\s*(?:const |virtual |static |inline )*(?!explicit)([\w:]+(?:<.*?>)?)\s+(?:\*|&)?(?:\w+|operator.{1,2})\(.*$/ ){
+            if ($1 !~ m/(void|SIP_PYOBJECT|operator|return|QFlag)/ ){
+                $return_type = $1;
+                # replace :: with . (changes c++ style namespace/class directives to Python style)
+                $return_type =~ s/::/./g;
+
+                # replace with builtin Python types
+                $return_type =~ s/\bdouble\b/float/;
+                $return_type =~ s/\bQString\b/str/;
+                $return_type =~ s/\bQStringList\b/list of str/;
+                if ( $return_type =~ m/^(?:QList|QVector)<\s*(.*?)[\s*\*]*>$/ ){
+                    $return_type = "list of $1";
+                }
+                if ( $return_type =~ m/^QSet<\s*(.*?)[\s*\*]*>$/ ){
+                    $return_type = "set of $1";
+                }
+            }
+        }
     };
 
     # deleted functions
-    if ( $line =~  m/^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+(\*|&)?)?(\w+|operator.)\(.*?(\(.*\))*.*\)( const)?)\s*= delete;(\s*\/\/.*)?$/ ){
+    if ( $line =~  m/^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( const)?)\s*= delete;(\s*\/\/.*)?$/ ){
       $comment = '';
       next;
     }
@@ -405,9 +427,17 @@ while(!eof $header){
     if ( $line =~ m/^\s*$/ || $line =~ m/\/\// || $line =~ m/\s*typedef / || $line =~ m/\s*struct / ){
         $comment = '';
     }
-    elsif ( $comment !~ m/^\s*$/ ){
-        print "%Docstring\n$comment\n%End\n";
+    elsif ( $comment !~ m/^\s*$/ || $return_type ne ''){
+        print "%Docstring\n";
+        if ( $comment !~ m/^\s*$/ ){
+            print "$comment\n";
+        }
+        if ($return_type ne '' ){
+           print " :rtype: $return_type\n";
+        }
+        print "%End\n";
         $comment = '';
+        $return_type = '';
     }
 }
 print  "/************************************************************************\n";

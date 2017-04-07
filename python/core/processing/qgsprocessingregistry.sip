@@ -37,6 +37,7 @@ class QgsProcessingRegistry : QObject
     QList<QgsProcessingProvider *> providers() const;
 %Docstring
  Get list of available providers.
+ :rtype: list of QgsProcessingProvider
 %End
 
     bool addProvider( QgsProcessingProvider *provider /Transfer/ );
@@ -48,6 +49,7 @@ class QgsProcessingRegistry : QObject
  Adding a provider to the registry automatically triggers the providers QgsProcessingProvider.load()
  method to populate the provider with algorithms.
  \see removeProvider()
+ :rtype: bool
 %End
 
     bool removeProvider( QgsProcessingProvider *provider );
@@ -55,6 +57,7 @@ class QgsProcessingRegistry : QObject
  Removes a provider implementation from the registry (the provider object is deleted).
  Returns false if the provider could not be removed (eg provider does not exist in the registry).
  \see addProvider()
+ :rtype: bool
 %End
 
     bool removeProvider( const QString &providerId );
@@ -62,17 +65,20 @@ class QgsProcessingRegistry : QObject
  Removes a provider implementation from the registry (the provider object is deleted).
  Returns false if the provider could not be removed (eg provider does not exist in the registry).
  \see addProvider()
+ :rtype: bool
 %End
 
     QgsProcessingProvider *providerById( const QString &id );
 %Docstring
  Returns a matching provider by provider ID.
+ :rtype: QgsProcessingProvider
 %End
 
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 %Docstring
  Returns a list of all available algorithms from registered providers.
  \see algorithmById()
+ :rtype: list of const QgsProcessingAlgorithm
 %End
 
     const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
@@ -80,6 +86,7 @@ class QgsProcessingRegistry : QObject
  Finds an algorithm by its ID. If no matching algorithm is found, a None
  is returned.
  \see algorithms()
+ :rtype: QgsProcessingAlgorithm
 %End
 
   signals:

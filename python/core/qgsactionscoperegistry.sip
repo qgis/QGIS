@@ -44,6 +44,7 @@ class QgsActionScopeRegistry : QObject
  Get all registered action scopes.
 
 .. versionadded:: 3.0
+ :rtype: set of QgsActionScope
 %End
 
     void registerActionScope( const QgsActionScope &actionScope );
@@ -65,6 +66,7 @@ class QgsActionScopeRegistry : QObject
  Get an action scope by its id.
 
 .. versionadded:: 3.0
+ :rtype: QgsActionScope
 %End
 
   signals:

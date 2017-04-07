@@ -44,6 +44,7 @@ class QgsCurveTransform
 %Docstring
  Returns a list of the control points for the transform.
  \see setControlPoints()
+ :rtype: list of QgsPoint
 %End
 
     void setControlPoints( const QList< QgsPoint > &points );
@@ -70,6 +71,7 @@ class QgsCurveTransform
     double y( double x ) const;
 %Docstring
  Returns the mapped y value corresponding to the specified x value.
+ :rtype: float
 %End
 
     QVector< double > y( const QVector< double > &x ) const;
@@ -77,6 +79,7 @@ class QgsCurveTransform
  Returns a list of y values corresponding to a list of x values.
  Calling this method is faster then calling the double variant multiple
  times.
+ :rtype: list of float
 %End
 
     bool readXml( const QDomElement &elem, const QDomDocument &doc );
@@ -85,6 +88,7 @@ class QgsCurveTransform
  \param elem source DOM element for transform's state
  \param doc DOM document
  \see writeXml()
+ :rtype: bool
 %End
 
     bool writeXml( QDomElement &transformElem, QDomDocument &doc ) const;
@@ -93,6 +97,7 @@ class QgsCurveTransform
  \param transformElem destination element for the transform's state
  \param doc DOM document
  \see readXml()
+ :rtype: bool
 %End
 
     QVariant toVariant() const;
@@ -101,6 +106,7 @@ class QgsCurveTransform
  You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
  \see loadVariant()
+ :rtype: QVariant
 %End
 
     bool loadVariant( const QVariant &transformer );
@@ -109,6 +115,7 @@ class QgsCurveTransform
  You can use QgsXmlUtils.writeVariant to load it from an XML document.
 
  \see toVariant()
+ :rtype: bool
 %End
 
 };
@@ -149,6 +156,7 @@ class QgsPropertyTransformer
 %Docstring
  Factory method for creating a new property transformer of the specified type.
  \param type transformer type to create
+ :rtype: QgsPropertyTransformer
 %End
 
     QgsPropertyTransformer( double minValue = 0.0, double maxValue = 1.0 );
@@ -169,11 +177,13 @@ class QgsPropertyTransformer
     virtual Type transformerType() const = 0;
 %Docstring
  Returns the transformer type.
+ :rtype: Type
 %End
 
     virtual QgsPropertyTransformer *clone() = 0 /Factory/;
 %Docstring
  Returns a clone of the transformer.
+ :rtype: QgsPropertyTransformer
 %End
 
     virtual bool loadVariant( const QVariant &transformer );
@@ -182,6 +192,7 @@ class QgsPropertyTransformer
  You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
  \see loadVariant()
+ :rtype: bool
 %End
 
     virtual QVariant toVariant() const;
@@ -190,6 +201,7 @@ class QgsPropertyTransformer
  You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
  \see toVariant()
+ :rtype: QVariant
 %End
 
     double minValue() const;
@@ -197,6 +209,7 @@ class QgsPropertyTransformer
  Returns the minimum value expected by the transformer.
  \see maxValue()
  \see setMinValue()
+ :rtype: float
 %End
 
     void setMinValue( double min );
@@ -212,6 +225,7 @@ class QgsPropertyTransformer
  Returns the maximum value expected by the transformer.
  \see minValue()
  \see setMaxValue()
+ :rtype: float
 %End
 
     void setMaxValue( double max );
@@ -227,6 +241,7 @@ class QgsPropertyTransformer
  Returns the curve transform applied to input values before they are transformed
  by the individual transform subclasses.
  \see setCurveTransform()
+ :rtype: QgsCurveTransform
 %End
 
     void setCurveTransform( QgsCurveTransform *transform /Transfer/ );
@@ -243,12 +258,14 @@ class QgsPropertyTransformer
  on input values
  \param context expression context
  \param value input value to transform
+ :rtype: QVariant
 %End
 
     virtual QString toExpression( const QString &baseExpression ) const = 0;
 %Docstring
  Converts the transformer to a QGIS expression string. The baseExpression string consists
  of a sub-expression reflecting the parent property's state.
+ :rtype: str
 %End
 
     static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
@@ -261,8 +278,9 @@ class QgsPropertyTransformer
  \param fieldName will be set to a field name which is used to calculate the input
  to the property transformer. This will be set to an
  empty string if an expression is the transformer input.
- \returns corresponding property transformer, or None if expression could not
+ :return: corresponding property transformer, or None if expression could not
  be parsed to a transformer.
+ :rtype: QgsPropertyTransformer
 %End
 
   protected:
@@ -272,6 +290,7 @@ class QgsPropertyTransformer
  Applies base class numeric transformations. Derived classes should call this
  to transform an input numeric value before they apply any transform to the result.
  This applies any curve transforms which may exist on the transformer.
+ :rtype: float
 %End
 };
 
@@ -307,11 +326,29 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 //     QgsGenericNumericTransformer &operator=( const QgsGenericNumericTransformer &other );
 
     virtual Type transformerType() const;
+%Docstring
+ :rtype: Type
+%End
     virtual QgsGenericNumericTransformer *clone();
+%Docstring
+ :rtype: QgsGenericNumericTransformer
+%End
     virtual QVariant toVariant() const;
+%Docstring
+ :rtype: QVariant
+%End
     virtual bool loadVariant( const QVariant &definition );
+%Docstring
+ :rtype: bool
+%End
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
+%Docstring
+ :rtype: QVariant
+%End
     virtual QString toExpression( const QString &baseExpression ) const;
+%Docstring
+ :rtype: str
+%End
 
     static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
 %Docstring
@@ -323,14 +360,16 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
  \param fieldName will be set to a field name which is used to calculate the input
  to the property transformer. This will be set to an
  empty string if an expression is the transformer input.
- \returns corresponding QgsSizeScaleTransformer, or None if expression could not
+ :return: corresponding QgsSizeScaleTransformer, or None if expression could not
  be parsed to a size scale transformer.
+ :rtype: QgsGenericNumericTransformer
 %End
 
     double value( double input ) const;
 %Docstring
  Calculates the size corresponding to a specific input value.
- \returns calculated size using size scale transformer's parameters and type
+ :return: calculated size using size scale transformer's parameters and type
+ :rtype: float
 %End
 
     double minOutputValue() const;
@@ -338,6 +377,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
  Returns the minimum calculated size.
  \see setMinSize()
  \see maxSize()
+ :rtype: float
 %End
 
     void setMinOutputValue( double size );
@@ -352,6 +392,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 %Docstring
  Returns the maximum calculated size.
  \see minSize()
+ :rtype: float
 %End
 
     void setMaxOutputValue( double size );
@@ -366,6 +407,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 %Docstring
  Returns the size value when an expression evaluates to NULL.
  \see setNullSize()
+ :rtype: float
 %End
 
     void setNullOutputValue( double size );
@@ -380,6 +422,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
  Returns the exponent for an exponential expression.
  \see setExponent()
  \see type()
+ :rtype: float
 %End
 
     void setExponent( double exponent );
@@ -433,11 +476,29 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 //     QgsSizeScaleTransformer &operator=( const QgsSizeScaleTransformer &other );
 
     virtual Type transformerType() const;
+%Docstring
+ :rtype: Type
+%End
     virtual QgsSizeScaleTransformer *clone() /Factory/;
+%Docstring
+ :rtype: QgsSizeScaleTransformer
+%End
     virtual QVariant toVariant() const;
+%Docstring
+ :rtype: QVariant
+%End
     virtual bool loadVariant( const QVariant &definition );
+%Docstring
+ :rtype: bool
+%End
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
+%Docstring
+ :rtype: QVariant
+%End
     virtual QString toExpression( const QString &baseExpression ) const;
+%Docstring
+ :rtype: str
+%End
 
     static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
 %Docstring
@@ -449,15 +510,17 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
  \param fieldName will be set to a field name which is used to calculate the input
  to the property transformer. This will be set to an
  empty string if an expression is the transformer input.
- \returns corresponding QgsSizeScaleTransformer, or None if expression could not
+ :return: corresponding QgsSizeScaleTransformer, or None if expression could not
  be parsed to a size scale transformer.
+ :rtype: QgsSizeScaleTransformer
 %End
 
     double size( double value ) const;
 %Docstring
  Calculates the size corresponding to a specific value.
  \param value value to calculate size for
- \returns calculated size using size scale transformer's parameters and type
+ :return: calculated size using size scale transformer's parameters and type
+ :rtype: float
 %End
 
     double minSize() const;
@@ -465,6 +528,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
  Returns the minimum calculated size.
  \see setMinSize()
  \see maxSize()
+ :rtype: float
 %End
 
     void setMinSize( double size );
@@ -479,6 +543,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 %Docstring
  Returns the maximum calculated size.
  \see minSize()
+ :rtype: float
 %End
 
     void setMaxSize( double size );
@@ -493,6 +558,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 %Docstring
  Returns the size value when an expression evaluates to NULL.
  \see setNullSize()
+ :rtype: float
 %End
 
     void setNullSize( double size );
@@ -507,6 +573,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
  Returns the exponent for an exponential expression.
  \see setExponent()
  \see type()
+ :rtype: float
 %End
 
     void setExponent( double exponent );
@@ -521,6 +588,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
  Returns the size transformer's scaling type (the method used to calculate
  the size from a value).
  \see setType()
+ :rtype: ScaleType
 %End
 
     void setType( ScaleType type );
@@ -562,24 +630,44 @@ Copy constructor
 //     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
 
     virtual Type transformerType() const;
+%Docstring
+ :rtype: Type
+%End
     virtual QgsColorRampTransformer *clone() /Factory/;
+%Docstring
+ :rtype: QgsColorRampTransformer
+%End
     virtual QVariant toVariant() const;
+%Docstring
+ :rtype: QVariant
+%End
     virtual bool loadVariant( const QVariant &definition );
+%Docstring
+ :rtype: bool
+%End
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
+%Docstring
+ :rtype: QVariant
+%End
     virtual QString toExpression( const QString &baseExpression ) const;
+%Docstring
+ :rtype: str
+%End
 
     QColor color( double value ) const;
 %Docstring
  Calculates the color corresponding to a specific value.
  \param value value to calculate color for
- \returns calculated color using transformer's parameters and type
+ :return: calculated color using transformer's parameters and type
+ :rtype: QColor
 %End
 
     QgsColorRamp *colorRamp() const;
 %Docstring
  Returns the color ramp used for calculating property colors.
- \returns color ramp
+ :return: color ramp
  \see setColorRamp()
+ :rtype: QgsColorRamp
 %End
 
     void setColorRamp( QgsColorRamp *ramp /Transfer/ );
@@ -593,6 +681,7 @@ Copy constructor
 %Docstring
  Returns the color corresponding to a null value.
  \see setNullColor()
+ :rtype: QColor
 %End
 
     void setNullColor( const QColor &color );
@@ -606,6 +695,7 @@ Copy constructor
 %Docstring
  Returns the color ramp's name.
  \see setRampName()
+ :rtype: str
 %End
 
     void setRampName( const QString &name );

@@ -142,26 +142,32 @@ Resets the group to what it was before the corresponding beginGroup() call.
     QStringList allKeys() const;
 %Docstring
 Returns a list of all keys, including subkeys, that can be read using the QSettings object.
+ :rtype: list of str
 %End
     QStringList childKeys() const;
 %Docstring
 Returns a list of all top-level keys that can be read using the QSettings object.
+ :rtype: list of str
 %End
     QStringList childGroups() const;
 %Docstring
 Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
+ :rtype: list of str
 %End
     static QString globalSettingsPath();
 %Docstring
 Return the path to the Global Settings QSettings storage file
+ :rtype: str
 %End
     static bool setGlobalSettingsPath( QString path );
 %Docstring
 Set the Global Settings QSettings storage file
+ :rtype: bool
 %End
     int beginReadArray( const QString &prefix );
 %Docstring
 Adds prefix to the current group and starts reading from an array. Returns the size of the array.
+ :rtype: int
 %End
     void endArray();
 %Docstring
@@ -202,10 +208,12 @@ An optional Section argument can be used to set a value to a specific Section.
     bool contains( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection ) const;
 %Docstring
 If a group is set using beginGroup(), key is taken to be relative to that group.
+ :rtype: bool
 %End
     QString fileName() const;
 %Docstring
 Returns the path where settings written using this QSettings object are stored.
+ :rtype: str
 %End
     void sync();
 %Docstring
@@ -218,6 +226,7 @@ Removes the setting key and any sub-settings of key.
     QString prefixedKey( const QString &key, const QgsSettings::Section section ) const;
 %Docstring
 Return the sanitized and prefixed key
+ :rtype: str
 %End
     void clear();
 %Docstring

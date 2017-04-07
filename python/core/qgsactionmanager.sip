@@ -31,6 +31,7 @@ Constructor
  capture is true, when running the action using doAction(),
  any stdout from the process will be captured and displayed in a
  dialog box.
+ :rtype: QUuid
 %End
 
     QUuid addAction( QgsAction::ActionType type, const QString &name, const QString &command, const QString &icon, bool capture = false );
@@ -40,6 +41,7 @@ Constructor
  capture is true, when running the action using doAction(),
  any stdout from the process will be captured and displayed in a
  dialog box.
+ :rtype: QUuid
 %End
 
     void addAction( const QgsAction &action );
@@ -83,21 +85,25 @@ Removes all actions
  If no action scope is provided, all actions will be returned.
 
 .. versionadded:: 3.0
+ :rtype: list of QgsAction
 %End
 
     QgsVectorLayer *layer() const;
 %Docstring
 Return the layer
+ :rtype: QgsVectorLayer
 %End
 
     bool writeXml( QDomNode &layer_node ) const;
 %Docstring
 Writes the actions out in XML format
+ :rtype: bool
 %End
 
     bool readXml( const QDomNode &layer_node );
 %Docstring
 Reads the actions in in XML format
+ :rtype: bool
 %End
 
     QgsAction action( const QUuid &id );
@@ -105,6 +111,7 @@ Reads the actions in in XML format
  Get an action by its id.
 
 .. versionadded:: 3.0
+ :rtype: QgsAction
 %End
 
     void setDefaultAction( const QString &actionScope, const QUuid &actionId );
@@ -121,6 +128,7 @@ Reads the actions in in XML format
  file.
 
 .. versionadded:: 3.0
+ :rtype: QgsAction
 %End
 
 };

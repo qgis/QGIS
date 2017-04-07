@@ -78,6 +78,7 @@ class QgsAggregateCalculator
     const QgsVectorLayer *layer() const;
 %Docstring
  Returns the associated vector layer.
+ :rtype: QgsVectorLayer
 %End
 
     void setParameters( const AggregateParameters &parameters );
@@ -97,6 +98,7 @@ class QgsAggregateCalculator
 %Docstring
  Returns the filter which limits the features used during the aggregate calculation.
  \see setFilter()
+ :rtype: str
 %End
 
     void setDelimiter( const QString &delimiter );
@@ -110,6 +112,7 @@ class QgsAggregateCalculator
 %Docstring
  Returns the delimiter used for joining values with the StringConcatenate aggregate.
  \see setDelimiter()
+ :rtype: str
 %End
 
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
@@ -121,7 +124,8 @@ class QgsAggregateCalculator
  If an expression is used, then the context parameter must be set.
  \param context expression context for evaluating expressions
  \param ok if specified, will be set to true if aggregate calculation was successful
- \returns calculated aggregate value
+ :return: calculated aggregate value
+ :rtype: QVariant
 %End
 
     static Aggregate stringToAggregate( const QString &string, bool *ok = 0 );
@@ -129,7 +133,8 @@ class QgsAggregateCalculator
  Converts a string to a aggregate type.
  \param string string to convert
  \param ok if specified, will be set to true if conversion was successful
- \returns aggregate type
+ :return: aggregate type
+ :rtype: Aggregate
 %End
 
 };

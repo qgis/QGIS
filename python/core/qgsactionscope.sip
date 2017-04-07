@@ -54,6 +54,7 @@ class QgsActionScope
     bool operator==( const QgsActionScope &other ) const;
 %Docstring
  Compares two action scopes
+ :rtype: bool
 %End
 
     QgsExpressionContextScope expressionContextScope() const;
@@ -63,6 +64,7 @@ class QgsActionScope
  `clicked_x` and `clicked_y` for actions which are available as map canvas clicks.
 
 .. versionadded:: 3.0
+ :rtype: QgsExpressionContextScope
 %End
 
     void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
@@ -75,6 +77,7 @@ class QgsActionScope
  A unique identifier for this action scope.
 
 .. versionadded:: 3.0
+ :rtype: str
 %End
 
     void setId( const QString &id );
@@ -88,6 +91,7 @@ class QgsActionScope
  presented to the user in the properties dialog.
 
 .. versionadded:: 3.0
+ :rtype: str
 %End
     void setTitle( const QString &title );
 %Docstring
@@ -101,6 +105,7 @@ class QgsActionScope
  in here, they are extracted automatically from the expressionContextScope().
 
 .. versionadded:: 3.0
+ :rtype: str
 %End
     void setDescription( const QString &description );
 %Docstring
@@ -112,6 +117,7 @@ class QgsActionScope
  Returns if this scope is valid.
 
 .. versionadded:: 3.0
+ :rtype: bool
 %End
 
 };

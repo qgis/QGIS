@@ -28,6 +28,9 @@ class QgsHtmlAnnotation: QgsAnnotation
     ~QgsHtmlAnnotation();
 
     QSizeF minimumFrameSize() const;
+%Docstring
+ :rtype: QSizeF
+%End
 
     void setSourceFile( const QString &htmlFile );
 %Docstring
@@ -39,6 +42,7 @@ class QgsHtmlAnnotation: QgsAnnotation
 %Docstring
  Returns the file path for the source HTML file.
  \see setSourceFile()
+ :rtype: str
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const;
@@ -49,6 +53,7 @@ class QgsHtmlAnnotation: QgsAnnotation
     static QgsHtmlAnnotation *create() /Factory/;
 %Docstring
  Returns a new QgsHtmlAnnotation object.
+ :rtype: QgsHtmlAnnotation
 %End
 
   protected:

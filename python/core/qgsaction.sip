@@ -60,11 +60,13 @@ class QgsAction
     QString name() const;
 %Docstring
 The name of the action. This may be a longer description.
+ :rtype: str
 %End
 
     QString shortTitle() const;
 %Docstring
 The short title is used to label user interface elements like buttons
+ :rtype: str
 %End
 
     QUuid id() const;
@@ -72,6 +74,7 @@ The short title is used to label user interface elements like buttons
  Returns a unique id for this action.
 
 .. versionadded:: 3.0
+ :rtype: QUuid
 %End
 
     bool isValid() const;
@@ -79,16 +82,19 @@ The short title is used to label user interface elements like buttons
  Returns true if this action was a default constructed one.
 
 .. versionadded:: 3.0
+ :rtype: bool
 %End
 
     QString iconPath() const;
 %Docstring
 The path to the icon
+ :rtype: str
 %End
 
     QIcon icon() const;
 %Docstring
 The icon
+ :rtype: QIcon
 %End
 
     QString command() const;
@@ -98,21 +104,25 @@ The icon
  the actionScope().
 
 .. versionadded:: 3.0
+ :rtype: str
 %End
 
     ActionType type() const;
 %Docstring
 The action type
+ :rtype: ActionType
 %End
 
     bool capture() const;
 %Docstring
 Whether to capture output for display when this action is run
+ :rtype: bool
 %End
 
     bool runable() const;
 %Docstring
 Checks if the action is runable on the current platform
+ :rtype: bool
 %End
 
     void run( QgsVectorLayer *layer, const QgsFeature &feature, const QgsExpressionContext &expressionContext ) const;
@@ -137,6 +147,7 @@ Checks if the action is runable on the current platform
 
  \see QgsActionScope
 .. versionadded:: 3.0
+ :rtype: set of str
 %End
 
     void setActionScopes( const QSet<QString> &actionScopes );

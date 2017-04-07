@@ -31,6 +31,7 @@ class QgsTextAnnotation: QgsAnnotation
  Returns the text document which will be rendered
  within the annotation.
  \see setDocument()
+ :rtype: QTextDocument
 %End
 
     void setDocument( const QTextDocument *doc );
@@ -46,6 +47,7 @@ class QgsTextAnnotation: QgsAnnotation
     static QgsTextAnnotation *create() /Factory/;
 %Docstring
  Returns a new QgsTextAnnotation object.
+ :rtype: QgsTextAnnotation
 %End
 
   protected:
