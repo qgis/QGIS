@@ -275,7 +275,6 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             except Exception:
                 html = self.tr('<h2>Unspecified Error - could not load help</h2>')
 
-
             html = '<h2>%s</h2>' % item.name
             html += self.tr('<p><b>Description:</b> {0}</p>').format(getDescription(ALG_DESC, descriptions))
             html += self.tr('<p><b>Created by:</b> {0}').format(getDescription(ALG_CREATOR, descriptions))
