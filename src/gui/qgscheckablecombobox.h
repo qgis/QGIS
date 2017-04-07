@@ -180,7 +180,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     /** Hides the list of items in the combobox if it is currently
      * visible and resets the internal state.
      */
-    virtual void hidePopup();
+    virtual void hidePopup() override;
 
     /** Filters events to enable context menu
      */
@@ -204,7 +204,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
 
     /** Handler for widget resizing
      */
-    virtual void resizeEvent( QResizeEvent *event );
+    virtual void resizeEvent( QResizeEvent *event ) override;
 
   protected slots:
 

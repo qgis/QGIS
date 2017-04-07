@@ -186,7 +186,7 @@ void QgsCheckableComboBox::showContextMenu( const QPoint &pos )
 void QgsCheckableComboBox::selectAllOptions()
 {
   blockSignals( true );
-  for ( int i;  i < count(); i++ )
+  for ( int i = 0;  i < count(); i++ )
   {
     setItemData( i, Qt::Checked, Qt::CheckStateRole );
   }
@@ -197,7 +197,7 @@ void QgsCheckableComboBox::selectAllOptions()
 void QgsCheckableComboBox::deselectAllOptions()
 {
   blockSignals( true );
-  for ( int i;  i < count(); i++ )
+  for ( int i = 0;  i < count(); i++ )
   {
     setItemData( i, Qt::Unchecked, Qt::CheckStateRole );
   }
