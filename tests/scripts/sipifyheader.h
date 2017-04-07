@@ -237,6 +237,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
   private:
     void PrivateAgain();
+    /* Single line block comments shouldn't break the parser */
 
     struct ProcessFeatureWrapper
     {
