@@ -28,7 +28,6 @@ class QgsAnnotationManager : QObject
 %TypeHeaderCode
 #include "qgsannotationmanager.h"
 %End
-
   public:
 
     explicit QgsAnnotationManager( QgsProject *project /TransferThis/ = 0 );

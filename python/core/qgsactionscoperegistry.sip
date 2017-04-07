@@ -27,7 +27,6 @@ class QgsActionScopeRegistry : QObject
 %TypeHeaderCode
 #include "qgsactionscoperegistry.h"
 %End
-
   public:
 
     explicit QgsActionScopeRegistry( QObject *parent = 0 );

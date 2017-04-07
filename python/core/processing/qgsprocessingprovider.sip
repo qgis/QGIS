@@ -21,7 +21,6 @@ class QgsProcessingProvider : QObject
 %TypeHeaderCode
 #include "qgsprocessingprovider.h"
 %End
-
   public:
 
     QgsProcessingProvider( QObject *parent /TransferThis/ = 0 );

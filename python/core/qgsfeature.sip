@@ -33,8 +33,6 @@ class QgsFeature
 #define sipType_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
-
-
   public:
 
     SIP_PYOBJECT __iter__();

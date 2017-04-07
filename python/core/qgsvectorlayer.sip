@@ -297,8 +297,6 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
 %TypeHeaderCode
 #include "qgsvectorlayer.h"
 %End
-
-
   public:
 
     enum EditResult

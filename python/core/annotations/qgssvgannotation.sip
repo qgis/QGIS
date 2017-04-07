@@ -19,7 +19,6 @@ class QgsSvgAnnotation: QgsAnnotation
 %TypeHeaderCode
 #include "qgssvgannotation.h"
 %End
-
   public:
 
     QgsSvgAnnotation( QObject *parent /TransferThis/ = 0 );

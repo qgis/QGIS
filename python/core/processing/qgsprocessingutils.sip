@@ -22,7 +22,6 @@ class QgsProcessingUtils
 %TypeHeaderCode
 #include "qgsprocessingutils.h"
 %End
-
   public:
 
     static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );

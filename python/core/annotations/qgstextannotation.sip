@@ -19,7 +19,6 @@ class QgsTextAnnotation: QgsAnnotation
 %TypeHeaderCode
 #include "qgstextannotation.h"
 %End
-
   public:
 
     QgsTextAnnotation( QObject *parent /TransferThis/ = 0 );

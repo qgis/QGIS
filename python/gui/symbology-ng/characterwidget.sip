@@ -20,7 +20,6 @@ class CharacterWidget : QWidget
 %TypeHeaderCode
 #include "characterwidget.h"
 %End
-
   public:
 
     CharacterWidget( QWidget *parent /TransferThis/ = 0 );
