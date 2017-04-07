@@ -267,7 +267,13 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             html = self.tr('<h2>No detailed description available for this script</h2>')
         else:
             content = bytes(reply.readAll()).decode('utf8')
-            descriptions = json.loads(content)
+            try:
+                descriptions = json.loads(content)
+            except json.decoder.JSONDecodeError:
+                html = self.tr('<h2>JSON Decoding Error - could not load help</h2>')
+            except Exception:
+                html = self.tr('<h2>Unspecified Error - could not load help</h2>')
+
             html = '<h2>%s</h2>' % item.name
             html += self.tr('<p><b>Description:</b> {0}</p>').format(getDescription(ALG_DESC, descriptions))
             html += self.tr('<p><b>Created by:</b> {0}').format(getDescription(ALG_CREATOR, descriptions))
