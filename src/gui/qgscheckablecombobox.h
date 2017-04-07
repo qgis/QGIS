@@ -34,6 +34,7 @@ class QEvent;
  * @note added in QGIS 3.0
  * @note not available in Python bindings
  **/
+#ifndef SIP_RUN
 class QgsCheckableItemModel : public QStandardItemModel
 {
     Q_OBJECT
@@ -102,7 +103,7 @@ class QgsCheckBoxDelegate : public QStyledItemDelegate
      */
     virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 };
-
+#endif
 
 /** \class QgsCheckableComboBox
  * \ingroup gui
