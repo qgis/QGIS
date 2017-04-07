@@ -52,8 +52,12 @@ class CORE_EXPORT QgsLegendSettings
      */
     void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
 
-    //! Returns reference to modifiable style
-    QgsLegendStyle &rstyle( QgsLegendStyle::Style s ) { return mStyleMap[s]; }
+    /**
+     * Returns reference to modifiable style
+     *
+     * \note Not available in Python bindings.
+     */
+    SIP_SKIP QgsLegendStyle &rstyle( QgsLegendStyle::Style s ) { return mStyleMap[s]; }
     //! Returns style
     QgsLegendStyle style( QgsLegendStyle::Style s ) const { return mStyleMap.value( s ); }
     void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style ) { mStyleMap[s] = style; }

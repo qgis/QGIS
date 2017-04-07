@@ -52,7 +52,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
     QgsMessageLog();
 
     //! add a message to the instance (and create it if necessary)
-    static void logMessage( const QString &message, const QString &tag = QString::null, MessageLevel level = WARNING );
+    static void logMessage( const QString &message, const QString &tag = QString(), MessageLevel level = QgsMessageLog::WARNING );
 
   signals:
     void messageReceived( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );

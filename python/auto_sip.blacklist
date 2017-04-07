@@ -4,7 +4,6 @@ core/qgis.sip
 core/qgsapplication.sip
 core/qgsbearingutils.sip
 core/qgsbrowsermodel.sip
-core/qgscolorramp.sip
 core/qgscolorscheme.sip
 core/qgscolorschemeregistry.sip
 core/qgscontexthelp.sip
@@ -52,7 +51,6 @@ core/qgsfontutils.sip
 core/qgslabelsearchtree.sip
 core/qgslegendrenderer.sip
 core/qgslegendsettings.sip
-core/qgslegendstyle.sip
 core/qgslogger.sip
 core/qgsmaphittest.sip
 core/qgsmaplayer.sip
@@ -71,14 +69,12 @@ core/qgsmapsettings.sip
 core/qgsmaptopixel.sip
 core/qgsmapunitscale.sip
 core/qgsmargins.sip
-core/qgsmessagelog.sip
 core/qgsmessageoutput.sip
 core/qgsmimedatautils.sip
 core/qgsmultirenderchecker.sip
 core/qgsnetworkaccessmanager.sip
 core/qgsnetworkcontentfetcher.sip
 core/qgsobjectcustomproperties.sip
-core/qgsofflineediting.sip
 core/qgsogcutils.sip
 core/qgsoptionalexpression.sip
 core/qgsowsconnection.sip
@@ -427,7 +423,6 @@ gui/qgsmaptoolzoom.sip
 gui/qgsmaplayerstylemanagerwidget.sip
 gui/qgsmessagebar.sip
 gui/qgsmessagebaritem.sip
-gui/qgsmessagelogviewer.sip
 gui/qgsmessageviewer.sip
 gui/qgsnewhttpconnection.sip
 gui/qgsnewmemorylayerdialog.sip

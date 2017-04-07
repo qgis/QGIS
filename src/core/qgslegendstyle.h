@@ -25,6 +25,7 @@
 #include <QDomDocument>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 /** \ingroup core
  * Composer legend components style
@@ -34,15 +35,15 @@ class CORE_EXPORT QgsLegendStyle
   public:
     enum Style
     {
-      Undefined, // should not happen, only if corrupted project file
-      Hidden, // special style, item is hidden includeing margins around
+      Undefined, //!< Should not happen, only if corrupted project file
+      Hidden, //!< Special style, item is hidden including margins around
       Title,
       Group,
-      Subgroup, // layer
-      Symbol, // symbol without label
+      Subgroup, //!< Layer
+      Symbol, //!< Symbol without label
       SymbolLabel
     };
-    enum Side // margin side
+    enum Side //! margin side
     {
       Top = 0,
       Bottom = 1,
@@ -52,13 +53,13 @@ class CORE_EXPORT QgsLegendStyle
     QgsLegendStyle();
 
     QFont font() const { return mFont; }
-    QFont &rfont() { return mFont; }
+    SIP_SKIP QFont &rfont() { return mFont; }
     void setFont( const QFont &font ) { mFont = font; }
 
     double margin( Side side ) { return mMarginMap.value( side ); }
     void setMargin( Side side, double margin ) { mMarginMap[side] = margin; }
 
-    // set all margins
+    //! set all margins
     void setMargin( double margin );
 
     void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const;
@@ -76,7 +77,7 @@ class CORE_EXPORT QgsLegendStyle
 
   private:
     QFont mFont;
-    // Space around element
+    //! Space around element
     QMap<Side, double> mMarginMap;
 };
 
