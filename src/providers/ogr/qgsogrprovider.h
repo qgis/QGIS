@@ -442,30 +442,31 @@ class QgsOgrProviderUtils
     static QByteArray quotedIdentifier( QByteArray field, const QString &ogrDriverName );
 
     /** Return OGR geometry type
-     * Sub-layers handled by this provider, in order from bottom to top
-     * @param OGRLayerH  Layer retrieved from OGR
-     * @returns geomType OGRwkbGeometryType
-     * @note
-     *
+     * Retrieves Geometry-Type
+     * @note     *
      * Up to Gdal 2.* each geometry was 1 layer and could be retrieved using an index
      * Starting with Gdal 2.0, each table is one layer, that can contain more than 1 geometry
-     *
+     * - Spatialite and GML
      * Care should be taken when using this with Gdal 2.* and more than 1 geometry exists.
      *
      * Some ogr drivers (e.g. GML,KML) are not able to determine the geometry type of a layer
      * 'subLayers()' will call this function in such cases.
-     * @see subLayers()
+     * @see QgsOgrProvider::subLayers()
      *
      * Logic changes:
      * The Layer name will be used to insure that the correct feature is being searched for
      * - avoiding a LINESTRING being set as a POLYGON, when a POLYGON was found first
      * Some ogr drivers (KML) may contain different Geometry-Types in 1 Layer
-     * - the first one found will be used
+     * - the Geometry Field Index will be used to retrieve the proper Geometry-Type
      * @note
      * Some ogr drivers (GML)  must read the first row to determin the GeometryType
      * - some may contain more than 1 geometry
      * @param ogrLayer Layer containing the Geometry
      * @param geomIndex Geometry-index in Layer to be retrieved
+     * @see OGRGetSubLayersWrapper()
+     * @see QgsOgrProvider::loadFields()
+     * @see QgsOgrLayerItem *dataItemForLayer()
+     * @returns geomType OGRwkbGeometryType
      */
     static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer, int geomIndex );
     static QString wkbGeometryTypeName( OGRwkbGeometryType type );

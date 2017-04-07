@@ -388,6 +388,9 @@ static QString AnalyzeURI( QString const &uri,
       }
     }
     subLayerString = QString( "%1:%2:%3:%4:%5:%6:%7" ).arg( layerIndex ).arg( layerName ).arg( featuresCounted ).arg( QgsOgrProviderUtils::wkbGeometryTypeName( ogrGeometryTypeFilter ) ).arg( geometryName ).arg( geometryIndex ).arg( ogrType );
+#if 0
+    qDebug() << QString( "-I-> AnalyzeURI: uri[%1] subLayerString[%2]" ).arg( uri ).arg( subLayerString );
+#endif
     return filePath;
   }
 
@@ -674,7 +677,7 @@ void QgsOgrProvider::loadFields()
   }
   else
   {
-    mOGRGeomType = QgsOgrProviderUtils::getOgrGeomType( ogrLayer,  mGeometryIndex);
+    mOGRGeomType = QgsOgrProviderUtils::getOgrGeomType( ogrLayer,  mGeometryIndex );
   }
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   if ( fdef )
@@ -2937,59 +2940,59 @@ OGRwkbGeometryType QgsOgrProviderUtils::getOgrGeomType( OGRLayerH ogrLayer, int 
     OGRGeomFieldDefnH fdef_geom = OGR_FD_GetGeomFieldDefn( fdef_layer, geomIndex );
     if ( fdef_geom )
     {
-     geomType = OGR_GFld_GetType( fdef_geom );
-    // Handle wkbUnknown and its Z/M variants. QGIS has no unknown Z/M variants,
-    // so just use flat wkbUnknown
-    if ( QgsOgrProviderUtils::wkbFlattenWrapper( geomType ) == wkbUnknown )
-    {
-      geomType = wkbUnknown;
-    }
-    // Some ogr drivers (e.g. GML,KML) are not able to determine the geometry type of a layer like this.
-    // In such cases, we use virtual sublayers for each geometry if the layer contains
-    // multiple geometries (see subLayers)
-    // If the feature-name matches the layer-name, that value will be used.
-    // As a backup we save geometry type from the first
-    // feature that has a geometry (limit us to a few features, not the whole layer)
-    if ( geomType == wkbUnknown )
-    {
-      OGRwkbGeometryType geomType_backup = geomType;
-      OGRwkbGeometryType layer_feature_type = geomType;
-      OGR_L_ResetReading( ogrLayer );
-      OGRFeatureH layer_feature;
-      QString layer_name_check = QString::fromUtf8( OGR_L_GetName( ogrLayer ) );
-      while ( ( layer_feature = OGR_L_GetNextFeature( ogrLayer ) ) )
+      geomType = OGR_GFld_GetType( fdef_geom );
+      // Handle wkbUnknown and its Z/M variants. QGIS has no unknown Z/M variants,
+      // so just use flat wkbUnknown
+      if ( QgsOgrProviderUtils::wkbFlattenWrapper( geomType ) == wkbUnknown )
       {
-        OGRGeometryH layer_geom = OGR_F_GetGeomFieldRef( layer_feature, geomIndex );
-        if ( layer_geom )
+        geomType = wkbUnknown;
+      }
+      // Some ogr drivers (e.g. GML,KML) are not able to determine the geometry type of a layer like this.
+      // In such cases, we use virtual sublayers for each geometry if the layer contains
+      // multiple geometries (see subLayers)
+      // If the feature-name matches the layer-name, that value will be used.
+      // As a backup we save geometry type from the first
+      // feature that has a geometry (limit us to a few features, not the whole layer)
+      if ( geomType == wkbUnknown )
+      {
+        OGRwkbGeometryType geomType_backup = geomType;
+        OGRwkbGeometryType layer_feature_type = geomType;
+        OGR_L_ResetReading( ogrLayer );
+        OGRFeatureH layer_feature;
+        QString layer_name_check = QString::fromUtf8( OGR_L_GetName( ogrLayer ) );
+        while ( ( layer_feature = OGR_L_GetNextFeature( ogrLayer ) ) )
         {
-          layer_feature_type = OGR_G_GetGeometryType( layer_geom );
-        }
-        if ( ( geomType_backup == wkbUnknown ) && ( layer_feature_type != wkbUnknown ) )
-        {
-          // Use this backup value in case we cannot find the layer-name
-          geomType_backup = layer_feature_type;
-        }
-        QString layer_feature_name = QString::fromUtf8( OGR_F_GetFieldAsString( layer_feature, 0 ) );
-        OGR_F_Destroy( layer_feature );
-        // the feature-name is the same as the layer-name, use this value
-        if ( layer_feature_name == layer_name_check )
-        {
-          // Note: with KML layer names may not be unique
-          if ( layer_feature_type != wkbUnknown )
+          OGRGeometryH layer_geom = OGR_F_GetGeomFieldRef( layer_feature, geomIndex );
+          if ( layer_geom )
           {
-            // Note: with KML is is possible that there are different Geometries types in the layer
-            geomType = layer_feature_type;
-            break;
+            layer_feature_type = OGR_G_GetGeometryType( layer_geom );
+          }
+          if ( ( geomType_backup == wkbUnknown ) && ( layer_feature_type != wkbUnknown ) )
+          {
+            // Use this backup value in case we cannot find the layer-name
+            geomType_backup = layer_feature_type;
+          }
+          QString layer_feature_name = QString::fromUtf8( OGR_F_GetFieldAsString( layer_feature, 0 ) );
+          OGR_F_Destroy( layer_feature );
+          // the feature-name is the same as the layer-name, use this value
+          if ( layer_feature_name == layer_name_check )
+          {
+            // Note: with KML layer names may not be unique
+            if ( layer_feature_type != wkbUnknown )
+            {
+              // Note: with KML is is possible that there are different Geometries types in the layer
+              geomType = layer_feature_type;
+              break;
+            }
           }
         }
-      }
-      if ( ( geomType == wkbUnknown ) && ( geomType_backup != wkbUnknown ) )
-      {
-        // Use this backup value in case we cannot find the layer-name
-        geomType = geomType_backup;
+        if ( ( geomType == wkbUnknown ) && ( geomType_backup != wkbUnknown ) )
+        {
+          // Use this backup value in case we cannot find the layer-name
+          geomType = geomType_backup;
+        }
       }
     }
-  }
   }
   return geomType;
 }
@@ -3462,6 +3465,9 @@ QStringList QgsOgrProviderUtils::OGRGetSubLayersWrapper( OGRDataSourceH ogrDataS
 OGRLayerH QgsOgrProviderUtils::OGRGetSubLayerStringWrapper( OGRDataSourceH ogrDataSource, QString sSubLayerString )
 {
   OGRLayerH ogrLayer = nullptr;
+#if 0
+  qDebug() << QString( "-I-> QgsOgrProviderUtils::OGRGetSubLayerStringWrapper]: sSubLayerString[%1]" ).arg( sSubLayerString );
+#endif
   if ( ( ogrDataSource ) && ( !sSubLayerString.isNull() ) )
   {
     // SubLayerString[-1:berlin_ortsteile_segmente:634:LineString]
@@ -3588,24 +3594,28 @@ OGRLayerH QgsOgrProviderUtils::OGRGetGeometryFeatureWrapper( OGRFeatureH fetch_f
   {
     return ogr_geometry;
   }
-  QString mGeometryName = sa_list_sublayer[4];
-  if ( mGeometryName.isEmpty() )
+  QString sGeometryName = sa_list_sublayer[4];
+  if ( sGeometryName.isEmpty() )
   {
-    mGeometryName = QString::null;
+    sGeometryName = QString::null;
   }
   bool ok = false;
-  int mGeometryIndex = sa_list_sublayer[5].toInt( &ok );
+  int iGeometryIndex = sa_list_sublayer[5].toInt( &ok );
   // Note: both conditions must be true because:
   // - a SQlite [spatialite] table with two geometries will always have OGR_F_GetGeomFieldCount(fet) == 1 (not 2)
   // - a GML file with two geometries will always have OGR_F_GetGeomFieldCount(fet) == 2
   // --> and the mGeometryIndex must be used  when > 0 [0 can use by both methods]
   if ( OGR_F_GetGeomFieldCount( fetch_feature ) > 1 )
   {
-    if ( ( mGeometryIndex < 0 ) && ( !mGeometryName.isNull() ) )
+    if ( ( iGeometryIndex < 0 ) && ( !sGeometryName.isNull() ) )
     {
-      mGeometryIndex = OGR_F_GetGeomFieldIndex( fetch_feature, mGeometryName.toUtf8().constData() );
+      iGeometryIndex = OGR_F_GetGeomFieldIndex( fetch_feature, sGeometryName.toUtf8().constData() );
     }
-    ogr_geometry = OGR_F_GetGeomFieldRef( fetch_feature, mGeometryIndex );
+    if ( iGeometryIndex < 0 )
+    {
+      iGeometryIndex = 0;
+    }
+    ogr_geometry = OGR_F_GetGeomFieldRef( fetch_feature, iGeometryIndex );
   }
   else
   {
@@ -3617,7 +3627,7 @@ OGRLayerH QgsOgrProviderUtils::OGRGetGeometryFeatureWrapper( OGRFeatureH fetch_f
     char *geo_temp = new char[( ( OGR_G_WkbSize( ogr_geometry ) ) * 3 )];
     OGR_G_ExportToWkt( ogr_geometry, &geo_temp );
     QString s_wkt( geo_temp );
-    qDebug() << QString( "-II-> QgsOgrProviderUtils::OGRGetGeometryFeatureWrapper[%1]: GeometryName[%2] Wkt[%4] SubLayerString[%3]" ).arg( mGeometryIndex ).arg( mGeometryName ).arg( sSubLayerString ).arg( s_wkt );
+    qDebug() << QString( "-II-> QgsOgrProviderUtils::OGRGetGeometryFeatureWrapper[%1]: count[%5] GeometryName[%2] Wkt[%4] SubLayerString[%3]" ).arg( iGeometryIndex ).arg( sGeometryName ).arg( sSubLayerString ).arg( s_wkt ).arg( OGR_F_GetGeomFieldCount( fetch_feature ) );
   }
 #endif
   return ogr_geometry;

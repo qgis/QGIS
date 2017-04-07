@@ -104,10 +104,10 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     const QgsRectangle &rect = mRequest.filterRect();
 #if 0
     QgsRectangle rect2;
-    //rect2.set( rect.xMinimum(), rect.yMinimum(), rect.xMaximum(), rect.yMaximum() );
-    rect2.scale(01);
-    rect2.set( qRound(rect.xMinimum()), qRound(rect.yMinimum()), qRound(rect.xMaximum()), qRound(rect.yMaximum()) );
-    qDebug() << QString( "-I-> QgsOgrFeatureIterator: [%1] filter[%2] width[%3] height[%4]" ).arg( mSource->mGeometryName ).arg(rect2.asWktPolygon()).arg(rect.width()).arg(rect.height());
+    // rounding errors with 2nd geometry of provider/gdal_220.autotest.ogr_multiplegeomfields.gml
+    rect2.scale( 01 );
+    rect2.set( qRound( rect.xMinimum() ), qRound( rect.yMinimum() ), qRound( rect.xMaximum() ), qRound( rect.yMaximum() ) );
+    qDebug() << QString( "-I-> QgsOgrFeatureIterator: [%1] filter[%2] width[%3] height[%4]" ).arg( mSource->mGeometryName ).arg( rect2.asWktPolygon() ).arg( rect.width() ).arg( rect.height() );
     OGR_L_SetSpatialFilterRect( ogrLayer, rect2.xMinimum(), rect2.yMinimum(), rect2.xMaximum(), rect2.yMaximum() );
 #else
     OGR_L_SetSpatialFilterRect( ogrLayer, rect.xMinimum(), rect.yMinimum(), rect.xMaximum(), rect.yMaximum() );
@@ -305,7 +305,6 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
   if ( mFetchGeometry || useIntersect || geometryTypeFilter )
   {
     OGRGeometryH geom = QgsOgrProviderUtils::OGRGetGeometryFeatureWrapper( fet, mSource->mSubLayerString );
-
     if ( geom )
     {
       feature.setGeometry( QgsOgrUtils::ogrGeometryToQgsGeometry( geom ) );
