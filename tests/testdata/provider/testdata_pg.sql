@@ -459,6 +459,20 @@ CREATE TABLE qgis_test.widget_styles(
 INSERT INTO qgis_editor_widget_styles VALUES
 ('qgis_test', 'widget_styles', 'fld1', 'FooEdit', '<config type="Map"><Option name="param1" value="value1" type="QString"/><Option name="param2" value="2" type="QString"/></config>');
 
+--------------------------------------
+-- Table for boolean
+--
+
+CREATE TABLE qgis_test.boolean_table
+(
+  id int PRIMARY KEY,
+  fld1 BOOLEAN
+);
+
+INSERT INTO qgis_test.boolean_table VALUES
+(1, TRUE),
+(2, FALSE),
+(3, NULL);
 
 -----------------------------
 -- Table for constraint tests

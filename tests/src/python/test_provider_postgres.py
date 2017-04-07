@@ -132,6 +132,21 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertIsInstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2004, 3, 4), QTime(13, 41, 52)))
 
+    def testBooleanType(self):
+        vl = QgsVectorLayer('{} table="qgis_test"."boolean_table" sql='.format(self.dbconn), "testbool", "postgres")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('fld1')).type(), QVariant.Bool)
+
+        values = {feat['id']: feat['fld1'] for feat in vl.getFeatures()}
+        expected = {
+            1: True,
+            2: False,
+            3: NULL
+        }
+        self.assertEqual(values, expected)
+
     def testQueryLayers(self):
         def test_query(dbconn, query, key):
             ql = QgsVectorLayer('%s srid=4326 table="%s" (geom) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), key), "testgeom", "postgres")
