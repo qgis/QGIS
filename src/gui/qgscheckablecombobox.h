@@ -31,8 +31,8 @@ class QEvent;
  * \ingroup gui
  * QStandardItemModel subclass which makes all items checkable
  * by default.
- * @note added in QGIS 3.0
- * @note not available in Python bindings
+ * \note added in QGIS 3.0
+ * \note not available in Python bindings
  **/
 #ifndef SIP_RUN
 class QgsCheckableItemModel : public QStandardItemModel
@@ -42,29 +42,29 @@ class QgsCheckableItemModel : public QStandardItemModel
   public:
 
     /** Constructor for QgsCheckableItemModel.
-     * @param parent parent object
+     * \param parent parent object
      */
     QgsCheckableItemModel( QObject *parent = nullptr );
 
     /** Returns a combination of the item flags: items are enabled
      * (ItemIsEnabled), selectable (ItemIsSelectable) and checkable
      * (ItemIsUserCheckable).
-     * @param index item index
+     * \param index item index
      */
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
     /** Returns the data stored under the given role for the item
      * referred to by the index.
-     * @param index item index
-     * @param role data role
+     * \param index item index
+     * \param role data role
      */
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
     /** Sets the role data for the item at index to value.
-     * @param index item index
-     * @param value data value
-     * @param role data role
-     * @returns true on success, false otherwise
+     * \param index item index
+     * \param value data value
+     * \param role data role
+     * \returns true on success, false otherwise
      */
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
@@ -80,8 +80,8 @@ class QgsCheckableItemModel : public QStandardItemModel
  * \ingroup gui
  * QStyledItemDelegate subclass for QgsCheckableComboBox. Needed for
  * correct drawing of the checkable items on Mac and GTK.
- * @note added in QGIS 3.0
- * @note not available in Python bindings
+ * \note added in QGIS 3.0
+ * \note not available in Python bindings
  **/
 
 class QgsCheckBoxDelegate : public QStyledItemDelegate
@@ -91,15 +91,15 @@ class QgsCheckBoxDelegate : public QStyledItemDelegate
   public:
 
     /** Constructor for QgsCheckBoxDelegate.
-     * @param parent parent object
+     * \param parent parent object
      */
     QgsCheckBoxDelegate( QObject *parent = nullptr );
 
     /** Renders the delegate using the given painter and style option
      * for the item specified by index.
-     * @param painter painter to use
-     * @param option style option
-     * @param index item index
+     * \param painter painter to use
+     * \param option style option
+     * \param index item index
      */
     virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 };
@@ -108,7 +108,7 @@ class QgsCheckBoxDelegate : public QStyledItemDelegate
 /** \class QgsCheckableComboBox
  * \ingroup gui
  * QComboBox subclass which allows selecting multiple items.
- * @note added in QGIS 3.0
+ * \note added in QGIS 3.0
  **/
 
 class GUI_EXPORT QgsCheckableComboBox : public QComboBox
@@ -122,58 +122,58 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
   public:
 
     /** Constructor for QgsCheckableComboBox.
-     * @param parent parent object
+     * \param parent parent object
      */
     QgsCheckableComboBox( QWidget *parent = nullptr );
 
     /** Returns separator used to separate items in the display text.
-     * @see setSeparator()
+     * \see setSeparator()
      */
     QString separator() const;
 
     /** Set separator used to separate items in the display text.
-     * @param separator separator to use
-     * @see separator()
+     * \param separator separator to use
+     * \see separator()
      */
     void setSeparator( const QString &separator );
 
     /** Returns default text which will be displayed in the widget
      * when no items selected.
-     * @see setDefaultText()
+     * \see setDefaultText()
      */
     QString defaultText() const;
 
     /** Set default text which will be displayed in the widget when
      * no items selected.
-     * @param text default text
-     * @see defaultText()
+     * \param text default text
+     * \see defaultText()
      */
     void setDefaultText( const QString &text );
 
     /** Returns currently checked items.
-     * @see setCheckedItems()
+     * \see setCheckedItems()
      */
     QStringList checkedItems() const;
 
     /** Returns the checked state of the item identified by index
-     * @param index item index
-     * @see setItemCheckState()
-     * @see toggleItemCheckState()
+     * \param index item index
+     * \see setItemCheckState()
+     * \see toggleItemCheckState()
      */
     Qt::CheckState itemCheckState( int index ) const;
 
     /** Sets the item check state to state
-     * @param index item index
-     * @param state check state
-     * @see itemCheckState()
-     * @see toggleItemCheckState()
+     * \param index item index
+     * \param state check state
+     * \see itemCheckState()
+     * \see toggleItemCheckState()
      */
     void setItemCheckState( int index, Qt::CheckState state );
 
     /** Toggles the item check state
-     * @param index item index
-     * @see itemCheckState()
-     * @see setItemCheckState()
+     * \param index item index
+     * \see itemCheckState()
+     * \see setItemCheckState()
      */
     void toggleItemCheckState( int index );
 
@@ -195,8 +195,8 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
   public slots:
 
     /** Set items which should be checked/selected.
-     * @param items items to select
-     * @see checkedItems()
+     * \param items items to select
+     * \see checkedItems()
      */
     void setCheckedItems( const QStringList &items );
 

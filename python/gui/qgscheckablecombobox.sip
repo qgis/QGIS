@@ -26,66 +26,66 @@ class QgsCheckableComboBox : QComboBox
     QgsCheckableComboBox( QWidget *parent = 0 );
 %Docstring
  Constructor for QgsCheckableComboBox.
- @param parent parent object
+ \param parent parent object
 %End
 
     QString separator() const;
 %Docstring
  Returns separator used to separate items in the display text.
- @see setSeparator()
+ \see setSeparator()
 %End
 
     void setSeparator( const QString &separator );
 %Docstring
  Set separator used to separate items in the display text.
- @param separator separator to use
- @see separator()
+ \param separator separator to use
+ \see separator()
 %End
 
     QString defaultText() const;
 %Docstring
  Returns default text which will be displayed in the widget
  when no items selected.
- @see setDefaultText()
+ \see setDefaultText()
 %End
 
     void setDefaultText( const QString &text );
 %Docstring
  Set default text which will be displayed in the widget when
  no items selected.
- @param text default text
- @see defaultText()
+ \param text default text
+ \see defaultText()
 %End
 
     QStringList checkedItems() const;
 %Docstring
  Returns currently checked items.
- @see setCheckedItems()
+ \see setCheckedItems()
 %End
 
     Qt::CheckState itemCheckState( int index ) const;
 %Docstring
  Returns the checked state of the item identified by index
- @param index item index
- @see setItemCheckState()
- @see toggleItemCheckState()
+ \param index item index
+ \see setItemCheckState()
+ \see toggleItemCheckState()
 %End
 
     void setItemCheckState( int index, Qt::CheckState state );
 %Docstring
  Sets the item check state to state
- @param index item index
- @param state check state
- @see itemCheckState()
- @see toggleItemCheckState()
+ \param index item index
+ \param state check state
+ \see itemCheckState()
+ \see toggleItemCheckState()
 %End
 
     void toggleItemCheckState( int index );
 %Docstring
  Toggles the item check state
- @param index item index
- @see itemCheckState()
- @see setItemCheckState()
+ \param index item index
+ \see itemCheckState()
+ \see setItemCheckState()
 %End
 
     virtual void hidePopup();
@@ -111,8 +111,8 @@ class QgsCheckableComboBox : QComboBox
     void setCheckedItems( const QStringList &items );
 %Docstring
  Set items which should be checked/selected.
- @param items items to select
- @see checkedItems()
+ \param items items to select
+ \see checkedItems()
 %End
 
   protected:
