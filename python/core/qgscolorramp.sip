@@ -440,7 +440,6 @@ class QgsLimitedRandomColorRamp : QgsColorRamp
 %End
 
   protected:
-    QList<QColor> mColors;
 };
 
 class QgsRandomColorRamp: QgsColorRamp
@@ -498,7 +497,6 @@ class QgsRandomColorRamp: QgsColorRamp
 
   protected:
 
-    QList<QColor> mPrecalculatedColors;
 
 };
 
@@ -710,7 +708,6 @@ class QgsColorBrewerColorRamp : QgsColorRamp
 Generates the scheme using the current name and number of colors
 %End
 
-    QList<QColor> mPalette;
 };
 
 

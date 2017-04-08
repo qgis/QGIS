@@ -225,6 +225,8 @@ Removing function body with namespaced return value
  :rtype: set of QgsActionScope
 %End
 
+    This<Member> shouldBeIncluded;
+
   protected:
     bool thisShouldBeListed();
 %Docstring

@@ -221,11 +221,14 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     QSet<QgsActionScope> returnTypeSet();
 
+    This<Member> shouldBeIncluded;
+
   protected:
     bool thisShouldBeListed();
 
     Whatever skipMember;
     Whatever::Something *alsoSkipMember = nullptr;
+    Some<Other> memberToSkip;
 
   private:
     void privateMethodAreNotShown();
