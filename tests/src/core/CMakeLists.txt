@@ -171,9 +171,9 @@ SET(TESTS
     )
 
 IF(WITH_QTWEBKIT)
-    SET(TESTS ${TESTS}
-        testqgscomposerhtml.cpp
-        testqgscomposition.cpp
+  SET(TESTS ${TESTS}
+      testqgscomposerhtml.cpp
+      testqgscomposition.cpp
         )
 ENDIF(WITH_QTWEBKIT)
 

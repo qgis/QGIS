@@ -27,31 +27,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
 )
 
-#############################################################
-# Compiler defines
-
-# This define is used for tests that need to locate the test
-# data under tests/testdata in the qgis source tree.
-# the TEST_DATA_DIR variable is set in the top level CMakeLists.txt
-ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
-
-ADD_DEFINITIONS(-DINSTALL_PREFIX="\\"${CMAKE_INSTALL_PREFIX}\\"")
-#############################################################
-# libraries
-
-# because of htonl
-IF (WIN32)
-  SET(PLATFORM_LIBRARIES wsock32)
-ENDIF (WIN32)
-
-# Since the tests are not actually installed, but rather
-# run directly from the build/src/tests dir we need to
-# ensure the qgis libs can be found.
-IF (APPLE)
-  # For Mac OS X, the executable must be at the root of the bundle's executable folder
-#  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
-ENDIF (APPLE)
-
 #note for tests we should not include the moc of our
 #qtests in the executable file list as the moc is
 #directly included in the sources
@@ -61,16 +36,22 @@ ENDIF (APPLE)
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 
-MACRO (ADD_QGIS_TEST testname testsrc)
-  SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-  SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
-  TARGET_LINK_LIBRARIES(qgis_${testname}
+MACRO (ADD_QGIS_TEST TESTSRC)
+  SET (TESTNAME  ${TESTSRC})
+  STRING(REPLACE "test" "" TESTNAME ${TESTNAME})
+  STRING(REPLACE "qgs" "" TESTNAME ${TESTNAME})
+  STRING(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
+  SET (TESTNAME  "qgis_${TESTNAME}test")
+
+  SET(${TESTNAME}_SRCS ${TESTSRC} ${util_SRCS})
+  SET(${TESTNAME}_MOC_CPPS ${TESTSRC})
+  ADD_EXECUTABLE(${TESTNAME} ${${TESTNAME}_SRCS})
+  SET_TARGET_PROPERTIES(${TESTNAME} PROPERTIES AUTOMOC TRUE)
+  TARGET_LINK_LIBRARIES(${TESTNAME}
     ${QT_QTCORE_LIBRARY}
     ${QT_QTTEST_LIBRARY}
     qgis_analysis)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
+  ADD_TEST(${TESTNAME} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/${TESTNAME} -maxwarnings 10000)
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
@@ -78,10 +59,15 @@ ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
+SET(TESTS
+ testqgsvectoranalyzer.cpp
+ testqgsgeometrysnapper.cpp
+ testopenstreetmap.cpp
+ testqgszonalstatistics.cpp
+ testqgsrastercalculator.cpp
+ testqgsalignraster.cpp
+    )
 
-ADD_QGIS_TEST(analyzertest testqgsvectoranalyzer.cpp)
-ADD_QGIS_TEST(geometrysnappertest testqgsgeometrysnapper.cpp)
-ADD_QGIS_TEST(openstreetmaptest testopenstreetmap.cpp)
-ADD_QGIS_TEST(zonalstatisticstest testqgszonalstatistics.cpp)
-ADD_QGIS_TEST(rastercalculatortest testqgsrastercalculator.cpp)
-ADD_QGIS_TEST(alignrastertest testqgsalignraster.cpp)
+FOREACH(TESTSRC ${TESTS})
+    ADD_QGIS_TEST(${TESTSRC})
+ENDFOREACH(TESTSRC)
