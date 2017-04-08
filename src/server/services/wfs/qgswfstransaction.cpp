@@ -461,7 +461,7 @@ namespace QgsWfs
       if ( !vlayer->commitChanges() )
       {
         action.error = true;
-        action.errorMsg = QStringLiteral( "Error commiting updates: %1" ).arg( vlayer->commitErrors().join( QStringLiteral( "; " ) ) );
+        action.errorMsg = QStringLiteral( "Error committing updates: %1" ).arg( vlayer->commitErrors().join( QStringLiteral( "; " ) ) );
         vlayer->rollBack();
         continue;
       }
@@ -558,7 +558,7 @@ namespace QgsWfs
       if ( !vlayer->commitChanges() )
       {
         action.error = true;
-        action.errorMsg = QStringLiteral( "Error commiting deletes: %1" ).arg( vlayer->commitErrors().join( QStringLiteral( "; " ) ) );
+        action.errorMsg = QStringLiteral( "Error committing deletes: %1" ).arg( vlayer->commitErrors().join( QStringLiteral( "; " ) ) );
         vlayer->rollBack();
         continue;
       }
@@ -658,7 +658,7 @@ namespace QgsWfs
       if ( !vlayer->commitChanges() )
       {
         action.error = true;
-        action.errorMsg = QStringLiteral( "Error commiting inserts: %1" ).arg( vlayer->commitErrors().join( QStringLiteral( "; " ) ) );
+        action.errorMsg = QStringLiteral( "Error committing inserts: %1" ).arg( vlayer->commitErrors().join( QStringLiteral( "; " ) ) );
         vlayer->rollBack();
         continue;
       }
@@ -739,7 +739,7 @@ namespace QgsWfs
         }
         currentAttributeChild = currentAttributeChild.nextSibling();
       }
-      // update fetaure list
+      // update feature list
       featList << feat;
     }
     return featList;

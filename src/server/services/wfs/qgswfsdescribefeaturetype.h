@@ -28,18 +28,18 @@
 
 namespace QgsWfs
 {
-  void setSchemaLayer( QDomElement& parentElement, QDomDocument& doc, const QgsVectorLayer* layer );
+  void setSchemaLayer( QDomElement &parentElement, QDomDocument &doc, const QgsVectorLayer *layer );
 
   /**
    * Create get capabilities document
    */
-  QDomDocument createDescribeFeatureTypeDocument( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
-      const QgsServerRequest& request );
+  QDomDocument createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+      const QgsServerRequest &request );
 
   /** Output WFS  GetCapabilities response
    */
-  void writeDescribeFeatureType( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
-                                 const QgsServerRequest& request, QgsServerResponse& response );
+  void writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                                 const QgsServerRequest &request, QgsServerResponse &response );
 
 } // samespace QgsWfs
 
