@@ -294,7 +294,7 @@ class CORE_EXPORT AbstractClass SIP_ABSTRACT
      * or protected API.
      */
     virtual QString reason() = 0;
-}
+};
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSipifyHeader::Flags )
 
