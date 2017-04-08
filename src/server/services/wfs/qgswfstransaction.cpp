@@ -67,6 +67,10 @@ namespace QgsWfs
       QDomElement docElem = doc.documentElement();
       aRequest = parseTransactionRequestBody( docElem );
     }
+    else
+    {
+      aRequest = parseTransactionParameters( parameters );
+    }
 
     int actionCount = aRequest.inserts.size() + aRequest.updates.size() + aRequest.deletes.size();
     if ( actionCount == 0 )
@@ -739,6 +743,257 @@ namespace QgsWfs
       featList << feat;
     }
     return featList;
+  }
+
+  transactionRequest parseTransactionParameters( QgsServerRequest::Parameters parameters )
+  {
+    if ( !parameters.contains( QStringLiteral( "OPERATION" ) ) )
+    {
+      throw QgsRequestNotWellFormedException( QStringLiteral( "OPERATION parameter is mandatory" ) );
+    }
+    if ( parameters.value( QStringLiteral( "OPERATION" ) ).toUpper() != QStringLiteral( "DELETE" ) )
+    {
+      throw QgsRequestNotWellFormedException( QStringLiteral( "Only DELETE value is defined for OPERATION parameter" ) );
+    }
+
+    // Verifying parameters mutually exclusive
+    if ( ( parameters.contains( QStringLiteral( "FEATUREID" ) )
+           && ( parameters.contains( QStringLiteral( "FILTER" ) ) || parameters.contains( QStringLiteral( "BBOX" ) ) ) )
+         || ( parameters.contains( QStringLiteral( "FILTER" ) )
+              && ( parameters.contains( QStringLiteral( "FEATUREID" ) ) || parameters.contains( QStringLiteral( "BBOX" ) ) ) )
+         || ( parameters.contains( QStringLiteral( "BBOX" ) )
+              && ( parameters.contains( QStringLiteral( "FEATUREID" ) ) || parameters.contains( QStringLiteral( "FILTER" ) ) ) )
+       )
+    {
+      throw QgsRequestNotWellFormedException( QStringLiteral( "FEATUREID FILTER and BBOX parameters are mutually exclusive" ) );
+    }
+
+    transactionRequest request;
+
+    QStringList typeNameList;
+    // parse FEATUREID
+    if ( parameters.contains( QStringLiteral( "FEATUREID" ) ) )
+    {
+      QStringList fidList = parameters.value( QStringLiteral( "FEATUREID" ) ).split( QStringLiteral( "," ) );
+
+      QMap<QString, QgsFeatureIds> fidsMap;
+
+      QStringList::const_iterator fidIt = fidList.constBegin();
+      for ( ; fidIt != fidList.constEnd(); ++fidIt )
+      {
+        // Get FeatureID
+        QString fid = *fidIt;
+        fid = fid.trimmed();
+        // testing typename in the WFS featureID
+        if ( !fid.contains( QLatin1String( "." ) ) )
+        {
+          throw QgsRequestNotWellFormedException( QStringLiteral( "FEATUREID has to have TYPENAME in the values" ) );
+        }
+
+        QString typeName = fid.section( QStringLiteral( "." ), 0, 0 );
+        fid = fid.section( QStringLiteral( "." ), 1, 1 );
+        if ( !typeNameList.contains( typeName ) )
+        {
+          typeNameList << typeName;
+        }
+
+        QgsFeatureIds fids;
+        if ( fidsMap.contains( typeName ) )
+        {
+          fids = fidsMap.value( typeName );
+        }
+        fids.insert( fid.toInt() );
+        fidsMap.insert( typeName, fids );
+      }
+
+      QMap<QString, QgsFeatureIds>::const_iterator fidsMapIt = fidsMap.constBegin();
+      while ( fidsMapIt != fidsMap.constEnd() )
+      {
+        transactionDelete action;
+        action.typeName = fidsMapIt.key();
+
+        QgsFeatureIds fids = fidsMapIt.value();
+        action.featureRequest = QgsFeatureRequest( fids );
+
+        request.deletes.append( action );
+      }
+      return request;
+    }
+
+    if ( !parameters.contains( QStringLiteral( "TYPENAME" ) ) )
+    {
+      throw QgsRequestNotWellFormedException( QStringLiteral( "TYPENAME is mandatory except if FEATUREID is used" ) );
+    }
+
+    typeNameList = parameters.value( QStringLiteral( "TYPENAME" ) ).split( QStringLiteral( "," ) );
+
+    // Create actions based on TypeName
+    QStringList::const_iterator typeNameIt = typeNameList.constBegin();
+    for ( ; typeNameIt != typeNameList.constEnd(); ++typeNameIt )
+    {
+      QString typeName = *typeNameIt;
+      typeName = typeName.trimmed();
+
+      transactionDelete action;
+      action.typeName = typeName;
+
+      request.deletes.append( action );
+    }
+
+    // Manage extra parameter exp_filter
+    if ( parameters.contains( QStringLiteral( "EXP_FILTER" ) ) )
+    {
+      QString expFilterName = parameters.value( QStringLiteral( "EXP_FILTER" ) );
+      QStringList expFilterList;
+      QRegExp rx( "\\(([^()]+)\\)" );
+      if ( rx.indexIn( expFilterName, 0 ) == -1 )
+      {
+        expFilterList << expFilterName;
+      }
+      else
+      {
+        int pos = 0;
+        while ( ( pos = rx.indexIn( expFilterName, pos ) ) != -1 )
+        {
+          expFilterList << rx.cap( 1 );
+          pos += rx.matchedLength();
+        }
+      }
+
+      // Verifying the 1:1 mapping between TYPENAME and EXP_FILTER but without exception
+      if ( request.deletes.size() == expFilterList.size() )
+      {
+        // set feature request filter expression based on filter element
+        QList<transactionDelete>::iterator dIt = request.deletes.begin();
+        QStringList::const_iterator expFilterIt = expFilterList.constBegin();
+        for ( ; dIt != request.deletes.end(); ++dIt )
+        {
+          transactionDelete &action = *dIt;
+          // Get Filter for this typeName
+          QString expFilter;
+          if ( expFilterIt != expFilterList.constEnd() )
+          {
+            expFilter = *expFilterIt;
+          }
+          std::shared_ptr<QgsExpression> filter( new QgsExpression( expFilter ) );
+          if ( filter )
+          {
+            if ( filter->hasParserError() )
+            {
+              QgsMessageLog::logMessage( filter->parserErrorString() );
+            }
+            else
+            {
+              if ( filter->needsGeometry() )
+              {
+                action.featureRequest.setFlags( QgsFeatureRequest::NoFlags );
+              }
+              action.featureRequest.setFilterExpression( filter->expression() );
+            }
+          }
+        }
+      }
+      else
+      {
+        QgsMessageLog::logMessage( "There has to be a 1:1 mapping between each element in a TYPENAME and the EXP_FILTER list" );
+      }
+    }
+
+    if ( parameters.contains( QStringLiteral( "BBOX" ) ) )
+    {
+      // get bbox value
+      QString bbox = parameters.value( QStringLiteral( "BBOX" ) );
+      if ( bbox.isEmpty() )
+      {
+        throw QgsRequestNotWellFormedException( QStringLiteral( "BBOX parameter is empty" ) );
+      }
+
+      // get bbox corners
+      QStringList corners = bbox.split( "," );
+      if ( corners.size() != 4 )
+      {
+        throw QgsRequestNotWellFormedException( QStringLiteral( "BBOX has to be composed of 4 elements: '%1'" ).arg( bbox ) );
+      }
+
+      // convert corners to double
+      double d[4];
+      bool ok;
+      for ( int i = 0; i < 4; i++ )
+      {
+        corners[i].replace( QLatin1String( " " ), QLatin1String( "+" ) );
+        d[i] = corners[i].toDouble( &ok );
+        if ( !ok )
+        {
+          throw QgsRequestNotWellFormedException( QStringLiteral( "BBOX has to be composed of 4 double: '%1'" ).arg( bbox ) );
+        }
+      }
+      // create extent
+      QgsRectangle extent( d[0], d[1], d[2], d[3] );
+
+      // set feature request filter rectangle
+      QList<transactionDelete>::iterator dIt = request.deletes.begin();
+      for ( ; dIt != request.deletes.end(); ++dIt )
+      {
+        transactionDelete &action = *dIt;
+        action.featureRequest.setFilterRect( extent );
+      }
+      return request;
+    }
+    else if ( parameters.contains( QStringLiteral( "FILTER" ) ) )
+    {
+      QString filterName = parameters.value( QStringLiteral( "FILTER" ) );
+      QStringList filterList;
+      QRegExp rx( "\\(([^()]+)\\)" );
+      if ( rx.indexIn( filterName, 0 ) == -1 )
+      {
+        filterList << filterName;
+      }
+      else
+      {
+        int pos = 0;
+        while ( ( pos = rx.indexIn( filterName, pos ) ) != -1 )
+        {
+          filterList << rx.cap( 1 );
+          pos += rx.matchedLength();
+        }
+      }
+
+      // Verifying the 1:1 mapping between TYPENAME and FILTER
+      if ( request.deletes.size() != filterList.size() )
+      {
+        throw QgsRequestNotWellFormedException( QStringLiteral( "There has to be a 1:1 mapping between each element in a TYPENAME and the FILTER list" ) );
+      }
+
+      // set feature request filter expression based on filter element
+      QList<transactionDelete>::iterator dIt = request.deletes.begin();
+      QStringList::const_iterator filterIt = filterList.constBegin();
+      for ( ; dIt != request.deletes.end(); ++dIt )
+      {
+        transactionDelete &action = *dIt;
+
+        // Get Filter for this typeName
+        QDomDocument filter;
+        if ( filterIt != filterList.constEnd() )
+        {
+          QString errorMsg;
+          if ( !filter.setContent( *filterIt, true, &errorMsg ) )
+          {
+            throw QgsRequestNotWellFormedException( QStringLiteral( "error message: %1. The XML string was: %2" ).arg( errorMsg, *filterIt ) );
+          }
+        }
+
+        QDomElement filterElem = filter.firstChildElement();
+        action.featureRequest = parseFilterElement( action.typeName, filterElem );
+
+        if ( filterIt != filterList.constEnd() )
+        {
+          ++filterIt;
+        }
+      }
+      return request;
+    }
+
+    return request;
   }
 
   transactionRequest parseTransactionRequestBody( QDomElement &docElem )
