@@ -33,6 +33,7 @@ class QgsProcessingUtils
  value.
  \see compatibleVectorLayers()
  \see compatibleLayers()
+ :rtype: list of QgsRasterLayer
 %End
 
     static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
@@ -50,6 +51,7 @@ class QgsProcessingUtils
  value.
  \see compatibleRasterLayers()
  \see compatibleLayers()
+ :rtype: list of QgsVectorLayer
 %End
 
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
@@ -61,6 +63,7 @@ class QgsProcessingUtils
  value.
  \see compatibleRasterLayers()
  \see compatibleVectorLayers()
+ :rtype: list of QgsMapLayer
 %End
 
 
@@ -74,6 +77,7 @@ class QgsProcessingUtils
  for layers in the specified project, then those matching layers will be
  returned.
  \see mapLayerFromString()
+ :rtype: QgsMapLayer
 %End
 
     static QgsMapLayer *mapLayerFromString( const QString &string ) /Factory/;
@@ -83,12 +87,14 @@ class QgsProcessingUtils
  then the layer at this file path will be loaded.
  The caller takes responsibility for deleting the returned map layer.
  \see mapLayerFromProject()
+ :rtype: QgsMapLayer
 %End
 
     static QString normalizeLayerSource( const QString &source );
 %Docstring
  Normalizes a layer source string for safe comparison across different
  operating system environments.
+ :rtype: str
 %End
 
 };

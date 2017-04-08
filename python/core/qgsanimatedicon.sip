@@ -27,6 +27,7 @@ class QgsAnimatedIcon : QObject
     QString iconPath() const;
 %Docstring
  Path to a movie, e.g. animated GIF
+ :rtype: str
 %End
 
     void setIconPath( const QString &iconPath );
@@ -39,6 +40,7 @@ class QgsAnimatedIcon : QObject
  Get the icons representation in the current frame.
  This will need to be called repeatedly, whenever a frameChanged()
  signal is emitted.
+ :rtype: QIcon
 %End
 
 
@@ -51,6 +53,7 @@ class QgsAnimatedIcon : QObject
  makes sure the annimation is started.
 
 .. versionadded:: 3.0
+ :rtype: bool
 %End
 
     bool disconnectFrameChanged( const QObject *receiver, const char *method );
@@ -58,6 +61,7 @@ class QgsAnimatedIcon : QObject
  Convenience function to disconnect the same style that the frame change connection was established.
 
 .. versionadded:: 3.0
+ :rtype: bool
 %End
 
 
@@ -66,6 +70,7 @@ class QgsAnimatedIcon : QObject
  The native width of the icon.
 
 .. versionadded:: 3.0
+ :rtype: int
 %End
 
     int height() const;
@@ -73,6 +78,7 @@ class QgsAnimatedIcon : QObject
  The native height of the icon.
 
 .. versionadded:: 3.0
+ :rtype: int
 %End
 
   signals:

@@ -104,6 +104,7 @@ Default constructor
     bool operator==( const QgsSipifyHeader other );
 %Docstring
 Comparison operator should be kept
+ :rtype: bool
 %End
 
     void multilineMethod( const QgsPoint &startPoint,
@@ -118,9 +119,13 @@ A multiline method signature
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 %Docstring
 Factory annotation
+ :rtype: QgsMapLayerRenderer
 %End
 
     SomeObject *createAnother() /Factory/;
+%Docstring
+ :rtype: SomeObject
+%End
 
     void LongDocStringMethod();
 %Docstring
@@ -139,9 +144,14 @@ Factory annotation
     MyPointer *pointerReturnValue();
 %Docstring
  I return a pointer. If something bad happens, I return None.
+ :return: pointer to something cool
+ :rtype: MyPointer
 %End
 
     bool isOKwithErrMesg( QString &ErrMsg /Out/ );
+%Docstring
+ :rtype: bool
+%End
 
     void InOutParam( bool &ok = true /In,Out/ );
 
@@ -156,24 +166,70 @@ Factory annotation
 complex default value and type (i.e. containing commas) should be given as a string with single quotes
 %End
 
-    inlineKeyWordShouldNotAppear();
+    int inlineKeyWordShouldNotAppear();
+%Docstring
+ :rtype: int
+%End
 
     QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
+%Docstring
+ :rtype: str
+%End
 
     void setComposition( QgsComposition *c /KeepReference/ );
 
     void removeProxyFactory( QNetworkProxyFactory *factory /TransferBack/ );
 
     bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl );
+%Docstring
+ :rtype: bool
+%End
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
 %Docstring
 Removing function body with namespaced return value
+ :rtype: QgsRaster.RasterBuildPyramids
 %End
 
 
     virtual int overriddenProperty();
+%Docstring
+ :rtype: int
+%End
+    QString returnTypeString() const;
+%Docstring
+ :rtype: str
+%End
+
+    double returnTypeDouble() const;
+%Docstring
+ :rtype: float
+%End
+
+    QList< QgsAnnotation * > returnTypeList();
+%Docstring
+ :rtype: list of QgsAnnotation
+%End
+
+    QVector< QgsAnnotation > returnTypeVector();
+%Docstring
+ :rtype: list of QgsAnnotation
+%End
+
+    QStringList returnTypeStringList();
+%Docstring
+ :rtype: list of str
+%End
+
+    QSet<QgsActionScope> returnTypeSet();
+%Docstring
+ :rtype: set of QgsActionScope
+%End
+
   protected:
     bool thisShouldBeListed();
+%Docstring
+ :rtype: bool
+%End
 
 
   private:

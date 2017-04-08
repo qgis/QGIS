@@ -39,11 +39,13 @@ class QgsSvgAnnotation: QgsAnnotation
 %Docstring
  Returns the file path for the source SVG file.
  \see setFilePath()
+ :rtype: str
 %End
 
     static QgsSvgAnnotation *create() /Factory/;
 %Docstring
  Returns a new QgsSvgAnnotation object.
+ :rtype: QgsSvgAnnotation
 %End
 
   protected:

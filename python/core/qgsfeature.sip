@@ -162,8 +162,9 @@ class QgsFeature
     QgsFeatureId id() const;
 %Docstring
  Get the feature ID for this feature.
- \returns feature ID
+ :return: feature ID
  \see setId()
+ :rtype: QgsFeatureId
 %End
 
     void setId( QgsFeatureId id );
@@ -176,12 +177,13 @@ class QgsFeature
     QgsAttributes attributes() const;
 %Docstring
  Returns the feature's attributes.
- \returns list of feature's attributes
+ :return: list of feature's attributes
  \see setAttributes
 .. versionadded:: 2.9
 .. note::
 
    Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
+ :rtype: QgsAttributes
 %End
 
     void setAttributes( const QgsAttributes &attrs );
@@ -199,7 +201,7 @@ class QgsFeature
  The feature will be valid if it was successful.
  \param field the index of the field to set
  \param attr the value of the attribute
- \returns false, if the field index does not exist
+ :return: false, if the field index does not exist
 .. note::
 
    For Python: raises a KeyError exception instead of returning false
@@ -207,6 +209,7 @@ class QgsFeature
 
    Alternatively in Python: @code feature[field] = attr @endcode
  \see setAttributes
+ :rtype: bool
 %End
 %MethodCode
     bool rv;
@@ -263,6 +266,7 @@ class QgsFeature
  the provider to indicate some problem that makes the feature
  invalid or to indicate a null feature.
  \see setValid
+ :rtype: bool
 %End
 
     void setValid( bool validity );
@@ -277,6 +281,7 @@ class QgsFeature
  Returns true if the feature has an associated geometry.
  \see geometry()
 .. versionadded:: 3.0.
+ :rtype: bool
 %End
 
     QgsGeometry geometry() const;
@@ -285,6 +290,7 @@ class QgsFeature
  an empty QgsGeometry object will be returned.
  \see hasGeometry()
  \see setGeometry()
+ :rtype: QgsGeometry
 %End
 
     void setGeometry( const QgsGeometry &geometry );
@@ -318,6 +324,7 @@ class QgsFeature
 %Docstring
  Returns the field map associated with the feature.
  \see setFields
+ :rtype: QgsFields
 %End
 
     void setAttribute( const QString &name, const QVariant &value /GetWrapper/ );
@@ -327,7 +334,7 @@ class QgsFeature
   The feature will be valid if it was successful
   \param name The name of the field to set
   \param value The value to set
-  \returns false if attribute name could not be converted to index (C++ only)
+  :return: false if attribute name could not be converted to index (C++ only)
 .. note::
 
    For Python: raises a KeyError exception instead of returning false
@@ -361,7 +368,7 @@ class QgsFeature
  Removes an attribute value by field name. Field map must be associated using setFields()
   before this method can be used.
   \param name The name of the field to delete
-  \returns false if attribute name could not be converted to index (C++ only)
+  :return: false if attribute name could not be converted to index (C++ only)
 .. note::
 
    For Python: raises a KeyError exception instead of returning false
@@ -369,6 +376,7 @@ class QgsFeature
 
    Alternatively in Python: @code del feature[name] @endcode
   \see setFields
+ :rtype: bool
 %End
 %MethodCode
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
@@ -390,7 +398,7 @@ class QgsFeature
  Lookup attribute value from attribute name. Field map must be associated using setFields()
   before this method can be used.
   \param name The name of the attribute to get
-  \returns The value of the attribute (C++: Invalid variant if no such name exists )
+  :return: The value of the attribute (C++: Invalid variant if no such name exists )
 .. note::
 
    For Python: raises a KeyError exception if the field is not found
@@ -418,7 +426,7 @@ class QgsFeature
  Lookup attribute value from its index. Field map must be associated using setFields()
   before this method can be used.
   \param fieldIdx The index of the attribute to get
-  \returns The value of the attribute (C++: Invalid variant if no such index exists )
+  :return: The value of the attribute (C++: Invalid variant if no such index exists )
 .. note::
 
    For Python: raises a KeyError exception if the field is not found
@@ -447,8 +455,9 @@ class QgsFeature
  Utility method to get attribute index from name. Field map must be associated using setFields()
   before this method can be used.
   \param fieldName name of field to get attribute index of
-  \returns -1 if field does not exist or field map is not associated.
+  :return: -1 if field does not exist or field map is not associated.
   \see setFields
+ :rtype: int
 %End
 
     operator QVariant() const;

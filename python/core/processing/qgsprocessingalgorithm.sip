@@ -49,6 +49,7 @@ class QgsProcessingAlgorithm
  \see displayName()
  \see group()
  \see tags()
+ :rtype: str
 %End
 
     QString id() const;
@@ -57,6 +58,7 @@ class QgsProcessingAlgorithm
  provider's ID and the algorithms unique name (e.g. "qgis:mergelayers" ).
  \see name()
  \see provider()
+ :rtype: str
 %End
 
     virtual QString displayName() const = 0;
@@ -64,24 +66,28 @@ class QgsProcessingAlgorithm
  Returns the translated algorithm name, which should be used for any user-visible display
  of the algorithm name.
  \see name()
+ :rtype: str
 %End
 
     virtual QStringList tags() const;
 %Docstring
  Returns a list of tags which relate to the algorithm, and are used to assist users in searching
  for suitable algorithms. These tags should be localised.
+ :rtype: list of str
 %End
 
     virtual QIcon icon() const;
 %Docstring
  Returns an icon for the algorithm.
  \see svgIconPath()
+ :rtype: QIcon
 %End
 
     virtual QString svgIconPath() const;
 %Docstring
  Returns a path to an SVG version of the algorithm's icon.
  \see icon()
+ :rtype: str
 %End
 
     virtual QString group() const;
@@ -89,16 +95,19 @@ class QgsProcessingAlgorithm
  Returns the name of the group this algorithm belongs to. This string
  should be localised.
  \see tags()
+ :rtype: str
 %End
 
     virtual Flags flags() const;
 %Docstring
  Returns the flags indicating how and when the algorithm operates and should be exposed to users.
+ :rtype: Flags
 %End
 
     QgsProcessingProvider *provider() const;
 %Docstring
  Returns the provider to which this algorithm belongs.
+ :rtype: QgsProcessingProvider
 %End
 
   private:

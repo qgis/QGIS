@@ -48,8 +48,9 @@ class QgsRasterFileWriter
 .. note::
 
    Does not work with tiled mode enabled.
- \returns Instance of data provider in editing mode (on success) or None on error.
+ :return: Instance of data provider in editing mode (on success) or None on error.
 .. versionadded:: 3.0
+ :rtype: QgsRasterDataProvider
 %End
 
     WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
@@ -62,46 +63,81 @@ class QgsRasterFileWriter
 \param outputExtent extent to output
 \param crs crs to reproject to
 \param feedback optional feedback object for progress reports
+ :rtype: WriterError
 %End
 
     QString outputUrl() const;
 %Docstring
  Returns the output URL for the raster.
 .. versionadded:: 3.0
+ :rtype: str
 %End
 
     void setOutputFormat( const QString &format );
     QString outputFormat() const;
+%Docstring
+ :rtype: str
+%End
 
     void setOutputProviderKey( const QString &key );
     QString outputProviderKey() const;
+%Docstring
+ :rtype: str
+%End
 
     void setTiledMode( bool t );
     bool tiledMode() const;
+%Docstring
+ :rtype: bool
+%End
 
     void setMaxTileWidth( int w );
     int maxTileWidth() const;
+%Docstring
+ :rtype: int
+%End
 
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
+%Docstring
+ :rtype: QgsRaster.RasterBuildPyramids
+%End
     void setBuildPyramidsFlag( QgsRaster::RasterBuildPyramids f );
 
     QList< int > pyramidsList() const;
+%Docstring
+ :rtype: list of int
+%End
     void setPyramidsList( const QList< int > &list );
 
     QString pyramidsResampling() const;
+%Docstring
+ :rtype: str
+%End
     void setPyramidsResampling( const QString &str );
 
     QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
+%Docstring
+ :rtype: QgsRaster.RasterPyramidsFormat
+%End
     void setPyramidsFormat( QgsRaster::RasterPyramidsFormat f );
 
     void setMaxTileHeight( int h );
     int maxTileHeight() const;
+%Docstring
+ :rtype: int
+%End
 
     void setCreateOptions( const QStringList &list );
     QStringList createOptions() const;
+%Docstring
+ :rtype: list of str
+%End
 
     void setPyramidsConfigOptions( const QStringList &list );
     QStringList pyramidsConfigOptions() const;
+%Docstring
+ :rtype: list of str
+%End
 
 };
 

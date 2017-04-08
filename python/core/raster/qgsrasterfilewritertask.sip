@@ -54,6 +54,9 @@ class QgsRasterFileWriterTask : QgsTask
   protected:
 
     virtual bool run();
+%Docstring
+ :rtype: bool
+%End
     virtual void finished( bool result );
 
 };

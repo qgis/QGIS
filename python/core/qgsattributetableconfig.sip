@@ -51,18 +51,21 @@ Constructor for ColumnConfig
 %Docstring
  Get the list with all columns and their configuration.
  The list order defines the order of appearance.
+ :rtype: list of QgsAttributeTableConfig.ColumnConfig
 %End
 
     bool isEmpty() const;
 %Docstring
  Returns true if the configuration is empty, ie it contains no columns.
+ :rtype: bool
 %End
 
     int mapVisibleColumnToIndex( int visibleColumn ) const;
 %Docstring
  Maps a visible column index to its original column index.
  \param visibleColumn index of visible column
- \returns corresponding index when hidden columns are considered
+ :return: corresponding index when hidden columns are considered
+ :rtype: int
 %End
 
     void setColumns( const QVector<QgsAttributeTableConfig::ColumnConfig> &columns );
@@ -82,6 +85,7 @@ Constructor for ColumnConfig
     bool actionWidgetVisible() const;
 %Docstring
  Returns true if the action widget is visible
+ :rtype: bool
 %End
 
     void setActionWidgetVisible( bool visible );
@@ -92,6 +96,7 @@ Constructor for ColumnConfig
     ActionWidgetStyle actionWidgetStyle() const;
 %Docstring
  Get the style of the action widget
+ :rtype: ActionWidgetStyle
 %End
 
     void setActionWidgetStyle( ActionWidgetStyle actionWidgetStyle );
@@ -112,6 +117,7 @@ Constructor for ColumnConfig
     QString sortExpression() const;
 %Docstring
  Get the expression used for sorting.
+ :rtype: str
 %End
 
     void setSortExpression( const QString &sortExpression );
@@ -124,6 +130,7 @@ Constructor for ColumnConfig
  Returns the width of a column, or -1 if column should use default width.
  \param column column index
  \see setColumnWidth()
+ :rtype: int
 %End
 
     void setColumnWidth( int column, int width );
@@ -139,6 +146,7 @@ Constructor for ColumnConfig
  Returns true if the specified column is hidden.
  \param column column index
  \see setColumnHidden()
+ :rtype: bool
 %End
 
     void setColumnHidden( int column, bool hidden );
@@ -153,6 +161,7 @@ Constructor for ColumnConfig
 %Docstring
  Get the sort order
 .. versionadded:: 2.16
+ :rtype: Qt.SortOrder
 %End
 
     void setSortOrder( Qt::SortOrder sortOrder );

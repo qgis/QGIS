@@ -28,15 +28,20 @@ class CharacterWidget : QWidget
 %End
 
     QSize sizeHint() const;
+%Docstring
+ :rtype: QSize
+%End
 
     int columns() const;
 %Docstring
  Returns the number of columns of characters shown in the widget.
+ :rtype: int
 %End
 
     int squareSize() const;
 %Docstring
  Returns the size (in pixels) of the square used to render each character preview.
+ :rtype: int
 %End
 
     QChar character() const;
@@ -44,6 +49,7 @@ class CharacterWidget : QWidget
  Returns the currently selected character in the widget.
  \see setCharacter()
 .. versionadded:: 3.0
+ :rtype: QChar
 %End
 
     QFont font() const;
@@ -51,6 +57,7 @@ class CharacterWidget : QWidget
  Returns the font shown in the widget
  \see setFont()
 .. versionadded:: 3.0
+ :rtype: QFont
 %End
 
   public slots:

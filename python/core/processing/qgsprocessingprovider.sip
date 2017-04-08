@@ -36,12 +36,14 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns an icon for the provider.
  \see svgIconPath()
+ :rtype: QIcon
 %End
 
     virtual QString svgIconPath() const;
 %Docstring
  Returns a path to an SVG version of the provider's icon.
  \see icon()
+ :rtype: str
 %End
 
     virtual QString id() const = 0;
@@ -50,6 +52,7 @@ class QgsProcessingProvider : QObject
  should be a unique, short, character only string, eg "qgis" or "gdal". This
  string should not be localised.
  \see name()
+ :rtype: str
 %End
 
     virtual QString name() const = 0;
@@ -57,6 +60,7 @@ class QgsProcessingProvider : QObject
  Returns the full provider name, which is used to describe the provider within the GUI.
  This string should be localised.
  \see id()
+ :rtype: str
 %End
 
     virtual bool canBeActivated() const;
@@ -64,11 +68,13 @@ class QgsProcessingProvider : QObject
  Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
  missing external dependencies).
  \see isActive()
+ :rtype: bool
 %End
 
     virtual bool isActive() const;
 %Docstring
  Returns true if the provider is active and able to run algorithms.
+ :rtype: bool
 %End
 
     virtual QStringList supportedOutputRasterLayerExtensions() const;
@@ -76,6 +82,7 @@ class QgsProcessingProvider : QObject
  Returns a list of the raster format file extensions supported by this provider.
  \see supportedOutputVectorLayerExtensions()
  \see supportedOutputTableExtensions()
+ :rtype: list of str
 %End
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
@@ -84,6 +91,7 @@ class QgsProcessingProvider : QObject
  \see supportedOutputRasterLayerExtensions()
  \see supportedOutputTableExtensions()
  \see supportsNonFileBasedOutput()
+ :rtype: list of str
 %End
 
     virtual QStringList supportedOutputTableExtensions() const;
@@ -91,6 +99,7 @@ class QgsProcessingProvider : QObject
  Returns a list of the table format file extensions supported by this provider.
  \see supportedOutputRasterLayerExtensions()
  \see supportedOutputVectorLayerExtensions()
+ :rtype: list of str
 %End
 
     virtual bool supportsNonFileBasedOutput() const;
@@ -98,6 +107,7 @@ class QgsProcessingProvider : QObject
  Returns true if the provider supports non-file based outputs (such as memory layers
  or direct database outputs).
  \see supportedOutputVectorLayerExtensions()
+ :rtype: bool
 %End
 
     virtual bool load();
@@ -107,8 +117,9 @@ class QgsProcessingProvider : QObject
  Subclasses should not individually load any algorithms in their load() implementations, as that must
  occur within the loadAlgorithms() method. Instead, subclasses should call refreshAlgorithms()
  from any overloaded load() method to trigger an initial load of the provider's algorithms.
- \returns true if provider could be successfully loaded
+ :return: true if provider could be successfully loaded
  \see unload()
+ :rtype: bool
 %End
 
     virtual void unload();
@@ -126,6 +137,7 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns a list of algorithms supplied by this provider.
  \see algorithm()
+ :rtype: list of const QgsProcessingAlgorithm
 %End
 
     const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
@@ -133,6 +145,7 @@ class QgsProcessingProvider : QObject
  Returns the matching algorithm by name, or a None if no matching
  algorithm is contained by this provider.
  \see algorithms()
+ :rtype: QgsProcessingAlgorithm
 %End
 
   signals:
@@ -155,6 +168,7 @@ class QgsProcessingProvider : QObject
     bool addAlgorithm( QgsProcessingAlgorithm *algorithm /Transfer/ );
 %Docstring
  Adds an algorithm to the provider. Ownership of the algorithm is transferred to the provider.
+ :rtype: bool
 %End
 
   private:

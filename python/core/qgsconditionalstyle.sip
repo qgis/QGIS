@@ -26,6 +26,9 @@ class QgsConditionalLayerStyles
     QgsConditionalLayerStyles();
 
     QList<QgsConditionalStyle> rowStyles();
+%Docstring
+ :rtype: list of QgsConditionalStyle
+%End
 
     void setRowStyles( const QList<QgsConditionalStyle> &styles );
 %Docstring
@@ -45,17 +48,20 @@ class QgsConditionalLayerStyles
     QList<QgsConditionalStyle> fieldStyles( const QString &fieldName );
 %Docstring
  Returns the conditional styles set for the field UI properties
- \returns A list of conditional styles that have been set.
+ :return: A list of conditional styles that have been set.
+ :rtype: list of QgsConditionalStyle
 %End
 
     bool readXml( const QDomNode &node );
 %Docstring
  Reads field ui properties specific state from Dom node.
+ :rtype: bool
 %End
 
     bool writeXml( QDomNode &node, QDomDocument &doc ) const;
 %Docstring
  Write field ui properties specific state from Dom node.
+ :rtype: bool
 %End
 
 };
@@ -81,13 +87,15 @@ class QgsConditionalStyle
  Check if the rule matches using the given value and feature
  \param value The current value being checked. The "value" variable from the context is replaced with this value.
  \param context Expression context for evaluating rule expression
- \returns True of the rule matches against the given feature
+ :return: True of the rule matches against the given feature
+ :rtype: bool
 %End
 
     QPixmap renderPreview() const;
 %Docstring
  Render a preview icon of the rule.
- \returns QPixmap preview of the style
+ :return: QPixmap preview of the style
+ :rtype: QPixmap
 %End
 
     void setName( const QString &value );
@@ -130,71 +138,82 @@ class QgsConditionalStyle
     QString displayText() const;
 %Docstring
  The name of the style.
- \returns The name of the style. Names are optional so might be empty.
+ :return: The name of the style. Names are optional so might be empty.
+ :rtype: str
 %End
 
     QString name() const;
 %Docstring
  The name of the style.
- \returns The name of the style. Names are optional so might be empty.
+ :return: The name of the style. Names are optional so might be empty.
+ :rtype: str
 %End
 
     QPixmap icon() const;
 %Docstring
  The icon set for style generated from the set symbol
- \returns A QPixmap that was set for the icon using the symbol
+ :return: A QPixmap that was set for the icon using the symbol
+ :rtype: QPixmap
 %End
 
     QgsSymbol *symbol() const;
 %Docstring
  The symbol used to generate the icon for the style
- \returns The QgsSymbol used for the icon
+ :return: The QgsSymbol used for the icon
+ :rtype: QgsSymbol
 %End
 
     QColor textColor() const;
 %Docstring
  The text color set for style
- \returns QColor for text color
+ :return: QColor for text color
+ :rtype: QColor
 %End
 
     bool validTextColor() const;
 %Docstring
  Check if the text color is valid for render.
  Valid colors are non invalid QColors and a color with a > 0 alpha
- \returns True of the color set for text is valid.
+ :return: True of the color set for text is valid.
+ :rtype: bool
 %End
 
     QColor backgroundColor() const;
 %Docstring
  The background color for style
- \returns QColor for background color
+ :return: QColor for background color
+ :rtype: QColor
 %End
 
     bool validBackgroundColor() const;
 %Docstring
  Check if the background color is valid for render.
  Valid colors are non invalid QColors and a color with a > 0 alpha
- \returns True of the color set for background is valid.
+ :return: True of the color set for background is valid.
+ :rtype: bool
 %End
 
     QFont font() const;
 %Docstring
  The font for the style
- \returns QFont for the style
+ :return: QFont for the style
+ :rtype: QFont
 %End
 
     QString rule() const;
 %Docstring
  The condition rule set for the style. Rule may contain variable \@value
  to represent the current value
- \returns QString of the current set rule
+ :return: QString of the current set rule
+ :rtype: str
 %End
 
     bool isValid() const;
 %Docstring
  isValid Check if this rule is valid.  A valid rule has one or more properties
  set.
- \returns True if the rule is valid.
+ :return: True if the rule is valid.
+ :rtype: bool
 %End
 
     static QList<QgsConditionalStyle> matchingConditionalStyles( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
@@ -202,8 +221,9 @@ class QgsConditionalStyle
  Find and return the matching styles for the value and feature.
  If no match is found a invalid QgsConditionalStyle is return.
 
- \returns A conditional style that matches the value and feature.
+ :return: A conditional style that matches the value and feature.
  Check with QgsConditionalStyle.isValid()
+ :rtype: list of QgsConditionalStyle
 %End
 
     static QgsConditionalStyle matchingConditionalStyle( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
@@ -211,8 +231,9 @@ class QgsConditionalStyle
  Find and return the matching style for the value and feature.
  If no match is found a invalid QgsConditionalStyle is return.
 
- \returns A conditional style that matches the value and feature.
+ :return: A conditional style that matches the value and feature.
  Check with QgsConditionalStyle.isValid()
+ :rtype: QgsConditionalStyle
 %End
 
     static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle> &styles );
@@ -220,17 +241,20 @@ class QgsConditionalStyle
  Compress a list of styles into a single style.  This can be used to stack the elements of the
  styles. The font of the last style is used in the output.
  \param styles The list of styles to compress down
- \returns A single style generated from joining each style property.
+ :return: A single style generated from joining each style property.
+ :rtype: QgsConditionalStyle
 %End
 
     bool readXml( const QDomNode &node );
 %Docstring
  Reads vector conditional style specific state from layer Dom node.
+ :rtype: bool
 %End
 
     bool writeXml( QDomNode &node, QDomDocument &doc ) const;
 %Docstring
  Write vector conditional style specific state from layer Dom node.
+ :rtype: bool
 %End
 
 
