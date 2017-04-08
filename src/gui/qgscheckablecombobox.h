@@ -124,7 +124,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     /** Constructor for QgsCheckableComboBox.
      * \param parent parent object
      */
-    QgsCheckableComboBox( QWidget *parent = nullptr );
+    QgsCheckableComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /** Returns separator used to separate items in the display text.
      * \see setSeparator()

@@ -23,7 +23,7 @@ class QgsCheckableComboBox : QComboBox
 
   public:
 
-    QgsCheckableComboBox( QWidget *parent = 0 );
+    QgsCheckableComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
  Constructor for QgsCheckableComboBox.
  \param parent parent object

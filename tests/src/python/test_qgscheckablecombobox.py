@@ -15,14 +15,9 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtTest import QSignalSpy
+
 from qgis.gui import QgsCheckableComboBox
-
-try:
-    from qgis.PyQt.QtTest import QSignalSpy
-    use_signal_spy = True
-except:
-    use_signal_spy = False
-
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -51,7 +46,6 @@ class TestQgsCheckableComboBox(unittest.TestCase):
         w.setItemCheckState(2, Qt.Unchecked)
         self.assertEqual(w.itemCheckState(2), Qt.Unchecked)
 
-    @unittest.skipIf(not use_signal_spy, "No QSignalSpy available")
     def test_ChangedSignals(self):
         """ test that signals are correctly emitted when clearing"""
 
