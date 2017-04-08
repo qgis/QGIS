@@ -271,6 +271,11 @@ class AbstractClass /Abstract/
 A constructor
 %End
 
+};
+
+QFlags<QgsSipifyHeader::MyEnum> operator|(QgsSipifyHeader::MyEnum f1, QFlags<QgsSipifyHeader::MyEnum> f2);
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
