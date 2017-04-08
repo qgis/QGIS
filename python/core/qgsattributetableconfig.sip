@@ -31,7 +31,6 @@ class QgsAttributeTableConfig
 Constructor for ColumnConfig
 %End
 
-      bool operator== ( const QgsAttributeTableConfig::ColumnConfig &other ) const;
 
       QgsAttributeTableConfig::Type type;    //!< The type of this column.
       QString name; //!< The name of the attribute if this column represents a field
