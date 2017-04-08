@@ -24,7 +24,7 @@
 #define QGSWFSUTILS_H
 
 #include "qgsmodule.h"
-#include "qgswfsprojectparser.h"
+#include "qgsfeaturerequest.h"
 #include "qgswfsserviceexception.h"
 
 /**
@@ -39,14 +39,6 @@ namespace QgsWfs
   /** Return the highest version supported by this implementation
    */
   QString implementationVersion();
-
-  /**
-   * Return the wms config parser (Transitional)
-   *
-   * XXX This is needed in the current implementation.
-   * This should disappear as soon we get rid of singleton.
-   */
-  QgsWfsProjectParser *getConfigParser( QgsServerInterface *serverIface );
 
   /**
    * Service URL string
