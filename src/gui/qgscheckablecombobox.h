@@ -123,7 +123,6 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
   public:
 
     /** Constructor for QgsCheckableComboBox.
-     * \param parent parent object
      */
     QgsCheckableComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 

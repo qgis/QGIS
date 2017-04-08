@@ -24,7 +24,6 @@ class QgsCheckableComboBox : QComboBox
     QgsCheckableComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
  Constructor for QgsCheckableComboBox.
- \param parent parent object
 %End
 
     QString separator() const;
