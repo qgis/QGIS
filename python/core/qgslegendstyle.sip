@@ -30,19 +30,27 @@ class QgsLegendStyle
       Symbol,
       SymbolLabel
     };
-    enum Side //! margin side
+
+    enum Side
     {
       Top,
       Bottom,
       Left,
       Right    };
+
     QgsLegendStyle();
 
     QFont font() const;
 %Docstring
+ The font for this style.
  :rtype: QFont
 %End
+
     void setFont( const QFont &font );
+%Docstring
+ The font for this style.
+%End
+
 
     double margin( Side side );
 %Docstring

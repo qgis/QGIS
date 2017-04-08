@@ -20,7 +20,12 @@ class QgsMessageLogViewer: QDialog
 #include "qgsmessagelogviewer.h"
 %End
   public:
+
     QgsMessageLogViewer( QStatusBar *statusBar = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+%Docstring
+ Create a new message log viewer, it will automatically connect to the system's
+ QgsMessageLog.instance() singleton.
+%End
 
   public slots:
     void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );

@@ -43,18 +43,35 @@ class CORE_EXPORT QgsLegendStyle
       Symbol, //!< Symbol without label
       SymbolLabel
     };
-    enum Side //! margin side
+
+    //! Margin side
+    enum Side
     {
       Top = 0,
       Bottom = 1,
       Left = 2,
       Right = 3
     };
+
     QgsLegendStyle();
 
+    /**
+     * The font for this style.
+     */
     QFont font() const { return mFont; }
-    SIP_SKIP QFont &rfont() { return mFont; }
+
+    /**
+     * The font for this style.
+     */
     void setFont( const QFont &font ) { mFont = font; }
+
+    /**
+     * Modifiable reference to font.
+     *
+     * \see setFont()
+     * \note Not available in Python bindings
+     */
+    SIP_SKIP QFont &rfont() { return mFont; }
 
     double margin( Side side ) { return mMarginMap.value( side ); }
     void setMargin( Side side, double margin ) { mMarginMap[side] = margin; }
