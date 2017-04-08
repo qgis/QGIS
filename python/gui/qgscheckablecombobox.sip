@@ -19,8 +19,6 @@ class QgsCheckableComboBox : QComboBox
 %TypeHeaderCode
 #include "qgscheckablecombobox.h"
 %End
-
-
   public:
 
     QgsCheckableComboBox( QWidget *parent /TransferThis/ = 0 );
@@ -33,6 +31,7 @@ class QgsCheckableComboBox : QComboBox
 %Docstring
  Returns separator used to separate items in the display text.
  \see setSeparator()
+ :rtype: str
 %End
 
     void setSeparator( const QString &separator );
@@ -47,6 +46,7 @@ class QgsCheckableComboBox : QComboBox
  Returns default text which will be displayed in the widget
  when no items selected.
  \see setDefaultText()
+ :rtype: str
 %End
 
     void setDefaultText( const QString &text );
@@ -61,6 +61,7 @@ class QgsCheckableComboBox : QComboBox
 %Docstring
  Returns currently checked items.
  \see setCheckedItems()
+ :rtype: list of str
 %End
 
     Qt::CheckState itemCheckState( int index ) const;
@@ -69,6 +70,7 @@ class QgsCheckableComboBox : QComboBox
  \param index item index
  \see setItemCheckState()
  \see toggleItemCheckState()
+ :rtype: Qt.CheckState
 %End
 
     void setItemCheckState( int index, Qt::CheckState state );
@@ -97,6 +99,7 @@ class QgsCheckableComboBox : QComboBox
     virtual bool eventFilter( QObject *object, QEvent *event );
 %Docstring
  Filters events to enable context menu
+ :rtype: bool
 %End
 
   signals:
