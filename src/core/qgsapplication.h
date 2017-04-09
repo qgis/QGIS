@@ -39,6 +39,8 @@ class QgsPluginLayerRegistry;
 class QgsMessageLog;
 class QgsProcessingRegistry;
 class QgsAnnotationRegistry;
+class QgsUserProfile;
+class QgsUserProfileManager;
 class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
 
@@ -115,9 +117,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
 #ifndef SIP_RUN
-    QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath = QString(), const QString &platformName = "desktop" );
+    QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" );
 #else
-    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString customConfigPath = QString() ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath = QString() )];
+    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString profileFolder = QString(), QString platformName = "desktop" ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" )];
     % MethodCode
     // The Python interface is a list of argument strings that is modified.
 
@@ -132,7 +134,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       // Create it now the arguments are right.
       static int nargc = argc;
 
-      sipCpp = new sipQgsApplication( nargc, argv, a1, *a2 );
+      sipCpp = new sipQgsApplication( nargc, argv, a1, *a2, *a3 );
 
       // Now modify the original list.
       qtgui_UpdatePyArgv( a0, argc, argv );
@@ -155,7 +157,7 @@ class CORE_EXPORT QgsApplication : public QApplication
         the above case.
         \note not available in Python bindings
       */
-    static void init( QString customConfigPath = QString() ) SIP_SKIP;
+    static void init( QString profileFolder = QString() ) SIP_SKIP;
 
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent *event ) override;
@@ -716,6 +718,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
       QgsTaskManager *mTaskManager = nullptr;
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
+      QgsUserProfileManager *mUserConfigManager = nullptr;
       QString mNullRepresentation;
 
       ApplicationMembers();
