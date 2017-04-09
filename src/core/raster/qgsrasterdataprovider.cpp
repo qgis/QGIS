@@ -233,7 +233,7 @@ QStringList QgsRasterDataProvider::cStringList2Q_( char **stringList )
   // presume null terminated string list
   for ( qgssize i = 0; stringList[i]; ++i )
   {
-    strings.append( stringList[i] );
+    strings.append( QString::fromUtf8(stringList[i]) );
   }
 
   return strings;
