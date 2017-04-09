@@ -55,7 +55,7 @@ MACRO (ADD_QGIS_TEST TESTSRC)
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     qgis_core)
-  ADD_TEST(${TESTNAME} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/${TESTNAME} -maxwarnings 10000)
+  ADD_TEST(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
