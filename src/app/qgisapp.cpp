@@ -288,6 +288,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsgui.h"
 #include "qgsdatasourcemanagerdialog.h"
 
+#include "qgsuserprofilemanager.h"
+#include "qgsuserprofile.h"
+
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
@@ -400,6 +403,8 @@ extern "C"
 #endif
 
 class QTreeWidgetItem;
+class QgsUserProfileManager;
+class QgsUserProfile;
 
 /** Set the application title bar text
 
@@ -598,7 +603,7 @@ static bool cmpByText_( QAction *a, QAction *b )
 QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString rootProfileLocation, const QString activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mNonEditMapTool( nullptr )
   , mScaleWidget( nullptr )
@@ -645,6 +650,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
+
+  startProfile( QStringLiteral( "User profile manager" ) );
+  mUserProfileManager = new QgsUserProfileManager();
+  mUserProfileManager->setRootLocation( rootProfileLocation );
+  mUserProfileManager->setActiveUserProfile( activeProfile );
+  endProfile();
 
   namSetup();
 
@@ -1270,6 +1281,8 @@ QgisApp::QgisApp()
   , mPopupMenu( nullptr )
   , mDatabaseMenu( nullptr )
   , mWebMenu( nullptr )
+  , mConfigMenu( nullptr )
+  , mConfigMenuBar( nullptr )
   , mToolPopupOverviews( nullptr )
   , mToolPopupDisplay( nullptr )
   , mMapCanvas( nullptr )
@@ -2273,12 +2286,46 @@ void QgisApp::createMenus()
   mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
   mWebMenu->setObjectName( QStringLiteral( "mWebMenu" ) );
 
+
   // Help menu
   // add What's this button to it
   QAction *before = mActionHelpAPI;
   QAction *actionWhatsThis = QWhatsThis::createAction( this );
   actionWhatsThis->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionWhatsThis.svg" ) ) );
   mHelpMenu->insertAction( before, actionWhatsThis );
+
+  this->createProfileMenu();
+}
+
+void QgisApp::refreshProfileMenu()
+{
+  mConfigMenu->clear();
+  QgsUserProfile *profile = userProfileManager()->userProfile();
+  mConfigMenu->setTitle( tr( "&User Profile: %1" ).arg( profile->alias() ) );
+
+  Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
+  {
+    profile = userProfileManager()->profileForName( name );
+    QAction *action = mConfigMenu->addAction( profile->icon(), profile->alias() );
+    connect( action, &QAction::triggered, this, [this, profile]()
+    {
+      userProfileManager()->loadUserProfile( profile );
+    } );
+  }
+}
+
+void QgisApp::createProfileMenu()
+{
+  mConfigMenu = new QMenu();
+  mConfigMenu->addSeparator();
+  mConfigMenu->addAction( tr( "Manage Configs" ) );
+
+  mConfigMenuBar = new QMenuBar( menuBar() );
+  mConfigMenuBar->addMenu( mConfigMenu );
+  menuBar()->setCornerWidget( mConfigMenuBar );
+  mConfigMenuBar->show();
+
+  this->refreshProfileMenu();
 }
 
 void QgisApp::createToolBars()
@@ -3287,6 +3334,12 @@ QgsPluginManager *QgisApp::pluginManager()
 {
   Q_ASSERT( mPluginManager );
   return mPluginManager;
+}
+
+QgsUserProfileManager *QgisApp::userProfileManager()
+{
+  Q_ASSERT( mUserProfileManager );
+  return mUserProfileManager;
 }
 
 QgsMapCanvas *QgisApp::mapCanvas()
@@ -4735,6 +4788,7 @@ void QgisApp::fileExit()
   if ( saveDirty() )
   {
     closeProject();
+    userProfileManager()->setDefaultFromActive();
     qApp->exit( 0 );
   }
 }

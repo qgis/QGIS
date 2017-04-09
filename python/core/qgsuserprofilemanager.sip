@@ -1,0 +1,146 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsuserprofilemanager.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsUserProfileManager : QObject
+{
+%Docstring
+ User profile manager is used to manager list, and manage user profiles on the users machine.
+
+ In QGIS 3 all settings, plugins, etc were moved into a %APPDATA%/profiles folder for each platform.
+ This allows for manage different user profiles per machine vs the single default one that was allowed in the
+ pass.
+
+ A user profile is all settings and anything that used to be found in .qgis3 in the users home folder.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsuserprofilemanager.h"
+%End
+  public:
+
+    static QgsUserProfile *getProfile( const QString &rootLocation = QString(), bool roamingConfig = true, const QString &defaultProfile = "default" );
+%Docstring
+ getProfile
+ @param rootLocation
+ @param roamingConfig
+ @param defaultProfile
+ @return
+ :rtype: QgsUserProfile
+%End
+
+    void setRootLocation( QString rootProfileLocation );
+%Docstring
+ Set the root profile location for the profile manager. All profiles are loaded from this
+ location.
+ @param rootprofileFolder
+%End
+
+    QString rootLocation();
+%Docstring
+ Returns the path to the root profiles location.
+ @return The root path to the profiles folder.
+ :rtype: str
+%End
+
+    bool rootLocationIsSet() const;
+%Docstring
+ Check if the root location has been set for the manager.
+ @return True if the root location has been set.
+ :rtype: bool
+%End
+
+    QStringList allProfiles() const;
+%Docstring
+ A list of all found profile names.
+ @return
+ :rtype: list of str
+%End
+
+    QString defaultProfileName() const;
+%Docstring
+ Returns the name of the default profile that has been set in .default.
+ @return The name of the default profile.
+ :rtype: str
+%End
+
+    void setDefaultProfileName( const QString &name );
+%Docstring
+ Sets the default profile name.  The default profile name is used when loading QGIS
+ with no arguments.
+ @param name The name of the profile to save.
+%End
+
+    void setDefaultFromActive();
+%Docstring
+ Set the default profile name from the current active profile.
+%End
+
+    QgsUserProfile *profileForName( const QString name ) const;
+%Docstring
+ Return the profile found for a given name.
+ @param name The name of the profile to return.
+ @return A QgsUserprofile pointing to the location of the user profile.
+ :rtype: QgsUserProfile
+%End
+
+    QgsError createUserProfile( const QString name );
+%Docstring
+ Create a user profile given by the name
+ @param name
+ @return A QgsError which report if there was any error creating the user profile.
+ :rtype: QgsError
+%End
+
+    QgsError deleteProfile( const QString name );
+%Docstring
+ Deletes a profile from the root profiles folder.
+.. note::
+
+   There is no undo on this as it deletes the folder from the machine.
+ @param name The name of the profile to delete.
+ @return A QgsError with a message if the profile failed to be deleted.
+ :rtype: QgsError
+%End
+
+    QgsUserProfile *userProfile();
+%Docstring
+ The currently active user profile.
+ @return The currently active user profile.
+ :rtype: QgsUserProfile
+%End
+
+    void setActiveUserProfile( const QString &profile );
+%Docstring
+ Sets the active profile in the manager.
+ This can only be set once.
+ Setting this again does nothing.
+
+ @param profile The name of the active profile
+%End
+
+    void loadUserProfile( const QgsUserProfile *profile );
+%Docstring
+ Starts a new instance of QGIS for the given profile.
+ @param profile The profile to start QGIS with.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsuserprofilemanager.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

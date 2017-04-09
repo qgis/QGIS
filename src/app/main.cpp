@@ -99,6 +99,9 @@ typedef SInt32 SRefCon;
 #include "qgis_app.h"
 #include "qgscrashhandler.h"
 
+#include "qgsuserprofilemanager.h"
+#include "qgsuserprofile.h"
+
 /** Print usage text
  */
 void usage( const QString &appName )
@@ -123,8 +126,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--nocustomization]\tdon't apply GUI customization\n" )
       << QStringLiteral( "\t[--customizationfile path]\tuse the given ini file as GUI customization\n" )
       << QStringLiteral( "\t[--globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
-      << QStringLiteral( "\t[--optionspath path]\tuse the given QgsSettings path\n" )
-      << QStringLiteral( "\t[--configpath path]\tuse the given path for all user configuration\n" )
+      << QStringLiteral( "\t[--configpath path]\tuse the given path for all user configuration. This is the same as --profiles-root-location.\n" )
       << QStringLiteral( "\t[--authdbdirectory path] use the given directory for authentication database\n" )
       << QStringLiteral( "\t[--code path]\trun the given python file on load\n" )
       << QStringLiteral( "\t[--defaultui]\tstart by resetting user ui settings to default\n" )
@@ -134,6 +136,9 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-scale-denom scale]\tscale for dxf output\n" )
       << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
       << QStringLiteral( "\t[--dxf-preset maptheme]\tmap theme to use for dxf output\n" )
+      << QStringLiteral( "\t[--profiles-local-storage]\tstore user profile folders in local machine folder only. Roaming folders by default.\n" )
+      << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
+      << QStringLiteral( "\t[--profiles-root-location path]\tpath to store user profile folders.\n" )
       << QStringLiteral( "\t[--help]\t\tthis text\n" )
       << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
       << QStringLiteral( "  FILE:\n" )
@@ -490,6 +495,8 @@ int main( int argc, char *argv[] )
   // This behavior is used to load the app, snapshot the map,
   // save the image to disk and then exit
   QString mySnapshotFileName = QLatin1String( "" );
+  QString configLocalStorageLocation = QLatin1String( "" );
+  QString configName;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
 
@@ -526,14 +533,15 @@ int main( int argc, char *argv[] )
   // The user can specify a path which will override the default path of custom
   // user settings (~/.qgis) and it will be used for QgsSettings INI file
   QString configpath;
-  QString optionpath;
   QString authdbdirectory;
+  bool roamingConfig = true;
 
   QString pythonfile;
 
   QString customizationfile;
   QString globalsettingsfile;
 
+// TODO Fix android
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
@@ -571,9 +579,21 @@ int main( int argc, char *argv[] )
       {
         myRestorePlugins = false;
       }
+      else if ( arg == QLatin1String( "--profiles-local-storage" ) || arg == QLatin1String( "-P" ) )
+      {
+        roamingConfig = false;
+      }
       else if ( arg == QLatin1String( "--nocustomization" ) || arg == QLatin1String( "-C" ) )
       {
         myCustomization = false;
+      }
+      else if ( i + 1 < argc && ( arg == QLatin1String( "--profile" ) ) )
+      {
+        configName = args[++i];
+      }
+      else if ( i + 1 < argc && ( arg == QLatin1String( "--profiles-root-location" ) || arg == QLatin1String( "-s" ) ) )
+      {
+        configLocalStorageLocation = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
       else if ( i + 1 < argc && ( arg == QLatin1String( "--snapshot" ) || arg == QLatin1String( "-s" ) ) )
       {
@@ -598,10 +618,6 @@ int main( int argc, char *argv[] )
       else if ( i + 1 < argc && ( arg == QLatin1String( "--extent" ) || arg == QLatin1String( "-e" ) ) )
       {
         myInitialExtent = args[++i];
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--optionspath" ) || arg == QLatin1String( "-o" ) ) )
-      {
-        optionpath = QDir::toNativeSeparators( QDir( args[++i] ).absolutePath() );
       }
       else if ( i + 1 < argc && ( arg == QLatin1String( "--configpath" ) || arg == QLatin1String( "-c" ) ) )
       {
@@ -768,13 +784,6 @@ int main( int argc, char *argv[] )
     exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
   }
 
-  if ( !optionpath.isEmpty() || !configpath.isEmpty() )
-  {
-    // tell QgsSettings to use INI format and save the file in custom config path
-    QSettings::setDefaultFormat( QSettings::IniFormat );
-    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionpath.isEmpty() ? configpath : optionpath );
-  }
-
   // GUI customization is enabled according to settings (loaded when instance is created)
   // we force disabled here if --nocustomization argument is used
   if ( !myCustomization )
@@ -782,7 +791,35 @@ int main( int argc, char *argv[] )
     QgsCustomization::instance()->setEnabled( false );
   }
 
-  QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
+  // Set up the QSettings environment must be done after qapp is created
+  QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
+  QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
+  QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
+  QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
+
+  if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+  {
+    configLocalStorageLocation =  getenv( "QGIS_CUSTOM_CONFIG_PATH" ) ;
+  }
+
+  if ( !configpath.isEmpty() )
+  {
+    configLocalStorageLocation =  configpath;
+  }
+
+  if ( ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) || !configpath.isEmpty() ) && configName.isEmpty() )
+  {
+    QDir dir( configLocalStorageLocation );
+    configName = dir.dirName();
+    dir.cdUp();
+    configLocalStorageLocation = dir.path();
+  }
+
+  QgsUserProfile *profile = QgsUserProfileManager::getProfile( configLocalStorageLocation, roamingConfig, configName );
+  QString profileFolder = profile->folder();
+  QString rootProfileFolder = profile->parentFolder();
+
+  QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
 
 #ifdef Q_OS_MAC
   // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
@@ -846,24 +883,16 @@ int main( int argc, char *argv[] )
 
   // TODO: use QgsSettings
   QSettings *customizationsettings = nullptr;
-  if ( !optionpath.isEmpty() || !configpath.isEmpty() )
-  {
-    // tell QgsSettings to use INI format and save the file in custom config path
-    QSettings::setDefaultFormat( QSettings::IniFormat );
-    QString path = optionpath.isEmpty() ? configpath : optionpath;
-    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, path );
-    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
-  }
-  else
-  {
-    customizationsettings = new QSettings( QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
-  }
 
   // Using the customizationfile option always overrides the option and config path options.
   if ( !customizationfile.isEmpty() )
   {
     customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
     QgsCustomization::instance()->setEnabled( true );
+  }
+  else
+  {
+    customizationsettings = new QSettings( QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
   }
 
   // Load and set possible default customization, must be done afterQgsApplication init and QgsSettings ( QCoreApplication ) init
@@ -1124,7 +1153,7 @@ int main( int argc, char *argv[] )
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( mySettings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
 
-  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck, rootProfileFolder, profile->name() ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
   myApp.connect(
@@ -1322,6 +1351,7 @@ int main( int argc, char *argv[] )
 #endif
 
   int retval = myApp.exec();
+  delete profile;
   delete qgis;
   return retval;
 }

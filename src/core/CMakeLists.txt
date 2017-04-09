@@ -457,6 +457,9 @@ SET(QGIS_CORE_SRCS
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
+
+  qgsuserprofile.cpp
+  qgsuserprofilemanager.cpp
 )
 
 
@@ -692,6 +695,7 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreemodellegendnode.h
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
+  qgsuserprofilemanager.h
 )
 
 IF (NOT WITH_QTWEBKIT)

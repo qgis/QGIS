@@ -97,6 +97,8 @@ class QgsWelcomePage;
 class QgsOptionsWidgetFactory;
 class QgsStatusBar;
 
+class QgsUserProfileManagerWidgetFactory;
+
 class QDomDocument;
 class QNetworkReply;
 class QNetworkProxy;
@@ -162,7 +164,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     Q_OBJECT
   public:
     //! Constructor
-    QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipVersionCheck = false, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
+    QgisApp( QSplashScreen *splash, bool restorePlugins = true,
+             bool skipVersionCheck = false, const QString rootProfileLocation = QString(),
+             const QString activeProfile = QString(),
+             QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
     //! Constructor for unit tests
     QgisApp();
 
@@ -568,6 +573,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! returns pointer to plugin manager
     QgsPluginManager *pluginManager();
+
+    /**
+     * The applications user profile manager.
+     */
+    QgsUserProfileManager *userProfileManager();
 
     /** Return vector layers in edit mode
      * \param modified whether to return only layers that have been modified
@@ -1661,6 +1671,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createActions();
     void createActionGroups();
     void createMenus();
+    void createProfileMenu();
     void createToolBars();
     void createStatusBar();
     void setupConnections();
@@ -1669,6 +1680,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createCanvasTools();
     void createMapTips();
     void createDecorations();
+
+    /**
+     * Refresh the user profile menu.
+     */
+    void refreshProfileMenu();
 
     //! Do histogram stretch for singleband gray / multiband color rasters
     void histogramStretch( bool visibleAreaOnly = false, QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax );
@@ -1871,6 +1887,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *mDatabaseMenu = nullptr;
     //! Top level web menu
     QMenu *mWebMenu = nullptr;
+
+    QMenu *mConfigMenu = nullptr;
+    QMenuBar *mConfigMenuBar = nullptr;
+
     //! Popup menu for the map overview tools
     QMenu *mToolPopupOverviews = nullptr;
     //! Popup menu for the display tools
@@ -1966,6 +1986,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsSnappingWidget *mSnappingDialog = nullptr;
 
     QgsPluginManager *mPluginManager = nullptr;
+    QgsUserProfileManager *mUserProfileManager = nullptr;
     QgsDockWidget *mMapStylingDock = nullptr;
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
 

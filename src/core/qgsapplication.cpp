@@ -39,6 +39,8 @@
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
 #include "qgsunittypes.h"
+#include "qgsuserprofile.h"
+#include "qgsuserprofilemanager.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -109,27 +111,32 @@ const char *QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 
 QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullptr;
 
-QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath, const QString &platformName )
+QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
 {
   sPlatformName = platformName;
 
   mApplicationMembers = new ApplicationMembers();
 
-  init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
+  init( profileFolder ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
 
-void QgsApplication::init( QString customConfigPath )
+void QgsApplication::init( QString profileFolder )
 {
-  if ( customConfigPath.isEmpty() )
+  if ( profileFolder.isEmpty() )
   {
     if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
     {
-      customConfigPath = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+      profileFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
     }
     else
     {
-      customConfigPath = QStringLiteral( "%1/.qgis3/" ).arg( QDir::homePath() );
+      // This will normally get here for custom scripts that use QgsApplication.
+      // This doesn't get this hit for QGIS Desktop because we setup the profile via main
+      QgsUserProfile *profile = QgsUserProfileManager::getProfile();
+      profileFolder = profile->folder();
+      profile->initSettings();
+      delete profile;
     }
   }
 
@@ -207,11 +214,7 @@ void QgsApplication::init( QString customConfigPath )
     }
   }
 
-  if ( !customConfigPath.isEmpty() )
-  {
-    ABISYM( mConfigPath ) = customConfigPath + '/'; // make sure trailing slash is included
-  }
-
+  ABISYM( mConfigPath ) = profileFolder + '/'; // make sure trailing slash is included
   ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QStringLiteral( "svg/" );
 
   ABISYM( mAuthDbDirPath ) = qgisSettingsDirPath();
@@ -1315,6 +1318,7 @@ void QgsApplication::setCustomVariable( const QString &name, const QVariant &val
 
   emit instance()->customVariablesChanged();
 }
+
 
 QString QgsApplication::nullRepresentation()
 {
