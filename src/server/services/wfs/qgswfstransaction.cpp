@@ -124,7 +124,7 @@ namespace QgsWfs
         errorCount += 1;
         if ( action.handle.isEmpty() )
         {
-          errorLocators << QStringLiteral( "Update:%1" ).arg( action.typeName );
+          errorLocators << QStringLiteral( "Delete:%1" ).arg( action.typeName );
         }
         else
         {
@@ -143,7 +143,7 @@ namespace QgsWfs
         errorCount += 1;
         if ( action.handle.isEmpty() )
         {
-          errorLocators << QStringLiteral( "Update:%1" ).arg( action.typeName );
+          errorLocators << QStringLiteral( "Insert:%1" ).arg( action.typeName );
         }
         else
         {
@@ -646,10 +646,14 @@ namespace QgsWfs
       }
 
       // perform add features
-      if ( !vlayer->addFeatures( featureList ) )
+      if ( !provider->addFeatures( featureList ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "Insert features failed on layer '%1'" ).arg( typeName );
+        if ( provider ->hasErrors() )
+        {
+          provider->clearErrors();
+        }
         vlayer->rollBack();
         continue;
       }
