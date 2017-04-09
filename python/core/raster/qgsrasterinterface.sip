@@ -55,6 +55,7 @@ class QgsRasterInterface
 #include <qgsrasterresamplefilter.h>
 
 // QgsRasterRenderer subclasses
+#include <qgshillshaderenderer.h>
 #include <qgsmultibandcolorrenderer.h>
 #include <qgspalettedrasterrenderer.h>
 #include <qgssinglebandcolordatarenderer.h>
@@ -80,7 +81,9 @@ class QgsRasterInterface
     sipType = sipType_QgsRasterProjector;
   else if (dynamic_cast<QgsRasterRenderer*>(sipCpp))
   {
-    if (     dynamic_cast<QgsMultiBandColorRenderer*>(sipCpp))
+    if ( dynamic_cast<QgsHillshadeRenderer*>(sipCpp))
+      sipType = sipType_QgsHillshadeRenderer;
+    else if ( dynamic_cast<QgsMultiBandColorRenderer*>(sipCpp))
       sipType = sipType_QgsMultiBandColorRenderer;
     else if (dynamic_cast<QgsPalettedRasterRenderer*>(sipCpp))
       sipType = sipType_QgsPalettedRasterRenderer;
