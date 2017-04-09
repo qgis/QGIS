@@ -1087,12 +1087,9 @@ QString QgsApplication::reportStyleSheet()
 
 void QgsApplication::registerOgrDrivers()
 {
-  if ( Qgis::ogrRuntimeSupport() )
-  { // allow only if running gdal version is supported
-    if ( 0 >= OGRGetDriverCount() )
-    {
-      OGRRegisterAll();
-    }
+  if ( 0 >= OGRGetDriverCount() )
+  {
+     OGRRegisterAll();
   }
 }
 

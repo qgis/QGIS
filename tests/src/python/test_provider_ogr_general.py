@@ -63,7 +63,6 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
     gdal_version_num=0
     gdal_build_num=0
     gdal_build_version=""
-    gdal_runtime_version=""
     ogr_runtime_supported=1
 
     def setUp(self):
@@ -74,14 +73,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         except AttributeError:
             self.gdal_build_num = self.gdal_version_num
             self.gdal_build_version = gdal.VersionInfo('VERSION_NUM')
-            self.gdal_runtime_version = gdal.VersionInfo('VERSION_NUM')
         else:
             self.ogr_runtime_supported = Qgis.GDAL_OGR_RUNTIME_SUPPORTED
             self.gdal_build_version = Qgis.GDAL_BUILD_VERSION
-            self.gdal_runtime_version = Qgis.GDAL_RUNTIME_VERSION
             self.gdal_build_num = (Qgis.GDAL_BUILD_VERSION_MAJOR*1000000)+(Qgis.GDAL_BUILD_VERSION_MINOR*10000)+(Qgis.GDAL_BUILD_VERSION_REV*100)
 
-        print('-I-> Using version of gdal/ogr[{0},{1}] qgis built with gdal[{2},{3}] ogr_runtime_supported[{4}]'.format(self.gdal_version_num,self.gdal_runtime_version, self.gdal_build_num,self.gdal_build_version,self.ogr_runtime_supported))
 
     @classmethod
     def setUpClass(cls):
@@ -222,9 +218,8 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             print('-I-> SpatialView({0}) the UPDATEd record was found,'.format('positions_1999'))
             # vl_positions_1999.rollBack(True)
             print('-I-> SpatialView({0}) should now again show 2: [{1}] rows'.format('positions_1955',vl_positions_1955.featureCount()))
-            print('-I-> This version of gdal/ogr[{0}] qgis built with gdal[{1}] supports writable SpatialViews.'.format(self.gdal_runtime_version, self.gdal_build_version))
         else:
-           print('-W-> This version of gdal/ogr[{0}] qgis built with gdal[{1}] does not support writable SpatialViews.'.format(self.gdal_runtime_version, self.gdal_build_version))
+           print('-W-> This version of gdal[{0}] does not support writable SpatialViews.'.format(self.gdal_build_version))
 
         if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
             print('-I-> Using version of gdal/ogr[{0}] qgis built with gdal[{0}]\n\t Note: this test has not failed. '.format(self.gdal_version_num, self.gdal_build_version))

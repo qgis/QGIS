@@ -421,8 +421,6 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
   , mCapabilities( 0 )
 {
   mSubLayerString = QString::null;
-  if ( !Qgis::ogrRuntimeSupport() )
-    return; // when < gdal 2
   QgsApplication::registerOgrDrivers();
 
   QgsSettings settings;

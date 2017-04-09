@@ -111,8 +111,6 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
   mGeoTransform[3] =  0;
   mGeoTransform[4] =  0;
   mGeoTransform[5] = -1;
-  if ( !Qgis::gdalRuntimeSupport() )
-    return;
   setError( error );
 }
 
