@@ -93,7 +93,7 @@ void CoordinateCapture::initGui()
   mCrs.createFromSrsId( GEOCRS_ID ); // initialize the CRS object
 
   connect( mQGisIface->mapCanvas(), &QgsMapCanvas::destinationCrsChanged, this, &CoordinateCapture::setSourceCrs );
-  connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisIface, &QgisInterface::currentThemeChanged, this, &CoordinateCapture::setCurrentTheme );
 
   setSourceCrs(); //set up the source CRS
   mTransform.setDestinationCrs( mCrs ); // set the CRS in the transform

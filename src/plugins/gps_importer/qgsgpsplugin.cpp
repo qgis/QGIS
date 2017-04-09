@@ -108,7 +108,7 @@ void QgsGPSPlugin::initGui()
   mQGisInterface->addVectorToolBarIcon( mQActionPointer );
 
   // this is called when the icon theme is changed
-  connect( mQGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisInterface, &QgisInterface::currentThemeChanged, this, &QgsGPSPlugin::setCurrentTheme );
 }
 
 //method defined in interface

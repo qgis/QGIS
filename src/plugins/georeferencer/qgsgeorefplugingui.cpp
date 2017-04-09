@@ -117,7 +117,7 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface *qgisInterface, QWidget *p
 
   mCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
 
-  connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( updateIconTheme( QString ) ) );
+  connect( mIface, &QgisInterface::currentThemeChanged, this, &QgsGeorefPluginGui::updateIconTheme );
 
   if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() )
   {

@@ -106,7 +106,7 @@ void QgsGeorefPlugin::initGui()
 
   setCurrentTheme( QLatin1String( "" ) );
   // this is called when the icon theme is changed
-  connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisIface, &QgisInterface::currentThemeChanged, this, &QgsGeorefPlugin::setCurrentTheme );
 
   // Add to the toolbar & menu
   mQGisIface->addRasterToolBarIcon( mActionRunGeoref );

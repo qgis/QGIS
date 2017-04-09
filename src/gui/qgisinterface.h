@@ -658,6 +658,12 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     void currentLayerChanged( QgsMapLayer *layer );
 
+    /** Signal emitted when the current \a theme is changed so plugins
+     * can change their tool button icons.
+     * \since QGIS 3.0
+    */
+    void currentThemeChanged( const QString &theme );
+
     /**
      * This signal is emitted when a new composer window has been opened.
      * \since QGIS 3.0

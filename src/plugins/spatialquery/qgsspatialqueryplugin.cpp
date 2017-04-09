@@ -80,7 +80,7 @@ void QgsSpatialQueryPlugin::initGui()
 
   setCurrentTheme( QLatin1String( "" ) );
   // this is called when the icon theme is changed
-  connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mIface, &QgisInterface::currentThemeChanged, this, &QgsSpatialQueryPlugin::setCurrentTheme );
 
   // Add the icon to the toolbar and to the plugin menu
   mIface->addVectorToolBarIcon( mSpatialQueryAction );

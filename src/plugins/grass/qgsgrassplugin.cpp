@@ -265,7 +265,7 @@ void QgsGrassPlugin::initGui()
   // Set icons to current theme
   setCurrentTheme( QLatin1String( "" ) );
   // Connect theme change signal
-  connect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( qGisInterface, &QgisInterface::currentThemeChanged, this, &QgsGrassPlugin::setCurrentTheme );
 
   connect( mCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( setTransform() ) );
 
@@ -815,7 +815,7 @@ void QgsGrassPlugin::unload()
   QWidget *qgis = qGisInterface->mainWindow();
   disconnect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   disconnect( qgis, SIGNAL( newProject() ), this, SLOT( newProject() ) );
-  disconnect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  disconnect( qGisInterface, &QgisInterface::currentThemeChanged, this, &QgsGrassPlugin::setCurrentTheme );
   disconnect( mCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( setTransform() ) );
   disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
 

@@ -511,6 +511,7 @@ class QgisInterface : QObject
 
   signals:
     void currentLayerChanged( QgsMapLayer *layer );
+    void currentThemeChanged( const QString &theme );
     void composerOpened( QgsComposerInterface *composer );
     void composerWillBeClosed( QgsComposerInterface *composer );
     void composerClosed( QgsComposerInterface *composer );
