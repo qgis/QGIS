@@ -161,7 +161,6 @@ SET(TESTS
  testqgssymbol.cpp
  testqgstaskmanager.cpp
  testqgstracer.cpp
-#for some obscure reason calling this test "fontutils" kills the build on Ubuntu 15.10
  testqgsfontutils.cpp
  testqgsvectordataprovider.cpp
  testqgsvectorlayercache.cpp
