@@ -316,7 +316,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
       RemoveFromSelection,
     };
 
-    QgsVectorLayer( const QString &path = QString::null, const QString &baseName = QString::null,
+    QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                     const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true );
 %Docstring
  Constructor - creates a vector layer

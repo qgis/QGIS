@@ -830,13 +830,6 @@ bool QgsMapLayer::isValid() const
   return mValid;
 }
 
-
-void QgsMapLayer::invalidTransformInput()
-{
-  QgsDebugMsg( "called" );
-  // TODO: emit a signal - it will be used to update legend
-}
-
 #if 0
 void QgsMapLayer::connectNotify( const char *signal )
 {

@@ -1390,6 +1390,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - asLayerDefinition(), fromLayerDefinition(), fromLayerDefinitionFile() were moved to QgsLayerDefinition class and renamed to exportLayerDefinitionLayers() resp. loadLayerDefinitionLayers()
 - loadNamedStyleFromDb() was renamed to loadNamedStyleFromDatabase()
 - readLayerXml() and writeLayerXml() expect QgsPathResolver reference as the last argument
+- the invalidTransformInput() slot was removed - calling this slot had no effect
 
 QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}
 --------------------
