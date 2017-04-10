@@ -105,6 +105,7 @@ INCLUDE_DIRECTORIES(
   ../src/core/geometry
   ../src/core/gps
   ../src/core/layertree
+  ../src/core/metadata
   ../src/core/processing
   ../src/core/raster
   ../src/core/scalebar

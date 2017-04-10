@@ -991,6 +991,7 @@ INCLUDE_DIRECTORIES(
   fieldformatter
   geometry
   layertree
+  metadata
   pal
   processing
   raster

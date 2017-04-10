@@ -747,6 +747,7 @@ INCLUDE_DIRECTORIES(
   ../core/fieldformatter
   ../core/geometry
   ../core/layertree
+  ../core/metadata
   ../core/raster
   ../core/scalebar
   ../core/symbology-ng
