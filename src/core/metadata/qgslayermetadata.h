@@ -80,8 +80,6 @@ class CORE_EXPORT QgsLayerMetadata
     QStringList mRights;
     QString mEncoding;
 
-
-
 };
 
 #endif // QGSLAYERMETADATA_H

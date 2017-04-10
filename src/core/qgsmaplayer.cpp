@@ -1621,6 +1621,12 @@ void QgsMapLayer::triggerRepaint( bool deferredUpdate )
   emit repaintRequested( deferredUpdate );
 }
 
+void QgsMapLayer::setMetadata( const QgsLayerMetadata &metadata )
+{
+  mMetadata = metadata;
+  emit metadataChanged();
+}
+
 QString QgsMapLayer::htmlMetadata() const
 {
   return QString();
