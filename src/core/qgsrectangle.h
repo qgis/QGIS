@@ -32,6 +32,7 @@ class QRectF;
  *
  * QgsRectangle is used to store a rectangle when double values are required.
  * Examples are storing a layer extent or the current view extent of a map
+ * \see QgsBox3d
  */
 class CORE_EXPORT QgsRectangle
 {

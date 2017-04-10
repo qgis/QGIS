@@ -101,6 +101,7 @@ SET(QGIS_CORE_SRCS
   qgsattributetableconfig.cpp
   qgsattributeeditorelement.cpp
   qgsbearingutils.cpp
+  qgsbox3d.cpp
   qgsbrowsermodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
@@ -673,6 +674,7 @@ SET(QGIS_CORE_HDRS
   qgsattributetableconfig.h
   qgsattributeeditorelement.h
   qgsbearingutils.h
+  qgsbox3d.h
   qgscachedfeatureiterator.h
   qgscacheindex.h
   qgscacheindexfeatureid.h

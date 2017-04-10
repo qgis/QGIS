@@ -25,6 +25,7 @@
 %Include qgsattributetableconfig.sip
 %Include qgsattributeeditorelement.sip
 %Include qgsbearingutils.sip
+%Include qgsbox3d.sip
 %Include qgsbrowsermodel.sip
 %Include qgsclipper.sip
 %Include qgscolorramp.sip
