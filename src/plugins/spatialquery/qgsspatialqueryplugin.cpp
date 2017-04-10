@@ -76,7 +76,7 @@ void QgsSpatialQueryPlugin::initGui()
   mSpatialQueryAction->setObjectName( QStringLiteral( "mSpatialQueryAction" ) );
 
   // Connect the action to the spatialQuery slot
-  connect( mSpatialQueryAction, SIGNAL( triggered() ), this, SLOT( run() ) );
+  connect( mSpatialQueryAction, &QAction::triggered, this, &QgsSpatialQueryPlugin::run );
 
   setCurrentTheme( QLatin1String( "" ) );
   // this is called when the icon theme is changed

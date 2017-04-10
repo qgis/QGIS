@@ -45,14 +45,14 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
   mToolEmitPoint = new QgsGeorefMapToolEmitPoint( qgisCanvas );
   mToolEmitPoint->setButton( mPointFromCanvasPushButton );
 
-  connect( mPointFromCanvasPushButton, SIGNAL( clicked( bool ) ), this, SLOT( setToolEmitPoint( bool ) ) );
+  connect( mPointFromCanvasPushButton, &QAbstractButton::clicked, this, &QgsMapCoordsDialog::setToolEmitPoint );
 
-  connect( mToolEmitPoint, SIGNAL( canvasClicked( const QgsPoint &, Qt::MouseButton ) ),
-           this, SLOT( maybeSetXY( const QgsPoint &, Qt::MouseButton ) ) );
-  connect( mToolEmitPoint, SIGNAL( mouseReleased() ), this, SLOT( setPrevTool() ) );
+  connect( mToolEmitPoint, &QgsGeorefMapToolEmitPoint::canvasClicked,
+           this, &QgsMapCoordsDialog::maybeSetXY );
+  connect( mToolEmitPoint, &QgsGeorefMapToolEmitPoint::mouseReleased, this, &QgsMapCoordsDialog::setPrevTool );
 
-  connect( leXCoord, SIGNAL( textChanged( const QString & ) ), this, SLOT( updateOK() ) );
-  connect( leYCoord, SIGNAL( textChanged( const QString & ) ), this, SLOT( updateOK() ) );
+  connect( leXCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );
+  connect( leYCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );
   updateOK();
 }
 

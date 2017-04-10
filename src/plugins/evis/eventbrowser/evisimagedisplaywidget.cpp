@@ -63,9 +63,9 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget *parent, Qt::WindowFlags
   pbtnZoomIn->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomIn.svg" ) ) );
   pbtnZoomOut->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomOut.svg" ) ) );
   pbtnZoomFull->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomFullExtent.svg" ) ) );
-  connect( pbtnZoomIn, SIGNAL( clicked() ), this, SLOT( on_pbtnZoomIn_clicked() ) );
-  connect( pbtnZoomOut, SIGNAL( clicked() ), this, SLOT( on_pbtnZoomOut_clicked() ) );
-  connect( pbtnZoomFull, SIGNAL( clicked() ), this, SLOT( on_pbtnZoomFull_clicked() ) );
+  connect( pbtnZoomIn, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::on_pbtnZoomIn_clicked );
+  connect( pbtnZoomOut, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::on_pbtnZoomOut_clicked );
+  connect( pbtnZoomFull, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::on_pbtnZoomFull_clicked );
 
   //Setup zoom button layout
   QWidget *myButtonBar = new QWidget();

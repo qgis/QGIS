@@ -39,6 +39,10 @@ class QgsPoint;
 class QgsRasterLayer;
 class QgsRectangle;
 class QgsMessageBar;
+class QgsGeorefToolAddPoint;
+class QgsGeorefToolDeletePoint;
+class QgsGeorefToolMovePoint;
+class QgsGeorefToolMovePoint;
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {
@@ -242,10 +246,10 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
     QgsMapTool *mToolPan = nullptr;
-    QgsMapTool *mToolAddPoint = nullptr;
-    QgsMapTool *mToolDeletePoint = nullptr;
-    QgsMapTool *mToolMovePoint = nullptr;
-    QgsMapTool *mToolMovePointQgis = nullptr;
+    QgsGeorefToolAddPoint *mToolAddPoint = nullptr;
+    QgsGeorefToolDeletePoint *mToolDeletePoint = nullptr;
+    QgsGeorefToolMovePoint *mToolMovePoint = nullptr;
+    QgsGeorefToolMovePoint *mToolMovePointQgis = nullptr;
 
     QgsGeorefDataPoint *mMovingPoint = nullptr;
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;

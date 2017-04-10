@@ -59,18 +59,18 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
     ui.comboBoxMergeAttribute->addItem( mFeaturePool->getLayer()->fields().at( i ).name() );
   }
 
-  connect( checker, SIGNAL( errorAdded( QgsGeometryCheckError * ) ), this, SLOT( addError( QgsGeometryCheckError * ) ) );
-  connect( checker, SIGNAL( errorUpdated( QgsGeometryCheckError *, bool ) ), this, SLOT( updateError( QgsGeometryCheckError *, bool ) ) );
-  connect( ui.comboBoxMergeAttribute, SIGNAL( currentIndexChanged( int ) ), checker, SLOT( setMergeAttributeIndex( int ) ) );
-  connect( ui.tableWidgetErrors->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
-  connect( ui.buttonGroupSelectAction, SIGNAL( buttonClicked( int ) ), this, SLOT( highlightErrors() ) );
-  connect( ui.pushButtonOpenAttributeTable, SIGNAL( clicked() ), this, SLOT( openAttributeTable() ) );
-  connect( ui.pushButtonFixWithDefault, SIGNAL( clicked() ), this, SLOT( fixErrorsWithDefault() ) );
-  connect( ui.pushButtonFixWithPrompt, SIGNAL( clicked() ), this, SLOT( fixErrorsWithPrompt() ) );
-  connect( ui.pushButtonErrorResolutionSettings, SIGNAL( clicked() ), this, SLOT( setDefaultResolutionMethods() ) );
-  connect( ui.checkBoxHighlight, SIGNAL( clicked() ), this, SLOT( highlightErrors() ) );
-  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( checkRemovedLayer( QStringList ) ) );
-  connect( ui.pushButtonExport, SIGNAL( clicked() ), this, SLOT( exportErrors() ) );
+  connect( checker, &QgsGeometryChecker::errorAdded, this, &QgsGeometryCheckerResultTab::addError );
+  connect( checker, &QgsGeometryChecker::errorUpdated, this, &QgsGeometryCheckerResultTab::updateError );
+  connect( ui.comboBoxMergeAttribute, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), checker, &QgsGeometryChecker::setMergeAttributeIndex );
+  connect( ui.tableWidgetErrors->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsGeometryCheckerResultTab::onSelectionChanged );
+  connect( ui.buttonGroupSelectAction, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGeometryCheckerResultTab::highlightErrors );
+  connect( ui.pushButtonOpenAttributeTable, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::openAttributeTable );
+  connect( ui.pushButtonFixWithDefault, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithDefault );
+  connect( ui.pushButtonFixWithPrompt, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithPrompt );
+  connect( ui.pushButtonErrorResolutionSettings, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::setDefaultResolutionMethods );
+  connect( ui.checkBoxHighlight, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::highlightErrors );
+  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsGeometryCheckerResultTab::checkRemovedLayer );
+  connect( ui.pushButtonExport, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::exportErrors );
 
   if ( ( mFeaturePool->getLayer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
   {
@@ -105,8 +105,8 @@ void QgsGeometryCheckerResultTab::finalize()
     dialog.layout()->addWidget( new QPlainTextEdit( mChecker->getMessages().join( QStringLiteral( "\n" ) ) ) );
     QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal );
     dialog.layout()->addWidget( bbox );
-    connect( bbox, SIGNAL( accepted() ), &dialog, SLOT( accept() ) );
-    connect( bbox, SIGNAL( rejected() ), &dialog, SLOT( reject() ) );
+    connect( bbox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
+    connect( bbox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject );
     dialog.setWindowTitle( tr( "Check errors occurred" ) );
     dialog.exec();
   }
@@ -442,11 +442,11 @@ void QgsGeometryCheckerResultTab::openAttributeTable()
   }
   if ( mAttribTableDialog )
   {
-    disconnect( mAttribTableDialog, SIGNAL( destroyed() ), this, SLOT( clearAttribTableDialog() ) );
+    disconnect( mAttribTableDialog, &QObject::destroyed, this, &QgsGeometryCheckerResultTab::clearAttribTableDialog );
     mAttribTableDialog->close();
   }
   mAttribTableDialog = mIface->showAttributeTable( mFeaturePool->getLayer(), expr.join( QStringLiteral( " or " ) ) );
-  connect( mAttribTableDialog, SIGNAL( destroyed() ), this, SLOT( clearAttribTableDialog() ) );
+  connect( mAttribTableDialog, &QObject::destroyed, this, &QgsGeometryCheckerResultTab::clearAttribTableDialog );
 }
 
 void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
@@ -489,8 +489,8 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
   {
     QgsGeometryCheckerFixDialog fixdialog( mChecker, errors, mIface, mIface->mainWindow() );
     QEventLoop loop;
-    connect( &fixdialog, SIGNAL( currentErrorChanged( QgsGeometryCheckError * ) ), this, SLOT( highlightError( QgsGeometryCheckError * ) ) );
-    connect( &fixdialog, SIGNAL( finished( int ) ), &loop, SLOT( quit() ) );
+    connect( &fixdialog, &QgsGeometryCheckerFixDialog::currentErrorChanged, this, &QgsGeometryCheckerResultTab::highlightError );
+    connect( &fixdialog, &QDialog::finished, &loop, &QEventLoop::quit );
     fixdialog.show();
     parentWidget()->parentWidget()->parentWidget()->setEnabled( false );
     loop.exec();
@@ -519,8 +519,8 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
   {
     QgsGeometryCheckerFixSummaryDialog summarydialog( mIface, mFeaturePool->getLayer(), mStatistics, mChecker->getMessages(), mIface->mainWindow() );
     QEventLoop loop;
-    connect( &summarydialog, SIGNAL( errorSelected( QgsGeometryCheckError * ) ), this, SLOT( highlightError( QgsGeometryCheckError * ) ) );
-    connect( &summarydialog, SIGNAL( finished( int ) ), &loop, SLOT( quit() ) );
+    connect( &summarydialog, &QgsGeometryCheckerFixSummaryDialog::errorSelected, this, &QgsGeometryCheckerResultTab::highlightError );
+    connect( &summarydialog, &QDialog::finished, &loop, &QEventLoop::quit );
     summarydialog.show();
     parentWidget()->parentWidget()->parentWidget()->setEnabled( false );
     loop.exec();
@@ -578,14 +578,14 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
       groupBoxLayout->addWidget( radio );
       radioGroup->addButton( radio, id++ );
     }
-    connect( radioGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( storeDefaultResolutionMethod( int ) ) );
+    connect( radioGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGeometryCheckerResultTab::storeDefaultResolutionMethod );
 
     scrollAreaLayout->addWidget( groupBox );
   }
   scrollArea->setWidget( scrollAreaContents );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok, Qt::Horizontal, &dialog );
-  connect( buttonBox, SIGNAL( accepted() ), &dialog, SLOT( accept() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
   layout->addWidget( buttonBox );
   dialog.exec();
 }

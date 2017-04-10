@@ -56,6 +56,13 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      */
     void initGui();
 
+  public slots:
+
+    /*
+     * Deletes all rules from rules dialog
+     */
+    void clearRules();
+
   private:
     QMap<QString, TopologyRule> mTestConfMap;
     QList<QString> mLayerIds;
@@ -98,10 +105,6 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      */
     void updateRuleItems( const QString &layerName );
 
-    /*
-     * Deletes all rules from rules dialog
-     */
-    void clearRules();
 
 
 

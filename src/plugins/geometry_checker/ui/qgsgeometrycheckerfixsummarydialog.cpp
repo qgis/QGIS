@@ -109,7 +109,7 @@ void QgsGeometryCheckerFixSummaryDialog::setupTable( QTableWidget *table )
   table->horizontalHeader()->setSortIndicator( 0, Qt::AscendingOrder );
   table->setSortingEnabled( true );
 
-  connect( table->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onTableSelectionChanged( QItemSelection, QItemSelection ) ) );
+  connect( table->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged );
 }
 
 void QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged( const QItemSelection &newSel, const QItemSelection & /*oldSel*/ )

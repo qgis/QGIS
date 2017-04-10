@@ -308,7 +308,7 @@ public:
     FilterObject(Filter::HotSpot* filter) : _filter(filter) {}
 
     void emitActivated(const QUrl& url);
-private slots:
+public slots:
     void activated();
 private:
     Filter::HotSpot* _filter;

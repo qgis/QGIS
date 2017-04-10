@@ -27,8 +27,8 @@ QgsGPSDeviceDialog::QgsGPSDeviceDialog( std::map < QString,
   // Manually set the relative size of the two main parts of the
   // device dialog box.
 
-  QObject::connect( lbDeviceList, SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
-                    this, SLOT( slotSelectionChanged( QListWidgetItem * ) ) );
+  QObject::connect( lbDeviceList, &QListWidget::currentItemChanged,
+                    this, &QgsGPSDeviceDialog::slotSelectionChanged );
   slotUpdateDeviceList();
 }
 
@@ -105,8 +105,8 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList( const QString &selection )
 
   // We're going to be changing the selected item, so disable our
   // notificaton of that.
-  QObject::disconnect( lbDeviceList, SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
-                       this, SLOT( slotSelectionChanged( QListWidgetItem * ) ) );
+  QObject::disconnect( lbDeviceList, &QListWidget::currentItemChanged,
+                       this, &QgsGPSDeviceDialog::slotSelectionChanged );
 
   lbDeviceList->clear();
   std::map<QString, QgsGPSDevice *>::const_iterator iter;
@@ -124,8 +124,8 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList( const QString &selection )
 
   // Update the display and reconnect the selection changed signal
   slotSelectionChanged( lbDeviceList->currentItem() );
-  QObject::connect( lbDeviceList, SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
-                    this, SLOT( slotSelectionChanged( QListWidgetItem * ) ) );
+  QObject::connect( lbDeviceList, &QListWidget::currentItemChanged,
+                    this, &QgsGPSDeviceDialog::slotSelectionChanged );
 }
 
 

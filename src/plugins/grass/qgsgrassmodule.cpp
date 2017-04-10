@@ -203,9 +203,9 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
     mManualTextBrowser->insertPlainText( tr( "Please ensure you have the GRASS documentation installed." ) );
   }
 
-  connect( &mProcess, SIGNAL( readyReadStandardOutput() ), this, SLOT( readStdout() ) );
-  connect( &mProcess, SIGNAL( readyReadStandardError() ), this, SLOT( readStderr() ) );
-  connect( &mProcess, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( finished( int, QProcess::ExitStatus ) ) );
+  connect( &mProcess, &QProcess::readyReadStandardOutput, this, &QgsGrassModule::readStdout );
+  connect( &mProcess, &QProcess::readyReadStandardError, this, &QgsGrassModule::readStderr );
+  connect( &mProcess, static_cast<void ( QProcess::* )( int, QProcess::ExitStatus )>( &QProcess::finished ), this, &QgsGrassModule::finished );
 
   const char *env = "GRASS_MESSAGE_FORMAT=gui";
   char *envstr = new char[strlen( env ) + 1];

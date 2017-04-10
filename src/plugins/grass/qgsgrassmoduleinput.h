@@ -328,7 +328,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     QComboBox *mLayerComboBox = nullptr;
 
     //! List of multiple selected maps
-    QTreeView *mSelectedTreeView = nullptr;
+    QgsGrassModuleInputSelectedView *mSelectedTreeView = nullptr;
 
     // Vector type checkboxes
     QMap<int, QCheckBox *> mTypeCheckBoxes;

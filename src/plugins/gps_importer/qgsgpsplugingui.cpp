@@ -44,35 +44,35 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
   populateIMPBabelFormats();
   populateCONVDialog();
 
-  connect( pbULEditDevices, SIGNAL( clicked() ), this, SLOT( openDeviceEditor() ) );
-  connect( pbDLEditDevices, SIGNAL( clicked() ), this, SLOT( openDeviceEditor() ) );
+  connect( pbULEditDevices, &QAbstractButton::clicked, this, &QgsGPSPluginGui::openDeviceEditor );
+  connect( pbDLEditDevices, &QAbstractButton::clicked, this, &QgsGPSPluginGui::openDeviceEditor );
 
   // make sure that the OK button is enabled only when it makes sense to
   // click it
   pbnOK = buttonBox->button( QDialogButtonBox::Ok );
   pbnOK->setEnabled( false );
-  connect( leGPXFile, SIGNAL( textChanged( const QString & ) ),
-           this, SLOT( enableRelevantControls() ) );
-  connect( leIMPInput, SIGNAL( textChanged( const QString & ) ),
-           this, SLOT( enableRelevantControls() ) );
-  connect( leIMPOutput, SIGNAL( textChanged( const QString & ) ),
-           this, SLOT( enableRelevantControls() ) );
-  connect( leIMPLayer, SIGNAL( textChanged( const QString & ) ),
-           this, SLOT( enableRelevantControls() ) );
-  connect( leCONVInput, SIGNAL( textChanged( const QString & ) ),
-           this, SLOT( enableRelevantControls() ) );
-  connect( leCONVOutput, SIGNAL( textChanged( const QString & ) ),
-           this, SLOT( enableRelevantControls() ) );
-  connect( leCONVLayer, SIGNAL( textChanged( const QString & ) ),
-           this, SLOT( enableRelevantControls() ) );
-  connect( leDLOutput, SIGNAL( textChanged( const QString & ) ),
-           this, SLOT( enableRelevantControls() ) );
-  connect( leDLBasename, SIGNAL( textChanged( const QString & ) ),
-           this, SLOT( enableRelevantControls() ) );
-  connect( cmbULLayer, SIGNAL( editTextChanged( const QString & ) ),
-           this, SLOT( enableRelevantControls() ) );
-  connect( tabWidget, SIGNAL( currentChanged( int ) ),
-           this, SLOT( enableRelevantControls() ) );
+  connect( leGPXFile, &QLineEdit::textChanged,
+           this, &QgsGPSPluginGui::enableRelevantControls );
+  connect( leIMPInput, &QLineEdit::textChanged,
+           this, &QgsGPSPluginGui::enableRelevantControls );
+  connect( leIMPOutput, &QLineEdit::textChanged,
+           this, &QgsGPSPluginGui::enableRelevantControls );
+  connect( leIMPLayer, &QLineEdit::textChanged,
+           this, &QgsGPSPluginGui::enableRelevantControls );
+  connect( leCONVInput, &QLineEdit::textChanged,
+           this, &QgsGPSPluginGui::enableRelevantControls );
+  connect( leCONVOutput, &QLineEdit::textChanged,
+           this, &QgsGPSPluginGui::enableRelevantControls );
+  connect( leCONVLayer, &QLineEdit::textChanged,
+           this, &QgsGPSPluginGui::enableRelevantControls );
+  connect( leDLOutput, &QLineEdit::textChanged,
+           this, &QgsGPSPluginGui::enableRelevantControls );
+  connect( leDLBasename, &QLineEdit::textChanged,
+           this, &QgsGPSPluginGui::enableRelevantControls );
+  connect( cmbULLayer, &QComboBox::editTextChanged,
+           this, &QgsGPSPluginGui::enableRelevantControls );
+  connect( tabWidget, &QTabWidget::currentChanged,
+           this, &QgsGPSPluginGui::enableRelevantControls );
 
   // drag and drop filter
   leGPXFile->setSuffixFilter( QStringLiteral( "gpx" ) );
@@ -436,7 +436,7 @@ void QgsGPSPluginGui::openDeviceEditor()
 {
   QgsGPSDeviceDialog *dlg = new QgsGPSDeviceDialog( mDevices );
   dlg->show();
-  connect( dlg, SIGNAL( devicesChanged() ), this, SLOT( devicesUpdated() ) );
+  connect( dlg, &QgsGPSDeviceDialog::devicesChanged, this, &QgsGPSPluginGui::devicesUpdated );
 }
 
 void QgsGPSPluginGui::devicesUpdated()

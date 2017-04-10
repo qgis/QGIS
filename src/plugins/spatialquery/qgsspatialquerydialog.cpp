@@ -351,20 +351,20 @@ QString QgsSpatialQueryDialog::getDescriptionInvalidFeaturesShow( bool isTarget 
 
 void QgsSpatialQueryDialog::connectAll()
 {
-  connect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ),
-           this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer * ) ) );
-  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
-           this, SLOT( signal_qgis_layerWillBeRemoved( QString ) ) );
-  connect( ckbLogProcessing, SIGNAL( clicked( bool ) ),
-           this, SLOT( on_ckbLogProcessing_clicked( bool ) ) );
+  connect( QgsProject::instance(), &QgsProject::layerWasAdded,
+           this, &QgsSpatialQueryDialog::signal_qgis_layerWasAdded );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ),
+           this, &QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved );
+  connect( ckbLogProcessing, &QAbstractButton::clicked,
+           this, &QgsSpatialQueryDialog::on_ckbLogProcessing_clicked );
 } // QgsSpatialQueryDialog::connectAll()
 
 void QgsSpatialQueryDialog::disconnectAll()
 {
-  disconnect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ),
-              this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer * ) ) );
-  disconnect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
-              this, SLOT( signal_qgis_layerWillBeRemoved( QString ) ) );
+  disconnect( QgsProject::instance(), &QgsProject::layerWasAdded,
+              this, &QgsSpatialQueryDialog::signal_qgis_layerWasAdded );
+  disconnect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ),
+              this, &QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved );
 
   if ( mLayerTarget )
   {

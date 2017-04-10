@@ -42,8 +42,8 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
   QgsDebugMsg( QString( "QgsGrassSelect() type = %1" ).arg( type ) );
 
   setupUi( this );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGrassSelect::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   if ( sFirst )
   {
