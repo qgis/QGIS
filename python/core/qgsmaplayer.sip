@@ -809,11 +809,6 @@ Return pointer to layer's undo stack
 
   public slots:
 
-    virtual void invalidTransformInput();
-%Docstring
-Event handler for when a coordinate transform fails due to bad vertex error
-%End
-
     void setMinimumScale( double scale );
 %Docstring
  Sets the minimum scale denominator at which the layer will be visible.

@@ -722,9 +722,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
   public slots:
 
-    //! Event handler for when a coordinate transform fails due to bad vertex error
-    virtual void invalidTransformInput();
-
     /** Sets the minimum scale denominator at which the layer will be visible.
      * Scale based visibility is only used if setScaleBasedVisibility is set to true.
      * \param scale minimum scale denominator at which the layer should render
