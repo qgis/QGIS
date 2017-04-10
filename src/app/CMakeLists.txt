@@ -178,6 +178,7 @@ SET(QGIS_APP_SRCS
 
   qgssettingstree.cpp
   qgsvariantdelegate.cpp
+  qgscrashdialog.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS
@@ -348,6 +349,7 @@ SET (QGIS_APP_MOC_HDRS
 
   qgssettingstree.h
   qgsvariantdelegate.h
+  qgscrashdialog.h
   )
 
 SET (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
