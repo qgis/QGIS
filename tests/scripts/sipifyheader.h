@@ -228,6 +228,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     Whatever skipMember;
     Whatever::Something *alsoSkipMember = nullptr;
+    mutable Whatever alsoSkipThis;
     Some<Other> memberToSkip;
 
   private:

@@ -296,7 +296,7 @@ while(!eof $header){
     }
 
     # skip non-method member declaration in non-public sections
-    if ( $SIP_RUN != 1 && $ACCESS != PUBLIC && $line =~ m/^\s*[\w<>]+(::\w+)? \*?\w+( = \w+(\([^()]+\))?)?;/){
+    if ( $SIP_RUN != 1 && $ACCESS != PUBLIC && $line =~ m/^\s*(?:mutable\s)?[\w<>]+(::\w+)? \*?\w+( = \w+(\([^()]+\))?)?;/){
         next;
     }
 
