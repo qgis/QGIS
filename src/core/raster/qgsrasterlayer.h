@@ -273,8 +273,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     virtual bool isSpatial() const override { return true; }
 
-    //! \brief Obtain GDAL Metadata for this layer
-    QString metadata() const override;
+    QString htmlMetadata() const override;
 
     //! \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
     QPixmap paletteAsPixmap( int bandNumber = 1 );

@@ -1526,7 +1526,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns the current transparency for the vector layer
     int layerTransparency() const;
 
-    QString metadata() const override;
+    QString htmlMetadata() const override;
 
     //! \note not available in Python bindings
     inline QgsGeometryCache *cache() SIP_SKIP { return mCache; }

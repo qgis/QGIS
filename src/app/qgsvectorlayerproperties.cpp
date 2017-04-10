@@ -703,7 +703,7 @@ void QgsVectorLayerProperties::on_pbnIndex_clicked()
 
 QString QgsVectorLayerProperties::metadata()
 {
-  return mLayer->metadata();
+  return mLayer->htmlMetadata();
 }
 
 void QgsVectorLayerProperties::on_mLayerOrigNameLineEdit_textEdited( const QString &text )

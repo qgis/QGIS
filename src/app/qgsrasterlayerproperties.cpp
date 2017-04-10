@@ -785,7 +785,7 @@ void QgsRasterLayerProperties::sync()
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
   txtbMetadata->document()->setDefaultStyleSheet( myStyle );
-  txtbMetadata->setHtml( mRasterLayer->metadata() );
+  txtbMetadata->setHtml( mRasterLayer->htmlMetadata() );
 
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mRasterLayer->shortName() );
@@ -1133,7 +1133,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
-  txtbMetadata->setHtml( mRasterLayer->metadata() );
+  txtbMetadata->setHtml( mRasterLayer->htmlMetadata() );
   txtbMetadata->document()->setDefaultStyleSheet( myStyle );
 }
 

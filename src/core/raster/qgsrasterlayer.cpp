@@ -287,7 +287,7 @@ QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
   return symbolList;
 }
 
-QString QgsRasterLayer::metadata() const
+QString QgsRasterLayer::htmlMetadata() const
 {
   QgsRasterDataProvider *provider = const_cast< QgsRasterDataProvider * >( mDataProvider );
   QString myMetadata;
