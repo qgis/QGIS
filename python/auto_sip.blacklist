@@ -53,7 +53,6 @@ core/qgslegendrenderer.sip
 core/qgslegendsettings.sip
 core/qgslogger.sip
 core/qgsmaphittest.sip
-core/qgsmaplayer.sip
 core/qgsmaplayerdependency.sip
 core/qgsmaplayerlegend.sip
 core/qgsmaplayermodel.sip
