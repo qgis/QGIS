@@ -55,7 +55,7 @@ class QgsMapLayer : QObject
       PluginLayer
     };
 
-    QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString::null, const QString &source = QString::null );
+    QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
 %Docstring
  Constructor for QgsMapLayer
  \param type layer type
@@ -1005,7 +1005,7 @@ Set whether layer is valid or not - should be used in constructor.
 %End
 
 
-    void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = "" );
+    void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = QString() );
 %Docstring
  Read custom properties from project file.
 \param layerNode note to read from

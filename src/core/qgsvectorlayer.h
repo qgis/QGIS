@@ -392,7 +392,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param  loadDefaultStyleFlag whether to load the default style
      *
      */
-    QgsVectorLayer( const QString &path = QString::null, const QString &baseName = QString::null,
+    QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                     const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true );
 
 

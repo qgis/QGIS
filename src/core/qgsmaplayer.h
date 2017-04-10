@@ -98,7 +98,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param name display name for the layer
      * \param source datasource of layer
      */
-    QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString::null, const QString &source = QString::null );
+    QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
 
     virtual ~QgsMapLayer();
 
@@ -885,7 +885,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Read custom properties from project file.
       \param layerNode note to read from
       \param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
-    void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = "" );
+    void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = QString() );
 
     //! Write custom properties to project file.
     void writeCustomProperties( QDomNode &layerNode, QDomDocument &doc ) const;
