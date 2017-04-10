@@ -276,6 +276,8 @@
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include layertree/qgslayertreeutils.sip
 
+%Include metadata/qgslayermetadata.sip
+
 %Include processing/qgsprocessingalgorithm.sip
 %Include processing/qgsprocessingcontext.sip
 %Include processing/qgsprocessingfeedback.sip
