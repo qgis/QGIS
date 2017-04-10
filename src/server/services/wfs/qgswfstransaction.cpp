@@ -1096,7 +1096,7 @@ namespace QgsWfs
 
     QDomNodeList filterNodeList = actionElem.elementsByTagName( QStringLiteral( "Filter" ) );
     QgsFeatureRequest featureRequest;
-    if ( filterNodeList.size() != 1 )
+    if ( filterNodeList.size() != 0 )
     {
       QDomElement filterElem = filterNodeList.at( 0 ).toElement();
       featureRequest = parseFilterElement( typeName, filterElem );

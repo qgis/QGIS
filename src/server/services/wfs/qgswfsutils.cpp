@@ -88,6 +88,10 @@ namespace QgsWfs
       {
         request.setFilterFids( fids );
       }
+      else
+      {
+        throw QgsRequestNotWellFormedException( QStringLiteral( "No FeatureId element corrcetly parse against typeName '%1'" ).arg( typeName ) );
+      }
       request.setFlags( QgsFeatureRequest::NoFlags );
       return request;
     }
