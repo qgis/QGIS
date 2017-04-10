@@ -921,6 +921,16 @@ int main( int argc, char *argv[] )
     }
   }
 
+  QString osmTitle = QStringLiteral( "OpenStreetMap" );
+  QString osmUrl = QStringLiteral( "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png" );
+  if ( !mySettings.contains( QStringLiteral( "qgis/connections-xyz/%1/url" ).arg( osmTitle ) ) )
+  {
+    QgsDebugMsg( QString( "OpenStreetMap default connection settings added" ) );
+    mySettings.setValue( QStringLiteral( "qgis/connections-xyz/%1/url" ).arg( osmTitle ), osmUrl );
+    mySettings.setValue( QStringLiteral( "qgis/connections-xyz/%1/zmax" ).arg( osmTitle ), 19 );
+    mySettings.setValue( QStringLiteral( "qgis/connections-xyz/%1/zmin" ).arg( osmTitle ), 0 );
+  }
+
   // custom environment variables
   QMap<QString, QString> systemEnvVars = QgsApplication::systemEnvVars();
   bool useCustomVars = mySettings.value( QStringLiteral( "qgis/customEnvVarsUse" ), QVariant( false ) ).toBool();
