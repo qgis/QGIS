@@ -110,6 +110,7 @@
 // QGIS Specific Includes
 //
 
+#include "qgscrashdialog.h"
 #include "qgisapp.h"
 #include "qgisappinterface.h"
 #include "qgisappstylesheet.h"
@@ -4724,6 +4725,8 @@ void QgisApp::fileExit()
 
 void QgisApp::fileNew()
 {
+    QgsRuntimeProfiler* profile;
+    profile->clear();
   fileNew( true ); // prompts whether to save project
 } // fileNew()
 
@@ -12525,7 +12528,10 @@ LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
     msg = QObject::tr( "creation of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
   }
 
-  QMessageBox::critical( 0, QObject::tr( "Crash dumped" ), msg );
+  QgsCrashDialog dlg;
+  dlg.setWindowTitle("Oh. Snap!");
+  dlg.exec();
+  //QMessageBox::critical( 0, QObject::tr( "Crash dumped" ), msg );
 
   return EXCEPTION_EXECUTE_HANDLER;
 }
