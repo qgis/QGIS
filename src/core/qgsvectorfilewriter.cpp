@@ -28,6 +28,8 @@
 #include "qgssymbollayerv2.h"
 #include "qgsvectordataprovider.h"
 #include "qgslocalec.h"
+#include "qgscsexception.h"
+#include "qgsgeometryengine.h"
 
 #include <QFile>
 #include <QSettings>
@@ -2443,6 +2445,34 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   req.setSubsetOfAttributes( attributes );
   if ( options.onlySelectedFeatures )
     req.setFilterFids( layer->selectedFeaturesIds() );
+
+  QScopedPointer< QgsGeometry > filterRectGeometry;
+  QScopedPointer< QgsGeometryEngine  > filterRectEngine;
+  if ( !options.filterExtent.isNull() )
+  {
+    QgsRectangle filterRect = options.filterExtent;
+    bool useFilterRect = true;
+    if ( shallTransform )
+    {
+      try
+      {
+        // map filter rect back from destination CRS to layer CRS
+        filterRect = options.ct->transformBoundingBox( filterRect, QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException & )
+      {
+        useFilterRect = false;
+      }
+    }
+    if ( useFilterRect )
+    {
+      req.setFilterRect( filterRect );
+    }
+    filterRectGeometry.reset( QgsGeometry::fromRect( options.filterExtent ) );
+    filterRectEngine.reset( QgsGeometry::createGeometryEngine( filterRectGeometry->geometry() ) );
+    filterRectEngine->prepareGeometry();
+  }
+
   QgsFeatureIterator fit = layer->getFeatures( req );
 
   //create symbol table if needed
@@ -2494,7 +2524,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     {
       try
       {
-        if ( fet.geometry() )
+        if ( fet.constGeometry() )
         {
           fet.geometry()->transform( *( options.ct ) );
         }
@@ -2513,7 +2543,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
       }
     }
 
-    if ( fet.constGeometry() && !options.filterExtent.isNull() && !fet.constGeometry()->intersects( options.filterExtent ) )
+    if ( fet.constGeometry() && filterRectEngine && !filterRectEngine->intersects( *fet.constGeometry()->geometry() ) )
       continue;
 
     if ( attributes.size() < 1 && options.skipAttributeCreation )

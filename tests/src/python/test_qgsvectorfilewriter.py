@@ -24,7 +24,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsCoordinateReferenceSystem,
                        QgsVectorFileWriter,
                        QgsFeatureRequest,
-                       QgsWKBTypes
+                       QgsWKBTypes,
+                       QgsRectangle,
+                       QgsCoordinateTransform
                        )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
@@ -32,8 +34,9 @@ import osgeo.gdal
 from osgeo import gdal, ogr
 import platform
 from qgis.testing import start_app, unittest
-from utilities import writeShape, compareWkt
+from utilities import writeShape, compareWkt, unitTestDataPath
 
+TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
@@ -66,8 +69,7 @@ class TestFieldValueConverter(QgsVectorFileWriter.FieldValueConverter):
         return 'unexpected_idx'
 
 
-class TestQgsVectorLayer(unittest.TestCase):
-
+class TestQgsVectorFileWriter(unittest.TestCase):
     mMemoryLayer = None
 
     def testWrite(self):
@@ -144,6 +146,58 @@ class TestQgsVectorLayer(unittest.TestCase):
         datetime_idx = created_layer.fieldNameIndex('dt_f')
         self.assertIsInstance(f.attributes()[datetime_idx], str)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)).toString("yyyy/MM/dd hh:mm:ss.zzz"))
+
+    def testWriterWithExtent(self):
+        """Check writing using extent filter."""
+        source_file = os.path.join(TEST_DATA_DIR, 'points.shp')
+        source_layer = QgsVectorLayer(source_file, 'Points', 'ogr')
+        self.assertTrue(source_layer.isValid())
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'ESRI Shapefile'
+        options.filterExtent = QgsRectangle(-111, 26, -96, 38)
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'extent_no_transform.shp')
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            source_layer,
+            dest_file_name,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        # Open result and check
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
+        features = [f for f in created_layer.getFeatures()]
+        self.assertEqual(len(features), 5)
+        for f in features:
+            self.assertTrue(f.geometry().intersects(options.filterExtent))
+
+    def testWriterWithExtentAndReprojection(self):
+        """Check writing using extent filter with reprojection."""
+        source_file = os.path.join(TEST_DATA_DIR, 'points.shp')
+        source_layer = QgsVectorLayer(source_file, 'Points', 'ogr')
+        self.assertTrue(source_layer.isValid())
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'ESRI Shapefile'
+        options.filterExtent = QgsRectangle(-12511460, 3045157, -10646621, 4683497)
+        crs = QgsCoordinateReferenceSystem()
+        self.assertTrue(crs.createFromOgcWmsCrs('EPSG:3785'))
+        ct = QgsCoordinateTransform(source_layer.crs(), crs)
+        options.ct = ct
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'extent_transform.shp')
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            source_layer,
+            dest_file_name,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        # Open result and check
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
+        features = [f for f in created_layer.getFeatures()]
+        self.assertEqual(len(features), 5)
+        for f in features:
+            self.assertTrue(f.geometry().intersects(options.filterExtent))
 
     def testDateTimeWriteTabfile(self):
         """Check writing date and time fields to an MapInfo tabfile."""
