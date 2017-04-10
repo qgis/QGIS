@@ -5,6 +5,7 @@
   ------------------------------------
   begin                : December 20 , 2016
   copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswfshandler)
+                         (C) 2012 by René-Luc D'Hont    ( parts from qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswfshandler)
                          (C) 2017 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch

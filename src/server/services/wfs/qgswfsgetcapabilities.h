@@ -3,6 +3,7 @@
                               -------------------------
   begin                : December 20 , 2016
   copyright            : (C) 2007 by Marco Hugentobler  (original code)
+                         (C) 2012 by René-Luc D'Hont    (original code)
                          (C) 2014 by Alessandro Pasotti (original code)
                          (C) 2017 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
