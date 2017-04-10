@@ -3029,26 +3029,14 @@ int QgsOgrProviderUtils::wkbHasZWrapper( OGRwkbGeometryType eType )
 
 int QgsOgrProviderUtils::wkbHasMWrapper( OGRwkbGeometryType eType )
 {
-  switch ( Qgis::GDAL_RUNTIME_VERSION_MINOR )
-  {
-    case 0:
-      if ( eType >= 2000 && eType < 3000 ) /* ISO M */
-        return 1;
-      if ( eType >= 3000 && eType < 4000 ) /* ISO ZM */
-        return 1;
-      break;
-    case 1:
-    default:
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
-      return wkbHasM( eType );
+  return wkbHasM( eType );
 #else
-      if ( eType >= 2000 && eType < 3000 ) /* ISO M */
-        return 1;
-      if ( eType >= 3000 && eType < 4000 ) /* ISO ZM */
-        return 1;
+  if ( eType >= 2000 && eType < 3000 ) /* ISO M */
+    return 1;
+  if ( eType >= 3000 && eType < 4000 ) /* ISO ZM */
+    return 1;
 #endif
-      break;
-  }
   return 0;
 }
 
@@ -4154,7 +4142,7 @@ void QgsOgrProvider::open( OpenMode mode )
     s_open_mode = "read-write";
   setProperty( "_debug_open_mode", s_open_mode );
 #if 1
-  qDebug() << QString( "-I-> QgsOgrProvider::open gdal[%1,%2,%3,%4,%5] open_mode[%6] SubLayerString[%7] dataSourceUri[%8]" ).arg( Qgis::GDAL_RUNTIME_VERSION_MAJOR ).arg( Qgis::GDAL_RUNTIME_VERSION_MINOR ).arg( Qgis::GDAL_RUNTIME_VERSION_REV ).arg( Qgis::GDAL_RUNTIME_VERSION ).arg( mDriverName ).arg( s_open_mode ).arg( SubLayerString() ).arg( dataSourceUri() );
+  qDebug() << QString( "-I-> QgsOgrProvider::open gdal[%1] open_mode[%2] SubLayerString[%3] dataSourceUri[%4]" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ).arg( mDriverName ).arg( s_open_mode ).arg( SubLayerString() ).arg( dataSourceUri() );
 #endif
 }
 

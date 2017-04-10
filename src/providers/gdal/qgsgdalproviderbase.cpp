@@ -25,8 +25,6 @@
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
-  if ( !Qgis::gdalRuntimeSupport() )
-    return;
   // first get the GDAL driver manager
   QgsGdalProviderBase::registerGdalDrivers();
 }
@@ -217,8 +215,6 @@ int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdal
 
 void QgsGdalProviderBase::registerGdalDrivers()
 {
-  if ( !Qgis::gdalRuntimeSupport() )
-    return;
   GDALAllRegister();
   QgsSettings mySettings;
   QString myJoinedList = mySettings.value( QStringLiteral( "gdal/skipList" ), "" ).toString();
