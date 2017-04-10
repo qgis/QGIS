@@ -720,6 +720,21 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void setAutoRefreshEnabled( bool enabled );
 
+    //! \brief Obtain Metadata for this layer
+    virtual QString metadata() const;
+
+    //! Time stamp of data source in the moment when data/metadata were loaded by provider
+    virtual QDateTime timestamp() const { return QDateTime() ; }
+
+    /**
+     * Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
+     * as well as dependencies given by the provider
+     *
+     * \returns a set of QgsMapLayerDependency
+     * \since QGIS 3.0
+     */
+    virtual QSet<QgsMapLayerDependency> dependencies() const;
+
   public slots:
 
     /** Sets the minimum scale denominator at which the layer will be visible.
@@ -758,12 +773,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void triggerRepaint( bool deferredUpdate = false );
 
-    //! \brief Obtain Metadata for this layer
-    virtual QString metadata() const;
-
-    //! Time stamp of data source in the moment when data/metadata were loaded by provider
-    virtual QDateTime timestamp() const { return QDateTime() ; }
-
     /** Triggers an emission of the styleChanged() signal.
      * \since QGIS 2.16
      */
@@ -778,15 +787,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.0
      */
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
-
-    /**
-     * Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
-     * as well as dependencies given by the provider
-     *
-     * \returns a set of QgsMapLayerDependency
-     * \since QGIS 3.0
-     */
-    virtual QSet<QgsMapLayerDependency> dependencies() const;
 
   signals:
 

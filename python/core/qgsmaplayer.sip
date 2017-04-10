@@ -807,6 +807,29 @@ Return pointer to layer's undo stack
  \see setAutoRefreshInterval()
 %End
 
+    virtual QString metadata() const;
+%Docstring
+ Obtain Metadata for this layer
+
+ :rtype: str
+%End
+
+    virtual QDateTime timestamp() const;
+%Docstring
+Time stamp of data source in the moment when data/metadata were loaded by provider
+ :rtype: QDateTime
+%End
+
+    virtual QSet<QgsMapLayerDependency> dependencies() const;
+%Docstring
+ Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
+ as well as dependencies given by the provider
+
+ :return: a set of QgsMapLayerDependency
+.. versionadded:: 3.0
+ :rtype: set of QgsMapLayerDependency
+%End
+
   public slots:
 
     void setMinimumScale( double scale );
@@ -850,19 +873,6 @@ Return pointer to layer's undo stack
    in 2.6 function moved from vector/raster subclasses to QgsMapLayer
 %End
 
-    virtual QString metadata() const;
-%Docstring
- Obtain Metadata for this layer
-
- :rtype: str
-%End
-
-    virtual QDateTime timestamp() const;
-%Docstring
-Time stamp of data source in the moment when data/metadata were loaded by provider
- :rtype: QDateTime
-%End
-
     void emitStyleChanged();
 %Docstring
  Triggers an emission of the styleChanged() signal.
@@ -878,16 +888,6 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
  :return: false if a dependency cycle has been detected
 .. versionadded:: 3.0
  :rtype: bool
-%End
-
-    virtual QSet<QgsMapLayerDependency> dependencies() const;
-%Docstring
- Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
- as well as dependencies given by the provider
-
- :return: a set of QgsMapLayerDependency
-.. versionadded:: 3.0
- :rtype: set of QgsMapLayerDependency
 %End
 
   signals:
