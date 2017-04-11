@@ -15,8 +15,8 @@ Build-Depends:
  gdal-bin,
  python-gdal,
  libgeos-dev (>= 3.0.0),
-#    jessie         trusty               # libgsl0-dev,
-#sid        stretch        xenial yakkety# libgsl-dev,
+#    jessie         trusty                     # libgsl0-dev,
+#sid        stretch        xenial yakkety zesty# libgsl-dev,
  libpq-dev,
  libproj-dev,
  libqt4-dev (>= 4.7.0),
@@ -24,8 +24,8 @@ Build-Depends:
  libqca2-dev,
  libqca2-plugin-ossl,
  libqtwebkit-dev,
-#    jessie stretch                      # libqwt-dev,
-#sid                trusty xenial yakkety# libqwt5-qt4-dev,
+#    jessie stretch                            # libqwt-dev,
+#sid                trusty xenial yakkety zesty# libqwt5-qt4-dev,
  libqjson-dev,
  libspatialite-dev,
  libsqlite3-dev,
@@ -38,8 +38,8 @@ Build-Depends:
  python-qt4-sql,
  python-yaml, python-mock,
  python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~), python-pyspatialite,
-#sid        stretch        xenial yakkety# python-future,
-#sid jessie stretch        xenial yakkety# pyqt4.qsci-dev, python-nose2,
+#sid        stretch        xenial yakkety zesty# python-future,
+#sid jessie stretch        xenial yakkety zesty# pyqt4.qsci-dev, python-nose2,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
@@ -56,11 +56,11 @@ Build-Depends:
  qt4-dev-tools,
  libqt4-sql-sqlite, python-psycopg2, ca-certificates
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid stretch xenial yakkety#Standards-Version: 3.9.7
+#sid stretch xenial yakkety zesty#Standards-Version: 3.9.7
 #jessie#Standards-Version: 3.9.6
 #trusty#Standards-Version: 3.8.4
 #sid stretch jessie#X-Python-Version: >= 2.7, << 2.8
-#trusty xenial yakkety#XS-Python-Version: current
+#trusty xenial yakkety zesty#XS-Python-Version: current
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: http://qgis.org/
@@ -235,8 +235,8 @@ Depends:
  libexpat1-dev,
  libgdal-dev (>= 1.10.1-0~),
  libgeos-dev (>= 3.0.0),
-#    jessie         trusty               # libgsl0-dev,
-#sid        stretch        xenial yakkety# libgsl-dev,
+#    jessie         trusty                     # libgsl0-dev,
+#sid        stretch        xenial yakkety zesty# libgsl-dev,
  libpq-dev,
  libproj-dev,
  libqgis-app{QGIS_ABI} (= ${binary:Version}),
@@ -372,8 +372,8 @@ Depends:
  python-pyproj,
  python-six,
  python-pyspatialite,
-#sid stretch               xenial yakkety# python-future,
-#sid stretch jessie        xenial yakkety# python-markupsafe, python-dateutil, python-yaml, python-owslib,
+#sid stretch               xenial yakkety zesty# python-future,
+#sid stretch jessie        xenial yakkety zesty# python-markupsafe, python-dateutil, python-yaml, python-owslib,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},
