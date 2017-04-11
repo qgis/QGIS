@@ -28,7 +28,6 @@ from qgis.core import (QgsApplication, QgsSettings, QgsRaster, QgsRasterLayer, Q
 
 QGISAPP = start_app()
 
-
 def createLayerFromSettings(url='http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', type='xyz', zmax=19, zmin=0):
     # urlWithParams = 'type=xyz&url=http://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0'
     # rlayer = QgsRasterLayer(urlWithParams, 'some layer name', 'wms')
@@ -39,7 +38,6 @@ def createLayerFromSettings(url='http://a.tile.openstreetmap.org/{z}/{x}/{y}.png
     uri = 'type=%s&url=%s&zmax=%d&zmin=%d' % (type, url, zmax, zmin)
     rlayer = QgsRasterLayer(uri, 'OpenStreetMap', 'wms')
     return rlayer
-
 
 class PyQgsOpenStreetMapConnection(unittest.TestCase):
     """
