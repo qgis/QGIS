@@ -88,7 +88,7 @@ bool Qgis::QGISRuntimeChecks()
 {
   if ( !Qgis::ogrRuntimeSupport() )
   {
-    std::cerr << QObject::tr( "QGIS does not support theis version of GDAL.\nGDAL[%1]\nPlease install a GDAL 2 version.\n" ).arg( Qgis::GDAL_RUNTIME_VERSION ).toUtf8().constData();
+    std::cerr << QObject::tr( "QGIS does not support this version of GDAL.\nGDAL[%1]\nPlease install a GDAL 2 version.\n" ).arg( Qgis::GDAL_RUNTIME_VERSION ).toUtf8().constData();
     return false;
   }
   return true;
