@@ -205,6 +205,9 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     //! Removing function body with namespaced return value
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const { return mBuildPyramidsFlag; }
 
+    //! Removing function body with virtual const reference
+    virtual const QgsLayerMetadata &metadata() const { return mMetadata; }
+
     bool deletedFunction() = delete; // some comments
 
     virtual int overriddenProperty() override { return 42; } // if in doubt, comment it out

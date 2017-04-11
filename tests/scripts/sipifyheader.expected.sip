@@ -190,6 +190,12 @@ Removing function body with namespaced return value
  :rtype: QgsRaster.RasterBuildPyramids
 %End
 
+    virtual const QgsLayerMetadata &metadata() const;
+%Docstring
+Removing function body with virtual const reference
+ :rtype: QgsLayerMetadata
+%End
+
 
     virtual int overriddenProperty();
 %Docstring
