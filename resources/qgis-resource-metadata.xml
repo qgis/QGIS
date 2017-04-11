@@ -11,7 +11,7 @@
         <keyword>kw2</keyword>
     </keywords>
     <fees>None</fees>
-    <accessconstraints>None<accessconstraints>
+    <constraints type="access">None<constraints>
     <encoding>utf-8</encoding>
     <crs>EPSG:4326</crs>
     <extent>
