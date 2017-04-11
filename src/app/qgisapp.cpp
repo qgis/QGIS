@@ -4573,12 +4573,16 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 
 void QgisApp::addGeonodeLayer()
 {
+  QgsDebugMsg( "about to addGeonodeLayer" );
+
   QgsGeoNodeSourceSelect *geonodes = new QgsGeoNodeSourceSelect( this, 0, true );
   if ( !geonodes )
   {
     QMessageBox::warning( this, tr( "Geonode" ), tr( "Cannot get Geonode select dialog." ) );
     return;
   }
+  connect( geonodes, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
+           this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
   geonodes->exec();
   delete geonodes;
 }

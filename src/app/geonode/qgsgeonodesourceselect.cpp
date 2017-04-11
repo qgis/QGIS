@@ -272,7 +272,7 @@ void QgsGeoNodeSourceSelect::filterChanged( const QString &text )
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }
 
-void QgsGeoNodeSourceSelect::treeViewSelectionChanged( QModelIndex modelIndex )
+void QgsGeoNodeSourceSelect::treeViewSelectionChanged()
 {
   qDebug() << "Treeview clicked";
   mAddButton->setEnabled( true );
@@ -310,5 +310,31 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
     QgsGeoNodeConnection connection( cmbConnections->currentText() );
     QString wmsURL = connection.wmsUrl( uuid );
     qDebug() << "wmsURL: " << wmsURL;
+    if ( wmsURL.isEmpty() )
+    {
+      qDebug() << "wmsURL is empty. Return";
+      return;
+    }
+
+    QgsDataSourceUri uri;
+    uri.setParam( QStringLiteral( "url" ), wmsURL );
+
+    // Set static first, to see that it works. Need to think about the UI also.
+    QString format( "image/png" );
+    QString crs( "EPSG:4326" );
+    QString styles( "" );
+    QString contextualWMSLegend( "0" );
+
+    uri.setParam( QStringLiteral( "contextualWMSLegend" ), contextualWMSLegend );
+    uri.setParam( QStringLiteral( "layers" ), layerName );
+    uri.setParam( QStringLiteral( "styles" ), styles );
+    uri.setParam( QStringLiteral( "format" ), format );
+    uri.setParam( QStringLiteral( "crs" ), crs );
+    qDebug() << "Uri Encode Uri: " << uri.encodedUri();
+
+    emit addRasterLayer( uri.encodedUri(),
+                         layerName,
+                         QStringLiteral( "wms" ) );
+
   }
 }

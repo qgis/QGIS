@@ -42,6 +42,9 @@ class QgsGeoNodeSourceSelect: public QDialog, private Ui::QgsGeonodeSourceSelect
 
   signals:
     void connectionsChanged();
+    void addRasterLayer( QString const &rasterLayerPath,
+                         QString const &baseName,
+                         QString const &providerKey );
 
   private:
     QgsGeoNodeSourceSelect(); //default constructor is forbidden
@@ -66,16 +69,11 @@ class QgsGeoNodeSourceSelect: public QDialog, private Ui::QgsGeonodeSourceSelect
     void saveGeonodeConnection();
     void loadGeonodeConnection();
     void filterChanged( const QString &text );
-    void treeViewSelectionChanged( QModelIndex modelIndex );
+    void treeViewSelectionChanged();
     void addButtonClicked();
 
     void populateConnectionList();
     void setConnectionListPosition();
-
-  signals:
-    void addRasterLayer( QString const &rasterLayerPath,
-                         QString const &baseName,
-                         QString const &providerKey );
 
 };
 

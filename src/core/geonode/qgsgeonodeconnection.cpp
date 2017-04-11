@@ -207,7 +207,8 @@ QString QgsGeoNodeConnection::wmsUrl( QString &resourceID )
       QDomNode referenceNode = referenceNodeList.at( i );
       QDomNamedNodeMap attributes = referenceNode.attributes();
       QString scheme = attributes.namedItem( "scheme" ).firstChild().nodeValue();
-      if ( scheme.startsWith( "OGC WMS" ) )
+      // Trick to get the WMS Url from CSW
+      if ( scheme.startsWith( "OGC" ) && scheme.contains( "WMS" ) )
       {
         QString url = referenceNode.firstChild().nodeValue();
         return url;
