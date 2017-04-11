@@ -18,6 +18,7 @@
 
 #include <QListWidgetItem>
 #include "qgis_gui.h"
+#include "qgis.h"
 
 /** \ingroup gui
  * \class QgsOptionsPageWidget
@@ -33,7 +34,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
     /**
      * Constructor for QgsOptionsPageWidget.
      */
-    QgsOptionsPageWidget( QWidget *parent = nullptr )
+    QgsOptionsPageWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr )
       : QWidget( parent )
     {}
 
@@ -52,20 +53,25 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
  * A factory class for creating custom options pages.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsOptionsWidgetFactory
+// NOTE - this is a QObject so we can detect its destruction and avoid
+// QGIS crashing when a plugin crashes/exits without deregistering a factory
+class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
 {
+    Q_OBJECT
+
   public:
 
     //! Constructor
-    QgsOptionsWidgetFactory() {}
+    QgsOptionsWidgetFactory()
+      : QObject()
+    {}
 
     //! Constructor
     QgsOptionsWidgetFactory( const QString &title, const QIcon &icon )
-      : mTitle( title )
+      : QObject()
+      , mTitle( title )
       , mIcon( icon )
     {}
-
-    virtual ~QgsOptionsWidgetFactory() = default;
 
     /**
      * \brief The icon that will be shown in the UI for the panel.
@@ -97,7 +103,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory
      * \param parent The parent of the widget.
      * \returns A new widget to show as a page in the options dialog.
      */
-    virtual QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const = 0;
+    virtual QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const = 0 SIP_FACTORY;
 
   private:
     QString mTitle;

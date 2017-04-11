@@ -9335,7 +9335,14 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
 
   bool oldCapitalize = mySettings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
 
-  std::unique_ptr< QgsOptions > optionsDialog( new QgsOptions( parent, QgisGui::ModalDialogFlags, mOptionsWidgetFactories ) );
+  QList< QgsOptionsWidgetFactory * > factories;
+  Q_FOREACH ( const QPointer< QgsOptionsWidgetFactory > &f, mOptionsWidgetFactories )
+  {
+    // remove any deleted factories
+    if ( f )
+      factories << f;
+  }
+  std::unique_ptr< QgsOptions > optionsDialog( new QgsOptions( parent, QgisGui::ModalDialogFlags, factories ) );
   if ( !currentPage.isEmpty() )
   {
     optionsDialog->setCurrentPage( currentPage );

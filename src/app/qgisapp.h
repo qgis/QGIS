@@ -134,6 +134,7 @@ class QgsDiagramProperties;
 #include "qgsraster.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgsmaplayeractionregistry.h"
+#include "qgsoptionswidgetfactory.h"
 
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
@@ -1957,7 +1958,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsSnappingUtils *mSnappingUtils = nullptr;
 
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
-    QList<QgsOptionsWidgetFactory *> mOptionsWidgetFactories;
+    QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
 
     QList<QgsCustomDropHandler *> mCustomDropHandlers;
 
