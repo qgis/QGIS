@@ -103,7 +103,7 @@ Apply and accept the changes for the dialog.
 
   protected:
 
-    void connectValueChanged( const QList<QWidget *> &widgets, void ( QgsRendererPropertiesDialog::*slot )() );
+    void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
 %Docstring
  Connect the given slot to the value changed event for the set of widgets
  Each widget is checked for type and the common type of signal is connected
@@ -111,6 +111,23 @@ Apply and accept the changes for the dialog.
 
  \param widgets The list of widgets to check.
  \param slot The slot to connect to the signals.
+%End
+%MethodCode
+#include <QMetaObject>
+    const QMetaObject *metaObject = sipCpp->metaObject();
+    QStringList methods;
+    for ( int i = metaObject->methodOffset(); i < metaObject->methodCount(); ++i )
+    {
+      QMetaMethod m = metaObject->method( i );
+      if ( m.methodType() == QMetaMethod::Slot )
+      {
+        if ( m.methodSignature() == QByteArray(a1) )
+        {
+          sipCpp->connectValueChanged( *a0, reinterpret_cast<void **>(&m) );
+          return;
+        }
+      }
+    }
 %End
 
     void keyPressEvent( QKeyEvent *event );

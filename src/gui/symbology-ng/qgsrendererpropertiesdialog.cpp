@@ -133,11 +133,11 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
           << mFeatureBlendComboBox
           << mEffectWidget;
 
-  connectValueChanged( widgets, &QgsRendererPropertiesDialog::widgetChanged );
+  //connectValueChanged( widgets, &QgsRendererPropertiesDialog::widgetChanged );
   connect( mEffectWidget, &QgsPanelWidget::showPanel, this, &QgsRendererPropertiesDialog::openPanel );
 }
 
-void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *> &widgets, void ( QgsRendererPropertiesDialog::*slot )() )
+void QgsRendererPropertiesDialog::connectValueChangedImpl( const QList<QWidget *> &widgets, void (QgsRendererPropertiesDialog::*slot)() )
 {
   Q_FOREACH ( QWidget *widget, widgets )
   {
