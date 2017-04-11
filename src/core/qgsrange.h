@@ -187,6 +187,12 @@ typedef QgsRange< int > QgsIntRange;
 
 
 // specialization required to handle invalid QDate bounds
+
+/**
+ * Returns true if the range is empty, ie the lower bound equals (or exceeds) the upper bound
+ * and either the bounds are exclusive.
+ * A range with both invalid lower and upper bounds is considered empty.
+ */
 template<>
 bool QgsRange<QDate>::isEmpty() const
 {
@@ -205,6 +211,9 @@ bool QgsRange<QDate>::isEmpty() const
   return false;
 }
 
+/**
+ * Returns true if this range contains another range.
+ */
 template<>
 bool QgsRange<QDate>::contains( const QgsRange<QDate> &other ) const
 {
@@ -235,6 +244,9 @@ bool QgsRange<QDate>::contains( const QgsRange<QDate> &other ) const
   return true;
 }
 
+/**
+ * Returns true if this range contains a specified \a element.
+ */
 template<>
 bool QgsRange<QDate>::contains( QDate element ) const
 {
@@ -260,6 +272,9 @@ bool QgsRange<QDate>::contains( QDate element ) const
   return true;
 }
 
+/**
+ * Returns true if this range overlaps another range.
+ */
 template<>
 bool QgsRange<QDate>::overlaps( const QgsRange<QDate> &other ) const
 {
