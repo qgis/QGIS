@@ -676,6 +676,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsCompoundCurve": ["QgsCompoundCurve(const QgsCompoundCurve &curve)"],
     "QgisPlugin": ["QgisPlugin(QString const &name=\"\", QString const &description=\"\", QString const &category=\"\", QString const &version=\"\", PLUGINTYPE const &type=MAPLAYER)", "name()"],
     "QgsFields": ["FieldOrigin", "None"],
+    "QgsRange": ["contains(QDate element) const", "overlaps(const QgsRange< QDate > &other) const", "contains(const QgsRange< QDate > &other) const"],
     "QgsGlowEffect": ["QgsGlowEffect(const QgsGlowEffect &other)"],
     "Node": ["Node(const Node &n)"],
     "QgsSymbolLevelItem": ["layer()", "QgsSymbolLevelItem(QgsSymbol *symbol, int layer)", "symbol()"],
