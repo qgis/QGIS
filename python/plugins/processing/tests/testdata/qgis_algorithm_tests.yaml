@@ -2578,7 +2578,7 @@ tests:
     results: {}
 
   - algorithm: qgis:randomextract
-    name: Random extract by percentage
+    name: Random extract by percentage 
     params:
       INPUT:
         name: custom/points_weighted.gml
