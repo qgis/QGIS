@@ -67,15 +67,15 @@ bool Qgis::ogrRuntimeSupport()
     QString gdalVersionInfo = Qgis::GDAL_RUNTIME_VERSION;
     gdalVersionInfo.remove( QRegExp( QString::fromUtf8( "[-`~!@#$%^&*()_—+=|:;<>«»,?/{a-zA-Z}\'\"\\[\\]\\\\]" ) ) );
     QStringList saSplit = gdalVersionInfo.split( '.' );
-    if ( if ( !saSplit.isEmpty() ) )
-      {
-        // setting gdal-runtime version
-        Qgis::GDAL_RUNTIME_VERSION_MAJOR = saSplit[0].toInt();
-        if ( sa_split.size() > 1 )
-          Qgis::GDAL_RUNTIME_VERSION_MINOR = saSplit[1].toInt();
-        if ( sa_split.size() > 2 )
-          Qgis::GDAL_RUNTIME_VERSION_REV = saSplit[2].toInt();
-      }
+    if ( ( !saSplit.isEmpty() ) )
+    {
+      // setting gdal-runtime version
+      Qgis::GDAL_RUNTIME_VERSION_MAJOR = saSplit[0].toInt();
+      if ( saSplit.size() > 1 )
+        Qgis::GDAL_RUNTIME_VERSION_MINOR = saSplit[1].toInt();
+      if ( saSplit.size() > 2 )
+        Qgis::GDAL_RUNTIME_VERSION_REV = saSplit[2].toInt();
+    }
     if ( Qgis::GDAL_RUNTIME_VERSION_MAJOR >= Qgis::GDAL_BUILD_VERSION_MAJOR )
     {
       // Deprecated gdal major-versions that are less than the major-version
@@ -88,11 +88,7 @@ bool Qgis::QGISRuntimeChecks()
 {
   if ( !Qgis::ogrRuntimeSupport() )
   {
-    std::cerr << QObject::tr(
-                QString( "QGIS does not support theis version of GDAL.\n"
-                         "GDAL[%1]\n"
-                         "Please install a GDAL 2 version.\n" ).arg( Qgis::GDAL_RUNTIME_VERSION )
-              ).toUtf8().constData();
+    std::cerr << QObject::tr( QString( "QGIS does not support theis version of GDAL.\nGDAL[%1]\nPlease install a GDAL 2 version.\n" ).arg( Qgis::GDAL_RUNTIME_VERSION ) ).toUtf8().constData();
     return false;
   }
   return true;
