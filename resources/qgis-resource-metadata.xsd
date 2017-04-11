@@ -39,7 +39,7 @@
             <xs:element name="abstract" type="xs:string"/>
             <xs:element name="keywords" type="rm:keywordsType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="fees" type="xs:string" minOccurs="0"/>
-            <xs:element name="constraints" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="constraints" type="rm:constraintsType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="rights" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="encoding" type="xs:string" minOccurs="0"/>
             <xs:element name="crs" type="xs:string"/>
@@ -49,6 +49,13 @@
         </xs:sequence>
         <xs:attribute name="version" use="required" fixed="1.0"/>
     </xs:complexType>
+    <xs:complexType name="constraintsType">
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="type" type="xs:string"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>  
     <xs:complexType name="keywordsType">
         <xs:sequence>
             <xs:element name="keyword" maxOccurs="unbounded"/>
