@@ -2586,19 +2586,3 @@ tests:
       METHOD: '1'
       NUMBER: 50
     results: {}
-
-  - algorithm: qgis:randomselection
-    name: Random Selection with point input
-    params:
-      INPUT_LAYER:
-        name: points.gml
-        type: vector
-    results: {}
-
-  - algorithm: qgis:randomselectionwithinsubsets
-    name: Random selection within subset
-    params:
-      INPUT_LAYER:
-        name: points.gml
-        type: vector
-    results: {}
