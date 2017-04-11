@@ -77,12 +77,12 @@ void QgsLayerMetadata::setFees( const QString &fees )
   mFees = fees;
 }
 
-QStringList QgsLayerMetadata::constraints() const
+QList<QgsLayerMetadata::Constraint> QgsLayerMetadata::constraints() const
 {
   return mConstraints;
 }
 
-void QgsLayerMetadata::setConstraints( const QStringList &constraints )
+void QgsLayerMetadata::setConstraints( const QList<Constraint> &constraints )
 {
   mConstraints = constraints;
 }
@@ -105,4 +105,79 @@ QString QgsLayerMetadata::encoding() const
 void QgsLayerMetadata::setEncoding( const QString &encoding )
 {
   mEncoding = encoding;
+}
+
+QgsCoordinateReferenceSystem QgsLayerMetadata::crs() const
+{
+  return mCrs;
+}
+
+void QgsLayerMetadata::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrs = crs;
+}
+
+QMap<QString, QStringList> QgsLayerMetadata::keywords() const
+{
+  return mKeywords;
+}
+
+void QgsLayerMetadata::setKeywords( const QMap<QString, QStringList> &keywords )
+{
+  mKeywords = keywords;
+}
+
+void QgsLayerMetadata::addKeywords( const QString &vocabulary, const QStringList &keywords )
+{
+  mKeywords.insert( vocabulary, keywords );
+}
+
+QStringList QgsLayerMetadata::keywordVocabularies() const
+{
+  return mKeywords.keys();
+}
+
+QStringList QgsLayerMetadata::keywords( const QString &vocabulary ) const
+{
+  return mKeywords.value( vocabulary );
+}
+
+QList<QgsLayerMetadata::Contact> QgsLayerMetadata::contacts() const
+{
+  return mContacts;
+}
+
+void QgsLayerMetadata::setContacts( const QList<Contact> &contacts )
+{
+  mContacts = contacts;
+}
+
+void QgsLayerMetadata::addContact( const QgsLayerMetadata::Contact &contact )
+{
+  mContacts << contact;
+}
+
+QList<QgsLayerMetadata::Link> QgsLayerMetadata::links() const
+{
+  return mLinks;
+}
+
+void QgsLayerMetadata::setLinks( const QList<QgsLayerMetadata::Link> &links )
+{
+  mLinks = links;
+}
+
+void QgsLayerMetadata::addLink( const QgsLayerMetadata::Link &link )
+{
+  mLinks << link;
+}
+
+QString QgsLayerMetadata::language() const
+{
+  return mLanguage;
+}
+
+void QgsLayerMetadata::setLanguage( const QString &language )
+{
+  mLanguage = language;
 }

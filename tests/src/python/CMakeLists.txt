@@ -71,6 +71,7 @@ ADD_PYTHON_TEST(PyQgsLayerTreeMapCanvasBridge test_qgslayertreemapcanvasbridge.p
 ADD_PYTHON_TEST(PyQgsLayerTree test_qgslayertree.py)
 ADD_PYTHON_TEST(PyQgsLayoutManager test_qgslayoutmanager.py)
 ADD_PYTHON_TEST(PyQgsLineSymbolLayers test_qgslinesymbollayers.py)
+ADD_PYTHON_TEST(PyQgsLayerMetadata test_qgslayermetadata.py)
 ADD_PYTHON_TEST(PyQgsMapCanvas test_qgsmapcanvas.py)
 ADD_PYTHON_TEST(PyQgsMapCanvasAnnotationItem test_qgsmapcanvasannotationitem.py)
 ADD_PYTHON_TEST(PyQgsMapLayer test_qgsmaplayer.py)
