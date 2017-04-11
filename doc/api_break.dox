@@ -1727,6 +1727,11 @@ QgsRasterRenderer
 
 - MinMaxOrigin enum, minMaxOriginName(), minMaxOriginLabel(), minMaxOriginFromName() removed. Use minMaxOrigin() instead
 
+QgsRectangle        {#qgis_api_break_3_0_QgsRectangle}
+------------
+
+- The protected members were removed - QgsRectangle is not intended to be subclassed.
+
 QgsRelation        {#qgis_api_break_3_0_QgsRelation}
 -----------
 

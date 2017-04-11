@@ -37,7 +37,7 @@ class CORE_EXPORT QgsRectangle
 {
   public:
     //! Constructor
-    QgsRectangle( double xmin = 0, double ymin = 0, double xmax = 0, double ymax = 0 );
+    QgsRectangle( double mXmin = 0, double mYmin = 0, double mXmax = 0, double mYmax = 0 );
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
     QgsRectangle( const QgsPoint &p1, const QgsPoint &p2 );
     //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRectangle
     void set( const QgsPoint &p1, const QgsPoint &p2 );
     //! Set the rectangle from four points. The rectangle is
     //! normalised after construction.
-    void set( double xmin, double ymin, double xmax, double ymax );
+    void set( double mXmin, double mYmin, double mXmax, double mYmax );
     //! Set the minimum x value
     void setXMinimum( double x );
     //! Set the maximum x value
@@ -151,15 +151,12 @@ class CORE_EXPORT QgsRectangle
     //! swap x/y
     void invert();
 
-  protected:
+  private:
 
-    // These are protected instead of private so that things like
-    // the QgsPostGisBox3d can get at them.
-
-    double xmin;
-    double ymin;
-    double xmax;
-    double ymax;
+    double mXmin;
+    double mYmin;
+    double mXmax;
+    double mYmax;
 
 };
 
@@ -174,57 +171,57 @@ inline QgsRectangle::~QgsRectangle()
 
 inline void QgsRectangle::setXMinimum( double x )
 {
-  xmin = x;
+  mXmin = x;
 }
 
 inline void QgsRectangle::setXMaximum( double x )
 {
-  xmax = x;
+  mXmax = x;
 }
 
 inline void QgsRectangle::setYMinimum( double y )
 {
-  ymin = y;
+  mYmin = y;
 }
 
 inline void QgsRectangle::setYMaximum( double y )
 {
-  ymax = y;
+  mYmax = y;
 }
 
 inline double QgsRectangle::xMaximum() const
 {
-  return xmax;
+  return mXmax;
 }
 
 inline double QgsRectangle::xMinimum() const
 {
-  return xmin;
+  return mXmin;
 }
 
 inline double QgsRectangle::yMaximum() const
 {
-  return ymax;
+  return mYmax;
 }
 
 inline double QgsRectangle::yMinimum() const
 {
-  return ymin;
+  return mYmin;
 }
 
 inline double QgsRectangle::width() const
 {
-  return xmax - xmin;
+  return mXmax - mXmin;
 }
 
 inline double QgsRectangle::height() const
 {
-  return ymax - ymin;
+  return mYmax - mYmin;
 }
 
 inline QgsPoint QgsRectangle::center() const
 {
-  return QgsPoint( xmin + width() / 2, ymin + height() / 2 );
+  return QgsPoint( mXmin + width() / 2, mYmin + height() / 2 );
 }
 inline std::ostream &operator << ( std::ostream &os, const QgsRectangle &r )
 {
