@@ -67,6 +67,7 @@ class QgsGeoNodeSourceSelect: public QDialog, private Ui::QgsGeonodeSourceSelect
     void loadGeonodeConnection();
     void filterChanged( const QString &text );
     void treeViewSelectionChanged( QModelIndex modelIndex );
+    void addButtonClicked();
 
     void populateConnectionList();
     void setConnectionListPosition();

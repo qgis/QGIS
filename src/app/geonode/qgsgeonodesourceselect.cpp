@@ -50,23 +50,24 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
 
   populateConnectionList();
 
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-  connect( btnNew, SIGNAL( clicked() ), this, SLOT( addConnectionsEntryList() ) );
-  connect( btnEdit, SIGNAL( clicked() ), this, SLOT( modifyConnectionsEntryList() ) );
-  connect( btnDelete, SIGNAL( clicked() ), this, SLOT( deleteConnectionsEntryList() ) );
-  connect( btnConnect, SIGNAL( clicked() ), this, SLOT( connectToGeonodeConnection() ) );
-  connect( btnSave, SIGNAL( clicked() ), this, SLOT( saveGeonodeConnection() ) );
-  connect( btnLoad, SIGNAL( clicked() ), this, SLOT( loadGeonodeConnection() ) );
-  connect( lineFilter, SIGNAL( textChanged( QString ) ), this, SLOT( filterChanged( QString ) ) );
-  connect( treeView, SIGNAL( clicked( QModelIndex ) ), this, SLOT( treeViewSelectionChanged( QModelIndex ) ) );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsGeoNodeSourceSelect::reject );
+  connect( btnNew, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::addConnectionsEntryList );
+  connect( btnEdit, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::modifyConnectionsEntryList );
+  connect( btnDelete, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::deleteConnectionsEntryList );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::connectToGeonodeConnection );
+  connect( btnSave, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::saveGeonodeConnection );
+  connect( btnLoad, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::loadGeonodeConnection );
+  connect( lineFilter, &QLineEdit::textChanged, this, &QgsGeoNodeSourceSelect::filterChanged );
+  connect( treeView, &QTreeView::clicked, this, &QgsGeoNodeSourceSelect::treeViewSelectionChanged );
+  connect( mAddButton, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::addButtonClicked );
 
   mItemDelegate = new QgsGeonodeItemDelegate( treeView );
   treeView->setItemDelegate( mItemDelegate );
 
   mModel = new QStandardItemModel();
-  mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( QStringLiteral( "Title" ) ) );
-  mModel->setHorizontalHeaderItem( MODEL_IDX_NAME, new QStandardItem( QStringLiteral( "Name" ) ) );
-  mModel->setHorizontalHeaderItem( MODEL_IDX_TYPE, new QStandardItem( QStringLiteral( "Service Type" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( tr( "Title" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_NAME, new QStandardItem( tr( "Name" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_TYPE, new QStandardItem( tr( "Service Type" ) ) );
 
   mModelProxy = new QSortFilterProxyModel( this );
   mModelProxy->setSourceModel( mModel );
@@ -274,18 +275,40 @@ void QgsGeoNodeSourceSelect::filterChanged( const QString &text )
 void QgsGeoNodeSourceSelect::treeViewSelectionChanged( QModelIndex modelIndex )
 {
   qDebug() << "Treeview clicked";
-  int row = modelIndex.row();
-  QString uuid = mModel->item( row, 0 )->data( Qt::UserRole + 1 ).toString();
-  QString layerName = mModel->item( row, 0 )->text();
-  qDebug() << layerName;
+  mAddButton->setEnabled( true );
+}
 
-  QgsGeoNodeConnection connection( cmbConnections->currentText() );
-  QString wmsURL = connection.wmsUrl( uuid );
-  qDebug() << wmsURL;
+void QgsGeoNodeSourceSelect::addButtonClicked()
+{
+  qDebug() << "Add button clicked";
+  //get selected entry in treeview
+  QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
+  if ( !currentIndex.isValid() )
+  {
+    qDebug() << "current index is invalid";
+    return;
+  }
 
-  QgsDataSourceUri uri = wmsURL;
-  uri.setParam( QStringLiteral( "layers" ), layerName );
-//  uri.setParam( QStringLiteral( "format" ), format );
+  QModelIndexList modelIndexList = treeView->selectionModel()->selectedRows();
+  qDebug() << "Number of index: " << modelIndexList.size();
+  for ( int i = 0; i < modelIndexList.size(); i++ )
+  {
+    //add a wms layer to the map
+    QModelIndex idx = mModelProxy->mapToSource( modelIndexList[i] );
+    if ( !idx.isValid() )
+    {
+      continue;
+    }
+    int row = idx.row();
 
-  emit addRasterLayer( uri.encodedUri(), layerName, QStringLiteral( "wms" ) );
+    qDebug() << "Model index row " << row;
+    QString uuid = mModel->item( row, 0 )->data( Qt::UserRole + 1 ).toString();
+    QString layerName = mModel->item( row, 0 )->text();
+    qDebug() << "Layer name: " << layerName;
+    qDebug() << "UUID: " << uuid;
+
+    QgsGeoNodeConnection connection( cmbConnections->currentText() );
+    QString wmsURL = connection.wmsUrl( uuid );
+    qDebug() << "wmsURL: " << wmsURL;
+  }
 }
