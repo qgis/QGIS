@@ -630,7 +630,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   sInstance = this;
-  Qgis::ogrRuntimeSupport();
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
   namSetup();

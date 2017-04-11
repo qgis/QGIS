@@ -30,25 +30,46 @@ class Qgis
   public:
     // Version constants
     //
-    // Version string
+    //! Version string
     static const QString QGIS_VERSION;
-    // Version number used for comparing versions using the "Check QGIS Version" function
+    //! Version number used for comparing versions using the "Check QGIS Version" function
     static const int QGIS_VERSION_INT;
-    // Release name
+    //! Release name
     static const QString QGIS_RELEASE_NAME;
-    // The development version
-    static const char* QGIS_DEV_VERSION;
-    // Gdal Version string at build/compile time
+    //! The development version
+    static const char *QGIS_DEV_VERSION;
+    //! Gdal Version string at build/compile time
     static QString GDAL_BUILD_VERSION;
+    //! Gdal major-version as integer (taken from Version string) at build/compile time
     static const int GDAL_BUILD_VERSION_MAJOR;
+    //! Gdal minor-version as integer (taken from Version string) at build/compile time
     static const int GDAL_BUILD_VERSION_MINOR;
+    //! Gdal revision-version as integer (taken from Version string) at build/compile time
     static const int GDAL_BUILD_VERSION_REV;
-    // Gdal Version string runtime
+    //! Gdal Version string runtime
     static QString GDAL_RUNTIME_VERSION;
+    //! Gdal major-version as integer (taken from Version string) while application is running
     static int GDAL_RUNTIME_VERSION_MAJOR;
+    //! Gdal minor-version as integer (taken from Version string) while application is running
     static int GDAL_RUNTIME_VERSION_MINOR;
+    //! Gdal revision-version as integer (taken from Version string) while application is running
     static int GDAL_RUNTIME_VERSION_REV;
-    static int GDAL_OGR_RUNTIME_SUPPORTED;
+    //! true or false the if Gdal runtime version is supported
+    static bool GDAL_OGR_RUNTIME_SUPPORTED;
+    /**
+     * Check if the gdal/ogr version running is supported
+     * @note
+     * For the moment, will be used to prevent QGIS3 from starting if running against a gdal 1 version
+     * In the future it may be useful when  gdal evolves in a way, that at the moment cannot be for seen.
+     * and it may be considered desirable that gdal 2 sub-versions no longer be supported
+     * This checking is done once in
+     * - QGis::ogrRuntimeSupport()
+     * and matches the conditions set in cmake (GDAL_VERSION_MAJOR)
+     * GDAL_RUNTIME_VERSION_MINOR and GDAL_RUNTIME_VERSION_REV
+      *  are available to check against the corresponding GDAL_BUILD_VERSION_ values.
+     * @return if the running version of gdal/ogr is supported
+     */
+    static bool ogrRuntimeSupport();
 
     // Enumerations
     //
