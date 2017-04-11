@@ -105,5 +105,9 @@ bool QgsBox3d::contains( const QgsPointV2 &p ) const
 {
   if ( !mBounds2d.contains( QgsPoint( p.x(), p.y() ) ) )
     return false;
-  return mZmin <= p.z() && p.z() <= mZmax;
+
+  if ( p.is3D() )
+    return mZmin <= p.z() && p.z() <= mZmax;
+  else
+    return true;
 }

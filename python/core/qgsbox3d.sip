@@ -177,6 +177,9 @@ class QgsBox3d
     bool contains( const QgsPointV2 &point ) const;
 %Docstring
  Returns true when box contains a point.
+
+ If the point is a 2D point (no z-coordinate), then the containment test
+ will be performed on the x/y extent of the box only.
  :rtype: bool
 %End
 

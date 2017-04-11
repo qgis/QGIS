@@ -173,6 +173,9 @@ class CORE_EXPORT QgsBox3d
 
     /**
      * Returns true when box contains a \a point.
+     *
+     * If the point is a 2D point (no z-coordinate), then the containment test
+     * will be performed on the x/y extent of the box only.
      */
     bool contains( const QgsPointV2 &point ) const;
 
