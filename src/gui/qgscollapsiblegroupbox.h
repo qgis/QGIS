@@ -68,7 +68,7 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
  * Basic class QgsCollapsibleGroupBoxBasic does not auto-save collapsed or checked state
  * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
  * Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
- * @note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
+ * \note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
  * bool collapsed, QString syncGroup, bool scrollOnExpand
  */
 
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     /**
      * Collapse or uncollapse this groupbox
      *
-     * @param collapse Will collapse on true and uncollapse on false
+     * \param collapse Will collapse on true and uncollapse on false
      */
     void setCollapsed( bool collapse );
 
@@ -173,8 +173,8 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
  * By default, it auto-saves only its collapsed state to the global settings based on the widget and it's parent names.
  * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
  * Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
- * @see basic class QgsCollapsibleGroupBoxBasic which does not auto-save states
- * @note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
+ * \see basic class QgsCollapsibleGroupBoxBasic which does not auto-save states
+ * \note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
  * bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
  */
 
@@ -204,7 +204,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     void setSaveCollapsedState( bool save ) { mSaveCollapsedState = save; }
 
     /** Set this to true to save/restore checked state
-     * @note only turn on mSaveCheckedState for groupboxes NOT used
+     * \note only turn on mSaveCheckedState for groupboxes NOT used
      * in multiple places or used as options for different parent objects */
     void setSaveCheckedState( bool save ) { mSaveCheckedState = save; }
     bool saveCollapsedState() { return mSaveCollapsedState; }

@@ -266,11 +266,11 @@ void QgsGrassModuleMultiParam::showAddRemoveButtons()
 
   // TODO: how to keep both buttons on the top?
   QPushButton *addButton = new QPushButton( QStringLiteral( "+" ), this );
-  connect( addButton, SIGNAL( clicked() ), this, SLOT( addRow() ) );
+  connect( addButton, &QAbstractButton::clicked, this, &QgsGrassModuleMultiParam::addRow );
   mButtonsLayout->addWidget( addButton, 0, Qt::AlignTop );
 
   QPushButton *removeButton = new QPushButton( QStringLiteral( "-" ), this );
-  connect( removeButton, SIGNAL( clicked() ), this, SLOT( removeRow() ) );
+  connect( removeButton, &QAbstractButton::clicked, this, &QgsGrassModuleMultiParam::removeRow );
   mButtonsLayout->addWidget( removeButton, 0, Qt::AlignTop );
 
   // Don't enable this, it makes the group box expanding
@@ -574,7 +574,7 @@ void QgsGrassModuleOption::addRow()
     QPushButton *button = new QPushButton( tr( "Browse" ) );
     l->addWidget( button );
     paramsLayout()->addItem( l );
-    connect( button, SIGNAL( clicked( bool ) ), this, SLOT( browse( bool ) ) );
+    connect( button, &QAbstractButton::clicked, this, &QgsGrassModuleOption::browse );
   }
   else
   {
@@ -872,10 +872,10 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
 
   lbl->setBuddy( mLayerPassword );
 
-  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
-           this, SLOT( updateQgisLayers() ) );
-  connect( QgsProject::instance(), SIGNAL( layersRemoved( QStringList ) ),
-           this, SLOT( updateQgisLayers() ) );
+  connect( QgsProject::instance(), &QgsProject::layersAdded,
+           this, &QgsGrassModuleGdalInput::updateQgisLayers );
+  connect( QgsProject::instance(), &QgsProject::layersRemoved,
+           this, &QgsGrassModuleGdalInput::updateQgisLayers );
 
   // Fill in QGIS layers
   updateQgisLayers();
@@ -1109,7 +1109,7 @@ QgsGrassModuleVectorField::QgsGrassModuleVectorField(
     if ( item )
     {
       mLayerInput = dynamic_cast<QgsGrassModuleInput *>( item );
-      connect( mLayerInput, SIGNAL( valueChanged() ), this, SLOT( updateFields() ) );
+      connect( mLayerInput, &QgsGrassModuleInput::valueChanged, this, &QgsGrassModuleVectorField::updateFields );
     }
   }
 
@@ -1228,7 +1228,7 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
   if ( item )
   {
     mLayerInput = dynamic_cast<QgsGrassModuleInput *>( item );
-    connect( mLayerInput, SIGNAL( valueChanged() ), SLOT( onLayerChanged() ) );
+    connect( mLayerInput, &QgsGrassModuleInput::valueChanged, this, &QgsGrassModuleSelection::onLayerChanged );
   }
 
   QHBoxLayout *l = new QHBoxLayout( this );
@@ -1238,11 +1238,11 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
   mModeComboBox = new QComboBox( this );
   mModeComboBox->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   mModeComboBox->addItem( tr( "Manual entry" ), Manual );
-  connect( mModeComboBox, SIGNAL( currentIndexChanged( int ) ), SLOT( onModeChanged() ) );
+  connect( mModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGrassModuleSelection::onModeChanged );
   l->addWidget( mModeComboBox );
 
-  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), SLOT( onLayerChanged() ) );
-  connect( QgsProject::instance(), SIGNAL( layersRemoved( QStringList ) ), SLOT( onLayerChanged() ) );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsGrassModuleSelection::onLayerChanged );
+  connect( QgsProject::instance(), &QgsProject::layersRemoved, this, &QgsGrassModuleSelection::onLayerChanged );
 
   // Fill in layer current fields
   onLayerChanged();
@@ -1480,8 +1480,8 @@ QgsGrassModuleFile::QgsGrassModuleFile(
   l->addWidget( mLineEdit );
   l->addWidget( mBrowseButton );
 
-  connect( mBrowseButton, SIGNAL( clicked() ),
-           this, SLOT( browse() ) );
+  connect( mBrowseButton, &QAbstractButton::clicked,
+           this, &QgsGrassModuleFile::browse );
 }
 
 QStringList QgsGrassModuleFile::options()

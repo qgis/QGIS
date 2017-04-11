@@ -84,11 +84,11 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
       QgsFeature &feat = const_cast<QgsFeature &>( *dialog->feature() );
       QgsFeatureAction *a = new QgsFeatureAction( action.name(), feat, mLayer, action.id(), -1, dialog );
       dialog->addAction( a );
-      connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
+      connect( a, &QAction::triggered, a, &QgsFeatureAction::execute );
 
       QAbstractButton *pb = dialog->findChild<QAbstractButton *>( action.name() );
       if ( pb )
-        connect( pb, SIGNAL( clicked() ), a, SLOT( execute() ) );
+        connect( pb, &QAbstractButton::clicked, a, &QgsFeatureAction::execute );
     }
   }
 
@@ -207,7 +207,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     dialog->setMode( QgsAttributeForm::AddFeatureMode );
     dialog->setEditCommandMessage( text() );
 
-    connect( dialog->attributeForm(), SIGNAL( featureSaved( const QgsFeature & ) ), this, SLOT( onFeatureSaved( const QgsFeature & ) ) );
+    connect( dialog->attributeForm(), &QgsAttributeForm::featureSaved, this, &QgsFeatureAction::onFeatureSaved );
 
     if ( !showModal )
     {

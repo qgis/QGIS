@@ -45,7 +45,7 @@ class QgsFilterLineEdit;
  * If the widget type is handled, it is valid.
  * It can perform a text search in the widget and highlight it in case of success.
  * This uses stylesheets.
- * @note added in 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
 {
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
   public:
 
     /** Constructor
-     * @param widget the widget used to search text into
+     * \param widget the widget used to search text into
      */
     explicit QgsSearchHighlightOptionWidget( QWidget *widget = 0 );
 
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
 
     /**
      * search for a text pattern and highlight the widget if the text is found
-     * @return true if the text pattern is found
+     * \returns true if the text pattern is found
      */
     bool searchHighlight( const QString &searchText );
 
@@ -114,17 +114,17 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
   public:
 
     /** Constructor
-     * @param settingsKey QgsSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
-     * @param parent parent object (owner)
-     * @param fl widget flags
-     * @param settings custom QgsSettings pointer
+     * \param settingsKey QgsSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
+     * \param parent parent object (owner)
+     * \param fl widget flags
+     * \param settings custom QgsSettings pointer
      */
     QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent = nullptr, Qt::WindowFlags fl = 0, QgsSettings *settings = nullptr );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.
-     * @param restoreUi Whether to restore the base ui at this time.
-     * @param title the window title
+     * \param restoreUi Whether to restore the base ui at this time.
+     * \param title the window title
      */
     void initOptionsBase( bool restoreUi = true, const QString &title = QString() );
 
@@ -133,7 +133,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
 
     /** Restore the base ui.
      * Sometimes useful to do at end of subclass's constructor.
-     * @param title the window title (it does not need to be defined if previously given to initOptionsBase();
+     * \param title the window title (it does not need to be defined if previously given to initOptionsBase();
      */
     void restoreOptionsBaseUi( const QString &title = QString() );
 
@@ -145,8 +145,8 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
 
     /**
      * searchText searches for a text in all the pages of the stacked widget and highlight the results
-     * @param text the text to search
-     * @note added in 3.0
+     * \param text the text to search
+     * \since QGIS 3.0
      */
     void searchText( const QString &text );
 
@@ -165,7 +165,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     /**
      * register widgets in the dialog to search for text in it
      * it is automatically called if a line edit has "mSearchLineEdit" as object name.
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     void registerTextSearchWidgets();
 

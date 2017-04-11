@@ -120,7 +120,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
   QFrame *mypAdvancedPushButtonFrame = new QFrame();
   QHBoxLayout *mypAdvancedPushButtonFrameLayout = new QHBoxLayout( mypAdvancedPushButtonFrame );
-  connect( &mAdvancedPushButton, SIGNAL( clicked() ), this, SLOT( switchAdvanced() ) );
+  connect( &mAdvancedPushButton, &QAbstractButton::clicked, this, &QgsGrassModuleStandardOptions::switchAdvanced );
   mypAdvancedPushButtonFrameLayout->addWidget( &mAdvancedPushButton );
   mypAdvancedPushButtonFrameLayout->addStretch( 1 );
 

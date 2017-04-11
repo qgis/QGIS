@@ -131,14 +131,14 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         /**
          * Dump for debug purpose
-         * @param indent How many characters to indent. Will increase by two with every of the recursive calls
-         * @return A string representing this rule
+         * \param indent How many characters to indent. Will increase by two with every of the recursive calls
+         * \returns A string representing this rule
          */
         QString dump( int indent = 0 ) const;
 
         /**
          * Return the attributes used to evaluate the expression of this rule
-         * @return A set of attribute names
+         * \returns A set of attribute names
          */
         QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
@@ -147,29 +147,29 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool needsGeometry() const;
 
-        //! @note available in python bindings as symbol2
+        //! \note available in Python bindings as symbol2
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 
-        //! @note not available in python bindings
+        //! \note not available in Python bindings
         QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) const;
 
-        //! @note added in 2.6
+        //! \since QGIS 2.6
         QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
 
         /**
          * Check if a given feature shall be rendered by this rule
          *
-         * @param f         The feature to test
-         * @param context   The context in which the rendering happens
-         * @return          True if the feature shall be rendered
+         * \param f         The feature to test
+         * \param context   The context in which the rendering happens
+         * \returns          True if the feature shall be rendered
          */
         bool isFilterOK( QgsFeature &f, QgsRenderContext *context = nullptr ) const;
 
         /**
          * Check if this rule applies for a given scale
-         * @param scale The scale to check. If set to 0, it will always return true.
+         * \param scale The scale to check. If set to 0, it will always return true.
          *
-         * @return If the rule will be evaluated at this scale
+         * \returns If the rule will be evaluated at this scale
          */
         bool isScaleOK( double scale ) const;
 
@@ -181,35 +181,35 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         /**
          * A filter that will check if this rule applies
-         * @return An expression
+         * \returns An expression
          */
         QgsExpression *filter() const { return mFilter; }
 
         /**
          * A filter that will check if this rule applies
-         * @return An expression
+         * \returns An expression
          */
         QString filterExpression() const { return mFilterExp; }
 
         /**
          * A human readable description for this rule
          *
-         * @return Description
+         * \returns Description
          */
         QString description() const { return mDescription; }
 
         /**
          * Returns if this rule is active
          *
-         * @return True if the rule is active
+         * \returns True if the rule is active
          */
         bool active() const { return mIsActive; }
 
         //! Unique rule identifier (for identification of rule within renderer)
-        //! @note added in 2.6
+        //! \since QGIS 2.6
         QString ruleKey() const { return mRuleKey; }
         //! Override the assigned rule key (should be used just internally by rule-based renderer)
-        //! @note added in 2.6
+        //! \since QGIS 2.6
         void setRuleKey( const QString &key ) { mRuleKey = key; }
 
         //! set a new symbol (or NULL). Deletes old symbol.
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * Set the minimum denominator for which this rule shall apply.
          * E.g. 1000 if it shall be evaluated between 1:1000 and 1:100'000
          * Set to 0 to disable the minimum check
-         * @param scaleMinDenom The minimum scale denominator for this rule
+         * \param scaleMinDenom The minimum scale denominator for this rule
          */
         void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
 
@@ -228,27 +228,27 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * Set the maximum denominator for which this rule shall apply.
          * E.g. 100'000 if it shall be evaluated between 1:1000 and 1:100'000
          * Set to 0 to disable the maximum check
-         * @param scaleMaxDenom maximum scale denominator for this rule
+         * \param scaleMaxDenom maximum scale denominator for this rule
          */
         void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
 
         /**
          * Set the expression used to check if a given feature shall be rendered with this rule
          *
-         * @param filterExp An expression
+         * \param filterExp An expression
          */
         void setFilterExpression( const QString &filterExp );
 
         /**
          * Set a human readable description for this rule
          *
-         * @param description Description
+         * \param description Description
          */
         void setDescription( const QString &description ) { mDescription = description; }
 
         /**
          * Sets if this rule is active
-         * @param state Determines if the rule should be activated or deactivated
+         * \param state Determines if the rule should be activated or deactivated
          */
         void setActive( bool state ) { mIsActive = state; }
 
@@ -271,16 +271,16 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QSet<int> collectZLevels();
 
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
-        //! @note not available in python bindings
+        //! \note not available in Python bindings
         void setNormZLevels( const QMap<int, int> &zLevelsToNormLevels );
 
         /**
          * Render a given feature, will recursively call subclasses and only render if the constraints apply.
          *
-         * @param featToRender The feature to render
-         * @param context      The rendering context
-         * @param renderQueue  The rendering queue to which the feature should be added
-         * @return             The result of the rendering. In explicit if the feature is added to the queue or
+         * \param featToRender The feature to render
+         * \param context      The rendering context
+         * \param renderQueue  The rendering queue to which the feature should be added
+         * \returns             The result of the rendering. In explicit if the feature is added to the queue or
          *                     the reason for not rendering the feature.
          */
         RenderResult renderFeature( FeatureToRender &featToRender, QgsRenderContext &context, RenderQueue &renderQueue );
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
 
         /** Returns which legend keys match the feature
-         * @note added in QGIS 2.14
+         * \since QGIS 2.14
          */
         QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
 
@@ -302,38 +302,38 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         /**
          * Stop a rendering process. Used to clean up the internal state of this rule
          *
-         * @param context The rendering context
+         * \param context The rendering context
          */
         void stopRender( QgsRenderContext &context );
 
         /**
          * Create a rule from an XML definition
          *
-         * @param ruleElem  The XML rule element
-         * @param symbolMap Symbol map
+         * \param ruleElem  The XML rule element
+         * \param symbolMap Symbol map
          *
-         * @return A new rule
+         * \returns A new rule
          */
         static Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap );
 
         /**
          * Return all children rules of this rule
          *
-         * @return A list of rules
+         * \returns A list of rules
          */
         RuleList &children() { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
-         * @return A list of descendant rules
+         * \returns A list of descendant rules
          */
         RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
 
         /**
          * The parent rule
          *
-         * @return Parent rule
+         * \returns Parent rule
          */
         Rule *parent() { return mParent; }
 
@@ -356,20 +356,20 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         Rule *takeChildAt( int i );
 
         //! Try to find a rule given its unique key
-        //! @note added in 2.6
+        //! \since QGIS 2.6
         Rule *findRuleByKey( const QString &key );
 
         /**
          * Sets if this rule is an ELSE rule
          *
-         * @param iselse If true, this rule is an ELSE rule
+         * \param iselse If true, this rule is an ELSE rule
          */
         void setIsElse( bool iselse );
 
         /**
          * Check if this rule is an ELSE rule
          *
-         * @return True if this rule is an else rule
+         * \returns True if this rule is an else rule
          */
         bool isElse() { return mElseRule; }
 
@@ -466,8 +466,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     static void refineRuleScales( Rule *initialRule, QList<int> scales );
 
     //! creates a QgsRuleBasedRenderer from an existing renderer.
-    //! @note added in 2.5
-    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    //! \since QGIS 2.5
+    //! \returns a new renderer if the conversion was possible, otherwise 0.
     static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology

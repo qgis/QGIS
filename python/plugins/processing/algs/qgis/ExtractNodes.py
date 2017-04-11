@@ -46,13 +46,19 @@ class ExtractNodes(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'extract_nodes.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extract nodes')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry tools')
 
+    def name(self):
+        return 'extractnodes'
+
+    def displayName(self):
+        return self.tr('Extract nodes')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON,
@@ -61,7 +67,7 @@ class ExtractNodes(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Nodes'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
 
         fields = layer.fields()

@@ -26,7 +26,11 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import (QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsWkbTypes,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -43,10 +47,22 @@ class HubLines(GeoAlgorithm):
     SPOKE_FIELD = 'SPOKE_FIELD'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Hub lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector analysis tools')
+
+    def name(self):
+        return 'hublines'
+
+    def displayName(self):
+        return self.tr('Hub lines')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.HUBS,
                                           self.tr('Hub layer')))
         self.addParameter(ParameterTableField(self.HUB_FIELD,
@@ -59,9 +75,9 @@ class HubLines(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, feedback):
-        layerHub = dataobjects.getObjectFromUri(
+        layerHub = dataobjects.getLayerFromString(
             self.getParameterValue(self.HUBS))
-        layerSpoke = dataobjects.getObjectFromUri(
+        layerSpoke = dataobjects.getLayerFromString(
             self.getParameterValue(self.SPOKES))
 
         fieldHub = self.getParameterValue(self.HUB_FIELD)

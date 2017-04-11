@@ -36,7 +36,9 @@ from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDi
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QKeySequence
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import (QgsApplication,
+                       QgsProcessingAlgorithm,
+                       QgsSettings)
 from qgis.gui import QgsMessageBar
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -48,7 +50,6 @@ from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.WrongModelException import WrongModelException
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -109,7 +110,7 @@ class ModelerDialog(BASE, WIDGET):
                 if text in ModelerParameterDefinitionDialog.paramTypes:
                     self.addInputOfType(text, event.pos())
                 else:
-                    alg = algList.getAlgorithm(text)
+                    alg = QgsApplication.processingRegistry().algorithmById(text)
                     if alg is not None:
                         self._addAlgorithm(alg.getCopy(), event.pos())
                 event.accept()
@@ -184,7 +185,7 @@ class ModelerDialog(BASE, WIDGET):
             item = items[0]
             if isinstance(item, TreeAlgorithmItem):
                 mimeData = QMimeData()
-                mimeData.setText(item.alg.commandLineName())
+                mimeData.setText(item.alg.id())
             return mimeData
 
         self.algorithmTree.mimeData = _mimeDataAlgorithm
@@ -229,8 +230,8 @@ class ModelerDialog(BASE, WIDGET):
 
         if alg is not None:
             self.alg = alg
-            self.textGroup.setText(alg.group)
-            self.textName.setText(alg.name)
+            self.textGroup.setText(alg._group)
+            self.textName.setText(alg.displayName())
             self.repaintModel()
 
         else:
@@ -268,9 +269,6 @@ class ModelerDialog(BASE, WIDGET):
             evt.accept()
 
     def editHelp(self):
-        if self.alg.provider is None:
-            # Might happen if model is opened from modeler dialog
-            self.alg.provider = QgsApplication.processingRegistry().providerById('model')
         alg = self.alg.getCopy()
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
@@ -283,9 +281,6 @@ class ModelerDialog(BASE, WIDGET):
             self.bar.pushMessage("", "Model doesn't contain any algorithm and/or parameter and can't be executed", level=QgsMessageBar.WARNING, duration=5)
             return
 
-        if self.alg.provider is None:
-            # Might happen if model is opened from modeler dialog
-            self.alg.provider = QgsApplication.processingRegistry().providerById('model')
         alg = self.alg.getCopy()
         dlg = AlgorithmDialog(alg)
         dlg.exec_()
@@ -405,7 +400,7 @@ class ModelerDialog(BASE, WIDGET):
         svg.setFileName(filename)
         svg.setSize(QSize(totalRect.width(), totalRect.height()))
         svg.setViewBox(svgRect)
-        svg.setTitle(self.alg.name)
+        svg.setTitle(self.alg.displayName())
 
         painter = QPainter(svg)
         self.scene.render(painter, svgRect, totalRect)
@@ -437,8 +432,8 @@ class ModelerDialog(BASE, WIDGET):
                 self, self.tr('Warning'), self.tr('Please enter group and model names before saving')
             )
             return
-        self.alg.name = str(self.textName.text())
-        self.alg.group = str(self.textGroup.text())
+        self.alg._name = str(self.textName.text())
+        self.alg._group = str(self.textGroup.text())
         if self.alg.descriptionFile is not None and not saveAs:
             filename = self.alg.descriptionFile
         else:
@@ -481,8 +476,8 @@ class ModelerDialog(BASE, WIDGET):
                 alg = ModelerAlgorithm.fromFile(filename)
                 self.alg = alg
                 self.alg.setModelerView(self)
-                self.textGroup.setText(alg.group)
-                self.textName.setText(alg.name)
+                self.textGroup.setText(alg._group)
+                self.textName.setText(alg._name)
                 self.repaintModel()
 
                 self.view.centerOn(0, 0)
@@ -553,7 +548,7 @@ class ModelerDialog(BASE, WIDGET):
     def addAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = algList.getAlgorithm(item.alg.commandLineName())
+            alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
             self._addAlgorithm(alg.getCopy())
 
     def _addAlgorithm(self, alg, pos=None):
@@ -603,43 +598,39 @@ class ModelerDialog(BASE, WIDGET):
         self.algorithmTree.clear()
         text = str(self.searchBox.text())
         search_strings = text.split(' ')
-        allAlgs = algList.algs
-        for provider_id in list(allAlgs.keys()):
-            name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
-            if not ProcessingConfig.getSetting(name):
+        for provider in QgsApplication.processingRegistry().providers():
+            if not provider.isActive():
                 continue
             groups = {}
-            algs = list(allAlgs[provider_id].values())
 
             # Add algorithms
-            for alg in algs:
-                if not alg.showInModeler:
+            for alg in provider.algorithms():
+                if alg.flags() & QgsProcessingAlgorithm.FlagHideFromModeler:
                     continue
-                if alg.commandLineName() == self.alg.commandLineName():
+                if alg.id() == self.alg.id():
                     continue
 
-                item_text = [alg.name.lower()]
-                item_text.extend(alg.tags.split(','))
+                item_text = [alg.displayName().lower()]
+                item_text.extend(alg.tags())
 
                 show = not search_strings or all(
                     any(part in t for t in item_text)
                     for part in search_strings)
 
                 if show:
-                    if alg.group in groups:
-                        groupItem = groups[alg.group]
+                    if alg.group() in groups:
+                        groupItem = groups[alg.group()]
                     else:
                         groupItem = QTreeWidgetItem()
-                        name = alg.i18n_group or alg.group
+                        name = alg.group()
                         groupItem.setText(0, name)
                         groupItem.setToolTip(0, name)
-                        groups[alg.group] = groupItem
+                        groups[alg.group()] = groupItem
                     algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
 
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
-                provider = QgsApplication.processingRegistry().providerById(provider_id)
                 providerItem.setText(0, provider.name())
                 providerItem.setToolTip(0, provider.name())
                 providerItem.setIcon(0, provider.icon())
@@ -659,7 +650,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
     def __init__(self, alg):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
-        icon = alg.getIcon()
+        icon = alg.icon()
         name = alg.displayName()
         self.setIcon(0, icon)
         self.setToolTip(0, name)

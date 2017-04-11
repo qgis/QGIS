@@ -29,7 +29,9 @@ __revision__ = '$Format:%H$'
 import sys
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsFeature, QgsField
+from qgis.core import (QgsFeature,
+                       QgsField,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -54,10 +56,22 @@ class FieldsPyculator(GeoAlgorithm):
 
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Advanced Python field calculator')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'advancedpythonfieldcalculator'
+
+    def displayName(self):
+        return self.tr('Advanced Python field calculator')
+
+    def defineCharacteristics(self):
         self.type_names = [self.tr('Integer'),
                            self.tr('Float'),
                            self.tr('String')]
@@ -87,7 +101,7 @@ class FieldsPyculator(GeoAlgorithm):
         globalExpression = self.getParameterValue(self.GLOBAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         fields = layer.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',

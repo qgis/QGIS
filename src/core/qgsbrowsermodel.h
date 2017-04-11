@@ -115,13 +115,13 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     /** Return index of item with given path. It only searches in currently fetched
      * items, i.e. it does not fetch children.
-     * @param path item path
-     * @param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
+     * \param path item path
+     * \param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
      *        item with the longest match from start with path (to get as close/deep as possible to deleted item).
-     * @return model index, invalid if item not found */
+     * \returns model index, invalid if item not found */
     QModelIndex findPath( const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
-    //! @note not available in python bindings
+    //! \note not available in Python bindings
     static QModelIndex findPath( QAbstractItemModel *model, const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     void connectItem( QgsDataItem *item );
@@ -145,15 +145,15 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     /**
      * Adds a directory to the favorites group.
-     * @note added in QGIS 3.0
-     * @see removeFavorite()
+     * \since QGIS 3.0
+     * \see removeFavorite()
      */
     void addFavoriteDirectory( const QString &directory );
 
     /**
      * Removes a favorite directory from its corresponding model index.
-     * @note added in QGIS 3.0
-     * @see addFavoriteDirectory()
+     * \since QGIS 3.0
+     * \see addFavoriteDirectory()
      */
     void removeFavorite( const QModelIndex &index );
 

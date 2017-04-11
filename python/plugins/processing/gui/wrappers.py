@@ -40,7 +40,8 @@ from qgis.core import (
     QgsWkbTypes,
     QgsSettings,
     QgsProject,
-    QgsMapLayer
+    QgsMapLayer,
+    QgsProcessingUtils
 )
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -519,13 +520,11 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                 return MultipleInputPanel(datatype=dataobjects.TYPE_FILE)
             else:
                 if self.param.datatype == dataobjects.TYPE_RASTER:
-                    options = dataobjects.getRasterLayers(sorting=False)
-                elif self.param.datatype == dataobjects.TYPE_VECTOR_ANY:
-                    options = dataobjects.getVectorLayers(sorting=False)
-                elif self.param.datatype == dataobjects.TYPE_TABLE:
-                    options = dataobjects.getTables(sorting=False)
+                    options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+                elif self.param.datatype in (dataobjects.TYPE_VECTOR_ANY, dataobjects.TYPE_TABLE):
+                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 else:
-                    options = dataobjects.getVectorLayers([self.param.datatype], sorting=False)
+                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.datatype], False)
                 opts = [getExtendedLayerName(opt) for opt in options]
                 return MultipleInputPanel(opts)
         elif self.dialogType == DIALOG_BATCH:
@@ -539,13 +538,11 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
     def refresh(self):
         if self.param.datatype != dataobjects.TYPE_FILE:
             if self.param.datatype == dataobjects.TYPE_RASTER:
-                options = dataobjects.getRasterLayers(sorting=False)
-            elif self.param.datatype == dataobjects.TYPE_VECTOR_ANY:
-                options = dataobjects.getVectorLayers(sorting=False)
-            elif self.param.datatype == dataobjects.TYPE_TABLE:
-                options = dataobjects.getTables(sorting=False)
+                options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+            elif self.param.datatype in (dataobjects.TYPE_VECTOR_ANY, dataobjects.TYPE_TABLE):
+                options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
             else:
-                options = dataobjects.getVectorLayers([self.param.datatype], sorting=False)
+                options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.datatype], False)
             opts = [getExtendedLayerName(opt) for opt in options]
             self.widget.updateForOptions(opts)
 
@@ -568,13 +565,11 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                 return self.param.setValue(self.widget.selectedoptions)
             else:
                 if self.param.datatype == dataobjects.TYPE_RASTER:
-                    options = dataobjects.getRasterLayers(sorting=False)
-                elif self.param.datatype == dataobjects.TYPE_VECTOR_ANY:
-                    options = dataobjects.getVectorLayers(sorting=False)
-                elif self.param.datatype == dataobjects.TYPE_TABLE:
-                    options = dataobjects.getTables(sorting=False)
+                    options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+                elif self.param.datatype in (dataobjects.TYPE_VECTOR_ANY, dataobjects.TYPE_TABLE):
+                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 else:
-                    options = dataobjects.getVectorLayers([self.param.datatype], sorting=False)
+                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.datatype], False)
                 return [options[i] for i in self.widget.selectedoptions]
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getText()
@@ -955,7 +950,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
     def setLayer(self, layer):
         if isinstance(layer, str):
-            layer = dataobjects.getObjectFromUri(_resolveLayers(layer))
+            layer = dataobjects.getLayerFromString(_resolveLayers(layer))
         self.widget.setLayer(layer)
 
     def setValue(self, value):
@@ -1123,7 +1118,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
 
     def setLayer(self, layer):
         if isinstance(layer, str):
-            layer = dataobjects.getObjectFromUri(_resolveLayers(layer))
+            layer = dataobjects.getLayerFromString(_resolveLayers(layer))
         self._layer = layer
         self.refreshItems()
 

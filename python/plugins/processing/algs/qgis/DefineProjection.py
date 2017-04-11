@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.core import QgsCoordinateReferenceSystem
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsApplication)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -50,10 +51,22 @@ class DefineProjection(GeoAlgorithm):
     #def getIcon(self):
     #    return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Define current projection')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'definecurrentprojection'
+
+    def displayName(self):
+        return self.tr('Define current projection')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterCrs(self.CRS, 'Output CRS'))
@@ -62,7 +75,7 @@ class DefineProjection(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         fileName = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(fileName)
+        layer = dataobjects.getLayerFromString(fileName)
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
 
         provider = layer.dataProvider()

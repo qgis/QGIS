@@ -20,7 +20,6 @@ from __future__ import print_function
 from builtins import str
 from builtins import object
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -38,10 +37,10 @@ from qgis.PyQt.QtGui import QCursor
 
 from qgis.utils import iface
 from qgis.core import (QgsMessageLog,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingProvider)
 
 import processing
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -51,7 +50,6 @@ from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
-from processing.core.alglist import algList
 
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
@@ -64,87 +62,40 @@ from processing.preconfigured.PreconfiguredAlgorithmProvider import Preconfigure
 
 
 class Processing(object):
-
-    providers = []
-
-    # Same structure as algs in algList
-    actions = {}
-
-    # All the registered context menu actions for the toolbox
-    contextMenuActions = []
-
-    @staticmethod
-    def algs():
-        """Use this method to get algorithms for wps4server.
-        """
-        return algList.algs
-
-    @staticmethod
-    def addProvider(provider, updateList=True):
-        """Use this method to add algorithms from external providers.
-        """
-
-        if provider.id() in [p.id() for p in QgsApplication.processingRegistry().providers()]:
-            return
-        try:
-            provider.initializeSettings()
-            Processing.providers.append(provider)
-            ProcessingConfig.readSettings()
-            provider.loadAlgorithms()
-            Processing.actions[provider.id()] = provider.actions
-            Processing.contextMenuActions.extend(provider.contextMenuActions)
-            algList.addProvider(provider)
-        except:
-            ProcessingLog.addToLog(
-                ProcessingLog.LOG_ERROR,
-                Processing.tr('Could not load provider: {0}\n{0}').format(
-                    provider.name(), traceback.format_exc()
-                )
-            )
-            Processing.removeProvider(provider)
-
-    @staticmethod
-    def removeProvider(provider):
-        """Use this method to remove a provider.
-
-        This method should be called when unloading a plugin that
-        contributes a provider.
-        """
-        try:
-            provider.unload()
-            for p in Processing.providers:
-                if p.id() == provider.id():
-                    Processing.providers.remove(p)
-            algList.removeProvider(provider.id())
-            if provider.id() in Processing.actions:
-                del Processing.actions[provider.id()]
-            for act in provider.contextMenuActions:
-                Processing.contextMenuActions.remove(act)
-        except:
-            # This try catch block is here to avoid problems if the
-            # plugin with a provider is unloaded after the Processing
-            # framework itself has been unloaded. It is a quick fix
-            # before I find out how to properly avoid that.
-            pass
+    BASIC_PROVIDERS = []
 
     @staticmethod
     def activateProvider(providerOrName, activate=True):
-        provider_id = providerOrName.id() if isinstance(providerOrName, AlgorithmProvider) else providerOrName
-        name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
-        ProcessingConfig.setSettingValue(name, activate)
-        algList.providerUpdated.emit(provider_id)
+        provider_id = providerOrName.id() if isinstance(providerOrName, QgsProcessingProvider) else providerOrName
+        provider = QgsApplication.processingRegistry().providerById(provider_id)
+        try:
+            provider.setActive(True)
+            provider.refreshAlgorithms()
+        except:
+            # provider could not be activated
+            QgsMessageLog.logMessage(Processing.tr('Error: Provider {0} could not be activated\n').format(provider_id),
+                                     Processing.tr("Processing"))
 
     @staticmethod
     def initialize():
-        if "model" in [p.id() for p in Processing.providers]:
+        if "model" in [p.id() for p in QgsApplication.processingRegistry().providers()]:
             return
         # Add the basic providers
-        for c in AlgorithmProvider.__subclasses__():
-            Processing.addProvider(c())
+        for c in QgsProcessingProvider.__subclasses__():
+            p = c()
+            Processing.BASIC_PROVIDERS.append(p)
+            QgsApplication.processingRegistry().addProvider(p)
         # And initialize
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
+
+    @staticmethod
+    def deinitialize():
+        for p in Processing.BASIC_PROVIDERS:
+            QgsApplication.processingRegistry().removeProvider(p)
+
+        Processing.BASIC_PROVIDERS = []
 
     @staticmethod
     def addScripts(folder):
@@ -156,9 +107,8 @@ class Processing(object):
         for script in scripts:
             script.allowEdit = False
             script._icon = provider._icon
-            script.provider = provider
         provider.externalAlgs.extend(scripts)
-        Processing.reloadProvider("qgis")
+        provider.refreshAlgorithms()
 
     @staticmethod
     def removeScripts(folder):
@@ -167,43 +117,19 @@ class Processing(object):
             path = os.path.dirname(alg.descriptionFile)
             if path == folder:
                 provider.externalAlgs.remove(alg)
-        Processing.reloadProvider("qgis")
-
-    @staticmethod
-    def updateAlgsList():
-        """Call this method when there has been any change that
-        requires the list of algorithms to be created again from
-        algorithm providers. Use reloadProvider() for a more fine-grained
-        update.
-        """
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        for p in Processing.providers:
-            Processing.reloadProvider(p.id())
-        QApplication.restoreOverrideCursor()
-
-    @staticmethod
-    def reloadProvider(provider_id):
-        algList.reloadProvider(provider_id)
-
-    @staticmethod
-    def getAlgorithm(name):
-        return algList.getAlgorithm(name)
-
-    @staticmethod
-    def getObject(uri):
-        """Returns the QGIS object identified by the given URI."""
-        return dataobjects.getObjectFromUri(uri)
+        provider.refreshAlgorithms()
 
     @staticmethod
     def runAlgorithm(algOrName, onFinish, *args, **kwargs):
         if isinstance(algOrName, GeoAlgorithm):
             alg = algOrName
         else:
-            alg = Processing.getAlgorithm(algOrName)
+            alg = QgsApplication.processingRegistry().algorithmById(algOrName)
         if alg is None:
             # fix_print_with_import
             print('Error: Algorithm not found\n')
-            QgsMessageLog.logMessage(Processing.tr('Error: Algorithm {0} not found\n').format(algOrName), Processing.tr("Processing"))
+            QgsMessageLog.logMessage(Processing.tr('Error: Algorithm {0} not found\n').format(algOrName),
+                                     Processing.tr("Processing"))
             return
         alg = alg.getCopy()
 
@@ -221,11 +147,13 @@ class Processing(object):
                     continue
                 # fix_print_with_import
                 print('Error: Wrong parameter value %s for parameter %s.' % (value, name))
-                QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name), Processing.tr("Processing"))
+                QgsMessageLog.logMessage(
+                    Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name),
+                    Processing.tr("Processing"))
                 ProcessingLog.addToLog(
                     ProcessingLog.LOG_ERROR,
                     Processing.tr('Error in {0}. Wrong parameter value {1} for parameter {2}.').format(
-                        alg.name, value, name
+                        alg.name(), value, name
                     )
                 )
                 return
@@ -235,18 +163,21 @@ class Processing(object):
                     if not param.setDefaultValue():
                         # fix_print_with_import
                         print('Error: Missing parameter value for parameter %s.' % param.name)
-                        QgsMessageLog.logMessage(Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name), Processing.tr("Processing"))
+                        QgsMessageLog.logMessage(
+                            Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name),
+                            Processing.tr("Processing"))
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
                             Processing.tr('Error in {0}. Missing parameter value for parameter {1}.').format(
-                                alg.name, param.name)
+                                alg.name(), param.name)
                         )
                         return
         else:
             if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
                 # fix_print_with_import
                 print('Error: Wrong number of parameters')
-                QgsMessageLog.logMessage(Processing.tr('Error: Wrong number of parameters'), Processing.tr("Processing"))
+                QgsMessageLog.logMessage(Processing.tr('Error: Wrong number of parameters'),
+                                         Processing.tr("Processing"))
                 processing.algorithmHelp(algOrName)
                 return
             i = 0
@@ -255,7 +186,8 @@ class Processing(object):
                     if not param.setValue(args[i]):
                         # fix_print_with_import
                         print('Error: Wrong parameter value: ' + str(args[i]))
-                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value: ') + str(args[i]), Processing.tr("Processing"))
+                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value: ') + str(args[i]),
+                                                 Processing.tr("Processing"))
                         return
                     i = i + 1
 
@@ -264,7 +196,8 @@ class Processing(object):
                     if not output.setValue(args[i]):
                         # fix_print_with_import
                         print('Error: Wrong output value: ' + str(args[i]))
-                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong output value: ') + str(args[i]), Processing.tr("Processing"))
+                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong output value: ') + str(args[i]),
+                                                 Processing.tr("Processing"))
                         return
                     i = i + 1
 
@@ -272,13 +205,16 @@ class Processing(object):
         if msg:
             # fix_print_with_import
             print('Unable to execute algorithm\n' + str(msg))
-            QgsMessageLog.logMessage(Processing.tr('Unable to execute algorithm\n{0}').format(msg), Processing.tr("Processing"))
+            QgsMessageLog.logMessage(Processing.tr('Unable to execute algorithm\n{0}').format(msg),
+                                     Processing.tr("Processing"))
             return
 
         if not alg.checkInputCRS():
             print('Warning: Not all input layers use the same CRS.\n' +
                   'This can cause unexpected results.')
-            QgsMessageLog.logMessage(Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'), Processing.tr("Processing"))
+            QgsMessageLog.logMessage(
+                Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'),
+                Processing.tr("Processing"))
 
         # Don't set the wait cursor twice, because then when you
         # restore it, it will still be a wait cursor.
@@ -296,14 +232,15 @@ class Processing(object):
         if kwargs is not None and "feedback" in list(kwargs.keys()):
             feedback = kwargs["feedback"]
         elif iface is not None:
-            feedback = MessageBarProgress(alg.name)
+            feedback = MessageBarProgress(alg.displayName())
 
         ret = execute(alg, feedback)
         if ret:
             if onFinish is not None:
                 onFinish(alg, feedback)
         else:
-            QgsMessageLog.logMessage(Processing.tr("There were errors executing the algorithm."), Processing.tr("Processing"))
+            QgsMessageLog.logMessage(Processing.tr("There were errors executing the algorithm."),
+                                     Processing.tr("Processing"))
 
         if overrideCursor:
             QApplication.restoreOverrideCursor()

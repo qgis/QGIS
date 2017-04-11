@@ -22,6 +22,7 @@
 #include <QVector>
 
 #include "qgsrasterrenderer.h"
+#include "qgscolorrampshader.h"
 
 class QColor;
 class QDomElement;
@@ -33,10 +34,32 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
   public:
 
-    //! Renderer owns color array
-    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, QColor *colorArray, int nColors, const QVector<QString> &labels = QVector<QString>() );
-    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, QRgb *colorArray, int nColors, const QVector<QString> &labels = QVector<QString>() );
-    ~QgsPalettedRasterRenderer();
+    //! Properties of a single value class
+    struct Class
+    {
+      //! Constructor for Class
+      Class( int value, const QColor &color = QColor(), const QString &label = QString() )
+        : value( value )
+        , color( color )
+        , label( label )
+      {}
+
+      //! Value
+      int value;
+
+      //! Color to render value
+      QColor color;
+      //! Label for value
+      QString label;
+    };
+
+    //! Map of value to class properties
+    typedef QList< Class > ClassData;
+
+    /**
+     * Constructor for QgsPalettedRasterRenderer.
+     */
+    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes );
 
     //! QgsPalettedRasterRenderer cannot be copied. Use clone() instead.
     QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer & ) = delete;
@@ -49,16 +72,19 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     //! Returns number of colors
-    int nColors() const { return mNColors; }
-    //! Returns copy of color array (caller takes ownership)
-    QColor *colors() const;
+    int nColors() const { return mClassData.size(); }
+
+    /**
+     * Returns a map of value to classes (colors) used by the renderer.
+     */
+    ClassData classes() const;
 
     /** Return optional category label
-     *  @note added in 2.1 */
-    QString label( int idx ) const { return mLabels.value( idx ); }
+     * \since QGIS 2.1 */
+    QString label( int idx ) const;
 
     /** Set category label
-     *  @note added in 2.1 */
+     *  \since QGIS 2.1 */
     void setLabel( int idx, const QString &label );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
@@ -67,20 +93,66 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     QList<int> usesBands() const override;
 
+    /**
+     * Set the source color \a ramp. Ownership is transferred to the renderer.
+     * \since QGIS 3.0
+     * \see sourceColorRamp()
+     */
+    void setSourceColorRamp( QgsColorRamp *ramp );
+
+    /** Get the source color ramp
+     * \since QGIS 3.0
+     * \see setSourceColorRamp()
+     */
+    QgsColorRamp *sourceColorRamp() const;
+
+    /**
+     * Converts a raster color \a table to paletted renderer class data.
+     * \since QGIS 3.0
+     */
+    static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
+
+    /**
+     * Converts a \a string containing a color table or class data to to paletted renderer class data.
+     * \since QGIS 3.0
+     * \see classDataFromFile()
+     * \see classDataToString()
+     */
+    static QgsPalettedRasterRenderer::ClassData classDataFromString( const QString &string );
+
+    /**
+     * Opens a color table file and returns corresponding paletted renderer class data.
+     * \since QGIS 3.0
+     * \see classDataFromString()
+     */
+    static QgsPalettedRasterRenderer::ClassData classDataFromFile( const QString &path );
+
+    /**
+     * Converts classes to a string representation, using the .clr/gdal color table file format.
+     * \since QGIS 3.0
+     * \see classDataFromString()
+     */
+    static QString classDataToString( const QgsPalettedRasterRenderer::ClassData &classes );
+
+    /**
+     * Generates class data from a \a raster, for the specified \a bandNumber. An optional
+     * color \a ramp can be specified to automatically assign colors from the ramp.
+     * \since QGIS 3.0
+     */
+    static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = nullptr,
+        QgsRasterBlockFeedback *feedback = nullptr );
+
   private:
 
-    /** Returns copy of premultiplied rgb array (caller takes ownership)
-     */
-    QRgb *rgbArray() const;
-
     int mBand;
-    //! Premultiplied color array
-    QRgb *mColors = nullptr;
-    //! Number of colors
-    int mNColors;
-    //! Optional category labels, size of vector may be < mNColors
-    QVector<QString> mLabels;
+    ClassData mClassData;
 
+    //! Source color ramp
+    std::unique_ptr<QgsColorRamp> mSourceColorRamp;
+
+    //! Premultiplied color map
+    QMap< int, QRgb > mColors;
+    void updateArrays();
 };
 
 #endif // QGSPALETTEDRASTERRENDERER_H

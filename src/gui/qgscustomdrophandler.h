@@ -23,7 +23,7 @@
  * Abstract base class that may be implemented to handle new types of data to be dropped in QGIS.
  * Implementations will be used when a QgsMimeDataUtils::Uri has layerType equal to "custom",
  * and the providerKey is equal to key() returned by the implementation.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsCustomDropHandler
 {

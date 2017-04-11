@@ -1,124 +1,142 @@
-/***************************************************************************
-                          qgsactionmanager.sip
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsactionmanager.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
- These classes store and control the management and execution of actions
- associated with a particular Qgis layer. Actions are defined to be
- external programs that are run with user-specified inputs that can
- depend on the contents of layer attributes.
 
-                             -------------------
-    begin                : Oct 24 2004
-    copyright            : (C) 2004 by Gavin Macaulay
-    email                : gavin at macaulay dot co dot nz
- ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/** \class QgsActionManager
- * \brief Storage and management of actions associated with Qgis layer
- * attributes.
- */
+
+
 
 class QgsActionManager
 {
+
 %TypeHeaderCode
-#include <qgsactionmanager.h>
+#include "qgsactionmanager.h"
 %End
   public:
-    //! Constructor
     QgsActionManager( QgsVectorLayer *layer );
+%Docstring
+Constructor
+%End
 
-    //! Destructor
-    virtual ~QgsActionManager();
+    QUuid addAction( QgsAction::ActionType type, const QString &name, const QString &command, bool capture = false );
+%Docstring
+ Add an action with the given name and action details.
+ Will happily have duplicate names and actions. If
+ capture is true, when running the action using doAction(),
+ any stdout from the process will be captured and displayed in a
+ dialog box.
+ :rtype: QUuid
+%End
 
-    /** Add an action with the given name and action details.
-     * Will happily have duplicate names and actions. If
-     * capture is true, when running the action using doAction(),
-     * any stdout from the process will be captured and displayed in a
-     * dialog box.
-     */
-    QUuid addAction(QgsAction::ActionType type, const QString& name, const QString& command, bool capture = false );
+    QUuid addAction( QgsAction::ActionType type, const QString &name, const QString &command, const QString &icon, bool capture = false );
+%Docstring
+ Add an action with the given name and action details.
+ Will happily have duplicate names and actions. If
+ capture is true, when running the action using doAction(),
+ any stdout from the process will be captured and displayed in a
+ dialog box.
+ :rtype: QUuid
+%End
 
-    /** Add an action with the given name and action details.
-     * Will happily have duplicate names and actions. If
-     * capture is true, when running the action using doAction(),
-     * any stdout from the process will be captured and displayed in a
-     * dialog box.
-     */
-    QUuid addAction(QgsAction::ActionType type, const QString& name, const QString& command, const QString& icon, bool capture = false );
+    void addAction( const QgsAction &action );
+%Docstring
+ Add a new action to this list.
+%End
 
-    /**
-     * Add a new action to this list.
-     */
-    void addAction( const QgsAction& action );
+    void removeAction( const QUuid &actionId );
+%Docstring
+ Remove an action by its id.
 
-    /**
-     * Remove an action by its id.
-     *
-     * @note Added in QGIS 3.0
-     */
-    void removeAction( const QUuid& actionId );
+.. versionadded:: 3.0
+%End
 
-    /** Does the given values. defaultValueIndex is the index of the
-     *  field to be used if the action has a $currfield placeholder.
-     *  @note available in python bindings as doActionFeature
-     */
-    void doAction(const QUuid& actionId, const QgsFeature& feature, int defaultValueIndex = 0 ) /PyName=doActionFeature/;
+    void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0 ) /PyName=doActionFeature/;
+%Docstring
+ Does the given action. defaultValueIndex is the index of the
+  field to be used if the action has a $currfield placeholder.
+.. note::
 
-    /** Does the action using the expression engine to replace any embedded expressions
-     * in the action definition.
-     * @param actionId action id
-     * @param feature feature to run action for
-     * @param context expression context to evaluate expressions under
-     */
-    void doAction( const QUuid& actionId, const QgsFeature& feature, const QgsExpressionContext& context );
+   available in Python bindings as doActionFeature
+%End
 
-    //! Removes all actions
+    void doAction( const QUuid &actionId, const QgsFeature &feature, const QgsExpressionContext &context );
+%Docstring
+ Does the action using the expression engine to replace any embedded expressions
+ in the action definition.
+ \param actionId action id
+ \param feature feature to run action for
+ \param context expression context to evaluate expressions under
+%End
+
     void clearActions();
+%Docstring
+Removes all actions
+%End
 
-    /**
-     * Return a list of actions that are available in the given action scope.
-     * If no action scope is provided, all actions will be returned.
-     */
-    QList<QgsAction> actions( const QString& actionScope = QString() ) const;
+    QList<QgsAction> actions( const QString &actionScope = QString() ) const;
+%Docstring
+ Return a list of actions that are available in the given action scope.
+ If no action scope is provided, all actions will be returned.
 
-    //! Return the layer
-    QgsVectorLayer* layer() const;
+.. versionadded:: 3.0
+ :rtype: list of QgsAction
+%End
 
-    //! Writes the actions out in XML format
-    bool writeXml( QDomNode& layer_node ) const;
+    QgsVectorLayer *layer() const;
+%Docstring
+Return the layer
+ :rtype: QgsVectorLayer
+%End
 
-    //! Reads the actions in in XML format
-    bool readXml( const QDomNode& layer_node );
+    bool writeXml( QDomNode &layer_node ) const;
+%Docstring
+Writes the actions out in XML format
+ :rtype: bool
+%End
 
-    /**
-     * Get an action by its id.
-     *
-     * @note Added in QGIS 3.0
-     */
-    QgsAction action( const QUuid& id );
+    bool readXml( const QDomNode &layer_node );
+%Docstring
+Reads the actions in in XML format
+ :rtype: bool
+%End
 
-    /**
-     * Each scope can have a default action. This will be saved in the project
-     * file.
-     *
-     * @note Added in QGIS 3.0
-     */
-    void setDefaultAction( const QString& actionScope, const QUuid& actionId );
+    QgsAction action( const QUuid &id );
+%Docstring
+ Get an action by its id.
 
-    /**
-     * Each scope can have a default action. This will be saved in the project
-     * file.
-     *
-     * @note Added in QGIS 3.0
-     */
-    QgsAction defaultAction( const QString& actionScope );
+.. versionadded:: 3.0
+ :rtype: QgsAction
+%End
+
+    void setDefaultAction( const QString &actionScope, const QUuid &actionId );
+%Docstring
+ Each scope can have a default action. This will be saved in the project
+ file.
+
+.. versionadded:: 3.0
+%End
+
+    QgsAction defaultAction( const QString &actionScope );
+%Docstring
+ Each scope can have a default action. This will be saved in the project
+ file.
+
+.. versionadded:: 3.0
+ :rtype: QgsAction
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsactionmanager.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

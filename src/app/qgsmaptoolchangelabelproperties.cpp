@@ -66,7 +66,7 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
                               mCurrentLabel.pos.labelFont,
                               labeltext, nullptr );
 
-    connect( &d, SIGNAL( applied() ), this, SLOT( dialogPropertiesApplied() ) );
+    connect( &d, &QgsLabelPropertyDialog::applied, this, &QgsMapToolChangeLabelProperties::dialogPropertiesApplied );
     if ( d.exec() == QDialog::Accepted )
     {
       applyChanges( d.changedProperties() );

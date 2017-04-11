@@ -27,7 +27,12 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsApplication,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -43,24 +48,35 @@ class SplitLinesWithLines(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
+    def flags(self):
         # this algorithm is deprecated - use SplitWithLines instead
-        self.showInToolbox = False
+        return QgsProcessingAlgorithm.FlagDeprecated
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector overlay tools')
+
+    def name(self):
+        return 'splitlineswithlines'
+
+    def displayName(self):
+        return self.tr('Split lines with lines')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Split lines with lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT_A,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
                                           self.tr('Split layer'), [dataobjects.TYPE_VECTOR_LINE]))
-
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Split'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, feedback):
-        layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))
-        layerB = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_B))
+        layerA = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_A))
+        layerB = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_B))
 
         sameLayer = self.getParameterValue(self.INPUT_A) == self.getParameterValue(self.INPUT_B)
         fieldList = layerA.fields()

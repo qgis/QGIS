@@ -44,7 +44,7 @@ QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas *canvas )
   mCrs = QgsGrass::crs( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), error );
   QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
   setTransform();
-  connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( setTransform() ) );
+  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGrassRegionEdit::setTransform );
 }
 
 QgsGrassRegionEdit::~QgsGrassRegionEdit()
@@ -202,7 +202,7 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
   setupUi( this );
   setAttribute( Qt::WA_DeleteOnClose );
 
-  connect( mButtonBox, SIGNAL( clicked( QAbstractButton * ) ), SLOT( buttonClicked( QAbstractButton * ) ) );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsGrassRegion::buttonClicked );
 
   //mPlugin = plugin;
   mInterface = iface;
@@ -229,20 +229,20 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
   mResRadio->setChecked( true );
   radioChanged();
 
-  connect( mRadioGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( radioChanged() ) );
+  connect( mRadioGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGrassRegion::radioChanged );
 
   // Connect entries
-  connect( mNorth, SIGNAL( editingFinished() ), this, SLOT( northChanged() ) );
-  connect( mSouth, SIGNAL( editingFinished() ), this, SLOT( southChanged() ) );
-  connect( mEast, SIGNAL( editingFinished() ), this, SLOT( eastChanged() ) );
-  connect( mWest, SIGNAL( editingFinished() ), this, SLOT( westChanged() ) );
-  connect( mNSRes, SIGNAL( editingFinished() ), this, SLOT( NSResChanged() ) );
-  connect( mEWRes, SIGNAL( editingFinished() ), this, SLOT( EWResChanged() ) );
-  connect( mRows, SIGNAL( editingFinished() ), this, SLOT( rowsChanged() ) );
-  connect( mCols, SIGNAL( editingFinished() ), this, SLOT( colsChanged() ) );
+  connect( mNorth, &QLineEdit::editingFinished, this, &QgsGrassRegion::northChanged );
+  connect( mSouth, &QLineEdit::editingFinished, this, &QgsGrassRegion::southChanged );
+  connect( mEast, &QLineEdit::editingFinished, this, &QgsGrassRegion::eastChanged );
+  connect( mWest, &QLineEdit::editingFinished, this, &QgsGrassRegion::westChanged );
+  connect( mNSRes, &QLineEdit::editingFinished, this, &QgsGrassRegion::NSResChanged );
+  connect( mEWRes, &QLineEdit::editingFinished, this, &QgsGrassRegion::EWResChanged );
+  connect( mRows, &QLineEdit::editingFinished, this, &QgsGrassRegion::rowsChanged );
+  connect( mCols, &QLineEdit::editingFinished, this, &QgsGrassRegion::colsChanged );
 
-  connect( QgsGrass::instance(), SIGNAL( regionChanged() ), SLOT( reloadRegion() ) );
-  connect( mCanvas, SIGNAL( mapToolSet( QgsMapTool * ) ), SLOT( canvasMapToolSet( QgsMapTool * ) ) );
+  connect( QgsGrass::instance(), &QgsGrass::regionChanged, this, &QgsGrassRegion::reloadRegion );
+  connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsGrassRegion::canvasMapToolSet );
 }
 
 QgsGrassRegion::~QgsGrassRegion()
@@ -312,7 +312,7 @@ void QgsGrassRegion::mapsetChanged()
   if ( QgsGrass::activeMode() )
   {
     mRegionEdit = new QgsGrassRegionEdit( mCanvas );
-    connect( mRegionEdit, SIGNAL( captureEnded() ), this, SLOT( onCaptureFinished() ) );
+    connect( mRegionEdit, &QgsGrassRegionEdit::captureEnded, this, &QgsGrassRegion::onCaptureFinished );
 
     QString error;
     mCrs = QgsGrass::crs( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), error );

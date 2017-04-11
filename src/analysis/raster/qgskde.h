@@ -34,7 +34,7 @@ class QgsFeature;
  * \class QgsKernelDensityEstimation
  * \ingroup analysis
  * Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class ANALYSIS_EXPORT QgsKernelDensityEstimation
 {
@@ -110,22 +110,22 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     /**
      * Prepares the output file for writing and setups up the surface calculation. This must be called
      * before adding features via addFeature().
-     * @see addFeature()
-     * @see finalise()
+     * \see addFeature()
+     * \see finalise()
      */
     Result prepare();
 
     /**
      * Adds a single feature to the KDE surface. prepare() must be called before adding features.
-     * @see prepare()
-     * @see finalise()
+     * \see prepare()
+     * \see finalise()
      */
     Result addFeature( const QgsFeature &feature );
 
     /**
      * Finalises the output file. Must be called after adding all features via addFeature().
-     * @see prepare()
-     * @see addFeature()
+     * \see prepare()
+     * \see addFeature()
      */
     Result finalise();
 

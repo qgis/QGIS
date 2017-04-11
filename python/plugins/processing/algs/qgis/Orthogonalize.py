@@ -25,7 +25,7 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterNumber
@@ -41,11 +41,25 @@ class Orthogonalize(GeoAlgorithm):
     DISTANCE_THRESHOLD = 'DISTANCE_THRESHOLD'
     ANGLE_TOLERANCE = 'ANGLE_TOLERANCE'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Orthogonalize')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('rectangle,perpendicular,right,angles,square,quadrilateralise')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('rectangle,perpendicular,right,angles,square,quadrilateralise').split(',')
+
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'orthogonalize'
+
+    def displayName(self):
+        return self.tr('Orthogonalize')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE,
                                                                    dataobjects.TYPE_VECTOR_POLYGON]))
@@ -62,7 +76,7 @@ class Orthogonalize(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Orthogonalized')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         max_iterations = self.getParameterValue(self.MAX_ITERATIONS)
         angle_tolerance = self.getParameterValue(self.ANGLE_TOLERANCE)

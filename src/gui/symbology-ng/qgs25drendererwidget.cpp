@@ -71,14 +71,14 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
   mShadowSizeWidget->setValue( mRenderer->shadowSpread() );
   mWallExpositionShading->setChecked( mRenderer->wallShadingEnabled() );
 
-  connect( mAngleWidget, SIGNAL( valueChanged( int ) ), this, SLOT( updateRenderer() ) );
-  connect( mHeightWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( updateRenderer() ) );
-  connect( mWallColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( updateRenderer() ) );
-  connect( mRoofColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( updateRenderer() ) );
-  connect( mShadowColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( updateRenderer() ) );
-  connect( mShadowEnabledWidget, SIGNAL( toggled( bool ) ), this, SLOT( updateRenderer() ) );
-  connect( mShadowSizeWidget, SIGNAL( valueChanged( double ) ), this, SLOT( updateRenderer() ) );
-  connect( mWallExpositionShading, SIGNAL( toggled( bool ) ), this, SLOT( updateRenderer() ) );
+  connect( mAngleWidget, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &Qgs25DRendererWidget::updateRenderer );
+  connect( mHeightWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &Qgs25DRendererWidget::updateRenderer );
+  connect( mWallColorButton, &QgsColorButton::colorChanged, this, &Qgs25DRendererWidget::updateRenderer );
+  connect( mRoofColorButton, &QgsColorButton::colorChanged, this, &Qgs25DRendererWidget::updateRenderer );
+  connect( mShadowColorButton, &QgsColorButton::colorChanged, this, &Qgs25DRendererWidget::updateRenderer );
+  connect( mShadowEnabledWidget, &QGroupBox::toggled, this, &Qgs25DRendererWidget::updateRenderer );
+  connect( mShadowSizeWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &Qgs25DRendererWidget::updateRenderer );
+  connect( mWallExpositionShading, &QAbstractButton::toggled, this, &Qgs25DRendererWidget::updateRenderer );
 }
 
 QgsFeatureRenderer *Qgs25DRendererWidget::renderer()

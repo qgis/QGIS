@@ -27,7 +27,7 @@ class QgsLineSymbol;
 
 /** \ingroup core
  * Composer item for polylines.
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
 {
@@ -36,13 +36,13 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
   public:
 
     /** Constructor
-     * @param c parent composition
+     * \param c parent composition
      */
     QgsComposerPolyline( QgsComposition *c );
 
     /** Constructor
-     * @param polyline nodes of the shape
-     * @param c parent composition
+     * \param polyline nodes of the shape
+     * \param c parent composition
      */
     QgsComposerPolyline( const QPolygonF &polyline, QgsComposition *c );
 

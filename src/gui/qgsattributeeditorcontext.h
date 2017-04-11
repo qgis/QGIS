@@ -105,28 +105,28 @@ class GUI_EXPORT QgsAttributeEditorContext
     inline RelationMode relationMode() const { return mRelationMode; }
 
     /** Returns the form mode.
-     * @see setFormMode()
+     * \see setFormMode()
      */
     inline FormMode formMode() const { return mFormMode; }
 
     /** Sets the form mode.
-     * @param mode form mode
-     * @see formMode()
-     * @note added in QGIS 2.16
+     * \param mode form mode
+     * \see formMode()
+     * \since QGIS 2.16
      */
     inline void setFormMode( FormMode mode ) { mFormMode = mode; }
 
     /** Returns true if the attribute editor should permit use of custom UI forms.
-     * @see setAllowCustomUi()
-     * @note added in QGIS 2.16
+     * \see setAllowCustomUi()
+     * \since QGIS 2.16
      */
     bool allowCustomUi() const { return mAllowCustomUi; }
 
     /** Sets whether the attribute editor should permit use of custom UI forms.
-     * @param allow set to true to allow custom UI forms, or false to disable them and use default generated
+     * \param allow set to true to allow custom UI forms, or false to disable them and use default generated
      * QGIS forms
-     * @see allowCustomUi()
-     * @note added in QGIS 2.16
+     * \see allowCustomUi()
+     * \since QGIS 2.16
      */
     void setAllowCustomUi( bool allow ) { mAllowCustomUi = allow; }
 

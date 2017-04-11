@@ -55,8 +55,8 @@ QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
 
   mFilter = new QgsGraduatedHistogramEventFilter( mPlot );
 
-  connect( mFilter, SIGNAL( mousePress( double ) ), this, SLOT( mousePress( double ) ) );
-  connect( mFilter, SIGNAL( mouseRelease( double ) ), this, SLOT( mouseRelease( double ) ) );
+  connect( mFilter, &QgsGraduatedHistogramEventFilter::mousePress, this, &QgsGraduatedHistogramWidget::mousePress );
+  connect( mFilter, &QgsGraduatedHistogramEventFilter::mouseRelease, this, &QgsGraduatedHistogramWidget::mouseRelease );
 
   mHistoPicker = new QwtPlotPicker( mPlot->canvas() );
   mHistoPicker->setTrackerMode( QwtPicker::ActiveOnly );

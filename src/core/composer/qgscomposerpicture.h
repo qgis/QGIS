@@ -72,19 +72,19 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Sets the source path of the image (may be svg or a raster format). Data defined
      * picture source may override this value. The path can either be a local path
      * or a remote (http) path.
-     * @param path path for the source image
-     * @see usePictureExpression
-     * @see picturePath
-     * @note added in QGIS 2.5
+     * \param path path for the source image
+     * \see usePictureExpression
+     * \see picturePath
+     * \since QGIS 2.5
      */
     void setPicturePath( const QString &path );
 
     /** Returns the path of the source image. Data defined picture source may override
      * this value. The path can either be a local path or a remote (http) path.
-     * @returns path for the source image
-     * @see usePictureExpression
-     * @see setPicturePath
-     * @note added in QGIS 2.5
+     * \returns path for the source image
+     * \see usePictureExpression
+     * \see setPicturePath
+     * \since QGIS 2.5
      */
     QString picturePath() const;
 
@@ -94,22 +94,22 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     void setSceneRect( const QRectF &rectangle ) override;
 
     /** Stores state in Dom element
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc is Dom document
+     * \param elem is Dom element corresponding to 'Composer' tag
+     * \param doc is Dom document
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is Dom document
+     * \param itemElem is Dom node corresponding to item tag
+     * \param doc is Dom document
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /** Returns the rotation used for drawing the picture within the item's frame
-     * @returns picture rotation in degrees
-     * @note added in 2.2
-     * @see setPictureRotation
-     * @see rotationMap
+     * \returns picture rotation in degrees
+     * \since QGIS 2.2
+     * \see setPictureRotation
+     * \see rotationMap
      */
     double pictureRotation() const { return mPictureRotation; }
 
@@ -117,138 +117,138 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * rotation.  If this is set then the picture will be rotated by the same
      * amount as the specified map object. This is useful especially for
      * syncing north arrows with a map item.
-     * @param composerMapId composer map id to sync rotation with
-     * @see setPictureRotation
-     * @see rotationMap
+     * \param composerMapId composer map id to sync rotation with
+     * \see setPictureRotation
+     * \see rotationMap
      */
     void setRotationMap( int composerMapId );
 
     /** Returns the id of the rotation map.  A value of -1 means map rotation is
      * disabled.  If this is set then the picture is rotated by the same amount
      * as the specified map object.
-     * @returns id of map object
-     * @see setRotationMap
-     * @see useRotationMap
+     * \returns id of map object
+     * \see setRotationMap
+     * \see useRotationMap
      */
     int rotationMap() const;
 
     /** True if the picture rotation is matched to a map item.
-     * @returns true if rotation map is in use
-     * @see rotationMap
-     * @see setRotationMap
+     * \returns true if rotation map is in use
+     * \see rotationMap
+     * \see setRotationMap
      */
     bool useRotationMap() const { return mRotationMap; }
 
     /**
      * Returns the mode used to align the picture to a map's North.
-     * @see setNorthMode()
-     * @see northOffset()
-     * @note added in QGIS 2.18
+     * \see setNorthMode()
+     * \see northOffset()
+     * \since QGIS 2.18
      */
     NorthMode northMode() const { return mNorthMode; }
 
     /**
      * Sets the mode used to align the picture to a map's North.
-     * @see northMode()
-     * @see setNorthOffset()
-     * @note added in QGIS 2.18
+     * \see northMode()
+     * \see setNorthOffset()
+     * \since QGIS 2.18
      */
     void setNorthMode( NorthMode mode );
 
     /**
      * Returns the offset added to the picture's rotation from a map's North.
-     * @see setNorthOffset()
-     * @see northMode()
-     * @note added in QGIS 2.18
+     * \see setNorthOffset()
+     * \see northMode()
+     * \since QGIS 2.18
      */
     double northOffset() const { return mNorthOffset; }
 
     /**
      * Sets the offset added to the picture's rotation from a map's North.
-     * @see northOffset()
-     * @see setNorthMode()
-     * @note added in QGIS 2.18
+     * \see northOffset()
+     * \see setNorthMode()
+     * \since QGIS 2.18
      */
     void setNorthOffset( double offset );
 
     /** Returns the resize mode used for drawing the picture within the composer
      * item's frame.
-     * @returns resize mode of picture
-     * @note added in 2.3
-     * @see setResizeMode
+     * \returns resize mode of picture
+     * \since QGIS 2.3
+     * \see setResizeMode
      */
     ResizeMode resizeMode() const { return mResizeMode; }
 
     /** Sets the picture's anchor point, which controls how it is placed
      * within the picture item's frame.
-     * @param anchor anchor point for picture
-     * @note added in 2.3
-     * @see pictureAnchor
+     * \param anchor anchor point for picture
+     * \since QGIS 2.3
+     * \see pictureAnchor
      */
     void setPictureAnchor( QgsComposerItem::ItemPositionMode anchor );
 
     /** Returns the picture's current anchor, which controls how it is placed
      * within the picture item's frame.
-     * @returns anchor point for picture
-     * @note added in 2.3
-     * @see setPictureAnchor
+     * \returns anchor point for picture
+     * \since QGIS 2.3
+     * \see setPictureAnchor
      */
     ItemPositionMode pictureAnchor() const { return mPictureAnchor; }
 
     /** Returns the fill color used for parametrized SVG files.
-     * @see setSvgFillColor()
-     * @see svgStrokeColor()
-     * @note added in QGIS 2.14.1
+     * \see setSvgFillColor()
+     * \see svgStrokeColor()
+     * \since QGIS 2.14.1
      */
     QColor svgFillColor() const { return mSvgFillColor; }
 
     /** Sets the fill color used for parametrized SVG files.
-     * @param color fill color.
-     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * \param color fill color.
+     * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * @see svgFillColor()
-     * @see setSvgStrokeColor()
-     * @note added in QGIS 2.14.1
+     * \see svgFillColor()
+     * \see setSvgStrokeColor()
+     * \since QGIS 2.14.1
      */
     void setSvgFillColor( const QColor &color );
 
     /** Returns the stroke color used for parametrized SVG files.
-     * @see setSvgStrokeColor()
-     * @see svgFillColor()
-     * @note added in QGIS 2.14.1
+     * \see setSvgStrokeColor()
+     * \see svgFillColor()
+     * \since QGIS 2.14.1
      */
     QColor svgStrokeColor() const { return mSvgStrokeColor; }
 
     /** Sets the stroke color used for parametrized SVG files.
-     * @param color stroke color.
-     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * \param color stroke color.
+     * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * @see svgStrokelColor()
-     * @see setSvgFillColor()
-     * @note added in QGIS 2.14.1
+     * \see svgStrokelColor()
+     * \see setSvgFillColor()
+     * \since QGIS 2.14.1
      */
     void setSvgStrokeColor( const QColor &color );
 
     /** Returns the stroke width (in mm) used for parametrized SVG files.
-     * @see setSvgStrokeWidth()
-     * @see svgStrokeColor()
-     * @note added in QGIS 2.14.1
+     * \see setSvgStrokeWidth()
+     * \see svgStrokeColor()
+     * \since QGIS 2.14.1
      */
     double svgStrokeWidth() const { return mSvgStrokeWidth; }
 
     /** Sets the stroke width used for parametrized SVG files.
-     * @param width stroke width in mm
-     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * \param width stroke width in mm
+     * \note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * @see svgStrokeWidth()
-     * @see setSvgStrokeColor()
-     * @note added in QGIS 2.14.1
+     * \see svgStrokeWidth()
+     * \see setSvgStrokeColor()
+     * \since QGIS 2.14.1
      */
     void setSvgStrokeWidth( double width );
 
     /** Returns the current picture mode (image format).
-     * @returns picture mode
-     * @note added in 2.3
+     * \returns picture mode
+     * \since QGIS 2.3
      */
     Mode mode() const { return mMode; }
 
@@ -256,28 +256,28 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Sets the picture rotation within the item bounds. This does not affect
      * the item's frame, only the way the picture is drawn within the item.
-     * @param r rotation in degrees clockwise
-     * @see pictureRotation
-     * @note added in 2.2
+     * \param r rotation in degrees clockwise
+     * \see pictureRotation
+     * \since QGIS 2.2
      */
     virtual void setPictureRotation( double r );
 
     /** Sets the resize mode used for drawing the picture within the item bounds.
-     * @param mode ResizeMode to use for image file
-     * @note added in 2.3
-     * @see resizeMode
+     * \param mode ResizeMode to use for image file
+     * \since QGIS 2.3
+     * \see resizeMode
      */
     virtual void setResizeMode( ResizeMode mode );
 
     /** Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.
-     * @param context expression context for evaluating data defined picture sources
-     * @note added in 2.3
+     * \param context expression context for evaluating data defined picture sources
+     * \since QGIS 2.3
      */
     void refreshPicture( const QgsExpressionContext *context = nullptr );
 
     /** Forces a recalculation of the picture's frame size
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     void recalculateSize();
 

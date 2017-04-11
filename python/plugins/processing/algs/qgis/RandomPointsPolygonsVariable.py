@@ -53,13 +53,19 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
     STRATEGY = 'STRATEGY'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random points inside polygons (variable)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+    def group(self):
+        return self.tr('Vector creation tools')
 
+    def name(self):
+        return 'randompointsinsidepolygonsvariable'
+
+    def displayName(self):
+        return self.tr('Random points inside polygons (variable)')
+
+    def defineCharacteristics(self):
         self.strategies = [self.tr('Points count'),
                            self.tr('Points density')]
 
@@ -75,7 +81,7 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.VECTOR))
         fieldName = self.getParameterValue(self.FIELD)
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))

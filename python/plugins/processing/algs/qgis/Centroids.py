@@ -45,20 +45,26 @@ class Centroids(GeoAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Centroids')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry tools')
 
+    def name(self):
+        return 'centroids'
+
+    def displayName(self):
+        return self.tr('Centroids')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Centroids'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 
         writer = self.getOutputFromName(

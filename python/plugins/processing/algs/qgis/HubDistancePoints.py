@@ -27,7 +27,13 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField, QgsGeometry, QgsDistanceArea, QgsFeature, QgsFeatureRequest, QgsWkbTypes
+from qgis.core import (QgsField,
+                       QgsGeometry,
+                       QgsDistanceArea,
+                       QgsFeature,
+                       QgsFeatureRequest,
+                       QgsWkbTypes,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -54,10 +60,22 @@ class HubDistancePoints(GeoAlgorithm):
              'Layer units'
              ]
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Distance to nearest hub (points)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector analysis tools')
+
+    def name(self):
+        return 'distancetonearesthubpoints'
+
+    def displayName(self):
+        return self.tr('Distance to nearest hub (points)')
+
+    def defineCharacteristics(self):
         self.units = [self.tr('Meters'),
                       self.tr('Feet'),
                       self.tr('Miles'),
@@ -76,9 +94,9 @@ class HubDistancePoints(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, feedback):
-        layerPoints = dataobjects.getObjectFromUri(
+        layerPoints = dataobjects.getLayerFromString(
             self.getParameterValue(self.POINTS))
-        layerHubs = dataobjects.getObjectFromUri(
+        layerHubs = dataobjects.getLayerFromString(
             self.getParameterValue(self.HUBS))
         fieldName = self.getParameterValue(self.FIELD)
 

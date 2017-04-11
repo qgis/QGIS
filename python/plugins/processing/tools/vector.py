@@ -495,7 +495,7 @@ def ogrConnectionString(uri):
     """
     ogrstr = None
 
-    layer = dataobjects.getObjectFromUri(uri, False)
+    layer = dataobjects.getLayerFromString(uri, False)
     if layer is None:
         return '"' + uri + '"'
     provider = layer.dataProvider().name()

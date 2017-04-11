@@ -66,7 +66,7 @@ void QgsColorWidgetWrapper::initWidget( QWidget *editor )
   }
 
   mColorButton->setShowNull( true );
-  connect( mColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( valueChanged() ) );
+  connect( mColorButton, &QgsColorButton::colorChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
 }
 
 bool QgsColorWidgetWrapper::valid() const

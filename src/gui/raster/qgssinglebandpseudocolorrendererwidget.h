@@ -65,7 +65,14 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     };
 
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
+
+    /** Generate labels from the values in the color map.
+     *  Skip labels which were manually edited (black text).
+     *  Text of generated labels is made gray
+     */
     void autoLabel();
+
+    //! Extract the unit out of the current labels and set the unit field.
     void setUnitFromLabels();
 
     QMenu *contextMenu = nullptr;

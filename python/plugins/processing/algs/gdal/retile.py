@@ -60,16 +60,19 @@ class retile(GdalAlgorithm):
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
     ALGO = ['near', 'bilinear', 'cubic', 'cubicspline', 'lanczos']
 
-    def commandLineName(self):
-        return "gdal:retile"
-
     def commandName(self):
         return "gdal_retile"
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Retile')
-        self.group, self.i18n_group = self.trAlgorithm('Raster miscellaneous')
+    def name(self):
+        return 'retile'
 
+    def displayName(self):
+        return self.tr('Retile')
+
+    def group(self):
+        return self.tr('Raster miscellaneous')
+
+    def defineCharacteristics(self):
         # Required parameters
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'),

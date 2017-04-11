@@ -56,12 +56,12 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     };
 
     /** Creates a new color ramp shader.
-     * @param minimumValue minimum value for the raster shader
-     * @param maximumValue maximum value for the raster shader
-     * @param type interpolation type used
-     * @param classificationMode method used to classify the color ramp shader
-     * @param colorRamp vector color ramp used to classify the color ramp shader
-     * @returns new QgsColorRampShader
+     * \param minimumValue minimum value for the raster shader
+     * \param maximumValue maximum value for the raster shader
+     * \param type interpolation type used
+     * \param classificationMode method used to classify the color ramp shader
+     * \param colorRamp vector color ramp used to classify the color ramp shader
+     * \returns new QgsColorRampShader
      */
     QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp = nullptr, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
 
@@ -112,14 +112,14 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void setColorRampType( QgsColorRampShader::Type colorRampType );
 
     /** Get the source color ramp
-     * @note added in QGIS 3.0
-     * @see setSourceColorRamp()
+     * \since QGIS 3.0
+     * \see setSourceColorRamp()
      */
     QgsColorRamp *sourceColorRamp() const;
 
     /** Set the source color ramp. Ownership is transferred to the renderer.
-     * @note added in QGIS 3.0
-     * @see sourceColorRamp()
+     * \since QGIS 3.0
+     * \see sourceColorRamp()
      */
     void setSourceColorRamp( QgsColorRamp *colorramp );
 
@@ -127,17 +127,17 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void setColorRampType( const QString &type );
 
     /** Classify color ramp shader
-     * @param classes number of classes
-     * @param band raster band used in classification (only used in quantile mode)
-     * @param extent extent used in classification (only used in quantile mode)
-     * @param input raster input used in classification (only used in quantile mode)
+     * \param classes number of classes
+     * \param band raster band used in classification (only used in quantile mode)
+     * \param extent extent used in classification (only used in quantile mode)
+     * \param input raster input used in classification (only used in quantile mode)
      */
     void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr );
 
     /** Classify color ramp shader
-     * @param band raster band used in classification (quantile mode only)
-     * @param extent extent used in classification (quantile mode only)
-     * @param input raster input used in classification (quantile mode only)
+     * \param band raster band used in classification (quantile mode only)
+     * \param extent extent used in classification (quantile mode only)
+     * \param input raster input used in classification (quantile mode only)
      */
     void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr );
 
@@ -157,13 +157,13 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     ClassificationMode classificationMode() const { return mClassificationMode; }
 
     /** Sets whether the shader should not render values out of range.
-     * @param clip set to true to clip values which are out of range.
-     * @see clip()
+     * \param clip set to true to clip values which are out of range.
+     * \see clip()
      */
     void setClip( bool clip ) { mClip = clip; }
 
     /** Returns whether the shader will clip values which are out of range.
-     * @see setClip()
+     * \see setClip()
      */
     bool clip() const { return mClip; }
 

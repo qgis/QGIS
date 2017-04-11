@@ -29,7 +29,10 @@ __revision__ = '$Format:%H$'
 
 from math import sqrt
 
-from qgis.core import QgsPoint, QgsGeometry, QgsWkbTypes
+from qgis.core import (QgsPoint,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsApplication)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -44,10 +47,22 @@ class DensifyGeometriesInterval(GeoAlgorithm):
     INTERVAL = 'INTERVAL'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Densify geometries given an interval')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'densifygeometriesgivenaninterval'
+
+    def displayName(self):
+        return self.tr('Densify geometries given an interval')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
@@ -57,7 +72,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 
         isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry

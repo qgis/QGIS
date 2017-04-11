@@ -26,15 +26,15 @@ class QgsSymbol;
  * The class stores information about one class/rule of a vector layer renderer in a unified way
  * that can be used by legend model for rendering of legend.
  *
- * @see QgsSymbolLegendNode
- * @note added in 2.6
+ * \see QgsSymbolLegendNode
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendSymbolItem
 {
   public:
     QgsLegendSymbolItem();
     //! Construct item. Does not take ownership of symbol (makes internal clone)
-    //! @note parentRuleKey added in 2.8
+    //! \since QGIS 2.8
     QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString() );
     ~QgsLegendSymbolItem();
     QgsLegendSymbolItem( const QgsLegendSymbolItem &other );
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     int level() const { return mLevel; }
 
     //! Key of the parent legend node. For legends with tree hierarchy
-    //! @note added in 2.8
+    //! \note Parameter parentRuleKey added in QGIS 2.8
     QString parentRuleKey() const { return mParentKey; }
 
     //! Set symbol of the item. Takes ownership of symbol.

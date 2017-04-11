@@ -54,15 +54,15 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   btnLoad->hide();
 
   mStatsButton = new QPushButton( tr( "&Update Statistics" ) );
-  connect( mStatsButton, SIGNAL( clicked() ), this, SLOT( updateStatistics() ) );
+  connect( mStatsButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::updateStatistics );
   mStatsButton->setEnabled( false );
 
   mAddButton = new QPushButton( tr( "&Add" ) );
-  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
+  connect( mAddButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::addClicked );
   mAddButton->setEnabled( false );
 
   mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
+  connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::buildQuery );
   mBuildQueryButton->setEnabled( false );
 
   if ( embedded )
@@ -95,7 +95,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
 
-  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+  connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged );
 
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work

@@ -39,12 +39,12 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
 
   QPushButton *nb = new QPushButton( tr( "&New" ) );
   buttonBox->addButton( nb, QDialogButtonBox::ActionRole );
-  connect( nb, SIGNAL( clicked() ), this, SLOT( restart() ) );
+  connect( nb, &QAbstractButton::clicked, this, &QgsMeasureDialog::restart );
 
   // Add a configuration button
   QPushButton *cb = new QPushButton( tr( "&Configuration" ) );
   buttonBox->addButton( cb, QDialogButtonBox::ActionRole );
-  connect( cb, SIGNAL( clicked() ), this, SLOT( openConfigTab() ) );
+  connect( cb, &QAbstractButton::clicked, this, &QgsMeasureDialog::openConfigTab );
 
   mMeasureArea = tool->measureArea();
   mTotal = 0.;
@@ -66,8 +66,8 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
 
   updateSettings();
 
-  connect( mUnitsCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( unitsChanged( int ) ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMeasureDialog::unitsChanged );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsMeasureDialog::reject );
   connect( mTool->canvas(), &QgsMapCanvas::destinationCrsChanged, this, &QgsMeasureDialog::crsChanged );
 
   groupBox->setCollapsed( true );
@@ -274,7 +274,16 @@ QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits ) c
 
   if ( convertUnits )
     distance = convertLength( distance, mDistanceUnits );
-  return QgsDistanceArea::formatDistance( distance, mDecimalPlaces, mDistanceUnits, baseUnit );
+
+  int decimals = mDecimalPlaces;
+  if ( mDistanceUnits == QgsUnitTypes::DistanceDegrees  && distance < 1 )
+  {
+    // special handling for degrees - because we can't use smaller units (eg m->mm), we need to make sure there's
+    // enough decimal places to show a usable measurement value
+    int minPlaces = qRound( log10( 1.0 / distance ) ) + 1;
+    decimals = qMax( decimals, minPlaces );
+  }
+  return QgsDistanceArea::formatDistance( distance, decimals, mDistanceUnits, baseUnit );
 }
 
 QString QgsMeasureDialog::formatArea( double area, bool convertUnits ) const

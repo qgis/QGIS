@@ -57,17 +57,17 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   expressionTree->sortByColumn( 0, Qt::AscendingOrder );
 
   expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( this, SIGNAL( expressionParsed( bool ) ), this, SLOT( setExpressionState( bool ) ) );
-  connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
-  connect( expressionTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
-           this, SLOT( currentChanged( const QModelIndex &, const QModelIndex & ) ) );
+  connect( this, &QgsExpressionBuilderWidget::expressionParsed, this, &QgsExpressionBuilderWidget::setExpressionState );
+  connect( expressionTree, &QWidget::customContextMenuRequested, this, &QgsExpressionBuilderWidget::showContextMenu );
+  connect( expressionTree->selectionModel(), &QItemSelectionModel::currentChanged,
+           this, &QgsExpressionBuilderWidget::currentChanged );
 
-  connect( btnLoadAll, SIGNAL( pressed() ), this, SLOT( loadAllValues() ) );
-  connect( btnLoadSample, SIGNAL( pressed() ), this, SLOT( loadSampleValues() ) );
+  connect( btnLoadAll, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::loadAllValues );
+  connect( btnLoadSample, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::loadSampleValues );
 
   Q_FOREACH ( QPushButton *button, mOperatorsGroupBox->findChildren<QPushButton *>() )
   {
-    connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
+    connect( button, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::operatorButtonClicked );
   }
 
   txtSearchEdit->setPlaceholderText( tr( "Search" ) );

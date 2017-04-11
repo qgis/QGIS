@@ -45,12 +45,19 @@ class SymmetricalDifference(GeoAlgorithm):
     OVERLAY = 'OVERLAY'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sym_difference.png'))
 
+    def group(self):
+        return self.tr('Vector overlay tools')
+
+    def name(self):
+        return 'symmetricaldifference'
+
+    def displayName(self):
+        return self.tr('Symmetrical difference')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Symmetrical difference')
-        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(self.OVERLAY,
@@ -59,9 +66,9 @@ class SymmetricalDifference(GeoAlgorithm):
                                     self.tr('Symmetrical difference')))
 
     def processAlgorithm(self, feedback):
-        layerA = dataobjects.getObjectFromUri(
+        layerA = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
-        layerB = dataobjects.getObjectFromUri(
+        layerB = dataobjects.getLayerFromString(
             self.getParameterValue(self.OVERLAY))
 
         geomType = QgsWkbTypes.multiType(layerA.wkbType())

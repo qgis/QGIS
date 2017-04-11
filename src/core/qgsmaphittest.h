@@ -30,7 +30,7 @@ class QgsExpression;
  * Class that runs a hit test with given map settings. Based on the hit test it returns which symbols
  * will be visible on the map - this is useful for content based legend.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsMapHitTest
 {
@@ -38,9 +38,9 @@ class CORE_EXPORT QgsMapHitTest
     //! Maps an expression string to a layer id
     typedef QMap<QString, QString> LayerFilterExpression;
 
-    //! @param settings Map settings used to evaluate symbols
-    //! @param polygon Polygon geometry to refine the hit test
-    //! @param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
+    //! \param settings Map settings used to evaluate symbols
+    //! \param polygon Polygon geometry to refine the hit test
+    //! \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
     QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const LayerFilterExpression &layerFilterExpression = LayerFilterExpression() );
 
     //! Constructor version used with only expressions to filter symbols (no extent or polygon intersection)
@@ -50,36 +50,36 @@ class CORE_EXPORT QgsMapHitTest
     void run();
 
     /** Tests whether a symbol is visible for a specified layer.
-     * @param symbol symbol to find
-     * @param layer vector layer
-     * @note added in QGIS 2.12
-     * @see legendKeyVisible()
+     * \param symbol symbol to find
+     * \param layer vector layer
+     * \since QGIS 2.12
+     * \see legendKeyVisible()
      */
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 
     /** Tests whether a given legend key is visible for a specified layer.
-     * @param ruleKey legend rule key
-     * @param layer vector layer
-     * @note added in QGIS 2.14
-     * @see symbolVisible()
+     * \param ruleKey legend rule key
+     * \param layer vector layer
+     * \since QGIS 2.14
+     * \see symbolVisible()
      */
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
 
   protected:
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     typedef QSet<QString> SymbolSet;
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     typedef QMap<QgsVectorLayer *, SymbolSet> HitTest;
 
     /** Runs test for visible symbols within a layer
-     * @param vl vector layer
-     * @param usedSymbols set for storage of visible symbols
-     * @param usedSymbolsRuleKey set of storage of visible legend rule keys
-     * @param context render context
-     * @note added in QGIS 2.12
-     * @note not available in Python bindings
+     * \param vl vector layer
+     * \param usedSymbols set for storage of visible symbols
+     * \param usedSymbolsRuleKey set of storage of visible legend rule keys
+     * \param context render context
+     * \since QGIS 2.12
+     * \note not available in Python bindings
      */
     void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context );
 

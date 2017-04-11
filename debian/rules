@@ -278,7 +278,7 @@ override_dh_auto_install:
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon-512x512.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-mime.png
 
 	# Install MIME type icon

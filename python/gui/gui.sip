@@ -37,6 +37,7 @@
 %Include qgscodeeditorcss.sip
 %End
 %Include qgscharacterselectdialog.sip
+%Include qgscheckablecombobox.sip
 %Include qgscolorbrewercolorrampdialog.sip
 %Include qgscolorbutton.sip
 %Include qgscolorrampbutton.sip

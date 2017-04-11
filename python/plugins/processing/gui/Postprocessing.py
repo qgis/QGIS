@@ -70,14 +70,14 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
                     else:
                         name = out.description
                     dataobjects.load(out.value, name, alg.crs,
-                                     RenderingStyles.getStyle(alg.commandLineName(),
+                                     RenderingStyles.getStyle(alg.id(),
                                                               out.name))
             except Exception:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                        "Error loading result layer:\n" + traceback.format_exc())
                 wrongLayers.append(out.description)
         elif isinstance(out, OutputHTML):
-            resultsList.addResult(alg.getIcon(), out.description, out.value)
+            resultsList.addResult(alg.icon(), out.description, out.value)
         i += 1
 
     QApplication.restoreOverrideCursor()

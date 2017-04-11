@@ -103,55 +103,55 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     void setMapset();
 
     /** Execute SQL statement
-     *   @param sql */
+     *   \param sql */
     void executeSql( const QString &sql, QString &error );
 
     /** Update attributes
-     *   @param cat
-     *   @param index ields  index */
+     *   \param cat
+     *   \param index ields  index */
     void changeAttributeValue( int cat, const QgsField &field, const QVariant &value, QString &error );
 
     /** Insert new attributes to the table (it does not check if attributes already exists)
-     *   @param cat */
+     *   \param cat */
     void insertAttributes( int cat, const QgsFeature &feature, QString &error );
 
     /** Restore previously deleted table record using data from mAttributes, if exists.
      *  If there the cat is not in mAttributes, nothing is inserted (to keep previous state).
-     *   @param cat */
+     *   \param cat */
     void reinsertAttributes( int cat, QString &error );
 
     /** Update existing record by values from feature.
-     *  @param cat
-     *  @param nullValues override all values, if false, only non empty values are used for update
+     *  \param cat
+     *  \param nullValues override all values, if false, only non empty values are used for update
      */
     void updateAttributes( int cat, QgsFeature &feature, QString &error, bool nullValues = false );
 
     /** Delete attributes from the table
-     *   @param cat
+     *   \param cat
      */
     void deleteAttribute( int cat, QString &error );
 
     /** Check if a database row exists
-     *   @param cat
-     *   @param error set to error if happens
-     *   @return true if cat is orphan
+     *   \param cat
+     *   \param error set to error if happens
+     *   \returns true if cat is orphan
      */
     bool recordExists( int cat, QString &error );
 
     /** Check if a database row exists and it is orphan (no more lines with that category)
-     *   @param cat
-     *   @param error set to error if happens
-     *   @return true if cat is orphan
+     *   \param cat
+     *   \param error set to error if happens
+     *   \returns true if cat is orphan
      */
     bool isOrphan( int cat, QString &error );
 
     /** Create table and link vector to this table
-     * @param fields fields to be created without cat (id) field
+     * \param fields fields to be created without cat (id) field
      */
     void createTable( const QgsFields &fields, QString &error );
 
     /** Add column to table
-     *   @param field
+     *   \param field
      */
     void addColumn( const QgsField &field, QString &error );
 

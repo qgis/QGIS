@@ -40,14 +40,14 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
   if ( !mManager )
     mManager = QgsShortcutsManager::instance();
 
-  connect( btnChangeShortcut, SIGNAL( clicked() ), this, SLOT( changeShortcut() ) );
-  connect( btnResetShortcut, SIGNAL( clicked() ), this, SLOT( resetShortcut() ) );
-  connect( btnSetNoShortcut, SIGNAL( clicked() ), this, SLOT( setNoShortcut() ) );
-  connect( btnSaveShortcuts, SIGNAL( clicked() ), this, SLOT( saveShortcuts() ) );
-  connect( btnLoadShortcuts, SIGNAL( clicked() ), this, SLOT( loadShortcuts() ) );
+  connect( btnChangeShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::changeShortcut );
+  connect( btnResetShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::resetShortcut );
+  connect( btnSetNoShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::setNoShortcut );
+  connect( btnSaveShortcuts, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::saveShortcuts );
+  connect( btnLoadShortcuts, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::loadShortcuts );
 
-  connect( treeActions, SIGNAL( currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * ) ),
-           this, SLOT( actionChanged( QTreeWidgetItem *, QTreeWidgetItem * ) ) );
+  connect( treeActions, &QTreeWidget::currentItemChanged,
+           this, &QgsConfigureShortcutsDialog::actionChanged );
 
   populateActions();
 
@@ -59,18 +59,12 @@ QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
   saveState();
 }
 
-/*!
- * Function to save dialog window state
- */
 void QgsConfigureShortcutsDialog::saveState()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/ShortcutsDialog/geometry" ), saveGeometry() );
 }
 
-/*!
- * Function to restore dialog window state
- */
 void QgsConfigureShortcutsDialog::restoreState()
 {
   QgsSettings settings;

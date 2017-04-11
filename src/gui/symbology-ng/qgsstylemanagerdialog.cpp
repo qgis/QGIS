@@ -62,9 +62,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   tabItemType->setDocumentMode( true );
   searchBox->setPlaceholderText( trUtf8( "Filter symbols…" ) );
 
-  connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
+  connect( this, &QDialog::finished, this, &QgsStyleManagerDialog::onFinished );
 
-  connect( listItems, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( editItem() ) );
+  connect( listItems, &QAbstractItemView::doubleClicked, this, &QgsStyleManagerDialog::editItem );
 
   connect( btnAddItem, &QPushButton::clicked, [ = ]( bool ) { addItem(); }
          );
@@ -87,10 +87,10 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   shareMenu->addSeparator();
   shareMenu->addAction( actnExportAsPNG );
   shareMenu->addAction( actnExportAsSVG );
-  connect( actnExportAsPNG, SIGNAL( triggered() ), this, SLOT( exportItemsPNG() ) );
-  connect( actnExportAsSVG, SIGNAL( triggered() ), this, SLOT( exportItemsSVG() ) );
-  connect( exportAction, SIGNAL( triggered() ), this, SLOT( exportItems() ) );
-  connect( importAction, SIGNAL( triggered() ), this, SLOT( importItems() ) );
+  connect( actnExportAsPNG, &QAction::triggered, this, &QgsStyleManagerDialog::exportItemsPNG );
+  connect( actnExportAsSVG, &QAction::triggered, this, &QgsStyleManagerDialog::exportItemsSVG );
+  connect( exportAction, &QAction::triggered, this, &QgsStyleManagerDialog::exportItems );
+  connect( importAction, &QAction::triggered, this, &QgsStyleManagerDialog::importItems );
   btnShare->setMenu( shareMenu );
 
   // Set editing mode off by default
@@ -100,11 +100,11 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   listItems->setModel( model );
   listItems->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
-  connect( model, SIGNAL( itemChanged( QStandardItem * ) ), this, SLOT( itemChanged( QStandardItem * ) ) );
-  connect( listItems->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
-           this, SLOT( symbolSelected( const QModelIndex & ) ) );
-  connect( listItems->selectionModel(), SIGNAL( selectionChanged( const QItemSelection, const QItemSelection ) ),
-           this, SLOT( selectedSymbolsChanged( const QItemSelection &, const QItemSelection & ) ) );
+  connect( model, &QStandardItemModel::itemChanged, this, &QgsStyleManagerDialog::itemChanged );
+  connect( listItems->selectionModel(), &QItemSelectionModel::currentChanged,
+           this, &QgsStyleManagerDialog::symbolSelected );
+  connect( listItems->selectionModel(), &QItemSelectionModel::selectionChanged,
+           this, &QgsStyleManagerDialog::selectedSymbolsChanged );
 
   populateTypes();
 
@@ -114,31 +114,31 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   populateGroups();
   groupTree->setCurrentIndex( groupTree->model()->index( 0, 0 ) );
 
-  connect( groupTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
-           this, SLOT( groupChanged( const QModelIndex & ) ) );
-  connect( groupModel, SIGNAL( itemChanged( QStandardItem * ) ),
-           this, SLOT( groupRenamed( QStandardItem * ) ) );
+  connect( groupTree->selectionModel(), &QItemSelectionModel::currentChanged,
+           this, &QgsStyleManagerDialog::groupChanged );
+  connect( groupModel, &QStandardItemModel::itemChanged,
+           this, &QgsStyleManagerDialog::groupRenamed );
 
   QMenu *groupMenu = new QMenu( tr( "Group actions" ), this );
-  connect( actnTagSymbols, SIGNAL( triggered() ), this, SLOT( tagSymbolsAction() ) );
+  connect( actnTagSymbols, &QAction::triggered, this, &QgsStyleManagerDialog::tagSymbolsAction );
   groupMenu->addAction( actnTagSymbols );
-  connect( actnFinishTagging, SIGNAL( triggered() ), this, SLOT( tagSymbolsAction() ) );
+  connect( actnFinishTagging, &QAction::triggered, this, &QgsStyleManagerDialog::tagSymbolsAction );
   actnFinishTagging->setVisible( false );
   groupMenu->addAction( actnFinishTagging );
   groupMenu->addAction( actnEditSmartGroup );
   btnManageGroups->setMenu( groupMenu );
 
-  connect( searchBox, SIGNAL( textChanged( QString ) ), this, SLOT( filterSymbols( QString ) ) );
+  connect( searchBox, &QLineEdit::textChanged, this, &QgsStyleManagerDialog::filterSymbols );
 
   // Context menu for groupTree
   groupTree->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( groupTree, SIGNAL( customContextMenuRequested( const QPoint & ) ),
-           this, SLOT( grouptreeContextMenu( const QPoint & ) ) );
+  connect( groupTree, &QWidget::customContextMenuRequested,
+           this, &QgsStyleManagerDialog::grouptreeContextMenu );
 
   // Context menu for listItems
   listItems->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( listItems, SIGNAL( customContextMenuRequested( const QPoint & ) ),
-           this, SLOT( listitemsContextMenu( const QPoint & ) ) );
+  connect( listItems, &QWidget::customContextMenuRequested,
+           this, &QgsStyleManagerDialog::listitemsContextMenu );
 
   // Menu for the "Add item" toolbutton when in colorramp mode
   QStringList rampTypes;
@@ -147,14 +147,14 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   mMenuBtnAddItemColorRamp = new QMenu( this );
   Q_FOREACH ( const QString &rampType, rampTypes )
     mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
-  connect( mMenuBtnAddItemColorRamp, SIGNAL( triggered( QAction * ) ),
-           this, SLOT( addColorRamp( QAction * ) ) );
+  connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
+           this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
 
   // Context menu for symbols/colorramps. The menu entries for every group are created when displaying the menu.
   mGroupMenu = new QMenu( this );
-  connect( actnAddFavorite, SIGNAL( triggered( bool ) ), this, SLOT( addFavoriteSelectedSymbols() ) );
+  connect( actnAddFavorite, &QAction::triggered, this, &QgsStyleManagerDialog::addFavoriteSelectedSymbols );
   mGroupMenu->addAction( actnAddFavorite );
-  connect( actnRemoveFavorite, SIGNAL( triggered( bool ) ), this, SLOT( removeFavoriteSelectedSymbols() ) );
+  connect( actnRemoveFavorite, &QAction::triggered, this, &QgsStyleManagerDialog::removeFavoriteSelectedSymbols );
   mGroupMenu->addAction( actnRemoveFavorite );
   mGroupMenu->addSeparator()->setParent( this );
   mGroupListMenu = new QMenu( mGroupMenu );
@@ -162,7 +162,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   mGroupListMenu->setEnabled( false );
   mGroupMenu->addMenu( mGroupListMenu );
   actnDetag->setData( 0 );
-  connect( actnDetag, SIGNAL( triggered( bool ) ), this, SLOT( detagSelectedSymbols() ) );
+  connect( actnDetag, &QAction::triggered, this, &QgsStyleManagerDialog::detagSelectedSymbols );
   mGroupMenu->addAction( actnDetag );
   mGroupMenu->addSeparator()->setParent( this );
   mGroupMenu->addAction( actnRemoveItem );
@@ -173,7 +173,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
 
   // Context menu for the group tree
   mGroupTreeContextMenu = new QMenu( this );
-  connect( actnEditSmartGroup, SIGNAL( triggered( bool ) ), this, SLOT( editSmartgroupAction() ) );
+  connect( actnEditSmartGroup, &QAction::triggered, this, &QgsStyleManagerDialog::editSmartgroupAction );
   mGroupTreeContextMenu->addAction( actnEditSmartGroup );
   connect( actnAddTag, &QAction::triggered, [ = ]( bool ) { addTag(); }
          );
@@ -181,7 +181,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   connect( actnAddSmartgroup, &QAction::triggered, [ = ]( bool ) { addSmartgroup(); }
          );
   mGroupTreeContextMenu->addAction( actnAddSmartgroup );
-  connect( actnRemoveGroup, SIGNAL( triggered( bool ) ), this, SLOT( removeGroup() ) );
+  connect( actnRemoveGroup, &QAction::triggered, this, &QgsStyleManagerDialog::removeGroup );
   mGroupTreeContextMenu->addAction( actnRemoveGroup );
 
   on_tabItemType_currentChanged( 0 );
@@ -1173,18 +1173,18 @@ void QgsStyleManagerDialog::tagSymbolsAction()
     actnTagSymbols->setVisible( true );
     actnFinishTagging->setVisible( false );
     // disconnect slot which handles regrouping
-    disconnect( model, SIGNAL( itemChanged( QStandardItem * ) ),
-                this, SLOT( regrouped( QStandardItem * ) ) );
+    disconnect( model, &QStandardItemModel::itemChanged,
+                this, &QgsStyleManagerDialog::regrouped );
 
     // disabel all items except groups in groupTree
     enableItemsForGroupingMode( true );
     groupChanged( groupTree->currentIndex() );
 
     // Finally: Reconnect all Symbol editing functionalities
-    connect( treeModel, SIGNAL( itemChanged( QStandardItem * ) ),
-             this, SLOT( groupRenamed( QStandardItem * ) ) );
-    connect( model, SIGNAL( itemChanged( QStandardItem * ) ),
-             this, SLOT( itemChanged( QStandardItem * ) ) );
+    connect( treeModel, &QStandardItemModel::itemChanged,
+             this, &QgsStyleManagerDialog::groupRenamed );
+    connect( model, &QStandardItemModel::itemChanged,
+             this, &QgsStyleManagerDialog::itemChanged );
     // Reset the selection mode
     listItems->setSelectionMode( QAbstractItemView::ExtendedSelection );
   }
@@ -1210,10 +1210,10 @@ void QgsStyleManagerDialog::tagSymbolsAction()
     actnTagSymbols->setVisible( false );
     actnFinishTagging->setVisible( true );
     // Remove all Symbol editing functionalities
-    disconnect( treeModel, SIGNAL( itemChanged( QStandardItem * ) ),
-                this, SLOT( groupRenamed( QStandardItem * ) ) );
-    disconnect( model, SIGNAL( itemChanged( QStandardItem * ) ),
-                this, SLOT( itemChanged( QStandardItem * ) ) );
+    disconnect( treeModel, &QStandardItemModel::itemChanged,
+                this, &QgsStyleManagerDialog::groupRenamed );
+    disconnect( model, &QStandardItemModel::itemChanged,
+                this, &QgsStyleManagerDialog::itemChanged );
 
     // disabel all items except groups in groupTree
     enableItemsForGroupingMode( false );
@@ -1222,8 +1222,8 @@ void QgsStyleManagerDialog::tagSymbolsAction()
 
 
     // Connect to slot which handles regrouping
-    connect( model, SIGNAL( itemChanged( QStandardItem * ) ),
-             this, SLOT( regrouped( QStandardItem * ) ) );
+    connect( model, &QStandardItemModel::itemChanged,
+             this, &QgsStyleManagerDialog::regrouped );
 
     // No selection should be possible
     listItems->setSelectionMode( QAbstractItemView::NoSelection );

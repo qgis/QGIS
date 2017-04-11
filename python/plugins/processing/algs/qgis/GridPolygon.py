@@ -54,14 +54,22 @@ class GridPolygon(GeoAlgorithm):
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create grid (polygon)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
-        self.tags = self.tr('grid,polygons,vector,create,fishnet')
+    def tags(self):
+        return self.tr('grid,lines,vector,create,fishnet').split(',')
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
+    def name(self):
+        return 'creategridpolygon'
+
+    def displayName(self):
+        return self.tr('Create grid (polygon)')
+
+    def defineCharacteristics(self):
         self.types = [self.tr('Rectangle (polygon)'),
                       self.tr('Diamond (polygon)'),
                       self.tr('Hexagon (polygon)')]

@@ -58,20 +58,20 @@ class QgsMSLayerCache: public QObject
 
     /**
       * Set the maximum number of layers in cache.
-      * @param maxCacheLayers the number of layers in cache
-      * @note added in QGIS 3.0
+      * \param maxCacheLayers the number of layers in cache
+      * \since QGIS 3.0
       */
     void setMaxCacheLayers( int maxCacheLayers );
 
     /** Inserts a new layer into the cash
-    @param url the layer datasource
-    @param layerName the layer name (to distinguish between different layers in a request using the same datasource
-    @param configFile path of the config file (to invalidate entries if file changes). Can be empty (e.g. layers from sld)
-    @param tempFiles some layers have temporary files. The cash makes sure they are removed when removing the layer from the cash*/
+    \param url the layer datasource
+    \param layerName the layer name (to distinguish between different layers in a request using the same datasource
+    \param configFile path of the config file (to invalidate entries if file changes). Can be empty (e.g. layers from sld)
+    \param tempFiles some layers have temporary files. The cash makes sure they are removed when removing the layer from the cash*/
     void insertLayer( const QString &url, const QString &layerName, QgsMapLayer *layer, const QString &configFile = QString(), const QList<QString> &tempFiles = QList<QString>() );
 
     /** Searches for the layer with the given url.
-     @return a pointer to the layer or 0 if no such layer*/
+     \returns a pointer to the layer or 0 if no such layer*/
     QgsMapLayer *searchLayer( const QString &url, const QString &layerName, const QString &configFile = QString() );
 
     int projectsMaxLayers() const { return mProjectMaxLayers; }

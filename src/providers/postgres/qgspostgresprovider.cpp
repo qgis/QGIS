@@ -227,6 +227,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
                   << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 64bit)" ), QStringLiteral( "int8[]" ), QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
                   << QgsVectorDataProvider::NativeType( tr( "Array of number (double)" ), QStringLiteral( "double precision[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Double )
                   << QgsVectorDataProvider::NativeType( tr( "Array of text" ), QStringLiteral( "text[]" ), QVariant::StringList, -1, -1, -1, -1, QVariant::String )
+
+                  // boolean
+                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
                 );
 
   QString key;
@@ -898,7 +901,6 @@ bool QgsPostgresProvider::loadFields()
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "text" ) ||
-                fieldTypeName == QLatin1String( "bool" ) ||
                 fieldTypeName == QLatin1String( "geometry" ) ||
                 fieldTypeName == QLatin1String( "inet" ) ||
                 fieldTypeName == QLatin1String( "money" ) ||
@@ -954,6 +956,12 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::Map;
         fieldSubType = QVariant::String;
+        fieldSize = -1;
+      }
+      else if ( fieldTypeName == QLatin1String( "bool" ) )
+      {
+        // enum
+        fieldType = QVariant::Bool;
         fieldSize = -1;
       }
       else
@@ -3615,6 +3623,12 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       fieldPrec = -1;
       break;
 
+    case QVariant::Bool:
+      fieldType = QStringLiteral( "bool" );
+      fieldPrec = -1;
+      fieldSize = -1;
+      break;
+
     default:
       return false;
   }
@@ -4106,20 +4120,32 @@ static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::T
 
 QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type subType, const QString &value )
 {
+  QVariant result;
   switch ( type )
   {
     case QVariant::Map:
-      return parseHstore( value );
+      result = parseHstore( value );
+      break;
     case QVariant::StringList:
     case QVariant::List:
-      return parseArray( value, type, subType );
+      result = parseArray( value, type, subType );
+      break;
+    case QVariant::Bool:
+      if ( value == QChar( 't' ) )
+        result = true;
+      else if ( value == QChar( 'f' ) )
+        result = false;
+      else
+        result = QVariant( type );
+      break;
     default:
-    {
-      QVariant v( value );
-      if ( !v.convert( type ) || value.isNull() ) return QVariant( type );
-      return v;
-    }
+      result = value;
+      if ( !result.convert( type ) || value.isNull() )
+        result = QVariant( type );
+      break;
   }
+
+  return result;
 }
 
 QList<QgsVectorLayer *> QgsPostgresProvider::searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &schema, const QString &tableName )

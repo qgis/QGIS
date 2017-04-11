@@ -66,9 +66,9 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer *
     delete lyr;
   }
 
-  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
-  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
-  connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
+  connect( spinOffsetX, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
+  connect( spinOffsetY, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
+  connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::penJoinStyleChanged );
 }
 
 void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )

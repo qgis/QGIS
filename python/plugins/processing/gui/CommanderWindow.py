@@ -32,7 +32,7 @@ from qgis.PyQt.QtCore import Qt, QSize
 from qgis.PyQt.QtWidgets import QDialog, QLabel, QSpacerItem, QHBoxLayout, QVBoxLayout, QSizePolicy, QComboBox, QCompleter
 from qgis.PyQt.QtCore import QSortFilterProxyModel
 from qgis.utils import iface
-from processing.core.alglist import algList
+from qgis.core import (QgsApplication)
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.tools.system import userFolder, mkdir
@@ -99,9 +99,8 @@ class CommanderWindow(QDialog):
         self.combo.clear()
 
         # Add algorithms
-        for provider in list(algList.algs.values()):
-            for alg in provider:
-                self.combo.addItem('Processing algorithm: ' + alg)
+        for alg in QgsApplication.processingRegistry().algorithms():
+            self.combo.addItem('Processing algorithm: ' + alg)
 
         # Add functions
         for command in dir(self.commands):
@@ -152,7 +151,7 @@ class CommanderWindow(QDialog):
         s = str(self.combo.currentText())
         if s.startswith('Processing algorithm: '):
             algName = s[len('Processing algorithm: '):]
-            alg = algList.getAlgorithm(algName)
+            alg = QgsApplication.processingRegistry().algorithmById(algName)
             if alg is not None:
                 self.close()
                 self.runAlgorithm(alg)

@@ -63,7 +63,7 @@ class OutputSelectionPanel(BASE, WIDGET):
 
         if hasattr(self.leText, 'setPlaceholderText'):
             if isinstance(output, OutputVector) \
-                    and alg.provider.supportsNonFileBasedOutput():
+                    and alg.provider().supportsNonFileBasedOutput():
                 # use memory layers for temporary files if supported
                 self.leText.setPlaceholderText(self.SAVE_TO_TEMP_LAYER)
             else:
@@ -78,7 +78,7 @@ class OutputSelectionPanel(BASE, WIDGET):
             popupMenu = QMenu()
 
             if isinstance(self.output, OutputVector) \
-                    and self.alg.provider.supportsNonFileBasedOutput():
+                    and self.alg.provider().supportsNonFileBasedOutput():
                 # use memory layers for temporary layers if supported
                 actionSaveToTemp = QAction(
                     self.tr('Create temporary layer'), self.btnSelect)
@@ -99,7 +99,7 @@ class OutputSelectionPanel(BASE, WIDGET):
             popupMenu.addAction(actionShowExpressionsBuilder)
 
             if isinstance(self.output, OutputVector) \
-                    and self.alg.provider.supportsNonFileBasedOutput():
+                    and self.alg.provider().supportsNonFileBasedOutput():
                 actionSaveToSpatialite = QAction(
                     self.tr('Save to Spatialite table...'), self.btnSelect)
                 actionSaveToSpatialite.triggered.connect(self.saveToSpatialite)

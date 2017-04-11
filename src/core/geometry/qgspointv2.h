@@ -31,15 +31,15 @@
 /** \ingroup core
  * \class QgsPointV2
  * \brief Point geometry type, with support for z-dimension and m-values.
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
 {
   public:
 
     /** Construct a 2 dimensional point with an initial x and y coordinate.
-     * @param x x-coordinate of point
-     * @param y y-coordinate of point
+     * \param x x-coordinate of point
+     * \param y y-coordinate of point
      */
     QgsPointV2( double x = 0.0, double y = 0.0 );
 
@@ -52,11 +52,11 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     explicit QgsPointV2( QPointF p );
 
     /** Construct a point with a specified type (e.g., PointZ, PointM) and initial x, y, z, and m values.
-     * @param type point type
-     * @param x x-coordinate of point
-     * @param y y-coordinate of point
-     * @param z z-coordinate of point, for PointZ or PointZM types
-     * @param m m-value of point, for PointM or PointZM types
+     * \param type point type
+     * \param x x-coordinate of point
+     * \param y y-coordinate of point
+     * \param z z-coordinate of point, for PointZ or PointZM types
+     * \param m m-value of point, for PointM or PointZM types
      */
     QgsPointV2( QgsWkbTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
 
@@ -64,91 +64,91 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     bool operator!=( const QgsPointV2 &pt ) const;
 
     /** Returns the point's x-coordinate.
-     * @see setX()
-     * @see rx()
+     * \see setX()
+     * \see rx()
      */
     double x() const { return mX; }
 
     /** Returns the point's y-coordinate.
-     * @see setY()
-     * @see ry()
+     * \see setY()
+     * \see ry()
      */
     double y() const { return mY; }
 
     /** Returns the point's z-coordinate.
-     * @see setZ()
-     * @see rz()
+     * \see setZ()
+     * \see rz()
      */
     double z() const { return mZ; }
 
     /** Returns the point's m value.
-     * @see setM()
-     * @see rm()
+     * \see setM()
+     * \see rm()
      */
     double m() const { return mM; }
 
     /** Returns a reference to the x-coordinate of this point.
      * Using a reference makes it possible to directly manipulate x in place.
-     * @see x()
-     * @see setX()
-     * @note not available in Python bindings
+     * \see x()
+     * \see setX()
+     * \note not available in Python bindings
      */
     double &rx() { clearCache(); return mX; }
 
     /** Returns a reference to the y-coordinate of this point.
      * Using a reference makes it possible to directly manipulate y in place.
-     * @see y()
-     * @see setY()
-     * @note not available in Python bindings
+     * \see y()
+     * \see setY()
+     * \note not available in Python bindings
      */
     double &ry() { clearCache(); return mY; }
 
     /** Returns a reference to the z-coordinate of this point.
      * Using a reference makes it possible to directly manipulate z in place.
-     * @see z()
-     * @see setZ()
-     * @note not available in Python bindings
+     * \see z()
+     * \see setZ()
+     * \note not available in Python bindings
      */
     double &rz() { clearCache(); return mZ; }
 
     /** Returns a reference to the m value of this point.
      * Using a reference makes it possible to directly manipulate m in place.
-     * @see m()
-     * @see setM()
-     * @note not available in Python bindings
+     * \see m()
+     * \see setM()
+     * \note not available in Python bindings
      */
     double &rm() { clearCache(); return mM; }
 
     /** Sets the point's x-coordinate.
-     * @see x()
-     * @see rx()
+     * \see x()
+     * \see rx()
      */
     void setX( double x ) { clearCache(); mX = x; }
 
     /** Sets the point's y-coordinate.
-     * @see y()
-     * @see ry()
+     * \see y()
+     * \see ry()
      */
     void setY( double y ) { clearCache(); mY = y; }
 
     /** Sets the point's z-coordinate.
-     * @note calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
+     * \note calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
      * add a z value and force the point to have a z dimension.
-     * @see z()
-     * @see rz()
+     * \see z()
+     * \see rz()
      */
     void setZ( double z ) { clearCache(); mZ = z; }
 
     /** Sets the point's m-value.
-     * @note calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
+     * \note calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
      * add a m value and force the point to have an m dimension.
-     * @see m()
-     * @see rm()
+     * \see m()
+     * \see rm()
      */
     void setM( double m ) { clearCache(); mM = m; }
 
     /** Returns the point as a QPointF.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QPointF toQPointF() const;
 
@@ -156,8 +156,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the distance between this point and a specified x, y coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * @note added in QGIS 3.0
-     * @see distanceSquared()
+     * \since QGIS 3.0
+     * \see distanceSquared()
     */
     double distance( double x, double y ) const;
 
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the 2D distance between this point and another point. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
     */
     double distance( const QgsPointV2 &other ) const;
 
@@ -173,8 +173,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the squared distance between this point a specified x, y coordinate. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
-     * @see distance()
-     * @note added in QGIS 3.0
+     * \see distance()
+     * \since QGIS 3.0
     */
     double distanceSquared( double x, double y ) const;
 
@@ -182,8 +182,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the squared distance between this point another point. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
-     * @see distance()
-     * @note added in QGIS 3.0
+     * \see distance()
+     * \since QGIS 3.0
     */
     double distanceSquared( const QgsPointV2 &other ) const;
 
@@ -191,8 +191,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * @note added in QGIS 3.0
-     * @see distanceSquared()
+     * \since QGIS 3.0
+     * \see distanceSquared()
     */
     double distance3D( double x, double y, double z ) const;
 
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the 3D distance between this point and another point. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
     */
     double distance3D( const QgsPointV2 &other ) const;
 
@@ -208,8 +208,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
-     * @see distance()
-     * @note added in QGIS 3.0
+     * \see distance()
+     * \since QGIS 3.0
     */
     double distanceSquared3D( double x, double y, double z ) const;
 
@@ -217,24 +217,24 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the 3D squared distance between this point another point. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
-     * @see distance()
-     * @note added in QGIS 3.0
+     * \see distance()
+     * \since QGIS 3.0
     */
     double distanceSquared3D( const QgsPointV2 &other ) const;
 
     /**
      * Calculates azimuth between this point and other one (clockwise in degree, starting from north)
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     double azimuth( const QgsPointV2 &other ) const;
 
     /** Returns a new point which correspond to this point projected by a specified distance
      * with specified angles (azimuth and inclination).
      * M value is preserved.
-     * @param distance distance to project
-     * @param azimuth angle to project in X Y, clockwise in degrees starting from north
-     * @param inclination angle to project in Z (3D)
-     * @return The point projected. If a 2D point is projected a 3D point will be returned except if
+     * \param distance distance to project
+     * \param azimuth angle to project in X Y, clockwise in degrees starting from north
+     * \param inclination angle to project in Z (3D)
+     * \returns The point projected. If a 2D point is projected a 3D point will be returned except if
      *  inclination is 90. A 3D point is always returned if a 3D point is projected.
      * Example:
      * \code{.py}
@@ -253,37 +253,37 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      *   pr = p.project (1, 0, 0 )
      *   # pr is a 3D point: 'PointZ (1 2 3)'
      * \endcode
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPointV2 project( double distance, double azimuth, double inclination = 90.0 ) const;
 
     /**
      * Calculates the vector obtained by subtracting a point from this point.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsVector operator-( const QgsPointV2 &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
 
     /**
      * Adds a vector to this point in place.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPointV2 &operator+=( QgsVector v ) { mX += v.x(); mY += v.y(); return *this; }
 
     /**
      * Subtracts a vector from this point in place.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPointV2 &operator-=( QgsVector v ) { mX -= v.x(); mY -= v.y(); return *this; }
 
     /**
      * Adds a vector to this point.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPointV2 operator+( QgsVector v ) const { QgsPointV2 r = *this; r.rx() += v.x(); r.ry() += v.y(); return r; }
 
     /**
      * Subtracts a vector from this point.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPointV2 operator-( QgsVector v ) const { QgsPointV2 r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
 
@@ -318,8 +318,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const override;
 
     /** Angle undefined. Always returns 0.0
-        @param vertex the vertex id
-        @return 0.0*/
+        \param vertex the vertex id
+        \returns 0.0*/
     double vertexAngle( QgsVertexId vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return 1; }

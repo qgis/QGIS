@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import math
 import codecs
 
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputNumber
@@ -50,10 +51,22 @@ class RasterLayerStatistics(GeoAlgorithm):
     STD_DEV = 'STD_DEV'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Raster layer statistics')
-        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Raster tools')
+
+    def name(self):
+        return 'rasterlayerstatistics'
+
+    def displayName(self):
+        return self.tr('Raster layer statistics')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
@@ -68,7 +81,7 @@ class RasterLayerStatistics(GeoAlgorithm):
     def processAlgorithm(self, feedback):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
         uri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(uri)
+        layer = dataobjects.getLayerFromString(uri)
         values = raster.scanraster(layer, feedback)
 
         n = 0

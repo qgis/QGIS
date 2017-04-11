@@ -50,13 +50,19 @@ class LinesIntersection(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'lines_intersection.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Line intersections')
-        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
+    def group(self):
+        return self.tr('Vector overlay tools')
 
+    def name(self):
+        return 'lineintersections'
+
+    def displayName(self):
+        return self.tr('Line intersections')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_A,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
@@ -75,8 +81,8 @@ class LinesIntersection(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, feedback):
-        layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))
-        layerB = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_B))
+        layerA = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_A))
+        layerB = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_B))
         fieldA = self.getParameterValue(self.FIELD_A)
         fieldB = self.getParameterValue(self.FIELD_B)
 

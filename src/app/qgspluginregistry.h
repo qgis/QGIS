@@ -67,7 +67,7 @@ class APP_EXPORT QgsPluginRegistry
     //! Unload plugins
     void unloadAll();
 
-    //! Save pointer for python utils (needed for unloading python plugins)
+    //! Save pointer for Python utils (needed for unloading Python plugins)
     void setPythonUtils( QgsPythonUtils *pythonUtils );
 
     //! Dump list of plugins

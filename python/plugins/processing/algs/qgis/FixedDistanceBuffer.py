@@ -56,12 +56,19 @@ class FixedDistanceBuffer(GeoAlgorithm):
     JOIN_STYLE = 'JOIN_STYLE'
     MITRE_LIMIT = 'MITRE_LIMIT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'fixeddistancebuffer'
+
+    def displayName(self):
+        return self.tr('Fixed distance buffer')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Fixed distance buffer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -86,11 +93,10 @@ class FixedDistanceBuffer(GeoAlgorithm):
             self.join_styles, default=0))
         self.addParameter(ParameterNumber(self.MITRE_LIMIT,
                                           self.tr('Mitre limit'), 1, default=2))
-
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         distance = self.getParameterValue(self.DISTANCE)
         dissolve = self.getParameterValue(self.DISSOLVE)
         segments = int(self.getParameterValue(self.SEGMENTS))

@@ -43,7 +43,6 @@ from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
 from processing.tools import dataobjects, vector
 
-
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
@@ -74,15 +73,23 @@ class BasicStatisticsForField(GeoAlgorithm):
     THIRDQUARTILE = 'THIRDQUARTILE'
     IQR = 'IQR'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Basic statistics for fields')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
-        self.tags = self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,maximum,minimum,mean,average,standard,deviation,'
-                            'count,distinct,unique,variance,median,quartile,range,majority,minority')
+    def tags(self):
+        return self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,maximum,minimum,mean,average,standard,deviation,'
+                       'count,distinct,unique,variance,median,quartile,range,majority,minority').split(',')
 
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'basicstatisticsforfields'
+
+    def displayName(self):
+        return self.tr('Basic statistics for fields')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input table')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
@@ -114,7 +121,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         field_name = self.getParameterValue(self.FIELD_NAME)
         field = layer.fields().at(layer.fields().lookupField(field_name))

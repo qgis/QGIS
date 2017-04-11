@@ -139,9 +139,9 @@ QString QgsGrassElementDialog::getItem( QString element,
   buttonLayout->addWidget( mOkButton );
   buttonLayout->addWidget( mCancelButton );
 
-  connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( textChanged() ) );
-  connect( mOkButton, SIGNAL( clicked() ), mDialog, SLOT( accept() ) );
-  connect( mCancelButton, SIGNAL( clicked() ), mDialog, SLOT( reject() ) );
+  connect( mLineEdit, &QLineEdit::textChanged, this, &QgsGrassElementDialog::textChanged );
+  connect( mOkButton, &QAbstractButton::clicked, mDialog, &QDialog::accept );
+  connect( mCancelButton, &QAbstractButton::clicked, mDialog, &QDialog::reject );
 
   textChanged();
   if ( ok && mDialog->exec() == QDialog::Accepted )

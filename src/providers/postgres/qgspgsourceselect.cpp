@@ -221,10 +221,10 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   if ( !mManagerMode )
   {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
+    connect( mAddButton, &QAbstractButton::clicked, this, &QgsPgSourceSelect::addTables );
 
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
+    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsPgSourceSelect::buildQuery );
   }
 
   populateConnectionList();
@@ -252,7 +252,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( new QgsPgSourceSelectDelegate( this ) );
 
-  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+  connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsPgSourceSelect::treeWidgetSelectionChanged );
 
   QgsSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() ?
@@ -541,14 +541,14 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   mColumnTypeThread = new QgsGeomColumnTypeThread( cmbConnections->currentText(), mUseEstimatedMetadata, cbxAllowGeometrylessTables->isChecked() );
 
-  connect( mColumnTypeThread, SIGNAL( setLayerType( const QgsPostgresLayerProperty & ) ),
-           this, SLOT( setLayerType( const QgsPostgresLayerProperty & ) ) );
-  connect( mColumnTypeThread, SIGNAL( finished() ),
-           this, SLOT( columnThreadFinished() ) );
-  connect( mColumnTypeThread, SIGNAL( progress( int, int ) ),
-           this, SIGNAL( progress( int, int ) ) );
-  connect( mColumnTypeThread, SIGNAL( progressMessage( const QString & ) ),
-           this, SIGNAL( progressMessage( const QString & ) ) );
+  connect( mColumnTypeThread, &QgsGeomColumnTypeThread::setLayerType,
+           this, &QgsPgSourceSelect::setLayerType );
+  connect( mColumnTypeThread, &QThread::finished,
+           this, &QgsPgSourceSelect::columnThreadFinished );
+  connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progress,
+           this, &QgsPgSourceSelect::progress );
+  connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progressMessage,
+           this, &QgsPgSourceSelect::progressMessage );
 
   btnConnect->setText( tr( "Stop" ) );
   mColumnTypeThread->start();

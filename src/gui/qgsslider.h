@@ -40,8 +40,8 @@ class GUI_EXPORT QgsSlider : public QSlider
   signals:
     void valueChanged( const QVariant & );
 
-  protected slots:
-    void valueChanged( int );
+  private slots:
+    void onValueChanged( int );
 
   protected:
     virtual void paintEvent( QPaintEvent *event ) override;

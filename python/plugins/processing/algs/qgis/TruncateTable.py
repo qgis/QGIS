@@ -25,6 +25,7 @@ __copyright__ = '(C) 2017, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.outputs import OutputVector
@@ -37,11 +38,25 @@ class TruncateTable(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Truncate table')
-        self.tags = self.tr('empty,delete,layer,clear,features')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('empty,delete,layer,clear,features').split(',')
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'truncatetable'
+
+    def displayName(self):
+        return self.tr('Truncate table')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input Layer')))
         self.addOutput(OutputVector(self.OUTPUT,
@@ -49,7 +64,7 @@ class TruncateTable(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         file_name = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(file_name)
+        layer = dataobjects.getLayerFromString(file_name)
         provider = layer.dataProvider()
 
         if not provider.truncate():

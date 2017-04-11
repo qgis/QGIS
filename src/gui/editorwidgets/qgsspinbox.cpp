@@ -41,8 +41,8 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
   setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
                   qMax( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
-  connect( mLineEdit, SIGNAL( cleared() ), this, SLOT( clear() ) );
-  connect( this, SIGNAL( valueChanged( int ) ), this, SLOT( changed( int ) ) );
+  connect( mLineEdit, &QgsFilterLineEdit::cleared, this, &QgsSpinBox::clear );
+  connect( this, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsSpinBox::changed );
 }
 
 void QgsSpinBox::setShowClearButton( const bool showClearButton )

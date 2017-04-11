@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -44,10 +45,22 @@ class VectorLayerScatterplot(GeoAlgorithm):
     XFIELD = 'XFIELD'
     YFIELD = 'YFIELD'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Vector layer scatterplot')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Graphics')
+
+    def name(self):
+        return 'vectorlayerscatterplot'
+
+    def displayName(self):
+        return self.tr('Vector layer scatterplot')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
@@ -62,7 +75,7 @@ class VectorLayerScatterplot(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         xfieldname = self.getParameterValue(self.XFIELD)
         yfieldname = self.getParameterValue(self.YFIELD)

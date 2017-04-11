@@ -37,60 +37,60 @@ class CORE_EXPORT QgsRelationManager : public QObject
   public:
 
     /** Constructor for QgsRelationManager.
-     * @param project associated project (used to notify project of changes)
+     * \param project associated project (used to notify project of changes)
      */
     explicit QgsRelationManager( QgsProject *project = nullptr );
 
     /**
      * Will set the specified relations and remove any relation currently set.
      *
-     * @param relations A list of relations to set.
+     * \param relations A list of relations to set.
      */
     void setRelations( const QList<QgsRelation> &relations );
 
     /**
      * Get access to the relations managed by this class.
      *
-     * @return A QMap where the key is the relation id, the value the relation object.
+     * \returns A QMap where the key is the relation id, the value the relation object.
      */
     QMap<QString, QgsRelation> relations() const;
 
     /**
      * Add a relation.
      *
-     * @param relation The relation to add.
+     * \param relation The relation to add.
      */
     void addRelation( const QgsRelation &relation );
 
     /**
      * Remove a relation.
      *
-     * @param id The id of the relation to remove.
+     * \param id The id of the relation to remove.
      */
     void removeRelation( const QString &id );
 
     /**
      * Remove a relation.
      *
-     * @param relation The relation to remove.
+     * \param relation The relation to remove.
      */
     void removeRelation( const QgsRelation &relation );
 
     /**
      * Get access to a relation by its id.
      *
-     * @param id The id to search for
+     * \param id The id to search for
      *
-     * @return A relation. Invalid if not found.
-     * @see relationsByName()
+     * \returns A relation. Invalid if not found.
+     * \see relationsByName()
      */
     Q_INVOKABLE QgsRelation relation( const QString &id ) const;
 
     /** Returns a list of relations with matching names.
-     * @param name relation name to search for. Searching is case insensitive.
-     * @returns a list of matching relations
-     * @note added in QGIS 2.16
-     * @see relation()
+     * \param name relation name to search for. Searching is case insensitive.
+     * \returns a list of matching relations
+     * \since QGIS 2.16
+     * \see relation()
      */
     QList<QgsRelation> relationsByName( const QString &name ) const;
 
@@ -102,29 +102,29 @@ class CORE_EXPORT QgsRelationManager : public QObject
     /**
      * Get all relations where the specified layer (and field) is the referencing part (i.e. the child table with the foreign key).
      *
-     * @param layer     The layer which should be searched for.
-     * @param fieldIdx  The field which should be part of the foreign key. If not set will return all relations.
+     * \param layer     The layer which should be searched for.
+     * \param fieldIdx  The field which should be part of the foreign key. If not set will return all relations.
      *
-     * @return A list of relations matching the given layer and fieldIdx.
+     * \returns A list of relations matching the given layer and fieldIdx.
      */
     QList<QgsRelation> referencingRelations( const QgsVectorLayer *layer = nullptr, int fieldIdx = -2 ) const;
 
     /**
      * Get all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).
      *
-     * @param layer   The layer which should be searched for.
+     * \param layer   The layer which should be searched for.
      *
-     * @return A list of relations where the specified layer is the referenced part.
+     * \returns A list of relations where the specified layer is the referenced part.
      */
     QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = nullptr ) const;
 
     /**
      * Discover all the relations available from the current layers.
      *
-     * @param existingRelations the existing relations to filter them out
-     * @param layers the current layers
-     * @return the list of discovered relations
-     * @note added in QGIS 3.0
+     * \param existingRelations the existing relations to filter them out
+     * \param layers the current layers
+     * \returns the list of discovered relations
+     * \since QGIS 3.0
      */
     static QList<QgsRelation> discoverRelations( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers );
 
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
 
     /**
      * Emitted when relations are added or removed to the manager.
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void changed();
 

@@ -46,7 +46,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
     changeProjectFile();
   }
 
-  QObject::connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 }
 
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
@@ -180,7 +180,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   QgsLayerTreeModel *model = new QgsLayerTreeModel( mRootGroup, this );
   mTreeView->setModel( model );
 
-  QObject::connect( mTreeView->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onTreeViewSelectionChanged() ) );
+  connect( mTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectLayerGroupDialog::onTreeViewSelectionChanged );
 
   mProjectPath = mProjectFileLineEdit->text();
 }

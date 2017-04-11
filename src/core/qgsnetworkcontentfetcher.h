@@ -45,17 +45,17 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
 
     /** Fetches content from a remote URL and handles redirects. The finished()
      * signal will be emitted when content has been fetched.
-     * @param url URL to fetch
+     * \param url URL to fetch
      */
     void fetchContent( const QUrl &url );
 
     /** Returns a reference to the network reply
-     * @returns QNetworkReply for fetched URL content
+     * \returns QNetworkReply for fetched URL content
      */
     QNetworkReply *reply();
 
     /** Returns the fetched content as a string
-     * @returns string containing network content
+     * \returns string containing network content
      */
     QString contentAsString() const;
 
@@ -72,8 +72,8 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     bool mContentLoaded;
 
     /** Tries to create a text codec for decoding html content. Works around bugs in Qt's built in method.
-     * @param array input html byte array
-     * @returns QTextCodec for html content, if detected
+     * \param array input html byte array
+     * \returns QTextCodec for html content, if detected
      */
     QTextCodec *codecForHtml( QByteArray &array ) const;
 

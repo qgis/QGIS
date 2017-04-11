@@ -68,16 +68,16 @@ class CORE_EXPORT QgsProviderRegistry
     void setLibraryDirectory( const QDir &path );
 
     /** Create an instance of the provider
-        @param providerKey identificator of the provider
-        @param dataSource  string containing data source for the provider
-        @return instance of provider or NULL on error
+        \param providerKey identificator of the provider
+        \param dataSource  string containing data source for the provider
+        \returns instance of provider or NULL on error
      */
     QgsDataProvider *provider( const QString &providerKey,
                                const QString &dataSource );
 
     /** Return the provider capabilities
-        @param providerKey identificator of the provider
-        @note Added in 2.6
+        \param providerKey identificator of the provider
+        \since QGIS 2.6
      */
     int providerCapabilities( const QString &providerKey ) const;
 
@@ -87,9 +87,9 @@ class CORE_EXPORT QgsProviderRegistry
                            QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
     /** Get pointer to provider function
-        @param providerKey identificator of the provider
-        @param functionName name of function
-        @return pointer to function or NULL on error
+        \param providerKey identificator of the provider
+        \param functionName name of function
+        \returns pointer to function or NULL on error
      */
     QFunctionPointer function( const QString &providerKey,
                                const QString &functionName );
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsProviderRegistry
       This walks through all data providers appending calls to their
       fileVectorFilters to a string, which is then returned.
 
-      @note
+      \note
 
       It'd be nice to eventually be raster/vector neutral.
      */
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsProviderRegistry
       This walks through all data providers appending calls to their
       buildSupportedRasterFileFilter to a string, which is then returned.
 
-      @note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
+      \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
      */
     virtual QString fileRasterFilters() const;
     //! Return a string containing the available database drivers
@@ -151,9 +151,9 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * Called by QgsDataManager::open().
      *
-     * @param name could be a file, URI
-     * @param provider is the key for the dataprovider used to open name
-     * @return NULL if unable to open vector data source
+     * \param name could be a file, URI
+     * \param provider is the key for the dataprovider used to open name
+     * \returns NULL if unable to open vector data source
      *
      * Temporarily always returns false until finished implementing.
      *

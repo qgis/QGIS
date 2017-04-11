@@ -18,8 +18,11 @@ class QgsGeometrySnapper : QObject
     //! Snapping modes
     enum SnapMode
     {
-      PreferNodes, //!< Prefer to snap to nodes, even when a segment may be closer than a node
-      PreferClosest, //!< Snap to closest point, regardless of it is a node or a segment
+      PreferNodes,
+      PreferClosest,
+      EndPointPreferNodes,
+      EndPointPreferClosest,
+      EndPointToEndPoint,
     };
 
     /**
@@ -47,4 +50,17 @@ class QgsGeometrySnapper : QObject
 
     //! Emitted each time a feature has been processed when calling snapFeatures()
     void featureSnapped();
+
+};
+
+class QgsInternalGeometrySnapper
+{
+%TypeHeaderCode
+#include <qgsgeometrysnapper.h>
+%End
+
+  public:
+    QgsInternalGeometrySnapper( double snapTolerance, QgsGeometrySnapper::SnapMode mode = QgsGeometrySnapper::PreferNodes );
+    QgsGeometry snapFeature( const QgsFeature &feature );
+    QgsGeometryMap snappedGeometries() const;
 };

@@ -429,7 +429,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
   initGui();
 
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGlowWidget::applyColorRamp );
-  connect( radioSingleColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
+  connect( radioSingleColor, &QAbstractButton::toggled, this, &QgsGlowWidget::colorModeChanged );
 }
 
 void QgsGlowWidget::setPaintEffect( QgsPaintEffect *effect )

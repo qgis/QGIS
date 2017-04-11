@@ -113,7 +113,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      * if more than one provider supports a given format, the user is able to
      * select a specific provider to open that file.
      *
-     * @note
+     * \note
      *
      * Instead of being pure virtual, might be better to generalize this
      * behavior and presume that none of the sub-classes are going to do
@@ -127,7 +127,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      *
      * Return a terse string describing what the provider is.
      *
-     * @note
+     * \note
      *
      * Instead of being pure virtual, might be better to generalize this
      * behavior and presume that none of the sub-classes are going to do
@@ -193,7 +193,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     QgsRasterBandStats bandStatistics( int bandNo,
                                        int stats = QgsRasterBandStats::All,
                                        const QgsRectangle &boundingBox = QgsRectangle(),
-                                       int sampleSize = 0 ) override;
+                                       int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 

@@ -357,6 +357,7 @@ class QgsVectorFileWriter
 
     /** Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();
+    static QStringList supportedFormatExtensions();
 
     /** Returns driver list that can be used for dialogs. It contains all OGR drivers
      * + some additional internal QGIS driver names to distinguish between more

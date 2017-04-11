@@ -53,7 +53,7 @@ void QgsListWidgetWrapper::initWidget( QWidget *editor )
     mWidget = editor->findChild<QgsListWidget *>();
   }
 
-  connect( mWidget, SIGNAL( valueChanged() ), this, SLOT( onValueChanged() ) );
+  connect( mWidget, &QgsListWidget::valueChanged, this, &QgsListWidgetWrapper::onValueChanged );
 }
 
 bool QgsListWidgetWrapper::valid() const

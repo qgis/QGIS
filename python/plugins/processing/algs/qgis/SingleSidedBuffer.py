@@ -27,7 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsGeometry, QgsWkbTypes
+from qgis.core import (QgsApplication,
+                       QgsGeometry,
+                       QgsWkbTypes)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -48,10 +50,22 @@ class SingleSidedBuffer(GeoAlgorithm):
     JOIN_STYLE = 'JOIN_STYLE'
     MITRE_LIMIT = 'MITRE_LIMIT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Single sided buffer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'singlesidedbuffer'
+
+    def displayName(self):
+        return self.tr('Single sided buffer')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -79,7 +93,7 @@ class SingleSidedBuffer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Single sided buffers')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 
         writer = self.getOutputFromName(

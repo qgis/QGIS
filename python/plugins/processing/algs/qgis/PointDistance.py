@@ -56,13 +56,19 @@ class PointDistance(GeoAlgorithm):
     NEAREST_POINTS = 'NEAREST_POINTS'
     DISTANCE_MATRIX = 'DISTANCE_MATRIX'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'matrix.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Distance matrix')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def group(self):
+        return self.tr('Vector analysis tools')
 
+    def name(self):
+        return 'distancematrix'
+
+    def displayName(self):
+        return self.tr('Distance matrix')
+
+    def defineCharacteristics(self):
         self.mat_types = [self.tr('Linear (N*k x 3) distance matrix'),
                           self.tr('Standard (N x T) distance matrix'),
                           self.tr('Summary distance matrix (mean, std. dev., min, max)')]
@@ -85,10 +91,10 @@ class PointDistance(GeoAlgorithm):
         self.addOutput(OutputTable(self.DISTANCE_MATRIX, self.tr('Distance matrix')))
 
     def processAlgorithm(self, feedback):
-        inLayer = dataobjects.getObjectFromUri(
+        inLayer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         inField = self.getParameterValue(self.INPUT_FIELD)
-        targetLayer = dataobjects.getObjectFromUri(
+        targetLayer = dataobjects.getLayerFromString(
             self.getParameterValue(self.TARGET_LAYER))
         targetField = self.getParameterValue(self.TARGET_FIELD)
         matType = self.getParameterValue(self.MATRIX_TYPE)

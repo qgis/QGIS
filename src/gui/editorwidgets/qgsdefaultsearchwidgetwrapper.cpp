@@ -272,13 +272,13 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget )
   {
     mCheckbox = new QCheckBox( QStringLiteral( "Case sensitive" ) );
     mContainer->layout()->addWidget( mCheckbox );
-    connect( mCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setCaseString( int ) ) );
+    connect( mCheckbox, &QCheckBox::stateChanged, this, &QgsDefaultSearchWidgetWrapper::setCaseString );
     mCheckbox->setChecked( Qt::Unchecked );
   }
 
-  connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( textChanged( QString ) ) );
-  connect( mLineEdit, SIGNAL( returnPressed() ), this, SLOT( filterChanged() ) );
-  connect( mLineEdit, SIGNAL( textEdited( QString ) ), this, SIGNAL( valueChanged() ) );
+  connect( mLineEdit, &QLineEdit::textChanged, this, &QgsDefaultSearchWidgetWrapper::textChanged );
+  connect( mLineEdit, &QLineEdit::returnPressed, this, &QgsDefaultSearchWidgetWrapper::filterChanged );
+  connect( mLineEdit, &QLineEdit::textEdited, this, &QgsSearchWidgetWrapper::valueChanged );
 
   mCaseString = QStringLiteral( "ILIKE" );
 }

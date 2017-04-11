@@ -19,7 +19,7 @@
 
 
 QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options )
-  : QgsTask( tr( "Saving %1 " ).arg( fileName ), QgsTask::CanCancel )
+  : QgsTask( tr( "Saving %1" ).arg( fileName ), QgsTask::CanCancel )
   , mLayer( layer )
   , mDestFileName( fileName )
   , mOptions( options )

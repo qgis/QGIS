@@ -43,6 +43,7 @@ class TestQgsMeasureTool : public QObject
     void testLengthCalculation();
     void testLengthCalculationNoCrs();
     void testAreaCalculation();
+    void degreeDecimalPlaces();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -225,6 +226,25 @@ void TestQgsMeasureTool::testAreaCalculation()
   measured = measureString.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   expected = 389.6117565069;
   QGSCOMPARENEAR( measured, expected, 0.001 );
+}
+
+void TestQgsMeasureTool::degreeDecimalPlaces()
+{
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceDegrees );
+
+  QgsSettings s;
+  s.setValue( QStringLiteral( "qgis/measure/decimalplaces" ), 3 );
+
+  std::unique_ptr< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, true ) );
+  std::unique_ptr< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.get() ) );
+
+  QCOMPARE( dlg->formatDistance( 11, false ), QString( "11.000 deg" ) );
+  QCOMPARE( dlg->formatDistance( 0.005, false ), QString( "0.005 deg" ) );
+  QCOMPARE( dlg->formatDistance( 0.002, false ), QString( "0.0020 deg" ) );
+  QCOMPARE( dlg->formatDistance( 0.001, false ), QString( "0.0010 deg" ) );
+  QCOMPARE( dlg->formatDistance( 0.0001, false ), QString( "0.00010 deg" ) );
+  QCOMPARE( dlg->formatDistance( 0.00001, false ), QString( "0.000010 deg" ) );
+
 }
 
 QGSTEST_MAIN( TestQgsMeasureTool )

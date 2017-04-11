@@ -62,7 +62,7 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   QHeaderView *verticalHeader = mTableWidget->verticalHeader();
   if ( verticalHeader )
   {
-    QObject::connect( mTableWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( selectedRowChanged() ) );
+    connect( mTableWidget, &QTableWidget::itemSelectionChanged, this, &QgsMergeAttributesDialog::selectedRowChanged );
   }
   mTableWidget->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTableWidget->setSelectionMode( QAbstractItemView::SingleSelection );
@@ -73,8 +73,8 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/MergeAttributes/geometry" ) ).toByteArray() );
 
-  connect( mSkipAllButton, SIGNAL( clicked() ), this, SLOT( setAllToSkip() ) );
-  connect( mTableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableWidgetCellChanged( int, int ) ) );
+  connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
+  connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
 }
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
@@ -210,8 +210,8 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
   newComboBox->addItem( tr( "Skip attribute" ), "skip" );
   newComboBox->addItem( tr( "Manual value" ), "manual" );
 
-  QObject::connect( newComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
-                    this, SLOT( comboValueChanged( const QString & ) ) );
+  connect( newComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ),
+           this, &QgsMergeAttributesDialog::comboValueChanged );
   return newComboBox;
 }
 

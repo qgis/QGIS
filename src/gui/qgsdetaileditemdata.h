@@ -42,7 +42,7 @@ class GUI_EXPORT QgsDetailedItemData
     /** This is a hint to the delegate to render using
      * a widget rather than manually painting every
      * part of the list item.
-     * @note the delegate may completely ignore this
+     * \note the delegate may completely ignore this
      * depending on the delegate implementation.
      */
     void setRenderAsWidget( bool flag );

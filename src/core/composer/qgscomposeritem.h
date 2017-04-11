@@ -106,17 +106,17 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     };
 
     /** Constructor
-     @param composition parent composition
-     @param manageZValue true if the z-Value of this object should be managed by mComposition*/
+     \param composition parent composition
+     \param manageZValue true if the z-Value of this object should be managed by mComposition*/
     QgsComposerItem( QgsComposition *composition, bool manageZValue = true );
 
     /** Constructor with box position and composer object
-     @param x x coordinate of item
-     @param y y coordinate of item
-     @param width width of item
-     @param height height of item
-     @param composition parent composition
-     @param manageZValue true if the z-Value of this object should be managed by mComposition*/
+     \param x x coordinate of item
+     \param y y coordinate of item
+     \param width width of item
+     \param height height of item
+     \param composition parent composition
+     \param manageZValue true if the z-Value of this object should be managed by mComposition*/
     QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition, bool manageZValue = true );
     virtual ~QgsComposerItem();
 
@@ -126,18 +126,18 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Returns whether this item has been removed from the composition. Items removed
      * from the composition are not deleted so that they can be restored via an undo
      * command.
-     * @returns true if the item has been removed from the composition
-     * @note added in QGIS 2.5
-     * @see setIsRemoved
+     * \returns true if the item has been removed from the composition
+     * \since QGIS 2.5
+     * \see setIsRemoved
      */
     virtual bool isRemoved() const { return mRemovedFromComposition; }
 
     /** Sets whether this item has been removed from the composition. Items removed
      * from the composition are not deleted so that they can be restored via an undo
      * command.
-     * @param removed set to true if the item has been removed from the composition
-     * @note added in QGIS 2.5
-     * @see isRemoved
+     * \param removed set to true if the item has been removed from the composition
+     * \since QGIS 2.5
+     * \see isRemoved
      */
     void setIsRemoved( const bool removed ) { mRemovedFromComposition = removed; }
 
@@ -151,67 +151,67 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void move( double dx, double dy );
 
     /** Move Content of item. Does nothing per default (but implemented in composer map)
-       @param dx move in x-direction (canvas coordinates)
-       @param dy move in y-direction(canvas coordinates)*/
+       \param dx move in x-direction (canvas coordinates)
+       \param dy move in y-direction(canvas coordinates)*/
     virtual void moveContent( double dx, double dy ) { Q_UNUSED( dx ); Q_UNUSED( dy ); }
 
     /** Zoom content of item. Does nothing per default (but implemented in composer map)
-     * @param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
-     * @param point item point for zoom center
-     * @param mode zoom mode
-     * @note added in QGIS 2.5
+     * \param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
+     * \param point item point for zoom center
+     * \param mode zoom mode
+     * \since QGIS 2.5
      */
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) { Q_UNUSED( factor ); Q_UNUSED( point ); Q_UNUSED( mode ); }
 
     /** Gets the page the item is currently on.
-     * @returns page number for item, beginning on page 1
-     * @see pagePos
-     * @see updatePagePos
-     * @note this method was added in version 2.4
+     * \returns page number for item, beginning on page 1
+     * \see pagePos
+     * \see updatePagePos
+     * \since QGIS 2.4
      */
     int page() const;
 
     /** Returns the item's position relative to its current page.
-     * @returns position relative to the page's top left corner.
-     * @see page
-     * @see updatePagePos
-     * @note this method was added in version 2.4
+     * \returns position relative to the page's top left corner.
+     * \see page
+     * \see updatePagePos
+     * \since QGIS 2.4
      */
     QPointF pagePos() const;
 
     /** Moves the item so that it retains its relative position on the page
      * when the paper size changes.
-     * @param newPageWidth new width of the page in mm
-     * @param newPageHeight new height of the page in mm
-     * @see page
-     * @see pagePos
-     * @note this method was added in version 2.4
+     * \param newPageWidth new width of the page in mm
+     * \param newPageHeight new height of the page in mm
+     * \see page
+     * \see pagePos
+     * \since QGIS 2.4
      */
     void updatePagePos( double newPageWidth, double newPageHeight );
 
     /** Moves the item to a new position (in canvas coordinates)
-      @param x item position x (mm)
-      @param y item position y (mm)
-      @param itemPoint reference point which coincides with specified position
-      @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates.
+      \param x item position x (mm)
+      \param y item position y (mm)
+      \param itemPoint reference point which coincides with specified position
+      \param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates.
        a page number of 1 corresponds to the first page.
       */
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft, int page = -1 );
 
     /** Sets item position and width / height in one go
-      @param x item position x (mm)
-      @param y item position y (mm)
-      @param width item width (mm)
-      @param height item height (mm)
-      @param itemPoint reference point which coincides with specified position
-      @param posIncludesFrame set to true if the position and size arguments include the item's frame stroke
-      @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates.
+      \param x item position x (mm)
+      \param y item position y (mm)
+      \param width item width (mm)
+      \param height item height (mm)
+      \param itemPoint reference point which coincides with specified position
+      \param posIncludesFrame set to true if the position and size arguments include the item's frame stroke
+      \param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates.
        a page number of 1 corresponds to the first page.
       */
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false, int page = -1 );
 
     /** Returns item's last used position mode.
-      @note: This property has no effect on actual's item position, which is always the top-left corner. */
+      \note: This property has no effect on actual's item position, which is always the top-left corner. */
     ItemPositionMode lastUsedPositionMode() { return mLastUsedPositionMode; }
 
     /** Sets this items bound in scene coordinates such that 1 item size units
@@ -225,80 +225,80 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool _readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     /** Whether this item has a frame or not.
-     * @returns true if there is a frame around this item, otherwise false.
-     * @see setFrameEnabled
-     * @see frameStrokeWidth
-     * @see frameJoinStyle
-     * @see frameStrokeColor
+     * \returns true if there is a frame around this item, otherwise false.
+     * \see setFrameEnabled
+     * \see frameStrokeWidth
+     * \see frameJoinStyle
+     * \see frameStrokeColor
      */
     bool hasFrame() const {return mFrame;}
 
     /** Set whether this item has a frame drawn around it or not.
-     * @param drawFrame draw frame
-     * @see hasFrame
-     * @see setFrameStrokeWidth
-     * @see setFrameJoinStyle
-     * @see setFrameStrokeColor
+     * \param drawFrame draw frame
+     * \see hasFrame
+     * \see setFrameStrokeWidth
+     * \see setFrameJoinStyle
+     * \see setFrameStrokeColor
      */
     virtual void setFrameEnabled( const bool drawFrame );
 
     /** Sets frame stroke color
-     * @param color new color for stroke frame
-     * @note introduced in 2.6
-     * @see frameStrokeColor
-     * @see setFrameEnabled
-     * @see setFrameJoinStyle
-     * @see setFrameStrokeWidth
+     * \param color new color for stroke frame
+     * \since QGIS 2.6
+     * \see frameStrokeColor
+     * \see setFrameEnabled
+     * \see setFrameJoinStyle
+     * \see setFrameStrokeWidth
      */
     virtual void setFrameStrokeColor( const QColor &color );
 
     /** Returns the frame's stroke color. Only used if hasFrame is true.
-     * @returns frame stroke color
-     * @note introduced in 2.6
-     * @see hasFrame
-     * @see setFrameStrokeColor
-     * @see frameJoinStyle
-     * @see setFrameStrokeColor
+     * \returns frame stroke color
+     * \since QGIS 2.6
+     * \see hasFrame
+     * \see setFrameStrokeColor
+     * \see frameJoinStyle
+     * \see setFrameStrokeColor
      */
     QColor frameStrokeColor() const { return mFrameColor; }
 
     /** Sets frame stroke width
-     * @param strokeWidth new width for stroke frame
-     * @note introduced in 2.2
-     * @see frameStrokeWidth
-     * @see setFrameEnabled
-     * @see setFrameJoinStyle
-     * @see setFrameStrokeColor
+     * \param strokeWidth new width for stroke frame
+     * \since QGIS 2.2
+     * \see frameStrokeWidth
+     * \see setFrameEnabled
+     * \see setFrameJoinStyle
+     * \see setFrameStrokeColor
      */
     virtual void setFrameStrokeWidth( const double strokeWidth );
 
     /** Returns the frame's stroke width. Only used if hasFrame is true.
-     * @returns Frame stroke width
-     * @note introduced in 2.3
-     * @see hasFrame
-     * @see setFrameStrokeWidth
-     * @see frameJoinStyle
-     * @see frameStrokeColor
+     * \returns Frame stroke width
+     * \since QGIS 2.3
+     * \see hasFrame
+     * \see setFrameStrokeWidth
+     * \see frameJoinStyle
+     * \see frameStrokeColor
      */
     double frameStrokeWidth() const { return mFrameWidth; }
 
     /** Returns the join style used for drawing the item's frame
-     * @returns Join style for stroke frame
-     * @note introduced in 2.3
-     * @see hasFrame
-     * @see setFrameJoinStyle
-     * @see frameStrokeWidth
-     * @see frameStrokeColor
+     * \returns Join style for stroke frame
+     * \since QGIS 2.3
+     * \see hasFrame
+     * \see setFrameJoinStyle
+     * \see frameStrokeWidth
+     * \see frameStrokeColor
      */
     Qt::PenJoinStyle frameJoinStyle() const { return mFrameJoinStyle; }
 
     /** Sets join style used when drawing the item's frame
-     * @param style Join style for stroke frame
-     * @note introduced in 2.3
-     * @see setFrameEnabled
-     * @see frameJoinStyle
-     * @see setFrameStrokeWidth
-     * @see setFrameStrokeColor
+     * \param style Join style for stroke frame
+     * \since QGIS 2.3
+     * \see setFrameEnabled
+     * \see frameJoinStyle
+     * \see setFrameStrokeWidth
+     * \see setFrameStrokeColor
      */
     void setFrameJoinStyle( const Qt::PenJoinStyle style );
 
@@ -306,8 +306,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * actual rectangle. For instance, if the item has a 2mm frame stroke, then
      * 1mm of this frame is drawn outside the item's rect. In this case the
      * return value will be 1.0
-     * @note introduced in 2.2
-     * @see rectWithFrame
+     * \since QGIS 2.2
+     * \see rectWithFrame
      */
     virtual double estimatedFrameBleed() const;
 
@@ -316,78 +316,78 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      *  more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
      *  function, as rect() makes no allowances for the portion of outlines which are drawn
      *  outside of the item.
-     * @note introduced in 2.2
-     * @see estimatedFrameBleed
+     * \since QGIS 2.2
+     * \see estimatedFrameBleed
      */
     virtual QRectF rectWithFrame() const;
 
     /** Whether this item has a Background or not.
-     * @returns true if there is a Background around this item, otherwise false.
-     * @see setBackgroundEnabled
-     * @see backgroundColor
+     * \returns true if there is a Background around this item, otherwise false.
+     * \see setBackgroundEnabled
+     * \see backgroundColor
      */
     bool hasBackground() const {return mBackground;}
 
     /** Set whether this item has a Background drawn around it or not.
-     * @param drawBackground draw Background
-     * @returns nothing
-     * @see hasBackground
-     * @see setBackgroundColor
+     * \param drawBackground draw Background
+     * \returns nothing
+     * \see hasBackground
+     * \see setBackgroundColor
      */
     void setBackgroundEnabled( const bool drawBackground ) { mBackground = drawBackground; }
 
     /** Gets the background color for this item
-     * @returns background color
-     * @see setBackgroundColor
-     * @see hasBackground
+     * \returns background color
+     * \see setBackgroundColor
+     * \see hasBackground
      */
     QColor backgroundColor() const { return mBackgroundColor; }
 
     /** Sets the background color for this item
-     * @param backgroundColor new background color
-     * @returns nothing
-     * @see backgroundColor
-     * @see setBackgroundEnabled
+     * \param backgroundColor new background color
+     * \returns nothing
+     * \see backgroundColor
+     * \see setBackgroundEnabled
      */
     void setBackgroundColor( const QColor &backgroundColor );
 
     /** Returns the item's composition blending mode.
-     * @returns item blending mode
-     * @see setBlendMode
+     * \returns item blending mode
+     * \see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
     /** Sets the item's composition blending mode
-     * @param blendMode blending mode for item
-     * @see blendMode
+     * \param blendMode blending mode for item
+     * \see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode blendMode );
 
     /** Returns the item's transparency
-     * @returns transparency as integer between 0 (transparent) and 255 (opaque)
-     * @see setTransparency
+     * \returns transparency as integer between 0 (transparent) and 255 (opaque)
+     * \see setTransparency
      */
     int transparency() const { return mTransparency; }
 
     /** Sets the item's transparency
-     * @param transparency integer between 0 (transparent) and 255 (opaque)
-     * @see transparency
+     * \param transparency integer between 0 (transparent) and 255 (opaque)
+     * \see transparency
      */
     void setTransparency( const int transparency );
 
     /** Returns whether effects (e.g., blend modes) are enabled for the item
-     * @returns true if effects are enabled
-     * @see setEffectsEnabled
-     * @see transparency
-     * @see blendMode
+     * \returns true if effects are enabled
+     * \see setEffectsEnabled
+     * \see transparency
+     * \see blendMode
      */
     bool effectsEnabled() const { return mEffectsEnabled; }
 
     /** Sets whether effects (e.g., blend modes) are enabled for the item
-     * @param effectsEnabled set to true to enable effects
-     * @see effectsEnabled
-     * @see setTransparency
-     * @see setBlendMode
+     * \param effectsEnabled set to true to enable effects
+     * \see effectsEnabled
+     * \see setTransparency
+     * \see setBlendMode
      */
     void setEffectsEnabled( const bool effectsEnabled );
 
@@ -398,8 +398,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void beginItemCommand( const QString &text ) { beginCommand( text ); }
 
     /** Starts new composer undo command
-      @param commandText command title
-      @param c context for mergeable commands (unknown for non-mergeable commands*/
+      \param commandText command title
+      \param c context for mergeable commands (unknown for non-mergeable commands*/
     void beginCommand( const QString &commandText, QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
 
     virtual void endItemCommand() { endCommand(); }
@@ -411,24 +411,24 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     //painter down by the same factor for drawing
 
     /** Locks / unlocks the item position for mouse drags
-     * @param lock set to true to prevent item movement and resizing via the mouse
-     * @see positionLock
+     * \param lock set to true to prevent item movement and resizing via the mouse
+     * \see positionLock
      */
     void setPositionLock( const bool lock );
 
     /** Returns whether position lock for mouse drags is enabled
      * returns true if item is locked for mouse movement and resizing
-     * @see setPositionLock
+     * \see setPositionLock
      */
     bool positionLock() const { return mItemPositionLocked; }
 
     /** Returns the current rotation for the composer item.
-     * @returns rotation for composer item
-     * @param valueType controls whether the returned value is the user specified rotation,
+     * \returns rotation for composer item
+     * \param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
-     * @note this method was added in version 2.1
-     * @see setItemRotation
+     * \since QGIS 2.1
+     * \see setItemRotation
      */
     double itemRotation( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
@@ -440,91 +440,91 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void updateItem();
 
     /** Get item's id (which is not necessarly unique)
-     * @returns item id
-     * @see setId
+     * \returns item id
+     * \see setId
      */
     QString id() const { return mId; }
 
     /** Set item's id (which is not necessarly unique)
-     * @param id new id for item
-     * @see id
+     * \param id new id for item
+     * \see id
      */
     virtual void setId( const QString &id );
 
     /** Get item identification name
-     * @returns unique item identification string
-     * @note there is not setter since one can't manually set the id
-     * @see id
-     * @see setId
+     * \returns unique item identification string
+     * \note there is not setter since one can't manually set the id
+     * \see id
+     * \see setId
      */
     QString uuid() const { return mUuid; }
 
     /** Get item display name. This is the item's id if set, and if
      * not, a user-friendly string identifying item type.
-     * @returns display name for item
-     * @see id
-     * @see setId
-     * @note added in version 2.5
+     * \returns display name for item
+     * \see id
+     * \see setId
+     * \since QGIS 2.5
      */
     virtual QString displayName() const;
 
     /** Sets visibility for item.
-     * @param visible set to true to show item, false to hide item
-     * @note QGraphicsItem::setVisible should not be called directly
+     * \param visible set to true to show item, false to hide item
+     * \note QGraphicsItem::setVisible should not be called directly
      * on a QgsComposerItem, as some item types (e.g., groups) need to override
      * the visibility toggle.
-     * @note added in version 2.5
+     * \since QGIS 2.5
      */
     virtual void setVisibility( const bool visible );
 
     /** Returns whether the item should be excluded from composer exports and prints
-     * @param valueType controls whether the returned value is the user specified value,
+     * \param valueType controls whether the returned value is the user specified value,
      * or the current evaluated value (which may be affected by data driven settings).
-     * @returns true if item should be excluded
-     * @note added in version 2.5
-     * @see setExcludeFromExports
+     * \returns true if item should be excluded
+     * \since QGIS 2.5
+     * \see setExcludeFromExports
      */
     bool excludeFromExports( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue );
 
     /** Sets whether the item should be excluded from composer exports and prints
-     * @param exclude set to true to exclude the item from exports
-     * @note added in version 2.5
-     * @see excludeFromExports
+     * \param exclude set to true to exclude the item from exports
+     * \since QGIS 2.5
+     * \see excludeFromExports
      */
     virtual void setExcludeFromExports( const bool exclude );
 
     /** Returns whether this item is part of a group
-     * @returns true if item is in a group
-     * @note added in version 2.5
-     * @see setIsGroupMember
+     * \returns true if item is in a group
+     * \since QGIS 2.5
+     * \see setIsGroupMember
      */
     bool isGroupMember() const { return mIsGroupMember; }
 
     /** Sets whether this item is part of a group
-     * @param isGroupMember set to true if item is in a group
-     * @note added in version 2.5
-     * @see isGroupMember
+     * \param isGroupMember set to true if item is in a group
+     * \since QGIS 2.5
+     * \see isGroupMember
      */
     void setIsGroupMember( const bool isGroupMember );
 
     /** Get the number of layers that this item requires for exporting as layers
-     * @returns 0 if this item is to be placed on the same layer as the previous item,
+     * \returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
-     * @note this method was added in version 2.4
-     * @see setCurrentExportLayer
+     * \since QGIS 2.4
+     * \see setCurrentExportLayer
      */
     virtual int numberExportLayers() const { return 0; }
 
     /** Sets the current layer to draw for exporting
-     * @param layerIdx can be set to -1 to draw all item layers, and must be less than numberExportLayers()
-     * @note this method was added in version 2.4
-     * @see numberExportLayers
+     * \param layerIdx can be set to -1 to draw all item layers, and must be less than numberExportLayers()
+     * \since QGIS 2.4
+     * \see numberExportLayers
      */
     virtual void setCurrentExportLayer( const int layerIdx = -1 ) { mCurrentExportLayer = layerIdx; }
 
     /** Creates an expression context relating to the item's current state. The context includes
      * scopes for global, project, composition, atlas and item properties.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual QgsExpressionContext createExpressionContext() const override;
 
@@ -533,8 +533,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * the item will not be redrawn. This can be used to prevent
      * multiple item updates when many settings for an item are
      * changed sequentially.
-     * @note added in QGIS 3.0
-     * @see updatesEnabled()
+     * \since QGIS 3.0
+     * \see updatesEnabled()
      */
     void setUpdatesEnabled( bool enabled ) { mUpdatesEnabled = enabled; }
 
@@ -543,19 +543,19 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * the item will not be redrawn. This can be used to prevent
      * multiple item updates when many settings for an item are
      * changed sequentially.
-     * @note added in QGIS 3.0
-     * @see setUpdatesEnabled()
+     * \since QGIS 3.0
+     * \see setUpdatesEnabled()
      */
     bool updatesEnabled() const { return mUpdatesEnabled; }
 
   public slots:
 
     /** Sets the item rotation
-     * @param r item rotation in degrees
-     * @param adjustPosition set to true if item should be shifted so that rotation occurs
+     * \param r item rotation in degrees
+     * \param adjustPosition set to true if item should be shifted so that rotation occurs
      * around item center. If false, rotation occurs around item origin
-     * @note this method was added in version 2.1
-     * @see itemRotation
+     * \since QGIS 2.1
+     * \see itemRotation
      */
     virtual void setItemRotation( const double r, const bool adjustPosition = false );
 
@@ -563,11 +563,11 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Refreshes a data defined property for the item by reevaluating the property's value
      * and redrawing the item with this new value.
-     * @param property data defined property to refresh. If property is set to
+     * \param property data defined property to refresh. If property is set to
      * QgsComposerItem::AllProperties then all data defined properties for the item will be
      * refreshed.
-     * @param context expression context for evaluating data defined expressions
-     * @note this method was added in version 2.5
+     * \param context expression context for evaluating data defined expressions
+     * \since QGIS 2.5
      */
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
@@ -638,8 +638,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool mIsGroupMember;
 
     /** The layer that needs to be exported
-     * @note: if -1, all layers are to be exported
-     * @note: this member was added in version 2.4
+     * \note: if -1, all layers are to be exported
+     * \since QGIS 2.4
      */
     int mCurrentExportLayer;
 
@@ -659,7 +659,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     double rectHandlerBorderTolerance() const;
 
     /** Returns the zoom factor of the graphics view.
-     * @return the factor or -1 in case of error (e.g. graphic view does not exist)
+     * \returns the factor or -1 in case of error (e.g. graphic view does not exist)
      */
     double horizontalViewScaleFactor() const;
 
@@ -675,20 +675,20 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Evaluates an item's bounding rect to consider data defined position and size of item
      * and reference point
-     * @param newRect target bounding rect for item
-     * @param resizeOnly set to true if the item is only being resized. If true then
+     * \param newRect target bounding rect for item
+     * \param resizeOnly set to true if the item is only being resized. If true then
      * the position of the returned rect will be adjusted to account for the item's
      * position mode
-     * @param context expression context for evaluating data defined expressions
-     * @returns bounding box rectangle for item after data defined size and position have been
+     * \param context expression context for evaluating data defined expressions
+     * \returns bounding box rectangle for item after data defined size and position have been
      * set and position mode has been accounted for
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false, const QgsExpressionContext *context = nullptr );
 
     /** Returns whether the item should be drawn in the current context
-     * @returns true if item should be drawn
-     * @note added in QGIS 2.5
+     * \returns true if item should be drawn
+     * \since QGIS 2.5
      */
     bool shouldDrawItem() const;
 
@@ -699,12 +699,12 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void sizeChanged();
 
     /** Emitted if the item's frame style changes
-     * @note: this function was introduced in version 2.2
+     * \since QGIS 2.2
      */
     void frameChanged();
 
     /** Emitted if the item's lock status changes
-     * @note: this function was introduced in version 2.5
+     * \since QGIS 2.5
      */
     void lockChanged();
 
@@ -725,38 +725,38 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool mUpdatesEnabled = true;
 
     /** Refresh item's rotation, considering data defined rotation setting
-      *@param updateItem set to false to prevent the item being automatically updated
-      *@param rotateAroundCenter set to true to rotate the item around its center rather
+      *\param updateItem set to false to prevent the item being automatically updated
+      *\param rotateAroundCenter set to true to rotate the item around its center rather
       * than its origin
-      * @param context expression context for evaulating data defined rotation
-      * @note this method was added in version 2.5
+      * \param context expression context for evaulating data defined rotation
+      * \since QGIS 2.5
      */
     void refreshRotation( const bool updateItem = true, const bool rotateAroundCenter = false, const QgsExpressionContext &context = QgsExpressionContext() );
 
     /** Refresh item's transparency, considering data defined transparency
-      * @param updateItem set to false to prevent the item being automatically updated
+      * \param updateItem set to false to prevent the item being automatically updated
       * after the transparency is set
-      * @param context expression context for evaulating data defined transparency
-      * @note this method was added in version 2.5
+      * \param context expression context for evaulating data defined transparency
+      * \since QGIS 2.5
      */
     void refreshTransparency( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
     /** Refresh item's frame color, considering data defined transparency
-      * @param updateItem set to false to prevent the item being automatically updated
+      * \param updateItem set to false to prevent the item being automatically updated
       * after the frame color is set
-      * @param context expression context for evaulating data defined transparency
+      * \param context expression context for evaulating data defined transparency
      */
     void refreshFrameColor( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
     /** Refresh item's transparency, considering data defined transparency
-      * @param updateItem set to false to prevent the item being automatically updated
+      * \param updateItem set to false to prevent the item being automatically updated
       * after the background color is set
-      * @param context expression context for evaulating data defined transparency
+      * \param context expression context for evaulating data defined transparency
      */
     void refreshBackgroundColor( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
     /** Refresh item's blend mode, considering data defined blend mode
-     * @note this method was added in version 2.5
+     * \since QGIS 2.5
      */
     void refreshBlendMode( const QgsExpressionContext &context );
 

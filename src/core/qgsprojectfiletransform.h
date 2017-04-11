@@ -43,8 +43,8 @@ class CORE_EXPORT QgsProjectFileTransform
     //QgsProjectfiletransform() {}
 
     /** Create an instance from a Dom and a supplied version
-     * @param domDocument The Dom document to use as content
-     * @param version Version number
+     * \param domDocument The Dom document to use as content
+     * \param version Version number
      */
     QgsProjectFileTransform( QDomDocument &domDocument,
                              const QgsProjectVersion &version )

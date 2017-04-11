@@ -28,7 +28,7 @@
  * is not an option because of some technical limitations (e.g. printing to printer on some
  * platforms).
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
 {
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     virtual bool usedCachedLabels() const override;
     virtual QgsLabelingResults *takeLabelingResults() override;
 
-    //! @note not available in python bindings
+    //! \note not available in Python bindings
     const LayerRenderJobs &jobs() const { return mLayerJobs; }
 
     /**

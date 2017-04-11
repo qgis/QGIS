@@ -46,12 +46,19 @@ class Difference(GeoAlgorithm):
     IGNORE_INVALID = 'IGNORE_INVALID'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'difference.png'))
 
+    def group(self):
+        return self.tr('Vector overlay tools')
+
+    def name(self):
+        return 'difference'
+
+    def displayName(self):
+        return self.tr('Difference')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Difference')
-        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Difference.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(Difference.OVERLAY,
@@ -59,9 +66,9 @@ class Difference(GeoAlgorithm):
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
     def processAlgorithm(self, feedback):
-        layerA = dataobjects.getObjectFromUri(
+        layerA = dataobjects.getLayerFromString(
             self.getParameterValue(Difference.INPUT))
-        layerB = dataobjects.getObjectFromUri(
+        layerB = dataobjects.getLayerFromString(
             self.getParameterValue(Difference.OVERLAY))
 
         geomType = QgsWkbTypes.multiType(layerA.wkbType())

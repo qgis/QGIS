@@ -55,12 +55,19 @@ class RandomPointsExtent(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     CRS = 'CRS'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
+    def name(self):
+        return 'randompointsinextent'
+
+    def displayName(self):
+        return self.tr('Random points in extent')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random points in extent')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Input extent'), optional=False))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,

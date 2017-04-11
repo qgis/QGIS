@@ -26,7 +26,13 @@ __copyright__ = '(C) 2015, Loïc BARTOLETTI'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField, QgsFields, QgsGeometry, QgsFeature, QgsWkbTypes, QgsFeatureRequest
+from qgis.core import (QgsField,
+                       QgsFields,
+                       QgsGeometry,
+                       QgsFeature,
+                       QgsWkbTypes,
+                       QgsFeatureRequest,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -42,10 +48,22 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Oriented minimum bounding box')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'orientedminimumboundingbox'
+
+    def displayName(self):
+        return self.tr('Oriented minimum bounding box')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
@@ -54,7 +72,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
 

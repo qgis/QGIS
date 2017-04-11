@@ -113,15 +113,15 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 
   cboRenderers->setCurrentIndex( -1 ); // set no current renderer
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererPropertiesDialog::onOK );
 
   // connect layer transparency slider and spin box
-  connect( mLayerTransparencySlider, SIGNAL( valueChanged( int ) ), mLayerTransparencySpnBx, SLOT( setValue( int ) ) );
-  connect( mLayerTransparencySpnBx, SIGNAL( valueChanged( int ) ), mLayerTransparencySlider, SLOT( setValue( int ) ) );
+  connect( mLayerTransparencySlider, &QAbstractSlider::valueChanged, mLayerTransparencySpnBx, &QSpinBox::setValue );
+  connect( mLayerTransparencySpnBx, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mLayerTransparencySlider, &QAbstractSlider::setValue );
 
-  connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
-  connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), btnOrderBy, SLOT( setEnabled( bool ) ) );
-  connect( btnOrderBy, SIGNAL( clicked( bool ) ), this, SLOT( showOrderByDialog() ) );
+  connect( cboRenderers, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRendererPropertiesDialog::rendererChanged );
+  connect( checkboxEnableOrderBy, &QAbstractButton::toggled, btnOrderBy, &QWidget::setEnabled );
+  connect( btnOrderBy, &QAbstractButton::clicked, this, &QgsRendererPropertiesDialog::showOrderByDialog );
 
   syncToLayer();
 
@@ -257,9 +257,9 @@ void QgsRendererPropertiesDialog::rendererChanged()
         mActiveWidget->setContext( context );
       }
       changeOrderBy( mActiveWidget->renderer()->orderBy(), mActiveWidget->renderer()->orderByEnabled() );
-      connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
+      connect( mActiveWidget, &QgsRendererWidget::layerVariablesChanged, this, &QgsRendererPropertiesDialog::layerVariablesChanged );
     }
-    connect( mActiveWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+    connect( mActiveWidget, &QgsPanelWidget::widgetChanged, this, &QgsRendererPropertiesDialog::widgetChanged );
     connect( mActiveWidget, &QgsPanelWidget::showPanel, this, &QgsRendererPropertiesDialog::openPanel );
     w->setDockMode( mDockMode );
   }
@@ -324,7 +324,7 @@ void QgsRendererPropertiesDialog::openPanel( QgsPanelWidget *panel )
     dlg->setLayout( new QVBoxLayout() );
     dlg->layout()->addWidget( panel );
     QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
-    connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
+    connect( buttonBox, &QDialogButtonBox::accepted, dlg, &QDialog::accept );
     dlg->layout()->addWidget( buttonBox );
     dlg->exec();
     settings.setValue( key, dlg->saveGeometry() );

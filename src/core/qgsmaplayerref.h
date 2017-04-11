@@ -22,7 +22,7 @@
 
 /** Internal structure to keep weak pointer to QgsMapLayer or layerId
  *  if the layer is not available yet.
- *  @note not available in python bindings
+ *  \note not available in Python bindings
  */
 template<typename TYPE>
 struct _LayerRef

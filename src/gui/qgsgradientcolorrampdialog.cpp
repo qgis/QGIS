@@ -64,8 +64,8 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   btnColor2->setShowNoColor( true );
   btnColor2->setNoColorString( tr( "Transparent" ) );
   updateColorButtons();
-  connect( btnColor1, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor1( const QColor & ) ) );
-  connect( btnColor2, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor2( const QColor & ) ) );
+  connect( btnColor1, &QgsColorButton::colorChanged, this, &QgsGradientColorRampDialog::setColor1 );
+  connect( btnColor2, &QgsColorButton::colorChanged, this, &QgsGradientColorRampDialog::setColor2 );
 
   // fill type combobox
   cboType->blockSignals( true );
@@ -81,10 +81,10 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
     btnInformation->setEnabled( false );
 
   mStopEditor->setGradientRamp( mRamp );
-  connect( mStopEditor, SIGNAL( changed() ), this, SLOT( updateRampFromStopEditor() ) );
+  connect( mStopEditor, &QgsGradientStopEditor::changed, this, &QgsGradientColorRampDialog::updateRampFromStopEditor );
 
-  connect( mColorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( colorWidgetChanged( QColor ) ) );
-  connect( mDeleteStopButton, SIGNAL( clicked() ), mStopEditor, SLOT( deleteSelectedStop() ) );
+  connect( mColorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsGradientColorRampDialog::colorWidgetChanged );
+  connect( mDeleteStopButton, &QAbstractButton::clicked, mStopEditor, &QgsGradientStopEditor::deleteSelectedStop );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/GradientEditor/geometry" ) ).toByteArray() );
@@ -135,9 +135,9 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   mAlphaCurve->attach( mPlot );
 
   mPlotFilter = new QgsGradientPlotEventFilter( mPlot );
-  connect( mPlotFilter, SIGNAL( mousePress( QPointF ) ), this, SLOT( plotMousePress( QPointF ) ) );
-  connect( mPlotFilter, SIGNAL( mouseRelease( QPointF ) ), this, SLOT( plotMouseRelease( QPointF ) ) );
-  connect( mPlotFilter, SIGNAL( mouseMove( QPointF ) ), this, SLOT( plotMouseMove( QPointF ) ) );
+  connect( mPlotFilter, &QgsGradientPlotEventFilter::mousePress, this, &QgsGradientColorRampDialog::plotMousePress );
+  connect( mPlotFilter, &QgsGradientPlotEventFilter::mouseRelease, this, &QgsGradientColorRampDialog::plotMouseRelease );
+  connect( mPlotFilter, &QgsGradientPlotEventFilter::mouseMove, this, &QgsGradientColorRampDialog::plotMouseMove );
 
   mPlotHueCheckbox->setChecked( settings.value( QStringLiteral( "GradientEditor/plotHue" ), false ).toBool() );
   mPlotLightnessCheckbox->setChecked( settings.value( QStringLiteral( "GradientEditor/plotLightness" ), true ).toBool() );
@@ -149,7 +149,7 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   mSaturationCurve->setVisible( mPlotSaturationCheckbox->isChecked() );
   mAlphaCurve->setVisible( mPlotAlphaCheckbox->isChecked() );
 
-  connect( mStopEditor, SIGNAL( selectedStopChanged( QgsGradientStop ) ), this, SLOT( selectedStopChanged( QgsGradientStop ) ) );
+  connect( mStopEditor, &QgsGradientStopEditor::selectedStopChanged, this, &QgsGradientColorRampDialog::selectedStopChanged );
   mStopEditor->selectStop( 0 );
 }
 

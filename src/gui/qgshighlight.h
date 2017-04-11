@@ -32,30 +32,33 @@ class QgsSymbol;
 
 /** \ingroup gui
  * A class for highlight features on the map.
+ *
+ * The QgsHighlight class provides a transparent overlay widget
+  for highlighting features on the map.
  */
 class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 {
   public:
 
     /** Constructor for QgsHighlight
-     * @param mapCanvas associated map canvas
-     * @param geom initial geometry of highlight
-     * @param layer associated map layer
+     * \param mapCanvas associated map canvas
+     * \param geom initial geometry of highlight
+     * \param layer associated map layer
      */
     QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer );
 
     /** Constructor for QgsHighlight
-     * @param mapCanvas associated map canvas
-     * @param geom initial geometry of highlight
-     * @param layer associated vector layer
+     * \param mapCanvas associated map canvas
+     * \param geom initial geometry of highlight
+     * \param layer associated vector layer
      */
     QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsVectorLayer *layer );
 
     /** Constructor for highlighting true feature shape using feature attributes
      * and renderer.
-     * @param mapCanvas map canvas
-     * @param feature
-     * @param layer vector layer
+     * \param mapCanvas map canvas
+     * \param feature
+     * \param layer vector layer
      */
     QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature &feature, QgsVectorLayer *layer );
     ~QgsHighlight();
@@ -65,18 +68,18 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void setColor( const QColor &color );
 
     /** Set polygons fill color.
-     * @note: added in version 2.3 */
+     * \since QGIS 2.3 */
     void setFillColor( const QColor &fillColor );
 
-    //! Set width. Ignored in feature mode.
+    //! Set stroke width. Ignored in feature mode.
     void setWidth( int width );
 
     /** Set line / stroke buffer in millimeters.
-     *  @note: added in version 2.3 */
+     *  \since QGIS 2.3 */
     void setBuffer( double buffer ) { mBuffer = buffer; }
 
     /** Set minimum line / stroke width in millimeters.
-     *  @note: added in version 2.3 */
+     *  \since QGIS 2.3 */
     void setMinWidth( double width ) { mMinWidth = width; }
 
     const QgsMapLayer *layer() const { return mLayer; }

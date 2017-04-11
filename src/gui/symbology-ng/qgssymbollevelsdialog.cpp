@@ -42,7 +42,7 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, b
 
   chkEnable->setChecked( usingSymbolLevels );
 
-  connect( chkEnable, SIGNAL( clicked() ), this, SLOT( updateUi() ) );
+  connect( chkEnable, &QAbstractButton::clicked, this, &QgsSymbolLevelsDialog::updateUi );
 
   if ( mList.count() > 0 && !mList[0].second )
   {
@@ -83,7 +83,7 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, b
 
   populateTable();
 
-  connect( tableLevels, SIGNAL( cellChanged( int, int ) ), this, SLOT( renderingPassChanged( int, int ) ) );
+  connect( tableLevels, &QTableWidget::cellChanged, this, &QgsSymbolLevelsDialog::renderingPassChanged );
 }
 
 QgsSymbolLevelsDialog::~QgsSymbolLevelsDialog()

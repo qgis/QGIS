@@ -24,6 +24,7 @@ __copyright__ = '(C) 2015, Etienne Trimaille'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import (ParameterVector,
                                         ParameterNumber)
@@ -37,11 +38,25 @@ class DeleteHoles(GeoAlgorithm):
     MIN_AREA = 'MIN_AREA'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Delete holes')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('remove,delete,drop,holes,rings,fill')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('remove,delete,drop,holes,rings,fill').split(',')
+
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'deleteholes'
+
+    def displayName(self):
+        return self.tr('Delete holes')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.MIN_AREA,
@@ -50,7 +65,7 @@ class DeleteHoles(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         min_area = self.getParameterValue(self.MIN_AREA)
         if min_area is not None:

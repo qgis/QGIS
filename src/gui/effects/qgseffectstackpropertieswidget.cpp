@@ -118,15 +118,15 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
   mEffectsList->setModel( mModel );
 
   QItemSelectionModel *selModel = mEffectsList->selectionModel();
-  connect( selModel, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( effectChanged() ) );
+  connect( selModel, &QItemSelectionModel::currentChanged, this, &QgsEffectStackPropertiesWidget::effectChanged );
 
   loadStack( stack );
   updatePreview();
 
-  connect( mUpButton, SIGNAL( clicked() ), this, SLOT( moveEffectUp() ) );
-  connect( mDownButton, SIGNAL( clicked() ), this, SLOT( moveEffectDown() ) );
-  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addEffect() ) );
-  connect( mRemoveButton, SIGNAL( clicked() ), this, SLOT( removeEffect() ) );
+  connect( mUpButton, &QAbstractButton::clicked, this, &QgsEffectStackPropertiesWidget::moveEffectUp );
+  connect( mDownButton, &QAbstractButton::clicked, this, &QgsEffectStackPropertiesWidget::moveEffectDown );
+  connect( mAddButton, &QAbstractButton::clicked, this, &QgsEffectStackPropertiesWidget::addEffect );
+  connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsEffectStackPropertiesWidget::removeEffect );
 
   updateUi();
 
@@ -253,12 +253,11 @@ void QgsEffectStackPropertiesWidget::effectChanged()
   if ( !currentItem )
     return;
 
-  QWidget *effectPropertiesWidget = new QgsPaintEffectPropertiesWidget( currentItem->effect() );
+  QgsPaintEffectPropertiesWidget *effectPropertiesWidget = new QgsPaintEffectPropertiesWidget( currentItem->effect() );
   setWidget( effectPropertiesWidget );
 
-  connect( effectPropertiesWidget, SIGNAL( changeEffect( QgsPaintEffect * ) ), this, SLOT( changeEffect( QgsPaintEffect * ) ) );
-  connect( effectPropertiesWidget, SIGNAL( changed() ), this, SLOT( updatePreview() ) );
-
+  connect( effectPropertiesWidget, &QgsPaintEffectPropertiesWidget::changeEffect, this, &QgsEffectStackPropertiesWidget::changeEffect );
+  connect( effectPropertiesWidget, &QgsPaintEffectPropertiesWidget::changed, this, &QgsEffectStackPropertiesWidget::updatePreview );
 }
 
 void QgsEffectStackPropertiesWidget::setWidget( QWidget *widget )
@@ -408,8 +407,8 @@ QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent, QgsPa
   setFocusPolicy( Qt::StrongFocus );
   setFocusProxy( mEnabledCheckBox );
 
-  connect( mButton, SIGNAL( clicked() ), this, SLOT( showDialog() ) );
-  connect( mEnabledCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( enableToggled( bool ) ) );
+  connect( mButton, &QAbstractButton::clicked, this, &QgsEffectStackCompactWidget::showDialog );
+  connect( mEnabledCheckBox, &QAbstractButton::toggled, this, &QgsEffectStackCompactWidget::enableToggled );
 
   setPaintEffect( effect );
 }
@@ -466,7 +465,7 @@ void QgsEffectStackCompactWidget::showDialog()
   {
     widget->setPreviewPicture( *mPreviewPicture );
   }
-  connect( widget, SIGNAL( widgetChanged() ), this, SLOT( updateEffectLive() ) );
+  connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsEffectStackCompactWidget::updateEffectLive );
   connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsEffectStackCompactWidget::updateAcceptWidget );
   openPanel( widget );
 }

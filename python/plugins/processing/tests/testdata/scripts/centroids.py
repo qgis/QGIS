@@ -6,8 +6,9 @@
 from qgis.core import QgsWkbTypes, QgsGeometry
 
 from processing.tools.vector import VectorWriter
+from processing.tools import dataobjects
 
-layer = processing.getObject(INPUT_LAYER)
+layer = dataobjects.getLayerFromString(INPUT_LAYER)
 fields = layer.fields()
 
 writer = VectorWriter(OUTPUT_LAYER, 'utf-8', fields, QgsWkbTypes.Point, layer.crs())

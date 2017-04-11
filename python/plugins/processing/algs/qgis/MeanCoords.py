@@ -51,13 +51,19 @@ class MeanCoords(GeoAlgorithm):
     UID = 'UID'
     WEIGHT = 'WEIGHT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'mean.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Mean coordinate(s)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def group(self):
+        return self.tr('Vector analysis tools')
 
+    def name(self):
+        return 'meancoordinates'
+
+    def displayName(self):
+        return self.tr('Mean coordinate(s)')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.WEIGHT,
@@ -73,7 +79,7 @@ class MeanCoords(GeoAlgorithm):
         self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)
 

@@ -35,31 +35,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QSCINTILLA_INCLUDE_DIR}
 )
 
-#############################################################
-# Compiler defines
-
-# This define is used for tests that need to locate the test
-# data under tests/testdata in the qgis source tree.
-# the TEST_DATA_DIR variable is set in the top level CMakeLists.txt
-ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
-
-ADD_DEFINITIONS(-DINSTALL_PREFIX="\\"${CMAKE_INSTALL_PREFIX}\\"")
-#############################################################
-# libraries
-
-# because of htonl
-IF (WIN32)
-  SET(PLATFORM_LIBRARIES wsock32)
-ENDIF (WIN32)
-
-# Since the tests are not actually installed, but rather
-# run directly from the build/src/tests dir we need to
-# ensure the qgis libs can be found.
-IF (APPLE)
-  # For Mac OS X, the executable must be at the root of the bundle's executable folder
-#  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
-ENDIF (APPLE)
-
 #note for tests we should not include the moc of our
 #qtests in the executable file list as the moc is
 #directly included in the sources

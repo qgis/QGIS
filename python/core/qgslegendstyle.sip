@@ -1,48 +1,96 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslegendstyle.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsLegendStyle
 {
+%Docstring
+ Composer legend components style
+%End
+
 %TypeHeaderCode
-#include <qgslegendstyle.h>
+#include "qgslegendstyle.h"
 %End
   public:
     enum Style
     {
-      Undefined, // should not happen, only if corrupted project file
-      Hidden, // special style, item is hidden includeing margins around
+      Undefined,
+      Hidden,
       Title,
       Group,
-      Subgroup, // layer
-      Symbol, // symbol without label
+      Subgroup,
+      Symbol,
       SymbolLabel
     };
-    enum Side // margin side
+
+    enum Side
     {
       Top,
       Bottom,
       Left,
-      Right,
-    };
+      Right    };
+
     QgsLegendStyle();
 
     QFont font() const;
-    QFont & rfont();
-    void setFont( const QFont & font );
+%Docstring
+ The font for this style.
+ :rtype: QFont
+%End
+
+    void setFont( const QFont &font );
+%Docstring
+ The font for this style.
+%End
+
 
     double margin( Side side );
+%Docstring
+ :rtype: float
+%End
     void setMargin( Side side, double margin );
 
-    // set all margins
     void setMargin( double margin );
+%Docstring
+set all margins
+%End
 
-    void writeXml( const QString& name, QDomElement& elem, QDomDocument & doc ) const;
+    void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const;
 
-    void readXml( const QDomElement& elem, const QDomDocument& doc );
+    void readXml( const QDomElement &elem, const QDomDocument &doc );
 
-    /** Get name for style, used in project file */
     static QString styleName( Style s );
+%Docstring
+Get name for style, used in project file
+ :rtype: str
+%End
 
-    /** Get style from name, used in project file */
-    static Style styleFromName( const QString& styleName );
+    static Style styleFromName( const QString &styleName );
+%Docstring
+Get style from name, used in project file
+ :rtype: Style
+%End
 
-    /** Get style label, translated, used in UI */
     static QString styleLabel( Style s );
+%Docstring
+Get style label, translated, used in UI
+ :rtype: str
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslegendstyle.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

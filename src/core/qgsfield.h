@@ -58,16 +58,16 @@ class CORE_EXPORT QgsField
   public:
 
     /** Constructor. Constructs a new QgsField object.
-     * @param name Field name
-     * @param type Field variant type, currently supported: String / Int / Double
-     * @param typeName Field type (e.g., char, varchar, text, int, serial, double).
+     * \param name Field name
+     * \param type Field variant type, currently supported: String / Int / Double
+     * \param typeName Field type (e.g., char, varchar, text, int, serial, double).
      * Field types are usually unique to the source and are stored exactly
      * as returned from the data store.
-     * @param len Field length
-     * @param prec Field precision. Usually decimal places but may also be
+     * \param len Field length
+     * \param prec Field precision. Usually decimal places but may also be
      * used in conjunction with other fields types (e.g., variable character fields)
-     * @param comment Comment for the field
-     * @param subType If the field is a collection, its element's type. When
+     * \param comment Comment for the field
+     * \param subType If the field is a collection, its element's type. When
      *                all the elements don't need to have the same type, leave
      *                this to QVariant::Invalid.
      */
@@ -93,16 +93,16 @@ class CORE_EXPORT QgsField
     bool operator!=( const QgsField &other ) const;
 
     /** Returns the name of the field.
-     * @see setName()
-     * @see displayName()
+     * \see setName()
+     * \see displayName()
      */
     QString name() const;
 
     /** Returns the name to use when displaying this field. This will be the
      * field alias if set, otherwise the field name.
-     * @see name()
-     * @see alias()
-     * @note added in QGIS 3.0
+     * \see name()
+     * \see alias()
+     * \since QGIS 3.0
      */
     QString displayName() const;
 
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsField
      * If the field is a collection, gets its element's type.
      * When all the elements don't need to have the same type, this returns
      * QVariant::Invalid.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QVariant::Type subType() const;
 
@@ -121,19 +121,19 @@ class CORE_EXPORT QgsField
      * Gets the field type. Field types vary depending on the data source. Examples
      * are char, int, double, blob, geometry, etc. The type is stored exactly as
      * the data store reports it, with no attempt to standardize the value.
-     * @return QString containing the field type
+     * \returns QString containing the field type
      */
     QString typeName() const;
 
     /**
      * Gets the length of the field.
-     * @return int containing the length of the field
+     * \returns int containing the length of the field
      */
     int length() const;
 
     /**
      * Gets the precision of the field. Not all field types have a related precision.
-     * @return int containing the precision or zero if not applicable to the field type.
+     * \returns int containing the precision or zero if not applicable to the field type.
      */
     int precision() const;
 
@@ -146,13 +146,13 @@ class CORE_EXPORT QgsField
      * Returns if this field is numeric. Any integer or floating point type
      * will return true for this.
      *
-     * @note added in QGIS 2.18
+     * \since QGIS 2.18
      */
     bool isNumeric() const;
 
     /**
      * Set the field name.
-     * @param name Name of the field
+     * \param name Name of the field
      */
     void setName( const QString &name );
 
@@ -165,25 +165,25 @@ class CORE_EXPORT QgsField
      * If the field is a collection, set its element's type.
      * When all the elements don't need to have the same type, set this to
      * QVariant::Invalid.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setSubType( QVariant::Type subType );
 
     /**
      * Set the field type.
-     * @param typeName Field type
+     * \param typeName Field type
      */
     void setTypeName( const QString &typeName );
 
     /**
      * Set the field length.
-     * @param len Length of the field
+     * \param len Length of the field
      */
     void setLength( int len );
 
     /**
      * Set the field precision.
-     * @param precision Precision of the field
+     * \param precision Precision of the field
      */
     void setPrecision( int precision );
 
@@ -193,46 +193,46 @@ class CORE_EXPORT QgsField
     void setComment( const QString &comment );
 
     /** Returns the expression used when calculating the default value for the field.
-     * @returns expression evaluated when calculating default values for field, or an
+     * \returns expression evaluated when calculating default values for field, or an
      * empty string if no default is set
-     * @note added in QGIS 3.0
-     * @see setDefaultValueExpression()
+     * \since QGIS 3.0
+     * \see setDefaultValueExpression()
      */
     QString defaultValueExpression() const;
 
     /** Sets an expression to use when calculating the default value for the field.
-     * @param expression expression to evaluate when calculating default values for field. Pass
+     * \param expression expression to evaluate when calculating default values for field. Pass
      * an empty expression to clear the default.
-     * @note added in QGIS 3.0
-     * @see defaultValueExpression()
+     * \since QGIS 3.0
+     * \see defaultValueExpression()
      */
     void setDefaultValueExpression( const QString &expression );
 
     /**
      * Returns constraints which are present for the field.
-     * @note added in QGIS 3.0
-     * @see setConstraints()
+     * \since QGIS 3.0
+     * \see setConstraints()
      */
     const QgsFieldConstraints &constraints() const;
 
     /**
      * Sets constraints which are present for the field.
-     * @note added in QGIS 3.0
-     * @see constraints()
+     * \since QGIS 3.0
+     * \see constraints()
      */
     void setConstraints( const QgsFieldConstraints &constraints );
 
     /** Returns the alias for the field (the friendly displayed name of the field ),
      * or an empty string if there is no alias.
-     * @see setAlias()
-     * @note added in QGIS 3.0
+     * \see setAlias()
+     * \since QGIS 3.0
      */
     QString alias() const;
 
     /** Sets the alias for the field (the friendly displayed name of the field ).
-     * @param alias field alias, or empty string to remove an existing alias
-     * @see alias()
-     * @note added in QGIS 3.0
+     * \param alias field alias, or empty string to remove an existing alias
+     * \see alias()
+     * \since QGIS 3.0
      */
     void setAlias( const QString &alias );
 
@@ -242,9 +242,9 @@ class CORE_EXPORT QgsField
     /**
      * Converts the provided variant to a compatible format
      *
-     * @param v  The value to convert
+     * \param v  The value to convert
      *
-     * @return   True if the conversion was successful
+     * \returns   True if the conversion was successful
      */
     bool convertCompatible( QVariant &v ) const;
 
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsField
     /**
      * Set the editor widget setup for the field.
      *
-     * @param v  The value to set
+     * \param v  The value to set
      */
     void setEditorWidgetSetup( const QgsEditorWidgetSetup &v );
 
@@ -267,7 +267,7 @@ class CORE_EXPORT QgsField
      * Defaults may be set by the provider and can be overridden
      * by manual field configuration.
      *
-     * @return the value
+     * \returns the value
      */
     QgsEditorWidgetSetup editorWidgetSetup() const;
 

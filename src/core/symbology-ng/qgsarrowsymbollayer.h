@@ -23,7 +23,7 @@
 /** \ingroup core
  * \class QgsArrowSymbolLayer
  * \brief Line symbol layer used for representing lines as arrows.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
@@ -35,9 +35,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     /**
      * Create a new QgsArrowSymbolLayer
      *
-     * @param properties A property map to deserialize saved information from properties()
+     * \param properties A property map to deserialize saved information from properties()
      *
-     * @return A new QgsArrowSymbolLayer
+     * \returns A new QgsArrowSymbolLayer
      */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
 

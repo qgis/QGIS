@@ -118,7 +118,7 @@ bool QgsRasterInterface::hasStatistics( int bandNo,
 QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
     int stats,
     const QgsRectangle &extent,
-    int sampleSize )
+    int sampleSize, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsgLevel( QString( "theBandNo = %1 stats = %2 sampleSize = %3" ).arg( bandNo ).arg( stats ).arg( sampleSize ), 4 );
 
@@ -169,6 +169,9 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
   {
     for ( int myXBlock = 0; myXBlock < myNXBlocks; myXBlock++ )
     {
+      if ( feedback && feedback->isCanceled() )
+        return myRasterBandStats;
+
       QgsDebugMsgLevel( QString( "myYBlock = %1 myXBlock = %2" ).arg( myYBlock ).arg( myXBlock ), 4 );
       int myBlockWidth = qMin( myXBlockSize, myWidth - myXBlock * myXBlockSize );
       int myBlockHeight = qMin( myYBlockSize, myHeight - myYBlock * myYBlockSize );
@@ -180,7 +183,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
 
       QgsRectangle myPartExtent( xmin, ymin, xmax, ymax );
 
-      QgsRasterBlock *blk = block( bandNo, myPartExtent, myBlockWidth, myBlockHeight );
+      QgsRasterBlock *blk = block( bandNo, myPartExtent, myBlockWidth, myBlockHeight, feedback );
 
       // Collect the histogram counts.
       for ( qgssize i = 0; i < ( static_cast< qgssize >( myBlockHeight ) ) * myBlockWidth; i++ )
@@ -394,7 +397,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
     double minimum, double maximum,
     const QgsRectangle &extent,
     int sampleSize,
-    bool includeOutOfRange )
+    bool includeOutOfRange, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsgLevel( QString( "theBandNo = %1 binCount = %2 minimum = %3 maximum = %4 sampleSize = %5" ).arg( bandNo ).arg( binCount ).arg( minimum ).arg( maximum ).arg( sampleSize ), 4 );
 
@@ -452,6 +455,9 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
   {
     for ( int myXBlock = 0; myXBlock < myNXBlocks; myXBlock++ )
     {
+      if ( feedback && feedback->isCanceled() )
+        return myHistogram;
+
       int myBlockWidth = qMin( myXBlockSize, myWidth - myXBlock * myXBlockSize );
       int myBlockHeight = qMin( myYBlockSize, myHeight - myYBlock * myYBlockSize );
 
@@ -462,7 +468,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
 
       QgsRectangle myPartExtent( xmin, ymin, xmax, ymax );
 
-      QgsRasterBlock *blk = block( bandNo, myPartExtent, myBlockWidth, myBlockHeight );
+      QgsRasterBlock *blk = block( bandNo, myPartExtent, myBlockWidth, myBlockHeight, feedback );
 
       // Collect the histogram counts.
       for ( qgssize i = 0; i < ( static_cast< qgssize >( myBlockHeight ) ) * myBlockWidth; i++ )

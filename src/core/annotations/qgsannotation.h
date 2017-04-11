@@ -28,7 +28,7 @@
 
 /** \ingroup core
  * \class QgsAnnotation
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  *
  * \brief Abstract base class for annotation items which are drawn over a map.
  *
@@ -59,13 +59,13 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
     /**
      * Returns true if the annotation is visible and should be rendered.
-     * @see setVisible()
+     * \see setVisible()
      */
     bool isVisible() const { return mVisible; }
 
     /**
      * Sets whether the annotation is visible and should be rendered.
-     * @see isVisible()
+     * \see isVisible()
      */
     void setVisible( bool visible );
 
@@ -73,45 +73,45 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Returns true if the annotation is attached to a fixed map position, or
      * false if the annotation uses a position relative to the current map
      * extent.
-     * @see setHasFixedMapPosition()
-     * @see mapPosition()
-     * @see relativePosition()
+     * \see setHasFixedMapPosition()
+     * \see mapPosition()
+     * \see relativePosition()
      */
     bool hasFixedMapPosition() const { return mHasFixedMapPosition; }
 
     /**
      * Sets whether the annotation is attached to a fixed map position, or
      * uses a position relative to the current map extent.
-     * @see hasFixedMapPosition()
+     * \see hasFixedMapPosition()
      */
     void setHasFixedMapPosition( bool fixed );
 
     /**
      * Returns the map position of the annotation, if it is attached to a fixed map
      * position.
-     * @see setMapPosition()
-     * @see hasFixedMapPosition()
-     * @see mapPositionCrs()
+     * \see setMapPosition()
+     * \see hasFixedMapPosition()
+     * \see mapPositionCrs()
      */
     QgsPoint mapPosition() const { return mMapPosition; }
 
     /**
      * Sets the map position of the annotation, if it is attached to a fixed map
      * position.
-     * @see mapPosition()
+     * \see mapPosition()
      */
     void setMapPosition( const QgsPoint &position );
 
     /**
      * Returns the CRS of the map position, or an invalid CRS if the annotation does
      * not have a fixed map position.
-     * @see setMapPositionCrs()
+     * \see setMapPositionCrs()
      */
     QgsCoordinateReferenceSystem mapPositionCrs() const { return mMapPositionCrs; }
 
     /**
      * Sets the CRS of the map position.
-     * @see mapPositionCrs()
+     * \see mapPositionCrs()
      */
     void setMapPositionCrs( const QgsCoordinateReferenceSystem &crs );
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Returns the relative position of the annotation, if it is not attached to a fixed map
      * position. The coordinates in the return point should be between 0 and 1, and represent
      * the relative percentage for the position compared to the map width and height.
-     * @see setRelativePosition()
+     * \see setRelativePosition()
      */
     QPointF relativePosition() const { return mRelativePosition; }
 
@@ -127,60 +127,60 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Sets the relative position of the annotation, if it is not attached to a fixed map
      * position. The coordinates in the return point should be between 0 and 1, and represent
      * the relative percentage for the position compared to the map width and height.
-     * @see relativePosition()
+     * \see relativePosition()
      */
     void setRelativePosition( QPointF position );
 
     /**
      * Sets the annotation's frame's offset from the mapPosition() reference point.
-     * @see frameOffsetFromReferencePoint()
+     * \see frameOffsetFromReferencePoint()
      */
     void setFrameOffsetFromReferencePoint( QPointF offset );
 
     /**
      * Returns the annotation's frame's offset from the mapPosition() reference point.
-     * @see setFrameOffsetFromReferencePoint()
+     * \see setFrameOffsetFromReferencePoint()
      */
     QPointF frameOffsetFromReferencePoint() const { return mOffsetFromReferencePoint; }
 
     /**
      * Sets the size of the annotation's frame (the main area in which
      * the annotation's content is drawn).
-     * @see frameSize()
+     * \see frameSize()
      */
     void setFrameSize( QSizeF size );
 
     /**
      * Returns the size of the annotation's frame (the main area in which
      * the annotation's content is drawn).
-     * @see setFrameSize()
+     * \see setFrameSize()
      */
     QSizeF frameSize() const { return mFrameSize; }
 
     /**
      * Sets the margins (in millimeters) between the outside of the frame and the annotation
      * content.
-     * @see contentsMargin()
+     * \see contentsMargin()
      */
     void setContentsMargin( const QgsMargins &margins );
 
     /**
      * Returns the margins (in millimeters) between the outside of the frame and the annotation
      * content.
-     * @see setContentsMargin()
+     * \see setContentsMargin()
      */
     QgsMargins contentsMargin() const { return mContentsMargins; }
 
     /**
      * Sets the fill symbol used for rendering the annotation frame. Ownership
      * of the symbol is transferred to the annotation.
-     * @see fillSymbol()
+     * \see fillSymbol()
      */
     void setFillSymbol( QgsFillSymbol *symbol );
 
     /**
      * Returns the symbol that is used for rendering the annotation frame.
-     * @see setFillSymbol()
+     * \see setFillSymbol()
      */
     QgsFillSymbol *fillSymbol() const { return mFillSymbol.get(); }
 
@@ -192,29 +192,29 @@ class CORE_EXPORT QgsAnnotation : public QObject
     /**
      * Writes the annotation state to a DOM element. Derived classes should
      * call _writeXml() within their implementation of this method.
-     * @see readXml()
-     * @see _writeXml()
+     * \see readXml()
+     * \see _writeXml()
      */
     virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const = 0;
 
     /**
      * Restores the annotation's state from a DOM element. Derived classes should
      * call _readXml() within their implementation of this method.
-     * @see writeXml()
-     * @see _readXml()
+     * \see writeXml()
+     * \see _readXml()
      */
     virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) = 0;
 
     /**
      * Sets the symbol that is drawn at the annotation's map position. Ownership
      * of the symbol is transferred to the annotation.
-     * @see markerSymbol()
+     * \see markerSymbol()
      */
     void setMarkerSymbol( QgsMarkerSymbol *symbol );
 
     /**
      * Returns the symbol that is drawn at the annotation's map position.
-     * @see setMarkerSymbol()
+     * \see setMarkerSymbol()
      */
     QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol.get(); }
 
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Returns the map layer associated with the annotation. Annotations can be
      * associated with a map layer if their visibility should be synchronized
      * with the layer's visibility.
-     * @see setMapLayer()
+     * \see setMapLayer()
      */
     QgsMapLayer *mapLayer() const { return mMapLayer.data(); }
 
@@ -230,20 +230,20 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Sets the map layer associated with the annotation. Annotations can be
      * associated with a map layer if their visibility should be synchronized
      * with the layer's visibility.
-     * @see mapLayer()
+     * \see mapLayer()
      */
     void setMapLayer( QgsMapLayer *layer );
 
     /**
      * Returns the feature associated with the annotation, or an invalid
      * feature if none has been set.
-     * @see setAssociatedFeature()
+     * \see setAssociatedFeature()
      */
     QgsFeature associatedFeature() const { return mFeature; }
 
     /**
      * Sets the feature associated with the annotation.
-     * @see associatedFeature()
+     * \see associatedFeature()
      */
     virtual void setAssociatedFeature( const QgsFeature &feature ) { mFeature = feature; }
 
@@ -280,16 +280,16 @@ class CORE_EXPORT QgsAnnotation : public QObject
     /**
      * Writes common annotation properties to a DOM element.
      * This method should be called from subclasses in their writeXml method.
-     * @see writeXml()
-     * @see _readXml()
+     * \see writeXml()
+     * \see _readXml()
      */
     void _writeXml( QDomElement &itemElem, QDomDocument &doc ) const;
 
     /**
      * Reads common annotation properties from a DOM element.
      * This method should be called from subclasses in their readXml method.
-     * @see readXml()
-     * @see _writeXml()
+     * \see readXml()
+     * \see _writeXml()
      */
     void _readXml( const QDomElement &annotationElem, const QDomDocument &doc );
 

@@ -50,23 +50,29 @@ class RandomPointsLayer(GeoAlgorithm):
     MIN_DISTANCE = 'MIN_DISTANCE'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
+    def name(self):
+        return 'randompointsinlayerbounds'
+
+    def displayName(self):
+        return self.tr('Random points in layer bounds')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random points in layer bounds')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
                                           self.tr('Points number'), 1, None, 1))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
-
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.VECTOR))
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))

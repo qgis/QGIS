@@ -38,23 +38,23 @@ class CORE_EXPORT QgsRasterDrawer
     QgsRasterDrawer( QgsRasterIterator *iterator );
 
     /** Draws raster data.
-     * @param p destination QPainter
-     * @param viewPort viewport to render
-     * @param qgsMapToPixel map to pixel converter
-     * @param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+     * \param p destination QPainter
+     * \param viewPort viewport to render
+     * \param qgsMapToPixel map to pixel converter
+     * \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
     void draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback = nullptr );
 
   protected:
 
     /** Draws raster part
-     * @param p the painter to draw to
-     * @param viewPort view port to draw to
-     * @param img image to draw
-     * @param topLeftCol Left position relative to left border of viewport
-     * @param topLeftRow Top position relative to top border of viewport
-     * @param mapToPixel map to device coordinate transformation info
-     * @note not available in python bindings
+     * \param p the painter to draw to
+     * \param viewPort view port to draw to
+     * \param img image to draw
+     * \param topLeftCol Left position relative to left border of viewport
+     * \param topLeftRow Top position relative to top border of viewport
+     * \param mapToPixel map to device coordinate transformation info
+     * \note not available in Python bindings
      */
     void drawImage( QPainter *p, QgsRasterViewPort *viewPort, const QImage &img, int topLeftCol, int topLeftRow, const QgsMapToPixel *mapToPixel = nullptr ) const;
 

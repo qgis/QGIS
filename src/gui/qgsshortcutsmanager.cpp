@@ -94,7 +94,7 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
 #endif
 
   mActions.insert( action, defaultSequence );
-  connect( action, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
+  connect( action, &QObject::destroyed, this, &QgsShortcutsManager::actionDestroyed );
 
   QString actionText = action->text();
   actionText.remove( '&' ); // remove the accelerator
@@ -119,7 +119,7 @@ bool QgsShortcutsManager::registerShortcut( QShortcut *shortcut, const QString &
 #endif
 
   mShortcuts.insert( shortcut, defaultSequence );
-  connect( shortcut, SIGNAL( destroyed() ), this, SLOT( shortcutDestroyed() ) );
+  connect( shortcut, &QObject::destroyed, this, &QgsShortcutsManager::shortcutDestroyed );
 
   QString shortcutName = shortcut->objectName();
 

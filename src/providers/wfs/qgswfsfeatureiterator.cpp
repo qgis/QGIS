@@ -36,7 +36,7 @@ QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceUR
   : QgsWfsRequest( uri.uri() )
   , mNumberMatched( -1 )
 {
-  connect( this, SIGNAL( downloadFinished() ), this, SLOT( hitsReplyFinished() ) );
+  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished );
 }
 
 QgsWFSFeatureHitsAsyncRequest::~QgsWFSFeatureHitsAsyncRequest()
@@ -127,7 +127,7 @@ QgsWFSProgressDialog::QgsWFSProgressDialog( const QString &labelText,
   mCancel = new QPushButton( cancelButtonText, this );
   setCancelButton( mCancel );
   mHide = new QPushButton( tr( "Hide" ), this );
-  connect( mHide, SIGNAL( clicked() ), this, SIGNAL( hide() ) );
+  connect( mHide, &QAbstractButton::clicked, this, &QgsWFSProgressDialog::hide );
 }
 
 void QgsWFSProgressDialog::resizeEvent( QResizeEvent *ev )
@@ -170,11 +170,11 @@ void QgsWFSFeatureDownloader::createProgressDialog()
   if ( mProgressDialogShowImmediately )
     mProgressDialog->show();
 
-  connect( mProgressDialog, SIGNAL( canceled() ), this, SLOT( setStopFlag() ), Qt::DirectConnection );
-  connect( mProgressDialog, SIGNAL( canceled() ), this, SLOT( stop() ) );
-  connect( mProgressDialog, SIGNAL( hide() ), this, SLOT( hideProgressDialog() ) );
+  connect( mProgressDialog, &QProgressDialog::canceled, this, &QgsWFSFeatureDownloader::setStopFlag, Qt::DirectConnection );
+  connect( mProgressDialog, &QProgressDialog::canceled, this, &QgsWFSFeatureDownloader::stop );
+  connect( mProgressDialog, &QWidget::hide, this, &QgsWFSFeatureDownloader::hideProgressDialog );
 
-  connect( this, SIGNAL( updateProgress( int ) ), mProgressDialog, SLOT( setValue( int ) ) );
+  connect( this, &QgsWFSFeatureDownloader::updateProgress, mProgressDialog, &QProgressDialog::setValue );
 }
 
 QString QgsWFSFeatureDownloader::sanitizeFilter( QString filter )
@@ -384,7 +384,7 @@ void QgsWFSFeatureDownloader::startHitsRequest()
     mNumberMatched = mShared->getFeatureCount( false );
   if ( mNumberMatched < 0 )
   {
-    connect( &mFeatureHitsAsyncRequest, SIGNAL( gotHitsResponse() ), this, SLOT( gotHitsResponse() ) );
+    connect( &mFeatureHitsAsyncRequest, &QgsWFSFeatureHitsAsyncRequest::gotHitsResponse, this, &QgsWFSFeatureDownloader::gotHitsResponse );
     mFeatureHitsAsyncRequest.launch( buildURL( 0, -1, true ) );
   }
 }
@@ -394,9 +394,9 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
   bool success = true;
 
   QEventLoop loop;
-  connect( this, SIGNAL( doStop() ), &loop, SLOT( quit() ) );
-  connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
-  connect( this, SIGNAL( downloadProgress( qint64, qint64 ) ), &loop, SLOT( quit() ) );
+  connect( this, &QgsWFSFeatureDownloader::doStop, &loop, &QEventLoop::quit );
+  connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit );
+  connect( this, &QgsWfsRequest::downloadProgress, &loop, &QEventLoop::quit );
 
   QTimer timerForHits;
 
@@ -420,8 +420,8 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     timerForHits.setInterval( 4 * 1000 );
     timerForHits.setSingleShot( true );
     timerForHits.start();
-    connect( &timerForHits, SIGNAL( timeout() ), this, SLOT( startHitsRequest() ) );
-    connect( &mFeatureHitsAsyncRequest, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
+    connect( &timerForHits, &QTimer::timeout, this, &QgsWFSFeatureDownloader::startHitsRequest );
+    connect( &mFeatureHitsAsyncRequest, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit );
   }
 
   bool interrupted = false;
@@ -542,7 +542,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
         if ( mNumberMatched > 0 )
         {
           if ( mShared->supportsHits() )
-            disconnect( &timerForHits, SIGNAL( timeout() ), this, SLOT( startHitsRequest() ) );
+            disconnect( &timerForHits, &QTimer::timeout, this, &QgsWFSFeatureDownloader::startHitsRequest );
 
           // This is a bit tricky. We want the createProgressDialog()
           // method to be run into the GUI thread
@@ -552,7 +552,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
           // Direct connection, since we want createProgressDialog()
           // to be invoked from the same thread as timer, and not in the
           // thread of this
-          connect( mTimer, SIGNAL( timeout() ), this, SLOT( createProgressDialog() ), Qt::DirectConnection );
+          connect( mTimer, &QTimer::timeout, this, &QgsWFSFeatureDownloader::createProgressDialog, Qt::DirectConnection );
 
           mTimer->moveToThread( mMainWindow->thread() );
           QMetaObject::invokeMethod( mTimer, "start", Qt::QueuedConnection );
@@ -885,19 +885,19 @@ QgsWFSFeatureIterator::~QgsWFSFeatureIterator()
   }
 }
 
-void QgsWFSFeatureIterator::connectSignals( QObject *downloader )
+void QgsWFSFeatureIterator::connectSignals( QgsWFSFeatureDownloader *downloader )
 {
   // We want to run the slot for that signal in the same thread as the sender
   // so as to avoid the list of features to accumulate without control in
   // memory
-  connect( downloader, SIGNAL( featureReceived( QVector<QgsWFSFeatureGmlIdPair> ) ),
-           this, SLOT( featureReceivedSynchronous( QVector<QgsWFSFeatureGmlIdPair> ) ), Qt::DirectConnection );
+  connect( downloader, static_cast<void ( QgsWFSFeatureDownloader::* )( QVector<QgsWFSFeatureGmlIdPair> )>( &QgsWFSFeatureDownloader::featureReceived ),
+           this, &QgsWFSFeatureIterator::featureReceivedSynchronous, Qt::DirectConnection );
 
-  connect( downloader, SIGNAL( featureReceived( int ) ),
-           this, SLOT( featureReceived( int ) ) );
+  connect( downloader, static_cast<void ( QgsWFSFeatureDownloader::* )( int )>( &QgsWFSFeatureDownloader::featureReceived ),
+           this, &QgsWFSFeatureIterator::featureReceived );
 
-  connect( downloader, SIGNAL( endOfDownload( bool ) ),
-           this, SLOT( endOfDownload( bool ) ) );
+  connect( downloader, &QgsWFSFeatureDownloader::endOfDownload,
+           this, &QgsWFSFeatureIterator::endOfDownload );
 }
 
 void QgsWFSFeatureIterator::endOfDownload( bool )
@@ -1136,7 +1136,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
     QTimer timer( this );
     timer.start( 50 );
     if ( mInterruptionChecker )
-      connect( &timer, SIGNAL( timeout() ), this, SLOT( checkInterruption() ) );
+      connect( &timer, &QTimer::timeout, this, &QgsWFSFeatureIterator::checkInterruption );
     loop.exec( QEventLoop::ExcludeUserInputEvents );
     mLoop = nullptr;
     //QgsDebugMsg("fetchFeature after loop");

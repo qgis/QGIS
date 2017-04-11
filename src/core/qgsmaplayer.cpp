@@ -98,7 +98,6 @@ QgsMapLayer::LayerType QgsMapLayer::type() const
   return mLayerType;
 }
 
-//! Get this layer's unique ID
 QString QgsMapLayer::id() const
 {
   return mID;
@@ -116,7 +115,6 @@ void QgsMapLayer::setName( const QString &name )
   emit nameChanged();
 }
 
-//! Read property of QString layerName.
 QString QgsMapLayer::name() const
 {
   QgsDebugMsgLevel( "returning name '" + mLayerName + '\'', 4 );
@@ -141,7 +139,6 @@ QgsRectangle QgsMapLayer::extent() const
   return mExtent;
 }
 
-//! Write blend mode for layer
 void QgsMapLayer::setBlendMode( QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
@@ -149,7 +146,6 @@ void QgsMapLayer::setBlendMode( QPainter::CompositionMode blendMode )
   emit styleChanged();
 }
 
-//! Read blend mode for layer
 QPainter::CompositionMode QgsMapLayer::blendMode() const
 {
   return mBlendMode;
@@ -832,13 +828,6 @@ void QgsMapLayer::writeStyleManager( QDomNode &layerNode, QDomDocument &doc ) co
 bool QgsMapLayer::isValid() const
 {
   return mValid;
-}
-
-
-void QgsMapLayer::invalidTransformInput()
-{
-  QgsDebugMsg( "called" );
-  // TODO: emit a signal - it will be used to update legend
 }
 
 #if 0
@@ -1632,7 +1621,7 @@ void QgsMapLayer::triggerRepaint( bool deferredUpdate )
   emit repaintRequested( deferredUpdate );
 }
 
-QString QgsMapLayer::metadata() const
+QString QgsMapLayer::htmlMetadata() const
 {
   return QString();
 }

@@ -34,7 +34,7 @@ class QTimer;
  * HTTP request/response manager that is redirect-aware.
  * This class extends the Qt QHttp concept by being able to recognise
  *  and respond to redirection responses (e.g. HTTP code 302)
- * @note not available in Python bindings
+ * \note not available in Python bindings
 */
 
 class QgsHttpTransaction : public QObject
@@ -66,15 +66,15 @@ class QgsHttpTransaction : public QObject
 
     /*!
         The function returns false if there is an error while getting the response.
-        @param[out] respondedContent is replaced with the new content.
+        \param[out] respondedContent is replaced with the new content.
 
-        @param[in]  redirections     is used to measure how many http redirections we've been through.
+        \param[in]  redirections     is used to measure how many http redirections we've been through.
         Clients typically don't need to set this.
 
-        @param postData data to send with the http message. This is only used for HTTP POST. If
+        \param postData data to send with the http message. This is only used for HTTP POST. If
         0 then the request is done with HTTP GET.
 
-        @return true in case of success
+        \returns true in case of success
      */
     bool getSynchronously( QByteArray &respondedContent, int redirections = 0, const QByteArray *postData = nullptr );
 
@@ -89,7 +89,7 @@ class QgsHttpTransaction : public QObject
     QString errorString();
 
     /** Apply proxy settings from QSettings to a http object
-    @return true if proxy settings was applied, false else*/
+    \returns true if proxy settings was applied, false else*/
     static bool applyProxySettings( QHttp &http, const QString &url );
 
     //! Set the credentials (username and password)

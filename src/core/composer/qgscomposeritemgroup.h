@@ -50,14 +50,14 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
     virtual void setVisibility( const bool visible ) override;
 
     /** Stores state in Dom node
-       * @param elem is Dom element corresponding to 'Composer' tag
-       * @param doc is the Dom document
+       * \param elem is Dom element corresponding to 'Composer' tag
+       * \param doc is the Dom document
        */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
-       * @param itemElem is Dom node corresponding to item tag
-       * @param doc is the Dom document
+       * \param itemElem is Dom node corresponding to item tag
+       * \param doc is the Dom document
        */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 

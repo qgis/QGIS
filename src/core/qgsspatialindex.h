@@ -59,7 +59,7 @@ class CORE_EXPORT QgsSpatialIndex
     /** Constructor - creates R-tree and bulk loads it with features from the iterator.
      * This is much faster approach than creating an empty index and then inserting features one by one.
      *
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     explicit QgsSpatialIndex( const QgsFeatureIterator &fi );
 
@@ -95,9 +95,9 @@ class CORE_EXPORT QgsSpatialIndex
     QAtomicInt refs() const;
 
   protected:
-    //! @note not available in python bindings
+    //! \note not available in Python bindings
     static SpatialIndex::Region rectToRegion( const QgsRectangle &rect );
-    //! @note not available in python bindings
+    //! \note not available in Python bindings
     static bool featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id );
 
     friend class QgsFeatureIteratorDataStream; // for access to featureInfo()

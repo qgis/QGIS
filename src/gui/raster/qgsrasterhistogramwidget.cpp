@@ -110,8 +110,8 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     // connect( leHistoMax, SIGNAL( textChanged( const QString & ) ), this, SLOT( updateHistoMarkers() ) );
     // connect( leHistoMin, SIGNAL( textChanged( const QString & ) ), this, SLOT( applyHistoMin() ) );
     // connect( leHistoMax, SIGNAL( textChanged( const QString & ) ), this, SLOT( applyHistoMax() ) );
-    connect( leHistoMin, SIGNAL( editingFinished() ), this, SLOT( applyHistoMin() ) );
-    connect( leHistoMax, SIGNAL( editingFinished() ), this, SLOT( applyHistoMax() ) );
+    connect( leHistoMin, &QLineEdit::editingFinished, this, &QgsRasterHistogramWidget::applyHistoMin );
+    connect( leHistoMax, &QLineEdit::editingFinished, this, &QgsRasterHistogramWidget::applyHistoMax );
 
     // histo actions
     // TODO move/add options to qgis options dialog
@@ -124,7 +124,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     // min/max options
     group = new QActionGroup( this );
     group->setExclusive( false );
-    connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( histoActionTriggered( QAction * ) ) );
+    connect( group, &QActionGroup::triggered, this, &QgsRasterHistogramWidget::histoActionTriggered );
     action = new QAction( tr( "Min/Max options" ), group );
     action->setSeparator( true );
     menu->addAction( action );
@@ -147,13 +147,13 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     // visibility options
     group = new QActionGroup( this );
     group->setExclusive( false );
-    connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( histoActionTriggered( QAction * ) ) );
+    connect( group, &QActionGroup::triggered, this, &QgsRasterHistogramWidget::histoActionTriggered );
     action = new QAction( tr( "Visibility" ), group );
     action->setSeparator( true );
     menu->addAction( action );
     group = new QActionGroup( this );
     group->setExclusive( true ); // these options are exclusive
-    connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( histoActionTriggered( QAction * ) ) );
+    connect( group, &QActionGroup::triggered, this, &QgsRasterHistogramWidget::histoActionTriggered );
     action = new QAction( tr( "Show all bands" ), group );
     action->setData( QVariant( "Show all" ) );
     action->setCheckable( true );
@@ -173,7 +173,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     // display options
     group = new QActionGroup( this );
     group->setExclusive( false );
-    connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( histoActionTriggered( QAction * ) ) );
+    connect( group, &QActionGroup::triggered, this, &QgsRasterHistogramWidget::histoActionTriggered );
     action = new QAction( tr( "Display" ), group );
     action->setSeparator( true );
     menu->addAction( action );
@@ -201,7 +201,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     // load actions
     group = new QActionGroup( this );
     group->setExclusive( false );
-    connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( histoActionTriggered( QAction * ) ) );
+    connect( group, &QActionGroup::triggered, this, &QgsRasterHistogramWidget::histoActionTriggered );
     action = new QAction( tr( "Reset" ), group );
     action->setData( QVariant( "Load reset" ) );
     menu->addAction( action );
@@ -303,7 +303,9 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
 
   // compute histogram
   stackedWidget2->setCurrentIndex( 1 );
-  connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
+
+  std::unique_ptr< QgsRasterBlockFeedback > feedback( new QgsRasterBlockFeedback() );
+  connect( feedback.get(), &QgsRasterBlockFeedback::progressChanged, mHistogramProgress, &QProgressBar::setValue );
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   for ( int myIteratorInt = 1;
@@ -311,10 +313,9 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
         ++myIteratorInt )
   {
     int sampleSize = 250000; // number of sample cells
-    mRasterLayer->dataProvider()->histogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
+    mRasterLayer->dataProvider()->histogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize, false, feedback.get() );
   }
 
-  disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   // mHistogramProgress->hide();
   stackedWidget2->setCurrentIndex( 0 );
   QApplication::restoreOverrideCursor();
@@ -478,7 +479,11 @@ void QgsRasterHistogramWidget::refreshHistogram()
     }
 
     int sampleSize = 250000; // number of sample cells
-    QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
+
+    std::unique_ptr< QgsRasterBlockFeedback > feedback( new QgsRasterBlockFeedback() );
+    connect( feedback.get(), &QgsRasterBlockFeedback::progressChanged, mHistogramProgress, &QProgressBar::setValue );
+
+    QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize, false, feedback.get() );
 
     QgsDebugMsg( QString( "got raster histo for band %1 : min=%2 max=%3 count=%4" ).arg( myIteratorInt ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myHistogram.binCount ) );
 
@@ -638,7 +643,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
       mHistoPicker->setRubberBand( QwtPicker::VLineRubberBand );
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
       mHistoPicker->setStateMachine( new QwtPickerDragPointMachine );
-      connect( mHistoPicker, SIGNAL( selected( const QPointF & ) ), this, SLOT( histoPickerSelected( const QPointF & ) ) );
+      connect( mHistoPicker, static_cast < void ( QwtPlotPicker::* )( const QPointF & ) > ( &QwtPlotPicker::selected ), this, &QgsRasterHistogramWidget::histoPickerSelected );
 #else
       mHistoPicker->setSelectionFlags( QwtPicker::PointSelection | QwtPicker::DragSelection );
       connect( mHistoPicker, SIGNAL( selected( const QwtDoublePoint & ) ), this, SLOT( histoPickerSelectedQwt5( const QwtDoublePoint & ) ) );
@@ -668,7 +673,6 @@ void QgsRasterHistogramWidget::refreshHistogram()
       mHistoZoomer->setEnabled( false );
   }
 
-  disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   stackedWidget2->setCurrentIndex( 0 );
   // icon from http://findicons.com/icon/169577/14_zoom?id=171427
   mpPlot->canvas()->setCursor( QCursor( QgsApplication::getThemePixmap( QStringLiteral( "/mIconZoom.svg" ) ) ) );
@@ -963,7 +967,7 @@ void QgsRasterHistogramWidget::applyHistoMin()
     if ( bandNo == mRendererWidget->selectedBand( i ) )
     {
       min = leHistoMin->text();
-      if ( mHistoUpdateStyleToMinMax )
+      if ( mHistoUpdateStyleToMinMax && mRendererWidget->min( i ) != min )
       {
         mRendererWidget->setMin( min, i );
         if ( mRendererWidget->minMaxWidget() )
@@ -998,7 +1002,7 @@ void QgsRasterHistogramWidget::applyHistoMax()
     if ( bandNo == mRendererWidget->selectedBand( i ) )
     {
       max = leHistoMax->text();
-      if ( mHistoUpdateStyleToMinMax )
+      if ( mHistoUpdateStyleToMinMax && mRendererWidget->max( i ) != max )
       {
         mRendererWidget->setMax( max, i );
         if ( mRendererWidget->minMaxWidget() )

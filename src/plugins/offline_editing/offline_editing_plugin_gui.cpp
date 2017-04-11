@@ -80,8 +80,8 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
   QgsLayerTreeModel *treeModel = new QgsSelectLayerTreeModel( rootNode, this );
   mLayerTree->setModel( treeModel );
 
-  connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
-  connect( mDeselectAllButton, SIGNAL( clicked() ), this, SLOT( deSelectAll() ) );
+  connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsOfflineEditingPluginGui::selectAll );
+  connect( mDeselectAllButton, &QAbstractButton::clicked, this, &QgsOfflineEditingPluginGui::deSelectAll );
 }
 
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()

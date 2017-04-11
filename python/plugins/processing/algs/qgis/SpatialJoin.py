@@ -56,13 +56,19 @@ class SpatialJoin(GeoAlgorithm):
     KEEP = "KEEP"
     OUTPUT = "OUTPUT"
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'join_location.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Join attributes by location')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def group(self):
+        return self.tr('Vector general tools')
 
+    def name(self):
+        return 'joinattributesbylocation'
+
+    def displayName(self):
+        return self.tr('Join attributes by location')
+
+    def defineCharacteristics(self):
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -103,9 +109,9 @@ class SpatialJoin(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
     def processAlgorithm(self, feedback):
-        target = dataobjects.getObjectFromUri(
+        target = dataobjects.getLayerFromString(
             self.getParameterValue(self.TARGET))
-        join = dataobjects.getObjectFromUri(
+        join = dataobjects.getLayerFromString(
             self.getParameterValue(self.JOIN))
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)

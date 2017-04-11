@@ -165,12 +165,12 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   mInvalidLabel->hide();
 
   // connect buttons
-  connect( mOpenFormButton, SIGNAL( clicked() ), this, SLOT( openForm() ) );
-  connect( mHighlightFeatureButton, SIGNAL( triggered( QAction * ) ), this, SLOT( highlightActionTriggered( QAction * ) ) );
-  connect( mMapIdentificationButton, SIGNAL( clicked() ), this, SLOT( mapIdentification() ) );
-  connect( mRemoveFKButton, SIGNAL( clicked() ), this, SLOT( deleteForeignKey() ) );
-  connect( mAddEntryButton, SIGNAL( clicked( bool ) ), this, SLOT( addEntry() ) );
-  connect( mComboBox, SIGNAL( editTextChanged( QString ) ), this, SLOT( updateAddEntryButton() ) );
+  connect( mOpenFormButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::openForm );
+  connect( mHighlightFeatureButton, &QToolButton::triggered, this, &QgsRelationReferenceWidget::highlightActionTriggered );
+  connect( mMapIdentificationButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::mapIdentification );
+  connect( mRemoveFKButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::deleteForeignKey );
+  connect( mAddEntryButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::addEntry );
+  connect( mComboBox, &QComboBox::editTextChanged, this, &QgsRelationReferenceWidget::updateAddEntryButton );
 }
 
 QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
@@ -207,8 +207,8 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
       mAttributeEditorLayout->addWidget( mReferencedAttributeForm );
     }
 
-    connect( mReferencedLayer, SIGNAL( editingStarted() ), this, SLOT( updateAddEntryButton() ) );
-    connect( mReferencedLayer, SIGNAL( editingStopped() ), this, SLOT( updateAddEntryButton() ) );
+    connect( mReferencedLayer, &QgsVectorLayer::editingStarted, this, &QgsRelationReferenceWidget::updateAddEntryButton );
+    connect( mReferencedLayer, &QgsVectorLayer::editingStopped, this, &QgsRelationReferenceWidget::updateAddEntryButton );
     updateAddEntryButton();
   }
   else
@@ -483,7 +483,7 @@ void QgsRelationReferenceWidget::init()
           cb->addItem( v.toString(), v );
         }
 
-        connect( cb, SIGNAL( currentIndexChanged( int ) ), this, SLOT( filterChanged() ) );
+        connect( cb, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceWidget::filterChanged );
 
         // Request this attribute for caching
         requestedAttrs << fieldName;
@@ -580,7 +580,7 @@ void QgsRelationReferenceWidget::init()
     mComboBox->setCurrentIndex( mComboBox->findData( featId, QgsAttributeTableModel::FeatureIdRole ) );
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboReferenceChanged( int ) ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceWidget::comboReferenceChanged );
     updateAttributeEditorFrame( mFeature );
     QApplication::restoreOverrideCursor();
   }
@@ -673,7 +673,7 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
 
   QTimer *timer = new QTimer( this );
   timer->setSingleShot( true );
-  connect( timer, SIGNAL( timeout() ), this, SLOT( deleteHighlight() ) );
+  connect( timer, &QTimer::timeout, this, &QgsRelationReferenceWidget::deleteHighlight );
   timer->start( 3000 );
 }
 
@@ -707,8 +707,8 @@ void QgsRelationReferenceWidget::mapIdentification()
   mCanvas->activateWindow();
   mCanvas->setFocus();
 
-  connect( mMapTool, SIGNAL( featureIdentified( QgsFeature ) ), this, SLOT( featureIdentified( const QgsFeature ) ) );
-  connect( mMapTool, SIGNAL( deactivated() ), this, SLOT( mapToolDeactivated() ) );
+  connect( mMapTool, static_cast<void ( QgsMapToolIdentifyFeature::* )( const QgsFeature & )>( &QgsMapToolIdentifyFeature::featureIdentified ), this, &QgsRelationReferenceWidget::featureIdentified );
+  connect( mMapTool, &QgsMapTool::deactivated, this, &QgsRelationReferenceWidget::mapToolDeactivated );
 
   if ( mMessageBar )
   {

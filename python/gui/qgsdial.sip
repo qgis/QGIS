@@ -15,8 +15,6 @@ class QgsDial: QDial
   signals:
     void valueChanged( const QVariant& );
 
-  protected slots:
-    void valueChanged( int );
 
   protected:
     virtual void paintEvent( QPaintEvent * event );

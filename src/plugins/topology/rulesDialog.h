@@ -35,10 +35,10 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
   public:
     /*
      * Constructor
-     * @param layerList List of layer IDs
-     * @param testMap maps test names to test routines
-     * @param qgisIface pointer to a QgisInterface instance
-     * @param parent parent widget
+     * \param layerList List of layer IDs
+     * \param testMap maps test names to test routines
+     * \param qgisIface pointer to a QgisInterface instance
+     * \param parent parent widget
      */
     rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterface *qgisIface, QWidget *parent );
     ~rulesDialog();
@@ -56,6 +56,13 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      */
     void initGui();
 
+  public slots:
+
+    /*
+     * Deletes all rules from rules dialog
+     */
+    void clearRules();
+
   private:
     QMap<QString, TopologyRule> mTestConfMap;
     QList<QString> mLayerIds;
@@ -63,8 +70,8 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
 
     /*
      * Reads a test from the project
-     * @param index test index
-     * @param project pointer to QgsProject
+     * \param index test index
+     * \param project pointer to QgsProject
      */
     void readTest( int index, QgsProject *project );
     /*
@@ -77,7 +84,7 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
   private slots:
     /*
      * Shows or hides controls according to test settings
-     * @param testName name of the test
+     * \param testName name of the test
      */
     void showControls( const QString &testName );
     /*
@@ -94,14 +101,10 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
     void projectRead();
     /*
      * Updates Rule combobox to mach first layer
-     * @param layerId layer ID
+     * \param layerId layer ID
      */
     void updateRuleItems( const QString &layerName );
 
-    /*
-     * Deletes all rules from rules dialog
-     */
-    void clearRules();
 
 
 

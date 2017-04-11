@@ -28,7 +28,13 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 from osgeo import gdal
-from qgis.core import QgsFields, QgsField, QgsFeature, QgsGeometry, QgsWkbTypes, QgsPointV2
+from qgis.core import (QgsApplication,
+                       QgsFields,
+                       QgsField,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsPointV2)
 from qgis.PyQt.QtCore import QVariant
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -44,10 +50,22 @@ class PointsFromPolygons(GeoAlgorithm):
     INPUT_VECTOR = 'INPUT_VECTOR'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Generate points (pixel centroids) inside polygons')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector analysis tools')
+
+    def name(self):
+        return 'generatepointspixelcentroidsinsidepolygons'
+
+    def displayName(self):
+        return self.tr('Generate points (pixel centroids) inside polygons')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
@@ -55,7 +73,7 @@ class PointsFromPolygons(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points from polygons'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
 

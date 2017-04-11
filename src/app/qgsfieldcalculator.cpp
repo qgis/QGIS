@@ -51,8 +51,8 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   populateFields();
   populateOutputFieldTypes();
 
-  connect( builder, SIGNAL( expressionParsed( bool ) ), this, SLOT( setOkButtonState() ) );
-  connect( mOutputFieldWidthSpinBox, SIGNAL( editingFinished() ), this, SLOT( setPrecisionMinMax() ) );
+  connect( builder, &QgsExpressionBuilderWidget::expressionParsed, this, &QgsFieldCalculator::setOkButtonState );
+  connect( mOutputFieldWidthSpinBox, &QAbstractSpinBox::editingFinished, this, &QgsFieldCalculator::setPrecisionMinMax );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( vl->crs() );

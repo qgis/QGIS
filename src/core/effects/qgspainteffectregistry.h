@@ -32,41 +32,41 @@ class QgsPaintEffectWidget;
  *  In C++ you can use the QgsPaintEffectMetadata convenience class to
  * simplify creation of the metadata.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 class CORE_EXPORT QgsPaintEffectAbstractMetadata
 {
   public:
 
     /** Construct a new QgsPaintEffectAbstractMetadata
-     * @param name unique string representing paint effect class
-     * @param visibleName user visible name representing paint effect class
+     * \param name unique string representing paint effect class
+     * \param visibleName user visible name representing paint effect class
      */
     QgsPaintEffectAbstractMetadata( const QString &name, const QString &visibleName );
 
     virtual ~QgsPaintEffectAbstractMetadata() = default;
 
     /** Returns the unique string representing the paint effect class
-     * @returns unique string
-     * @see visibleName
+     * \returns unique string
+     * \see visibleName
      */
     QString name() const { return mName; }
 
     /** Returns the user visible string representing the paint effect class
-     * @returns friendly user visible string
-     * @see name
+     * \returns friendly user visible string
+     * \see name
      */
     QString visibleName() const { return mVisibleName; }
 
     /** Create a paint effect of this class given an encoded map of properties.
-     * @param map properties string map
-     * @returns new paint effect
+     * \param map properties string map
+     * \returns new paint effect
      */
     virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) = 0;
 
     /** Create configuration widget for paint effect of this class. Can return nullptr
      * if there's no GUI for the paint effect class.
-     * @returns configuration widget
+     * \returns configuration widget
      */
     virtual QgsPaintEffectWidget *createWidget() { return nullptr; }
 
@@ -83,7 +83,7 @@ typedef QgsPaintEffectWidget *( *QgsPaintEffectWidgetFunc )();
  * \class QgsPaintEffectMetadata
  * \brief Convenience metadata class that uses static functions to create an effect and its widget.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
 {
@@ -91,11 +91,11 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
   public:
 
     /** Create effect metadata from static functions
-     * @param name unique string representing paint effect class
-     * @param visibleName user visible name representing paint effect class
-     * @param pfCreate paint effect creation function
-     * @param pfWidget widget creation function
-     * @note not available in python bindings
+     * \param name unique string representing paint effect class
+     * \param visibleName user visible name representing paint effect class
+     * \param pfCreate paint effect creation function
+     * \param pfWidget widget creation function
+     * \note not available in Python bindings
      */
     QgsPaintEffectMetadata( const QString &name, const QString &visibleName,
                             QgsPaintEffectCreateFunc pfCreate,
@@ -106,37 +106,37 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
     {}
 
     /** Returns the paint effect creation function for the paint effect class
-     * @returns creation function
-     * @note not available in python bindings
+     * \returns creation function
+     * \note not available in Python bindings
      */
     QgsPaintEffectCreateFunc createFunction() const { return mCreateFunc; }
 
     /** Returns the paint effect properties widget creation function for the paint effect class
-     * @returns widget creation function
-     * @note not available in python bindings
-     * @see setWidgetFunction
+     * \returns widget creation function
+     * \note not available in Python bindings
+     * \see setWidgetFunction
      */
     QgsPaintEffectWidgetFunc widgetFunction() const { return mWidgetFunc; }
 
     /** Sets the paint effect properties widget creation function for the paint effect class
-     * @param f widget creation function
-     * @note not available in python bindings
-     * @see widgetFunction
+     * \param f widget creation function
+     * \note not available in Python bindings
+     * \see widgetFunction
      */
     void setWidgetFunction( QgsPaintEffectWidgetFunc f ) { mWidgetFunc = f; }
 
     /** Creates a new paint effect of the metadata's effect class
-     * @param map string map of effect properties
-     * @returns new paint effect
-     * @note not available in python bindings
-     * @see createWidget
+     * \param map string map of effect properties
+     * \returns new paint effect
+     * \note not available in Python bindings
+     * \see createWidget
      */
     virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
 
     /** Creates a new paint effect properties widget for the metadata's effect class
-     * @returns effect properties widget
-     * @note not available in python bindings
-     * @see createWidget
+     * \returns effect properties widget
+     * \note not available in Python bindings
+     * \see createWidget
      */
     virtual QgsPaintEffectWidget *createWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }
 
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
  * QgsPaintEffectRegistry is not usually directly created, but rather accessed through
  * QgsApplication::paintEffectRegistry().
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 class CORE_EXPORT QgsPaintEffectRegistry
 {
@@ -168,51 +168,51 @@ class CORE_EXPORT QgsPaintEffectRegistry
     QgsPaintEffectRegistry &operator=( const QgsPaintEffectRegistry &rh ) = delete;
 
     /** Returns the metadata for a specific effect.
-     * @param name unique string name for paint effect class
-     * @returns paint effect metadata if found, otherwise nullptr
+     * \param name unique string name for paint effect class
+     * \returns paint effect metadata if found, otherwise nullptr
      */
     QgsPaintEffectAbstractMetadata *effectMetadata( const QString &name ) const;
 
     /** Registers a new effect type.
-     * @param metadata effect metadata. Ownership is transferred to the registry.
-     * @returns true if add was successful.
+     * \param metadata effect metadata. Ownership is transferred to the registry.
+     * \returns true if add was successful.
      */
     bool addEffectType( QgsPaintEffectAbstractMetadata *metadata );
 
     /** Creates a new paint effect given the effect name and properties map.
-     * @param name unique name representing paint effect class
-     * @param properties encoded string map of effect properties
-     * @returns new paint effect of specified class, or nullptr if matching
+     * \param name unique name representing paint effect class
+     * \param properties encoded string map of effect properties
+     * \returns new paint effect of specified class, or nullptr if matching
      * paint effect could not be created
      */
     QgsPaintEffect *createEffect( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const;
 
     /** Creates a new paint effect given a DOM element storing paint effect
      * properties.
-     * @param element encoded DOM element of effect properties
-     * @returns new paint effect, or nullptr if matching
+     * \param element encoded DOM element of effect properties
+     * \returns new paint effect, or nullptr if matching
      * paint effect could not be created
      */
     QgsPaintEffect *createEffect( const QDomElement &element ) const;
 
     /** Returns a list of known paint effects.
-     * @returns list of paint effect names
+     * \returns list of paint effect names
      */
     QStringList effects() const;
 
     /** Returns a new effect stack consisting of a sensible selection of default
      * effects. All effects except the standard draw source effect are disabled,
      * but are included so that they can be easily drawn just by enabling the effect.
-     * @returns default effects stack
-     * @see isDefaultStack()
+     * \returns default effects stack
+     * \see isDefaultStack()
      */
     static QgsPaintEffect *defaultStack();
 
     /** Tests whether a paint effect matches the default effects stack.
-     * @param effect paint effect to test
-     * @returns true if effect is default stack
-     * @note added in QGIS 2.12
-     * @see defaultStack()
+     * \param effect paint effect to test
+     * \returns true if effect is default stack
+     * \since QGIS 2.12
+     * \see defaultStack()
      */
     static bool isDefaultStack( QgsPaintEffect *effect );
 

@@ -70,7 +70,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
   mActionCloseAll = new QAction( tr( "Close all" ), this );
   mCloseMenu->addAction( mActionCloseAll );
-  connect( mActionCloseAll, SIGNAL( triggered() ), this, SLOT( clearWidgets() ) );
+  connect( mActionCloseAll, &QAction::triggered, this, &QgsMessageBar::clearWidgets );
 
   mCloseBtn = new QToolButton( this );
   mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
@@ -85,15 +85,15 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
   mCloseBtn->setMenu( mCloseMenu );
   mCloseBtn->setPopupMode( QToolButton::MenuButtonPopup );
-  connect( mCloseBtn, SIGNAL( clicked() ), this, SLOT( popWidget() ) );
+  connect( mCloseBtn, &QAbstractButton::clicked, this, static_cast < bool ( QgsMessageBar::* )( ) > ( &QgsMessageBar::popWidget ) );
   mLayout->addWidget( mCloseBtn, 0, 3, 1, 1 );
 
   mCountdownTimer = new QTimer( this );
   mCountdownTimer->setInterval( 1000 );
-  connect( mCountdownTimer, SIGNAL( timeout() ), this, SLOT( updateCountdown() ) );
+  connect( mCountdownTimer, &QTimer::timeout, this, &QgsMessageBar::updateCountdown );
 
-  connect( this, SIGNAL( widgetAdded( QgsMessageBarItem * ) ), this, SLOT( updateItemCount() ) );
-  connect( this, SIGNAL( widgetRemoved( QgsMessageBarItem * ) ), this, SLOT( updateItemCount() ) );
+  connect( this, &QgsMessageBar::widgetAdded, this, &QgsMessageBar::updateItemCount );
+  connect( this, &QgsMessageBar::widgetRemoved, this, &QgsMessageBar::updateItemCount );
 
   // start hidden
   setVisible( false );
@@ -130,7 +130,7 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
       QWidget *widget = mCurrentItem;
       mLayout->removeWidget( widget );
       mCurrentItem->hide();
-      disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
+      disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
       delete mCurrentItem;
       mCurrentItem = nullptr;
     }
@@ -228,7 +228,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
   Q_ASSERT( item );
 
   if ( mCurrentItem )
-    disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
+    disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
 
   if ( item == mCurrentItem )
     return;
@@ -255,7 +255,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
     mCountdownTimer->start();
   }
 
-  connect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
+  connect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
   setStyleSheet( item->getStyleSheet() );
   show();
 

@@ -43,7 +43,7 @@ QgsClipboard::QgsClipboard()
   , mFeatureFields()
   , mUseSystemClipboard( false )
 {
-  connect( QApplication::clipboard(), SIGNAL( dataChanged() ), this, SLOT( systemClipboardChanged() ) );
+  connect( QApplication::clipboard(), &QClipboard::dataChanged, this, &QgsClipboard::systemClipboardChanged );
 }
 
 QgsClipboard::~QgsClipboard()

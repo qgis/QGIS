@@ -180,7 +180,7 @@ class GdalUtils(object):
     def escapeAndJoin(strList):
         joined = ''
         for s in strList:
-            if s[0] != '-' and ' ' in s:
+            if s and s[0] != '-' and ' ' in s:
                 escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
                     + '"'
             else:

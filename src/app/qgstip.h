@@ -25,7 +25,7 @@
 * Tips can be generic, in which case they make no mention of
 * gui dialogs etc, or gui-specific in which case they may allude
 * to features of the graphical user interface.
-* @see also QgsTipOfTheDay, QgsTipFactory
+* \see also QgsTipOfTheDay, QgsTipFactory
 */
 
 class APP_EXPORT QgsTip

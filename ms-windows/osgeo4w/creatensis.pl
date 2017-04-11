@@ -166,9 +166,9 @@ foreach my $p ( keys %pkgs ) {
 
 		if( exists $md5{$file} ) {
 			my $md5;
-			open F, "md5sum $file|";
+			open F, "md5sum '$file'|";
 			while(<F>) {
-				if( /^(\S+)\s+\*?$file$/ ) {
+				if( /^(\S+)\s+\*?(.*)$/ && $2 eq $file ) {
 					$md5 = $1;
 				}
 			}

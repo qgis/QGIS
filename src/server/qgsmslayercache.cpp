@@ -34,7 +34,7 @@ QgsMSLayerCache *QgsMSLayerCache::instance()
 
 QgsMSLayerCache::QgsMSLayerCache()
 {
-  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString & ) ), this, SLOT( removeProjectFileLayers( const QString & ) ) );
+  QObject::connect( &mFileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &QgsMSLayerCache::removeProjectFileLayers );
 }
 
 QgsMSLayerCache::~QgsMSLayerCache()

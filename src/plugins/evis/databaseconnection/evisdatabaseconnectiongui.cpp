@@ -62,7 +62,7 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *t
 
   //Create a new instance of the file selector
   mDatabaseLayerFieldSelector = new eVisDatabaseLayerFieldSelectionGui( this, fl );
-  connect( mDatabaseLayerFieldSelector, SIGNAL( eVisDatabaseLayerFieldsSelected( QString, QString, QString ) ), this, SLOT( drawNewVectorLayer( QString, QString, QString ) ) );
+  connect( mDatabaseLayerFieldSelector, &eVisDatabaseLayerFieldSelectionGui::eVisDatabaseLayerFieldsSelected, this, &eVisDatabaseConnectionGui::drawNewVectorLayer );
 
   //Populate gui components
 #ifdef Q_OS_WIN

@@ -36,6 +36,7 @@ from osgeo.gdalconst import GA_ReadOnly
 
 from numpy import nan_to_num
 
+from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
 
@@ -135,7 +136,7 @@ def createTest(text):
 
     tokens = list(parseParameters(text[len('processing.run('):-1]))
     cmdname = tokens[0]
-    alg = Processing.getAlgorithm(cmdname)
+    alg = QgsApplication.processingRegistry().algorithmById(cmdname)
 
     definition['name'] = 'Test ({})'.format(cmdname)
     definition['algorithm'] = cmdname

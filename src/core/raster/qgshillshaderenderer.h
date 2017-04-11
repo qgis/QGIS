@@ -29,29 +29,29 @@ class QgsRasterInterface;
 
 /**
  * \ingroup core
- * @brief A renderer for generating live hillshade models.
- * @note added in QGIS 2.16
+ * \brief A renderer for generating live hillshade models.
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 {
   public:
 
     /**
-     * @brief A renderer for generating live hillshade models.
-     * @param input The input raster interface
-     * @param band The band in the raster to use
-     * @param lightAzimuth The azimuth of the light source
-     * @param lightAltitude The altitude of the light source
+     * \brief A renderer for generating live hillshade models.
+     * \param input The input raster interface
+     * \param band The band in the raster to use
+     * \param lightAzimuth The azimuth of the light source
+     * \param lightAltitude The altitude of the light source
      */
     QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAltitude );
 
     QgsHillshadeRenderer *clone() const override;
 
     /**
-     * @brief Factory method to create a new renderer
-     * @param elem A DOM element to create the renderer from.
-     * @param input The raster input interface.
-     * @return A new QgsHillshadeRenderer.
+     * \brief Factory method to create a new renderer
+     * \param elem A DOM element to create the renderer from.
+     * \param input The raster input interface.
+     * \returns A new QgsHillshadeRenderer.
      */
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
 
@@ -66,55 +66,55 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     int band() const { return mBand; }
 
     /** Sets the band used by the renderer.
-     * @see band
+     * \see band
      */
     void setBand( int bandNo );
 
     /**
      * Returns the direction of the light over the raster between 0-360.
-     * @see setAzimuth()
+     * \see setAzimuth()
      */
     double azimuth() const { return mLightAzimuth; }
 
     /** Returns the angle of the light source over the raster.
-     * @see setAltitude()
+     * \see setAltitude()
      */
     double altitude()  const { return mLightAngle; }
 
     /** Returns the Z scaling factor.
-     * @see setZFactor()
+     * \see setZFactor()
      */
     double zFactor()  const { return mZFactor; }
 
     /** Returns true if the renderer is using multi-directional hillshading.
-     * @see setMultiDirectional()
+     * \see setMultiDirectional()
      */
     bool multiDirectional() const { return mMultiDirectional; }
 
     /**
-     * @brief Set the azimuth of the light source.
-     * @param azimuth The azimuth of the light source, between 0 and 360.0
-     * @see azimuth()
+     * \brief Set the azimuth of the light source.
+     * \param azimuth The azimuth of the light source, between 0 and 360.0
+     * \see azimuth()
      */
     void setAzimuth( double azimuth ) { mLightAzimuth = azimuth; }
 
     /**
-     * @brief Set the altitude of the light source
-     * @param altitude the altitude
-     * @see altitude()
+     * \brief Set the altitude of the light source
+     * \param altitude the altitude
+     * \see altitude()
      */
     void setAltitude( double altitude ) { mLightAngle = altitude; }
 
     /**
-     * @brief Set the Z scaling factor of the result image.
-     * @param zfactor The z factor
-     * @see zFactor()
+     * \brief Set the Z scaling factor of the result image.
+     * \param zfactor The z factor
+     * \see zFactor()
      */
     void setZFactor( double zfactor ) { mZFactor = zfactor; }
 
     /** Sets whether to render using a multi-directional hillshade algorithm.
-     * @param isMultiDirectional set to true to use multi directional rendering
-     * @see multiDirectional()
+     * \param isMultiDirectional set to true to use multi directional rendering
+     * \see multiDirectional()
      */
     void setMultiDirectional( bool isMultiDirectional ) { mMultiDirectional = isMultiDirectional; }
 

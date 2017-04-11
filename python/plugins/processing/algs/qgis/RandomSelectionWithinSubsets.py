@@ -53,13 +53,19 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sub_selection.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random selection within subsets')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+    def group(self):
+        return self.tr('Vector selection tools')
 
+    def name(self):
+        return 'randomselectionwithinsubsets'
+
+    def displayName(self):
+        return self.tr('Random selection within subsets')
+
+    def defineCharacteristics(self):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
@@ -77,7 +83,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
 
-        layer = dataobjects.getObjectFromUri(filename)
+        layer = dataobjects.getLayerFromString(filename)
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
 

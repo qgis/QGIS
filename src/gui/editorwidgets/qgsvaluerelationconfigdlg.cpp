@@ -25,16 +25,16 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   mLayerName->setFilters( QgsMapLayerProxyModel::VectorLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mKeyColumn, &QgsFieldComboBox::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mValueColumn, &QgsFieldComboBox::setLayer );
-  connect( mEditExpression, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
+  connect( mEditExpression, &QAbstractButton::clicked, this, &QgsValueRelationConfigDlg::editExpression );
 
-  connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer * ) ), this, SIGNAL( changed() ) );
-  connect( mKeyColumn, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
-  connect( mValueColumn, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
-  connect( mAllowMulti, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mAllowNull, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mOrderByValue, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mFilterExpression, SIGNAL( textChanged() ), this, SIGNAL( changed() ) );
-  connect( mUseCompleter, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mLayerName, &QgsMapLayerComboBox::layerChanged, this, &QgsEditorConfigWidget::changed );
+  connect( mKeyColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mValueColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mAllowMulti, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mAllowNull, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mOrderByValue, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mFilterExpression, &QTextEdit::textChanged, this, &QgsEditorConfigWidget::changed );
+  connect( mUseCompleter, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
 }
 
 QVariantMap QgsValueRelationConfigDlg::config()

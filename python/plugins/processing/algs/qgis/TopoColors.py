@@ -31,7 +31,8 @@ import sys
 
 from collections import defaultdict
 
-from qgis.core import (QgsField,
+from qgis.core import (QgsApplication,
+                       QgsField,
                        QgsGeometry,
                        QgsSpatialIndex,
                        QgsPointV2,
@@ -56,11 +57,25 @@ class TopoColor(GeoAlgorithm):
     BALANCE = 'BALANCE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Topological coloring')
-        self.group, self.i18n_group = self.trAlgorithm('Cartographic tools')
-        self.tags = self.tr('topocolor,colors,graph,adjacent,assign')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('topocolor,colors,graph,adjacent,assign').split(',')
+
+    def group(self):
+        return self.tr('Cartographic tools')
+
+    def name(self):
+        return 'topologicalcoloring'
+
+    def displayName(self):
+        return self.tr('Topological coloring')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.MIN_COLORS,
@@ -78,7 +93,7 @@ class TopoColor(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Colored'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         min_colors = self.getParameterValue(self.MIN_COLORS)
         balance_by = self.getParameterValue(self.BALANCE)

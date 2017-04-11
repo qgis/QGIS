@@ -24,7 +24,7 @@
 /** \ingroup core
  * \class QgsPolygonV2
  * \brief Polygon geometry type.
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
     QgsPolygonV2 *surfaceToPolygon() const override;
 
     /** Returns the geometry converted to the more generic curve type QgsCurvePolygon
-     @return the converted geometry. Caller takes ownership*/
+     \returns the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry *toCurveType() const override;
 
     void addInteriorRing( QgsCurve *ring ) override;
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
      * Returns the distance from a point to the boundary of the polygon (either the
      * exterior ring or any closer interior rings). The returned distance will be
      * negative if the point lies outside the polygon.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     double pointDistanceToBoundary( double x, double y ) const;
 

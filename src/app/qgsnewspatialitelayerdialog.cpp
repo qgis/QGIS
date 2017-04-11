@@ -78,10 +78,10 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
   pbnFindSRID->setEnabled( mDatabaseComboBox->count() );
 
-  connect( mNameEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged( QString ) ) );
-  connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
-  connect( leLayerName, SIGNAL( textChanged( QString ) ), this, SLOT( checkOk() ) );
-  connect( checkBoxPrimaryKey, SIGNAL( clicked() ), this, SLOT( checkOk() ) );
+  connect( mNameEdit, &QLineEdit::textChanged, this, &QgsNewSpatialiteLayerDialog::nameChanged );
+  connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewSpatialiteLayerDialog::selectionChanged );
+  connect( leLayerName, &QLineEdit::textChanged, this, &QgsNewSpatialiteLayerDialog::checkOk );
+  connect( checkBoxPrimaryKey, &QAbstractButton::clicked, this, &QgsNewSpatialiteLayerDialog::checkOk );
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );

@@ -56,12 +56,12 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   // it will allow pressing on the expression dialog button
   setFocusProxy( mCombo );
 
-  connect( mCombo->lineEdit(), SIGNAL( textEdited( QString ) ), this, SLOT( expressionEdited( QString ) ) );
-  connect( mCombo->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( expressionEditingFinished() ) );
-  connect( mCombo, SIGNAL( activated( int ) ), this, SLOT( currentFieldChanged() ) );
-  connect( mButton, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
-  connect( mFieldProxyModel, SIGNAL( modelAboutToBeReset() ), this, SLOT( beforeResetModel() ) );
-  connect( mFieldProxyModel, SIGNAL( modelReset() ), this, SLOT( afterResetModel() ) );
+  connect( mCombo->lineEdit(), &QLineEdit::textEdited, this, &QgsFieldExpressionWidget::expressionEdited );
+  connect( mCombo->lineEdit(), &QLineEdit::editingFinished, this, &QgsFieldExpressionWidget::expressionEditingFinished );
+  connect( mCombo, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsFieldExpressionWidget::currentFieldChanged );
+  connect( mButton, &QAbstractButton::clicked, this, &QgsFieldExpressionWidget::editExpression );
+  connect( mFieldProxyModel, &QAbstractItemModel::modelAboutToBeReset, this, &QgsFieldExpressionWidget::beforeResetModel );
+  connect( mFieldProxyModel, &QAbstractItemModel::modelReset, this, &QgsFieldExpressionWidget::afterResetModel );
   // NW TODO - Fix in 2.6
 //  connect( mCombo->lineEdit(), SIGNAL( returnPressed() ), this, SIGNAL( returnPressed() ) );
 
@@ -157,7 +157,7 @@ void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
   QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
 
   if ( mFieldProxyModel->sourceFieldModel()->layer() )
-    disconnect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), this, SLOT( reloadLayer() ) );
+    disconnect( mFieldProxyModel->sourceFieldModel()->layer(), &QgsVectorLayer::updatedFields, this, &QgsFieldExpressionWidget::reloadLayer );
 
   if ( vl )
     mExpressionContext = vl->createExpressionContext();
@@ -167,7 +167,7 @@ void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
   mFieldProxyModel->sourceFieldModel()->setLayer( vl );
 
   if ( mFieldProxyModel->sourceFieldModel()->layer() )
-    connect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), SLOT( reloadLayer() ), Qt::UniqueConnection );
+    connect( mFieldProxyModel->sourceFieldModel()->layer(), &QgsVectorLayer::updatedFields, this, &QgsFieldExpressionWidget::reloadLayer, Qt::UniqueConnection );
 }
 
 void QgsFieldExpressionWidget::setField( const QString &fieldName )

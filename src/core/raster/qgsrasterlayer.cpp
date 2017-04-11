@@ -287,7 +287,7 @@ QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
   return symbolList;
 }
 
-QString QgsRasterLayer::metadata() const
+QString QgsRasterLayer::htmlMetadata() const
 {
   QgsRasterDataProvider *provider = const_cast< QgsRasterDataProvider * >( mDataProvider );
   QString myMetadata;
@@ -798,9 +798,6 @@ void QgsRasterLayer::setDataProvider( QString const &provider )
   // TODO move to provider
   mLastModified = lastModified( mDataSource );
 
-  // Connect provider signals
-  connect( mDataProvider, &QgsRasterDataProvider::progress, this, &QgsRasterLayer::onProgress );
-
   // Do a passthrough for the status bar text
   connect( mDataProvider, &QgsRasterDataProvider::statusChanged, this, &QgsRasterLayer::statusChanged );
 
@@ -1242,12 +1239,6 @@ void QgsRasterLayer::setRenderer( QgsRasterRenderer *renderer )
   emit styleChanged();
 }
 
-void QgsRasterLayer::showProgress( int value )
-{
-  emit progressUpdate( value );
-}
-
-
 void QgsRasterLayer::showStatusMessage( QString const &message )
 {
   // QgsDebugMsg(QString("entered with '%1'.").arg(theMessage));
@@ -1312,14 +1303,6 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
   delete myQPainter;
 
   return myQImage;
-}
-
-void QgsRasterLayer::onProgress( int type, double progress, const QString &message )
-{
-  Q_UNUSED( type );
-  Q_UNUSED( message );
-  QgsDebugMsgLevel( QString( "theProgress = %1" ).arg( progress ), 4 );
-  emit progressUpdate( static_cast< int >( progress ) );
 }
 
 //////////////////////////////////////////////////////////
@@ -1435,7 +1418,7 @@ bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage )
 bool QgsRasterLayer::readXml( const QDomNode &layer_node )
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  //! @note Make sure to read the file first so stats etc are initialized properly!
+  // Make sure to read the file first so stats etc are initialized properly!
 
   //process provider key
   QDomNode pkeyNode = layer_node.namedItem( QStringLiteral( "provider" ) );

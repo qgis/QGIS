@@ -82,7 +82,7 @@ QgsPaintEffectPropertiesWidget::QgsPaintEffectPropertiesWidget( QgsPaintEffect *
   }
   // set the corresponding widget
   updateEffectWidget( effect );
-  connect( mEffectTypeCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( effectTypeChanged() ) );
+  connect( mEffectTypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPaintEffectPropertiesWidget::effectTypeChanged );
 }
 
 
@@ -112,7 +112,8 @@ void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect *effect 
   if ( stackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    disconnect( stackedWidget->currentWidget(), SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
+    if ( QgsPaintEffectWidget *pew = qobject_cast< QgsPaintEffectWidget * >( stackedWidget->currentWidget() ) )
+      disconnect( pew, &QgsPaintEffectWidget::changed, this, &QgsPaintEffectPropertiesWidget::emitSignalChanged );
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }
 
@@ -127,7 +128,7 @@ void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect *effect 
       stackedWidget->addWidget( w );
       stackedWidget->setCurrentWidget( w );
       // start receiving updates from widget
-      connect( w, SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
+      connect( w, &QgsPaintEffectWidget::changed, this, &QgsPaintEffectPropertiesWidget::emitSignalChanged );
       return;
     }
   }

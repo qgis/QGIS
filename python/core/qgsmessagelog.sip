@@ -1,43 +1,77 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmessagelog.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsMessageLog : QObject
 {
-%TypeHeaderCode
-#include <qgsmessagelog.h>
+%Docstring
+ Interface for logging messages from QGIS in GUI independent way.
+ This class provides abstraction of a tabbed window for showing messages to the user.
+ By default QgsMessageLogOutput will be used if not overridden with another
+ message log creator function.
+ QGIS application uses QgsMessageLog class for logging messages in a dockable
+ window for the user.
+
+ QgsMessageLog is not usually directly created, but rather accessed through
+ QgsApplication.messageLog().
 %End
 
+%TypeHeaderCode
+#include "qgsmessagelog.h"
+%End
   public:
-    QgsMessageLog();
 
     enum MessageLevel
     {
+      ALL,
       INFO,
       WARNING,
       CRITICAL,
-    };
+      NONE    };
 
-    //! add a message to the instance (and create it if necessary)
-    static void logMessage( const QString& message, const QString& tag = QString::null, MessageLevel level = WARNING );
+    QgsMessageLog();
+
+    static void logMessage( const QString &message, const QString &tag = QString(), MessageLevel level = QgsMessageLog::WARNING );
+%Docstring
+add a message to the instance (and create it if necessary)
+%End
 
   signals:
-    void messageReceived( const QString& message, const QString& tag, MessageLevel level );
+    void messageReceived( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+
+    void messageReceived( bool received );
 
 };
 
-
-/**
-\brief Default implementation of message logging interface
-
-This class outputs log messages to the standard output. Therefore it might
-be the right choice for apps without GUI.
-*/
 class QgsMessageLogConsole : QObject
 {
-%TypeHeaderCode
-#include <qgsmessagelog.h>
+%Docstring
+ Default implementation of message logging interface
+This class outputs log messages to the standard output. Therefore it might
+be the right choice for apps without GUI.
 %End
 
+%TypeHeaderCode
+#include "qgsmessagelog.h"
+%End
   public:
     QgsMessageLogConsole();
 
   public slots:
-    void logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmessagelog.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -45,8 +45,8 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue 
   mSearchIconSize = QSize( 16, 16 );
   mSearchIconPixmap = searchIcon.pixmap( mSearchIconSize );
 
-  connect( this, SIGNAL( textChanged( const QString & ) ), this,
-           SLOT( onTextChanged( const QString & ) ) );
+  connect( this, &QLineEdit::textChanged, this,
+           &QgsFilterLineEdit::onTextChanged );
 }
 
 void QgsFilterLineEdit::setShowClearButton( bool visible )

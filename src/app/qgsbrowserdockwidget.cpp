@@ -144,7 +144,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       if ( layer->isValid() )
       {
         layerCrs = layer->crs();
-        layerMetadata = layer->metadata();
+        layerMetadata = layer->htmlMetadata();
       }
       delete layer;
     }
@@ -158,7 +158,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       if ( layer->isValid() )
       {
         layerCrs = layer->crs();
-        layerMetadata = layer->metadata();
+        layerMetadata = layer->htmlMetadata();
       }
       delete layer;
     }

@@ -36,16 +36,17 @@ from inspect import isclass
 from copy import deepcopy
 import numbers
 
+from qgis.core import QgsProcessingUtils
 from qgis.utils import iface
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem,
                        QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope,
-                       QgsProject)
+                       QgsProject,
+                       QgsVectorFileWriter)
 
 from processing.tools.vector import resolveFieldIndex, features
 from processing.tools import dataobjects
 from processing.core.outputs import OutputNumber, OutputRaster, OutputVector
-from processing.tools.dataobjects import getObject
 
 
 def parseBool(s):
@@ -89,7 +90,7 @@ def _expressionContext():
 
 
 def _resolveLayers(value):
-    layers = dataobjects.getAllLayers()
+    layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
     if value:
         inputlayers = value.split(';')
         for i, inputlayer in enumerate(inputlayers):
@@ -276,7 +277,7 @@ class ParameterCrs(Parameter):
             self.value = value.crs().authid()
             return True
         try:
-            layer = dataobjects.getObjectFromUri(value)
+            layer = dataobjects.getLayerFromString(value)
             if layer is not None:
                 self.value = layer.crs().authid()
                 return True
@@ -320,7 +321,7 @@ class ParameterDataObject(Parameter):
         if self.value is None:
             return str(None)
         else:
-            s = dataobjects.normalizeLayerSource(str(self.value))
+            s = QgsProcessingUtils.normalizeLayerSource(str(self.value))
             s = '"%s"' % s
             return s
 
@@ -355,7 +356,7 @@ class ParameterExtent(Parameter):
             return True
 
         try:
-            layer = dataobjects.getObjectFromUri(value)
+            layer = dataobjects.getLayerFromString(value)
             if layer is not None:
                 rect = layer.extent()
                 self.value = '{},{},{},{}'.format(
@@ -412,7 +413,7 @@ class ParameterExtent(Parameter):
                                                 QgsVectorLayer)):
                         layer = param.value
                     else:
-                        layer = dataobjects.getObject(param.value)
+                        layer = dataobjects.getLayerFromString(param.value)
                     if layer:
                         found = True
                         self.addToRegion(layer, first)
@@ -420,7 +421,7 @@ class ParameterExtent(Parameter):
                 elif isinstance(param, ParameterMultipleInput):
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getObject(layername)
+                        layer = dataobjects.getLayerFromString(layername)
                         if layer:
                             found = True
                             self.addToRegion(layer, first)
@@ -705,7 +706,7 @@ class ParameterMultipleInput(ParameterDataObject):
             return self.value
         if self.datatype == dataobjects.TYPE_RASTER:
             for layerfile in layers:
-                layer = dataobjects.getObjectFromUri(layerfile, False)
+                layer = dataobjects.getLayerFromString(layerfile, False)
                 if layer:
                     filename = dataobjects.exportRasterLayer(layer)
                     self.exported = self.exported.replace(layerfile, filename)
@@ -714,7 +715,7 @@ class ParameterMultipleInput(ParameterDataObject):
             return self.value
         else:
             for layerfile in layers:
-                layer = dataobjects.getObjectFromUri(layerfile, False)
+                layer = dataobjects.getLayerFromString(layerfile, False)
                 if layer:
                     filename = dataobjects.exportVectorLayer(layer)
                     self.exported = self.exported.replace(layerfile, filename)
@@ -726,7 +727,7 @@ class ParameterMultipleInput(ParameterDataObject):
                 return str(value.dataProvider().dataSourceUri())
             else:
                 s = str(value)
-                layers = dataobjects.getRasterLayers()
+                layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
                 for layer in layers:
                     if layer.name() == s:
                         return str(layer.dataProvider().dataSourceUri())
@@ -739,7 +740,10 @@ class ParameterMultipleInput(ParameterDataObject):
                 return str(value.source())
             else:
                 s = str(value)
-                layers = dataobjects.getVectorLayers([self.datatype])
+                if self.datatype != dataobjects.TYPE_VECTOR_ANY:
+                    layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.datatype], False)
+                else:
+                    layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 for layer in layers:
                     if layer.name() == s:
                         return str(layer.source())
@@ -751,7 +755,7 @@ class ParameterMultipleInput(ParameterDataObject):
         elif self.datatype == dataobjects.TYPE_FILE:
             return self.tr('All files (*.*)', 'ParameterMultipleInput')
         else:
-            exts = dataobjects.getSupportedOutputVectorLayerExtensions()
+            exts = QgsVectorFileWriter.supportedFormatExtensions()
         for i in range(len(exts)):
             exts[i] = self.tr('{0} files (*.{1})', 'ParameterMultipleInput').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
@@ -902,7 +906,7 @@ class ParameterNumber(Parameter):
         variables = {}
         layer = getObject(element.value)
         if layer is not None:
-            name = element.name if alg is None else "%s_%s" % (alg.name, element.name)
+            name = element.name if alg is None else "%s_%s" % (alg.name(), element.name)
             variables['@%s_minx' % name] = layer.extent().xMinimum()
             variables['@%s_miny' % name] = layer.extent().yMinimum()
             variables['@%s_maxx' % name] = layer.extent().yMaximum()
@@ -928,7 +932,7 @@ class ParameterNumber(Parameter):
         for alg in list(model.algs.values()):
             for out in alg.algorithm.outputs:
                 if isinstance(out, OutputNumber):
-                    variables["@%s_%s" % (alg.name, out.name)] = out.value
+                    variables["@%s_%s" % (alg.name(), out.name)] = out.value
                 if isinstance(out, (OutputRaster, OutputVector)):
                     variables.update(self._layerVariables(out, alg))
         for k, v in list(variables.items()):
@@ -1017,7 +1021,7 @@ class ParameterRaster(ParameterDataObject):
 
         if self.exported:
             return self.exported
-        layer = dataobjects.getObjectFromUri(self.value, False)
+        layer = dataobjects.getLayerFromString(self.value, False)
         if layer:
             self.exported = dataobjects.exportRasterLayer(layer)
         else:
@@ -1316,7 +1320,7 @@ class ParameterTable(ParameterDataObject):
             return True
         else:
             self.value = str(obj)
-            layers = dataobjects.getTables()
+            layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
             for layer in layers:
                 if layer.name() == self.value or layer.source() == self.value:
                     source = str(layer.source())
@@ -1347,7 +1351,7 @@ class ParameterTable(ParameterDataObject):
 
         if self.exported:
             return self.exported
-        table = dataobjects.getObjectFromUri(self.value, False)
+        table = dataobjects.getLayerFromString(self.value, False)
         if table:
             self.exported = dataobjects.exportTable(table)
         else:
@@ -1515,7 +1519,7 @@ class ParameterVector(ParameterDataObject):
 
         if self.exported:
             return self.exported
-        layer = dataobjects.getObjectFromUri(self.value, False)
+        layer = dataobjects.getLayerFromString(self.value, False)
         if layer:
             self.exported = dataobjects.exportVectorLayer(layer)
         else:
@@ -1523,7 +1527,7 @@ class ParameterVector(ParameterDataObject):
         return self.exported
 
     def getFileFilter(self):
-        exts = dataobjects.getSupportedOutputVectorLayerExtensions()
+        exts = QgsVectorFileWriter.supportedFormatExtensions()
         for i in range(len(exts)):
             exts[i] = self.tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)

@@ -32,13 +32,13 @@ class CORE_EXPORT QgsRasterIdentifyResult
     QgsRasterIdentifyResult();
 
     /** \brief Constructor. Creates valid result.
-     *  @param format the result format
-     *  @param results the results
+     *  \param format the result format
+     *  \param results the results
      */
     QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
 
     /** \brief Constructor. Creates invalid result with error.
-     *  @param error the error
+     *  \param error the error
      */
     QgsRasterIdentifyResult( const QgsError &error );
 

@@ -22,7 +22,7 @@ email                : marco.hugentobler at sourcepole dot com
 /** \ingroup core
  * \class QgsMultiLineString
  * \brief Multi line string geometry collection.
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     virtual bool addGeometry( QgsAbstractGeometry *g ) override;
 
     /** Returns the geometry converted to the more generic curve type QgsMultiCurve
-    @return the converted geometry. Caller takes ownership*/
+    \returns the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry *toCurveType() const override;
 
   protected:

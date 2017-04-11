@@ -37,7 +37,7 @@ class QgsProject;
  * If a layer is completely removed from the layer tree, it will be also removed
  * from the map layer registry.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 {
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 
   signals:
     //! Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
-    //! @note added in 2.6
+    //! \since QGIS 2.6
     void addedLayersToLayerTree( const QList<QgsMapLayer *> &layers );
 
   protected slots:

@@ -26,7 +26,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import (QgsApplication,
+                       QgsField,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -43,9 +47,22 @@ class PointsInPolygonUnique(GeoAlgorithm):
     FIELD = 'FIELD'
     CLASSFIELD = 'CLASSFIELD'
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector analysis tools')
+
+    def name(self):
+        return 'countuniquepointsinpolygon'
+
+    def displayName(self):
+        return self.tr('Count unique points in polygon')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Count unique points in polygon')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
         self.addParameter(ParameterVector(self.POLYGONS,
                                           self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,
@@ -57,8 +74,8 @@ class PointsInPolygonUnique(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Unique count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
+        polyLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POLYGONS))
+        pointLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 

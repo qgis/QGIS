@@ -36,7 +36,7 @@
  *
  * The class is thread-safe (multiple classes can access the same instance safely).
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererCache : public QObject
 {
@@ -47,14 +47,14 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
 
     /**
      * Invalidates the cache contents, clearing all cached images.
-     * @see clearCacheImage()
+     * \see clearCacheImage()
      */
     void clear();
 
     /**
      * Initialize cache: set new parameters and clears the cache if any
      * parameters have changed since last initialization.
-     * @return flag whether the parameters are the same as last time
+     * \returns flag whether the parameters are the same as last time
      */
     bool init( const QgsRectangle &extent, double scale );
 
@@ -64,14 +64,14 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * A list of \a dependentLayers should be passed containing all layer
      * on which this cache image is dependent. If any of these layers triggers a
      * repaint then the cache image will be cleared.
-     * @see cacheImage()
+     * \see cacheImage()
      */
     void setCacheImage( const QString &cacheKey, const QImage &image, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 
     /**
      * Returns true if the cache contains an image with the specified \a cacheKey.
-     * @note added in QGIS 3.0
-     * @see cacheImage()
+     * \since QGIS 3.0
+     * \see cacheImage()
      */
     bool hasCacheImage( const QString &cacheKey ) const;
 
@@ -79,20 +79,20 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * Returns the cached image for the specified \a cacheKey. The \a cacheKey usually
      * matches the QgsMapLayer::id() which the image is a render of.
      * Returns a null image if it is not cached.
-     * @see setCacheImage()
-     * @see hasCacheImage()
+     * \see setCacheImage()
+     * \see hasCacheImage()
      */
     QImage cacheImage( const QString &cacheKey ) const;
 
     /**
      * Returns a list of map layers on which an image in the cache depends.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > dependentLayers( const QString &cacheKey ) const;
 
     /**
      * Removes an image from the cache with matching \a cacheKey.
-     * @see clear()
+     * \see clear()
      */
     void clearCacheImage( const QString &cacheKey );
 

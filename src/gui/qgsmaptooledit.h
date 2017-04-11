@@ -55,8 +55,8 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     /** Creates a rubber band with the color/line width from
      *   the QGIS settings. The caller takes ownership of the
      *   returned object
-     *   @param geometryType
-     *   @param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
+     *   \param geometryType
+     *   \param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
      */
     QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false );
 
@@ -66,8 +66,8 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     QgsVectorLayer *currentVectorLayer();
 
     /** Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
-     * @param geom list of points (in layer coordinate system)
-     * @return 0 in case of success
+     * \param geom list of points (in layer coordinate system)
+     * \returns 0 in case of success
      */
     int addTopologicalPoints( const QList<QgsPoint> &geom );
 

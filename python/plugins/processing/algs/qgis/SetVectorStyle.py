@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -40,9 +41,22 @@ class SetVectorStyle(GeoAlgorithm):
     STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'setstyleforvectorlayer'
+
+    def displayName(self):
+        return self.tr('Set style for vector layer')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Set style for vector layer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Vector layer')))
         self.addParameter(ParameterFile(self.STYLE,
@@ -53,7 +67,7 @@ class SetVectorStyle(GeoAlgorithm):
         filename = self.getParameterValue(self.INPUT)
 
         style = self.getParameterValue(self.STYLE)
-        layer = dataobjects.getObjectFromUri(filename, False)
+        layer = dataobjects.getLayerFromString(filename, False)
         if layer is None:
             dataobjects.load(filename, os.path.basename(filename), style=style)
             self.getOutputFromName(self.OUTPUT).open = False

@@ -46,12 +46,19 @@ class Clip(GeoAlgorithm):
     OVERLAY = 'OVERLAY'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'clip.png'))
 
+    def group(self):
+        return self.tr('Vector overlay tools')
+
+    def name(self):
+        return 'clip'
+
+    def displayName(self):
+        return self.tr('Clip')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Clip')
-        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Clip.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(Clip.OVERLAY,
@@ -59,9 +66,9 @@ class Clip(GeoAlgorithm):
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
 
     def processAlgorithm(self, feedback):
-        source_layer = dataobjects.getObjectFromUri(
+        source_layer = dataobjects.getLayerFromString(
             self.getParameterValue(Clip.INPUT))
-        mask_layer = dataobjects.getObjectFromUri(
+        mask_layer = dataobjects.getLayerFromString(
             self.getParameterValue(Clip.OVERLAY))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(

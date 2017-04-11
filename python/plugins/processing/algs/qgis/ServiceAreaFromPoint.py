@@ -71,8 +71,17 @@ class ServiceAreaFromPoint(GeoAlgorithm):
     OUTPUT_POINTS = 'OUTPUT_POINTS'
     OUTPUT_POLYGON = 'OUTPUT_POLYGON'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
+
+    def group(self):
+        return self.tr('Network analysis')
+
+    def name(self):
+        return 'serviceareafrompoint'
+
+    def displayName(self):
+        return self.tr('Service area (from point)')
 
     def defineCharacteristics(self):
         self.DIRECTIONS = OrderedDict([
@@ -83,9 +92,6 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
                            ]
-
-        self.name, self.i18n_name = self.trAlgorithm('Service area (from point)')
-        self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer representing network'),
@@ -144,7 +150,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_VECTOR))
         startPoint = self.getParameterValue(self.START_POINT)
         strategy = self.getParameterValue(self.STRATEGY)

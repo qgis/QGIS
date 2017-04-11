@@ -29,7 +29,7 @@
 /**
   * QgsServerSettingsEnv provides some enum describing the environment
   * currently supported for configuration.
-  * @note added in QGIS 3.0
+  * \since QGIS 3.0
   */
 class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 {
@@ -62,7 +62,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 /** \ingroup server
  * QgsServerSettings provides a way to retrieve settings by prioritizing
  * according to environment variables, ini file and default values.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsServerSettings
 {
@@ -87,7 +87,7 @@ class SERVER_EXPORT QgsServerSettings
     void load();
 
     /** Load setting for a specific environment variable name.
-      * @return true if loading is successful, false in case of an invalid name.
+      * \returns true if loading is successful, false in case of an invalid name.
       */
     bool load( const QString &envVarName );
 
@@ -96,48 +96,48 @@ class SERVER_EXPORT QgsServerSettings
     void logSummary() const;
 
     /** Returns the ini file loaded by QSetting.
-      * @return the path of the ini file or an empty string if none is loaded.
+      * \returns the path of the ini file or an empty string if none is loaded.
       */
     QString iniFile() const;
 
     /** Returns parallel rendering setting.
-      * @return true if parallel rendering is activated, false otherwise.
+      * \returns true if parallel rendering is activated, false otherwise.
       */
     bool parallelRendering() const;
 
     /** Returns the maximum number of threads to use.
-      * @return the number of threads.
+      * \returns the number of threads.
       */
     int maxThreads() const;
 
     /**
       * Returns the maximum number of cached layers.
-      * @return the number of cached layers.
+      * \returns the number of cached layers.
       */
     int maxCacheLayers() const;
 
     /** Returns the log level.
-      * @return the log level.
+      * \returns the log level.
       */
     QgsMessageLog::MessageLevel logLevel() const;
 
     /** Returns the QGS project file to use.
-      * @return the path of the QGS project or an empty string if none is defined.
+      * \returns the path of the QGS project or an empty string if none is defined.
       */
     QString projectFile() const;
 
     /** Returns the log file.
-      * @return the path of the log file or an empty string if none is defined.
+      * \returns the path of the log file or an empty string if none is defined.
       */
     QString logFile() const;
 
     /** Returns the cache size.
-      * @return the cache size.
+      * \returns the cache size.
       */
     qint64 cacheSize() const;
 
     /** Returns the cache directory.
-      * @return the directory.
+      * \returns the directory.
       */
     QString cacheDirectory() const;
 

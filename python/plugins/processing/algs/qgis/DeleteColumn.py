@@ -25,6 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -38,11 +39,25 @@ class DeleteColumn(GeoAlgorithm):
     COLUMNS = 'COLUMN'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Delete column')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
-        self.tags = self.tr('drop,delete,remove,fields,columns,attributes')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('drop,delete,remove,fields,columns,attributes').split(',')
+
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'deletecolumn'
+
+    def displayName(self):
+        return self.tr('Delete column')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.COLUMNS,
@@ -50,7 +65,7 @@ class DeleteColumn(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
 
         fields_to_delete = self.getParameterValue(self.COLUMNS).split(';')
         fields = layer.fields()

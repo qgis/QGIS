@@ -25,7 +25,10 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import (QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -40,10 +43,22 @@ class GeometryConvert(GeoAlgorithm):
     TYPE = 'TYPE'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Convert geometry type')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'convertgeometrytype'
+
+    def displayName(self):
+        return self.tr('Convert geometry type')
+
+    def defineCharacteristics(self):
         self.types = [self.tr('Centroids'),
                       self.tr('Nodes'),
                       self.tr('Linestrings'),
@@ -58,7 +73,7 @@ class GeometryConvert(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         index = self.getParameterValue(self.TYPE)
 

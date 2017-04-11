@@ -123,14 +123,14 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void restoreWindowState();
 
     /** Loads the contents of a template document into the composer's composition.
-     * @param templateDoc template document to load
-     * @param clearExisting set to true to remove all existing composition settings and items before loading template
-     * @returns true if template load was successful
+     * \param templateDoc template document to load
+     * \param clearExisting set to true to remove all existing composition settings and items before loading template
+     * \returns true if template load was successful
      */
     bool loadFromTemplate( const QDomDocument &templateDoc, bool clearExisting );
 
     //! Sets the specified feature as the current atlas feature
-    //! @note added in 2.1
+    //! \since QGIS 2.1
     void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
 
   protected:
@@ -592,7 +592,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QMenu *mirrorOtherMenu( QMenu *otherMenu );
 
     //! Toggles the state of the atlas preview and navigation controls
-    //! @note added in 2.1
+    //! \since QGIS 2.1
     void toggleAtlasControls( bool atlasEnabled );
 
     //! Sets the printer page orientation when the page orientation changes

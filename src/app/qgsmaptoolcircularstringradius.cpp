@@ -159,7 +159,7 @@ void QgsMapToolCircularStringRadius::createRadiusSpinBox()
   mRadiusSpinBox->setPrefix( tr( "Radius: " ) );
   mRadiusSpinBox->setValue( mRadius );
   QgisApp::instance()->addUserInputWidget( mRadiusSpinBox );
-  QObject::connect( mRadiusSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( updateRadiusFromSpinBox( double ) ) );
+  connect( mRadiusSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolCircularStringRadius::updateRadiusFromSpinBox );
   mRadiusSpinBox->setFocus( Qt::TabFocusReason );
 }
 

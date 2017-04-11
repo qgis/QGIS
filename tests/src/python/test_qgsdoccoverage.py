@@ -68,7 +68,7 @@ class TestQgsDocCoverage(unittest.TestCase):
         if parser.classes_missing_version_added:
             print("---------------------------------")
             print('\n')
-            print((colored('{} classes have been added without a version added doxygen note ("@note added in QGIS x.xx"):'.format(len(parser.classes_missing_version_added)), 'yellow')))
+            print((colored('{} classes have been added without a version added doxygen note ("\since QGIS x.xx"):'.format(len(parser.classes_missing_version_added)), 'yellow')))
             print('')
             print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_version_added])))
 
@@ -81,9 +81,9 @@ class TestQgsDocCoverage(unittest.TestCase):
 
         sys.stdout.flush()
         self.assertTrue(not parser.undocumented_members, 'Undocumented members found')
-        self.assertTrue(not parser.classes_missing_group, 'Classes without \group tag found')
-        self.assertTrue(not parser.classes_missing_version_added, 'Classes without version added note found')
-        self.assertTrue(not parser.classes_missing_brief, 'Classes without brief description found')
+        self.assertTrue(not parser.classes_missing_group, 'Classes without \\group tag found')
+        self.assertTrue(not parser.classes_missing_version_added, 'Classes without \\since version tag found')
+        self.assertTrue(not parser.classes_missing_brief, 'Classes without \\brief description found')
 
 
 if __name__ == '__main__':

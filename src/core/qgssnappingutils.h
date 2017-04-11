@@ -40,7 +40,7 @@ class QgsSnappingConfig;
  * When working with map canvas, it may be useful to use derived class QgsMapCanvasSnappingUtils
  * which keeps the configuration in sync with map canvas (e.g. current view, active layer).
  *
- * @note added in 2.8
+ * \since QGIS 2.8
  */
 class CORE_EXPORT QgsSnappingUtils : public QObject
 {
@@ -117,10 +117,10 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
         snapper.setSnapToMapMode(QgsSnappingUtils.SnapAdvanced)
         ```
 
-       * @param l   The vector layer for which this configuration is
-       * @param t   Which parts of the geometry should be snappable
-       * @param tol The tolerance radius in which the snapping will trigger
-       * @param u   The unit in which the tolerance is specified
+       * \param l   The vector layer for which this configuration is
+       * \param t   Which parts of the geometry should be snappable
+       * \param tol The tolerance radius in which the snapping will trigger
+       * \param u   The unit in which the tolerance is specified
        */
       LayerConfig( QgsVectorLayer *l, QgsPointLocator::Types t, double tol, QgsTolerance::UnitType u )
         : layer( l )
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QList<LayerConfig> layers() const { return mLayers; }
 
     /** Get extra information about the instance
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QString dump();
 
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /**
      * Toggles the state of snapping
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void toggleEnabled();
 

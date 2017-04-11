@@ -71,8 +71,17 @@ class ShortestPathPointToLayer(GeoAlgorithm):
     TOLERANCE = 'TOLERANCE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
+
+    def group(self):
+        return self.tr('Network analysis')
+
+    def name(self):
+        return 'shortestpathpointtolayer'
+
+    def displayName(self):
+        return self.tr('Shortest path (point to layer)')
 
     def defineCharacteristics(self):
         self.DIRECTIONS = OrderedDict([
@@ -83,9 +92,6 @@ class ShortestPathPointToLayer(GeoAlgorithm):
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
                            ]
-
-        self.name, self.i18n_name = self.trAlgorithm('Shortest path (point to layer)')
-        self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer representing network'),
@@ -141,10 +147,10 @@ class ShortestPathPointToLayer(GeoAlgorithm):
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_VECTOR))
         startPoint = self.getParameterValue(self.START_POINT)
-        endPoints = dataobjects.getObjectFromUri(
+        endPoints = dataobjects.getLayerFromString(
             self.getParameterValue(self.END_POINTS))
         strategy = self.getParameterValue(self.STRATEGY)
 

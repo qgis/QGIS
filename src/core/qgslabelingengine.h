@@ -28,15 +28,15 @@ class QgsLabelingEngine;
 
 
 /** \ingroup core
- * @brief The QgsAbstractLabelProvider class is an interface class. Implementations
+ * \brief The QgsAbstractLabelProvider class is an interface class. Implementations
  * return list of labels and their associated geometries - these are used by
  * QgsLabelingEngine to compute the final layout of labels.
  *
  * Implementations also take care of drawing the returned final label positions.
  *
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
- * @note not available in Python bindings
- * @note added in QGIS 2.12
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \note not available in Python bindings
+ * \since QGIS 2.12
  */
 class CORE_EXPORT QgsAbstractLabelProvider
 {
@@ -132,7 +132,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
 
 
 /** \ingroup core
- * @brief The QgsLabelingEngine class provides map labeling functionality.
+ * \brief The QgsLabelingEngine class provides map labeling functionality.
  * The input for the engine is a list of label provider objects and map settings.
  * Based on the input, the engine computes layout of labels for the given map view
  * with no collisions between the labels. Drawing of resulting labels is done
@@ -153,15 +153,15 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
  *   engine.run( context );
  * \endcode
  *
- * @note this class is not a part of public API yet. The provider's interface still
+ * \note this class is not a part of public API yet. The provider's interface still
  * uses pal::LabelPosition as an argument in drawLabels() method - this should be
  * sorted out first (a class common to API and pal?). Also, the API may need more
  * polishing to be easy to use - e.g. use concept of labeling layers in API
  * (equivalent of pal::Layer) instead of subProviders(), label providers integrated
  * into feature loop vs providers with independent feature loop), split labeling
  * computation from drawing of labels, improved results class with label iterator).
- * @note added in QGIS 2.12
- * @note not available in Python bindings
+ * \since QGIS 2.12
+ * \note not available in Python bindings
  */
 class CORE_EXPORT QgsLabelingEngine
 {
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsLabelingEngine
 
     /**
      * Returns a list of layers with providers in the engine.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > participatingLayers() const;
 
@@ -263,11 +263,11 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngine::Flags )
 
 
 /** \ingroup core
- * @class QgsLabelingUtils
- * @brief Contains helper utilities for working with QGIS' labeling engine.
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
- * @note added in QGIS 2.14
- * @note not available in Python bindings
+ * \class QgsLabelingUtils
+ * \brief Contains helper utilities for working with QGIS' labeling engine.
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \since QGIS 2.14
+ * \note not available in Python bindings
  */
 
 class CORE_EXPORT QgsLabelingUtils
@@ -275,16 +275,16 @@ class CORE_EXPORT QgsLabelingUtils
   public:
 
     /** Encodes an ordered list of predefined point label positions to a string.
-     * @param positions order list of positions
-     * @returns list encoded to string
-     * @see decodePredefinedPositionOrder()
+     * \param positions order list of positions
+     * \returns list encoded to string
+     * \see decodePredefinedPositionOrder()
      */
     static QString encodePredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition > &positions );
 
     /** Decodes a string to an ordered list of predefined point label positions.
-     * @param positionString encoded string of positions
-     * @returns decoded list
-     * @see encodePredefinedPositionOrder()
+     * \param positionString encoded string of positions
+     * \returns decoded list
+     * \see encodePredefinedPositionOrder()
      */
     static QVector< QgsPalLayerSettings::PredefinedPointPosition > decodePredefinedPositionOrder( const QString &positionString );
 

@@ -191,7 +191,7 @@ class HeatmapPixelSizeWidgetWrapper(WidgetWrapper):
 
     def setLayer(self, layer):
         if isinstance(layer, str):
-            layer = dataobjects.getObjectFromUri(_resolveLayers(layer))
+            layer = dataobjects.getLayerFromString(_resolveLayers(layer))
         self.widget.setLayer(layer)
 
     def radiusChanged(self, wrapper):

@@ -57,7 +57,7 @@ class CORE_EXPORT QgsDataSourceUri
     QByteArray encodedUri() const;
 
     //! set complete encoded uri (generic mode)
-    // \note not available in python bindings
+    // \note not available in Python bindings
     void setEncodedUri( const QByteArray &uri );
 
     //! set complete encoded uri (generic mode)
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsDataSourceUri
     //! Set generic param (generic mode)
     // \note if key exists, another is inserted
     void setParam( const QString &key, const QString &value );
-    //! @note available in python as setParamList
+    //! \note available in Python as setParamList
     void setParam( const QString &key, const QStringList &value );
 
     //! Remove generic param (generic mode)
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsDataSourceUri
     void clearSchema();
 
     //! set the table schema
-    // @note added in 2.11
+    // \since QGIS 2.11
     void setSchema( const QString &schema );
 
     //! Sets the SQL query
@@ -170,10 +170,10 @@ class CORE_EXPORT QgsDataSourceUri
     //! Returns the port
     QString port() const;
     //! Returns the driver
-    // @note added in QGIS 2.16
+    // \since QGIS 2.16
     QString driver() const;
     //! Sets the driver name
-    // @note added in QGIS 2.16
+    // \since QGIS 2.16
     void setDriver( const QString &driver );
     //! Returns the password
     QString password() const;

@@ -48,9 +48,9 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     void updateCanvas();
 
     /** Sets render context parameters
-    @param p painter for rendering
-    @param context out: configured context
-    @return true in case of success */
+    \param p painter for rendering
+    \param context out: configured context
+    \returns true in case of success */
     bool setRenderContextVariables( QPainter *p, QgsRenderContext &context ) const;
 
   public:

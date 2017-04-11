@@ -33,7 +33,7 @@ class QgsCoordinateReferenceSystem;
  *
  * When using the widget, make sure to call setOriginalExtent(), setCurrentExtent() and setOutputCrs() during initialization.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::QgsExtentGroupBoxWidget
 {
@@ -72,10 +72,10 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     ExtentState extentState() const { return mExtentState; }
 
     //! Set base part of title of the group box (will be appended with extent state)
-    //! @note added in 2.12
+    //! \since QGIS 2.12
     void setTitleBase( const QString &title );
     //! Set base part of title of the group box (will be appended with extent state)
-    //! @note added in 2.12
+    //! \since QGIS 2.12
     QString titleBase() const;
 
   public slots:

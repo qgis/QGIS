@@ -374,6 +374,16 @@ from a project, the new QgsProject.instance().layoutManager() class should be us
 Additionally, the new interface methods work with QgsComposerInterface objects instead
 of QgsComposerView objects.
 
+CharacterWidget        {#qgis_api_break_3_0_CharacterWidget}
+-------------------
+
+- getColumns() was renamed to columns()
+- getSquareSize() was renamed to squareSize()
+- updateFont() was renamed to setFont()
+- updateSize() was renamed to setFontSize()
+- updateStyle() was renamed to setFontStyle()
+- updateColumns() was renamed to setColumns()
+
 
 QgsAbstractGeometry        {#qgis_api_break_3_0_QgsAbstractGeometry}
 -------------------
@@ -930,6 +940,11 @@ QgsDiagramSettings        {#qgis_api_break_3_0_QgsDiagramSettings}
 
 - The SizeType enum was removed. Use QgsUnitTypes.RenderUnit instead.
 
+QgsDial        {#qgis_api_break_3_0_QgsDial}
+-------
+
+- The protected valueChanged slot was removed.
+
 
 QgsDistanceArea        {#qgis_api_break_3_0_QgsDistanceArea}
 ---------------
@@ -1272,10 +1287,10 @@ QgsLayerTreeMapCanvasBridge        {#qgis_api_break_3_0_QgsLayerTreeMapCanvasBri
 
 - setAutoEnableCrsTransform() and autoEnableCrsTransform() were removed. CRS transformation is now always enabled.
 - setCanvasLayers() now requires a third map layer list argument for storage of all layers in the layer tree order.
-- `setCustomLayerOrder()` has been removed. Use `QgsProject::layerTree().setCustomLayerOrder()` instead
-- `customLayerOrder()` has been removed. Use `QgsProject::layerTree().customLayerOrder()` or `QgsProject::layerOrder()` instead
-- `hasCustomLayerOrder()` has been removed. Use `QgsProject::layerTree().hasCustomLayerOrder()` instead
-- `setHasCustomLayerOrder()` has been removed. Use `QgsProject::layerTree().setHasCustomLayerOrder()` instead
+- `setCustomLayerOrder()` has been removed. Use `QgsProject::layerTreeRoot().setCustomLayerOrder()` instead
+- `customLayerOrder()` has been removed. Use `QgsProject::layerTreeRoot().customLayerOrder()` instead
+- `hasCustomLayerOrder()` has been removed. Use `QgsProject::layerTreeRoot().hasCustomLayerOrder()` instead
+- `setHasCustomLayerOrder()` has been removed. Use `QgsProject::layerTreeRoot().setHasCustomLayerOrder()` instead
 - `defaultLayerOrder()` has been removed.
 
 
@@ -1375,6 +1390,8 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - asLayerDefinition(), fromLayerDefinition(), fromLayerDefinitionFile() were moved to QgsLayerDefinition class and renamed to exportLayerDefinitionLayers() resp. loadLayerDefinitionLayers()
 - loadNamedStyleFromDb() was renamed to loadNamedStyleFromDatabase()
 - readLayerXml() and writeLayerXml() expect QgsPathResolver reference as the last argument
+- the invalidTransformInput() slot was removed - calling this slot had no effect
+- metadata() was renamed to htmlMetadata()
 
 QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}
 --------------------
@@ -1536,7 +1553,10 @@ QgsPaintEffectRegistry        {#qgis_api_break_3_0_QgsPaintEffectRegistry}
 QgsPalettedRasterRenderer        {#qgis_api_break_3_0_QgsPalettedRasterRenderer}
 -------------------------
 
-- The rgbArray() method was made private
+- The rgbArray() method was removed
+- colors() has been removed, use classes() instead.
+- The constructor has a different signature and requires a list of classes instead of an array
+
 
 QgsPalLabeling        {#qgis_api_break_3_0_QgsPalLabeling}
 --------------
@@ -1660,6 +1680,16 @@ QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 - setUseSrcNoDataValue() has been renamed to setUseSourceNoDataValue()
 - srcNoDataValue() has been renamed to sourceNoDataValue()
 - draw() has been removed from the interface as it was not used anywhere.
+- The progress and progressUpdate signals were removed. Methods which previously emitted these
+signals now accept a QgsRasterBlockFeedback argument for reporting progress updates.
+
+
+QgsRasterFileWriter        {#qgis_api_break_3_0_QgsRasterFileWriter}
+------------------
+
+- writeRaster now uses a QgsRasterBlockFeedback object instead of a QProgressDialog argument. Any use of the old
+QProgressDialog argument will need to be updated using manually created connections between QgsRasterBlockFeedback's
+signals and the updates to the progress dialog.
 
 
 QgsRasterInterface        {#qgis_api_break_3_0_QgsRasterInterface}
@@ -1668,6 +1698,7 @@ QgsRasterInterface        {#qgis_api_break_3_0_QgsRasterInterface}
 - srcDataType() has been renamed to sourceDataType()
 - srcInput() has been renamed to sourceInput()
 - block() has new "feedback" argument.
+- The signature of histogram() and bandStatistics() now takes a QgsRasterBlockFeedback pointer argument.
 
 
 QgsRasterLayer        {#qgis_api_break_3_0_QgsRasterLayer}
@@ -1681,6 +1712,10 @@ constructor variant which accepts a data provider string and loadDefaultStyleFla
 - updateProgress() had no effect and was removed.
 - CUMULATIVE_CUT_LOWER and CUMULATIVE_CUT_UPPER have been moved to QgsRasterMinMaxOrigin
 - the second parameter of setContrastEnhancement() has changed type. It is now QgsRasterMinMaxOrigin::Limits
+- showProgress() and onProgress() were removed
+- The progressUpdate() signal was removed.  Methods which previously emitted these
+signals now accept a QgsRasterBlockFeedback argument for reporting progress updates.
+
 
 QgsRasterProjector        {#qgis_api_break_3_0_QgsRasterProjector}
 ------------------
@@ -1691,6 +1726,11 @@ QgsRasterRenderer
 -----------------
 
 - MinMaxOrigin enum, minMaxOriginName(), minMaxOriginLabel(), minMaxOriginFromName() removed. Use minMaxOrigin() instead
+
+QgsRectangle        {#qgis_api_break_3_0_QgsRectangle}
+------------
+
+- The protected members were removed - QgsRectangle is not intended to be subclassed.
 
 QgsRelation        {#qgis_api_break_3_0_QgsRelation}
 -----------
@@ -1799,6 +1839,11 @@ QgsSingleSymbolRendererWidget        {#qgis_api_break_3_0_QgsSingleSymbolRendere
 
 - sizeScaleFieldChanged() and scaleMethodChanged() were removed. These settings are no longer exposed in the widget's GUI.
 - The Mode enum was removed.
+
+QgsSlider        {#qgis_api_break_3_0_QgsSlider}
+---------
+
+- The protected valueChanged slot was removed.
 
 
 QgsSnapper        {#qgis_api_break_3_0_QgsSnapper}
@@ -2125,13 +2170,14 @@ Processing        {#qgis_api_break_3_0_Processing}
 ----------
 
 - Algorithm providers now subclass the c++ QgsProcessingProvider class, and must be adapted to the API for QgsProcessingProvider. Specifically,
-getName() should be replaced with id(), getDescription() with name(), and getIcon with icon().
+getName() should be replaced with id(), getDescription() with name(), and getIcon with icon(). AlgorithmProvider was removed.
 - Algorithm's processAlgorithm method now passes a QgsProcessingFeedback object instead of the loosely defined progress parameter. Algorithms will
 need to update their use of the progress argument to utilize the QgsProcessingFeedback API.
 - Similarly, Python processing scripts no longer have access to a progress variable for reporting their progress. Instead they have a feedback
 object of type QgsProcessingFeedback, and will need to adapt their use of progress reporting to the QgsProcessingFeedback API.
 - SilentProgress was removed. Use the base QgsProcessingFeedback class instead.
-
+- algList was removed. Use QgsApplication.processingRegistry() instead.
+- Processing.algs was removed. QgsApplication.processingRegistry().algorithms() instead.
 
 Triangulation        {#qgis_api_break_3_0_Triangulation}
 -------------

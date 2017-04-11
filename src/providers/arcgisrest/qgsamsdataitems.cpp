@@ -46,7 +46,7 @@ QVector<QgsDataItem *> QgsAmsRootItem::createChildren()
 QList<QAction *> QgsAmsRootItem::actions()
 {
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
-  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  connect( actionNew, &QAction::triggered, this, &QgsAmsRootItem::newConnection );
   return QList<QAction *>() << actionNew;
 }
 
@@ -54,7 +54,7 @@ QList<QAction *> QgsAmsRootItem::actions()
 QWidget *QgsAmsRootItem::paramWidget()
 {
   QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, true );
-  connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
+  connect( select, &QgsSourceSelectDialog::connectionsChanged, this, &QgsAmsRootItem::connectionsChanged );
   return select;
 }
 
@@ -134,11 +134,11 @@ QList<QAction *> QgsAmsConnectionItem::actions()
   QList<QAction *> lst;
 
   QAction *actionEdit = new QAction( tr( "Edit..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  connect( actionEdit, &QAction::triggered, this, &QgsAmsConnectionItem::editConnection );
   lst.append( actionEdit );
 
   QAction *actionDelete = new QAction( tr( "Delete" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  connect( actionDelete, &QAction::triggered, this, &QgsAmsConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
   return lst;

@@ -59,8 +59,8 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol ) override;
 
     //! creates a QgsSingleSymbolRenderer from an existing renderer.
-    //! @note added in 2.5
-    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    //! \since QGIS 2.5
+    //! \returns a new renderer if the conversion was possible, otherwise 0.
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   protected:

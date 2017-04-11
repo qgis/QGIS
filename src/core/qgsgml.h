@@ -39,8 +39,8 @@ class QgsCoordinateReferenceSystem;
  * as soon it has new content from the source. At any point, it can call
  * getAndStealReadyFeatures() to collect the features that have been completely
  * parsed.
- * @note not available in Python bindings
- * @note Added in QGIS 2.16
+ * \note not available in Python bindings
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsGmlStreamingParser
 {
@@ -183,33 +183,33 @@ class CORE_EXPORT QgsGmlStreamingParser
     //helper routines
 
     /** Reads attribute srsName="EpsgCrsId:..."
-       @param epsgNr result
-       @param attr attribute strings
-       @return 0 in case of success
+       \param epsgNr result
+       \param attr attribute strings
+       \returns 0 in case of success
       */
     int readEpsgFromAttribute( int &epsgNr, const XML_Char **attr );
 
     /** Reads attribute as string
-       @param attributeName
-       @param attr
-       @return attribute value or an empty string if no such attribute
+       \param attributeName
+       \param attr
+       \returns attribute value or an empty string if no such attribute
       */
     QString readAttribute( const QString &attributeName, const XML_Char **attr ) const;
     //! Creates a rectangle from a coordinate string.
     bool createBBoxFromCoordinateString( QgsRectangle &bb, const QString &coordString ) const;
 
     /** Creates a set of points from a coordinate string.
-       @param points list that will contain the created points
-       @param coordString the text containing the coordinates
-       @return 0 in case of success
+       \param points list that will contain the created points
+       \param coordString the text containing the coordinates
+       \returns 0 in case of success
       */
     int pointsFromCoordinateString( QList<QgsPoint> &points, const QString &coordString ) const;
 
     /** Creates a set of points from a gml:posList or gml:pos coordinate string.
-       @param points list that will contain the created points
-       @param coordString the text containing the coordinates
-       @param dimension number of dimensions
-       @return 0 in case of success
+       \param points list that will contain the created points
+       \param coordString the text containing the coordinates
+       \param dimension number of dimensions
+       \returns 0 in case of success
       */
     int pointsFromPosListString( QList<QgsPoint> &points, const QString &coordString, int dimension ) const;
 
@@ -342,14 +342,14 @@ class CORE_EXPORT QgsGml : public QObject
 
     /** Does the Http GET request to the wfs server
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
-     *  @param uri GML URL
-     *  @param wkbType wkbType to retrieve
-     *  @param extent retrieved extents
-     *  @param userName username for authentication
-     *  @param password password for authentication
-     *  @param authcfg authentication configuration id
-     *  @return 0 in case of success
-     *  @note available in python as getFeaturesUri
+     *  \param uri GML URL
+     *  \param wkbType wkbType to retrieve
+     *  \param extent retrieved extents
+     *  \param userName username for authentication
+     *  \param password password for authentication
+     *  \param authcfg authentication configuration id
+     *  \returns 0 in case of success
+     *  \note available in Python as getFeaturesUri
      */
     int getFeatures( const QString &uri,
                      QgsWkbTypes::Type *wkbType,
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsGml : public QObject
     QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
 
     /** Returns features spatial reference system
-      @note Added in QGIS 2.1 */
+      \since QGIS 2.1 */
     QgsCoordinateReferenceSystem crs() const;
 
   private slots:

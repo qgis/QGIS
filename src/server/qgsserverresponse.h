@@ -31,11 +31,11 @@ class QgsServerException;
  * QgsServerResponse
  * Class defining response interface passed to services QgsService::executeRequest() method
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 // Note:
-// This class is intended to be used from python code: method signatures and return types should be
+// This class is intended to be used from Python code: method signatures and return types should be
 // compatible with pyQGIS/pyQT types and rules.
 
 class SERVER_EXPORT QgsServerResponse
@@ -78,7 +78,7 @@ class SERVER_EXPORT QgsServerResponse
 
 
     /** Set the http return code
-     * @param code HTTP return code value
+     * \param code HTTP return code value
      */
     virtual void setReturnCode( int code ) = 0;
 
@@ -88,8 +88,8 @@ class SERVER_EXPORT QgsServerResponse
      * from calling setReturnCode() which let you return a specific response body.
      * Calling sendError() will end the transaction and any attempt to write data
      * or set headers will be an error.
-     * @param code HHTP return code value
-     * @param message An informative error message
+     * \param code HHTP return code value
+     * \param message An informative error message
      */
     virtual void sendError( int code,  const QString &message ) = 0;
 
@@ -104,7 +104,7 @@ class SERVER_EXPORT QgsServerResponse
      * Write chunk of data
      * This is a convenient method that will write directly
      * to the underlying I/O device
-     * @return the number of bytes that were actually written
+     * \returns the number of bytes that were actually written
      */
     virtual qint64 write( const QByteArray &byteArray );
 
@@ -113,9 +113,9 @@ class SERVER_EXPORT QgsServerResponse
      *
      * This is a convenient method that will write directly
      * to the underlying I/O device
-     * @return the number of bytes written
+     * \returns the number of bytes written
      *
-     *  @note not available in python bindings
+     *  \note not available in Python bindings
      */
     virtual qint64 write( const char *data, qint64 maxsize );
 
@@ -124,9 +124,9 @@ class SERVER_EXPORT QgsServerResponse
      *
      * This is a convenient method that will write directly
      * to the underlying I/O device
-     * @return the number of bytes written
+     * \returns the number of bytes written
      *
-     * @note not available in python bindings
+     * \note not available in Python bindings
      */
     virtual qint64 write( const char *data );
 

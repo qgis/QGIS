@@ -29,6 +29,9 @@
 
 class QgsCurve;
 
+SIP_FEATURE( ARM ) // Some parts are not available in sip bindings on ARM because of qreal double vs. float issues
+
+
 /** \ingroup core
  * A class to trim lines and polygons to within a rectangular region.
  * The functions in this class are likely to be called from within a
@@ -38,7 +41,6 @@ class QgsCurve;
  *  for drawing items to an X11 display which have a limit on the
  *   magnitude of the screen coordinates (+/- 32768, i.e. 16 bit integer).
  */
-
 class CORE_EXPORT QgsClipper
 {
   public:
@@ -69,7 +71,15 @@ class CORE_EXPORT QgsClipper
 
 
     //! A handy way to refer to the four boundaries
-    enum Boundary {XMax, XMin, YMax, YMin};
+    enum Boundary
+    {
+      XMax,
+      XMin,
+      YMax,
+      YMin
+    };
+
+    SIP_IF_FEATURE( !ARM ) // Not available on ARM sip bindings because of qreal issues
 
     /**
      * Trims the given feature to a rectangular box. Returns the trimmed
@@ -77,18 +87,20 @@ class CORE_EXPORT QgsClipper
      * the function treats the points as a closed shape (polygon), or as
      * an open shape (linestring).
      *
-     * @note not available in python bindings on android
+     * \note not available in Python bindings on android
      */
     static void trimFeature( QVector<double> &x,
                              QVector<double> &y,
                              bool shapeOpen );
 
+    SIP_END
+
     static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );
 
     /** Takes a linestring and clips it to clipExtent
-     * @param curve the linestring
-     * @param clipExtent clipping bounds
-     * @return clipped line coordinates
+     * \param curve the linestring
+     * \param clipExtent clipping bounds
+     * \returns clipped line coordinates
      */
     static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
 
@@ -127,12 +139,12 @@ class CORE_EXPORT QgsClipper
     static bool clipLineSegment( double xLeft, double xRight, double yBottom, double yTop, double &x0, double &y0, double &x1, double &y1 );
 
     /** Connects two lines split by the clip (by inserting points on the clip border)
-      @param x0 x-coordinate of the first line end
-      @param y0 y-coordinate of the first line end
-      @param x1 x-coordinate of the second line start
-      @param y1 y-coordinate of the second line start
-      @param clipRect clip rectangle
-      @param pts: in/out array of clipped points
+      \param x0 x-coordinate of the first line end
+      \param y0 y-coordinate of the first line end
+      \param x1 x-coordinate of the second line start
+      \param y1 y-coordinate of the second line start
+      \param clipRect clip rectangle
+      \param pts: in/out array of clipped points
       */
     static void connectSeparatedLines( double x0, double y0, double x1, double y1,
                                        const QgsRectangle &clipRect, QPolygonF &pts );
@@ -148,6 +160,7 @@ class CORE_EXPORT QgsClipper
     static void clipEndLeft( double x0, double y0, double &x1, double &y1, double xMin );
 };
 
+#ifndef SIP_RUN
 // The inline functions
 
 // Trim the feature using Sutherland and Hodgman's
@@ -872,6 +885,7 @@ inline bool QgsClipper::clipLineSegment( double xLeft, double xRight, double yBo
   return false;
 
 }
+#endif // SIP_RUN
 
 
 #endif

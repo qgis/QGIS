@@ -99,8 +99,8 @@ void QgsGPSPlugin::initGui()
 
   mQActionPointer->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
   mCreateGPXAction->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
-  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
-  connect( mCreateGPXAction, SIGNAL( triggered() ), this, SLOT( createGPX() ) );
+  connect( mQActionPointer, &QAction::triggered, this, &QgsGPSPlugin::run );
+  connect( mCreateGPXAction, &QAction::triggered, this, &QgsGPSPlugin::createGPX );
 
   mQGisInterface->layerToolBar()->insertAction( nullptr, mCreateGPXAction );
   mQGisInterface->newLayerMenu()->addAction( mCreateGPXAction );
@@ -108,7 +108,7 @@ void QgsGPSPlugin::initGui()
   mQGisInterface->addVectorToolBarIcon( mQActionPointer );
 
   // this is called when the icon theme is changed
-  connect( mQGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisInterface, &QgisInterface::currentThemeChanged, this, &QgsGPSPlugin::setCurrentTheme );
 }
 
 //method defined in interface
@@ -140,25 +140,19 @@ void QgsGPSPlugin::run()
                          QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //listen for when the layer has been made so we can draw it
-  connect( myPluginGui, SIGNAL( drawVectorLayer( QString, QString, QString ) ),
-           this, SLOT( drawVectorLayer( QString, QString, QString ) ) );
-  connect( myPluginGui, SIGNAL( loadGPXFile( QString, bool, bool, bool ) ),
-           this, SLOT( loadGPXFile( QString, bool, bool, bool ) ) );
-  connect( myPluginGui, SIGNAL( importGPSFile( QString, QgsBabelFormat *, bool,
-                                bool, bool, QString, QString ) ),
-           this, SLOT( importGPSFile( QString, QgsBabelFormat *, bool, bool,
-                                      bool, QString, QString ) ) );
-  connect( myPluginGui, SIGNAL( convertGPSFile( QString, int,
-                                QString, QString ) ),
-           this, SLOT( convertGPSFile( QString, int,
-                                       QString, QString ) ) );
-  connect( myPluginGui, SIGNAL( downloadFromGPS( QString, QString, bool, bool,
-                                bool, QString, QString ) ),
-           this, SLOT( downloadFromGPS( QString, QString, bool, bool, bool,
-                                        QString, QString ) ) );
-  connect( myPluginGui, SIGNAL( uploadToGPS( QgsVectorLayer *, QString, QString ) ),
-           this, SLOT( uploadToGPS( QgsVectorLayer *, QString, QString ) ) );
-  connect( this, SIGNAL( closeGui() ), myPluginGui, SLOT( close() ) );
+  connect( myPluginGui, &QgsGPSPluginGui::drawVectorLayer,
+           this, &QgsGPSPlugin::drawVectorLayer );
+  connect( myPluginGui, &QgsGPSPluginGui::loadGPXFile,
+           this, &QgsGPSPlugin::loadGPXFile );
+  connect( myPluginGui, &QgsGPSPluginGui::importGPSFile,
+           this, &QgsGPSPlugin::importGPSFile );
+  connect( myPluginGui, &QgsGPSPluginGui::convertGPSFile,
+           this, &QgsGPSPlugin::convertGPSFile );
+  connect( myPluginGui, &QgsGPSPluginGui::downloadFromGPS,
+           this, &QgsGPSPlugin::downloadFromGPS );
+  connect( myPluginGui, &QgsGPSPluginGui::uploadToGPS,
+           this, &QgsGPSPlugin::uploadToGPS );
+  connect( this, &QgsGPSPlugin::closeGui, myPluginGui, &QWidget::close );
 
   myPluginGui->show();
 }

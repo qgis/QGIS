@@ -25,8 +25,10 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.analysis import QgsGeometrySnapper
-from qgis.core import QgsFeature
+from qgis.analysis import (QgsGeometrySnapper,
+                           QgsInternalGeometrySnapper)
+from qgis.core import (QgsApplication,
+                       QgsFeature)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector, ParameterNumber, ParameterSelection
@@ -42,16 +44,31 @@ class SnapGeometriesToLayer(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     BEHAVIOR = 'BEHAVIOR'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Snap geometries to layer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'snapgeometries'
+
+    def displayName(self):
+        return self.tr('Snap geometries to layer')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterVector(self.REFERENCE_LAYER, self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), 0.00000001, 9999999999, default=10.0))
 
         self.modes = [self.tr('Prefer aligning nodes'),
-                      self.tr('Prefer closest point')]
+                      self.tr('Prefer closest point'),
+                      self.tr('Move end points only, prefer aligning nodes'),
+                      self.tr('Move end points only, prefer closest point'),
+                      self.tr('Snap end points to end points only')]
         self.addParameter(ParameterSelection(
             self.BEHAVIOR,
             self.tr('Behavior'),
@@ -59,8 +76,8 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped geometries')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        reference_layer = dataobjects.getObjectFromUri(self.getParameterValue(self.REFERENCE_LAYER))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+        reference_layer = dataobjects.getLayerFromString(self.getParameterValue(self.REFERENCE_LAYER))
         tolerance = self.getParameterValue(self.TOLERANCE)
         mode = self.getParameterValue(self.BEHAVIOR)
 
@@ -73,11 +90,22 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         self.feedback = feedback
         self.total = 100.0 / len(features)
 
-        snapper = QgsGeometrySnapper(reference_layer)
-        snapper.featureSnapped.connect(self.featureSnapped)
-        snapped_features = snapper.snapFeatures(features, tolerance, mode)
-        for f in snapped_features:
-            writer.addFeature(QgsFeature(f))
+        if self.getParameterValue(self.INPUT) != self.getParameterValue(self.REFERENCE_LAYER):
+            snapper = QgsGeometrySnapper(reference_layer)
+            snapper.featureSnapped.connect(self.featureSnapped)
+            snapped_features = snapper.snapFeatures(features, tolerance, mode)
+            for f in snapped_features:
+                writer.addFeature(QgsFeature(f))
+        else:
+            # snapping internally
+            snapper = QgsInternalGeometrySnapper(tolerance, mode)
+            processed = 0
+            for f in features:
+                out_feature = f
+                out_feature.setGeometry(snapper.snapFeature(f))
+                writer.addFeature(out_feature)
+                processed += 1
+                feedback.setProgress(processed * self.total)
 
         del writer
 

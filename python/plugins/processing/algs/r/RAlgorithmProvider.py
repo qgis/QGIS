@@ -28,15 +28,18 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsApplication
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.WrongScriptException import WrongScriptException
 from processing.gui.GetScriptsAndModels import GetRScriptsAction
+from processing.gui.ProviderActions import (ProviderActions,
+                                            ProviderContextMenuActions)
 from processing.tools.system import isWindows
 
 from .RUtils import RUtils
@@ -46,11 +49,12 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class RAlgorithmProvider(AlgorithmProvider):
+class RAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
-        self.activate = False
+        self.algs = []
+        self.actions = []
         self.actions.append(CreateNewScriptAction(
             'Create new R script', CreateNewScriptAction.SCRIPT_R))
         self.actions.append(GetRScriptsAction())
@@ -58,8 +62,10 @@ class RAlgorithmProvider(AlgorithmProvider):
             [EditScriptAction(EditScriptAction.SCRIPT_R),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_R)]
 
-    def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
+    def load(self):
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_R',
+                                            self.tr('Activate'), False))
         ProcessingConfig.addSetting(Setting(
             self.name(), RUtils.RSCRIPTS_FOLDER,
             self.tr('R Scripts folder'), RUtils.defaultRScriptsFolder(),
@@ -76,14 +82,27 @@ class RAlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.addSetting(Setting(
                 self.name(),
                 RUtils.R_USE64, self.tr('Use 64 bit version'), False))
+        ProviderActions.registerProviderActions(self, self.actions)
+        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
+        return True
 
     def unload(self):
-        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting('ACTIVATE_R')
         ProcessingConfig.removeSetting(RUtils.RSCRIPTS_FOLDER)
         if isWindows():
             ProcessingConfig.removeSetting(RUtils.R_FOLDER)
             ProcessingConfig.removeSetting(RUtils.R_LIBS_USER)
             ProcessingConfig.removeSetting(RUtils.R_USE64)
+        ProviderActions.deregisterProviderActions(self)
+        ProviderContextMenuActions.deregisterProviderContextMenuActions(self.contextMenuActions)
+
+    def isActive(self):
+        return ProcessingConfig.getSetting('ACTIVATE_R')
+
+    def setActive(self, active):
+        ProcessingConfig.setSettingValue('ACTIVATE_R', active)
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerR.svg")
@@ -97,7 +116,7 @@ class RAlgorithmProvider(AlgorithmProvider):
     def id(self):
         return 'r'
 
-    def _loadAlgorithms(self):
+    def loadAlgorithms(self):
         folders = RUtils.RScriptsFolders()
         self.algs = []
         for f in folders:
@@ -105,6 +124,8 @@ class RAlgorithmProvider(AlgorithmProvider):
 
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         self.loadFromFolder(folder)
+        for a in self.algs:
+            self.addAlgorithm(a)
 
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):
@@ -115,7 +136,7 @@ class RAlgorithmProvider(AlgorithmProvider):
                     try:
                         fullpath = os.path.join(path, descriptionFile)
                         alg = RAlgorithm(fullpath)
-                        if alg.name.strip() != '':
+                        if alg.name().strip() != '':
                             self.algs.append(alg)
                     except WrongScriptException as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
@@ -123,3 +144,9 @@ class RAlgorithmProvider(AlgorithmProvider):
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
                             self.tr('Could not load R script: {0}\n{1}').format(descriptionFile, str(e)))
+        return
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'RAlgorithmProvider'
+        return QCoreApplication.translate(context, string)

@@ -29,7 +29,7 @@
 /** \ingroup gui
  * \class QgsFieldConditionalFormatWidget
  * A widget for customising conditional formatting options.
- * \note added in QGIS 2.12
+ * \since QGIS 2.12
  */
 class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::QgsFieldConditionalWidget
 {
@@ -37,7 +37,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
   public:
 
     /** Constructor for QgsFieldConditionalFormatWidget.
-     * @param parent parent widget
+     * \param parent parent widget
      */
     explicit QgsFieldConditionalFormatWidget( QWidget *parent = nullptr );
 
@@ -48,18 +48,18 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     void viewRules();
 
     /** Sets the vector layer associated with the widget.
-     * @param layer vector layer
+     * \param layer vector layer
      */
     void setLayer( QgsVectorLayer *layer );
 
     /** Switches the widget to the edit style mode for the specified style.
-     * @param index index of conditional style to edit
-     * @param style initial conditional styling options
+     * \param index index of conditional style to edit
+     * \param style initial conditional styling options
      */
     void editStyle( int index, const QgsConditionalStyle &style );
 
     /**
-     * @param style initial conditional styling options
+     * \param style initial conditional styling options
      */
     void loadStyle( const QgsConditionalStyle &style );
 
@@ -68,22 +68,22 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     void reset();
 
     /**
-     * @brief Set the presets that can be used for quick pick
-     * @param styles A list of styles used as presets
+     * \brief Set the presets that can be used for quick pick
+     * \param styles A list of styles used as presets
      */
     void setPresets( const QList<QgsConditionalStyle> &styles );
 
     /**
-     * @brief The default presets for the widget.  Normally set when the widget is
+     * \brief The default presets for the widget.  Normally set when the widget is
      * created however called setPresets will override the default styles.
-     * @return List of default presets.
+     * \returns List of default presets.
      */
     QList<QgsConditionalStyle> defaultPresets() const;
 
   signals:
 
     /** Emitted when the conditional styling rules are updated.
-     * @param fieldName name of field whose rules have been modified.
+     * \param fieldName name of field whose rules have been modified.
      */
     void rulesUpdated( const QString &fieldName );
 

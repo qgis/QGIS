@@ -40,7 +40,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 class ScriptUtils(object):
 
     SCRIPTS_FOLDER = 'SCRIPTS_FOLDER'
-    ACTIVATE_SCRIPTS = 'ACTIVATE_SCRIPTS'
 
     @staticmethod
     def defaultScriptsFolder():
@@ -67,7 +66,7 @@ class ScriptUtils(object):
                     try:
                         fullpath = os.path.join(path, descriptionFile)
                         alg = ScriptAlgorithm(fullpath)
-                        if alg.name.strip() != '':
+                        if alg.name().strip() != '':
                             algs.append(alg)
                     except WrongScriptException as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)

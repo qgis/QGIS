@@ -23,17 +23,17 @@ QgsComposerItemComboBox::QgsComposerItemComboBox( QWidget *parent, QgsCompositio
   setComposition( composition );
 
   setModelColumn( QgsComposerModel::ItemId );
-  connect( this, SIGNAL( currentIndexChanged( int ) ), this, SLOT( indexChanged( int ) ) );
-  connect( mProxyModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
-  connect( mProxyModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
+  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerItemComboBox::indexChanged );
+  connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsComposerItemComboBox::rowsChanged );
+  connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsComposerItemComboBox::rowsChanged );
 }
 
 void QgsComposerItemComboBox::setComposition( QgsComposition *composition )
 {
   delete mProxyModel;
   mProxyModel = new QgsComposerProxyModel( composition, this );
-  connect( mProxyModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
-  connect( mProxyModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
+  connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsComposerItemComboBox::rowsChanged );
+  connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsComposerItemComboBox::rowsChanged );
   setModel( mProxyModel );
   setModelColumn( QgsComposerModel::ItemId );
   mProxyModel->sort( 0, Qt::AscendingOrder );

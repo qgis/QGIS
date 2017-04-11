@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 import codecs
 
-from qgis.core import (QgsGeometry,
+from qgis.core import (QgsApplication,
+                       QgsGeometry,
                        QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform)
@@ -40,7 +41,6 @@ from processing.core.parameters import ParameterExtent
 from processing.core.outputs import OutputHTML
 from processing.tools import dataobjects
 
-
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
@@ -51,11 +51,25 @@ class FindProjection(GeoAlgorithm):
     TARGET_AREA_CRS = 'TARGET_AREA_CRS'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Find projection')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
-        self.tags = self.tr('crs,srs,coordinate,reference,system,guess,estimate,finder,determine')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('crs,srs,coordinate,reference,system,guess,estimate,finder,determine').split(',')
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'findprojection'
+
+    def displayName(self):
+        return self.tr('Find projection')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         extent_parameter = ParameterExtent(self.TARGET_AREA,
@@ -69,7 +83,7 @@ class FindProjection(GeoAlgorithm):
                                   self.tr('Candidates')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 
         extent = self.getParameterValue(self.TARGET_AREA).split(',')

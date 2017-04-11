@@ -29,7 +29,7 @@ class QDomNode;
  * Simple key-value store (keys = strings, values = variants) that supports loading/saving to/from XML
  * in \verbatim <customproperties> \endverbatim element.
  *
- * \note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsObjectCustomProperties
 {
@@ -50,8 +50,8 @@ class CORE_EXPORT QgsObjectCustomProperties
 
 
     /** Read store contents from XML
-      @param parentNode node to read from
-      @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)
+      \param parentNode node to read from
+      \param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)
      */
     void readXml( const QDomNode &parentNode, const QString &keyStartsWith = QString() );
 

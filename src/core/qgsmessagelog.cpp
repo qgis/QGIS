@@ -47,7 +47,7 @@ void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgs
 QgsMessageLogConsole::QgsMessageLogConsole()
   : QObject( QgsApplication::messageLog() )
 {
-  connect( QgsApplication::messageLog(),  static_cast < void ( QgsMessageLog::* )( const QString &, const QString &, QgsMessageLog::MessageLevel ) >( &QgsMessageLog::messageReceived ),
+  connect( QgsApplication::messageLog(), static_cast < void ( QgsMessageLog::* )( const QString &, const QString &, QgsMessageLog::MessageLevel ) >( &QgsMessageLog::messageReceived ),
            this, &QgsMessageLogConsole::logMessage );
 }
 

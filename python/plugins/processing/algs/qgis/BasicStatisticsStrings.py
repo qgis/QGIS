@@ -31,7 +31,8 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsStringStatisticalSummary,
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsStringStatisticalSummary,
                        QgsFeatureRequest)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -60,19 +61,26 @@ class BasicStatisticsStrings(GeoAlgorithm):
     MIN_VALUE = 'MIN_VALUE'
     MAX_VALUE = 'MAX_VALUE'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
+    def flags(self):
         # this algorithm is deprecated - use BasicStatistics instead
-        self.showInToolbox = False
+        return QgsProcessingAlgorithm.FlagDeprecated
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Basic statistics for text fields')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
-        self.tags = self.tr('stats,statistics,string,table,layer')
+    def tags(self):
+        return self.tr('stats,statistics,string,table,layer').split(',')
 
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'basicstatisticsfortextfields'
+
+    def displayName(self):
+        return self.tr('Basic statistics for text fields')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
@@ -93,7 +101,7 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.addOutput(OutputNumber(self.MAX_VALUE, self.tr('Maximum string value')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
 

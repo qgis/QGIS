@@ -26,9 +26,9 @@
 #include "qgis_gui.h"
 
 /**
- * @brief Renderer widget for the hill shade renderer.
- * @ingroup gui
- * @note added in QGIS 2.16
+ * \brief Renderer widget for the hill shade renderer.
+ * \ingroup gui
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, private Ui::QgsHillShadeWidget
 {
@@ -36,9 +36,9 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
   public:
 
     /**
-     * @brief Renderer widget for the hill shade renderer.
-     * @param layer The layer attached for this widget.
-     * @param extent The current extent.
+     * \brief Renderer widget for the hill shade renderer.
+     * \param layer The layer attached for this widget.
+     * \param extent The current extent.
      */
     QgsHillshadeRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
@@ -48,65 +48,65 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsHillshadeRendererWidget( layer, extent ); }
 
     /**
-     * @brief The renderer for the widget.
-     * @return A new renderer for the the config in the widget
+     * \brief The renderer for the widget.
+     * \returns A new renderer for the the config in the widget
      */
     QgsRasterRenderer *renderer() override;
 
     /**
-     * @brief Set the widget state from the given renderer.
-     * @param renderer The renderer to take the state from.
+     * \brief Set the widget state from the given renderer.
+     * \param renderer The renderer to take the state from.
      */
     void setFromRenderer( const QgsRasterRenderer *renderer );
 
     /**
      * Returns the direction of the light over the raster between 0-360.
-     * @see setAzimuth()
+     * \see setAzimuth()
      */
     double azimuth() const;
 
     /** Returns the angle of the light source over the raster.
-     * @see setAltitude()
+     * \see setAltitude()
      */
     double altitude()  const;
 
     /** Returns the Z scaling factor.
-     * @see setZFactor()
+     * \see setZFactor()
      */
     double zFactor()  const;
 
     /**
      * Returns true if the renderer should use the multi-directional hillshade algorithm.
-     * @see setMultiDirectional()
+     * \see setMultiDirectional()
      */
     bool multiDirectional() const;
 
   public slots:
 
     /**
-     * @brief Set the altitude of the light source
-     * @param altitude the altitude
-     * @see altitude()
+     * \brief Set the altitude of the light source
+     * \param altitude the altitude
+     * \see altitude()
      */
     void setAltitude( double altitude );
 
     /**
-     * @brief Set the azimuth of the light source.
-     * @param azimuth The azimuth of the light source, between 0 and 360.0
-     * @see azimuth()
+     * \brief Set the azimuth of the light source.
+     * \param azimuth The azimuth of the light source, between 0 and 360.0
+     * \see azimuth()
      */
     void setAzimuth( double azimuth );
 
     /**
-     * @brief Set the Z scaling factor of the result image.
-     * @param zfactor The z factor
-     * @see zFactor()
+     * \brief Set the Z scaling factor of the result image.
+     * \param zfactor The z factor
+     * \see zFactor()
      */
     void setZFactor( double zfactor );
 
     /** Sets whether to render using a multi-directional hillshade algorithm.
-     * @param isMultiDirectional set to true to use multi directional rendering
-     * @see multiDirectional()
+     * \param isMultiDirectional set to true to use multi directional rendering
+     * \see multiDirectional()
      */
     void setMultiDirectional( bool isMultiDirectional );
 

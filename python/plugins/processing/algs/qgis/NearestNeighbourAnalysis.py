@@ -54,13 +54,19 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
     POINT_COUNT = 'POINT_COUNT'
     Z_SCORE = 'Z_SCORE'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'neighbour.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Nearest neighbour analysis')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def group(self):
+        return self.tr('Vector analysis tools')
 
+    def name(self):
+        return 'nearestneighbouranalysis'
+
+    def displayName(self):
+        return self.tr('Nearest neighbour analysis')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Points'), [dataobjects.TYPE_VECTOR_POINT]))
 
@@ -77,7 +83,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
         output = self.getOutputValue(self.OUTPUT)
 
         spatialIndex = vector.spatialindex(layer)

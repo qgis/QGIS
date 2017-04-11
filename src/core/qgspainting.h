@@ -6,10 +6,10 @@
 #include "qgis_core.h"
 
 /**
- * @ingroup core
+ * \ingroup core
  * Misc painting enums and functions.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPainting
 {

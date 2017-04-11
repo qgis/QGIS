@@ -25,20 +25,20 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
 
   mDemoDateTimeEdit->setDateTime( QDateTime::currentDateTime() );
 
-  connect( mDisplayFormatEdit, SIGNAL( textChanged( QString ) ), this, SLOT( updateDemoWidget() ) );
-  connect( mCalendarPopupCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( updateDemoWidget() ) );
+  connect( mDisplayFormatEdit, &QLineEdit::textChanged, this, &QgsDateTimeEditConfig::updateDemoWidget );
+  connect( mCalendarPopupCheckBox, &QAbstractButton::toggled, this, &QgsDateTimeEditConfig::updateDemoWidget );
 
-  connect( mFieldFormatComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateFieldFormat( int ) ) );
-  connect( mFieldFormatEdit, SIGNAL( textChanged( QString ) ), this, SLOT( updateDisplayFormat( QString ) ) );
-  connect( mDisplayFormatComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( displayFormatChanged( int ) ) );
+  connect( mFieldFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDateTimeEditConfig::updateFieldFormat );
+  connect( mFieldFormatEdit, &QLineEdit::textChanged, this, &QgsDateTimeEditConfig::updateDisplayFormat );
+  connect( mDisplayFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDateTimeEditConfig::displayFormatChanged );
 
-  connect( mFieldHelpToolButton, SIGNAL( clicked( bool ) ), this, SLOT( showHelp( bool ) ) );
-  connect( mDisplayHelpToolButton, SIGNAL( clicked( bool ) ), this, SLOT( showHelp( bool ) ) );
+  connect( mFieldHelpToolButton, &QAbstractButton::clicked, this, &QgsDateTimeEditConfig::showHelp );
+  connect( mDisplayHelpToolButton, &QAbstractButton::clicked, this, &QgsDateTimeEditConfig::showHelp );
 
-  connect( mFieldFormatEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
-  connect( mDisplayFormatEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
-  connect( mCalendarPopupCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mAllowNullCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mFieldFormatEdit, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
+  connect( mDisplayFormatEdit, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
+  connect( mCalendarPopupCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mAllowNullCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
 
   // initialize
   updateFieldFormat( mFieldFormatComboBox->currentIndex() );

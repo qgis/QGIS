@@ -38,7 +38,13 @@ from processing.tools.system import isWindows, getTempFilenameInTempFolder, getT
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
 
-from qgis.core import QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope, QgsProject, QgsSettings
+from qgis.core import (QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsExpression,
+                       QgsExpressionContextScope,
+                       QgsProject,
+                       QgsSettings,
+                       QgsVectorFileWriter)
 
 
 def _expressionContext(alg):
@@ -227,11 +233,11 @@ class OutputRaster(Output):
         """
 
         ext = self.value[self.value.rfind('.') + 1:]
-        if ext in alg.provider.getSupportedOutputRasterLayerExtensions():
+        if ext in alg.provider().supportedOutputRasterLayerExtensions():
             return self.value
         else:
             if self.compatible is None:
-                supported = alg.provider.getSupportedOutputRasterLayerExtensions()
+                supported = alg.provider().supportedOutputRasterLayerExtensions()
                 default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT, True)
                 ext = default if default in supported else supported[0]
                 self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
@@ -269,12 +275,12 @@ class OutputTable(Output):
         """
 
         ext = self.value[self.value.rfind('.') + 1:]
-        if ext in alg.provider.getSupportedOutputTableExtensions():
+        if ext in alg.provider().supportedOutputTableExtensions():
             return self.value
         else:
             if self.compatible is None:
                 self.compatible = getTempFilenameInTempFolder(
-                    self.name + '.' + alg.provider.getSupportedOutputTableExtensions()[0])
+                    self.name + '.' + alg.provider().supportedOutputTableExtensions()[0])
             return self.compatible
 
     def getTableWriter(self, fields):
@@ -313,10 +319,10 @@ class OutputVector(Output):
     def hasGeometry(self):
         if self.base_layer is None:
             return True
-        return dataobjects.canUseVectorLayer(self.base_layer, [-1])
+        return self.base_layer.hasGeometryType()
 
     def getSupportedOutputVectorLayerExtensions(self):
-        exts = dataobjects.getSupportedOutputVectorLayerExtensions()
+        exts = QgsVectorFileWriter.supportedFormatExtensions()
         if not self.hasGeometry():
             exts = ['dbf'] + [ext for ext in exts if ext in VectorWriter.nogeometry_extensions]
         return exts
@@ -344,12 +350,12 @@ class OutputVector(Output):
         generate the output result.
         """
         ext = self.value[self.value.rfind('.') + 1:]
-        if ext in alg.provider.getSupportedOutputVectorLayerExtensions():
+        if ext in alg.provider().supportedOutputVectorLayerExtensions():
             return self.value
         else:
             if self.compatible is None:
                 default = self.getDefaultFileExtension()
-                supported = alg.provider.getSupportedOutputVectorLayerExtensions()
+                supported = alg.provider().supportedOutputVectorLayerExtensions()
                 ext = default if default in supported else supported[0]
                 self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
             return self.compatible
@@ -387,7 +393,7 @@ class OutputVector(Output):
         return dataobjects.vectorDataType(self)
 
     def _resolveTemporary(self, alg):
-        if alg.provider.supportsNonFileBasedOutput():
+        if alg.provider().supportsNonFileBasedOutput():
             return "memory:"
         else:
             ext = self.getDefaultFileExtension()

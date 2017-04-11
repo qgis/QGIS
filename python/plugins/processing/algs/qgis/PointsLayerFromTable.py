@@ -25,7 +25,11 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsWkbTypes, QgsPointV2, QgsCoordinateReferenceSystem, QgsGeometry
+from qgis.core import (QgsApplication,
+                       QgsWkbTypes,
+                       QgsPointV2,
+                       QgsCoordinateReferenceSystem,
+                       QgsGeometry)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
@@ -44,10 +48,25 @@ class PointsLayerFromTable(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     TARGET_CRS = 'TARGET_CRS'
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('points,create,values,attributes').split(',')
+
+    def group(self):
+        return self.tr('Vector creation tools')
+
+    def name(self):
+        return 'createpointslayerfromtable'
+
+    def displayName(self):
+        return self.tr('Create points layer from table')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create points layer from table')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
-        self.tags = self.tr('points,create,values,attributes')
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
@@ -64,7 +83,7 @@ class PointsLayerFromTable(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         source = self.getParameterValue(self.INPUT)
-        vlayer = dataobjects.getObjectFromUri(source)
+        vlayer = dataobjects.getLayerFromString(source)
         output = self.getOutputFromName(self.OUTPUT)
 
         fields = vlayer.fields()

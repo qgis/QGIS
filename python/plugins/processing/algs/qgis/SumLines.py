@@ -48,13 +48,19 @@ class SumLines(GeoAlgorithm):
     COUNT_FIELD = 'COUNT_FIELD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_lines.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Sum line lengths')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def group(self):
+        return self.tr('Vector analysis tools')
 
+    def name(self):
+        return 'sumlinelengths'
+
+    def displayName(self):
+        return self.tr('Sum line lengths')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.LINES,
                                           self.tr('Lines'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.POLYGONS,
@@ -67,8 +73,8 @@ class SumLines(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        lineLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.LINES))
-        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
+        lineLayer = dataobjects.getLayerFromString(self.getParameterValue(self.LINES))
+        polyLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POLYGONS))
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
         countFieldName = self.getParameterValue(self.COUNT_FIELD)
 

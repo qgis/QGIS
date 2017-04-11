@@ -37,7 +37,7 @@ class CORE_EXPORT QgsRectangle
 {
   public:
     //! Constructor
-    QgsRectangle( double xmin = 0, double ymin = 0, double xmax = 0, double ymax = 0 );
+    QgsRectangle( double mXmin = 0, double mYmin = 0, double mXmax = 0, double mYmax = 0 );
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
     QgsRectangle( const QgsPoint &p1, const QgsPoint &p2 );
     //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRectangle
     void set( const QgsPoint &p1, const QgsPoint &p2 );
     //! Set the rectangle from four points. The rectangle is
     //! normalised after construction.
-    void set( double xmin, double ymin, double xmax, double ymax );
+    void set( double mXmin, double mYmin, double mXmax, double mYmax );
     //! Set the minimum x value
     void setXMinimum( double x );
     //! Set the maximum x value
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsRectangle
     void include( const QgsPoint &p );
 
     /** Get rectangle enlarged by buffer.
-     * @note added in 2.1 */
+     * \since QGIS 2.1 */
     QgsRectangle buffer( double width );
     //! return the intersection with the given rectangle
     QgsRectangle intersect( const QgsRectangle *rect ) const;
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsRectangle
     bool isEmpty() const;
     //! test if the rectangle is null (all coordinates zero or after call to setMinimal()).
     //! Null rectangle is also an empty rectangle.
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     bool isNull() const;
     //! returns string representation in Wkt form
     QString asWktCoordinates() const;
@@ -126,17 +126,17 @@ class CORE_EXPORT QgsRectangle
     QString asPolygon() const;
 
     /** Comparison operator
-     * @return True if rectangles are equal
+     * \returns True if rectangles are equal
      */
     bool operator==( const QgsRectangle &r1 ) const;
 
     /** Comparison operator
-     * @return False if rectangles are equal
+     * \returns False if rectangles are equal
      */
     bool operator!=( const QgsRectangle &r1 ) const;
 
     /** Assignment operator
-     * @param r1 QgsRectangle to assign from
+     * \param r1 QgsRectangle to assign from
      */
     QgsRectangle &operator=( const QgsRectangle &r1 );
 
@@ -151,15 +151,12 @@ class CORE_EXPORT QgsRectangle
     //! swap x/y
     void invert();
 
-  protected:
+  private:
 
-    // These are protected instead of private so that things like
-    // the QgsPostGisBox3d can get at them.
-
-    double xmin;
-    double ymin;
-    double xmax;
-    double ymax;
+    double mXmin;
+    double mYmin;
+    double mXmax;
+    double mYmax;
 
 };
 
@@ -174,57 +171,57 @@ inline QgsRectangle::~QgsRectangle()
 
 inline void QgsRectangle::setXMinimum( double x )
 {
-  xmin = x;
+  mXmin = x;
 }
 
 inline void QgsRectangle::setXMaximum( double x )
 {
-  xmax = x;
+  mXmax = x;
 }
 
 inline void QgsRectangle::setYMinimum( double y )
 {
-  ymin = y;
+  mYmin = y;
 }
 
 inline void QgsRectangle::setYMaximum( double y )
 {
-  ymax = y;
+  mYmax = y;
 }
 
 inline double QgsRectangle::xMaximum() const
 {
-  return xmax;
+  return mXmax;
 }
 
 inline double QgsRectangle::xMinimum() const
 {
-  return xmin;
+  return mXmin;
 }
 
 inline double QgsRectangle::yMaximum() const
 {
-  return ymax;
+  return mYmax;
 }
 
 inline double QgsRectangle::yMinimum() const
 {
-  return ymin;
+  return mYmin;
 }
 
 inline double QgsRectangle::width() const
 {
-  return xmax - xmin;
+  return mXmax - mXmin;
 }
 
 inline double QgsRectangle::height() const
 {
-  return ymax - ymin;
+  return mYmax - mYmin;
 }
 
 inline QgsPoint QgsRectangle::center() const
 {
-  return QgsPoint( xmin + width() / 2, ymin + height() / 2 );
+  return QgsPoint( mXmin + width() / 2, mYmin + height() / 2 );
 }
 inline std::ostream &operator << ( std::ostream &os, const QgsRectangle &r )
 {

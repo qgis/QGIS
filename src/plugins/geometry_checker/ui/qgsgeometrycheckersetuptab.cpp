@@ -52,17 +52,17 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QW
   mAbortButton = new QPushButton( tr( "Abort" ) );
   mRunButton->setEnabled( false );
 
-  connect( mRunButton, SIGNAL( clicked() ), this, SLOT( runChecks() ) );
-  connect( ui.comboBoxInputLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( validateInput() ) );
-  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), this, SLOT( updateLayers() ) );
-  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( updateLayers() ) );
-  connect( ui.radioButtonOutputNew, SIGNAL( toggled( bool ) ), ui.lineEditOutput, SLOT( setEnabled( bool ) ) );
-  connect( ui.radioButtonOutputNew, SIGNAL( toggled( bool ) ), ui.pushButtonOutputBrowse, SLOT( setEnabled( bool ) ) );
-  connect( ui.buttonGroupOutput, SIGNAL( buttonClicked( int ) ), this, SLOT( validateInput() ) );
-  connect( ui.pushButtonOutputBrowse, SIGNAL( clicked() ), this, SLOT( selectOutputFile() ) );
-  connect( ui.lineEditOutput, SIGNAL( textChanged( QString ) ), this, SLOT( validateInput() ) );
-  connect( ui.checkBoxSliverPolygons, SIGNAL( toggled( bool ) ), ui.widgetSliverThreshold, SLOT( setEnabled( bool ) ) );
-  connect( ui.checkBoxSliverArea, SIGNAL( toggled( bool ) ), ui.doubleSpinBoxSliverArea, SLOT( setEnabled( bool ) ) );
+  connect( mRunButton, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::runChecks );
+  connect( ui.comboBoxInputLayer, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGeometryCheckerSetupTab::validateInput );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsGeometryCheckerSetupTab::updateLayers );
+  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsGeometryCheckerSetupTab::updateLayers );
+  connect( ui.radioButtonOutputNew, &QAbstractButton::toggled, ui.lineEditOutput, &QWidget::setEnabled );
+  connect( ui.radioButtonOutputNew, &QAbstractButton::toggled, ui.pushButtonOutputBrowse, &QWidget::setEnabled );
+  connect( ui.buttonGroupOutput, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGeometryCheckerSetupTab::validateInput );
+  connect( ui.pushButtonOutputBrowse, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::selectOutputFile );
+  connect( ui.lineEditOutput, &QLineEdit::textChanged, this, &QgsGeometryCheckerSetupTab::validateInput );
+  connect( ui.checkBoxSliverPolygons, &QAbstractButton::toggled, ui.widgetSliverThreshold, &QWidget::setEnabled );
+  connect( ui.checkBoxSliverArea, &QAbstractButton::toggled, ui.doubleSpinBoxSliverArea, &QWidget::setEnabled );
 
   updateLayers();
 
@@ -308,10 +308,10 @@ void QgsGeometryCheckerSetupTab::runChecks()
   ui.widgetInputs->setEnabled( false );
   QEventLoop evLoop;
   QFutureWatcher<void> futureWatcher;
-  connect( checker, SIGNAL( progressValue( int ) ), ui.progressBar, SLOT( setValue( int ) ) );
-  connect( &futureWatcher, SIGNAL( finished() ), &evLoop, SLOT( quit() ) );
-  connect( mAbortButton, SIGNAL( clicked() ), &futureWatcher, SLOT( cancel() ) );
-  connect( mAbortButton, SIGNAL( clicked() ), this, SLOT( showCancelFeedback() ) );
+  connect( checker, &QgsGeometryChecker::progressValue, ui.progressBar, &QProgressBar::setValue );
+  connect( &futureWatcher, &QFutureWatcherBase::finished, &evLoop, &QEventLoop::quit );
+  connect( mAbortButton, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel );
+  connect( mAbortButton, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::showCancelFeedback );
 
   int maxSteps = 0;
   futureWatcher.setFuture( checker->execute( &maxSteps ) );

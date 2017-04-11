@@ -63,6 +63,7 @@ FORMATS = [
     'ODS',
     'XLSX',
     'PDF',
+    'GPKG',
 ]
 
 EXTS = [
@@ -88,6 +89,7 @@ EXTS = [
     '.ods',
     '.xlsx',
     '.pdf',
+    '.gpkg',
 ]
 
 
@@ -98,10 +100,16 @@ class Ogr2Ogr(GdalAlgorithm):
     FORMAT = 'FORMAT'
     OPTIONS = 'OPTIONS'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Convert format')
-        self.group, self.i18n_group = self.trAlgorithm('Vector conversion')
+    def name(self):
+        return 'convertformat'
 
+    def displayName(self):
+        return self.tr('Convert format')
+
+    def group(self):
+        return self.tr('Vector conversion')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterSelection(self.FORMAT,

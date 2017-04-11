@@ -59,13 +59,19 @@ class IdwInterpolation(GeoAlgorithm):
     EXTENT = 'EXTENT'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('IDW interpolation')
-        self.group, self.i18n_group = self.trAlgorithm('Interpolation')
+    def group(self):
+        return self.tr('Interpolation')
 
+    def name(self):
+        return 'idwinterpolation'
+
+    def displayName(self):
+        return self.tr('IDW interpolation')
+
+    def defineCharacteristics(self):
         class ParameterInterpolationData(Parameter):
             default_metadata = {
                 'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
@@ -160,10 +166,16 @@ class IdwInterpolation(GeoAlgorithm):
         bbox = QgsRectangle(xMin, yMin, xMax, yMax)
 
         layerData = []
+        layers = []
         for row in interpolationData.split(';'):
             v = row.split(',')
             data = QgsInterpolator.LayerData()
-            data.vectorLayer = dataobjects.getObjectFromUri(v[0])
+
+            # need to keep a reference until interpolation is complete
+            layer = dataobjects.getLayerFromString(v[0])
+            data.vectorLayer = layer
+            layers.append(layer)
+
             data.zCoordInterpolation = bool(v[1])
             data.interpolationAttribute = int(v[2])
             if v[3] == '0':

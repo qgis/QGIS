@@ -26,7 +26,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
+from qgis.core import (QgsExpression,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsFeature,
+                       QgsField,
+                       QgsDistanceArea,
+                       QgsProject,
+                       GEO_NONE,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -53,10 +61,22 @@ class FieldsCalculator(GeoAlgorithm):
 
     TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Date]
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Field calculator')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'fieldcalculator'
+
+    def displayName(self):
+        return self.tr('Field calculator')
+
+    def defineCharacteristics(self):
         self.type_names = [self.tr('Float'),
                            self.tr('Integer'),
                            self.tr('String'),
@@ -78,7 +98,7 @@ class FieldsCalculator(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.TYPES[self.getParameterValue(self.FIELD_TYPE)]
         width = self.getParameterValue(self.FIELD_LENGTH)

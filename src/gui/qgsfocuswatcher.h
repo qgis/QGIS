@@ -25,7 +25,7 @@
  * subclass and override methods like focusOutEvent to handle focus events. Using this class
  * as an event filter avoids the need to subclass objects and the focus events can be directly
  * caught using the emitted signals.
- * \note added in 2.16
+ * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsFocusWatcher : public QObject
@@ -35,7 +35,7 @@ class GUI_EXPORT QgsFocusWatcher : public QObject
   public:
 
     /** Constructor for QgsFocusWatcher.
-     * @param parent parent widget to catch focus events for. This class will automatically be
+     * \param parent parent widget to catch focus events for. This class will automatically be
      * installed as an event filter for parent.
      */
     explicit QgsFocusWatcher( QObject *parent );
@@ -45,7 +45,7 @@ class GUI_EXPORT QgsFocusWatcher : public QObject
   signals:
 
     /** Emitted when parent object's focus changes.
-     * @param focused true if object gained focus, false if object lost focus
+     * \param focused true if object gained focus, false if object lost focus
      */
     void focusChanged( bool focused );
 

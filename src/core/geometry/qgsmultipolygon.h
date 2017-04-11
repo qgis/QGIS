@@ -22,7 +22,7 @@ email                : marco.hugentobler at sourcepole dot com
 /** \ingroup core
  * \class QgsMultiPolygonV2
  * \brief Multi polygon geometry collection.
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
     virtual bool addGeometry( QgsAbstractGeometry *g ) override;
 
     /** Returns the geometry converted to the more generic curve type QgsMultiSurface
-    @return the converted geometry. Caller takes ownership*/
+    \returns the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry *toCurveType() const override;
 
     virtual QgsAbstractGeometry *boundary() const override;

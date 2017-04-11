@@ -52,7 +52,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   // add a "Select All" button - would be nicer with an icon
   QPushButton *button = new QPushButton( tr( "Select All" ) );
   buttonBox->addButton( button, QDialogButtonBox::ActionRole );
-  connect( button, SIGNAL( pressed() ), layersTable, SLOT( selectAll() ) );
+  connect( button, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
   // connect( pbnSelectNone, SIGNAL( pressed() ), SLOT( layersTable->selectNone() ) );
 
   QgsSettings settings;

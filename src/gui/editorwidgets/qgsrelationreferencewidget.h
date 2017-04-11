@@ -100,7 +100,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     /**
      * Determines if the filters are chained
      *
-     * @return True if filters are chained
+     * \returns True if filters are chained
      */
     bool chainFilters() const { return mChainFilters; }
 
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      * Set if filters are chained.
      * Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
      *
-     * @param chainFilters If chaining should be enabled
+     * \param chainFilters If chaining should be enabled
      */
     void setChainFilters( bool chainFilters );
 
@@ -117,21 +117,21 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsFeature referencedFeature() const;
 
     /** Sets the widget to display in an indeterminate "mixed value" state.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void showIndeterminateState();
 
     /**
      * Determines if a button for adding new features should be shown.
      *
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     bool allowAddFeatures() const;
 
     /**
      * Determines if a button for adding new features should be shown.
      *
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setAllowAddFeatures( bool allowAddFeatures );
 

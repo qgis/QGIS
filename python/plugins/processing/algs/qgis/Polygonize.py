@@ -26,7 +26,8 @@ __copyright__ = '(C) 2013, Piotr Pociask'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFields,
+from qgis.core import (QgsApplication,
+                       QgsFields,
                        QgsField,
                        QgsFeature,
                        QgsGeometry,
@@ -47,10 +48,25 @@ class Polygonize(GeoAlgorithm):
     FIELDS = 'FIELDS'
     GEOMETRY = 'GEOMETRY'
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('create,lines,polygons,convert').split(',')
+
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'polygonize'
+
+    def displayName(self):
+        return self.tr('Polygonize')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polygonize')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('create,lines,polygons,convert')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterBoolean(self.FIELDS,
@@ -60,7 +76,7 @@ class Polygonize(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
-        vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        vlayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         if self.getParameterValue(self.FIELDS):
             fields = vlayer.fields()

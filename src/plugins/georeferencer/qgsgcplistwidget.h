@@ -47,7 +47,6 @@ class QgsGCPListWidget : public QTableView
 
   signals:
     void jumpToGCP( uint theGCPIndex );
-//  void replaceDataPoint(QgsGeorefDataPoint *pnt, int row);
     void pointEnabled( QgsGeorefDataPoint *pnt, int i );
     void deleteDataPoint( int index );
 

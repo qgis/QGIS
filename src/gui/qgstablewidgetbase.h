@@ -27,7 +27,7 @@
  * This widget includes buttons to add and remove rows.
  * Child classes must call init(QAbstractTableModel*) from their constructor.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsTableWidgetBase: public QWidget, public Ui::QgsTableWidgetBase
 {

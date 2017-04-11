@@ -29,9 +29,9 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   mYMinLineEdit->setValidator( new QDoubleValidator( this ) );
   mYMaxLineEdit->setValidator( new QDoubleValidator( this ) );
 
-  connect( mCurrentExtentButton, SIGNAL( clicked() ), this, SLOT( setOutputExtentFromCurrent() ) );
-  connect( mOriginalExtentButton, SIGNAL( clicked() ), this, SLOT( setOutputExtentFromOriginal() ) );
-  connect( this, SIGNAL( clicked( bool ) ), this, SLOT( groupBoxClicked() ) );
+  connect( mCurrentExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromCurrent );
+  connect( mOriginalExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromOriginal );
+  connect( this, &QGroupBox::clicked, this, &QgsExtentGroupBox::groupBoxClicked );
 }
 
 

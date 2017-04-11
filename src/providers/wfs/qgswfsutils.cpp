@@ -170,7 +170,7 @@ void QgsWFSUtilsKeepAlive::run()
   QTimer timer;
   timer.setInterval( KEEP_ALIVE_DELAY );
   timer.start();
-  connect( &timer, SIGNAL( timeout() ), this, SLOT( updateTimestamp() ) );
+  connect( &timer, &QTimer::timeout, this, &QgsWFSUtilsKeepAlive::updateTimestamp );
   QThread::exec();
 }
 

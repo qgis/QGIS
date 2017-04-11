@@ -95,7 +95,7 @@ QList<QAction *> QgsPGConnectionItem::actions()
   QList<QAction *> lst;
 
   QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
-  connect( actionRefresh, SIGNAL( triggered() ), this, SLOT( refreshConnection() ) );
+  connect( actionRefresh, &QAction::triggered, this, &QgsPGConnectionItem::refreshConnection );
   lst.append( actionRefresh );
 
   QAction *separator = new QAction( this );
@@ -103,11 +103,11 @@ QList<QAction *> QgsPGConnectionItem::actions()
   lst.append( separator );
 
   QAction *actionEdit = new QAction( tr( "Edit Connection..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  connect( actionEdit, &QAction::triggered, this, &QgsPGConnectionItem::editConnection );
   lst.append( actionEdit );
 
   QAction *actionDelete = new QAction( tr( "Delete Connection" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  connect( actionDelete, &QAction::triggered, this, &QgsPGConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
   QAction *separator2 = new QAction( this );
@@ -115,7 +115,7 @@ QList<QAction *> QgsPGConnectionItem::actions()
   lst.append( separator2 );
 
   QAction *actionCreateSchema = new QAction( tr( "Create Schema..." ), this );
-  connect( actionCreateSchema, SIGNAL( triggered() ), this, SLOT( createSchema() ) );
+  connect( actionCreateSchema, &QAction::triggered, this, &QgsPGConnectionItem::createSchema );
   lst.append( actionCreateSchema );
 
   return lst;
@@ -297,17 +297,17 @@ QList<QAction *> QgsPGLayerItem::actions()
   QString typeName = mLayerProperty.isView ? tr( "View" ) : tr( "Table" );
 
   QAction *actionRenameLayer = new QAction( tr( "Rename %1..." ).arg( typeName ), this );
-  connect( actionRenameLayer, SIGNAL( triggered() ), this, SLOT( renameLayer() ) );
+  connect( actionRenameLayer, &QAction::triggered, this, &QgsPGLayerItem::renameLayer );
   lst.append( actionRenameLayer );
 
   QAction *actionDeleteLayer = new QAction( tr( "Delete %1" ).arg( typeName ), this );
-  connect( actionDeleteLayer, SIGNAL( triggered() ), this, SLOT( deleteLayer() ) );
+  connect( actionDeleteLayer, &QAction::triggered, this, &QgsPGLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
 
   if ( !mLayerProperty.isView )
   {
     QAction *actionTruncateLayer = new QAction( tr( "Truncate %1" ).arg( typeName ), this );
-    connect( actionTruncateLayer, SIGNAL( triggered() ), this, SLOT( truncateTable() ) );
+    connect( actionTruncateLayer, &QAction::triggered, this, &QgsPGLayerItem::truncateTable );
     lst.append( actionTruncateLayer );
   }
 
@@ -519,7 +519,7 @@ QList<QAction *> QgsPGSchemaItem::actions()
   QList<QAction *> lst;
 
   QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
-  connect( actionRefresh, SIGNAL( triggered() ), this, SLOT( refresh() ) );
+  connect( actionRefresh, &QAction::triggered, this, static_cast<void ( QgsDataItem::* )()>( &QgsDataItem::refresh ) );
   lst.append( actionRefresh );
 
   QAction *separator = new QAction( this );
@@ -527,11 +527,11 @@ QList<QAction *> QgsPGSchemaItem::actions()
   lst.append( separator );
 
   QAction *actionRename = new QAction( tr( "Rename Schema..." ), this );
-  connect( actionRename, SIGNAL( triggered() ), this, SLOT( renameSchema() ) );
+  connect( actionRename, &QAction::triggered, this, &QgsPGSchemaItem::renameSchema );
   lst.append( actionRename );
 
   QAction *actionDelete = new QAction( tr( "Delete Schema" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteSchema() ) );
+  connect( actionDelete, &QAction::triggered, this, &QgsPGSchemaItem::deleteSchema );
   lst.append( actionDelete );
 
   return lst;
@@ -713,7 +713,7 @@ QList<QAction *> QgsPGRootItem::actions()
   QList<QAction *> lst;
 
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
-  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  connect( actionNew, &QAction::triggered, this, &QgsPGRootItem::newConnection );
   lst.append( actionNew );
 
   return lst;
@@ -722,7 +722,7 @@ QList<QAction *> QgsPGRootItem::actions()
 QWidget *QgsPGRootItem::paramWidget()
 {
   QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, 0, true, true );
-  connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
+  connect( select, &QgsPgSourceSelect::connectionsChanged, this, &QgsPGRootItem::connectionsChanged );
   return select;
 }
 

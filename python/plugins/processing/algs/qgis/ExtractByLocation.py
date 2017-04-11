@@ -25,7 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeatureRequest
+from qgis.core import (QgsFeatureRequest,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -42,11 +43,25 @@ class ExtractByLocation(GeoAlgorithm):
     PRECISION = 'PRECISION'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extract by location')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
-        self.tags = self.tr('extract,filter,location,intersects,contains,within')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('extract,filter,location,intersects,contains,within').split(',')
+
+    def group(self):
+        return self.tr('Vector selection tools')
+
+    def name(self):
+        return 'extractbylocation'
+
+    def displayName(self):
+        return self.tr('Extract by location')
+
+    def defineCharacteristics(self):
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -72,9 +87,9 @@ class ExtractByLocation(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)
+        layer = dataobjects.getLayerFromString(filename)
         filename = self.getParameterValue(self.INTERSECT)
-        selectLayer = dataobjects.getObjectFromUri(filename)
+        selectLayer = dataobjects.getLayerFromString(filename)
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)
 

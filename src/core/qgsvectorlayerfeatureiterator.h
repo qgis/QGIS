@@ -35,14 +35,14 @@ class QgsVectorLayerFeatureIterator;
 
 /** \ingroup core
  * Partial snapshot of vector layer's state (only the members necessary for access to features)
- * @note not available in Python bindings
+ * \note not available in Python bindings
 */
 class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
 
     /** Constructor for QgsVectorLayerFeatureSource.
-     * @param layer source layer
+     * \param layer source layer
      */
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
 
@@ -105,34 +105,34 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void rewindEditBuffer();
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void prepareJoin( int fieldIdx );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void prepareExpression( int fieldIdx );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void prepareFields();
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void prepareField( int fieldIdx );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     bool fetchNextAddedFeature( QgsFeature &f );
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     bool fetchNextChangedGeomFeature( QgsFeature &f );
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     bool fetchNextChangedAttributeFeature( QgsFeature &f );
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void useAddedFeature( const QgsFeature &src, QgsFeature &f );
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry &geom, QgsFeature &f );
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     bool nextFeatureFid( QgsFeature &f );
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void addJoinedAttributes( QgsFeature &f );
 
     /**
@@ -141,26 +141,26 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      *  - Joined fields
      *  - Expression fields
      *
-     * @param f The feature will be modified
-     * @note not available in Python bindings
+     * \param f The feature will be modified
+     * \note not available in Python bindings
      */
     void addVirtualAttributes( QgsFeature &f );
 
     /** Adds an expression based attribute to a feature
-     * @param f feature
-     * @param attrIndex attribute index
-     * @note added in QGIS 2.14
-     * @note not available in Python bindings
+     * \param f feature
+     * \param attrIndex attribute index
+     * \since QGIS 2.14
+     * \note not available in Python bindings
      */
     void addExpressionAttribute( QgsFeature &f, int attrIndex );
 
     /** Update feature with uncommitted attribute updates.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void updateChangedAttributes( QgsFeature &f );
 
     /** Update feature with uncommitted geometry updates.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void updateFeatureGeometry( QgsFeature &f );
 

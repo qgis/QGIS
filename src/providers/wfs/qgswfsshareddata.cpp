@@ -543,7 +543,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator *iterator, const Qg
     mComputedExtent = QgsRectangle();
     mDownloader = new QgsWFSThreadedFeatureDownloader( this );
     QEventLoop loop;
-    connect( mDownloader, SIGNAL( ready() ), &loop, SLOT( quit() ) );
+    connect( mDownloader, &QgsWFSThreadedFeatureDownloader::ready, &loop, &QEventLoop::quit );
     mDownloader->start();
     loop.exec( QEventLoop::ExcludeUserInputEvents );
   }

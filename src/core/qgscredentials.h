@@ -54,19 +54,19 @@ class CORE_EXPORT QgsCredentials
      * Lock the instance against access from multiple threads. This does not really lock access to get/put methds,
      * it will just prevent other threads to lock the instance and continue the execution. When the class is used
      * from non-GUI threads, they should call lock() before the get/put calls to avoid race conditions.
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     void lock();
 
     /**
      * Unlock the instance after being locked.
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     void unlock();
 
     /**
      * Return pointer to mutex
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     QMutex *mutex() { return &mMutex; }
 

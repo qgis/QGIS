@@ -53,15 +53,15 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     };
 
     /**
-     * @brief QgsExternalResourceWidget creates a widget with a file widget and a document viewer
+     * \brief QgsExternalResourceWidget creates a widget with a file widget and a document viewer
      * Both part of the widget are optional.
-     * @see QgsFileWidget
+     * \see QgsFileWidget
      */
     explicit QgsExternalResourceWidget( QWidget *parent = 0 );
 
     /**
-     * @brief documentPath returns the path of the current document in the widget
-     * @param type determines the type of the returned null variant if the document is not defined yet
+     * \brief documentPath returns the path of the current document in the widget
+     * \param type determines the type of the returned null variant if the document is not defined yet
      */
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
     void setDocumentPath( const QVariant &documentPath );
@@ -83,16 +83,16 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     int documentViewerHeight() const;
 
     /**
-     * @brief setDocumentViewerWidth set the height of the document viewer.
-     * @param height the height. Use 0 for automatic best display.
+     * \brief setDocumentViewerWidth set the height of the document viewer.
+     * \param height the height. Use 0 for automatic best display.
      */
     void setDocumentViewerHeight( int height );
     //! returns the width of the document viewer
     int documentViewerWidth() const ;
 
     /**
-     * @brief setDocumentViewerWidth set the width of the document viewer.
-     * @param width the width. Use 0 for automatic best display.
+     * \brief setDocumentViewerWidth set the width of the document viewer.
+     * \param width the width. Use 0 for automatic best display.
      */
     void setDocumentViewerWidth( int width );
 

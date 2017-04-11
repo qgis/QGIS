@@ -159,6 +159,14 @@
     <string>Show Main Canvas Extent</string>
    </property>
   </action>
+  <action name="mActionShowLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Labels</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

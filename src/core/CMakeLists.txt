@@ -84,8 +84,10 @@ SET(QGIS_CORE_SRCS
   annotations/qgssvgannotation.cpp
   annotations/qgstextannotation.cpp
 
+  processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
+  processing/qgsprocessingutils.cpp
 
   qgis.cpp
   qgsapplication.cpp
@@ -95,6 +97,7 @@ SET(QGIS_CORE_SRCS
   qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
   qgsanimatedicon.cpp
+  qgsattributes.cpp
   qgsattributetableconfig.cpp
   qgsattributeeditorelement.cpp
   qgsbearingutils.cpp
@@ -333,6 +336,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasterblock.cpp
   raster/qgsrasterchecker.cpp
   raster/qgsrasterdataprovider.cpp
+  raster/qgsrasterfilewritertask.cpp
   raster/qgsrasteridentifyresult.cpp
   raster/qgsrasterinterface.cpp
   raster/qgsrasteriterator.cpp
@@ -592,8 +596,10 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgspaperitem.h
 
   processing/qgsprocessingfeedback.h
+  processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
 
+  raster/qgsrasterfilewritertask.h
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
 
@@ -663,6 +669,7 @@ SET(QGIS_CORE_HDRS
   qgsactionscope.h
   qgsactionmanager.h
   qgsaggregatecalculator.h
+  qgsattributes.h
   qgsattributetableconfig.h
   qgsattributeeditorelement.h
   qgsbearingutils.h
@@ -833,7 +840,8 @@ SET(QGIS_CORE_HDRS
   composer/qgssingleboxscalebarstyle.h
   composer/qgsticksscalebarstyle.h
 
-  processing/qgsprocessingprovider.h
+  processing/qgsprocessingalgorithm.h
+  processing/qgsprocessingutils.h
 
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h

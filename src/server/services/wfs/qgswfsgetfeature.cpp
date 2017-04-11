@@ -65,8 +65,6 @@ namespace QgsWfs
 
   }
 
-  /** Output WFS  GetCapabilities response
-   */
   void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project,
                         const QString &version, const QgsServerRequest &request,
                         QgsServerResponse &response )

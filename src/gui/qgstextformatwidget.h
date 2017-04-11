@@ -41,7 +41,7 @@ class QgsCharacterSelectorDialog;
  * subclassing QgsTextFormatWidget and calling the protected constructor with a mode
  * of Labeling.
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextFormatWidgetBase
@@ -52,9 +52,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
   public:
 
     /** Constructor for QgsTextFormatWidget.
-     * @param format initial formatting settings to show in widget
-     * @param mapCanvas associated map canvas
-     * @param parent parent widget
+     * \param format initial formatting settings to show in widget
+     * \param mapCanvas associated map canvas
+     * \param parent parent widget
      */
     QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr );
 
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
   public slots:
 
     /** Sets whether the widget should be shown in a compact dock mode.
-     * @param enabled set to true to show in dock mode.
+     * \param enabled set to true to show in dock mode.
      */
     void setDockMode( bool enabled );
 
@@ -86,24 +86,24 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     };
 
     /** Constructor for QgsTextFormatWidget.
-     * @param mapCanvas associated map canvas
-     * @param parent parent widget
-     * @param mode widget mode
+     * \param mapCanvas associated map canvas
+     * \param parent parent widget
+     * \param mode widget mode
      */
     QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode );
 
     /** Updates the widget's state to reflect the settings in a QgsTextFormat.
-     * @param format source format
+     * \param format source format
      */
     void updateWidgetForFormat( const QgsTextFormat &format );
 
     /** Sets the background color for the text preview widget.
-     * @param color background color
+     * \param color background color
      */
     void setPreviewBackground( const QColor &color );
 
     /** Controls whether data defined alignment buttons are enabled.
-     * @param enable set to true to enable alignment controls
+     * \param enable set to true to enable alignment controls
      */
     void enableDataDefinedAlignment( bool enable );
 
@@ -204,7 +204,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
  * using QgsTextRenderer. The dialog includes all settings contained within
  * a QgsTextFormat, including shadow, background and buffer.
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsTextFormatDialog : public QDialog
@@ -214,10 +214,10 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
   public:
 
     /** Constructor for QgsTextFormatDialog.
-     * @param format initial format settings to show in dialog
-     * @param mapCanvas optional associated map canvas
-     * @param parent parent widget
-     * @param fl window flags for dialog
+     * \param format initial format settings to show in dialog
+     * \param mapCanvas optional associated map canvas
+     * \param parent parent widget
+     * \param fl window flags for dialog
      */
     QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
@@ -240,7 +240,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
  * using QgsTextRenderer. The dialog includes all settings contained within
  * a QgsTextFormat, including shadow, background and buffer.
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
@@ -250,9 +250,9 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
   public:
 
     /** Constructor for QgsTextFormatPanelWidget.
-     * @param format initial format settings to show in dialog
-     * @param mapCanvas optional associated map canvas
-     * @param parent parent widget
+     * \param format initial format settings to show in dialog
+     * \param mapCanvas optional associated map canvas
+     * \param parent parent widget
      */
     QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr );
 

@@ -28,7 +28,7 @@
  *
  * E.g. "color: yellow, amount: 5"
  *
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsKeyValueFieldFormatter : public QgsFieldFormatter
 {

@@ -29,6 +29,7 @@ import plotly as plt
 import plotly.graph_objs as go
 import numpy as np
 
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
@@ -43,10 +44,22 @@ class PolarPlot(GeoAlgorithm):
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polar plot')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Graphics')
+
+    def name(self):
+        return 'polarplot'
+
+    def displayName(self):
+        return self.tr('Polar plot')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
@@ -57,7 +70,7 @@ class PolarPlot(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Polar plot')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         namefieldname = self.getParameterValue(self.NAME_FIELD)  # NOQA  FIXME unused?
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)

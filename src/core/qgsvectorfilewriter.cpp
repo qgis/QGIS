@@ -32,6 +32,7 @@
 #include "qgslocalec.h"
 #include "qgscsexception.h"
 #include "qgssettings.h"
+#include "qgsgeometryengine.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -2398,6 +2399,34 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   req.setSubsetOfAttributes( attributes );
   if ( options.onlySelectedFeatures )
     req.setFilterFids( layer->selectedFeatureIds() );
+
+  QgsGeometry filterRectGeometry;
+  std::unique_ptr< QgsGeometryEngine  > filterRectEngine;
+  if ( !options.filterExtent.isNull() )
+  {
+    QgsRectangle filterRect = options.filterExtent;
+    bool useFilterRect = true;
+    if ( shallTransform )
+    {
+      try
+      {
+        // map filter rect back from destination CRS to layer CRS
+        filterRect = options.ct.transformBoundingBox( filterRect, QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException & )
+      {
+        useFilterRect = false;
+      }
+    }
+    if ( useFilterRect )
+    {
+      req.setFilterRect( filterRect );
+    }
+    filterRectGeometry = QgsGeometry::fromRect( options.filterExtent );
+    filterRectEngine.reset( QgsGeometry::createGeometryEngine( filterRectGeometry.geometry() ) );
+    filterRectEngine->prepareGeometry();
+  }
+
   QgsFeatureIterator fit = layer->getFeatures( req );
 
   //create symbol table if needed
@@ -2490,7 +2519,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
 
-    if ( fet.hasGeometry() && !options.filterExtent.isNull() && !fet.geometry().intersects( options.filterExtent ) )
+    if ( fet.hasGeometry() && filterRectEngine && !filterRectEngine->intersects( *fet.geometry().geometry() ) )
       continue;
 
     if ( attributes.size() < 1 && options.skipAttributeCreation )
@@ -2602,6 +2631,35 @@ QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
   }
 
   return resultMap;
+}
+
+QStringList QgsVectorFileWriter::supportedFormatExtensions()
+{
+  QgsStringMap formats = supportedFiltersAndFormats();
+  QStringList extensions;
+
+  QRegularExpression rx( "\\*\\.([a-zA-Z0-9]*)" );
+
+  QgsStringMap::const_iterator formatIt = formats.constBegin();
+  for ( ; formatIt != formats.constEnd(); ++formatIt )
+  {
+    QString ext = formatIt.key();
+    QRegularExpressionMatch match = rx.match( ext );
+    if ( !match.hasMatch() )
+      continue;
+
+    QString matched = match.captured( 1 );
+    if ( matched.compare( QStringLiteral( "shp" ), Qt::CaseInsensitive ) == 0 )
+      continue;
+
+    extensions << matched;
+  }
+
+  std::sort( extensions.begin(), extensions.end() );
+
+  // Make https://twitter.com/shapefiIe a happy little fellow
+  extensions.insert( 0, QStringLiteral( "shp" ) );
+  return extensions;
 }
 
 QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()

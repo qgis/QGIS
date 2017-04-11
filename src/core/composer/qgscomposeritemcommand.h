@@ -51,7 +51,7 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     bool containsChange() const;
 
     /** Returns the target item the command applies to.
-     * @returns target composer item
+     * \returns target composer item
      */
     QgsComposerItem *item() const;
 

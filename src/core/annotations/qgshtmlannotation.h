@@ -29,7 +29,7 @@ class QgsWebPage;
  * \class QgsHtmlAnnotation
  * \ingroup core
  * An annotation item that embeds HTML content.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 
 class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
@@ -40,7 +40,7 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsHtmlAnnotation.
      */
-    QgsHtmlAnnotation( QObject *parent = nullptr );
+    QgsHtmlAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsHtmlAnnotation() = default;
 
@@ -48,13 +48,13 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
 
     /**
      * Sets the file path for the source HTML file.
-     * @see sourceFile()
+     * \see sourceFile()
      */
     void setSourceFile( const QString &htmlFile );
 
     /**
      * Returns the file path for the source HTML file.
-     * @see setSourceFile()
+     * \see setSourceFile()
      */
     QString sourceFile() const { return mHtmlFile; }
 
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     /**
      * Returns a new QgsHtmlAnnotation object.
      */
-    static QgsHtmlAnnotation *create() { return new QgsHtmlAnnotation(); }
+    static QgsHtmlAnnotation *create() SIP_FACTORY { return new QgsHtmlAnnotation(); }
 
   protected:
 

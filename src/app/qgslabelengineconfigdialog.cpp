@@ -26,9 +26,9 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
 {
   setupUi( this );
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
-  connect( buttonBox->button( QDialogButtonBox::RestoreDefaults ), SIGNAL( clicked() ),
-           this, SLOT( setDefaults() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsLabelEngineConfigDialog::onOK );
+  connect( buttonBox->button( QDialogButtonBox::RestoreDefaults ), &QAbstractButton::clicked,
+           this, &QgsLabelEngineConfigDialog::setDefaults );
 
   QgsLabelingEngine engine;
   engine.readSettingsFromProject( QgsProject::instance() );

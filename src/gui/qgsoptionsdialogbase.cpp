@@ -134,14 +134,14 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   if ( mOptButtonBox )
   {
     // enforce only one connection per signal, in case added in Qt Designer
-    disconnect( mOptButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-    connect( mOptButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-    disconnect( mOptButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-    connect( mOptButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+    disconnect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+    connect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+    disconnect( mOptButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+    connect( mOptButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   }
-  connect( mOptSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( updateOptionsListVerticalTabs() ) );
-  connect( mOptStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( optionsStackedWidget_CurrentChanged( int ) ) );
-  connect( mOptStackedWidget, SIGNAL( widgetRemoved( int ) ), this, SLOT( optionsStackedWidget_WidgetRemoved( int ) ) );
+  connect( mOptSplitter, &QSplitter::splitterMoved, this, &QgsOptionsDialogBase::updateOptionsListVerticalTabs );
+  connect( mOptStackedWidget, &QStackedWidget::currentChanged, this, &QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged );
+  connect( mOptStackedWidget, &QStackedWidget::widgetRemoved, this, &QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved );
 
   if ( mSearchLineEdit )
   {

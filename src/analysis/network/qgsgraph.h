@@ -37,7 +37,7 @@ class QgsGraphVertex;
 /**
  * \ingroup analysis
  * \class QgsGraphEdge
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  * \brief This class implements a graph edge
  */
 class ANALYSIS_EXPORT QgsGraphEdge
@@ -47,7 +47,7 @@ class ANALYSIS_EXPORT QgsGraphEdge
 
     /**
      * Returns edge cost calculated using specified strategy
-     * @param strategyIndex strategy index
+     * \param strategyIndex strategy index
      */
     QVariant cost( int strategyIndex ) const;
 
@@ -167,7 +167,7 @@ class ANALYSIS_EXPORT QgsGraph
 
     /**
      * Find vertex by associated point
-     * \return vertex index
+     * \returns vertex index
      */
     int findVertex( const QgsPoint &pt ) const;
 

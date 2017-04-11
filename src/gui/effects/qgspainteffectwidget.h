@@ -32,7 +32,7 @@ class QgsColorEffect;
  * \class QgsPaintEffectWidget
  * \brief Base class for effect properties widgets.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsPaintEffectWidget : public QWidget
@@ -44,7 +44,7 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
 
     /**
      * Sets the paint effect to modify with the widget
-     * @param effect paint effect
+     * \param effect paint effect
      */
     virtual void setPaintEffect( QgsPaintEffect *effect ) = 0;
 

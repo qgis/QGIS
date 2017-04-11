@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsdockwidget.h"
 #include "qgssettings.h"
+#include "layertree/qgslayertreeview.h"
 
 #include <QMainWindow>
 #include <QMenu>
@@ -34,7 +35,7 @@ QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent
 {
   setupUi( this );
 
-  connect( mMapCanvas, SIGNAL( scaleChanged( double ) ), this, SLOT( scaleChanged( double ) ) );
+  connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, &QgsTileScaleWidget::scaleChanged );
 
   layerChanged( mMapCanvas->currentLayer() );
 }
@@ -129,11 +130,11 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   QgsTileScaleWidget *tws = new QgsTileScaleWidget( canvas );
   tws->setObjectName( QStringLiteral( "theTileScaleWidget" ) );
 
-  QObject *legend = mainWindow->findChild<QObject *>( QStringLiteral( "theLayerTreeView" ) );
+  QgsLayerTreeView *legend = mainWindow->findChild<QgsLayerTreeView *>( QStringLiteral( "theLayerTreeView" ) );
   if ( legend )
   {
-    connect( legend, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
-             tws, SLOT( layerChanged( QgsMapLayer * ) ) );
+    connect( legend, &QgsLayerTreeView::currentLayerChanged,
+             tws, &QgsTileScaleWidget::layerChanged );
   }
   else
   {
@@ -160,7 +161,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
 
   dock->setWidget( tws );
 
-  connect( dock, SIGNAL( visibilityChanged( bool ) ), tws, SLOT( scaleEnabled( bool ) ) );
+  connect( dock, &QDockWidget::visibilityChanged, tws, &QgsTileScaleWidget::scaleEnabled );
 
   QgsSettings settings;
   dock->setVisible( settings.value( QStringLiteral( "UI/tileScaleEnabled" ), false ).toBool() );

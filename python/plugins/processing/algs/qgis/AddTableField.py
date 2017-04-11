@@ -26,7 +26,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField, QgsFeature
+from qgis.core import (QgsField,
+                       QgsFeature,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -47,9 +49,22 @@ class AddTableField(GeoAlgorithm):
 
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'addfieldtoattributestable'
+
+    def displayName(self):
+        return self.tr('Add field to attributes table')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Add field to attributes table')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.type_names = [self.tr('Integer'),
                            self.tr('Float'),
@@ -75,7 +90,7 @@ class AddTableField(GeoAlgorithm):
         fieldPrecision = self.getParameterValue(self.FIELD_PRECISION)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 
         fields = layer.fields()

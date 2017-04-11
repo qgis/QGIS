@@ -94,8 +94,8 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     ~QgsWFSFeatureDownloader();
 
     /** Start the download.
-     * @param serializeFeatures whether to notify the sharedData serializer.
-     * @param maxFeatures user-defined limit of features to download. Overrides
+     * \param serializeFeatures whether to notify the sharedData serializer.
+     * \param maxFeatures user-defined limit of features to download. Overrides
      *                    the one defined in the URI. Typically by the QgsWFSProvider,
      *                    when it cannot guess the geometry type.
      */
@@ -203,7 +203,7 @@ class QgsWFSFeatureIterator : public QObject,
     void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override;
 
     //! Used by QgsWFSSharedData::registerToCache()
-    void connectSignals( QObject *downloader );
+    void connectSignals( QgsWFSFeatureDownloader *downloader );
 
   private slots:
     void featureReceived( int featureCount );

@@ -80,20 +80,20 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   mVMFeature1 = nullptr;
   mVMFeature2 = nullptr;
 
-  connect( actionConfigure, SIGNAL( triggered() ), this, SLOT( configure() ) );
-  connect( actionValidateAll, SIGNAL( triggered() ), this, SLOT( validateAll() ) );
+  connect( actionConfigure, &QAction::triggered, this, &checkDock::configure );
+  connect( actionValidateAll, &QAction::triggered, this, &checkDock::validateAll );
   //connect( mValidateSelectedButton, SIGNAL( clicked() ), this, SLOT( validateSelected() ) );
-  connect( actionValidateExtent, SIGNAL( triggered() ), this, SLOT( validateExtent() ) );
-  connect( mToggleRubberband, SIGNAL( clicked() ), this, SLOT( toggleErrorMarker() ) );
+  connect( actionValidateExtent, &QAction::triggered, this, &checkDock::validateExtent );
+  connect( mToggleRubberband, &QAbstractButton::clicked, this, &checkDock::toggleErrorMarker );
 
-  connect( mFixButton, SIGNAL( clicked() ), this, SLOT( fix() ) );
-  connect( mErrorTableView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( errorListClicked( const QModelIndex & ) ) );
+  connect( mFixButton, &QAbstractButton::clicked, this, &checkDock::fix );
+  connect( mErrorTableView, &QAbstractItemView::clicked, this, &checkDock::errorListClicked );
 
-  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( parseErrorListByLayer( QString ) ) );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &checkDock::parseErrorListByLayer );
 
-  connect( this, SIGNAL( visibilityChanged( bool ) ), this, SLOT( updateRubberBands( bool ) ) );
-  connect( qgsInterface, SIGNAL( newProjectCreated() ), mConfigureDialog, SLOT( clearRules() ) );
-  connect( qgsInterface, SIGNAL( newProjectCreated() ), this, SLOT( deleteErrors() ) );
+  connect( this, &QDockWidget::visibilityChanged, this, &checkDock::updateRubberBands );
+  connect( qgsInterface, &QgisInterface::newProjectCreated, mConfigureDialog, &rulesDialog::clearRules );
+  connect( qgsInterface, &QgisInterface::newProjectCreated, this, &checkDock::deleteErrors );
 
 }
 
@@ -344,8 +344,8 @@ void checkDock::runTests( ValidateType type )
     QProgressDialog progress( testName, tr( "Abort" ), 0, layer1->featureCount(), this );
     progress.setWindowModality( Qt::WindowModal );
 
-    connect( &progress, SIGNAL( canceled() ), mTest, SLOT( setTestCanceled() ) );
-    connect( mTest, SIGNAL( progress( int ) ), &progress, SLOT( setValue( int ) ) );
+    connect( &progress, &QProgressDialog::canceled, mTest, &topolTest::setTestCanceled );
+    connect( mTest, &topolTest::progress, &progress, &QProgressDialog::setValue );
     // run the test
 
     ErrorList errors = mTest->runTest( testName, layer1, layer2, type, toleranceStr.toDouble() );
@@ -373,8 +373,8 @@ void checkDock::runTests( ValidateType type )
       rb->show();
       mRbErrorMarkers << rb;
     }
-    disconnect( &progress, SIGNAL( canceled() ), mTest, SLOT( setTestCanceled() ) );
-    disconnect( mTest, SIGNAL( progress( int ) ), &progress, SLOT( setValue( int ) ) );
+    disconnect( &progress, &QProgressDialog::canceled, mTest, &topolTest::setTestCanceled );
+    disconnect( mTest, &topolTest::progress, &progress, &QProgressDialog::setValue );
     mErrorList << errors;
   }
   mToggleRubberband->setChecked( true );

@@ -36,7 +36,7 @@ class QCheckBox;
 /**
  * \class QgsMapCanvasDockWidget
  * A dock widget with an embedded map canvas, for additional map views.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsMapCanvasDockWidgetBase
 {
@@ -56,67 +56,79 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
 
     /**
      * Sets whether the view center should be synchronized with the main canvas center.
-     * @see isViewCenterSynchronized()
+     * \see isViewCenterSynchronized()
      */
     void setViewCenterSynchronized( bool enabled );
 
     /**
      * Returns true if the view extent is synchronized with the main canvas extent.
-     * @see setViewCenterSynchronized()
+     * \see setViewCenterSynchronized()
      */
     bool isViewCenterSynchronized() const;
 
     /**
      * Sets whether the cursor position marker is visible.
-     * @see isCursorMarkerVisible()
+     * \see isCursorMarkerVisible()
      */
     void setCursorMarkerVisible( bool visible );
 
     /**
      * Returns true if the cursor position marker is visible.
-     * @see setCursorMarkerVisible()
+     * \see setCursorMarkerVisible()
      */
     bool isCursorMarkerVisible() const;
 
     /**
      * Sets whether the main canvas extent is visible.
-     * @see isMainCanvasExtentVisible()
+     * \see isMainCanvasExtentVisible()
      */
     void setMainCanvasExtentVisible( bool visible );
 
     /**
      * Returns true if the main canvas extent is visible.
-     * @see setMainCanvasExtentVisible()
+     * \see setMainCanvasExtentVisible()
      */
     bool isMainCanvasExtentVisible() const;
 
     /**
      * Returns the scaling factor for main canvas scale to view scale.
-     * @see setScaleFactor()
-     * @see isViewScaleSynchronized()
+     * \see setScaleFactor()
+     * \see isViewScaleSynchronized()
      */
     double scaleFactor() const;
 
     /**
      * Sets the scaling \a factor for main canvas scale to view scale.
-     * @see scaleFactor()
-     * @see setViewScaleSynchronized()
+     * \see scaleFactor()
+     * \see setViewScaleSynchronized()
      */
     void setScaleFactor( double factor );
 
     /**
      * Sets whether the view scale should be synchronized with the main canvas center.
-     * @see isViewScaleSynchronized()
-     * @see setScaleFactor()
+     * \see isViewScaleSynchronized()
+     * \see setScaleFactor()
      */
     void setViewScaleSynchronized( bool enabled );
 
     /**
      * Returns true if the view scale is synchronized with the main canvas extent.
-     * @see setViewScaleSynchronized()
-     * @see scaleFactor()
+     * \see setViewScaleSynchronized()
+     * \see scaleFactor()
      */
     bool isViewScaleSynchronized() const;
+
+    /**
+     * Sets whether labels should be rendered in the view.
+     * \see labelsVisible()
+     */
+    void setLabelsVisible( bool enabled );
+
+    /**
+     * Returns whether labels are rendered in the view.
+     * \see setLabelsVisible()
+     */
+    bool labelsVisible() const;
 
   signals:
 
@@ -136,6 +148,8 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void syncMarker( const QgsPoint &p );
     void mapScaleChanged();
     void updateExtentRect();
+    void showLabels( bool show );
+
 
   private:
 
@@ -162,7 +176,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
 /**
  * \class QgsMapSettingsAction
  * Allows embedding a scale, rotation and other map settings into a menu.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class QgsMapSettingsAction: public QWidgetAction

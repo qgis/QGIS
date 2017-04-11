@@ -84,7 +84,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
   if ( !mManagerMode )
   {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
+    connect( mAddButton, &QAbstractButton::clicked, this, &QgsWMSSourceSelect::addClicked );
 
     // TODO: do it without QgisApp
     //mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.svg" ) );
@@ -446,7 +446,7 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   }
 
   QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization(), true );
-  connect( &capDownload, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
+  connect( &capDownload, &QgsWmsCapabilitiesDownload::statusChanged, this, &QgsWMSSourceSelect::showStatusMessage );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
   bool res = capDownload.downloadCapabilities();
@@ -1161,7 +1161,7 @@ void QgsWMSSourceSelect::on_btnSearch_clicked()
   QgsDebugMsg( url.toString() );
 
   QNetworkReply *r = QgsNetworkAccessManager::instance()->get( QNetworkRequest( url ) );
-  connect( r, SIGNAL( finished() ), SLOT( searchFinished() ) );
+  connect( r, &QNetworkReply::finished, this, &QgsWMSSourceSelect::searchFinished );
 }
 
 void QgsWMSSourceSelect::searchFinished()

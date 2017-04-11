@@ -21,6 +21,7 @@
 #include <QDomNode>
 #include <QVariant>
 
+#include "qgis.h"
 #include "qgis_core.h"
 
 class QgsFields;
@@ -28,7 +29,7 @@ class QgsFields;
 /** \ingroup core
  * This is a container for configuration of the attribute table.
  * The configuration is specific for one vector layer.
- * \note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsAttributeTableConfig
@@ -56,9 +57,9 @@ class CORE_EXPORT QgsAttributeTableConfig
         , width( -1 )
       {}
 
-      bool operator== ( const ColumnConfig &other ) const;
+      bool operator== ( const QgsAttributeTableConfig::ColumnConfig &other ) const SIP_SKIP;
 
-      Type type;    //!< The type of this column.
+      QgsAttributeTableConfig::Type type;    //!< The type of this column.
       QString name; //!< The name of the attribute if this column represents a field
       bool hidden;  //!< Flag that controls if the column is hidden
       int width; //!< Width of column, or -1 for default width
@@ -79,15 +80,15 @@ class CORE_EXPORT QgsAttributeTableConfig
      * Get the list with all columns and their configuration.
      * The list order defines the order of appearance.
      */
-    QVector<ColumnConfig> columns() const;
+    QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
 
     /** Returns true if the configuration is empty, ie it contains no columns.
      */
     bool isEmpty() const;
 
     /** Maps a visible column index to its original column index.
-     * @param visibleColumn index of visible column
-     * @returns corresponding index when hidden columns are considered
+     * \param visibleColumn index of visible column
+     * \returns corresponding index when hidden columns are considered
      */
     int mapVisibleColumnToIndex( int visibleColumn ) const;
 
@@ -95,7 +96,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      * Set the list of columns visible in the attribute table.
      * The list order defines the order of appearance.
      */
-    void setColumns( const QVector<ColumnConfig> &columns );
+    void setColumns( const QVector<QgsAttributeTableConfig::ColumnConfig> &columns );
 
     /**
      * Update the configuration with the given fields.
@@ -146,40 +147,40 @@ class CORE_EXPORT QgsAttributeTableConfig
     void setSortExpression( const QString &sortExpression );
 
     /** Returns the width of a column, or -1 if column should use default width.
-     * @param column column index
-     * @see setColumnWidth()
+     * \param column column index
+     * \see setColumnWidth()
      */
     int columnWidth( int column ) const;
 
     /** Sets the width of a column.
-     * @param column column index
-     * @param width column width in pixels, or -1 if column should use default width
-     * @see columnWidth()
+     * \param column column index
+     * \param width column width in pixels, or -1 if column should use default width
+     * \see columnWidth()
      */
     void setColumnWidth( int column, int width );
 
     /** Returns true if the specified column is hidden.
-     * @param column column index
-     * @see setColumnHidden()
+     * \param column column index
+     * \see setColumnHidden()
      */
     bool columnHidden( int column ) const;
 
     /** Sets whether the specified column should be hidden.
-     * @param column column index
-     * @param hidden set to true to hide column
-     * @see columnHidden()
+     * \param column column index
+     * \param hidden set to true to hide column
+     * \see columnHidden()
      */
     void setColumnHidden( int column, bool hidden );
 
     /**
      * Get the sort order
-     * @note Added in 2.16
+     * \since QGIS 2.16
      */
     Qt::SortOrder sortOrder() const;
 
     /**
      * Set the sort order
-     * @note Added in 2.16
+     * \since QGIS 2.16
      */
     void setSortOrder( Qt::SortOrder sortOrder );
 

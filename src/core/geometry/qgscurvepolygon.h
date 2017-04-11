@@ -26,7 +26,7 @@ class QgsPolygonV2;
 /** \ingroup core
  * \class QgsCurvePolygon
  * \brief Curve polygon geometry type
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsCurvePolygon: public QgsSurface
@@ -64,16 +64,16 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     /** Returns a new polygon geometry corresponding to a segmentized approximation
      * of the curve.
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     virtual QgsPolygonV2 *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
 
     /** Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
      * of the exterior ring. For instance, setting a 2D exterior ring on a 3D CurvePolygon will drop the z dimension
      * from the CurvePolygon and all interior rings.
-     * @param ring new exterior ring. Ownership is transferred to the CurvePolygon.
-     * @see setInteriorRings()
-     * @see exteriorRing()
+     * \param ring new exterior ring. Ownership is transferred to the CurvePolygon.
+     * \see setInteriorRings()
+     * \see exteriorRing()
      */
     virtual void setExteriorRing( QgsCurve *ring );
 
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * Removes an interior ring from the polygon. The first interior ring has index 0.
      * The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
      * the function will return true.  It is not possible to remove the exterior ring using this method.
-     * @see removeInteriorRings()
+     * \see removeInteriorRings()
      */
     bool removeInteriorRing( int ringIndex );
 
@@ -94,8 +94,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * Removes the interior rings from the polygon. If the minimumAllowedArea
      * parameter is specified then only rings smaller than this minimum
      * area will be removed.
-     * @note added in QGIS 3.0
-     * @see removeInteriorRing()
+     * \since QGIS 3.0
+     * \see removeInteriorRing()
      */
     void removeInteriorRings( double minimumAllowedArea = -1 );
 
@@ -117,13 +117,13 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     bool hasCurvedSegments() const override;
 
     /** Returns a geometry without curves. Caller takes ownership
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-     *  @param vertex the vertex id
-     *  @return rotation in radians, clockwise from north
+     *  \param vertex the vertex id
+     *  \returns rotation in radians, clockwise from north
      */
     double vertexAngle( QgsVertexId vertex ) const override;
 

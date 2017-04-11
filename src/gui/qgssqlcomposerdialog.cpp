@@ -46,21 +46,21 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl 
   mTablesCombo->view()->installEventFilter( this );
 
 
-  connect( mButtonBox->button( QDialogButtonBox::Reset ), SIGNAL( clicked() ),
-           this, SLOT( reset() ) );
+  connect( mButtonBox->button( QDialogButtonBox::Reset ), &QAbstractButton::clicked,
+           this, &QgsSQLComposerDialog::reset );
 
-  connect( mQueryEdit, SIGNAL( textChanged() ),
-           this, SLOT( splitSQLIntoFields() ) );
-  connect( mColumnsEditor, SIGNAL( textChanged() ),
-           this, SLOT( buildSQLFromFields() ) );
-  connect( mTablesEditor, SIGNAL( textChanged( const QString & ) ),
-           this, SLOT( buildSQLFromFields() ) );
-  connect( mWhereEditor, SIGNAL( textChanged() ),
-           this, SLOT( buildSQLFromFields() ) );
-  connect( mOrderEditor, SIGNAL( textChanged() ),
-           this, SLOT( buildSQLFromFields() ) );
-  connect( mTableJoins, SIGNAL( cellChanged( int, int ) ),
-           this, SLOT( buildSQLFromFields() ) );
+  connect( mQueryEdit, &QsciScintilla::textChanged,
+           this, &QgsSQLComposerDialog::splitSQLIntoFields );
+  connect( mColumnsEditor, &QTextEdit::textChanged,
+           this, &QgsSQLComposerDialog::buildSQLFromFields );
+  connect( mTablesEditor, &QLineEdit::textChanged,
+           this, &QgsSQLComposerDialog::buildSQLFromFields );
+  connect( mWhereEditor, &QTextEdit::textChanged,
+           this, &QgsSQLComposerDialog::buildSQLFromFields );
+  connect( mOrderEditor, &QTextEdit::textChanged,
+           this, &QgsSQLComposerDialog::buildSQLFromFields );
+  connect( mTableJoins, &QTableWidget::cellChanged,
+           this, &QgsSQLComposerDialog::buildSQLFromFields );
 
   QStringList baseList;
   baseList << QStringLiteral( "SELECT" );

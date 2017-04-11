@@ -147,7 +147,7 @@ void QgsPointClusterRendererWidget::on_mRendererSettingsButton_clicked()
     QgsSymbolWidgetContext context = mContext;
     context.setAdditionalExpressionContextScopes( scopes );
     w->setContext( context );
-    connect( w, SIGNAL( widgetChanged() ), this, SLOT( updateRendererFromWidget() ) );
+    connect( w, &QgsPanelWidget::widgetChanged, this, &QgsPointClusterRendererWidget::updateRendererFromWidget );
     w->setDockMode( this->dockMode() );
     openPanel( w );
   }
@@ -201,7 +201,7 @@ void QgsPointClusterRendererWidget::on_mCenterSymbolPushButton_clicked()
 
   dlg->setContext( context );
 
-  connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateCenterSymbolFromWidget() ) );
+  connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsPointClusterRendererWidget::updateCenterSymbolFromWidget );
   connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsPointClusterRendererWidget::cleanUpSymbolSelector );
   openPanel( dlg );
 }

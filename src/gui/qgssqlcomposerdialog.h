@@ -31,7 +31,7 @@ email                : even.rouault at spatialys.com
 
 /** \ingroup gui
  * SQL composer dialog
- *  @note not available in Python bindings
+ *  \note not available in Python bindings
  */
 class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLComposerDialogBase
 {
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
 
     /** \ingroup gui
      * Callback to do actions on table selection
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     class GUI_EXPORT TableSelectedCallback
     {
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
 
     /** \ingroup gui
      * Callback to do validation check on dialog validation.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     class GUI_EXPORT SQLValidatorCallback
     {

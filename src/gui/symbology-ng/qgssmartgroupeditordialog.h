@@ -77,14 +77,14 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     QString smartgroupName();
 
     //! returns the condition map
-    //! @note not available in python bindings
+    //! \note not available in Python bindings
     QgsSmartConditionMap conditionMap();
 
     //! returns the AND/OR condition
     QString conditionOperator();
 
     //! sets up the GUI for the given conditionmap
-    //! @note not available in python bindings
+    //! \note not available in Python bindings
     void setConditionMap( const QgsSmartConditionMap & );
 
     //! sets the operator AND/OR

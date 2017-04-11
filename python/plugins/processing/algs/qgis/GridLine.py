@@ -58,14 +58,22 @@ class GridLine(GeoAlgorithm):
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create grid (lines)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
-        self.tags = self.tr('grid,lines,vector,create,fishnet')
+    def tags(self):
+        return self.tr('grid,lines,vector,create,fishnet').split(',')
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
+    def name(self):
+        return 'creategridlines'
+
+    def displayName(self):
+        return self.tr('Create grid (lines)')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.HSPACING,

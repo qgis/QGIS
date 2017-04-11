@@ -23,7 +23,7 @@ class QToolButton;
 class QLineEdit;
 
 /** \ingroup gui
- * @brief The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
+ * \brief The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
  */
 class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 {
@@ -38,25 +38,25 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     bool allowNull() const {return mAllowNull;}
 
     /**
-     * @brief setDateTime set the date time in the widget and handles null date times.
-     * @note since QDateTimeEdit::setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
+     * \brief setDateTime set the date time in the widget and handles null date times.
+     * \note since QDateTimeEdit::setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
      */
     void setDateTime( const QDateTime &dateTime );
 
     /**
-     * @brief dateTime returns the date time which can eventually be a null date/time
-     * @note since QDateTimeEdit::dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
+     * \brief dateTime returns the date time which can eventually be a null date/time
+     * \note since QDateTimeEdit::dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
      */
     QDateTime dateTime() const;
 
     /**
      * Set the current date as NULL
-     * @note if the widget is not configured to accept NULL dates, this will have no effect
+     * \note if the widget is not configured to accept NULL dates, this will have no effect
      */
     virtual void clear() override;
 
     /** Resets the widget to show no value (ie, an "unknown" state).
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setEmpty();
 

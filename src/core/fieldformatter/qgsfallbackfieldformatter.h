@@ -24,7 +24,7 @@
  * A default fallback field formatter in case no specialized field formatter is defined.
  * The values will be returned unmodified.
  *
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFallbackFieldFormatter : public QgsFieldFormatter
 {

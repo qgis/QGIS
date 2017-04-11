@@ -39,9 +39,8 @@ const int PLUGMAN_TAB_UPGRADEABLE = 3;
 const int PLUGMAN_TAB_NEW = 4;
 const int PLUGMAN_TAB_INVALID = 5;
 
-/*!
+/**
  * \brief Plugin manager for browsing, (un)installing and (un)loading plugins
-@author Gary Sherman
 */
 class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManagerBase
 {
@@ -52,7 +51,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     ~QgsPluginManager();
 
-    //! Save pointer to python utils and enable Python support
+    //! Save pointer to Python utils and enable Python support
     void setPythonUtils( QgsPythonUtils *pythonUtils );
 
     //! Load selected plugin
@@ -76,7 +75,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Fill the html browser widget with plugin details
     void showPluginDetails( QStandardItem *item );
 
-    //! Remove python plugins from the metadata registry (c++ plugins stay)
+    //! Remove Python plugins from the metadata registry (c++ plugins stay)
     void clearPythonPluginMetadata();
 
     //! Add a single plugin to the metadata registry

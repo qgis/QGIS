@@ -32,7 +32,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     /**
      * Create a new 2.5D renderer from XML
      *
-     * @param element XML information
+     * \param element XML information
      */
     static QgsFeatureRenderer *create( QDomElement &element );
     QDomElement save( QDomDocument &doc ) override;

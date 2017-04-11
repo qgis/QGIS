@@ -61,7 +61,8 @@ void QgsEnumerationWidgetWrapper::initWidget( QWidget *editor )
     {
       mComboBox->addItem( s, s );
     }
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
   }
 }
 

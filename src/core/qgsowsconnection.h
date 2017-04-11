@@ -39,8 +39,8 @@ class CORE_EXPORT QgsOwsConnection : public QObject
 
     /**
      * Constructor
-     * @param service service name: WMS,WFS,WCS
-     * @param connName connection name
+     * \param service service name: WMS,WFS,WCS
+     * \param connName connection name
      */
     QgsOwsConnection( const QString &service, const QString &connName );
 

@@ -47,19 +47,19 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   mAddTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   mDeleteTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
-  connect( mAddTestButton, SIGNAL( clicked() ), this, SLOT( addRule() ) );
-  connect( mAddTestButton, SIGNAL( clicked() ), mRulesTable, SLOT( resizeColumnsToContents() ) );
+  connect( mAddTestButton, &QAbstractButton::clicked, this, &rulesDialog::addRule );
+  connect( mAddTestButton, &QAbstractButton::clicked, mRulesTable, &QTableView::resizeColumnsToContents );
   // attempt to add new test when Ok clicked
   //connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addTest() ) );
-  connect( mDeleteTestButton, SIGNAL( clicked() ), this, SLOT( deleteTest() ) );
+  connect( mDeleteTestButton, &QAbstractButton::clicked, this, &rulesDialog::deleteTest );
 
-  connect( mLayer1Box, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( updateRuleItems( const QString & ) ) );
-  connect( mRuleBox, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( showControls( const QString & ) ) );
+  connect( mLayer1Box, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &rulesDialog::updateRuleItems );
+  connect( mRuleBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &rulesDialog::showControls );
 
   mRuleBox->setCurrentIndex( 0 );
 
   //this resets this plugin up if a project is loaded
-  connect( mQgisIface, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
+  connect( mQgisIface, &QgisInterface::projectRead, this, &rulesDialog::projectRead );
   //reset plugin if new project is activated
   projectRead();
 }

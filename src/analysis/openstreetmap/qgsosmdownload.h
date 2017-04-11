@@ -25,7 +25,7 @@
 class QgsRectangle;
 
 /** \ingroup analysis
- * @brief OSMDownload is a utility class for downloading OpenStreetMap via Overpass API.
+ * \brief OSMDownload is a utility class for downloading OpenStreetMap via Overpass API.
  *
  * To use this class, it is necessary to set query, output file name and start the request.
  * The interface is asynchronous, the caller has to wait for finished() signal that is
@@ -64,18 +64,18 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     QString errorString() const { return mError; }
 
     /**
-     * @brief Starts network request for data. The prerequisite is that the query string and output
+     * \brief Starts network request for data. The prerequisite is that the query string and output
      * file name have been set.
      *
      * Only one request may be pending at one point - if you need more requests at once, use several instances.
      *
-     * @return true if the network request has been issued, false otherwise (and sets error string)
+     * \returns true if the network request has been issued, false otherwise (and sets error string)
      */
     bool start();
 
     /**
-     * @brief Aborts current pending request
-     * @return true if there is a pending request and has been aborted, false otherwise
+     * \brief Aborts current pending request
+     * \returns true if there is a pending request and has been aborted, false otherwise
      */
     bool abort();
 

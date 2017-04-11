@@ -37,8 +37,8 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   setupUi( this );
   initOptionsBase( false );
 
-  connect( this, SIGNAL( accepted() ), SLOT( saveOptions() ) );
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), SLOT( saveOptions() ) );
+  connect( this, &QDialog::accepted, this, &QgsGrassOptions::saveOptions );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsGrassOptions::saveOptions );
 
   QgsSettings settings;
 
@@ -54,10 +54,10 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   mGisbaseCustomRadioButton->setChecked( customGisbase );
   mGisbaseLineEdit->setText( customGisbaseDir );
   gisbaseChanged();
-  connect( mGisbaseDefaultRadioButton, SIGNAL( toggled( bool ) ), SLOT( gisbaseChanged() ) );
-  connect( mGisbaseLineEdit, SIGNAL( textChanged( const QString & ) ), SLOT( gisbaseChanged() ) );
-  connect( mGisbaseLineEdit, SIGNAL( textEdited( const QString & ) ), SLOT( gisbaseChanged() ) );
-  connect( mGisbaseGroupBox, SIGNAL( collapsedStateChanged( bool ) ), SLOT( gisbaseChanged() ) );
+  connect( mGisbaseDefaultRadioButton, &QAbstractButton::toggled, this, &QgsGrassOptions::gisbaseChanged );
+  connect( mGisbaseLineEdit, &QLineEdit::textChanged, this, &QgsGrassOptions::gisbaseChanged );
+  connect( mGisbaseLineEdit, &QLineEdit::textEdited, this, &QgsGrassOptions::gisbaseChanged );
+  connect( mGisbaseGroupBox, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsGrassOptions::gisbaseChanged );
 
   // Modules
   bool customModules = settings.value( mModulesSettingsPath + "/custom", false ).toBool();

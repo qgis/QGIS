@@ -55,16 +55,16 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! Returns the raster shader
     QgsRasterShader *shader() { return mShader.get(); }
 
-    //! @note available in python as constShader
+    //! \note available in Python as constShader
     const QgsRasterShader *shader() const { return mShader.get(); }
 
     /** Creates a color ramp shader
-     * @param colorRamp vector color ramp
-     * @param colorRampType type of color ramp shader
-     * @param classificationMode classification mode
-     * @param classes number of classes
-     * @param clip clip out of range values
-     * @param extent extent used in classification (only used in quantile mode)
+     * \param colorRamp vector color ramp
+     * \param colorRampType type of color ramp shader
+     * \param classificationMode classification mode
+     * \param classes number of classes
+     * \param clip clip out of range values
+     * \param extent extent used in classification (only used in quantile mode)
      */
     void createShader( QgsColorRamp *colorRamp = nullptr, QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated, QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous, int classes = 0, bool clip = false, const QgsRectangle &extent = QgsRectangle() );
 
@@ -75,13 +75,13 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     QList<int> usesBands() const override;
 
     /** Returns the band used by the renderer
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     int band() const { return mBand; }
 
     /** Sets the band used by the renderer.
-     * @see band
-     * @note added in QGIS 2.10
+     * \see band
+     * \since QGIS 2.10
      */
     void setBand( int bandNo );
 

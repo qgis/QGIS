@@ -27,7 +27,7 @@ class QgsShortcutsManager;
 /** \ingroup gui
  * \class QgsConfigureShortcutsDialog
  * Reusable dialog for allowing users to configure shortcuts contained in a QgsShortcutsManager.
- * \note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsConfigureShortcutsDialog
@@ -37,8 +37,8 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
   public:
 
     /** Constructor for QgsConfigureShortcutsDialog.
-     * @param parent parent widget
-     * @param manager associated QgsShortcutsManager, or leave as null to use the default
+     * \param parent parent widget
+     * \param manager associated QgsShortcutsManager, or leave as null to use the default
      * singleton QgsShortcutsManager instance.
      */
     QgsConfigureShortcutsDialog( QWidget *parent = nullptr, QgsShortcutsManager *manager = nullptr );

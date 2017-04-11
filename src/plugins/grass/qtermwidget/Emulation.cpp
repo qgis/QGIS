@@ -62,12 +62,12 @@ Emulation::Emulation() :
   _screen[1] = new Screen(40,80);
   _currentScreen = _screen[0];
 
-  QObject::connect(&_bulkTimer1, SIGNAL(timeout()), this, SLOT(showBulk()) );
-  QObject::connect(&_bulkTimer2, SIGNAL(timeout()), this, SLOT(showBulk()) );
+  QObject::connect(&_bulkTimer1, &QTimer::timeout, this, &Emulation::showBulk );
+  QObject::connect(&_bulkTimer2, &QTimer::timeout, this, &Emulation::showBulk );
 
   // listen for mouse status changes
-  connect( this , SIGNAL(programUsesMouseChanged(bool)) ,
-           SLOT(usesMouseChanged(bool)) );
+  connect( this , &Emulation::programUsesMouseChanged ,
+           this, &Emulation::usesMouseChanged );
 }
 
 bool Emulation::programUsesMouse() const
@@ -86,11 +86,11 @@ ScreenWindow* Emulation::createWindow()
     window->setScreen(_currentScreen);
     _windows << window;
 
-    connect(window , SIGNAL(selectionChanged()),
-            this , SLOT(bufferedUpdate()));
+    connect(window , &ScreenWindow::selectionChanged,
+            this , &Emulation::bufferedUpdate);
 
-    connect(this , SIGNAL(outputChanged()),
-            window , SLOT(notifyOutputChanged()) );
+    connect(this , &Emulation::outputChanged,
+            window , &ScreenWindow::notifyOutputChanged );
     return window;
 }
 

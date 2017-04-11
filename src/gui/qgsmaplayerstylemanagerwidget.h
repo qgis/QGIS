@@ -27,7 +27,7 @@ class QgsMapCanvas;
 
 
 /** \ingroup gui
- * @brief The QgsMapLayerStyleManagerWidget class which is used to visually manage
+ * \brief The QgsMapLayerStyleManagerWidget class which is used to visually manage
  * the layer styles.
  */
 class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
@@ -36,10 +36,10 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
   public:
 
     /**
-     * @brief Style manager widget to manage the layers styles.
-     * @param layer The layer for the widget
-     * @param canvas The canvas object.
-     * @param parent The parent.
+     * \brief Style manager widget to manage the layers styles.
+     * \param layer The layer for the widget
+     * \param canvas The canvas object.
+     * \param parent The parent.
      */
     QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 

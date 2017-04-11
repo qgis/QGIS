@@ -1,7 +1,7 @@
 // ASEnhancer.cpp
-// Copyright (c) 2016 by Jim Pattee <jimp03@email.com>.
+// Copyright (c) 2017 by Jim Pattee <jimp03@email.com>.
 // This code is licensed under the MIT License.
-// License.txt describes the conditions under which this software may be distributed.
+// License.md describes the conditions under which this software may be distributed.
 
 //-----------------------------------------------------------------------------
 // headers
@@ -66,18 +66,18 @@ void ASEnhancer::init(int  _fileType,
 
 	// unindent variables
 	lineNumber = 0;
-	bracketCount = 0;
+	braceCount = 0;
 	isInComment = false;
 	isInQuote = false;
 	switchDepth = 0;
 	eventPreprocDepth = 0;
-	lookingForCaseBracket = false;
+	lookingForCaseBrace = false;
 	unindentNextLine = false;
 	shouldUnindentLine = false;
 	shouldUnindentComment = false;
 
 	// switch struct and vector
-	sw.switchBracketCount = 0;
+	sw.switchBraceCount = 0;
 	sw.unindentDepth = 0;
 	sw.unindentCase = false;
 	switchStack.clear();
@@ -124,7 +124,7 @@ void ASEnhancer::enhance(string& line, bool isInNamespace, bool isInPreprocessor
 	        && !emptyLineFill)
 		return;
 
-	// test for unindent on attached brackets
+	// test for unindent on attached braces
 	if (unindentNextLine)
 	{
 		sw.unindentDepth++;
@@ -202,7 +202,7 @@ void ASEnhancer::convertSpaceIndentToForceTab(string& line) const
  * @param caseIndex     the line index of the case statement.
  * @return              the line index of the colon.
  */
-size_t ASEnhancer::findCaseColon(string& line, size_t caseIndex) const
+size_t ASEnhancer::findCaseColon(const string& line, size_t caseIndex) const
 {
 	size_t i = caseIndex;
 	bool isInQuote_ = false;
@@ -293,7 +293,7 @@ int ASEnhancer::indentLine(string& line, int indent) const
  * @param index         the current line index.
  * @return              true if a hit.
  */
-bool ASEnhancer::isBeginDeclareSectionSQL(string& line, size_t index) const
+bool ASEnhancer::isBeginDeclareSectionSQL(const string& line, size_t index) const
 {
 	string word;
 	size_t hits = 0;
@@ -342,7 +342,7 @@ bool ASEnhancer::isBeginDeclareSectionSQL(string& line, size_t index) const
  * @param index         the current line index.
  * @return              true if a hit.
  */
-bool ASEnhancer::isEndDeclareSectionSQL(string& line, size_t index) const
+bool ASEnhancer::isEndDeclareSectionSQL(const string& line, size_t index) const
 {
 	string word;
 	size_t hits = 0;
@@ -384,12 +384,12 @@ bool ASEnhancer::isEndDeclareSectionSQL(string& line, size_t index) const
 }
 
 /**
- * check if a one-line bracket has been reached,
+ * check if a one-line brace has been reached,
  * i.e. if the currently reached '{' character is closed
  * with a complimentary '}' elsewhere on the current line,
  *.
- * @return     false = one-line bracket has not been reached.
- *             true  = one-line bracket has been reached.
+ * @return     false = one-line brace has not been reached.
+ *             true  = one-line brace has been reached.
  */
 bool ASEnhancer::isOneLineBlockReached(const string& line, int startChar) const
 {
@@ -397,7 +397,7 @@ bool ASEnhancer::isOneLineBlockReached(const string& line, int startChar) const
 
 	bool isInComment_ = false;
 	bool isInQuote_ = false;
-	int _bracketCount = 1;
+	int _braceCount = 1;
 	int lineLength = line.length();
 	char quoteChar_ = ' ';
 	char ch = ' ';
@@ -448,11 +448,11 @@ bool ASEnhancer::isOneLineBlockReached(const string& line, int startChar) const
 		}
 
 		if (ch == '{')
-			++_bracketCount;
+			++_braceCount;
 		else if (ch == '}')
-			--_bracketCount;
+			--_braceCount;
 
-		if (_bracketCount == 0)
+		if (_braceCount == 0)
 			return true;
 	}
 
@@ -519,17 +519,17 @@ void ASEnhancer::parseCurrentLine(string& line, bool isInPreprocessor, bool isIn
 			// check for windows line markers
 			if (line.compare(i + 2, 1, "\xf0") > 0)
 				lineNumber--;
-			// unindent if not in case brackets
+			// unindent if not in case braces
 			if (line.find_first_not_of(" \t") == i
-			        && sw.switchBracketCount == 1
+			        && sw.switchBraceCount == 1
 			        && sw.unindentCase)
 				shouldUnindentComment = true;
 			break;                 // finished with the line
 		}
 		else if (!(isInComment) && line.compare(i, 2, "/*") == 0)
 		{
-			// unindent if not in case brackets
-			if (sw.switchBracketCount == 1 && sw.unindentCase)
+			// unindent if not in case braces
+			if (sw.switchBraceCount == 1 && sw.unindentCase)
 				shouldUnindentComment = true;
 			isInComment = true;
 			size_t commentEnd = line.find("*/", i);
@@ -541,8 +541,8 @@ void ASEnhancer::parseCurrentLine(string& line, bool isInPreprocessor, bool isIn
 		}
 		else if ((isInComment) && line.compare(i, 2, "*/") == 0)
 		{
-			// unindent if not in case brackets
-			if (sw.switchBracketCount == 1 && sw.unindentCase)
+			// unindent if not in case braces
+			if (sw.switchBraceCount == 1 && sw.unindentCase)
 				shouldUnindentComment = true;
 			isInComment = false;
 			i++;
@@ -551,8 +551,8 @@ void ASEnhancer::parseCurrentLine(string& line, bool isInPreprocessor, bool isIn
 
 		if (isInComment)
 		{
-			// unindent if not in case brackets
-			if (sw.switchBracketCount == 1 && sw.unindentCase)
+			// unindent if not in case braces
+			if (sw.switchBraceCount == 1 && sw.unindentCase)
 				shouldUnindentComment = true;
 			size_t commentEnd = line.find("*/", i);
 			if (commentEnd == string::npos)
@@ -565,10 +565,10 @@ void ASEnhancer::parseCurrentLine(string& line, bool isInPreprocessor, bool isIn
 		// if we have reached this far then we are NOT in a comment or string of special characters
 
 		if (line[i] == '{')
-			bracketCount++;
+			braceCount++;
 
 		if (line[i] == '}')
-			bracketCount--;
+			braceCount--;
 
 		// check for preprocessor within an event table
 		if (isInEventTable && line[i] == '#' && preprocBlockIndent)
@@ -621,11 +621,11 @@ void ASEnhancer::parseCurrentLine(string& line, bool isInPreprocessor, bool isIn
 
 		// ----------------  process switch statements  ---------------------------------
 
-		if (isPotentialKeyword && findKeyword(line, i, "switch"))
+		if (isPotentialKeyword && findKeyword(line, i, ASResource::AS_SWITCH))
 		{
 			switchDepth++;
-			switchStack.push_back(sw);                      // save current variables
-			sw.switchBracketCount = 0;
+			switchStack.emplace_back(sw);                      // save current variables
+			sw.switchBraceCount = 0;
 			sw.unindentCase = false;                        // don't clear case until end of switch
 			i += 5;                                         // bypass switch statement
 			continue;
@@ -665,22 +665,22 @@ size_t ASEnhancer::processSwitchBlock(string& line, size_t index)
 
 	if (line[i] == '{')
 	{
-		sw.switchBracketCount++;
-		if (lookingForCaseBracket)                      // if 1st after case statement
+		sw.switchBraceCount++;
+		if (lookingForCaseBrace)                      // if 1st after case statement
 		{
 			sw.unindentCase = true;                     // unindenting this case
 			sw.unindentDepth++;
-			lookingForCaseBracket = false;              // not looking now
+			lookingForCaseBrace = false;              // not looking now
 		}
 		return i;
 	}
-	lookingForCaseBracket = false;                      // no opening bracket, don't indent
+	lookingForCaseBrace = false;                      // no opening brace, don't indent
 
 	if (line[i] == '}')
 	{
-		sw.switchBracketCount--;
-		assert(sw.switchBracketCount <= bracketCount);
-		if (sw.switchBracketCount == 0)                 // if end of switch statement
+		sw.switchBraceCount--;
+		assert(sw.switchBraceCount <= braceCount);
+		if (sw.switchBraceCount == 0)                 // if end of switch statement
 		{
 			int lineUnindent = sw.unindentDepth;
 			if (line.find_first_not_of(" \t") == i
@@ -700,7 +700,8 @@ size_t ASEnhancer::processSwitchBlock(string& line, size_t index)
 	}
 
 	if (isPotentialKeyword
-	        && (findKeyword(line, i, "case") || findKeyword(line, i, "default")))
+	        && (findKeyword(line, i, ASResource::AS_CASE)
+	            || findKeyword(line, i, ASResource::AS_DEFAULT)))
 	{
 		if (sw.unindentCase)					// if unindented last case
 		{
@@ -720,14 +721,14 @@ size_t ASEnhancer::processSwitchBlock(string& line, size_t index)
 		{
 			if (line[i] == '{')
 			{
-				bracketCount++;
-				sw.switchBracketCount++;
+				braceCount++;
+				sw.switchBraceCount++;
 				if (!isOneLineBlockReached(line, i))
 					unindentNextLine = true;
 				return i;
 			}
 		}
-		lookingForCaseBracket = true;
+		lookingForCaseBrace = true;
 		i--;									// need to process this char
 		return i;
 	}

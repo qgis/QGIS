@@ -36,7 +36,12 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
     //! Function to set the selected blend mode from QPainter::CompositionMode
     void setBlendMode( QPainter::CompositionMode blendMode );
   private:
-    //! Returns a list of grouped blend modes (with separators)
+
+    /** Returns a QStringList of the translated blend modes
+    * "-" is used to indicate the position of a separator in the list
+    * This list is designed to emulate GIMP's layer modes, where
+    * blending modes are grouped by their effect (lightening, darkening, etc)
+    */
     QStringList blendModesList() const;
 
     //! Used to map blend modes across to their corresponding
@@ -45,6 +50,10 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
     std::vector<int> mListIndexToBlendMode;
 
   public slots:
+
+    /** Populates the blend mode combo box, and sets up mapping for
+    * blend modes to combo box indexes
+    */
     void updateModes();
 
 };

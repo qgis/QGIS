@@ -30,7 +30,10 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
-from qgis.core import NULL, QgsApplication, QgsSettings
+from qgis.core import (NULL,
+                       QgsApplication,
+                       QgsSettings,
+                       QgsVectorFileWriter)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -165,7 +168,7 @@ class ProcessingConfig(object):
             valuetype=Setting.SELECTION,
             options=invalidFeaturesOptions))
 
-        extensions = processing.tools.dataobjects.getSupportedOutputVectorLayerExtensions()
+        extensions = QgsVectorFileWriter.supportedFormatExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,

@@ -27,7 +27,7 @@
  * \ingroup core
  * A class that implements a custom filter and can be used
  * as a proxy for QgsDbTableModel
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsDatabaseFilterProxyModel: public QSortFilterProxyModel
 {

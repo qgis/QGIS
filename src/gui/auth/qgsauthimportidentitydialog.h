@@ -57,8 +57,8 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
 
     /**
      * Construct a dialog for importing identities
-     * @param identitytype Type of the identity to import
-     * @param parent Parent widget
+     * \param identitytype Type of the identity to import
+     * \param parent Parent widget
      */
     explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
                                           QWidget *parent = nullptr );
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     QgsAuthImportIdentityDialog::IdentityType identityType();
 
     /** Get certificate/key bundle to be imported.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     const QPair<QSslCertificate, QSslKey> certBundleToImport();
 

@@ -25,7 +25,7 @@
 /** \ingroup gui
  * \class QgsPresetColorRampWidget
  * A widget which allows users to modify the properties of a QgsPresetSchemeColorRamp.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::QgsPresetColorRampWidgetBase
 {
@@ -35,19 +35,19 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
   public:
 
     /** Constructor for QgsPresetColorRampWidget.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
+     * \param ramp initial ramp to show in dialog
+     * \param parent parent widget
      */
     QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+     * \see setRamp()
      */
     QgsPresetSchemeColorRamp ramp() const;
 
     /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
+     * \param ramp color ramp
+     * \see ramp()
      */
     void setRamp( const QgsPresetSchemeColorRamp &ramp );
 
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
 /** \ingroup gui
  * \class QgsPresetColorRampDialog
  * A dialog which allows users to modify the properties of a QgsPresetSchemeColorRamp.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
 {
@@ -83,19 +83,19 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
   public:
 
     /** Constructor for QgsPresetColorRampDialog.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
+     * \param ramp initial ramp to show in dialog
+     * \param parent parent widget
      */
     QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+     * \see setRamp()
      */
     QgsPresetSchemeColorRamp ramp() const { return mWidget->ramp(); }
 
     /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
+     * \param ramp color ramp
+     * \see ramp()
      */
     void setRamp( const QgsPresetSchemeColorRamp &ramp ) { mWidget->setRamp( ramp ); }
 

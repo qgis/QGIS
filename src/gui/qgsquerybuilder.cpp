@@ -38,11 +38,11 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( test() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsQueryBuilder::test );
 
   pbn = new QPushButton( tr( "&Clear" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( clear() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsQueryBuilder::clear );
 
   setupGuiViews();
 

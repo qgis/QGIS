@@ -132,7 +132,7 @@ class QgsHistogramValuesGatherer: public QThread
 /** \ingroup gui
  * \class QgsCurveEditorWidget
  * A widget for manipulating QgsCurveTransform curves.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 {
@@ -149,13 +149,13 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
     /**
      * Returns a curve representing the current curve from the widget.
-     * @see setCurve()
+     * \see setCurve()
      */
     QgsCurveTransform curve() const { return mCurve; }
 
     /**
      * Sets the \a curve to show in the widget.
-     * @see curve()
+     * \see curve()
      */
     void setCurve( const QgsCurveTransform &curve );
 
@@ -163,22 +163,22 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
      * Sets a \a layer and \a expression source for values to show in a histogram
      * behind the curve. The histogram is generated in a background thread to keep
      * the widget responsive.
-     * @see minHistogramValueRange()
-     * @see maxHistogramValueRange()
+     * \see minHistogramValueRange()
+     * \see maxHistogramValueRange()
      */
     void setHistogramSource( const QgsVectorLayer *layer, const QString &expression );
 
     /**
      * Returns the minimum expected value for the range of values shown in the histogram.
-     * @see maxHistogramValueRange()
-     * @see setMinHistogramValueRange()
+     * \see maxHistogramValueRange()
+     * \see setMinHistogramValueRange()
      */
     double minHistogramValueRange() const { return mMinValueRange; }
 
     /**
      * Returns the maximum expected value for the range of values shown in the histogram.
-     * @see minHistogramValueRange()
-     * @see setMaxHistogramValueRange()
+     * \see minHistogramValueRange()
+     * \see setMaxHistogramValueRange()
      */
     double maxHistogramValueRange() const { return mMaxValueRange; }
 
@@ -186,15 +186,15 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
     /**
      * Sets the minimum expected value for the range of values shown in the histogram.
-     * @see setMaxHistogramValueRange()
-     * @see minHistogramValueRange()
+     * \see setMaxHistogramValueRange()
+     * \see minHistogramValueRange()
      */
     void setMinHistogramValueRange( double minValueRange );
 
     /**
      * Sets the maximum expected value for the range of values shown in the histogram.
-     * @see setMinHistogramValueRange()
-     * @see maxHistogramValueRange()
+     * \see setMinHistogramValueRange()
+     * \see maxHistogramValueRange()
      */
     void setMaxHistogramValueRange( double maxValueRange );
 

@@ -30,7 +30,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
   restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
-  connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationScaleBarDialog::apply );
 
   // set the map units in the spin box
   spnSize->setShowClearButton( false );

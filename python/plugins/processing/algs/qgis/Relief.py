@@ -54,13 +54,19 @@ class Relief(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     FREQUENCY_DISTRIBUTION = 'FREQUENCY_DISTRIBUTION'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Relief')
-        self.group, self.i18n_group = self.trAlgorithm('Raster terrain analysis')
+    def group(self):
+        return self.tr('Raster terrain analysis')
 
+    def name(self):
+        return 'relief'
+
+    def displayName(self):
+        return self.tr('Relief')
+
+    def defineCharacteristics(self):
         class ParameterReliefColors(Parameter):
             default_metadata = {
                 'widget_wrapper': 'processing.algs.qgis.ui.ReliefColorsWidget.ReliefColorsWidgetWrapper'

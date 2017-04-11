@@ -31,7 +31,7 @@ class QToolButton;
  * a color (e.g., the red or green components), or an entire color. The QgsColorWidget also keeps track of
  * any explicitly set hue for the color, so that this information is not lost when the widget is
  * set to a color with an ambiguous hue (e.g., black or white shades).
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 
 class GUI_EXPORT QgsColorWidget : public QWidget
@@ -55,57 +55,57 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     };
 
     /** Construct a new color widget.
-     * @param parent parent QWidget for the widget
-     * @param component color component the widget alters
+     * \param parent parent QWidget for the widget
+     * \param component color component the widget alters
      */
     QgsColorWidget( QWidget *parent = nullptr, const ColorComponent component = Multiple );
 
     /** Returns the current color for the widget
-     * @returns current widget color
-     * @see setColor
+     * \returns current widget color
+     * \see setColor
      */
     QColor color() const;
 
     /** Returns the color component which the widget controls
-     * @returns color component for widget
-     * @see setComponent
+     * \returns color component for widget
+     * \see setComponent
      */
     ColorComponent component() const { return mComponent; }
 
     /** Returns the current value of the widget's color component
-     * @returns value of color component, or -1 if widget has multiple components or an invalid color
+     * \returns value of color component, or -1 if widget has multiple components or an invalid color
      * set
-     * @see setComponentValue
-     * @see component
+     * \see setComponentValue
+     * \see component
      */
     int componentValue() const;
 
     /** Create an icon for dragging colors
-     * @param color for icon
+     * \param color for icon
      */
     static QPixmap createDragIcon( const QColor &color );
 
   public slots:
 
     /** Sets the color for the widget
-     * @param color widget color
-     * @param emitSignals set to true to emit the colorChanged signal after setting color
-     * @see color
+     * \param color widget color
+     * \param emitSignals set to true to emit the colorChanged signal after setting color
+     * \see color
      */
     virtual void setColor( const QColor &color, const bool emitSignals = false );
 
     /** Sets the color component which the widget controls
-     * @param component color component for widget
-     * @see component
+     * \param component color component for widget
+     * \see component
      */
     virtual void setComponent( const ColorComponent component );
 
     /** Alters the widget's color by setting the value for the widget's color component
-     * @param value value for widget's color component. This value is automatically
+     * \param value value for widget's color component. This value is automatically
      * clipped to the range of valid values for the color component.
-     * @see componentValue
-     * @see setComponent
-     * @note this method has no effect if the widget is set to the QgsColorWidget::Multiple
+     * \see componentValue
+     * \see setComponent
+     * \note this method has no effect if the widget is set to the QgsColorWidget::Multiple
      * component
      */
     virtual void setComponentValue( const int value );
@@ -113,12 +113,12 @@ class GUI_EXPORT QgsColorWidget : public QWidget
   signals:
 
     /** Emitted when the widget's color changes
-     * @param color new widget color
+     * \param color new widget color
      */
     void colorChanged( const QColor &color );
 
     /** Emitted when mouse hovers over widget.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     void hovered();
 
@@ -134,39 +134,39 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     int mExplicitHue;
 
     /** Returns the range of valid values for the color widget's component
-     * @returns maximum value allowed for color component, or -1 if widget has multiple components
+     * \returns maximum value allowed for color component, or -1 if widget has multiple components
      */
     int componentRange() const;
 
     /** Returns the range of valid values a color component
-     * @returns maximum value allowed for color component
+     * \returns maximum value allowed for color component
      */
     int componentRange( const ColorComponent component ) const;
 
     /** Returns the value of a component of the widget's current color. This method correctly
      * handles hue values when the color has an ambiguous hue (e.g., black or white shades)
-     * @param component color component to return
-     * @returns value of color component, or -1 if widget has an invalid color set
-     * @see hue
+     * \param component color component to return
+     * \returns value of color component, or -1 if widget has an invalid color set
+     * \see hue
      */
     int componentValue( const ColorComponent component ) const;
 
     /** Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
      * as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
-     * @returns explicitly set hue for widget
+     * \returns explicitly set hue for widget
      */
     int hue() const;
 
     /** Alters a color by modifiying the value of a specific color component
-     * @param color color to alter
-     * @param component color component to alter
-     * @param newValue new value of color component. Values are automatically clipped to a
+     * \param color color to alter
+     * \param component color component to alter
+     * \param newValue new value of color component. Values are automatically clipped to a
      * valid range for the color component.
      */
     void alterColor( QColor &color, const QgsColorWidget::ColorComponent component, const int newValue ) const;
 
     /** Generates a checkboard pattern pixmap for use as a background to transparent colors
-     * @returns checkerboard pixmap
+     * \returns checkerboard pixmap
      */
     static const QPixmap &transparentBackground();
 
@@ -185,8 +185,8 @@ class GUI_EXPORT QgsColorWidget : public QWidget
 /** \ingroup gui
  * \class QgsColorWidgetAction
  * An action containing a color widget, which can be embedded into a menu.
- * @see QgsColorWidget
- * @note introduced in QGIS 2.14
+ * \see QgsColorWidget
+ * \since QGIS 2.14
  */
 
 class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
@@ -196,9 +196,9 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
   public:
 
     /** Construct a new color widget action.
-     * @param colorWidget QgsColorWidget to show in action
-     * @param menu parent menu
-     * @param parent parent widget
+     * \param colorWidget QgsColorWidget to show in action
+     * \param menu parent menu
+     * \param parent parent widget
      */
     QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *menu = nullptr, QWidget *parent = nullptr );
 
@@ -208,23 +208,23 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
 
     /** Sets whether the parent menu should be dismissed and closed when a color is selected
      * from the action's color widget.
-     * @param dismiss set to true (default) to immediately close the menu when a color is selected
+     * \param dismiss set to true (default) to immediately close the menu when a color is selected
      * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
      * stay open.
-     * @see dismissOnColorSelection()
+     * \see dismissOnColorSelection()
      */
     void setDismissOnColorSelection( bool dismiss ) { mDismissOnColorSelection = dismiss; }
 
     /** Returns whether the parent menu will be dismissed after a color is selected from the
      * action's color widget.
-     * @see setDismissOnColorSelection
+     * \see setDismissOnColorSelection
      */
     bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
 
   signals:
 
     /** Emitted when a color has been selected from the widget
-     * @param color selected color
+     * \param color selected color
      */
     void colorChanged( const QColor &color );
 
@@ -254,7 +254,7 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
  * \class QgsColorWheel
  * A color wheel widget. This widget consists of an outer ring which allows for hue selection, and an
  * inner rotating triangle which allows for saturation and value selection.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 
 class GUI_EXPORT QgsColorWheel : public QgsColorWidget
@@ -264,7 +264,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
   public:
 
     /** Constructs a new color wheel widget.
-     * @param parent parent QWidget for the widget
+     * \param parent parent QWidget for the widget
      */
     QgsColorWheel( QWidget *parent = nullptr );
 
@@ -321,7 +321,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     QBrush mWheelBrush;
 
     /** Creates cache images for specified widget size
-     * @param size widget size for images
+     * \param size widget size for images
      */
     void createImages( const QSizeF size );
 
@@ -332,7 +332,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     void createTriangle();
 
     /** Sets the widget color based on a point in the widget
-     * @param pos position for color
+     * \param pos position for color
      */
     void setColorFromPos( const QPointF pos );
 
@@ -344,7 +344,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
  * A color box widget. This widget consists of a two dimensional rectangle filled with color
  * variations, where a different color component varies along both the horizontal and vertical
  * axis.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 
 class GUI_EXPORT QgsColorBox : public QgsColorWidget
@@ -354,8 +354,8 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
   public:
 
     /** Construct a new color box widget.
-     * @param parent parent QWidget for the widget
-     * @param component constant color component for the widget. The color components
+     * \param parent parent QWidget for the widget
+     * \param component constant color component for the widget. The color components
      * which vary along the horizontal and vertical axis are automatically assigned
      * based on this constant color component.
      */
@@ -393,12 +393,12 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     void createBox();
 
     /** Returns the range of permissible values along the x axis
-     * @returns maximum color component value for x axis
+     * \returns maximum color component value for x axis
      */
     int valueRangeX() const;
 
     /** Returns the range of permissible values along the y axis
-     * @returns maximum color component value for y axis
+     * \returns maximum color component value for y axis
      */
     int valueRangeY() const;
 
@@ -419,7 +419,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     int xComponentValue() const;
 
     /** Updates the widget's color based on a point within the widget
-     * @param point point within the widget
+     * \param point point within the widget
      */
     void setColorFromPoint( QPoint point );
 
@@ -430,7 +430,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
  * \class QgsColorRampWidget
  * A color ramp widget. This widget consists of an interactive box filled with a color which varies along
  * its length by a single color component (e.g., varying saturation from 0 to 100%).
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 
 class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
@@ -448,9 +448,9 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     };
 
     /** Construct a new color ramp widget.
-     * @param parent parent QWidget for the widget
-     * @param component color component which varies along the ramp
-     * @param orientation orientation for widget
+     * \param parent parent QWidget for the widget
+     * \param component color component which varies along the ramp
+     * \param orientation orientation for widget
      */
     QgsColorRampWidget( QWidget *parent = nullptr,
                         const ColorComponent component = QgsColorWidget::Red,
@@ -460,50 +460,50 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     void paintEvent( QPaintEvent *event ) override;
 
     /** Sets the orientation for the color ramp
-     * @param orientation new orientation for the ramp
-     * @see orientation
+     * \param orientation new orientation for the ramp
+     * \see orientation
      */
     void setOrientation( const Orientation orientation );
 
     /** Fetches the orientation for the color ramp
-     * @returns orientation for the ramp
-     * @see setOrientation
+     * \returns orientation for the ramp
+     * \see setOrientation
      */
     Orientation orientation() const { return mOrientation; }
 
     /** Sets the margin between the edge of the widget and the ramp
-     * @param margin margin around the ramp
-     * @see interiorMargin
+     * \param margin margin around the ramp
+     * \see interiorMargin
      */
     void setInteriorMargin( const int margin );
 
     /** Fetches the margin between the edge of the widget and the ramp
-     * @returns margin around the ramp
-     * @see setInteriorMargin
+     * \returns margin around the ramp
+     * \see setInteriorMargin
      */
     int interiorMargin() const { return mMargin; }
 
     /** Sets whether the ramp should be drawn within a frame
-     * @param showFrame set to true to draw a frame around the ramp
-     * @see showFrame
+     * \param showFrame set to true to draw a frame around the ramp
+     * \see showFrame
      */
     void setShowFrame( const bool showFrame );
 
     /** Fetches whether the ramp is drawn within a frame
-     * @returns true if a frame is drawn around the ramp
-     * @see setShowFrame
+     * \returns true if a frame is drawn around the ramp
+     * \see setShowFrame
      */
     bool showFrame() const { return mShowFrame; }
 
     /** Sets the size for drawing the triangular markers on the ramp
-     * @param markerSize marker size in pixels
+     * \param markerSize marker size in pixels
      */
     void setMarkerSize( const int markerSize );
 
   signals:
 
     /** Emitted when the widget's color component value changes
-     * @param value new value of color component
+     * \param value new value of color component
      */
     void valueChanged( const int value );
 
@@ -532,7 +532,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     QPolygonF mBottomTriangle;
 
     /** Updates the widget's color based on a point within the widget
-     * @param point point within the widget
+     * \param point point within the widget
      */
     void setColorFromPoint( QPointF point );
 
@@ -542,7 +542,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
 /** \ingroup gui
  * \class QgsColorSliderWidget
  * A composite horizontal color ramp widget and associated spinbox for manual value entry.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 
 class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
@@ -552,8 +552,8 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
   public:
 
     /** Construct a new color slider widget.
-     * @param parent parent QWidget for the widget
-     * @param component color component which is controlled by the slider
+     * \param parent parent QWidget for the widget
+     * \param component color component which is controlled by the slider
      */
     QgsColorSliderWidget( QWidget *parent = nullptr, const ColorComponent component = QgsColorWidget::Red );
 
@@ -571,16 +571,16 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
 
     /** Converts the real value of a color component to a friendly display value. For instance,
      * alpha values from 0-255 have little meaning to users, so we translate them to 0-100%
-     * @param realValue actual value of the color component
-     * @returns display value of color component
-     * @see convertDisplayToReal
+     * \param realValue actual value of the color component
+     * \returns display value of color component
+     * \see convertDisplayToReal
      */
     int convertRealToDisplay( const int realValue ) const;
 
     /** Converts the display value of a color component to a real value.
-     * @param displayValue friendly display value of the color component
-     * @returns real value of color component
-     * @see convertRealToDisplay
+     * \param displayValue friendly display value of the color component
+     * \returns real value of color component
+     * \see convertRealToDisplay
      */
     int convertDisplayToReal( const int displayValue ) const;
 
@@ -605,7 +605,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
  * \class QgsColorTextWidget
  * A line edit widget which displays colors as text and accepts string representations
  * of colors.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 
 class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
@@ -615,7 +615,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
   public:
 
     /** Construct a new color line edit widget.
-     * @param parent parent QWidget for the widget
+     * \param parent parent QWidget for the widget
      */
     QgsColorTextWidget( QWidget *parent = nullptr );
 
@@ -663,7 +663,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
 /** \ingroup gui
  * \class QgsColorPreviewWidget
  * A preview box which displays one or two colors as swatches.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 
 class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
@@ -673,7 +673,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
   public:
 
     /** Construct a new color preview widget.
-     * @param parent parent QWidget for the widget
+     * \param parent parent QWidget for the widget
      */
     QgsColorPreviewWidget( QWidget *parent = nullptr );
 
@@ -681,20 +681,20 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     virtual QSize sizeHint() const override;
 
     /** Returns the secondary color for the widget
-     * @returns secondary widget color, or an invalid color if the widget
+     * \returns secondary widget color, or an invalid color if the widget
      * has no secondary color
-     * @see color
-     * @see setColor2
+     * \see color
+     * \see setColor2
      */
     QColor color2() const { return mColor2; }
 
   public slots:
 
     /** Sets the second color for the widget
-     * @param color secondary widget color. Set to an invalid color to prevent
+     * \param color secondary widget color. Set to an invalid color to prevent
      * drawing of a secondary color
-     * @see setColor
-     * @see color2
+     * \see setColor
+     * \see color2
      */
     virtual void setColor2( const QColor &color );
 
@@ -717,9 +717,9 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     QPoint mDragStartPosition;
 
     /*Draws a color preview within the specified rect.
-     * @param color color to draw
-     * @param rect rect to draw color in
-     * @param painter destination painter
+     * \param color color to draw
+     * \param rect rect to draw color in
+     * \param painter destination painter
      */
     void drawColor( const QColor &color, QRect rect, QPainter &painter );
 };

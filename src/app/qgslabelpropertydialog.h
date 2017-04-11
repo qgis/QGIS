@@ -39,7 +39,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
   signals:
 
     /** Emitted when dialog settings are applied
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     void applied();
 

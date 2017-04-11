@@ -562,7 +562,7 @@ void QgsPropertyOverrideButton::showAssistant()
     dlg->setLayout( new QVBoxLayout() );
     dlg->layout()->addWidget( widget );
     QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
-    connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
+    connect( buttonBox, &QDialogButtonBox::accepted, dlg, &QDialog::accept );
     dlg->layout()->addWidget( buttonBox );
     dlg->exec();
     settings.setValue( key, dlg->saveGeometry() );

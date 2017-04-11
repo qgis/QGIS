@@ -21,6 +21,7 @@
 %Include qgsactionscoperegistry.sip
 %Include qgsaggregatecalculator.sip
 %Include qgsanimatedicon.sip
+%Include qgsattributes.sip
 %Include qgsattributetableconfig.sip
 %Include qgsattributeeditorelement.sip
 %Include qgsbearingutils.sip
@@ -272,9 +273,11 @@
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include layertree/qgslayertreeutils.sip
 
+%Include processing/qgsprocessingalgorithm.sip
 %Include processing/qgsprocessingfeedback.sip
 %Include processing/qgsprocessingprovider.sip
 %Include processing/qgsprocessingregistry.sip
+%Include processing/qgsprocessingutils.sip
 
 %Include raster/qgsbilinearrasterresampler.sip
 %Include raster/qgsbrightnesscontrastfilter.sip
@@ -295,6 +298,7 @@
 %Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterdrawer.sip
 %Include raster/qgsrasterfilewriter.sip
+%Include raster/qgsrasterfilewritertask.sip
 %Include raster/qgsrasterhistogram.sip
 %Include raster/qgsrasteridentifyresult.sip
 %Include raster/qgsrasterinterface.sip

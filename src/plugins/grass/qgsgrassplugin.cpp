@@ -171,12 +171,12 @@ void QgsGrassPlugin::initGui()
   mOptionsAction->setObjectName( QStringLiteral( "mOptionsAction" ) );
 
   // Connect the actions
-  connect( mOpenMapsetAction, SIGNAL( triggered() ), this, SLOT( openMapset() ) );
-  connect( mNewMapsetAction, SIGNAL( triggered() ), this, SLOT( newMapset() ) );
-  connect( mCloseMapsetAction, SIGNAL( triggered() ), SLOT( closeMapset() ) );
-  connect( mOpenToolsAction, SIGNAL( triggered() ), this, SLOT( openTools() ) );
-  connect( mRegionAction, SIGNAL( toggled( bool ) ), this, SLOT( switchRegion( bool ) ) );
-  connect( mOptionsAction, SIGNAL( triggered() ), QgsGrass::instance(), SLOT( openOptions() ) );
+  connect( mOpenMapsetAction, &QAction::triggered, this, &QgsGrassPlugin::openMapset );
+  connect( mNewMapsetAction, &QAction::triggered, this, &QgsGrassPlugin::newMapset );
+  connect( mCloseMapsetAction, &QAction::triggered, this, &QgsGrassPlugin::closeMapset );
+  connect( mOpenToolsAction, &QAction::triggered, this, &QgsGrassPlugin::openTools );
+  connect( mRegionAction, &QAction::toggled, this, &QgsGrassPlugin::switchRegion );
+  connect( mOptionsAction, &QAction::triggered, QgsGrass::instance(), &QgsGrass::openOptions );
 
   // Add actions to a GRASS plugin menu
   QString menu = tr( "&GRASS" );
@@ -222,11 +222,11 @@ void QgsGrassPlugin::initGui()
   mAddAreaAction->setObjectName( QStringLiteral( "mAddAreaAction" ) );
   mAddAreaAction->setCheckable( true );
 
-  connect( mAddPointAction, SIGNAL( triggered() ), SLOT( addFeature() ) );
-  connect( mAddLineAction, SIGNAL( triggered() ), SLOT( addFeature() ) );
-  connect( mAddBoundaryAction, SIGNAL( triggered() ), SLOT( addFeature() ) );
-  connect( mAddCentroidAction, SIGNAL( triggered() ), SLOT( addFeature() ) );
-  connect( mAddAreaAction, SIGNAL( triggered() ), SLOT( addFeature() ) );
+  connect( mAddPointAction, &QAction::triggered, this, &QgsGrassPlugin::addFeature );
+  connect( mAddLineAction, &QAction::triggered, this, &QgsGrassPlugin::addFeature );
+  connect( mAddBoundaryAction, &QAction::triggered, this, &QgsGrassPlugin::addFeature );
+  connect( mAddCentroidAction, &QAction::triggered, this, &QgsGrassPlugin::addFeature );
+  connect( mAddAreaAction, &QAction::triggered, this, &QgsGrassPlugin::addFeature );
 
   mAddFeatureAction = qGisInterface->actionAddFeature();
 
@@ -255,34 +255,33 @@ void QgsGrassPlugin::initGui()
   mAddArea = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CapturePolygon );
   mAddArea->setAction( mAddAreaAction );
 
-  connect( qGisInterface->actionSplitFeatures(), SIGNAL( triggered( bool ) ), SLOT( onSplitFeaturesTriggered( bool ) ) );
+  connect( qGisInterface->actionSplitFeatures(), &QAction::triggered, this, &QgsGrassPlugin::onSplitFeaturesTriggered );
 
   // Connect project
-  QWidget *qgis = qGisInterface->mainWindow();
-  connect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
-  connect( qgis, SIGNAL( newProject() ), this, SLOT( newProject() ) );
+  connect( qGisInterface, &QgisInterface::projectRead, this, &QgsGrassPlugin::projectRead );
+  connect( qGisInterface, &QgisInterface::newProject, this, &QgsGrassPlugin::newProject );
 
   // Set icons to current theme
   setCurrentTheme( QLatin1String( "" ) );
   // Connect theme change signal
-  connect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( qGisInterface, &QgisInterface::currentThemeChanged, this, &QgsGrassPlugin::setCurrentTheme );
 
-  connect( mCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( setTransform() ) );
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGrassPlugin::setTransform );
 
   // Connect display region
-  connect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
+  connect( mCanvas, &QgsMapCanvas::renderComplete, this, &QgsGrassPlugin::postRender );
 
-  connect( QgsGrass::instance(), SIGNAL( gisbaseChanged() ), SLOT( onGisbaseChanged() ) );
-  connect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), SLOT( mapsetChanged() ) );
-  connect( QgsGrass::instance(), SIGNAL( regionChanged() ), SLOT( displayRegion() ) );
-  connect( QgsGrass::instance(), SIGNAL( regionPenChanged() ), SLOT( displayRegion() ) );
-  connect( QgsGrass::instance(), SIGNAL( newLayer( QString, QString ) ), SLOT( onNewLayer( QString, QString ) ) );
+  connect( QgsGrass::instance(), &QgsGrass::gisbaseChanged, this, &QgsGrassPlugin::onGisbaseChanged );
+  connect( QgsGrass::instance(), &QgsGrass::mapsetChanged, this, &QgsGrassPlugin::mapsetChanged );
+  connect( QgsGrass::instance(), &QgsGrass::regionChanged, this, &QgsGrassPlugin::displayRegion );
+  connect( QgsGrass::instance(), &QgsGrass::regionPenChanged, this, &QgsGrassPlugin::displayRegion );
+  connect( QgsGrass::instance(), &QgsGrass::newLayer, this, &QgsGrassPlugin::onNewLayer );
 
   // Connect start/stop editing
-  connect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ), this, SLOT( onLayerWasAdded( QgsMapLayer * ) ) );
+  connect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsGrassPlugin::onLayerWasAdded );
 
-  connect( qGisInterface->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
-           SLOT( onCurrentLayerChanged( QgsMapLayer * ) ) );
+  connect( qGisInterface->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
+           this, &QgsGrassPlugin::onCurrentLayerChanged );
 
   // open tools when plugin is loaded so that main app restores tools dock widget state
   mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow() );
@@ -343,7 +342,7 @@ void QgsGrassPlugin::onLayerWasAdded( QgsMapLayer *mapLayer )
     return;
 
   QgsDebugMsg( "connect editing" );
-  connect( vectorLayer, SIGNAL( editingStarted() ), this, SLOT( onEditingStarted() ) );
+  connect( vectorLayer, &QgsVectorLayer::editingStarted, this, &QgsGrassPlugin::onEditingStarted );
 }
 
 void QgsGrassPlugin::onCurrentLayerChanged( QgsMapLayer *layer )
@@ -424,8 +423,8 @@ void QgsGrassPlugin::onEditingStarted()
   grassProvider->startEditing( vectorLayer );
   vectorLayer->updateFields();
 
-  connect( vectorLayer, SIGNAL( editingStopped() ), SLOT( onEditingStopped() ) );
-  connect( grassProvider, SIGNAL( fieldsChanged() ), SLOT( onFieldsChanged() ) );
+  connect( vectorLayer, &QgsVectorLayer::editingStopped, this, &QgsGrassPlugin::onEditingStopped );
+  connect( grassProvider, &QgsGrassProvider::fieldsChanged, this, &QgsGrassPlugin::onFieldsChanged );
 
   resetEditActions();
 }
@@ -812,23 +811,22 @@ void QgsGrassPlugin::unload()
   QgsGrass::instance()->closeMapsetWarn();
 
   // disconnect slots of QgsGrassPlugin so they're not fired also after unload
-  QWidget *qgis = qGisInterface->mainWindow();
-  disconnect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
-  disconnect( qgis, SIGNAL( newProject() ), this, SLOT( newProject() ) );
-  disconnect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
-  disconnect( mCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( setTransform() ) );
-  disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
+  disconnect( qGisInterface, &QgisInterface::projectRead, this, &QgsGrassPlugin::projectRead );
+  disconnect( qGisInterface, &QgisInterface::newProject, this, &QgsGrassPlugin::newProject );
+  disconnect( qGisInterface, &QgisInterface::currentThemeChanged, this, &QgsGrassPlugin::setCurrentTheme );
+  disconnect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGrassPlugin::setTransform );
+  disconnect( mCanvas, &QgsMapCanvas::renderComplete, this, &QgsGrassPlugin::postRender );
 
-  disconnect( QgsGrass::instance(), SIGNAL( gisbaseChanged() ), this, SLOT( onGisbaseChanged() ) );
-  disconnect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), this, SLOT( mapsetChanged() ) );
-  disconnect( QgsGrass::instance(), SIGNAL( regionChanged() ), this, SLOT( displayRegion() ) );
-  disconnect( QgsGrass::instance(), SIGNAL( regionPenChanged() ), this, SLOT( displayRegion() ) );
-  disconnect( QgsGrass::instance(), SIGNAL( newLayer( QString, QString ) ), this, SLOT( onNewLayer( QString, QString ) ) );
+  disconnect( QgsGrass::instance(), &QgsGrass::gisbaseChanged, this, &QgsGrassPlugin::onGisbaseChanged );
+  disconnect( QgsGrass::instance(), &QgsGrass::mapsetChanged, this, &QgsGrassPlugin::mapsetChanged );
+  disconnect( QgsGrass::instance(), &QgsGrass::regionChanged, this, &QgsGrassPlugin::displayRegion );
+  disconnect( QgsGrass::instance(), &QgsGrass::regionPenChanged, this, &QgsGrassPlugin::displayRegion );
+  disconnect( QgsGrass::instance(), &QgsGrass::newLayer, this, &QgsGrassPlugin::onNewLayer );
 
-  disconnect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ), this, SLOT( onLayerWasAdded( QgsMapLayer * ) ) );
+  disconnect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsGrassPlugin::onLayerWasAdded );
 
-  disconnect( qGisInterface->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
-              this, SLOT( onCurrentLayerChanged( QgsMapLayer * ) ) );
+  disconnect( qGisInterface->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
+              this, &QgsGrassPlugin::onCurrentLayerChanged );
 
   Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
@@ -840,8 +838,8 @@ void QgsGrassPlugin::unload()
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer && vectorLayer->providerType() == QLatin1String( "grass" ) )
     {
-      disconnect( vectorLayer, SIGNAL( editingStarted() ), this, SLOT( onEditingStarted() ) );
-      disconnect( vectorLayer, SIGNAL( editingStopped() ), this, SLOT( onEditingStopped() ) );
+      disconnect( vectorLayer, &QgsVectorLayer::editingStarted, this, &QgsGrassPlugin::onEditingStarted );
+      disconnect( vectorLayer, &QgsVectorLayer::editingStopped, this, &QgsGrassPlugin::onEditingStopped );
     }
   }
 

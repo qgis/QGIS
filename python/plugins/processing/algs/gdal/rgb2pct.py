@@ -47,12 +47,19 @@ class rgb2pct(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     NCOLORS = 'NCOLORS'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '24-to-8-bits.png'))
 
+    def group(self):
+        return self.tr('Raster conversion')
+
+    def name(self):
+        return 'rgbtopct'
+
+    def displayName(self):
+        return self.tr('RGB to PCT')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('RGB to PCT')
-        self.group, self.i18n_group = self.trAlgorithm('Raster conversion')
         self.addParameter(ParameterRaster(rgb2pct.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(rgb2pct.NCOLORS,

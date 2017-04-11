@@ -984,9 +984,6 @@ const QMap<QString, QString> *QgsPluginManager::pluginMetadata( const QString &k
   return nullptr;
 }
 
-
-
-//! Clear the repository listWidget
 void QgsPluginManager::clearRepositoryList()
 {
   treeRepositories->clear();
@@ -999,9 +996,6 @@ void QgsPluginManager::clearRepositoryList()
   }
 }
 
-
-
-//! Add repository to the repository listWidget
 void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &repository )
 {
   // If it's the second item on the tree, change the button text to plural form and add the filter context menu

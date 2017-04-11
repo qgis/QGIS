@@ -33,7 +33,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationCopyright/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
-  connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationCopyrightDialog::apply );
 
   grpEnable->setChecked( mDeco.enabled() );
   // text

@@ -48,37 +48,37 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     ~QgsComposerHtml();
 
     /** Sets the source mode for item's HTML content.
-     * @param mode ContentMode for the item's source
-     * @see contentMode
-     * @see setUrl
-     * @see setHtml
-     * @note added in 2.5
+     * \param mode ContentMode for the item's source
+     * \see contentMode
+     * \see setUrl
+     * \see setHtml
+     * \since QGIS 2.5
      */
     void setContentMode( ContentMode mode ) { mContentMode = mode; }
 
     /** Returns the source mode for item's HTML content.
-     * @returns ContentMode for the item's source
-     * @see setContentMode
-     * @see url
-     * @see html
-     * @note added in 2.5
+     * \returns ContentMode for the item's source
+     * \see setContentMode
+     * \see url
+     * \see html
+     * \since QGIS 2.5
      */
     ContentMode contentMode() const { return mContentMode; }
 
     /** Sets the URL for content to display in the item when the item is using
      * the QgsComposerHtml::Url mode. Content is automatically fetched and the
      * HTML item refreshed after calling this function.
-     * @param url URL of content to display in the item
-     * @see url
-     * @see contentMode
+     * \param url URL of content to display in the item
+     * \see url
+     * \see contentMode
      */
     void setUrl( const QUrl &url );
 
     /** Returns the URL of the content displayed in the item if the item is using
      * the QgsComposerHtml::Url mode.
-     * @returns url for content displayed in item
-     * @see setUrl
-     * @see contentMode
+     * \returns url for content displayed in item
+     * \see setUrl
+     * \see contentMode
      */
     QUrl url() const { return mUrl; }
 
@@ -86,20 +86,20 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * the QgsComposerHtml::ManualHtml mode. Setting the HTML using this function
      * does not automatically refresh the item's contents. Call loadHtml to trigger
      * a refresh of the item after setting the HTML content.
-     * @param html HTML to display in item
-     * @see html
-     * @see contentMode
-     * @see loadHtml
-     * @note added in 2.5
+     * \param html HTML to display in item
+     * \see html
+     * \see contentMode
+     * \see loadHtml
+     * \since QGIS 2.5
      */
     void setHtml( const QString &html );
 
     /** Returns the HTML source displayed in the item if the item is using
      * the QgsComposerHtml::ManualHtml mode.
-     * @returns HTML displayed in item
-     * @see setHtml
-     * @see contentMode
-     * @note added in 2.5
+     * \returns HTML displayed in item
+     * \see setHtml
+     * \see contentMode
+     * \since QGIS 2.5
      */
     QString html() const { return mHtml; }
 
@@ -107,9 +107,9 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * the HTML content. If set, any content inside [% %] tags will be
      * treated as a QGIS expression and evaluated against the current atlas
      * feature.
-     * @returns true if html item will evaluate expressions in the content
-     * @see setEvaluateExpressions
-     * @note added in QGIS 2.5
+     * \returns true if html item will evaluate expressions in the content
+     * \see setEvaluateExpressions
+     * \since QGIS 2.5
      */
     bool evaluateExpressions() const { return mEvaluateExpressions; }
 
@@ -117,24 +117,24 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * the HTML content. If set, any content inside [% %] tags will be
      * treated as a QGIS expression and evaluated against the current atlas
      * feature.
-     * @param evaluateExpressions set to true to evaluate expressions in the HTML content
-     * @see evaluateExpressions
-     * @note added in QGIS 2.5
+     * \param evaluateExpressions set to true to evaluate expressions in the HTML content
+     * \see evaluateExpressions
+     * \since QGIS 2.5
      */
     void setEvaluateExpressions( bool evaluateExpressions );
 
     /** Returns whether html item is using smart breaks. Smart breaks prevent
      * the html frame contents from breaking mid-way though a line of text.
-     * @returns true if html item is using smart breaks
-     * @see setUseSmartBreaks
+     * \returns true if html item is using smart breaks
+     * \see setUseSmartBreaks
      */
     bool useSmartBreaks() const { return mUseSmartBreaks; }
 
     /** Sets whether the html item should use smart breaks. Smart breaks prevent
      * the html frame contents from breaking mid-way though a line of text.
-     * @param useSmartBreaks set to true to prevent content from breaking
+     * \param useSmartBreaks set to true to prevent content from breaking
      * mid-way through a line of text
-     * @see useSmartBreaks
+     * \see useSmartBreaks
      */
     void setUseSmartBreaks( bool useSmartBreaks );
 
@@ -144,11 +144,11 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * a larger value will result in better choice of page break location, but more
      * wasted space at the bottom of frames. This setting is only effective if
      * useSmartBreaks is true.
-     * @param maxBreakDistance maximum amount of empty space to leave when calculating
+     * \param maxBreakDistance maximum amount of empty space to leave when calculating
      * page break locations
-     * @note added in 2.3
-     * @see maxBreakDistance
-     * @see setUseSmartBreaks
+     * \since QGIS 2.3
+     * \see maxBreakDistance
+     * \see setUseSmartBreaks
      */
     void setMaxBreakDistance( double maxBreakDistance );
 
@@ -156,10 +156,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * in the html. This distance is the maximum amount of empty space allowed
      * at the bottom of a frame after calculating the optimum break location. This setting
      * is only effective if useSmartBreaks is true.
-     * @returns maximum amount of empty space to leave when calculating page break locations
-     * @note added in 2.3
-     * @see setMaxBreakDistance
-     * @see useSmartBreaks
+     * \returns maximum amount of empty space to leave when calculating page break locations
+     * \since QGIS 2.3
+     * \see setMaxBreakDistance
+     * \see useSmartBreaks
      */
     double maxBreakDistance() const { return mMaxBreakDistance; }
 
@@ -167,36 +167,36 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * allow for overriding the styles specified within the HTML source. Setting the stylesheet
      * using this function does not automatically refresh the item's contents. Call loadHtml
      * to trigger a refresh of the item after setting the stylesheet rules.
-     * @param stylesheet CSS rules for user stylesheet
-     * @see userStylesheet
-     * @see setUserStylesheetEnabled
-     * @see loadHtml
-     * @note added in 2.5
+     * \param stylesheet CSS rules for user stylesheet
+     * \see userStylesheet
+     * \see setUserStylesheetEnabled
+     * \see loadHtml
+     * \since QGIS 2.5
      */
     void setUserStylesheet( const QString &stylesheet );
 
     /** Returns the user stylesheet CSS rules used while rendering the HTML content. These
      * overriding the styles specified within the HTML source.
-     * @returns CSS rules for user stylesheet
-     * @see setUserStylesheet
-     * @see userStylesheetEnabled
-     * @note added in 2.5
+     * \returns CSS rules for user stylesheet
+     * \see setUserStylesheet
+     * \see userStylesheetEnabled
+     * \since QGIS 2.5
      */
     QString userStylesheet() const { return mUserStylesheet; }
 
     /** Sets whether user stylesheets are enabled for the HTML content.
-     * @param stylesheetEnabled set to true to enable user stylesheets
-     * @see userStylesheetEnabled
-     * @see setUserStylesheet
-     * @note added in 2.5
+     * \param stylesheetEnabled set to true to enable user stylesheets
+     * \see userStylesheetEnabled
+     * \see setUserStylesheet
+     * \since QGIS 2.5
      */
     void setUserStylesheetEnabled( const bool stylesheetEnabled );
 
     /** Returns whether user stylesheets are enabled for the HTML content.
-     * @returns true if user stylesheets are enabled
-     * @see setUserStylesheetEnabled
-     * @see userStylesheet
-     * @note added in 2.5
+     * \returns true if user stylesheets are enabled
+     * \see setUserStylesheetEnabled
+     * \see userStylesheet
+     * \since QGIS 2.5
      */
     bool userStylesheetEnabled() const { return mEnableUserStylesheet; }
 
@@ -212,11 +212,11 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
   public slots:
 
     /** Reloads the html source from the url and redraws the item.
-     * @param useCache set to true to use a cached copy of remote html
+     * \param useCache set to true to use a cached copy of remote html
      * content
-     * @param context expression context for evaluating data defined urls and expressions in html
-     * @see setUrl
-     * @see url
+     * \param context expression context for evaluating data defined urls and expressions in html
+     * \see setUrl
+     * \see url
      */
     void loadHtml( const bool useCache = false, const QgsExpressionContext *context = nullptr );
 

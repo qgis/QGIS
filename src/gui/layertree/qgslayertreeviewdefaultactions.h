@@ -32,8 +32,8 @@ class QgsMapLayer;
  * The QgsLayerTreeViewDefaultActions class serves as a factory of actions
  * that can be used together with a layer tree view.
  *
- * @see QgsLayerTreeView
- * @note added in 2.4
+ * \see QgsLayerTreeView
+ * \since QGIS 2.4
  */
 class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 {
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     QAction *actionMakeTopLevel( QObject *parent = nullptr );
     QAction *actionGroupSelected( QObject *parent = nullptr );
     //! Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
-    //! @note added in 2.12
+    //! \since QGIS 2.12
     QAction *actionMutuallyExclusiveGroup( QObject *parent = nullptr );
 
     void zoomToLayer( QgsMapCanvas *canvas );
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     void makeTopLevel();
     void groupSelected();
     //! Slot to enable/disable mutually exclusive group flag
-    //! @note added in 2.12
+    //! \since QGIS 2.12
     void mutuallyExclusiveGroup();
 
   private slots:

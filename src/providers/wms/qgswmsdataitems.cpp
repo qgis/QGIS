@@ -219,11 +219,11 @@ QList<QAction *> QgsWMSConnectionItem::actions()
   QList<QAction *> lst;
 
   QAction *actionEdit = new QAction( tr( "Edit..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  connect( actionEdit, &QAction::triggered, this, &QgsWMSConnectionItem::editConnection );
   lst.append( actionEdit );
 
   QAction *actionDelete = new QAction( tr( "Delete" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  connect( actionDelete, &QAction::triggered, this, &QgsWMSConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
   return lst;
@@ -401,7 +401,7 @@ QList<QAction *> QgsWMSRootItem::actions()
   QList<QAction *> lst;
 
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
-  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  connect( actionNew, &QAction::triggered, this, &QgsWMSRootItem::newConnection );
   lst.append( actionNew );
 
   return lst;
@@ -411,7 +411,7 @@ QList<QAction *> QgsWMSRootItem::actions()
 QWidget *QgsWMSRootItem::paramWidget()
 {
   QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, 0, true, true );
-  connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
+  connect( select, &QgsWMSSourceSelect::connectionsChanged, this, &QgsWMSRootItem::connectionsChanged );
   return select;
 }
 
@@ -499,7 +499,7 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 QList<QAction *> QgsXyzTileRootItem::actions()
 {
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
-  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  connect( actionNew, &QAction::triggered, this, &QgsXyzTileRootItem::newConnection );
   return QList<QAction *>() << actionNew;
 }
 
@@ -533,7 +533,7 @@ QList<QAction *> QgsXyzLayerItem::actions()
   lst << actionEdit;
 
   QAction *actionDelete = new QAction( tr( "Delete" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  connect( actionDelete, &QAction::triggered, this, &QgsXyzLayerItem::deleteConnection );
   lst << actionDelete;
 
   return lst;

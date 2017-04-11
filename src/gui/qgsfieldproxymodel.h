@@ -22,8 +22,8 @@
 class QgsFieldModel;
 
 /** \ingroup gui
- * @brief The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.
- * @note added in 2.3
+ * \brief The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.
+ * \since QGIS 2.3
  */
 class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
 {
@@ -48,7 +48,7 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
     Q_DECLARE_FLAGS( Filters, Filter )
 
     /**
-     * @brief QgsFieldProxModel creates a proxy model with a QgsFieldModel as source model.
+     * \brief QgsFieldProxModel creates a proxy model with a QgsFieldModel as source model.
      * It can be used to filter the fields based on their types.
      */
     explicit QgsFieldProxyModel( QObject *parent = nullptr );
@@ -58,13 +58,13 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
 
     /**
      * Set flags that affect how fields are filtered in the model.
-     * @param filters are Filter flags
-     * @see filters()
+     * \param filters are Filter flags
+     * \see filters()
      */
     QgsFieldProxyModel *setFilters( QgsFieldProxyModel::Filters filters );
 
     /** Returns the filters controlling displayed fields.
-     * @see setFilters()
+     * \see setFilters()
      */
     const Filters &filters() const { return mFilters; }
 

@@ -46,7 +46,7 @@ class QgsVectorLayerDiagramProvider;
 
 /** \ingroup core
  * Interruption checker used by QgsVectorLayerRenderer::render()
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
 {
@@ -61,8 +61,8 @@ class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
 /** \ingroup core
  * Implementation of threaded rendering for vector layers.
  *
- * @note added in 2.4
- * @note not available in Python bindings
+ * \since QGIS 2.4
+ * \note not available in Python bindings
  */
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
@@ -73,14 +73,14 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     virtual bool render() override;
 
     //! where to save the cached geometries
-    //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
+    //! \note The way how geometries are cached is really suboptimal - this method may be removed in future releases
     void setGeometryCachePointer( QgsGeometryCache *cache );
 
   private:
 
     /** Registers label and diagram layer
-      @param layer diagram layer
-      @param attributeNames attributes needed for labeling and diagrams will be added to the list
+      \param layer diagram layer
+      \param attributeNames attributes needed for labeling and diagrams will be added to the list
      */
     void prepareLabeling( QgsVectorLayer *layer, QSet<QString> &attributeNames );
     void prepareDiagrams( QgsVectorLayer *layer, QSet<QString> &attributeNames );

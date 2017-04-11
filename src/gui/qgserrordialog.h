@@ -34,10 +34,10 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
     QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     /** Show dialog with error
-     * @param error error
-     * @param title title
-     * @param parent parent object
-     * @param fl widget flags
+     * \param error error
+     * \param title title
+     * \param parent parent object
+     * \param fl widget flags
      */
     static void show( const QgsError &error, const QString &title, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 

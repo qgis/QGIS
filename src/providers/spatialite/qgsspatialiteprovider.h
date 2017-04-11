@@ -69,7 +69,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     /**
      * Constructor of the vector provider
-     * @param uri  uniform resource locator (URI) for a dataset
+     * \param uri  uniform resource locator (URI) for a dataset
      */
     explicit QgsSpatiaLiteProvider( QString const &uri = "" );
 
@@ -86,7 +86,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     /** Return the number of layers for the current data source
      *
-     * @note Should this be subLayerCount() instead?
+     * \note Should this be subLayerCount() instead?
      */
     size_t layerCount() const;
 

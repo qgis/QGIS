@@ -39,11 +39,11 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *mes
   sTracers.insert( canvas, this );
 
   // when things change we just invalidate the graph - and set up new parameters again only when necessary
-  connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( invalidateGraph() ) );
-  connect( canvas, SIGNAL( layersChanged() ), this, SLOT( invalidateGraph() ) );
-  connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( invalidateGraph() ) );
-  connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer * ) ), this, SLOT( onCurrentLayerChanged() ) );
-  connect( canvas->snappingUtils(), SIGNAL( configChanged() ), this, SLOT( invalidateGraph() ) );
+  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasTracer::invalidateGraph );
+  connect( canvas, &QgsMapCanvas::layersChanged, this, &QgsMapCanvasTracer::invalidateGraph );
+  connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasTracer::invalidateGraph );
+  connect( canvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapCanvasTracer::onCurrentLayerChanged );
+  connect( canvas->snappingUtils(), &QgsSnappingUtils::configChanged, this, &QgsMapCanvasTracer::invalidateGraph );
 
   // arbitrarily chosen limit that should allow for fairly fast initialization
   // of the underlying graph structure

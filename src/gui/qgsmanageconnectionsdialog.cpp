@@ -36,11 +36,11 @@ QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mo
   QPushButton *pb = nullptr;
   pb = new QPushButton( tr( "Select all" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
+  connect( pb, &QAbstractButton::clicked, this, &QgsManageConnectionsDialog::selectAll );
 
   pb = new QPushButton( tr( "Clear selection" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( clearSelection() ) );
+  connect( pb, &QAbstractButton::clicked, this, &QgsManageConnectionsDialog::clearSelection );
 
   if ( mDialogMode == Import )
   {
@@ -61,10 +61,10 @@ QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mo
   }
 
   // use Ok button for starting import and export operations
-  disconnect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( doExportImport() ) );
+  disconnect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsManageConnectionsDialog::doExportImport );
 
-  connect( listConnections, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
+  connect( listConnections, &QListWidget::itemSelectionChanged, this, &QgsManageConnectionsDialog::selectionChanged );
 }
 
 void QgsManageConnectionsDialog::selectionChanged()

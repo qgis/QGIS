@@ -29,7 +29,7 @@ class QgsDateTimeEdit;
 /** \ingroup gui
  * \class QgsDateTimeSearchWidgetWrapper
  * Wraps a date/time edit widget for searching.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
@@ -39,9 +39,9 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
   public:
 
     /** Constructor for QgsDateTimeSearchWidgetWrapper.
-     * @param vl associated vector layer
-     * @param fieldIdx index of associated field
-     * @param parent parent widget
+     * \param vl associated vector layer
+     * \param fieldIdx index of associated field
+     * \param parent parent widget
      */
     explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 

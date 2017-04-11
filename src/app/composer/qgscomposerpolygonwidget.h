@@ -24,7 +24,7 @@ class QgsComposerPolygon;
 
 /**
  * Input widget for QgsComposerPolygon
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class QgsComposerPolygonWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerPolygonWidgetBase
 {

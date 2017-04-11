@@ -7,8 +7,9 @@
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsFeature, QgsField
 from processing.tools.vector import VectorWriter
+from processing.tools import dataobjects
 
-layer = processing.getObject(input)
+layer = dataobjects.getLayerFromString(input)
 fields = layer.fields()
 fields.append(QgsField('UNIQ_COUNT', QVariant.Int))
 writer = VectorWriter(N_unique_values, None, fields, layer.wkbType(),

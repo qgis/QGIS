@@ -68,7 +68,7 @@ def executeIterating(alg, paramToIter, feedback):
     settings = QgsSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
     layerfile = alg.getParameterValue(paramToIter)
-    layer = dataobjects.getObjectFromUri(layerfile, False)
+    layer = dataobjects.getLayerFromString(layerfile, False)
     feat = QgsFeature()
     filelist = []
     outputs = {}

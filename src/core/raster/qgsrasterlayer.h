@@ -251,7 +251,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsRasterDataProvider *dataProvider();
 
     /** Returns the data provider in a const-correct manner
-      @note available in python bindings as constDataProvider()
+      \note available in Python bindings as constDataProvider()
      */
     const QgsRasterDataProvider *dataProvider() const;
 
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual void reload() override;
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override;
 
@@ -273,8 +273,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     virtual bool isSpatial() const override { return true; }
 
-    //! \brief Obtain GDAL Metadata for this layer
-    QString metadata() const override;
+    QString htmlMetadata() const override;
 
     //! \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
     QPixmap paletteAsPixmap( int bandNumber = 1 );
@@ -288,11 +287,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     double rasterUnitsPerPixelY() const;
 
     /** \brief Set contrast enhancement algorithm
-     *  @param algorithm Contrast enhancement algorithm
-     *  @param limits Limits
-     *  @param extent Extent used to calculate limits, if empty, use full layer extent
-     *  @param sampleSize Size of data sample to calculate limits, if 0, use full resolution
-     *  @param generateLookupTableFlag Generate lookup table. */
+     *  \param algorithm Contrast enhancement algorithm
+     *  \param limits Limits
+     *  \param extent Extent used to calculate limits, if empty, use full layer extent
+     *  \param sampleSize Size of data sample to calculate limits, if 0, use full resolution
+     *  \param generateLookupTableFlag Generate lookup table. */
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
@@ -302,19 +301,19 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                                  bool generateLookupTableFlag = true );
 
     /** \brief Refresh contrast enhancement with new extent.
-     *  @note not available in python bindings
+     *  \note not available in Python bindings
      */
     // Used by QgisApp::legendLayerStretchUsingCurrentExtent()
     void refreshContrastEnhancement( const QgsRectangle &extent );
 
     /** \brief Refresh renderer with new extent, if needed
-     *  @note not available in python bindings
+     *  \note not available in Python bindings
      */
     // Used by QgsRasterLayerRenderer
     void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
 
     /** \brief Return default contrast enhancemnt settings for that type of raster.
-     *  @note not available in python bindings
+     *  \note not available in Python bindings
      */
     bool defaultContrastEnhancementSettings(
       QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
@@ -323,14 +322,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Set default contrast enhancement
     void setDefaultContrastEnhancement();
 
-    //! \brief [ data provider interface ] A wrapper function to emit a progress update signal
-    void showProgress( int value );
-
     //! \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
     virtual QStringList subLayers() const override;
 
     /** \brief Draws a preview of the rasterlayer into a QImage
-     @note added in 2.4 */
+     \since QGIS 2.4 */
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
@@ -352,13 +348,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
   public slots:
     void showStatusMessage( const QString &message );
-
-    //! \brief receive progress signal from provider
-    void onProgress( int, double, const QString & );
-
-  signals:
-    //! \brief Signal for notifying listeners of long running processes
-    void progressUpdate( int value );
 
   protected:
     //! \brief Read the symbology for the current layer from the Dom node supplied

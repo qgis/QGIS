@@ -219,10 +219,10 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
             mColumnTypeThread = new QgsMssqlGeomColumnTypeThread(
               connectionName, true /* use estimated metadata */ );
 
-            connect( mColumnTypeThread, SIGNAL( setLayerType( QgsMssqlLayerProperty ) ),
-                     this, SLOT( setLayerType( QgsMssqlLayerProperty ) ) );
-            connect( this, SIGNAL( addGeometryColumn( QgsMssqlLayerProperty ) ),
-                     mColumnTypeThread, SLOT( addGeometryColumn( QgsMssqlLayerProperty ) ) );
+            connect( mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::setLayerType,
+                     this, &QgsMssqlConnectionItem::setLayerType );
+            connect( this, &QgsMssqlConnectionItem::addGeometryColumn,
+                     mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::addGeometryColumn );
           }
 
           emit addGeometryColumn( layer );
@@ -248,7 +248,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
     // spawn threads (new layers will be added later on)
     if ( mColumnTypeThread )
     {
-      connect( mColumnTypeThread, SIGNAL( finished() ), this, SLOT( setAsPopulated() ) );
+      connect( mColumnTypeThread, &QThread::finished, this, &QgsMssqlConnectionItem::setAsPopulated );
       mColumnTypeThread->start();
     }
     else
@@ -332,15 +332,15 @@ QList<QAction *> QgsMssqlConnectionItem::actions()
   QAction *actionShowNoGeom = new QAction( tr( "Show Non-Spatial Tables" ), this );
   actionShowNoGeom->setCheckable( true );
   actionShowNoGeom->setChecked( mAllowGeometrylessTables );
-  connect( actionShowNoGeom, SIGNAL( toggled( bool ) ), this, SLOT( setAllowGeometrylessTables( bool ) ) );
+  connect( actionShowNoGeom, &QAction::toggled, this, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
   lst.append( actionShowNoGeom );
 
   QAction *actionEdit = new QAction( tr( "Edit Connection..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  connect( actionEdit, &QAction::triggered, this, &QgsMssqlConnectionItem::editConnection );
   lst.append( actionEdit );
 
   QAction *actionDelete = new QAction( tr( "Delete Connection" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  connect( actionDelete, &QAction::triggered, this, &QgsMssqlConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
   return lst;
@@ -616,7 +616,7 @@ QList<QAction *> QgsMssqlRootItem::actions()
   QList<QAction *> lst;
 
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
-  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  connect( actionNew, &QAction::triggered, this, &QgsMssqlRootItem::newConnection );
   lst.append( actionNew );
 
   return lst;
@@ -625,7 +625,7 @@ QList<QAction *> QgsMssqlRootItem::actions()
 QWidget *QgsMssqlRootItem::paramWidget()
 {
   QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, 0, true, true );
-  connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
+  connect( select, &QgsMssqlSourceSelect::connectionsChanged, this, &QgsMssqlRootItem::connectionsChanged );
   return select;
 }
 

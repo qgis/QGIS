@@ -24,7 +24,7 @@
  * \class QgsVectorLayerUtils
  * \brief Contains utility methods for working with QgsVectorLayers.
  *
- * \note Added in version 3.0
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsVectorLayerUtils
@@ -35,14 +35,14 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Returns true if the specified value already exists within a field. This method can be used to test for uniqueness
      * of values inside a layer's attributes. An optional list of ignored feature IDs can be provided, if so, any features
      * with IDs within this list are ignored when testing for existence of the value.
-     * @see createUniqueValue()
+     * \see createUniqueValue()
      */
     static bool valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds = QgsFeatureIds() );
 
     /**
      * Returns a new attribute value for the specified field index which is guaranteed to be unique. The optional seed
      * value can be used as a basis for generated values.
-     * @see valueExists()
+     * \see valueExists()
      */
     static QVariant createUniqueValue( const QgsVectorLayer *layer, int fieldIndex, const QVariant &seed = QVariant() );
 

@@ -25,7 +25,9 @@ __copyright__ = '(C) 2015, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsSpatialIndex, QgsFeatureRequest
+from qgis.core import (QgsApplication,
+                       QgsSpatialIndex,
+                       QgsFeatureRequest)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -42,10 +44,22 @@ class SelectByAttributeSum(GeoAlgorithm):
     VALUE = 'VALUE'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Select by attribute sum')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector selection tools')
+
+    def name(self):
+        return 'selectbyattributesum'
+
+    def displayName(self):
+        return self.tr('Select by attribute sum')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,
@@ -58,7 +72,7 @@ class SelectByAttributeSum(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         fileName = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(fileName)
+        layer = dataobjects.getLayerFromString(fileName)
         fieldName = self.getParameterValue(self.FIELD)
         value = self.getParameterValue(self.VALUE)
 

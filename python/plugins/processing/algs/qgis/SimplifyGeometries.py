@@ -49,13 +49,19 @@ class SimplifyGeometries(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     METHOD = 'METHOD'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'simplify.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Simplify geometries')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry tools')
 
+    def name(self):
+        return 'simplifygeometries'
+
+    def displayName(self):
+        return self.tr('Simplify geometries')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
@@ -72,7 +78,7 @@ class SimplifyGeometries(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         tolerance = self.getParameterValue(self.TOLERANCE)
         method = self.getParameterValue(self.METHOD)
 

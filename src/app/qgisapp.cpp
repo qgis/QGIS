@@ -219,6 +219,7 @@
 #include "qgsquerybuilder.h"
 #include "qgsrastercalcdialog.h"
 #include "qgsrasterfilewriter.h"
+#include "qgsrasterfilewritertask.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
@@ -3141,8 +3142,12 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
   QgsMapCanvasDockWidget *dock = createNewMapCanvasDock( name );
   if ( !dock )
     return nullptr;
-  else
-    return dock->mapCanvas();
+
+  dock->mapCanvas()->setLayers( mMapCanvas->layers() );
+  dock->mapCanvas()->setExtent( mMapCanvas->extent() );
+  dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
+  dock->mapCanvas()->freeze( false );
+  return dock->mapCanvas();
 }
 
 QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bool isFloating, const QRect &dockGeometry, Qt::DockWidgetArea area )
@@ -3170,12 +3175,6 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   applyProjectSettingsToCanvas( mapCanvas );
   applyDefaultSettingsToCanvas( mapCanvas );
 
-  mapCanvas->setLayers( mMapCanvas->layers() );
-  mapCanvas->setExtent( mMapCanvas->extent() );
-
-  mapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
-
-
   // add existing annotations to canvas
   Q_FOREACH ( QgsAnnotation *annotation, QgsProject::instance()->annotationManager()->annotations() )
   {
@@ -3183,7 +3182,6 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
     Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
   }
 
-  mapCanvas->freeze( false );
   markDirty();
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
@@ -4646,7 +4644,7 @@ void QgisApp::addAfsLayer()
   }
   afss->setCurrentExtentAndCrs( mapCanvas()->extent(), mapCanvas()->mapSettings().destinationCrs() );
   connect( afss, &QgsSourceSelectDialog::addLayer,
-           this, [ = ] { addAfsLayer(); } );
+  this, [ = ]( const QString & uri, const QString & typeName ) { addAfsLayer( uri, typeName ); } );
 
   bool wasFrozen = mapCanvas()->isFrozen();
   freezeCanvases();
@@ -4680,7 +4678,7 @@ void QgisApp::addAmsLayer()
   }
   amss->setCurrentExtentAndCrs( mapCanvas()->extent(), mapCanvas()->mapSettings().destinationCrs() );
   connect( amss, &QgsSourceSelectDialog::addLayer,
-           this, [ = ] { addAmsLayer(); } );
+  this, [ = ]( const QString & uri, const QString & typeName ) { addAmsLayer( uri, typeName ); } );
 
   bool wasFrozen = mapCanvas()->isFrozen();
   freezeCanvases();
@@ -4808,7 +4806,7 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   prj->setCrs( srs );
   prj->setDirty( false );
 
-  /** New Empty Project Created
+  /* New Empty Project Created
       (before attempting to load custom project templates/filepaths) */
 
   // load default template
@@ -4918,10 +4916,10 @@ void QgisApp::fileOpenAfterLaunch()
 
   // notify user if last attempt at auto-opening a project failed
 
-  /** NOTE: Notification will not show if last auto-opened project failed but
+  /* NOTE: Notification will not show if last auto-opened project failed but
       next project opened is from command line (minor issue) */
 
-  /** TODO: Keep projOpenedOKAtLaunch from being reset to true after
+  /* TODO: Keep projOpenedOKAtLaunch from being reset to true after
       reading command line project (which happens before initialization signal) */
   if ( !projOpenedOK )
   {
@@ -5181,6 +5179,9 @@ bool QgisApp::addProject( const QString &projectFile )
   // close the previous opened project if any
   closeProject();
 
+  bool autoSetupOnFirstLayer = mLayerTreeCanvasBridge->autoSetupOnFirstLayer();
+  mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
+
   if ( !QgsProject::instance()->read( projectFile ) )
   {
     QString backupFile = projectFile + "~";
@@ -5296,6 +5297,9 @@ bool QgisApp::addProject( const QString &projectFile )
   saveRecentProjectPath( projectFile, false );
 
   QApplication::restoreOverrideCursor();
+
+  if ( autoSetupOnFirstLayer )
+    mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );
 
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
@@ -6450,13 +6454,6 @@ void QgisApp::saveAsRasterFile()
     fileWriter.setMaxTileHeight( d.maximumTileSizeY() );
   }
 
-  QProgressDialog pd( QString(), tr( "Abort..." ), 0, 0 );
-  // Show the dialo immediately because cloning pipe can take some time (WCS)
-  pd.setLabelText( tr( "Reading raster" ) );
-  pd.setWindowTitle( tr( "Saving raster" ) );
-  pd.show();
-  pd.setWindowModality( Qt::WindowModal );
-
   // TODO: show error dialogs
   // TODO: this code should go somewhere else, but probably not into QgsRasterFileWriter
   // clone pipe/provider is not really necessary, ready for threads
@@ -6522,34 +6519,50 @@ void QgisApp::saveAsRasterFile()
   fileWriter.setPyramidsFormat( d.pyramidsFormat() );
   fileWriter.setPyramidsConfigOptions( d.pyramidsConfigOptions() );
 
-  QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe.get(), d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
-  if ( err != QgsRasterFileWriter::NoError )
-  {
-    QMessageBox::warning( this, tr( "Error" ),
-                          tr( "Cannot write raster error code: %1" ).arg( err ),
-                          QMessageBox::Ok );
+  bool tileMode = d.tileMode();
+  bool addToCanvas = d.addToCanvas();
+  QPointer< QgsRasterLayer > rlWeakPointer( rasterLayer );
 
-  }
-  else
+  QgsRasterFileWriterTask *writerTask = new QgsRasterFileWriterTask( fileWriter, pipe.release(), d.nColumns(), d.nRows(),
+      d.outputRectangle(), d.outputCrs() );
+
+  // when writer is successful:
+
+  connect( writerTask, &QgsRasterFileWriterTask::writeComplete, this, [this, tileMode, addToCanvas, rlWeakPointer ]( const QString & newFilename )
   {
-    QString fileName( d.outputFileName() );
-    if ( d.tileMode() )
+    QString fileName = newFilename;
+    if ( tileMode )
     {
       QFileInfo outputInfo( fileName );
       fileName = QStringLiteral( "%1/%2.vrt" ).arg( fileName, outputInfo.fileName() );
     }
 
-    if ( d.addToCanvas() )
+    if ( addToCanvas )
     {
       addRasterLayers( QStringList( fileName ) );
     }
+    if ( rlWeakPointer )
+      emit layerSavedAs( rlWeakPointer, fileName );
 
-    emit layerSavedAs( rasterLayer, fileName );
     messageBar()->pushMessage( tr( "Saving done" ),
                                tr( "Export to raster file has been completed" ),
                                QgsMessageBar::INFO, messageTimeout() );
-  }
+  } );
+
+  // when an error occurs:
+  connect( writerTask, &QgsRasterFileWriterTask::errorOccurred, this, [ = ]( int error )
+  {
+    if ( error != QgsRasterFileWriter::WriteCanceled )
+    {
+      QMessageBox::warning( this, tr( "Error" ),
+                            tr( "Cannot write raster error code: %1" ).arg( error ),
+                            QMessageBox::Ok );
+    }
+  } );
+
+  QgsApplication::taskManager()->addTask( writerTask );
 }
+
 
 void QgisApp::saveAsFile()
 {
@@ -6585,7 +6598,7 @@ void QgisApp::saveAsLayerDefinition()
 
 ///@cond PRIVATE
 
-/** Field value converter for export as vecotr layer
+/** Field value converter for export as vector layer
  * \note Not available in Python bindings
  */
 class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
@@ -9322,7 +9335,14 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
 
   bool oldCapitalize = mySettings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
 
-  std::unique_ptr< QgsOptions > optionsDialog( new QgsOptions( parent, QgisGui::ModalDialogFlags, mOptionsWidgetFactories ) );
+  QList< QgsOptionsWidgetFactory * > factories;
+  Q_FOREACH ( const QPointer< QgsOptionsWidgetFactory > &f, mOptionsWidgetFactories )
+  {
+    // remove any deleted factories
+    if ( f )
+      factories << f;
+  }
+  std::unique_ptr< QgsOptions > optionsDialog( new QgsOptions( parent, QgisGui::ModalDialogFlags, factories ) );
   if ( !currentPage.isEmpty() )
   {
     optionsDialog->setCurrentPage( currentPage );
@@ -9601,13 +9621,11 @@ void QgisApp::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
   mOptionsWidgetFactories.removeAll( factory );
 }
 
-//! Get a pointer to the currently selected map layer
 QgsMapLayer *QgisApp::activeLayer()
 {
   return mLayerTreeView ? mLayerTreeView->currentLayer() : nullptr;
 }
 
-//! Set the current layer
 bool QgisApp::setActiveLayer( QgsMapLayer *layer )
 {
   if ( !layer )
@@ -9620,13 +9638,7 @@ bool QgisApp::setActiveLayer( QgsMapLayer *layer )
   return true;
 }
 
-/** Add a vector layer directly without prompting user for location
-  The caller must provide information compatible with the provider plugin
-  using the vectorLayerPath and baseName. The provider can use these
-  parameters in any way necessary to initialize the layer. The baseName
-  parameter is used in the Map Legend so it should be formed in a meaningful
-  way.
-  */
+
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey )
 {
   bool wasfrozen = mMapCanvas->isFrozen();
@@ -9809,7 +9821,14 @@ void QgisApp::newMapCanvas()
     }
   }
 
-  createNewMapCanvasDock( name, true );
+  QgsMapCanvasDockWidget *dock = createNewMapCanvasDock( name, true );
+  if ( dock )
+  {
+    dock->mapCanvas()->setLayers( mMapCanvas->layers() );
+    dock->mapCanvas()->setExtent( mMapCanvas->extent() );
+    dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
+    dock->mapCanvas()->freeze( false );
+  }
 }
 
 void QgisApp::setExtent( const QgsRectangle &rect )
@@ -11483,15 +11502,6 @@ QgsRasterLayer *QgisApp::addRasterLayer(
 }
 
 
-/** Add a raster layer directly without prompting user for location
-  The caller must provide information compatible with the provider plugin
-  using the uri and baseName. The provider can use these
-  parameters in any way necessary to initialize the layer. The baseName
-  parameter is used in the Map Legend so it should be formed in a meaningful
-  way.
-
-  \note   Copied from the equivalent addVectorLayer function in this file
-  */
 QgsRasterLayer *QgisApp::addRasterLayer(
   QString const &uri, QString const &baseName, QString const &providerKey )
 {
@@ -11851,6 +11861,7 @@ void QgisApp::writeProject( QDomDocument &doc )
     node.setAttribute( QStringLiteral( "showExtent" ), w->isMainCanvasExtentVisible() );
     node.setAttribute( QStringLiteral( "scaleSynced" ), w->isViewScaleSynchronized() );
     node.setAttribute( QStringLiteral( "scaleFactor" ), w->scaleFactor() );
+    node.setAttribute( QStringLiteral( "showLabels" ), w->labelsVisible() );
     mapViewNode.appendChild( node );
   }
   qgisNode.appendChild( mapViewNode );
@@ -11872,6 +11883,7 @@ void QgisApp::readProject( const QDomDocument &doc )
     mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );
 
   QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapViewDocks" ) );
+  QList< QgsMapCanvas * > views;
   if ( !nodes.isEmpty() )
   {
     QDomNode viewNode = nodes.at( 0 );
@@ -11890,18 +11902,27 @@ void QgisApp::readProject( const QDomDocument &doc )
       bool showExtent = elementNode.attribute( QStringLiteral( "showExtent" ), QStringLiteral( "0" ) ).toInt();
       bool scaleSynced = elementNode.attribute( QStringLiteral( "scaleSynced" ), QStringLiteral( "0" ) ).toInt();
       double scaleFactor = elementNode.attribute( QStringLiteral( "scaleFactor" ), QStringLiteral( "1" ) ).toDouble();
+      bool showLabels = elementNode.attribute( QStringLiteral( "showLabels" ), QStringLiteral( "1" ) ).toInt();
       Qt::DockWidgetArea area = static_cast< Qt::DockWidgetArea >( elementNode.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
 
       QgsMapCanvasDockWidget *mapCanvasDock = createNewMapCanvasDock( mapName, floating, QRect( x, y, w, h ), area );
       QgsMapCanvas *mapCanvas = mapCanvasDock->mapCanvas();
-      mapCanvas->readProject( doc );
-
       mapCanvasDock->setViewCenterSynchronized( synced );
       mapCanvasDock->setCursorMarkerVisible( showCursor );
       mapCanvasDock->setScaleFactor( scaleFactor );
       mapCanvasDock->setViewScaleSynchronized( scaleSynced );
       mapCanvasDock->setMainCanvasExtentVisible( showExtent );
+      mapCanvasDock->setLabelsVisible( showLabels );
+      mapCanvas->readProject( doc );
+      views << mapCanvas;
     }
+  }
+  // unfreeze all new views at once. We don't do this as they are created since additional
+  // views which may exist in project could rearrange the docks and cause the canvases to resize
+  // resulting in multiple redraws
+  Q_FOREACH ( QgsMapCanvas *c, views )
+  {
+    c->freeze( false );
   }
 }
 

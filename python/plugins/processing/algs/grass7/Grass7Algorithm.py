@@ -80,29 +80,39 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
+        self._name = ''
+        self._display_name = ''
+        self._group = ''
         self.hardcodedStrings = []
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
-        self._icon = None
         self.uniqueSuffix = str(uuid.uuid4()).replace('-', '')
 
         # Use the ext mechanism
-        name = self.commandLineName().replace('.', '_')[len('grass7:'):]
+        name = self.name().replace('.', '_')
         try:
             self.module = importlib.import_module('processing.algs.grass7.ext.' + name)
         except ImportError:
             self.module = None
 
     def getCopy(self):
-        newone = Grass7Algorithm(self.descriptionFile)
-        newone.provider = self.provider
-        return newone
+        return self
 
-    def getIcon(self):
-        if self._icon is None:
-            self._icon = QgsApplication.getThemeIcon("/providerGrass.svg")
-        return self._icon
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._display_name
+
+    def group(self):
+        return self._group
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerGrass.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerGrass.svg")
 
     def help(self):
         helpPath = Grass7Utils.grassHelpPath()
@@ -138,14 +148,16 @@ class Grass7Algorithm(GeoAlgorithm):
             line = lines.readline().strip('\n').strip()
             self.grass7Name = line
             line = lines.readline().strip('\n').strip()
-            self.name = line
-            self.i18n_name = QCoreApplication.translate("GrassAlgorithm", line)
-            if " - " not in self.name:
-                self.name = self.grass7Name + " - " + self.name
-                self.i18n_name = self.grass7Name + " - " + self.i18n_name
+            self._name = line
+            self._display_name = QCoreApplication.translate("GrassAlgorithm", line)
+            if " - " not in self._name:
+                self._name = self.grass7Name + " - " + self._name
+                self._display_name = self.grass7Name + " - " + self._display_name
+
+            self._name = self._name[:self._name.find(' ')].lower()
+
             line = lines.readline().strip('\n').strip()
-            self.group = line
-            self.i18n_group = QCoreApplication.translate("GrassAlgorithm", line)
+            self._group = QCoreApplication.translate("GrassAlgorithm", line)
             hasRasterOutput = False
             hasVectorInput = False
             vectorOutputs = 0
@@ -215,7 +227,7 @@ class Grass7Algorithm(GeoAlgorithm):
                     if isinstance(param.value, QgsRasterLayer):
                         layer = param.value
                     else:
-                        layer = dataobjects.getObjectFromUri(param.value)
+                        layer = dataobjects.getLayerFromString(param.value)
                     cellsize = max(cellsize, (layer.extent().xMaximum() -
                                               layer.extent().xMinimum()) /
                                    layer.width())
@@ -223,7 +235,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getObjectFromUri(layername)
+                        layer = dataobjects.getLayerFromString(layername)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (
                                 layer.extent().xMaximum() -
@@ -501,11 +513,11 @@ class Grass7Algorithm(GeoAlgorithm):
         # but the functionality of v.in.ogr could be used for this.
         # We also export if there is a selection
         if not os.path.exists(orgFilename) or not orgFilename.endswith('shp'):
-            layer = dataobjects.getObjectFromUri(orgFilename, False)
+            layer = dataobjects.getLayerFromString(orgFilename, False)
             if layer:
                 filename = dataobjects.exportVectorLayer(layer)
         else:
-            layer = dataobjects.getObjectFromUri(orgFilename, False)
+            layer = dataobjects.getLayerFromString(orgFilename, False)
             if layer:
                 useSelection = \
                     ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
@@ -539,7 +551,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def setSessionProjectionFromLayer(self, layer, commands):
         if not Grass7Utils.projectionSet:
-            qGisLayer = dataobjects.getObjectFromUri(layer)
+            qGisLayer = dataobjects.getLayerFromString(layer)
             if qGisLayer:
                 proj4 = str(qGisLayer.crs().toProj4())
                 command = 'g.proj'
@@ -560,9 +572,6 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def getTempFilename(self):
         return system.getTempFilename()
-
-    def commandLineName(self):
-        return 'grass7:' + self.name[:self.name.find(' ')]
 
     def checkBeforeOpeningParametersDialog(self):
         return Grass7Utils.checkGrass7IsInstalled()

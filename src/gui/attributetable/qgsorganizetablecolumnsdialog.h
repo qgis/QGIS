@@ -29,7 +29,7 @@ class QgsVectorLayer;
 /** \class QgsOrganizeTableColumnsDialog
  * \ingroup gui
  * Dialog for organising (hiding and reordering) columns in the attributes table.
- * \note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::QgsOrganizeTableColumnsDialog
 {
@@ -39,9 +39,9 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
 
     /**
      * Constructor
-     * @param vl The concerned vector layer
-     * @param parent parent object
-     * @param flags window flags
+     * \param vl The concerned vector layer
+     * \param parent parent object
+     * \param flags window flags
      */
     QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
 

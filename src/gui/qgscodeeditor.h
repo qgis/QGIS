@@ -27,7 +27,7 @@ class QWidget;
 
 /** \ingroup gui
  * A text editor based on QScintilla2.
- * \note added in 2.6
+ * \since QGIS 2.6
  * \note may not be available in Python bindings, depending on platform support
  */
 class GUI_EXPORT QgsCodeEditor : public QsciScintilla
@@ -39,34 +39,34 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     /**
      * Construct a new code editor.
      *
-     * @param parent The parent QWidget
-     * @param title The title to show in the code editor dialog
-     * @param folding false: Enable folding for code editor
-     * @param margin false: Enable margin for code editor
-     * @note added in 2.6
+     * \param parent The parent QWidget
+     * \param title The title to show in the code editor dialog
+     * \param folding false: Enable folding for code editor
+     * \param margin false: Enable margin for code editor
+     * \since QGIS 2.6
      */
     QgsCodeEditor( QWidget *parent = nullptr, const QString &title = "", bool folding = false, bool margin = false );
 
     /** Set the widget title
-     * @param title widget title
+     * \param title widget title
      */
     void setTitle( const QString &title );
 
     /** Set margin visible state
-     *  @param margin Set margin in the editor
+     *  \param margin Set margin in the editor
      */
     void setMarginVisible( bool margin );
     bool marginVisible() { return mMargin; }
 
     /** Set folding visible state
-     *  @param folding Set folding in the editor
+     *  \param folding Set folding in the editor
      */
     void setFoldingVisible( bool folding );
     bool foldingVisible() { return mFolding; }
 
     /** Insert text at cursor position, or replace any selected text if user has
      * made a selection.
-     * @param text The text to be inserted
+     * \param text The text to be inserted
      */
     void insertText( const QString &text );
 

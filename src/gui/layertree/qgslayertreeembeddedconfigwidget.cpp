@@ -32,8 +32,8 @@ void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer *layer )
 {
   mLayer = layer;
 
-  connect( mBtnAdd, SIGNAL( clicked( bool ) ), this, SLOT( onAddClicked() ) );
-  connect( mBtnRemove, SIGNAL( clicked( bool ) ), this, SLOT( onRemoveClicked() ) );
+  connect( mBtnAdd, &QAbstractButton::clicked, this, &QgsLayerTreeEmbeddedConfigWidget::onAddClicked );
+  connect( mBtnRemove, &QAbstractButton::clicked, this, &QgsLayerTreeEmbeddedConfigWidget::onRemoveClicked );
 
   QStandardItemModel *modelAvailable = new QStandardItemModel( this );
   QStandardItemModel *modelUsed = new QStandardItemModel( this );

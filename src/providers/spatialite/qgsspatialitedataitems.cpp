@@ -42,7 +42,7 @@ QList<QAction *> QgsSLLayerItem::actions()
   QList<QAction *> lst;
 
   QAction *actionDeleteLayer = new QAction( tr( "Delete Layer" ), this );
-  connect( actionDeleteLayer, SIGNAL( triggered() ), this, SLOT( deleteLayer() ) );
+  connect( actionDeleteLayer, &QAction::triggered, this, &QgsSLLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
 
   return lst;
@@ -167,7 +167,7 @@ QList<QAction *> QgsSLConnectionItem::actions()
   //lst.append( actionEdit );
 
   QAction *actionDelete = new QAction( tr( "Delete" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  connect( actionDelete, &QAction::triggered, this, &QgsSLConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
   return lst;
@@ -301,11 +301,11 @@ QList<QAction *> QgsSLRootItem::actions()
   QList<QAction *> lst;
 
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
-  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  connect( actionNew, &QAction::triggered, this, &QgsSLRootItem::newConnection );
   lst.append( actionNew );
 
   QAction *actionCreateDatabase = new QAction( tr( "Create Database..." ), this );
-  connect( actionCreateDatabase, SIGNAL( triggered() ), this, SLOT( createDatabase() ) );
+  connect( actionCreateDatabase, &QAction::triggered, this, &QgsSLRootItem::createDatabase );
   lst.append( actionCreateDatabase );
 
   return lst;
@@ -314,7 +314,7 @@ QList<QAction *> QgsSLRootItem::actions()
 QWidget *QgsSLRootItem::paramWidget()
 {
   QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( nullptr, 0, true );
-  connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
+  connect( select, &QgsSpatiaLiteSourceSelect::connectionsChanged, this, &QgsSLRootItem::connectionsChanged );
   return select;
 }
 

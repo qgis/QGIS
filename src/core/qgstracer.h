@@ -34,7 +34,7 @@ struct QgsTracerGraph;
  * layers and provides shortest path search for tracing of existing
  * features.
  *
- * @note added in QGIS 2.14
+ * \since QGIS 2.14
  */
 class CORE_EXPORT QgsTracer : public QObject
 {
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsTracer : public QObject
 
     //! Whether there was an error during graph creation due to noding exception,
     //! indicating some input data topology problems
-    //! @note added in QGIS 2.16
+    //! \since QGIS 2.16
     bool hasTopologyProblem() const { return mHasTopologyProblem; }
 
     //! Possible errors that may happen when calling findShortestPath()
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsTracer : public QObject
 
     //! Given two points, find the shortest path and return points on the way.
     //! The optional "error" argument may receive error code (PathError enum) if it is not null
-    //! @return array of points - trace of linestrings of other features (empty array one error)
+    //! \returns array of points - trace of linestrings of other features (empty array one error)
     QVector<QgsPoint> findShortestPath( const QgsPoint &p1, const QgsPoint &p2, PathError *error = nullptr );
 
     //! Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)

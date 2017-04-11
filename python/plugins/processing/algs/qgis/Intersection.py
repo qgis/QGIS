@@ -55,12 +55,19 @@ class Intersection(GeoAlgorithm):
     INPUT2 = 'INPUT2'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'intersect.png'))
 
+    def group(self):
+        return self.tr('Vector overlay tools')
+
+    def name(self):
+        return 'intersection'
+
+    def displayName(self):
+        return self.tr('Intersection')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Intersection')
-        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(self.INPUT2,
@@ -68,9 +75,9 @@ class Intersection(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))
 
     def processAlgorithm(self, feedback):
-        vlayerA = dataobjects.getObjectFromUri(
+        vlayerA = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
-        vlayerB = dataobjects.getObjectFromUri(
+        vlayerB = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT2))
 
         geomType = QgsWkbTypes.multiType(vlayerA.wkbType())

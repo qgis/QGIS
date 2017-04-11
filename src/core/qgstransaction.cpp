@@ -110,7 +110,7 @@ bool QgsTransaction::addLayer( QgsVectorLayer *layer )
   }
 
   connect( this, &QgsTransaction::afterRollback, layer->dataProvider(), &QgsVectorDataProvider::dataChanged );
-  connect( QgsProject::instance(),  static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsTransaction::onLayersDeleted );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsTransaction::onLayersDeleted );
   mLayers.insert( layer );
 
   if ( mTransactionActive )

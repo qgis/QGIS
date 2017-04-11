@@ -25,7 +25,9 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsVectorDataProvider, QgsFields
+from qgis.core import (QgsVectorDataProvider,
+                       QgsFields,
+                       QgsApplication)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
@@ -41,10 +43,22 @@ class CreateAttributeIndex(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create attribute index')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'createattributeindex'
+
+    def displayName(self):
+        return self.tr('Create attribute index')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,
@@ -54,7 +68,7 @@ class CreateAttributeIndex(GeoAlgorithm):
 
     def processAlgorithm(self, feedback):
         file_name = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(file_name)
+        layer = dataobjects.getLayerFromString(file_name)
         field = self.getParameterValue(self.FIELD)
         provider = layer.dataProvider()
 

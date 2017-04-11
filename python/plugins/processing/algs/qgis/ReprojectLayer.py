@@ -44,14 +44,22 @@ class ReprojectLayer(GeoAlgorithm):
     TARGET_CRS = 'TARGET_CRS'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Reproject layer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
-        self.tags = self.tr('transform,reproject,crs,srs,warp')
+    def tags(self):
+        return self.tr('transform,reproject,crs,srs,warp').split(',')
 
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'reprojectlayer'
+
+    def displayName(self):
+        return self.tr('Reproject layer')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterCrs(self.TARGET_CRS,
@@ -60,7 +68,7 @@ class ReprojectLayer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem()
         targetCrs.createFromUserInput(crsId)

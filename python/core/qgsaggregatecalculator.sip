@@ -1,115 +1,149 @@
-/** \ingroup core
- * \class QgsAggregateCalculator
- * \brief Utility class for calculating aggregates for a field (or expression) over the features
- * from a vector layer. It is recommended that QgsVectorLayer::aggregate() is used rather then
- * directly using this class, as the QgsVectorLayer method can handle delegating aggregate calculation
- * to a data provider for remote calculation.
- * \note added in QGIS 2.16
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsaggregatecalculator.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 class QgsAggregateCalculator
 {
-
-%TypeHeaderCode
-#include <qgsaggregatecalculator.h>
+%Docstring
+ Utility class for calculating aggregates for a field (or expression) over the features
+ from a vector layer. It is recommended that QgsVectorLayer.aggregate() is used rather then
+ directly using this class, as the QgsVectorLayer method can handle delegating aggregate calculation
+ to a data provider for remote calculation.
+.. versionadded:: 2.16
 %End
 
+%TypeHeaderCode
+#include "qgsaggregatecalculator.h"
+%End
   public:
 
-    //! Available aggregates to calculate. Not all aggregates are available for all field
-    //! types.
     enum Aggregate
     {
-      Count,  //!< Count
-      CountDistinct,  //!< Number of distinct values
-      CountMissing,  //!< Number of missing (null) values
-      Min,  //!< Min of values
-      Max,  //!< Max of values
-      Sum,  //!< Sum of values
-      Mean,  //!< Mean of values (numeric fields only)
-      Median, //!< Median of values (numeric fields only)
-      StDev, //!< Standard deviation of values (numeric fields only)
-      StDevSample, //!< Sample standard deviation of values (numeric fields only)
-      Range, //!< Range of values (max - min) (numeric and datetime fields only)
-      Minority, //!< Minority of values (numeric fields only)
-      Majority, //!< Majority of values (numeric fields only)
-      FirstQuartile, //!< First quartile (numeric fields only)
-      ThirdQuartile, //!< Third quartile (numeric fields only)
-      InterQuartileRange, //!< Inter quartile range (IQR) (numeric fields only)
-      StringMinimumLength, //!< Minimum length of string (string fields only)
-      StringMaximumLength, //!< Maximum length of string (string fields only)
-      StringConcatenate, //! Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
-      GeometryCollect, //! Create a multipart geometry from aggregated geometries
+      Count,
+      CountDistinct,
+      CountMissing,
+      Min,
+      Max,
+      Sum,
+      Mean,
+      Median,
+      StDev,
+      StDevSample,
+      Range,
+      Minority,
+      Majority,
+      FirstQuartile,
+      ThirdQuartile,
+      InterQuartileRange,
+      StringMinimumLength,
+      StringMaximumLength,
+      StringConcatenate,
+      GeometryCollect
     };
 
-    //! A bundle of parameters controlling aggregate calculation
     struct AggregateParameters
     {
-      /** Optional filter for calculating aggregate over a subset of features, or an
-       * empty string to use all features.
-       * @see QgsAggregateCalculator::setFilter()
-       * @see QgsAggregateCalculator::filter()
-       */
-      QString filter;
 
-      /** Delimiter to use for joining values with the StringConcatenate aggregate.
-       * @see QgsAggregateCalculator::setDelimiter()
-       * @see QgsAggregateCalculator::delimiter()
-       */
+      QString filter;
+%Docstring
+ Optional filter for calculating aggregate over a subset of features, or an
+ empty string to use all features.
+ \see QgsAggregateCalculator.setFilter()
+ \see QgsAggregateCalculator.filter()
+%End
+
       QString delimiter;
+%Docstring
+ Delimiter to use for joining values with the StringConcatenate aggregate.
+ \see QgsAggregateCalculator.setDelimiter()
+ \see QgsAggregateCalculator.delimiter()
+%End
     };
 
-    /** Constructor for QgsAggregateCalculator.
-     * @param layer vector layer to calculate aggregate from
-     */
-    QgsAggregateCalculator( const QgsVectorLayer* layer );
+    QgsAggregateCalculator( const QgsVectorLayer *layer );
+%Docstring
+ Constructor for QgsAggregateCalculator.
+ \param layer vector layer to calculate aggregate from
+%End
 
-    /** Returns the associated vector layer.
-     */
-    const QgsVectorLayer* layer() const;
+    const QgsVectorLayer *layer() const;
+%Docstring
+ Returns the associated vector layer.
+ :rtype: QgsVectorLayer
+%End
 
-    /** Sets all aggregate parameters from a parameter bundle.
-     * @param parameters aggregate parameters
-     */
-    void setParameters( const AggregateParameters& parameters );
+    void setParameters( const AggregateParameters &parameters );
+%Docstring
+ Sets all aggregate parameters from a parameter bundle.
+ \param parameters aggregate parameters
+%End
 
-    /** Sets a filter to limit the features used during the aggregate calculation.
-     * @param filterExpression expression for filtering features, or empty string to remove filter
-     * @see filter()
-     */
-    void setFilter( const QString& filterExpression );
+    void setFilter( const QString &filterExpression );
+%Docstring
+ Sets a filter to limit the features used during the aggregate calculation.
+ \param filterExpression expression for filtering features, or empty string to remove filter
+ \see filter()
+%End
 
-    /** Returns the filter which limits the features used during the aggregate calculation.
-     * @see setFilter()
-     */
     QString filter() const;
+%Docstring
+ Returns the filter which limits the features used during the aggregate calculation.
+ \see setFilter()
+ :rtype: str
+%End
 
-    /** Sets the delimiter to use for joining values with the StringConcatenate aggregate.
-     * @param delimiter string delimiter
-     * @see delimiter()
-     */
-    void setDelimiter( const QString& delimiter );
+    void setDelimiter( const QString &delimiter );
+%Docstring
+ Sets the delimiter to use for joining values with the StringConcatenate aggregate.
+ \param delimiter string delimiter
+ \see delimiter()
+%End
 
-    /** Returns the delimiter used for joining values with the StringConcatenate aggregate.
-     * @see setDelimiter()
-     */
     QString delimiter() const;
+%Docstring
+ Returns the delimiter used for joining values with the StringConcatenate aggregate.
+ \see setDelimiter()
+ :rtype: str
+%End
 
-    /** Calculates the value of an aggregate.
-     * @param aggregate aggregate to calculate
-     * @param fieldOrExpression source field or expression to use as basis for aggregated values.
-     * If an expression is used, then the context parameter must be set.
-     * @param context expression context for evaluating expressions
-     * @param ok if specified, will be set to true if aggregate calculation was successful
-     * @returns calculated aggregate value
-     */
-    QVariant calculate( Aggregate aggregate, const QString& fieldOrExpression,
-                        QgsExpressionContext* context = nullptr, bool* ok = nullptr ) const;
+    QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
+                        QgsExpressionContext *context = 0, bool *ok = 0 ) const;
+%Docstring
+ Calculates the value of an aggregate.
+ \param aggregate aggregate to calculate
+ \param fieldOrExpression source field or expression to use as basis for aggregated values.
+ If an expression is used, then the context parameter must be set.
+ \param context expression context for evaluating expressions
+ \param ok if specified, will be set to true if aggregate calculation was successful
+ :return: calculated aggregate value
+ :rtype: QVariant
+%End
 
-    /** Converts a string to a aggregate type.
-     * @param string string to convert
-     * @param ok if specified, will be set to true if conversion was successful
-     * @returns aggregate type
-     */
-    static Aggregate stringToAggregate( const QString& string, bool* ok = nullptr );
+    static Aggregate stringToAggregate( const QString &string, bool *ok = 0 );
+%Docstring
+ Converts a string to a aggregate type.
+ \param string string to convert
+ \param ok if specified, will be set to true if conversion was successful
+ :return: aggregate type
+ :rtype: Aggregate
+%End
 
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsaggregatecalculator.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

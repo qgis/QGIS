@@ -23,10 +23,10 @@
 
 ///@cond PRIVATE
 
-/** @ingroup gui
+/** \ingroup gui
  * Table model to edit a QVariantList.
- * @note added in QGIS 3.0
- * @note not available in Python bindings
+ * \since QGIS 3.0
+ * \note not available in Python bindings
  */
 class GUI_EXPORT QgsListModel : public QAbstractTableModel
 {
@@ -56,7 +56,7 @@ class GUI_EXPORT QgsListModel : public QAbstractTableModel
 
 /** \ingroup gui
  * Widget allowing to edit a QVariantList, using a table.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsListWidget: public QgsTableWidgetBase
 {
@@ -76,13 +76,13 @@ class GUI_EXPORT QgsListWidget: public QgsTableWidgetBase
 
     /**
      * Get the edit value.
-     * @return the QVariantList
+     * \returns the QVariantList
      */
     QVariantList list() const { return mModel.list(); }
 
     /**
      * Check the content is valid
-     * @return true if valid
+     * \returns true if valid
      */
     bool valid() const { return mModel.valid(); }
 

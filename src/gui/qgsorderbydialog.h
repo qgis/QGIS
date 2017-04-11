@@ -28,7 +28,7 @@ class QgsVectorLayer;
 /** \ingroup gui
  * This is a dialog to build and manage a list of order by clauses.
  *
- * @note added in 2.14
+ * \since QGIS 2.14
  */
 
 class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBase
@@ -40,8 +40,8 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     /**
      * Create a new order by dialog. This helps building order by structures.
      *
-     * @param layer  The vector layer for which the order by should be produced
-     * @param parent The parent widget, optional
+     * \param layer  The vector layer for which the order by should be produced
+     * \param parent The parent widget, optional
      */
     QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 

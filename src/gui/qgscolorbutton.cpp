@@ -59,11 +59,11 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
 
   setAcceptDrops( true );
   setMinimumSize( QSize( 24, 16 ) );
-  connect( this, SIGNAL( clicked() ), this, SLOT( buttonClicked() ) );
+  connect( this, &QAbstractButton::clicked, this, &QgsColorButton::buttonClicked );
 
   //setup dropdown menu
   mMenu = new QMenu( this );
-  connect( mMenu, SIGNAL( aboutToShow() ), this, SLOT( prepareMenu() ) );
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsColorButton::prepareMenu );
   setMenu( mMenu );
   setPopupMode( QToolButton::MenuButtonPopup );
 }
@@ -103,7 +103,7 @@ void QgsColorButton::showColorDialog()
       colorWidget->setPreviousColor( currentColor );
     }
 
-    connect( colorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( setValidTemporaryColor( QColor ) ) );
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsColorButton::setValidTemporaryColor );
     panel->openPanel( colorWidget );
     return;
   }
@@ -433,7 +433,7 @@ void QgsColorButton::prepareMenu()
     QAction *nullAction = new QAction( tr( "Clear color" ), this );
     nullAction->setIcon( createMenuIcon( Qt::transparent, false ) );
     mMenu->addAction( nullAction );
-    connect( nullAction, SIGNAL( triggered() ), this, SLOT( setToNull() ) );
+    connect( nullAction, &QAction::triggered, this, &QgsColorButton::setToNull );
   }
 
   //show default color option if set
@@ -442,7 +442,7 @@ void QgsColorButton::prepareMenu()
     QAction *defaultColorAction = new QAction( tr( "Default color" ), this );
     defaultColorAction->setIcon( createMenuIcon( mDefaultColor ) );
     mMenu->addAction( defaultColorAction );
-    connect( defaultColorAction, SIGNAL( triggered() ), this, SLOT( setToDefaultColor() ) );
+    connect( defaultColorAction, &QAction::triggered, this, &QgsColorButton::setToDefaultColor );
   }
 
   if ( mShowNoColorOption && mAllowAlpha )
@@ -450,7 +450,7 @@ void QgsColorButton::prepareMenu()
     QAction *noColorAction = new QAction( mNoColorString, this );
     noColorAction->setIcon( createMenuIcon( Qt::transparent, false ) );
     mMenu->addAction( noColorAction );
-    connect( noColorAction, SIGNAL( triggered() ), this, SLOT( setToNoColor() ) );
+    connect( noColorAction, &QAction::triggered, this, &QgsColorButton::setToNoColor );
   }
 
   mMenu->addSeparator();
@@ -484,8 +484,8 @@ void QgsColorButton::prepareMenu()
       QgsColorSwatchGridAction *colorAction = new QgsColorSwatchGridAction( *it, mMenu, mContext, this );
       colorAction->setBaseColor( mColor );
       mMenu->addAction( colorAction );
-      connect( colorAction, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setValidColor( const QColor & ) ) );
-      connect( colorAction, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( addRecentColor( const QColor & ) ) );
+      connect( colorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsColorButton::setValidColor );
+      connect( colorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsColorButton::addRecentColor );
     }
   }
 
@@ -493,7 +493,7 @@ void QgsColorButton::prepareMenu()
 
   QAction *copyColorAction = new QAction( tr( "Copy color" ), this );
   mMenu->addAction( copyColorAction );
-  connect( copyColorAction, SIGNAL( triggered() ), this, SLOT( copyColor() ) );
+  connect( copyColorAction, &QAction::triggered, this, &QgsColorButton::copyColor );
 
   QAction *pasteColorAction = new QAction( tr( "Paste color" ), this );
   //enable or disable paste action based on current clipboard contents. We always show the paste
@@ -508,7 +508,7 @@ void QgsColorButton::prepareMenu()
     pasteColorAction->setEnabled( false );
   }
   mMenu->addAction( pasteColorAction );
-  connect( pasteColorAction, SIGNAL( triggered() ), this, SLOT( pasteColor() ) );
+  connect( pasteColorAction, &QAction::triggered, this, &QgsColorButton::pasteColor );
 
 #ifndef Q_OS_MAC
   //disabled for OSX, as it is impossible to grab the mouse under OSX
@@ -516,11 +516,11 @@ void QgsColorButton::prepareMenu()
   //http://qt-project.org/doc/qt-4.8/qwidget.html#grabMouse
   QAction *pickColorAction = new QAction( tr( "Pick color" ), this );
   mMenu->addAction( pickColorAction );
-  connect( pickColorAction, SIGNAL( triggered() ), this, SLOT( activatePicker() ) );
+  connect( pickColorAction, &QAction::triggered, this, &QgsColorButton::activatePicker );
 #endif
   QAction *chooseColorAction = new QAction( tr( "Choose color..." ), this );
   mMenu->addAction( chooseColorAction );
-  connect( chooseColorAction, SIGNAL( triggered() ), this, SLOT( showColorDialog() ) );
+  connect( chooseColorAction, &QAction::triggered, this, &QgsColorButton::showColorDialog );
 }
 
 void QgsColorButton::changeEvent( QEvent *e )

@@ -119,7 +119,7 @@ eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
   //Clean up, disconnect the highlighting routine and refresh the canvas to clear highlighting symbol
   if ( mCanvas )
   {
-    disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
+    disconnect( mCanvas, &QgsMapCanvas::renderComplete, this, &eVisGenericEventBrowserGui::renderSymbol );
     mCanvas->refresh();
   }
 
@@ -139,7 +139,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
   //setup gui
   setWindowTitle( tr( "Generic Event Browser" ) );
 
-  connect( treeEventData, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ), this, SLOT( launchExternalApplication( QTreeWidgetItem *, int ) ) );
+  connect( treeEventData, &QTreeWidget::itemDoubleClicked, this, &eVisGenericEventBrowserGui::launchExternalApplication );
 
   mHighlightSymbol.load( QStringLiteral( ":/evis/eVisHighlightSymbol.png" ) );
   mPointerSymbol.load( QStringLiteral( ":/evis/eVisPointerSymbol.png" ) );
@@ -242,7 +242,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
   }
 
   //Connect rendering routine for highlighting symbols and load symbols
-  connect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
+  connect( mCanvas, &QgsMapCanvas::renderComplete, this, &eVisGenericEventBrowserGui::renderSymbol );
 
   mDataProvider = mVectorLayer->dataProvider();
 

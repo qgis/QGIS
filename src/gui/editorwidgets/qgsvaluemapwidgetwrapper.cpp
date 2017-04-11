@@ -66,7 +66,8 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget *editor )
       mComboBox->addItem( it.key(), it.value() );
       ++it;
     }
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
   }
 }
 

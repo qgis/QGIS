@@ -703,7 +703,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   mLayerValid = mValid;
 
   // If it is valid, then watch for changes to the file
-  connect( mFile, SIGNAL( fileUpdated() ), this, SLOT( onFileUpdated() ) );
+  connect( mFile, &QgsDelimitedTextFile::fileUpdated, this, &QgsDelimitedTextProvider::onFileUpdated );
 
 
 }
@@ -1107,17 +1107,11 @@ QgsRectangle QgsDelimitedTextProvider::extent() const
   return mExtent;
 }
 
-/**
- * Return the feature type
- */
 QgsWkbTypes::Type QgsDelimitedTextProvider::wkbType() const
 {
   return mWkbType;
 }
 
-/**
- * Return the feature type
- */
 long QgsDelimitedTextProvider::featureCount() const
 {
   if ( mRescanRequired ) const_cast<QgsDelimitedTextProvider *>( this )->rescanFile();
