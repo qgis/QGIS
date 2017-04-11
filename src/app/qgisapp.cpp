@@ -4725,8 +4725,8 @@ void QgisApp::fileExit()
 
 void QgisApp::fileNew()
 {
-    QgsRuntimeProfiler* profile;
-    profile->clear();
+  QgsRuntimeProfiler *profile;
+  profile->clear();
   fileNew( true ); // prompts whether to save project
 } // fileNew()
 
@@ -12529,9 +12529,15 @@ LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
   }
 
   QgsCrashDialog dlg;
-  dlg.setWindowTitle("Oh. Snap!");
-  dlg.exec();
-  //QMessageBox::critical( 0, QObject::tr( "Crash dumped" ), msg );
+  if ( dlg.exec() )
+  {
+    QStringList arguments;
+    arguments = QCoreApplication::arguments();
+    QString path = arguments.at( 0 );
+    arguments.removeFirst();
+    arguments << QgsProject::instance()->fileName();
+    QProcess::startDetached( path, arguments, QDir::toNativeSeparators( QCoreApplication::applicationDirPath() ) );
+  }
 
   return EXCEPTION_EXECUTE_HANDLER;
 }

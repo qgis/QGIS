@@ -552,5 +552,38 @@
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QgsCrashDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>352</x>
+     <y>257</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>468</x>
+     <y>-36</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>QgsCrashDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>486</x>
+     <y>246</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>457</x>
+     <y>-30</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
