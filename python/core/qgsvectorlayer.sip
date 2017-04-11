@@ -1643,7 +1643,7 @@ Returns the current transparency for the vector layer
  :rtype: int
 %End
 
-    QString metadata() const;
+    QString htmlMetadata() const;
 %Docstring
  :rtype: str
 %End

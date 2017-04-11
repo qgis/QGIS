@@ -128,8 +128,7 @@ class QgsRasterLayer : QgsMapLayer
 
     virtual bool isSpatial() const;
 
-    /** \brief Obtain GDAL Metadata for this layer */
-    QString metadata() const;
+    QString htmlMetadata() const;
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int bandNumber = 1 );

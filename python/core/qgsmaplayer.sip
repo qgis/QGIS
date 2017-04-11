@@ -807,10 +807,10 @@ Return pointer to layer's undo stack
  \see setAutoRefreshInterval()
 %End
 
-    virtual QString metadata() const;
+    virtual QString htmlMetadata() const;
 %Docstring
- Obtain Metadata for this layer
-
+ Obtain a formatted HTML string containing assorted metadata for this layer.
+.. versionadded:: 3.0
  :rtype: str
 %End
 

@@ -720,8 +720,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void setAutoRefreshEnabled( bool enabled );
 
-    //! \brief Obtain Metadata for this layer
-    virtual QString metadata() const;
+    /**
+     * Obtain a formatted HTML string containing assorted metadata for this layer.
+     * \since QGIS 3.0
+     */
+    virtual QString htmlMetadata() const;
 
     //! Time stamp of data source in the moment when data/metadata were loaded by provider
     virtual QDateTime timestamp() const { return QDateTime() ; }

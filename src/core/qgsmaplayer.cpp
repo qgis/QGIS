@@ -1621,7 +1621,7 @@ void QgsMapLayer::triggerRepaint( bool deferredUpdate )
   emit repaintRequested( deferredUpdate );
 }
 
-QString QgsMapLayer::metadata() const
+QString QgsMapLayer::htmlMetadata() const
 {
   return QString();
 }
