@@ -76,6 +76,11 @@ class TestQgsRectangle(unittest.TestCase):
                      (20.0, rect.height()))
         assert rect.height() == 20.0, myMessage
 
+    def testCalculations(self):
+        rect = QgsRectangle(0.0, 1.0, 20.0, 10.0)
+        self.assertEqual(rect.area(), 180.0)
+        self.assertEqual(rect.perimeter(), 58.0)
+
     def testIntersection(self):
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
         rect2 = QgsRectangle(2.0, 2.0, 7.0, 7.0)

@@ -95,7 +95,6 @@ core/qgspropertycollection.sip
 core/qgsprovidermetadata.sip
 core/qgsproviderregistry.sip
 core/qgspythonrunner.sip
-core/qgsrectangle.sip
 core/qgsrelation.sip
 core/qgsrelationmanager.sip
 core/qgsrenderchecker.sip

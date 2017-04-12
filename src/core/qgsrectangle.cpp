@@ -29,11 +29,11 @@
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
-QgsRectangle::QgsRectangle( double newxmin, double newymin, double newxmax, double newymax )
-  : mXmin( newxmin )
-  , mYmin( newymin )
-  , mXmax( newxmax )
-  , mYmax( newymax )
+QgsRectangle::QgsRectangle( double xMin, double yMin, double xMax, double yMax )
+  : mXmin( xMin )
+  , mYmin( yMin )
+  , mXmax( xMax )
+  , mYmax( yMax )
 {
   normalize();
 }
@@ -58,7 +58,6 @@ QgsRectangle::QgsRectangle( const QgsRectangle &r )
   mXmax = r.xMaximum();
   mYmax = r.yMaximum();
 }
-
 
 void QgsRectangle::set( const QgsPoint &p1, const QgsPoint &p2 )
 {
@@ -91,8 +90,7 @@ void QgsRectangle::normalize()
   {
     std::swap( mYmin, mYmax );
   }
-} // QgsRectangle::normalize()
-
+}
 
 void QgsRectangle::setMinimal()
 {
@@ -264,9 +262,6 @@ QRectF QgsRectangle::toRectF() const
   return QRectF( static_cast< qreal >( mXmin ), static_cast< qreal >( mYmin ), static_cast< qreal >( mXmax - mXmin ), static_cast< qreal >( mYmax - mYmin ) );
 }
 
-// Returns a string representation of form xmin,ymin : xmax,ymax. Coordinates will be truncated
-// to the specified \a precision. If \a precision is less than 0 then a suitable minimum precision
-// will be automatically calculated.
 QString QgsRectangle::toString( int precision ) const
 {
   QString rep;
@@ -297,8 +292,6 @@ QString QgsRectangle::toString( int precision ) const
   return rep;
 }
 
-
-// Return the rectangle as a set of polygon coordinates
 QString QgsRectangle::asPolygon() const
 {
 //   QString rep = tmp.sprintf("%16f %16f,%16f %16f,%16f %16f,%16f %16f,%16f %16f",
@@ -320,8 +313,7 @@ QString QgsRectangle::asPolygon() const
 
   return rep;
 
-} // QgsRectangle::asPolygon() const
-
+}
 
 bool QgsRectangle::operator==( const QgsRectangle &r1 ) const
 {
@@ -331,12 +323,10 @@ bool QgsRectangle::operator==( const QgsRectangle &r1 ) const
          qgsDoubleNear( r1.yMinimum(), yMinimum() );
 }
 
-
 bool QgsRectangle::operator!=( const QgsRectangle &r1 ) const
 {
   return ( ! operator==( r1 ) );
 }
-
 
 QgsRectangle &QgsRectangle::operator=( const QgsRectangle &r )
 {
@@ -350,7 +340,6 @@ QgsRectangle &QgsRectangle::operator=( const QgsRectangle &r )
 
   return *this;
 }
-
 
 void QgsRectangle::unionRect( const QgsRectangle &r )
 {
