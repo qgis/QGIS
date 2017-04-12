@@ -265,10 +265,13 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
             from .MeanAndStdDevPlot import MeanAndStdDevPlot
             from .BarPlot import BarPlot
             from .PolarPlot import PolarPlot
+            from .BoxPlot import BoxPlot
+            from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
 
             algs.extend([VectorLayerHistogram(), RasterLayerHistogram(),
                          VectorLayerScatterplot(), MeanAndStdDevPlot(),
-                         BarPlot(), PolarPlot()])
+                         BarPlot(), PolarPlot(), BoxPlot(),
+                         VectorLayerScatterplot3D()])
 
         # to store algs added by 3rd party plugins as scripts
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
