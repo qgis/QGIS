@@ -12494,39 +12494,41 @@ void QgisApp::transactionGroupCommitError( const QString &error )
 #ifdef Q_OS_WIN
 LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
 {
-  QString dumpName = QDir::toNativeSeparators(
-                       QString( "%1\\qgis-%2-%3-%4-%5.dmp" )
-                       .arg( QDir::tempPath() )
-                       .arg( QDateTime::currentDateTime().toString( "yyyyMMdd-hhmmss" ) )
-                       .arg( GetCurrentProcessId() )
-                       .arg( GetCurrentThreadId() )
-                       .arg( Qgis::QGIS_DEV_VERSION )
-                     );
+  // Crash dump creation will be move to a new class in the near future.
 
-  QString msg;
-  HANDLE hDumpFile = CreateFile( dumpName.toLocal8Bit(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
-  if ( hDumpFile != INVALID_HANDLE_VALUE )
-  {
-    MINIDUMP_EXCEPTION_INFORMATION ExpParam;
-    ExpParam.ThreadId = GetCurrentThreadId();
-    ExpParam.ExceptionPointers = ExceptionInfo;
-    ExpParam.ClientPointers = TRUE;
+//  QString dumpName = QDir::toNativeSeparators(
+//                       QString( "%1\\qgis-%2-%3-%4-%5.dmp" )
+//                       .arg( QDir::tempPath() )
+//                       .arg( QDateTime::currentDateTime().toString( "yyyyMMdd-hhmmss" ) )
+//                       .arg( GetCurrentProcessId() )
+//                       .arg( GetCurrentThreadId() )
+//                       .arg( Qgis::QGIS_DEV_VERSION )
+//                     );
 
-    if ( MiniDumpWriteDump( GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpWithDataSegs, ExceptionInfo ? &ExpParam : nullptr, nullptr, nullptr ) )
-    {
-      msg = QObject::tr( "minidump written to %1" ).arg( dumpName );
-    }
-    else
-    {
-      msg = QObject::tr( "writing of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
-    }
+//  QString msg;
+//  HANDLE hDumpFile = CreateFile( dumpName.toLocal8Bit(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
+//  if ( hDumpFile != INVALID_HANDLE_VALUE )
+//  {
+//    MINIDUMP_EXCEPTION_INFORMATION ExpParam;
+//    ExpParam.ThreadId = GetCurrentThreadId();
+//    ExpParam.ExceptionPointers = ExceptionInfo;
+//    ExpParam.ClientPointers = TRUE;
 
-    CloseHandle( hDumpFile );
-  }
-  else
-  {
-    msg = QObject::tr( "creation of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
-  }
+//    if ( MiniDumpWriteDump( GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpWithDataSegs, ExceptionInfo ? &ExpParam : nullptr, nullptr, nullptr ) )
+//    {
+//      msg = QObject::tr( "minidump written to %1" ).arg( dumpName );
+//    }
+//    else
+//    {
+//      msg = QObject::tr( "writing of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
+//    }
+
+//    CloseHandle( hDumpFile );
+//  }
+//  else
+//  {
+//    msg = QObject::tr( "creation of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
+//  }
 
   QgsCrashDialog dlg( QApplication::activeWindow() );
   if ( dlg.exec() )
