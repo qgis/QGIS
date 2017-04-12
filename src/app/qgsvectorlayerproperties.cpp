@@ -292,6 +292,12 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     )
   );
 
+  QString myStyle = QgsApplication::reportStyleSheet();
+  teMetadataViewer->clear();
+  teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
+  teMetadataViewer->setHtml( htmlMetadata() );
+  mMetadataFilled = true;
+
   QgsSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
@@ -383,7 +389,6 @@ void QgsVectorLayerProperties::syncToLayer()
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->originalName() );
   txtDisplayName->setText( mLayer->name() );
-  txtLayerSource->setText( mLayer->publicSource() );
   pbnQueryBuilder->setWhatsThis( tr( "This button opens the query "
                                      "builder and allows you to create a subset of features to display on "
                                      "the map canvas rather than displaying all features in the layer" ) );
@@ -562,19 +567,58 @@ void QgsVectorLayerProperties::apply()
   }
 
   //layer title and abstract
+  if ( mLayer->shortName() != mLayerShortNameLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setShortName( mLayerShortNameLineEdit->text() );
+
+  if ( mLayer->title() != mLayerTitleLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setTitle( mLayerTitleLineEdit->text() );
+
+  if ( mLayer->abstract() != mLayerAbstractTextEdit->toPlainText() )
+    mMetadataFilled = false;
   mLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
+
+  if ( mLayer->keywordList() != mLayerKeywordListLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setKeywordList( mLayerKeywordListLineEdit->text() );
+
+  if ( mLayer->dataUrl() != mLayerDataUrlLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setDataUrl( mLayerDataUrlLineEdit->text() );
+
+  if ( mLayer->dataUrlFormat() != mLayerDataUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
+
   //layer attribution and metadataUrl
+  if ( mLayer->attribution() != mLayerAttributionLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setAttribution( mLayerAttributionLineEdit->text() );
+
+  if ( mLayer->attributionUrl() != mLayerAttributionUrlLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
+
+  if ( mLayer->metadataUrl() != mLayerMetadataUrlLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
+
+  if ( mLayer->metadataUrlType() != mLayerMetadataUrlTypeComboBox->currentText() )
+    mMetadataFilled = false;
   mLayer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
+
+  if ( mLayer->metadataUrlFormat() != mLayerMetadataUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mLayer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+
+  // LegendURL
+  if ( mLayer->legendUrl() != mLayerLegendUrlLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+
+  if ( mLayer->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   //layer simplify drawing configuration
@@ -701,7 +745,7 @@ void QgsVectorLayerProperties::on_pbnIndex_clicked()
   }
 }
 
-QString QgsVectorLayerProperties::metadata()
+QString QgsVectorLayerProperties::htmlMetadata()
 {
   return mLayer->htmlMetadata();
 }
@@ -714,6 +758,7 @@ void QgsVectorLayerProperties::on_mLayerOrigNameLineEdit_textEdited( const QStri
 void QgsVectorLayerProperties::on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mLayer->setCrs( crs );
+  mMetadataFilled = false;
 }
 
 void QgsVectorLayerProperties::loadDefaultStyle_clicked()
@@ -1310,14 +1355,12 @@ void QgsVectorLayerProperties::on_pbnUpdateExtents_clicked()
 
 void QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
 {
-  if ( indx != mOptStackedWidget->indexOf( mOptsPage_Metadata ) || mMetadataFilled )
+  if ( indx != mOptStackedWidget->indexOf( mOptsPage_Information ) || mMetadataFilled )
     return;
 
   //set the metadata contents (which can be expensive)
-  QString myStyle = QgsApplication::reportStyleSheet();
-  teMetadata->clear();
-  teMetadata->document()->setDefaultStyleSheet( myStyle );
-  teMetadata->setHtml( metadata() );
+  teMetadataViewer->clear();
+  teMetadataViewer->setHtml( htmlMetadata() );
   mMetadataFilled = true;
 }
 

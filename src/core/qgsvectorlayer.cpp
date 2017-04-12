@@ -31,6 +31,7 @@
 #include <QString>
 #include <QDomNode>
 #include <QVector>
+#include <QStringBuilder>
 
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
@@ -82,6 +83,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfeedback.h"
 #include "qgsxmlutils.h"
+#include "qgsunittypes.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -3987,65 +3989,55 @@ void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings &s )
 
 QString QgsVectorLayer::htmlMetadata() const
 {
-  QString myMetadata = QStringLiteral( "<html><body>" );
+  QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
 
-  //-------------
+  // Identification section
+  myMetadata += QLatin1String( "<h1>" ) % tr( "Identification" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
 
-  myMetadata += QLatin1String( R"(<p class="subheaderglossy">)" );
-  myMetadata += tr( "General" );
-  myMetadata += QLatin1String( "</p>\n" );
+  // ID
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "ID" ) % QLatin1String( "</td><td>" ) % id() % QLatin1String( "</td></tr>\n" );
 
-  // data comment
-  if ( !( dataComment().isEmpty() ) )
-  {
-    myMetadata += R"(<p class="glossy">)" + tr( "Layer comment" ) + "</p>\n";
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += dataComment();
-    myMetadata += QLatin1String( "</p>\n" );
-  }
+  // original name
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Original" ) % QLatin1String( "</td><td>" ) % originalName() % QLatin1String( "</td></tr>\n" );
 
-  //storage type
-  myMetadata += R"(<p class="glossy">)" + tr( "Storage type of this layer" ) + "</p>\n";
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += storageType();
-  myMetadata += QLatin1String( "</p>\n" );
+  // name
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QLatin1String( "</td><td>" ) % name() % QLatin1String( "</td></tr>\n" );
 
-  if ( dataProvider() )
-  {
-    //provider description
-    myMetadata += R"(<p class="glossy">)" + tr( "Description of this provider" ) + "</p>\n";
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += dataProvider()->description().replace( '\n', QLatin1String( "<br>" ) );
-    myMetadata += QLatin1String( "</p>\n" );
+  // short
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Short" ) % QLatin1String( "</td><td>" ) % shortName() % QLatin1String( "</td></tr>\n" );
 
-    QVariantMap dataProviderMetadata = mDataProvider->metadata();
-    if ( !dataProviderMetadata.isEmpty() )
-    {
-      myMetadata += R"(<p class="glossy">)" + tr( "Provider Metadata" ) + "</p>\n";
-      myMetadata +=  "<p><table><tr><th>" + tr( "Metadata name" ) + "</th><th>" + tr( "Metadata value" ) + "</th></tr>\n";
-      QMapIterator<QString, QVariant> i( dataProviderMetadata );
-      while ( i.hasNext() )
-      {
-        i.next();
-        myMetadata += "<tr>";
-        myMetadata += "<td>" + mDataProvider->translateMetadataKey( i.key() ) + ":</td>";
-        myMetadata += "<td>" + mDataProvider->translateMetadataValue( i.key(), i.value() ) + "</td>";
-        myMetadata += "</tr>\n";
-      }
-      myMetadata += QLatin1String( "</table></p>\n" );
-    }
-  }
+  // title
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Title" ) % QLatin1String( "</td><td>" ) % title() % QLatin1String( "</td></tr>\n" );
+
+  // abstract
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Abstract" ) % QLatin1String( "</td><td>" ) % abstract() % QLatin1String( "</td></tr>\n" );
+
+  // keywords
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Keywords" ) % QLatin1String( "</td><td>" ) % keywordList() % QLatin1String( "</td></tr>\n" );
+
+  // lang, waiting for the proper metadata implementation QEP #91 Work package 2
+  // myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Language" ) % QLatin1String( "</td><td>en-CA</td></tr>\n" );
+
+  // comment
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Comment" ) % QLatin1String( "</td><td>" ) % dataComment() % QLatin1String( "</td></tr>\n" );
+
+  // date, waiting for the proper metadata implementation QEP #91 Work package 2
+  // myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Date" ) % QLatin1String( "</td><td>28/03/17</td></tr>\n" );
+
+  // storage type
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Storage" ) % QLatin1String( "</td><td>" ) % storageType() % QLatin1String( "</td></tr>\n" );
 
   // data source
-  myMetadata += R"(<p class="glossy">)" + tr( "Source for this layer" ) + "</p>\n";
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += publicSource();
-  myMetadata += QLatin1String( "</p>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Source" ) % QLatin1String( "</td><td>" ) % publicSource() % QLatin1String( "</td></tr>\n" );
 
-  //geom type
+  // encoding
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Encoding" ) % QLatin1String( "</td><td>" ) % dataProvider()->encoding() % QLatin1String( "</td></tr>\n" );
 
+  // Section spatial
+  myMetadata += QLatin1String( "</table>\n<br><br><h1>" ) % tr( "Spatial" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+
+  // geom type
   QgsWkbTypes::GeometryType type =  geometryType();
-
   if ( type < 0 || type > QgsWkbTypes::NullGeometry )
   {
     QgsDebugMsg( "Invalid vector type" );
@@ -4053,204 +4045,86 @@ QString QgsVectorLayer::htmlMetadata() const
   else
   {
     QString typeString( QgsWkbTypes::geometryDisplayString( geometryType() ) );
-
-    myMetadata += R"(<p class="glossy">)" + tr( "Geometry type of the features in this layer" ) + "</p>\n";
-    myMetadata += QStringLiteral( "<p>%1</p>\n" ).arg( typeString );
+    myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Geometry" ) % QLatin1String( "</td><td>" ) % typeString % QLatin1String( "</td></tr>\n" );
   }
 
+  // EPSG
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "CRS" ) % QLatin1String( "</td><td>" ) % crs().authid() % QLatin1String( " - " );
+  myMetadata += crs().description() % QLatin1String( " - " );
+  if ( crs().isGeographic() )
+    myMetadata += tr( "Geographic" );
+  else
+    myMetadata += tr( "Projected" );
+  myMetadata += QLatin1String( "</td></tr>\n" );
+
+  // Extent
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Extent" ) % QLatin1String( "</td><td>" ) % extent().toString() % QLatin1String( "</td></tr>\n" );
+
+  // unit
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Unit" ) % QLatin1String( "</td><td>" ) % QgsUnitTypes::toString( crs().mapUnits() ) % QLatin1String( "</td></tr>\n" );
+
+  // max scale
+  // myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Max scale" ) % QLatin1String( "</td><td>" ) % QString::number( maximumScale() ) % QLatin1String( "</td></tr>\n" );
+
+  // min scale
+  // myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Min scale" ) % QLatin1String( "</td><td>" ) % QString::number( minimumScale() ) % QLatin1String( "</td></tr>\n" );
+
+  // feature count
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Feature count" ) % QLatin1String( "</td><td>" ) % QString::number( featureCount() ) % QLatin1String( "</td></tr>\n" );
+
+  // Fields section
+  myMetadata += QLatin1String( "</table>\n<br><br><h1>" ) % tr( "Fields" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+
+  // primary key
   QgsAttributeList pkAttrList = pkAttributeList();
   if ( !pkAttrList.isEmpty() )
   {
-    myMetadata += R"(<p class="glossy">)" + tr( "Primary key attributes" ) + "</p>\n";
-    myMetadata += QLatin1String( "<p>" );
+    myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Primary key attributes" ) % QLatin1String( "</td><td>" );
     Q_FOREACH ( int idx, pkAttrList )
     {
-      myMetadata += fields().at( idx ).name() + ' ';
+      myMetadata += fields().at( idx ).name() % ' ';
     }
-    myMetadata += QLatin1String( "</p>\n" );
+    myMetadata += QLatin1String( "</td></tr>\n" );
   }
 
-
-  //feature count
-  myMetadata += R"(<p class="glossy">)" + tr( "The number of features in this layer" ) + "</p>\n";
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += QString::number( featureCount() );
-  myMetadata += QLatin1String( "</p>\n" );
-  //capabilities
-  myMetadata += R"(<p class="glossy">)" + tr( "Capabilities of this layer" ) + "</p>\n";
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += capabilitiesString();
-  myMetadata += QLatin1String( "</p>\n" );
-
-  //-------------
-
-  QgsRectangle myExtent = extent();
-  myMetadata += QLatin1String( R"(<p class="subheaderglossy">)" );
-  myMetadata += tr( "Extents" );
-  myMetadata += QLatin1String( "</p>\n" );
-
-  //extents in layer cs  TODO...maybe make a little nested table to improve layout...
-  myMetadata += R"(<p class="glossy">)" + tr( "In layer spatial reference system units" ) + "</p>\n";
-  myMetadata += QLatin1String( "<p>" );
-  // Try to be a bit clever over what number format we use for the
-  // extents. Some people don't like it using scientific notation when the
-  // numbers get large, but for small numbers this is the more practical
-  // option (so we can't force the format to 'f' for all values).
-  // The scheme:
-  // - for all numbers with more than 5 digits, force non-scientific notation
-  // and 2 digits after the decimal point.
-  // - for all smaller numbers let the OS decide which format to use (it will
-  // generally use non-scientific unless the number gets much less than 1).
-
-  if ( !myExtent.isEmpty() )
-  {
-    QString xMin, yMin, xMax, yMax;
-    double changeoverValue = 99999; // The 'largest' 5 digit number
-    if ( qAbs( myExtent.xMinimum() ) > changeoverValue )
-    {
-      xMin = QStringLiteral( "%1" ).arg( myExtent.xMinimum(), 0, 'f', 2 );
-    }
-    else
-    {
-      xMin = QStringLiteral( "%1" ).arg( myExtent.xMinimum() );
-    }
-    if ( qAbs( myExtent.yMinimum() ) > changeoverValue )
-    {
-      yMin = QStringLiteral( "%1" ).arg( myExtent.yMinimum(), 0, 'f', 2 );
-    }
-    else
-    {
-      yMin = QStringLiteral( "%1" ).arg( myExtent.yMinimum() );
-    }
-    if ( qAbs( myExtent.xMaximum() ) > changeoverValue )
-    {
-      xMax = QStringLiteral( "%1" ).arg( myExtent.xMaximum(), 0, 'f', 2 );
-    }
-    else
-    {
-      xMax = QStringLiteral( "%1" ).arg( myExtent.xMaximum() );
-    }
-    if ( qAbs( myExtent.yMaximum() ) > changeoverValue )
-    {
-      yMax = QStringLiteral( "%1" ).arg( myExtent.yMaximum(), 0, 'f', 2 );
-    }
-    else
-    {
-      yMax = QStringLiteral( "%1" ).arg( myExtent.yMaximum() );
-    }
-
-    myMetadata += tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
-                  .arg( xMin, yMin, xMax, yMax );
-  }
-  else
-  {
-    myMetadata += tr( "unknown extent" );
-  }
-
-  myMetadata += QLatin1String( "</p>\n" );
-
-  //extents in project cs
-
-  try
-  {
-#if 0
-    // TODO: currently disabled, will revisit later [MD]
-    QgsRectangle myProjectedExtent = coordinateTransform->transformBoundingBox( extent() );
-    myMetadata += "<p class=\"glossy\">" + tr( "In project spatial reference system units" ) + "</p>\n";
-    myMetadata += "<p>";
-    myMetadata += tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
-                  .arg( myProjectedExtent.xMinimum() )
-                  .arg( myProjectedExtent.yMinimum() )
-                  .arg( myProjectedExtent.xMaximum() )
-                  .arg( myProjectedExtent.yMaximum() );
-    myMetadata += "</p>\n";
-#endif
-
-    //
-    // Display layer spatial ref system
-    //
-    myMetadata += R"(<p class="glossy">)" + tr( "Layer Spatial Reference System" ) + "</p>\n";
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += crs().toProj4().replace( '"', QLatin1String( " \"" ) );
-    myMetadata += QLatin1String( "</p>\n" );
-
-    //
-    // Display project (output) spatial ref system
-    //
-#if 0
-    // TODO: disabled for now, will revisit later [MD]
-    //myMetadata += "<tr> < td bgcolor = \"gray\">";
-    myMetadata += "<p class=\"glossy\">" + tr( "Project (Output) Spatial Reference System" ) + "</p>\n";
-    myMetadata += "<p>";
-    myMetadata += coordinateTransform->destCRS().toProj4().replace( '"', " \"" );
-    myMetadata += "</p>\n";
-#endif
-  }
-  catch ( QgsCsException &cse )
-  {
-    Q_UNUSED( cse );
-    QgsDebugMsg( cse.what() );
-
-    myMetadata += R"(<p class="glossy">)" + tr( "In project spatial reference system units" ) + "</p>\n";
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += tr( "(Invalid transformation of layer extents)" );
-    myMetadata += QLatin1String( "</p>\n" );
-
-  }
-
-#if 0
-  //
-  // Add the info about each field in the attribute table
-  //
-  myMetadata += "<p class=\"glossy\">" + tr( "Attribute field info" ) + "</p>\n";
-  myMetadata += "<p>";
-
-  // Start a nested table in this trow
-  myMetadata += "<table width=\"100%\">";
-  myMetadata += "<tr><th>";
-  myMetadata += tr( "Field" );
-  myMetadata += "</th>";
-  myMetadata += "<th>";
-  myMetadata += tr( "Type" );
-  myMetadata += "</th>";
-  myMetadata += "<th>";
-  myMetadata += tr( "Length" );
-  myMetadata += "</th>";
-  myMetadata += "<th>";
-  myMetadata += tr( "Precision" );
-  myMetadata += "</th>";
-  myMetadata += "<th>";
-  myMetadata += tr( "Comment" );
-  myMetadata += "</th>";
-
-  //get info for each field by looping through them
   const QgsFields &myFields = pendingFields();
-  for ( int i = 0, n = myFields.size(); i < n; ++i )
-  {
-    QgsField myField = fields.at( i );
 
-    myMetadata += "<tr><td>";
-    myMetadata += myField.name();
-    myMetadata += "</td>";
-    myMetadata += "<td>";
-    myMetadata += myField.typeName();
-    myMetadata += "</td>";
-    myMetadata += "<td>";
-    myMetadata += QString( "%1" ).arg( myField.length() );
-    myMetadata += "</td>";
-    myMetadata += "<td>";
-    myMetadata += QString( "%1" ).arg( myField.precision() );
-    myMetadata += "</td>";
-    myMetadata += "<td>";
-    myMetadata += QString( "%1" ).arg( myField.comment() );
-    myMetadata += "</td></tr>";
+  // count fields
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Count" ) % QLatin1String( "</td><td>" ) % QString::number( myFields.size() ) % QLatin1String( "</td></tr>\n" );
+
+  myMetadata += "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n";
+  myMetadata += "<tr><th>" % tr( "Field" ) % "</th><th>" % tr( "Type" ) % "</th><th>" % tr( "Length" ) % "</th><th>" % tr( "Precision" ) % "</th><th>" % tr( "Comment" ) % "</th></tr>\n";
+
+  for ( int i = 0; i < myFields.size(); ++i )
+  {
+    QgsField myField = myFields.at( i );
+    QString rowClass = QString( "" );
+    if ( i % 2 )
+      rowClass = QString( "class=\"odd-row\"" );
+    myMetadata += "<tr " % rowClass % "><td>" % myField.name() % "</td><td>" % myField.typeName() % "</td><td>" % QString::number( myField.length() ) % "</td><td>" % QString::number( myField.precision() ) % "</td><td>" % myField.comment() % "</td></tr>\n";
   }
 
-  //close field list
-  myMetadata += "</table>"; //end of nested table
-#endif
+  //close field list and start references
+  myMetadata += QLatin1String( "</table>\n<br><br><h1>" ) % tr( "References" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
 
-  myMetadata += QLatin1String( "</body></html>" );
+  // data URL
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Data URL" ) % QLatin1String( "</td><td>" ) % dataUrl() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Data Format" ) % QLatin1String( "</td><td>" ) % dataUrlFormat() % QLatin1String( "</td></tr>\n" );
+
+  // attribution
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Attribution" ) % QLatin1String( "</td><td>" ) % attribution() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Attribution URL" ) % QLatin1String( "</td><td>" ) % attributionUrl() % QLatin1String( "</td></tr>\n" );
+
+  // metadata URL
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Metadata URL" ) % QLatin1String( "</td><td>" ) % metadataUrl() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Metadata Type" ) % QLatin1String( "</td><td>" ) % metadataUrlType() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Metadata Format" ) % QLatin1String( "</td><td>" ) % metadataUrlFormat() % QLatin1String( "</td></tr>\n" );
+
+  // legend URL
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Legend URL" ) % QLatin1String( "</td><td>" ) % legendUrl() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Legend Format" ) % QLatin1String( "</td><td>" ) % legendUrlFormat() % QLatin1String( "</td></tr>\n" );
+
+  myMetadata += QStringLiteral( "</body>\n</html>\n" );
   return myMetadata;
 }
 
