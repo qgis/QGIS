@@ -376,10 +376,12 @@ SET(QGIS_CORE_SRCS
 
   geometry/qgsabstractgeometry.cpp
   geometry/qgsbox3d.cpp
+  geometry/qgscircle.cpp
   geometry/qgscircularstring.cpp
   geometry/qgscompoundcurve.cpp
   geometry/qgscurvepolygon.cpp
   geometry/qgscurve.cpp
+  geometry/qgsellipse.cpp
   geometry/qgsgeometry.cpp
   geometry/qgsgeometrycollection.cpp
   geometry/qgsgeometryeditutils.cpp
@@ -933,9 +935,11 @@ SET(QGIS_CORE_HDRS
   geometry/qgsabstractgeometry.h
   geometry/qgsbox3d.h
   geometry/qgscircularstring.h
+  geometry/qgscircle.h
   geometry/qgscompoundcurve.h
   geometry/qgscurvepolygon.h
   geometry/qgscurve.h
+  geometry/qgsellipse.h
   geometry/qgsgeometrycollection.h
   geometry/qgsgeometryeditutils.h
   geometry/qgsgeometryengine.h

@@ -52,12 +52,12 @@ class QgsTriangle : public QgsPolygonV2
 
     QgsTriangle medial( ) const;
     QgsPointV2 orthocenter( double lengthTolerance = 0.0001 ) const;
+
     QgsPointV2 circumscribedCenter( ) const;
     double circumscribedRadius( ) const;
-    // TODO:
-    // QgsCircle circumscribedCircle ( ) const; // need QgsCircle (from CADDigitize.CADCircle)
+    QgsCircle circumscribedCircle( ) const;
+
     QgsPointV2 inscribedCenter( ) const;
     double inscribedRadius( ) const;
-    // TODO:
-    // QgsCircle inscribedCircle ( ) const; // need QgsCircle (from CADDigitize.CADCircle)
+    QgsCircle inscribedCircle( ) const;
 };
