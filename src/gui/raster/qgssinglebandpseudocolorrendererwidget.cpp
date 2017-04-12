@@ -51,7 +51,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
 
   contextMenu = new QMenu( tr( "Options" ), this );
   contextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
-  contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeTransparency() ) );
+  contextMenu->addAction( tr( "Change opacity" ), this, SLOT( changeOpacity() ) );
 
   mColormapTreeWidget->setColumnWidth( ColorColumn, 50 );
   mColormapTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -818,7 +818,7 @@ void QgsSingleBandPseudoColorRendererWidget::changeColor()
   }
 }
 
-void QgsSingleBandPseudoColorRendererWidget::changeTransparency()
+void QgsSingleBandPseudoColorRendererWidget::changeOpacity()
 {
   QList<QTreeWidgetItem *> itemList;
   itemList = mColormapTreeWidget->selectedItems();
@@ -829,15 +829,15 @@ void QgsSingleBandPseudoColorRendererWidget::changeTransparency()
   QTreeWidgetItem *firstItem = itemList.first();
 
   bool ok;
-  double oldTransparency = firstItem->background( ColorColumn ).color().alpha() / 255 * 100;
-  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change color transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
+  double oldOpacity = firstItem->background( ColorColumn ).color().alpha() / 255 * 100;
+  double opacity = QInputDialog::getDouble( this, tr( "Opacity" ), tr( "Change color opacity [%]" ), oldOpacity, 0.0, 100.0, 0, &ok );
   if ( ok )
   {
-    int newTransparency = transparency / 100 * 255;
+    int newOpacity = opacity / 100 * 255;
     Q_FOREACH ( QTreeWidgetItem *item, itemList )
     {
       QColor newColor = item->background( ColorColumn ).color();
-      newColor.setAlpha( newTransparency );
+      newColor.setAlpha( newOpacity );
       item->setBackground( ColorColumn, QBrush( newColor ) );
     }
     emit widgetChanged();

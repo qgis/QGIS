@@ -42,7 +42,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
 
   contextMenu = new QMenu( tr( "Options" ), this );
   contextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
-  contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeTransparency() ) );
+  contextMenu->addAction( tr( "Change opacity" ), this, SLOT( changeOpacity() ) );
   contextMenu->addAction( tr( "Change label" ), this, SLOT( changeLabel() ) );
 
   mModel = new QgsPalettedRendererModel( this );
@@ -239,7 +239,7 @@ void QgsPalettedRendererWidget::changeColor()
   }
 }
 
-void QgsPalettedRendererWidget::changeTransparency()
+void QgsPalettedRendererWidget::changeOpacity()
 {
   QItemSelection sel = mTreeView->selectionModel()->selection();
 
@@ -247,11 +247,11 @@ void QgsPalettedRendererWidget::changeTransparency()
   QColor currentColor = mModel->data( colorIndex, Qt::DisplayRole ).value<QColor>();
 
   bool ok;
-  double oldTransparency = ( currentColor.alpha() / 255.0 ) * 100.0;
-  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change color transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
+  double oldOpacity = ( currentColor.alpha() / 255.0 ) * 100.0;
+  double opacity = QInputDialog::getDouble( this, tr( "Opacity" ), tr( "Change color opacity [%]" ), oldOpacity, 0.0, 100.0, 0, &ok );
   if ( ok )
   {
-    int newTransparency = transparency / 100 * 255;
+    int newOpacity = opacity / 100 * 255;
 
     // don't want to emit widgetChanged multiple times
     disconnect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
@@ -263,7 +263,7 @@ void QgsPalettedRendererWidget::changeTransparency()
         colorIndex = mModel->index( index.row(), QgsPalettedRendererModel::ColorColumn );
 
         QColor newColor = mModel->data( colorIndex, Qt::DisplayRole ).value<QColor>();
-        newColor.setAlpha( newTransparency );
+        newColor.setAlpha( newOpacity );
         mModel->setData( colorIndex, newColor, Qt::EditRole );
       }
     }

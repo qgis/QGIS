@@ -96,7 +96,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mMaxLineEdit_textEdited( const QString &text ) ;
     void on_mClassificationModeComboBox_currentIndexChanged( int index );
     void changeColor();
-    void changeTransparency();
+    void changeOpacity();
 
   private:
 
