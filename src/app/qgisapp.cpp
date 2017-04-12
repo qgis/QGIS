@@ -12254,6 +12254,8 @@ void QgisApp::masterPasswordSetup()
 {
   connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
            this, &QgisApp::authMessageOut );
+  connect( QgsAuthManager::instance(), &QgsAuthManager::passwordHelperMessageOut,
+           this, &QgisApp::authMessageOut );
   connect( QgsAuthManager::instance(), &QgsAuthManager::authDatabaseEraseRequested,
            this, &QgisApp::eraseAuthenticationDatabase );
 }
@@ -12289,12 +12291,17 @@ void QgisApp::eraseAuthenticationDatabase()
 
 void QgisApp::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  // only if main window is active window
+  // Use system notifications if the main window is not the active one,
+  // push message to the message bar if the main window is active
   if ( qApp->activeWindow() != this )
-    return;
-
-  int levelint = static_cast< int >( level );
-  messageBar()->pushMessage( authtag, message, static_cast< QgsMessageBar::MessageLevel >( levelint ), 7 );
+  {
+    showSystemNotification( tr( "QGIS Authentication" ), message );
+  }
+  else
+  {
+    int levelint = static_cast< int >( level );
+    messageBar()->pushMessage( authtag, message, static_cast< QgsMessageBar::MessageLevel >( levelint ), 7 );
+  }
 }
 
 void QgisApp::completeInitialization()

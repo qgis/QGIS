@@ -442,6 +442,19 @@ class QgsAuthManager : QObject
     QMutex *mutex();
 
   signals:
+
+    /**
+     * Signals emitted on password helper failure,
+     * mainly used in the tests to exit main application loop
+     */
+    void passwordHelperFailure();
+
+    /**
+     * Signals emitted on password helper success,
+     * mainly used in the tests to exit main application loop
+     */
+    void passwordHelperSuccess();
+
     /**
      * Custom logging signal to relay to console output and QgsMessageLog
      * @see QgsMessageLog
@@ -449,7 +462,16 @@ class QgsAuthManager : QObject
      * @param tag Associated tag (title)
      * @param level Message log level
      */
-    void messageOut( const QString& message, const QString& tag, QgsAuthManager::MessageLevel level = INFO ) const;
+    void messageOut( const QString& message, const QString& tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
+
+    /**
+     * Custom logging signal to inform the user about master password <-> password manager interactions
+     * @see QgsMessageLog
+     * @param message Message to send
+     * @param tag Associated tag (title)
+     * @param level Message log level
+     */
+    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
 
     /**
      * Emitted when a password has been verify (or not)
