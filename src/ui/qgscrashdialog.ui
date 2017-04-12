@@ -489,7 +489,7 @@
      <item>
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Looks lke QGIS has crashed. Something unexpected happend that we didn't handle correctly</string>
+        <string>Looks lke QGIS has crashed. Something unexpected happened that we didn't handle correctly</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
