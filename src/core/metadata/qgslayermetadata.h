@@ -22,6 +22,8 @@
 #include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 
+class QgsMapLayer;
+
 /**
  * \ingroup core
  * \class QgsLayerMetadata
@@ -49,6 +51,11 @@ class CORE_EXPORT QgsLayerMetadata
   public:
 
     /**
+     * Map of vocabulary string to keyword list.
+     */
+    typedef QMap< QString, QStringList > KeywordMap;
+
+    /**
      * Metadata constraint structure.
      */
     struct Constraint
@@ -73,6 +80,12 @@ class CORE_EXPORT QgsLayerMetadata
        */
       QString constraint;
     };
+
+    /**
+     * A list of constraints.
+     */
+    typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
+
 
     /**
      * Metadata address structure.
@@ -181,6 +194,12 @@ class CORE_EXPORT QgsLayerMetadata
     };
 
     /**
+     * A list of contacts.
+     */
+    typedef QList< QgsLayerMetadata::Contact > ContactList;
+
+
+    /**
      * Metadata link structure.
      */
     struct Link
@@ -231,6 +250,11 @@ class CORE_EXPORT QgsLayerMetadata
        */
       QString size;
     };
+
+    /**
+     * A list of links.
+     */
+    typedef QList< QgsLayerMetadata::Link > LinkList;
 
     /**
      * Constructor for QgsLayerMetadata.
@@ -338,13 +362,13 @@ class CORE_EXPORT QgsLayerMetadata
      * Returns a list of constraints associated with using the resource.
      * \see setConstraints()
      */
-    QList< QgsLayerMetadata::Constraint > constraints() const;
+    QgsLayerMetadata::ConstraintList constraints() const;
 
     /**
      * Sets the list of \a constraints associated with using the resource.
      * \see constraints()
      */
-    void setConstraints( const QList<QgsLayerMetadata::Constraint> &constraints );
+    void setConstraints( const QgsLayerMetadata::ConstraintList &constraints );
 
     /**
      * Returns a list of attribution or copyright strings associated with the resource.
@@ -411,7 +435,7 @@ class CORE_EXPORT QgsLayerMetadata
      * \see setKeywords()
      * \see keywordVocabularies()
      */
-    QMap<QString, QStringList> keywords() const;
+    KeywordMap keywords() const;
 
     /**
      * Sets the \a keywords map, which is a set of descriptive keywords associated with the resource.
@@ -425,7 +449,7 @@ class CORE_EXPORT QgsLayerMetadata
      * \see keywords()
      * \see addKeywords()
      */
-    void setKeywords( const QMap<QString, QStringList> &keywords );
+    void setKeywords( const KeywordMap &keywords );
 
     /**
      * Adds a list of descriptive \a keywords for a specified \a vocabulary. Any existing
@@ -465,7 +489,7 @@ class CORE_EXPORT QgsLayerMetadata
      * Returns a list of contact persons or entities associated with the resource.
      * \see setContacts()
      */
-    QList<QgsLayerMetadata::Contact> contacts() const;
+    QgsLayerMetadata::ContactList contacts() const;
 
     /**
      * Sets the list of \a contacts or entities associated with the resource. Any existing contacts
@@ -473,7 +497,7 @@ class CORE_EXPORT QgsLayerMetadata
      * \see contacts()
      * \see addContact()
      */
-    void setContacts( const QList<QgsLayerMetadata::Contact> &contacts );
+    void setContacts( const QgsLayerMetadata::ContactList &contacts );
 
     /**
      * Adds an individual \a contact to the existing contacts.
@@ -486,7 +510,7 @@ class CORE_EXPORT QgsLayerMetadata
      * Returns a list of online resources associated with the resource.
      * \see setLinks()
      */
-    QList<QgsLayerMetadata::Link> links() const;
+    QgsLayerMetadata::LinkList links() const;
 
     /**
      * Sets the list of online resources associated with the resource. Any existing links
@@ -494,7 +518,7 @@ class CORE_EXPORT QgsLayerMetadata
      * \see links()
      * \see addLink()
      */
-    void setLinks( const QList<QgsLayerMetadata::Link> &links );
+    void setLinks( const QgsLayerMetadata::LinkList &links );
 
     /**
      * Adds an individual \a link to the existing links.
@@ -502,6 +526,18 @@ class CORE_EXPORT QgsLayerMetadata
      * \see setLinks()
      */
     void addLink( const QgsLayerMetadata::Link &link );
+
+    /**
+     * Saves the metadata to a \a layer's custom properties (see QgsMapLayer::setCustomProperty() ).
+     * \see readFromLayer()
+     */
+    void saveToLayer( QgsMapLayer *layer ) const;
+
+    /**
+     * Reads the metadata state from a \a layer's custom properties (see QgsMapLayer::customProperty() ).
+     * \see saveToLayer()
+     */
+    void readFromLayer( const QgsMapLayer *layer );
 
   private:
 
@@ -520,7 +556,7 @@ class CORE_EXPORT QgsLayerMetadata
     QString mTitle;
     QString mAbstract;
     QString mFees;
-    QList<QgsLayerMetadata::Constraint> mConstraints;
+    ConstraintList mConstraints;
     QStringList mRights;
 
     // IMPORTANT - look up before adding anything here!!
@@ -531,11 +567,11 @@ class CORE_EXPORT QgsLayerMetadata
     /**
      * Keywords map. Key is the vocabulary, value is a list of keywords for that vocabulary.
      */
-    QMap< QString, QStringList > mKeywords;
+    KeywordMap mKeywords;
 
-    QList< Contact > mContacts;
+    ContactList mContacts;
 
-    QList< Link > mLinks;
+    LinkList mLinks;
 
     /*
      * IMPORTANT!!!!!!
@@ -546,5 +582,12 @@ class CORE_EXPORT QgsLayerMetadata
      */
 
 };
+
+Q_DECLARE_METATYPE( QgsLayerMetadata::KeywordMap )
+Q_DECLARE_METATYPE( QgsLayerMetadata::ConstraintList )
+Q_DECLARE_METATYPE( QgsLayerMetadata::ContactList )
+Q_DECLARE_METATYPE( QgsLayerMetadata::LinkList )
+
+
 
 #endif // QGSLAYERMETADATA_H

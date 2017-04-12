@@ -15,7 +15,8 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.core import (QgsLayerMetadata,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsVectorLayer)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -282,6 +283,22 @@ class TestQgsLayerMetadata(unittest.TestCase):
     def testStandard(self):
         m = self.createTestMetadata()
         self.checkExpectedMetadata(m)
+
+    def testSaveReadFromLayer(self):
+        """
+        Test saving and reading metadata from a layer
+        """
+        vl = QgsVectorLayer('Point', 'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        # save metadata to layer
+        m = self.createTestMetadata()
+        m.saveToLayer(vl)
+
+        # read back from layer and check result
+        m2 = QgsLayerMetadata()
+        m2.readFromLayer(vl)
+        self.checkExpectedMetadata(m2)
 
 
 if __name__ == '__main__':

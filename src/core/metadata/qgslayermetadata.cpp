@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayermetadata.h"
+#include "qgsmaplayer.h"
 
 QString QgsLayerMetadata::identifier() const
 {
@@ -180,4 +181,41 @@ QString QgsLayerMetadata::language() const
 void QgsLayerMetadata::setLanguage( const QString &language )
 {
   mLanguage = language;
+}
+
+void QgsLayerMetadata::saveToLayer( QgsMapLayer *layer ) const
+{
+  layer->setCustomProperty( QStringLiteral( "metadata/identifier" ), mIdentifier );
+  layer->setCustomProperty( QStringLiteral( "metadata/parentIdentifier" ), mParentIdentifier );
+  layer->setCustomProperty( QStringLiteral( "metadata/language" ), mLanguage );
+  layer->setCustomProperty( QStringLiteral( "metadata/type" ), mType );
+  layer->setCustomProperty( QStringLiteral( "metadata/title" ), mTitle );
+  layer->setCustomProperty( QStringLiteral( "metadata/abstract" ), mAbstract );
+  layer->setCustomProperty( QStringLiteral( "metadata/fees" ), mFees );
+  layer->setCustomProperty( QStringLiteral( "metadata/rights" ), mRights );
+  layer->setCustomProperty( QStringLiteral( "metadata/encoding" ), mEncoding );
+  layer->setCustomProperty( QStringLiteral( "metadata/crs" ), mCrs.authid() );
+  layer->setCustomProperty( QStringLiteral( "metadata/constraints" ), QVariant::fromValue( mConstraints ) );
+  layer->setCustomProperty( QStringLiteral( "metadata/keywords" ), QVariant::fromValue( mKeywords ) );
+  layer->setCustomProperty( QStringLiteral( "metadata/contacts" ), QVariant::fromValue( mContacts ) );
+  layer->setCustomProperty( QStringLiteral( "metadata/links" ), QVariant::fromValue( mLinks ) );
+}
+
+void QgsLayerMetadata::readFromLayer( const QgsMapLayer *layer )
+{
+  mIdentifier = layer->customProperty( QStringLiteral( "metadata/identifier" ) ).toString();
+  mParentIdentifier = layer->customProperty( QStringLiteral( "metadata/parentIdentifier" ) ).toString();
+  mLanguage = layer->customProperty( QStringLiteral( "metadata/language" ) ).toString();
+  mType = layer->customProperty( QStringLiteral( "metadata/type" ) ).toString();
+  mTitle = layer->customProperty( QStringLiteral( "metadata/title" ) ).toString();
+  mAbstract = layer->customProperty( QStringLiteral( "metadata/abstract" ) ).toString();
+  mFees = layer->customProperty( QStringLiteral( "metadata/fees" ) ).toString();
+  mRights = layer->customProperty( QStringLiteral( "metadata/rights" ) ).toStringList();
+  mEncoding = layer->customProperty( QStringLiteral( "metadata/encoding" ) ).toString();
+  QString crsAuthId = layer->customProperty( QStringLiteral( "metadata/crs" ) ).toString();
+  mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsAuthId );
+  mConstraints = layer->customProperty( QStringLiteral( "metadata/constraints" ) ).value<ConstraintList>();
+  mKeywords = layer->customProperty( QStringLiteral( "metadata/keywords" ) ).value<KeywordMap>();
+  mContacts = layer->customProperty( QStringLiteral( "metadata/contacts" ) ).value<ContactList>();
+  mLinks = layer->customProperty( QStringLiteral( "metadata/links" ) ).value<LinkList>();
 }

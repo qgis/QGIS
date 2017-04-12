@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayerMetadata
 {
 %Docstring
@@ -37,6 +38,8 @@ class QgsLayerMetadata
 %End
   public:
 
+    typedef QMap< QString, QStringList > KeywordMap;
+
     struct Constraint
     {
 
@@ -56,6 +59,9 @@ class QgsLayerMetadata
  Free-form constraint string.
 %End
     };
+
+    typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
+
 
     struct Address
     {
@@ -150,6 +156,9 @@ class QgsLayerMetadata
 %End
     };
 
+    typedef QList< QgsLayerMetadata::Contact > ContactList;
+
+
     struct Link
     {
 
@@ -194,6 +203,8 @@ class QgsLayerMetadata
  Estimated size (in bytes) of the online resource response.
 %End
     };
+
+    typedef QList< QgsLayerMetadata::Link > LinkList;
 
     QgsLayerMetadata();
 %Docstring
@@ -304,14 +315,14 @@ class QgsLayerMetadata
  \see fees()
 %End
 
-    QList< QgsLayerMetadata::Constraint > constraints() const;
+    QgsLayerMetadata::ConstraintList constraints() const;
 %Docstring
  Returns a list of constraints associated with using the resource.
  \see setConstraints()
- :rtype: list of QgsLayerMetadata.Constraint
+ :rtype: QgsLayerMetadata.ConstraintList
 %End
 
-    void setConstraints( const QList<QgsLayerMetadata::Constraint> &constraints );
+    void setConstraints( const QgsLayerMetadata::ConstraintList &constraints );
 %Docstring
  Sets the list of constraints associated with using the resource.
  \see constraints()
@@ -374,7 +385,7 @@ class QgsLayerMetadata
  \see setCrs()
 %End
 
-    QMap<QString, QStringList> keywords() const;
+    KeywordMap keywords() const;
 %Docstring
  Returns the keywords map, which is a set of descriptive keywords associated with the resource.
 
@@ -385,10 +396,10 @@ class QgsLayerMetadata
 
  \see setKeywords()
  \see keywordVocabularies()
- :rtype: QMap<str, list of str>
+ :rtype: KeywordMap
 %End
 
-    void setKeywords( const QMap<QString, QStringList> &keywords );
+    void setKeywords( const KeywordMap &keywords );
 %Docstring
  Sets the keywords map, which is a set of descriptive keywords associated with the resource.
 
@@ -438,14 +449,14 @@ class QgsLayerMetadata
  :rtype: list of str
 %End
 
-    QList<QgsLayerMetadata::Contact> contacts() const;
+    QgsLayerMetadata::ContactList contacts() const;
 %Docstring
  Returns a list of contact persons or entities associated with the resource.
  \see setContacts()
- :rtype: list of QgsLayerMetadata.Contact
+ :rtype: QgsLayerMetadata.ContactList
 %End
 
-    void setContacts( const QList<QgsLayerMetadata::Contact> &contacts );
+    void setContacts( const QgsLayerMetadata::ContactList &contacts );
 %Docstring
  Sets the list of contacts or entities associated with the resource. Any existing contacts
  will be replaced.
@@ -460,14 +471,14 @@ class QgsLayerMetadata
  \see setContacts()
 %End
 
-    QList<QgsLayerMetadata::Link> links() const;
+    QgsLayerMetadata::LinkList links() const;
 %Docstring
  Returns a list of online resources associated with the resource.
  \see setLinks()
- :rtype: list of QgsLayerMetadata.Link
+ :rtype: QgsLayerMetadata.LinkList
 %End
 
-    void setLinks( const QList<QgsLayerMetadata::Link> &links );
+    void setLinks( const QgsLayerMetadata::LinkList &links );
 %Docstring
  Sets the list of online resources associated with the resource. Any existing links
  will be replaced.
@@ -482,7 +493,22 @@ class QgsLayerMetadata
  \see setLinks()
 %End
 
+    void saveToLayer( QgsMapLayer *layer ) const;
+%Docstring
+ Saves the metadata to a layer's custom properties (see QgsMapLayer.setCustomProperty() ).
+ \see readFromLayer()
+%End
+
+    void readFromLayer( const QgsMapLayer *layer );
+%Docstring
+ Reads the metadata state from a layer's custom properties (see QgsMapLayer.customProperty() ).
+ \see saveToLayer()
+%End
+
 };
+
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
