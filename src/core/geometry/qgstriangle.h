@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgspolygon.h"
+#include "qgscircle.h"
 #include "qgslinestring.h"
 
 /** \ingroup core
@@ -277,8 +278,17 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      */
     double circumscribedRadius( ) const;
 
-    // TODO:
-    // QgsCircle circumscribedCircle ( ) const; // need QgsCircle (from CADDigitize.CADCircle)
+    /**
+    * Circumscribed circle of the triangle.
+    * @return The circumbscribed of the triangle with a QgsCircle.
+    * Example:
+    * \code{.py}
+    *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+    *   tri.circumscribedCircle()
+    *   # QgsCircle(Point (2.5 2.5), 3.5355339059327378, 0)
+    * \endcode
+    */
+    QgsCircle circumscribedCircle( ) const;
 
     /**
      * Center of the inscribed circle of the triangle.
@@ -304,8 +314,18 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      */
     double inscribedRadius( ) const;
 
-    // TODO:
-    // QgsCircle inscribedCircle ( ) const; // need QgsCircle (from CADDigitize.CADCircle)
+    /**
+    * Inscribed circle of the triangle.
+    * @return The inscribed of the triangle with a QgsCircle.
+    * Example:
+    * \code{.py}
+    *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+    *   tri.inscribedCircle()
+    *   # QgsCircle(Point (1.46446609406726225 3.53553390593273775), 1.4644660940672622, 0)
+    * \endcode
+    */
+    QgsCircle inscribedCircle( ) const;
+
   private:
 
     /**

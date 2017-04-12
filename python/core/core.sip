@@ -368,10 +368,12 @@
 
 %Include geometry/qgsabstractgeometry.sip
 %Include geometry/qgsbox3d.sip
+%Include geometry/qgscircle.sip
 %Include geometry/qgscircularstring.sip
 %Include geometry/qgscompoundcurve.sip
 %Include geometry/qgscurvepolygon.sip
 %Include geometry/qgscurve.sip
+%Include geometry/qgsellipse.sip
 %Include geometry/qgsgeometry.sip
 %Include geometry/qgsgeometrycollection.sip
 %Include geometry/qgsgeometryengine.sip
