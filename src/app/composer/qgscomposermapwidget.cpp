@@ -119,6 +119,8 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
   loadGridEntries();
   loadOverviewEntries();
 
+  connect( mMapRotationSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsComposerMapWidget::rotationChanged );
+
   blockAllSignals( false );
 }
 
@@ -491,7 +493,7 @@ void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mMapRotationSpinBox_valueChanged( double value )
+void QgsComposerMapWidget::rotationChanged()
 {
   if ( !mComposerMap )
   {
@@ -499,7 +501,7 @@ void QgsComposerMapWidget::on_mMapRotationSpinBox_valueChanged( double value )
   }
 
   mComposerMap->beginCommand( tr( "Map rotation changed" ), QgsComposerMergeCommand::ComposerMapRotation );
-  mComposerMap->setMapRotation( value );
+  mComposerMap->setMapRotation( mMapRotationSpinBox->value() );
   mComposerMap->endCommand();
   mComposerMap->cache();
   mComposerMap->update();

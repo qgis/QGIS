@@ -39,7 +39,6 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
   public slots:
     void on_mPreviewModeComboBox_activated( int i );
     void on_mScaleLineEdit_editingFinished();
-    void on_mMapRotationSpinBox_valueChanged( double value );
     void on_mSetToMapCanvasExtentButton_clicked();
     void on_mViewExtentInCanvasButton_clicked();
     void on_mUpdatePreviewButton_clicked();
@@ -131,6 +130,8 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
 
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );
+
+    void rotationChanged();
 
     void handleChangedFrameDisplay( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::DisplayMode mode );
     void handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString &text );
