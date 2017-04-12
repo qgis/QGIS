@@ -218,7 +218,6 @@ core/fieldformatter/qgsrelationreferencefieldformatter.sip
 core/fieldformatter/qgsvaluemapfieldformatter.sip
 core/fieldformatter/qgsvaluerelationfieldformatter.sip
 core/layertree/qgslayertree.sip
-core/layertree/qgslayertreelayer.sip
 core/layertree/qgslayertreemodel.sip
 core/layertree/qgslayertreemodellegendnode.sip
 core/layertree/qgslayertreenode.sip
