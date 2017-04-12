@@ -234,6 +234,12 @@ int QgsSettings::beginReadArray( const QString &prefix )
   return size;
 }
 
+void QgsSettings::beginWriteArray( const QString &prefix, int size )
+{
+  mUsingGlobalArray = false;
+  mUserSettings->beginWriteArray( prefix, size );
+}
+
 void QgsSettings::endArray()
 {
   mUserSettings->endArray();

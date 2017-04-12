@@ -33,8 +33,10 @@ class QgsSettings : QObject
   - Gui
   - Server
   - Plugins
-  - Misc
   - Auth
+  - App
+  - Providers
+  - Misc
 
 .. versionadded:: 3
 %End
@@ -169,17 +171,30 @@ Set the Global Settings QSettings storage file
 Adds prefix to the current group and starts reading from an array. Returns the size of the array.
  :rtype: int
 %End
+
+    void beginWriteArray( const QString &prefix, int size = -1 );
+%Docstring
+ Adds prefix to the current group and starts writing an array of size size.
+ If size is -1 (the default), it is automatically determined based on the indexes of the entries written.
+.. note::
+
+   This will completely shadow any existing array with the same name in the global settings
+%End
     void endArray();
 %Docstring
 Closes the array that was started using beginReadArray() or beginWriteArray().
 %End
+
     void setArrayIndex( int i );
 %Docstring
-remove(), and contains() will operate on the array entry at that index.
+ Sets the current array index to i. Calls to functions such as setValue(), value(),
+ remove(), and contains() will operate on the array entry at that index.
 %End
+
     void setValue( const QString &key, const QVariant &value, const QgsSettings::Section section = QgsSettings::NoSection );
 %Docstring
-An optional Section argument can be used to set a value to a specific Section.
+ Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
+ An optional Section argument can be used to set a value to a specific Section.
 %End
 
     SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
@@ -205,9 +220,11 @@ An optional Section argument can be used to set a value to a specific Section.
 
     sipIsErr = !sipRes;
 %End
+
     bool contains( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection ) const;
 %Docstring
-If a group is set using beginGroup(), key is taken to be relative to that group.
+ Returns true if there exists a setting called key; returns false otherwise.
+ If a group is set using beginGroup(), key is taken to be relative to that group.
  :rtype: bool
 %End
     QString fileName() const;
@@ -215,9 +232,13 @@ If a group is set using beginGroup(), key is taken to be relative to that group.
 Returns the path where settings written using this QSettings object are stored.
  :rtype: str
 %End
+
     void sync();
 %Docstring
-loop at regular intervals, so you normally don't need to call it yourself.
+ Writes any unsaved changes to permanent storage, and reloads any settings that have been
+ changed in the meantime by another application.
+ This function is called automatically from QSettings's destructor and by the event
+ loop at regular intervals, so you normally don't need to call it yourself.
 %End
     void remove( const QString &key );
 %Docstring

@@ -44,8 +44,10 @@
  *  - Gui
  *  - Server
  *  - Plugins
- *  - Misc
  *  - Auth
+ *  - App
+ *  - Providers
+ *  - Misc
  *
  * \since QGIS 3
  */
@@ -154,13 +156,23 @@ class CORE_EXPORT QgsSettings : public QObject
     static bool setGlobalSettingsPath( QString path );
     //! Adds prefix to the current group and starts reading from an array. Returns the size of the array.
     int beginReadArray( const QString &prefix );
+
+    /** Adds prefix to the current group and starts writing an array of size size.
+     * If size is -1 (the default), it is automatically determined based on the indexes of the entries written.
+     * @note This will completely shadow any existing array with the same name in the global settings
+     */
+    void beginWriteArray( const QString &prefix, int size = -1 );
     //! Closes the array that was started using beginReadArray() or beginWriteArray().
     void endArray();
-    //! Sets the current array index to i. Calls to functions such as setValue(), value(),
-    //! remove(), and contains() will operate on the array entry at that index.
+
+    /** Sets the current array index to i. Calls to functions such as setValue(), value(),
+     * remove(), and contains() will operate on the array entry at that index.
+     */
     void setArrayIndex( int i );
-    //! Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
-    //! An optional Section argument can be used to set a value to a specific Section.
+
+    /** Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
+     * An optional Section argument can be used to set a value to a specific Section.
+     */
     void setValue( const QString &key, const QVariant &value, const QgsSettings::Section section = QgsSettings::NoSection );
 
     /** Returns the value for setting key. If the setting doesn't exist, it will be
@@ -190,15 +202,19 @@ class CORE_EXPORT QgsSettings : public QObject
     sipIsErr = !sipRes;
     % End
 #endif
-    //! Returns true if there exists a setting called key; returns false otherwise.
-    //! If a group is set using beginGroup(), key is taken to be relative to that group.
+
+    /** Returns true if there exists a setting called key; returns false otherwise.
+     * If a group is set using beginGroup(), key is taken to be relative to that group.
+     */
     bool contains( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection ) const;
     //! Returns the path where settings written using this QSettings object are stored.
     QString fileName() const;
-    //! Writes any unsaved changes to permanent storage, and reloads any settings that have been
-    //! changed in the meantime by another application.
-    //! This function is called automatically from QSettings's destructor and by the event
-    //! loop at regular intervals, so you normally don't need to call it yourself.
+
+    /** Writes any unsaved changes to permanent storage, and reloads any settings that have been
+     * changed in the meantime by another application.
+     * This function is called automatically from QSettings's destructor and by the event
+     * loop at regular intervals, so you normally don't need to call it yourself.
+     */
     void sync();
     //! Removes the setting key and any sub-settings of key.
     void remove( const QString &key );
