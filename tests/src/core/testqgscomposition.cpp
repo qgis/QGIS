@@ -720,7 +720,6 @@ void TestQgsComposition::legendRestoredFromTemplate()
   QCOMPARE( layerNode2->layer(), layer );
   QCOMPARE( model2->data( model->node2index( layerNode2 ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
 
-#if 0 //expected failure (#2738)
   QString oldId = layer->id();
   // new test
   // remove existing layer
@@ -749,7 +748,6 @@ void TestQgsComposition::legendRestoredFromTemplate()
   QVERIFY( layerNode3 );
   QCOMPARE( layerNode3->layer(), layer2 );
   QCOMPARE( model3->data( model->node2index( layerNode3 ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
-#endif
 }
 
 void TestQgsComposition::legendRestoredFromTemplateAutoUpdate()

@@ -49,8 +49,9 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
     virtual QgsLayerTreeLayer* clone() const /Factory/;
 
     //! Resolves reference to layer from stored layer ID (if it has not been resolved already)
-    //! @note added in 3.0
-    virtual void resolveReferences( const QgsProject* project );
+    //! \since QGIS 3.0
+    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
+
 
   signals:
     //! emitted when a previously unavailable layer got loaded

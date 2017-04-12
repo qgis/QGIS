@@ -103,7 +103,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
     //! Calls resolveReferences() on child tree nodes
     //! \since QGIS 3.0
-    virtual void resolveReferences( const QgsProject *project ) override;
+    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
 
     //! Check or uncheck a node and all its children (taking into account exclusion rules)
     virtual void setItemVisibilityCheckedRecursive( bool checked ) override;

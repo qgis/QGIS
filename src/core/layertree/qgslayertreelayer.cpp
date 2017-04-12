@@ -28,9 +28,9 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
   attachToLayer();
 }
 
-QgsLayerTreeLayer::QgsLayerTreeLayer( const QString &layerId, const QString &name )
+QgsLayerTreeLayer::QgsLayerTreeLayer( const QString &layerId, const QString &name, const QString &source, const QString &provider )
   : QgsLayerTreeNode( NodeLayer, true )
-  , mRef( layerId )
+  , mRef( layerId, name, source, provider )
   , mLayerName( name.isEmpty() ? QStringLiteral( "(?)" ) : name )
 {
 }
@@ -43,12 +43,25 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
   attachToLayer();
 }
 
-void QgsLayerTreeLayer::resolveReferences( const QgsProject *project )
+void QgsLayerTreeLayer::resolveReferences( const QgsProject *project, bool looseMatching )
 {
   if ( mRef.layer )
     return;  // already assigned
 
   QgsMapLayer *layer = project->mapLayer( mRef.layerId );
+
+  if ( !layer && looseMatching && !mRef.name.isEmpty() )
+  {
+    Q_FOREACH ( QgsMapLayer *l, project->mapLayersByName( mRef.name ) )
+    {
+      if ( mRef.layerMatchesSource( l ) )
+      {
+        layer = l;
+        break;
+      }
+    }
+  }
+
   if ( !layer )
     return;
 
@@ -98,11 +111,15 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element )
 
   QString layerID = element.attribute( QStringLiteral( "id" ) );
   QString layerName = element.attribute( QStringLiteral( "name" ) );
+
+  QString providerKey = element.attribute( "providerKey" );
+  QString source = element.attribute( "source" );
+
   Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) );
   bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
 
   // needs to have the layer reference resolved later
-  QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layerID, layerName );
+  QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layerID, layerName, source, providerKey );
 
   nodeLayer->readCommonXml( element );
 
@@ -125,6 +142,31 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement )
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-layer" ) );
   elem.setAttribute( QStringLiteral( "id" ), layerId() );
   elem.setAttribute( QStringLiteral( "name" ), name() );
+
+  if ( mRef.layer )
+  {
+    elem.setAttribute( "source", mRef.layer->publicSource() );
+    QString providerKey;
+    switch ( mRef.layer->type() )
+    {
+      case QgsMapLayer::VectorLayer:
+      {
+        QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mRef.layer );
+        providerKey = vl->dataProvider()->name();
+        break;
+      }
+      case QgsMapLayer::RasterLayer:
+      {
+        QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( mRef.layer );
+        providerKey = rl->dataProvider()->name();
+        break;
+      }
+      case QgsMapLayer::PluginLayer:
+        break;
+    }
+    elem.setAttribute( "providerKey", providerKey );
+  }
+
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
   elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? "1" : "0" );
 

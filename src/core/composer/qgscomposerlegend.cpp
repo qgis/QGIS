@@ -489,7 +489,7 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
   {
     std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem ) );
     if ( mComposition )
-      tree->resolveReferences( mComposition->project() );
+      tree->resolveReferences( mComposition->project(), true );
     setCustomLayerTree( tree.release() );
   }
   else

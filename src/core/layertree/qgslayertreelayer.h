@@ -43,7 +43,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     explicit QgsLayerTreeLayer( QgsMapLayer *layer );
     QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
 
-    explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString() );
+    explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
 
     QString layerId() const { return mRef.layerId; }
 
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     //! Resolves reference to layer from stored layer ID (if it has not been resolved already)
     //! \since QGIS 3.0
-    virtual void resolveReferences( const QgsProject *project ) override;
+    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
 
   private slots:
     //! Emits a nameChanged() signal if layer's name has changed

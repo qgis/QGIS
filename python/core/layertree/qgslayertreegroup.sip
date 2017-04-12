@@ -79,8 +79,11 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     virtual QgsLayerTreeGroup* clone() const /Factory/;
 
     //! Calls resolveReferences() on child tree nodes
-    //! @note added in 3.0
-    virtual void resolveReferences( const QgsProject* project );
+    //! \since QGIS 3.0
+    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
+
+    //! Check or uncheck a node and all its children (taking into account exclusion rules)
+    virtual void setItemVisibilityCheckedRecursive( bool checked );
 
     //! Return whether the group is mutually exclusive (only one child can be checked at a time)
     //! @note added in 2.12
