@@ -4,9 +4,9 @@
 ***************************************************************************
     BarPlot.py
     ---------------------
-    Date                 : January 2013
-    Copyright            : (C) 2013 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : March 2015
+    Copyright            : (C) 2017 by Matteo Ghetta
+    Email                : matteo dot ghetta at gmail dot com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'January 2013'
-__copyright__ = '(C) 2013, Victor Olaya'
+__author__ = 'Matteo Ghetta'
+__date__ = 'March 2017'
+__copyright__ = '(C) 2017, Matteo Ghetta'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -31,18 +31,20 @@ import plotly.graph_objs as go
 from qgis.core import (QgsApplication)
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterSelection
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.outputs import OutputHTML
 from processing.tools import vector
 from processing.tools import dataobjects
 
 
-class BarPlot(GeoAlgorithm):
+class BoxPlot(GeoAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
+    MSD = 'MSD'
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerQgis.svg")
@@ -54,10 +56,10 @@ class BarPlot(GeoAlgorithm):
         return self.tr('Graphics')
 
     def name(self):
-        return 'barplot'
+        return 'boxplot'
 
     def displayName(self):
-        return self.tr('Bar plot')
+        return self.tr('Box plot')
 
     def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
@@ -69,8 +71,16 @@ class BarPlot(GeoAlgorithm):
                                               self.tr('Value field'),
                                               self.INPUT,
                                               ParameterTableField.DATA_TYPE_NUMBER))
+        msd = [self.tr('Show Mean'),
+               self.tr('Show Standard Deviation'),
+               self.tr('Don\'t show Mean and Standard Deviation')
+               ]
+        self.addParameter(ParameterSelection(
+            self.MSD,
+            self.tr('Additional Statistic Lines'),
+            msd, default=0))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Box plot')))
 
     def processAlgorithm(self, feedback):
         layer = dataobjects.getLayerFromString(
@@ -84,6 +94,17 @@ class BarPlot(GeoAlgorithm):
 
         x_var = [i[namefieldname] for i in layer.getFeatures()]
 
-        data = [go.Bar(x=x_var,
-                       y=values[valuefieldname])]
+        msdIndex = self.getParameterValue(self.MSD)
+        msd = True
+
+        if msdIndex == 1:
+            msd = 'sd'
+        elif msdIndex == 2:
+            msd = False
+
+        data = [go.Box(
+                x=x_var,
+                y=values[valuefieldname],
+                boxmean=msd)]
+
         plt.offline.plot(data, filename=output, auto_open=False)

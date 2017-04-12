@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    BarPlot.py
+    EquivalentNumField.py
     ---------------------
     Date                 : January 2013
     Copyright            : (C) 2013 by Victor Olaya
@@ -29,20 +29,22 @@ import plotly as plt
 import plotly.graph_objs as go
 
 from qgis.core import (QgsApplication)
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
+
 from processing.tools import vector
 from processing.tools import dataobjects
 
 
-class BarPlot(GeoAlgorithm):
+class VectorLayerScatterplot3D(GeoAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
-    NAME_FIELD = 'NAME_FIELD'
-    VALUE_FIELD = 'VALUE_FIELD'
+    XFIELD = 'XFIELD'
+    YFIELD = 'YFIELD'
+    ZFIELD = 'ZFIELD'
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerQgis.svg")
@@ -54,36 +56,45 @@ class BarPlot(GeoAlgorithm):
         return self.tr('Graphics')
 
     def name(self):
-        return 'barplot'
+        return 'scatter3dplot'
 
     def displayName(self):
-        return self.tr('Bar plot')
+        return self.tr('Scatter3D plot')
 
     def defineCharacteristics(self):
-        self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
-        self.addParameter(ParameterTableField(self.NAME_FIELD,
-                                              self.tr('Category name field'),
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input layer')))
+        self.addParameter(ParameterTableField(self.XFIELD,
+                                              self.tr('X attribute'),
                                               self.INPUT,
-                                              ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.VALUE_FIELD,
-                                              self.tr('Value field'),
+                                              ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterTableField(self.YFIELD,
+                                              self.tr('Y attribute'),
+                                              self.INPUT,
+                                              ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterTableField(self.ZFIELD,
+                                              self.tr('Z attribute'),
                                               self.INPUT,
                                               ParameterTableField.DATA_TYPE_NUMBER))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot 3D')))
 
     def processAlgorithm(self, feedback):
+
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
-        namefieldname = self.getParameterValue(self.NAME_FIELD)
-        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
+        xfieldname = self.getParameterValue(self.XFIELD)
+        yfieldname = self.getParameterValue(self.YFIELD)
+        zfieldname = self.getParameterValue(self.ZFIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, valuefieldname)
+        values = vector.values(layer, xfieldname, yfieldname, zfieldname)
 
-        x_var = [i[namefieldname] for i in layer.getFeatures()]
+        data = [go.Scatter3d(
+                x=values[xfieldname],
+                y=values[yfieldname],
+                z=values[zfieldname],
+                mode='markers')]
 
-        data = [go.Bar(x=x_var,
-                       y=values[valuefieldname])]
         plt.offline.plot(data, filename=output, auto_open=False)
