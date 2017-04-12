@@ -47,6 +47,9 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
 #endif
 
+    /**
+     * Constructor for QgsLayerTreeLayer using weak references to layer ID, \a name, public \a source, and \a provider key.
+     */
     explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
 
     QString layerId() const { return mRef.layerId; }

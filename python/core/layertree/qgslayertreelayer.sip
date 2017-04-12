@@ -34,6 +34,9 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 
 
     explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
+%Docstring
+ Constructor for QgsLayerTreeLayer using weak references to layer ID, name, public source, and provider key.
+%End
 
     QString layerId() const;
 %Docstring
