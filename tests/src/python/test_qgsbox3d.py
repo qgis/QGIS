@@ -17,7 +17,8 @@ import qgis  # NOQA
 from qgis.core import (QgsBox3d,
                        QgsPoint,
                        QgsPointV2,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsRectangle)
 
 from qgis.testing import unittest
 
@@ -144,6 +145,15 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertTrue(box.contains(QgsPointV2(QgsWkbTypes.Point, 6, 7)))
         self.assertFalse(box.contains(QgsPointV2(QgsWkbTypes.Point, 16, 7)))
         self.assertFalse(box.contains(QgsPointV2(QgsWkbTypes.Point, 6, 17)))
+
+    def testVolume(self):
+        box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        self.assertEqual(box.volume(), 336.0)
+
+    def testToRectangle(self):
+        box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        rect = box.toRectangle()
+        self.assertEqual(rect, QgsRectangle(5, 6, 11, 13))
 
 
 if __name__ == '__main__':

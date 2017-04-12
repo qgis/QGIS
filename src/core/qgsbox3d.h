@@ -157,6 +157,11 @@ class CORE_EXPORT QgsBox3d
     double depth() const { return mZmax - mZmin; }
 
     /**
+     * Returns the volume of the box.
+     */
+    double volume() const { return mBounds2d.area() * ( mZmax - mZmin ); }
+
+    /**
      * Returns the intersection of this box and another 3D box.
      */
     QgsBox3d intersect( const QgsBox3d &other ) const;
@@ -178,6 +183,11 @@ class CORE_EXPORT QgsBox3d
      * will be performed on the x/y extent of the box only.
      */
     bool contains( const QgsPointV2 &point ) const;
+
+    /**
+     * Converts the box to a 2D rectangle.
+     */
+    QgsRectangle toRectangle() const { return mBounds2d; }
 
   private:
 

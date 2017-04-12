@@ -242,6 +242,16 @@ class TestQgsRectangle(unittest.TestCase):
                      (myExpectedString, myString))
         assert myString == myExpectedString, myMessage
 
+    def testToBox3d(self):
+        rect = QgsRectangle(0, 0.1, 0.2, 0.3)
+        box = rect.toBox3d(0.4, 0.5)
+        self.assertEqual(box.xMinimum(), 0.0)
+        self.assertEqual(box.yMinimum(), 0.1)
+        self.assertEqual(box.zMinimum(), 0.4)
+        self.assertEqual(box.xMaximum(), 0.2)
+        self.assertEqual(box.yMaximum(), 0.3)
+        self.assertEqual(box.zMaximum(), 0.5)
+
 
 if __name__ == '__main__':
     unittest.main()

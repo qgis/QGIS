@@ -24,6 +24,7 @@
 
 class QString;
 class QRectF;
+class QgsBox3d;
 #include "qgspoint.h"
 
 
@@ -273,6 +274,13 @@ class CORE_EXPORT QgsRectangle
      * Swap x/y coordinates in the rectangle.
      */
     void invert();
+
+    /**
+     * Converts the rectangle to a 3D box, with the specified
+     * \a zMin and \a zMax z values.
+     * \since QGIS 3.0
+     */
+    QgsBox3d toBox3d( double zMin, double zMax ) const;
 
   private:
 

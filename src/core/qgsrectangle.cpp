@@ -28,6 +28,7 @@
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
+#include "qgsbox3d.h"
 
 QgsRectangle::QgsRectangle( double xMin, double yMin, double xMax, double yMax )
   : mXmin( xMin )
@@ -375,6 +376,11 @@ void QgsRectangle::invert()
   tmp = mXmax;
   mXmax = mYmax;
   mYmax = tmp;
+}
+
+QgsBox3d QgsRectangle::toBox3d( double zMin, double zMax ) const
+{
+  return QgsBox3d( mXmin, mYmin, zMin, mXmax, mYmax, zMax );
 }
 
 QDataStream &operator<<( QDataStream &out, const QgsRectangle &rectangle )

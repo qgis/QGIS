@@ -290,6 +290,14 @@ Copy constructor
  Swap x/y coordinates in the rectangle.
 %End
 
+    QgsBox3d toBox3d( double zMin, double zMax ) const;
+%Docstring
+ Converts the rectangle to a 3D box, with the specified
+ zMin and zMax z values.
+.. versionadded:: 3.0
+ :rtype: QgsBox3d
+%End
+
 };
 
 

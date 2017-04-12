@@ -156,6 +156,12 @@ class QgsBox3d
  :rtype: float
 %End
 
+    double volume() const;
+%Docstring
+ Returns the volume of the box.
+ :rtype: float
+%End
+
     QgsBox3d intersect( const QgsBox3d &other ) const;
 %Docstring
  Returns the intersection of this box and another 3D box.
@@ -181,6 +187,12 @@ class QgsBox3d
  If the point is a 2D point (no z-coordinate), then the containment test
  will be performed on the x/y extent of the box only.
  :rtype: bool
+%End
+
+    QgsRectangle toRectangle() const;
+%Docstring
+ Converts the box to a 2D rectangle.
+ :rtype: QgsRectangle
 %End
 
 };
