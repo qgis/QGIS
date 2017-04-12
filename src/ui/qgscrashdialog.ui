@@ -468,7 +468,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="mCrashHeaderMessage">
        <property name="font">
         <font>
          <family>MS Shell Dlg 2</family>
@@ -482,14 +482,14 @@
         <string notr="true">font: 75 30pt &quot;MS Shell Dlg 2&quot;;</string>
        </property>
        <property name="text">
-        <string>Ouch!</string>
+        <string/>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="mCrashMessage">
        <property name="text">
-        <string>Looks lke QGIS has crashed. Something unexpected happened that we didn't handle correctly</string>
+        <string/>
        </property>
        <property name="wordWrap">
         <bool>true</bool>

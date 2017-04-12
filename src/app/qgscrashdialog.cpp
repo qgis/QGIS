@@ -25,4 +25,7 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   mHelpLabel->setText( tr( "Keen to help us fix? <br> <a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\"> Follow the steps to help devs.<a>" ) );
   mHelpLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
   mHelpLabel->setOpenExternalLinks( true );
+
+  mCrashHeaderMessage->setText( tr( "Ouch!" ) );
+  mCrashMessage->setText( tr("Sorry it looks like QGIS crashed. \n Something unexpected happened that we didn't handle correctly."));
 }
