@@ -4725,8 +4725,6 @@ void QgisApp::fileExit()
 
 void QgisApp::fileNew()
 {
-  QgsRuntimeProfiler *profile;
-  profile->clear();
   fileNew( true ); // prompts whether to save project
 } // fileNew()
 
