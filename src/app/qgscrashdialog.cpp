@@ -17,8 +17,12 @@
 
 #include "qgscrashdialog.h"
 
-QgsCrashDialog::QgsCrashDialog()
+QgsCrashDialog::QgsCrashDialog( QWidget *parent )
+  : QDialog( parent )
 {
   setupUi( this );
   setWindowTitle( tr( "Oh. Snap!" ) );
+  mHelpLabel->setText( tr( "Keen to help us fix? <br> <a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\"> Follow the steps to help devs.<a>" ) );
+  mHelpLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+  mHelpLabel->setOpenExternalLinks( true );
 }

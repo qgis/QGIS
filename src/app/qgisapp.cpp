@@ -12528,7 +12528,7 @@ LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
     msg = QObject::tr( "creation of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
   }
 
-  QgsCrashDialog dlg;
+  QgsCrashDialog dlg( QApplication::activeWindow() );
   if ( dlg.exec() )
   {
     QStringList arguments;

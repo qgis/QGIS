@@ -21,11 +21,18 @@
 #include "ui_qgscrashdialog.h"
 #include "qgis_app.h"
 
+/**
+ * A dialog to show a nicer crash dialog to the user.
+ */
 class APP_EXPORT QgsCrashDialog : public QDialog, private Ui::QgsCrashDialog
 {
     Q_OBJECT
   public:
-    QgsCrashDialog( );
+
+    /**
+     * A dialog to show a nicer crash dialog to the user.
+     */
+    QgsCrashDialog( QWidget *parent = nullptr );
 };
 
 #endif // QGSCRASHDIALOG_H
