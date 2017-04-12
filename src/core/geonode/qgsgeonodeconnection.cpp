@@ -184,7 +184,7 @@ QVariantList QgsGeoNodeConnection::getMaps()
   return layerList;
 }
 
-QString QgsGeoNodeConnection::wmsUrl( QString &resourceID )
+QString QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceType )
 {
   // Example CSW url
   // demo.geonode.org/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=
@@ -215,8 +215,8 @@ QString QgsGeoNodeConnection::wmsUrl( QString &resourceID )
       QDomNode referenceNode = referenceNodeList.at( i );
       QDomNamedNodeMap attributes = referenceNode.attributes();
       QString scheme = attributes.namedItem( "scheme" ).firstChild().nodeValue();
-      // Trick to get the WMS Url from CSW
-      if ( scheme.startsWith( "OGC" ) && scheme.contains( "WMS" ) )
+      // Trick to get the WMS / WFS Url from CSW
+      if ( scheme.startsWith( "OGC" ) && scheme.contains( serviceType ) )
       {
         QString url = referenceNode.firstChild().nodeValue();
         return url;

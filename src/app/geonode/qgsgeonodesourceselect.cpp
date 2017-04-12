@@ -30,7 +30,8 @@ enum
 {
   MODEL_IDX_TITLE,
   MODEL_IDX_NAME,
-  MODEL_IDX_TYPE
+  MODEL_IDX_TYPE,
+  MODEL_IDX_WEB_SERVICE
 };
 
 QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
@@ -67,7 +68,8 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
   mModel = new QStandardItemModel();
   mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( tr( "Title" ) ) );
   mModel->setHorizontalHeaderItem( MODEL_IDX_NAME, new QStandardItem( tr( "Name" ) ) );
-  mModel->setHorizontalHeaderItem( MODEL_IDX_TYPE, new QStandardItem( tr( "Service Type" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_TYPE, new QStandardItem( tr( "Type" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_WEB_SERVICE, new QStandardItem( tr( "Web Service" ) ) );
 
   mModelProxy = new QSortFilterProxyModel( this );
   mModelProxy->setSourceModel( mModel );
@@ -192,13 +194,39 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
   {
     Q_FOREACH ( const QVariant &layer, layers )
     {
-      QStandardItem *titleItem = new QStandardItem( layer.toMap()["title"].toString() );
-      QStandardItem *nameItem = new QStandardItem( layer.toMap()["name"].toString() );
-      QStandardItem *serviceTypeItem = new QStandardItem( "Feature Service" );
+      QString uuid = layer.toMap()["uuid"].toString();
+      QString wmsURL = connection.serviceUrl( uuid, QString( "WMS" ) );
+      QString wfsURL = connection.serviceUrl( uuid, QString( "WFS" ) );
+      if ( !wmsURL.isEmpty() )
+      {
+//          qDebug() << "WMS Url for " << layer.toMap()["title"].toString() << " : " << wmsURL;
+        QStandardItem *titleItem = new QStandardItem( layer.toMap()["title"].toString() );
+        QStandardItem *nameItem = new QStandardItem( layer.toMap()["name"].toString() );
+        QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
+        QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WMS" ) );
 
-      titleItem->setData( layer.toMap()["uuid"],  Qt::UserRole + 1 );
-      typedef QList< QStandardItem * > StandardItemList;
-      mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem );
+        titleItem->setData( uuid,  Qt::UserRole + 1 );
+        titleItem->setData( wmsURL,  Qt::UserRole + 2 );
+        typedef QList< QStandardItem * > StandardItemList;
+        mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
+      }
+      if ( !wfsURL.isEmpty() )
+      {
+//          qDebug() << "WFS Url for " << layer.toMap()["title"].toString() << " : " << wfsURL;
+        QStandardItem *titleItem = new QStandardItem( layer.toMap()["title"].toString() );
+        QStandardItem *nameItem = new QStandardItem( layer.toMap()["name"].toString() );
+        QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
+        QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WFS" ) );
+
+        titleItem->setData( uuid,  Qt::UserRole + 1 );
+        titleItem->setData( wfsURL,  Qt::UserRole + 2 );
+        typedef QList< QStandardItem * > StandardItemList;
+        mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
+      }
+      if ( wmsURL.isEmpty() && wfsURL.isEmpty() )
+      {
+        qDebug() << "Layer " << layer.toMap()["title"].toString() << " does not have wfs or wms url.";
+      }
     }
   }
 
@@ -217,7 +245,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
     {
       QStandardItem *titleItem = new QStandardItem( map.toMap()["title"].toString() );
       QStandardItem *nameItem = new QStandardItem( "-" );
-      QStandardItem *serviceTypeItem = new QStandardItem( "Map Service" );
+      QStandardItem *serviceTypeItem = new QStandardItem( tr( "Map" ) );
       typedef QList< QStandardItem * > StandardItemList;
       mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem );
     }
@@ -275,7 +303,6 @@ void QgsGeoNodeSourceSelect::filterChanged( const QString &text )
 
 void QgsGeoNodeSourceSelect::treeViewSelectionChanged()
 {
-  qDebug() << "Treeview clicked";
   mAddButton->setEnabled( true );
 }
 
@@ -286,7 +313,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( !currentIndex.isValid() )
   {
-    qDebug() << "current index is invalid";
+    qDebug() << "Current index is invalid";
     return;
   }
 
@@ -305,37 +332,36 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
     qDebug() << "Model index row " << row;
     QString uuid = mModel->item( row, 0 )->data( Qt::UserRole + 1 ).toString();
     QString layerName = mModel->item( row, 0 )->text();
-    qDebug() << "Layer name: " << layerName;
+    QString webServiceType = mModel->item( row, 3 )->text();
+    QString serviceURL = mModel->item( row, 0 )->data( Qt::UserRole + 2 ).toString();
+
+    qDebug() << "Layer name: " << layerName << " Type: " << webServiceType;
     qDebug() << "UUID: " << uuid;
 
     QgsGeoNodeConnection connection( cmbConnections->currentText() );
-    QString wmsURL = connection.wmsUrl( uuid );
-    qDebug() << "wmsURL: " << wmsURL;
-    if ( wmsURL.isEmpty() )
+    if ( webServiceType == "WMS" )
     {
-      qDebug() << "wmsURL is empty. Return";
-      return;
+      qDebug() << "Adding WMS layer of " << layerName;
+      QgsDataSourceUri uri;
+      uri.setParam( QStringLiteral( "url" ), serviceURL );
+
+      // Set static first, to see that it works. Need to think about the UI also.
+      QString format( "image/png" );
+      QString crs( "EPSG:4326" );
+      QString styles( "" );
+      QString contextualWMSLegend( "0" );
+
+      uri.setParam( QStringLiteral( "contextualWMSLegend" ), contextualWMSLegend );
+      uri.setParam( QStringLiteral( "layers" ), layerName );
+      uri.setParam( QStringLiteral( "styles" ), styles );
+      uri.setParam( QStringLiteral( "format" ), format );
+      uri.setParam( QStringLiteral( "crs" ), crs );
+
+      qDebug() << "Add From GeoNode: " << uri.encodedUri();
+
+      emit addRasterLayer( uri.encodedUri(),
+                           layerName,
+                           QStringLiteral( "wms" ) );
     }
-
-    QgsDataSourceUri uri;
-    uri.setParam( QStringLiteral( "url" ), wmsURL );
-
-    // Set static first, to see that it works. Need to think about the UI also.
-    QString format( "image/png" );
-    QString crs( "EPSG:4326" );
-    QString styles( "" );
-    QString contextualWMSLegend( "0" );
-
-    uri.setParam( QStringLiteral( "contextualWMSLegend" ), contextualWMSLegend );
-    uri.setParam( QStringLiteral( "layers" ), layerName );
-    uri.setParam( QStringLiteral( "styles" ), styles );
-    uri.setParam( QStringLiteral( "format" ), format );
-    uri.setParam( QStringLiteral( "crs" ), crs );
-    qDebug() << "Uri Encode Uri: " << uri.encodedUri();
-
-    emit addRasterLayer( uri.encodedUri(),
-                         layerName,
-                         QStringLiteral( "wms" ) );
-
   }
 }

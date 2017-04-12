@@ -147,7 +147,7 @@ void TestQgsGeoNodeConnection::testGetWMSUrl()
   QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
 
   QString layerID = "1c863918-f9e8-11e6-ab35-0e23392a5c01";
-  QString WMSUrl = geonodeConnection.wmsUrl( layerID );
+  QString WMSUrl = geonodeConnection.serviceUrl( layerID, QString( "WMS" ) );
   std::cout << WMSUrl.toStdString();
   QVERIFY( WMSUrl == "http://demo.geonode.org/geoserver/geonode/wms" );
 }

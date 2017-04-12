@@ -62,7 +62,7 @@ class CORE_EXPORT QgsGeoNodeConnection : public QObject
     QVariantList getMaps();
 
     //! Return WMS url for the layer / map / resource ID
-    QString wmsUrl( QString &resourceID );
+    QString serviceUrl( QString &resourceID, QString serviceType );
 
     // Methods below can be moved to another class. I will put here first until I decide. (Ismail)
 
