@@ -12,6 +12,7 @@
     </keywords>
     <fees>None</fees>
     <constraints type="access">None<constraints>
+    <rights>Copyright foo 2017</rights>
     <encoding>utf-8</encoding>
     <crs>EPSG:4326</crs>
     <extent>
