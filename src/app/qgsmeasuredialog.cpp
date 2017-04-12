@@ -527,6 +527,8 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareMiles ), QgsUnitTypes::AreaSquareMiles );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaHectares ), QgsUnitTypes::AreaHectares );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaAcres ), QgsUnitTypes::AreaAcres );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareCentimeters ), QgsUnitTypes::AreaSquareCentimeters );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareMillimeters ), QgsUnitTypes::AreaSquareMillimeters );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareNauticalMiles ), QgsUnitTypes::AreaSquareNauticalMiles );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareDegrees ), QgsUnitTypes::AreaSquareDegrees );
     mUnitsCombo->addItem( tr( "map units" ), QgsUnitTypes::AreaUnknownUnit );
@@ -538,8 +540,10 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceFeet ), QgsUnitTypes::DistanceFeet );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceYards ), QgsUnitTypes::DistanceYards );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMiles ), QgsUnitTypes::DistanceMiles );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceDegrees ), QgsUnitTypes::DistanceDegrees );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceNauticalMiles ), QgsUnitTypes::DistanceNauticalMiles );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceCentimeters ), QgsUnitTypes::DistanceCentimeters );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMillimeters ), QgsUnitTypes::DistanceMillimeters );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceDegrees ), QgsUnitTypes::DistanceDegrees );
     mUnitsCombo->addItem( tr( "map units" ), QgsUnitTypes::DistanceUnknownUnit );
   }
 }
