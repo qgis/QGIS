@@ -63,32 +63,17 @@ bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QgsGeometryChec
 void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  for ( const QString &layerId : featureIds.keys() )
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
-    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
+    const QgsAbstractGeometry *geom = layerFeature.geometry();
+    for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
-      continue;
-    }
-    for ( QgsFeatureId featureid : featureIds[layerId] )
-    {
-      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-      QgsFeature feature;
-      if ( !featurePool->get( featureid, feature ) )
+      for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        continue;
-      }
-      QgsGeometry featureGeom = feature.geometry();
-      QgsAbstractGeometry *geom = featureGeom.geometry();
-
-      for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
-      {
-        for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
+        for ( const QgsGeometryUtils::SelfIntersection &inter : QgsGeometryUtils::getSelfIntersections( geom, iPart, iRing, mContext->tolerance ) )
         {
-          for ( const QgsGeometryUtils::SelfIntersection &inter : QgsGeometryUtils::getSelfIntersections( geom, iPart, iRing, mContext->tolerance ) )
-          {
-            errors.append( new QgsGeometrySelfIntersectionCheckError( this, layerId, featureid, inter.point, QgsVertexId( iPart, iRing ), inter ) );
-          }
+          errors.append( new QgsGeometrySelfIntersectionCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), inter.point, QgsVertexId( iPart, iRing ), inter ) );
         }
       }
     }
@@ -216,8 +201,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
         poly2->setExteriorRing( ringGeom2 );
 
         // Reassing interiors as necessary
-        QgsGeometryEngine *geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, mContext->tolerance );
-        QgsGeometryEngine *geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, mContext->tolerance );
+        QSharedPointer<QgsGeometryEngine> geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, mContext->tolerance );
+        QSharedPointer<QgsGeometryEngine> geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, mContext->tolerance );
         for ( int n = poly->numInteriorRings(), i = n - 1; i >= 0; --i )
         {
           if ( !geomEnginePoly1->contains( poly->interiorRing( i ) ) )
@@ -231,8 +216,6 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
             changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeRemoved, QgsVertexId( vidx.part, i ) ) );
           }
         }
-        delete geomEnginePoly1;
-        delete geomEnginePoly2;
 
         if ( method == ToMultiObject )
         {

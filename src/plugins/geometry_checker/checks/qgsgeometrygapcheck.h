@@ -28,18 +28,11 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
                               const QMap<QString, QgsFeatureIds> &neighbors,
                               double area,
                               const QgsRectangle &gapAreaBBox )
-      : QgsGeometryCheckError( check, layerId, FEATUREID_NULL, geometry->centroid(), QgsVertexId(), area, ValueArea )
+      : QgsGeometryCheckError( check, layerId, FEATUREID_NULL, geometry, geometry->centroid(), QgsVertexId(), area, ValueArea )
       , mNeighbors( neighbors )
       , mGapAreaBBox( gapAreaBBox )
     {
-      mGeometry = geometry;
     }
-    ~QgsGeometryGapCheckError()
-    {
-      delete mGeometry;
-    }
-
-    QgsAbstractGeometry *geometry() const override { return mGeometry->clone(); }
     const QMap<QString, QgsFeatureIds> &neighbors() const { return mNeighbors; }
 
     bool isEqual( QgsGeometryCheckError *other ) const override
@@ -59,8 +52,6 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
       QgsGeometryCheckError::update( other );
       // Static cast since this should only get called if isEqual == true
       const QgsGeometryGapCheckError *err = static_cast<const QgsGeometryGapCheckError *>( other );
-      delete mGeometry;
-      mGeometry = err->mGeometry->clone();
       mNeighbors = err->mNeighbors;
       mGapAreaBBox = err->mGapAreaBBox;
     }
@@ -78,7 +69,6 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
   private:
     QMap<QString, QgsFeatureIds> mNeighbors;
     QgsRectangle mGapAreaBBox;
-    QgsAbstractGeometry *mGeometry = nullptr;
 };
 
 class QgsGeometryGapCheck : public QgsGeometryCheck

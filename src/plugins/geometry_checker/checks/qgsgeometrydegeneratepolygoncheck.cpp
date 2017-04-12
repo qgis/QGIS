@@ -19,31 +19,17 @@
 void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  for ( const QString &layerId : featureIds.keys() )
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
-    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
+    const QgsAbstractGeometry *geom = layerFeature.geometry();
+    for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
-      continue;
-    }
-    for ( QgsFeatureId featureid : featureIds[layerId] )
-    {
-      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-      QgsFeature feature;
-      if ( !featurePool->get( featureid, feature ) )
+      for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        continue;
-      }
-      QgsGeometry featureGeom = feature.geometry();
-      QgsAbstractGeometry *geom = featureGeom.geometry();
-      for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
-      {
-        for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
+        if ( QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing ) < 3 )
         {
-          if ( QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing ) < 3 )
-          {
-            errors.append( new QgsGeometryCheckError( this, layerId, featureid, geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ), QgsVertexId( iPart, iRing ) ) );
-          }
+          errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ), QgsVertexId( iPart, iRing ) ) );
         }
       }
     }

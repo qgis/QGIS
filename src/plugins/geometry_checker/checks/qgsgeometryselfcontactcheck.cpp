@@ -12,80 +12,61 @@
 void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  for ( const QString &layerId : featureIds.keys() )
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
-    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
+    const QgsAbstractGeometry *geom = layerFeature.geometry();
+    for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
-      continue;
-    }
-    for ( QgsFeatureId featureid : featureIds[layerId] )
-    {
-      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-      QgsFeature feature;
-      if ( !featurePool->get( featureid, feature ) )
+      for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        continue;
-      }
-      QgsAbstractGeometry *geom = feature.geometry().geometry();
+        // Test for self-contacts
+        int n = geom->vertexCount( iPart, iRing );
+        bool isClosed = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ) == geom->vertexAt( QgsVertexId( iPart, iRing, n - 1 ) );
 
-      for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
-      {
-        for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
+        // Geometry ring without duplicate nodes
+        QVector<int> vtxMap;
+        QVector<QgsPointV2> ring;
+        vtxMap.append( 0 );
+        ring.append( geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ) );
+        for ( int i = 1; i < n; ++i )
         {
-          // Test for self-contacts
-          int n = geom->vertexCount( iPart, iRing );
-          bool isClosed = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ) == geom->vertexAt( QgsVertexId( iPart, iRing, n - 1 ) );
-
-          // Geometry ring without duplicate nodes
-          QVector<int> vtxMap;
-          QVector<QgsPoint> ring;
-          vtxMap.append( 0 );
-          ring.append( geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ) );
-          for ( int i = 1; i < n; ++i )
+          QgsPoint p = geom->vertexAt( QgsVertexId( iPart, iRing, i ) );
+          if ( QgsGeometryUtils::sqrDistance2D( p, ring.last() ) > mContext->tolerance * mContext->tolerance )
           {
-<<<<<<< HEAD
-            QgsPoint p = geom->vertexAt( QgsVertexId( iPart, iRing, i ) );
-            if ( QgsGeometryUtils::sqrDistance2D( p, ring.last() ) > tolerance * tolerance )
-=======
-            QgsPoint p = geom->vertexAt( QgsVertexId( iPart, iRing, i ) );
-            if ( QgsGeometryUtils::sqrDistance2D( p, ring.last() ) > mContext->tolerance * mContext->tolerance )
->>>>>>> [GeometryChecker] Introduce QgsGeometryCheckerContext
+            vtxMap.append( i );
+            ring.append( p );
+          }
+        }
+        while ( QgsGeometryUtils::sqrDistance2D( ring.front(), ring.back() ) < mContext->tolerance * mContext->tolerance )
+        {
+          vtxMap.pop_back();
+          ring.pop_back();
+        }
+        if ( isClosed )
+        {
+          vtxMap.append( n - 1 );
+          ring.append( ring.front() );
+        }
+        n = ring.size();
+
+        // For each vertex, check whether it lies on a segment
+        for ( int iVert = 0, nVerts = n - isClosed; iVert < nVerts; ++iVert )
+        {
+          const QgsPointV2 &p = ring[iVert];
+          for ( int i = 0, j = 1; j < n; i = j++ )
+          {
+            if ( iVert == i || iVert == j || ( isClosed && iVert == 0 && j == n - 1 ) )
             {
-              vtxMap.append( i );
-              ring.append( p );
+              continue;
             }
-          }
-          while ( QgsGeometryUtils::sqrDistance2D( ring.front(), ring.back() ) < mContext->tolerance * mContext->tolerance )
-          {
-            vtxMap.pop_back();
-            ring.pop_back();
-          }
-          if ( isClosed )
-          {
-            vtxMap.append( n - 1 );
-            ring.append( ring.front() );
-          }
-          n = ring.size();
-
-          // For each vertex, check whether it lies on a segment
-          for ( int iVert = 0, nVerts = n - isClosed; iVert < nVerts; ++iVert )
-          {
-            const QgsPoint &p = ring[iVert];
-            for ( int i = 0, j = 1; j < n; i = j++ )
+            const QgsPoint &si = ring[i];
+            const QgsPoint &sj = ring[j];
+            QgsPoint q = QgsGeometryUtils::projPointOnSegment( p, si, sj );
+            if ( QgsGeometryUtils::sqrDistance2D( p, q ) < mContext->tolerance * mContext->tolerance )
             {
-              if ( iVert == i || iVert == j || ( isClosed && iVert == 0 && j == n - 1 ) )
-              {
-                continue;
-              }
-              const QgsPoint &si = ring[i];
-              const QgsPoint &sj = ring[j];
-              QgsPoint q = QgsGeometryUtils::projPointOnSegment( p, si, sj );
-              if ( QgsGeometryUtils::sqrDistance2D( p, q ) < mContext->tolerance * mContext->tolerance )
-              {
-                errors.append( new QgsGeometryCheckError( this, layerId, featureid, p, QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );
-                break; // No need to report same contact on different segments multiple times
-              }
+              errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), p, QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );
+              break; // No need to report same contact on different segments multiple times
             }
           }
         }

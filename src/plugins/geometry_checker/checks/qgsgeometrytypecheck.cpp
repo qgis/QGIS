@@ -26,29 +26,14 @@
 void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  for ( const QString &layerId : featureIds.keys() )
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
-    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
+    const QgsAbstractGeometry *geom = layerFeature.geometry();
+    QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
+    if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
     {
-      continue;
-    }
-    for ( QgsFeatureId featureid : featureIds[layerId] )
-    {
-      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-      QgsFeature feature;
-      if ( !featurePool->get( featureid, feature ) )
-      {
-        continue;
-      }
-      QgsGeometry featureGeom = feature.geometry();
-      QgsAbstractGeometry *geom = featureGeom.geometry();
-
-      QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
-      if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
-      {
-        errors.append( new QgsGeometryTypeCheckError( this, layerId, featureid, geom->centroid(), type ) );
-      }
+      errors.append( new QgsGeometryTypeCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), geom->centroid(), type ) );
     }
   }
 }

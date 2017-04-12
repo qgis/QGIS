@@ -24,10 +24,11 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
     QgsGeometryOverlapCheckError( const QgsGeometryCheck *check,
                                   const QString &layerId,
                                   QgsFeatureId featureId,
+                                  QgsAbstractGeometry *geometry,
                                   const QgsPoint &errorLocation,
                                   const QVariant &value,
                                   const QPair<QString, QgsFeatureId> &overlappedFeature )
-      : QgsGeometryCheckError( check, layerId, featureId, errorLocation, QgsVertexId(), value, ValueArea )
+      : QgsGeometryCheckError( check, layerId, featureId, geometry, errorLocation, QgsVertexId(), value, ValueArea )
       , mOverlappedFeature( overlappedFeature )
     { }
     const QPair<QString, QgsFeatureId> &overlappedFeature() const { return mOverlappedFeature; }

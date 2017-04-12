@@ -14,17 +14,155 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckerutils.h"
+#include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
+#include "qgsfeaturepool.h"
+#include <qmath.h>
 #include "qgsgeos.h"
 #include "qgsgeometrycollection.h"
 #include "qgssurface.h"
 
 namespace QgsGeometryCheckerUtils
 {
-
-  QgsGeometryEngine *createGeomEngine( QgsAbstractGeometry *geometry, double tolerance )
+  LayerFeature::LayerFeature( const QgsVectorLayer *layer, const QgsFeature &feature, double mapToLayerUnits, const QString &targetCrs )
+    : mLayer( layer )
+    , mFeature( feature )
+    , mMapToLayerUnits( mapToLayerUnits )
+    , mClonedGeometry( false )
   {
-    return new QgsGeos( geometry, tolerance );
+    mGeometry = feature.geometry().geometry();
+    if ( !targetCrs.isEmpty() && targetCrs != layer->crs().authid() )
+    {
+      mClonedGeometry = true;
+      mGeometry = mGeometry->clone();
+      QgsCoordinateTransform crst = QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), targetCrs );
+      mGeometry->transform( crst );
+    }
+  }
+  LayerFeature::~LayerFeature()
+  {
+    if ( mClonedGeometry )
+    {
+      delete mGeometry;
+    }
+  }
+
+/////////////////////////////////////////////////////////////////////////////
+
+  LayerFeatures::iterator::iterator( const QList<QString>::iterator &layerIt, const QgsFeatureIds::const_iterator &featureIt, const QgsFeature &feature, LayerFeatures *parent )
+    : mLayerIt( layerIt )
+    , mFeatureIt( featureIt )
+    , mFeature( feature )
+    , mParent( parent )
+    , mCurrentFeature( LayerFeature( parent->mFeaturePools[ * layerIt]->getLayer(), feature, parent->mFeaturePools[ * layerIt]->getMapToLayerUnits(), parent->mTargetCrs ) )
+  {
+  }
+
+  const LayerFeatures::iterator &LayerFeatures::iterator::operator++()
+  {
+    if ( nextFeature() )
+    {
+      return *this;
+    }
+    do
+    {
+      ++mLayerIt;
+      mFeatureIt = mParent->mFeatureIds[*mLayerIt].begin();
+      if ( mParent->mGeometryTypes.contains( mParent->mFeaturePools[*mLayerIt]->getLayer()->geometryType() ) && nextFeature() )
+      {
+        return *this;
+      }
+    }
+    while ( mLayerIt != mParent->mLayerIds.end() );
+    return *this;
+  }
+
+  bool LayerFeatures::iterator::nextFeature()
+  {
+    QgsFeaturePool *featurePool = mParent->mFeaturePools[*mLayerIt];
+    const QgsFeatureIds &featureIds = mParent->mFeatureIds[*mLayerIt];
+    do
+    {
+      ++mFeatureIt;
+      if ( mParent->mProgressCounter )
+        mParent->mProgressCounter->fetchAndAddRelaxed( 1 );
+      if ( featurePool->get( *mFeatureIt, mFeature ) )
+      {
+        mCurrentFeature = LayerFeature( mParent->mFeaturePools[*mLayerIt]->getLayer(), mFeature, mParent->mFeaturePools[*mLayerIt]->getMapToLayerUnits(), mParent->mTargetCrs );
+        return true;
+      }
+    }
+    while ( mFeatureIt != featureIds.end() );
+    return false;
+  }
+
+/////////////////////////////////////////////////////////////////////////////
+
+  LayerFeatures::LayerFeatures( const QMap<QString, QgsFeatureIds> &featureIds,
+                                const QMap<QString, QgsFeaturePool *> &featurePools,
+                                const QList<QgsWkbTypes::GeometryType> &geometryTypes,
+                                QAtomicInt *progressCounter, const QString &targetCrs )
+    : mLayerIds( featurePools.keys() )
+    , mFeatureIds( featureIds )
+    , mFeaturePools( featurePools )
+    , mGeometryTypes( geometryTypes )
+    , mProgressCounter( progressCounter )
+    , mTargetCrs( targetCrs )
+  {}
+
+  LayerFeatures::LayerFeatures( const QList<QString> &layerIds, const QgsRectangle &extent,
+                                const QString &targetCrs, const QMap<QString, QgsFeaturePool *> &featurePools,
+                                const QList<QgsWkbTypes::GeometryType> &geometryTypes )
+    : mLayerIds( layerIds )
+    , mFeaturePools( featurePools )
+    , mGeometryTypes( geometryTypes )
+    , mTargetCrs( targetCrs )
+    , mExtent( extent )
+  {
+    for ( const QString &layerId : layerIds )
+    {
+      const QgsFeaturePool *featurePool = featurePools[layerId];
+      if ( geometryTypes.contains( featurePool->getLayer()->geometryType() ) )
+      {
+        QgsCoordinateTransform crst = QgsCoordinateTransformCache::instance()->transform( targetCrs, featurePool->getLayer()->crs().authid() );
+        mFeatureIds.insert( layerId, featurePool->getIntersects( crst.transform( extent ) ) );
+      }
+      else
+      {
+        mFeatureIds.insert( layerId, QgsFeatureIds() );
+      }
+    }
+  }
+
+  LayerFeatures::iterator LayerFeatures::begin()
+  {
+    for ( auto layerIt = mLayerIds.begin(), layerItEnd = mLayerIds.end(); layerIt != layerItEnd; ++layerIt )
+    {
+      if ( !mGeometryTypes.contains( mFeaturePools[*layerIt]->getLayer()->geometryType() ) )
+      {
+        continue;
+      }
+      const QgsFeatureIds &featureIds = mFeatureIds[*layerIt];
+      for ( auto featureIt = featureIds.begin(), featureItEnd = featureIds.end(); featureIt != featureItEnd; ++featureIt )
+      {
+        if ( mProgressCounter )
+          mProgressCounter->fetchAndAddRelaxed( 1 );
+        QgsFeature feature;
+        if ( mFeaturePools[*layerIt]->get( *featureIt, feature ) )
+        {
+          return iterator( layerIt, featureIt, feature, this );
+        }
+      }
+    }
+    return end();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  QSharedPointer<QgsGeometryEngine> createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance )
+  {
+    return QSharedPointer<QgsGeometryEngine>( new QgsGeos( geometry, tolerance ) );
   }
 
   QgsAbstractGeometry *getGeomPart( QgsAbstractGeometry *geom, int partIdx )
@@ -32,6 +170,15 @@ namespace QgsGeometryCheckerUtils
     if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
     {
       return static_cast<QgsGeometryCollection *>( geom )->geometryN( partIdx );
+    }
+    return geom;
+  }
+
+  const QgsAbstractGeometry *getGeomPart( const QgsAbstractGeometry *geom, int partIdx )
+  {
+    if ( dynamic_cast<const QgsGeometryCollection *>( geom ) )
+    {
+      return static_cast<const QgsGeometryCollection *>( geom )->geometryN( partIdx );
     }
     return geom;
   }

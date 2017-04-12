@@ -19,31 +19,16 @@
 void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  for ( const QString &layerId : featureIds.keys() )
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
-    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
+    const QgsAbstractGeometry *geom = layerFeature.geometry();
+    for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
-      continue;
-    }
-    for ( QgsFeatureId featureid : featureIds[layerId] )
-    {
-      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-      QgsFeature feature;
-      if ( !featurePool->get( featureid, feature ) )
+      // Rings after the first one are interiors
+      for ( int iRing = 1, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        continue;
-      }
-
-      QgsGeometry featureGeom = feature.geometry();
-      QgsAbstractGeometry *geom = featureGeom.geometry();
-      for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
-      {
-        // Rings after the first one are interiors
-        for ( int iRing = 1, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
-        {
-          errors.append( new QgsGeometryCheckError( this, layerId, featureid, QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->centroid(), QgsVertexId( iPart, iRing ) ) );
-        }
+        errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->centroid(), QgsVertexId( iPart, iRing ) ) );
       }
     }
   }

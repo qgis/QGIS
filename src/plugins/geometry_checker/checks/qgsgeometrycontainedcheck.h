@@ -24,10 +24,11 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
     QgsGeometryContainedCheckError( const QgsGeometryCheck *check,
                                     const QString &layerId,
                                     QgsFeatureId featureId,
+                                    QgsAbstractGeometry *geometry,
                                     const QgsPoint &errorLocation,
                                     const QPair<QString, QgsFeatureId> &containingFeature
                                   )
-      : QgsGeometryCheckError( check, layerId, featureId, errorLocation, QgsVertexId(), QString( "%1:%2" ).arg( containingFeature.first ).arg( containingFeature.second ), ValueOther )
+      : QgsGeometryCheckError( check, layerId, featureId, geometry, errorLocation, QgsVertexId(), QString( "%1:%2" ).arg( containingFeature.first ).arg( containingFeature.second ), ValueOther )
       , mContainingFeature( containingFeature )
     { }
     const QPair<QString, QgsFeatureId> &containingFeature() const { return mContainingFeature; }

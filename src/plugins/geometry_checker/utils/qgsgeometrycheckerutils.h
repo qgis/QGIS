@@ -17,17 +17,84 @@
 #ifndef QGS_GEOMETRYCHECKERUTILS_H
 #define QGS_GEOMETRYCHECKERUTILS_H
 
+#include "qgscrscache.h"
+#include "qgsfeature.h"
+#include "qgsvectorlayer.h"
 #include "geometry/qgsabstractgeometry.h"
 #include "geometry/qgspoint.h"
 
 class QgsGeometryEngine;
+class QgsFeaturePool;
 
 namespace QgsGeometryCheckerUtils
 {
+  class LayerFeature
+  {
+    public:
+      LayerFeature( const QgsVectorLayer *layer, const QgsFeature &feature, double mapToLayerUnits, const QString &targetCrs );
+      ~LayerFeature();
+      const QgsVectorLayer &layer() const { return *mLayer; }
+      const QgsFeature &feature() const { return mFeature; }
+      double mapToLayerUnits() const { return mMapToLayerUnits; }
+      const QgsAbstractGeometry *geometry() const { return mGeometry; }
+      QString id() const { return QString( "%1:%2" ).arg( mLayer->id() ).arg( mFeature.id() ); }
 
-  QgsGeometryEngine *createGeomEngine( QgsAbstractGeometry *geometry, double tolerance );
+    private:
+      const QgsVectorLayer *mLayer = nullptr;
+      QgsFeature mFeature;
+      double mMapToLayerUnits;
+      QgsAbstractGeometry *mGeometry = nullptr;
+      bool mClonedGeometry = false;
+  };
+
+  class LayerFeatures
+  {
+    public:
+      LayerFeatures( const QMap<QString, QgsFeatureIds> &featureIds,
+                     const QMap<QString, QgsFeaturePool *> &featurePools,
+                     const QList<QgsWkbTypes::GeometryType> &geometryTypes,
+                     QAtomicInt *progressCounter, const QString &targetCrs = QString() );
+      LayerFeatures( const QList<QString> &layerIds, const QgsRectangle &extent, const QString &targetCrs,
+                     const QMap<QString, QgsFeaturePool *> &featurePools,
+                     const QList<QgsWkbTypes::GeometryType> &geometryTypes );
+
+      class iterator
+      {
+        public:
+          iterator( const QList<QString>::iterator &layerIt, const QgsFeatureIds::const_iterator &featureIt, const QgsFeature &feature, LayerFeatures *parent );
+          const iterator &operator++();
+          iterator operator++( int ) { iterator tmp( *this ); ++*this; return tmp; }
+          const LayerFeature &operator*() const { return mCurrentFeature; }
+          bool operator!=( const iterator &other ) { return mLayerIt != other.mLayerIt || mFeatureIt != other.mFeatureIt; }
+
+        private:
+          bool nextFeature();
+          QList<QString>::iterator mLayerIt;
+          QgsFeatureIds::const_iterator mFeatureIt;
+          QgsFeature mFeature;
+          LayerFeatures *mParent;
+          LayerFeature mCurrentFeature;
+      };
+
+      iterator begin();
+      iterator end()
+      {
+        return iterator( mLayerIds.end(), mFeatureIds[mLayerIds.back()].end(), QgsFeature(), this );
+      }
+    private:
+      QList<QString> mLayerIds;
+      QMap<QString, QgsFeatureIds> mFeatureIds;
+      QMap<QString, QgsFeaturePool *> mFeaturePools;
+      QList<QgsWkbTypes::GeometryType> mGeometryTypes;
+      QAtomicInt *mProgressCounter = nullptr;
+      QString mTargetCrs;
+      QgsRectangle mExtent;
+  };
+
+  QSharedPointer<QgsGeometryEngine> createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance );
 
   QgsAbstractGeometry *getGeomPart( QgsAbstractGeometry *geom, int partIdx );
+  const QgsAbstractGeometry *getGeomPart( const QgsAbstractGeometry *geom, int partIdx );
 
   void filter1DTypes( QgsAbstractGeometry *geom );
 

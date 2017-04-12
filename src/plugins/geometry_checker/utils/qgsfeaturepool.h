@@ -35,7 +35,7 @@ class QgsFeaturePool
     void addFeature( QgsFeature &feature );
     void updateFeature( QgsFeature &feature );
     void deleteFeature( QgsFeature &feature );
-    QgsFeatureIds getIntersects( const QgsRectangle &rect );
+    QgsFeatureIds getIntersects( const QgsRectangle &rect ) const;
     QgsVectorLayer *getLayer() const { return mLayer; }
     const QgsFeatureIds &getFeatureIds() const { return mFeatureIds; }
     double getMapToLayerUnits() const { return mMapToLayerUnits;}
@@ -59,7 +59,7 @@ class QgsFeaturePool
     QgsVectorLayer *mLayer = nullptr;
     QgsFeatureIds mFeatureIds;
     QMutex mLayerMutex;
-    QMutex mIndexMutex;
+    mutable QMutex mIndexMutex;
     QgsSpatialIndex mIndex;
     double mMapToLayerUnits;
     bool mSelectedOnly;

@@ -24,9 +24,10 @@ class QgsGeometryTypeCheckError : public QgsGeometryCheckError
     QgsGeometryTypeCheckError( const QgsGeometryCheck *check,
                                const QString &layerId,
                                QgsFeatureId featureId,
+                               QgsAbstractGeometry *geometry,
                                const QgsPoint &errorLocation,
                                QgsWkbTypes::Type flatType )
-      : QgsGeometryCheckError( check, layerId, featureId, errorLocation )
+      : QgsGeometryCheckError( check, layerId, featureId, geometry, errorLocation )
     {
       mTypeName = QgsWkbTypes::displayString( flatType );
     }

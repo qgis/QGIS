@@ -135,7 +135,7 @@ void QgsFeaturePool::deleteFeature( QgsFeature &feature )
   mLayerMutex.unlock();
 }
 
-QgsFeatureIds QgsFeaturePool::getIntersects( const QgsRectangle &rect )
+QgsFeatureIds QgsFeaturePool::getIntersects( const QgsRectangle &rect ) const
 {
   QMutexLocker lock( &mIndexMutex );
   return QgsFeatureIds::fromList( mIndex.intersects( rect ) );

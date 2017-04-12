@@ -25,10 +25,11 @@ class QgsGeometrySelfIntersectionCheckError : public QgsGeometryCheckError
     QgsGeometrySelfIntersectionCheckError( const QgsGeometryCheck *check,
                                            const QString &layerId,
                                            QgsFeatureId featureId,
+                                           QgsAbstractGeometry *geometry,
                                            const QgsPoint &errorLocation,
                                            QgsVertexId vidx,
                                            const QgsGeometryUtils::SelfIntersection &inter )
-      : QgsGeometryCheckError( check, layerId, featureId, errorLocation, vidx )
+      : QgsGeometryCheckError( check, layerId, featureId, geometry, errorLocation, vidx )
       , mInter( inter )
     { }
     const QgsGeometryUtils::SelfIntersection &intersection() const { return mInter; }

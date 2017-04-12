@@ -336,12 +336,6 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
       featureRubberBand->setColor( Qt::yellow );
       mCurrentRubberBands.append( featureRubberBand );
     }
-    else
-    {
-      // QgsGeometry above takes ownership of geometry and deletes it when it goes out of scope
-      delete geometry;
-      geometry = nullptr;
-    }
 
     if ( ui.radioButtonError->isChecked() || current || error->status() == QgsGeometryCheckError::StatusFixed )
     {
@@ -353,9 +347,9 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
       mCurrentRubberBands.append( pointRubberBand );
       errorPositions.append( pos );
     }
-    else if ( ui.radioButtonFeature->isChecked() && geometry )
+    else if ( ui.radioButtonFeature->isChecked() )
     {
-      QgsRectangle geomextent = mIface->mapCanvas()->mapSettings().layerExtentToOutputExtent( layer, geometry->boundingBox() );
+      QgsRectangle geomextent = error->affectedAreaBBox();
       if ( totextent.isEmpty() )
       {
         totextent = geomextent;

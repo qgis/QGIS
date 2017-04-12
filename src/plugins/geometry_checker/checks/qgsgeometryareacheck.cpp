@@ -21,44 +21,30 @@
 void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  for ( const QString &layerId : featureIds.keys() )
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
-    double mapToLayerUnits = featurePool->getMapToLayerUnits();
-    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
+    double mapToLayerUnits = layerFeature.mapToLayerUnits();
+    const QgsAbstractGeometry *geom = layerFeature.geometry();
+    if ( dynamic_cast<const QgsGeometryCollection *>( geom ) )
     {
-      continue;
-    }
-    for ( QgsFeatureId featureid : featureIds[layerId] )
-    {
-      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-      QgsFeature feature;
-      if ( !featurePool->get( featureid, feature ) )
-      {
-        continue;
-      }
-
-      QgsGeometry g = feature.geometry();
-      QgsAbstractGeometry *geom = g.geometry();
-      if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
-      {
-        QgsGeometryCollection *multiGeom = static_cast<QgsGeometryCollection *>( geom );
-        for ( int i = 0, n = multiGeom->numGeometries(); i < n; ++i )
-        {
-          double value;
-          if ( checkThreshold( featurePool->getMapToLayerUnits(), multiGeom->geometryN( i ), value ) )
-          {
-            errors.append( new QgsGeometryCheckError( this, layerId, featureid, multiGeom->geometryN( i )->centroid(), QgsVertexId( i ), value / ( mapToLayerUnits * mapToLayerUnits ), QgsGeometryCheckError::ValueArea ) );
-          }
-        }
-      }
-      else
+      const QgsGeometryCollection *multiGeom = static_cast<const QgsGeometryCollection *>( geom );
+      for ( int i = 0, n = multiGeom->numGeometries(); i < n; ++i )
       {
         double value;
-        if ( checkThreshold( featurePool->getMapToLayerUnits(), geom, value ) )
+        if ( checkThreshold( mapToLayerUnits, multiGeom->geometryN( i ), value ) )
         {
-          errors.append( new QgsGeometryCheckError( this, layerId, featureid, geom->centroid(), QgsVertexId( 0 ), value / ( mapToLayerUnits * mapToLayerUnits ), QgsGeometryCheckError::ValueArea ) );
+          QgsAbstractGeometry *part = multiGeom->geometryN( i )->clone();
+          errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), part, part->centroid(), QgsVertexId( i ), value / ( mapToLayerUnits * mapToLayerUnits ), QgsGeometryCheckError::ValueArea ) );
         }
+      }
+    }
+    else
+    {
+      double value;
+      if ( checkThreshold( mapToLayerUnits, geom, value ) )
+      {
+        errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), geom->centroid(), QgsVertexId( 0 ), value / ( mapToLayerUnits * mapToLayerUnits ), QgsGeometryCheckError::ValueArea ) );
       }
     }
   }
@@ -217,9 +203,8 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
   // Merge geometries
   QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.geometry();
-  QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), mContext->tolerance );
+  QSharedPointer<QgsGeometryEngine> geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), mContext->tolerance );
   QgsAbstractGeometry *combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
-  delete geomEngine;
   if ( !combinedGeom || combinedGeom->isEmpty() )
   {
     return false;

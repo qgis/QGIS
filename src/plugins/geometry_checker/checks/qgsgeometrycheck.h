@@ -83,11 +83,8 @@ class QgsGeometryCheck : public QObject
     void deleteFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const;
     void deleteFeatureGeometryRing( const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const;
 
-  private:
     const CheckType mCheckType;
     QList<QgsWkbTypes::GeometryType> mCompatibleGeometryTypes;
-
-  protected:
     QgsGeometryCheckerContext *mContext;
 };
 
@@ -101,18 +98,22 @@ class QgsGeometryCheckError
     QgsGeometryCheckError( const QgsGeometryCheck *check,
                            const QString &layerId,
                            QgsFeatureId featureId,
+                           QgsAbstractGeometry *geometry,
                            const QgsPoint &errorLocation,
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
                            ValueType valueType = ValueOther );
-    virtual ~QgsGeometryCheckError() {}
+    virtual ~QgsGeometryCheckError()
+    {
+      delete mGeometry;
+    }
 
     const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & ) = delete;
 
     const QgsGeometryCheck *check() const { return mCheck; }
     const QString &layerId() const { return mLayerId; }
     QgsFeatureId featureId() const { return mFeatureId; }
-    virtual QgsAbstractGeometry *geometry() const;
+    QgsAbstractGeometry *geometry() const { return mGeometry; }
     // In map units
     virtual QgsRectangle affectedAreaBBox() const;
     virtual QString description() const { return mCheck->errorDescription(); }
@@ -120,7 +121,7 @@ class QgsGeometryCheckError
     // Lengths, areas in map units
     QVariant value() const { return mValue; }
     ValueType valueType() const { return mValueType; }
-    QgsVertexId vidx() const { return mVidx; }
+    const QgsVertexId &vidx() const { return mVidx; }
     Status status() const { return mStatus; }
     QString resolutionMessage() const { return mResolutionMessage; }
     void setFixed( int method )
@@ -147,12 +148,14 @@ class QgsGeometryCheckError
     }
     virtual void update( const QgsGeometryCheckError *other )
     {
+      delete mGeometry;
       Q_ASSERT( mCheck == other->mCheck );
       Q_ASSERT( mLayerId == other->mLayerId );
       Q_ASSERT( mFeatureId == other->mFeatureId );
       mErrorLocation = other->mErrorLocation;
       mVidx = other->mVidx;
       mValue = other->mValue;
+      mGeometry = other->mGeometry->clone();
     }
 
     virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
@@ -161,6 +164,7 @@ class QgsGeometryCheckError
     const QgsGeometryCheck *mCheck = nullptr;
     QString mLayerId;
     QgsFeatureId mFeatureId;
+    QgsAbstractGeometry *mGeometry;
     QgsPoint mErrorLocation;
     QgsVertexId mVidx;
     QVariant mValue;

@@ -29,44 +29,27 @@ QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QStr
 }
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId,
-    QgsFeatureId featureId,
+    QgsFeatureId featureId, QgsAbstractGeometry *geometry,
     const QgsPoint &errorLocation,
     QgsVertexId vidx,
     const QVariant &value, ValueType valueType )
   : mCheck( check )
   , mLayerId( layerId )
   , mFeatureId( featureId )
+  , mGeometry( geometry )
   , mErrorLocation( errorLocation )
   , mVidx( vidx )
   , mValue( value )
   , mValueType( valueType )
   , mStatus( StatusPending )
-{}
-
-QgsAbstractGeometry *QgsGeometryCheckError::geometry() const
 {
-  QgsFeature f;
-  if ( mCheck->getContext()->featurePools[ layerId() ]->get( featureId(), f ) && f.hasGeometry() )
-  {
-    QgsGeometry featureGeom = f.geometry();
-    QgsAbstractGeometry *geom = featureGeom.geometry();
-    return mVidx.part >= 0 ? QgsGeometryCheckerUtils::getGeomPart( geom, mVidx.part )->clone() : geom->clone();
-  }
-  return nullptr;
 }
 
 QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
 {
-  QgsAbstractGeometry *geom = geometry();
-  if ( !geom )
-  {
-    return QgsRectangle();
-  }
   QString srcCrs = mCheck->getContext()->featurePools[ layerId() ]->getLayer()->crs().authid();
   QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( srcCrs, mCheck->getContext()->mapCrs );
-  QgsRectangle rect = t.transformBoundingBox( geom->boundingBox() );
-  delete geom;
-  return rect;
+  return t.transformBoundingBox( mGeometry->boundingBox() );
 }
 
 bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &changes )
