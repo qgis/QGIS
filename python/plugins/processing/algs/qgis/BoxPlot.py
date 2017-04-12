@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import plotly as plt
 import plotly.graph_objs as go
-import numpy as np
 
+from qgis.core import (QgsApplication)
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterBoolean
@@ -46,10 +46,22 @@ class BoxPlot(GeoAlgorithm):
     VALUE_FIELD = 'VALUE_FIELD'
     MSD = 'MSD'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Box plot')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Graphics')
+
+    def name(self):
+        return 'boxplot'
+
+    def displayName(self):
+        return self.tr('Box plot')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
                                               self.tr('Category name field'),
@@ -61,10 +73,11 @@ class BoxPlot(GeoAlgorithm):
                                               ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterBoolean(self.MSD,
                                            self.tr('Show also standard deviation'), False))
+
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Box plot')))
 
     def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
+        layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         namefieldname = self.getParameterValue(self.NAME_FIELD)
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
