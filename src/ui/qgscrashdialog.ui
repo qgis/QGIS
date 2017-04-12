@@ -482,17 +482,24 @@
         <string notr="true">font: 75 30pt &quot;MS Shell Dlg 2&quot;;</string>
        </property>
        <property name="text">
-        <string/>
+        <string>Header</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QLabel" name="mCrashMessage">
        <property name="text">
-        <string/>
+        <string>Message</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="mHelpLabel">
+       <property name="text">
+        <string>Help Message</string>
        </property>
       </widget>
      </item>
@@ -548,26 +555,6 @@
         </widget>
        </item>
       </layout>
-     </item>
-     <item>
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="mHelpLabel">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>
