@@ -823,6 +823,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
 
       QgsField fld = mAttributeFields.at( i );
 
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
+
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
 
@@ -896,6 +899,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
         break;
 
       QgsField fld = mAttributeFields.at( i );
+
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
 
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
@@ -1127,6 +1133,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     {
       QgsField fld = mAttributeFields.at( it2.key() );
 
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
+
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
 
@@ -1157,6 +1166,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
     {
       QgsField fld = mAttributeFields.at( it2.key() );
+
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
 
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
