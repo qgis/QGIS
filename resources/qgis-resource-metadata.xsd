@@ -81,6 +81,11 @@
 					<xs:documentation>Attribution or copyright associated with a given resource.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+      <xs:element name="license" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>License associated with a given resource (examples: http://opendefinition.org/licenses/).</xs:documentation>
+				</xs:annotation>        
+      </xs:element>
 			<xs:element name="encoding" type="xs:string" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>Character encoding of the data of a given resource.</xs:documentation>
