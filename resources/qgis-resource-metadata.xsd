@@ -163,7 +163,7 @@
 		<xs:attribute name="dimensions" type="xs:integer" default="2"/>
 		<xs:attribute name="crs" type="xs:string" use="required">
 			<xs:annotation>
-				<xs:documentation>Coordinate refernece system.</xs:documentation>
+				<xs:documentation>Coordinate reference system.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="minx" type="xs:decimal" use="required">
@@ -318,7 +318,7 @@
 						* description: abstract text about link
 						* url: endpoint.  If the URL is an OWS server, specify the *base* URL only without parameters like service=xxx.....
 						* format: format specification of online resource.  Strongly suggested to use GDAL/OGR format values
-						* mimeType: MIME type represenative of the online resource response (image/png, application/json, etc.)
+						* mimeType: MIME type representative of the online resource response (image/png, application/json, etc.)
 						* size: estimated size (in bytes) of the online resource response
 					</xs:documentation>
 				</xs:annotation>
