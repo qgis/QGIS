@@ -493,11 +493,10 @@ double QgsTriangle::circumscribedRadius() const
   return r;
 }
 
-/*
 QgsCircle QgsTriangle::circumscribedCircle() const
 {
-
-}*/
+  return QgsCircle( circumscribedCenter(), circumscribedRadius() );
+}
 
 QgsPointV2 QgsTriangle::inscribedCenter() const
 {
@@ -528,11 +527,10 @@ bool QgsTriangle::validateGeom( const QgsPointV2 &p1, const QgsPointV2 &p2, cons
   return true;
 }
 
-/*
 QgsCircle QgsTriangle::inscribedCircle() const
 {
-
-}*/
+  return QgsCircle( inscribedCenter(), inscribedRadius() );
+}
 
 
 

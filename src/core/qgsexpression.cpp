@@ -46,6 +46,8 @@
 #include "qgspointv2.h"
 #include "qgspolygon.h"
 #include "qgstriangle.h"
+#include "qgscircle.h"
+#include "qgsellipse.h"
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
 #include "qgscurvepolygon.h"
@@ -2218,6 +2220,51 @@ static QVariant fcnMakeTriangle( const QVariantList &values, const QgsExpression
   return QVariant::fromValue( QgsGeometry( tr.release() ) );
 }
 
+static QVariant fcnMakeCircle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  if ( geom.isNull() )
+    return QVariant();
+
+  if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
+    return QVariant();
+
+  double radius = getDoubleValue( values.at( 1 ), parent );
+  double segment = getIntValue( values.at( 2 ), parent );
+
+  if ( segment < 3 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Segment must be greater than 2" ) );
+    return QVariant();
+  }
+  QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
+  QgsCircle circ( *point, radius );
+  return QVariant::fromValue( QgsGeometry( circ.toPolygon( segment ).clone() ) );
+}
+
+static QVariant fcnMakeEllipse( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  if ( geom.isNull() )
+    return QVariant();
+
+  if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
+    return QVariant();
+
+  double majorAxis = getDoubleValue( values.at( 1 ), parent );
+  double minorAxis = getDoubleValue( values.at( 2 ), parent );
+  double azimuth = getDoubleValue( values.at( 3 ), parent );
+  double segment = getIntValue( values.at( 4 ), parent );
+  if ( segment < 3 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Segment must be greater than 2" ) );
+    return QVariant();
+  }
+  QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
+  QgsEllipse elp( *point, majorAxis,  minorAxis, azimuth );
+  return QVariant::fromValue( QgsGeometry( elp.toPolygon( segment ).clone() ) );
+}
+
 static QVariant pointAt( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) // helper function
 {
   FEAT_FROM_CONTEXT( context, f );
@@ -4031,6 +4078,18 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
                                << Parameter( QStringLiteral( "geometry" ) )
                                << Parameter( QStringLiteral( "geometry" ) ),
                                fcnMakeTriangle, QStringLiteral( "GeometryGroup" ) )
+        << new StaticFunction( QStringLiteral( "make_circle" ), ParameterList()
+                               << Parameter( QStringLiteral( "geometry" ) )
+                               << Parameter( QStringLiteral( "radius" ) )
+                               << Parameter( QStringLiteral( "segments" ), true, 36 ),
+                               fcnMakeCircle, QStringLiteral( "GeometryGroup" ) )
+        << new StaticFunction( QStringLiteral( "make_ellipse" ), ParameterList()
+                               << Parameter( QStringLiteral( "geometry" ) )
+                               << Parameter( QStringLiteral( "semi-major axis" ) )
+                               << Parameter( QStringLiteral( "semi-minor axis" ) )
+                               << Parameter( QStringLiteral( "azimuth" ) )
+                               << Parameter( QStringLiteral( "segments" ), true, 36 ),
+                               fcnMakeEllipse, QStringLiteral( "GeometryGroup" ) )
         << new StaticFunction( QStringLiteral( "$x_at" ), 1, fcnXat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "xat" ) << QStringLiteral( "x_at" ) )
         << new StaticFunction( QStringLiteral( "$y_at" ), 1, fcnYat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "yat" ) << QStringLiteral( "y_at" ) )
         << new StaticFunction( QStringLiteral( "x_min" ), 1, fcnXMin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "xmin" ) )
