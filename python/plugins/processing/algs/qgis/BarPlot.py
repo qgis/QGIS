@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
+
 from qgis.core import (QgsApplication)
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
