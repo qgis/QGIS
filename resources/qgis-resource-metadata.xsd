@@ -96,7 +96,7 @@
             <xs:element name="name" type="xs:string"/>
             <xs:element name="organization" type="xs:string" minOccurs="0"/>
             <xs:element name="position" type="xs:string" minOccurs="0"/>
-            <xs:element name="address" type="rm:addressType" minOccurs="0"/>
+            <xs:element name="address" type="rm:addressType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="voice" type="xs:string" minOccurs="0"/>
             <xs:element name="fax" type="xs:string" minOccurs="0"/>
             <xs:element name="email" type="xs:string" minOccurs="0"/>
