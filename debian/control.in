@@ -20,7 +20,7 @@ Build-Depends:
  libspatialite-dev,
  libsqlite3-dev,
  libspatialindex-dev,
- qtbase5-dev, qttools5-dev-tools, qttools5-dev, qtscript5-dev, qtpositioning5-dev,
+ qtbase5-dev, qttools5-dev-tools, qttools5-dev, qtscript5-dev, qtpositioning5-dev, qt5keychain-dev,
  libqt5svg5-dev, libqt5xmlpatterns5-dev, libqt5webkit5-dev, libqt5opengl5-dev, libqt5sql5-sqlite, libqt5scintilla2-dev,
  libqwt-qt5-dev, libqca-qt5-2-dev, libqca-qt5-2-plugins,
  python3-dev, python3-all-dev, python3-sip, python3-sip-dev,
