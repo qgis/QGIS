@@ -76,6 +76,11 @@ class TestQgsRectangle(unittest.TestCase):
                      (20.0, rect.height()))
         assert rect.height() == 20.0, myMessage
 
+    def testCalculations(self):
+        rect = QgsRectangle(0.0, 1.0, 20.0, 10.0)
+        self.assertEqual(rect.area(), 180.0)
+        self.assertEqual(rect.perimeter(), 58.0)
+
     def testIntersection(self):
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
         rect2 = QgsRectangle(2.0, 2.0, 7.0, 7.0)
@@ -236,6 +241,16 @@ class TestQgsRectangle(unittest.TestCase):
         myMessage = ('Expected: %s\nGot: %s\n' %
                      (myExpectedString, myString))
         assert myString == myExpectedString, myMessage
+
+    def testToBox3d(self):
+        rect = QgsRectangle(0, 0.1, 0.2, 0.3)
+        box = rect.toBox3d(0.4, 0.5)
+        self.assertEqual(box.xMinimum(), 0.0)
+        self.assertEqual(box.yMinimum(), 0.1)
+        self.assertEqual(box.zMinimum(), 0.4)
+        self.assertEqual(box.xMaximum(), 0.2)
+        self.assertEqual(box.yMaximum(), 0.3)
+        self.assertEqual(box.zMaximum(), 0.5)
 
 
 if __name__ == '__main__':

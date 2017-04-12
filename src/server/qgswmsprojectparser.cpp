@@ -2106,7 +2106,6 @@ void QgsWmsProjectParser::drawOverlays( QPainter *p, int dpi, int width, int hei
 
   //consider DPI
   double scaleFactor = dpi / 88.0; //assume 88 as standard dpi
-  QgsRectangle prjExtent = mProjectParser->projectExtent();
 
   //text annotations
   QList< QPair< QTextDocument *, QDomElement > >::const_iterator textIt = mTextAnnotationItems.constBegin();

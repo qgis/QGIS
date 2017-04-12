@@ -209,7 +209,6 @@ SET(QGIS_CORE_SRCS
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgspythonrunner.cpp
-  qgsrectangle.cpp
   qgsrelation.cpp
   qgsrelationmanager.cpp
   qgsrenderchecker.cpp
@@ -368,6 +367,7 @@ SET(QGIS_CORE_SRCS
   raster/qgshillshaderenderer.cpp
 
   geometry/qgsabstractgeometry.cpp
+  geometry/qgsbox3d.cpp
   geometry/qgscircularstring.cpp
   geometry/qgscompoundcurve.cpp
   geometry/qgscurvepolygon.cpp
@@ -388,6 +388,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgsmultisurface.cpp
   geometry/qgspointv2.cpp
   geometry/qgspolygon.cpp
+  geometry/qgsrectangle.cpp
   geometry/qgstriangle.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
@@ -760,7 +761,6 @@ SET(QGIS_CORE_HDRS
   qgsprovidermetadata.h
   qgsproviderregistry.h
   qgspythonrunner.h
-  qgsrectangle.h
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsruntimeprofiler.h
@@ -912,6 +912,7 @@ SET(QGIS_CORE_HDRS
   layertree/qgslayertreeutils.h
 
   geometry/qgsabstractgeometry.h
+  geometry/qgsbox3d.h
   geometry/qgscircularstring.h
   geometry/qgscompoundcurve.h
   geometry/qgscurvepolygon.h
@@ -932,6 +933,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgsmultisurface.h
   geometry/qgspointv2.h
   geometry/qgspolygon.h
+  geometry/qgsrectangle.h
   geometry/qgstriangle.h
   geometry/qgssurface.h
   geometry/qgswkbptr.h

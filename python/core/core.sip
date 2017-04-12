@@ -126,7 +126,6 @@
 %Include qgsprovidermetadata.sip
 %Include qgsproviderregistry.sip
 %Include qgspythonrunner.sip
-%Include qgsrectangle.sip
 %Include qgsrelation.sip
 %Include qgsrelationmanager.sip
 %Include qgsrenderchecker.sip
@@ -357,6 +356,7 @@
 %Include dxf/qgsdxfexport.sip
 
 %Include geometry/qgsabstractgeometry.sip
+%Include geometry/qgsbox3d.sip
 %Include geometry/qgscircularstring.sip
 %Include geometry/qgscompoundcurve.sip
 %Include geometry/qgscurvepolygon.sip
@@ -373,6 +373,7 @@
 %Include geometry/qgsmultisurface.sip
 %Include geometry/qgspointv2.sip
 %Include geometry/qgspolygon.sip
+%Include geometry/qgsrectangle.sip
 %Include geometry/qgssurface.sip
 %Include geometry/qgstriangle.sip
 %Include geometry/qgswkbtypes.sip
