@@ -810,7 +810,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
     {
       QgsField fld = mAttributeFields.at( i );
 
-      if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
+
+      if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
 
       if ( fld.name().isEmpty() )
@@ -881,7 +884,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
     {
       QgsField fld = mAttributeFields.at( i );
 
-      if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
+
+      if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
 
       if ( fld.name().isEmpty() )
@@ -1111,7 +1117,10 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     {
       QgsField fld = mAttributeFields.at( it2.key() );
 
-      if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
+
+      if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
 
       if ( fld.name().isEmpty() )
@@ -1142,7 +1151,10 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     {
       QgsField fld = mAttributeFields.at( it2.key() );
 
-      if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
+
+      if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
 
       if ( fld.name().isEmpty() )
