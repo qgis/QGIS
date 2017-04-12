@@ -80,6 +80,7 @@ class VectorLayerScatterplot3D(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot 3D')))
 
     def processAlgorithm(self, feedback):
+
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         xfieldname = self.getParameterValue(self.XFIELD)

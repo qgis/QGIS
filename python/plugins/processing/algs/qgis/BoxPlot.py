@@ -31,7 +31,7 @@ import plotly.graph_objs as go
 from qgis.core import (QgsApplication)
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.outputs import OutputHTML
 from processing.tools import vector
@@ -71,8 +71,14 @@ class BoxPlot(GeoAlgorithm):
                                               self.tr('Value field'),
                                               self.INPUT,
                                               ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterBoolean(self.MSD,
-                                           self.tr('Show also standard deviation'), False))
+        msd = [self.tr('Show Mean'),
+               self.tr('Show Standard Deviation'),
+               self.tr('Don\'t show Mean and Standard Deviation')
+               ]
+        self.addParameter(ParameterSelection(
+            self.MSD,
+            self.tr('Additional Statistic Lines'),
+            msd, default=0))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Box plot')))
 
@@ -88,17 +94,17 @@ class BoxPlot(GeoAlgorithm):
 
         x_var = [i[namefieldname] for i in layer.getFeatures()]
 
-        msd = self.getParameterValue(self.MSD)
+        msdIndex = self.getParameterValue(self.MSD)
+        msd = True
 
-        if not msd:
-            data = [go.Box(
-                    x=x_var,
-                    y=values[valuefieldname],
-                    boxmean=True)]
-        else:
-            data = [go.Box(
-                    x=x_var,
-                    y=values[valuefieldname],
-                    boxmean='sd')]
+        if msdIndex == 1:
+            msd = 'sd'
+        elif msdIndex == 2:
+            msd = False
+
+        data = [go.Box(
+                x=x_var,
+                y=values[valuefieldname],
+                boxmean=msd)]
 
         plt.offline.plot(data, filename=output, auto_open=False)
