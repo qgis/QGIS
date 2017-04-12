@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsrectangle.h                                              *
+ * src/core/geometry/qgsrectangle.h                                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -304,7 +304,7 @@ Copy constructor
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsrectangle.h                                              *
+ * src/core/geometry/qgsrectangle.h                                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

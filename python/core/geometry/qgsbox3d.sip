@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsbox3d.h                                                  *
+ * src/core/geometry/qgsbox3d.h                                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -200,7 +200,7 @@ class QgsBox3d
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsbox3d.h                                                  *
+ * src/core/geometry/qgsbox3d.h                                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
