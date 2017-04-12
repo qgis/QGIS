@@ -33,12 +33,12 @@
 		<xs:sequence>
 			<xs:element name="identifier" type="xs:string">
 				<xs:annotation>
-					<xs:documentation>A Reference, URI, URL or some other mechanism to identify a given resource. </xs:documentation>
+					<xs:documentation>Reference, URI, URL or some other mechanism to identify a given resource. </xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="parentidentifier" type="xs:string" minOccurs="0">
 				<xs:annotation>
-					<xs:documentation>A Reference, URI, URL or some other mechanism that that a given resource is a part of (child).</xs:documentation>
+					<xs:documentation>Reference, URI, URL or some other mechanism that that a given resource is a part of (child).</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="language" type="xs:string">
