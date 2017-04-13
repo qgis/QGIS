@@ -1051,8 +1051,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   // add geonode menu under web menu
-  mWebMenu->addMenu( mGeonodeMenu );
-  mGeonodeMenu->addAction( mActionAddGeonodeLayer );
+  addPluginToWebMenu( mGeonodeMenu->title(), mActionAddGeonodeLayer );
 
   // Set icon size of toolbars
   if ( settings.contains( QStringLiteral( "IconSize" ) ) )

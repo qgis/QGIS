@@ -103,7 +103,11 @@ QVariantList QgsGeoNodeConnection::getLayers()
 {
   // Construct URL. I need to prepend http in the beginning to make it work.
   // setScheme doesn't really help.
-  QString url = "http://" + uri().param( "url" ) + QStringLiteral( "/api/layers/" );
+  QString url = uri().param( "url" ) + QStringLiteral( "/api/layers/" );
+  if ( !url.contains( QLatin1String( "://" ) ) )
+  {
+    url.prepend( "http://" );
+  }
   QUrl layerUrl( url );
   layerUrl.setScheme( "http" );
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
@@ -152,7 +156,11 @@ QVariantList QgsGeoNodeConnection::getMaps()
 {
   // Construct URL. I need to prepend http in the beginning to make it work.
   // setScheme doesn't really help.
-  QString url = "http://" + uri().param( "url" ) + QStringLiteral( "/api/maps/" );
+  QString url = uri().param( "url" ) + QStringLiteral( "/api/maps/" );
+  if ( !url.contains( QLatin1String( "://" ) ) )
+  {
+    url.prepend( "http://" );
+  }
   QUrl layerUrl( url );
   layerUrl.setScheme( "http" );
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();

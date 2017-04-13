@@ -93,6 +93,7 @@ void QgsGeoNodeSourceSelect::addConnectionsEntryList()
 void QgsGeoNodeSourceSelect::modifyConnectionsEntryList()
 {
   QgsGeoNodeNewConnection *nc = new QgsGeoNodeNewConnection( this, cmbConnections->currentText() );
+  nc->setWindowTitle( tr( "Modify GeoNode connection" ) );
 
   if ( nc->exec() )
   {
