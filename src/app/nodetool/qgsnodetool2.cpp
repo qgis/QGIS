@@ -57,7 +57,7 @@ static bool isEndpointAtVertexIndex( const QgsGeometry &geom, int vertexIndex )
   QgsAbstractGeometry *g = geom.geometry();
   if ( QgsCurve *curve = dynamic_cast<QgsCurve *>( g ) )
   {
-    return vertexIndex == 0 or vertexIndex == curve->numPoints() - 1;
+    return vertexIndex == 0 || vertexIndex == curve->numPoints() - 1;
   }
   else if ( QgsMultiCurve *multiCurve = dynamic_cast<QgsMultiCurve *>( g ) )
   {
@@ -650,7 +650,7 @@ bool QgsNodeTool2::isNearEndpointMarker( const QgsPoint &mapPoint )
   QgsPoint vertexPoint = QgsPoint( vertexPointV2.x(), vertexPointV2.y() );
   double distVertex = sqrt( vertexPoint.sqrDist( mapPoint ) );
 
-  return distMarker < tol and distMarker < distVertex;
+  return distMarker < tol && distMarker < distVertex;
 }
 
 bool QgsNodeTool2::isMatchAtEndpoint( const QgsPointLocator::Match &match )
