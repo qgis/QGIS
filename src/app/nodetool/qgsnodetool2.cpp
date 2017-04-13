@@ -836,11 +836,11 @@ void QgsNodeTool2::keyPressEvent( QKeyEvent *e )
     if ( mDraggingVertex )
       stopDragging();
   }
-  else if ( e->key() == Qt::Key_Comma )
+  else if ( e->key() == Qt::Key_Less || e->key() == Qt::Key_Comma )
   {
     highlightAdjacentVertex( -1 );
   }
-  else if ( e->key() == Qt::Key_Period )
+  else if ( e->key() == Qt::Key_Greater || e->key() == Qt::Key_Period )
   {
     highlightAdjacentVertex( + 1 );
   }
@@ -1599,10 +1599,22 @@ void QgsNodeTool2::highlightAdjacentVertex( double offset )
   Vertex node = mSelectedNodes[0];  // simply use the first one
 
   QgsGeometry geom = cachedGeometryForVertex( node );
-  QgsPoint pt = geom.vertexAt( node.vertexId + offset );
+
+  // try to wrap around polygon rings
+  int newVertexId, v0idx, v1idx;
+  geom.adjacentVertices( node.vertexId, v0idx, v1idx );
+  if ( offset == -1 && v0idx != -1 )
+    newVertexId = v0idx;
+  else if ( offset == 1 && v1idx != -1 )
+    newVertexId = v1idx;
+  else
+    newVertexId = node.vertexId + offset;
+
+  QgsPoint pt = geom.vertexAt( newVertexId );
   if ( pt != QgsPoint() )
-    node = Vertex( node.layer, node.fid, node.vertexId + offset );
+    node = Vertex( node.layer, node.fid, newVertexId );
   setHighlightedNodes( QList<Vertex>() << node );
+  zoomToNode( node );  // make sure the node is visible
 }
 
 void QgsNodeTool2::startSelectionRect( const QPoint &point0 )
@@ -1782,4 +1794,16 @@ void QgsNodeTool2::validateGeometry( QgsVectorLayer *layer, QgsFeatureId feature
   QgsGeometry geom = cachedGeometry( layer, featureId );
   validation.start( geom, this, layer );
   mValidations.insert( id, validation );
+}
+
+void QgsNodeTool2::zoomToNode( const Vertex &node )
+{
+  QgsPoint newCenter = cachedGeometryForVertex( node ).vertexAt( node.vertexId );
+  QgsPoint mapPoint = mCanvas->mapSettings().layerToMapCoordinates( node.layer, newCenter );
+  QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
+  if ( !ext.containsPoint( mapPoint.toQPointF(), Qt::OddEvenFill ) )
+  {
+    mCanvas->setCenter( mapPoint );
+    mCanvas->refresh();
+  }
 }

@@ -187,6 +187,9 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     //! Run validation on a geometry (in a background thread)
     void validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId );
 
+    //! Makes sure that the node is visible in map canvas
+    void zoomToNode( const Vertex &node );
+
   private:
 
     // members used for temporary highlight of stuff
