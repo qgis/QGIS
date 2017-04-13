@@ -12,16 +12,16 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,1">
    <property name="leftMargin">
-    <number>6</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>6</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>6</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>6</number>
+    <number>0</number>
    </property>
    <item>
     <widget class="QFrame" name="frameShowDiagrams">
@@ -303,8 +303,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>632</width>
-                   <height>405</height>
+                   <width>644</width>
+                   <height>417</height>
                   </rect>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -539,7 +539,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>618</width>
+                   <width>340</width>
                    <height>484</height>
                   </rect>
                  </property>
@@ -1130,8 +1130,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>632</width>
-                   <height>405</height>
+                   <width>511</width>
+                   <height>294</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1446,8 +1446,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>632</width>
-                   <height>405</height>
+                   <width>280</width>
+                   <height>288</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
@@ -1872,8 +1872,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>632</width>
-                   <height>405</height>
+                   <width>100</width>
+                   <height>180</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2091,8 +2091,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>632</width>
-                   <height>405</height>
+                   <width>324</width>
+                   <height>131</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2176,12 +2176,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -2191,6 +2185,17 @@
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2213,11 +2218,6 @@
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleRangeWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalerangewidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
