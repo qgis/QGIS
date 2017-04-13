@@ -48,7 +48,6 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
 
     void requestCredentialsMasterPassword( QString *password, bool stored, bool *ok );
 
-    void on_chkMasterPassShow_stateChanged( int state );
     void on_leMasterPass_textChanged( const QString &pass );
     void on_leMasterPassVerify_textChanged( const QString &pass );
     void on_chkbxEraseAuthDb_toggled( bool checked );
