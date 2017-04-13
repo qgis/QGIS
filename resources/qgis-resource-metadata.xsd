@@ -118,6 +118,11 @@
 					<xs:documentation>Set of online resources associated with a given resource.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+      <xs:element name="history" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+    	    <xs:documentation>Freeform description of the history or lineage of the resource.</xs:documentation>
+        </xs:annotation>
+      </xs:element> 
 		</xs:sequence>
 		<xs:attribute name="version" use="required" fixed="1.0">
 			<xs:annotation>
