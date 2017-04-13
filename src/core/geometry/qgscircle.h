@@ -126,19 +126,26 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     // void setAzimuth(const double azimuth);
     // double azimuth() const {return mAzimuth; }
 
-    /** Inherited method not used. Use radius instead.
-     * @see radius()
-     * @see setRadius()
-     * @note not available in Python bindings
-     */
-    double semiMajorAxis() = delete;
 
-    /** Inherited method not used. Use radius instead.
+    /** Inherited method. Use setRadius instead.
      * @see radius()
      * @see setRadius()
-     * @note not available in Python bindings
      */
-    double semiMinorAxis() = delete;
+    void setSemiMajorAxis( const double semiMajorAxis ) override
+    {
+      mSemiMajorAxis = fabs( semiMajorAxis );
+      mSemiMinorAxis = mSemiMajorAxis;
+    }
+
+    /** Inherited method. Use setRadius instead.
+     * @see radius()
+     * @see setRadius()
+     */
+    void setSemiMinorAxis( const double semiMinorAxis ) override
+    {
+      mSemiMajorAxis = fabs( semiMinorAxis );
+      mSemiMinorAxis = mSemiMajorAxis;
+    }
 
     //! Returns the radius of the circle
     double radius() const {return mSemiMajorAxis;}
@@ -146,7 +153,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     void setRadius( double radius )
     {
       mSemiMajorAxis = fabs( radius );
-      mSemiMinorAxis = fabs( radius );
+      mSemiMinorAxis = mSemiMajorAxis;
     }
 
     /** The four quadrant of the ellipse.

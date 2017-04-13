@@ -99,14 +99,14 @@ An ellipse is empty if axes are equal to 0
  :rtype: QgsPointV2
 %End
 
-    virtual double semiMajorAxis() const;
+    double semiMajorAxis() const;
 %Docstring
  Returns the semi-major axis.
  @see setSemiMajorAxis()
  :rtype: float
 %End
 
-    virtual double semiMinorAxis() const;
+    double semiMinorAxis() const;
 %Docstring
  Returns the semi-minor axis.
  @see setSemiMinorAxis()

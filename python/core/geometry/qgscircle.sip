@@ -116,6 +116,19 @@ class QgsCircle : QgsEllipse
 
 
 
+    void setSemiMajorAxis( const double semiMajorAxis );
+%Docstring
+ Inherited method. Use setRadius instead.
+ @see radius()
+ @see setRadius()
+%End
+
+    void setSemiMinorAxis( const double semiMinorAxis );
+%Docstring
+ Inherited method. Use setRadius instead.
+ @see radius()
+ @see setRadius()
+%End
 
     double radius() const;
 %Docstring

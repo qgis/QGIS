@@ -106,12 +106,12 @@ class CORE_EXPORT QgsEllipse
     /** Returns the semi-major axis.
      * @see setSemiMajorAxis()
      */
-    virtual double semiMajorAxis() const {return mSemiMajorAxis; }
+    double semiMajorAxis() const {return mSemiMajorAxis; }
 
     /** Returns the semi-minor axis.
      * @see setSemiMinorAxis()
      */
-    virtual double semiMinorAxis() const {return mSemiMinorAxis; }
+    double semiMinorAxis() const {return mSemiMinorAxis; }
 
     /** Returns the azimuth.
      * @see setAzimuth()
