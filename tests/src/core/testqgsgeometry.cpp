@@ -4046,6 +4046,18 @@ void TestQgsGeometry::circle()
 
   circ1.setRadius( 50 );
   QCOMPARE( circ1.radius(), 50.0 );
+  QCOMPARE( circ1.semiMajorAxis(), 50.0 );
+  QCOMPARE( circ1.semiMinorAxis(), 50.0 );
+
+  circ1.setSemiMajorAxis( 250 );
+  QCOMPARE( circ1.radius(), 250.0 );
+  QCOMPARE( circ1.semiMajorAxis(), 250.0 );
+  QCOMPARE( circ1.semiMinorAxis(), 250.0 );
+
+  circ1.setSemiMinorAxis( 8250 );
+  QCOMPARE( circ1.radius(), 8250.0 );
+  QCOMPARE( circ1.semiMajorAxis(), 8250.0 );
+  QCOMPARE( circ1.semiMinorAxis(), 8250.0 );
 
   circ1.setCenter( QgsPointV2( 5, 10 ) );
   QVERIFY( circ1.center() == QgsPointV2( 5, 10 ) );
