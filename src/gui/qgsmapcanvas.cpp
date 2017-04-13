@@ -203,7 +203,7 @@ QgsMapCanvas::~QgsMapCanvas()
   if ( mJob )
   {
     whileBlocking( mJob )->cancel();
-    Q_ASSERT( !mJob );
+    delete mJob;
   }
 
   // delete canvas items prior to deleting the canvas
