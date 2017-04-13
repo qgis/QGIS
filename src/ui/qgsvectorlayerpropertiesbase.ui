@@ -113,7 +113,7 @@
            <string>Metadata</string>
           </property>
           <property name="toolTip">
-           <string>General</string>
+           <string>Metadata</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -232,6 +232,9 @@
           <property name="text">
            <string>Variables</string>
           </property>
+          <property name="toolTip">
+           <string>Variables</string>
+          </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
@@ -241,6 +244,9 @@
           <property name="text">
            <string>Legend</string>
           </property>
+          <property name="toolTip">
+           <string>Legend</string>
+          </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/legend.svg</normaloff>:/images/themes/default/legend.svg</iconset>
@@ -248,6 +254,9 @@
          </item>
          <item>
           <property name="text">
+           <string>Dependencies</string>
+          </property>
+          <property name="toolTip">
            <string>Dependencies</string>
           </property>
           <property name="icon">
