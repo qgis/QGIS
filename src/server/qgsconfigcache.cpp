@@ -18,7 +18,6 @@
 #include "qgsconfigcache.h"
 #include "qgsmessagelog.h"
 #include "qgsmslayercache.h"
-#include "qgswfsprojectparser.h"
 #include "qgswmsprojectparser.h"
 #include "qgssldconfigparser.h"
 #include "qgsaccesscontrol.h"
@@ -74,32 +73,6 @@ QgsServerProjectParser *QgsConfigCache::serverConfiguration( const QString &file
     QStringLiteral( "Server" ), QgsMessageLog::INFO
   );
   return new QgsServerProjectParser( doc, filePath );
-}
-
-QgsWfsProjectParser *QgsConfigCache::wfsConfiguration(
-  const QString &filePath
-  , const QgsAccessControl *accessControl
-)
-{
-  QgsWfsProjectParser *p = mWFSConfigCache.object( filePath );
-  if ( !p )
-  {
-    QDomDocument *doc = xmlDocument( filePath );
-    if ( !doc )
-    {
-      return nullptr;
-    }
-    p = new QgsWfsProjectParser(
-      filePath
-      , accessControl
-    );
-    mWFSConfigCache.insert( filePath, p );
-    p = mWFSConfigCache.object( filePath );
-    Q_ASSERT( p );
-  }
-
-  QgsMSLayerCache::instance()->setProjectMaxLayers( p->wfsLayers().size() );
-  return p;
 }
 
 QgsWmsConfigParser *QgsConfigCache::wmsConfiguration(
@@ -182,7 +155,6 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
 void QgsConfigCache::removeChangedEntry( const QString &path )
 {
   mWMSConfigCache.remove( path );
-  mWFSConfigCache.remove( path );
 
   //xml document must be removed last, as other config cache destructors may require it
   mXmlDocumentCache.remove( path );

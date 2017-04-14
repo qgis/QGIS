@@ -32,7 +32,6 @@ class QgsConfigCache: QObject
     ~QgsConfigCache();
 
     QgsServerProjectParser* serverConfiguration( const QString& filePath );
-    QgsWfsProjectParser* wfsConfiguration( const QString& filePath, const QgsAccessControl* accessControl );
     QgsWmsConfigParser* wmsConfiguration( const QString& filePath, const QgsAccessControl* accessControl, const QMap<QString, QString>& parameterMap = QMap< QString, QString >() );
 
   private:

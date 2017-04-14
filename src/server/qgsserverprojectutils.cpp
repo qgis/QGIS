@@ -97,6 +97,31 @@ QString QgsServerProjectUtils::wfsServiceUrl( const QgsProject &project )
   return project.readEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), "" );
 }
 
+QStringList QgsServerProjectUtils::wfsLayerIds( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WFSLayers" ), QStringLiteral( "/" ) );
+}
+
+int QgsServerProjectUtils::wfsLayerPrecision( const QString &layerId, const QgsProject &project )
+{
+  return project.readNumEntry( QStringLiteral( "WFSLayersPrecision" ), "/" + layerId, 6 );
+}
+
+QStringList QgsServerProjectUtils::wfstUpdateLayerIds( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Update" ) );
+}
+
+QStringList QgsServerProjectUtils::wfstInsertLayerIds( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Insert" ) );
+}
+
+QStringList QgsServerProjectUtils::wfstDeleteLayerIds( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Delete" ) );
+}
+
 QString QgsServerProjectUtils::wcsServiceUrl( const QgsProject &project )
 {
   return project.readEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), "" );

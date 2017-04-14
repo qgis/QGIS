@@ -458,7 +458,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WFS",
-            "VERSION": "1.1.0",
+            "VERSION": "1.0.0",
             "REQUEST": "GetCapabilities"
         }.items())])
 
@@ -482,7 +482,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WFS",
-            "VERSION": "1.1.0",
+            "VERSION": "1.0.0",
             "REQUEST": "DescribeFeatureType",
             "TYPENAME": "Hello"
         }.items())])
@@ -501,7 +501,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WFS",
-            "VERSION": "1.1.0",
+            "VERSION": "1.0.0",
             "REQUEST": "DescribeFeatureType",
             "TYPENAME": "Country"
         }.items())])
@@ -722,8 +722,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Insert is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
-            str(response).find(
-                '<ServiceException code="Security">Feature modify permission denied</ServiceException>') != -1,
+            str(response).find("<SUCCESS/>") == -1,
             "WFS/Transactions Insert succeed\n%s" % response)
 
         response, headers = self._post_restricted(data.format(color="red"), "LAYER_PERM=no")
@@ -732,7 +731,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Content type for Insert is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
             str(response).find(
-                '<ServiceException code="Security">Feature insert permission denied</ServiceException>') != -1,
+                '<ServiceException code="Security">No permissions to do WFS changes on layer \\\'db_point\\\'</ServiceException>') != -1,
             "WFS/Transactions Insert succeed\n%s" % response)
 
         response, headers = self._post_restricted(data.format(color="yellow"), "LAYER_PERM=yes")
@@ -753,8 +752,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
-            str(response).find(
-                '<ServiceException code="Security">Feature modify permission denied</ServiceException>') != -1,
+            str(response).find("<SUCCESS/>") == -1,
             "WFS/Transactions Update succeed\n%s" % response)
         self._test_colors({1: "blue"})
 
@@ -772,8 +770,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Update is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
-            str(response).find(
-                '<ServiceException code="Security">Feature modify permission denied</ServiceException>') != -1,
+            str(response).find("<SUCCESS/>") == -1,
             "WFS/Transactions Update succeed\n%s" % response)
         self._test_colors({1: "red"})
 
@@ -783,7 +780,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Content type for Update is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
             str(response).find(
-                '<ServiceException code="Security">Feature update permission denied</ServiceException>') != -1,
+                '<ServiceException code="Security">No permissions to do WFS changes on layer \\\'db_point\\\'</ServiceException>') != -1,
             "WFS/Transactions Update succeed\n%s" % response)
         self._test_colors({1: "red"})
 
@@ -817,8 +814,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
-            str(response).find(
-                '<ServiceException code="Security">Feature modify permission denied</ServiceException>') != -1,
+            str(response).find("<SUCCESS/>") == -1,
             "WFS/Transactions Delete succeed\n%s" % response)
 
         data_update = WFS_TRANSACTION_UPDATE.format(id="1", color="red", xml_ns=XML_NS)
@@ -831,7 +827,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
             str(response).find(
-                '<ServiceException code="Security">Feature delete permission denied</ServiceException>') != -1,
+                '<ServiceException code="Security">No permissions to do WFS changes on layer \\\'db_point\\\'</ServiceException>') != -1,
             "WFS/Transactions Delete succeed\n%s" % response)
 
         response, headers = self._post_restricted(data, "LAYER_PERM=yes")
