@@ -91,7 +91,7 @@ class ProcessingConfig(object):
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.USE_FILENAME_AS_LAYER_NAME,
-            ProcessingConfig.tr('Use filename as layer name'), False))
+            ProcessingConfig.tr('Use filename as layer name'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.SHOW_RECENT_ALGORITHMS,
