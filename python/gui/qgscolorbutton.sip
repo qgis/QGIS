@@ -1,329 +1,409 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorbutton.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \ingroup gui
- * \class QgsColorButton
- * A cross platform button subclass for selecting colors. Will open a color chooser dialog when clicked.
- * Offers live updates to button from color chooser dialog. An attached drop down menu allows for copying
- * and pasting colors, picking colors from the screen, and selecting colors from color swatch grids.
- * \note Added in version 2.5
- */
+
 
 class QgsColorButton : QToolButton
 {
-%TypeHeaderCode
-#include <qgscolorbutton.h>
+%Docstring
+ A cross platform button subclass for selecting colors. Will open a color chooser dialog when clicked.
+ Offers live updates to button from color chooser dialog. An attached drop down menu allows for copying
+ and pasting colors, picking colors from the screen, and selecting colors from color swatch grids.
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorbutton.h"
+%End
   public:
 
-    /** Specifies the behavior when the button is clicked
-     */
     enum Behavior
     {
-      ShowDialog, /*!< show a color picker dialog when clicked */
-      SignalOnly /*!< emit colorClicked signal only, no dialog */
+      ShowDialog,
+      SignalOnly
     };
 
-    /** Construct a new color button.
-     * @param parent The parent QWidget for the dialog
-     * @param cdt The title to show in the color chooser dialog
-     * @param registry a color scheme registry for color swatch grids to show in the drop down menu. If not
-     * specified, the button will use the global color scheme registry
-     */
-    QgsColorButton( QWidget *parent /TransferThis/ = 0, const QString& cdt = "", QgsColorSchemeRegistry* registry = 0 );
-
-    virtual ~QgsColorButton();
+    QgsColorButton( QWidget *parent /TransferThis/ = 0, const QString &cdt = "", QgsColorSchemeRegistry *registry = 0 );
+%Docstring
+ Construct a new color button.
+ \param parent The parent QWidget for the dialog
+ \param cdt The title to show in the color chooser dialog
+ \param registry a color scheme registry for color swatch grids to show in the drop down menu. If not
+ specified, the button will use the global color scheme registry
+%End
 
     virtual QSize sizeHint() const;
+%Docstring
+ :rtype: QSize
+%End
 
-    /** Return the currently selected color.
-     * @returns currently selected color
-     * @see setColor
-     */
     QColor color() const;
+%Docstring
+ Return the currently selected color.
+ :return: currently selected color
+ \see setColor
+ :rtype: QColor
+%End
 
-    /** Sets whether alpha modification (transparency) is permitted
-     * for the color. Defaults to false.
-     * @param allowAlpha set to true to allow alpha modification
-     * @see allowAlpha
-     */
     void setAllowAlpha( const bool allowAlpha );
+%Docstring
+ Sets whether alpha modification (transparency) is permitted
+ for the color. Defaults to false.
+ \param allowAlpha set to true to allow alpha modification
+ \see allowAlpha
+%End
 
-    /** Returns whether alpha modification (transparency) is permitted
-     * for the color.
-     * @returns true if alpha modification is allowed
-     * @see setAllowAlpha
-     */
     bool allowAlpha() const;
+%Docstring
+ Returns whether alpha modification (transparency) is permitted
+ for the color.
+ :return: true if alpha modification is allowed
+ \see setAllowAlpha
+ :rtype: bool
+%End
 
-    /** Set the title for the color chooser dialog window.
-     * @param title Title for the color chooser dialog
-     * @see colorDialogTitle
-     */
-    void setColorDialogTitle( const QString& title );
+    void setColorDialogTitle( const QString &title );
+%Docstring
+ Set the title for the color chooser dialog window.
+ \param title Title for the color chooser dialog
+ \see colorDialogTitle
+%End
 
-    /** Returns the title for the color chooser dialog window.
-     * @returns title for the color chooser dialog
-     * @see setColorDialogTitle
-     */
     QString colorDialogTitle() const;
+%Docstring
+ Returns the title for the color chooser dialog window.
+ :return: title for the color chooser dialog
+ \see setColorDialogTitle
+ :rtype: str
+%End
 
-    /** Returns whether the button accepts live updates from QColorDialog.
-     * @returns true if the button will be accepted immediately when the dialog's color changes
-     * @see setAcceptLiveUpdates
-     */
     bool acceptLiveUpdates() const;
+%Docstring
+ Returns whether the button accepts live updates from QColorDialog.
+ :return: true if the button will be accepted immediately when the dialog's color changes
+ \see setAcceptLiveUpdates
+ :rtype: bool
+%End
 
-    /** Sets whether the button accepts live updates from QColorDialog. Live updates may cause changes
-     * that are not undoable on QColorDialog cancel.
-     * @param accept set to true to enable live updates
-     * @see acceptLiveUpdates
-     */
     void setAcceptLiveUpdates( const bool accept );
+%Docstring
+ Sets whether the button accepts live updates from QColorDialog. Live updates may cause changes
+ that are not undoable on QColorDialog cancel.
+ \param accept set to true to enable live updates
+ \see acceptLiveUpdates
+%End
 
-    /** Sets whether the drop down menu should be shown for the button. The default behavior is to
-     * show the menu.
-     * @param showMenu set to false to hide the drop down menu
-     * @see showMenu
-     */
     void setShowMenu( const bool showMenu );
+%Docstring
+ Sets whether the drop down menu should be shown for the button. The default behavior is to
+ show the menu.
+ \param showMenu set to false to hide the drop down menu
+ \see showMenu
+%End
 
-    /** Returns whether the drop down menu is shown for the button.
-     * @returns true if drop down menu is shown
-     * @see setShowMenu
-     */
     bool showMenu() const;
+%Docstring
+ Returns whether the drop down menu is shown for the button.
+ :return: true if drop down menu is shown
+ \see setShowMenu
+ :rtype: bool
+%End
 
-    /** Sets the behavior for when the button is clicked. The default behavior is to show
-     * a color picker dialog.
-     * @param behavior behavior when button is clicked
-     * @see behavior
-     */
     void setBehavior( const Behavior behavior );
+%Docstring
+ Sets the behavior for when the button is clicked. The default behavior is to show
+ a color picker dialog.
+ \param behavior behavior when button is clicked
+ \see behavior
+%End
 
-    /** Returns the behavior for when the button is clicked.
-     * @returns behavior when button is clicked
-     * @see setBehavior
-     */
     Behavior behavior() const;
+%Docstring
+ Returns the behavior for when the button is clicked.
+ :return: behavior when button is clicked
+ \see setBehavior
+ :rtype: Behavior
+%End
 
-    /** Sets the default color for the button, which is shown in the button's drop down menu for the
-     * "default color" option.
-     * @param color default color for the button. Set to an invalid QColor to disable the default color
-     * option.
-     * @see defaultColor
-     */
-    void setDefaultColor( const QColor& color );
+    void setDefaultColor( const QColor &color );
+%Docstring
+ Sets the default color for the button, which is shown in the button's drop down menu for the
+ "default color" option.
+ \param color default color for the button. Set to an invalid QColor to disable the default color
+ option.
+ \see defaultColor
+%End
 
-    /** Returns the default color for the button, which is shown in the button's drop down menu for the
-     * "default color" option.
-     * @returns default color for the button. Returns an invalid QColor if the default color
-     * option is disabled.
-     * @see setDefaultColor
-     */
     QColor defaultColor() const;
+%Docstring
+ Returns the default color for the button, which is shown in the button's drop down menu for the
+ "default color" option.
+ :return: default color for the button. Returns an invalid QColor if the default color
+ option is disabled.
+ \see setDefaultColor
+ :rtype: QColor
+%End
 
-    /** Sets whether the "no color" option should be shown in the button's drop down menu. If selected,
-     * the "no color" option sets the color button's color to a totally transparent color.
-     * @param showNoColorOption set to true to show the no color option. This is disabled by default.
-     * @see showNoColor
-     * @see setNoColorString
-     * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
-     */
     void setShowNoColor( const bool showNoColorOption );
+%Docstring
+ Sets whether the "no color" option should be shown in the button's drop down menu. If selected,
+ the "no color" option sets the color button's color to a totally transparent color.
+ \param showNoColorOption set to true to show the no color option. This is disabled by default.
+ \see showNoColor
+ \see setNoColorString
+.. note::
 
-    /** Returns whether the "no color" option is shown in the button's drop down menu. If selected,
-     * the "no color" option sets the color button's color to a totally transparent color.
-     * @returns true if the no color option is shown.
-     * @see setShowNoColor
-     * @see noColorString
-     * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
-     */
+   The "no color" option is only shown if the color button is set to show an alpha channel in the color
+ dialog (see setColorDialogOptions)
+%End
+
     bool showNoColor() const;
+%Docstring
+ Returns whether the "no color" option is shown in the button's drop down menu. If selected,
+ the "no color" option sets the color button's color to a totally transparent color.
+ :return: true if the no color option is shown.
+ \see setShowNoColor
+ \see noColorString
+.. note::
 
-    /** Sets the string to use for the "no color" option in the button's drop down menu.
-     * @param noColorString string to use for the "no color" menu option
-     * @see noColorString
-     * @see setShowNoColor
-     * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
-     */
-    void setNoColorString( const QString& noColorString );
+   The "no color" option is only shown if the color button is set to show an alpha channel in the color
+ dialog (see setColorDialogOptions)
+ :rtype: bool
+%End
 
-     /** Sets whether a set to null (clear) option is shown in the button's drop down menu.
-     * @param showNull set to true to show a null option
-     * @note added in QGIS 2.16
-     * @see showNull()
-     * @see isNull()
-     */
+    void setNoColorString( const QString &noColorString );
+%Docstring
+ Sets the string to use for the "no color" option in the button's drop down menu.
+ \param noColorString string to use for the "no color" menu option
+ \see noColorString
+ \see setShowNoColor
+.. note::
+
+   The "no color" option is only shown if the color button is set to show an alpha channel in the color
+ dialog (see setColorDialogOptions)
+%End
+
     void setShowNull( bool showNull );
+%Docstring
+ Sets whether a set to null (clear) option is shown in the button's drop down menu.
+ \param showNull set to true to show a null option
+.. versionadded:: 2.16
+ \see showNull()
+ \see isNull()
+%End
 
-    /** Returns whether the set to null (clear) option is shown in the button's drop down menu.
-     * @note added in QGIS 2.16
-     * @see setShowNull()
-     * @see isNull()
-     */
     bool showNull() const;
+%Docstring
+ Returns whether the set to null (clear) option is shown in the button's drop down menu.
+.. versionadded:: 2.16
+ \see setShowNull()
+ \see isNull()
+ :rtype: bool
+%End
 
-    /** Returns true if the current color is null.
-     * @note added in QGIS 2.16
-     * @see setShowNull()
-     * @see showNull()
-     */
     bool isNull() const;
+%Docstring
+ Returns true if the current color is null.
+.. versionadded:: 2.16
+ \see setShowNull()
+ \see showNull()
+ :rtype: bool
+%End
 
-    /** Returns the string used for the "no color" option in the button's drop down menu.
-     * @returns string used for the "no color" menu option
-     * @see setNoColorString
-     * @see showNoColor
-     * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
-     */
     QString noColorString() const;
+%Docstring
+ Returns the string used for the "no color" option in the button's drop down menu.
+ :return: string used for the "no color" menu option
+ \see setNoColorString
+ \see showNoColor
+.. note::
 
-    /** Sets the context string for the color button. The context string is passed to all color swatch
-     * grids shown in the button's drop down menu, to allow them to customise their display colors
-     * based on the context.
-     * @param context context string for the color button's color swatch grids
-     * @see context
-     */
-    void setContext( const QString& context );
+   The "no color" option is only shown if the color button is set to show an alpha channel in the color
+ dialog (see setColorDialogOptions)
+ :rtype: str
+%End
 
-    /** Returns the context string for the color button. The context string is passed to all color swatch
-     * grids shown in the button's drop down menu, to allow them to customise their display colors
-     * based on the context.
-     * @returns context string for the color button's color swatch grids
-     * @see setContext
-     */
+    void setContext( const QString &context );
+%Docstring
+ Sets the context string for the color button. The context string is passed to all color swatch
+ grids shown in the button's drop down menu, to allow them to customise their display colors
+ based on the context.
+ \param context context string for the color button's color swatch grids
+ \see context
+%End
+
     QString context() const;
+%Docstring
+ Returns the context string for the color button. The context string is passed to all color swatch
+ grids shown in the button's drop down menu, to allow them to customise their display colors
+ based on the context.
+ :return: context string for the color button's color swatch grids
+ \see setContext
+ :rtype: str
+%End
 
-    /** Sets the color scheme registry for the button, which controls the color swatch grids
-     * that are shown in the button's drop down menu.
-     * @param registry color scheme registry for the button. Set to 0 to hide all color
-     * swatch grids from the button's drop down menu.
-     * @see colorSchemeRegistry
-     */
-    void setColorSchemeRegistry( QgsColorSchemeRegistry* registry );
+    void setColorSchemeRegistry( QgsColorSchemeRegistry *registry );
+%Docstring
+ Sets the color scheme registry for the button, which controls the color swatch grids
+ that are shown in the button's drop down menu.
+ \param registry color scheme registry for the button. Set to 0 to hide all color
+ swatch grids from the button's drop down menu.
+ \see colorSchemeRegistry
+%End
 
-    /** Returns the color scheme registry for the button, which controls the color swatch grids
-     * that are shown in the button's drop down menu.
-     * @returns color scheme registry for the button. If returned value is 0 then all color
-     * swatch grids are hidden from the button's drop down menu.
-     * @see setColorSchemeRegistry
-     */
-    QgsColorSchemeRegistry* colorSchemeRegistry();
+    QgsColorSchemeRegistry *colorSchemeRegistry();
+%Docstring
+ Returns the color scheme registry for the button, which controls the color swatch grids
+ that are shown in the button's drop down menu.
+ :return: color scheme registry for the button. If returned value is 0 then all color
+ swatch grids are hidden from the button's drop down menu.
+ \see setColorSchemeRegistry
+ :rtype: QgsColorSchemeRegistry
+%End
 
   public slots:
 
-    /** Sets the current color for the button. Will emit a colorChanged signal if the color is different
-     * to the previous color.
-     * @param color new color for the button
-     * @see color
-     */
     void setColor( const QColor &color );
+%Docstring
+ Sets the current color for the button. Will emit a colorChanged signal if the color is different
+ to the previous color.
+ \param color new color for the button
+ \see color
+%End
 
-    /** Sets the background pixmap for the button based upon color and transparency.
-     * Call directly to update background after adding/removing QColorDialog::ShowAlphaChannel option
-     * but the color has not changed, i.e. setColor() wouldn't update button and
-     * you want the button to retain the set color's alpha component regardless
-     * @param color Color for button background. If no color is specified, the button's current
-     * color will be used
-     */
     void setButtonBackground( const QColor &color = QColor() );
+%Docstring
+ Sets the background pixmap for the button based upon color and transparency.
+ Call directly to update background after adding/removing QColorDialog.ShowAlphaChannel option
+ but the color has not changed, i.e. setColor() wouldn't update button and
+ you want the button to retain the set color's alpha component regardless
+ \param color Color for button background. If no color is specified, the button's current
+ color will be used
+%End
 
-    /** Copies the current color to the clipboard
-     * @see pasteColor
-     */
     void copyColor();
+%Docstring
+ Copies the current color to the clipboard
+ \see pasteColor
+%End
 
-    /** Pastes a color from the clipboard to the color button. If clipboard does not contain a valid
-     * color or string representation of a color, then no change is applied.
-     * @see copyColor
-     */
     void pasteColor();
+%Docstring
+ Pastes a color from the clipboard to the color button. If clipboard does not contain a valid
+ color or string representation of a color, then no change is applied.
+ \see copyColor
+%End
 
-    /** Activates the color picker tool, which allows for sampling a color from anywhere on the screen
-     */
     void activatePicker();
+%Docstring
+ Activates the color picker tool, which allows for sampling a color from anywhere on the screen
+%End
 
-    /** Sets color to a totally transparent color.
-     * @note If the color button is not set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions) then the color will not be changed.
-     */
     void setToNoColor();
+%Docstring
+ Sets color to a totally transparent color.
+.. note::
 
-    /** Sets color to the button's default color, if set.
-     * @see setDefaultColor
-     * @see defaultColor
-     */
+   If the color button is not set to show an alpha channel in the color
+ dialog (see setColorDialogOptions) then the color will not be changed.
+ \see setToNull()
+%End
+
     void setToDefaultColor();
+%Docstring
+ Sets color to the button's default color, if set.
+ \see setDefaultColor
+ \see defaultColor
+ \see setToNull()
+%End
 
-    /** Sets color to null.
-     * @see setToDefaultColor()
-     * @see setToNoColor()
-     * @note added in QGIS 2.16
-     */
     void setToNull();
+%Docstring
+ Sets color to null.
+ \see setToDefaultColor()
+ \see setToNoColor()
+.. versionadded:: 2.16
+%End
 
   signals:
 
-    /** Is emitted whenever a new color is set for the button. The color is always valid.
-     * In case the new color is the same no signal is emitted, to avoid infinite loops.
-     * @param color New color
-     */
     void colorChanged( const QColor &color );
+%Docstring
+ Is emitted whenever a new color is set for the button. The color is always valid.
+ In case the new color is the same no signal is emitted, to avoid infinite loops.
+ \param color New color
+%End
 
-    /** Emitted when the button is clicked, if the button's behavior is set to SignalOnly
-     * @param color button color
-     * @see setBehavior
-     * @see behavior
-     */
     void colorClicked( const QColor &color );
+%Docstring
+ Emitted when the button is clicked, if the button's behavior is set to SignalOnly
+ \param color button color
+ \see setBehavior
+ \see behavior
+%End
 
   protected:
 
-    void changeEvent( QEvent* e );
-    void showEvent( QShowEvent* e );
+    bool event( QEvent *e );
+%Docstring
+ :rtype: bool
+%End
+    void changeEvent( QEvent *e );
+    void showEvent( QShowEvent *e );
     void resizeEvent( QResizeEvent *event );
 
-    /** Returns a checkboard pattern pixmap for use as a background to transparent colors
-     */
-    static const QPixmap& transparentBackground();
+    static const QPixmap &transparentBackground();
+%Docstring
+ Returns a checkboard pattern pixmap for use as a background to transparent colors
+ :rtype: QPixmap
+%End
 
-    /**
-     * Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
-     */
-    void mousePressEvent( QMouseEvent* e );
+    void mousePressEvent( QMouseEvent *e );
+%Docstring
+ Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
+%End
 
-    /**
-     * Reimplemented to allow dragging colors from button
-     */
     void mouseMoveEvent( QMouseEvent *e );
+%Docstring
+ Reimplemented to allow dragging colors from button
+%End
 
-    /**
-     * Reimplemented to allow color picking
-     */
     void mouseReleaseEvent( QMouseEvent *e );
+%Docstring
+ Reimplemented to allow color picking
+%End
 
-    /**
-     * Reimplemented to allow canceling color pick via keypress, and sample via space bar press
-     */
     void keyPressEvent( QKeyEvent *e );
+%Docstring
+ Reimplemented to allow canceling color pick via keypress, and sample via space bar press
+%End
 
-    /**
-     * Reimplemented to accept dragged colors
-     */
-    void dragEnterEvent( QDragEnterEvent * e );
+    void dragEnterEvent( QDragEnterEvent *e );
+%Docstring
+ Reimplemented to accept dragged colors
+%End
 
-    /**
-     * Reimplemented to reset button appearance after drag leave
-     */
     void dragLeaveEvent( QDragLeaveEvent *e );
+%Docstring
+ Reimplemented to reset button appearance after drag leave
+%End
 
-    /**
-     * Reimplemented to accept dropped colors
-     */
     void dropEvent( QDropEvent *e );
+%Docstring
+ Reimplemented to accept dropped colors
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorbutton.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

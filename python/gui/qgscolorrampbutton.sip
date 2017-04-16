@@ -1,220 +1,284 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorrampbutton.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \ingroup gui
- * \class QgsColorRampButton
- * A cross platform button subclass for selecting color ramps. Will open color ramp dialogs when clicked.
- * Offers live updates to button from color ramp dialog. An attached drop down menu allows for access to
- * saved color ramps, as well as option to invert the current color ramp and create new ramps.
- * \note Added in version 3.0
- */
+
+
+
 
 class QgsColorRampButton : QToolButton
 {
-%TypeHeaderCode
-#include <qgscolorrampbutton.h>
+%Docstring
+ A cross platform button subclass for selecting color ramps. Will open color ramp dialogs when clicked.
+ Offers live updates to button from color ramp dialog. An attached drop down menu allows for access to
+ saved color ramps, as well as option to invert the current color ramp and create new ramps.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgscolorrampbutton.h"
+%End
   public:
 
-    /** Construct a new color ramp button.
-     * @param parent The parent QWidget for the dialog
-     * @param dialogTitle The title to show in the color ramp dialog
-     */
-    QgsColorRampButton( QWidget *parent = nullptr, const QString& dialogTitle = QString() );
+    QgsColorRampButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
+%Docstring
+ Construct a new color ramp button.
+ \param parent The parent QWidget for the dialog
+ \param dialogTitle The title to show in the color ramp dialog
+%End
 
     virtual ~QgsColorRampButton();
 
     virtual QSize sizeHint() const;
+%Docstring
+ :rtype: QSize
+%End
 
-    /** Return a copy of the current color ramp.
-     * @see setColorRamp()
-     */
-    QgsColorRamp* colorRamp() const /Factory/;
+    QgsColorRamp *colorRamp() const /Factory/;
+%Docstring
+ Return a copy of the current color ramp.
+ \see setColorRamp()
+ :rtype: QgsColorRamp
+%End
 
-    /** Set the title for the color ramp dialog window.
-     * @param title Title for the color ramp dialog
-     * @see colorRampDialogTitle
-     */
-    void setColorRampDialogTitle( const QString& title );
+    void setColorRampDialogTitle( const QString &title );
+%Docstring
+ Set the title for the color ramp dialog window.
+ \param title Title for the color ramp dialog
+ \see colorRampDialogTitle
+%End
 
-    /** Returns the title for the color ramp dialog window.
-     * @returns title for the color ramp dialog
-     * @see setColorRampDialogTitle
-     */
     QString colorRampDialogTitle() const;
+%Docstring
+ Returns the title for the color ramp dialog window.
+ :return: title for the color ramp dialog
+ \see setColorRampDialogTitle
+ :rtype: str
+%End
 
-    /** Returns whether the button accepts live updates from QgsColorRampDialog.
-     * @returns true if the button will be accepted immediately when the dialog's color ramp changes
-     * @see setAcceptLiveUpdates
-     */
     bool acceptLiveUpdates() const;
+%Docstring
+ Returns whether the button accepts live updates from QgsColorRampDialog.
+ :return: true if the button will be accepted immediately when the dialog's color ramp changes
+ \see setAcceptLiveUpdates
+ :rtype: bool
+%End
 
-    /** Sets whether the button accepts live updates from QgsColorRampDialog. Live updates may cause changes
-     * that are not undoable on QColorRampDialog cancel.
-     * @param accept set to true to enable live updates
-     * @see acceptLiveUpdates
-     */
     void setAcceptLiveUpdates( const bool accept );
+%Docstring
+ Sets whether the button accepts live updates from QgsColorRampDialog. Live updates may cause changes
+ that are not undoable on QColorRampDialog cancel.
+ \param accept set to true to enable live updates
+ \see acceptLiveUpdates
+%End
 
-    /** Sets whether the drop down menu should be shown for the button. The default behavior is to
-     * show the menu.
-     * @param showMenu set to false to hide the drop down menu
-     * @see showMenu
-     */
     void setShowMenu( const bool showMenu );
+%Docstring
+ Sets whether the drop down menu should be shown for the button. The default behavior is to
+ show the menu.
+ \param showMenu set to false to hide the drop down menu
+ \see showMenu
+%End
 
-    /** Returns whether the drop down menu is shown for the button.
-     * @returns true if drop down menu is shown
-     * @see setShowMenu
-     */
     bool showMenu() const;
+%Docstring
+ Returns whether the drop down menu is shown for the button.
+ :return: true if drop down menu is shown
+ \see setShowMenu
+ :rtype: bool
+%End
 
-    /** Sets the default color ramp for the button, which is shown in the button's drop down menu for the
-     * "default color ramp" option.
-     * @param colorramp default color ramp for the button. Set to a null pointer to disable the default color
-     * ramp option. The ramp will be cloned and ownership is not transferred.
-     * @see defaultColorRamp
-     */
-    void setDefaultColorRamp( QgsColorRamp* colorramp );
+    void setDefaultColorRamp( QgsColorRamp *colorramp );
+%Docstring
+ Sets the default color ramp for the button, which is shown in the button's drop down menu for the
+ "default color ramp" option.
+ \param colorramp default color ramp for the button. Set to a null pointer to disable the default color
+ ramp option. The ramp will be cloned and ownership is not transferred.
+ \see defaultColorRamp
+%End
 
-    /** Returns a copy of the default color ramp for the button, which is shown in the button's drop down menu for the
-     * "default color ramp" option.
-     * @returns default color ramp for the button. Returns a null pointer if the default color ramp
-     * option is disabled.
-     * @see setDefaultColorRamp
-     */
-    QgsColorRamp* defaultColorRamp() const /Factory/;
+    QgsColorRamp *defaultColorRamp() const /Factory/;
+%Docstring
+ Returns a copy of the default color ramp for the button, which is shown in the button's drop down menu for the
+ "default color ramp" option.
+ :return: default color ramp for the button. Returns a null pointer if the default color ramp
+ option is disabled.
+ \see setDefaultColorRamp
+ :rtype: QgsColorRamp
+%End
 
-    /** Sets whether a random colors option is shown in the button's drop down menu.
-     * @param showNull set to true to show a null option
-     * @see showRandom()
-     */
     void setShowRandomColorRamp( bool showRandom );
+%Docstring
+ Sets whether a random colors option is shown in the button's drop down menu.
+ \param showRandom set to true to show a random colors option
+ \see showRandom()
+%End
 
-    /** Returns whether random colors option is shown in the button's drop down menu.
-     * @see setShowRandom()
-     */
     bool showRandomColorRamp() const;
+%Docstring
+ Returns whether random colors option is shown in the button's drop down menu.
+ \see setShowRandom()
+ :rtype: bool
+%End
 
-    /** Returns true if the current color is null.
-     * @see setShowNull()
-     * @see showNull()
-     */
     bool isRandomColorRamp() const;
+%Docstring
+ Returns true if the current color is null.
+ \see setShowNull()
+ \see showNull()
+ :rtype: bool
+%End
 
-    /** Sets whether a set to null (clear) option is shown in the button's drop down menu.
-     * @param showNull set to true to show a null option
-     * @see showNull()
-     * @see isNull()
-     */
     void setShowNull( bool showNull );
+%Docstring
+ Sets whether a set to null (clear) option is shown in the button's drop down menu.
+ \param showNull set to true to show a null option
+ \see showNull()
+ \see isNull()
+%End
 
-    /** Returns whether the set to null (clear) option is shown in the button's drop down menu.
-     * @see setShowNull()
-     * @see isNull()
-     */
     bool showNull() const;
+%Docstring
+ Returns whether the set to null (clear) option is shown in the button's drop down menu.
+ \see setShowNull()
+ \see isNull()
+ :rtype: bool
+%End
 
-    /** Returns true if the current color is null.
-     * @see setShowNull()
-     * @see showNull()
-     */
     bool isNull() const;
+%Docstring
+ Returns true if the current color is null.
+ \see setShowNull()
+ \see showNull()
+ :rtype: bool
+%End
 
-    /** Sets the context string for the color ramp button. The context string is passed to all color ramp
-     * preview icons shown in the button's drop down menu, to (eventually) allow them to customise their display colors
-     * based on the context.
-     * @param context context string for the color dialog button's color ramp preview icons
-     * @see context
-     */
-    void setContext( const QString& context );
+    void setContext( const QString &context );
+%Docstring
+ Sets the context string for the color ramp button. The context string is passed to all color ramp
+ preview icons shown in the button's drop down menu, to (eventually) allow them to customise their display colors
+ based on the context.
+ \param context context string for the color dialog button's color ramp preview icons
+ \see context
+%End
 
-    /** Returns the context string for the color ramp button. The context string is passed to all color ramp
-     * preview icons shown in the button's drop down menu, to (eventually) allow them to customise their display colors
-     * based on the context.
-     * @returns context context string for the color dialog button's color ramp preview icons
-     * @see setContext
-     */
     QString context() const;
+%Docstring
+ Returns the context string for the color ramp button. The context string is passed to all color ramp
+ preview icons shown in the button's drop down menu, to (eventually) allow them to customise their display colors
+ based on the context.
+ :return: context context string for the color dialog button's color ramp preview icons
+ \see setContext
+ :rtype: str
+%End
 
-    /** Sets whether the color ramp button only shows gradient type ramps
-     * @param gradientonly set to true to show only gradient type ramps
-     * @see showGradientOnly
-     */
     void setShowGradientOnly( bool gradientonly );
+%Docstring
+ Sets whether the color ramp button only shows gradient type ramps
+ \param gradientonly set to true to show only gradient type ramps
+ \see showGradientOnly
+%End
 
-    /** Returns true if the color ramp button only shows gradient type ramps
-     * @see setShowGradientOnly
-     */
     bool showGradientOnly() const;
+%Docstring
+ Returns true if the color ramp button only shows gradient type ramps
+ \see setShowGradientOnly
+ :rtype: bool
+%End
 
-    /** Sets the name of the current color ramp when it's available in the style manager
-     * @param name Name of the saved color ramp
-     * @see colorRampName
-     */
-    void setColorRampName( QString name );
+    void setColorRampName( const QString &name );
+%Docstring
+ Sets the name of the current color ramp when it's available in the style manager
+ \param name Name of the saved color ramp
+ \see colorRampName
+%End
 
-    /** Returns the name of the current color ramp when it's available in the style manager
-     * @see setColorRampName
-     */
     QString colorRampName() const;
+%Docstring
+ Returns the name of the current color ramp when it's available in the style manager
+ \see setColorRampName
+ :rtype: str
+%End
 
   public slots:
 
-    /** Sets the current color ramp for the button. Will emit a colorRampChanged() signal if the color ramp is different
-     * to the previous color ramp.
-     * @param colorramp New color ramp for the button. The ramp will be cloned and ownership is not transferred.
-     * @see setRandomColorRamp, setColorRampFromName, colorRamp
-     */
-    void setColorRamp( QgsColorRamp* colorramp );
+    void setColorRamp( QgsColorRamp *colorramp );
+%Docstring
+ Sets the current color ramp for the button. Will emit a colorRampChanged() signal if the color ramp is different
+ to the previous color ramp.
+ \param colorramp New color ramp for the button. The ramp will be cloned and ownership is not transferred.
+ \see setRandomColorRamp, setColorRampFromName, colorRamp
+%End
 
-    /** Sets the current color ramp for the button to random colors. Will emit a colorRampChanged() signal
-     * if the color ramp is different to the previous color ramp.
-     * @see setColorRamp, setColorRampFromName, colorRamp
-     */
     void setRandomColorRamp();
+%Docstring
+ Sets the current color ramp for the button to random colors. Will emit a colorRampChanged() signal
+ if the color ramp is different to the previous color ramp.
+ \see setColorRamp, setColorRampFromName, colorRamp
+%End
 
-    /** Sets the current color ramp for the button using a saved color ramp name. Will emit a colorRampChanged() signal
-     * if the color ramp is different to the previous color ramp.
-     * @param name Name of saved color ramp
-     * @see setColorRamp, setRandomColorRamp, colorRamp
-     */
-    void setColorRampFromName( const QString& name = QString() );
+    void setColorRampFromName( const QString &name = QString() );
+%Docstring
+ Sets the current color ramp for the button using a saved color ramp name. Will emit a colorRampChanged() signal
+ if the color ramp is different to the previous color ramp.
+ \param name Name of saved color ramp
+ \see setColorRamp, setRandomColorRamp, colorRamp
+%End
 
-    /** Sets the background pixmap for the button based upon current color ramp.
-     * @param colorramp Color ramp for button background. If no color ramp is specified, the button's current
-     * color ramp will be used
-     */
-    void setButtonBackground( QgsColorRamp* colorramp = nullptr );
+    void setButtonBackground( QgsColorRamp *colorramp = 0 );
+%Docstring
+ Sets the background pixmap for the button based upon current color ramp.
+ \param colorramp Color ramp for button background. If no color ramp is specified, the button's current
+ color ramp will be used
+%End
 
-    /** Sets color ramp to the button's default color ramp, if set.
-     * @see setDefaultColorRamp
-     * @see defaultColorRamp
-     * @see setToNull()
-     */
     void setToDefaultColorRamp();
+%Docstring
+ Sets color ramp to the button's default color ramp, if set.
+ \see setDefaultColorRamp
+ \see defaultColorRamp
+ \see setToNull()
+%End
 
-    /** Sets color ramp to null.
-     * @see setToDefaultColorRamp()
-     */
     void setToNull();
+%Docstring
+ Sets color ramp to null.
+ \see setToDefaultColorRamp()
+%End
 
   signals:
 
-    /** Emitted whenever a new color ramp is set for the button. The color ramp is always valid.
-     * In case the new color ramp is the same, no signal is emitted to avoid infinite loops.
-     */
     void colorRampChanged();
+%Docstring
+ Emitted whenever a new color ramp is set for the button. The color ramp is always valid.
+ In case the new color ramp is the same, no signal is emitted to avoid infinite loops.
+%End
 
   protected:
 
     bool event( QEvent *e );
-    void changeEvent( QEvent* e );
-    void showEvent( QShowEvent* e );
+%Docstring
+ :rtype: bool
+%End
+    void changeEvent( QEvent *e );
+    void showEvent( QShowEvent *e );
     void resizeEvent( QResizeEvent *event );
 
-    /**
-     * Reimplemented to detect right mouse button clicks on the color ramp button
-     */
-    void mousePressEvent( QMouseEvent* e );
+    void mousePressEvent( QMouseEvent *e );
+%Docstring
+ Reimplemented to detect right mouse button clicks on the color ramp button
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorrampbutton.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
