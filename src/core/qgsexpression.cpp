@@ -4699,7 +4699,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
   switch ( mOp )
   {
     case boPlus:
-      if ( vL.type() == QVariant::String && vR.type() == QVariant::String )
+      if ( vL.type() == QVariant::String || vR.type() == QVariant::String )
       {
         QString sL = isNull( vL ) ? QString() : getStringValue( vL, parent );
         ENSURE_NO_EVAL_ERROR;
