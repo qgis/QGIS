@@ -60,6 +60,7 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     {
       checkBoxStyle.state = QStyle::State_Off | QStyle::State_Enabled;
     }
+    checkBoxStyle.iconSize = QSize( pixelsHigh, pixelsHigh );
     style->drawControl( QStyle::CE_CheckBox, &checkBoxStyle, painter );
   }
 
