@@ -18,6 +18,7 @@
 #include <QDir>
 #include <QString>
 #include <QObject>
+#include <QDebug>
 
 #include "qgis.h"
 #include "qgspoint.h"
@@ -43,6 +44,8 @@
 #endif
 
 #define DEG2RAD(x)    ((x)*M_PI/180)
+#define RAD2DEG(r) (180.0 * (r) / M_PI)
+#define POW2(x) ((x)*(x))
 
 
 QgsDistanceArea::QgsDistanceArea()
@@ -535,6 +538,111 @@ double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2, Qgs
   }
   QgsDebugMsgLevel( QString( "The result was %1" ).arg( result ), 3 );
   return result;
+}
+
+double QgsDistanceArea::measureLineProjected( const QgsPoint &p1, double distance, double azimuth, QgsPoint *projected_point )
+{
+  double result = 0.0;
+  QgsPoint p2;
+  if ( geographic() )
+  {
+    if ( !mEllipsoidalMode )
+    {
+      if ( ( mSemiMajor > 0 ) && ( mSemiMinor > 0 ) )
+      {
+        setEllipsoid( mSemiMajor, mSemiMinor );
+      }
+      else
+      {
+        setEllipsoid( sourceCrs().ellipsoidAcronym() );
+      }
+      if ( mEllipsoid != GEO_NONE )
+      {
+        mEllipsoidalMode = true;
+      }
+    }
+    if ( mEllipsoid != GEO_NONE )
+    {
+      p2 = computeSpheroidProject( p1, distance, azimuth );
+      QList<QgsPoint> linePoints;
+      linePoints.append( p1 );
+      linePoints.append( p2 );
+      QgsLineString lineString = QgsLineString( linePoints );
+      result = lineString.length();
+    }
+  }
+  else // cartesian coordinates
+  {
+    result = distance; // Avoid rounding errors when using meters [return as sent]
+    if ( sourceCrs().mapUnits() != QgsUnitTypes::DistanceMeters )
+    {
+      distance = ( distance * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, sourceCrs().mapUnits() ) );
+      result = measureLine( p1, p2 );
+    }
+    p2 = p1.project( distance, azimuth );
+  }
+  if ( projected_point )
+  {
+    *projected_point = QgsPoint( p2 );
+  }
+  return result;
+}
+
+QgsPoint QgsDistanceArea::computeSpheroidProject(
+  const QgsPoint &p1, double distance, double azimuth ) const
+{
+  // ellipsoid
+  double a = mSemiMajor;
+  double b = mSemiMinor;
+  double f = 1 / mInvFlattening;
+  double radians_lat = DEG2RAD( p1.y() );
+  double radians_long = DEG2RAD( p1.x() );
+  double b2 = POW2( b ); // spheroid_mu2
+  double omf = 1 - f;
+  double tan_u1 = omf * tan( radians_lat );
+  double u1 = atan( tan_u1 );
+  double sigma, last_sigma, delta_sigma, two_sigma_m;
+  double sigma1, sin_alpha, alpha, cos_alphasq;
+  double u2, A, B;
+  double lat2, lambda, lambda2, C, omega;
+  int i = 0;
+  if ( azimuth < 0.0 )
+  {
+    azimuth = azimuth + M_PI * 2.0;
+  }
+  if ( azimuth > ( M_PI * 2.0 ) )
+  {
+    azimuth = azimuth - M_PI * 2.0;
+  }
+  sigma1 = atan2( tan_u1, cos( azimuth ) );
+  sin_alpha = cos( u1 ) * sin( azimuth );
+  alpha = asin( sin_alpha );
+  cos_alphasq = 1.0 - POW2( sin_alpha );
+  u2 = POW2( cos( alpha ) ) * ( POW2( a ) - b2 ) / b2; // spheroid_mu2
+  A = 1.0 + ( u2 / 16384.0 ) * ( 4096.0 + u2 * ( -768.0 + u2 * ( 320.0 - 175.0 * u2 ) ) );
+  B = ( u2 / 1024.0 ) * ( 256.0 + u2 * ( -128.0 + u2 * ( 74.0 - 47.0 * u2 ) ) );
+  sigma = ( distance / ( b * A ) );
+  do
+  {
+    two_sigma_m = 2.0 * sigma1 + sigma;
+    delta_sigma = B * sin( sigma ) * ( cos( two_sigma_m ) + ( B / 4.0 ) * ( cos( sigma ) * ( -1.0 + 2.0 * POW2( cos( two_sigma_m ) ) - ( B / 6.0 ) * cos( two_sigma_m ) * ( -3.0 + 4.0 * POW2( sin( sigma ) ) ) * ( -3.0 + 4.0 * POW2( cos( two_sigma_m ) ) ) ) ) );
+    last_sigma = sigma;
+    sigma = ( distance / ( b * A ) ) + delta_sigma;
+    i++;
+  }
+  while ( i < 999 && fabs( ( last_sigma - sigma ) / sigma ) > 1.0e-9 );
+
+  lat2 = atan2( ( sin( u1 ) * cos( sigma ) + cos( u1 ) * sin( sigma ) *
+                  cos( azimuth ) ), ( omf * sqrt( POW2( sin_alpha ) +
+                                      POW2( sin( u1 ) * sin( sigma ) - cos( u1 ) * cos( sigma ) *
+                                          cos( azimuth ) ) ) ) );
+  lambda = atan2( ( sin( sigma ) * sin( azimuth ) ), ( cos( u1 ) * cos( sigma ) -
+                  sin( u1 ) * sin( sigma ) * cos( azimuth ) ) );
+  C = ( f / 16.0 ) * cos_alphasq * ( 4.0 + f * ( 4.0 - 3.0 * cos_alphasq ) );
+  omega = lambda - ( 1.0 - C ) * f * sin_alpha * ( sigma + C * sin( sigma ) *
+          ( cos( two_sigma_m ) + C * cos( sigma ) * ( -1.0 + 2.0 * POW2( cos( two_sigma_m ) ) ) ) );
+  lambda2 = radians_long + omega;
+  return QgsPoint( RAD2DEG( lambda2 ), RAD2DEG( lat2 ) );
 }
 
 QgsUnitTypes::DistanceUnit QgsDistanceArea::lengthUnits() const
