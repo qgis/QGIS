@@ -329,7 +329,7 @@ class CORE_EXPORT QgsDistanceArea
      * https://git.osgeo.org/gogs/rttopo/librttopo
      * - spheroid_project.spheroid_project(...)
      * \since QGIS 3.0
-     * \param p1 - location of first Geographich (lat,long) point as degrees.
+     * \param p1 - location of first Geographic (lat,long) point as degrees.
      * \param distance - distance in meters. [default 1 meter]
      * \param azimuth - azimuth in radians. [default M_PI/2 - East of p1]
      * \return p2 - location of projected point as degrees.
