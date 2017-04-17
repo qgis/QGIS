@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsnodetool2.h
+  qgsnodetool.h
   --------------------------------------
   Date                 : February 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSNODETOOL2_H
-#define QGSNODETOOL2_H
+#ifndef QGSNODETOOL_H
+#define QGSNODETOOL_H
 
 #include <memory>
 
@@ -56,14 +56,14 @@ uint qHash( const Vertex &v );
 
 
 
-class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
+class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
-    QgsNodeTool2( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
+    QgsNodeTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
 
     //! Cleanup canvas items we have created
-    ~QgsNodeTool2();
+    ~QgsNodeTool();
 
     virtual void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
 
@@ -325,13 +325,13 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     //! data structure for validation of one geometry of a vector layer
     struct GeometryValidation
     {
-      QgsNodeTool2 *tool = nullptr;               //!< Pointer to the parent node tool (for connections / canvas)
+      QgsNodeTool *tool = nullptr;               //!< Pointer to the parent node tool (for connections / canvas)
       QgsVectorLayer *layer = nullptr;            //!< Pointer to the layer of the validated geometry (for reporojection)
       QgsGeometryValidator *validator = nullptr;  //!< Object that does validation. Non-null if active
       QList<QgsVertexMarker *> errorMarkers;      //!< Markers created by validation
       QString errors;                             //!< Full error text from validation
 
-      void start( QgsGeometry &geom, QgsNodeTool2 *tool, QgsVectorLayer *l );  //!< Start validation
+      void start( QgsGeometry &geom, QgsNodeTool *tool, QgsVectorLayer *l );  //!< Start validation
       void addError( QgsGeometry::Error e );  //!< Add another error to the validation
       void cleanup(); //!< Delete everything
     };
@@ -342,4 +342,4 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 };
 
 
-#endif // QGSNODETOOL2_H
+#endif // QGSNODETOOL_H

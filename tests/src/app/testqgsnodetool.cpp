@@ -22,7 +22,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-#include "nodetool/qgsnodetool2.h"
+#include "nodetool/qgsnodetool.h"
 
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
 {
@@ -105,7 +105,7 @@ class TestQgsNodeTool : public QObject
   private:
     QgsMapCanvas *mCanvas = nullptr;
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
-    QgsNodeTool2 *mNodeTool = nullptr;
+    QgsNodeTool *mNodeTool = nullptr;
     QgsVectorLayer *mLayerLine = nullptr;
     QgsVectorLayer *mLayerPolygon = nullptr;
     QgsVectorLayer *mLayerPoint = nullptr;
@@ -198,7 +198,7 @@ void TestQgsNodeTool::initTestCase()
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create node tool
-  mNodeTool = new QgsNodeTool2( mCanvas, mAdvancedDigitizingDockWidget );
+  mNodeTool = new QgsNodeTool( mCanvas, mAdvancedDigitizingDockWidget );
 
   mCanvas->setMapTool( mNodeTool );
 }

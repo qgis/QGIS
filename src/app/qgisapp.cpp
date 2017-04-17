@@ -345,7 +345,7 @@
 #include "qgsmaptoolrotatelabel.h"
 #include "qgsmaptoolchangelabelproperties.h"
 
-#include "nodetool/qgsnodetool2.h"
+#include "nodetool/qgsnodetool.h"
 
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
@@ -3029,7 +3029,7 @@ void QgisApp::createCanvasTools()
   mMapTools.mDeleteRing->setAction( mActionDeleteRing );
   mMapTools.mDeletePart = new QgsMapToolDeletePart( mMapCanvas );
   mMapTools.mDeletePart->setAction( mActionDeletePart );
-  mMapTools.mNodeTool = new QgsNodeTool2( mMapCanvas, mAdvancedDigitizingDockWidget );
+  mMapTools.mNodeTool = new QgsNodeTool( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mNodeTool->setAction( mActionNodeTool );
   mMapTools.mRotatePointSymbolsTool = new QgsMapToolRotatePointSymbols( mMapCanvas );
   mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );

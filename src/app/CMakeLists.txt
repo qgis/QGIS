@@ -100,7 +100,7 @@ SET(QGIS_APP_SRCS
   nodetool/qgsselectedfeature.cpp
   nodetool/qgsvertexentry.cpp
   nodetool/qgsnodeeditor.cpp
-  nodetool/qgsnodetool2.cpp
+  nodetool/qgsnodetool.cpp
 
   qgslayerstylingwidget.cpp
   qgsmeasuredialog.cpp
@@ -281,7 +281,7 @@ SET (QGIS_APP_MOC_HDRS
 
   nodetool/qgsselectedfeature.h
   nodetool/qgsnodeeditor.h
-  nodetool/qgsnodetool2.h
+  nodetool/qgsnodetool.h
 
   qgslayerstylingwidget.h
   qgsmeasuredialog.h
