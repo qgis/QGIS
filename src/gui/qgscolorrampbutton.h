@@ -22,6 +22,7 @@
 
 #include <QToolButton>
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QgsPanelWidget;
 
@@ -32,7 +33,6 @@ class QgsPanelWidget;
  * saved color ramps, as well as option to invert the current color ramp and create new ramps.
  * \since QGIS 3.0
  */
-
 class GUI_EXPORT QgsColorRampButton : public QToolButton
 {
     Q_OBJECT
@@ -45,10 +45,10 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
   public:
 
     /** Construct a new color ramp button.
-     * \param parent The parent QWidget for the dialog
-     * \param dialogTitle The title to show in the color ramp dialog
+     * Use \a parent to attach a parent QWidget to the dialog.
+     * Use \a dialogTitle string  to define the title to show in the color ramp dialog
      */
-    QgsColorRampButton( QWidget *parent = nullptr, const QString &dialogTitle = QString() );
+    QgsColorRampButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
 
     virtual ~QgsColorRampButton();
 
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /** Return a copy of the current color ramp.
      * \see setColorRamp()
      */
-    QgsColorRamp *colorRamp() const;
+    QgsColorRamp *colorRamp() const SIP_FACTORY;
 
     /** Set the title for the color ramp dialog window.
      * \param title Title for the color ramp dialog
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * option is disabled.
      * \see setDefaultColorRamp
      */
-    QgsColorRamp *defaultColorRamp() const { return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr ; }
+    QgsColorRamp *defaultColorRamp() const SIP_FACTORY { return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr ; }
 
     /** Sets whether a random colors option is shown in the button's drop down menu.
      * \param showRandom set to true to show a random colors option
@@ -227,16 +227,16 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      */
     void setToNull();
 
-  private slots:
-
-    void rampWidgetUpdated();
-
   signals:
 
     /** Emitted whenever a new color ramp is set for the button. The color ramp is always valid.
      * In case the new color ramp is the same, no signal is emitted to avoid infinite loops.
      */
     void colorRampChanged();
+
+  private slots:
+
+    void rampWidgetUpdated();
 
   protected:
 

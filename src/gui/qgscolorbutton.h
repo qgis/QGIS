@@ -19,6 +19,7 @@
 #include <QToolButton>
 #include <QTemporaryFile>
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QMimeData;
 class QgsColorSchemeRegistry;
@@ -31,7 +32,6 @@ class QgsPanelWidget;
  * and pasting colors, picking colors from the screen, and selecting colors from color swatch grids.
  * \since QGIS 2.5
  */
-
 class GUI_EXPORT QgsColorButton : public QToolButton
 {
     Q_OBJECT
@@ -57,13 +57,13 @@ class GUI_EXPORT QgsColorButton : public QToolButton
       SignalOnly //!< Emit colorClicked signal only, no dialog
     };
 
-    /** Construct a new color button.
-     * \param parent The parent QWidget for the dialog
-     * \param cdt The title to show in the color chooser dialog
-     * \param registry a color scheme registry for color swatch grids to show in the drop down menu. If not
-     * specified, the button will use the global color scheme registry
+    /** Construct a new color ramp button.
+     * Use \a parent to attach a parent QWidget to the dialog.
+     * Use \a cdt string to define the title to show in the color ramp dialog
+     * Use a color scheme \a registry for color swatch grids to show in the drop down menu. If not specified,
+     * the button will use the global color scheme registry instead
      */
-    QgsColorButton( QWidget *parent = nullptr, const QString &cdt = "", QgsColorSchemeRegistry *registry = nullptr );
+    QgsColorButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &cdt = "", QgsColorSchemeRegistry *registry = nullptr );
 
     virtual QSize sizeHint() const override;
 
