@@ -231,3 +231,19 @@ QString QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceTy
   QString result;
   return result;
 }
+
+QString QgsGeoNodeConnection::serviceUrl( QString serviceType )
+{
+  QString randomUUID = "";
+  QVariantList layers = getLayers();
+
+  if ( !layers.isEmpty() )
+  {
+    Q_FOREACH ( const QVariant &layer, layers )
+    {
+      randomUUID = layer.toMap()["uuid"].toString();
+      break;
+    }
+  }
+  return serviceUrl( randomUUID, serviceType );
+}

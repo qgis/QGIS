@@ -50,6 +50,7 @@ class TestQgsGeoNodeConnection: public QObject
     void testGetLayers();
     void testGetMaps();
     void testGetWMSUrl();
+    void testGetGeoNodeUrl();
   private:
     QString mGeoNodeConnectionName;
     QString mGeoNodeConnectionURL;
@@ -101,7 +102,7 @@ void TestQgsGeoNodeConnection::testCreation()
 // Test retrieving layers
 void TestQgsGeoNodeConnection::testGetLayers()
 {
-  if ( !mSkipRemoteTest )
+  if ( mSkipRemoteTest )
   {
     QSKIP( "Skip remote test for faster testing" );
   }
@@ -150,6 +151,24 @@ void TestQgsGeoNodeConnection::testGetWMSUrl()
   QString WMSUrl = geonodeConnection.serviceUrl( layerID, QString( "WMS" ) );
   std::cout << WMSUrl.toStdString();
   QVERIFY( WMSUrl == "http://demo.geonode.org/geoserver/geonode/wms" );
+}
+
+// Test retrieving WMS Url
+void TestQgsGeoNodeConnection::testGetGeoNodeUrl()
+{
+  if ( !mSkipRemoteTest )
+  {
+    QSKIP( "Skip remote test for faster testing" );
+  }
+  QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
+
+  QString WMSUrl = geonodeConnection.serviceUrl( QStringLiteral( "WMS" ) );
+  std::cout << WMSUrl.toStdString();
+  QVERIFY( WMSUrl == "http://demo.geonode.org/geoserver/geonode/wms" );
+
+  QString WFSUrl = geonodeConnection.serviceUrl( QStringLiteral( "WFS" ) );
+  std::cout << WFSUrl.toStdString();
+  QVERIFY( WFSUrl == "http://demo.geonode.org/geoserver/geonode/wfs" );
 }
 
 QGSTEST_MAIN( TestQgsGeoNodeConnection )
