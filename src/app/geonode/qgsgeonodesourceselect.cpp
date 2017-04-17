@@ -313,7 +313,7 @@ void QgsGeoNodeSourceSelect::treeViewSelectionChanged()
 void QgsGeoNodeSourceSelect::addButtonClicked()
 {
   qDebug() << "Add button clicked";
-  //get selected entry in treeview
+  // Get selected entry in treeview
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( !currentIndex.isValid() )
   {
@@ -321,11 +321,11 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
     return;
   }
 
+  QgsGeoNodeConnection connection( cmbConnections->currentText() );
   QModelIndexList modelIndexList = treeView->selectionModel()->selectedRows();
   qDebug() << "Number of index: " << modelIndexList.size();
   for ( int i = 0; i < modelIndexList.size(); i++ )
   {
-    //add a wms layer to the map
     QModelIndex idx = mModelProxy->mapToSource( modelIndexList[i] );
     if ( !idx.isValid() )
     {
@@ -334,6 +334,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
     int row = idx.row();
 
     qDebug() << "Model index row " << row;
+
     QString uuid = mModel->item( row, MODEL_IDX_TITLE )->data( Qt::UserRole + 1 ).toString();
     QString serviceURL = mModel->item( row, MODEL_IDX_TITLE )->data( Qt::UserRole + 2 ).toString();
     QString titleName = mModel->item( row, MODEL_IDX_TITLE )->text();
@@ -346,9 +347,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
     }
 
     qDebug() << "Layer name: " << layerName << " Type: " << webServiceType;
-    qDebug() << "UUID: " << uuid;
 
-    QgsGeoNodeConnection connection( cmbConnections->currentText() );
     if ( webServiceType == "WMS" )
     {
       qDebug() << "Adding WMS layer of " << layerName;
@@ -372,6 +371,13 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       emit addRasterLayer( uri.encodedUri(),
                            layerName,
                            QStringLiteral( "wms" ) );
+    }
+    else if ( webServiceType == "WFS" )
+    {
+      qDebug() << "Adding WFS layer of " << layerName;
+      // Get parameters
+      // typeName, titleName, sql,
+
     }
   }
 
