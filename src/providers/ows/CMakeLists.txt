@@ -8,9 +8,11 @@ SET(OWS_MOC_HDRS
 )
 
 INCLUDE_DIRECTORIES (
+  ${CMAKE_SOURCE_DIR}/app/geonode
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/geonode
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui

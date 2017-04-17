@@ -23,6 +23,9 @@
 #include "qgsnewhttpconnection.h"
 #include "qgsowssourceselect.h"
 #endif
+#include "qgsgeonodeconnection.h"
+#include "qgsgeonodenewconnection.h"
+>>>>>>> add geonode data item to the browser panel as an extention of ows provider
 
 #include "qgsapplication.h"
 
@@ -259,7 +262,14 @@ void QgsOWSRootItem::newConnection()
 static QStringList extensions = QStringList();
 static QStringList wildcards = QStringList();
 
-QGISEXTERN int dataCapabilities()
+QGISEXTERN QList<QgsDataItemProvider *> dataItemProviders()
+{
+  return QList<QgsDataItemProvider *>()
+         << new QgsOwsDataItemProvider
+         << new QgsGeoNodeDataItemProvider;
+}
+
+/*QGISEXTERN int dataCapabilities()
 {
   return QgsDataProvider::Net;
 }
@@ -280,5 +290,81 @@ QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProvid
   Q_UNUSED( fl );
   Q_UNUSED( widgetMode );
   //return new QgsOWSSourceSelect( parent, fl, widgetMode );
+  return nullptr;
+}*/
+
+QgsGeoNodeConnectionItem::QgsGeoNodeConnectionItem(QgsDataItem *parent, QString name, QString path, QString uri)
+    : QgsDataCollectionItem( parent, name, path )
+    , mUri( uri )
+{
+  mIconName = QStringLiteral( "mIconConnect.png" );
+}
+
+QgsGeoNodeRootItem::QgsGeoNodeRootItem(QgsDataItem *parent, QString name, QString path) : QgsDataCollectionItem( parent, name, path )
+{
+  mCapabilities |= Fast;
+  mIconName = QStringLiteral( "mIconGeonode.svg" );
+  populate();
+}
+
+QVector<QgsDataItem *> QgsGeoNodeRootItem::createChildren()
+{
+  QVector<QgsDataItem *> connections;
+
+  Q_FOREACH ( const QString &connName, QgsGeoNodeConnection::connectionList() )
+    {
+      QgsGeoNodeConnection connection( connName );
+      QString path = mPath + "/" + connName;
+      QgsDataItem *conn = new QgsGeoNodeConnectionItem( this, connName, path, connection.uri().uri() );
+      connections.append( conn );
+    }
+  return connections;
+}
+
+/*QList<QAction *> QgsGeoNodeRootItem::actions()
+{
+  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  connect( actionNew, &QAction::triggered, this, &QgsGeoNodeRootItem::newConnection );
+  return QList<QAction *>() << actionNew;
+}
+
+void QgsGeoNodeRootItem::newConnection()
+{
+  QgsGeoNodeNewConnection *nc = new QgsGeoNodeNewConnection( nullptr );
+
+  if ( nc->exec() )
+  {
+    refresh();
+  }
+}*/
+
+QgsDataItem *QgsOwsDataItemProvider::createDataItem(const QString &path, QgsDataItem *parentItem)
+{
+  if ( path.isEmpty() )
+  {
+    return new QgsOWSRootItem( parentItem, QStringLiteral( "OWS" ), QStringLiteral( "ows:" ) );
+  }
+  return nullptr;
+}
+
+QgsDataItem *QgsGeoNodeDataItemProvider::createDataItem(const QString &path, QgsDataItem *parentItem)
+{
+  QgsDebugMsg( "thePath = " + path );
+  if ( path.isEmpty() )
+  {
+    return new QgsGeoNodeRootItem( parentItem, QStringLiteral( "GeoNode" ), QStringLiteral( "geonode:" ) );
+  }
+
+  // path schema: geonode:/connection name (used by OWS)
+  if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
+  {
+    QString connectionName = path.split( '/' ).last();
+    if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
+    {
+      QgsGeoNodeConnection connection( connectionName );
+      return new QgsGeoNodeConnectionItem( parentItem, QStringLiteral( "GeoNode" ), path, connection.uri().encodedUri() );
+    }
+  }
+
   return nullptr;
 }

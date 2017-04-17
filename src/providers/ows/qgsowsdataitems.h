@@ -16,6 +16,8 @@
 #define QGSOWSDATAITEMS_H
 
 #include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataprovider.h"
 #include "qgsdatasourceuri.h"
 class QgsOWSConnectionItem : public QgsDataCollectionItem
 {
@@ -61,6 +63,51 @@ class QgsOWSRootItem : public QgsDataCollectionItem
 
     void newConnection();
 #endif
+};
+
+//! Provider for ows root data item
+class QgsOwsDataItemProvider : public QgsDataItemProvider
+{
+public:
+  virtual QString name() override { return QStringLiteral( "OWS" ); }
+
+  virtual int capabilities() override { return QgsDataProvider::Net; }
+
+  virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+};
+
+class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoNodeConnectionItem(QgsDataItem *parent, QString name, QString path, QString uri);
+  private:
+    QString mUri;
+};
+
+class QgsGeoNodeRootItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoNodeRootItem( QgsDataItem *parent, QString name, QString path );
+
+    QVector<QgsDataItem *> createChildren() override;
+
+  /*virtual QList<QAction *> actions() override;
+
+  private slots:
+    void newConnection();*/
+};
+
+//! Provider for Geonode root data item
+class QgsGeoNodeDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    virtual QString name() override { return QStringLiteral( "GeoNode" ); }
+
+    virtual int capabilities() override { return QgsDataProvider::Net; }
+
+    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSOWSDATAITEMS_H

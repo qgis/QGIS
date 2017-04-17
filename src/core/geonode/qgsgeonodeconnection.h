@@ -20,7 +20,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
-#include "qgsstyle.h"
+//#include "qgsstyle.h"
 //#include "../../providers/wms/qgswmsconnection.h"
 //#include "../../providers/wfs/qgswfsconnection.h"
 
