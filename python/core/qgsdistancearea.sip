@@ -159,7 +159,7 @@ class QgsDistanceArea
      * @param projected_point calculated projected point
      * @return distance in mapUnits
      */
-    double measureLineProjected( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2, QgsPoint *projected_point = nullptr );
+    double measureLineProjected( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2, QgsPoint *projectedPoint /In,Out/ = nullptr ) const;
 
     /** Returns the units of distance for length calculations made by this object.
      * @note added in QGIS 2.14

@@ -18,7 +18,6 @@
 #include <QDir>
 #include <QString>
 #include <QObject>
-#include <QDebug>
 
 #include "qgis.h"
 #include "qgspoint.h"
@@ -540,35 +539,16 @@ double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2, Qgs
   return result;
 }
 
-double QgsDistanceArea::measureLineProjected( const QgsPoint &p1, double distance, double azimuth, QgsPoint *projected_point )
+double QgsDistanceArea::measureLineProjected( const QgsPoint &p1, double distance, double azimuth, QgsPoint *projectedPoint ) const
 {
   double result = 0.0;
   QgsPoint p2;
   if ( geographic() )
   {
-    if ( !mEllipsoidalMode )
-    {
-      if ( ( mSemiMajor > 0 ) && ( mSemiMinor > 0 ) )
-      {
-        setEllipsoid( mSemiMajor, mSemiMinor );
-      }
-      else
-      {
-        setEllipsoid( sourceCrs().ellipsoidAcronym() );
-      }
-      if ( mEllipsoid != GEO_NONE )
-      {
-        mEllipsoidalMode = true;
-      }
-    }
     if ( mEllipsoid != GEO_NONE )
     {
       p2 = computeSpheroidProject( p1, distance, azimuth );
-      QList<QgsPoint> linePoints;
-      linePoints.append( p1 );
-      linePoints.append( p2 );
-      QgsLineString lineString = QgsLineString( linePoints );
-      result = lineString.length();
+      result = p1.distance( p2 );
     }
   }
   else // cartesian coordinates
@@ -577,13 +557,13 @@ double QgsDistanceArea::measureLineProjected( const QgsPoint &p1, double distanc
     if ( sourceCrs().mapUnits() != QgsUnitTypes::DistanceMeters )
     {
       distance = ( distance * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, sourceCrs().mapUnits() ) );
-      result = measureLine( p1, p2 );
+      result = p1.distance( p2 );
     }
     p2 = p1.project( distance, azimuth );
   }
-  if ( projected_point )
+  if ( projectedPoint )
   {
-    *projected_point = QgsPoint( p2 );
+    *projectedPoint = QgsPoint( p2 );
   }
   return result;
 }
@@ -630,7 +610,7 @@ QgsPoint QgsDistanceArea::computeSpheroidProject(
     sigma = ( distance / ( b * A ) ) + delta_sigma;
     i++;
   }
-  while ( i < 999 && fabs( ( last_sigma - sigma ) / sigma ) > 1.0e-9 );
+  while ( i < 999 && qAbs( ( last_sigma - sigma ) / sigma ) > 1.0e-9 );
 
   lat2 = atan2( ( sin( u1 ) * cos( sigma ) + cos( u1 ) * sin( sigma ) *
                   cos( azimuth ) ), ( omf * sqrt( POW2( sin_alpha ) +
