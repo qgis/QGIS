@@ -46,6 +46,8 @@
 #define RAD2DEG(r) (180.0 * (r) / M_PI)
 #define POW2(x) ((x)*(x))
 
+QReadWriteLock QgsDistanceArea::sEllipsoidCacheLock;
+QHash< QString, QgsDistanceArea::EllipsoidParameters > QgsDistanceArea::sEllipsoidCache;
 
 QgsDistanceArea::QgsDistanceArea()
 {
@@ -83,21 +85,34 @@ void QgsDistanceArea::setSourceAuthId( const QString &authId )
 
 bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 {
-  QString radius, parameter2;
-  //
-  // SQLITE3 stuff - get parameters for selected ellipsoid
-  //
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
-  int           myResult;
-
   // Shortcut if ellipsoid is none.
   if ( ellipsoid == GEO_NONE )
   {
     mEllipsoid = GEO_NONE;
     return true;
   }
+
+  // check cache
+  sEllipsoidCacheLock.lockForRead();
+  QHash< QString, EllipsoidParameters >::const_iterator cacheIt = sEllipsoidCache.constFind( ellipsoid );
+  if ( cacheIt != sEllipsoidCache.constEnd() )
+  {
+    // found a match in the cache
+    sEllipsoidCacheLock.unlock();
+    if ( cacheIt.value().valid )
+    {
+      mEllipsoid = ellipsoid;
+      setFromParams( cacheIt.value() );
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  sEllipsoidCacheLock.unlock();
+
+  EllipsoidParameters params;
 
   // Check if we have a custom projection, and set from text string.
   // Format is "PARAMETER:<semi-major axis>:<semi minor axis>
@@ -111,54 +126,80 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
     double semiMinor = paramList[2].toDouble( & semiMinorOk );
     if ( semiMajorOk && semiMinorOk )
     {
-      return setEllipsoid( semiMajor, semiMinor );
+      params.semiMajor = semiMajor;
+      params.semiMinor = semiMinor;
+      params.useCustomParameters = true;
     }
     else
     {
-      return false;
+      params.valid = false;
     }
+
+    sEllipsoidCacheLock.lockForWrite();
+    sEllipsoidCache.insert( ellipsoid, params );
+    sEllipsoidCacheLock.unlock();
+    if ( params.valid )
+      setFromParams( params );
+    return params.valid;
   }
 
+  // cache miss - get from database
+
+  QString radius, parameter2;
+  //
+  // SQLITE3 stuff - get parameters for selected ellipsoid
+  //
+  sqlite3 *database = nullptr;
+  const char *tail = nullptr;
+  sqlite3_stmt *preparedStatement = nullptr;
   // Continue with PROJ.4 list of ellipsoids.
 
   //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
-  if ( myResult )
+  int result = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
+  if ( result )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
+    QgsMessageLog::logMessage( QObject::tr( "Can't open database: %1" ).arg( sqlite3_errmsg( database ) ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     return false;
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select radius, parameter2 from tbl_ellipsoid where acronym='" + ellipsoid + '\'';
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+  QString sql = "select radius, parameter2 from tbl_ellipsoid where acronym='" + ellipsoid + '\'';
+  result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &preparedStatement, &tail );
   // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
+  if ( result == SQLITE_OK )
   {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    if ( sqlite3_step( preparedStatement ) == SQLITE_ROW )
     {
-      radius = QString( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
-      parameter2 = QString( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 1 ) ) );
+      radius = QString( reinterpret_cast< const char * >( sqlite3_column_text( preparedStatement, 0 ) ) );
+      parameter2 = QString( reinterpret_cast< const char * >( sqlite3_column_text( preparedStatement, 1 ) ) );
     }
   }
   // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
+  sqlite3_finalize( preparedStatement );
+  sqlite3_close( database );
 
   // row for this ellipsoid wasn't found?
   if ( radius.isEmpty() || parameter2.isEmpty() )
   {
     QgsDebugMsg( QString( "setEllipsoid: no row in tbl_ellipsoid for acronym '%1'" ).arg( ellipsoid ) );
+    params.valid = false;
+    sEllipsoidCacheLock.lockForWrite();
+    sEllipsoidCache.insert( ellipsoid, params );
+    sEllipsoidCacheLock.unlock();
     return false;
   }
 
   // get major semiaxis
   if ( radius.left( 2 ) == QLatin1String( "a=" ) )
-    mSemiMajor = radius.midRef( 2 ).toDouble();
+    params.semiMajor = radius.midRef( 2 ).toDouble();
   else
   {
     QgsDebugMsg( QString( "setEllipsoid: wrong format of radius field: '%1'" ).arg( radius ) );
+    params.valid = false;
+    sEllipsoidCacheLock.lockForWrite();
+    sEllipsoidCache.insert( ellipsoid, params );
+    sEllipsoidCacheLock.unlock();
     return false;
   }
 
@@ -167,21 +208,25 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
   // second one must be computed using formula: invf = a/(a-b)
   if ( parameter2.left( 2 ) == QLatin1String( "b=" ) )
   {
-    mSemiMinor = parameter2.midRef( 2 ).toDouble();
-    mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
+    params.semiMinor = parameter2.midRef( 2 ).toDouble();
+    params.inverseFlattening = params.semiMajor / ( params.semiMajor - params.semiMinor );
   }
   else if ( parameter2.left( 3 ) == QLatin1String( "rf=" ) )
   {
-    mInvFlattening = parameter2.midRef( 3 ).toDouble();
-    mSemiMinor = mSemiMajor - ( mSemiMajor / mInvFlattening );
+    params.inverseFlattening = parameter2.midRef( 3 ).toDouble();
+    params.semiMinor = params.semiMajor - ( params.semiMajor / params.inverseFlattening );
   }
   else
   {
     QgsDebugMsg( QString( "setEllipsoid: wrong format of parameter2 field: '%1'" ).arg( parameter2 ) );
+    params.valid = false;
+    sEllipsoidCacheLock.lockForWrite();
+    sEllipsoidCache.insert( ellipsoid, params );
+    sEllipsoidCacheLock.unlock();
     return false;
   }
 
-  QgsDebugMsg( QString( "setEllipsoid: a=%1, b=%2, 1/f=%3" ).arg( mSemiMajor ).arg( mSemiMinor ).arg( mInvFlattening ) );
+  QgsDebugMsg( QString( "setEllipsoid: a=%1, b=%2, 1/f=%3" ).arg( params.semiMajor ).arg( params.semiMinor ).arg( params.inverseFlattening ) );
 
 
   // get spatial ref system for ellipsoid
@@ -193,21 +238,23 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
   // familiar with the code (should also give a more descriptive name to the generated CRS)
   if ( destCRS.srsid() == 0 )
   {
-    QString myName = QStringLiteral( " * %1 (%2)" )
-                     .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                           destCRS.toProj4() );
-    destCRS.saveAsUserCrs( myName );
+    QString name = QStringLiteral( " * %1 (%2)" )
+                   .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
+                         destCRS.toProj4() );
+    destCRS.saveAsUserCrs( name );
   }
   //
 
   // set transformation from project CRS to ellipsoid coordinates
-  mCoordTransform.setDestinationCrs( destCRS );
+  params.crs = destCRS;
+
+  sEllipsoidCacheLock.lockForWrite();
+  sEllipsoidCache.insert( ellipsoid, params );
+  sEllipsoidCacheLock.unlock();
 
   mEllipsoid = ellipsoid;
 
-  // precalculate some values for area calculations
-  computeAreaInit();
-
+  setFromParams( params );
   return true;
 }
 
@@ -215,7 +262,7 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 // Also, b = a-(a/invf)
 bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
 {
-  mEllipsoid = QStringLiteral( "PARAMETER:%1:%2" ).arg( semiMajor ).arg( semiMinor );
+  mEllipsoid = QStringLiteral( "PARAMETER:%1:%2" ).arg( qgsDoubleToString( semiMajor ) ).arg( qgsDoubleToString( semiMinor ) );
   mSemiMajor = semiMajor;
   mSemiMinor = semiMinor;
   mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
@@ -787,6 +834,22 @@ void QgsDistanceArea::computeAreaInit()
     m_E = -m_E;
 }
 
+void QgsDistanceArea::setFromParams( const QgsDistanceArea::EllipsoidParameters &params )
+{
+  if ( params.useCustomParameters )
+  {
+    setEllipsoid( params.semiMajor, params.semiMinor );
+  }
+  else
+  {
+    mSemiMajor = params.semiMajor;
+    mSemiMinor = params.semiMinor;
+    mInvFlattening = params.inverseFlattening;
+    mCoordTransform.setDestinationCrs( params.crs );
+    // precalculate some values for area calculations
+    computeAreaInit();
+  }
+}
 
 double QgsDistanceArea::computePolygonArea( const QList<QgsPoint> &points ) const
 {

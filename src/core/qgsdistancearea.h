@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include <QList>
+#include <QReadWriteLock>
 #include "qgscoordinatetransform.h"
 #include "qgsunittypes.h"
 
@@ -327,6 +328,31 @@ class CORE_EXPORT QgsDistanceArea
      */
     void computeAreaInit();
 
+    /**
+     * Contains parameter definitions for an ellipsoid.
+     * \since QGIS 3.0
+     */
+    struct EllipsoidParameters
+    {
+      //! Whether ellipsoid parameters are valid
+      bool valid = true;
+
+      //! Semi-major axis
+      double semiMajor = -1.0;
+      //! Semi-minor axis
+      double semiMinor = -1.0;
+
+      //! Whether custom parameters alone should be used (semiMajor/semiMinor only)
+      bool useCustomParameters = false;
+
+      //! Inverse flattening
+      double inverseFlattening = -1.0;
+      //! Associated coordinate reference system
+      QgsCoordinateReferenceSystem crs;
+    };
+
+    void setFromParams( const EllipsoidParameters &params );
+
     enum MeasureType
     {
       Default,
@@ -363,6 +389,10 @@ class CORE_EXPORT QgsDistanceArea
     double m_Qp;  /* Q at the north pole */
     double m_E;   /* area of the earth */
     double m_TwoPI;
+
+    // ellipsoid cache
+    static QReadWriteLock sEllipsoidCacheLock;
+    static QHash< QString, EllipsoidParameters > sEllipsoidCache;
 
 };
 

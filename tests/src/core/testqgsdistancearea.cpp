@@ -37,6 +37,8 @@ class TestQgsDistanceArea: public QObject
     void initTestCase();
     void cleanupTestCase();
     void basic();
+    void noEllipsoid();
+    void cache();
     void test_distances();
     void regression13601();
     void collections();
@@ -100,6 +102,74 @@ void TestQgsDistanceArea::basic()
   daA.setEllipsoid( 6378135.0, 6378135.0 - ( 6378135.0 / 298.26 ) );
   resultA = daA.measureLine( p1, p2 );
   QCOMPARE( resultA, resultB );
+}
+
+void TestQgsDistanceArea::noEllipsoid()
+{
+  QgsDistanceArea da;
+  da.setEllipsoidalMode( true );
+  da.setEllipsoid( GEO_NONE );
+  QVERIFY( !da.willUseEllipsoid() );
+  QCOMPARE( da.ellipsoid(), GEO_NONE );
+}
+
+void TestQgsDistanceArea::cache()
+{
+  // test that ellipsoid can be retrieved correctly from cache
+  QgsDistanceArea da;
+  da.setEllipsoidalMode( true );
+
+  // warm cache
+  QVERIFY( da.setEllipsoid( QStringLiteral( "Ganymede2000" ) ) );
+  QVERIFY( da.willUseEllipsoid() );
+  QCOMPARE( da.ellipsoidSemiMajor(), 2632400.0 );
+  QCOMPARE( da.ellipsoidSemiMinor(), 2632350.0 );
+  QCOMPARE( da.ellipsoidInverseFlattening(), 52648.0 );
+  QCOMPARE( da.ellipsoid(), QStringLiteral( "Ganymede2000" ) );
+
+  // a second time, so ellipsoid is fetched from cache
+  QgsDistanceArea da2;
+  da2.setEllipsoidalMode( true );
+  QVERIFY( da2.setEllipsoid( QStringLiteral( "Ganymede2000" ) ) );
+  QVERIFY( da2.willUseEllipsoid() );
+  QCOMPARE( da2.ellipsoidSemiMajor(), 2632400.0 );
+  QCOMPARE( da2.ellipsoidSemiMinor(), 2632350.0 );
+  QCOMPARE( da2.ellipsoidInverseFlattening(), 52648.0 );
+  QCOMPARE( da2.ellipsoid(), QStringLiteral( "Ganymede2000" ) );
+
+  // using parameters
+  QgsDistanceArea da3;
+  da3.setEllipsoidalMode( true );
+  QVERIFY( da3.setEllipsoid( QStringLiteral( "PARAMETER:2631400:2341350" ) ) );
+  QVERIFY( da3.willUseEllipsoid() );
+  QCOMPARE( da3.ellipsoidSemiMajor(), 2631400.0 );
+  QCOMPARE( da3.ellipsoidSemiMinor(), 2341350.0 );
+  QGSCOMPARENEAR( da3.ellipsoidInverseFlattening(), 9.07223, 0.00001 );
+  QCOMPARE( da3.ellipsoid(), QStringLiteral( "PARAMETER:2631400:2341350" ) );
+
+  // again, to check parameters with cache
+  QgsDistanceArea da4;
+  da4.setEllipsoidalMode( true );
+  QVERIFY( da4.setEllipsoid( QStringLiteral( "PARAMETER:2631400:2341350" ) ) );
+  QVERIFY( da4.willUseEllipsoid() );
+  QCOMPARE( da4.ellipsoidSemiMajor(), 2631400.0 );
+  QCOMPARE( da4.ellipsoidSemiMinor(), 2341350.0 );
+  QGSCOMPARENEAR( da4.ellipsoidInverseFlattening(), 9.07223, 0.00001 );
+  QCOMPARE( da4.ellipsoid(), QStringLiteral( "PARAMETER:2631400:2341350" ) );
+
+  // invalid
+  QgsDistanceArea da5;
+  da5.setEllipsoidalMode( true );
+  QVERIFY( !da5.setEllipsoid( QStringLiteral( "MyFirstEllipsoid" ) ) );
+  QVERIFY( !da5.willUseEllipsoid() );
+  QCOMPARE( da5.ellipsoid(), GEO_NONE );
+
+  // invalid again, should be cached
+  QgsDistanceArea da6;
+  da6.setEllipsoidalMode( true );
+  QVERIFY( !da6.setEllipsoid( QStringLiteral( "MyFirstEllipsoid" ) ) );
+  QVERIFY( !da6.willUseEllipsoid() );
+  QCOMPARE( da6.ellipsoid(), GEO_NONE );
 }
 
 void TestQgsDistanceArea::test_distances()
