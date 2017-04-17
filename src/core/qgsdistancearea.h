@@ -231,7 +231,8 @@ class CORE_EXPORT QgsDistanceArea
      * \since QGIS 3.0
      * \param p1 start point [can be Cartesian or Geographic]
      * \param distance must be in meters
-     * \param projected_point calculated projected point
+     * \param azimuth - azimuth in radians. [default M_PI/2 - East of p1]
+     * \param projectedPoint calculated projected point
      * \return distance in mapUnits
      * \see sourceCrs()
      * \see computeSpheroidProject()
@@ -335,7 +336,7 @@ class CORE_EXPORT QgsDistanceArea
      * \return p2 - location of projected point as degrees.
      */
 
-    /**
+    /*
      *  From original rttopo documentation:
      *  Tested against:
      *   http://mascot.gdbc.gov.bc.ca/mascot/util1b.html

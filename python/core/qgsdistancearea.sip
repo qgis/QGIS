@@ -156,10 +156,11 @@ class QgsDistanceArea
      * \since QGIS 3.0
      * @param p1 start point [can be Cartesian or Geographic]
      * @param distance expected to be in meters
-     * @param projected_point calculated projected point
+     * @param azimuth - azimuth in radians. [default M_PI/2 - East of p1]
+     * @param projectedPoint calculated projected point
      * @return distance in mapUnits
      */
-    double measureLineProjected( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2, QgsPoint *projectedPoint /In,Out/ = nullptr ) const;
+    double measureLineProjected( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2, QgsPoint *projectedPoint /Out/ = nullptr ) const;
 
     /** Returns the units of distance for length calculations made by this object.
      * @note added in QGIS 2.14
