@@ -111,6 +111,7 @@
 //
 
 #include "qgscrashdialog.h"
+#include "qgscrashreport.h"
 #include "qgisapp.h"
 #include "qgisappinterface.h"
 #include "qgisappstylesheet.h"
@@ -12502,45 +12503,98 @@ void QgisApp::transactionGroupCommitError( const QString &error )
 #ifdef Q_OS_WIN
 LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
 {
-  // Crash dump creation will be move to a new class in the near future.
+  HANDLE process = GetCurrentProcess();
+  // TOOD Pull symbols from symbol server.
+  // TOOD Move this logic to generic stack trace class to handle each
+  // platform.
+  SymInitialize( process, NULL, TRUE );
 
-#if 0
-  QString dumpName = QDir::toNativeSeparators(
-                       QString( "%1\\qgis-%2-%3-%4-%5.dmp" )
-                       .arg( QDir::tempPath() )
-                       .arg( QDateTime::currentDateTime().toString( "yyyyMMdd-hhmmss" ) )
-                       .arg( GetCurrentProcessId() )
-                       .arg( GetCurrentThreadId() )
-                       .arg( Qgis::QGIS_DEV_VERSION )
-                     );
-
-  QString msg;
-  HANDLE hDumpFile = CreateFile( dumpName.toLocal8Bit(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
-  if ( hDumpFile != INVALID_HANDLE_VALUE )
-  {
-    MINIDUMP_EXCEPTION_INFORMATION ExpParam;
-    ExpParam.ThreadId = GetCurrentThreadId();
-    ExpParam.ExceptionPointers = ExceptionInfo;
-    ExpParam.ClientPointers = TRUE;
-
-    if ( MiniDumpWriteDump( GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpWithDataSegs, ExceptionInfo ? &ExpParam : nullptr, nullptr, nullptr ) )
-    {
-      msg = QObject::tr( "minidump written to %1" ).arg( dumpName );
-    }
-    else
-    {
-      msg = QObject::tr( "writing of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
-    }
-
-    CloseHandle( hDumpFile );
-  }
-  else
-  {
-    msg = QObject::tr( "creation of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
-  }
+  // StackWalk64() may modify context record passed to it, so we will
+  // use a copy.
+  CONTEXT context_record = *ExceptionInfo->ContextRecord;
+  // Initialize stack walking.
+  STACKFRAME64 stack_frame;
+  memset( &stack_frame, 0, sizeof( stack_frame ) );
+#if defined(_WIN64)
+  int machine_type = IMAGE_FILE_MACHINE_AMD64;
+  stack_frame.AddrPC.Offset = context_record.Rip;
+  stack_frame.AddrFrame.Offset = context_record.Rbp;
+  stack_frame.AddrStack.Offset = context_record.Rsp;
+#else
+  int machine_type = IMAGE_FILE_MACHINE_I386;
+  stack_frame.AddrPC.Offset = context_record.Eip;
+  stack_frame.AddrFrame.Offset = context_record.Ebp;
+  stack_frame.AddrStack.Offset = context_record.Esp;
 #endif
+  stack_frame.AddrPC.Mode = AddrModeFlat;
+  stack_frame.AddrFrame.Mode = AddrModeFlat;
+  stack_frame.AddrStack.Mode = AddrModeFlat;
+
+  SYMBOL_INFO *symbol = ( SYMBOL_INFO * ) qgsMalloc( sizeof( SYMBOL_INFO ) + MAX_SYM_NAME );
+  symbol->SizeOfStruct = sizeof( SYMBOL_INFO );
+  symbol->MaxNameLen = MAX_SYM_NAME;
+
+  IMAGEHLP_LINE *line = ( IMAGEHLP_LINE * ) qgsMalloc( sizeof( IMAGEHLP_LINE ) );
+  line->SizeOfStruct = sizeof( IMAGEHLP_LINE );
+
+  IMAGEHLP_MODULE *module = ( IMAGEHLP_MODULE * ) qgsMalloc( sizeof( IMAGEHLP_MODULE ) );
+  module->SizeOfStruct = sizeof( IMAGEHLP_MODULE );
+
+  QList<QgsCrashReport::StackLine> stack;
+  while ( StackWalk64( machine_type,
+                       GetCurrentProcess(),
+                       GetCurrentThread(),
+                       &stack_frame,
+                       &context_record,
+                       NULL,
+                       &SymFunctionTableAccess64,
+                       &SymGetModuleBase64,
+                       NULL ) )
+  {
+
+    DWORD64 displacement = 0;
+
+    if ( SymFromAddr( process, ( DWORD64 )stack_frame.AddrPC.Offset, &displacement, symbol ) )
+    {
+      DWORD dwDisplacement;
+      QString fileName;
+      QString lineNumber;
+      QString moduleName;
+      if ( SymGetLineFromAddr( process, ( DWORD )( stack_frame.AddrPC.Offset ), &dwDisplacement, line ) )
+      {
+        fileName = QString( line->FileName );
+        lineNumber = QString::number( line->LineNumber );
+      }
+      else
+      {
+        fileName = "(unknown file)";
+        lineNumber = "(unknown line)";
+      }
+      if ( SymGetModuleInfo( process, ( DWORD )( stack_frame.AddrPC.Offset ), module ) )
+      {
+        moduleName = QString( module->ModuleName );
+      }
+      else
+      {
+        moduleName = "(unknown module)";
+      }
+      QgsCrashReport::StackLine stackline;
+      stackline.ModuleName = moduleName;
+      stackline.FileName = fileName;
+      stackline.LineNumber = lineNumber;
+      stackline.SymbolName = QString( symbol->Name );
+      stack.append( stackline );
+    }
+  }
+
+  qgsFree( symbol );
+  qgsFree( line );
+  qgsFree( module );
 
   QgsCrashDialog dlg( QApplication::activeWindow() );
+  QgsCrashReport report;
+  report.setStackTrace( stack );
+  dlg.setBugReport( report.toString() );
   if ( dlg.exec() )
   {
     QStringList arguments;

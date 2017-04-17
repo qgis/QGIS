@@ -21,6 +21,7 @@ SET(QGIS_APP_SRCS
   qgsclipboard.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
+  qgscrashreport.cpp
   qgsdecorationitem.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
