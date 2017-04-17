@@ -80,9 +80,12 @@ void QgsDistanceArea::_copy( const QgsDistanceArea &origDA )
   mSemiMajor = origDA.mSemiMajor;
   mSemiMinor = origDA.mSemiMinor;
   mInvFlattening = origDA.mInvFlattening;
-  // Some calculations and trig. Should not be TOO time consuming.
-  // Alternatively we could copy the temp vars?
-  computeAreaInit();
+  if ( ( mSemiMajor > 0 ) && ( mSemiMinor > 0 ) )
+  {
+    // Some calculations and trig. Should not be TOO time consuming.
+    // Alternatively we could copy the temp vars?
+    computeAreaInit();
+  }
   mCoordTransform = origDA.mCoordTransform;
 }
 
