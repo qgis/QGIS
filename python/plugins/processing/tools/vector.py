@@ -343,7 +343,6 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
         if method == 2:
             measure.setSourceCrs(crs)
             measure.setEllipsoid(ellips)
-            measure.setEllipsoidalMode(True)
 
         if geom.type() == QgsWkbTypes.PolygonGeometry:
             attr1 = measure.measureArea(geom)

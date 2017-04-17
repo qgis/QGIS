@@ -181,7 +181,7 @@ class QgsCoordinateReferenceSystem
      * @param type One of the types described in CrsType
      */
     // TODO QGIS 3: remove type and always use EPSG code
-    QgsCoordinateReferenceSystem( const long id, CrsType type = PostgisCrsId );
+    explicit QgsCoordinateReferenceSystem( const long id, CrsType type = PostgisCrsId );
 
     operator QVariant() const;
     static QList< long > validSrsIds();

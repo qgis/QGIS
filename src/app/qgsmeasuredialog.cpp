@@ -106,7 +106,6 @@ void QgsMeasureDialog::updateSettings()
   mAreaUnits = QgsProject::instance()->areaUnits();
   mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs() );
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  mDa.setEllipsoidalMode( true );
 
   mTable->clear();
   mTotal = 0;

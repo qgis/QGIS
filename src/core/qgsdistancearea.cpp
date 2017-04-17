@@ -52,34 +52,17 @@ QHash< QString, QgsDistanceArea::EllipsoidParameters > QgsDistanceArea::sEllipso
 QgsDistanceArea::QgsDistanceArea()
 {
   // init with default settings
-  setSourceCrs( GEOCRS_ID ); // WGS 84
+  setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) ); // WGS 84
   setEllipsoid( GEO_NONE );
-}
-
-void QgsDistanceArea::setEllipsoidalMode( bool flag )
-{
-  mEllipsoidalMode = flag;
 }
 
 bool QgsDistanceArea::willUseEllipsoid() const
 {
-  return mEllipsoidalMode && mEllipsoid != GEO_NONE;
-}
-
-void QgsDistanceArea::setSourceCrs( long srsid )
-{
-  QgsCoordinateReferenceSystem srcCRS = QgsCoordinateReferenceSystem::fromSrsId( srsid );
-  mCoordTransform.setSourceCrs( srcCRS );
+  return mEllipsoid != GEO_NONE;
 }
 
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS )
 {
-  mCoordTransform.setSourceCrs( srcCRS );
-}
-
-void QgsDistanceArea::setSourceAuthId( const QString &authId )
-{
-  QgsCoordinateReferenceSystem srcCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
   mCoordTransform.setSourceCrs( srcCRS );
 }
 
@@ -484,14 +467,7 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
 
 double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const
 {
-  QgsUnitTypes::DistanceUnit units;
-  return measureLine( p1, p2, units );
-}
-
-double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2, QgsUnitTypes::DistanceUnit &units ) const
-{
   double result;
-  units = mCoordTransform.sourceCrs().mapUnits();
 
   try
   {
@@ -500,7 +476,6 @@ double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2, Qgs
     QgsDebugMsgLevel( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
     if ( willUseEllipsoid() )
     {
-      units = QgsUnitTypes::DistanceMeters;
       QgsDebugMsgLevel( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
       QgsDebugMsgLevel( QString( "From proj4 : %1" ).arg( mCoordTransform.sourceCrs().toProj4() ), 4 );
       QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform.destinationCrs().toProj4() ), 4 );
@@ -529,7 +504,7 @@ double QgsDistanceArea::measureLineProjected( const QgsPoint &p1, double distanc
 {
   double result = 0.0;
   QgsPoint p2;
-  if ( geographic() && willUseEllipsoid() )
+  if ( mCoordTransform.sourceCrs().isGeographic() && willUseEllipsoid() )
   {
     p2 = computeSpheroidProject( p1, distance, azimuth );
     result = p1.distance( p2 );

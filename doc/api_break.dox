@@ -951,7 +951,14 @@ QgsDial        {#qgis_api_break_3_0_QgsDial}
 QgsDistanceArea        {#qgis_api_break_3_0_QgsDistanceArea}
 ---------------
 
+- setEllipsoidalMode() was removed. Ellipsoidal calculations are now enabled whenever a valid ellipsoid() has been set. Set the
+ellipsoid to 'NONE' to disable ellipsoidal calculations.
+- ellipsoidalEnabled() was removed. Ellipsoidal calculations are now enabled whenever a valid ellipsoid() is set. Check
+willUseEllipsoid() to determine whether ellipsoidal calculations will be performed.
 - sourceCrs() now returns a QgsCoordinateReferenceSystem instead of the crs ID.
+- setSourceCrs() now requires a QgsCoordinateReferenceSystem instead of crs ID.
+- setSourceAuthId() was removed. Use setSourceCrs() instead.
+- geographic() was removed. Check sourceCrs().isGeographic() instead.
 - measure() has been removed. Use measureArea() or measureLength() instead.
 - textUnit() was removed. Use formatDistance() or formatArea() instead.
 - convertMeasurement was removed. Use QgsUnitTypes for conversion instead.

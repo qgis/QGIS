@@ -26,15 +26,24 @@ class QgsGeometry;
 class QgsAbstractGeometry;
 class QgsCurve;
 
-/** \ingroup core
-General purpose distance and area calculator.
-- calculations are done on ellipsoid
-- it's possible to pass points/features in any CRS, coordinates are transformed
-- two options how to use it
-  + use measure() takes QgsGeometry as a parameter and calculates distance or area
-  + use directly measureLine(), measurePolygon() which take list of QgsPoints
-  (both cases transform the coordinates from source CRS to the ellipse coords)
-- returned values are in meters resp. square meters
+/**
+ * \ingroup core
+ * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+ *
+ * Measurements can either be performed on existing QgsGeometry objects, or using
+ * lists of points.
+ *
+ * If a valid ellipsoid() has been set for the QgsDistanceArea, all calculations will be
+ * performed using ellipsoidal algorithms (e.g. using Vincenty's formulas). If no
+ * ellipsoid has been set, all calculations will be performed using cartesian
+ * formulas only. The behavior can be determined by calling willUseEllipsoid().
+ *
+ * In order to perform accurate calculations, the source coordinate reference system
+ * of all measured geometries must first be specified using setSourceCrs().
+ *
+ * Usually, the measurements returned by QgsDistanceArea are in meters. If no valid
+ * ellipsoid is set, then the units may not be meters. The units can be retrieved
+ * by calling lengthUnits() and areaUnits().
 */
 class CORE_EXPORT QgsDistanceArea
 {
@@ -43,104 +52,79 @@ class CORE_EXPORT QgsDistanceArea
     //! Constructor
     QgsDistanceArea();
 
-    /** Sets whether coordinates must be projected to ellipsoid before measuring
-     * \note for calculations to use the ellipsoid, both the ellipsoid mode must be true
-     * and an ellipse must be set
-     * \see setEllipsoid()
-     * \see willUseEllipsoid()
-     */
-    void setEllipsoidalMode( bool flag );
-
-    /** Returns whether ellipsoidal calculations are enabled
-     * \see willUseEllipsoid()
-     * \see setEllipsoidalMode()
-     */
-    bool ellipsoidalEnabled() const { return mEllipsoidalMode; }
-
-    /** Returns whether calculations will use the ellipsoid. Calculations will only use the
-     * ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
+    /**
+     * Returns whether calculations will use the ellipsoid. Calculations will only use the
+     * ellipsoid if a valid ellipsoid() has been set.
      * \since QGIS 2.14
-     * \see ellipsoidalEnabled()
      * \see ellipsoid()
      */
     bool willUseEllipsoid() const;
 
     /**
-     * Sets source spatial reference system (by QGIS CRS).
-     */
-    void setSourceCrs( long srsid );
-
-    /**
-     * Sets source spatial reference system (by QGIS CRS).
+     * Sets source spatial reference system.
      * \since QGIS 2.2
      * \see sourceCrs()
      */
     void setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS );
 
     /**
-     * Sets source spatial reference system by authid.
-     */
-    void setSourceAuthId( const QString &authid );
-
-    /** Returns the source spatial reference system.
+     * Returns the source spatial reference system.
      * \see setSourceCrs()
      */
     QgsCoordinateReferenceSystem sourceCrs() const { return mCoordTransform.sourceCrs(); }
 
-    /** Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
-     * \see setSourceCrs()
-     * \since QGIS 2.14
-     */
-    long sourceCrsId() const { return mCoordTransform.sourceCrs().srsid(); }
-
     /**
-     * Returns true if a geographic (latitude/longitude based) source CRS is used.
-     */
-    bool geographic() const { return mCoordTransform.sourceCrs().isGeographic(); }
-
-    /** Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
-     * both the ellipsoid has been set and ellipsoidalEnabled() is true.
+     * Sets the \a ellipsoid by its acronym.
+     * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
      * \returns true if ellipsoid was successfully set
      * \see ellipsoid()
-     * \see setEllipsoidalMode()
      * \see willUseEllipsoid()
      */
     bool setEllipsoid( const QString &ellipsoid );
 
-    /** Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
-     * both the ellipsoid has been set and ellipsoidalEnabled() is true.
+    /**
+     * Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
+     * a valid ellipsoid been set.
      * \returns true if ellipsoid was successfully set
      * \see ellipsoid()
-     * \see setEllipsoidalMode()
      * \see willUseEllipsoid()
      */
-    // Inverse flattening is calculated with invf = a/(a-b)
     bool setEllipsoid( double semiMajor, double semiMinor );
 
     /** Returns ellipsoid's acronym. Calculations will only use the
-     * ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
+     * ellipsoid if a valid ellipsoid has been set.
      * \see setEllipsoid()
-     * \see ellipsoidalEnabled()
      * \see willUseEllipsoid()
      */
     QString ellipsoid() const { return mEllipsoid; }
 
     /**
      * Returns the ellipsoid's semi major axis.
+     * \see ellipsoid()
+     * \see ellipsoidSemiMinor()
+     * \see ellipsoidInverseFlattening()
      */
     double ellipsoidSemiMajor() const { return mSemiMajor; }
 
     /**
      * Returns ellipsoid's semi minor axis.
+     * \see ellipsoid()
+     * \see ellipsoidSemiMajor()
+     * \see ellipsoidInverseFlattening()
      */
     double ellipsoidSemiMinor() const { return mSemiMinor; }
 
     /**
      * Returns ellipsoid's inverse flattening.
+     * The inverse flattening is calculated with invf = a/(a-b).
+     * \see ellipsoid()
+     * \see ellipsoidSemiMajor()
+     * \see ellipsoidSemiMinor()
      */
     double ellipsoidInverseFlattening() const { return mInvFlattening; }
 
-    /** Measures the area of a geometry.
+    /**
+     * Measures the area of a geometry.
      * \param geometry geometry to measure
      * \returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
      * returned area can be retrieved by calling areaUnits().
@@ -151,7 +135,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureArea( const QgsGeometry &geometry ) const;
 
-    /** Measures the length of a geometry.
+    /**
+     * Measures the length of a geometry.
      * \param geometry geometry to measure
      * \returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
      * returned distance can be retrieved by calling lengthUnits().
@@ -162,7 +147,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureLength( const QgsGeometry &geometry ) const;
 
-    /** Measures the perimeter of a polygon geometry.
+    /**
+     * Measures the perimeter of a polygon geometry.
      * \param geometry geometry to measure
      * \returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
      * returned perimeter can be retrieved by calling lengthUnits().
@@ -173,14 +159,16 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measurePerimeter( const QgsGeometry &geometry ) const;
 
-    /** Measures the length of a line with multiple segments.
+    /**
+     * Measures the length of a line with multiple segments.
      * \param points list of points in line
      * \returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
      * \see lengthUnits()
      */
     double measureLine( const QList<QgsPoint> &points ) const;
 
-    /** Measures length of a line with one segment.
+    /**
+     * Measures the distance between two points.
      * \param p1 start of line
      * \param p2 end of line
      * \returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
@@ -188,18 +176,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const;
 
-    /** Measures length of line with one segment and returns units of distance.
-     * \param p1 start of line
-     * \param p2 end of line
-     * \param units will be set to units of measure
-     * \returns calculated distance between points. Distance units are stored in units parameter.
-     * \note Not available in Python bindings.
-     * \since QGIS 2.12
-     */
-    SIP_SKIP double measureLine( const QgsPoint &p1, const QgsPoint &p2, QgsUnitTypes::DistanceUnit &units ) const;
-
     /**
-     * Calculates distance from one point with distance in meters and azimuth (direction)
+     * Calculates the distance from one point with distance in meters and azimuth (direction)
      * When the sourceCrs() is geographic, computeSpheroidProject() will be called
      * otherwise QgsPoint.project() will be called after QgsUnitTypes::fromUnitToUnitFactor() has been applied to the distance
      * \note:
@@ -215,13 +193,15 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureLineProjected( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2, QgsPoint *projectedPoint SIP_OUT = nullptr ) const;
 
-    /** Returns the units of distance for length calculations made by this object.
+    /**
+     * Returns the units of distance for length calculations made by this object.
      * \since QGIS 2.14
      * \see areaUnits()
      */
     QgsUnitTypes::DistanceUnit lengthUnits() const;
 
-    /** Returns the units of area for areal calculations made by this object.
+    /**
+     * Returns the units of area for areal calculations made by this object.
      * \since QGIS 2.14
      * \see lengthUnits()
      */
@@ -233,11 +213,12 @@ class CORE_EXPORT QgsDistanceArea
     double measurePolygon( const QList<QgsPoint> &points ) const;
 
     /**
-     * Compute the bearing (in radians) between two points.
+     * Computes the bearing (in radians) between two points.
      */
     double bearing( const QgsPoint &p1, const QgsPoint &p2 ) const;
 
-    /** Returns an distance formatted as a friendly string.
+    /**
+     * Returns an distance formatted as a friendly string.
      * \param distance distance to format
      * \param decimals number of decimal places to show
      * \param unit unit of distance
@@ -249,7 +230,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
 
-    /** Returns an area formatted as a friendly string.
+    /**
+     * Returns an area formatted as a friendly string.
      * \param area area to format
      * \param decimals number of decimal places to show
      * \param unit unit of area
@@ -261,7 +243,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
 
-    /** Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
+    /**
+     * Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
      * different distance unit.
      * \param length length value calculated by this class to convert. It is assumed that the length
      * was calculated by this class, ie that its unit of length is equal to lengthUnits().
@@ -272,7 +255,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     double convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const;
 
-    /** Takes an area measurement calculated by this QgsDistanceArea object and converts it to a
+    /**
+     * Takes an area measurement calculated by this QgsDistanceArea object and converts it to a
      * different areal unit.
      * \param area area value calculated by this class to convert. It is assumed that the area
      * was calculated by this class, ie that its unit of area is equal to areaUnits().
@@ -362,9 +346,6 @@ class CORE_EXPORT QgsDistanceArea
 
     //! used for transforming coordinates from source CRS to ellipsoid's coordinates
     QgsCoordinateTransform mCoordTransform;
-
-    //! indicates whether we will transform coordinates
-    bool mEllipsoidalMode = false;
 
     //! ellipsoid acronym (from table tbl_ellipsoids)
     QString mEllipsoid;

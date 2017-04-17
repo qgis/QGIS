@@ -536,18 +536,17 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
   //setup distance area conversion
   if ( layer )
   {
-    mDistanceArea->setSourceCrs( layer->crs().srsid() );
+    mDistanceArea->setSourceCrs( layer->crs() );
   }
   else if ( mComposition )
   {
     //set to composition's mapsettings' crs
     QgsComposerMap *referenceMap = mComposition->referenceMap();
     if ( referenceMap )
-      mDistanceArea->setSourceCrs( referenceMap->crs().srsid() );
+      mDistanceArea->setSourceCrs( referenceMap->crs() );
   }
   if ( mComposition )
   {
-    mDistanceArea->setEllipsoidalMode( true );
     mDistanceArea->setEllipsoid( mComposition->project()->ellipsoid() );
   }
 

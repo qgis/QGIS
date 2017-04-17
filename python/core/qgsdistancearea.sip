@@ -12,14 +12,22 @@
 class QgsDistanceArea
 {
 %Docstring
-General purpose distance and area calculator.
-- calculations are done on ellipsoid
-- it's possible to pass points/features in any CRS, coordinates are transformed
-- two options how to use it
-+ use measure() takes QgsGeometry as a parameter and calculates distance or area
-+ use directly measureLine(), measurePolygon() which take list of QgsPoints
-(both cases transform the coordinates from source CRS to the ellipse coords)
-- returned values are in meters resp. square meters
+ A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+
+ Measurements can either be performed on existing QgsGeometry objects, or using
+ lists of points.
+
+ If a valid ellipsoid() has been set for the QgsDistanceArea, all calculations will be
+ performed using ellipsoidal algorithms (e.g. using Vincenty's formulas). If no
+ ellipsoid has been set, all calculations will be performed using cartesian
+ formulas only. The behavior can be determined by calling willUseEllipsoid().
+
+ In order to perform accurate calculations, the source coordinate reference system
+ of all measured geometries must first be specified using setSourceCrs().
+
+ Usually, the measurements returned by QgsDistanceArea are in meters. If no valid
+ ellipsoid is set, then the units may not be meters. The units can be retrieved
+ by calling lengthUnits() and areaUnits().
 %End
 
 %TypeHeaderCode
@@ -32,50 +40,20 @@ General purpose distance and area calculator.
 Constructor
 %End
 
-    void setEllipsoidalMode( bool flag );
-%Docstring
- Sets whether coordinates must be projected to ellipsoid before measuring
-.. note::
-
-   for calculations to use the ellipsoid, both the ellipsoid mode must be true
- and an ellipse must be set
- \see setEllipsoid()
- \see willUseEllipsoid()
-%End
-
-    bool ellipsoidalEnabled() const;
-%Docstring
- Returns whether ellipsoidal calculations are enabled
- \see willUseEllipsoid()
- \see setEllipsoidalMode()
- :rtype: bool
-%End
-
     bool willUseEllipsoid() const;
 %Docstring
  Returns whether calculations will use the ellipsoid. Calculations will only use the
- ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
+ ellipsoid if a valid ellipsoid() has been set.
 .. versionadded:: 2.14
- \see ellipsoidalEnabled()
  \see ellipsoid()
  :rtype: bool
 %End
 
-    void setSourceCrs( long srsid );
-%Docstring
- Sets source spatial reference system (by QGIS CRS).
-%End
-
     void setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS );
 %Docstring
- Sets source spatial reference system (by QGIS CRS).
+ Sets source spatial reference system.
 .. versionadded:: 2.2
  \see sourceCrs()
-%End
-
-    void setSourceAuthId( const QString &authid );
-%Docstring
- Sets source spatial reference system by authid.
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
@@ -85,43 +63,31 @@ Constructor
  :rtype: QgsCoordinateReferenceSystem
 %End
 
-    long sourceCrsId() const;
-%Docstring
- Returns the QgsCoordinateReferenceSystem.srsid() for the CRS used during calculations.
- \see setSourceCrs()
-.. versionadded:: 2.14
- :rtype: long
-%End
-
-    bool geographic() const;
-%Docstring
- Returns true if a geographic (latitude/longitude based) source CRS is used.
- :rtype: bool
-%End
-
     bool setEllipsoid( const QString &ellipsoid );
 %Docstring
- Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
- both the ellipsoid has been set and ellipsoidalEnabled() is true.
+ Sets the ``ellipsoid`` by its acronym.
+ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
  :return: true if ellipsoid was successfully set
  \see ellipsoid()
- \see setEllipsoidalMode()
  \see willUseEllipsoid()
  :rtype: bool
 %End
 
     bool setEllipsoid( double semiMajor, double semiMinor );
 %Docstring
-Inverse flattening is calculated with invf = a/(a-b)
+ Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
+ a valid ellipsoid been set.
+ :return: true if ellipsoid was successfully set
+ \see ellipsoid()
+ \see willUseEllipsoid()
  :rtype: bool
 %End
 
     QString ellipsoid() const;
 %Docstring
  Returns ellipsoid's acronym. Calculations will only use the
- ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
+ ellipsoid if a valid ellipsoid has been set.
  \see setEllipsoid()
- \see ellipsoidalEnabled()
  \see willUseEllipsoid()
  :rtype: str
 %End
@@ -129,18 +95,28 @@ Inverse flattening is calculated with invf = a/(a-b)
     double ellipsoidSemiMajor() const;
 %Docstring
  Returns the ellipsoid's semi major axis.
+ \see ellipsoid()
+ \see ellipsoidSemiMinor()
+ \see ellipsoidInverseFlattening()
  :rtype: float
 %End
 
     double ellipsoidSemiMinor() const;
 %Docstring
  Returns ellipsoid's semi minor axis.
+ \see ellipsoid()
+ \see ellipsoidSemiMajor()
+ \see ellipsoidInverseFlattening()
  :rtype: float
 %End
 
     double ellipsoidInverseFlattening() const;
 %Docstring
  Returns ellipsoid's inverse flattening.
+ The inverse flattening is calculated with invf = a/(a-b).
+ \see ellipsoid()
+ \see ellipsoidSemiMajor()
+ \see ellipsoidSemiMinor()
  :rtype: float
 %End
 
@@ -194,7 +170,7 @@ Inverse flattening is calculated with invf = a/(a-b)
 
     double measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const;
 %Docstring
- Measures length of a line with one segment.
+ Measures the distance between two points.
  \param p1 start of line
  \param p2 end of line
  :return: distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
@@ -202,10 +178,9 @@ Inverse flattening is calculated with invf = a/(a-b)
  :rtype: float
 %End
 
-
     double measureLineProjected( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2, QgsPoint *projectedPoint /Out/ = 0 ) const;
 %Docstring
- Calculates distance from one point with distance in meters and azimuth (direction)
+ Calculates the distance from one point with distance in meters and azimuth (direction)
  When the sourceCrs() is geographic, computeSpheroidProject() will be called
  otherwise QgsPoint.project() will be called after QgsUnitTypes.fromUnitToUnitFactor() has been applied to the distance
  \note:
@@ -245,7 +220,7 @@ Inverse flattening is calculated with invf = a/(a-b)
 
     double bearing( const QgsPoint &p1, const QgsPoint &p2 ) const;
 %Docstring
- Compute the bearing (in radians) between two points.
+ Computes the bearing (in radians) between two points.
  :rtype: float
 %End
 

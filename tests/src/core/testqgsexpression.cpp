@@ -1878,9 +1878,8 @@ class TestQgsExpression: public QObject
     {
       //test calculations with and without geometry calculator set
       QgsDistanceArea da;
-      da.setSourceAuthId( QStringLiteral( "EPSG:3111" ) );
+      da.setSourceCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:3111" ) ) );
       da.setEllipsoid( QStringLiteral( "WGS84" ) );
-      da.setEllipsoidalMode( true );
 
       QgsFeature feat;
       QgsPolyline polygonRing3111;

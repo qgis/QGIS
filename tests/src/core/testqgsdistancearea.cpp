@@ -76,9 +76,8 @@ void TestQgsDistanceArea::basic()
   QCOMPARE( resultA, 5.0 );
 
   // Now, on an ellipsoid. Always less?
-  daA.setSourceCrs( 3006 );
+  daA.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 3006 ) );
   daA.setEllipsoid( QStringLiteral( "WGS84" ) );
-  daA.setEllipsoidalMode( true );
   resultA = daA.measureLine( p1, p2 );
   QVERIFY( resultA < 5.0 );
 
@@ -107,7 +106,6 @@ void TestQgsDistanceArea::basic()
 void TestQgsDistanceArea::noEllipsoid()
 {
   QgsDistanceArea da;
-  da.setEllipsoidalMode( true );
   da.setEllipsoid( GEO_NONE );
   QVERIFY( !da.willUseEllipsoid() );
   QCOMPARE( da.ellipsoid(), GEO_NONE );
@@ -117,7 +115,6 @@ void TestQgsDistanceArea::cache()
 {
   // test that ellipsoid can be retrieved correctly from cache
   QgsDistanceArea da;
-  da.setEllipsoidalMode( true );
 
   // warm cache
   QVERIFY( da.setEllipsoid( QStringLiteral( "Ganymede2000" ) ) );
@@ -129,7 +126,6 @@ void TestQgsDistanceArea::cache()
 
   // a second time, so ellipsoid is fetched from cache
   QgsDistanceArea da2;
-  da2.setEllipsoidalMode( true );
   QVERIFY( da2.setEllipsoid( QStringLiteral( "Ganymede2000" ) ) );
   QVERIFY( da2.willUseEllipsoid() );
   QCOMPARE( da2.ellipsoidSemiMajor(), 2632400.0 );
@@ -139,7 +135,6 @@ void TestQgsDistanceArea::cache()
 
   // using parameters
   QgsDistanceArea da3;
-  da3.setEllipsoidalMode( true );
   QVERIFY( da3.setEllipsoid( QStringLiteral( "PARAMETER:2631400:2341350" ) ) );
   QVERIFY( da3.willUseEllipsoid() );
   QCOMPARE( da3.ellipsoidSemiMajor(), 2631400.0 );
@@ -149,7 +144,6 @@ void TestQgsDistanceArea::cache()
 
   // again, to check parameters with cache
   QgsDistanceArea da4;
-  da4.setEllipsoidalMode( true );
   QVERIFY( da4.setEllipsoid( QStringLiteral( "PARAMETER:2631400:2341350" ) ) );
   QVERIFY( da4.willUseEllipsoid() );
   QCOMPARE( da4.ellipsoidSemiMajor(), 2631400.0 );
@@ -159,14 +153,12 @@ void TestQgsDistanceArea::cache()
 
   // invalid
   QgsDistanceArea da5;
-  da5.setEllipsoidalMode( true );
   QVERIFY( !da5.setEllipsoid( QStringLiteral( "MyFirstEllipsoid" ) ) );
   QVERIFY( !da5.willUseEllipsoid() );
   QCOMPARE( da5.ellipsoid(), GEO_NONE );
 
   // invalid again, should be cached
   QgsDistanceArea da6;
-  da6.setEllipsoidalMode( true );
   QVERIFY( !da6.setEllipsoid( QStringLiteral( "MyFirstEllipsoid" ) ) );
   QVERIFY( !da6.willUseEllipsoid() );
   QCOMPARE( da6.ellipsoid(), GEO_NONE );
@@ -185,8 +177,7 @@ void TestQgsDistanceArea::test_distances()
 
   // Set up DA
   QgsDistanceArea myDa;
-  myDa.setSourceAuthId( QStringLiteral( "EPSG:4030" ) );
-  myDa.setEllipsoidalMode( true );
+  myDa.setSourceCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4030" ) ) );
   myDa.setEllipsoid( QStringLiteral( "WGS84" ) );
 
   QString myFileName = QStringLiteral( TEST_DATA_DIR ) + "/GeodTest-nano.dat";
@@ -224,9 +215,8 @@ void TestQgsDistanceArea::regression13601()
 {
   //test regression #13601
   QgsDistanceArea calc;
-  calc.setEllipsoidalMode( true );
   calc.setEllipsoid( QStringLiteral( "NONE" ) );
-  calc.setSourceCrs( 1108L );
+  calc.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 1108L ) );
   QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((252000 1389000, 265000 1389000, 265000 1385000, 252000 1385000, 252000 1389000))" ) ) );
   QGSCOMPARENEAR( calc.measureArea( geom ), 52000000, 0.0001 );
 }
@@ -235,8 +225,7 @@ void TestQgsDistanceArea::collections()
 {
   //test measuring for collections
   QgsDistanceArea myDa;
-  myDa.setSourceAuthId( QStringLiteral( "EPSG:4030" ) );
-  myDa.setEllipsoidalMode( true );
+  myDa.setSourceCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4030" ) ) );
   myDa.setEllipsoid( QStringLiteral( "WGS84" ) );
 
   //collection of lines, should be sum of line length
@@ -267,21 +256,21 @@ void TestQgsDistanceArea::measureUnits()
 {
   //test regression #13610
   QgsDistanceArea calc;
-  calc.setEllipsoidalMode( false );
   calc.setEllipsoid( QStringLiteral( "NONE" ) );
-  calc.setSourceCrs( 254L );
+  calc.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 254L ) );
   QgsUnitTypes::DistanceUnit units;
   QgsPoint p1( 1341683.9854275715, 408256.9562717728 );
   QgsPoint p2( 1349321.7807031618, 408256.9562717728 );
 
-  double result = calc.measureLine( p1, p2, units );
+  double result = calc.measureLine( p1, p2 );
+  units = calc.lengthUnits();
   //no OTF, result will be in CRS unit (feet)
   QCOMPARE( units, QgsUnitTypes::DistanceFeet );
   QGSCOMPARENEAR( result, 7637.7952755903825, 0.001 );
 
-  calc.setEllipsoidalMode( true );
   calc.setEllipsoid( QStringLiteral( "WGS84" ) );
-  result = calc.measureLine( p1, p2, units );
+  units = calc.lengthUnits();
+  result = calc.measureLine( p1, p2 );
   //OTF, result will be in meters
   QCOMPARE( units, QgsUnitTypes::DistanceMeters );
   QGSCOMPARENEAR( result, 2328.0988253106957, 0.001 );
@@ -290,11 +279,10 @@ void TestQgsDistanceArea::measureUnits()
 void TestQgsDistanceArea::measureAreaAndUnits()
 {
   QgsDistanceArea da;
-  da.setSourceCrs( 3452 );
-  da.setEllipsoidalMode( false );
+  da.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 3452 ) );
   da.setEllipsoid( QStringLiteral( "NONE" ) );
   QgsCoordinateReferenceSystem daCRS;
-  daCRS.createFromSrsId( da.sourceCrsId() );
+  daCRS.createFromSrsId( da.sourceCrs().srsid() );
   QgsPolyline ring;
   ring << QgsPoint( 0, 0 )
        << QgsPoint( 1, 0 )
@@ -321,15 +309,6 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   da.setEllipsoid( QStringLiteral( "WGS84" ) );
   area = da.measureArea( polygon );
   units = da.areaUnits();
-
-  QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
-  QVERIFY( ( qgsDoubleNear( area, 3.0, 0.00000001 ) && units == QgsUnitTypes::AreaSquareDegrees )
-           || ( qgsDoubleNear( area, 37176087091.5, 0.1 ) && units == QgsUnitTypes::AreaSquareMeters ) );
-
-  da.setEllipsoidalMode( true );
-  area = da.measureArea( polygon );
-  units = da.areaUnits();
-
   QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
   // should always be in Meters Squared
   QGSCOMPARENEAR( area, 37416879192.9, 0.1 );
@@ -352,8 +331,8 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   poly << ring;
   polygon = QgsGeometry::fromPolygon( poly );
 
-  da.setSourceCrs( 27469 );
-  da.setEllipsoidalMode( false );
+  da.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 27469 ) );
+  da.setEllipsoid( QStringLiteral( "NONE" ) );
   // measurement should be in square feet
   area = da.measureArea( polygon );
   units = da.areaUnits();
@@ -365,7 +344,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   area = da.convertAreaMeasurement( area, QgsUnitTypes::AreaSquareYards );
   QGSCOMPARENEAR( area, 222222.2222, 0.001 );
 
-  da.setEllipsoidalMode( true );
+  da.setEllipsoid( QStringLiteral( "WGS84" ) );
   // now should be in Square Meters again
   area = da.measureArea( polygon );
   units = da.areaUnits();
@@ -382,8 +361,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
 void TestQgsDistanceArea::emptyPolygon()
 {
   QgsDistanceArea da;
-  da.setSourceCrs( 3452 );
-  da.setEllipsoidalMode( true );
+  da.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 3452 ) );
   da.setEllipsoid( QStringLiteral( "WGS84" ) );
 
   //test that measuring an empty polygon doesn't crash
@@ -394,9 +372,8 @@ void TestQgsDistanceArea::regression14675()
 {
   //test regression #14675
   QgsDistanceArea calc;
-  calc.setEllipsoidalMode( true );
   calc.setEllipsoid( QStringLiteral( "GRS80" ) );
-  calc.setSourceCrs( 145L );
+  calc.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 145L ) );
   QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))" ) ) );
   //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
   QGSCOMPARENEAR( calc.measureArea( geom ), 0.83301, 0.02 );

@@ -125,7 +125,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   myDa = new QgsDistanceArea();
 
   myDa->setSourceCrs( mLayer->crs() );
-  myDa->setEllipsoidalMode( true );
   myDa->setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mEditorContext.setDistanceArea( *myDa );
@@ -588,7 +587,6 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs() );
-  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   dlg.setGeomCalculator( myDa );
 
@@ -949,7 +947,6 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
   QgsDistanceArea myDa;
 
   myDa.setSourceCrs( mLayer->crs() );
-  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   // parse search string and build parsed tree

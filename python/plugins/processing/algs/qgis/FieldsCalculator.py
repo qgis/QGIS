@@ -119,7 +119,6 @@ class FieldsCalculator(GeoAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs())
-        da.setEllipsoidalMode(True)
         da.setEllipsoid(QgsProject.instance().ellipsoid())
         exp.setGeomCalculator(da)
         exp.setDistanceUnits(QgsProject.instance().distanceUnits())
