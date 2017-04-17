@@ -417,7 +417,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionDeleteRing() { return mActionDeleteRing; }
     QAction *actionDeletePart() { return mActionDeletePart; }
     QAction *actionNodeTool() { return mActionNodeTool; }
-    QAction *actionNodeTool2() { return mActionNodeTool2; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
     QAction *actionPan() { return mActionPan; }
@@ -1210,8 +1209,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void modifyAttributesOfSelectedFeatures();
     //! provides operations with nodes
     void nodeTool();
-    //! provides operations with nodes
-    void nodeTool2();
     //! activates the rotate points tool
     void rotatePointSymbols();
     //! activates the offset point symbol tool
@@ -1731,7 +1728,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
           , mDeleteRing( nullptr )
           , mDeletePart( nullptr )
           , mNodeTool( nullptr )
-          , mNodeTool2( nullptr )
           , mRotatePointSymbolsTool( nullptr )
           , mOffsetPointSymbolTool( nullptr )
           , mAnnotation( nullptr )
@@ -1779,7 +1775,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mDeleteRing = nullptr;
         QgsMapTool *mDeletePart = nullptr;
         QgsMapTool *mNodeTool = nullptr;
-        QgsMapTool *mNodeTool2 = nullptr;
         QgsMapTool *mRotatePointSymbolsTool = nullptr;
         QgsMapTool *mOffsetPointSymbolTool = nullptr;
         QgsMapTool *mAnnotation = nullptr;

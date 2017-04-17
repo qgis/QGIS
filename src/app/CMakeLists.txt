@@ -97,7 +97,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
 
-  nodetool/qgsmaptoolnodetool.cpp
   nodetool/qgsselectedfeature.cpp
   nodetool/qgsvertexentry.cpp
   nodetool/qgsnodeeditor.cpp
@@ -280,7 +279,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooladdcircularstring.h
   qgsmaptoolcircularstringcurvepoint.h
 
-  nodetool/qgsmaptoolnodetool.h
   nodetool/qgsselectedfeature.h
   nodetool/qgsnodeeditor.h
   nodetool/qgsnodetool2.h

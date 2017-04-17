@@ -377,7 +377,6 @@
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
    <addaction name="mActionNodeTool"/>
-   <addaction name="mActionNodeTool2"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
    <addaction name="mActionCopyFeatures"/>
@@ -2602,21 +2601,6 @@ Acts on currently active editable layer</string>
    </property>
    <property name="text">
     <string>Install plugin from ZIP...</string>
-   </property>
-  </action>
-  <action name="mActionNodeTool2">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNodeTool.svg</normaloff>:/images/themes/default/mActionNodeTool.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Node Tool 2</string>
-   </property>
-   <property name="toolTip">
-    <string>Node Tool 2</string>
    </property>
   </action>
  </widget>
