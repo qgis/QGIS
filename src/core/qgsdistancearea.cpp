@@ -50,7 +50,6 @@
 QgsDistanceArea::QgsDistanceArea()
 {
   // init with default settings
-  mEllipsoidalMode = false;
   setSourceCrs( GEOCRS_ID ); // WGS 84
   setEllipsoid( GEO_NONE );
 }

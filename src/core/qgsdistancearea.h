@@ -338,7 +338,7 @@ class CORE_EXPORT QgsDistanceArea
     QgsCoordinateTransform mCoordTransform;
 
     //! indicates whether we will transform coordinates
-    bool mEllipsoidalMode;
+    bool mEllipsoidalMode = false;
 
     //! ellipsoid acronym (from table tbl_ellipsoids)
     QString mEllipsoid;
