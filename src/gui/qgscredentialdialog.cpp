@@ -208,7 +208,6 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
 
   // don't leave master password in singleton's text field, or the ability to show it
   leMasterPass->clear();
-  chkMasterPassShow->setChecked( false );
   leMasterPassVerify->clear();
 
   chkbxEraseAuthDb->setChecked( false );
@@ -224,12 +223,6 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
   {
     close();
   }
-}
-
-void QgsCredentialDialog::on_chkMasterPassShow_stateChanged( int state )
-{
-  leMasterPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
-  leMasterPassVerify->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
 void QgsCredentialDialog::on_leMasterPass_textChanged( const QString &pass )

@@ -347,7 +347,6 @@ gui/qgscomposerruler.sip
 gui/qgscomposerview.sip
 gui/qgscompoundcolorwidget.sip
 gui/qgsconfigureshortcutsdialog.sip
-gui/qgscredentialdialog.sip
 gui/qgscustomdrophandler.sip
 gui/qgscurveeditorwidget.sip
 gui/qgsdetaileditemdata.sip
