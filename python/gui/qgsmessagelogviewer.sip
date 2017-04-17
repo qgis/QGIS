@@ -21,17 +21,18 @@ class QgsMessageLogViewer: QDialog
 %End
   public:
 
-    QgsMessageLogViewer( QStatusBar *statusBar = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsMessageLogViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 %Docstring
- Create a new message log viewer, it will automatically connect to the system's
- QgsMessageLog.instance() singleton.
+ Create a new message log viewer. The viewer will automatically connect to the system's
+ QgsApplication.messageLog() instance.
 %End
 
   public slots:
+
+    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
 %Docstring
-TODO QGIS 3.0: remove statusBar (it's unused)
+ Logs a message to the viewer.
 %End
-    void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
 
   protected:
     void closeEvent( QCloseEvent *e );

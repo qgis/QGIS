@@ -905,7 +905,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mLastMapToolMessage = nullptr;
 
-  mLogViewer = new QgsMessageLogViewer( statusBar(), this );
+  mLogViewer = new QgsMessageLogViewer( this );
 
   mLogDock = new QgsDockWidget( tr( "Log Messages Panel" ), this );
   mLogDock->setObjectName( QStringLiteral( "MessageLog" ) );

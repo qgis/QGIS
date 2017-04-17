@@ -1481,6 +1481,11 @@ QgsMessageLog        {#qgis_api_break_3_0_QgsMessageLog}
 
 - This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::messageLog() to access an application-wide log.
 
+QgsMessageLogViewer        {#qgis_api_break_3_0_QgsMessageLogViewer}
+---------------------------
+
+- The constructor no longer accepts a QStatusBar argument (this argument was unused).
+
 
 QgsMimeDataUtils        {#qgis_api_break_3_0_QgsMimeDataUtils}
 ----------------
