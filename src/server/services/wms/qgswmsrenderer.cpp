@@ -1219,7 +1219,7 @@ namespace QgsWms
       {
         mapExtent.invert();
       }
-      if ( !mapExtent.isEmpty() && height > 0 )
+      if ( !mapExtent.isEmpty() && height > 0 && width > 0 )
       {
         double mapWidthHeightRatio = mapExtent.width() / mapExtent.height();
         double imageWidthHeightRatio = ( double )width / ( double )height;
