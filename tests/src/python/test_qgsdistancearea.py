@@ -123,12 +123,12 @@ class TestQgsDistanceArea(unittest.TestCase):
         # Test degree based projected point from point_1924 1 meter due East
         point_wsg84_meter_result = QgsPoint(0, 0)
         point_wsg84_1927_meter = QgsPoint(13.37652180838435, 52.50952361017102)
-        length_meter_mapunits, point_soldner_1998_result = da_wsg84.measureLineProjected(point_wsg84_1924, 1.0, (math.pi / 2))
+        length_meter_mapunits, point_wsg84_meter_result = da_wsg84.measureLineProjected(point_wsg84_1924, 1.0, (math.pi / 2))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, QgsUnitTypes.DistanceDegrees, True), '0.0000147 deg')
         self.assertEqual(point_wsg84_meter_result.toString(7), point_wsg84_1927_meter.toString(7))
 
         point_wsg84_1998_result = QgsPoint(0, 0)
-        length_1928_mapunits, point_soldner_1998_result = da_wsg84.measureLineProjected(point_wsg84_1924, distance_wsg84_meters, azimuth_wsg84_1924)
+        length_1928_mapunits, point_wsg84_1998_result = da_wsg84.measureLineProjected(point_wsg84_1924, distance_wsg84_meters, azimuth_wsg84_1924)
         self.assertEqual(QgsDistanceArea.formatDistance(length_1928_mapunits, 7, QgsUnitTypes.DistanceDegrees, True), distance_wsg84_mapunits_format)
         self.assertEqual(point_wsg84_1998_result.toString(7), point_wsg84_1998.toString(7))
 
