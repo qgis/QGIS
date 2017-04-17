@@ -70,17 +70,21 @@ class CORE_EXPORT QgsDistanceArea
      */
     bool willUseEllipsoid() const;
 
-    //! sets source spatial reference system (by QGIS CRS)
+    /**
+     * Sets source spatial reference system (by QGIS CRS).
+     */
     void setSourceCrs( long srsid );
 
     /**
-     * Sets source spatial reference system (by QGIS CRS)
-     * \note: missing in Python bindings in QGIS < 2.2
+     * Sets source spatial reference system (by QGIS CRS).
+     * \since QGIS 2.2
      * \see sourceCrs()
      */
     void setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS );
 
-    //! sets source spatial reference system by authid
+    /**
+     * Sets source spatial reference system by authid.
+     */
     void setSourceAuthId( const QString &authid );
 
     /** Returns the source spatial reference system.
@@ -94,7 +98,9 @@ class CORE_EXPORT QgsDistanceArea
      */
     long sourceCrsId() const { return mCoordTransform.sourceCrs().srsid(); }
 
-    //! What sort of coordinate system is being used?
+    /**
+     * Returns true if a geographic (latitude/longitude based) source CRS is used.
+     */
     bool geographic() const { return mCoordTransform.sourceCrs().isGeographic(); }
 
     /** Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
@@ -124,11 +130,19 @@ class CORE_EXPORT QgsDistanceArea
      */
     QString ellipsoid() const { return mEllipsoid; }
 
-    //! returns ellipsoid's semi major axis
+    /**
+     * Returns the ellipsoid's semi major axis.
+     */
     double ellipsoidSemiMajor() const { return mSemiMajor; }
-    //! returns ellipsoid's semi minor axis
+
+    /**
+     * Returns ellipsoid's semi minor axis.
+     */
     double ellipsoidSemiMinor() const { return mSemiMinor; }
-    //! returns ellipsoid's inverse flattening
+
+    /**
+     * Returns ellipsoid's inverse flattening.
+     */
     double ellipsoidInverseFlattening() const { return mInvFlattening; }
 
     /** Measures the area of a geometry.
@@ -184,9 +198,10 @@ class CORE_EXPORT QgsDistanceArea
      * \param p2 end of line
      * \param units will be set to units of measure
      * \returns calculated distance between points. Distance units are stored in units parameter.
+     * \note Not available in Python bindings.
      * \since QGIS 2.12
      */
-    double measureLine( const QgsPoint &p1, const QgsPoint &p2, QgsUnitTypes::DistanceUnit &units ) const;
+    SIP_SKIP double measureLine( const QgsPoint &p1, const QgsPoint &p2, QgsUnitTypes::DistanceUnit &units ) const;
 
     /**
      * Calculates distance from one point with distance in meters and azimuth (direction)
@@ -203,7 +218,7 @@ class CORE_EXPORT QgsDistanceArea
      * \see sourceCrs()
      * \see computeSpheroidProject()
      */
-    double measureLineProjected( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2, QgsPoint *projectedPoint = nullptr ) const;
+    double measureLineProjected( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2, QgsPoint *projectedPoint SIP_OUT = nullptr ) const;
 
     /** Returns the units of distance for length calculations made by this object.
      * \since QGIS 2.14
@@ -217,10 +232,14 @@ class CORE_EXPORT QgsDistanceArea
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
-    //! measures polygon area
+    /**
+     * Measures the area of the polygon described by a set of points.
+     */
     double measurePolygon( const QList<QgsPoint> &points ) const;
 
-    //! compute bearing - in radians
+    /**
+     * Compute the bearing (in radians) between two points.
+     */
     double bearing( const QgsPoint &p1, const QgsPoint &p2 ) const;
 
     /** Returns an distance formatted as a friendly string.
@@ -281,15 +300,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param p1 - location of first geographic (latitude/longitude) point as degrees.
      * \param distance - distance in meters.
      * \param azimuth - azimuth in radians, clockwise from North
-     * \return p2 - location of projected point as degrees.
-     */
-
-    /*
-     *  From original rttopo documentation:
-     *  Tested against:
-     *   http://mascot.gdbc.gov.bc.ca/mascot/util1b.html
-     *  and
-     *   http://www.ga.gov.au/nmd/geodesy/datums/vincenty_direct.jsp
+     * \return p2 - location of projected point as longitude/latitude.
      */
     QgsPoint computeSpheroidProject( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2 ) const;
 

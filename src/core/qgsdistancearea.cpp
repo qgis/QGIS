@@ -545,6 +545,13 @@ double QgsDistanceArea::measureLineProjected( const QgsPoint &p1, double distanc
   return result;
 }
 
+/*
+ *  From original rttopo documentation:
+ *  Tested against:
+ *   http://mascot.gdbc.gov.bc.ca/mascot/util1b.html
+ *  and
+ *   http://www.ga.gov.au/nmd/geodesy/datums/vincenty_direct.jsp
+ */
 QgsPoint QgsDistanceArea::computeSpheroidProject(
   const QgsPoint &p1, double distance, double azimuth ) const
 {
