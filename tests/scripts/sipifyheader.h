@@ -230,6 +230,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     This<Member> shouldBeIncluded;
 
+    bool initializedMember{ false };
+
   protected:
     bool thisShouldBeListed();
 

@@ -369,6 +369,12 @@ while(!eof $header){
             $line = $newline;
         }
 
+        # remove inline declarations
+        if ( $line =~  m/^(\s*)?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$/ ){
+            my $newline = "$1$3;\n";
+            $line = $newline;
+        }
+
         if ( $line =~  m/^\s*(?:const |virtual |static |inline )*(?!explicit)([\w:]+(?:<.*?>)?)\s+(?:\*|&)?(?:\w+|operator.{1,2})\(.*$/ ){
             if ($1 !~ m/(void|SIP_PYOBJECT|operator|return|QFlag)/ ){
                 $return_type = $1;

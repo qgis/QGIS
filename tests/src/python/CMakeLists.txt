@@ -45,6 +45,7 @@ ADD_PYTHON_TEST(PyQgsDateTimeStatisticalSummary test_qgsdatetimestatisticalsumma
 ADD_PYTHON_TEST(PyQgsDelimitedTextProvider test_qgsdelimitedtextprovider.py)
 ADD_PYTHON_TEST(PyQgsDistanceArea test_qgsdistancearea.py)
 ADD_PYTHON_TEST(PyQgsEditWidgets test_qgseditwidgets.py)
+ADD_PYTHON_TEST(PyQgsEllipsoidUtils test_qgsellipsoidutils.py)
 ADD_PYTHON_TEST(PyQgsExpression test_qgsexpression.py)
 ADD_PYTHON_TEST(PyQgsExpressionLineEdit test_qgsexpressionlineedit.py)
 ADD_PYTHON_TEST(PyQgsFeature test_qgsfeature.py)

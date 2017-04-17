@@ -234,6 +234,8 @@ Removing function body with virtual const reference
 
     This<Member> shouldBeIncluded;
 
+    bool initializedMember;
+
   protected:
     bool thisShouldBeListed();
 %Docstring

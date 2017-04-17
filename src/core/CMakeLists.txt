@@ -128,6 +128,7 @@ SET(QGIS_CORE_SRCS
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
   qgseditformconfig.cpp
+  qgsellipsoidutils.cpp
   qgserror.cpp
   qgsexpression.cpp
   qgsexpressioncontext.cpp
@@ -699,18 +700,19 @@ SET(QGIS_CORE_HDRS
   qgsdistancearea.h
   qgseditformconfig.h
   qgseditorwidgetsetup.h
-  qgsfeaturefilterprovider.h
-  qgsfield_p.h
+  qgsellipsoidutils.h
   qgserror.h
   qgsexception.h
   qgsexpression.h
   qgsexpressioncontext.h
   qgsexpressioncontextgenerator.h
   qgsexpressionfieldbuffer.h
+  qgsfeaturefilterprovider.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfeaturestore.h
   qgsfieldformatter.h
+  qgsfield_p.h
   qgsfields.h
   qgsfontutils.h
   qgsgeometrycache.h
