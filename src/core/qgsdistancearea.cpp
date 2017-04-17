@@ -279,7 +279,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
     measureType = ( geomDimension == 1 ? Length : Area );
   }
 
-  if ( !mEllipsoidalMode || mEllipsoid == GEO_NONE )
+  if ( !willUseEllipsoid() )
   {
     //no transform required
     if ( measureType == Length )
@@ -370,7 +370,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
     return 0.0;
   }
 
-  if ( !mEllipsoidalMode || mEllipsoid == GEO_NONE )
+  if ( !willUseEllipsoid() )
   {
     return geomV2->perimeter();
   }
@@ -441,14 +441,14 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
 
   try
   {
-    if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
+    if ( willUseEllipsoid() )
       p1 = mCoordTransform.transform( points[0] );
     else
       p1 = points[0];
 
     for ( QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i )
     {
-      if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
+      if ( willUseEllipsoid() )
       {
         p2 = mCoordTransform.transform( *i );
         total += computeDistanceBearing( p1, p2 );
@@ -489,7 +489,7 @@ double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2, Qgs
     QgsPoint pp1 = p1, pp2 = p2;
 
     QgsDebugMsgLevel( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
-    if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
+    if ( willUseEllipsoid() )
     {
       units = QgsUnitTypes::DistanceMeters;
       QgsDebugMsgLevel( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
@@ -520,13 +520,10 @@ double QgsDistanceArea::measureLineProjected( const QgsPoint &p1, double distanc
 {
   double result = 0.0;
   QgsPoint p2;
-  if ( geographic() )
+  if ( geographic() && willUseEllipsoid() )
   {
-    if ( mEllipsoid != GEO_NONE )
-    {
-      p2 = computeSpheroidProject( p1, distance, azimuth );
-      result = p1.distance( p2 );
-    }
+    p2 = computeSpheroidProject( p1, distance, azimuth );
+    result = p1.distance( p2 );
   }
   else // cartesian coordinates
   {
@@ -639,7 +636,7 @@ double QgsDistanceArea::measurePolygon( const QList<QgsPoint> &points ) const
 {
   try
   {
-    if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
+    if ( willUseEllipsoid() )
     {
       QList<QgsPoint> pts;
       for ( QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i )
@@ -667,7 +664,7 @@ double QgsDistanceArea::bearing( const QgsPoint &p1, const QgsPoint &p2 ) const
   QgsPoint pp1 = p1, pp2 = p2;
   double bearing;
 
-  if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
+  if ( willUseEllipsoid() )
   {
     pp1 = mCoordTransform.transform( p1 );
     pp2 = mCoordTransform.transform( p2 );
@@ -838,7 +835,7 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPoint> &points ) cons
   double area;
 
   QgsDebugMsgLevel( "Ellipsoid: " + mEllipsoid, 3 );
-  if ( ( ! mEllipsoidalMode ) || ( mEllipsoid == GEO_NONE ) )
+  if ( !willUseEllipsoid() )
   {
     return computePolygonFlatArea( points );
   }
