@@ -28,6 +28,9 @@ class QgsMessageLogViewer: QDialog
 %End
 
   public slots:
+%Docstring
+TODO QGIS 3.0: remove statusBar (it's unused)
+%End
     void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
 
   protected:

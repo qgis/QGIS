@@ -12,6 +12,24 @@
 
 class QgsCurveTransform
 {
+%Docstring
+ Handles scaling of input values to output values by using a curve created
+ from smoothly joining a number of set control points.
+
+ QgsCurveTransform assists in creation of curve type transforms, typically seen in
+ raster image editing software (eg the curves dialog in GIMP or Photoshop).
+ Transforms are created by passing a number of set control points through which
+ the transform curve must pass. The curve is guaranteed to exactly pass through
+ these control points. Between control points the curve is smoothly interpolated
+ so that no disjoint sections or "corners" are present.
+
+ If the first or last control point are not located at x = 0 and x = 1 respectively,
+ then values outside this range will be mapped to the y value of either the first
+ or last control point. In other words, the curve will have a flat segment
+ for values outside of the control point range.
+
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
 #include "qgspropertytransformer.h"
@@ -297,6 +315,10 @@ class QgsPropertyTransformer
 
 class QgsGenericNumericTransformer : QgsPropertyTransformer
 {
+%Docstring
+ QgsPropertyTransformer subclass for scaling an input numeric value into an output numeric value.
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
 #include "qgspropertytransformer.h"
@@ -437,6 +459,11 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 
 class QgsSizeScaleTransformer : QgsPropertyTransformer
 {
+%Docstring
+ QgsPropertyTransformer subclass for scaling a value into a size according to various
+ scaling methods.
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
 #include "qgspropertytransformer.h"
@@ -604,6 +631,11 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 
 class QgsColorRampTransformer : QgsPropertyTransformer
 {
+%Docstring
+ QgsPropertyTransformer subclass for transforming a numeric value into a color from a
+ color ramp.
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
 #include "qgspropertytransformer.h"

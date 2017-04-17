@@ -14,6 +14,10 @@
 
 class QgsHtmlAnnotation: QgsAnnotation
 {
+%Docstring
+ An annotation item that embeds HTML content.
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
 #include "qgshtmlannotation.h"

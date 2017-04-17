@@ -116,6 +116,8 @@ A multiline method signature
 %End
 
 
+    void nonAnnotatedMethodFollowingSkip();
+
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 %Docstring
 Factory annotation
@@ -263,6 +265,7 @@ A constructor with definition in header on several lines
 %End
 
 };
+
 
 class AbstractClass /Abstract/
 {

@@ -34,9 +34,21 @@ class QgsClipper
 
 
     static const double MAX_X;
+%Docstring
+Maximum X-coordinate of the rectangular box used for clipping.
+%End
     static const double MIN_X;
+%Docstring
+Minimum X-coordinate of the rectangular box used for clipping.
+%End
     static const double MAX_Y;
+%Docstring
+Maximum Y-coordinate of the rectangular box used for clipping.
+%End
     static const double MIN_Y;
+%Docstring
+Minimum Y-coordinate of the rectangular box used for clipping.
+%End
 
 
     enum Boundary

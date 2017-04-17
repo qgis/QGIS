@@ -180,6 +180,7 @@ while(!eof $header){
 
     # SIP_SKIP
     if ( $line =~ m/SIP_SKIP/ ){
+      $comment = '';
       next;
     }
 
@@ -292,6 +293,7 @@ while(!eof $header){
         }
         print $line;
         # enums don't have Docstring apparently
+        $comment = '';
         next;
     }
 
@@ -424,7 +426,11 @@ while(!eof $header){
     }
 
     # write comment
-    if ( $line =~ m/^\s*$/ || $line =~ m/\/\// || $line =~ m/\s*typedef / || $line =~ m/\s*struct / ){
+    if ( $line =~ m/^\s*$/ )
+    {
+        next;
+    }
+    elsif ( $line =~ m/\/\// || $line =~ m/\s*typedef / || $line =~ m/\s*struct / ){
         $comment = '';
     }
     elsif ( $comment !~ m/^\s*$/ || $return_type ne ''){

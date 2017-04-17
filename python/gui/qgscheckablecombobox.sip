@@ -15,6 +15,11 @@
 
 class QgsCheckableComboBox : QComboBox
 {
+%Docstring
+ QComboBox subclass which allows selecting multiple items.
+.. versionadded:: 3.0
+*
+%End
 
 %TypeHeaderCode
 #include "qgscheckablecombobox.h"

@@ -12,6 +12,11 @@
 
 class QgsAttributeTableConfig
 {
+%Docstring
+ This is a container for configuration of the attribute table.
+ The configuration is specific for one vector layer.
+.. versionadded:: 2.16
+%End
 
 %TypeHeaderCode
 #include "qgsattributetableconfig.h"

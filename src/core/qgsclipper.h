@@ -45,8 +45,6 @@ class CORE_EXPORT QgsClipper
 {
   public:
 
-    // Coordinates of the rectangular box that we trim to.
-    //
     // These are the limits for X11 screen coordinates. The actual
     // values are +/-32767, but we allow a little bit of space for
     // rounding errors.
@@ -64,9 +62,13 @@ class CORE_EXPORT QgsClipper
     // The limit is set to 30,000 instead of 32768 because that things
     // still go wrong.
 
+    //! Maximum X-coordinate of the rectangular box used for clipping.
     static const double MAX_X;
+    //! Minimum X-coordinate of the rectangular box used for clipping.
     static const double MIN_X;
+    //! Maximum Y-coordinate of the rectangular box used for clipping.
     static const double MAX_Y;
+    //! Minimum Y-coordinate of the rectangular box used for clipping.
     static const double MIN_Y;
 
 

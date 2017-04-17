@@ -154,6 +154,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     // Adding SIP_SKIP at the end of a line will discard this MethodCode
     bool thisShouldBeSkipped() const SIP_SKIP;
 
+    void nonAnnotatedMethodFollowingSkip();
+
     //! Factory annotation
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
@@ -286,6 +288,7 @@ class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass
  * \ingroup core
  * Documentation goes here
  */
+
 class CORE_EXPORT AbstractClass SIP_ABSTRACT
 {
   public:
