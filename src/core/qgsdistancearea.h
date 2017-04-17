@@ -24,7 +24,6 @@
 class QgsGeometry;
 class QgsAbstractGeometry;
 class QgsCurve;
-class QgsConstWkbPtr;
 
 /** \ingroup core
 General purpose distance and area calculator.
@@ -141,17 +140,6 @@ class CORE_EXPORT QgsDistanceArea
      * \see measurePerimeter()
      * \see areaUnits()
      */
-    double measureArea( const QgsGeometry *geometry ) const;
-
-    /** Measures the area of a geometry.
-     * \param geometry geometry to measure
-     * \returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
-     * returned area can be retrieved by calling areaUnits().
-     * \since QGIS 2.12
-     * \see measureLength()
-     * \see measurePerimeter()
-     * \see areaUnits()
-     */
     double measureArea( const QgsGeometry &geometry ) const;
 
     /** Measures the length of a geometry.
@@ -163,29 +151,7 @@ class CORE_EXPORT QgsDistanceArea
      * \see measureArea()
      * \see measurePerimeter()
      */
-    double measureLength( const QgsGeometry *geometry ) const;
-
-    /** Measures the length of a geometry.
-     * \param geometry geometry to measure
-     * \returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
-     * returned distance can be retrieved by calling lengthUnits().
-     * \since QGIS 2.12
-     * \see lengthUnits()
-     * \see measureArea()
-     * \see measurePerimeter()
-     */
     double measureLength( const QgsGeometry &geometry ) const;
-
-    /** Measures the perimeter of a polygon geometry.
-     * \param geometry geometry to measure
-     * \returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
-     * returned perimeter can be retrieved by calling lengthUnits().
-     * \since QGIS 2.12
-     * \see lengthUnits()
-     * \see measureArea()
-     * \see measurePerimeter()
-     */
-    double measurePerimeter( const QgsGeometry *geometry ) const;
 
     /** Measures the perimeter of a polygon geometry.
      * \param geometry geometry to measure
@@ -224,14 +190,14 @@ class CORE_EXPORT QgsDistanceArea
 
     /**
      * Calculates distance from one point with distance in meters and azimuth (direction)
-     * When the sourceCrs is Geographic, computeSpheroidProject will be called
+     * When the sourceCrs() is geographic, computeSpheroidProject() will be called
      * otherwise QgsPoint.project() will be called after QgsUnitTypes::fromUnitToUnitFactor() has been applied to the distance
      * \note:
-     *  The input Point must be in the CoordinateReferenceSystem being used
+     *  The input Point must be in the coordinate reference system being used
      * \since QGIS 3.0
      * \param p1 start point [can be Cartesian or Geographic]
      * \param distance must be in meters
-     * \param azimuth - azimuth in radians. [default M_PI/2 - East of p1]
+     * \param azimuth - azimuth in radians, clockwise from North
      * \param projectedPoint calculated projected point
      * \return distance in mapUnits
      * \see sourceCrs()
@@ -303,24 +269,6 @@ class CORE_EXPORT QgsDistanceArea
      */
     double convertAreaMeasurement( double area, QgsUnitTypes::AreaUnit toUnits ) const;
 
-  protected:
-    //! measures polygon area and perimeter, vertices are extracted from WKB
-    // \note not available in Python bindings
-    QgsConstWkbPtr measurePolygon( QgsConstWkbPtr feature, double *area, double *perimeter, bool hasZptr = false ) const;
-
-    /**
-     * calculates distance from two points on ellipsoid
-     * based on inverse Vincenty's formulae
-     *
-     * Points p1 and p2 are expected to be in degrees and in currently used ellipsoid
-     *
-     * \note if course1 is not NULL, bearing (in radians) from first point is calculated
-     * (the same for course2)
-     * \returns distance in meters
-     */
-    double computeDistanceBearing( const QgsPoint &p1, const QgsPoint &p2,
-                                   double *course1 = nullptr, double *course2 = nullptr ) const;
-
     /**
      * Given a location, an azimuth and a distance, computes the
      * location of the projected point. Based on Vincenty's formula
@@ -330,9 +278,9 @@ class CORE_EXPORT QgsDistanceArea
      * https://git.osgeo.org/gogs/rttopo/librttopo
      * - spheroid_project.spheroid_project(...)
      * \since QGIS 3.0
-     * \param p1 - location of first Geographic (lat,long) point as degrees.
-     * \param distance - distance in meters. [default 1 meter]
-     * \param azimuth - azimuth in radians. [default M_PI/2 - East of p1]
+     * \param p1 - location of first geographic (latitude/longitude) point as degrees.
+     * \param distance - distance in meters.
+     * \param azimuth - azimuth in radians, clockwise from North
      * \return p2 - location of projected point as degrees.
      */
 
@@ -345,14 +293,23 @@ class CORE_EXPORT QgsDistanceArea
      */
     QgsPoint computeSpheroidProject( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2 ) const;
 
-    //! uses flat / planimetric / Euclidean distance
-    double computeDistanceFlat( const QgsPoint &p1, const QgsPoint &p2 ) const;
-
-    //! calculate distance with given coordinates (does not do a transform anymore)
-    double computeDistance( const QList<QgsPoint> &points ) const;
+  private:
 
     /**
-     * calculates area of polygon on ellipsoid
+     * Calculates distance from two points on ellipsoid
+     * based on inverse Vincenty's formulae
+     *
+     * Points p1 and p2 are expected to be in degrees and in currently used ellipsoid
+     *
+     * \note if course1 is not NULL, bearing (in radians) from first point is calculated
+     * (the same for course2)
+     * \returns distance in meters
+     */
+    double computeDistanceBearing( const QgsPoint &p1, const QgsPoint &p2,
+                                   double *course1 = nullptr, double *course2 = nullptr ) const;
+
+    /**
+     * Calculates area of polygon on ellipsoid
      * algorithm has been taken from GRASS: gis/area_poly1.c
      */
     double computePolygonArea( const QList<QgsPoint> &points ) const;
@@ -360,12 +317,10 @@ class CORE_EXPORT QgsDistanceArea
     double computePolygonFlatArea( const QList<QgsPoint> &points ) const;
 
     /**
-     * precalculates some values
+     * Precalculates some values
      * (must be called always when changing ellipsoid)
      */
     void computeAreaInit();
-
-  private:
 
     enum MeasureType
     {

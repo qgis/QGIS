@@ -341,15 +341,6 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
   }
 }
 
-double QgsDistanceArea::measureArea( const QgsGeometry *geometry ) const
-{
-  if ( !geometry )
-    return 0.0;
-
-  const QgsAbstractGeometry *geomV2 = geometry->geometry();
-  return measure( geomV2, Area );
-}
-
 double QgsDistanceArea::measureArea( const QgsGeometry &geometry ) const
 {
   if ( geometry.isNull() )
@@ -359,15 +350,6 @@ double QgsDistanceArea::measureArea( const QgsGeometry &geometry ) const
   return measure( geomV2, Area );
 }
 
-double QgsDistanceArea::measureLength( const QgsGeometry *geometry ) const
-{
-  if ( !geometry )
-    return 0.0;
-
-  const QgsAbstractGeometry *geomV2 = geometry->geometry();
-  return measure( geomV2, Length );
-}
-
 double QgsDistanceArea::measureLength( const QgsGeometry &geometry ) const
 {
   if ( geometry.isNull() )
@@ -375,14 +357,6 @@ double QgsDistanceArea::measureLength( const QgsGeometry &geometry ) const
 
   const QgsAbstractGeometry *geomV2 = geometry.geometry();
   return measure( geomV2, Length );
-}
-
-double QgsDistanceArea::measurePerimeter( const QgsGeometry *geometry ) const
-{
-  if ( !geometry )
-    return 0.0;
-
-  return measurePerimeter( *geometry );
 }
 
 double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
@@ -529,7 +503,7 @@ double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2, Qgs
     else
     {
       QgsDebugMsgLevel( "Cartesian calculation on canvas coordinates", 4 );
-      result = computeDistanceFlat( p1, p2 );
+      result = p2.distance( p1 );
     }
   }
   catch ( QgsCsException &cse )
@@ -637,100 +611,6 @@ QgsUnitTypes::AreaUnit QgsDistanceArea::areaUnits() const
 {
   return willUseEllipsoid() ? QgsUnitTypes::AreaSquareMeters :
          QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() );
-}
-
-QgsConstWkbPtr QgsDistanceArea::measurePolygon( QgsConstWkbPtr wkbPtr, double *area, double *perimeter, bool hasZptr ) const
-{
-  if ( !wkbPtr )
-  {
-    QgsDebugMsg( "no feature to measure" );
-    return wkbPtr;
-  }
-
-  wkbPtr.readHeader();
-
-  // get number of rings in the polygon
-  int numRings;
-  wkbPtr >> numRings;
-
-  if ( numRings == 0 )
-  {
-    QgsDebugMsg( "no rings to measure" );
-    return QgsConstWkbPtr( nullptr, 0 );
-  }
-
-  // Set pointer to the first ring
-  QList<QgsPoint> points;
-  QgsPoint pnt;
-  double x, y;
-  if ( area )
-    *area = 0;
-  if ( perimeter )
-    *perimeter = 0;
-
-  try
-  {
-    for ( int idx = 0; idx < numRings; idx++ )
-    {
-      int nPoints;
-      wkbPtr >> nPoints;
-
-      // Extract the points from the WKB and store in a pair of
-      // vectors.
-      for ( int jdx = 0; jdx < nPoints; jdx++ )
-      {
-        wkbPtr >> x >> y;
-        if ( hasZptr )
-        {
-          // totally ignore Z value
-          wkbPtr += sizeof( double );
-        }
-
-        pnt = QgsPoint( x, y );
-
-        if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
-        {
-          pnt = mCoordTransform.transform( pnt );
-        }
-        points.append( pnt );
-      }
-
-      if ( points.size() > 2 )
-      {
-        if ( area )
-        {
-          double areaTmp = computePolygonArea( points );
-          if ( idx == 0 )
-          {
-            // exterior ring
-            *area += areaTmp;
-          }
-          else
-          {
-            *area -= areaTmp; // interior rings
-          }
-        }
-
-        if ( perimeter )
-        {
-          if ( idx == 0 )
-          {
-            // exterior ring
-            *perimeter += computeDistance( points );
-          }
-        }
-      }
-
-      points.clear();
-    }
-  }
-  catch ( QgsCsException &cse )
-  {
-    Q_UNUSED( cse );
-    QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter." ) );
-  }
-
-  return wkbPtr;
 }
 
 double QgsDistanceArea::measurePolygon( const QgsCurve *curve ) const
@@ -876,50 +756,6 @@ double QgsDistanceArea::computeDistanceBearing(
 
   return s;
 }
-
-double QgsDistanceArea::computeDistanceFlat( const QgsPoint &p1, const QgsPoint &p2 ) const
-{
-  return sqrt( ( p2.x() - p1.x() ) * ( p2.x() - p1.x() ) + ( p2.y() - p1.y() ) * ( p2.y() - p1.y() ) );
-}
-
-double QgsDistanceArea::computeDistance( const QList<QgsPoint> &points ) const
-{
-  if ( points.size() < 2 )
-    return 0;
-
-  double total = 0;
-  QgsPoint p1, p2;
-
-  try
-  {
-    p1 = points[0];
-
-    for ( QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i )
-    {
-      p2 = *i;
-      if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
-      {
-        total += computeDistanceBearing( p1, p2 );
-      }
-      else
-      {
-        total += computeDistanceFlat( p1, p2 );
-      }
-
-      p1 = p2;
-    }
-
-    return total;
-  }
-  catch ( QgsCsException &cse )
-  {
-    Q_UNUSED( cse );
-    QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
-    return 0.0;
-  }
-}
-
-
 
 ///////////////////////////////////////////////////////////
 // stuff for measuring areas - copied from GRASS
