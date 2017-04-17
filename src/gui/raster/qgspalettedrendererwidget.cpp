@@ -439,7 +439,7 @@ void QgsPalettedRendererWidget::loadFromLayer()
 
 void QgsPalettedRendererWidget::gatheredClasses()
 {
-  if ( mGatherer && mGatherer->wasCanceled() )
+  if ( !mGatherer || mGatherer->wasCanceled() )
     return;
 
   mModel->setClassData( mGatherer->classes() );

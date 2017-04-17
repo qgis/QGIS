@@ -218,7 +218,7 @@ bool QgsComposerLegend::resizeToContents() const
 
 void QgsComposerLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
 {
-  mLegendModel->setRootGroup( rootGroup ? rootGroup : mComposition->project()->layerTreeRoot() );
+  mLegendModel->setRootGroup( rootGroup ? rootGroup : ( mComposition ? mComposition->project()->layerTreeRoot() : nullptr ) );
 
   mCustomLayerTree.reset( rootGroup );
 }
