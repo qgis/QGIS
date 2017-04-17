@@ -98,17 +98,14 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
   if ( cacheIt != sEllipsoidCache.constEnd() )
   {
     // found a match in the cache
-    sEllipsoidCacheLock.unlock();
-    if ( cacheIt.value().valid )
+    bool result = cacheIt.value().valid;
+    if ( result )
     {
       mEllipsoid = ellipsoid;
       setFromParams( cacheIt.value() );
-      return true;
     }
-    else
-    {
-      return false;
-    }
+    sEllipsoidCacheLock.unlock();
+    return result;
   }
   sEllipsoidCacheLock.unlock();
 
