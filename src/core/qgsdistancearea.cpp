@@ -55,40 +55,6 @@ QgsDistanceArea::QgsDistanceArea()
   setEllipsoid( GEO_NONE );
 }
 
-
-QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea &origDA )
-{
-  _copy( origDA );
-}
-
-QgsDistanceArea &QgsDistanceArea::operator=( const QgsDistanceArea &origDA )
-{
-  if ( this == & origDA )
-  {
-    // Do not copy unto self
-    return *this;
-  }
-  _copy( origDA );
-  return *this;
-}
-
-//! Copy helper. Avoid Sqlite3 accesses.
-void QgsDistanceArea::_copy( const QgsDistanceArea &origDA )
-{
-  mEllipsoidalMode = origDA.mEllipsoidalMode;
-  mEllipsoid = origDA.mEllipsoid;
-  mSemiMajor = origDA.mSemiMajor;
-  mSemiMinor = origDA.mSemiMinor;
-  mInvFlattening = origDA.mInvFlattening;
-  if ( ( mSemiMajor > 0 ) && ( mSemiMinor > 0 ) )
-  {
-    // Some calculations and trig. Should not be TOO time consuming.
-    // Alternatively we could copy the temp vars?
-    computeAreaInit();
-  }
-  mCoordTransform = origDA.mCoordTransform;
-}
-
 void QgsDistanceArea::setEllipsoidalMode( bool flag )
 {
   mEllipsoidalMode = flag;

@@ -32,13 +32,6 @@ General purpose distance and area calculator.
 Constructor
 %End
 
-    QgsDistanceArea( const QgsDistanceArea &origDA );
-%Docstring
-Copy constructor
-%End
-
-//     QgsDistanceArea &operator=( const QgsDistanceArea &origDA );
-
     void setEllipsoidalMode( bool flag );
 %Docstring
  Sets whether coordinates must be projected to ellipsoid before measuring

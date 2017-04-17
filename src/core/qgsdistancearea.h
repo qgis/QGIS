@@ -42,12 +42,6 @@ class CORE_EXPORT QgsDistanceArea
     //! Constructor
     QgsDistanceArea();
 
-    //! Copy constructor
-    QgsDistanceArea( const QgsDistanceArea &origDA );
-
-    //! Assignment operator
-    QgsDistanceArea &operator=( const QgsDistanceArea &origDA );
-
     /** Sets whether coordinates must be projected to ellipsoid before measuring
      * \note for calculations to use the ellipsoid, both the ellipsoid mode must be true
      * and an ellipse must be set
@@ -339,9 +333,6 @@ class CORE_EXPORT QgsDistanceArea
       Area,
       Length
     };
-
-    //! Copy helper
-    void _copy( const QgsDistanceArea &origDA );
 
     //! used for transforming coordinates from source CRS to ellipsoid's coordinates
     QgsCoordinateTransform mCoordTransform;
