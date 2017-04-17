@@ -222,6 +222,23 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureLine( const QgsPoint &p1, const QgsPoint &p2, QgsUnitTypes::DistanceUnit &units ) const;
 
+    /**
+     * Calculates distance from one point with distance in meters and azimuth (direction)
+     * When the sourceCrs is Geographic, computeSpheroidProject will be called
+     * otherwise QgsPoint.project() will be called after QgsUnitTypes::fromUnitToUnitFactor() has been applied to the distance
+     * \note:
+     *  The input Point must be in the CoordinateReferenceSystem being used
+     * \since QGIS 3.0
+     * \param p1 start point [can be Cartesian or Geographic]
+     * \param distance must be in meters
+     * \param azimuth - azimuth in radians. [default M_PI/2 - East of p1]
+     * \param projectedPoint calculated projected point
+     * \return distance in mapUnits
+     * \see sourceCrs()
+     * \see computeSpheroidProject()
+     */
+    double measureLineProjected( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2, QgsPoint *projectedPoint = nullptr ) const;
+
     /** Returns the units of distance for length calculations made by this object.
      * \since QGIS 2.14
      * \see areaUnits()
@@ -303,6 +320,30 @@ class CORE_EXPORT QgsDistanceArea
      */
     double computeDistanceBearing( const QgsPoint &p1, const QgsPoint &p2,
                                    double *course1 = nullptr, double *course2 = nullptr ) const;
+
+    /**
+     * Given a location, an azimuth and a distance, computes the
+     * location of the projected point. Based on Vincenty's formula
+     * for the geodetic direct problem as described in "Geocentric
+     * Datum of Australia Technical Manual", Chapter 4.
+     * \note code (and documentation) taken from rttopo project
+     * https://git.osgeo.org/gogs/rttopo/librttopo
+     * - spheroid_project.spheroid_project(...)
+     * \since QGIS 3.0
+     * \param p1 - location of first Geographic (lat,long) point as degrees.
+     * \param distance - distance in meters. [default 1 meter]
+     * \param azimuth - azimuth in radians. [default M_PI/2 - East of p1]
+     * \return p2 - location of projected point as degrees.
+     */
+
+    /*
+     *  From original rttopo documentation:
+     *  Tested against:
+     *   http://mascot.gdbc.gov.bc.ca/mascot/util1b.html
+     *  and
+     *   http://www.ga.gov.au/nmd/geodesy/datums/vincenty_direct.jsp
+     */
+    QgsPoint computeSpheroidProject( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2 ) const;
 
     //! uses flat / planimetric / Euclidean distance
     double computeDistanceFlat( const QgsPoint &p1, const QgsPoint &p2 ) const;
