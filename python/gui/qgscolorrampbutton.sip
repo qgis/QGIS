@@ -27,16 +27,13 @@ class QgsColorRampButton : QToolButton
     QgsColorRampButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
  Construct a new color ramp button.
- \param parent The parent QWidget for the dialog
- \param dialogTitle The title to show in the color ramp dialog
+ Use ``parent`` to attach a parent QWidget to the dialog.
+ Use ``dialogTitle`` string  to define the title to show in the color ramp dialog
 %End
 
     virtual ~QgsColorRampButton();
 
     virtual QSize sizeHint() const;
-%Docstring
- :rtype: QSize
-%End
 
     QgsColorRamp *colorRamp() const /Factory/;
 %Docstring
@@ -261,9 +258,6 @@ class QgsColorRampButton : QToolButton
   protected:
 
     bool event( QEvent *e );
-%Docstring
- :rtype: bool
-%End
     void changeEvent( QEvent *e );
     void showEvent( QShowEvent *e );
     void resizeEvent( QResizeEvent *event );

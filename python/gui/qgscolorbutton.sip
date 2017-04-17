@@ -30,17 +30,14 @@ class QgsColorButton : QToolButton
 
     QgsColorButton( QWidget *parent /TransferThis/ = 0, const QString &cdt = "", QgsColorSchemeRegistry *registry = 0 );
 %Docstring
- Construct a new color button.
- \param parent The parent QWidget for the dialog
- \param cdt The title to show in the color chooser dialog
- \param registry a color scheme registry for color swatch grids to show in the drop down menu. If not
- specified, the button will use the global color scheme registry
+ Construct a new color ramp button.
+ Use ``parent`` to attach a parent QWidget to the dialog.
+ Use ``cdt`` string to define the title to show in the color ramp dialog
+ Use a color scheme ``registry`` for color swatch grids to show in the drop down menu. If not specified,
+ the button will use the global color scheme registry instead
 %End
 
     virtual QSize sizeHint() const;
-%Docstring
- :rtype: QSize
-%End
 
     QColor color() const;
 %Docstring
@@ -350,9 +347,6 @@ class QgsColorButton : QToolButton
   protected:
 
     bool event( QEvent *e );
-%Docstring
- :rtype: bool
-%End
     void changeEvent( QEvent *e );
     void showEvent( QShowEvent *e );
     void resizeEvent( QResizeEvent *event );

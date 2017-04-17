@@ -45,8 +45,8 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
   public:
 
     /** Construct a new color ramp button.
-     * \param parent The parent QWidget for the dialog
-     * \param dialogTitle The title to show in the color ramp dialog
+     * Use \a parent to attach a parent QWidget to the dialog.
+     * Use \a dialogTitle string  to define the title to show in the color ramp dialog
      */
     QgsColorRampButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
 
