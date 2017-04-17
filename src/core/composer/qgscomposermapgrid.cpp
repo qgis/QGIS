@@ -1704,6 +1704,8 @@ int QgsComposerMapGrid::xGridLinesCrsTransform( const QgsRectangle &bbox, const 
   double minX = bbox.xMinimum();
   double maxX = bbox.xMaximum();
   double step = ( maxX - minX ) / 20;
+  if ( step == 0 )
+    return 0;
 
   bool crosses180 = false;
   bool crossed180 = false;
@@ -1780,6 +1782,8 @@ int QgsComposerMapGrid::yGridLinesCrsTransform( const QgsRectangle &bbox, const 
   double minY = bbox.yMinimum();
   double maxY = bbox.yMaximum();
   double step = ( maxY - minY ) / 20;
+  if ( step == 0 )
+    return 0;
 
   if ( qgsDoubleNear( step, 0.0 ) )
     return 1;
