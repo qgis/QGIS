@@ -21,18 +21,15 @@ class QgsCredentialDialog : QDialog, QgsCredentials
 %End
   public:
     QgsCredentialDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+%Docstring
+QgsCredentialDialog constructor
+%End
 
 
   protected:
     virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString::null );
-%Docstring
- :rtype: bool
-%End
 
     virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false );
-%Docstring
- :rtype: bool
-%End
 
 };
 

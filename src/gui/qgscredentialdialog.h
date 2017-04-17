@@ -34,6 +34,7 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
 {
     Q_OBJECT
   public:
+    //! QgsCredentialDialog constructor
     QgsCredentialDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
 #ifndef SIP_RUN
