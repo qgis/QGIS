@@ -153,30 +153,12 @@ Creates a new QgsColorRamp from a map of properties
 %End
 
     virtual int count() const;
-%Docstring
- :rtype: int
-%End
     virtual double value( int index ) const;
-%Docstring
- :rtype: float
-%End
     virtual QColor color( double value ) const;
-%Docstring
- :rtype: QColor
-%End
     virtual QString type() const;
-%Docstring
- :rtype: str
-%End
     virtual void invert();
     virtual QgsGradientColorRamp *clone() const;
-%Docstring
- :rtype: QgsGradientColorRamp
-%End
     virtual QgsStringMap properties() const;
-%Docstring
- :rtype: QgsStringMap
-%End
 
     QColor color1() const;
 %Docstring
@@ -316,29 +298,11 @@ class QgsLimitedRandomColorRamp : QgsColorRamp
 %End
 
     virtual double value( int index ) const;
-%Docstring
- :rtype: float
-%End
     virtual QColor color( double value ) const;
-%Docstring
- :rtype: QColor
-%End
     virtual QString type() const;
-%Docstring
- :rtype: str
-%End
     virtual QgsLimitedRandomColorRamp *clone() const /Factory/;
-%Docstring
- :rtype: QgsLimitedRandomColorRamp
-%End
     virtual QgsStringMap properties() const;
-%Docstring
- :rtype: QgsStringMap
-%End
     int count() const;
-%Docstring
- :rtype: int
-%End
 
     static QList<QColor> randomColors( int count,
                                        int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN,
@@ -457,19 +421,10 @@ class QgsRandomColorRamp: QgsColorRamp
     QgsRandomColorRamp();
 
     int count() const;
-%Docstring
- :rtype: int
-%End
 
     double value( int index ) const;
-%Docstring
- :rtype: float
-%End
 
     QColor color( double value ) const;
-%Docstring
- :rtype: QColor
-%End
 
     virtual void setTotalColorCount( const int colorCount );
 %Docstring
@@ -481,19 +436,10 @@ class QgsRandomColorRamp: QgsColorRamp
 %End
 
     QString type() const;
-%Docstring
- :rtype: str
-%End
 
     virtual QgsRandomColorRamp *clone() const /Factory/;
-%Docstring
- :rtype: QgsRandomColorRamp
-%End
 
     virtual QgsStringMap properties() const;
-%Docstring
- :rtype: QgsStringMap
-%End
 
   protected:
 
@@ -558,26 +504,11 @@ QgsColorRamp interface
  :rtype: float
 %End
     virtual QColor color( double value ) const;
-%Docstring
- :rtype: QColor
-%End
     virtual QString type() const;
-%Docstring
- :rtype: str
-%End
     virtual void invert();
     virtual QgsPresetSchemeColorRamp *clone() const /Factory/;
-%Docstring
- :rtype: QgsPresetSchemeColorRamp
-%End
     virtual QgsStringMap properties() const;
-%Docstring
- :rtype: QgsStringMap
-%End
     int count() const;
-%Docstring
- :rtype: int
-%End
 
     QString schemeName() const;
 %Docstring
@@ -586,13 +517,7 @@ QgsColorScheme interface
 %End
     QgsNamedColorList fetchColors( const QString &context = QString(),
                                    const QColor &baseColor = QColor() );
-%Docstring
- :rtype: QgsNamedColorList
-%End
     bool isEditable() const;
-%Docstring
- :rtype: bool
-%End
 
 };
 
@@ -630,30 +555,12 @@ class QgsColorBrewerColorRamp : QgsColorRamp
 %End
 
     virtual double value( int index ) const;
-%Docstring
- :rtype: float
-%End
     virtual QColor color( double value ) const;
-%Docstring
- :rtype: QColor
-%End
     virtual QString type() const;
-%Docstring
- :rtype: str
-%End
     virtual void invert();
     virtual QgsColorBrewerColorRamp *clone() const /Factory/;
-%Docstring
- :rtype: QgsColorBrewerColorRamp
-%End
     virtual QgsStringMap properties() const;
-%Docstring
- :rtype: QgsStringMap
-%End
     virtual int count() const;
-%Docstring
- :rtype: int
-%End
 
     QString schemeName() const;
 %Docstring
@@ -750,16 +657,10 @@ class QgsCptCityColorRamp : QgsGradientColorRamp
 %End
 
     virtual QString type() const;
-%Docstring
- :rtype: str
-%End
 
     virtual void invert();
 
     virtual QgsCptCityColorRamp *clone() const /Factory/;
-%Docstring
- :rtype: QgsCptCityColorRamp
-%End
     void copy( const QgsCptCityColorRamp *other );
     QgsGradientColorRamp *cloneGradientRamp() const /Factory/;
 %Docstring
@@ -767,9 +668,6 @@ class QgsCptCityColorRamp : QgsGradientColorRamp
 %End
 
     virtual QgsStringMap properties() const;
-%Docstring
- :rtype: QgsStringMap
-%End
 
     QString schemeName() const;
 %Docstring

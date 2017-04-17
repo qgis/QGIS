@@ -129,6 +129,8 @@ Factory annotation
  :rtype: SomeObject
 %End
 
+    SomeObject *createAnother2() /Factory/;
+
     void LongDocStringMethod();
 %Docstring
  My long doc string
@@ -200,9 +202,6 @@ Removing function body with virtual const reference
 
 
     virtual int overriddenProperty();
-%Docstring
- :rtype: int
-%End
     QString returnTypeString() const;
 %Docstring
  :rtype: str

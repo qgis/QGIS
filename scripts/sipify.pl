@@ -55,6 +55,7 @@ my $private_section_line = '';
 my $line;
 my $classname = '';
 my $return_type = '';
+my $is_override = 0;
 my %qflag_hash;
 
 print  "/************************************************************************\n";
@@ -315,6 +316,9 @@ while(!eof $header){
 
     do {no warnings 'uninitialized';
         # remove keywords
+        if ( $line =~ m/\boverride\b/){
+            $is_override = 1;
+        }
         $line =~ s/\s*\boverride\b//;
         $line =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
         $line =~ s/\bnullptr\b/0/g;
@@ -434,16 +438,23 @@ while(!eof $header){
         $comment = '';
     }
     elsif ( $comment !~ m/^\s*$/ || $return_type ne ''){
-        print "%Docstring\n";
-        if ( $comment !~ m/^\s*$/ ){
-            print "$comment\n";
+        if ( $is_override == 1 && $comment =~ m/^\s*$/ ){
+            # overridden method with no new docs - so don't create a Docstring and use
+            # parent class Docstring
         }
-        if ($return_type ne '' ){
-           print " :rtype: $return_type\n";
+        else {
+            print "%Docstring\n";
+            if ( $comment !~ m/^\s*$/ ){
+                print "$comment\n";
+            }
+            if ($return_type ne '' ){
+                print " :rtype: $return_type\n";
+            }
+            print "%End\n";
         }
-        print "%End\n";
         $comment = '';
         $return_type = '';
+        $is_override = 0;
     }
 }
 print  "/************************************************************************\n";

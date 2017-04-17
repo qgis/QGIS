@@ -161,6 +161,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     SomeObject *createAnother() SIP_FACTORY { return something; }
 
+    SomeObject *createAnother2() override SIP_FACTORY { return something; }
+
     /**
      * My long doc string
      * is not very interesting!

@@ -28,9 +28,6 @@ class CharacterWidget : QWidget
 %End
 
     QSize sizeHint() const;
-%Docstring
- :rtype: QSize
-%End
 
     int columns() const;
 %Docstring

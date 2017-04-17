@@ -264,9 +264,6 @@ class QgsAttributeEditorField : QgsAttributeEditorElement
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
-%Docstring
- :rtype: QgsAttributeEditorElement
-%End
 
 };
 
@@ -317,9 +314,6 @@ class QgsAttributeEditorRelation : QgsAttributeEditorElement
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
-%Docstring
- :rtype: QgsAttributeEditorElement
-%End
 
     bool showLinkButton() const;
 %Docstring

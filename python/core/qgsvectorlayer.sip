@@ -822,9 +822,6 @@ Return the provider type for this layer
 %End
 
     bool readSld( const QDomNode &node, QString &errorMessage );
-%Docstring
- :rtype: bool
-%End
 
     long featureCount( const QString &legendKey ) const;
 %Docstring
@@ -1069,9 +1066,6 @@ Returns true if the provider is in editing mode
 %End
 
     virtual bool isSpatial() const;
-%Docstring
- :rtype: bool
-%End
 
     virtual bool isModified() const;
 %Docstring
@@ -1644,9 +1638,6 @@ Returns the current transparency for the vector layer
 %End
 
     QString htmlMetadata() const;
-%Docstring
- :rtype: str
-%End
 
 
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
@@ -1715,9 +1706,6 @@ Returns the current transparency for the vector layer
 %End
 
     QgsExpressionContext createExpressionContext() const;
-%Docstring
- :rtype: QgsExpressionContext
-%End
 
     QgsEditFormConfig editFormConfig() const;
 %Docstring

@@ -348,29 +348,11 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 //     QgsGenericNumericTransformer &operator=( const QgsGenericNumericTransformer &other );
 
     virtual Type transformerType() const;
-%Docstring
- :rtype: Type
-%End
     virtual QgsGenericNumericTransformer *clone();
-%Docstring
- :rtype: QgsGenericNumericTransformer
-%End
     virtual QVariant toVariant() const;
-%Docstring
- :rtype: QVariant
-%End
     virtual bool loadVariant( const QVariant &definition );
-%Docstring
- :rtype: bool
-%End
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
-%Docstring
- :rtype: QVariant
-%End
     virtual QString toExpression( const QString &baseExpression ) const;
-%Docstring
- :rtype: str
-%End
 
     static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
 %Docstring
@@ -503,29 +485,11 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 //     QgsSizeScaleTransformer &operator=( const QgsSizeScaleTransformer &other );
 
     virtual Type transformerType() const;
-%Docstring
- :rtype: Type
-%End
     virtual QgsSizeScaleTransformer *clone() /Factory/;
-%Docstring
- :rtype: QgsSizeScaleTransformer
-%End
     virtual QVariant toVariant() const;
-%Docstring
- :rtype: QVariant
-%End
     virtual bool loadVariant( const QVariant &definition );
-%Docstring
- :rtype: bool
-%End
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
-%Docstring
- :rtype: QVariant
-%End
     virtual QString toExpression( const QString &baseExpression ) const;
-%Docstring
- :rtype: str
-%End
 
     static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
 %Docstring
@@ -662,29 +626,11 @@ Copy constructor
 //     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
 
     virtual Type transformerType() const;
-%Docstring
- :rtype: Type
-%End
     virtual QgsColorRampTransformer *clone() /Factory/;
-%Docstring
- :rtype: QgsColorRampTransformer
-%End
     virtual QVariant toVariant() const;
-%Docstring
- :rtype: QVariant
-%End
     virtual bool loadVariant( const QVariant &definition );
-%Docstring
- :rtype: bool
-%End
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
-%Docstring
- :rtype: QVariant
-%End
     virtual QString toExpression( const QString &baseExpression ) const;
-%Docstring
- :rtype: str
-%End
 
     QColor color( double value ) const;
 %Docstring

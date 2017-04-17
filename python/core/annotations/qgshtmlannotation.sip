@@ -32,9 +32,6 @@ class QgsHtmlAnnotation: QgsAnnotation
     ~QgsHtmlAnnotation();
 
     QSizeF minimumFrameSize() const;
-%Docstring
- :rtype: QSizeF
-%End
 
     void setSourceFile( const QString &htmlFile );
 %Docstring
