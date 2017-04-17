@@ -66,7 +66,7 @@ Constructor
 
     void setIcon( const QIcon &icon );
 %Docstring
- Set the icon to show in the interface for the factory object.
+ Set the ``icon`` to show in the interface for the factory object.
  \see icon()
 %End
 
@@ -79,7 +79,7 @@ Constructor
 
     void setTitle( const QString &title );
 %Docstring
- Set the title for the interface.
+ Set the ``title`` for the interface.
  \see title()
 %End
 

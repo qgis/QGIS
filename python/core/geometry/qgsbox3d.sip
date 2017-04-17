@@ -39,14 +39,14 @@ class QgsBox3d
 
     void setXMinimum( double x );
 %Docstring
- Sets the minimum x value.
+ Sets the minimum ``x`` value.
  \see xMinimum()
  \see setXMaximum()
 %End
 
     void setXMaximum( double x );
 %Docstring
- Sets the maximum x value.
+ Sets the maximum ``x`` value.
  \see xMaximum()
  \see setXMinimum()
 %End
@@ -69,14 +69,14 @@ class QgsBox3d
 
     void setYMinimum( double y );
 %Docstring
- Sets the minimum y value.
+ Sets the minimum ``y`` value.
  \see yMinimum()
  \see setYMaximum()
 %End
 
     void setYMaximum( double y );
 %Docstring
- Sets the maximum y value.
+ Sets the maximum ``y`` value.
  \see yMaximum()
  \see setYMinimum()
 %End
@@ -99,14 +99,14 @@ class QgsBox3d
 
     void setZMinimum( double z );
 %Docstring
- Sets the minimum z value.
+ Sets the minimum ``z`` value.
  \see zMinimum()
  \see setZMaximum()
 %End
 
     void setZMaximum( double z );
 %Docstring
- Sets the maximum z value.
+ Sets the maximum ``z`` value.
  \see zMaximum()
  \see setZMinimum()
 %End
@@ -182,7 +182,7 @@ class QgsBox3d
 
     bool contains( const QgsPointV2 &point ) const;
 %Docstring
- Returns true when box contains a point.
+ Returns true when box contains a ``point``.
 
  If the point is a 2D point (no z-coordinate), then the containment test
  will be performed on the x/y extent of the box only.

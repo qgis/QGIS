@@ -142,7 +142,7 @@ class QgsProcessingProvider : QObject
 
     const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
 %Docstring
- Returns the matching algorithm by name, or a None if no matching
+ Returns the matching algorithm by ``name``, or a None if no matching
  algorithm is contained by this provider.
  \see algorithms()
  :rtype: QgsProcessingAlgorithm
@@ -167,7 +167,7 @@ class QgsProcessingProvider : QObject
 
     bool addAlgorithm( QgsProcessingAlgorithm *algorithm /Transfer/ );
 %Docstring
- Adds an algorithm to the provider. Ownership of the algorithm is transferred to the provider.
+ Adds an ``algorithm`` to the provider. Ownership of the algorithm is transferred to the provider.
  :rtype: bool
 %End
 

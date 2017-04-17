@@ -865,7 +865,7 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
 %Docstring
  Will advise the map canvas (and any other interested party) that this layer requires to be repainted.
  Will emit a repaintRequested() signal.
- If deferredUpdate is true then the layer will only be repainted when the canvas is next
+ If ``deferredUpdate`` is true then the layer will only be repainted when the canvas is next
  re-rendered, and will not trigger any canvas redraws itself.
 
 .. note::
@@ -913,7 +913,7 @@ Emit a signal that layer's CRS has been reset
 %Docstring
  By emitting this signal the layer tells that either appearance or content have been changed
  and any view showing the rendered layer should refresh itself.
- If deferredUpdate is true then the layer will only be repainted when the canvas is next
+ If ``deferredUpdate`` is true then the layer will only be repainted when the canvas is next
  re-rendered, and will not trigger any canvas redraws itself.
 %End
 

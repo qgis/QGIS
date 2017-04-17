@@ -31,7 +31,7 @@ class QgsMessageLogViewer: QDialog
 
     void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
 %Docstring
- Logs a message to the viewer.
+ Logs a ``message`` to the viewer.
 %End
 
   protected:

@@ -21,7 +21,7 @@ class QgsAnimatedIcon : QObject
 
     QgsAnimatedIcon( const QString &iconPath = QString(), QObject *parent = 0 );
 %Docstring
- Create a new animated icon. Optionally, the iconPath can already be specified.
+ Create a new animated icon. Optionally, the ``iconPath`` can already be specified.
 %End
 
     QString iconPath() const;

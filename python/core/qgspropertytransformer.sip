@@ -44,7 +44,7 @@ class QgsCurveTransform
 
     QgsCurveTransform( const QList< QgsPoint > &controlPoints );
 %Docstring
- Constructs a QgsCurveTransform using a specified list of controlPoints.
+ Constructs a QgsCurveTransform using a specified list of ``controlPoints``.
  Behavior is undefined if duplicate x values exist in the control points
  list.
 %End
@@ -88,13 +88,13 @@ class QgsCurveTransform
 
     double y( double x ) const;
 %Docstring
- Returns the mapped y value corresponding to the specified x value.
+ Returns the mapped y value corresponding to the specified ``x`` value.
  :rtype: float
 %End
 
     QVector< double > y( const QVector< double > &x ) const;
 %Docstring
- Returns a list of y values corresponding to a list of x values.
+ Returns a list of y values corresponding to a list of ``x`` values.
  Calling this method is faster then calling the double variant multiple
  times.
  :rtype: list of float
@@ -265,7 +265,7 @@ class QgsPropertyTransformer
     void setCurveTransform( QgsCurveTransform *transform /Transfer/ );
 %Docstring
  Sets a curve transform to apply to input values before they are transformed
- by the individual transform subclasses. Ownership of transform is transferred
+ by the individual transform subclasses. Ownership of ``transform`` is transferred
  to the property transformer.
  \see curveTransform()
 %End
@@ -281,7 +281,7 @@ class QgsPropertyTransformer
 
     virtual QString toExpression( const QString &baseExpression ) const = 0;
 %Docstring
- Converts the transformer to a QGIS expression string. The baseExpression string consists
+ Converts the transformer to a QGIS expression string. The ``baseExpression`` string consists
  of a sub-expression reflecting the parent property's state.
  :rtype: str
 %End
@@ -306,7 +306,7 @@ class QgsPropertyTransformer
     double transformNumeric( double input ) const;
 %Docstring
  Applies base class numeric transformations. Derived classes should call this
- to transform an input numeric value before they apply any transform to the result.
+ to transform an ``input`` numeric value before they apply any transform to the result.
  This applies any curve transforms which may exist on the transformer.
  :rtype: float
 %End
@@ -371,7 +371,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 
     double value( double input ) const;
 %Docstring
- Calculates the size corresponding to a specific input value.
+ Calculates the size corresponding to a specific ``input`` value.
  :return: calculated size using size scale transformer's parameters and type
  :rtype: float
 %End
@@ -678,7 +678,7 @@ Copy constructor
 
     void setRampName( const QString &name );
 %Docstring
- Sets the color ramp's name. The ramp name must be set to match
+ Sets the color ramp's ``name``. The ramp name must be set to match
  a color ramp available in the style database for conversion to expression
  to work correctly.
  \see rampName()

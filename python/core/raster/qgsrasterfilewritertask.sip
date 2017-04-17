@@ -29,9 +29,9 @@ class QgsRasterFileWriterTask : QgsTask
                              const QgsRectangle &outputExtent,
                              const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Constructor for QgsRasterFileWriterTask. Takes a source writer,
- columns, rows, outputExtent and destination crs.
- Ownership of the pipe is transferred to the writer task, and will
+ Constructor for QgsRasterFileWriterTask. Takes a source ``writer``,
+ ``columns``, ``rows``, ``outputExtent`` and destination ``crs``.
+ Ownership of the ``pipe`` is transferred to the writer task, and will
  be deleted when the task completes.
 %End
 
@@ -41,14 +41,14 @@ class QgsRasterFileWriterTask : QgsTask
 
     void writeComplete( const QString &outputUrl );
 %Docstring
- Emitted when writing the layer is successfully completed. The outputUrl
+ Emitted when writing the layer is successfully completed. The ``outputUrl``
  parameter indicates the file path for the written file(s).
 %End
 
     void errorOccurred( int error );
 %Docstring
  Emitted when an error occurs which prevented the file being written (or if
- the task is canceled). The writing error will be reported.
+ the task is canceled). The writing ``error`` will be reported.
 %End
 
   protected:

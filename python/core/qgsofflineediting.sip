@@ -63,8 +63,8 @@ Synchronize to remote layers
 %Docstring
  Is emitted whenever a new layer is being processed.
  It is possible to estimate the progress of the complete operation by
- comparing the index of the current layer to the total amount
- numLayers.
+ comparing the index of the current ``layer`` to the total amount
+ ``numLayers``.
 %End
 
     void progressModeSet( QgsOfflineEditing::ProgressMode mode, int maximum );
