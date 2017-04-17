@@ -104,6 +104,7 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
       QgsGeometry *geom = mLocator->mGeoms.value( id );
       int vertexIndex, beforeVertex, afterVertex;
       double sqrDist;
+
       QgsPoint pt = geom->closestVertex( mSrcPoint, vertexIndex, beforeVertex, afterVertex, sqrDist );
       if ( sqrDist < 0 )
         return;  // probably empty geometry

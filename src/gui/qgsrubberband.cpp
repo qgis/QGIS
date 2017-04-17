@@ -490,6 +490,22 @@ void QgsRubberBand::drawShape( QPainter *p, QVector<QPointF> &pts )
           case ICON_CIRCLE:
             p->drawEllipse( x - s, y - s, mIconSize, mIconSize );
             break;
+
+          case ICON_DIAMOND:
+          case ICON_FULL_DIAMOND:
+          {
+            QPointF pts[] =
+            {
+              QPointF( x, y - s ),
+              QPointF( x + s, y ),
+              QPointF( x, y + s ),
+              QPointF( x - s, y )
+            };
+            if ( mIconType == ICON_FULL_DIAMOND )
+              p->drawPolygon( pts, 4 );
+            else
+              p->drawPolyline( pts, 4 );
+          }
         }
       }
     }
@@ -515,10 +531,9 @@ void QgsRubberBand::updateRect()
 
   const QgsMapToPixel &m2p = *( mMapCanvas->getCoordinateTransform() );
 
-  qreal res = m2p.mapUnitsPerPixel();
-  qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ) / res;
+  qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units
 
-  QgsRectangle r;
+  QgsRectangle r;  // in canvas units
   for ( int i = 0; i < mPoints.size(); ++i )
   {
     QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin(),
@@ -543,6 +558,7 @@ void QgsRubberBand::updateRect()
 
   // This is an hack to pass QgsMapCanvasItem::setRect what it
   // expects (encoding of position and size of the item)
+  qreal res = m2p.mapUnitsPerPixel();
   QgsPoint topLeft = m2p.toMapPoint( r.xMinimum(), r.yMinimum() );
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + r.width()*res, topLeft.y() - r.height()*res );
 

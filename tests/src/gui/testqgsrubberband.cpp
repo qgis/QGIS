@@ -73,6 +73,11 @@ void TestQgsRubberband::initTestCase()
                                       myPolygonFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   mCanvas = new QgsMapCanvas();
+  mCanvas->setFrameStyle( QFrame::NoFrame );
+  mCanvas->resize( 512, 512 );
+  mCanvas->show(); // to make the canvas resize
+  mCanvas->hide();
+
   mRubberband = 0;
 }
 
@@ -111,13 +116,9 @@ void TestQgsRubberband::testAddSingleMultiGeometries()
 
 void TestQgsRubberband::testBoundingRect()
 {
-  QSizeF mapSize = mCanvas->mapSettings().outputSize();
-
   // Set extent to match canvas size.
   // This is to ensure a 1:1 scale
-  mCanvas->setExtent( QgsRectangle( QRectF(
-                                      QPointF( 0, 0 ), mapSize
-                                    ) ) );
+  mCanvas->setExtent( QgsRectangle( 0, 0, 512, 512 ) );
   QCOMPARE( mCanvas->mapUnitsPerPixel(), 1.0 );
 
   // Polygon extent is 10,10 to 30,30
@@ -129,26 +130,24 @@ void TestQgsRubberband::testBoundingRect()
   mRubberband->setWidth( 1 );    // default, but better be explicit
   mRubberband->addGeometry( geom, mPolygonLayer );
 
-  // 20 pixels for the extent + 3 for pen & icon per side + 2 of padding
+  // 20 pixels for the extent + 3 for pen & icon per side + 2 of extra padding from setRect()
   QCOMPARE( mRubberband->boundingRect(), QRectF( QPointF( -1, -1 ), QSizeF( 28, 28 ) ) );
   QCOMPARE( mRubberband->pos(), QPointF(
               // 10 for extent minx - 3 for pen & icon
-              7,
+              10 - 3,
               // 30 for extent maxy - 3 for pen & icon
-              mapSize.height() - 30 - 3
+              512 - 30 - 3
             ) );
 
-  mCanvas->setExtent( QgsRectangle( QRectF(
-                                      QPointF( 0, 0 ), mapSize / 2
-                                    ) ) );
+  mCanvas->setExtent( QgsRectangle( 0, 0, 256, 256 ) );
 
-  // 40 pixels for the extent + 6 for pen & icon per side + 2 of padding
-  QCOMPARE( mRubberband->boundingRect(), QRectF( QPointF( -1, -1 ), QSizeF( 54, 54 ) ) );
+  // 40 pixels for the extent + 3 for pen & icon per side + 2 of extra padding from setRect()
+  QCOMPARE( mRubberband->boundingRect(), QRectF( QPointF( -1, -1 ), QSizeF( 48, 48 ) ) );
   QCOMPARE( mRubberband->pos(), QPointF(
               // 10 for extent minx - 3 for pen & icon
-              7 * 2,
+              10 * 2 - 3,
               // 30 for extent maxy - 3 for pen & icon
-              mapSize.height() - ( 30 + 3 ) * 2
+              512 - 30 * 2 - 3
             ) );
 
 }

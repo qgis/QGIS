@@ -209,7 +209,9 @@ inline QgsRectangle _areaOfInterest( const QgsPoint &point, double tolerance )
 QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint &pointMap, QgsPointLocator::MatchFilter *filter )
 {
   if ( !mMapSettings.hasValidSettings() || !mSnappingConfig.enabled() )
+  {
     return QgsPointLocator::Match();
+  }
 
   if ( mSnappingConfig.mode() == QgsSnappingConfig::ActiveLayer )
   {
