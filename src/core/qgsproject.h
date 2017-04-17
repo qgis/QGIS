@@ -30,8 +30,6 @@
 #include <QFileInfo>
 #include <QStringList>
 
-//#include <QDomDocument>qgp
-#include "qgssnapper.h"
 #include "qgsunittypes.h"
 #include "qgssnappingconfig.h"
 #include "qgsprojectversion.h"

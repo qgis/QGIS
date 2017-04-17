@@ -1079,7 +1079,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     int snapWithContext( const QgsPoint &startPoint,
                          double snappingTolerance,
                          QMultiMap < double, QgsSnappingResult > &snappingResults SIP_OUT,
-                         QgsSnapper::SnappingType snap_to );
+                         QgsSnappingResult::SnappingType snap_to );
 
     //! Synchronises with changes in the datasource
     virtual void reload() override;
@@ -1930,7 +1930,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                          const QgsGeometry &geom,
                          double sqrSnappingTolerance,
                          QMultiMap<double, QgsSnappingResult> &snappingResults,
-                         QgsSnapper::SnappingType snap_to ) const;
+                         QgsSnappingResult::SnappingType snap_to ) const;
 
     //! Add joined attributes to a feature
     //void addJoinedAttributes( QgsFeature& f, bool all = false );

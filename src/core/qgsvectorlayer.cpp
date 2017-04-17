@@ -2588,7 +2588,7 @@ bool QgsVectorLayer::snapPoint( QgsPoint &point, double tolerance )
     return false;
 
   QMultiMap<double, QgsSnappingResult> snapResults;
-  int result = snapWithContext( point, tolerance, snapResults, QgsSnapper::SnapToVertex );
+  int result = snapWithContext( point, tolerance, snapResults, QgsSnappingResult::SnapToVertex );
 
   if ( result != 0 )
   {
@@ -2609,7 +2609,7 @@ bool QgsVectorLayer::snapPoint( QgsPoint &point, double tolerance )
 
 int QgsVectorLayer::snapWithContext( const QgsPoint &startPoint, double snappingTolerance,
                                      QMultiMap<double, QgsSnappingResult> &snappingResults,
-                                     QgsSnapper::SnappingType snap_to )
+                                     QgsSnappingResult::SnappingType snap_to )
 {
   if ( !hasGeometryType() )
     return 1;
@@ -2663,7 +2663,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint &startPoint,
                                      const QgsGeometry &geom,
                                      double sqrSnappingTolerance,
                                      QMultiMap<double, QgsSnappingResult> &snappingResults,
-                                     QgsSnapper::SnappingType snap_to ) const
+                                     QgsSnappingResult::SnappingType snap_to ) const
 {
   if ( geom.isNull() )
   {
@@ -2676,7 +2676,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint &startPoint,
   QgsSnappingResult snappingResultVertex;
   QgsSnappingResult snappingResultSegment;
 
-  if ( snap_to == QgsSnapper::SnapToVertex || snap_to == QgsSnapper::SnapToVertexAndSegment )
+  if ( snap_to == QgsSnappingResult::SnapToVertex || snap_to == QgsSnappingResult::SnapToVertexAndSegment )
   {
     snappedPoint = geom.closestVertex( startPoint, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
     if ( sqrDistVertexSnap < sqrSnappingTolerance )
@@ -2699,7 +2699,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint &startPoint,
       return;
     }
   }
-  if ( snap_to == QgsSnapper::SnapToSegment || snap_to == QgsSnapper::SnapToVertexAndSegment ) // snap to segment
+  if ( snap_to == QgsSnappingResult::SnapToSegment || snap_to == QgsSnappingResult::SnapToVertexAndSegment ) // snap to segment
   {
     if ( geometryType() != QgsWkbTypes::PointGeometry ) // cannot snap to segment for points/multipoints
     {

@@ -149,7 +149,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void multilineMethod( const QgsPoint &startPoint,
                           QgsFeatureId featureId,
                           QgsVectorLayer *vl,
-                          QgsSnapper::SnappingType snap_to ) const;
+                          QgsSnappingResult::SnappingType snap_to ) const;
 
     // Adding SIP_SKIP at the end of a line will discard this MethodCode
     bool thisShouldBeSkipped() const SIP_SKIP;

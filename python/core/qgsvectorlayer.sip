@@ -1086,7 +1086,7 @@ Returns true if the provider has been modified since the last commit
     int snapWithContext( const QgsPoint &startPoint,
                          double snappingTolerance,
                          QMultiMap < double, QgsSnappingResult > &snappingResults /Out/,
-                         QgsSnapper::SnappingType snap_to );
+                         QgsSnappingResult::SnappingType snap_to );
 %Docstring
  Snaps to segment or vertex within given tolerance
  \param startPoint point to snap (in layer coordinates)

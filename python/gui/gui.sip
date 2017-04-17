@@ -101,7 +101,6 @@
 %Include qgsmapcanvas.sip
 %Include qgsmapcanvasannotationitem.sip
 %Include qgsmapcanvasitem.sip
-%Include qgsmapcanvassnapper.sip
 %Include qgsmapcanvassnappingutils.sip
 %Include qgsmapcanvastracer.sip
 %Include qgsmaplayeractionregistry.sip

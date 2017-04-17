@@ -399,7 +399,6 @@ gui/qgsmanageconnectionsdialog.sip
 gui/qgsmapcanvas.sip
 gui/qgsmapcanvasannotationitem.sip
 gui/qgsmapcanvasitem.sip
-gui/qgsmapcanvassnapper.sip
 gui/qgsmapcanvassnappingutils.sip
 gui/qgsmapcanvastracer.sip
 gui/qgsmaplayeractionregistry.sip

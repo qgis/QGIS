@@ -683,7 +683,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
   }
 
 
-  if ( L->snapWithContext( p, threshold, snapResults, QgsSnapper::SnapToSegment ) != 0 )
+  if ( L->snapWithContext( p, threshold, snapResults, QgsSnappingResult::SnapToSegment ) != 0 )
   {
     return 2;
   }
@@ -694,7 +694,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
   {
     //test if p is already a vertex of this geometry. If yes, don't insert it
     bool vertexAlreadyExists = false;
-    if ( L->snapWithContext( p, threshold, vertexSnapResults, QgsSnapper::SnapToVertex ) != 0 )
+    if ( L->snapWithContext( p, threshold, vertexSnapResults, QgsSnappingResult::SnapToVertex ) != 0 )
     {
       continue;
     }

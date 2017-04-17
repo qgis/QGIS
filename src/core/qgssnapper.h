@@ -20,15 +20,8 @@
 
 #include "qgis_core.h"
 #include "qgspoint.h"
-#include "qgstolerance.h"
-#include "qgsfeature.h"
 
-#include <QList>
-#include <QMultiMap>
-
-class QgsMapSettings;
 class QgsVectorLayer;
-class QPoint;
 
 /** \ingroup core
  * Represents the result of a snapping operation.
@@ -36,6 +29,15 @@ class QPoint;
 // ### QGIS 3: remove from API
 struct CORE_EXPORT QgsSnappingResult
 {
+  //! Snap to vertex, to segment or both
+  enum SnappingType
+  {
+    SnapToVertex,
+    SnapToSegment,
+    //snap to vertex and also to segment if no vertex is within the search tolerance
+    SnapToVertexAndSegment
+  };
+
   //! The coordinates of the snapping result
   QgsPoint snappedVertex;
 
@@ -58,76 +60,6 @@ struct CORE_EXPORT QgsSnappingResult
   QgsFeatureId snappedAtGeometry;
   //! Layer where the snap occurred
   const QgsVectorLayer *layer = nullptr;
-};
-
-
-
-/** \ingroup core
- * A class that allows advanced snapping operations on a set of vector layers*/
-// ### QGIS 3: remove from API
-class CORE_EXPORT QgsSnapper
-{
-  public:
-    //! Snap to vertex, to segment or both
-    enum SnappingType
-    {
-      SnapToVertex,
-      SnapToSegment,
-      //snap to vertex and also to segment if no vertex is within the search tolerance
-      SnapToVertexAndSegment
-    };
-
-    enum SnappingMode
-    {
-      //! Only one snapping result is returned
-      SnapWithOneResult,
-
-      /** Several snapping results which have the same position are returned.
-         This is useful for topological editing*/
-      SnapWithResultsForSamePosition,
-      //! All results within the given layer tolerances are returned
-      SnapWithResultsWithinTolerances
-    };
-
-    struct SnapLayer
-    {
-      //! The layer to which snapping is applied
-      QgsVectorLayer *mLayer = nullptr;
-      //! The snapping tolerances for the layers, always in source coordinate systems of the layer
-      double mTolerance;
-      //! What snapping type to use (snap to segment or to vertex)
-      QgsSnapper::SnappingType mSnapTo;
-      //! What unit is used for tolerance
-      QgsTolerance::UnitType mUnitType;
-    };
-
-    explicit QgsSnapper( const QgsMapSettings &mapSettings );
-
-    /** Does the snapping operation
-     * \param mapCoordPoint the start point for snapping (in map coordinates)
-     * \param snappingResult the list where the results are inserted (everything in map coordinate system)
-     * \param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
-     * \returns 0 in case of success
-     */
-    int snapMapPoint( const QgsPoint &mapCoordPoint, QList<QgsSnappingResult> &snappingResult, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() );
-
-    //setters
-    void setSnapLayers( const QList<QgsSnapper::SnapLayer> &snapLayers );
-    void setSnapMode( QgsSnapper::SnappingMode snapMode );
-
-  private:
-
-    //! Removes the snapping results that contains points in exclude list
-    void cleanResultList( QMultiMap<double, QgsSnappingResult> &list, const QList<QgsPoint> &excludeList ) const;
-
-    /** The map settings object contains information about the output coordinate system
-     * of the map and about the relationship between pixel space and map space
-     */
-    const QgsMapSettings &mMapSettings;
-    //! Snap mode to apply
-    QgsSnapper::SnappingMode mSnapMode;
-    //! List of layers to which snapping is applied
-    QList<QgsSnapper::SnapLayer> mSnapLayers;
 };
 
 #endif

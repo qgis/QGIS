@@ -110,7 +110,7 @@ Comparison operator should be kept
     void multilineMethod( const QgsPoint &startPoint,
                           QgsFeatureId featureId,
                           QgsVectorLayer *vl,
-                          QgsSnapper::SnappingType snap_to ) const;
+                          QgsSnappingResult::SnappingType snap_to ) const;
 %Docstring
 A multiline method signature
 %End

@@ -252,7 +252,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
       {
         // snap from current vertex
         currentResultList.clear();
-        mVlayer->snapWithContext( mVertexMap.at( i )->pointV1(), ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToVertex );
+        mVlayer->snapWithContext( mVertexMap.at( i )->pointV1(), ZERO_TOLERANCE, currentResultList, QgsSnappingResult::SnapToVertex );
       }
 
       // only last update should trigger the geometry update
@@ -336,7 +336,7 @@ void QgsSelectedFeature::moveSelectedVertexes( QgsVector v )
     {
       // snap from current vertex
       currentResultList.clear();
-      mVlayer->snapWithContext( entry->pointV1(), ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToVertex );
+      mVlayer->snapWithContext( entry->pointV1(), ZERO_TOLERANCE, currentResultList, QgsSnappingResult::SnapToVertex );
     }
 
     // only last update should trigger the geometry update

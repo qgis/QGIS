@@ -220,7 +220,6 @@ SET(QGIS_CORE_SRCS
   qgsscaleutils.cpp
   qgssimplifymethod.cpp
   qgsslconnect.cpp
-  qgssnapper.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
   qgssqlexpressioncompiler.cpp
