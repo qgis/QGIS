@@ -269,33 +269,35 @@ static void dumpBacktrace( unsigned int depth )
 #elif defined(Q_OS_WIN)
   void **buffer = new void *[ depth ];
 
-  SymSetOptions( SYMOPT_DEFERRED_LOADS | SYMOPT_INCLUDE_32BIT_MODULES | SYMOPT_UNDNAME );
-  SymInitialize( GetCurrentProcess(), "http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore", TRUE );
+//  SymSetOptions( SYMOPT_DEFERRED_LOADS | SYMOPT_INCLUDE_32BIT_MODULES | SYMOPT_UNDNAME );
+//  SymInitialize( GetCurrentProcess(), "http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore", TRUE );
 
-  unsigned short nFrames = CaptureStackBackTrace( 1, depth, buffer, nullptr );
-  SYMBOL_INFO *symbol = ( SYMBOL_INFO * ) qgsMalloc( sizeof( SYMBOL_INFO ) + 256 );
-  symbol->MaxNameLen = 255;
-  symbol->SizeOfStruct = sizeof( SYMBOL_INFO );
-  IMAGEHLP_LINE *line = ( IMAGEHLP_LINE * ) qgsMalloc( sizeof( IMAGEHLP_LINE ) );
-  line->SizeOfStruct = sizeof( IMAGEHLP_LINE );
 
-  for ( int i = 0; i < nFrames; i++ )
-  {
-    DWORD dwDisplacement;
-    SymFromAddr( GetCurrentProcess(), ( DWORD64 )( buffer[ i ] ), 0, symbol );
-    symbol->Name[ 255 ] = 0;
-    if ( SymGetLineFromAddr( GetCurrentProcess(), ( DWORD64 )( buffer[i] ), &dwDisplacement, line ) )
-    {
-      myPrint( "%s(%d) : (%s) frame %d, address %x\n", line->FileName, line->LineNumber, symbol->Name, i, symbol->Address );
-    }
-    else
-    {
-      myPrint( "%s(%d) : (%s) unknown source location, frame %d, address %x [GetLastError()=%d]\n", __FILE__, __LINE__, symbol->Name, i, symbol->Address, GetLastError() );
-    }
-  }
 
-  qgsFree( symbol );
-  qgsFree( line );
+//  unsigned short nFrames = CaptureStackBackTrace( 1, depth, buffer, nullptr );
+//  SYMBOL_INFO *symbol = ( SYMBOL_INFO * ) qgsMalloc( sizeof( SYMBOL_INFO ) + 256 );
+//  symbol->MaxNameLen = 255;
+//  symbol->SizeOfStruct = sizeof( SYMBOL_INFO );
+//  IMAGEHLP_LINE *line = ( IMAGEHLP_LINE * ) qgsMalloc( sizeof( IMAGEHLP_LINE ) );
+//  line->SizeOfStruct = sizeof( IMAGEHLP_LINE );
+
+//  for ( int i = 0; i < nFrames; i++ )
+//  {
+//    DWORD dwDisplacement;
+//    SymFromAddr( GetCurrentProcess(), ( DWORD64 )( buffer[ i ] ), 0, symbol );
+//    symbol->Name[ 255 ] = 0;
+//    if ( SymGetLineFromAddr( GetCurrentProcess(), ( DWORD64 )( buffer[i] ), &dwDisplacement, line ) )
+//    {
+//      myPrint( "%s(%d) : (%s) frame %d, address %x\n", line->FileName, line->LineNumber, symbol->Name, i, symbol->Address );
+//    }
+//    else
+//    {
+//      myPrint( "%s(%d) : (%s) unknown source location, frame %d, address %x [GetLastError()=%d]\n", __FILE__, __LINE__, symbol->Name, i, symbol->Address, GetLastError() );
+//    }
+//  }
+
+//  qgsFree( symbol );
+//  qgsFree( line );
 #else
   Q_UNUSED( depth );
 #endif

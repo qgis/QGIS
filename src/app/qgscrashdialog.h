@@ -18,8 +18,13 @@
 #define QGSCRASHDIALOG_H
 
 #include <QDialog>
+#include <QFormLayout>
+#include <QPlainTextEdit>
+#include <QPushButton>
+
 #include "ui_qgscrashdialog.h"
 #include "qgis_app.h"
+#include "qgspanelwidget.h"
 
 /**
  * A dialog to show a nicer crash dialog to the user.
@@ -33,6 +38,12 @@ class APP_EXPORT QgsCrashDialog : public QDialog, private Ui::QgsCrashDialog
      * A dialog to show a nicer crash dialog to the user.
      */
     QgsCrashDialog( QWidget *parent = nullptr );
+
+    void setBugReport( const QString &reportData );
+
+  private slots:
+    void showReportWidget();
+    void createBugReport();
 };
 
 #endif // QGSCRASHDIALOG_H
