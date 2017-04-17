@@ -433,6 +433,7 @@ APP_EXPORT
 #endif
 int main( int argc, char *argv[] )
 {
+  QCoreApplication::setAttribute( Qt::AA_X11InitThreads );
 #ifdef Q_OS_MACX
   // Increase file resource limits (i.e., number of allowed open files)
   // (from code provided by Larry Biehl, Purdue University, USA, from 'MultiSpec' project)
