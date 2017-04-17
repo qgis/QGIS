@@ -2582,31 +2582,6 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
 }
 
 
-bool QgsVectorLayer::snapPoint( QgsPoint &point, double tolerance )
-{
-  if ( !hasGeometryType() )
-    return false;
-
-  QMultiMap<double, QgsSnappingResult> snapResults;
-  int result = snapWithContext( point, tolerance, snapResults, QgsSnappingResult::SnapToVertex );
-
-  if ( result != 0 )
-  {
-    return false;
-  }
-
-  if ( snapResults.size() < 1 )
-  {
-    return false;
-  }
-
-  QMultiMap<double, QgsSnappingResult>::const_iterator snap_it = snapResults.constBegin();
-  point.setX( snap_it.value().snappedVertex.x() );
-  point.setY( snap_it.value().snappedVertex.y() );
-  return true;
-}
-
-
 int QgsVectorLayer::snapWithContext( const QgsPoint &startPoint, double snappingTolerance,
                                      QMultiMap<double, QgsSnappingResult> &snappingResults,
                                      QgsSnappingResult::SnappingType snap_to )

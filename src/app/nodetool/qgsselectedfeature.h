@@ -77,12 +77,6 @@ class QgsSelectedFeature: public QObject
     void deleteSelectedVertexes();
 
     /**
-     * Moves selected vertex
-     * \param v translation vector
-     */
-    void moveSelectedVertexes( QgsVector v );
-
-    /**
      * Inverts selection of vertex with number
      * \param vertexNr number of vertex which is to be inverted
      */

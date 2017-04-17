@@ -1061,14 +1061,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns true if the provider has been modified since the last commit
     virtual bool isModified() const;
 
-    /** Snaps a point to the closest vertex if there is one within the snapping tolerance
-     *  \param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.
-     *  If there is no point within this tolerance, point is left unchanged.
-     *  \param tolerance   The snapping tolerance
-     *  \returns true if the point has been snapped, false if no vertex within search tolerance
-     */
-    bool snapPoint( QgsPoint &point, double tolerance );
-
     /** Snaps to segment or vertex within given tolerance
      * \param startPoint point to snap (in layer coordinates)
      * \param snappingTolerance distance tolerance for snapping

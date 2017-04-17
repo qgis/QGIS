@@ -1073,16 +1073,6 @@ Returns true if the provider has been modified since the last commit
  :rtype: bool
 %End
 
-    bool snapPoint( QgsPoint &point, double tolerance );
-%Docstring
- Snaps a point to the closest vertex if there is one within the snapping tolerance
-  \param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.
-  If there is no point within this tolerance, point is left unchanged.
-  \param tolerance   The snapping tolerance
-  :return: true if the point has been snapped, false if no vertex within search tolerance
- :rtype: bool
-%End
-
     int snapWithContext( const QgsPoint &startPoint,
                          double snappingTolerance,
                          QMultiMap < double, QgsSnappingResult > &snappingResults /Out/,

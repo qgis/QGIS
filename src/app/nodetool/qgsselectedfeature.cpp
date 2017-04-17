@@ -308,66 +308,6 @@ void QgsSelectedFeature::deleteSelectedVertexes()
   }
 }
 
-void QgsSelectedFeature::moveSelectedVertexes( QgsVector v )
-{
-  int nUpdates = 0;
-  Q_FOREACH ( QgsVertexEntry *entry, mVertexMap )
-  {
-    if ( entry->isSelected() )
-      nUpdates++;
-  }
-
-  if ( nUpdates == 0 )
-    return;
-
-  mVlayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
-  bool topologicalEditing = QgsProject::instance()->topologicalEditing();
-
-  beginGeometryChange();
-
-  QMultiMap<double, QgsSnappingResult> currentResultList;
-  for ( int i = mVertexMap.size() - 1; i > -1 && nUpdates > 0; i-- )
-  {
-    QgsVertexEntry *entry = mVertexMap.value( i, nullptr );
-    if ( !entry || !entry->isSelected() )
-      continue;
-
-    if ( topologicalEditing )
-    {
-      // snap from current vertex
-      currentResultList.clear();
-      mVlayer->snapWithContext( entry->pointV1(), ZERO_TOLERANCE, currentResultList, QgsSnappingResult::SnapToVertex );
-    }
-
-    // only last update should trigger the geometry update
-    // as vertex selection gets lost on the update
-    if ( --nUpdates == 0 )
-      endGeometryChange();
-
-    QgsPointV2 p = entry->point();
-    p.setX( p.x() + v.x() );
-    p.setY( p.y() + v.y() );
-    mVlayer->moveVertex( p, mFeatureId, i );
-
-    if ( topologicalEditing )
-    {
-      QMultiMap<double, QgsSnappingResult>::iterator resultIt =  currentResultList.begin();
-
-      for ( ; resultIt != currentResultList.end(); ++resultIt )
-      {
-        // move all other
-        if ( mFeatureId !=  resultIt.value().snappedAtGeometry )
-          mVlayer->moveVertex( p, resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
-      }
-    }
-  }
-
-  if ( nUpdates > 0 )
-    endGeometryChange();
-
-  mVlayer->endEditCommand();
-}
-
 void QgsSelectedFeature::replaceVertexMap()
 {
   // delete old map
