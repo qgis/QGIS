@@ -203,7 +203,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
   if ( !groupElement.isNull() )
   {
     addLayersFromGroup( groupElement, layers, useCache );
-    return QgsConfigParserUtils::layerMapToList( layers, mProjectParser->updateLegendDrawingOrder() );
+    return QgsConfigParserUtils::layerMapToList( layers, false );
   }
 
   //still not found. Check if it is a single embedded layer (embedded layers are not contained in mProjectLayerElementsByName)
