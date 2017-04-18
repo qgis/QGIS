@@ -296,6 +296,20 @@ QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const
   return mDestCRS;
 }
 
+bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
+{
+  QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
+  if ( !params.valid )
+  {
+    return false;
+  }
+  else
+  {
+    mEllipsoid = ellipsoid;
+    return true;
+  }
+}
+
 void QgsMapSettings::setFlags( QgsMapSettings::Flags flags )
 {
   mFlags = flags;

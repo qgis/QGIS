@@ -148,6 +148,27 @@ class CORE_EXPORT QgsMapSettings
     //! Get units of map's geographical coordinates - used for scale calculation
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
+    /**
+     * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
+     * retrieved using QgsEllipsoidUtils::acronyms().
+     * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
+     * \note
+     * - QgsMapCanvas will call this using QgsProject::instance()->ellipsoid()
+     * - QgsComposerMap mComposition->project()->ellipsoid()
+     * - Server: TODO unknown
+     * \returns true if ellipsoid was successfully set
+     * \since QGIS 3.0
+     * \see ellipsoid()
+     */
+    bool setEllipsoid( const QString &ellipsoid );
+
+    /** Returns ellipsoid's acronym. Calculations will only use the
+     * ellipsoid if a valid ellipsoid has been set.
+     * \since QGIS 3.0
+     * \see setEllipsoid()
+     */
+    QString ellipsoid() const { return mEllipsoid; }
+
     //! Set the background color of the map
     void setBackgroundColor( const QColor &color ) { mBackgroundColor = color; }
     //! Get the background color of the map
@@ -328,6 +349,8 @@ class CORE_EXPORT QgsMapSettings
     QgsExpressionContext mExpressionContext;
 
     QgsCoordinateReferenceSystem mDestCRS;
+    //! ellipsoid acronym (from table tbl_ellipsoids)
+    QString mEllipsoid;
     QgsDatumTransformStore mDatumTransformStore;
 
     QColor mBackgroundColor;

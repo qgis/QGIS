@@ -148,6 +148,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
   mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
   mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
+  mSettings.setEllipsoid(QgsProject::instance()->ellipsoid());
 
   //segmentation parameters
   QgsSettings settings;
