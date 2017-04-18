@@ -53,7 +53,11 @@ bool QgsNativeMetadataValidator::validate( const QgsLayerMetadata &metadata, QLi
     results << ValidationResult( QObject::tr( "abstract" ), QObject::tr( "Abstract element is required." ) );
   }
 
-  //result = result && !metadata.license().isEmpty();
+  if ( metadata.licenses().isEmpty() )
+  {
+    result = false;
+    results << ValidationResult( QObject::tr( "license" ), QObject::tr( "At least one license is required." ) );
+  }
 
   if ( !metadata.crs().isValid() )
   {

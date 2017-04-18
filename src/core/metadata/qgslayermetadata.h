@@ -383,6 +383,19 @@ class CORE_EXPORT QgsLayerMetadata
     void setRights( const QStringList &rights );
 
     /**
+     * Returns a list of licenses associated with the resource (examples: http://opendefinition.org/licenses/).
+     * \see setLicenses()
+     */
+    QStringList licenses() const;
+
+    /**
+     * Sets a list of \a licenses associated with the resource.
+     * (examples: http://opendefinition.org/licenses/).
+     * \see licenses()
+     */
+    void setLicenses( const QStringList &licenses );
+
+    /**
      * Returns the character encoding of the data in the resource. An empty string will be returned if no encoding is set.
      * \see setEncoding()
      */
@@ -558,6 +571,7 @@ class CORE_EXPORT QgsLayerMetadata
     QString mFees;
     ConstraintList mConstraints;
     QStringList mRights;
+    QStringList mLicenses;
 
     // IMPORTANT - look up before adding anything here!!
 

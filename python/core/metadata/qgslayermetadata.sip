@@ -341,6 +341,20 @@ class QgsLayerMetadata
  \see rights()
 %End
 
+    QStringList licenses() const;
+%Docstring
+ Returns a list of licenses associated with the resource (examples: http://opendefinition.org/licenses/).
+ \see setLicenses()
+ :rtype: list of str
+%End
+
+    void setLicenses( const QStringList &licenses );
+%Docstring
+ Sets a list of ``licenses`` associated with the resource.
+ (examples: http://opendefinition.org/licenses/).
+ \see licenses()
+%End
+
     QString encoding() const;
 %Docstring
  Returns the character encoding of the data in the resource. An empty string will be returned if no encoding is set.
