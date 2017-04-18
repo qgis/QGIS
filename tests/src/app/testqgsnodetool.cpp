@@ -61,6 +61,8 @@ class TestQgsNodeTool : public QObject
     void testAddVertexAtEndpoint();
     void testDeleteVertex();
     void testMoveMultipleVertices();
+    void testMoveVertexTopo();
+    void testDeleteVertexTopo();
 
   private:
     QPoint mapToScreen( double mapX, double mapY )
@@ -470,6 +472,64 @@ void TestQgsNodeTool::testMoveMultipleVertices()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+}
+
+void TestQgsNodeTool::testMoveVertexTopo()
+{
+  // test moving of vertices of two features at once
+
+  QgsProject::instance()->setTopologicalEditing( true );
+
+  // connect linestring with polygon at point (2, 1)
+  mouseClick( 4, 1, Qt::LeftButton );
+  mouseClick( 2, 1, Qt::LeftButton );
+
+  // move shared node of linestring and polygon
+  mouseClick( 2, 1, Qt::LeftButton );
+  mouseClick( 3, 3, Qt::LeftButton );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(3 3, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((3 3, 7 1, 7 4, 4 4, 3 3))" ) );
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );  // one more move of node from earlier
+  mLayerLine->undoStack()->undo();
+  mLayerPolygon->undoStack()->undo();
+  mLayerPolygon->undoStack()->undo();
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+
+  QgsProject::instance()->setTopologicalEditing( false );
+}
+
+void TestQgsNodeTool::testDeleteVertexTopo()
+{
+  // test deletion of vertices with topological editing enabled
+
+  QgsProject::instance()->setTopologicalEditing( true );
+
+  // connect linestring with polygon at point (2, 1)
+  mouseClick( 4, 1, Qt::LeftButton );
+  mouseClick( 2, 1, Qt::LeftButton );
+
+  // move shared node of linestring and polygon
+  mouseClick( 2, 1, Qt::LeftButton );
+  keyClick( Qt::Key_Delete );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((7 1, 7 4, 4 4, 7 1))" ) );
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );  // one more move of node from earlier
+  mLayerLine->undoStack()->undo();
+  mLayerPolygon->undoStack()->undo();
+  mLayerPolygon->undoStack()->undo();
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+
+  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 QGSTEST_MAIN( TestQgsNodeTool )

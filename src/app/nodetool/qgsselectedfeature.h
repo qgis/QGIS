@@ -72,11 +72,6 @@ class QgsSelectedFeature: public QObject
     void deselectAllVertexes();
 
     /**
-     * Deletes all selected vertexes
-     */
-    void deleteSelectedVertexes();
-
-    /**
      * Inverts selection of vertex with number
      * \param vertexNr number of vertex which is to be inverted
      */

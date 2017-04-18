@@ -945,13 +945,27 @@ void QgsNodeTool::deleteNodeEditorSelection()
   if ( firstSelectedIndex == -1 )
     return;
 
-  mSelectedFeature->deleteSelectedVertexes();
-
-  if ( mSelectedFeature->geometry()->isNull() )
+  // make a list of selected vertices
+  QList<Vertex> nodes;
+  QList<QgsVertexEntry *> &selFeatureVertices = mSelectedFeature->vertexMap();
+  QgsVectorLayer *layer = mSelectedFeature->vlayer();
+  QgsFeatureId fid = mSelectedFeature->featureId();
+  QgsGeometry geometry = cachedGeometry( layer, fid );
+  Q_FOREACH ( QgsVertexEntry *vertex, selFeatureVertices )
   {
-    emit messageEmitted( tr( "Geometry has been cleared. Use the add part tool to set geometry for this feature." ) );
+    if ( vertex->isSelected() )
+    {
+      int vertexIndex = geometry.vertexNrFromVertexId( vertex->vertexId() );
+      if ( vertexIndex != -1 )
+        nodes.append( Vertex( layer, fid, vertexIndex ) );
+    }
   }
-  else
+
+  // now select the vertices and delete them...
+  setHighlightedNodes( nodes );
+  deleteVertex();
+
+  if ( !mSelectedFeature->geometry()->isNull() )
   {
     int nextVertexToSelect = firstSelectedIndex;
     if ( mSelectedFeature->geometry()->type() == QgsWkbTypes::LineGeometry )
@@ -1475,29 +1489,88 @@ void QgsNodeTool::applyEditsToLayers( QgsNodeTool::NodeEdits &edits )
 
 void QgsNodeTool::deleteVertex()
 {
-  QList<Vertex> toDelete;
+  QSet<Vertex> toDelete;
   if ( !mSelectedNodes.isEmpty() )
   {
-    toDelete = mSelectedNodes;
+    toDelete = QSet<Vertex>::fromList( mSelectedNodes );
   }
   else
   {
     bool addingVertex = mDraggingVertexType == AddingVertex || mDraggingVertexType == AddingEndpoint;
     toDelete << *mDraggingVertex;
-    toDelete += mDraggingExtraVertices;
-    stopDragging();
+    toDelete += QSet<Vertex>::fromList( mDraggingExtraVertices );
 
     if ( addingVertex )
+    {
+      stopDragging();
       return;   // just cancel the vertex
+    }
   }
 
+  stopDragging();
   setHighlightedNodes( QList<Vertex>() ); // reset selection
+
+  if ( QgsProject::instance()->topologicalEditing() )
+  {
+    // if topo editing is enabled, delete all the vertices that are on the same location
+    QSet<Vertex> topoVerticesToDelete;
+    Q_FOREACH ( const Vertex &vertexToDelete, toDelete )
+    {
+      QgsPoint layerPt = cachedGeometryForVertex( vertexToDelete ).vertexAt( vertexToDelete.vertexId );
+      QgsPoint mapPt = toMapCoordinates( vertexToDelete.layer, layerPt );
+      Q_FOREACH ( const QgsPointLocator::Match &otherMatch, layerVerticesSnappedToPoint( vertexToDelete.layer, mapPt ) )
+      {
+        Vertex otherVertex( otherMatch.layer(), otherMatch.featureId(), otherMatch.vertexIndex() );
+        if ( toDelete.contains( otherVertex ) || topoVerticesToDelete.contains( otherVertex ) )
+          continue;
+
+        topoVerticesToDelete.insert( otherVertex );
+      }
+    }
+
+    toDelete.unite( topoVerticesToDelete );
+  }
 
   // switch from a plain list to dictionary { layer: { fid: [vertexNr1, vertexNr2, ...] } }
   QHash<QgsVectorLayer *, QHash<QgsFeatureId, QList<int> > > toDeleteGrouped;
   Q_FOREACH ( const Vertex &vertex, toDelete )
   {
     toDeleteGrouped[vertex.layer][vertex.fid].append( vertex.vertexId );
+  }
+
+  // de-duplicate vertices in linear rings - if there is the first vertex selected,
+  // then also the last vertex will be selected - but we want just one out of the pair
+  QHash<QgsVectorLayer *, QHash<QgsFeatureId, QList<int> > >::iterator itX = toDeleteGrouped.begin();
+  for ( ; itX != toDeleteGrouped.end(); ++itX )
+  {
+    QgsVectorLayer *layer = itX.key();
+    QHash<QgsFeatureId, QList<int> > &featuresDict = itX.value();
+
+    QHash<QgsFeatureId, QList<int> >::iterator it2 = featuresDict.begin();
+    for ( ; it2 != featuresDict.end(); ++it2 )
+    {
+      QgsFeatureId fid = it2.key();
+      QList<int> &vertexIds = it2.value();
+      if ( vertexIds.count() >= 2 && layer->geometryType() == QgsWkbTypes::PolygonGeometry )
+      {
+        QSet<int> duplicateVertexIndices;
+        QgsGeometry geom = cachedGeometry( layer, fid );
+        for ( int i = 0; i < vertexIds.count(); ++i )
+        {
+          QgsVertexId vid;
+          geom.vertexIdFromVertexNr( vertexIds[i], vid );
+          int ringVertexCount = geom.geometry()->vertexCount( vid.part, vid.ring );
+          if ( vid.vertex == ringVertexCount - 1 )
+          {
+            // this is the last vertex of the ring - remove the first vertex from the list
+            duplicateVertexIndices << geom.vertexNrFromVertexId( QgsVertexId( vid.part, vid.ring, 0 ) );
+          }
+        }
+        // now delete the duplicities
+        Q_FOREACH ( int duplicateVertexIndex, duplicateVertexIndices )
+          vertexIds.removeOne( duplicateVertexIndex );
+      }
+    }
   }
 
   // main for cycle to delete all selected vertices
@@ -1528,6 +1601,11 @@ void QgsNodeTool::deleteVertex()
           success = false;
         }
       }
+
+      if ( res == QgsVectorLayer::EmptyGeometry )
+      {
+        emit messageEmitted( tr( "Geometry has been cleared. Use the add part tool to set geometry for this feature." ) );
+      }
     }
 
     if ( success )
@@ -1545,7 +1623,7 @@ void QgsNodeTool::deleteVertex()
   // pre-select next node for deletion if we are deleting just one node
   if ( toDelete.count() == 1 )
   {
-    const Vertex &vertex = toDelete[0];
+    const Vertex &vertex = *toDelete.constBegin();
     QgsGeometry geom( cachedGeometryForVertex( vertex ) );
     int vertexId = vertex.vertexId;
 
