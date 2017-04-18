@@ -35,7 +35,7 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 
     explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
 %Docstring
- Constructor for QgsLayerTreeLayer using weak references to layer ID, name, public source, and provider key.
+ Constructor for QgsLayerTreeLayer using weak references to layer ID, ``name``, public ``source``, and ``provider`` key.
 %End
 
     QString layerId() const;
@@ -48,14 +48,14 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
  :rtype: QgsMapLayer
 %End
 
-    QString name() const;
+    virtual QString name() const;
 %Docstring
  Returns the layer's name.
 .. versionadded:: 3.0
  :rtype: str
 %End
 
-    void setName( const QString &n );
+    virtual void setName( const QString &n );
 %Docstring
  Sets the layer's name.
 .. versionadded:: 3.0
@@ -79,14 +79,8 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
     virtual void writeXml( QDomElement &parentElement );
 
     virtual QString dump() const;
-%Docstring
- :rtype: str
-%End
 
     virtual QgsLayerTreeLayer *clone() const /Factory/;
-%Docstring
- :rtype: QgsLayerTreeLayer
-%End
 
     virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
 %Docstring
@@ -112,7 +106,11 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 
 
   private:
+
     QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
+%Docstring
+ Copies are not allowed
+%End
 };
 
 

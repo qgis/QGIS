@@ -257,12 +257,12 @@ class QgsColorRampButton : QToolButton
 
   protected:
 
-    bool event( QEvent *e );
-    void changeEvent( QEvent *e );
-    void showEvent( QShowEvent *e );
-    void resizeEvent( QResizeEvent *event );
+    virtual bool event( QEvent *e );
+    virtual void changeEvent( QEvent *e );
+    virtual void showEvent( QShowEvent *e );
+    virtual void resizeEvent( QResizeEvent *event );
 
-    void mousePressEvent( QMouseEvent *e );
+    virtual void mousePressEvent( QMouseEvent *e );
 %Docstring
  Reimplemented to detect right mouse button clicks on the color ramp button
 %End

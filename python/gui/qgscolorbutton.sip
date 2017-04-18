@@ -346,10 +346,10 @@ class QgsColorButton : QToolButton
 
   protected:
 
-    bool event( QEvent *e );
-    void changeEvent( QEvent *e );
-    void showEvent( QShowEvent *e );
-    void resizeEvent( QResizeEvent *event );
+    virtual bool event( QEvent *e );
+    virtual void changeEvent( QEvent *e );
+    virtual void showEvent( QShowEvent *e );
+    virtual void resizeEvent( QResizeEvent *event );
 
     static const QPixmap &transparentBackground();
 %Docstring
@@ -357,37 +357,37 @@ class QgsColorButton : QToolButton
  :rtype: QPixmap
 %End
 
-    void mousePressEvent( QMouseEvent *e );
+    virtual void mousePressEvent( QMouseEvent *e );
 %Docstring
  Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
 %End
 
-    void mouseMoveEvent( QMouseEvent *e );
+    virtual void mouseMoveEvent( QMouseEvent *e );
 %Docstring
  Reimplemented to allow dragging colors from button
 %End
 
-    void mouseReleaseEvent( QMouseEvent *e );
+    virtual void mouseReleaseEvent( QMouseEvent *e );
 %Docstring
  Reimplemented to allow color picking
 %End
 
-    void keyPressEvent( QKeyEvent *e );
+    virtual void keyPressEvent( QKeyEvent *e );
 %Docstring
  Reimplemented to allow canceling color pick via keypress, and sample via space bar press
 %End
 
-    void dragEnterEvent( QDragEnterEvent *e );
+    virtual void dragEnterEvent( QDragEnterEvent *e );
 %Docstring
  Reimplemented to accept dragged colors
 %End
 
-    void dragLeaveEvent( QDragLeaveEvent *e );
+    virtual void dragLeaveEvent( QDragLeaveEvent *e );
 %Docstring
  Reimplemented to reset button appearance after drag leave
 %End
 
-    void dropEvent( QDropEvent *e );
+    virtual void dropEvent( QDropEvent *e );
 %Docstring
  Reimplemented to accept dropped colors
 %End

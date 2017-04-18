@@ -30,13 +30,13 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
 %End
 
 
-    QString name() const;
+    virtual QString name() const;
 %Docstring
  Returns the group's name.
  :rtype: str
 %End
 
-    void setName( const QString &n );
+    virtual void setName( const QString &n );
 %Docstring
  Sets the group's name.
 %End
@@ -213,8 +213,13 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
 
 
 
+
   private:
+
     QgsLayerTreeGroup( const QgsLayerTreeGroup &other );
+%Docstring
+ Copies are not allowed
+%End
 };
 
 

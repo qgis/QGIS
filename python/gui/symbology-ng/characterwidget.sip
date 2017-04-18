@@ -27,7 +27,7 @@ class CharacterWidget : QWidget
  Constructor for CharacterWidget.
 %End
 
-    QSize sizeHint() const;
+    virtual QSize sizeHint() const;
 
     int columns() const;
 %Docstring
@@ -101,9 +101,9 @@ class CharacterWidget : QWidget
 %End
 
   protected:
-    void mouseMoveEvent( QMouseEvent *event );
-    void mousePressEvent( QMouseEvent *event );
-    void paintEvent( QPaintEvent *event );
+    virtual void mouseMoveEvent( QMouseEvent *event );
+    virtual void mousePressEvent( QMouseEvent *event );
+    virtual void paintEvent( QPaintEvent *event );
 
 };
 
