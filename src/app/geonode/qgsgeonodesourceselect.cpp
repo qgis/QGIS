@@ -181,6 +181,7 @@ void QgsGeoNodeSourceSelect::setConnectionListPosition()
 void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 {
   qDebug() << "Connect";
+  QApplication::setOverrideCursor( Qt::BusyCursor );
   QgsGeoNodeConnection connection( cmbConnections->currentText() );
   QVariantList layers = connection.getLayers();
   QVariantList maps = connection.getMaps();
@@ -261,14 +262,17 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
   }
 
   treeView->resizeColumnToContents( MODEL_IDX_TITLE );
+  treeView->resizeColumnToContents( MODEL_IDX_NAME);
   treeView->resizeColumnToContents( MODEL_IDX_TYPE );
-  for ( int i = MODEL_IDX_TITLE; i < MODEL_IDX_TYPE; i++ )
+  treeView->resizeColumnToContents( MODEL_IDX_WEB_SERVICE );
+  for ( int i = MODEL_IDX_TITLE; i < MODEL_IDX_WEB_SERVICE; i++ )
   {
-    if ( treeView->columnWidth( i ) > 300 )
+    if ( treeView->columnWidth( i ) > 210 )
     {
-      treeView->setColumnWidth( i, 300 );
+      treeView->setColumnWidth( i, 210 );
     }
   }
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsGeoNodeSourceSelect::saveGeonodeConnection()
@@ -330,10 +334,16 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
     int row = idx.row();
 
     qDebug() << "Model index row " << row;
-    QString uuid = mModel->item( row, 0 )->data( Qt::UserRole + 1 ).toString();
-    QString layerName = mModel->item( row, 0 )->text();
-    QString webServiceType = mModel->item( row, 3 )->text();
-    QString serviceURL = mModel->item( row, 0 )->data( Qt::UserRole + 2 ).toString();
+    QString uuid = mModel->item( row, MODEL_IDX_TITLE )->data( Qt::UserRole + 1 ).toString();
+    QString serviceURL = mModel->item( row, MODEL_IDX_TITLE )->data( Qt::UserRole + 2 ).toString();
+    QString titleName = mModel->item( row, MODEL_IDX_TITLE )->text();
+    QString layerName = mModel->item( row, MODEL_IDX_NAME )->text();
+    QString webServiceType = mModel->item( row, MODEL_IDX_WEB_SERVICE )->text();
+
+    if ( cbxUseTitleLayerName->isChecked() && !titleName.isEmpty() )
+    {
+      QString layerName = titleName;
+    }
 
     qDebug() << "Layer name: " << layerName << " Type: " << webServiceType;
     qDebug() << "UUID: " << uuid;
@@ -363,5 +373,10 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
                            layerName,
                            QStringLiteral( "wms" ) );
     }
+  }
+
+  if ( !mHoldDialogOpen->isChecked() )
+  {
+    accept();
   }
 }

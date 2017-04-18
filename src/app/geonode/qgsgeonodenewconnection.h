@@ -10,6 +10,8 @@
 #include "qgshelp.h"
 #include "qgsauthconfigselect.h"
 
+#include <QNetworkReply>
+
 class QgsGeoNodeNewConnection : public QDialog, private Ui::QgsNewGeoNodeConnectionBase
 {
     Q_OBJECT
@@ -18,12 +20,13 @@ class QgsGeoNodeNewConnection : public QDialog, private Ui::QgsNewGeoNodeConnect
     //! Constructor
     QgsGeoNodeNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
-    //! Test the connection using the parameters supplied
-    void testConnection();
+    QNetworkReply *request( QString &endPoint );
 
   public slots:
     void accept() override;
     void okButtonBehavior( const QString & );
+    //! Test the connection using the parameters supplied
+    void testConnection();
 
   private:
     QString mBaseKey;

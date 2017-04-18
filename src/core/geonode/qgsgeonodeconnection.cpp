@@ -189,7 +189,11 @@ QString QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceTy
   // Example CSW url
   // demo.geonode.org/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=
 
-  QString url = "http://" + uri().param( "url" ) + QString( "/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=%1" ).arg( resourceID );
+  QString url = uri().param( "url" ) + QString( "/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=%1" ).arg( resourceID );
+  if ( !url.contains( QLatin1String( "://" ) ) )
+  {
+    url.prepend( "http://" );
+  }
   QUrl layerUrl( url );
   layerUrl.setScheme( "http" );
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
