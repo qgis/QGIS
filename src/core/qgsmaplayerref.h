@@ -19,10 +19,7 @@
 #include <QPointer>
 
 #include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "raster/qgsrasterlayer.h"
-#include "raster/qgsrasterdataprovider.h"
+#include "qgsdataprovider.h"
 
 /** Internal structure to keep weak pointer to QgsMapLayer or layerId
  *  if the layer is not available yet.
@@ -31,7 +28,19 @@
 template<typename TYPE>
 struct _LayerRef
 {
-  _LayerRef( TYPE *l = nullptr ): layer( l ), layerId( l ? l->id() : QString() ) {}
+
+  /**
+   * Constructor for a layer reference from an existing map layer.
+   * The layerId, source, name and provider members will automatically
+   * be populated from this layer.
+   */
+  _LayerRef( TYPE *l = nullptr )
+    : layer( l )
+    , layerId( l ? l->id() : QString() )
+    , source( l ? l->publicSource() : QString() )
+    , name( l ? l->name() : QString() )
+    , provider( l && l->dataProvider() ? l->dataProvider()->name() : QString() )
+  {}
 
   /**
    * Constructor for a weak layer reference, using a combination of layer ID,
@@ -45,7 +54,16 @@ struct _LayerRef
     , provider( provider )
   {}
 
+  /**
+   * Returns a pointer to the layer, or nullptr if the reference has not yet been matched
+   * to a layer.
+   */
+  TYPE *get() const { return layer.data(); }
+
+  //! Weak pointer to map layer
   QPointer<TYPE> layer;
+
+  //! Original layer ID
   QString layerId;
 
   //! Weak reference to layer public source

@@ -25,6 +25,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
+#include "qgsvectorlayerref.h"
 
 class TestSignalReceiver : public QObject
 {
@@ -68,9 +69,11 @@ class TestQgsMapLayer : public QObject
     void isInScaleRange_data();
     void isInScaleRange();
 
+    void layerRef();
+
 
   private:
-    QgsMapLayer *mpLayer = nullptr;
+    QgsVectorLayer *mpLayer = nullptr;
 };
 
 void TestQgsMapLayer::initTestCase()
@@ -150,6 +153,33 @@ void TestQgsMapLayer::isInScaleRange()
   mpLayer->setScaleBasedVisibility( false );
   QCOMPARE( mpLayer->isInScaleRange( scale ), true );
 
+}
+
+void TestQgsMapLayer::layerRef()
+{
+  // construct from layer
+  QgsVectorLayerRef ref( mpLayer );
+  QCOMPARE( ref.get(), mpLayer );
+  QCOMPARE( ref.layer.data(), mpLayer );
+  QCOMPARE( ref.layerId, mpLayer->id() );
+  QCOMPARE( ref.name, QStringLiteral( "points" ) );
+  QCOMPARE( ref.source, mpLayer->publicSource() );
+  QCOMPARE( ref.provider, QStringLiteral( "ogr" ) );
+
+  // verify that layer matches layer
+  QVERIFY( ref.layerMatchesSource( mpLayer ) );
+
+  // create a weak reference
+  QgsVectorLayerRef ref2( mpLayer->id(), QStringLiteral( "points" ), mpLayer->publicSource(), QStringLiteral( "ogr" ) );
+  QVERIFY( !ref2.get() );
+  QVERIFY( !ref2.layer.data() );
+  QCOMPARE( ref2.layerId, mpLayer->id() );
+  QCOMPARE( ref2.name, QStringLiteral( "points" ) );
+  QCOMPARE( ref2.source, mpLayer->publicSource() );
+  QCOMPARE( ref2.provider, QStringLiteral( "ogr" ) );
+
+  // verify that weak reference matches layer
+  QVERIFY( ref2.layerMatchesSource( mpLayer ) );
 }
 
 QGSTEST_MAIN( TestQgsMapLayer )

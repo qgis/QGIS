@@ -27,7 +27,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     //! Sets weak reference to the joined layer
     void setJoinLayer( QgsVectorLayer *layer ) { mJoinLayerRef = QgsVectorLayerRef( layer ); }
     //! Returns joined layer (may be null if the reference was set by layer ID and not resolved yet)
-    QgsVectorLayer *joinLayer() const { return mJoinLayerRef.layer.data(); }
+    QgsVectorLayer *joinLayer() const { return mJoinLayerRef.get(); }
 
     //! Sets ID of the joined layer. It will need to be overwritten by setJoinLayer() to a reference to real layer
     void setJoinLayerId( const QString &layerId ) { mJoinLayerRef = QgsVectorLayerRef( layerId ); }
