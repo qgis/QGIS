@@ -313,13 +313,17 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
       size = convertMetersToMapUnits( size );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
       FALLTHROUGH;
 =======
       QgsDebugMsg( QString("QgsRenderContext::convertToMapUnits: size[%1] ").arg( + size ));
+=======
+      QgsDebugMsg( QString( "QgsRenderContext::convertToMapUnits: size[%1] " ).arg( + size ) );
+>>>>>>> Implementation of RenderMetersInMapUnits with QgsDistanceArea. Initial commit.
       size = convertMetersToMapUnits( size );
-      QgsDebugMsg( QString("QgsRenderContext::convertToMapUnits: result[%1] ").arg( + size ));
+      QgsDebugMsg( QString( "QgsRenderContext::convertToMapUnits: result[%1] " ).arg( + size ) );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
 >>>>>>> Implementation of RenderMetersInMapUnits with QgsDistanceArea. Initial commit
     }
