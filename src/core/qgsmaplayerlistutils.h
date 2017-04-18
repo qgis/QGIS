@@ -47,7 +47,7 @@ inline QList<QgsMapLayer *> _qgis_listRefToRaw( const QList< QgsMapLayerRef > &l
   Q_FOREACH ( const QgsMapLayerRef &layer, layers )
   {
     if ( layer )
-      lst.append( &layer );
+      lst.append( layer.get() );
   }
   return lst;
 }
@@ -69,7 +69,7 @@ inline void _qgis_removeLayers( QList< QgsMapLayerRef > &list, QList< QgsMapLaye
   while ( it.hasNext() )
   {
     QgsMapLayerRef &ref = it.next();
-    if ( layersToRemove.contains( &ref ) )
+    if ( layersToRemove.contains( ref.get() ) )
       it.remove();
   }
 }

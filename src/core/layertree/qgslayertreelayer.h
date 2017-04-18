@@ -54,7 +54,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     QString layerId() const { return mRef.layerId; }
 
-    QgsMapLayer *layer() const { return &mRef; }
+    QgsMapLayer *layer() const { return mRef.get(); }
 
     /**
      * Returns the layer's name.

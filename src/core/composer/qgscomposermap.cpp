@@ -1532,7 +1532,7 @@ void QgsComposerMap::storeCurrentLayerStyles()
   mLayerStyleOverrides.clear();
   Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
   {
-    if ( QgsMapLayer *layer = &layerRef )
+    if ( QgsMapLayer *layer = layerRef.get() )
     {
       QgsMapLayerStyle style;
       style.readFromLayer( layer );

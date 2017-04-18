@@ -120,7 +120,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * \returns attribute table's current vector layer
      * \see setVectorLayer
      */
-    QgsVectorLayer *vectorLayer() const { return &mVectorLayer; }
+    QgsVectorLayer *vectorLayer() const { return mVectorLayer.get(); }
 
     /** Sets the relation id from which to display child features
      * \param relationId id for relation to display child features from

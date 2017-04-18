@@ -76,7 +76,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition *compos
   {
     resetColumns();
     //listen for modifications to layer and refresh table when they occur
-    connect( &mVectorLayer, &QgsVectorLayer::layerModified, this, &QgsComposerTableV2::refreshAttributes );
+    connect( mVectorLayer.get(), &QgsVectorLayer::layerModified, this, &QgsComposerTableV2::refreshAttributes );
   }
 
   if ( mComposition )
@@ -102,7 +102,7 @@ QString QgsComposerAttributeTableV2::displayName() const
 
 void QgsComposerAttributeTableV2::setVectorLayer( QgsVectorLayer *layer )
 {
-  if ( layer == &mVectorLayer )
+  if ( layer == mVectorLayer.get() )
   {
     //no change
     return;
@@ -123,7 +123,7 @@ void QgsComposerAttributeTableV2::setVectorLayer( QgsVectorLayer *layer )
     resetColumns();
 
     //listen for modifications to layer and refresh table when they occur
-    connect( &mVectorLayer, &QgsVectorLayer::layerModified, this, &QgsComposerTableV2::refreshAttributes );
+    connect( mVectorLayer.get(), &QgsVectorLayer::layerModified, this, &QgsComposerTableV2::refreshAttributes );
   }
 
   refreshAttributes();
@@ -538,7 +538,7 @@ QgsExpressionContext QgsComposerAttributeTableV2::createExpressionContext() cons
 
   if ( mSource == LayerAttributes )
   {
-    context.appendScope( QgsExpressionContextUtils::layerScope( &mVectorLayer ) );
+    context.appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer.get() ) );
   }
 
   return context;
@@ -562,7 +562,7 @@ QgsVectorLayer *QgsComposerAttributeTableV2::sourceLayer()
     case QgsComposerAttributeTableV2::AtlasFeature:
       return mComposition->atlasComposition().coverageLayer();
     case QgsComposerAttributeTableV2::LayerAttributes:
-      return &mVectorLayer;
+      return mVectorLayer.get();
     case QgsComposerAttributeTableV2::RelationChildren:
     {
       QgsRelation relation = mComposition->project()->relationManager()->relation( mRelationId );
