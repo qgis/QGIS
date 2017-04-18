@@ -1190,14 +1190,18 @@ bool QgsComposerMap::writeXml( QDomElement &elem, QDomDocument &doc ) const
 
   //layer set
   QDomElement layerSetElem = doc.createElement( QStringLiteral( "LayerSet" ) );
-  Q_FOREACH ( const QgsWeakMapLayerPointer &layerPtr, mLayers )
+  Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
   {
-    QgsMapLayer *layer = layerPtr.data();
-    if ( !layer )
+    if ( !layerRef )
       continue;
     QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
-    QDomText layerIdText = doc.createTextNode( layer->id() );
+    QDomText layerIdText = doc.createTextNode( layerRef.layerId );
     layerElem.appendChild( layerIdText );
+
+    layerElem.setAttribute( QStringLiteral( "name" ), layerRef.name );
+    layerElem.setAttribute( QStringLiteral( "source" ), layerRef.source );
+    layerElem.setAttribute( QStringLiteral( "provider" ), layerRef.provider );
+
     layerSetElem.appendChild( layerElem );
   }
   composerMapElem.appendChild( layerSetElem );
@@ -1338,9 +1342,15 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     mLayers.reserve( layerIdNodeList.size() );
     for ( int i = 0; i < layerIdNodeList.size(); ++i )
     {
-      QString layerId = layerIdNodeList.at( i ).toElement().text();
-      if ( QgsMapLayer *ml = mComposition->project()->mapLayer( layerId ) )
-        mLayers << ml;
+      QDomElement layerElem = layerIdNodeList.at( i ).toElement();
+      QString layerId = layerElem.text();
+      QString layerName = layerElem.attribute( QStringLiteral( "name" ) );
+      QString layerSource = layerElem.attribute( QStringLiteral( "source" ) );
+      QString layerProvider = layerElem.attribute( QStringLiteral( "provider" ) );
+
+      QgsMapLayerRef ref( layerId, layerName, layerSource, layerProvider );
+      ref.resolveWeakly( mComposition->project() );
+      mLayers << ref;
     }
   }
 
@@ -1498,12 +1508,12 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
 
 QList<QgsMapLayer *> QgsComposerMap::layers() const
 {
-  return _qgis_listQPointerToRaw( mLayers );
+  return _qgis_listRefToRaw( mLayers );
 }
 
 void QgsComposerMap::setLayers( const QList<QgsMapLayer *> &layers )
 {
-  mLayers = _qgis_listRawToQPointer( layers );
+  mLayers = _qgis_listRawToRef( layers );
 }
 
 
@@ -1520,9 +1530,9 @@ void QgsComposerMap::setLayerStyleOverrides( const QMap<QString, QString> &overr
 void QgsComposerMap::storeCurrentLayerStyles()
 {
   mLayerStyleOverrides.clear();
-  Q_FOREACH ( const QgsWeakMapLayerPointer &layerPtr, mLayers )
+  Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
   {
-    if ( QgsMapLayer *layer = layerPtr.data() )
+    if ( QgsMapLayer *layer = &layerRef )
     {
       QgsMapLayerStyle style;
       style.readFromLayer( layer );
@@ -1538,8 +1548,8 @@ void QgsComposerMap::layersAboutToBeRemoved( QList< QgsMapLayer * > layers )
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
       mLayerStyleOverrides.remove( layer->id() );
-      mLayers.removeAll( layer );
     }
+    _qgis_removeLayers( mLayers, layers );
   }
 }
 

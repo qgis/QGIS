@@ -24,6 +24,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerref.h"
 #include <QFont>
 #include <QGraphicsRectItem>
 
@@ -541,7 +542,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     bool mKeepLayerSet = false;
 
     //! Stored layer list (used if layer live-link mKeepLayerSet is disabled)
-    QgsWeakMapLayerPointerList mLayers;
+    QList< QgsMapLayerRef > mLayers;
 
     bool mKeepLayerStyles = false;
     //! Stored style names (value) to be used with particular layer IDs (key) instead of default style

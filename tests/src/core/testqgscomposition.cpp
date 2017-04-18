@@ -67,6 +67,7 @@ class TestQgsComposition : public QObject
     void legendRestoredFromTemplate();
     void legendRestoredFromTemplateAutoUpdate();
     void attributeTableRestoredFromTemplate();
+    void mapLayersRestoredFromTemplate();
 
   private:
     QgsComposition *mComposition = nullptr;
@@ -857,6 +858,58 @@ void TestQgsComposition::attributeTableRestoredFromTemplate()
   QVERIFY( table2 );
 
   QCOMPARE( table2->vectorLayer(), layer3 );
+}
+
+void TestQgsComposition::mapLayersRestoredFromTemplate()
+{
+  // load some layers
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      "ogr" );
+  QFileInfo vectorFileInfo2( QString( TEST_DATA_DIR ) + "/polys.shp" );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      "ogr" );
+  QgsProject p;
+  p.addMapLayer( layer2 );
+  p.addMapLayer( layer );
+
+  // create composition
+  QgsComposition c( &p );
+  // add a map
+  QgsComposerMap *map = new QgsComposerMap( &c, 1, 1, 10, 10 );
+  c.addComposerMap( map );
+  map->setLayers( QList<QgsMapLayer *>() << layer << layer2 );
+
+  // save composition to template
+  QDomDocument doc;
+  QDomElement composerElem = doc.createElement( "Composer" );
+  doc.appendChild( composerElem );
+  c.writeXml( composerElem, doc );
+  c.atlasComposition().writeXml( composerElem, doc );
+
+  // new project
+  QgsProject p2;
+  QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      "ogr" );
+  QgsVectorLayer *layer4 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      "ogr" );
+  p2.addMapLayer( layer4 );
+  p2.addMapLayer( layer3 );
+
+  // make a new composition from template
+  QgsComposition c2( &p2 );
+  QVERIFY( c2.loadFromTemplate( doc ) );
+  // get map from new composition
+  QList< QgsComposerMap * > maps;
+  c2.composerItems( maps );
+  QgsComposerMap *map2 = static_cast< QgsComposerMap *>( maps.at( 0 ) );
+  QVERIFY( map2 );
+
+  QCOMPARE( map2->layers(), QList<QgsMapLayer *>() << layer3 << layer4 );
 }
 
 QGSTEST_MAIN( TestQgsComposition )
