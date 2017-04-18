@@ -32,6 +32,7 @@
 #include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsraster.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
@@ -247,13 +248,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Get the name of a band given its number
     QString bandName( int bandNoInt ) const;
 
-    //! Returns the data provider
-    QgsRasterDataProvider *dataProvider();
+    QgsRasterDataProvider *dataProvider() override;
 
     /** Returns the data provider in a const-correct manner
       \note available in Python bindings as constDataProvider()
      */
-    const QgsRasterDataProvider *dataProvider() const;
+    const QgsRasterDataProvider *dataProvider() const override;
 
     //! Synchronises with changes in the datasource
     virtual void reload() override;

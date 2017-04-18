@@ -215,13 +215,20 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
     //! Whether the group is mutually exclusive (i.e. only one child can be checked at a time)
     bool mMutuallyExclusive;
-    //! Keeps track which child has been most recently selected
-    //! (so if the whole group is unchecked and checked again, we know which child to check)
+
+    /**
+     * Keeps track which child has been most recently selected
+     * (so if the whole group is unchecked and checked again, we know which child to check)
+     */
     int mMutuallyExclusiveChildIndex;
 
   private:
 
 #ifdef SIP_RUN
+
+    /**
+     * Copies are not allowed
+     */
     QgsLayerTreeGroup( const QgsLayerTreeGroup &other );
 #endif
 

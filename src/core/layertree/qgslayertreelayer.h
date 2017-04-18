@@ -131,6 +131,10 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
   private:
 
 #ifdef SIP_RUN
+
+    /**
+     * Copies are not allowed
+     */
     QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
 #endif
 };

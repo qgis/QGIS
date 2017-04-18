@@ -95,6 +95,13 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  :rtype: str
 %End
 
+    virtual QgsDataProvider *dataProvider();
+%Docstring
+ Returns the layer's data provider.
+ :rtype: QgsDataProvider
+%End
+
+
     QString originalName() const;
 %Docstring
  Returns the original name of the layer.

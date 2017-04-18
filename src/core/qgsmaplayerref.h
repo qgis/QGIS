@@ -65,26 +65,9 @@ struct _LayerRef
          layer->name() != name )
       return false;
 
-    switch ( layer->type() )
-    {
-      case QgsMapLayer::VectorLayer:
-      {
-        QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
-        if ( vl->dataProvider()->name() != provider )
-          return false;
-        break;
-      }
-      case QgsMapLayer::RasterLayer:
-      {
-        QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer );
-        if ( rl->dataProvider()->name() != provider )
-          return false;
-        break;
-      }
-      case QgsMapLayer::PluginLayer:
-        break;
+    if ( layer->dataProvider()->name() != provider )
+      return false;
 
-    }
     return true;
   }
 };

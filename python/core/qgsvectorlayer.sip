@@ -383,12 +383,7 @@ Returns a comment for the data in the layer
  :rtype: str
 %End
 
-    QgsVectorDataProvider *dataProvider();
-%Docstring
-Returns the data provider
- :rtype: QgsVectorDataProvider
-%End
-
+    virtual QgsVectorDataProvider *dataProvider();
 
     void setProviderEncoding( const QString &encoding );
 %Docstring

@@ -146,25 +146,7 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement )
   if ( mRef.layer )
   {
     elem.setAttribute( "source", mRef.layer->publicSource() );
-    QString providerKey;
-    switch ( mRef.layer->type() )
-    {
-      case QgsMapLayer::VectorLayer:
-      {
-        QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mRef.layer );
-        providerKey = vl->dataProvider()->name();
-        break;
-      }
-      case QgsMapLayer::RasterLayer:
-      {
-        QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( mRef.layer );
-        providerKey = rl->dataProvider()->name();
-        break;
-      }
-      case QgsMapLayer::PluginLayer:
-        break;
-    }
-    elem.setAttribute( "providerKey", providerKey );
+    elem.setAttribute( "providerKey", mRef.layer->dataProvider() ? mRef.layer->dataProvider()->name() : QString() );
   }
 
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );

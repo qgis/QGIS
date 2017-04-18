@@ -103,12 +103,12 @@ class QgsRasterLayer : QgsMapLayer
     QString bandName( int bandNoInt ) const;
 
     /** Returns the data provider */
-    QgsRasterDataProvider* dataProvider();
+    virtual QgsRasterDataProvider* dataProvider();
 
     /** Returns the data provider in a const-correct manner
       @note available in python bindings as constDataProvider()
      */
-    const QgsRasterDataProvider* dataProvider() const /PyName=constDataProvider/;
+    virtual const QgsRasterDataProvider* dataProvider() const /PyName=constDataProvider/;
 
     /** Synchronises with changes in the datasource */
     virtual void reload();
