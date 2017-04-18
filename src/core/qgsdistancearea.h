@@ -75,7 +75,8 @@ class CORE_EXPORT QgsDistanceArea
     QgsCoordinateReferenceSystem sourceCrs() const { return mCoordTransform.sourceCrs(); }
 
     /**
-     * Sets the \a ellipsoid by its acronym.
+     * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
+     * retrieved using QgsEllipsoidUtils::acronyms().
      * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
      * \returns true if ellipsoid was successfully set
      * \see ellipsoid()
