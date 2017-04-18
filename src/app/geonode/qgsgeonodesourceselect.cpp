@@ -185,8 +185,6 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
   QApplication::setOverrideCursor( Qt::BusyCursor );
   QgsGeoNodeConnection connection( cmbConnections->currentText() );
   QVariantList layers = connection.getLayers();
-  // Currently we don't have obvious way to add Map, comment these lines until the time comes.
-//  QVariantList maps = connection.getMaps();
 
   QString wmsURL = connection.serviceUrl( QStringLiteral( "WMS" ) );
   QString wfsURL = connection.serviceUrl( QStringLiteral( "WFS" ) );
@@ -249,30 +247,32 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
     box->open();
   }
 
-// Currently we don't have obvious way to add Map, comment these lines until the time comes.
-//  if ( !maps.isEmpty() )
-//  {
-//    Q_FOREACH ( const QVariant &map, maps )
-//    {
-//      QStandardItem *titleItem = new QStandardItem( map.toMap()["title"].toString() );
-//      QStandardItem *nameItem = new QStandardItem( "-" );
-//      QStandardItem *serviceTypeItem = new QStandardItem( tr( "Map" ) );
-//      typedef QList< QStandardItem * > StandardItemList;
-//      mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem );
-//    }
-//  }
+  // Currently we don't have obvious way to add Map, comment these lines until the time comes.
+  QVariantList maps = connection.getMaps();
+  if ( !maps.isEmpty() )
+  {
+    Q_FOREACH ( const QVariant &map, maps )
+    {
+      QStandardItem *titleItem = new QStandardItem( map.toMap()["title"].toString() );
+      QStandardItem *nameItem = new QStandardItem( "-" );
+      QStandardItem *serviceTypeItem = new QStandardItem( tr( "Map" ) );
+      QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WMS" ) );
+      typedef QList< QStandardItem * > StandardItemList;
+      mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
+    }
+  }
 
-//  else
-//  {
-//    QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Error" ), tr( "Cannot get any map services" ), QMessageBox::Ok, this );
-//    box->setAttribute( Qt::WA_DeleteOnClose );
-//    box->setModal( true );
-//    box->setObjectName( QStringLiteral( "GeonodeCapabilitiesErrorBox" ) );
-//    box->open();
-//  }
+  else
+  {
+    QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Error" ), tr( "Cannot get any map services" ), QMessageBox::Ok, this );
+    box->setAttribute( Qt::WA_DeleteOnClose );
+    box->setModal( true );
+    box->setObjectName( QStringLiteral( "GeonodeCapabilitiesErrorBox" ) );
+    box->open();
+  }
 
   treeView->resizeColumnToContents( MODEL_IDX_TITLE );
-  treeView->resizeColumnToContents( MODEL_IDX_NAME);
+  treeView->resizeColumnToContents( MODEL_IDX_NAME );
   treeView->resizeColumnToContents( MODEL_IDX_TYPE );
   treeView->resizeColumnToContents( MODEL_IDX_WEB_SERVICE );
   for ( int i = MODEL_IDX_TITLE; i < MODEL_IDX_WEB_SERVICE; i++ )
@@ -317,7 +317,31 @@ void QgsGeoNodeSourceSelect::filterChanged( const QString &text )
 
 void QgsGeoNodeSourceSelect::treeViewSelectionChanged()
 {
-  mAddButton->setEnabled( true );
+  QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
+  if ( !currentIndex.isValid() )
+  {
+    qDebug() << "Current index is invalid";
+    return;
+  }
+  mAddButton->setEnabled( false );
+  QModelIndexList modelIndexList = treeView->selectionModel()->selectedRows();
+  for ( int i = 0; i < modelIndexList.size(); i++ )
+  {
+    QModelIndex idx = mModelProxy->mapToSource( modelIndexList[i] );
+    if ( !idx.isValid() )
+    {
+      continue;
+    }
+    int row = idx.row();
+    QString typeItem = mModel->item( row, MODEL_IDX_TYPE )->text();
+    if ( typeItem == tr( "Layer" ) )
+    {
+      // Enable if there is a layer selected
+      mAddButton->setEnabled( true );
+      return;
+    }
+  }
+
 }
 
 void QgsGeoNodeSourceSelect::addButtonClicked()
@@ -333,7 +357,6 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
 
   QgsGeoNodeConnection connection( cmbConnections->currentText() );
   QModelIndexList modelIndexList = treeView->selectionModel()->selectedRows();
-  qDebug() << "Number of index: " << modelIndexList.size();
   for ( int i = 0; i < modelIndexList.size(); i++ )
   {
     QModelIndex idx = mModelProxy->mapToSource( modelIndexList[i] );
@@ -345,7 +368,12 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
 
     qDebug() << "Model index row " << row;
 
-    QString uuid = mModel->item( row, MODEL_IDX_TITLE )->data( Qt::UserRole + 1 ).toString();
+    QString typeItem = mModel->item( row, MODEL_IDX_TYPE )->text();
+    if ( typeItem == tr( "Map" ) )
+    {
+      qDebug() << "Skip adding map.";
+      continue;
+    }
     QString serviceURL = mModel->item( row, MODEL_IDX_TITLE )->data( Qt::UserRole + 2 ).toString();
     QString titleName = mModel->item( row, MODEL_IDX_TITLE )->text();
     QString layerName = mModel->item( row, MODEL_IDX_NAME )->text();
@@ -377,7 +405,6 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       uri.setParam( QStringLiteral( "crs" ), crs );
 
       QgsDebugMsg( "Add WMS from GeoNode : " + uri.encodedUri() );
-
       emit addRasterLayer( uri.encodedUri(), layerName, QStringLiteral( "wms" ) );
     }
     else if ( webServiceType == "WFS" )
@@ -397,9 +424,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       uri += QStringLiteral( " url='%1'" ).arg( serviceURL );
 
       QgsDebugMsg( "Add WFS from GeoNode : " + uri );
-
       emit addWfsLayer( uri, typeName );
-
     }
   }
 
