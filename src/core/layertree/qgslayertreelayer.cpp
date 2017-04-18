@@ -48,25 +48,18 @@ void QgsLayerTreeLayer::resolveReferences( const QgsProject *project, bool loose
   if ( mRef.layer )
     return;  // already assigned
 
-  QgsMapLayer *layer = project->mapLayer( mRef.layerId );
-
-  if ( !layer && looseMatching && !mRef.name.isEmpty() )
+  if ( !looseMatching )
   {
-    Q_FOREACH ( QgsMapLayer *l, project->mapLayersByName( mRef.name ) )
-    {
-      if ( mRef.layerMatchesSource( l ) )
-      {
-        layer = l;
-        break;
-      }
-    }
+    mRef.resolve( project );
+  }
+  else
+  {
+    mRef.resolveWeakly( project );
   }
 
-  if ( !layer )
+  if ( !mRef.layer )
     return;
 
-  mRef.layer = layer;
-  mRef.layerId = layer->id();
   attachToLayer();
   emit layerLoaded();
 }

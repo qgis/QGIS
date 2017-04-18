@@ -97,11 +97,12 @@ void TestQgsMapLayer::init()
   QFileInfo myMapFileInfo( myFileName );
   mpLayer = new QgsVectorLayer( myMapFileInfo.filePath(),
                                 myMapFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  QgsProject::instance()->addMapLayer( mpLayer );
 }
 
 void TestQgsMapLayer::cleanup()
 {
-  delete mpLayer;
+  QgsProject::instance()->removeAllMapLayers();
 }
 
 void TestQgsMapLayer::cleanupTestCase()
@@ -180,6 +181,44 @@ void TestQgsMapLayer::layerRef()
 
   // verify that weak reference matches layer
   QVERIFY( ref2.layerMatchesSource( mpLayer ) );
+
+  // resolve layer using project
+  QCOMPARE( ref2.resolve( QgsProject::instance() ), mpLayer );
+  QCOMPARE( ref2.get(), mpLayer );
+  QCOMPARE( ref2.layer.data(), mpLayer );
+  QCOMPARE( ref2.layerId, mpLayer->id() );
+  QCOMPARE( ref2.name, QStringLiteral( "points" ) );
+  QCOMPARE( ref2.source, mpLayer->publicSource() );
+  QCOMPARE( ref2.provider, QStringLiteral( "ogr" ) );
+
+  // setLayer
+  QgsVectorLayerRef ref3;
+  QVERIFY( !ref3.get() );
+  ref3.setLayer( mpLayer );
+  QCOMPARE( ref3.get(), mpLayer );
+  QCOMPARE( ref3.layer.data(), mpLayer );
+  QCOMPARE( ref3.layerId, mpLayer->id() );
+  QCOMPARE( ref3.name, QStringLiteral( "points" ) );
+  QCOMPARE( ref3.source, mpLayer->publicSource() );
+  QCOMPARE( ref3.provider, QStringLiteral( "ogr" ) );
+
+  // weak resolve
+  QgsVectorLayerRef ref4( QStringLiteral( "badid" ), QStringLiteral( "points" ), mpLayer->publicSource(), QStringLiteral( "ogr" ) );
+  QVERIFY( !ref4.get() );
+  QVERIFY( !ref4.resolve( QgsProject::instance() ) );
+  QCOMPARE( ref4.resolveWeakly( QgsProject::instance() ), mpLayer );
+  QCOMPARE( ref4.get(), mpLayer );
+  QCOMPARE( ref4.layer.data(), mpLayer );
+  QCOMPARE( ref4.layerId, mpLayer->id() );
+  QCOMPARE( ref4.name, QStringLiteral( "points" ) );
+  QCOMPARE( ref4.source, mpLayer->publicSource() );
+  QCOMPARE( ref4.provider, QStringLiteral( "ogr" ) );
+
+  // try resolving a bad reference
+  QgsVectorLayerRef ref5( QStringLiteral( "badid" ), QStringLiteral( "points" ), mpLayer->publicSource(), QStringLiteral( "xxx" ) );
+  QVERIFY( !ref5.get() );
+  QVERIFY( !ref5.resolve( QgsProject::instance() ) );
+  QVERIFY( !ref5.resolveWeakly( QgsProject::instance() ) );
 }
 
 QGSTEST_MAIN( TestQgsMapLayer )
