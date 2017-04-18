@@ -31,6 +31,7 @@
 #include "qgsmapunitscale.h"
 #include "qgsrectangle.h"
 #include "qgsvectorsimplifymethod.h"
+=======
 #include "qgsdistancearea.h"
 
 class QPainter;

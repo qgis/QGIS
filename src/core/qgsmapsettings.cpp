@@ -299,7 +299,6 @@ QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const
 bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
 {
   QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
-  QgsDebugMsgLevel( QString( "\n\n-------->\nQgsMapSettings::setEllipsoid -10- : sourceCrs().description[%1,%2] ellipsoid[%3] valid[%4] semiMajor[%5] semiMinor[%6] inverseFlattening[%7]" ).arg( mDestCRS.description() ).arg( mDestCRS.ellipsoidAcronym() ).arg( ellipsoid ).arg( params.valid ).arg( params.semiMajor ).arg( params.semiMinor ).arg( params.inverseFlattening ), 3 );
   if ( !params.valid )
   {
     return false;

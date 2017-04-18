@@ -23,7 +23,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeaturefilterprovider.h"
 #include "qgslogger.h"
+<<<<<<< HEAD
 #include "qgspointv2.h"
+=======
+>>>>>>> Implementation of RenderMetersInMapUnits with QgsDistanceArea. Initial commit
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
@@ -139,8 +142,13 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setExpressionContext( mapSettings.expressionContext() );
   ctx.setSegmentationTolerance( mapSettings.segmentationTolerance() );
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
+<<<<<<< HEAD
   ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
   ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
+=======
+  ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
+  ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
+>>>>>>> Implementation of RenderMetersInMapUnits with QgsDistanceArea. Initial commit
 
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
@@ -240,10 +248,23 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
 
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
+<<<<<<< HEAD
       size = convertMetersToMapUnits( size );
       unit = QgsUnitTypes::RenderMapUnits;
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
       FALLTHROUGH;
+=======
+      double mup = mapToPixel().mapUnitsPerPixel() / convertMetersToMapUnits( 1.0 );
+      if ( mup > 0 )
+      {
+        conversionFactor = 1.0 / mup;
+      }
+      else
+      {
+        conversionFactor = 1.0;
+      }
+      break;
+>>>>>>> Implementation of RenderMetersInMapUnits with QgsDistanceArea. Initial commit
     }
     case QgsUnitTypes::RenderMapUnits:
     {
@@ -291,9 +312,16 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
   {
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
+<<<<<<< HEAD
       size = convertMetersToMapUnits( size );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
       FALLTHROUGH;
+=======
+      QgsDebugMsg( QString("QgsRenderContext::convertToMapUnits: size[%1] ").arg( + size ));
+      size = convertMetersToMapUnits( size );
+      QgsDebugMsg( QString("QgsRenderContext::convertToMapUnits: result[%1] ").arg( + size ));
+      // Fall through to RenderMapUnits with values of meters converted to MapUnits
+>>>>>>> Implementation of RenderMetersInMapUnits with QgsDistanceArea. Initial commit
     }
     case QgsUnitTypes::RenderMapUnits:
     {
