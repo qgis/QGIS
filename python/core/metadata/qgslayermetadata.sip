@@ -355,6 +355,28 @@ class QgsLayerMetadata
  \see licenses()
 %End
 
+    QStringList history() const;
+%Docstring
+ Returns a freeform description of the history or lineage of the resource.
+ \see setHistory()
+ :rtype: list of str
+%End
+
+    void setHistory( const QStringList &history );
+%Docstring
+ Sets the freeform description of the ``history`` or lineage of the resource.
+ Any existing history items will be overwritten.
+ \see addHistoryItem()
+ \see history()
+%End
+
+    void addHistoryItem( const QString &text );
+%Docstring
+ Adds a single history ``text`` to the end of the existing history list.
+ \see history()
+ \see setHistory()
+%End
+
     QString encoding() const;
 %Docstring
  Returns the character encoding of the data in the resource. An empty string will be returned if no encoding is set.

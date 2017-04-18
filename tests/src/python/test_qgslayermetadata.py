@@ -59,6 +59,13 @@ class TestQgsLayerMetadata(unittest.TestCase):
         m.setLicenses(['l a', 'l b'])
         self.assertEqual(m.licenses(), ['l a', 'l b'])
 
+        m.setHistory(['loaded into QGIS'])
+        self.assertEqual(m.history(), ['loaded into QGIS'])
+        m.setHistory(['accidentally deleted some features'])
+        self.assertEqual(m.history(), ['accidentally deleted some features'])
+        m.addHistoryItem('panicked and deleted more')
+        self.assertEqual(m.history(), ['accidentally deleted some features', 'panicked and deleted more'])
+
         m.setEncoding('encoding')
         self.assertEqual(m.encoding(), 'encoding')
 
@@ -192,6 +199,7 @@ class TestQgsLayerMetadata(unittest.TestCase):
         m.setConstraints([QgsLayerMetadata.Constraint('None', 'access')])
         m.setRights(['Copyright foo 2017'])
         m.setLicenses(['WTFPL'])
+        m.setHistory(['history a', 'history b'])
         m.setKeywords({'GEMET': ['kw1', 'kw2']})
         m.setEncoding('utf-8')
         m.setCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'))
@@ -254,6 +262,7 @@ class TestQgsLayerMetadata(unittest.TestCase):
         self.assertEqual(m.constraints()[0].type, 'access')
         self.assertEqual(m.rights(), ['Copyright foo 2017'])
         self.assertEqual(m.licenses(), ['WTFPL'])
+        self.assertEqual(m.history(), ['history a', 'history b'])
         self.assertEqual(m.encoding(), 'utf-8')
         self.assertEqual(m.keywords(), {'GEMET': ['kw1', 'kw2']})
         self.assertEqual(m.crs().authid(), 'EPSG:4326')

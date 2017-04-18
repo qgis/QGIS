@@ -396,6 +396,27 @@ class CORE_EXPORT QgsLayerMetadata
     void setLicenses( const QStringList &licenses );
 
     /**
+     * Returns a freeform description of the history or lineage of the resource.
+     * \see setHistory()
+     */
+    QStringList history() const;
+
+    /**
+     * Sets the freeform description of the \a history or lineage of the resource.
+     * Any existing history items will be overwritten.
+     * \see addHistoryItem()
+     * \see history()
+     */
+    void setHistory( const QStringList &history );
+
+    /**
+     * Adds a single history \a text to the end of the existing history list.
+     * \see history()
+     * \see setHistory()
+     */
+    void addHistoryItem( const QString &text );
+
+    /**
      * Returns the character encoding of the data in the resource. An empty string will be returned if no encoding is set.
      * \see setEncoding()
      */
@@ -572,6 +593,7 @@ class CORE_EXPORT QgsLayerMetadata
     ConstraintList mConstraints;
     QStringList mRights;
     QStringList mLicenses;
+    QStringList mHistory;
 
     // IMPORTANT - look up before adding anything here!!
 

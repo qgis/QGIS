@@ -108,6 +108,21 @@ void QgsLayerMetadata::setLicenses( const QStringList &licenses )
   mLicenses = licenses;
 }
 
+QStringList QgsLayerMetadata::history() const
+{
+  return mHistory;
+}
+
+void QgsLayerMetadata::setHistory( const QStringList &history )
+{
+  mHistory = history;
+}
+
+void QgsLayerMetadata::addHistoryItem( const QString &text )
+{
+  mHistory << text;
+}
+
 QString QgsLayerMetadata::encoding() const
 {
   return mEncoding;
@@ -204,6 +219,7 @@ void QgsLayerMetadata::saveToLayer( QgsMapLayer *layer ) const
   layer->setCustomProperty( QStringLiteral( "metadata/fees" ), mFees );
   layer->setCustomProperty( QStringLiteral( "metadata/rights" ), mRights );
   layer->setCustomProperty( QStringLiteral( "metadata/licenses" ), mLicenses );
+  layer->setCustomProperty( QStringLiteral( "metadata/history" ), mHistory );
   layer->setCustomProperty( QStringLiteral( "metadata/encoding" ), mEncoding );
   layer->setCustomProperty( QStringLiteral( "metadata/crs" ), mCrs.authid() );
   layer->setCustomProperty( QStringLiteral( "metadata/constraints" ), QVariant::fromValue( mConstraints ) );
@@ -223,6 +239,7 @@ void QgsLayerMetadata::readFromLayer( const QgsMapLayer *layer )
   mFees = layer->customProperty( QStringLiteral( "metadata/fees" ) ).toString();
   mRights = layer->customProperty( QStringLiteral( "metadata/rights" ) ).toStringList();
   mLicenses = layer->customProperty( QStringLiteral( "metadata/licenses" ) ).toStringList();
+  mHistory = layer->customProperty( QStringLiteral( "metadata/history" ) ).toStringList();
   mEncoding = layer->customProperty( QStringLiteral( "metadata/encoding" ) ).toString();
   QString crsAuthId = layer->customProperty( QStringLiteral( "metadata/crs" ) ).toString();
   mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsAuthId );
