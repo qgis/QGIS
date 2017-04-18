@@ -16,7 +16,8 @@ import qgis  # NOQA
 
 from qgis.core import (QgsLayerMetadata,
                        QgsCoordinateReferenceSystem,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       QgsNativeMetadataValidator)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -299,6 +300,117 @@ class TestQgsLayerMetadata(unittest.TestCase):
         m2 = QgsLayerMetadata()
         m2.readFromLayer(vl)
         self.checkExpectedMetadata(m2)
+
+    def testValidateNative(self):  # spellok
+        """
+        Test validating metadata against QGIS native schema
+        """
+
+        m = self.createTestMetadata()
+        v = QgsNativeMetadataValidator()
+
+        res, list = v.validate(m)
+        self.assertTrue(res)
+        self.assertFalse(list)
+
+        # corrupt metadata piece by piece...
+        m = self.createTestMetadata()
+        m.setIdentifier('')
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'identifier')
+
+        m = self.createTestMetadata()
+        m.setLanguage('')
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'language')
+
+        m = self.createTestMetadata()
+        m.setType('')
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'type')
+
+        m = self.createTestMetadata()
+        m.setTitle('')
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'title')
+
+        m = self.createTestMetadata()
+        m.setAbstract('')
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'abstract')
+
+        m = self.createTestMetadata()
+        m.setCrs(QgsCoordinateReferenceSystem())
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'crs')
+
+        m = self.createTestMetadata()
+        m.setContacts([])
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'contacts')
+
+        m = self.createTestMetadata()
+        m.setLinks([])
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'links')
+
+        m = self.createTestMetadata()
+        m.setKeywords({'': ['kw1', 'kw2']})
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'keywords')
+        self.assertEqual(list[0].identifier, 0)
+
+        m = self.createTestMetadata()
+        m.setKeywords({'AA': []})
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'keywords')
+        self.assertEqual(list[0].identifier, 0)
+
+        m = self.createTestMetadata()
+        c = m.contacts()[0]
+        c.name = ''
+        m.setContacts([c])
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'contacts')
+        self.assertEqual(list[0].identifier, 0)
+
+        m = self.createTestMetadata()
+        l = m.links()[0]
+        l.name = ''
+        m.setLinks([l])
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'links')
+        self.assertEqual(list[0].identifier, 0)
+
+        m = self.createTestMetadata()
+        l = m.links()[0]
+        l.type = ''
+        m.setLinks([l])
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'links')
+        self.assertEqual(list[0].identifier, 0)
+
+        m = self.createTestMetadata()
+        l = m.links()[0]
+        l.url = ''
+        m.setLinks([l])
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'links')
+        self.assertEqual(list[0].identifier, 0)
 
 
 if __name__ == '__main__':

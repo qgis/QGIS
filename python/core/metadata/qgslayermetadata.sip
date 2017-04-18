@@ -253,7 +253,7 @@ class QgsLayerMetadata
 
     void setLanguage( const QString &language );
 %Docstring
- Sets the human language associated with the resource. While a formal vocabulary is not imposed,
+ Sets the human ``language`` associated with the resource. While a formal vocabulary is not imposed,
  ideally values should be taken from the ISO 639.2 or ISO 3166 specifications,
  e.g. 'ENG' or 'SPA' (ISO 639.2) or 'EN-AU' (ISO 3166).
  \see language()
@@ -269,7 +269,7 @@ class QgsLayerMetadata
 
     void setType( const QString &type );
 %Docstring
- Sets the type (nature) of the resource.  While a formal vocabulary is not imposed, it is advised
+ Sets the ``type`` (nature) of the resource.  While a formal vocabulary is not imposed, it is advised
  to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
  \see type()
 %End
@@ -283,7 +283,7 @@ class QgsLayerMetadata
 
     void setTitle( const QString &title );
 %Docstring
- Sets the human readable title (name) of the resource, typically displayed in search results.
+ Sets the human readable ``title`` (name) of the resource, typically displayed in search results.
  \see title()
 %End
 
@@ -296,7 +296,7 @@ class QgsLayerMetadata
 
     void setAbstract( const QString &abstract );
 %Docstring
- Sets a free-form abstract (description) of the resource.
+ Sets a free-form ``abstract`` (description) of the resource.
  \see abstract()
 %End
 
@@ -310,7 +310,7 @@ class QgsLayerMetadata
 
     void setFees( const QString &fees );
 %Docstring
- Sets the fees associated with using the resource.
+ Sets the ``fees`` associated with using the resource.
  Use an empty string if no fees are set.
  \see fees()
 %End
@@ -324,7 +324,7 @@ class QgsLayerMetadata
 
     void setConstraints( const QgsLayerMetadata::ConstraintList &constraints );
 %Docstring
- Sets the list of constraints associated with using the resource.
+ Sets the list of ``constraints`` associated with using the resource.
  \see constraints()
 %End
 
@@ -337,7 +337,7 @@ class QgsLayerMetadata
 
     void setRights( const QStringList &rights );
 %Docstring
- Sets a list of rights (attribution or copyright strings) associated with the resource.
+ Sets a list of ``rights`` (attribution or copyright strings) associated with the resource.
  \see rights()
 %End
 
@@ -350,7 +350,7 @@ class QgsLayerMetadata
 
     void setEncoding( const QString &encoding );
 %Docstring
- Sets the character encoding of the data in the resource. Use an empty string if no encoding is set.
+ Sets the character ``encoding`` of the data in the resource. Use an empty string if no encoding is set.
  \see encoding()
 %End
 
@@ -401,7 +401,7 @@ class QgsLayerMetadata
 
     void setKeywords( const KeywordMap &keywords );
 %Docstring
- Sets the keywords map, which is a set of descriptive keywords associated with the resource.
+ Sets the ``keywords`` map, which is a set of descriptive keywords associated with the resource.
 
  The map key is the vocabulary string and map value is a list of keywords for that vocabulary.
  Calling this replaces any existing keyword vocabularies.
@@ -415,7 +415,7 @@ class QgsLayerMetadata
 
     void addKeywords( const QString &vocabulary, const QStringList &keywords );
 %Docstring
- Adds a list of descriptive keywords for a specified vocabulary. Any existing
+ Adds a list of descriptive ``keywords`` for a specified ``vocabulary``. Any existing
  keywords for the same vocabulary will be replaced. Other vocabularies
  will not be affected.
 
@@ -438,7 +438,7 @@ class QgsLayerMetadata
 
     QStringList keywords( const QString &vocabulary ) const;
 %Docstring
- Returns a list of keywords for the specified vocabulary.
+ Returns a list of keywords for the specified ``vocabulary``.
  If the vocabulary is not contained in the metadata, an empty
  list will be returned.
 
@@ -458,7 +458,7 @@ class QgsLayerMetadata
 
     void setContacts( const QgsLayerMetadata::ContactList &contacts );
 %Docstring
- Sets the list of contacts or entities associated with the resource. Any existing contacts
+ Sets the list of ``contacts`` or entities associated with the resource. Any existing contacts
  will be replaced.
  \see contacts()
  \see addContact()
@@ -466,7 +466,7 @@ class QgsLayerMetadata
 
     void addContact( const QgsLayerMetadata::Contact &contact );
 %Docstring
- Adds an individual contact to the existing contacts.
+ Adds an individual ``contact`` to the existing contacts.
  \see contacts()
  \see setContacts()
 %End
@@ -488,20 +488,20 @@ class QgsLayerMetadata
 
     void addLink( const QgsLayerMetadata::Link &link );
 %Docstring
- Adds an individual link to the existing links.
+ Adds an individual ``link`` to the existing links.
  \see links()
  \see setLinks()
 %End
 
     void saveToLayer( QgsMapLayer *layer ) const;
 %Docstring
- Saves the metadata to a layer's custom properties (see QgsMapLayer.setCustomProperty() ).
+ Saves the metadata to a ``layer``'s custom properties (see QgsMapLayer.setCustomProperty() ).
  \see readFromLayer()
 %End
 
     void readFromLayer( const QgsMapLayer *layer );
 %Docstring
- Reads the metadata state from a layer's custom properties (see QgsMapLayer.customProperty() ).
+ Reads the metadata state from a ``layer``'s custom properties (see QgsMapLayer.customProperty() ).
  \see saveToLayer()
 %End
 

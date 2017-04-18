@@ -829,7 +829,7 @@ Return pointer to layer's undo stack
 
     virtual void setMetadata( const QgsLayerMetadata &metadata );
 %Docstring
- Sets the layer's metadata store.
+ Sets the layer's ``metadata`` store.
 .. versionadded:: 3.0
  \see metadata()
  \see metadataChanged()

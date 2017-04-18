@@ -277,6 +277,7 @@
 %Include layertree/qgslayertreeutils.sip
 
 %Include metadata/qgslayermetadata.sip
+%Include metadata/qgslayermetadatavalidator.sip
 
 %Include processing/qgsprocessingalgorithm.sip
 %Include processing/qgsprocessingcontext.sip
