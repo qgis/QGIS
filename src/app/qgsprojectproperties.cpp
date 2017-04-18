@@ -1805,10 +1805,6 @@ void QgsProjectProperties::populateEllipsoidList()
   //
   // Populate the ellipsoid list
   //
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
-  int           myResult;
   EllipsoidDefs myItem;
 
   myItem.acronym = GEO_NONE;
@@ -1823,58 +1819,17 @@ void QgsProjectProperties::populateEllipsoidList()
   myItem.semiMinor = 6370997.0;
   mEllipsoidList.append( myItem );
 
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
-  if ( myResult )
+  Q_FOREACH ( const QgsEllipsoidUtils::EllipsoidDefinition &def, QgsEllipsoidUtils::definitions() )
   {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == 0 );
+    myItem.acronym = def.acronym;
+    myItem.description = def.description;
+    // Fall-back values
+    myItem.semiMajor = 0.0;
+    myItem.semiMinor = 0.0;
+    myItem.semiMajor = def.parameters.semiMajor;
+    myItem.semiMinor = def.parameters.semiMinor;
+    mEllipsoidList.append( myItem );
   }
-
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = QStringLiteral( "select acronym, name, radius, parameter2 from tbl_ellipsoid order by name" );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-    {
-      QString para1, para2;
-      myItem.acronym = ( const char * )sqlite3_column_text( myPreparedStatement, 0 );
-      myItem.description = ( const char * )sqlite3_column_text( myPreparedStatement, 1 );
-
-      // Copied from QgsDistanecArea. Should perhaps be moved there somehow?
-      // No error checking, this values are for show only, never used in calculations.
-
-      // Fall-back values
-      myItem.semiMajor = 0.0;
-      myItem.semiMinor = 0.0;
-      // Crash if no column?
-      para1 = ( const char * )sqlite3_column_text( myPreparedStatement, 2 );
-      para2 = ( const char * )sqlite3_column_text( myPreparedStatement, 3 );
-      myItem.semiMajor = para1.midRef( 2 ).toDouble();
-      if ( para2.left( 2 ) == QLatin1String( "b=" ) )
-      {
-        myItem.semiMinor = para2.midRef( 2 ).toDouble();
-      }
-      else if ( para2.left( 3 ) == QLatin1String( "rf=" ) )
-      {
-        double invFlattening = para2.midRef( 3 ).toDouble();
-        if ( invFlattening != 0.0 )
-        {
-          myItem.semiMinor = myItem.semiMajor - ( myItem.semiMajor / invFlattening );
-        }
-      }
-      mEllipsoidList.append( myItem );
-    }
-  }
-
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-
   // Add all items to selector
 
   Q_FOREACH ( const EllipsoidDefs &i, mEllipsoidList )

@@ -19,6 +19,7 @@
 #include "qgsspatialindex.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
 #include <QProgressDialog>
 #include <QFileInfo>
 #ifndef _MSC_VER
@@ -126,11 +127,11 @@ int QgsTransectSample::createSample( QProgressDialog *pd )
   distanceArea.setSourceCrs( mStrataLayer->crs() );
   if ( mMinDistanceUnits == Meters )
   {
-    distanceArea.setEllipsoidalMode( true );
+    distanceArea.setEllipsoid( QgsProject::instance()->ellipsoid() );
   }
   else
   {
-    distanceArea.setEllipsoidalMode( false );
+    distanceArea.setEllipsoid( GEO_NONE );
   }
 
   //possibility to transform output points to lat/long

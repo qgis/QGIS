@@ -4402,7 +4402,6 @@ void QgsExpression::initGeomCalculator()
 
   // Use planimetric as default
   d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
-  d->mCalc->setEllipsoidalMode( false );
 }
 
 void QgsExpression::detach()

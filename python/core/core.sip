@@ -47,6 +47,7 @@
 %Include qgsdistancearea.sip
 %Include qgseditformconfig.sip
 %Include qgseditorwidgetsetup.sip
+%Include qgsellipsoidutils.sip
 %Include qgserror.sip
 %Include qgsexpression.sip
 %Include qgsexpressioncontext.sip

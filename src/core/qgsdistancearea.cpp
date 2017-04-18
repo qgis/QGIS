@@ -14,19 +14,16 @@
  ***************************************************************************/
 
 #include <cmath>
-#include <sqlite3.h>
-#include <QDir>
 #include <QString>
 #include <QObject>
 
+#include "qgsdistancearea.h"
 #include "qgis.h"
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 #include "qgsgeometrycollection.h"
-#include "qgsdistancearea.h"
-#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmultisurface.h"
@@ -46,63 +43,16 @@
 #define RAD2DEG(r) (180.0 * (r) / M_PI)
 #define POW2(x) ((x)*(x))
 
-
 QgsDistanceArea::QgsDistanceArea()
 {
   // init with default settings
-  mEllipsoidalMode = false;
-  setSourceCrs( GEOCRS_ID ); // WGS 84
+  setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) ); // WGS 84
   setEllipsoid( GEO_NONE );
-}
-
-
-QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea &origDA )
-{
-  _copy( origDA );
-}
-
-QgsDistanceArea &QgsDistanceArea::operator=( const QgsDistanceArea &origDA )
-{
-  if ( this == & origDA )
-  {
-    // Do not copy unto self
-    return *this;
-  }
-  _copy( origDA );
-  return *this;
-}
-
-//! Copy helper. Avoid Sqlite3 accesses.
-void QgsDistanceArea::_copy( const QgsDistanceArea &origDA )
-{
-  mEllipsoidalMode = origDA.mEllipsoidalMode;
-  mEllipsoid = origDA.mEllipsoid;
-  mSemiMajor = origDA.mSemiMajor;
-  mSemiMinor = origDA.mSemiMinor;
-  mInvFlattening = origDA.mInvFlattening;
-  if ( ( mSemiMajor > 0 ) && ( mSemiMinor > 0 ) )
-  {
-    // Some calculations and trig. Should not be TOO time consuming.
-    // Alternatively we could copy the temp vars?
-    computeAreaInit();
-  }
-  mCoordTransform = origDA.mCoordTransform;
-}
-
-void QgsDistanceArea::setEllipsoidalMode( bool flag )
-{
-  mEllipsoidalMode = flag;
 }
 
 bool QgsDistanceArea::willUseEllipsoid() const
 {
-  return mEllipsoidalMode && mEllipsoid != GEO_NONE;
-}
-
-void QgsDistanceArea::setSourceCrs( long srsid )
-{
-  QgsCoordinateReferenceSystem srcCRS = QgsCoordinateReferenceSystem::fromSrsId( srsid );
-  mCoordTransform.setSourceCrs( srcCRS );
+  return mEllipsoid != GEO_NONE;
 }
 
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS )
@@ -110,23 +60,8 @@ void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS )
   mCoordTransform.setSourceCrs( srcCRS );
 }
 
-void QgsDistanceArea::setSourceAuthId( const QString &authId )
-{
-  QgsCoordinateReferenceSystem srcCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
-  mCoordTransform.setSourceCrs( srcCRS );
-}
-
 bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 {
-  QString radius, parameter2;
-  //
-  // SQLITE3 stuff - get parameters for selected ellipsoid
-  //
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
-  int           myResult;
-
   // Shortcut if ellipsoid is none.
   if ( ellipsoid == GEO_NONE )
   {
@@ -134,123 +69,24 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
     return true;
   }
 
-  // Check if we have a custom projection, and set from text string.
-  // Format is "PARAMETER:<semi-major axis>:<semi minor axis>
-  // Numbers must be with (optional) decimal point and no other separators (C locale)
-  // Distances in meters.  Flattening is calculated.
-  if ( ellipsoid.startsWith( QLatin1String( "PARAMETER" ) ) )
+  QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
+  if ( !params.valid )
   {
-    QStringList paramList = ellipsoid.split( ':' );
-    bool semiMajorOk, semiMinorOk;
-    double semiMajor = paramList[1].toDouble( & semiMajorOk );
-    double semiMinor = paramList[2].toDouble( & semiMinorOk );
-    if ( semiMajorOk && semiMinorOk )
-    {
-      return setEllipsoid( semiMajor, semiMinor );
-    }
-    else
-    {
-      return false;
-    }
-  }
-
-  // Continue with PROJ.4 list of ellipsoids.
-
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
-  if ( myResult )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
     return false;
-  }
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select radius, parameter2 from tbl_ellipsoid where acronym='" + ellipsoid + '\'';
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-    {
-      radius = QString( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
-      parameter2 = QString( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 1 ) ) );
-    }
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-
-  // row for this ellipsoid wasn't found?
-  if ( radius.isEmpty() || parameter2.isEmpty() )
-  {
-    QgsDebugMsg( QString( "setEllipsoid: no row in tbl_ellipsoid for acronym '%1'" ).arg( ellipsoid ) );
-    return false;
-  }
-
-  // get major semiaxis
-  if ( radius.left( 2 ) == QLatin1String( "a=" ) )
-    mSemiMajor = radius.midRef( 2 ).toDouble();
-  else
-  {
-    QgsDebugMsg( QString( "setEllipsoid: wrong format of radius field: '%1'" ).arg( radius ) );
-    return false;
-  }
-
-  // get second parameter
-  // one of values 'b' or 'f' is in field parameter2
-  // second one must be computed using formula: invf = a/(a-b)
-  if ( parameter2.left( 2 ) == QLatin1String( "b=" ) )
-  {
-    mSemiMinor = parameter2.midRef( 2 ).toDouble();
-    mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
-  }
-  else if ( parameter2.left( 3 ) == QLatin1String( "rf=" ) )
-  {
-    mInvFlattening = parameter2.midRef( 3 ).toDouble();
-    mSemiMinor = mSemiMajor - ( mSemiMajor / mInvFlattening );
   }
   else
   {
-    QgsDebugMsg( QString( "setEllipsoid: wrong format of parameter2 field: '%1'" ).arg( parameter2 ) );
-    return false;
+    mEllipsoid = ellipsoid;
+    setFromParams( params );
+    return true;
   }
-
-  QgsDebugMsg( QString( "setEllipsoid: a=%1, b=%2, 1/f=%3" ).arg( mSemiMajor ).arg( mSemiMinor ).arg( mInvFlattening ) );
-
-
-  // get spatial ref system for ellipsoid
-  QString proj4 = "+proj=longlat +ellps=" + ellipsoid + " +no_defs";
-  QgsCoordinateReferenceSystem destCRS = QgsCoordinateReferenceSystem::fromProj4( proj4 );
-  //TODO: createFromProj4 used to save to the user database any new CRS
-  // this behavior was changed in order to separate creation and saving.
-  // Not sure if it necessary to save it here, should be checked by someone
-  // familiar with the code (should also give a more descriptive name to the generated CRS)
-  if ( destCRS.srsid() == 0 )
-  {
-    QString myName = QStringLiteral( " * %1 (%2)" )
-                     .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                           destCRS.toProj4() );
-    destCRS.saveAsUserCrs( myName );
-  }
-  //
-
-  // set transformation from project CRS to ellipsoid coordinates
-  mCoordTransform.setDestinationCrs( destCRS );
-
-  mEllipsoid = ellipsoid;
-
-  // precalculate some values for area calculations
-  computeAreaInit();
-
-  return true;
 }
 
 // Inverse flattening is calculated with invf = a/(a-b)
 // Also, b = a-(a/invf)
-bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
+bool QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
 {
-  mEllipsoid = QStringLiteral( "PARAMETER:%1:%2" ).arg( semiMajor ).arg( semiMinor );
+  mEllipsoid = QStringLiteral( "PARAMETER:%1:%2" ).arg( qgsDoubleToString( semiMajor ) ).arg( qgsDoubleToString( semiMinor ) );
   mSemiMajor = semiMajor;
   mSemiMinor = semiMinor;
   mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
@@ -279,7 +115,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
     measureType = ( geomDimension == 1 ? Length : Area );
   }
 
-  if ( !mEllipsoidalMode || mEllipsoid == GEO_NONE )
+  if ( !willUseEllipsoid() )
   {
     //no transform required
     if ( measureType == Length )
@@ -341,15 +177,6 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
   }
 }
 
-double QgsDistanceArea::measureArea( const QgsGeometry *geometry ) const
-{
-  if ( !geometry )
-    return 0.0;
-
-  const QgsAbstractGeometry *geomV2 = geometry->geometry();
-  return measure( geomV2, Area );
-}
-
 double QgsDistanceArea::measureArea( const QgsGeometry &geometry ) const
 {
   if ( geometry.isNull() )
@@ -359,15 +186,6 @@ double QgsDistanceArea::measureArea( const QgsGeometry &geometry ) const
   return measure( geomV2, Area );
 }
 
-double QgsDistanceArea::measureLength( const QgsGeometry *geometry ) const
-{
-  if ( !geometry )
-    return 0.0;
-
-  const QgsAbstractGeometry *geomV2 = geometry->geometry();
-  return measure( geomV2, Length );
-}
-
 double QgsDistanceArea::measureLength( const QgsGeometry &geometry ) const
 {
   if ( geometry.isNull() )
@@ -375,14 +193,6 @@ double QgsDistanceArea::measureLength( const QgsGeometry &geometry ) const
 
   const QgsAbstractGeometry *geomV2 = geometry.geometry();
   return measure( geomV2, Length );
-}
-
-double QgsDistanceArea::measurePerimeter( const QgsGeometry *geometry ) const
-{
-  if ( !geometry )
-    return 0.0;
-
-  return measurePerimeter( *geometry );
 }
 
 double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
@@ -396,7 +206,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
     return 0.0;
   }
 
-  if ( !mEllipsoidalMode || mEllipsoid == GEO_NONE )
+  if ( !willUseEllipsoid() )
   {
     return geomV2->perimeter();
   }
@@ -467,14 +277,14 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
 
   try
   {
-    if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
+    if ( willUseEllipsoid() )
       p1 = mCoordTransform.transform( points[0] );
     else
       p1 = points[0];
 
     for ( QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i )
     {
-      if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
+      if ( willUseEllipsoid() )
       {
         p2 = mCoordTransform.transform( *i );
         total += computeDistanceBearing( p1, p2 );
@@ -501,23 +311,15 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
 
 double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const
 {
-  QgsUnitTypes::DistanceUnit units;
-  return measureLine( p1, p2, units );
-}
-
-double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2, QgsUnitTypes::DistanceUnit &units ) const
-{
   double result;
-  units = mCoordTransform.sourceCrs().mapUnits();
 
   try
   {
     QgsPoint pp1 = p1, pp2 = p2;
 
     QgsDebugMsgLevel( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
-    if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
+    if ( willUseEllipsoid() )
     {
-      units = QgsUnitTypes::DistanceMeters;
       QgsDebugMsgLevel( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
       QgsDebugMsgLevel( QString( "From proj4 : %1" ).arg( mCoordTransform.sourceCrs().toProj4() ), 4 );
       QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform.destinationCrs().toProj4() ), 4 );
@@ -529,7 +331,7 @@ double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2, Qgs
     else
     {
       QgsDebugMsgLevel( "Cartesian calculation on canvas coordinates", 4 );
-      result = computeDistanceFlat( p1, p2 );
+      result = p2.distance( p1 );
     }
   }
   catch ( QgsCsException &cse )
@@ -546,13 +348,10 @@ double QgsDistanceArea::measureLineProjected( const QgsPoint &p1, double distanc
 {
   double result = 0.0;
   QgsPoint p2;
-  if ( geographic() )
+  if ( mCoordTransform.sourceCrs().isGeographic() && willUseEllipsoid() )
   {
-    if ( mEllipsoid != GEO_NONE )
-    {
-      p2 = computeSpheroidProject( p1, distance, azimuth );
-      result = p1.distance( p2 );
-    }
+    p2 = computeSpheroidProject( p1, distance, azimuth );
+    result = p1.distance( p2 );
   }
   else // cartesian coordinates
   {
@@ -571,6 +370,13 @@ double QgsDistanceArea::measureLineProjected( const QgsPoint &p1, double distanc
   return result;
 }
 
+/*
+ *  From original rttopo documentation:
+ *  Tested against:
+ *   http://mascot.gdbc.gov.bc.ca/mascot/util1b.html
+ *  and
+ *   http://www.ga.gov.au/nmd/geodesy/datums/vincenty_direct.jsp
+ */
 QgsPoint QgsDistanceArea::computeSpheroidProject(
   const QgsPoint &p1, double distance, double azimuth ) const
 {
@@ -639,100 +445,6 @@ QgsUnitTypes::AreaUnit QgsDistanceArea::areaUnits() const
          QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() );
 }
 
-QgsConstWkbPtr QgsDistanceArea::measurePolygon( QgsConstWkbPtr wkbPtr, double *area, double *perimeter, bool hasZptr ) const
-{
-  if ( !wkbPtr )
-  {
-    QgsDebugMsg( "no feature to measure" );
-    return wkbPtr;
-  }
-
-  wkbPtr.readHeader();
-
-  // get number of rings in the polygon
-  int numRings;
-  wkbPtr >> numRings;
-
-  if ( numRings == 0 )
-  {
-    QgsDebugMsg( "no rings to measure" );
-    return QgsConstWkbPtr( nullptr, 0 );
-  }
-
-  // Set pointer to the first ring
-  QList<QgsPoint> points;
-  QgsPoint pnt;
-  double x, y;
-  if ( area )
-    *area = 0;
-  if ( perimeter )
-    *perimeter = 0;
-
-  try
-  {
-    for ( int idx = 0; idx < numRings; idx++ )
-    {
-      int nPoints;
-      wkbPtr >> nPoints;
-
-      // Extract the points from the WKB and store in a pair of
-      // vectors.
-      for ( int jdx = 0; jdx < nPoints; jdx++ )
-      {
-        wkbPtr >> x >> y;
-        if ( hasZptr )
-        {
-          // totally ignore Z value
-          wkbPtr += sizeof( double );
-        }
-
-        pnt = QgsPoint( x, y );
-
-        if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
-        {
-          pnt = mCoordTransform.transform( pnt );
-        }
-        points.append( pnt );
-      }
-
-      if ( points.size() > 2 )
-      {
-        if ( area )
-        {
-          double areaTmp = computePolygonArea( points );
-          if ( idx == 0 )
-          {
-            // exterior ring
-            *area += areaTmp;
-          }
-          else
-          {
-            *area -= areaTmp; // interior rings
-          }
-        }
-
-        if ( perimeter )
-        {
-          if ( idx == 0 )
-          {
-            // exterior ring
-            *perimeter += computeDistance( points );
-          }
-        }
-      }
-
-      points.clear();
-    }
-  }
-  catch ( QgsCsException &cse )
-  {
-    Q_UNUSED( cse );
-    QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter." ) );
-  }
-
-  return wkbPtr;
-}
-
 double QgsDistanceArea::measurePolygon( const QgsCurve *curve ) const
 {
   if ( !curve )
@@ -752,7 +464,7 @@ double QgsDistanceArea::measurePolygon( const QList<QgsPoint> &points ) const
 {
   try
   {
-    if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
+    if ( willUseEllipsoid() )
     {
       QList<QgsPoint> pts;
       for ( QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i )
@@ -780,7 +492,7 @@ double QgsDistanceArea::bearing( const QgsPoint &p1, const QgsPoint &p2 ) const
   QgsPoint pp1 = p1, pp2 = p2;
   double bearing;
 
-  if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
+  if ( willUseEllipsoid() )
   {
     pp1 = mCoordTransform.transform( p1 );
     pp2 = mCoordTransform.transform( p2 );
@@ -877,50 +589,6 @@ double QgsDistanceArea::computeDistanceBearing(
   return s;
 }
 
-double QgsDistanceArea::computeDistanceFlat( const QgsPoint &p1, const QgsPoint &p2 ) const
-{
-  return sqrt( ( p2.x() - p1.x() ) * ( p2.x() - p1.x() ) + ( p2.y() - p1.y() ) * ( p2.y() - p1.y() ) );
-}
-
-double QgsDistanceArea::computeDistance( const QList<QgsPoint> &points ) const
-{
-  if ( points.size() < 2 )
-    return 0;
-
-  double total = 0;
-  QgsPoint p1, p2;
-
-  try
-  {
-    p1 = points[0];
-
-    for ( QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i )
-    {
-      p2 = *i;
-      if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
-      {
-        total += computeDistanceBearing( p1, p2 );
-      }
-      else
-      {
-        total += computeDistanceFlat( p1, p2 );
-      }
-
-      p1 = p2;
-    }
-
-    return total;
-  }
-  catch ( QgsCsException &cse )
-  {
-    Q_UNUSED( cse );
-    QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
-    return 0.0;
-  }
-}
-
-
-
 ///////////////////////////////////////////////////////////
 // stuff for measuring areas - copied from GRASS
 // don't know how does it work, but it's working .)
@@ -982,6 +650,22 @@ void QgsDistanceArea::computeAreaInit()
     m_E = -m_E;
 }
 
+void QgsDistanceArea::setFromParams( const QgsEllipsoidUtils::EllipsoidParameters &params )
+{
+  if ( params.useCustomParameters )
+  {
+    setEllipsoid( params.semiMajor, params.semiMinor );
+  }
+  else
+  {
+    mSemiMajor = params.semiMajor;
+    mSemiMinor = params.semiMinor;
+    mInvFlattening = params.inverseFlattening;
+    mCoordTransform.setDestinationCrs( params.crs );
+    // precalculate some values for area calculations
+    computeAreaInit();
+  }
+}
 
 double QgsDistanceArea::computePolygonArea( const QList<QgsPoint> &points ) const
 {
@@ -995,7 +679,7 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPoint> &points ) cons
   double area;
 
   QgsDebugMsgLevel( "Ellipsoid: " + mEllipsoid, 3 );
-  if ( ( ! mEllipsoidalMode ) || ( mEllipsoid == GEO_NONE ) )
+  if ( !willUseEllipsoid() )
   {
     return computePolygonFlatArea( points );
   }

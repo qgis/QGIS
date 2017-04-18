@@ -260,16 +260,15 @@ void QgsComposerLabel::refreshExpressionContext()
   //setup distance area conversion
   if ( layer )
   {
-    mDistanceArea->setSourceCrs( layer->crs().srsid() );
+    mDistanceArea->setSourceCrs( layer->crs() );
   }
   else
   {
     //set to composition's reference map's crs
     QgsComposerMap *referenceMap = mComposition->referenceMap();
     if ( referenceMap )
-      mDistanceArea->setSourceCrs( referenceMap->crs().srsid() );
+      mDistanceArea->setSourceCrs( referenceMap->crs() );
   }
-  mDistanceArea->setEllipsoidalMode( true );
   mDistanceArea->setEllipsoid( mComposition->project()->ellipsoid() );
   contentChanged();
 

@@ -56,7 +56,6 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( vl->crs() );
-  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   builder->setGeomCalculator( myDa );
 
@@ -156,7 +155,6 @@ void QgsFieldCalculator::accept()
   QgsDistanceArea myDa;
 
   myDa.setSourceCrs( mVectorLayer->crs() );
-  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   QString calcString = builder->expressionText();

@@ -19,7 +19,6 @@ core/qgsdatasourceuri.sip
 core/qgsdatetimestatisticalsummary.sip
 core/qgsdatumtransformstore.sip
 core/qgsdbfilterproxymodel.sip
-core/qgsdistancearea.sip
 core/qgseditformconfig.sip
 core/qgseditorwidgetsetup.sip
 core/qgserror.sip

@@ -48,7 +48,6 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     {
       mDa.setSourceCrs( mCrs );
       mDa.setEllipsoid( ellipsoidID );
-      mDa.setEllipsoidalMode( ctfEnabled );
     }
 
     virtual ~QgsGraphBuilderInterface()

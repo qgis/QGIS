@@ -33,7 +33,8 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProject)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -117,7 +118,7 @@ class HubDistancePoints(GeoAlgorithm):
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(layerPoints.crs())
-        distance.setEllipsoidalMode(True)
+        distance.setEllipsoid(QgsProject.instance().ellipsoid())
 
         # Scan source points, find nearest hub, and write to output file
         features = vector.features(layerPoints)

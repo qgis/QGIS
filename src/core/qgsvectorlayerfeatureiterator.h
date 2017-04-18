@@ -18,6 +18,7 @@
 #include "qgis_core.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QSet>
 #include <memory>
@@ -74,7 +75,7 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QgsChangedAttributesMap mChangedAttributeValues;
     QgsAttributeList mDeletedAttributeIds;
 
-    long mCrsId;
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 /** \ingroup core

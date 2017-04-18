@@ -7734,7 +7734,6 @@ void QgisApp::selectByForm()
   QgsDistanceArea myDa;
 
   myDa.setSourceCrs( vlayer->crs() );
-  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   QgsAttributeEditorContext context;

@@ -339,14 +339,12 @@ double QgsComposerScaleBar::mapWidth() const
   else
   {
     QgsDistanceArea da;
-    da.setEllipsoidalMode( true );
     da.setSourceCrs( mComposerMap->crs() );
     da.setEllipsoid( mComposition->project()->ellipsoid() );
 
-    QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceMeters;
+    QgsUnitTypes::DistanceUnit units = da.lengthUnits();
     double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ),
-                                     QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ),
-                                     units );
+                                     QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
     switch ( mUnits )
     {
       case QgsComposerScaleBar::Feet:
