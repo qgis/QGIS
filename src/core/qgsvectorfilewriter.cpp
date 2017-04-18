@@ -363,6 +363,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     layerOptions.removeAt( optIndex );
   }
 
+  // Remove FEATURE_DATASET layer option (used for ESRI File GDB driver) if its value is not set
+  int optIndex = layerOptions.indexOf( "FEATURE_DATASET=" );
+  if ( optIndex != -1 )
+  {
+    layerOptions.removeAt( optIndex );
+  }
+
   if ( !layerOptions.isEmpty() )
   {
     options = new char *[ layerOptions.size() + 1 ];
