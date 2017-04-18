@@ -160,19 +160,25 @@ void TestQgsMapLayer::layerRef()
 {
   // construct from layer
   QgsVectorLayerRef ref( mpLayer );
-  QCOMPARE( ref.get(), mpLayer );
+  QCOMPARE( &ref, mpLayer );
   QCOMPARE( ref.layer.data(), mpLayer );
   QCOMPARE( ref.layerId, mpLayer->id() );
   QCOMPARE( ref.name, QStringLiteral( "points" ) );
   QCOMPARE( ref.source, mpLayer->publicSource() );
   QCOMPARE( ref.provider, QStringLiteral( "ogr" ) );
 
+  // bool operator
+  QVERIFY( ref );
+  // -> operator
+  QCOMPARE( ref->id(), mpLayer->id() );
+
   // verify that layer matches layer
   QVERIFY( ref.layerMatchesSource( mpLayer ) );
 
   // create a weak reference
   QgsVectorLayerRef ref2( mpLayer->id(), QStringLiteral( "points" ), mpLayer->publicSource(), QStringLiteral( "ogr" ) );
-  QVERIFY( !ref2.get() );
+  QVERIFY( !ref2 );
+  QVERIFY( !&ref2 );
   QVERIFY( !ref2.layer.data() );
   QCOMPARE( ref2.layerId, mpLayer->id() );
   QCOMPARE( ref2.name, QStringLiteral( "points" ) );
@@ -184,7 +190,8 @@ void TestQgsMapLayer::layerRef()
 
   // resolve layer using project
   QCOMPARE( ref2.resolve( QgsProject::instance() ), mpLayer );
-  QCOMPARE( ref2.get(), mpLayer );
+  QVERIFY( ref2 );
+  QCOMPARE( &ref2, mpLayer );
   QCOMPARE( ref2.layer.data(), mpLayer );
   QCOMPARE( ref2.layerId, mpLayer->id() );
   QCOMPARE( ref2.name, QStringLiteral( "points" ) );
@@ -193,9 +200,9 @@ void TestQgsMapLayer::layerRef()
 
   // setLayer
   QgsVectorLayerRef ref3;
-  QVERIFY( !ref3.get() );
+  QVERIFY( !&ref3 );
   ref3.setLayer( mpLayer );
-  QCOMPARE( ref3.get(), mpLayer );
+  QCOMPARE( &ref3, mpLayer );
   QCOMPARE( ref3.layer.data(), mpLayer );
   QCOMPARE( ref3.layerId, mpLayer->id() );
   QCOMPARE( ref3.name, QStringLiteral( "points" ) );
@@ -204,10 +211,10 @@ void TestQgsMapLayer::layerRef()
 
   // weak resolve
   QgsVectorLayerRef ref4( QStringLiteral( "badid" ), QStringLiteral( "points" ), mpLayer->publicSource(), QStringLiteral( "ogr" ) );
-  QVERIFY( !ref4.get() );
+  QVERIFY( !&ref4 );
   QVERIFY( !ref4.resolve( QgsProject::instance() ) );
   QCOMPARE( ref4.resolveWeakly( QgsProject::instance() ), mpLayer );
-  QCOMPARE( ref4.get(), mpLayer );
+  QCOMPARE( &ref4, mpLayer );
   QCOMPARE( ref4.layer.data(), mpLayer );
   QCOMPARE( ref4.layerId, mpLayer->id() );
   QCOMPARE( ref4.name, QStringLiteral( "points" ) );
@@ -216,7 +223,7 @@ void TestQgsMapLayer::layerRef()
 
   // try resolving a bad reference
   QgsVectorLayerRef ref5( QStringLiteral( "badid" ), QStringLiteral( "points" ), mpLayer->publicSource(), QStringLiteral( "xxx" ) );
-  QVERIFY( !ref5.get() );
+  QVERIFY( !&ref5 );
   QVERIFY( !ref5.resolve( QgsProject::instance() ) );
   QVERIFY( !ref5.resolveWeakly( QgsProject::instance() ) );
 }

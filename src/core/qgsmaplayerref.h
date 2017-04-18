@@ -68,10 +68,30 @@ struct _LayerRef
   }
 
   /**
+   * Returns true if the layer reference is resolved and contains a reference to an existing
+   * map layer.
+   */
+  operator bool() const
+  {
+    return static_cast< bool >( layer.data() );
+  }
+
+  /**
+   * Forwards the to map layer.
+   */
+  TYPE *operator->() const
+  {
+    return layer.data();
+  }
+
+  /**
    * Returns a pointer to the layer, or nullptr if the reference has not yet been matched
    * to a layer.
    */
-  TYPE *get() const { return layer.data(); }
+  TYPE *operator &() const
+  {
+    return layer.data();
+  }
 
   //! Weak pointer to map layer
   QPointer<TYPE> layer;
