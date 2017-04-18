@@ -53,11 +53,43 @@ Associated coordinate reference system
 %End
     };
 
+    struct EllipsoidDefinition
+    {
+      QString acronym;
+%Docstring
+Acronym for ellipsoid
+%End
+      QString description;
+%Docstring
+Description of ellipsoid
+%End
+      QgsEllipsoidUtils::EllipsoidParameters parameters;
+%Docstring
+Ellipsoid parameters
+%End
+    };
+
     static EllipsoidParameters ellipsoidParameters( const QString &ellipsoid );
 %Docstring
  Returns the parameters for the specified ``ellipsoid``.
  Results are cached to allow for fast retrieval of parameters.
  :rtype: EllipsoidParameters
+%End
+
+    static QList< QgsEllipsoidUtils::EllipsoidDefinition > definitions();
+%Docstring
+ Returns a list of the definitions for all known ellipsoids from the
+ internal ellipsoid database.
+ \see acronyms()
+ :rtype: list of QgsEllipsoidUtils.EllipsoidDefinition
+%End
+
+    static QStringList acronyms();
+%Docstring
+ Returns a list of all known ellipsoid acronyms from the internal
+ ellipsoid database.
+ \see definitions()
+ :rtype: list of str
 %End
 
 };

@@ -30,6 +30,15 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
         # run each test twice, so that ellipsoid is fetched from cache on the second time
 
         for i in range(2):
+            params = QgsEllipsoidUtils.ellipsoidParameters("WGS84")
+            self.assertTrue(params.valid)
+            self.assertEqual(params.semiMajor, 6378137.0)
+            self.assertAlmostEqual(params.semiMinor, 6356752.314245179, 5)
+            self.assertAlmostEqual(params.inverseFlattening, 298.257223563, 5)
+            self.assertFalse(params.useCustomParameters)
+            self.assertEqual(params.crs.authid(), 'EPSG:4030')
+
+        for i in range(2):
             params = QgsEllipsoidUtils.ellipsoidParameters("Ganymede2000")
             self.assertTrue(params.valid)
             self.assertEqual(params.semiMajor, 2632400.0)
@@ -52,6 +61,23 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
         for i in range(2):
             params = QgsEllipsoidUtils.ellipsoidParameters("Babies first ellipsoid!")
             self.assertFalse(params.valid)
+
+    def testAcronyms(self):
+        self.assertTrue('WGS84' in QgsEllipsoidUtils.acronyms())
+        self.assertTrue('Ganymede2000' in QgsEllipsoidUtils.acronyms())
+
+    def testDefinitions(self):
+        defs = QgsEllipsoidUtils.definitions()
+
+        gany_defs = [d for d in defs if d.acronym == 'Ganymede2000'][0]
+        self.assertEqual(gany_defs.acronym, 'Ganymede2000')
+        self.assertEqual(gany_defs.description, 'Ganymede2000')
+        self.assertTrue(gany_defs.parameters.valid)
+        self.assertEqual(gany_defs.parameters.semiMajor, 2632400.0)
+        self.assertEqual(gany_defs.parameters.semiMinor, 2632350.0)
+        self.assertEqual(gany_defs.parameters.inverseFlattening, 52648.0)
+        self.assertFalse(gany_defs.parameters.useCustomParameters)
+        self.assertEqual(gany_defs.parameters.crs.authid(), '')
 
 
 if __name__ == '__main__':

@@ -21,7 +21,8 @@
 
 QReadWriteLock QgsEllipsoidUtils::sEllipsoidCacheLock;
 QHash< QString, QgsEllipsoidUtils::EllipsoidParameters > QgsEllipsoidUtils::sEllipsoidCache;
-
+QReadWriteLock QgsEllipsoidUtils::sDefinitionCacheLock;
+QList< QgsEllipsoidUtils::EllipsoidDefinition > QgsEllipsoidUtils::sDefinitionCache;
 
 QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( const QString &ellipsoid )
 {
@@ -176,4 +177,72 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   sEllipsoidCache.insert( ellipsoid, params );
   sEllipsoidCacheLock.unlock();
   return params;
+}
+
+QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
+{
+  sDefinitionCacheLock.lockForRead();
+  if ( !sDefinitionCache.isEmpty() )
+  {
+    QList<QgsEllipsoidUtils::EllipsoidDefinition> defs = sDefinitionCache;
+    sDefinitionCacheLock.unlock();
+    return defs;
+  }
+  sDefinitionCacheLock.unlock();
+
+  sDefinitionCacheLock.lockForWrite();
+  sqlite3 *database = nullptr;
+  const char *tail = nullptr;
+  sqlite3_stmt *preparedStatement = nullptr;
+  int result;
+
+  QList<QgsEllipsoidUtils::EllipsoidDefinition> defs;
+
+  //check the db is available
+  result = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
+  if ( result )
+  {
+    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( database ) ) );
+    // XXX This will likely never happen since on open, sqlite creates the
+    //     database if it does not exist.
+    Q_ASSERT( result == 0 );
+  }
+
+  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
+  QString sql = QStringLiteral( "select acronym, name from tbl_ellipsoid order by name" );
+  result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &preparedStatement, &tail );
+  // XXX Need to free memory from the error msg if one is set
+  if ( result == SQLITE_OK )
+  {
+    while ( sqlite3_step( preparedStatement ) == SQLITE_ROW )
+    {
+      EllipsoidDefinition def;
+      def.acronym = ( const char * )sqlite3_column_text( preparedStatement, 0 );
+      def.description = ( const char * )sqlite3_column_text( preparedStatement, 1 );
+
+      // use ellipsoidParameters so that result is cached
+      def.parameters = ellipsoidParameters( def.acronym );
+
+      defs << def;
+    }
+  }
+
+  // close the sqlite3 statement
+  sqlite3_finalize( preparedStatement );
+  sqlite3_close( database );
+
+  sDefinitionCache = defs;
+  sDefinitionCacheLock.unlock();
+
+  return defs;
+}
+
+QStringList QgsEllipsoidUtils::acronyms()
+{
+  QStringList result;
+  Q_FOREACH ( const QgsEllipsoidUtils::EllipsoidDefinition &def, definitions() )
+  {
+    result << def.acronym;
+  }
+  return result;
 }
