@@ -762,6 +762,7 @@ SET(QGIS_CORE_HDRS
   qgsprovidermetadata.h
   qgsproviderregistry.h
   qgspythonrunner.h
+  qgsrange.h
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsruntimeprofiler.h
