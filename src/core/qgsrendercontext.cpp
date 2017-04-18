@@ -291,9 +291,9 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
   {
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
-      QgsDebugMsg( QString("QgsRenderContext::convertToMapUnits: size[%1] ").arg( + size ));
+      QgsDebugMsg( QString( "QgsRenderContext::convertToMapUnits: size[%1] " ).arg( + size ) );
       size = convertMetersToMapUnits( size );
-      QgsDebugMsg( QString("QgsRenderContext::convertToMapUnits: result[%1] ").arg( + size ));
+      QgsDebugMsg( QString( "QgsRenderContext::convertToMapUnits: result[%1] " ).arg( + size ) );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
     }
     case QgsUnitTypes::RenderMapUnits:
@@ -389,5 +389,5 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
 
 double QgsRenderContext::convertMetersToMapUnits( double meters ) const
 {
-  return mDistanceArea.measureLineProjected(mExtent.center(),meters);
+  return mDistanceArea.measureLineProjected( mExtent.center(), meters );
 }
