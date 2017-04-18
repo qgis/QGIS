@@ -35,6 +35,7 @@
 #include "qgsrendercontext.h"
 #include "qgsmaplayerdependency.h"
 
+class QgsDataProvider;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
@@ -127,6 +128,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see setName()
      */
     QString name() const;
+
+    /**
+     * Returns the layer's data provider.
+     */
+    virtual QgsDataProvider *dataProvider() { return nullptr; }
+
+    /**
+     * Returns the layer's data provider in a const-correct manner
+     * \note not available in Python bindings
+     */
+    virtual const QgsDataProvider *dataProvider() const SIP_SKIP { return nullptr; }
 
     /** Returns the original name of the layer.
      * \returns the original layer name

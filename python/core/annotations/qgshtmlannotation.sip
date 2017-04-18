@@ -31,7 +31,7 @@ class QgsHtmlAnnotation: QgsAnnotation
 
     ~QgsHtmlAnnotation();
 
-    QSizeF minimumFrameSize() const;
+    virtual QSizeF minimumFrameSize() const;
 
     void setSourceFile( const QString &htmlFile );
 %Docstring
@@ -49,7 +49,7 @@ class QgsHtmlAnnotation: QgsAnnotation
     virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const;
     virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
-    void setAssociatedFeature( const QgsFeature &feature );
+    virtual void setAssociatedFeature( const QgsFeature &feature );
 
     static QgsHtmlAnnotation *create() /Factory/;
 %Docstring
@@ -59,7 +59,7 @@ class QgsHtmlAnnotation: QgsAnnotation
 
   protected:
 
-    void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
+    virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 
 };
 

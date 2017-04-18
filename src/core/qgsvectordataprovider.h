@@ -525,14 +525,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Get metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
      * \returns The provider metadata
      */
-    virtual QVariantMap metadata() const { return QVariantMap(); };
+    virtual QVariantMap metadata() const { return QVariantMap(); }
 
     /**
      * Get the translated metadata key.
      * \param mdKey The metadata key
      * \returns The translated metadata value
      */
-    virtual QString translateMetadataKey( const QString &mdKey ) const { return mdKey; };
+    virtual QString translateMetadataKey( const QString &mdKey ) const { return mdKey; }
 
     /**
      * Get the translated metadata value.
@@ -540,7 +540,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * \param value The metadata value
      * \returns The translated metadata value
      */
-    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ); return value.toString(); };
+    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ); return value.toString(); }
 
   signals:
 

@@ -17,6 +17,7 @@
 #define QGSLAYERTREELAYER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgslayertreenode.h"
 #include "qgsmaplayerref.h"
 
@@ -41,52 +42,68 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     Q_OBJECT
   public:
     explicit QgsLayerTreeLayer( QgsMapLayer *layer );
-    QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
 
-    explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString() );
+#ifndef SIP_RUN
+    QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
+#endif
+
+    /**
+     * Constructor for QgsLayerTreeLayer using weak references to layer ID, \a name, public \a source, and \a provider key.
+     */
+    explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
 
     QString layerId() const { return mRef.layerId; }
 
     QgsMapLayer *layer() const { return mRef.layer.data(); }
 
-    //! Get layer's name
-    //! \since QGIS 3.0
+    /**
+     * Returns the layer's name.
+     * \since QGIS 3.0
+     */
     QString name() const override;
-    //! Set layer's name
-    //! \since QGIS 3.0
+
+    /**
+     * Sets the layer's name.
+     * \since QGIS 3.0
+     */
     void setName( const QString &n ) override;
 
-    //! Read layer node from XML. Returns new instance.
-    //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
-    static QgsLayerTreeLayer *readXml( QDomElement &element );
-    //! Read layer node from XML. Returns new instance.
-    //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
-    //! \since QGIS 3.0
-    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project );
+    /**
+     * Read layer node from XML. Returns new instance.
+     * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+     */
+    static QgsLayerTreeLayer *readXml( QDomElement &element ) SIP_FACTORY;
+
+    /**
+     * Read layer node from XML. Returns new instance.
+     * Also resolves textual references to layers from the project (calls resolveReferences() internally).
+     * \since QGIS 3.0
+     */
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project ) SIP_FACTORY;
 
     virtual void writeXml( QDomElement &parentElement ) override;
 
     virtual QString dump() const override;
 
-    virtual QgsLayerTreeLayer *clone() const override;
+    virtual QgsLayerTreeLayer *clone() const override SIP_FACTORY;
 
-    //! Resolves reference to layer from stored layer ID (if it has not been resolved already)
-    //! \since QGIS 3.0
-    virtual void resolveReferences( const QgsProject *project ) override;
-
-  private slots:
-    //! Emits a nameChanged() signal if layer's name has changed
-    //! \since QGIS 3.0
-    void layerNameChanged();
-    //! Handles the event of deletion of the referenced layer
-    //! \since QGIS 3.0
-    void layerWillBeDeleted();
+    /**
+     * Resolves reference to layer from stored layer ID (if it has not been resolved already)
+     * \since QGIS 3.0
+     */
+    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
 
   signals:
-    //! emitted when a previously unavailable layer got loaded
+
+    /**
+     * Emitted when a previously unavailable layer got loaded.
+     */
     void layerLoaded();
-    //! emitted when a previously available layer got unloaded (from layer registry)
-    //! \since QGIS 2.6
+
+    /**
+     * Emitted when a previously available layer got unloaded (from layer registry).
+     * \since QGIS 2.6
+     */
     void layerWillBeUnloaded();
 
   protected:
@@ -96,6 +113,30 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     QgsMapLayerRef mRef;
     //! Layer name - only used if layer does not exist
     QString mLayerName;
+
+  private slots:
+
+    /**
+     * Emits a nameChanged() signal if layer's name has changed
+     * \since QGIS 3.0
+     */
+    void layerNameChanged();
+
+    /**
+     * Handles the event of deletion of the referenced layer
+     * \since QGIS 3.0
+     */
+    void layerWillBeDeleted();
+
+  private:
+
+#ifdef SIP_RUN
+
+    /**
+     * Copies are not allowed
+     */
+    QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
+#endif
 };
 
 

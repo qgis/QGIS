@@ -35,8 +35,8 @@ class QgsMessageLogViewer: QDialog
 %End
 
   protected:
-    void closeEvent( QCloseEvent *e );
-    void reject();
+    virtual void closeEvent( QCloseEvent *e );
+    virtual void reject();
 
 };
 

@@ -216,6 +216,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     virtual int overriddenProperty() override { return 42; } // if in doubt, comment it out
 
+    int overrideWithoutVirtual() override;
+
     QString returnTypeString() const;
 
     double returnTypeDouble() const;

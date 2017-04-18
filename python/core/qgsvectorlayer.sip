@@ -383,12 +383,7 @@ Returns a comment for the data in the layer
  :rtype: str
 %End
 
-    QgsVectorDataProvider *dataProvider();
-%Docstring
-Returns the data provider
- :rtype: QgsVectorDataProvider
-%End
-
+    virtual QgsVectorDataProvider *dataProvider();
 
     void setProviderEncoding( const QString &encoding );
 %Docstring
@@ -772,7 +767,7 @@ Return the provider type for this layer
  :rtype: str
 %End
 
-    bool readSymbology( const QDomNode &layerNode, QString &errorMessage );
+    virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage );
 %Docstring
  Read the symbology for the current layer from the Dom node supplied.
  \param layerNode node that will contain the symbology definition for this layer.
@@ -781,7 +776,7 @@ Return the provider type for this layer
  :rtype: bool
 %End
 
-    bool readStyle( const QDomNode &node, QString &errorMessage );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage );
 %Docstring
  Read the style for the current layer from the Dom node supplied.
  \param node node that will contain the style definition for this layer.
@@ -790,7 +785,7 @@ Return the provider type for this layer
  :rtype: bool
 %End
 
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
 %Docstring
  Write the symbology for the layer into the docment provided.
   \param node the node that will have the style element added to it.
@@ -800,7 +795,7 @@ Return the provider type for this layer
  :rtype: bool
 %End
 
-    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
 %Docstring
  Write just the style information for the layer into the document
   \param node the node that will have the style element added to it.
@@ -821,7 +816,7 @@ Return the provider type for this layer
  :rtype: bool
 %End
 
-    bool readSld( const QDomNode &node, QString &errorMessage );
+    virtual bool readSld( const QDomNode &node, QString &errorMessage );
 
     long featureCount( const QString &legendKey ) const;
 %Docstring
@@ -1099,7 +1094,7 @@ Synchronises with changes in the datasource
  :rtype: QgsMapLayerRenderer
 %End
 
-    QgsRectangle extent() const;
+    virtual QgsRectangle extent() const;
 %Docstring
 Return the extent of the layer
  :rtype: QgsRectangle
@@ -1627,7 +1622,7 @@ Returns the current transparency for the vector layer
  :rtype: int
 %End
 
-    QString htmlMetadata() const;
+    virtual QString htmlMetadata() const;
 
 
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
@@ -1695,7 +1690,7 @@ Returns the current transparency for the vector layer
 .. versionadded:: 3.0
 %End
 
-    QgsExpressionContext createExpressionContext() const;
+    virtual QgsExpressionContext createExpressionContext() const;
 
     QgsEditFormConfig editFormConfig() const;
 %Docstring
@@ -2041,7 +2036,7 @@ Signal emitted when setLayerTransparency() is called
 
 
   protected:
-    void setExtent( const QgsRectangle &rect );
+    virtual void setExtent( const QgsRectangle &rect );
 %Docstring
 Set the extent
 %End

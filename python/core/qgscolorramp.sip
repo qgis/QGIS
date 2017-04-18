@@ -302,7 +302,7 @@ class QgsLimitedRandomColorRamp : QgsColorRamp
     virtual QString type() const;
     virtual QgsLimitedRandomColorRamp *clone() const /Factory/;
     virtual QgsStringMap properties() const;
-    int count() const;
+    virtual int count() const;
 
     static QList<QColor> randomColors( int count,
                                        int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN,
@@ -420,11 +420,11 @@ class QgsRandomColorRamp: QgsColorRamp
   public:
     QgsRandomColorRamp();
 
-    int count() const;
+    virtual int count() const;
 
-    double value( int index ) const;
+    virtual double value( int index ) const;
 
-    QColor color( double value ) const;
+    virtual QColor color( double value ) const;
 
     virtual void setTotalColorCount( const int colorCount );
 %Docstring
@@ -435,7 +435,7 @@ class QgsRandomColorRamp: QgsColorRamp
 .. versionadded:: 2.5
 %End
 
-    QString type() const;
+    virtual QString type() const;
 
     virtual QgsRandomColorRamp *clone() const /Factory/;
 
@@ -483,7 +483,7 @@ class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
  :rtype: QgsColorRamp
 %End
 
-    bool setColors( const QgsNamedColorList &colors, const QString & = QString(), const QColor & = QColor() );
+    virtual bool setColors( const QgsNamedColorList &colors, const QString & = QString(), const QColor & = QColor() );
 %Docstring
  Sets the list of colors used by the ramp.
  \param colors list of colors
@@ -499,25 +499,16 @@ class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
 %End
 
     virtual double value( int index ) const;
-%Docstring
-QgsColorRamp interface
- :rtype: float
-%End
     virtual QColor color( double value ) const;
     virtual QString type() const;
     virtual void invert();
     virtual QgsPresetSchemeColorRamp *clone() const /Factory/;
     virtual QgsStringMap properties() const;
-    int count() const;
+    virtual int count() const;
 
-    QString schemeName() const;
-%Docstring
-QgsColorScheme interface
- :rtype: str
-%End
-    QgsNamedColorList fetchColors( const QString &context = QString(),
-                                   const QColor &baseColor = QColor() );
-    bool isEditable() const;
+    virtual QString schemeName() const;
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() );
+    virtual bool isEditable() const;
 
 };
 

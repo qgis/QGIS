@@ -33,6 +33,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
 #include "qgssnapper.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgseditformconfig.h"
 #include "qgsattributetableconfig.h"
@@ -63,7 +64,6 @@ class QgsRelation;
 class QgsRelationManager;
 class QgsSingleSymbolRenderer;
 class QgsSymbol;
-class QgsVectorDataProvider;
 class QgsVectorLayerJoinInfo;
 class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
@@ -437,13 +437,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     QString displayExpression() const;
 
-    //! Returns the data provider
-    QgsVectorDataProvider *dataProvider();
-
-    /** Returns the data provider in a const-correct manner
-     * \note not available in Python bindings
-     */
-    const QgsVectorDataProvider *dataProvider() const SIP_SKIP;
+    QgsVectorDataProvider *dataProvider() override;
+    const QgsVectorDataProvider *dataProvider() const override SIP_SKIP;
 
     //! Sets the textencoding of the data provider
     void setProviderEncoding( const QString &encoding );

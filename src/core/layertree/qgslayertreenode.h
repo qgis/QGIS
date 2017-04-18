@@ -113,10 +113,16 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Create a copy of the node. Returns new instance
     virtual QgsLayerTreeNode *clone() const = 0;
 
-    //! Turn textual references to layers into map layer object from project.
-    //! This method should be called after readXml()
-    //! \since QGIS 3.0
-    virtual void resolveReferences( const QgsProject *project ) = 0;
+    /**
+     * Turn textual references to layers into map layer object from project.
+     * This method should be called after readXml()
+     * If \a looseMatching is true then a looser match will be used, where a layer
+     * will match if the name, public source, and data provider match. This can be
+     * used to match legend customisation from different projects where layers
+     * will have different layer IDs.
+     * \since QGIS 3.0
+     */
+    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false ) = 0;
 
     //! Returns whether a node is really visible (ie checked and all its ancestors checked as well)
     //! \since QGIS 3.0

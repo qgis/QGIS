@@ -450,7 +450,6 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
      */
     QList< QColor > colors() const;
 
-    // QgsColorRamp interface
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "preset" ); }
@@ -459,10 +458,8 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
     virtual QgsStringMap properties() const override;
     int count() const override;
 
-    // QgsColorScheme interface
     QString schemeName() const override { return QStringLiteral( "preset" ); }
-    QgsNamedColorList fetchColors( const QString &context = QString(),
-                                   const QColor &baseColor = QColor() ) override;
+    QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() ) override;
     bool isEditable() const override { return true; }
 
   private:

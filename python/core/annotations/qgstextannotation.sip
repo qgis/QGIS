@@ -52,7 +52,7 @@ class QgsTextAnnotation: QgsAnnotation
 
   protected:
 
-    void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
+    virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 
 };
 

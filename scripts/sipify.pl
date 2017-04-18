@@ -318,6 +318,12 @@ while(!eof $header){
         # remove keywords
         if ( $line =~ m/\boverride\b/){
             $is_override = 1;
+            if ( $line !~ m/^(\s*)virtual\b(.*)$/ ){
+                #sip often requires the virtual keyword to be present, or it chokes on covariant return types
+                #in overridden methods
+                $line =~ m/^(\s*?)\b(.*)$/;
+                $line = "$1virtual $2\n";
+            }
         }
         $line =~ s/\s*\boverride\b//;
         $line =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
