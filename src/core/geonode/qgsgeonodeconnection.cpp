@@ -139,13 +139,16 @@ QVariantList QgsGeoNodeConnection::getLayers()
       temp = layer["detail_url"].toString().split( "/" );
       layerName = temp[temp.count() - 1];
     }
+    // Add typeName
+    QString layerTypeName = layerName;
+    layer[QStringLiteral( "typename" )] = layerName;
     // Clean from geonode%3A
-    QString geonodePrefix = QString( "geonode%3A" );
+    QString geonodePrefix = QStringLiteral( "geonode%3A" );
     if ( layerName.contains( geonodePrefix ) )
     {
       layerName.remove( 0, geonodePrefix.length() );
     }
-    layer[QString( "name" )] = layerName;
+    layer[QStringLiteral( "name" )] = layerName;
     layerList[i] = layer;
   }
   return layerList;
