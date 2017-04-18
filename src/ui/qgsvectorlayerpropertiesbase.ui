@@ -2027,10 +2027,37 @@ border-radius: 2px;</string>
  </customwidgets>
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>mSearchLineEdit</tabstop>
+  <tabstop>teMetadataViewer</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mLayerOrigNameLineEdit</tabstop>
+  <tabstop>txtDisplayName</tabstop>
+  <tabstop>mLayerShortNameLineEdit</tabstop>
+  <tabstop>mLayerTitleLineEdit</tabstop>
+  <tabstop>mLayerAbstractTextEdit</tabstop>
+  <tabstop>mLayerKeywordListLineEdit</tabstop>
+  <tabstop>mLayerDataUrlLineEdit</tabstop>
+  <tabstop>mLayerDataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerAttributionLineEdit</tabstop>
+  <tabstop>mLayerAttributionUrlLineEdit</tabstop>
+  <tabstop>mLayerMetadataUrlLineEdit</tabstop>
+  <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
+  <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerLegendUrlLineEdit</tabstop>
+  <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>cboProviderEncoding</tabstop>
+  <tabstop>indexGroupBox_2</tabstop>
+  <tabstop>mCrsSelector</tabstop>
+  <tabstop>pbnIndex</tabstop>
+  <tabstop>pbnUpdateExtents</tabstop>
+  <tabstop>txtSubsetSQL</tabstop>
+  <tabstop>pbnQueryBuilder</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>scrollArea_19</tabstop>
+  <tabstop>mScaleVisibilityGroupBox</tabstop>
+  <tabstop>mScaleRangeWidget</tabstop>
   <tabstop>mSimplifyDrawingGroupBox</tabstop>
   <tabstop>mSimplifyDrawingSpinBox</tabstop>
   <tabstop>mSimplifyAlgorithmComboBox</tabstop>
@@ -2040,15 +2067,15 @@ border-radius: 2px;</string>
   <tabstop>mRefreshLayerCheckBox</tabstop>
   <tabstop>mRefreshLayerIntervalSpinBox</tabstop>
   <tabstop>mDisplayExpressionWidget</tabstop>
-  <tabstop>mMapTipExpressionFieldWidget</tabstop>
-  <tabstop>mInsertExpressionButton</tabstop>
   <tabstop>scrollArea_6</tabstop>
-  <tabstop>scrollArea_7</tabstop>
-  <tabstop>mButtonAddJoin</tabstop>
-  <tabstop>mButtonRemoveJoin</tabstop>
-  <tabstop>mButtonEditJoin</tabstop>
   <tabstop>mJoinTreeWidget</tabstop>
   <tabstop>mLayersDependenciesTreeView</tabstop>
+  <tabstop>mButtonRemoveJoin</tabstop>
+  <tabstop>scrollArea_7</tabstop>
+  <tabstop>mButtonAddJoin</tabstop>
+  <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mButtonEditJoin</tabstop>
+  <tabstop>mMapTipExpressionFieldWidget</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
