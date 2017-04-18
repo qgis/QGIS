@@ -13,6 +13,7 @@
 #include <QPointer>
 
 #include "qgsmaplayer.h"
+#include "qgsmaplayerref.h"
 
 /// @cond PRIVATE
 
@@ -37,6 +38,40 @@ inline QgsWeakMapLayerPointerList _qgis_listRawToQPointer( const QList<QgsMapLay
     lst.append( layer );
   }
   return lst;
+}
+
+inline QList<QgsMapLayer *> _qgis_listRefToRaw( const QList< QgsMapLayerRef > &layers )
+{
+  QList<QgsMapLayer *> lst;
+  lst.reserve( layers.count() );
+  Q_FOREACH ( const QgsMapLayerRef &layer, layers )
+  {
+    if ( layer )
+      lst.append( &layer );
+  }
+  return lst;
+}
+
+inline QList< QgsMapLayerRef > _qgis_listRawToRef( const QList<QgsMapLayer *> &layers )
+{
+  QList< QgsMapLayerRef > lst;
+  lst.reserve( layers.count() );
+  Q_FOREACH ( QgsMapLayer *layer, layers )
+  {
+    lst.append( QgsMapLayerRef( layer ) );
+  }
+  return lst;
+}
+
+inline void _qgis_removeLayers( QList< QgsMapLayerRef > &list, QList< QgsMapLayer *> layersToRemove )
+{
+  QMutableListIterator<QgsMapLayerRef> it( list );
+  while ( it.hasNext() )
+  {
+    QgsMapLayerRef &ref = it.next();
+    if ( layersToRemove.contains( &ref ) )
+      it.remove();
+  }
 }
 
 inline QStringList _qgis_listQPointerToIDs( const QgsWeakMapLayerPointerList &layers )

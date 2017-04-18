@@ -26,6 +26,7 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include "qgsvectorlayerref.h"
+#include "qgsmaplayerlistutils.h"
 
 class TestSignalReceiver : public QObject
 {
@@ -70,6 +71,7 @@ class TestQgsMapLayer : public QObject
     void isInScaleRange();
 
     void layerRef();
+    void layerRefListUtils();
 
 
   private:
@@ -226,6 +228,35 @@ void TestQgsMapLayer::layerRef()
   QVERIFY( !&ref5 );
   QVERIFY( !ref5.resolve( QgsProject::instance() ) );
   QVERIFY( !ref5.resolveWeakly( QgsProject::instance() ) );
+}
+
+void TestQgsMapLayer::layerRefListUtils()
+{
+  // conversion utils
+  QgsVectorLayer *vlA = new QgsVectorLayer( "Point", "a", "memory" );
+  QgsVectorLayer *vlB = new QgsVectorLayer( "Point", "b", "memory" );
+
+  QList<QgsMapLayer *> listRawSource;
+  listRawSource << vlA << vlB;
+
+  QList< QgsMapLayerRef > refs = _qgis_listRawToRef( listRawSource );
+  QCOMPARE( &refs.at( 0 ), vlA );
+  QCOMPARE( &refs.at( 1 ), vlB );
+
+  QList<QgsMapLayer *> raw = _qgis_listRefToRaw( refs );
+  QCOMPARE( raw, QList< QgsMapLayer *>() << vlA << vlB );
+
+  //remove layers
+  QgsVectorLayer *vlC = new QgsVectorLayer( "Point", "c", "memory" );
+  QgsVectorLayer *vlD = new QgsVectorLayer( "Point", "d", "memory" );
+  refs << QgsMapLayerRef( vlC ) << QgsMapLayerRef( vlD );
+
+  _qgis_removeLayers( refs, QList< QgsMapLayer *>() << vlB << vlD );
+  QCOMPARE( refs.size(), 2 );
+  QCOMPARE( &refs.at( 0 ), vlA );
+  QCOMPARE( &refs.at( 1 ), vlC );
+
+
 }
 
 QGSTEST_MAIN( TestQgsMapLayer )
