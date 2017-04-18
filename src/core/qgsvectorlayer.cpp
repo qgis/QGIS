@@ -3978,7 +3978,7 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Legend URL" ) % QLatin1String( "</td><td>" ) % legendUrl() % QLatin1String( "</td></tr>\n" );
   myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Legend Format" ) % QLatin1String( "</td><td>" ) % legendUrlFormat() % QLatin1String( "</td></tr>\n" );
 
-  myMetadata += QStringLiteral( "</body>\n</html>\n" );
+  myMetadata += QStringLiteral( "</table>\n</body>\n</html>\n" );
   return myMetadata;
 }
 
