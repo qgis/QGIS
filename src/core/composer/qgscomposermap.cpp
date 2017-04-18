@@ -1214,7 +1214,15 @@ bool QgsComposerMap::writeXml( QDomElement &elem, QDomDocument &doc ) const
     for ( ; styleIt != mLayerStyleOverrides.constEnd(); ++styleIt )
     {
       QDomElement styleElem = doc.createElement( QStringLiteral( "LayerStyle" ) );
-      styleElem.setAttribute( QStringLiteral( "layerid" ), styleIt.key() );
+
+      QgsMapLayerRef ref( styleIt.key() );
+      ref.resolve( mComposition->project() );
+
+      styleElem.setAttribute( QStringLiteral( "layerid" ), ref.layerId );
+      styleElem.setAttribute( QStringLiteral( "name" ), ref.name );
+      styleElem.setAttribute( QStringLiteral( "source" ), ref.source );
+      styleElem.setAttribute( QStringLiteral( "provider" ), ref.provider );
+
       QgsMapLayerStyle style( styleIt.value() );
       style.writeXml( styleElem );
       stylesElem.appendChild( styleElem );
@@ -1365,9 +1373,15 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     {
       const QDomElement &layerStyleElement = layerStyleNodeList.at( i ).toElement();
       QString layerId = layerStyleElement.attribute( QStringLiteral( "layerid" ) );
+      QString layerName = layerStyleElement.attribute( QStringLiteral( "name" ) );
+      QString layerSource = layerStyleElement.attribute( QStringLiteral( "source" ) );
+      QString layerProvider = layerStyleElement.attribute( QStringLiteral( "provider" ) );
+      QgsMapLayerRef ref( layerId, layerName, layerSource, layerProvider );
+      ref.resolveWeakly( mComposition->project() );
+
       QgsMapLayerStyle style;
       style.readXml( layerStyleElement );
-      mLayerStyleOverrides.insert( layerId, style.xmlData() );
+      mLayerStyleOverrides.insert( ref.layerId, style.xmlData() );
     }
   }
 
