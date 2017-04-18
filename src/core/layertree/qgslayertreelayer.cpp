@@ -45,35 +45,28 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
 
 void QgsLayerTreeLayer::resolveReferences( const QgsProject *project, bool looseMatching )
 {
-  if ( mRef.layer )
+  if ( mRef )
     return;  // already assigned
 
-  QgsMapLayer *layer = project->mapLayer( mRef.layerId );
-
-  if ( !layer && looseMatching && !mRef.name.isEmpty() )
+  if ( !looseMatching )
   {
-    Q_FOREACH ( QgsMapLayer *l, project->mapLayersByName( mRef.name ) )
-    {
-      if ( mRef.layerMatchesSource( l ) )
-      {
-        layer = l;
-        break;
-      }
-    }
+    mRef.resolve( project );
+  }
+  else
+  {
+    mRef.resolveWeakly( project );
   }
 
-  if ( !layer )
+  if ( !mRef )
     return;
 
-  mRef.layer = layer;
-  mRef.layerId = layer->id();
   attachToLayer();
   emit layerLoaded();
 }
 
 void QgsLayerTreeLayer::attachToLayer()
 {
-  if ( !mRef.layer )
+  if ( !mRef )
     return;
 
   connect( mRef.layer, &QgsMapLayer::nameChanged, this, &QgsLayerTreeLayer::layerNameChanged );
@@ -83,16 +76,16 @@ void QgsLayerTreeLayer::attachToLayer()
 
 QString QgsLayerTreeLayer::name() const
 {
-  return mRef.layer ? mRef.layer->name() : mLayerName;
+  return mRef ? mRef->name() : mLayerName;
 }
 
 void QgsLayerTreeLayer::setName( const QString &n )
 {
-  if ( mRef.layer )
+  if ( mRef )
   {
-    if ( mRef.layer->name() == n )
+    if ( mRef->name() == n )
       return;
-    mRef.layer->setName( n );
+    mRef->setName( n );
     // no need to emit signal: we will be notified from layer's nameChanged() signal
   }
   else
@@ -143,10 +136,10 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement )
   elem.setAttribute( QStringLiteral( "id" ), layerId() );
   elem.setAttribute( QStringLiteral( "name" ), name() );
 
-  if ( mRef.layer )
+  if ( mRef )
   {
-    elem.setAttribute( "source", mRef.layer->publicSource() );
-    elem.setAttribute( "providerKey", mRef.layer->dataProvider() ? mRef.layer->dataProvider()->name() : QString() );
+    elem.setAttribute( "source", mRef->publicSource() );
+    elem.setAttribute( "providerKey", mRef->dataProvider() ? mRef->dataProvider()->name() : QString() );
   }
 
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
@@ -169,9 +162,9 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::clone() const
 
 void QgsLayerTreeLayer::layerWillBeDeleted()
 {
-  Q_ASSERT( mRef.layer );
+  Q_ASSERT( mRef );
 
-  mLayerName = mRef.layer->name();
+  mLayerName = mRef->name();
   // in theory we do not even need to do this - the weak ref should clear itself
   mRef.layer.clear();
   // layerId stays in the reference
@@ -182,6 +175,6 @@ void QgsLayerTreeLayer::layerWillBeDeleted()
 
 void QgsLayerTreeLayer::layerNameChanged()
 {
-  Q_ASSERT( mRef.layer );
-  emit nameChanged( this, mRef.layer->name() );
+  Q_ASSERT( mRef );
+  emit nameChanged( this, mRef->name() );
 }
