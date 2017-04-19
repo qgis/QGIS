@@ -21,6 +21,8 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgis_gui.h"
 
+#include "qgis.h"
+
 class QgsMapLayer;
 class QgsVectorLayer;
 
@@ -43,7 +45,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * \brief QgsMapLayerComboBox creates a combo box to dislpay the list of layers (currently in the registry).
      * The layers can be filtered and/or ordered.
      */
-    explicit QgsMapLayerComboBox( QWidget *parent = nullptr );
+    explicit QgsMapLayerComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! setFilters allows fitering according to layer type and/or geometry type.
     void setFilters( QgsMapLayerProxyModel::Filters filters ) { mProxyModel->setFilters( filters ); }
