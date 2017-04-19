@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgscomposition.h"
+#include "qgscomposerattributetablev2.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposershape.h"
 #include "qgscomposerarrow.h"
@@ -60,6 +61,7 @@ class TestQgsComposition : public QObject
     void georeference();
     void variablesEdited();
     void legendRestoredFromTemplate();
+    void attributeTableRestoredFromTemplate();
 
   private:
     QgsComposition *mComposition;
@@ -686,6 +688,56 @@ void TestQgsComposition::legendRestoredFromTemplate()
   QVERIFY( layerNode3 );
   QCOMPARE( layerNode3->layer(), layer2 );
   QCOMPARE( model3->data( model->node2index( layerNode3 ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
+}
+
+void TestQgsComposition::attributeTableRestoredFromTemplate()
+{
+  // load some layers
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      "ogr" );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( "Point", "memory", "memory" );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer2 );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+
+  // create composition
+  QgsMapSettings ms;
+  QgsComposition c( ms );
+  // add an attribute table
+  QgsComposerAttributeTableV2 *table = new QgsComposerAttributeTableV2( &c, false );
+  c.addMultiFrame( table );
+  table->setVectorLayer( layer );
+  QgsComposerFrame *frame = new QgsComposerFrame( &c, table, 1, 1, 10, 10 );
+  c.addComposerTableFrame( table, frame );
+  table->addFrame( frame );
+
+  // save composition to template
+  QDomDocument doc;
+  QDomElement composerElem = doc.createElement( "Composer" );
+  doc.appendChild( composerElem );
+  c.writeXML( composerElem, doc );
+  c.atlasComposition().writeXML( composerElem, doc );
+
+  // new project
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      "ogr" );
+  QgsVectorLayer *layer4 = new QgsVectorLayer( "Point", "memory", "memory" );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer4 );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer3 );
+
+  // make a new composition from template
+  QgsComposition c2( ms );
+  QVERIFY( c2.loadFromTemplate( doc ) );
+  // get table from new composition
+  QList< QgsComposerFrame * > frames2;
+  c2.composerItems( frames2 );
+  QgsComposerAttributeTableV2 *table2 = static_cast< QgsComposerAttributeTableV2 *>( frames2.at( 0 )->multiFrame() );
+  QVERIFY( table2 );
+
+  QCOMPARE( table2->vectorLayer(), layer3 );
 }
 
 QTEST_MAIN( TestQgsComposition )

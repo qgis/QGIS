@@ -49,7 +49,6 @@ bool QgsComposerAttributeTableCompareV2::operator()( const QgsComposerTableRow& 
 QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands )
     : QgsComposerTableV2( composition, createUndoCommands )
     , mSource( LayerAttributes )
-    , mVectorLayer( nullptr )
     , mCurrentAtlasLayer( nullptr )
     , mComposerMap( nullptr )
     , mMaximumNumberOfFeatures( 30 )
@@ -67,7 +66,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( mapIt.value() );
     if ( vl )
     {
-      mVectorLayer = vl;
+      mVectorLayer.setLayer( vl );
       break;
     }
   }
@@ -75,7 +74,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
   {
     resetColumns();
     //listen for modifications to layer and refresh table when they occur
-    connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( refreshAttributes() ) );
+    connect( mVectorLayer.get(), SIGNAL( layerModified() ), this, SLOT( refreshAttributes() ) );
   }
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
 
@@ -104,14 +103,14 @@ QString QgsComposerAttributeTableV2::displayName() const
 
 void QgsComposerAttributeTableV2::setVectorLayer( QgsVectorLayer* layer )
 {
-  if ( layer == mVectorLayer )
+  if ( layer == mVectorLayer.get() )
   {
     //no change
     return;
   }
 
   QgsVectorLayer* prevLayer = sourceLayer();
-  mVectorLayer = layer;
+  mVectorLayer.setLayer( layer );
 
   if ( mSource == QgsComposerAttributeTableV2::LayerAttributes && layer != prevLayer )
   {
@@ -125,7 +124,7 @@ void QgsComposerAttributeTableV2::setVectorLayer( QgsVectorLayer* layer )
     resetColumns();
 
     //listen for modifications to layer and refresh table when they occur
-    connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( refreshAttributes() ) );
+    connect( mVectorLayer.get(), SIGNAL( layerModified() ), this, SLOT( refreshAttributes() ) );
   }
 
   refreshAttributes();
@@ -591,7 +590,7 @@ QgsExpressionContext *QgsComposerAttributeTableV2::createExpressionContext() con
 
   if ( mSource == LayerAttributes )
   {
-    context->appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
+    context->appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer.get() ) );
   }
 
   return context;
@@ -615,7 +614,7 @@ QgsVectorLayer *QgsComposerAttributeTableV2::sourceLayer()
     case QgsComposerAttributeTableV2::AtlasFeature:
       return mComposition->atlasComposition().coverageLayer();
     case QgsComposerAttributeTableV2::LayerAttributes:
-      return mVectorLayer;
+      return mVectorLayer.get();
     case QgsComposerAttributeTableV2::RelationChildren:
     {
       QgsRelation relation = QgsProject::instance()->relationManager()->relation( mRelationId );
@@ -631,7 +630,7 @@ void QgsComposerAttributeTableV2::removeLayer( const QString& layerId )
   {
     if ( layerId == mVectorLayer->id() )
     {
-      mVectorLayer = nullptr;
+      mVectorLayer.setLayer( nullptr );
       //remove existing columns
       qDeleteAll( mColumns );
       mColumns.clear();
@@ -709,7 +708,10 @@ bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & do
   }
   if ( mVectorLayer )
   {
-    composerTableElem.setAttribute( "vectorLayer", mVectorLayer->id() );
+    composerTableElem.setAttribute( "vectorLayer", mVectorLayer.layerId );
+    composerTableElem.setAttribute( "vectorLayerName", mVectorLayer.name );
+    composerTableElem.setAttribute( "vectorLayerSource", mVectorLayer.source );
+    composerTableElem.setAttribute( "vectorLayerProvider", mVectorLayer.provider );
   }
 
   bool ok = QgsComposerTableV2::writeXML( composerTableElem, doc, ignoreFrames );
@@ -778,19 +780,12 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
   }
 
   //vector layer
-  QString layerId = itemElem.attribute( "vectorLayer", "not_existing" );
-  if ( layerId == "not_existing" )
-  {
-    mVectorLayer = nullptr;
-  }
-  else
-  {
-    QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-    if ( ml )
-    {
-      mVectorLayer = dynamic_cast<QgsVectorLayer*>( ml );
-    }
-  }
+  QString layerId = itemElem.attribute( "vectorLayer" );
+  QString layerName = itemElem.attribute( "vectorLayerName" );
+  QString layerSource = itemElem.attribute( "vectorLayerSource" );
+  QString layerProvider = itemElem.attribute( "vectorLayerProvider" );
+  mVectorLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
+  mVectorLayer.resolveWeakly();
 
   //connect to new layer
   connect( sourceLayer(), SIGNAL( layerModified() ), this, SLOT( refreshAttributes() ) );

@@ -20,6 +20,7 @@
 
 #include "qgscomposertablev2.h"
 #include "qgscomposerattributetable.h"
+#include "qgsvectorlayerref.h"
 
 class QgsComposerMap;
 class QgsVectorLayer;
@@ -120,7 +121,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @returns attribute table's current vector layer
      * @see setVectorLayer
      */
-    QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+    QgsVectorLayer* vectorLayer() const { return mVectorLayer.get(); }
 
     /** Sets the relation id from which to display child features
      * @param relationId id for relation to display child features from
@@ -314,7 +315,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /** Attribute source*/
     ContentSource mSource;
     /** Associated vector layer*/
-    QgsVectorLayer* mVectorLayer;
+    QgsVectorLayerRef mVectorLayer;
     /** Relation id, if in relation children mode*/
     QString mRelationId;
 
