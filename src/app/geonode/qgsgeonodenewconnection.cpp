@@ -124,6 +124,7 @@ void QgsGeoNodeNewConnection::testConnection()
   QNetworkReply *layersReply = request( endpoint );
   endpoint = "/api/maps";
   QNetworkReply *mapsReply = request( endpoint );
+  QApplication::restoreOverrideCursor();
 
   if ( layersReply->error() == QNetworkReply::NoError && mapsReply->error() == QNetworkReply::NoError )
   {
@@ -137,7 +138,6 @@ void QgsGeoNodeNewConnection::testConnection()
                               tr( "Test connection" ),
                               tr( "\nConnection failed, \n\nplease check whether %1 is a valid geonode instance.\n\n" ).arg( txtUrl->text() ) );
   }
-  QApplication::restoreOverrideCursor();
 }
 
 QNetworkReply *QgsGeoNodeNewConnection::request( QString &endPoint )

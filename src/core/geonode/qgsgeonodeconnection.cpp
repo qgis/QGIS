@@ -154,6 +154,67 @@ QVariantList QgsGeoNodeConnection::getLayers()
   return layerList;
 }
 
+QVariantList QgsGeoNodeConnection::getLayers( QString serviceType )
+{
+  QString url = serviceUrl( serviceType ) + "?version=2.0.0&service=wfs&request=GetCapabilities";
+  if ( !url.contains( QLatin1String( "://" ) ) )
+  {
+    url.prepend( "http://" );
+  }
+  QUrl layerUrl( url );
+  layerUrl.setScheme( "http" );
+  QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
+
+  QNetworkRequest request( layerUrl );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, "application/xml" );
+
+  QNetworkReply *reply = networkManager->get( request );
+  while ( !reply->isFinished() )
+  {
+    qApp->processEvents();
+  }
+  QByteArray response_data = reply->readAll();
+
+  QDomDocument dom;
+  dom.setContent( response_data );
+
+  QDomNodeList featureNodeList = dom.elementsByTagName( "FeatureType" );
+  QVariantList layerList;
+
+  if ( !featureNodeList.isEmpty() )
+  {
+    for ( int i = 0; i < featureNodeList.size(); ++i )
+    {
+      QVariantMap layer;
+
+      QDomNode featureNode = featureNodeList.at( i );
+      QString layerName = featureNode.namedItem( "Name" ).firstChild().nodeValue();
+      QString layerTitle = featureNode.namedItem( "Title" ).firstChild().nodeValue();
+      QString layerCRS = featureNode.namedItem( "DefaultCRS" ).firstChild().nodeValue();
+      QString geonodePrefix = QStringLiteral( "geonode:" );
+      QString CRSPrefix = QStringLiteral( "urn:ogc:def:crs:" );
+
+      layer[QStringLiteral( "typename" )] = layerName;
+
+      if ( layerName.contains( geonodePrefix ) )
+      {
+        layerName.remove( 0, geonodePrefix.length() );
+      }
+      if ( layerCRS.contains( CRSPrefix ) )
+      {
+        layerCRS.remove( 0, CRSPrefix.length() );
+      }
+
+      layer.insertMulti( QStringLiteral( "name" ), layerName );
+      layer.insertMulti( QStringLiteral( "title" ), layerTitle );
+      layer.insertMulti( QStringLiteral( "default_crs" ), layerCRS );
+      layerList.append( layer );
+    }
+  }
+
+  return layerList;
+}
+
 // Currently copy and paste from getLayers. It can be refactored easily, difference in url only.
 QVariantList QgsGeoNodeConnection::getMaps()
 {

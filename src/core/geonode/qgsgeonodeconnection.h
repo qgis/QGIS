@@ -57,6 +57,7 @@ class CORE_EXPORT QgsGeoNodeConnection : public QObject
 
     //! Return list of available layers
     QVariantList getLayers();
+    QVariantList getLayers( QString serviceType );
 
     //! Return list of available layers
     QVariantList getMaps();
