@@ -32,7 +32,6 @@
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
-#include "qgssnapper.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgseditformconfig.h"
@@ -1029,13 +1028,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     int addTopologicalPoints( const QgsPoint &p );
 
-    /** Inserts vertices to the snapped segments.
-     * This is useful for topological editing if snap to segment is enabled.
-     * \param snapResults results collected from the snapping operation
-     * \returns 0 in case of success
-     */
-    int insertSegmentVerticesForSnap( const QList<QgsSnappingResult> &snapResults );
-
     /** Access to labeling configuration.
      * \since QGIS 2.12
      * \note not available in Python bindings
@@ -1055,18 +1047,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Returns true if the provider has been modified since the last commit
     virtual bool isModified() const;
-
-    /** Snaps to segment or vertex within given tolerance
-     * \param startPoint point to snap (in layer coordinates)
-     * \param snappingTolerance distance tolerance for snapping
-     * \param snappingResults snapping results. Key is the distance between startPoint and snapping target
-     * \param snap_to to segment / to vertex
-     * \returns 0 in case of success
-     */
-    int snapWithContext( const QgsPoint &startPoint,
-                         double snappingTolerance,
-                         QMultiMap < double, QgsSnappingResult > &snappingResults SIP_OUT,
-                         QgsSnappingResult::SnappingType snap_to );
 
     //! Synchronises with changes in the datasource
     virtual void reload() override;
@@ -1903,21 +1883,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Goes through all features and finds a free id (e.g. to give it temporarily to a not-committed feature)
     QgsFeatureId findFreeId();
-
-    /** Snaps to a geometry and adds the result to the multimap if it is within the snapping result
-     * \param startPoint start point of the snap
-     * \param featureId id of feature
-     * \param geom geometry to snap
-     * \param sqrSnappingTolerance squared search tolerance of the snap
-     * \param snappingResults list to which the result is appended
-     * \param snap_to snap to vertex or to segment
-     */
-    void snapToGeometry( const QgsPoint &startPoint,
-                         QgsFeatureId featureId,
-                         const QgsGeometry &geom,
-                         double sqrSnappingTolerance,
-                         QMultiMap<double, QgsSnappingResult> &snappingResults,
-                         QgsSnappingResult::SnappingType snap_to ) const;
 
     //! Add joined attributes to a feature
     //void addJoinedAttributes( QgsFeature& f, bool all = false );

@@ -286,6 +286,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsSymbologyV2Conversion was removed. Reading of renderers from pre-1.0 versions is not supported anymore.
 - QgsTextAnnotationItem. Use QgsTextAnnotation instead.
 - QgsSnapper. Use QgsSnappingUtils instead.
+- QgsSnappingResult. Use QgsSnappingUtils instead.
 - QgsMapCanvasSnapper. Use QgsMapCanvas::snappingUtils() instead.
 
 
@@ -2095,6 +2096,9 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - readXml() does not resolve references to joined layers. Call resolveReferences() when joined layers are available.
 - snapWithContext(), snapToGeometry() - last argument has changed from QgsSnapper::SnappingType to QgsSnappingResult::SnappingType (no change in functionality).
 - snapPoint() has been removed - use QgsPointLocator class instead.
+- snapWithContext() has been removed - use QgsPointLocator class instead.
+- insertSegmentVerticesForSnap() has been removed - use addTopologicalPoints() directly.
+
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}
 ------------------------
@@ -2110,6 +2114,7 @@ QgsVectorLayerEditUtils        {#qgis_api_break_3_0_QgsVectorLayerEditUtils}
 -----------------------
 
 - addTopologicalPoints() now accepts a geometry reference, not a pointer.
+- insertSegmentVerticesForSnap() has been removed.
 
 
 QgsVectorLayerImport        {#qgis_api_break_3_0_QgsVectorLayerImport}

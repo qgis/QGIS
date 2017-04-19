@@ -176,18 +176,13 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      */
     int addTopologicalPoints( const QgsPoint &p );
 
-    /** Inserts vertices to the snapped segments.
-     * This is useful for topological editing if snap to segment is enabled.
-     * \param snapResults results collected from the snapping operation
-     * \returns 0 in case of success
-     */
-    int insertSegmentVerticesForSnap( const QList<QgsSnappingResult> &snapResults );
-
   protected:
 
     /** Little helper function that gives bounding box from a list of points.
     \returns 0 in case of success */
     int boundingBoxFromPointList( const QList<QgsPoint> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
+
+  private:
 
     QgsVectorLayer *L = nullptr;
 };

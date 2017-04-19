@@ -665,11 +665,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
   if ( !L->hasGeometryType() )
     return 1;
 
-  QMultiMap<double, QgsSnappingResult> snapResults; //results from the snapper object
-  //we also need to snap to vertex to make sure the vertex does not already exist in this geometry
-  QMultiMap<double, QgsSnappingResult> vertexSnapResults;
-
-  QList<QgsSnappingResult> filteredSnapResults; //we filter out the results that are on existing vertices
+  double segmentSearchEpsilon = L->crs().isGeographic() ? 1e-12 : 1e-8;
 
   //work with a tolerance because coordinate projection may introduce some rounding
   double threshold =  0.0000001;
@@ -682,66 +678,55 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
     threshold = 0.0001;
   }
 
+  QgsRectangle searchRect( p.x() - threshold, p.y() - threshold,
+                           p.x() + threshold, p.y() + threshold );
+  double sqrSnappingTolerance = threshold * threshold;
 
-  if ( L->snapWithContext( p, threshold, snapResults, QgsSnappingResult::SnapToSegment ) != 0 )
+  QgsFeature f;
+  QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest()
+                           .setFilterRect( searchRect )
+                           .setFlags( QgsFeatureRequest::ExactIntersect )
+                           .setSubsetOfAttributes( QgsAttributeList() ) );
+
+  QMap<QgsFeatureId, QgsGeometry> features;
+  QMap<QgsFeatureId, int> segments;
+
+  while ( fit.nextFeature( f ) )
   {
+    int afterVertex;
+    QgsPoint snappedPoint;
+    double sqrDistSegmentSnap = f.geometry().closestSegmentWithContext( p, snappedPoint, afterVertex, nullptr, segmentSearchEpsilon );
+    if ( sqrDistSegmentSnap < sqrSnappingTolerance )
+    {
+      segments[f.id()] = afterVertex;
+      features[f.id()] = f.geometry();
+    }
+  }
+
+  if ( segments.isEmpty() )
     return 2;
-  }
 
-  QMultiMap<double, QgsSnappingResult>::const_iterator snap_it = snapResults.constBegin();
-  QMultiMap<double, QgsSnappingResult>::const_iterator vertex_snap_it;
-  for ( ; snap_it != snapResults.constEnd(); ++snap_it )
+  for ( QMap<QgsFeatureId, int>::const_iterator it = segments.constBegin(); it != segments.constEnd(); ++it )
   {
-    //test if p is already a vertex of this geometry. If yes, don't insert it
-    bool vertexAlreadyExists = false;
-    if ( L->snapWithContext( p, threshold, vertexSnapResults, QgsSnappingResult::SnapToVertex ) != 0 )
-    {
-      continue;
-    }
+    QgsFeatureId fid = it.key();
+    int segmentAfterVertex = it.value();
+    QgsGeometry geom = features[fid];
 
-    vertex_snap_it = vertexSnapResults.constBegin();
-    for ( ; vertex_snap_it != vertexSnapResults.constEnd(); ++vertex_snap_it )
-    {
-      if ( snap_it.value().snappedAtGeometry == vertex_snap_it.value().snappedAtGeometry )
-      {
-        vertexAlreadyExists = true;
-      }
-    }
+    int atVertex, beforeVertex, afterVertex;
+    double sqrDistVertexSnap;
+    geom.closestVertex( p, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
 
-    if ( !vertexAlreadyExists )
+    if ( sqrDistVertexSnap < sqrSnappingTolerance )
+      continue;  // the vertex already exists - do not insert it
+
+    if ( !L->insertVertex( p.x(), p.y(), fid, segmentAfterVertex ) )
     {
-      filteredSnapResults.push_back( *snap_it );
+      QgsDebugMsg( "failed to insert topo point" );
     }
   }
-  insertSegmentVerticesForSnap( filteredSnapResults );
+
   return 0;
 }
-
-
-int QgsVectorLayerEditUtils::insertSegmentVerticesForSnap( const QList<QgsSnappingResult> &snapResults )
-{
-  if ( !L->hasGeometryType() )
-    return 1;
-
-  int returnval = 0;
-  QgsPoint layerPoint;
-
-  QList<QgsSnappingResult>::const_iterator it = snapResults.constBegin();
-  for ( ; it != snapResults.constEnd(); ++it )
-  {
-    if ( it->snappedVertexNr == -1 ) // segment snap
-    {
-      layerPoint = it->snappedVertex;
-      if ( !insertVertex( layerPoint.x(), layerPoint.y(), it->snappedAtGeometry, it->afterVertexNr ) )
-      {
-        returnval = 3;
-      }
-    }
-  }
-  return returnval;
-}
-
-
 
 
 int QgsVectorLayerEditUtils::boundingBoxFromPointList( const QList<QgsPoint> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const

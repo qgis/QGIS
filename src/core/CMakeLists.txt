@@ -769,7 +769,6 @@ SET(QGIS_CORE_HDRS
   qgsscalecalculator.h
   qgsscaleutils.h
   qgssimplifymethod.h
-  qgssnapper.h
   qgssnappingutils.h
   qgsspatialindex.h
   qgssqlexpressioncompiler.h

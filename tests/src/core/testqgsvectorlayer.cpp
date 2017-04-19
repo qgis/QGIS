@@ -22,6 +22,7 @@
 #include <QDesktopServices>
 
 //qgis includes...
+#include <qgsgeometry.h>
 #include <qgsmaplayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
@@ -103,6 +104,7 @@ class TestQgsVectorLayer : public QObject
     void minimumValue();
     void maximumValue();
     void isSpatial();
+    void testAddTopologicalPoints();
 };
 
 void TestQgsVectorLayer::initTestCase()
@@ -335,6 +337,46 @@ void TestQgsVectorLayer::isSpatial()
   QVERIFY( mpPolysLayer->isSpatial() );
   QVERIFY( mpLinesLayer->isSpatial() );
   QVERIFY( !mpNonSpatialLayer->isSpatial() );
+}
+
+void TestQgsVectorLayer::testAddTopologicalPoints()
+{
+  // create a simple linestring layer
+
+  QgsVectorLayer *layerLine = new QgsVectorLayer( "LineString?crs=EPSG:27700", "layer line", "memory" );
+  QVERIFY( layerLine->isValid() );
+
+  QgsPolyline line1;
+  line1 << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 1, 3 );
+  QgsFeature lineF1;
+  lineF1.setGeometry( QgsGeometry::fromPolyline( line1 ) );
+
+  layerLine->startEditing();
+  layerLine->addFeature( lineF1 );
+  QgsFeatureId fidLineF1 = lineF1.id();
+  QCOMPARE( layerLine->featureCount(), ( long )1 );
+
+  QCOMPARE( layerLine->undoStack()->index(), 1 );
+
+  // outside of the linestring - nothing should happen
+  layerLine->addTopologicalPoints( QgsPoint( 2, 2 ) );
+
+  QCOMPARE( layerLine->undoStack()->index(), 1 );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+
+  // add point at an existing vertex
+  layerLine->addTopologicalPoints( QgsPoint( 1, 1 ) );
+
+  QCOMPARE( layerLine->undoStack()->index(), 1 );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+
+  // add point on segment of linestring
+  layerLine->addTopologicalPoints( QgsPoint( 1, 2 ) );
+
+  QCOMPARE( layerLine->undoStack()->index(), 2 );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 3)" ) );
+
+  delete layerLine;
 }
 
 QGSTEST_MAIN( TestQgsVectorLayer )

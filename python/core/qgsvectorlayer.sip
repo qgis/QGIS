@@ -1043,15 +1043,6 @@ TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
-    int insertSegmentVerticesForSnap( const QList<QgsSnappingResult> &snapResults );
-%Docstring
- Inserts vertices to the snapped segments.
- This is useful for topological editing if snap to segment is enabled.
- \param snapResults results collected from the snapping operation
- :return: 0 in case of success
- :rtype: int
-%End
-
 
 
     virtual bool isEditable() const;
@@ -1066,20 +1057,6 @@ Returns true if the provider is in editing mode
 %Docstring
 Returns true if the provider has been modified since the last commit
  :rtype: bool
-%End
-
-    int snapWithContext( const QgsPoint &startPoint,
-                         double snappingTolerance,
-                         QMultiMap < double, QgsSnappingResult > &snappingResults /Out/,
-                         QgsSnappingResult::SnappingType snap_to );
-%Docstring
- Snaps to segment or vertex within given tolerance
- \param startPoint point to snap (in layer coordinates)
- \param snappingTolerance distance tolerance for snapping
- \param snappingResults snapping results. Key is the distance between startPoint and snapping target
- \param snap_to to segment / to vertex
- :return: 0 in case of success
- :rtype: int
 %End
 
     virtual void reload();
