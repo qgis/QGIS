@@ -293,14 +293,86 @@ QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProvid
   return nullptr;
 }*/
 
-QgsGeoNodeConnectionItem::QgsGeoNodeConnectionItem(QgsDataItem *parent, QString name, QString path, QString uri)
-    : QgsDataCollectionItem( parent, name, path )
-    , mUri( uri )
+QgsGeoNodeConnectionItem::QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
+  : QgsDataCollectionItem( parent, name, path )
+  , mUri( uri )
+  , mConnection( name )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
-QgsGeoNodeRootItem::QgsGeoNodeRootItem(QgsDataItem *parent, QString name, QString path) : QgsDataCollectionItem( parent, name, path )
+QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()
+{
+  QVector<QgsDataItem *> services;
+
+  QString wmsUrl = mConnection.serviceUrl( QStringLiteral( "WMS" ) );
+  QString wfsUrl = mConnection.serviceUrl( QStringLiteral( "WFS" ) );
+
+  if ( !wmsUrl.isEmpty() )
+  {
+    QString path = mPath + "/wms";
+    QgsDataItem *service = new QgsGeoNodeServiceItem( this, mConnection.mConnName, QString( "WMS" ), path, wmsUrl );
+    services.append( service );
+  }
+
+  if ( !wfsUrl.isEmpty() )
+  {
+    QString path = mPath + "/wfs";
+    QgsDataItem *service = new QgsGeoNodeServiceItem( this, mConnection.mConnName, QString( "WFS" ), path, wmsUrl );
+    services.append( service );
+  }
+
+  return services;
+}
+
+QgsGeoNodeServiceItem::QgsGeoNodeServiceItem( QgsDataItem *parent, QString connName, QString serviceName, QString path, QString uri )
+  : QgsDataCollectionItem( parent, serviceName, path )
+  , mServiceName( serviceName )
+  , mUri( uri )
+  , mConnection( connName )
+{
+  if ( serviceName == "WMS" )
+  {
+    mIconName = QStringLiteral( "mIconWms.svg" );
+  }
+  else
+  {
+    mIconName = QStringLiteral( "mIconWfs.svg" );
+  }
+}
+
+QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
+{
+  QVector<QgsDataItem *> layers;
+  QVariantList layerList = mConnection.getLayers( mServiceName );
+
+  Q_FOREACH ( QVariant layerMap, layerList )
+  {
+    QString layerName = layerMap.toMap()["name"].toString();
+    QgsDebugMsg( "on createChildren() ASU LAYER NAME = " + layerName );
+    QgsGeoNodeLayerItem *layer = new QgsGeoNodeLayerItem( this, mConnection.mConnName, layerName, QString( "" ) );
+    layers.append( layer );
+  }
+
+  return layers;
+}
+
+QgsGeoNodeLayerItem::QgsGeoNodeLayerItem( QgsDataItem *parent, QString connName, QString layerName, QString serviceName )
+  : QgsDataCollectionItem( parent, layerName, parent->path() + '/' + layerName )
+  , mConnection( connName )
+{
+  setState( Populated );
+  if ( serviceName == "WMS" )
+  {
+    mIconName = QStringLiteral( "mIconWms.svg" );
+  }
+  else
+  {
+    mIconName = QStringLiteral( "mIconWfs.svg" );
+  }
+}
+
+QgsGeoNodeRootItem::QgsGeoNodeRootItem( QgsDataItem *parent, QString name, QString path ) : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconGeonode.svg" );
@@ -312,12 +384,12 @@ QVector<QgsDataItem *> QgsGeoNodeRootItem::createChildren()
   QVector<QgsDataItem *> connections;
 
   Q_FOREACH ( const QString &connName, QgsGeoNodeConnection::connectionList() )
-    {
-      QgsGeoNodeConnection connection( connName );
-      QString path = mPath + "/" + connName;
-      QgsDataItem *conn = new QgsGeoNodeConnectionItem( this, connName, path, connection.uri().uri() );
-      connections.append( conn );
-    }
+  {
+    QgsGeoNodeConnection connection( connName );
+    QString path = mPath + "/" + connName;
+    QgsDataItem *conn = new QgsGeoNodeConnectionItem( this, connName, path, connection.uri().uri() );
+    connections.append( conn );
+  }
   return connections;
 }
 
@@ -338,7 +410,7 @@ void QgsGeoNodeRootItem::newConnection()
   }
 }*/
 
-QgsDataItem *QgsOwsDataItemProvider::createDataItem(const QString &path, QgsDataItem *parentItem)
+QgsDataItem *QgsOwsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
   {
@@ -347,7 +419,7 @@ QgsDataItem *QgsOwsDataItemProvider::createDataItem(const QString &path, QgsData
   return nullptr;
 }
 
-QgsDataItem *QgsGeoNodeDataItemProvider::createDataItem(const QString &path, QgsDataItem *parentItem)
+QgsDataItem *QgsGeoNodeDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   QgsDebugMsg( "thePath = " + path );
   if ( path.isEmpty() )

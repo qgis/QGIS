@@ -19,6 +19,8 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgsdatasourceuri.h"
+#include "qgsgeonodeconnection.h"
+
 class QgsOWSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -68,21 +70,45 @@ class QgsOWSRootItem : public QgsDataCollectionItem
 //! Provider for ows root data item
 class QgsOwsDataItemProvider : public QgsDataItemProvider
 {
-public:
-  virtual QString name() override { return QStringLiteral( "OWS" ); }
+  public:
+    virtual QString name() override { return QStringLiteral( "OWS" ); }
 
-  virtual int capabilities() override { return QgsDataProvider::Net; }
+    virtual int capabilities() override { return QgsDataProvider::Net; }
 
-  virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsGeoNodeConnectionItem(QgsDataItem *parent, QString name, QString path, QString uri);
+    QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri );
+    QVector<QgsDataItem *> createChildren() override;
   private:
     QString mUri;
+    QgsGeoNodeConnection mConnection;
+};
+
+class QgsGeoNodeServiceItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoNodeServiceItem( QgsDataItem *parent, QString connName, QString serviceName, QString path, QString uri );
+    QVector<QgsDataItem *> createChildren() override;
+
+  private:
+    QString mServiceName;
+    QString mUri;
+    QgsGeoNodeConnection mConnection;
+};
+
+class QgsGeoNodeLayerItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoNodeLayerItem( QgsDataItem *parent, QString connName, QString layerName, QString serviceName );
+  private:
+    QgsGeoNodeConnection mConnection;
 };
 
 class QgsGeoNodeRootItem : public QgsDataCollectionItem
@@ -93,10 +119,10 @@ class QgsGeoNodeRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-  /*virtual QList<QAction *> actions() override;
+    /*virtual QList<QAction *> actions() override;
 
-  private slots:
-    void newConnection();*/
+    private slots:
+      void newConnection();*/
 };
 
 //! Provider for Geonode root data item
