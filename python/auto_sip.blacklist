@@ -364,7 +364,6 @@ gui/qgsextentgroupbox.sip
 gui/qgsexternalresourcewidget.sip
 gui/qgsfeatureselectiondlg.sip
 gui/qgsfieldcombobox.sip
-gui/qgsfieldexpressionwidget.sip
 gui/qgsfieldmodel.sip
 gui/qgsfieldproxymodel.sip
 gui/qgsfieldvalidator.sip
