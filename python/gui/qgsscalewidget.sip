@@ -23,7 +23,13 @@ class QgsScaleWidget : QWidget
 #include "qgsscalewidget.h"
 %End
   public:
+
     explicit QgsScaleWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ QgsScaleWidget creates a combobox which lets the user select map scale from predefined list
+ and highlights nearest to current scale value
+*
+%End
 
     void setShowCurrentScaleButton( bool showCurrentScaleButton );
 %Docstring
@@ -34,6 +40,7 @@ class QgsScaleWidget : QWidget
 %End
     bool showCurrentScaleButton();
 %Docstring
+returns if a button to set the scale from map canvas is shown or not
  :rtype: bool
 %End
 
@@ -80,6 +87,9 @@ Helper function to convert a scale string to double
 
   public slots:
     void updateScales( const QStringList &scales = QStringList() );
+%Docstring
+updates the list of predefined scales
+%End
 
     void setScaleFromCanvas();
 %Docstring
