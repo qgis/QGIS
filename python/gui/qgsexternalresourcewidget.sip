@@ -1,12 +1,28 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsexternalresourcewidget.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsExternalResourceWidget : QWidget
 {
-%TypeHeaderCode
-#include <qgsexternalresourcewidget.h>
+%Docstring
+ Widget to display file path with a push button for an "open file" dialog
+ It can also be used to display a picture or a web page.
+*
 %End
 
+%TypeHeaderCode
+#include "qgsexternalresourcewidget.h"
+%End
   public:
-
     enum DocumentViewerContent
     {
       NoContent,
@@ -14,77 +30,114 @@ class QgsExternalResourceWidget : QWidget
       Web
     };
 
-    /**
-     * @brief QgsExternalResourceWidget creates a widget with a file widget and a document viewer
-     * Both part of the widget are optional.
-     * @see QgsFileWidget
-     */
-    explicit QgsExternalResourceWidget( QWidget *parent = 0 );
+    explicit QgsExternalResourceWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ QgsExternalResourceWidget creates a widget with a file widget and a document viewer
+ Both part of the widget are optional.
+ \see QgsFileWidget
+%End
 
-    /**
-     * @brief documentPath returns the path of the current document in the widget
-     * @param type determines the type of the returned null variant if the document is not defined yet
-     */
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
-    void setDocumentPath( const QVariant& documentPath );
+%Docstring
+ documentPath returns the path of the current document in the widget
+ \param type determines the type of the returned null variant if the document is not defined yet
+ :rtype: QVariant
+%End
+    void setDocumentPath( const QVariant &documentPath );
 
-    //! access the file widget to allow its configuration
-    QgsFileWidget* fileWidget();
+    QgsFileWidget *fileWidget();
+%Docstring
+access the file widget to allow its configuration
+ :rtype: QgsFileWidget
+%End
 
-    //! returns if the file widget is visible in the widget
     bool fileWidgetVisible() const;
-    //! set the visiblity of the file widget in the layout
+%Docstring
+returns if the file widget is visible in the widget
+ :rtype: bool
+%End
     void setFileWidgetVisible( bool visible );
+%Docstring
+set the visiblity of the file widget in the layout
+%End
 
-    //! returns the type of content used in the document viewer
     QgsExternalResourceWidget::DocumentViewerContent documentViewerContent() const;
-    //! setDocumentViewerContent defines the type of content to be shown. Widget will be adapted accordingly
+%Docstring
+returns the type of content used in the document viewer
+ :rtype: QgsExternalResourceWidget.DocumentViewerContent
+%End
     void setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content );
+%Docstring
+setDocumentViewerContent defines the type of content to be shown. Widget will be adapted accordingly
+%End
 
-    //! returns the height of the document viewer
     int documentViewerHeight() const;
-    /**
-     * @brief setDocumentViewerWidth set the height of the document viewer.
-     * @param height the height. Use 0 for automatic best display.
-     */
+%Docstring
+returns the height of the document viewer
+ :rtype: int
+%End
+
     void setDocumentViewerHeight( int height );
-    //! returns the width of the document viewer
+%Docstring
+ setDocumentViewerWidth set the height of the document viewer.
+ \param height the height. Use 0 for automatic best display.
+%End
     int documentViewerWidth() const ;
-    /**
-     * @brief setDocumentViewerWidth set the width of the document viewer.
-     * @param width the width. Use 0 for automatic best display.
-     */
+%Docstring
+returns the width of the document viewer
+ :rtype: int
+%End
+
     void setDocumentViewerWidth( int width );
+%Docstring
+ setDocumentViewerWidth set the width of the document viewer.
+ \param width the width. Use 0 for automatic best display.
+%End
 
-    //! defines if the widget is readonly
     void setReadOnly( bool readOnly );
+%Docstring
+defines if the widget is readonly
+%End
 
-    /**
-     * Configures if paths are handled absolute or relative and if relative,
-     * which should be the base path.
-     */
     QgsFileWidget::RelativeStorage relativeStorage() const;
+%Docstring
+ Configures if paths are handled absolute or relative and if relative,
+ which should be the base path.
+ :rtype: QgsFileWidget.RelativeStorage
+%End
 
-    /**
-     * Configures if paths are handled absolute or relative and if relative,
-     * which should be the base path.
-     */
     void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
+%Docstring
+ Configures if paths are handled absolute or relative and if relative,
+ which should be the base path.
+%End
 
 
-    /**
-     * Configures the base path which should be used if the relativeStorage property
-     * is set to QgsFileWidget::RelativeDefaultPath.
-     */
     QString defaultRoot() const;
+%Docstring
+ Configures the base path which should be used if the relativeStorage property
+ is set to QgsFileWidget.RelativeDefaultPath.
+ :rtype: str
+%End
 
-    /**
-     * Configures the base path which should be used if the relativeStorage property
-     * is set to QgsFileWidget::RelativeDefaultPath.
-     */
-    void setDefaultRoot(const QString& defaultRoot);
+    void setDefaultRoot( const QString &defaultRoot );
+%Docstring
+ Configures the base path which should be used if the relativeStorage property
+ is set to QgsFileWidget.RelativeDefaultPath.
+%End
 
   signals:
-    //! emitteed as soon as the current document changes
-    void valueChanged( const QString& );
+    void valueChanged( const QString & );
+%Docstring
+emitteed as soon as the current document changes
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsexternalresourcewidget.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

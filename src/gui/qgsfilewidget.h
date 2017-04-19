@@ -24,7 +24,9 @@ class QVariant;
 class QgsFilterLineEdit;
 
 #include <QWidget>
+
 #include "qgis_gui.h"
+#include "qgis.h"
 
 /** \ingroup gui
  * \brief The QgsFileWidget class creates a widget for selecting a file or a folder.
@@ -65,7 +67,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     /**
      * \brief QgsFileWidget creates a widget for selecting a file or a folder.
      */
-    explicit QgsFileWidget( QWidget *parent = 0 );
+    explicit QgsFileWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Returns the current file path
     QString filePath();

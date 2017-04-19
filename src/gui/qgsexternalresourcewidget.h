@@ -25,8 +25,7 @@ class QgsPixmapLabel;
 
 #include "qgsfilewidget.h"
 #include "qgis_gui.h"
-
-
+#include "qgis.h"
 
 
 /** \ingroup gui
@@ -57,7 +56,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * Both part of the widget are optional.
      * \see QgsFileWidget
      */
-    explicit QgsExternalResourceWidget( QWidget *parent = 0 );
+    explicit QgsExternalResourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * \brief documentPath returns the path of the current document in the widget

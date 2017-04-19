@@ -360,7 +360,6 @@ gui/qgsexpressionhighlighter.sip
 gui/qgsexpressionlineedit.sip
 gui/qgsexpressionselectiondialog.sip
 gui/qgsextentgroupbox.sip
-gui/qgsexternalresourcewidget.sip
 gui/qgsfeatureselectiondlg.sip
 gui/qgsfieldcombobox.sip
 gui/qgsfieldmodel.sip
@@ -368,7 +367,6 @@ gui/qgsfieldproxymodel.sip
 gui/qgsfieldvalidator.sip
 gui/qgsfieldvalueslineedit.sip
 gui/qgsfiledropedit.sip
-gui/qgsfilewidget.sip
 gui/qgsfiledownloader.sip
 gui/qgsfilterlineedit.sip
 gui/qgsfloatingwidget.sip
