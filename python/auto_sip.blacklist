@@ -374,7 +374,6 @@ gui/qgsgroupwmsdatadialog.sip
 gui/qgshelp.sip
 gui/qgshighlight.sip
 gui/qgshistogramwidget.sip
-gui/qgsidentifymenu.sip
 gui/qgskeyvaluewidget.sip
 gui/qgslistwidget.sip
 gui/qgslegendfilterbutton.sip

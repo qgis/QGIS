@@ -21,8 +21,10 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolidentify.h"
 #include "qgis_gui.h"
+#include "qgis.h"
 
-/// @cond PRIVATE
+#ifndef SIP_RUN
+/// \cond PRIVATE
 class CustomActionRegistry : public QgsMapLayerActionRegistry
 {
     Q_OBJECT
@@ -32,7 +34,8 @@ class CustomActionRegistry : public QgsMapLayerActionRegistry
     // remove all actions
     void clear() { mMapLayerActionList.clear(); }
 };
-///@endcond
+///\endcond
+#endif
 
 /** \ingroup gui
  * \brief The QgsIdentifyMenu class builds a menu to be used with identify results (\see QgsMapToolIdentify).
@@ -89,7 +92,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
       bool mIsExternalAction;
       QgsMapLayer *mLayer = nullptr;
       QgsFeatureId mFeatureId;
-      MenuLevel mLevel;
+      QgsIdentifyMenu::MenuLevel mLevel;
       QgsMapLayerAction *mMapLayerAction = nullptr;
     };
 
