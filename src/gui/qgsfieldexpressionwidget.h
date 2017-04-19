@@ -16,17 +16,19 @@
 #ifndef QGSFIELDEXPRESSIONWIDGET_H
 #define QGSFIELDEXPRESSIONWIDGET_H
 
-#include <QWidget>
-#include <QToolButton>
-#include <QComboBox>
 #include <QColor>
+#include <QComboBox>
+#include <QToolButton>
+#include <QWidget>
 #include <memory>
 
-#include "qgsdistancearea.h"
-#include "qgsfieldproxymodel.h"
-#include "qgsexpressioncontext.h"
-#include "qgsexpressioncontextgenerator.h"
 #include "qgis_gui.h"
+#include "qgis.h"
+#include "qgsdistancearea.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfieldproxymodel.h"
+
 
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -52,7 +54,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     /**
      * \brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
      */
-    explicit QgsFieldExpressionWidget( QWidget *parent = nullptr );
+    explicit QgsFieldExpressionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! define the title used in the expression dialog
     void setExpressionDialogTitle( const QString &title );
@@ -133,8 +135,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 
     //! fieldChanged signal with indication of the validity of the expression
     void fieldChanged( const QString &fieldName, bool isValid );
-
-//    void returnPressed();
 
   public slots:
 
