@@ -181,7 +181,6 @@ void QgsGeoNodeSourceSelect::setConnectionListPosition()
 
 void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 {
-  qDebug() << "Connect";
   QApplication::setOverrideCursor( Qt::BusyCursor );
   QgsGeoNodeConnection connection( cmbConnections->currentText() );
   QVariantList layers = connection.getLayers();
@@ -347,6 +346,7 @@ void QgsGeoNodeSourceSelect::treeViewSelectionChanged()
 void QgsGeoNodeSourceSelect::addButtonClicked()
 {
   qDebug() << "Add button clicked";
+  QApplication::setOverrideCursor( Qt::BusyCursor );
   // Get selected entry in treeview
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( !currentIndex.isValid() )
@@ -427,6 +427,8 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       emit addWfsLayer( uri, typeName );
     }
   }
+
+  QApplication::restoreOverrideCursor();
 
   if ( !mHoldDialogOpen->isChecked() )
   {
