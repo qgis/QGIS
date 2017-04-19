@@ -672,6 +672,8 @@ SET(QGIS_CORE_HDRS
   qgslegendsettings.h
   qgslogger.h
   qgsmaphittest.h
+  qgsmaplayerlistutils.h
+  qgsmaplayerref.h
   qgsmaplayerrenderer.h
   qgsmaplayerstylemanager.h
   qgsmapsettings.h
@@ -723,6 +725,7 @@ SET(QGIS_CORE_HDRS
 
   qgsvectordataprovider.h
   qgsvectorlayercache.h
+  qgsvectorlayerref.h
   qgsvectorfilewriter.h
   qgsvectorlayerdiagramprovider.h
   qgsvectorlayereditutils.h

@@ -35,6 +35,7 @@
 #include "qgsexpression.h"
 #include "qgsvisibilitypresetcollection.h"
 #include "qgsannotation.h"
+#include "qgsvectorlayerref.h"
 
 #include "qgslabel.h"
 #include "qgslabelattributes.h"
@@ -1323,12 +1324,21 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   //layer set
   QDomElement layerSetElem = doc.createElement( "LayerSet" );
-  QStringList::const_iterator layerIt = mLayerSet.constBegin();
-  for ( ; layerIt != mLayerSet.constEnd(); ++layerIt )
+  Q_FOREACH ( const QString &layerId, mLayerSet )
   {
+    QgsVectorLayerRef layerRef( layerId );
+    layerRef.resolve();
+
+    if ( !layerRef )
+      continue;
+
     QDomElement layerElem = doc.createElement( "Layer" );
-    QDomText layerIdText = doc.createTextNode( *layerIt );
+    QDomText layerIdText = doc.createTextNode( layerRef.layerId );
     layerElem.appendChild( layerIdText );
+    layerElem.setAttribute( "name", layerRef.name );
+    layerElem.setAttribute( "source", layerRef.source );
+    layerElem.setAttribute( "provider", layerRef.provider );
+
     layerSetElem.appendChild( layerElem );
   }
   composerMapElem.appendChild( layerSetElem );
@@ -1341,7 +1351,15 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
     for ( ; styleIt != mLayerStyleOverrides.constEnd(); ++styleIt )
     {
       QDomElement styleElem = doc.createElement( "LayerStyle" );
-      styleElem.setAttribute( "layerid", styleIt.key() );
+
+      QgsMapLayerRef ref( styleIt.key() );
+      ref.resolve();
+
+      styleElem.setAttribute( "layerid", ref.layerId );
+      styleElem.setAttribute( "name", ref.name );
+      styleElem.setAttribute( "source", ref.source );
+      styleElem.setAttribute( "provider", ref.provider );
+
       QgsMapLayerStyle style( styleIt.value() );
       style.writeXml( styleElem );
       stylesElem.appendChild( styleElem );
@@ -1456,8 +1474,15 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     layerSet.reserve( layerIdNodeList.size() );
     for ( int i = 0; i < layerIdNodeList.size(); ++i )
     {
-      const QDomElement& layerIdElement = layerIdNodeList.at( i ).toElement();
-      layerSet << layerIdElement.text();
+      QDomElement layerElem = layerIdNodeList.at( i ).toElement();
+      QString layerId = layerElem.text();
+      QString layerName = layerElem.attribute( "name" );
+      QString layerSource = layerElem.attribute( "source" );
+      QString layerProvider = layerElem.attribute( "provider" );
+
+      QgsMapLayerRef ref( layerId, layerName, layerSource, layerProvider );
+      ref.resolveWeakly();
+      layerSet << ref.layerId;
     }
   }
   mLayerSet = layerSet;
@@ -1473,9 +1498,15 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     {
       const QDomElement& layerStyleElement = layerStyleNodeList.at( i ).toElement();
       QString layerId = layerStyleElement.attribute( "layerid" );
+      QString layerName = layerStyleElement.attribute( "name" );
+      QString layerSource = layerStyleElement.attribute( "source" );
+      QString layerProvider = layerStyleElement.attribute( "provider" );
+      QgsMapLayerRef ref( layerId, layerName, layerSource, layerProvider );
+      ref.resolveWeakly();
+
       QgsMapLayerStyle style;
       style.readXml( layerStyleElement );
-      mLayerStyleOverrides.insert( layerId, style.xmlData() );
+      mLayerStyleOverrides.insert( ref.layerId, style.xmlData() );
     }
   }
 
