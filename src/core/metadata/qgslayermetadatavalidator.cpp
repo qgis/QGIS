@@ -65,6 +65,23 @@ bool QgsNativeMetadataValidator::validate( const QgsLayerMetadata &metadata, QLi
     results << ValidationResult( QObject::tr( "crs" ), QObject::tr( "A valid CRS element is required." ) );
   }
 
+  int index = 0;
+  Q_FOREACH ( const QgsLayerMetadata::SpatialExtent &extent, metadata.extent().spatialExtents() )
+  {
+    if ( !extent.extentCrs.isValid() )
+    {
+      result = false;
+      results << ValidationResult( QObject::tr( "extent" ), QObject::tr( "A valid CRS element for the spatial extent is required." ), index );
+    }
+
+    if ( extent.bounds.width() == 0.0 || extent.bounds.height() == 0.0 )
+    {
+      result = false;
+      results << ValidationResult( QObject::tr( "extent" ), QObject::tr( "A valid spatial extent is required." ), index );
+    }
+    index++;
+  }
+
   if ( metadata.contacts().isEmpty() )
   {
     result = false;
@@ -80,7 +97,7 @@ bool QgsNativeMetadataValidator::validate( const QgsLayerMetadata &metadata, QLi
   // validate keywords
   QgsLayerMetadata::KeywordMap keywords = metadata.keywords();
   QgsLayerMetadata::KeywordMap::const_iterator keywordIt = keywords.constBegin();
-  int index = 0;
+  index = 0;
   for ( ; keywordIt != keywords.constEnd(); ++keywordIt )
   {
     if ( keywordIt.key().isEmpty() )

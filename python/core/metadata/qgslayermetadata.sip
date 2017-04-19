@@ -44,6 +44,62 @@ class QgsLayerMetadata
 
     typedef QMap< QString, QStringList > KeywordMap;
 
+    struct SpatialExtent
+    {
+
+      QgsCoordinateReferenceSystem extentCrs;
+%Docstring
+ Coordinate reference system for spatial extent.
+ \see spatial
+%End
+
+      QgsBox3d bounds;
+%Docstring
+ Geospatial extent of the resource. X and Y coordinates are in the
+ CRS defined by the metadata (see extentCrs).
+
+ While the spatial extent can include a Z dimension, this is not
+ compulsory.
+ \see extentCrs
+%End
+    };
+
+    struct Extent
+    {
+      public:
+
+        QList< QgsLayerMetadata::SpatialExtent > spatialExtents() const;
+%Docstring
+ Spatial extents of the resource.
+ \see setSpatialExtents()
+ :rtype: list of QgsLayerMetadata.SpatialExtent
+%End
+
+        void setSpatialExtents( const QList< QgsLayerMetadata::SpatialExtent > &extents );
+%Docstring
+ Sets the spatial ``extents`` of the resource.
+ \see spatialExtents()
+%End
+
+        QList< QgsDateTimeRange > temporalExtents() const;
+%Docstring
+ Temporal extents of the resource. Use QgsDateTimeRange.isInstant() to determine
+ whether the temporal extent is a range or a single point in time.
+ If QgsDateTimeRange.isInfinite() returns true then the temporal extent
+ is considered to be indeterminate and continuous.
+ \see setTemporalExtents()
+ :rtype: list of QgsDateTimeRange
+%End
+
+        void setTemporalExtents( const QList< QgsDateTimeRange > &extents );
+%Docstring
+ Sets the temporal ``extents`` of the resource.
+ \see temporalExtents()
+%End
+
+
+    };
+
     struct Constraint
     {
 
@@ -394,6 +450,20 @@ class QgsLayerMetadata
  \see encoding()
 %End
 
+
+    QgsLayerMetadata::Extent &extent();
+%Docstring
+ Returns the spatial and temporal extents associated with the resource.
+ \see setExtent()
+ :rtype: QgsLayerMetadata.Extent
+%End
+
+    void setExtent( const QgsLayerMetadata::Extent &extent );
+%Docstring
+ Sets the spatial and temporal extents associated with the resource.
+ \see setExtent()
+%End
+
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
  Returns the coordinate reference system described by the layer's metadata.
@@ -546,8 +616,6 @@ class QgsLayerMetadata
 %End
 
 };
-
-
 
 
 /************************************************************************

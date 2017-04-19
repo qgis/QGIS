@@ -215,6 +215,7 @@ void QgsLayerMetadata::saveToLayer( QgsMapLayer *layer ) const
   layer->setCustomProperty( QStringLiteral( "metadata/language" ), mLanguage );
   layer->setCustomProperty( QStringLiteral( "metadata/type" ), mType );
   layer->setCustomProperty( QStringLiteral( "metadata/title" ), mTitle );
+  layer->setCustomProperty( QStringLiteral( "metadata/extent" ), QVariant::fromValue( mExtent ) );
   layer->setCustomProperty( QStringLiteral( "metadata/abstract" ), mAbstract );
   layer->setCustomProperty( QStringLiteral( "metadata/fees" ), mFees );
   layer->setCustomProperty( QStringLiteral( "metadata/rights" ), mRights );
@@ -243,8 +244,44 @@ void QgsLayerMetadata::readFromLayer( const QgsMapLayer *layer )
   mEncoding = layer->customProperty( QStringLiteral( "metadata/encoding" ) ).toString();
   QString crsAuthId = layer->customProperty( QStringLiteral( "metadata/crs" ) ).toString();
   mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsAuthId );
+  mExtent = layer->customProperty( QStringLiteral( "metadata/extent" ) ).value<Extent>();
   mConstraints = layer->customProperty( QStringLiteral( "metadata/constraints" ) ).value<ConstraintList>();
   mKeywords = layer->customProperty( QStringLiteral( "metadata/keywords" ) ).value<KeywordMap>();
   mContacts = layer->customProperty( QStringLiteral( "metadata/contacts" ) ).value<ContactList>();
   mLinks = layer->customProperty( QStringLiteral( "metadata/links" ) ).value<LinkList>();
+}
+
+const QgsLayerMetadata::Extent &QgsLayerMetadata::extent() const
+{
+  return mExtent;
+}
+
+QgsLayerMetadata::Extent &QgsLayerMetadata::extent()
+{
+  return mExtent;
+}
+
+void QgsLayerMetadata::setExtent( const Extent &extent )
+{
+  mExtent = extent;
+}
+
+QList<QgsLayerMetadata::SpatialExtent> QgsLayerMetadata::Extent::spatialExtents() const
+{
+  return mSpatialExtents;
+}
+
+void QgsLayerMetadata::Extent::setSpatialExtents( const QList<QgsLayerMetadata::SpatialExtent> &spatialExtents )
+{
+  mSpatialExtents = spatialExtents;
+}
+
+QList<QgsDateTimeRange> QgsLayerMetadata::Extent::temporalExtents() const
+{
+  return mTemporalExtents;
+}
+
+void QgsLayerMetadata::Extent::setTemporalExtents( const QList<QgsDateTimeRange> &temporalExtents )
+{
+  mTemporalExtents = temporalExtents;
 }

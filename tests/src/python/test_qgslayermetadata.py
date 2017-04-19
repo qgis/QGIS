@@ -17,7 +17,12 @@ import qgis  # NOQA
 from qgis.core import (QgsLayerMetadata,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayer,
-                       QgsNativeMetadataValidator)
+                       QgsNativeMetadataValidator,
+                       QgsBox3d,
+                       QgsDateTimeRange)
+from qgis.PyQt.QtCore import (QDate,
+                              QTime,
+                              QDateTime)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -71,6 +76,28 @@ class TestQgsLayerMetadata(unittest.TestCase):
 
         m.setCrs(QgsCoordinateReferenceSystem.fromEpsgId(3111))
         self.assertEqual(m.crs().authid(), 'EPSG:3111')
+
+    def testExtent(self):
+        e = QgsLayerMetadata.Extent()
+        se = QgsLayerMetadata.SpatialExtent()
+        se.extentCrs = QgsCoordinateReferenceSystem.fromEpsgId(3111)
+        se.bounds = QgsBox3d(1, 2, 3, 4, 5, 6)
+        e.setSpatialExtents([se])
+        e.setTemporalExtents([QgsDateTimeRange(QDateTime(QDate(2017, 1, 3), QTime(11, 34, 56)), QDateTime(QDate(2018, 1, 3), QTime(12, 35, 57)))])
+
+        m = QgsLayerMetadata()
+        m.setExtent(e)
+
+        extents = m.extent().spatialExtents()
+        self.assertEqual(extents[0].extentCrs.authid(), 'EPSG:3111')
+        self.assertEqual(extents[0].bounds.xMinimum(), 1.0)
+        self.assertEqual(extents[0].bounds.yMinimum(), 2.0)
+        self.assertEqual(extents[0].bounds.zMinimum(), 3.0)
+        self.assertEqual(extents[0].bounds.xMaximum(), 4.0)
+        self.assertEqual(extents[0].bounds.yMaximum(), 5.0)
+        self.assertEqual(extents[0].bounds.zMaximum(), 6.0)
+        self.assertEqual(m.extent().temporalExtents()[0].begin(), QDateTime(QDate(2017, 1, 3), QTime(11, 34, 56)))
+        self.assertEqual(m.extent().temporalExtents()[0].end(), QDateTime(QDate(2018, 1, 3), QTime(12, 35, 57)))
 
     def testKeywords(self):
         m = QgsLayerMetadata()
@@ -204,6 +231,14 @@ class TestQgsLayerMetadata(unittest.TestCase):
         m.setEncoding('utf-8')
         m.setCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'))
 
+        e = QgsLayerMetadata.Extent()
+        se = QgsLayerMetadata.SpatialExtent()
+        se.extentCrs = QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326')
+        se.bounds = QgsBox3d(-180, -90, 0, 180, 90, 0)
+        e.setSpatialExtents([se])
+        e.setTemporalExtents([QgsDateTimeRange(QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47)), QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47)))])
+        m.setExtent(e)
+
         c = QgsLayerMetadata.Contact()
         c.name = 'John Smith'
         c.organization = 'ACME'
@@ -266,6 +301,16 @@ class TestQgsLayerMetadata(unittest.TestCase):
         self.assertEqual(m.encoding(), 'utf-8')
         self.assertEqual(m.keywords(), {'GEMET': ['kw1', 'kw2']})
         self.assertEqual(m.crs().authid(), 'EPSG:4326')
+
+        extent = m.extent().spatialExtents()[0]
+        self.assertEqual(extent.extentCrs.authid(), 'EPSG:4326')
+        self.assertEqual(extent.bounds.xMinimum(), -180.0)
+        self.assertEqual(extent.bounds.yMinimum(), -90.0)
+        self.assertEqual(extent.bounds.xMaximum(), 180.0)
+        self.assertEqual(extent.bounds.yMaximum(), 90.0)
+        self.assertEqual(m.extent().temporalExtents()[0].begin(), QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47)))
+        self.assertTrue(m.extent().temporalExtents()[0].isInstant())
+
         self.assertEqual(m.contacts()[0].name, 'John Smith')
         self.assertEqual(m.contacts()[0].organization, 'ACME')
         self.assertEqual(m.contacts()[0].position, 'staff')
@@ -319,7 +364,6 @@ class TestQgsLayerMetadata(unittest.TestCase):
         """
         Test validating metadata against QGIS native schema
         """
-
         m = self.createTestMetadata()
         v = QgsNativeMetadataValidator()
 
@@ -394,6 +438,28 @@ class TestQgsLayerMetadata(unittest.TestCase):
         res, list = v.validate(m)
         self.assertFalse(res)
         self.assertEqual(list[0].section, 'keywords')
+        self.assertEqual(list[0].identifier, 0)
+
+        m = self.createTestMetadata()
+        e = m.extent()
+        se = e.spatialExtents()[0]
+        se.extentCrs = QgsCoordinateReferenceSystem()
+        e.setSpatialExtents([se])
+        m.setExtent(e)
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'extent')
+        self.assertEqual(list[0].identifier, 0)
+
+        m = self.createTestMetadata()
+        e = m.extent()
+        se = e.spatialExtents()[0]
+        se.bounds = QgsBox3d(1, 1, 0, 1, 2)
+        e.setSpatialExtents([se])
+        m.setExtent(e)
+        res, list = v.validate(m)
+        self.assertFalse(res)
+        self.assertEqual(list[0].section, 'extent')
         self.assertEqual(list[0].identifier, 0)
 
         m = self.createTestMetadata()

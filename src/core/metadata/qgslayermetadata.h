@@ -21,6 +21,8 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsbox3d.h"
+#include "qgsrange.h"
 
 class QgsMapLayer;
 
@@ -58,6 +60,73 @@ class CORE_EXPORT QgsLayerMetadata
      * Map of vocabulary string to keyword list.
      */
     typedef QMap< QString, QStringList > KeywordMap;
+
+    /**
+     * Metadata spatial extent structure.
+     */
+    struct SpatialExtent
+    {
+
+      /**
+       * Coordinate reference system for spatial extent.
+       * \see spatial
+       */
+      QgsCoordinateReferenceSystem extentCrs;
+
+      /**
+       * Geospatial extent of the resource. X and Y coordinates are in the
+       * CRS defined by the metadata (see extentCrs).
+       *
+       * While the spatial extent can include a Z dimension, this is not
+       * compulsory.
+       * \see extentCrs
+       */
+      QgsBox3d bounds;
+    };
+
+    /**
+     * Metadata extent structure.
+     */
+    struct Extent
+    {
+      public:
+
+        /**
+         * Spatial extents of the resource.
+         * \see setSpatialExtents()
+         */
+        QList< QgsLayerMetadata::SpatialExtent > spatialExtents() const;
+
+        /**
+         * Sets the spatial \a extents of the resource.
+         * \see spatialExtents()
+         */
+        void setSpatialExtents( const QList< QgsLayerMetadata::SpatialExtent > &extents );
+
+        /**
+         * Temporal extents of the resource. Use QgsDateTimeRange::isInstant() to determine
+         * whether the temporal extent is a range or a single point in time.
+         * If QgsDateTimeRange::isInfinite() returns true then the temporal extent
+         * is considered to be indeterminate and continuous.
+         * \see setTemporalExtents()
+         */
+        QList< QgsDateTimeRange > temporalExtents() const;
+
+        /**
+         * Sets the temporal \a extents of the resource.
+         * \see temporalExtents()
+         */
+        void setTemporalExtents( const QList< QgsDateTimeRange > &extents );
+
+#ifndef SIP_RUN
+      private:
+
+        QList< QgsLayerMetadata::SpatialExtent > mSpatialExtents;
+        QList< QgsDateTimeRange > mTemporalExtents;
+
+#endif
+
+    };
 
     /**
      * Metadata constraint structure.
@@ -433,6 +502,24 @@ class CORE_EXPORT QgsLayerMetadata
     void setEncoding( const QString &encoding );
 
     /**
+     * Returns the spatial and temporal extents associated with the resource.
+     * \see setExtent()
+     */
+    SIP_SKIP const QgsLayerMetadata::Extent &extent() const;
+
+    /**
+     * Returns the spatial and temporal extents associated with the resource.
+     * \see setExtent()
+     */
+    QgsLayerMetadata::Extent &extent();
+
+    /**
+     * Sets the spatial and temporal extents associated with the resource.
+     * \see setExtent()
+     */
+    void setExtent( const QgsLayerMetadata::Extent &extent );
+
+    /**
      * Returns the coordinate reference system described by the layer's metadata.
      *
      * Note that this has no link to QgsMapLayer::crs(). While in most cases these
@@ -604,6 +691,8 @@ class CORE_EXPORT QgsLayerMetadata
     QString mEncoding;
     QgsCoordinateReferenceSystem mCrs;
 
+    Extent mExtent;
+
     /**
      * Keywords map. Key is the vocabulary, value is a list of keywords for that vocabulary.
      */
@@ -627,7 +716,6 @@ Q_DECLARE_METATYPE( QgsLayerMetadata::KeywordMap )
 Q_DECLARE_METATYPE( QgsLayerMetadata::ConstraintList )
 Q_DECLARE_METATYPE( QgsLayerMetadata::ContactList )
 Q_DECLARE_METATYPE( QgsLayerMetadata::LinkList )
-
-
+Q_DECLARE_METATYPE( QgsLayerMetadata::Extent )
 
 #endif // QGSLAYERMETADATA_H
