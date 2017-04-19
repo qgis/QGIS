@@ -303,6 +303,11 @@ while(!eof $header){
         next;
     }
 
+    # remove struct member assignment
+    if ( $SIP_RUN != 1 && $ACCESS == PUBLIC && $line =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
+        $line = "$1;\n";
+    }
+
     # catch Q_DECLARE_FLAGS
     if ( $line =~ m/^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$/ ){
         $line = "$1typedef QFlags<$classname::$3> $2;\n";

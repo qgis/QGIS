@@ -112,8 +112,14 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
      */
     struct Data
     {
-      QString name;
-      int count;
+      Data( QgsMapLayer *layer, Qstring name )
+        : mLayer( layer )
+        , mName( name )
+      {}
+
+      QString mName;
+      int mCount = 100;
+      QgsMapLayer *mLayer = nullptr;
     };
 
     //! A constructor with definition in header

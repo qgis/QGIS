@@ -70,8 +70,11 @@ class QgsSipifyHeader : QtClass<QVariant>
 
     struct Data
     {
-      QString name;
-      int count;
+      Data( QgsMapLayer *layer, Qstring name );
+
+      QString mName;
+      int mCount;
+      QgsMapLayer *mLayer;
     };
 
     explicit QgsSipifyHeader();
