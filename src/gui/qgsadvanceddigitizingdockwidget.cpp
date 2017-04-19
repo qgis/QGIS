@@ -30,6 +30,7 @@
 #include "qgslinestring.h"
 #include "qgsfocuswatcher.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
@@ -199,9 +200,6 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
   // set tooltips
   mConstructionModeButton->setToolTip( "<b>" + tr( "Construction mode" ) + "</b><br>(" + tr( "press c to toggle on/off" ) + ")" );
-  mPerpendicularButton->setToolTip( "<b>" + tr( "Perpendicular" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
-  mParallelButton->setToolTip( "<b>" + tr( "Parallel" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
-
   mDistanceLineEdit->setToolTip( "<b>" + tr( "Distance" ) + "</b><br>(" + tr( "press d for quick access" ) + ")" );
   mLockDistanceButton->setToolTip( "<b>" + tr( "Lock distance" ) + "</b><br>(" + tr( "press Ctrl + d for quick access" ) + ")" );
   mRepeatingLockDistanceButton->setToolTip( "<b>" + tr( "Continuously lock distance" ) + "</b>" );
@@ -223,6 +221,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
 
   updateCapacity( true );
+  connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [ = ] { updateCapacity( true ); } );
+
   disable();
 }
 
@@ -525,6 +525,8 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
     return;
   }
 
+  bool snappingEnabled = QgsProject::instance()->snappingConfig().enabled();
+
   // update the UI according to new capacities
   // still keep the old to compare
 
@@ -532,8 +534,22 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
   bool absoluteAngle = mCadEnabled && newCapacities.testFlag( AbsoluteAngle );
   bool relativeCoordinates = mCadEnabled && newCapacities.testFlag( RelativeCoordinates );
 
-  mPerpendicularButton->setEnabled( absoluteAngle );
-  mParallelButton->setEnabled( absoluteAngle );
+  mPerpendicularButton->setEnabled( absoluteAngle && snappingEnabled );
+  mParallelButton->setEnabled( absoluteAngle && snappingEnabled );
+
+  //update tooltips on buttons
+  if ( !snappingEnabled )
+  {
+    mPerpendicularButton->setToolTip( tr( "Snapping must be enabled to utilize perpendicular mode" ) );
+    mParallelButton->setToolTip( tr( "Snapping must be enabled to utilize parallel mode" ) );
+  }
+  else
+  {
+    mPerpendicularButton->setToolTip( "<b>" + tr( "Perpendicular" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
+    mParallelButton->setToolTip( "<b>" + tr( "Parallel" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
+  }
+
+
   if ( !absoluteAngle )
   {
     lockAdditionalConstraint( NoConstraint );
