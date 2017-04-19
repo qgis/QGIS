@@ -63,6 +63,7 @@ class TestQgsComposition : public QObject
     void legendRestoredFromTemplate();
     void attributeTableRestoredFromTemplate();
     void mapLayersRestoredFromTemplate();
+    void atlasLayerRestoredFromTemplate();
 
   private:
     QgsComposition *mComposition;
@@ -796,6 +797,45 @@ void TestQgsComposition::mapLayersRestoredFromTemplate()
   QVERIFY( map2 );
 
   QCOMPARE( map2->layerSet(), QStringList() << layer3->id() << layer4->id() );
+}
+
+void TestQgsComposition::atlasLayerRestoredFromTemplate()
+{
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+
+  // load some layers
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+
+  // create composition
+  QgsMapSettings ms;
+  QgsComposition c( ms );
+  // set atlas layer
+  c.atlasComposition().setEnabled( true );
+  c.atlasComposition().setCoverageLayer( layer );
+
+  // save composition to template
+  QDomDocument doc;
+  QDomElement composerElem = doc.createElement( "Composer" );
+  doc.appendChild( composerElem );
+  c.writeXML( composerElem, doc );
+  c.atlasComposition().writeXML( composerElem, doc );
+
+  // new project
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer2 );
+
+  // make a new composition from template
+  QgsComposition c2( ms );
+  QVERIFY( c2.loadFromTemplate( doc ) );
+  // check atlas layer
+  QCOMPARE( c2.atlasComposition().coverageLayer(), layer2 );
 }
 
 QTEST_MAIN( TestQgsComposition )

@@ -19,6 +19,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgsvectorlayerref.h"
 
 #include <memory>
 #include <QString>
@@ -101,7 +102,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @returns atlas coverage layer
      * @see setCoverageLayer
      */
-    QgsVectorLayer* coverageLayer() const { return mCoverageLayer; }
+    QgsVectorLayer* coverageLayer() const { return mCoverageLayer.get(); }
 
     /** Sets the coverage layer to use for the atlas features
      * @param layer vector coverage layer
@@ -355,7 +356,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     bool mEnabled;
     bool mHideCoverage;
     QString mFilenamePattern;
-    QgsVectorLayer* mCoverageLayer;
+    QgsVectorLayerRef mCoverageLayer;
     bool mSingleFile;
 
     QString mCurrentFilename;

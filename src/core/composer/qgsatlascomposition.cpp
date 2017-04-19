@@ -35,7 +35,6 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
     , mEnabled( false )
     , mHideCoverage( false )
     , mFilenamePattern( "'output_'||@atlas_featurenumber" )
-    , mCoverageLayer( nullptr )
     , mSingleFile( false )
     , mSortFeatures( false )
     , mSortAscending( true )
@@ -73,10 +72,10 @@ void QgsAtlasComposition::removeLayers( const QStringList& layers )
 
   Q_FOREACH ( const QString& layerId, layers )
   {
-    if ( layerId == mCoverageLayer->id() )
+    if ( layerId == mCoverageLayer.layerId )
     {
       //current coverage layer removed
-      mCoverageLayer = nullptr;
+      mCoverageLayer.setLayer( nullptr );
       setEnabled( false );
       return;
     }
@@ -85,12 +84,12 @@ void QgsAtlasComposition::removeLayers( const QStringList& layers )
 
 void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
 {
-  if ( layer == mCoverageLayer )
+  if ( layer == mCoverageLayer.get() )
   {
     return;
   }
 
-  mCoverageLayer = layer;
+  mCoverageLayer.setLayer( layer );
   emit coverageLayerChanged( layer );
 }
 
@@ -644,7 +643,10 @@ void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
 
   if ( mCoverageLayer )
   {
-    atlasElem.setAttribute( "coverageLayer", mCoverageLayer->id() );
+    atlasElem.setAttribute( "coverageLayer", mCoverageLayer.layerId );
+    atlasElem.setAttribute( "coverageLayerName", mCoverageLayer.name );
+    atlasElem.setAttribute( "coverageLayerSource", mCoverageLayer.source );
+    atlasElem.setAttribute( "coverageLayerProvider", mCoverageLayer.provider );
   }
   else
   {
@@ -682,16 +684,13 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   }
 
   // look for stored layer name
-  mCoverageLayer = nullptr;
-  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
-  for ( QMap<QString, QgsMapLayer*>::const_iterator it = layers.begin(); it != layers.end(); ++it )
-  {
-    if ( it.key() == atlasElem.attribute( "coverageLayer" ) )
-    {
-      mCoverageLayer = dynamic_cast<QgsVectorLayer*>( it.value() );
-      break;
-    }
-  }
+  QString layerId = atlasElem.attribute( "coverageLayer" );
+  QString layerName = atlasElem.attribute( "coverageLayerName" );
+  QString layerSource = atlasElem.attribute( "coverageLayerSource" );
+  QString layerProvider = atlasElem.attribute( "coverageLayerProvider" );
+
+  mCoverageLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
+  mCoverageLayer.resolveWeakly();
 
   mPageNameExpression = atlasElem.attribute( "pageNameExpression", QString() );
   mSingleFile = atlasElem.attribute( "singleFile", "false" ) == "true" ? true : false;
