@@ -1210,6 +1210,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 
 void QgsAdvancedDigitizingDockWidget::enable()
 {
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsAdvancedDigitizingDockWidget::enable, Qt::UniqueConnection );
   if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
   {
     mErrorLabel->setText( tr( "CAD tools can not be used on geographic coordinates. Change the coordinates system in the project properties." ) );
@@ -1236,6 +1237,8 @@ void QgsAdvancedDigitizingDockWidget::enable()
 
 void QgsAdvancedDigitizingDockWidget::disable()
 {
+  disconnect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsAdvancedDigitizingDockWidget::enable );
+
   mEnableAction->setEnabled( false );
   mErrorLabel->setText( tr( "CAD tools are not enabled for the current map tool" ) );
   mErrorLabel->show();
