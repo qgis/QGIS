@@ -151,7 +151,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     return params;
   }
 
-  QgsDebugMsg( QString( "setEllipsoid: a=%1, b=%2, 1/f=%3" ).arg( params.semiMajor ).arg( params.semiMinor ).arg( params.inverseFlattening ) );
+  QgsDebugMsgLevel( QString( "setEllipsoid: a=%1, b=%2, 1/f=%3" ).arg( params.semiMajor ).arg( params.semiMinor ).arg( params.inverseFlattening ), 4 );
 
 
   // get spatial ref system for ellipsoid

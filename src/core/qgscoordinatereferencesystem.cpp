@@ -305,11 +305,11 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
     if ( strcmp( configNew, CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) != 0 )
       QgsLogger::warning( QStringLiteral( "GDAL_FIX_ESRI_WKT could not be set to %1 : %2" )
                           .arg( configNew, CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) );
-    QgsDebugMsg( QString( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ) );
+    QgsDebugMsgLevel( QString( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ), 4 );
   }
   else
   {
-    QgsDebugMsg( QString( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ) );
+    QgsDebugMsgLevel( QString( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ), 4 );
   }
 }
 
@@ -537,7 +537,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
   }
   else
   {
-    QgsDebugMsg( "failed : " + mySql );
+    QgsDebugMsgLevel( "failed : " + mySql, 4 );
   }
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
@@ -592,7 +592,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 
   if ( wkt.isEmpty() )
   {
-    QgsDebugMsg( "theWkt is uninitialized, operation failed" );
+    QgsDebugMsgLevel( "theWkt is uninitialized, operation failed", 4 );
     return d->mIsValid;
   }
   QByteArray ba = wkt.toLatin1();
@@ -770,7 +770,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
       myStart2 = 0;
       myStart2 = myLat2RegExp.indexIn( proj4String, myStart2 );
       proj4StringModified.replace( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN, lat1Str );
-      QgsDebugMsg( "trying proj4string match with swapped lat_1,lat_2" );
+      QgsDebugMsgLevel( "trying proj4string match with swapped lat_1,lat_2", 4 );
       myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( proj4StringModified.trimmed() ) + " order by deprecated" );
     }
   }
@@ -862,7 +862,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   // if we failed to look up the projection in database, don't worry. we can still use it :)
   if ( !d->mIsValid )
   {
-    QgsDebugMsg( "Projection is not found in databases." );
+    QgsDebugMsgLevel( "Projection is not found in databases.", 4 );
     //setProj4String will set mIsValidFlag to true if there is no issue
     setProj4String( myProj4String );
   }
@@ -916,13 +916,13 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     }
     if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
     {
-      QgsDebugMsg( "Multiple records found in srs.db" );
+      QgsDebugMsgLevel( "Multiple records found in srs.db", 4 );
       myMap.clear();
     }
   }
   else
   {
-    QgsDebugMsg( "failed :  " + sql );
+    QgsDebugMsgLevel( "failed :  " + sql, 4 );
   }
 
   if ( myMap.empty() )
@@ -961,13 +961,13 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 
       if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
       {
-        QgsDebugMsg( "Multiple records found in srs.db" );
+        QgsDebugMsgLevel( "Multiple records found in srs.db", 4 );
         myMap.clear();
       }
     }
     else
     {
-      QgsDebugMsg( "failed :  " + sql );
+      QgsDebugMsgLevel( "failed :  " + sql, 4 );
     }
   }
   sqlite3_finalize( myPreparedStatement );
@@ -1099,7 +1099,7 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   projPJ proj = pj_init_plus( proj4String.trimmed().toLatin1().constData() );
   if ( !proj )
   {
-    QgsDebugMsg( "proj.4 string rejected by pj_init_plus()" );
+    QgsDebugMsgLevel( "proj.4 string rejected by pj_init_plus()", 4 );
     d->mIsValid = false;
   }
   else
@@ -1190,9 +1190,9 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   if ( d->mEllipsoidAcronym.isNull() || d->mProjectionAcronym.isNull()
        || !d->mIsValid )
   {
-    QgsDebugMsg( "QgsCoordinateReferenceSystem::findMatchingProj will only "
-                 "work if prj acr ellipsoid acr and proj4string are set"
-                 " and the current projection is valid!" );
+    QgsDebugMsgLevel( "QgsCoordinateReferenceSystem::findMatchingProj will only "
+                      "work if prj acr ellipsoid acr and proj4string are set"
+                      " and the current projection is valid!", 4 );
     return 0;
   }
 
@@ -1593,7 +1593,7 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
 {
   if ( !d->mIsValid )
   {
-    QgsDebugMsg( "Can't save an invalid CRS!" );
+    QgsDebugMsgLevel( "Can't save an invalid CRS!", 4 );
     return false;
   }
 
@@ -1933,7 +1933,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       QRegExp projRegExp( "\\+proj=(\\S+)" );
       if ( projRegExp.indexIn( proj4 ) < 0 )
       {
-        QgsDebugMsg( QString( "EPSG %1: no +proj argument found [%2]" ).arg( it.key() ).arg( proj4 ) );
+        QgsDebugMsgLevel( QString( "EPSG %1: no +proj argument found [%2]" ).arg( it.key() ).arg( proj4 ), 4 );
         continue;
       }
 
@@ -2053,7 +2053,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         }
         else
         {
-          QgsDebugMsg( QString( "could not retrieve proj string for %1 from PROJ" ).arg( input ) );
+          QgsDebugMsgLevel( QString( "could not retrieve proj string for %1 from PROJ" ).arg( input ), 4 );
         }
       }
       else

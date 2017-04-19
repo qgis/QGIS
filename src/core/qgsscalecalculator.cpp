@@ -83,7 +83,7 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
     return 0;
   }
   double scale = ( delta * conversionFactor ) / ( static_cast< double >( canvasWidth ) / mDpi );
-  QgsDebugMsg( QString( "scale = %1 conversionFactor = %2" ).arg( scale ).arg( conversionFactor ) );
+  QgsDebugMsgLevel( QString( "scale = %1 conversionFactor = %2" ).arg( scale ).arg( conversionFactor ), 4 );
   return scale;
 }
 
@@ -126,7 +126,7 @@ double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapE
                   pow( 1.0 - E * E * sin( lat * RADS ) * sin( lat * RADS ), 1.5 );
   double meters = ( mapExtent.xMaximum() - mapExtent.xMinimum() ) / 180.0 * radius * c;
 
-  QgsDebugMsg( "Distance across map extent (m): " + QString::number( meters ) );
+  QgsDebugMsgLevel( "Distance across map extent (m): " + QString::number( meters ), 4 );
 
   return meters;
 }

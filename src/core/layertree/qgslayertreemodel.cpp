@@ -575,7 +575,7 @@ void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont &font )
   }
   else
   {
-    QgsDebugMsg( "invalid node type" );
+    QgsDebugMsgLevel( "invalid node type", 4 );
   }
 }
 
@@ -588,7 +588,7 @@ QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
     return mFontLayer;
   else
   {
-    QgsDebugMsg( "invalid node type" );
+    QgsDebugMsgLevel( "invalid node type", 4 );
     return QFont();
   }
 }
@@ -1509,8 +1509,6 @@ void QgsLayerTreeModel::legendInvalidateMapBasedData()
 
 void QgsLayerTreeModel::invalidateLegendMapBasedData()
 {
-  QgsDebugCall;
-
   // we have varying icon sizes, and we want icon to be centered and
   // text to be left aligned, so we have to compute the max width of icons
   //

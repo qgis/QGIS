@@ -679,7 +679,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
 bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes )
 {
   QString type = layerElem.attribute( QStringLiteral( "type" ) );
-  QgsDebugMsg( "Layer type is " + type );
+  QgsDebugMsgLevel( "Layer type is " + type, 4 );
   QgsMapLayer *mapLayer = nullptr;
 
   if ( type == QLatin1String( "vector" ) )

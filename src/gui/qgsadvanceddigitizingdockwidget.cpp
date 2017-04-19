@@ -593,11 +593,11 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 {
   bool res = true;
 
-  QgsDebugMsg( "Constraints (locked / relative / value" );
-  QgsDebugMsg( QString( "Angle:    %1 %2 %3" ).arg( mAngleConstraint->isLocked() ).arg( mAngleConstraint->relative() ).arg( mAngleConstraint->value() ) );
-  QgsDebugMsg( QString( "Distance: %1 %2 %3" ).arg( mDistanceConstraint->isLocked() ).arg( mDistanceConstraint->relative() ).arg( mDistanceConstraint->value() ) );
-  QgsDebugMsg( QString( "X:        %1 %2 %3" ).arg( mXConstraint->isLocked() ).arg( mXConstraint->relative() ).arg( mXConstraint->value() ) );
-  QgsDebugMsg( QString( "Y:        %1 %2 %3" ).arg( mYConstraint->isLocked() ).arg( mYConstraint->relative() ).arg( mYConstraint->value() ) );
+  QgsDebugMsgLevel( "Constraints (locked / relative / value", 4 );
+  QgsDebugMsgLevel( QString( "Angle:    %1 %2 %3" ).arg( mAngleConstraint->isLocked() ).arg( mAngleConstraint->relative() ).arg( mAngleConstraint->value() ), 4 );
+  QgsDebugMsgLevel( QString( "Distance: %1 %2 %3" ).arg( mDistanceConstraint->isLocked() ).arg( mDistanceConstraint->relative() ).arg( mDistanceConstraint->value() ), 4 );
+  QgsDebugMsgLevel( QString( "X:        %1 %2 %3" ).arg( mXConstraint->isLocked() ).arg( mXConstraint->relative() ).arg( mXConstraint->value() ), 4 );
+  QgsDebugMsgLevel( QString( "Y:        %1 %2 %3" ).arg( mYConstraint->isLocked() ).arg( mYConstraint->relative() ).arg( mYConstraint->value() ), 4 );
 
   QgsPoint point = e->snapPoint( mSnappingMode );
 
@@ -829,9 +829,9 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 
   // *****************************
   // ---- calculate CAD values
-  QgsDebugMsg( QString( "point:             %1 %2" ).arg( point.x() ).arg( point.y() ) );
-  QgsDebugMsg( QString( "previous point:    %1 %2" ).arg( previousPt.x() ).arg( previousPt.y() ) );
-  QgsDebugMsg( QString( "penultimate point: %1 %2" ).arg( penultimatePt.x() ).arg( penultimatePt.y() ) );
+  QgsDebugMsgLevel( QString( "point:             %1 %2" ).arg( point.x() ).arg( point.y() ), 4 );
+  QgsDebugMsgLevel( QString( "previous point:    %1 %2" ).arg( previousPt.x() ).arg( previousPt.y() ), 4 );
+  QgsDebugMsgLevel( QString( "penultimate point: %1 %2" ).arg( penultimatePt.x() ).arg( penultimatePt.y() ), 4 );
   //QgsDebugMsg( QString( "dx: %1 dy: %2" ).arg( point.x() - previousPt.x() ).arg( point.y() - previousPt.y() ) );
   //QgsDebugMsg( QString( "ddx: %1 ddy: %2" ).arg( previousPt.x() - penultimatePt.x() ).arg( previousPt.y() - penultimatePt.y() ) );
 

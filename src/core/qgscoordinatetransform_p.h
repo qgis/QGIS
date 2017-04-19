@@ -109,7 +109,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       {
         // Pass through with no projection since we have no idea what the layer
         // coordinates are and projecting them may not be appropriate
-        QgsDebugMsg( "Source CRS is invalid!" );
+        QgsDebugMsgLevel( "Source CRS is invalid!", 4 );
         return false;
       }
 
@@ -118,7 +118,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
         //No destination projection is set so we set the default output projection to
         //be the same as input proj.
         mDestCRS = mSourceCRS;
-        QgsDebugMsg( "Destination CRS is invalid!" );
+        QgsDebugMsgLevel( "Destination CRS is invalid!", 4 );
         return false;
       }
 

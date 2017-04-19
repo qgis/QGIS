@@ -237,10 +237,10 @@ void QgsOptionsDialogBase::searchText( const QString &text )
     rsw.first->reset();
     if ( !text.isEmpty() && rsw.first->searchHighlight( text ) )
     {
-      QgsDebugMsg( QString( "Found %1 in %2 (tab: %3)" )
-                   .arg( text )
-                   .arg( rsw.first->isValid() ? rsw.first->widget()->objectName() : "no widget" )
-                   .arg( mOptListWidget->item( rsw.second )->text() ) );
+      QgsDebugMsgLevel( QString( "Found %1 in %2 (tab: %3)" )
+                        .arg( text )
+                        .arg( rsw.first->isValid() ? rsw.first->widget()->objectName() : "no widget" )
+                        .arg( mOptListWidget->item( rsw.second )->text() ), 4 );
       mOptListWidget->setRowHidden( rsw.second, false );
     }
   }
@@ -274,7 +274,7 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
       QgsSearchHighlightOptionWidget *shw = new QgsSearchHighlightOptionWidget( w );
       if ( shw->isValid() )
       {
-        QgsDebugMsg( QString( "Registering: %1" ).arg( w->objectName() ) );
+        QgsDebugMsgLevel( QString( "Registering: %1" ).arg( w->objectName() ), 4 );
         mRegisteredSearchWidgets.append( qMakePair( shw, i ) );
       }
       else
@@ -436,7 +436,7 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
   if ( mValid )
   {
     mStyleSheet.prepend( "/*!search!*/" ).append( "/*!search!*/" );
-    QgsDebugMsg( mStyleSheet );
+    QgsDebugMsgLevel( mStyleSheet, 4 );
     connect( mWidget, &QWidget::destroyed, this, &QgsSearchHighlightOptionWidget::widgetDestroyed );
   }
 }

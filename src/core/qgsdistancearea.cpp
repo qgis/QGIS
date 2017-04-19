@@ -768,10 +768,10 @@ double QgsDistanceArea::convertLengthMeasurement( double length, QgsUnitTypes::D
   double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
 
   double result = length * factorUnits;
-  QgsDebugMsg( QString( "Converted length of %1 %2 to %3 %4" ).arg( length )
-               .arg( QgsUnitTypes::toString( measureUnits ) )
-               .arg( result )
-               .arg( QgsUnitTypes::toString( toUnits ) ) );
+  QgsDebugMsgLevel( QString( "Converted length of %1 %2 to %3 %4" ).arg( length )
+                    .arg( QgsUnitTypes::toString( measureUnits ) )
+                    .arg( result )
+                    .arg( QgsUnitTypes::toString( toUnits ) ), 3 );
   return result;
 }
 
@@ -782,9 +782,9 @@ double QgsDistanceArea::convertAreaMeasurement( double area, QgsUnitTypes::AreaU
   double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
 
   double result = area * factorUnits;
-  QgsDebugMsg( QString( "Converted area of %1 %2 to %3 %4" ).arg( area )
-               .arg( QgsUnitTypes::toString( measureUnits ) )
-               .arg( result )
-               .arg( QgsUnitTypes::toString( toUnits ) ) );
+  QgsDebugMsgLevel( QString( "Converted area of %1 %2 to %3 %4" ).arg( area )
+                    .arg( QgsUnitTypes::toString( measureUnits ) )
+                    .arg( result )
+                    .arg( QgsUnitTypes::toString( toUnits ) ), 3 );
   return result;
 }
