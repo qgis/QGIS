@@ -363,7 +363,6 @@ gui/qgsexpressionselectiondialog.sip
 gui/qgsextentgroupbox.sip
 gui/qgsexternalresourcewidget.sip
 gui/qgsfeatureselectiondlg.sip
-gui/qgsfieldcombobox.sip
 gui/qgsfieldmodel.sip
 gui/qgsfieldproxymodel.sip
 gui/qgsfieldvalidator.sip
@@ -396,7 +395,6 @@ gui/qgsmapcanvasitem.sip
 gui/qgsmapcanvassnappingutils.sip
 gui/qgsmapcanvastracer.sip
 gui/qgsmaplayeractionregistry.sip
-gui/qgsmaplayercombobox.sip
 gui/qgsmaplayerconfigwidget.sip
 gui/qgsmaplayerconfigwidgetfactory.sip
 gui/qgsmapmouseevent.sip
