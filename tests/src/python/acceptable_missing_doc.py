@@ -504,7 +504,6 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsOSMNodeIterator": ["close()", "next()"],
     "QgsPalettedRendererWidget": ["create(QgsRasterLayer *layer, const QgsRectangle &extent)", "QgsPalettedRendererWidget(QgsRasterLayer *layer, const QgsRectangle &extent=QgsRectangle())", "setFromRenderer(const QgsRasterRenderer *r)"],
     "QgsDataProvider": ["QgsDataProvider(QString const &uri=\"\")", "DataCapability"],
-    "QgsScaleWidget": ["showCurrentScaleButton()", "QgsScaleWidget(QWidget *parent=nullptr)", "updateScales(const QStringList &scales=QStringList())"],
     "QgsMapToolIdentifyFeature": ["featureIdentified(const QgsFeature &)", "featureIdentified(QgsFeatureId)"],
     "QgsGeometryValidator": ["errorFound(const QgsGeometry::Error &)", "addError(const QgsGeometry::Error &)", "stop()"],
     "QgsErrorDialog": ["QgsErrorDialog(const QgsError &error, const QString &title, QWidget *parent=nullptr, Qt::WindowFlags fl=QgisGui::ModalDialogFlags)"],
