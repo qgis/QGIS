@@ -107,8 +107,7 @@ class translate(GdalAlgorithm):
         outsize = str(self.getParameterValue(self.OUTSIZE))
         outsizePerc = str(self.getParameterValue(self.OUTSIZE_PERC))
         noData = self.getParameterValue(self.NO_DATA)
-        expand = str(self.getParameterFromName(
-            self.EXPAND).options[self.getParameterValue(self.EXPAND)])
+        expand = self.getParameterFromName(self.EXPAND).options[self.getParameterValue(self.EXPAND)][1]
         projwin = str(self.getParameterValue(self.PROJWIN))
         crsId = self.getParameterValue(self.SRS)
         sds = self.getParameterValue(self.SDS)
