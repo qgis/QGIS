@@ -38,7 +38,7 @@ class CORE_EXPORT QgsBox3d
     /**
      * Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates.
      */
-    QgsBox3d( double xmin = 0, double ymin = 0, double mZmin = 0, double xmax = 0, double ymax = 0, double mZmax = 0 );
+    QgsBox3d( double xmin = 0, double ymin = 0, double zmin = 0, double xmax = 0, double ymax = 0, double zmax = 0 );
 
     /**
      * Constructs a QgsBox3D from two points representing opposite corners of the box.
@@ -165,6 +165,12 @@ class CORE_EXPORT QgsBox3d
      * Returns the intersection of this box and another 3D box.
      */
     QgsBox3d intersect( const QgsBox3d &other ) const;
+
+    /**
+     * Returns true if the box can be considered a 2-dimensional box, i.e.
+     * it has equal minimum and maximum z values.
+     */
+    bool is2d() const;
 
     /**
      * Returns true if box intersects with another box.

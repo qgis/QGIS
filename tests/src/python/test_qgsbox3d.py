@@ -155,6 +155,16 @@ class TestQgsBox3d(unittest.TestCase):
         rect = box.toRectangle()
         self.assertEqual(rect, QgsRectangle(5, 6, 11, 13))
 
+    def is2d(self):
+        box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        self.assertFalse(box.is2d())
+        box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 7.0)
+        self.assertTrue(box.is2d())
+        box = QgsBox3d(5.0, 6.0, 0.0, 11.0, 13.0, 0.0)
+        self.assertTrue(box.is2d())
+        box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, -7.0)
+        self.assertTrue(box.is2d())
+
 
 if __name__ == '__main__':
     unittest.main()

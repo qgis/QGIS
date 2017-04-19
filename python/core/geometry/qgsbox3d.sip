@@ -26,7 +26,7 @@ class QgsBox3d
 %End
   public:
 
-    QgsBox3d( double xmin = 0, double ymin = 0, double mZmin = 0, double xmax = 0, double ymax = 0, double mZmax = 0 );
+    QgsBox3d( double xmin = 0, double ymin = 0, double zmin = 0, double xmax = 0, double ymax = 0, double zmax = 0 );
 %Docstring
  Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates.
 %End
@@ -166,6 +166,13 @@ class QgsBox3d
 %Docstring
  Returns the intersection of this box and another 3D box.
  :rtype: QgsBox3d
+%End
+
+    bool is2d() const;
+%Docstring
+ Returns true if the box can be considered a 2-dimensional box, i.e.
+ it has equal minimum and maximum z values.
+ :rtype: bool
 %End
 
     bool intersects( const QgsBox3d &other ) const;
