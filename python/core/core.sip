@@ -74,6 +74,8 @@
 %Include qgstransactiongroup.sip
 %Include qgsdartmeasurement.sip
 %Include qgsexpressionfieldbuffer.sip
+%Include qgsfieldmodel.sip
+%Include qgsfieldproxymodel.sip
 %Include qgsfontutils.sip
 %Include qgslabelsearchtree.sip
 %Include qgslegendrenderer.sip

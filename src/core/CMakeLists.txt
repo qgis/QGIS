@@ -141,6 +141,8 @@ SET(QGIS_CORE_SRCS
   qgsfieldconstraints.cpp
   qgsfieldformatter.cpp
   qgsfieldformatterregistry.cpp
+  qgsfieldmodel.cpp
+  qgsfieldproxymodel.cpp
   qgsfields.cpp
   qgsfontutils.cpp
   qgsgeometrycache.cpp
@@ -504,6 +506,8 @@ SET(QGIS_CORE_MOC_HDRS
   qgsfield.h
   qgsfieldconstraints.h
   qgsfieldformatterregistry.h
+  qgsfieldmodel.h
+  qgsfieldproxymodel.h
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h

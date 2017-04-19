@@ -363,8 +363,6 @@ gui/qgsexpressionselectiondialog.sip
 gui/qgsextentgroupbox.sip
 gui/qgsexternalresourcewidget.sip
 gui/qgsfeatureselectiondlg.sip
-gui/qgsfieldmodel.sip
-gui/qgsfieldproxymodel.sip
 gui/qgsfieldvalidator.sip
 gui/qgsfieldvalueslineedit.sip
 gui/qgsfiledropedit.sip

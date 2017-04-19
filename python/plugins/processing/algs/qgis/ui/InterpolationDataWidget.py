@@ -39,7 +39,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingUtils,
                        QgsProject
                        )
-from qgis.gui import QgsFieldProxyModel
+from qgis.core import QgsFieldProxyModel
 from qgis.analysis import QgsInterpolator
 
 from processing.gui.wrappers import WidgetWrapper

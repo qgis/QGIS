@@ -17,7 +17,10 @@
 #define QGSFIELDPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
-#include "qgis_gui.h"
+
+#include "qgis_core.h"
+
+#include "qgis.h"
 
 class QgsFieldModel;
 
@@ -25,7 +28,7 @@ class QgsFieldModel;
  * \brief The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.
  * \since QGIS 2.3
  */
-class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
+class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
     Q_FLAGS( Filters )
@@ -51,7 +54,7 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
      * \brief QgsFieldProxModel creates a proxy model with a QgsFieldModel as source model.
      * It can be used to filter the fields based on their types.
      */
-    explicit QgsFieldProxyModel( QObject *parent = nullptr );
+    explicit QgsFieldProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Returns the QgsFieldModel used in this QSortFilterProxyModel
     QgsFieldModel *sourceFieldModel() { return mModel; }

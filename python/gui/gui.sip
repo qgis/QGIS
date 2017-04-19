@@ -72,8 +72,6 @@
 %Include qgsfeatureselectiondlg.sip
 %Include qgsfieldcombobox.sip
 %Include qgsfieldexpressionwidget.sip
-%Include qgsfieldmodel.sip
-%Include qgsfieldproxymodel.sip
 %Include qgsfieldvalidator.sip
 %Include qgsfieldvalueslineedit.sip
 %Include qgsfiledropedit.sip
