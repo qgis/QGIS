@@ -289,7 +289,7 @@ while(!eof $header){
             if ($line =~ m/\};/){
                 last;
             }
-            $line =~ s/(\s*\w+)(\s*=\s*[\w\s\d<]+.*?)?(,?).*$/$1$3/;
+            $line =~ s/(\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?).*$/$1$3/;
             print $line;
         }
         print $line;

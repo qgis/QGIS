@@ -102,6 +102,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       NoSuccess = 1, //!< Edit operation resulted in an empty geometry
       ImaginarySuccess = 1 << 3, //!< Edit operation resulted in an imaginary geometry
       RecursiveSuccess = 1 << 4, //!< Edit operation resulted in an n-dimensional wormhole
+      SuccessCombination = Success | ImaginarySuccess, //!< Holy Graal
     };
     Q_DECLARE_FLAGS( Flags, MyEnum )
 

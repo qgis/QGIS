@@ -27,7 +27,7 @@ class QgsProcessingAlgorithm
       FlagHideFromToolbox,
       FlagHideFromModeler,
       FlagSupportsBatch,
-      FlagDeprecated
+      FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
 

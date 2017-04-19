@@ -64,6 +64,7 @@ class QgsSipifyHeader : QtClass<QVariant>
       NoSuccess,
       ImaginarySuccess,
       RecursiveSuccess,
+      SuccessCombination,
     };
     typedef QFlags<QgsSipifyHeader::MyEnum> Flags;
 
