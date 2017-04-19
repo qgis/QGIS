@@ -95,7 +95,6 @@ core/qgsprovidermetadata.sip
 core/qgsproviderregistry.sip
 core/qgspythonrunner.sip
 core/qgsrange.sip
-core/qgsrelation.sip
 core/qgsrelationmanager.sip
 core/qgsrenderchecker.sip
 core/qgsrendercontext.sip
