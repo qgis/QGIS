@@ -16,12 +16,14 @@
 #ifndef QGSRELATION_H
 #define QGSRELATION_H
 
-#include "qgis_core.h"
 #include <QList>
 #include <QDomNode>
 #include <QPair>
 
+#include "qgis_core.h"
 #include "qgsfields.h"
+
+#include "qgis.h"
 
 class QgsVectorLayer;
 class QgsFeatureIterator;
@@ -44,6 +46,8 @@ class CORE_EXPORT QgsRelation
 
 
   public:
+
+#ifndef SIP_RUN
 
     /**
      * \ingroup core
@@ -71,6 +75,7 @@ class CORE_EXPORT QgsRelation
 
         bool operator==( const FieldPair &other ) const { return first == other.first && second == other.second; }
     };
+#endif
 
     /**
      * Default constructor. Creates an invalid relation.
@@ -132,7 +137,7 @@ class CORE_EXPORT QgsRelation
      * \param fieldPair A pair of two strings
      * \note not available in Python bindings
      */
-    void addFieldPair( const FieldPair &fieldPair );
+    void addFieldPair( const FieldPair &fieldPair ) SIP_SKIP;
 
     /**
      * Creates an iterator which returns all the features on the referencing (child) layer
@@ -258,7 +263,19 @@ class CORE_EXPORT QgsRelation
      *
      * \returns The fields forming the relation
      */
-    QList< FieldPair > fieldPairs() const;
+#ifndef SIP_RUN
+    QList< QgsRelation::FieldPair > fieldPairs() const;
+#else
+    QMap< QString, QString > fieldPairs() const;
+    % MethodCode
+    const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
+    sipRes = new QMap< QString, QString >();
+    Q_FOREACH ( const QgsRelation::FieldPair &pair, pairs )
+    {
+      sipRes->insert( pair.first, pair.second );
+    }
+    % End
+#endif
 
     /**
      * Returns a list of attributes used to form the referenced fields
