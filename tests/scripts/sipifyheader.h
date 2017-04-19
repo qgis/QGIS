@@ -233,6 +233,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     This<Member> shouldBeIncluded;
 
+    Q_INVOKABLE static QString invokableMethod();
+
     bool initializedMember{ false };
 
   protected:

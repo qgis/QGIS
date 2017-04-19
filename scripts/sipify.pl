@@ -314,6 +314,9 @@ while(!eof $header){
         $line = "$1QFlags<$flag> operator|($flag f1, QFlags<$flag> f2);\n";
     }
 
+    # remove Q_INVOKABLE
+    $line =~ s/^(\s*)Q_INVOKABLE /$1/;
+
     do {no warnings 'uninitialized';
         # remove keywords
         if ( $line =~ m/\boverride\b/){
