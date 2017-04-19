@@ -17,10 +17,13 @@
 #define QGSFIELDMODEL_H
 
 #include <QAbstractItemModel>
-#include <QItemSelectionModel>
 #include <QComboBox>
+#include <QItemSelectionModel>
+
 #include "qgsfields.h"
-#include "qgis_gui.h"
+#include "qgis_core.h"
+
+#include "qgis.h"
 
 class QgsVectorLayer;
 
@@ -31,7 +34,7 @@ class QgsVectorLayer;
  * It can be associated with a QgsMapLayerModel to dynamically display a layer and its fields.
  * \since QGIS 2.3
  */
-class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
+class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -57,7 +60,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     /**
      * Constructor for QgsFieldModel - creates a model to display the fields of a given layer.
      */
-    explicit QgsFieldModel( QObject *parent = nullptr );
+    explicit QgsFieldModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the index corresponding to a given fieldName.
