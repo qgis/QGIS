@@ -63,6 +63,7 @@ class TestQgsComposition : public QObject
     void legendRestoredFromTemplate();
     void attributeTableRestoredFromTemplate();
     void mapLayersRestoredFromTemplate();
+    void mapLayersStyleOverrideRestoredFromTemplate();
     void atlasLayerRestoredFromTemplate();
 
   private:
@@ -797,6 +798,70 @@ void TestQgsComposition::mapLayersRestoredFromTemplate()
   QVERIFY( map2 );
 
   QCOMPARE( map2->layerSet(), QStringList() << layer3->id() << layer4->id() );
+}
+
+void TestQgsComposition::mapLayersStyleOverrideRestoredFromTemplate()
+{
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+
+  // load some layers
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      "ogr" );
+  QFileInfo vectorFileInfo2( QString( TEST_DATA_DIR ) + "/polys.shp" );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer2 );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+
+  // create composition
+  QgsMapSettings ms;
+  QgsComposition c( ms );
+  // add a map
+  QgsComposerMap *map = new QgsComposerMap( &c, 1, 1, 10, 10 );
+  c.addComposerMap( map );
+  map->setKeepLayerStyles( true );
+  QgsStringMap styles;
+  // just close your eyes and pretend these are real styles
+  styles.insert( layer->id(), "<b>xxxxx</b>" );
+  styles.insert( layer2->id(), "<blink>yyyyy</blink>" );
+  map->setLayerStyleOverrides( styles );
+
+  // save composition to template
+  QDomDocument doc;
+  QDomElement composerElem = doc.createElement( "Composer" );
+  doc.appendChild( composerElem );
+  c.writeXML( composerElem, doc );
+  c.atlasComposition().writeXML( composerElem, doc );
+
+  // new project
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      "ogr" );
+  QgsVectorLayer *layer4 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer4 );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer3 );
+
+  // make a new composition from template
+  QgsComposition c2( ms );
+  QVERIFY( c2.loadFromTemplate( doc ) );
+  // get map from new composition
+  QList< QgsComposerMap * > maps;
+  c2.composerItems( maps );
+  QgsComposerMap *map2 = static_cast< QgsComposerMap *>( maps.at( 0 ) );
+  QVERIFY( map2 );
+  QVERIFY( map2->keepLayerStyles() );
+
+  QgsStringMap restoredStyles = map2->layerStyleOverrides();
+  QVERIFY( restoredStyles.contains( layer3->id() ) );
+  QCOMPARE( restoredStyles.value( layer3->id() ).trimmed(), QString( "<b>xxxxx</b>" ) );
+  QVERIFY( restoredStyles.contains( layer4->id() ) );
+  QCOMPARE( restoredStyles.value( layer4->id() ).trimmed(), QString( "<blink>yyyyy</blink>" ) );
 }
 
 void TestQgsComposition::atlasLayerRestoredFromTemplate()
