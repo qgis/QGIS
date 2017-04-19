@@ -242,6 +242,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     Whatever::Something *alsoSkipMember = nullptr;
     mutable Whatever alsoSkipThis;
     Some<Other> memberToSkip;
+    QList<QgsMapLayer *> list2skip;
+    QMap<QString, Qt::CheckState> map2skip;
 
   private:
     void privateMethodAreNotShown();
