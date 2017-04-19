@@ -102,7 +102,8 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
             else:
                 pointCount = int(round(value * da.measureArea(fGeom)))
 
-            if strategy == 1 and pointCount == 0:
+            if pointCount == 0:
+                feedback.pushInfo("Skip feature {} as number of points for it is 0.")
                 continue
 
             index = QgsSpatialIndex()
