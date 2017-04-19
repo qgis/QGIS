@@ -27,7 +27,7 @@
  * A template based class for storing ranges (lower to upper values).
  *
  * QgsRange classes represent a range of values of some element type. For instance,
- * ranges of QDateTime might be used to represent the ranges of timestamp ranges.
+ * ranges of int might be used to represent integer ranges.
  *
  * Ranges can indicate whether the upper and lower values are inclusive or exclusive.
  * The inclusivity or exclusivity of bounds is considered when determining things like
@@ -86,8 +86,15 @@ template <class T> class CORE_EXPORT QgsRange
     /**
      * Returns true if the range is empty, ie the lower bound equals (or exceeds) the upper bound
      * and either the bounds are exclusive.
+     * \see isSingleton()
      */
     bool isEmpty() const { return mLower > mUpper || ( mUpper == mLower && !( mIncludeLower || mIncludeUpper ) ); }
+
+    /**
+     * Returns true if the range consists only of a single value or instant.
+     * \see isEmpty()
+     */
+    bool isSingleton() const { return mLower == mUpper && ( mIncludeLower || mIncludeUpper ); }
 
     /**
      * Returns true if this range contains another range.
@@ -176,6 +183,9 @@ template <class T> class CORE_EXPORT QgsRange
  */
 typedef QgsRange< double > QgsDoubleRange;
 
+
+
+
 /**
  * QgsRange which stores a range of integer values.
  * \since QGIS 3.0
@@ -186,137 +196,225 @@ typedef QgsRange< double > QgsDoubleRange;
 typedef QgsRange< int > QgsIntRange;
 
 
-// specialization required to handle invalid QDate bounds
-
 /**
- * Returns true if the range is empty, ie the lower bound equals (or exceeds) the upper bound
- * and either the bounds are exclusive.
- * A range with both invalid lower and upper bounds is considered empty.
+ * \class QgsTemporalRange
+ * \ingroup core
+ * A template based class for storing temporal ranges (beginning to end values).
+ *
+ * QgsTemporalRange classes represent a range of values of some temporal type. For instance,
+ * ranges of QDateTime might be used to represent datetime ranges.
+ *
+ * Ranges can indicate whether the upper and lower values are inclusive or exclusive.
+ * The inclusivity or exclusivity of bounds is considered when determining things like
+ * whether ranges overlap or during calculation of range intersections.
+ *
+ * \since QGIS 3.0
+ * \see QgsDateRange
+ * \note not available in Python bindings
  */
-template<>
-bool QgsRange<QDate>::isEmpty() const
+template <class T> class CORE_EXPORT QgsTemporalRange
 {
-  if ( !mLower.isValid() && !mUpper.isValid() )
-    return true;
+  public:
 
-  if ( mLower.isValid() != mUpper.isValid() )
-    return false;
+    /**
+     * Constructor for QgsTemporalRange. The \a begin and \a end are specified,
+     * and optionally whether or not these bounds are included in the range.
+     */
+    QgsTemporalRange( const T &begin = T(), const T &end = T(), bool includeBeginning = true, bool includeEnd = true )
+      : mLower( begin )
+      , mUpper( end )
+      , mIncludeLower( includeBeginning )
+      , mIncludeUpper( includeEnd )
+    {}
 
-  if ( mLower > mUpper )
-    return true;
+    /**
+     * Returns the beginning of the range.
+     * \see end()
+     * \see includeBeginning()
+     */
+    T begin() const { return mLower; }
 
-  if ( mLower == mUpper && !( mIncludeLower || mIncludeUpper ) )
-    return true;
+    /**
+     * Returns the upper bound of the range.
+     * \see begin()
+     * \see includeEnd()
+     */
+    T end() const { return mUpper; }
 
-  return false;
-}
+    /**
+     * Returns true if the beginning is inclusive, or false if the beginning
+     * is exclusive.
+     * \see begin()
+     * \see includeEnd()
+     */
+    bool includeBeginning() const { return mIncludeLower; }
 
-/**
- * Returns true if this range contains another range.
- */
-template<>
-bool QgsRange<QDate>::contains( const QgsRange<QDate> &other ) const
-{
-  if ( !other.mLower.isValid() && mLower.isValid() )
-    return false;
+    /**
+     * Returns true if the end is inclusive, or false if the end is exclusive.
+     * \see end()
+     * \see includeBeginning()
+     */
+    bool includeEnd() const { return mIncludeUpper; }
 
-  if ( mLower.isValid() )
-  {
-    bool lowerOk = ( mIncludeLower && mLower <= other.mLower )
-                   || ( !mIncludeLower && mLower < other.mLower )
-                   || ( !mIncludeLower && !other.mIncludeLower && mLower <= other.mLower );
-    if ( !lowerOk )
+    /**
+     * Returns true if the range consists only of a single instant.
+     * \see isEmpty()
+     * \see isInfinite()
+     */
+    bool isInstant() const { return mLower.isValid() && mUpper.isValid() && mLower == mUpper && ( mIncludeLower || mIncludeUpper ); }
+
+    /**
+     * Returns true if the range consists of all possible values.
+     * \see isEmpty()
+     * \see isInstant()
+     */
+    bool isInfinite() const
+    {
+      return !mLower.isValid() && !mUpper.isValid();
+    }
+
+    /**
+     * Returns true if the range is empty, ie the beginning equals (or exceeds) the end
+     * and either of the bounds are exclusive.
+     * A range with both invalid beginning and end is considered infinite and not empty.
+     */
+    bool isEmpty() const
+    {
+      if ( !mLower.isValid() && !mUpper.isValid() )
+        return false;
+
+      if ( mLower.isValid() != mUpper.isValid() )
+        return false;
+
+      if ( mLower > mUpper )
+        return true;
+
+      if ( mLower == mUpper && !( mIncludeLower || mIncludeUpper ) )
+        return true;
+
       return false;
-  }
+    }
 
-  if ( !other.mUpper.isValid() && mUpper.isValid() )
-    return false;
+    /**
+     * Returns true if this range contains another range.
+     */
+    bool contains( const QgsTemporalRange<T> &other ) const
+    {
+      if ( !other.mLower.isValid() && mLower.isValid() )
+        return false;
 
-  if ( mUpper.isValid() )
-  {
-    bool upperOk = ( mIncludeUpper && mUpper >= other.mUpper )
-                   || ( !mIncludeUpper && mUpper > other.mUpper )
-                   || ( !mIncludeUpper && !other.mIncludeUpper && mUpper >= other.mUpper );
-    if ( !upperOk )
+      if ( mLower.isValid() )
+      {
+        bool lowerOk = ( mIncludeLower && mLower <= other.mLower )
+                       || ( !mIncludeLower && mLower < other.mLower )
+                       || ( !mIncludeLower && !other.mIncludeLower && mLower <= other.mLower );
+        if ( !lowerOk )
+          return false;
+      }
+
+      if ( !other.mUpper.isValid() && mUpper.isValid() )
+        return false;
+
+      if ( mUpper.isValid() )
+      {
+        bool upperOk = ( mIncludeUpper && mUpper >= other.mUpper )
+                       || ( !mIncludeUpper && mUpper > other.mUpper )
+                       || ( !mIncludeUpper && !other.mIncludeUpper && mUpper >= other.mUpper );
+        if ( !upperOk )
+          return false;
+      }
+
+      return true;
+    }
+
+    /**
+     * Returns true if this range contains a specified \a element.
+     */
+    bool contains( const T &element ) const
+    {
+      if ( !element.isValid() )
+        return false;
+
+      if ( mLower.isValid() )
+      {
+        bool lowerOk = ( mIncludeLower && mLower <= element )
+                       || ( !mIncludeLower && mLower < element );
+        if ( !lowerOk )
+          return false;
+      }
+
+      if ( mUpper.isValid() )
+      {
+        bool upperOk = ( mIncludeUpper && mUpper >= element )
+                       || ( !mIncludeUpper && mUpper > element );
+        if ( !upperOk )
+          return false;
+      }
+
+      return true;
+    }
+
+    /**
+     * Returns true if this range overlaps another range.
+     */
+    bool overlaps( const QgsTemporalRange<T> &other ) const
+    {
+      if ( !mUpper.isValid() && ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) ) )
+        return true;
+
+      if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
+           && ( ( mIncludeUpper  && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
+        return true;
+
+      if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
+           && ( ( mIncludeUpper  && mUpper >= other.mLower ) || ( !mIncludeUpper && mUpper > other.mLower ) ) )
+        return true;
+
+      if ( ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) )
+           && ( ( mIncludeUpper && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
+        return true;
+
+      if ( ( ( mIncludeLower && mLower >= other.mLower ) || ( !mIncludeLower && mLower > other.mLower ) )
+           && ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) ) )
+        return true;
+
+      if ( mLower == other.mLower && mUpper == other.mUpper )
+        return true;
+
       return false;
-  }
+    }
 
-  return true;
-}
+  private:
 
-/**
- * Returns true if this range contains a specified \a element.
- */
-template<>
-bool QgsRange<QDate>::contains( QDate element ) const
-{
-  if ( !element.isValid() )
-    return false;
+    T mLower;
+    T mUpper;
+    bool mIncludeLower = true;
+    bool mIncludeUpper = true;
+};
 
-  if ( mLower.isValid() )
-  {
-    bool lowerOk = ( mIncludeLower && mLower <= element )
-                   || ( !mIncludeLower && mLower < element );
-    if ( !lowerOk )
-      return false;
-  }
-
-  if ( mUpper.isValid() )
-  {
-    bool upperOk = ( mIncludeUpper && mUpper >= element )
-                   || ( !mIncludeUpper && mUpper > element );
-    if ( !upperOk )
-      return false;
-  }
-
-  return true;
-}
-
-/**
- * Returns true if this range overlaps another range.
- */
-template<>
-bool QgsRange<QDate>::overlaps( const QgsRange<QDate> &other ) const
-{
-  if ( !mUpper.isValid() && ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) ) )
-    return true;
-
-  if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
-       && ( ( mIncludeUpper  && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
-    return true;
-
-  if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
-       && ( ( mIncludeUpper  && mUpper >= other.mLower ) || ( !mIncludeUpper && mUpper > other.mLower ) ) )
-    return true;
-
-  if ( ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) )
-       && ( ( mIncludeUpper && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
-    return true;
-
-  if ( ( ( mIncludeLower && mLower >= other.mLower ) || ( !mIncludeLower && mLower > other.mLower ) )
-       && ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) ) )
-    return true;
-
-  if ( mLower == other.mLower && mUpper == other.mUpper )
-    return true;
-
-  return false;
-}
 
 /**
  * QgsRange which stores a range of dates.
  *
- * Invalid QDates as the lower or upper bound are permitted. In this case,
+ * Invalid QDates as the beginning or end are permitted. In this case,
  * the bound is considered to be infinite. E.g. QgsDateRange(QDate(),QDate(2017,1,1))
  * is treated as a range containing all dates before 2017-1-1.
  * QgsDateRange(QDate(2017,1,1),QDate()) is treated as a range containing all dates after 2017-1-1.
  * \since QGIS 3.0
- * \see QgsIntRange
- * \see QgsDoubleRange
  * \see QgsDateTimeRange
  */
-typedef QgsRange< QDate > QgsDateRange;
+typedef QgsTemporalRange< QDate > QgsDateRange;
 
-
+/**
+ * QgsRange which stores a range of date times.
+ *
+ * Invalid QDateTimes as the beginning or end are permitted. In this case,
+ * the bound is considered to be infinite. E.g. QgsDateTimeRange(QDateTime(),QDateTime(2017,1,1))
+ * is treated as a range containing all dates before 2017-1-1.
+ * QgsDateTimeRange(QDateTime(2017,1,1),QDateTime()) is treated as a range containing all dates after 2017-1-1.
+ * \since QGIS 3.0
+ * \see QgsDateRange
+ */
+typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
 
 #endif // QGSRANGE_H

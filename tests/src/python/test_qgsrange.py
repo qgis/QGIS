@@ -48,6 +48,21 @@ class TestQgsIntRange(unittest.TestCase):
         range = QgsIntRange(1, -1)
         self.assertTrue(range.isEmpty())
 
+    def testIsSingleton(self):
+        range = QgsIntRange(1, 1)
+        self.assertTrue(range.isSingleton())
+
+        range = QgsIntRange(1, 10)
+        self.assertFalse(range.isSingleton())
+
+        range = QgsIntRange(1, 1, False, False)
+        # should not be singleton because 1 is NOT included
+        self.assertFalse(range.isSingleton())
+
+        # invalid range is not singleton
+        range = QgsIntRange(1, -1)
+        self.assertFalse(range.isSingleton())
+
     def testContains(self):
         # includes both ends
         range = QgsIntRange(0, 10)
@@ -179,18 +194,18 @@ class TestQgsDateRange(unittest.TestCase):
 
     def testGetters(self):
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2))
-        self.assertEqual(range.lower(), QDate(2010, 3, 1))
-        self.assertEqual(range.upper(), QDate(2010, 6, 2))
-        self.assertTrue(range.includeLower())
-        self.assertTrue(range.includeUpper())
+        self.assertEqual(range.begin(), QDate(2010, 3, 1))
+        self.assertEqual(range.end(), QDate(2010, 6, 2))
+        self.assertTrue(range.includeBeginning())
+        self.assertTrue(range.includeEnd())
 
         range = QgsDateRange(QDate(), QDate(2010, 6, 2))
-        self.assertFalse(range.lower().isValid())
-        self.assertEqual(range.upper(), QDate(2010, 6, 2))
+        self.assertFalse(range.begin().isValid())
+        self.assertEqual(range.end(), QDate(2010, 6, 2))
 
         range = QgsDateRange(QDate(2010, 3, 1), QDate())
-        self.assertEqual(range.lower(), QDate(2010, 3, 1))
-        self.assertFalse(range.upper().isValid())
+        self.assertEqual(range.begin(), QDate(2010, 3, 1))
+        self.assertFalse(range.end().isValid())
 
     def testIsEmpty(self):
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2))
@@ -313,6 +328,25 @@ class TestQgsDateRange(unittest.TestCase):
         self.assertTrue(range.overlaps(QgsDateRange(QDate(), QDate(2010, 4, 1))))
         self.assertFalse(range.overlaps(QgsDateRange(QDate(2009, 4, 1), QDate(2009, 8, 5))))
         self.assertTrue(range.overlaps(QgsDateRange(QDate(2019, 4, 1), QDate(2019, 8, 5))))
+
+    def testIsInstant(self):
+        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2)).isInstant())
+        self.assertTrue(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1)).isInstant())
+        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1), False, False).isInstant())
+        self.assertFalse(QgsDateRange(QDate(), QDate()).isInstant())
+
+    def testIsInfinite(self):
+        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2)).isInfinite())
+        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1)).isInfinite())
+        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1), False, False).isInfinite())
+        self.assertTrue(QgsDateRange(QDate(), QDate()).isInfinite())
+
+    def testIsEmpty(self):
+        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2)).isEmpty())
+        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1)).isEmpty())
+        self.assertTrue(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1), False, False).isEmpty())
+        self.assertTrue(QgsDateRange(QDate(2017, 3, 1), QDate(2010, 6, 2)).isEmpty())
+        self.assertFalse(QgsDateRange(QDate(), QDate()).isEmpty())
 
 
 if __name__ == "__main__":

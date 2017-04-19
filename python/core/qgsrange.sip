@@ -12,6 +12,7 @@ class QgsDoubleRange
     bool includeLower() const;
     bool includeUpper() const;
     bool isEmpty() const;
+    bool isSingleton() const;
     bool contains( const QgsDoubleRange &other ) const;
     bool contains( double element ) const;
     bool overlaps( const QgsDoubleRange &other ) const;
@@ -31,6 +32,7 @@ class QgsIntRange
     bool includeLower() const;
     bool includeUpper() const;
     bool isEmpty() const;
+    bool isSingleton() const;
     bool contains( const QgsIntRange &other ) const;
     bool contains( int element ) const;
     bool overlaps( const QgsIntRange &other ) const;
@@ -44,14 +46,37 @@ class QgsDateRange
 
   public:
 
-    QgsDateRange( QDate lower, QDate upper, bool includeLower = true, bool includeUpper = true );
-    QDate lower() const;
-    QDate upper() const;
-    bool includeLower() const;
-    bool includeUpper() const;
+    QgsDateRange( const QDate &lower = QDate(), const QDate &upper = QDate(), bool includeLower = true, bool includeUpper = true );
+    QDate begin() const;
+    QDate end() const;
+    bool includeBeginning() const;
+    bool includeEnd() const;
     bool isEmpty() const;
+    bool isInstant() const;
+    bool isInfinite() const;
     bool contains( const QgsDateRange &other ) const;
-    bool contains( QDate element ) const;
+    bool contains( const QDate &element ) const;
     bool overlaps( const QgsDateRange &other ) const;
+};
+
+class QgsDateTimeRange
+{
+%TypeHeaderCode
+#include <qgsrange.h>
+%End
+
+  public:
+
+    QgsDateTimeRange( const QDateTime &lower = QDateTime(), const QDateTime &upper = QDateTime(), bool includeLower = true, bool includeUpper = true );
+    QDateTime begin() const;
+    QDateTime end() const;
+    bool includeBeginning() const;
+    bool includeEnd() const;
+    bool isEmpty() const;
+    bool isInstant() const;
+    bool isInfinite() const;
+    bool contains( const QgsDateTimeRange &other ) const;
+    bool contains( const QDateTime &element ) const;
+    bool overlaps( const QgsDateTimeRange &other ) const;
 };
 
