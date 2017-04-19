@@ -20,6 +20,7 @@
 #include <QStringList>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 class QgsMapLayerModel;
 class QgsMapLayer;
@@ -57,7 +58,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * \brief QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
      * It can be used to filter the layers list in a widget.
      */
-    explicit QgsMapLayerProxyModel( QObject *parent = nullptr );
+    explicit QgsMapLayerProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * \brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
@@ -96,16 +97,14 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      */
     QStringList excludedProviders() const { return mExcludedProviders; }
 
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+
   private:
     Filters mFilters;
     QList<QgsMapLayer *> mExceptList;
     QgsMapLayerModel *mModel = nullptr;
     QStringList mExcludedProviders;
-
-    // QSortFilterProxyModel interface
-  public:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerProxyModel::Filters )

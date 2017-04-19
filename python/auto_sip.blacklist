@@ -54,8 +54,6 @@ core/qgslogger.sip
 core/qgsmaphittest.sip
 core/qgsmaplayerdependency.sip
 core/qgsmaplayerlegend.sip
-core/qgsmaplayermodel.sip
-core/qgsmaplayerproxymodel.sip
 core/qgsmaplayerrenderer.sip
 core/qgsmaplayerstylemanager.sip
 core/qgsmaprenderercache.sip

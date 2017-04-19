@@ -29,11 +29,11 @@ class QgsFieldProxyModel : QSortFilterProxyModel
       Int,
       LongLong,
       Double,
-      Numeric
+      Numeric,
       Date,
       Time,
       HideReadOnly,
-      AllTypes
+      AllTypes,
     };
     typedef QFlags<QgsFieldProxyModel::Filter> Filters;
 

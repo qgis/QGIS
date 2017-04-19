@@ -21,6 +21,7 @@
 #include <QStringList>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 class QgsMapLayer;
 
@@ -54,7 +55,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * \brief QgsMapLayerModel creates a model to display layers in widgets.
      */
-    explicit QgsMapLayerModel( QObject *parent = nullptr );
+    explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * \brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
@@ -127,17 +128,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      */
     QStringList additionalItems() const { return mAdditionalItems; }
 
-  protected slots:
-    void removeLayers( const QStringList &layerIds );
-    void addLayers( const QList<QgsMapLayer *> &layers );
-
-  protected:
-    QList<QgsMapLayer *> mLayers;
-    QMap<QString, Qt::CheckState> mLayersChecked;
-    bool mItemCheckable;
-
     // QAbstractItemModel interface
-  public:
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &child ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -149,10 +140,19 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      *
      * \note Available only with Qt5 (Python and c++)
      */
-    QHash<int, QByteArray> roleNames() const override;
+    QHash<int, QByteArray> roleNames() const override SIP_SKIP;
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+  protected slots:
+    void removeLayers( const QStringList &layerIds );
+    void addLayers( const QList<QgsMapLayer *> &layers );
+
+  protected:
+    QList<QgsMapLayer *> mLayers;
+    QMap<QString, Qt::CheckState> mLayersChecked;
+    bool mItemCheckable;
 
   private:
 
