@@ -236,6 +236,11 @@ Removing function body with virtual const reference
 
     This<Member> shouldBeIncluded;
 
+    static QString invokableMethod();
+%Docstring
+ :rtype: str
+%End
+
     bool initializedMember;
 
   protected:
