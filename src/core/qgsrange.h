@@ -38,7 +38,7 @@
  * \see QgsIntRange
  * \note not available in Python bindings
  */
-template <class T> class CORE_EXPORT QgsRange
+template <class T> class QgsRange
 {
   public:
 
@@ -212,7 +212,7 @@ typedef QgsRange< int > QgsIntRange;
  * \see QgsDateRange
  * \note not available in Python bindings
  */
-template <class T> class CORE_EXPORT QgsTemporalRange
+template <class T> class QgsTemporalRange
 {
   public:
 
