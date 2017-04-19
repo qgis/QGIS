@@ -435,7 +435,6 @@ gui/qgsrubberband.sip
 gui/qgsscalecombobox.sip
 gui/qgsscalerangewidget.sip
 gui/qgsscalevisibilitydialog.sip
-gui/qgsscalewidget.sip
 gui/qgsscrollarea.sip
 gui/qgssearchquerybuilder.sip
 gui/qgsshortcutsmanager.sip
