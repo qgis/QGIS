@@ -30,6 +30,10 @@ class QgsLayerMetadata
  the schema definition available at resources/qgis-resource-metadata.xsd
  within the QGIS source code.
 
+ Metadata can be validated through the use of QgsLayerMetadataValidator
+ subclasses. E.g. validating against the native QGIS metadata schema can be performed
+ using QgsNativeMetadataValidator.
+
 .. versionadded:: 3.0
 %End
 
