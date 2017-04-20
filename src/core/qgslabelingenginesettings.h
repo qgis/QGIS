@@ -7,13 +7,14 @@
 
 class QgsProject;
 
-/**
+/** \ingroup core
  * Stores global configuration for labeling engine
- * \since in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLabelingEngineSettings
 {
   public:
+    //! Various flags that affect drawing and placement of labels
     enum Flag
     {
       UseAllLabels          = 1 << 1,  //!< Whether to draw all labels even if there would be collisions

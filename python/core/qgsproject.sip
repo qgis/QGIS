@@ -596,6 +596,12 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void mapThemeCollectionChanged();
 
+    /**
+     * Emitted when global configuration of the labeling engine changes.
+     * \since QGIS 3.0
+     */
+    void labelingEngineSettingsChanged();
+
     //
     // signals from QgsMapLayerRegistry
     //

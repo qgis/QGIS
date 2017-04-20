@@ -23,7 +23,8 @@ import sys
 
 from qgis.PyQt.QtCore import QThreadPool, qDebug
 
-from qgis.core import (QgsPalLayerSettings,
+from qgis.core import (QgsLabelingEngineSettings,
+                       QgsPalLayerSettings,
                        QgsSingleSymbolRenderer,
                        QgsMarkerSymbol,
                        QgsProperty)
@@ -39,8 +40,9 @@ class TestPlacementBase(TestQgsPalLabeling):
     def setUpClass(cls):
         if not cls._BaseSetup:
             TestQgsPalLabeling.setUpClass()
-        cls._Pal.setDrawLabelRectOnly(True)
-        cls._Pal.saveEngineSettings()
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly)
+        cls._MapSettings.setLabelingEngineSettings(engine_settings)
 
     @classmethod
     def tearDownClass(cls):
