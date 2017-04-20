@@ -26,6 +26,7 @@ Required build dependencies:
 - expat >= 1.95
 - QScintilla2
 - QCA
+- qtkeychain (>= 0.5)
 -
 
 Optional dependencies:
