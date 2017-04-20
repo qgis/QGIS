@@ -65,6 +65,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
   dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
+  dialog->setObjectName( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id(), f->id() ) );
 
   QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Feature" ) );
   if ( !actions.isEmpty() )
@@ -96,10 +97,19 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
 bool QgsFeatureAction::viewFeatureForm( QgsHighlight *h )
 {
-  if ( !mLayer )
+  if ( !mLayer || !mFeature )
     return false;
 
-  QgsAttributeDialog *dialog = newDialog( true );
+  QString name( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id(), mFeature->id() ) );
+
+  QgsAttributeDialog *dialog = QgisApp::instance()->findChild<QgsAttributeDialog *>( name );
+  if ( dialog )
+  {
+    dialog->raise();
+    return true;
+  }
+
+  dialog = newDialog( true );
   dialog->setHighlight( h );
   // delete the dialog when it is closed
   dialog->setAttribute( Qt::WA_DeleteOnClose );
@@ -126,7 +136,16 @@ bool QgsFeatureAction::editFeature( bool showModal )
   }
   else
   {
-    QgsAttributeDialog *dialog = newDialog( false );
+    QString name( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id(), mFeature->id() ) );
+
+    QgsAttributeDialog *dialog = QgisApp::instance()->findChild<QgsAttributeDialog *>( name );
+    if ( dialog )
+    {
+      dialog->raise();
+      return true;
+    }
+
+    dialog = newDialog( false );
 
     if ( !mFeature->isValid() )
       dialog->setMode( QgsAttributeForm::AddFeatureMode );
