@@ -389,7 +389,7 @@ class QTreeWidgetItem;
 
   If the current project title is null
   if the project file is null then
-  set title text to just application name and version
+  set title text to just application name
   else
   set set title text to the project file name
   else
@@ -397,17 +397,7 @@ class QTreeWidgetItem;
   */
 static void setTitleBarText_( QWidget &qgisApp )
 {
-  QString caption = QgisApp::tr( "QGIS " );
-
-  if ( Qgis::QGIS_VERSION.endsWith( QLatin1String( "Master" ) ) )
-  {
-    caption += QStringLiteral( "%1" ).arg( Qgis::QGIS_DEV_VERSION );
-  }
-  else
-  {
-    caption += Qgis::QGIS_VERSION;
-  }
-
+  QString caption;
   if ( QgsProject::instance()->title().isEmpty() )
   {
     if ( QgsProject::instance()->fileName().isEmpty() )
@@ -418,16 +408,23 @@ static void setTitleBarText_( QWidget &qgisApp )
     else
     {
       QFileInfo projectFileInfo( QgsProject::instance()->fileName() );
-      caption += " - " + projectFileInfo.completeBaseName();
+      caption = projectFileInfo.completeBaseName() + " - ";
     }
   }
   else
   {
-    caption += " - " + QgsProject::instance()->title();
+    caption = QgsProject::instance()->title() + " - ";
+  }
+
+  caption += QgisApp::tr( "QGIS" );
+
+  if ( Qgis::QGIS_VERSION.endsWith( QLatin1String( "Master" ) ) )
+  {
+    caption += QStringLiteral( " %1" ).arg( Qgis::QGIS_DEV_VERSION );
   }
 
   qgisApp.setWindowTitle( caption );
-} // setTitleBarText_( QWidget * qgisApp )
+}
 
 /**
  Creator function for output viewer
