@@ -35,13 +35,14 @@ sub processDoxygenLine
     if ( $line =~ m/[\\@]brief (.*)/ ) {
         return " $1\n";
     }
-    return $line;
+    return "$line\n";
 }
-
 
 my $headerfile = $ARGV[0];
 
-open(my $header, "<", $headerfile) || die "Couldn't open '".$headerfile."' for reading because: ".$!;
+open(my $handle, "<", $headerfile) || die "Couldn't open '".$headerfile."' for reading because: ".$!;
+chomp(my @lines = <$handle>);
+close $handle;
 
 # contexts
 my $SIP_RUN = 0;
@@ -52,40 +53,44 @@ my $MULTILINE_DEFINITION = 0;
 my $comment = '';
 my $nesting_index = 0;
 my $private_section_line = '';
-my $line;
 my $classname = '';
 my $return_type = '';
 my $is_override = 0;
 my %qflag_hash;
 
-print  "/************************************************************************\n";
-print  " * This file has been generated automatically from                      *\n";
-print  " *                                                                      *\n";
-printf " * %-*s *\n", 68, $headerfile;
-print  " *                                                                      *\n";
-print  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
-print  " ************************************************************************/\n";
+my $line_count = @lines;
+my $line_idx = -1;
+my $line;
+my @output = ();
 
+push @output, "/************************************************************************\n";
+push @output, " * This file has been generated automatically from                      *\n";
+push @output, " *                                                                      *\n";
+push @output, sprintf " * %-*s *\n", 68, $headerfile;
+push @output, " *                                                                      *\n";
+push @output, " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
+push @output, " ************************************************************************/\n";
 
-while(!eof $header){
-    $line = readline $header;
-    #print $line;
+while ($line_idx < $line_count){
+    $line = $lines[$line_idx];
+    $line_idx++;
+    #push @output, "$line\n";
 
     if ($line =~ m/^\s*SIP_FEATURE\( (\w+) \)(.*)$/){
-        print "%Feature $1$2\n";
+        push @output, "%Feature $1$2\n";
         next;
     }
     if ($line =~ m/^\s*SIP_IF_FEATURE\( (\!?\w+) \)(.*)$/){
-        print "%If ($1)$2\n";
+        push @output, "%If ($1)$2\n";
         next;
     }
     if ($line =~ m/^\s*SIP_CONVERT_TO_SUBCLASS_CODE(.*)$/){
-        print "%ConvertToSubClassCode$1\n";
+        push @output, "%ConvertToSubClassCode$1\n";
         next;
     }
 
     if ($line =~ m/^\s*SIP_END(.*)$/){
-        print "%End$1\n";
+        push @output, "%End$1\n";
         next;
     }
 
@@ -94,7 +99,7 @@ while(!eof $header){
         if ( $line =~ m/^\s*#ifdef SIP_RUN/){
             $SIP_RUN = 1;
             if ($ACCESS == PRIVATE){
-                print $private_section_line
+                push @output, $private_section_line."\n";
             }
             next;
         }
@@ -114,8 +119,9 @@ while(!eof $header){
 
             # if there is an else at this level, code will be ignored i.e. not SIP_RUN
             if ( $line =~ m/^\s*#else/ && $nesting_index == 0){
-                while(!eof $header){
-                    $line = readline $header;
+                while ($line_idx < $line_count){
+                    $line = $lines[$line_idx];
+                    $line_idx++;
                     if ( $line =~ m/^\s*#if(def)?\s+/ ){
                         $nesting_index++;
                     }
@@ -134,15 +140,16 @@ while(!eof $header){
         }
         elsif ( $line =~ m/^\s*#ifndef SIP_RUN/){
             # code is ignored here
-            while(!eof $header){
-                $line = readline $header;
+            while ($line_idx < $line_count){
+                $line = $lines[$line_idx];
+                $line_idx++;
                 if ( $line =~ m/^\s*#if(def)?\s+/ ){
                     $nesting_index++;
                 }
                 elsif ( $line =~ m/^\s*#else/ && $nesting_index == 0 ){
                     # code here will be printed out
                     if ($ACCESS == PRIVATE){
-                        print $private_section_line;
+                        push @output, $private_section_line."\n";
                     }
                     $SIP_RUN = 1;
                     last;
@@ -167,7 +174,7 @@ while(!eof $header){
     # TYPE HEADER CODE
     if ( $HEADER_CODE && $SIP_RUN == 0 ){
         $HEADER_CODE = 0;
-        print "%End\n";
+        push @output, "%End\n";
     }
 
     # Skip forward declarations
@@ -205,33 +212,36 @@ while(!eof $header){
     }
     # Skip assignment operator
     if ( $line =~ m/operator=\s*\(/ ){
-        print "// $line";
+        push @output, "// $line";
         next;
     }
 
     # Detect comment block
     if ($line =~ m/^\s*\/\*/){
         do {no warnings 'uninitialized';
-            $comment = processDoxygenLine( $line =~ s/^\s*\/\*(\*)?(.*)$/$2/r );
+            $comment = processDoxygenLine( $line =~ s/^\s*\/\*(\*)?(.*?)\n?$/$2/r );
         };
         $comment =~ s/^\s*$//;
-        while(!eof $header){
-            $line = readline $header;
-            $comment .= processDoxygenLine( $line =~ s/\s*\*?(.*?)(\/)?$/$1/r );
+        #$comment =~ s/^(\s*\n)*(.+)/$2/;
+        while ($line_idx < $line_count){
+            $line = $lines[$line_idx];
+            $line_idx++;
+            $comment .= processDoxygenLine( $line =~ s/\s*\*?(.*?)(\/)?\n?$/$1/r );
             if ( $line =~ m/\*\/$/ ){
                 last;
             }
         }
-        $comment =~ s/(\n)+$//;
-        #print $comment;
+        $comment =~ s/\n+$//;
+        #push @output, $comment;
         next;
     }
 
     # save comments and do not print them, except in SIP_RUN
     if ( $SIP_RUN == 0 ){
         if ( $line =~ m/^\s*\/\// ){
-            $line =~ s/^\s*\/\/\!*\s*(.*)\n?$/$1/;
+            $line =~ s/^\s*\/\/\!*\s*(.*?)\n?$/$1/;
             $comment = processDoxygenLine( $line );
+            $comment =~ s/\n+$//;
             next;
         }
     }
@@ -263,14 +273,14 @@ while(!eof $header){
         if ( $comment !~ m/^\s*$/ ){
             $line .= "%Docstring\n$comment\n%End\n";
         }
-        $line .= "\n%TypeHeaderCode\n#include \"" . basename($headerfile) . "\"\n";
+        $line .= "\n%TypeHeaderCode\n#include \"" . basename($headerfile) . "\"";
 
-        print $line;
+        push @output, "$line\n";
 
-        my $skip;
         # Skip opening curly bracket, we already added that above
-        $skip = readline $header;
-        $skip =~ m/^\s*{\s$/ || die "Unexpected content on line $line";
+        my $skip = $lines[$line_idx];
+        $line_idx++;
+        $skip =~ m/^\s*{\s*$/ || die "Unexpected content on line $skip";
 
         $comment = '';
         $HEADER_CODE = 1;
@@ -280,19 +290,21 @@ while(!eof $header){
 
     # Enum declaration
     if ( $line =~ m/^\s*enum\s+\w+.*?$/ ){
-        print $line;
-        $line = readline $header;
+        push @output, "$line\n";
+        $line = $lines[$line_idx];
+        $line_idx++;
         $line =~ m/^\s*\{\s*$/ || die 'Unexpected content: enum should be followed by {';
-        print $line;
-        while(!eof $header){
-            $line = readline $header;
+        push @output, "$line\n";
+        while ($line_idx < $line_count){
+            $line = $lines[$line_idx];
+            $line_idx++;
             if ($line =~ m/\};/){
                 last;
             }
             $line =~ s/(\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?).*$/$1$3/;
-            print $line;
+            push @output, "$line\n";
         }
-        print $line;
+        push @output, "$line\n";
         # enums don't have Docstring apparently
         $comment = '';
         next;
@@ -305,7 +317,7 @@ while(!eof $header){
 
     # remove struct member assignment
     if ( $SIP_RUN != 1 && $ACCESS == PUBLIC && $line =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
-        $line = "$1;\n";
+        $line = "$1;";
     }
 
     # catch Q_DECLARE_FLAGS
@@ -342,8 +354,9 @@ while(!eof $header){
         if ( $line =~  m/^(\s*)?(explicit )?(\w+)\([\w\=\(\)\s\,\&\*\<\>]*\)(?!;)$/ ){
             my $newline = $line =~ s/\n/;\n/r;
             my $nesting_index = 0;
-            while(!eof $header){
-                $line = readline $header;
+            while ($line_idx < $line_count){
+                $line = $lines[$line_idx];
+                $line_idx++;
                 if ( $nesting_index == 0 ){
                     if ( $line =~ m/^\s*(:|,)/ ){
                         next;
@@ -368,12 +381,14 @@ while(!eof $header){
 
         # remove function bodies
         if ( $line =~  m/^(\s*)?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
-            my $newline = "$1$2$3$4;\n";
+            my $newline = "$1$2$3$4;";
             if ($line !~ m/\{.*?\}$/){
-                $line = readline $header;
+                $line = $lines[$line_idx];
+                $line_idx++;
                 if ( $line =~ m/^\s*\{\s*$/ ){
-                    while(!eof $header){
-                        $line = readline $header;
+                    while ($line_idx < $line_count){
+                        $line = $lines[$line_idx];
+                        $line_idx++;
                         if ( $line =~ m/\}\s*$/ ){
                             last;
                         }
@@ -385,7 +400,7 @@ while(!eof $header){
 
         # remove inline declarations
         if ( $line =~  m/^(\s*)?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$/ ){
-            my $newline = "$1$3;\n";
+            my $newline = "$1$3;";
             $line = $newline;
         }
 
@@ -432,7 +447,7 @@ while(!eof $header){
     $line =~ s/\s*% (MappedType|TypeHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;
     $line =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
-    print $line;
+    push @output, "$line\n";
 
     # multiline definition (parenthesis left open)
     if ( $MULTILINE_DEFINITION == 1 ){
@@ -463,24 +478,27 @@ while(!eof $header){
             # parent class Docstring
         }
         else {
-            print "%Docstring\n";
+            push @output, "%Docstring\n";
             if ( $comment !~ m/^\s*$/ ){
-                print "$comment\n";
+                push @output, "$comment\n";
             }
             if ($return_type ne '' ){
-                print " :rtype: $return_type\n";
+                push @output, " :rtype: $return_type\n";
             }
-            print "%End\n";
+            push @output, "%End\n";
         }
         $comment = '';
         $return_type = '';
         $is_override = 0;
     }
 }
-print  "/************************************************************************\n";
-print  " * This file has been generated automatically from                      *\n";
-print  " *                                                                      *\n";
-printf " * %-*s *\n", 68, $headerfile;
-print  " *                                                                      *\n";
-print  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
-print  " ************************************************************************/\n";
+push @output,  "/************************************************************************\n";
+push @output,  " * This file has been generated automatically from                      *\n";
+push @output,  " *                                                                      *\n";
+push @output, sprintf " * %-*s *\n", 68, $headerfile;
+push @output,  " *                                                                      *\n";
+push @output,  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
+push @output,  " ************************************************************************/\n";
+
+
+print join('',@output)."\n";
