@@ -40,6 +40,14 @@ QgsFormAnnotation::QgsFormAnnotation( QObject *parent )
   : QgsAnnotation( parent )
 {}
 
+QgsFormAnnotation *QgsFormAnnotation::clone() const
+{
+  std::unique_ptr< QgsFormAnnotation > c( new QgsFormAnnotation() );
+  copyCommonProperties( c.get() );
+  c->setDesignerForm( mDesignerForm );
+  return c.release();
+}
+
 void QgsFormAnnotation::setDesignerForm( const QString &uiFile )
 {
   mDesignerForm = uiFile;

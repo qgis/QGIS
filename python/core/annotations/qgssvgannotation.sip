@@ -26,6 +26,8 @@ class QgsSvgAnnotation: QgsAnnotation
  Constructor for QgsSvgAnnotation.
 %End
 
+    virtual QgsSvgAnnotation *clone() const /Factory/;
+
     virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const;
     virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc );
 

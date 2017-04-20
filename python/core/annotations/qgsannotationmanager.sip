@@ -68,6 +68,16 @@ class QgsAnnotationManager : QObject
     QList< QgsAnnotation * > annotations() const;
 %Docstring
  Returns a list of all annotations contained in the manager.
+ \see cloneAnnotations()
+ :rtype: list of QgsAnnotation
+%End
+
+    QList< QgsAnnotation * > cloneAnnotations() const /Factory/;
+%Docstring
+ Returns a list containing clones of all annotations contained
+ in the manager. The caller takes responsibility for deleting
+ all returned annotations.
+ \see annotations()
  :rtype: list of QgsAnnotation
 %End
 

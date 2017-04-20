@@ -44,6 +44,8 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
 
     ~QgsHtmlAnnotation() = default;
 
+    QgsHtmlAnnotation *clone() const override SIP_FACTORY;
+
     QSizeF minimumFrameSize() const override;
 
     /**

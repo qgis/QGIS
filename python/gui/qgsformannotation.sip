@@ -7,6 +7,8 @@ class QgsFormAnnotation : QgsAnnotation
 
     QgsFormAnnotation( QObject* parent /TransferThis/ = nullptr );
 
+    virtual QgsFormAnnotation *clone() const /Factory/;
+
     QSizeF minimumFrameSize() const;
     QSizeF preferredFrameSize() const;
 

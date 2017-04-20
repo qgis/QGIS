@@ -26,6 +26,8 @@ class QgsTextAnnotation: QgsAnnotation
  Constructor for QgsTextAnnotation.
 %End
 
+    virtual QgsTextAnnotation *clone() const /Factory/;
+
     const QTextDocument *document() const;
 %Docstring
  Returns the text document which will be rendered

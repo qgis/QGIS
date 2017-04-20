@@ -47,6 +47,14 @@ QgsHtmlAnnotation::QgsHtmlAnnotation( QObject *parent )
   connect( mWebPage->mainFrame(), &QWebFrame::javaScriptWindowObjectCleared, this, &QgsHtmlAnnotation::javascript );
 }
 
+QgsHtmlAnnotation *QgsHtmlAnnotation::clone() const
+{
+  std::unique_ptr< QgsHtmlAnnotation > c( new QgsHtmlAnnotation() );
+  copyCommonProperties( c.get() );
+  c->setSourceFile( mHtmlFile );
+  return c.release();
+}
+
 void QgsHtmlAnnotation::setSourceFile( const QString &htmlFile )
 {
   QFile file( htmlFile );

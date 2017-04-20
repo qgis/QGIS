@@ -26,6 +26,14 @@ QgsTextAnnotation::QgsTextAnnotation( QObject *parent )
   mDocument->setUseDesignMetrics( true );
 }
 
+QgsTextAnnotation *QgsTextAnnotation::clone() const
+{
+  std::unique_ptr< QgsTextAnnotation > c( new QgsTextAnnotation() );
+  copyCommonProperties( c.get() );
+  c->setDocument( mDocument ? mDocument->clone() : nullptr );
+  return c.release();
+}
+
 const QTextDocument *QgsTextAnnotation::document() const
 {
   return mDocument.get();

@@ -39,6 +39,8 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
      */
     QgsFormAnnotation( QObject *parent = nullptr );
 
+    QgsFormAnnotation *clone() const override SIP_FACTORY;
+
     QSizeF minimumFrameSize() const override;
     //! Returns the optimal frame size
     QSizeF preferredFrameSize() const;
@@ -63,7 +65,7 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
     /**
      * Returns a new QgsFormAnnotation object.
      */
-    static QgsFormAnnotation *create() { return new QgsFormAnnotation(); }
+    static QgsFormAnnotation *create() SIP_FACTORY { return new QgsFormAnnotation(); }
 
   protected:
 
