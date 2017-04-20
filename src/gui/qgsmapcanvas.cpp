@@ -149,7 +149,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
   mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
   mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  connect( QgsProject::instance(), &QgsProject::crsChanged,
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged,
            this, [ = ]
   {
     mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
