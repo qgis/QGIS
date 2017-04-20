@@ -60,6 +60,12 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
 
 void QgsVectorLayerLabelProvider::init()
 {
+  if ( mLayerGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry &&
+       ( mSettings.placement == QgsPalLayerSettings::Placement::Line  || mSettings.placement == QgsPalLayerSettings::Placement::PerimeterCurved ) )
+  {
+    mSettings.labelPerPart = true;
+  }
+
   mPlacement = mSettings.placement;
   mLinePlacementFlags = mSettings.placementFlags;
   mFlags = Flags();
