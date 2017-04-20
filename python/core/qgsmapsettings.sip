@@ -239,6 +239,17 @@ class QgsMapSettings
     /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
 
+    /**
+     * Sets global configuration of the labeling engine
+     * \since QGIS 3.0
+     */
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
+
+    /**
+     * Returns global configuration of the labeling engine
+     * \since QGIS 3.0
+     */
+    const QgsLabelingEngineSettings &labelingEngineSettings() const;
 
   protected:
 

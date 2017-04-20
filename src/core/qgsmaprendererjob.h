@@ -34,7 +34,6 @@ class QgsLabelingEngine;
 class QgsLabelingResults;
 class QgsMapLayerRenderer;
 class QgsMapRendererCache;
-class QgsPalLabeling;
 class QgsFeatureFilterProvider;
 
 /// @cond PRIVATE

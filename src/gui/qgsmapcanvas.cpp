@@ -2124,3 +2124,13 @@ void QgsMapCanvas::setAnnotationsVisible( bool show )
     item->setVisible( show );
   }
 }
+
+void QgsMapCanvas::setLabelingEngineSettings( const QgsLabelingEngineSettings &settings )
+{
+  mSettings.setLabelingEngineSettings( settings );
+}
+
+const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
+{
+  return mSettings.labelingEngineSettings();
+}

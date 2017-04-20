@@ -1577,6 +1577,14 @@ QgsPalLabeling        {#qgis_api_break_3_0_QgsPalLabeling}
 --------------
 
 - all methods implemented from QgsLabelingEngineInterface have been removed: init(), willUseLayer(), clearActiveLayers(), clearActiveLayer(), prepareLayer(), prepareDiagramLayer(), registerFeature(), registerDiagramFeature(), drawLabeling(), exit(), clone(). Labeling is now driven by QgsLabelingEngine.
+- all methods for global labeling engine configuration have been moved to QgsLabelingEngineSettings:
+  - searchMethod(), setSearchMethod(), numCandidatePositions(), setNumCandidatePositions() - methods with the same name in QgsLabelingEngineSettings
+  - isShowingCandidates(), setShowingCandidates() - replaced by DrawCandidates flag
+  - isShowingAllLabels(), setShowingAllLabels() - replaced by UseAllLabels flag
+  - isShowingPartialLabels(), setShowingPartialLabels() - replaced by UsePartialCandidates flag
+  - drawLabelRectOnly(), setDrawLabelRectOnly() - replaced by DrawLabelRectOnly flag
+  - loadEngineSettings(), saveEngineSettings() - replaced by readSettingsFromProject() and writeSettingsToProject()
+  - clearEngineSettings() - replaced by clear() that resets the settings instance (rather than immediately writing to project)
 - init(QgsMapRenderer*) has been removed. Use init(const QgsMapSettings&) instead.
 - prepareGeometry and geometryRequiresPreparation now take geometry references, not pointers.
 - layer() was removed. If direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
@@ -1586,7 +1594,6 @@ QgsPalLabeling        {#qgis_api_break_3_0_QgsPalLabeling}
 - labelsWithinRect() was removed. Use takeResults() and methods of QgsLabelingResults instead.
 - isStoredWithProject() and setStoredWithProject() had no effect and were removed.
 - staticWillUseLayer(QString) was removed. Use the variant with QgsVectorLayer argument.
-- clearEngineSettings() was replaced by QgsLabelingEngine::clearSettingsInProject().
 
 
 QgsPalLayerSettings        {#qgis_api_break_3_0_QgsPalLayerSettings}

@@ -19,7 +19,6 @@
 #define QGSWMSCONFIGPARSER_H
 
 #include "qgsunittypes.h"
-#include "qgspallabeling.h"
 #include "qgsdatumtransformstore.h"
 #include "qgis_server.h"
 
@@ -30,9 +29,11 @@ class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerMap;
 class QgsComposition;
+class QgsGeometry;
 class QgsMapLayer;
 class QgsLegendModel;
 class QgsMapSettings;
+class QgsVectorLayer;
 
 
 class SERVER_EXPORT QgsWmsConfigParser

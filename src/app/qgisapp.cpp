@@ -2893,6 +2893,12 @@ void QgisApp::setupConnections()
     mMapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
   } );
 
+  connect( QgsProject::instance(), &QgsProject::labelingEngineSettingsChanged,
+           this, [ = ]
+  {
+    mMapCanvas->setLabelingEngineSettings( QgsProject::instance()->labelingEngineSettings() );
+  } );
+
   // connect legend signals
   connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged,
            this, &QgisApp::activateDeactivateLayerRelatedActions );

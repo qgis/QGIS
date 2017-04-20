@@ -409,6 +409,19 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer*>& layers );
     QVariantMap customVariables() const;
     void setCustomVariables( const QVariantMap& customVariables );
+
+    /**
+     * Sets project's global labeling engine settings
+     * \since QGIS 3.0
+     */
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
+
+    /**
+     * Returns project's global labeling engine settings
+     * \since QGIS 3.0
+     */
+    const QgsLabelingEngineSettings &labelingEngineSettings() const;
+
     int count() const;
 
     QgsMapLayer* mapLayer( const QString& layerId ) const;

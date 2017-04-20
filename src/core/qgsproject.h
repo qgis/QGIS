@@ -56,6 +56,7 @@ class QgsVectorLayer;
 class QgsAnnotationManager;
 class QgsLayoutManager;
 class QgsLayerTree;
+class QgsLabelingEngineSettings;
 
 /** \ingroup core
  * Reads and writes project states.
@@ -510,6 +511,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setCustomVariables( const QVariantMap &customVariables );
 
+    /**
+     * Sets project's global labeling engine settings
+     * \since QGIS 3.0
+     */
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
+
+    /**
+     * Returns project's global labeling engine settings
+     * \since QGIS 3.0
+     */
+    const QgsLabelingEngineSettings &labelingEngineSettings() const;
+
     //
     // Functionality from QgsMapLayerRegistry
     //
@@ -815,6 +828,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void mapThemeCollectionChanged();
 
+    /**
+     * Emitted when global configuration of the labeling engine changes.
+     * \since QGIS 3.0
+     */
+    void labelingEngineSettingsChanged();
+
     //
     // signals from QgsMapLayerRegistry
     //
@@ -1000,6 +1019,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QMap< QPair< QString, QString>, QgsTransactionGroup *> mTransactionGroups;
 
     std::unique_ptr<QgsMapThemeCollection> mMapThemeCollection;
+
+    std::unique_ptr<QgsLabelingEngineSettings> mLabelingEngineSettings;
 
     QVariantMap mCustomVariables;
 

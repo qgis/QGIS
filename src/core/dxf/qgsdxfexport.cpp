@@ -966,7 +966,6 @@ void QgsDxfExport::writeEntities()
 
   // label engine
   QgsLabelingEngine engine;
-  engine.readSettingsFromProject( QgsProject::instance() );
   engine.setMapSettings( mMapSettings );
 
   // iterate through the maplayers
