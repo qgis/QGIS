@@ -57,9 +57,9 @@ QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString
   resize( w, height() );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
-  connect( txtName, SIGNAL( textChanged( QString ) ), this, SLOT( okButtonBehavior( QString ) ) );
-  connect( txtUrl, SIGNAL( textChanged( QString ) ), this, SLOT( okButtonBehavior( QString ) ) );
-  connect( btnConnect, SIGNAL( clicked() ), this, SLOT( testConnection() ) );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsGeoNodeNewConnection::okButtonBehavior );
+  connect( txtUrl, &QLineEdit::textChanged, this, &QgsGeoNodeNewConnection::okButtonBehavior );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsGeoNodeNewConnection::testConnection );
 }
 
 void QgsGeoNodeNewConnection::accept()

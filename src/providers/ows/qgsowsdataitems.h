@@ -121,8 +121,8 @@ class QgsGeoNodeRootItem : public QgsDataCollectionItem
 
     /*virtual QList<QAction *> actions() override;
 
-    private slots:
-      void newConnection();*/
+  private slots:
+    void newConnection();*/
 };
 
 //! Provider for Geonode root data item

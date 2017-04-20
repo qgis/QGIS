@@ -349,7 +349,6 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
   Q_FOREACH ( QVariant layerMap, layerList )
   {
     QString layerName = layerMap.toMap()["name"].toString();
-    QgsDebugMsg( "on createChildren() ASU LAYER NAME = " + layerName );
     QgsGeoNodeLayerItem *layer = new QgsGeoNodeLayerItem( this, mConnection.mConnName, layerName, QString( "" ) );
     layers.append( layer );
   }
