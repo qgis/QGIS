@@ -163,6 +163,10 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     void nonAnnotatedMethodFollowingSkip();
 
+    bool myMultiLineSkipped( const QList<int, QString> &list1,
+                             const QList<int, QString> &list2,
+                             const QList<int, QString> &list3 ) SIP_SKIP;
+
     //! Factory annotation
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 

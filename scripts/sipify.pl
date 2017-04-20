@@ -189,6 +189,15 @@ while ($line_idx < $line_count){
     # SIP_SKIP
     if ( $line =~ m/SIP_SKIP/ ){
       $comment = '';
+      # if multiline definition, remove previous lines
+      if ( $MULTILINE_DEFINITION == 1){
+        my $opening_line = '';
+        while ( $opening_line !~ m/^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$/){
+            $opening_line = pop(@output);
+            $#output >= 0 or die 'could not reach opening definition';
+        }
+        $MULTILINE_DEFINITION = 0;
+      }
       next;
     }
 

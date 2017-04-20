@@ -120,6 +120,7 @@ A multiline method signature
 
     void nonAnnotatedMethodFollowingSkip();
 
+
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 %Docstring
 Factory annotation
