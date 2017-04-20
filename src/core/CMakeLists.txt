@@ -173,6 +173,7 @@ SET(QGIS_CORE_SRCS
   qgsmaprendererjob.cpp
   qgsmaprendererparalleljob.cpp
   qgsmaprenderersequentialjob.cpp
+  qgsmaprenderertask.cpp
   qgsmapsettings.cpp
   qgsmaptopixel.cpp
   qgsmaptopixelgeometrysimplifier.cpp
@@ -521,6 +522,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaprendererjob.h
   qgsmaprendererparalleljob.h
   qgsmaprenderersequentialjob.h
+  qgsmaprenderertask.h
   qgsmessagelog.h
   qgsmessageoutput.h
   qgsnetworkaccessmanager.h
