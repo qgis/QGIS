@@ -447,6 +447,7 @@ void QgsProject::setEllipsoid( const QString &ellipsoid )
 {
   writeEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), ellipsoid );
   setDirty( true );
+  emit ellipsoidChanged( ellipsoid );
 }
 
 void QgsProject::clear()
@@ -954,6 +955,7 @@ bool QgsProject::read()
 
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
   emit crsChanged();
+  emit ellipsoidChanged( ellipsoid() );
 
   return true;
 }

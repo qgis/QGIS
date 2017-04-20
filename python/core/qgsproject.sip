@@ -546,6 +546,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     void customVariablesChanged();
 
     void crsChanged();
+    void ellipsoidChanged( const QString &ellipsoid );
 
     /**
      * Emitted whenever a new transaction group has been created or a

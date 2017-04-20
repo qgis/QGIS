@@ -78,6 +78,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
+    Q_PROPERTY( QString ellipsoid READ ellipsoid WRITE setEllipsoid NOTIFY ellipsoidChanged )
     Q_PROPERTY( QgsMapThemeCollection *mapThemeCollection READ mapThemeCollection NOTIFY mapThemeCollectionChanged )
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
     Q_PROPERTY( QgsRelationManager *relationManager READ relationManager )
@@ -769,6 +770,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.0
      */
     void crsChanged();
+
+    /**
+     * Emitted when the project \a ellipsoid is changed.
+     *
+     * \since QGIS 3.0
+     * \see setEllipsoid()
+     * \see ellipsoid()
+     */
+    void ellipsoidChanged( const QString &ellipsoid );
 
     /**
      * Emitted whenever a new transaction group has been created or a
