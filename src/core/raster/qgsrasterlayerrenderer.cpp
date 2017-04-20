@@ -23,6 +23,7 @@
 #include "qgsrasterprojector.h"
 #include "qgsrendercontext.h"
 #include "qgscsexception.h"
+#include "qgsproject.h"
 
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
   : QgsMapLayerRenderer( layer->id() )
@@ -31,6 +32,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   , mContext( rendererContext )
   , mFeedback( new Feedback( this ) )
 {
+  mContext.distanceArea().setSourceCrs( QgsProject::instance()->crs() );
+  // QgsDebugMsgLevel( QString( "QgsRasterLayerRenderer::QgsRasterLayerRenderer[%3] -17- : sourceCrs().description[%1] ellipsoid[%2]" ).arg( mContext.distanceArea().sourceCrs().description() ).arg(mContext.distanceArea().sourceCrs().ellipsoidAcronym()).arg(layer->originalName()),3);
   mPainter = rendererContext.painter();
   const QgsMapToPixel &qgsMapToPixel = rendererContext.mapToPixel();
   mMapToPixel = &qgsMapToPixel;

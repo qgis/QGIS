@@ -285,7 +285,8 @@ void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem &crs 
 {
   mDestCRS = crs;
   mDatumTransformStore.setDestinationCrs( crs );
-
+  setEllipsoid( mDestCRS.ellipsoidAcronym() );
+  QgsDebugMsgLevel( QString( "QgsMapSettings::setDestinationCrs -11- : sourceCrs().description[%1] ellipsoid[%2,%3]" ).arg( mDestCRS.description() ).arg( mDestCRS.ellipsoidAcronym() ).arg( mEllipsoid ), 3 );
   mScaleCalculator.setMapUnits( crs.mapUnits() );
   // Since the map units have changed, force a recalculation of the scale.
   updateDerived();
@@ -299,6 +300,7 @@ QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const
 bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
 {
   QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
+  QgsDebugMsgLevel( QString( "\n\n-------->\nQgsMapSettings::setEllipsoid -10- : sourceCrs().description[%1,%2] ellipsoid[%3] valid[%4] semiMajor[%5] semiMinor[%6] inverseFlattening[%7]" ).arg( mDestCRS.description() ).arg( mDestCRS.ellipsoidAcronym() ).arg( ellipsoid ).arg( params.valid ).arg( params.semiMajor ).arg( params.semiMinor ).arg( params.inverseFlattening ), 3 );
   if ( !params.valid )
   {
     return false;

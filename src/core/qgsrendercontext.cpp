@@ -133,7 +133,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setExpressionContext( mapSettings.expressionContext() );
   ctx.setSegmentationTolerance( mapSettings.segmentationTolerance() );
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
-  ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
+  // QgsDebugMsgLevel( QString( "QgsRenderContext::fromMapSettings -20- : sourceCrs().description[%1] Ellipsoid[%2]" ).arg( mapSettings.destinationCrs().description() ).arg(mapSettings.destinationCrs().ellipsoidAcronym()),3);
   ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
 
   //this flag is only for stopping during the current rendering progress,
@@ -243,6 +243,15 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       {
         conversionFactor = 1.0;
       }
+      QgsDebugMsgLevel( QString( "convertToPainterUnits -1- : size[%1] mup[%2] mapUnitsPerPixel[%3] conversionFactor[%4] mapUnits[%5] from center[%6] sourceCrs[%7]" ).arg( size )
+                        .arg( mup )
+                        .arg( mapToPixel().mapUnitsPerPixel() )
+                        .arg( conversionFactor )
+                        .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
+                        .arg( mExtent.center().wellKnownText() )
+                        .arg( mDistanceArea.sourceCrs().description() ), 4 );
+      unit = QgsUnitTypes::RenderMapUnits;
+      // Act as if RenderMapUnits with values of meters converted to MapUnits
       break;
     }
     case QgsUnitTypes::RenderMapUnits:
@@ -256,6 +265,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       {
         conversionFactor = 1.0;
       }
+      QgsDebugMsgLevel( QString( "convertToPainterUnits -2- : size[%1]  mup[%2] conversionFactor[%3]" ).arg( size ).arg( mup ).arg( conversionFactor ), 4 );
       break;
     }
     case QgsUnitTypes::RenderPixels:
@@ -278,6 +288,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       convertedSize = qMax( convertedSize, scale.minSizeMM * mScaleFactor );
     if ( scale.maxSizeMMEnabled )
       convertedSize = qMin( convertedSize, scale.maxSizeMM * mScaleFactor );
+    QgsDebugMsgLevel( QString( "convertToPainterUnits -3- : convertedSize[%1]" ).arg( convertedSize ), 4 );
   }
 
   return convertedSize;
@@ -291,9 +302,12 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
   {
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
-      QgsDebugMsg( QString( "QgsRenderContext::convertToMapUnits: size[%1] " ).arg( + size ) );
+      QgsDebugMsgLevel( QString( "convertToMapUnits: mup[%1] size[%2] mapUnits[%3]from center[%4] sourceCrs[%5]" ).arg( mup )
+                        .arg( size )
+                        .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
+                        .arg( mExtent.center().wellKnownText() )
+                        .arg( mDistanceArea.sourceCrs().description() ), 4 );
       size = convertMetersToMapUnits( size );
-      QgsDebugMsg( QString( "QgsRenderContext::convertToMapUnits: result[%1] " ).arg( + size ) );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
     }
     case QgsUnitTypes::RenderMapUnits:
@@ -356,6 +370,11 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
   {
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
+      QgsDebugMsgLevel( QString( "convertFromMapUnits: meter[%1] sizeInMapUnits[%2] mapUnits[%3]from center[%4] sourceCrs[%5]" ).arg( convertMetersToMapUnits( 1.0 ) )
+                        .arg( sizeInMapUnits )
+                        .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
+                        .arg( mExtent.center().wellKnownText() )
+                        .arg( mDistanceArea.sourceCrs().description() ), 4 );
       return sizeInMapUnits / convertMetersToMapUnits( 1.0 );
     }
     case QgsUnitTypes::RenderMapUnits:

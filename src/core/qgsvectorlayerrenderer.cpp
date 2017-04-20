@@ -35,6 +35,7 @@
 #include "qgscsexception.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <QPicture>
 
@@ -51,7 +52,9 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   , mLabelProvider( nullptr )
   , mDiagramProvider( nullptr )
 {
+  mContext.distanceArea().setSourceCrs( QgsProject::instance()->crs() );
   mSource = new QgsVectorLayerFeatureSource( layer );
+  // QgsDebugMsgLevel( QString( "QgsVectorLayerRenderer::QgsVectorLayerRenderer[%3] -15- : sourceCrs().description[%1] ellipsoid[%2]" ).arg( mContext.distanceArea().sourceCrs().description() ).arg(mContext.distanceArea().sourceCrs().ellipsoidAcronym()).arg(layer->originalName()),3);
 
   mRenderer = layer->renderer() ? layer->renderer()->clone() : nullptr;
   mSelectedFeatureIds = layer->selectedFeatureIds();
