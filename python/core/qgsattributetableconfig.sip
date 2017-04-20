@@ -36,7 +36,6 @@ class QgsAttributeTableConfig
 Constructor for ColumnConfig
 %End
 
-
       QgsAttributeTableConfig::Type type;    //!< The type of this column.
       QString name; //!< The name of the attribute if this column represents a field
       bool hidden;  //!< Flag that controls if the column is hidden
@@ -189,3 +188,4 @@ Constructor for ColumnConfig
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

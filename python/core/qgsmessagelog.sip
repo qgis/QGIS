@@ -16,6 +16,7 @@ class QgsMessageLog : QObject
  This class provides abstraction of a tabbed window for showing messages to the user.
  By default QgsMessageLogOutput will be used if not overridden with another
  message log creator function.
+
  QGIS application uses QgsMessageLog class for logging messages in a dockable
  window for the user.
 
@@ -34,7 +35,8 @@ class QgsMessageLog : QObject
       INFO,
       WARNING,
       CRITICAL,
-      NONE    };
+      NONE
+    };
 
     QgsMessageLog();
 
@@ -54,6 +56,7 @@ class QgsMessageLogConsole : QObject
 {
 %Docstring
  Default implementation of message logging interface
+
 This class outputs log messages to the standard output. Therefore it might
 be the right choice for apps without GUI.
 %End
@@ -75,3 +78,4 @@ be the right choice for apps without GUI.
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

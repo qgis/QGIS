@@ -10,6 +10,7 @@
 
 
 
+
 class QgsProcessingAlgorithm
 {
 %Docstring
@@ -31,6 +32,7 @@ class QgsProcessingAlgorithm
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
 
+
     QgsProcessingAlgorithm();
 %Docstring
  Constructor for QgsProcessingAlgorithm.
@@ -39,7 +41,6 @@ class QgsProcessingAlgorithm
     virtual ~QgsProcessingAlgorithm();
 
 //     QgsProcessingAlgorithm &operator=( const QgsProcessingAlgorithm &other ) = delete;
-
     virtual QString name() const = 0;
 %Docstring
  Returns the algorithm name, used for identifying the algorithm. This string
@@ -117,6 +118,7 @@ QFlags<QgsProcessingAlgorithm::Flag> operator|(QgsProcessingAlgorithm::Flag f1, 
 
 
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
@@ -124,3 +126,4 @@ QFlags<QgsProcessingAlgorithm::Flag> operator|(QgsProcessingAlgorithm::Flag f1, 
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

@@ -32,11 +32,8 @@ class QgsIdentifyMenu : QMenu
     struct ActionData
     {
       ActionData();
-
       ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = 0 );
-
       ActionData( QgsMapLayer *layer, QgsFeatureId fid, QgsMapLayerAction *mapLayerAction = 0 );
-
       bool mIsValid;
       bool mAllResults;
       bool mIsExternalAction;
@@ -106,7 +103,6 @@ define if the menu will be shown with a single idetify result
 .. note::
 
    0 is unlimited.
-
 %End
     int maxLayerDisplay();
 %Docstring
@@ -118,7 +114,6 @@ define if the menu will be shown with a single idetify result
 .. note::
 
    0 is unlimited.
-
 %End
     int maxFeatureDisplay();
 %Docstring
@@ -156,3 +151,4 @@ remove all custom actions from the menu to be built
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

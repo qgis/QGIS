@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProcessingRegistry : QObject
 {
 %Docstring
@@ -33,7 +34,6 @@ class QgsProcessingRegistry : QObject
     ~QgsProcessingRegistry();
 
 //     QgsProcessingRegistry &operator=( const QgsProcessingRegistry &other ) = delete;
-
     QList<QgsProcessingProvider *> providers() const;
 %Docstring
  Get list of available providers.
@@ -114,3 +114,4 @@ Emitted when a provider is removed from the registry
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

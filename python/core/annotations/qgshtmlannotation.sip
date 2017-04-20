@@ -33,7 +33,9 @@ class QgsHtmlAnnotation: QgsAnnotation
 
     virtual QgsHtmlAnnotation *clone() const /Factory/;
 
+
     virtual QSizeF minimumFrameSize() const;
+
 
     void setSourceFile( const QString &htmlFile );
 %Docstring
@@ -53,6 +55,7 @@ class QgsHtmlAnnotation: QgsAnnotation
 
     virtual void setAssociatedFeature( const QgsFeature &feature );
 
+
     static QgsHtmlAnnotation *create() /Factory/;
 %Docstring
  Returns a new QgsHtmlAnnotation object.
@@ -63,6 +66,7 @@ class QgsHtmlAnnotation: QgsAnnotation
 
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 
+
 };
 
 /************************************************************************
@@ -72,3 +76,4 @@ class QgsHtmlAnnotation: QgsAnnotation
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

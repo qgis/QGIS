@@ -18,6 +18,7 @@ class QgsColorRamp
 %TypeHeaderCode
 #include "qgscolorramp.h"
 %End
+
 %ConvertToSubClassCode
     if ( sipCpp->type() == "gradient" )
       sipType = sipType_QgsGradientColorRamp;
@@ -101,7 +102,6 @@ class QgsGradientStop
  \param offset positional offset for stop, between 0 and 1.0
  \param color color for stop
 %End
-
     double offset;
 %Docstring
 Relative positional offset, between 0 and 1
@@ -422,9 +422,12 @@ class QgsRandomColorRamp: QgsColorRamp
 
     virtual int count() const;
 
+
     virtual double value( int index ) const;
 
+
     virtual QColor color( double value ) const;
+
 
     virtual void setTotalColorCount( const int colorCount );
 %Docstring
@@ -436,6 +439,7 @@ class QgsRandomColorRamp: QgsColorRamp
 %End
 
     virtual QString type() const;
+
 
     virtual QgsRandomColorRamp *clone() const /Factory/;
 
@@ -506,8 +510,10 @@ class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
     virtual QgsStringMap properties() const;
     virtual int count() const;
 
+
     virtual QString schemeName() const;
     virtual QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() );
+
     virtual bool isEditable() const;
 
 };
@@ -725,3 +731,4 @@ lazy loading - have to call loadPalette() explicitly
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

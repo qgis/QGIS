@@ -33,7 +33,6 @@ class QgsAction
 %Docstring
  Default constructor
 %End
-
     QgsAction( ActionType type, const QString &description, const QString &command, bool capture = false );
 %Docstring
  Create a new QgsAction
@@ -43,7 +42,6 @@ class QgsAction
  \param command       The action text. Its interpretation depends on the type
  \param capture       If this is set to true, the output will be captured when an action is run
 %End
-
     QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>() );
 %Docstring
  Create a new QgsAction
@@ -56,7 +54,6 @@ class QgsAction
  \param shortTitle           A short string used to label user interface elements like buttons
  \param actionScopes         A set of scopes in which this action will be available
 %End
-
     QString name() const;
 %Docstring
 The name of the action. This may be a longer description.
@@ -185,3 +182,4 @@ Checks if the action is runable on the current platform
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

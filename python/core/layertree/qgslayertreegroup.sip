@@ -31,12 +31,14 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
 
 
     virtual QString name() const;
+
 %Docstring
  Returns the group's name.
  :rtype: str
 %End
 
     virtual void setName( const QString &n );
+
 %Docstring
  Sets the group's name.
 %End
@@ -230,3 +232,4 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

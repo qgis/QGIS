@@ -29,6 +29,7 @@ class CharacterWidget : QWidget
 
     virtual QSize sizeHint() const;
 
+
     int columns() const;
 %Docstring
  Returns the number of columns of characters shown in the widget.
@@ -102,8 +103,11 @@ class CharacterWidget : QWidget
 
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event );
+
     virtual void mousePressEvent( QMouseEvent *event );
+
     virtual void paintEvent( QPaintEvent *event );
+
 
 };
 
@@ -114,3 +118,4 @@ class CharacterWidget : QWidget
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

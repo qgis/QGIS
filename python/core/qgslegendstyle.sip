@@ -36,7 +36,8 @@ class QgsLegendStyle
       Top,
       Bottom,
       Left,
-      Right    };
+      Right
+    };
 
     QgsLegendStyle();
 
@@ -94,3 +95,4 @@ Get style label, translated, used in UI
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

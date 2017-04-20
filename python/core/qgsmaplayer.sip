@@ -22,6 +22,7 @@ class QgsMapLayer : QObject
 %TypeHeaderCode
 #include "qgsmaplayer.h"
 %End
+
 %ConvertToSubClassCode
     QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
 
@@ -66,7 +67,6 @@ class QgsMapLayer : QObject
     virtual ~QgsMapLayer();
 
 //     QgsMapLayer &operator=( QgsMapLayer const & ) = delete;
-
     QgsMapLayer::LayerType type() const;
 %Docstring
  Returns the type of the layer.
@@ -180,6 +180,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
     void setDataUrl( const QString &dataUrl );
 %Docstring
  Layer dataUrl information */
+
 /** Sets the DataUrl of the layer
   used by QGIS Server in GetCapabilities request.
   DataUrl is a a link to the underlying data represented by a particular layer.
@@ -219,6 +220,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
     void setAttribution( const QString &attrib );
 %Docstring
  Layer attribution information */
+
 /** Sets the attribution of the layer
   used by QGIS Server in GetCapabilities request.
   Attribution indicates the provider of a layer or collection of layers.
@@ -258,6 +260,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
     void setMetadataUrl( const QString &metaUrl );
 %Docstring
  Layer metadataUrl information */
+
 /** Sets the metadata URL of the layer
   used by QGIS Server in GetCapabilities request.
   MetadataUrl is a a link to the detailed, standardized metadata about the data.
@@ -415,11 +418,15 @@ Returns true if the layer can be edited.
 \param layerElement The Dom element corresponding to ``maplayer'' tag
 \param pathResolver object for conversion between relative and absolute paths
 \note
+
 The Dom node corresponds to a Dom document project file XML element read
 by QgsProject.
+
 This, in turn, calls readXml(), which is over-rideable by sub-classes so
 that they can read their own specific state from the given Dom node.
+
 Invoked by QgsProject.read().
+
 :return: true if successful
  :rtype: bool
 %End
@@ -1073,3 +1080,4 @@ Checks whether a new set of dependencies will introduce a cycle
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

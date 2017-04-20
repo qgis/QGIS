@@ -258,11 +258,16 @@ class QgsColorRampButton : QToolButton
   protected:
 
     virtual bool event( QEvent *e );
+
     virtual void changeEvent( QEvent *e );
+
     virtual void showEvent( QShowEvent *e );
+
     virtual void resizeEvent( QResizeEvent *event );
 
+
     virtual void mousePressEvent( QMouseEvent *e );
+
 %Docstring
  Reimplemented to detect right mouse button clicks on the color ramp button
 %End
@@ -276,3 +281,4 @@ class QgsColorRampButton : QToolButton
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

@@ -336,7 +336,6 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     virtual ~QgsVectorLayer();
 
 //     QgsVectorLayer &operator=( QgsVectorLayer const &rhs ) = delete;
-
     QString storageType() const;
 %Docstring
 Returns the permanent storage type for this layer as a friendly name.
@@ -384,6 +383,7 @@ Returns a comment for the data in the layer
 %End
 
     virtual QgsVectorDataProvider *dataProvider();
+
 
     void setProviderEncoding( const QString &encoding );
 %Docstring
@@ -768,6 +768,7 @@ Return the provider type for this layer
 %End
 
     virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage );
+
 %Docstring
  Read the symbology for the current layer from the Dom node supplied.
  \param layerNode node that will contain the symbology definition for this layer.
@@ -777,6 +778,7 @@ Return the provider type for this layer
 %End
 
     virtual bool readStyle( const QDomNode &node, QString &errorMessage );
+
 %Docstring
  Read the style for the current layer from the Dom node supplied.
  \param node node that will contain the style definition for this layer.
@@ -786,6 +788,7 @@ Return the provider type for this layer
 %End
 
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+
 %Docstring
  Write the symbology for the layer into the docment provided.
   \param node the node that will have the style element added to it.
@@ -796,6 +799,7 @@ Return the provider type for this layer
 %End
 
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+
 %Docstring
  Write just the style information for the layer into the document
   \param node the node that will have the style element added to it.
@@ -817,6 +821,7 @@ Return the provider type for this layer
 %End
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage );
+
 
     long featureCount( const QString &legendKey ) const;
 %Docstring
@@ -995,7 +1000,6 @@ TODO QGIS 3.0 returns an enum instead of a magic constant
 .. note::
 
    available in Python as addCurvedPart
-
  :rtype: int
 %End
 
@@ -1072,6 +1076,7 @@ Synchronises with changes in the datasource
 %End
 
     virtual QgsRectangle extent() const;
+
 %Docstring
 Return the extent of the layer
  :rtype: QgsRectangle
@@ -1602,6 +1607,7 @@ Returns the current transparency for the vector layer
     virtual QString htmlMetadata() const;
 
 
+
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 %Docstring
  Set the simplification settings for fast rendering of features
@@ -1668,6 +1674,7 @@ Returns the current transparency for the vector layer
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 
     QgsEditFormConfig editFormConfig() const;
 %Docstring
@@ -2014,6 +2021,7 @@ Signal emitted when setLayerTransparency() is called
 
   protected:
     virtual void setExtent( const QgsRectangle &rect );
+
 %Docstring
 Set the extent
 %End
@@ -2029,3 +2037,4 @@ Set the extent
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

@@ -272,7 +272,6 @@ Copy constructor
 %End
 
 //     QgsRectangle &operator=( const QgsRectangle &r1 );
-
     void unionRect( const QgsRectangle &rect );
 %Docstring
  Updates the rectangle to include another rectangle.
@@ -308,3 +307,4 @@ Copy constructor
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+
