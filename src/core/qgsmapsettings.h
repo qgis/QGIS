@@ -152,10 +152,6 @@ class CORE_EXPORT QgsMapSettings
      * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
      * retrieved using QgsEllipsoidUtils::acronyms().
      * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
-     * \note
-     * - QgsMapCanvas will call this using QgsProject::instance()->ellipsoid()
-     * - QgsComposerMap mComposition->project()->ellipsoid()
-     * - Server: TODO unknown
      * \returns true if ellipsoid was successfully set
      * \since QGIS 3.0
      * \see ellipsoid()

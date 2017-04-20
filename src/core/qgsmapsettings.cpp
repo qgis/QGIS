@@ -285,7 +285,6 @@ void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem &crs 
 {
   mDestCRS = crs;
   mDatumTransformStore.setDestinationCrs( crs );
-  setEllipsoid( mDestCRS.ellipsoidAcronym() );
   QgsDebugMsgLevel( QString( "QgsMapSettings::setDestinationCrs -11- : sourceCrs().description[%1] ellipsoid[%2,%3]" ).arg( mDestCRS.description() ).arg( mDestCRS.ellipsoidAcronym() ).arg( mEllipsoid ), 3 );
   mScaleCalculator.setMapUnits( crs.mapUnits() );
   // Since the map units have changed, force a recalculation of the scale.

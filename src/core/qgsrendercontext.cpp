@@ -133,8 +133,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setExpressionContext( mapSettings.expressionContext() );
   ctx.setSegmentationTolerance( mapSettings.segmentationTolerance() );
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
-  // QgsDebugMsgLevel( QString( "QgsRenderContext::fromMapSettings -20- : sourceCrs().description[%1] Ellipsoid[%2]" ).arg( mapSettings.destinationCrs().description() ).arg(mapSettings.destinationCrs().ellipsoidAcronym()),3);
   ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
+  ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
 
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
@@ -408,5 +408,9 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
 
 double QgsRenderContext::convertMetersToMapUnits( double meters ) const
 {
-  return mDistanceArea.measureLineProjected( mExtent.center(), meters );
+  if ( mDistanceArea.sourceCrs().mapUnits() != QgsUnitTypes::DistanceMeters )
+  {
+    return mDistanceArea.measureLineProjected( mExtent.center(), meters );
+  }
+  return meters;
 }

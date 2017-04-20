@@ -164,7 +164,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle &extent, QSizeF s
   jobMapSettings.setOutputDpi( dpi );
   jobMapSettings.setBackgroundColor( Qt::transparent );
   jobMapSettings.setRotation( mEvaluatedMapRotation );
-  jobMapSettings.setEllipsoid( renderCrs.ellipsoidAcronym() );
+  jobMapSettings.setEllipsoid( mComposition->project()->ellipsoid() );
 
   //set layers to render
   QList<QgsMapLayer *> layers = layersToRender( &expressionContext );

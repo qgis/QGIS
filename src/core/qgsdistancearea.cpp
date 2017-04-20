@@ -58,7 +58,6 @@ bool QgsDistanceArea::willUseEllipsoid() const
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS )
 {
   mCoordTransform.setSourceCrs( srcCRS );
-  setEllipsoid( sourceCrs().ellipsoidAcronym() );
   QgsDebugMsgLevel( QString( "QgsDistanceArea::setSourceCrs -51- : sourceCrs().description[%1] ellipsoid[%2,%3]" ).arg( sourceCrs().description() ).arg( sourceCrs().ellipsoidAcronym() ).arg( mEllipsoid ), 3 );
 }
 
