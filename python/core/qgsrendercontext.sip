@@ -117,6 +117,12 @@ class QgsRenderContext
      */
     const QgsDistanceArea distanceArea() const;
 
+    /**
+     * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+     * \since QGIS 3.0
+     */
+    QgsDistanceArea distanceArea() {return mDistanceArea;}
+
     const QgsRectangle& extent() const;
 
     const QgsMapToPixel &mapToPixel() const;
@@ -344,6 +350,14 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 .. seealso:: convertToMapUnits()
  :rtype: float
 %End
+
+    /**
+     * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
+     * \note
+      * When the sourceCrs() is geographic, the center of the Extent will be used
+     * \since QGIS 3.0
+     */
+    double convertMetersToMapUnits( double meters ) const;
 
     /**
      * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits

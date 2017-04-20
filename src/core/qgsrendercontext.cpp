@@ -141,6 +141,10 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
   ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
   ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
+<<<<<<< HEAD
+=======
+
+>>>>>>> first pull request corrections.
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
