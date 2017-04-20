@@ -36,7 +36,6 @@ class QgsScaleWidget : QWidget
 .. note::
 
    the map canvas must be defined to show the button
-
 %End
     bool showCurrentScaleButton();
 %Docstring
@@ -116,3 +115,4 @@ Signal is emitted when *user* has finished editing/selecting a new scale.
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

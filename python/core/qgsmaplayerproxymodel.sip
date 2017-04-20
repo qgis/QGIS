@@ -32,8 +32,10 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
       VectorLayer,
       PluginLayer,
       WritableLayer,
-      All    };
+      All
+    };
     typedef QFlags<QgsMapLayerProxyModel::Filter> Filters;
+
 
     explicit QgsMapLayerProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
@@ -95,11 +97,14 @@ Get the list of maplayer ids which are excluded from the list
 %End
 
     virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
 
 };
 
 QFlags<QgsMapLayerProxyModel::Filter> operator|(QgsMapLayerProxyModel::Filter f1, QFlags<QgsMapLayerProxyModel::Filter> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
@@ -108,3 +113,4 @@ QFlags<QgsMapLayerProxyModel::Filter> operator|(QgsMapLayerProxyModel::Filter f1
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

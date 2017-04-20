@@ -347,9 +347,13 @@ class QgsColorButton : QToolButton
   protected:
 
     virtual bool event( QEvent *e );
+
     virtual void changeEvent( QEvent *e );
+
     virtual void showEvent( QShowEvent *e );
+
     virtual void resizeEvent( QResizeEvent *event );
+
 
     static const QPixmap &transparentBackground();
 %Docstring
@@ -358,36 +362,43 @@ class QgsColorButton : QToolButton
 %End
 
     virtual void mousePressEvent( QMouseEvent *e );
+
 %Docstring
  Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
 %End
 
     virtual void mouseMoveEvent( QMouseEvent *e );
+
 %Docstring
  Reimplemented to allow dragging colors from button
 %End
 
     virtual void mouseReleaseEvent( QMouseEvent *e );
+
 %Docstring
  Reimplemented to allow color picking
 %End
 
     virtual void keyPressEvent( QKeyEvent *e );
+
 %Docstring
  Reimplemented to allow canceling color pick via keypress, and sample via space bar press
 %End
 
     virtual void dragEnterEvent( QDragEnterEvent *e );
+
 %Docstring
  Reimplemented to accept dragged colors
 %End
 
     virtual void dragLeaveEvent( QDragLeaveEvent *e );
+
 %Docstring
  Reimplemented to reset button appearance after drag leave
 %End
 
     virtual void dropEvent( QDropEvent *e );
+
 %Docstring
  Reimplemented to accept dropped colors
 %End
@@ -401,3 +412,4 @@ class QgsColorButton : QToolButton
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

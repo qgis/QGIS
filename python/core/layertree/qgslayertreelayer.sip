@@ -49,6 +49,7 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 %End
 
     virtual QString name() const;
+
 %Docstring
  Returns the layer's name.
 .. versionadded:: 3.0
@@ -56,6 +57,7 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 %End
 
     virtual void setName( const QString &n );
+
 %Docstring
  Sets the layer's name.
 .. versionadded:: 3.0
@@ -122,3 +124,4 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

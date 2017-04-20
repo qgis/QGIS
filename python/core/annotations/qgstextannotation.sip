@@ -28,6 +28,7 @@ class QgsTextAnnotation: QgsAnnotation
 
     virtual QgsTextAnnotation *clone() const /Factory/;
 
+
     const QTextDocument *document() const;
 %Docstring
  Returns the text document which will be rendered
@@ -56,6 +57,7 @@ class QgsTextAnnotation: QgsAnnotation
 
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 
+
 };
 
 /************************************************************************
@@ -65,3 +67,4 @@ class QgsTextAnnotation: QgsAnnotation
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

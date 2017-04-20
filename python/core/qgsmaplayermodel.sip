@@ -118,18 +118,25 @@ returns if the items can be checked or not
 %End
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
 %Docstring
 QAbstractItemModel interface
  :rtype: QModelIndex
 %End
     virtual QModelIndex parent( const QModelIndex &child ) const;
+
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
 
+
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
 
   protected slots:
     void removeLayers( const QStringList &layerIds );
@@ -146,3 +153,4 @@ QAbstractItemModel interface
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

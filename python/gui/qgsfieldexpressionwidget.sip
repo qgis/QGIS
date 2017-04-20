@@ -195,6 +195,7 @@ when expression has been edited (finished) it will be added to the model
   protected:
     virtual void changeEvent( QEvent *event );
 
+
 };
 
 /************************************************************************
@@ -204,3 +205,4 @@ when expression has been edited (finished) it will be added to the model
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

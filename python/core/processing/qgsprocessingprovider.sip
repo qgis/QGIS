@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProcessingProvider : QObject
 {
 %Docstring
@@ -31,7 +32,6 @@ class QgsProcessingProvider : QObject
     virtual ~QgsProcessingProvider();
 
 //     QgsProcessingProvider &operator=( const QgsProcessingProvider &other ) = delete;
-
     virtual QIcon icon() const;
 %Docstring
  Returns an icon for the provider.
@@ -184,3 +184,4 @@ class QgsProcessingProvider : QObject
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

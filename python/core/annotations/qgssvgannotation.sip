@@ -28,6 +28,7 @@ class QgsSvgAnnotation: QgsAnnotation
 
     virtual QgsSvgAnnotation *clone() const /Factory/;
 
+
     virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const;
     virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
@@ -54,6 +55,7 @@ class QgsSvgAnnotation: QgsAnnotation
 
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 
+
 };
 
 /************************************************************************
@@ -63,3 +65,4 @@ class QgsSvgAnnotation: QgsAnnotation
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

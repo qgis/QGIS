@@ -36,7 +36,9 @@ class QgsMessageLogViewer: QDialog
 
   protected:
     virtual void closeEvent( QCloseEvent *e );
+
     virtual void reject();
+
 
 };
 
@@ -47,3 +49,4 @@ class QgsMessageLogViewer: QDialog
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

@@ -29,7 +29,6 @@ class QgsActionManager
 %Docstring
 Constructor
 %End
-
     QUuid addAction( QgsAction::ActionType type, const QString &name, const QString &command, bool capture = false );
 %Docstring
  Add an action with the given name and action details.
@@ -146,3 +145,4 @@ Reads the actions in in XML format
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+
