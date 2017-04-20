@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import random
 
 from qgis.core import (QgsApplication)
+from collections import defaultdict
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
@@ -106,38 +107,23 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
             layer.fields().toList(), layer.wkbType(), layer.crs())
 
         selran = []
-        current = 0
         total = 100.0 / (featureCount * len(unique))
         features = vector.features(layer)
 
-        if not len(unique) == featureCount:
-            for classValue in unique:
-                classFeatures = []
-                for i, feature in enumerate(features):
-                    attrs = feature.attributes()
-                    if attrs[index] == classValue:
-                        classFeatures.append(i)
-                    current += 1
-                    feedback.setProgress(int(current * total))
+        classes = defaultdict(list)
+        for i, feature in enumerate(features):
+            attrs = feature.attributes()
+            classes[attrs[index]].append(feature)
+            feedback.setProgress(int(i * total))
 
-                if method == 1:
-                    selValue = int(round(value * len(classFeatures), 0))
-                else:
-                    selValue = value
+        for subset in classes.values():
+            selValue = value if method != 1 else int(round(value * len(subset), 0))
+            selran.extend(random.sample(subset, selValue))
 
-                if selValue >= len(classFeatures):
-                    selFeat = classFeatures
-                else:
-                    selFeat = random.sample(classFeatures, selValue)
-
-                selran.extend(selFeat)
-        else:
-            selran = list(range(featureCount))
 
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for (i, feat) in enumerate(features):
-            if i in selran:
-                writer.addFeature(feat)
+        for (i, feat) in enumerate(selran):
+            writer.addFeature(feat)
             feedback.setProgress(int(i * total))
         del writer
