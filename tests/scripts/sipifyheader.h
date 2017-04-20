@@ -225,6 +225,9 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     int overrideWithoutVirtual() override;
 
+    void overrideWithoutVirtualMultLine( const QList<int, QString> &list1,
+                                         const QList<int, QString> &list2 ) override;
+
     QString returnTypeString() const;
 
     double returnTypeDouble() const;

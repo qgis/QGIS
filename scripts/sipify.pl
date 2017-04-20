@@ -338,11 +338,26 @@ while ($line_idx < $line_count){
         # remove keywords
         if ( $line =~ m/\boverride\b/){
             $is_override = 1;
-            if ( $line !~ m/^(\s*)virtual\b(.*)$/ ){
+
+            # handle multiline definition to add virtual keyword on opening line
+            if ( $MULTILINE_DEFINITION == 1 ){
+                my $virtual_line = $line;
+                my $virtual_line_idx = $line_idx;
+                while ( $virtual_line !~ m/^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$/){
+                    $virtual_line_idx--;
+                    $virtual_line = $lines[$virtual_line_idx];
+                    $virtual_line_idx >= 0 or die 'could not reach opening definition';
+                }
+                if ( $virtual_line !~ m/^(\s*)virtual\b(.*)$/ ){
+                    my $idx = $#output-$line_idx+$virtual_line_idx+2;
+                    #print "len: $#output line_idx: $line_idx virt: $virtual_line_idx\n"idx: $idx\n$output[$idx]\n";
+                    $output[$idx] = $virtual_line =~ s/^(\s*?)\b(.*)$/$1 virtual $2\n/r;
+                }
+            }
+            elsif ( $line !~ m/^(\s*)virtual\b(.*)$/ ){
                 #sip often requires the virtual keyword to be present, or it chokes on covariant return types
                 #in overridden methods
-                $line =~ m/^(\s*?)\b(.*)$/;
-                $line = "$1virtual $2\n";
+                $line =~ s/^(\s*?)\b(.*)$/$1virtual $2\n/;
             }
         }
         $line =~ s/\s*\boverride\b//;
@@ -467,6 +482,7 @@ while ($line_idx < $line_count){
     # write comment
     if ( $line =~ m/^\s*$/ )
     {
+        $is_override = 0;
         next;
     }
     elsif ( $line =~ m/\/\// || $line =~ m/\s*typedef / || $line =~ m/\s*struct / ){

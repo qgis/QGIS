@@ -207,6 +207,9 @@ Removing function body with virtual const reference
     virtual int overrideWithoutVirtual();
 
 
+     virtual void overrideWithoutVirtualMultLine( const QList<int, QString> &list1,
+                                         const QList<int, QString> &list2 );
+
     QString returnTypeString() const;
 %Docstring
  :rtype: str
