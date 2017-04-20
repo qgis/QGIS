@@ -58,6 +58,12 @@ class CORE_EXPORT QgsAnnotation : public QObject
     QgsAnnotation( QObject *parent = nullptr );
 
     /**
+     * Clones the annotation, returning a new copy of the annotation
+     * reflecting the annotation's current state.
+     */
+    virtual QgsAnnotation *clone() const = 0;
+
+    /**
      * Returns true if the annotation is visible and should be rendered.
      * \see setVisible()
      */
@@ -292,6 +298,14 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see _writeXml()
      */
     void _readXml( const QDomElement &annotationElem, const QDomDocument &doc );
+
+    /**
+     * Copies common annotation properties to the \a targe
+     * annotation.
+     * Can be used within QgsAnnotation::clone() implementations
+     * to assist with creating copies.
+     */
+    void copyCommonProperties( QgsAnnotation *target ) const;
 
   private:
 

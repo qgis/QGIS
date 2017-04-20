@@ -73,6 +73,16 @@ QList<QgsAnnotation *> QgsAnnotationManager::annotations() const
   return mAnnotations;
 }
 
+QList<QgsAnnotation *> QgsAnnotationManager::cloneAnnotations() const
+{
+  QList<QgsAnnotation *> results;
+  Q_FOREACH ( const QgsAnnotation *a, mAnnotations )
+  {
+    results << a->clone();
+  }
+  return results;
+}
+
 bool QgsAnnotationManager::readXml( const QDomElement &element, const QDomDocument &doc )
 {
   clear();

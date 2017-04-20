@@ -39,6 +39,8 @@ class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
      */
     QgsTextAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+    QgsTextAnnotation *clone() const override SIP_FACTORY;
+
     /**
      * Returns the text document which will be rendered
      * within the annotation.

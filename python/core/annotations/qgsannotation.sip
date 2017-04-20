@@ -25,6 +25,8 @@ class QgsAnnotation : QObject
 
     QgsAnnotation( QObject* parent /TransferThis/ = nullptr );
 
+    virtual QgsAnnotation *clone() const = 0 /Factory/;
+
     bool isVisible() const;
     void setVisible( bool visible );
 
@@ -80,5 +82,7 @@ class QgsAnnotation : QObject
 
     void _writeXml( QDomElement& itemElem, QDomDocument& doc ) const;
     void _readXml( const QDomElement& annotationElem, const QDomDocument& doc );
+
+    void copyCommonProperties( QgsAnnotation *target ) const;
 
 };

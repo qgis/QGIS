@@ -39,6 +39,8 @@ class CORE_EXPORT QgsSvgAnnotation: public QgsAnnotation
      */
     QgsSvgAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+    QgsSvgAnnotation *clone() const override SIP_FACTORY;
+
     virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const override;
     virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 

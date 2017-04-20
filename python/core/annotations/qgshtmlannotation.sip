@@ -31,6 +31,8 @@ class QgsHtmlAnnotation: QgsAnnotation
 
     ~QgsHtmlAnnotation();
 
+    virtual QgsHtmlAnnotation *clone() const /Factory/;
+
     virtual QSizeF minimumFrameSize() const;
 
     void setSourceFile( const QString &htmlFile );

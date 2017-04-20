@@ -431,3 +431,22 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QDomDocum
   emit mapLayerChanged();
 }
 
+void QgsAnnotation::copyCommonProperties( QgsAnnotation *target ) const
+{
+  target->mVisible = mVisible;
+  target->mHasFixedMapPosition = mHasFixedMapPosition;
+  target->mMapPosition = mMapPosition;
+  target->mMapPositionCrs = mMapPositionCrs;
+  target->mRelativePosition = mRelativePosition;
+  target->mOffsetFromReferencePoint = mOffsetFromReferencePoint;
+  target->mFrameSize = mFrameSize;
+  target->mMarkerSymbol.reset( mMarkerSymbol ? mMarkerSymbol->clone() : nullptr );
+  target->mContentsMargins = mContentsMargins;
+  target->mFillSymbol.reset( mFillSymbol ? mFillSymbol->clone() : nullptr );
+  target->mBalloonSegment = mBalloonSegment;
+  target->mBalloonSegmentPoint1 = mBalloonSegmentPoint1;
+  target->mBalloonSegmentPoint2 = mBalloonSegmentPoint2;
+  target->mMapLayer = mMapLayer;
+  target->mFeature = mFeature;
+}
+
