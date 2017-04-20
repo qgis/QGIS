@@ -51,6 +51,7 @@ class QgsSipifyHeader : QtClass<QVariant>
 %TypeHeaderCode
 #include "sipifyheader.h"
 %End
+
 %ConvertToSubClassCode
     if ( sipCpp->headerType() == QgsSipifyHeader::Special )
       sipType = sipType_QgsSpecialSipifyHeader;
@@ -68,10 +69,10 @@ class QgsSipifyHeader : QtClass<QVariant>
     };
     typedef QFlags<QgsSipifyHeader::MyEnum> Flags;
 
+
     struct Data
     {
       Data( QgsMapLayer *layer, Qstring name );
-
       QString mName;
       int mCount;
       QgsMapLayer *mLayer;
@@ -81,7 +82,6 @@ class QgsSipifyHeader : QtClass<QVariant>
 %Docstring
 A constructor with definition in header
 %End
-
     QgsSipifyHeader( QWidget *parent /TransferThis/ = 0 );
 %Docstring
  A classic constructor with arguments
@@ -91,7 +91,6 @@ A constructor with definition in header
 %Docstring
 A constructor with no empty `()`
 %End
-
     QgsSipifyHeader( QList<Point> a, const Issues &b = Issues::weDontHaveIssues(), QgsClass *b = 0 );
 %Docstring
 A constructor with some special character types
@@ -104,7 +103,6 @@ Default constructor
 %End
 
 //     QgsSipifyHeader &operator=( const QgsSipifyHeader other );
-
     bool operator==( const QgsSipifyHeader other );
 %Docstring
 Comparison operator should be kept
@@ -208,6 +206,7 @@ Removing function body with virtual const reference
     virtual int overriddenProperty();
     virtual int overrideWithoutVirtual();
 
+
     QString returnTypeString() const;
 %Docstring
  :rtype: str
@@ -275,7 +274,6 @@ class ClassWithPrivateInheritanceOnly
 %Docstring
 A constructor with definition in header on several lines
 %End
-
 };
 
 
@@ -293,10 +291,10 @@ class AbstractClass /Abstract/
 %Docstring
 A constructor
 %End
-
 };
 
 QFlags<QgsSipifyHeader::MyEnum> operator|(QgsSipifyHeader::MyEnum f1, QFlags<QgsSipifyHeader::MyEnum> f2);
+
 
 
 /************************************************************************
@@ -306,3 +304,4 @@ QFlags<QgsSipifyHeader::MyEnum> operator|(QgsSipifyHeader::MyEnum f1, QFlags<Qgs
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+
