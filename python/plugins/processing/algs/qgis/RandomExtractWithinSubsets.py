@@ -120,7 +120,6 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
             selValue = value if method != 1 else int(round(value * len(subset), 0))
             selran.extend(random.sample(subset, selValue))
 
-
         features = vector.features(layer)
         total = 100.0 / len(features)
         for (i, feat) in enumerate(selran):
