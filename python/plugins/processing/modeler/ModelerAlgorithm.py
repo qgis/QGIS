@@ -573,7 +573,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         return descs
 
     def todict(self):
-        keys = ["inputs", "group", "name", "algs", "helpContent"]
+        keys = ["inputs", "_group", "_name", "algs", "helpContent"]
         return {k: v for k, v in list(self.__dict__.items()) if k in keys}
 
     def toJson(self):
@@ -632,7 +632,8 @@ class ModelerAlgorithm(GeoAlgorithm):
         except Exception as e:
             raise WrongModelException(e.args[0])
 
-        model._name = model.modeler_name
+        if hasattr(model, "modeler_name"):
+            model._name = model.modeler_name
         return model
 
     @staticmethod
