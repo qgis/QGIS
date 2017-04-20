@@ -67,11 +67,10 @@ class GeoDB:
         try:
             self._exec_sql(c, u'SELECT spatialite_version()')
             rep = c.fetchall()
-            v = [int(a) for a in rep[0][0].split('.')]
-            vv = v[0] * 100000 + v[1] * 1000 + v[2] * 10
+            v = [int(x) if x.isdigit() else x for x in re.findall("\d+|[a-zA-Z]+", rep[0][0])]
 
             # Add spatialite support
-            if vv >= 401000:
+            if v >= [4, 1, 0]:
                 # 4.1 and above
                 sql = "SELECT initspatialmetadata(1)"
             else:
