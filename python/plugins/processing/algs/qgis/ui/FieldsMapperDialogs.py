@@ -26,6 +26,8 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 __revision__ = '$Format:%H$'
 
 
+from qgis.core import QgsMapLayerRegistry
+
 from qgis.PyQt.QtWidgets import QComboBox, QSpacerItem
 
 from processing.core.parameters import ParameterVector
@@ -93,12 +95,16 @@ class FieldsMapperParametersPanel(ParametersPanel):
 class FieldsMapperParametersDialog(AlgorithmDialog):
 
     def __init__(self, alg):
-        AlgorithmDialogBase.__init__(self, alg)
+        AlgorithmDialog.__init__(self, alg)
 
-        self.alg = alg
+        QgsMapLayerRegistry.instance().layerWasAdded.disconnect(self.mainWidget.layerAdded)
+        QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect(self.mainWidget.layersWillBeRemoved)
+        self.tabWidget.widget(0).layout().removeWidget(self.mainWidget)
 
         self.mainWidget = FieldsMapperParametersPanel(self, alg)
         self.setMainWidget()
+        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerAdded)
+        QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layersWillBeRemoved)
 
     def setParamValue(self, param, widget, alg=None):
         if isinstance(param, ParameterFieldsMapping):
