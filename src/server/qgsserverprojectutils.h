@@ -113,6 +113,60 @@ namespace QgsServerProjectUtils
     */
   SERVER_EXPORT int wmsMaxHeight( const QgsProject &project );
 
+  /** Returns if layer ids are used as name in WMS.
+    * \param project the QGIS project
+    * \returns if layer ids are used as name.
+    */
+  SERVER_EXPORT bool wmsUseLayerIds( const QgsProject &project );
+
+  /** Returns if the info format is SIA20145.
+    * \param project the QGIS project
+    * \returns if the info format is SIA20145.
+    */
+  SERVER_EXPORT bool wmsInfoFormatSIA2045( const QgsProject &project );
+
+  /** Returns if Inspire is activated.
+    * \param project the QGIS project
+    * \returns if Inspire is activated.
+    */
+  SERVER_EXPORT bool wmsInspireActivated( const QgsProject &project );
+
+  /** Returns the Inspire language.
+    * \param project the QGIS project
+    * \returns the Inspire language if defined in project.
+    */
+  SERVER_EXPORT QString wmsInspireLanguage( const QgsProject &project );
+
+  /** Returns the Inspire metadata URL.
+    * \param project the QGIS project
+    * \returns the Inspire metadata URL if defined in project.
+    */
+  SERVER_EXPORT QString wmsInspireMetadataUrl( const QgsProject &project );
+
+  /** Returns the Inspire metadata URL type.
+    * \param project the QGIS project
+    * \returns the Inspire metadata URL type if defined in project.
+    */
+  SERVER_EXPORT QString wmsInspireMetadataUrlType( const QgsProject &project );
+
+  /** Returns the Inspire temporal reference.
+    * \param project the QGIS project
+    * \returns the Inspire temporal reference if defined in project.
+    */
+  SERVER_EXPORT QString wmsInspireTemporalReference( const QgsProject &project );
+
+  /** Returns the Inspire metadata date.
+    * \param project the QGIS project
+    * \returns the Inspire metadata date if defined in project.
+    */
+  SERVER_EXPORT QString wmsInspireMetadataDate( const QgsProject &project );
+
+  /** Returns the restricted composer list.
+    * \param project the QGIS project
+    * \returns the restricted composer list if defined in project.
+    */
+  SERVER_EXPORT QStringList wmsRestrictedComposers( const QgsProject &project );
+
   /** Returns the WMS service url defined in a QGIS project.
     * \param project the QGIS project
     * \returns url if defined in project, an empty string otherwise.
