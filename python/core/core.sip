@@ -95,6 +95,7 @@
 %Include qgsmaprendererjob.sip
 %Include qgsmaprendererparalleljob.sip
 %Include qgsmaprenderersequentialjob.sip
+%Include qgsmaprenderertask.sip
 %Include qgsmapsettings.sip
 %Include qgsmaptopixel.sip
 %Include qgsmapunitscale.sip

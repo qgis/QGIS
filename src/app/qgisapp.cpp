@@ -270,6 +270,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgshelp.h"
 #include "qgsvectorfilewritertask.h"
+#include "qgsmaprenderertask.h"
 #include "qgsnewnamedialog.h"
 
 #include "qgssublayersdialog.h"
@@ -5772,9 +5773,48 @@ void QgisApp::saveMapAsImage()
   QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   if ( myFileNameAndFilter.first != QLatin1String( "" ) )
   {
-    //save the mapview to the selected file
-    mMapCanvas->saveAsImage( myFileNameAndFilter.first, nullptr, myFileNameAndFilter.second );
-    statusBar()->showMessage( tr( "Saved map image to %1" ).arg( myFileNameAndFilter.first ) );
+    //TODO: GUI
+    int dpi = 90;
+    QSize size = mMapCanvas->size() * ( dpi / 90 );
+
+    QgsMapSettings ms = QgsMapSettings();
+    ms.setDestinationCrs( QgsProject::instance()->crs() );
+    ms.setExtent( mMapCanvas->extent() );
+    ms.setOutputSize( size );
+    ms.setOutputDpi( dpi );
+    ms.setBackgroundColor( mMapCanvas->canvasColor() );
+    ms.setRotation( mMapCanvas->rotation() );
+    ms.setLayers( mMapCanvas->layers() );
+
+    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, myFileNameAndFilter.first, myFileNameAndFilter.second );
+    mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
+
+    connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
+    {
+      QgsMessageBarItem *successMsg = new QgsMessageBarItem(
+        tr( "Successfully saved canvas to image" ),
+        QgsMessageBar::SUCCESS );
+      messageBar()->pushItem( successMsg );
+    } );
+    connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int error )
+    {
+      if ( error == QgsMapRendererTask::ImageAllocationFail )
+      {
+        QgsMessageBarItem *errorMsg = new QgsMessageBarItem(
+          tr( "Could not allocate required memory for image" ),
+          QgsMessageBar::WARNING );
+        messageBar()->pushItem( errorMsg );
+      }
+      else if ( error == QgsMapRendererTask::ImageAllocationFail )
+      {
+        QgsMessageBarItem *errorMsg = new QgsMessageBarItem(
+          tr( "Could not save the image to file" ),
+          QgsMessageBar::WARNING );
+        messageBar()->pushItem( errorMsg );
+      }
+    } );
+
+    QgsApplication::taskManager()->addTask( mapRendererTask );
   }
 
 } // saveMapAsImage
