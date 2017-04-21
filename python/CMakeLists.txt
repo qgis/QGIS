@@ -107,6 +107,7 @@ INCLUDE_DIRECTORIES(
   ../src/core/layertree
   ../src/core/processing
   ../src/core/raster
+  ../src/core/scalebar
   ../src/core/symbology-ng
 
   ../src/gui/raster

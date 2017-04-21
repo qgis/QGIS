@@ -102,7 +102,7 @@ void TestQgsComposerScaleBar::initTestCase()
   mComposition->addComposerScaleBar( mComposerScaleBar );
   mComposerScaleBar->setComposerMap( mComposerMap );
   mComposerScaleBar->setFont( QgsFontUtils::getStandardTestFont() );
-  mComposerScaleBar->setUnits( QgsComposerScaleBar::Meters );
+  mComposerScaleBar->setUnits( QgsUnitTypes::DistanceMeters );
   mComposerScaleBar->setNumUnitsPerSegment( 2000 );
   mComposerScaleBar->setNumSegmentsLeft( 0 );
   mComposerScaleBar->setNumSegments( 2 );

@@ -1,6 +1,6 @@
 /***************************************************************************
-                            qgsticksscalebarstyle.h
-                            -----------------------------
+                            qgssingleboxscalebarrenderer.h
+                            ------------------------------
     begin                : June 2008
     copyright            : (C) 2008 by Marco Hugentobler
     email                : marco.hugentobler@karto.baug.ethz.ch
@@ -14,41 +14,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTICKSSCALEBARSTYLE_H
-#define QGSTICKSSCALEBARSTYLE_H
+#ifndef QGSSINGLEBOXSCALEBARRENDERER_H
+#define QGSSINGLEBOXSCALEBARRENDERER_H
 
 #include "qgis_core.h"
-#include "qgsscalebarstyle.h"
+#include "qgsscalebarrenderer.h"
+#include <QString>
 
-/** \ingroup core
- * A scale bar that draws segments using short ticks.
+/**
+ * \class QgsSingleBoxScaleBarRenderer
+ * \ingroup core
+ * Scalebar style that draws a single box with alternating
+ * color for the segments.
+ * \since QGIS 3.0
  */
-class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
+class CORE_EXPORT QgsSingleBoxScaleBarRenderer: public QgsScaleBarRenderer
 {
   public:
-    enum TickPosition
-    {
-      TicksUp,
-      TicksDown,
-      TicksMiddle
-    };
 
-    QgsTicksScaleBarStyle( const QgsComposerScaleBar *bar );
+    QgsSingleBoxScaleBarRenderer() = default;
 
-    QString name() const override;
+    QString name() const override { return QStringLiteral( "Single Box" ); }
 
-    /** Draw method
-     \param p painter object
-     \param xOffset offset
-     */
-    void draw( QPainter *p, double xOffset = 0 ) const override;
+    void draw( QgsRenderContext &context,
+               const QgsScaleBarSettings &settings,
+               const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
-    void setTickPosition( TickPosition p ) {mTickPosition = p;}
-
-  private:
-    QgsTicksScaleBarStyle(); //forbidden
-
-    TickPosition mTickPosition;
 };
 
-#endif
+#endif // QGSSINGLEBOXSCALEBARRENDERER_H

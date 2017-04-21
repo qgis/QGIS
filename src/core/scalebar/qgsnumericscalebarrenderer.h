@@ -1,6 +1,6 @@
 /***************************************************************************
-                            qgsnumericscalebarstyle.h
-                            ---------------------------
+                            qgsnumericscalebarrenderer.h
+                            ----------------------------
     begin                : June 2008
     copyright            : (C) 2008 by Marco Hugentobler
     email                : marco.hugentobler@karto.baug.ethz.ch
@@ -14,34 +14,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSNUMERICSCALEBARSTYLE_H
-#define QGSNUMERICSCALEBARSTYLE_H
+#ifndef QGSNUMERICSCALEBARRENDERER_H
+#define QGSNUMERICSCALEBARRENDERER_H
 
 #include "qgis_core.h"
-#include "qgsscalebarstyle.h"
+#include "qgsscalebarrenderer.h"
+#include <QString>
 
-/** \ingroup core
- * A scale bar style that draws text in the form of '1:XXXXX'
+/**
+ * \class QgsNumericScaleBarRenderer
+ * \ingroup core
+ * A scale bar style that draws text in the form of '1:XXXXX'.
+ * \since QGIS 3.0
  */
-class CORE_EXPORT QgsNumericScaleBarStyle: public QgsScaleBarStyle
+class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
 {
   public:
-    QgsNumericScaleBarStyle( QgsComposerScaleBar *bar );
+    QgsNumericScaleBarRenderer() = default;
 
-    QString name() const override;
+    QString name() const override { return QStringLiteral( "Numeric" ); }
 
-    void draw( QPainter *p, double xOffset = 0 ) const override;
+    void draw( QgsRenderContext &context,
+               const QgsScaleBarSettings &settings,
+               const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
-    //calculation of box size is different compared to segment based scale bars
-    QRectF calculateBoxSize() const override;
+    QSizeF calculateBoxSize( const QgsScaleBarSettings &settings,
+                             const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
   private:
-    QgsNumericScaleBarStyle(); //forbidden
-    //! Returns the text for the scale bar or an empty string in case of error
-    QString scaleText() const;
 
-    //! Store last width (in mm) to keep alignment to left/middle/right side
-    mutable double mLastScaleBarWidth;
+    //! Returns the text for the scale bar or an empty string in case of error
+    QString scaleText( double scale ) const;
+
 };
 
-#endif
+#endif // QGSNUMERICSCALEBARRENDERER_H

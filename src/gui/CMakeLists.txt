@@ -749,6 +749,7 @@ INCLUDE_DIRECTORIES(
   ../core/geometry
   ../core/layertree
   ../core/raster
+  ../core/scalebar
   ../core/symbology-ng
   ../core/effects
   ${CMAKE_CURRENT_BINARY_DIR}

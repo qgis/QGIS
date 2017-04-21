@@ -89,6 +89,12 @@ SET(QGIS_CORE_SRCS
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
 
+  scalebar/qgsdoubleboxscalebarrenderer.cpp
+  scalebar/qgsnumericscalebarrenderer.cpp
+  scalebar/qgsscalebarrenderer.cpp
+  scalebar/qgssingleboxscalebarrenderer.cpp
+  scalebar/qgsticksscalebarrenderer.cpp
+
   qgis.cpp
   qgsapplication.cpp
   qgsaction.cpp
@@ -304,14 +310,9 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposertexttable.cpp
   composer/qgscomposerutils.cpp
   composer/qgscomposition.cpp
-  composer/qgsdoubleboxscalebarstyle.cpp
   composer/qgsgroupungroupitemscommand.cpp
   composer/qgslayoutmanager.cpp
-  composer/qgsnumericscalebarstyle.cpp
   composer/qgspaperitem.cpp
-  composer/qgsscalebarstyle.cpp
-  composer/qgssingleboxscalebarstyle.cpp
-  composer/qgsticksscalebarstyle.cpp
 
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
@@ -846,12 +847,7 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposeritemcommand.h
   composer/qgscomposermultiframecommand.h
   composer/qgscomposertexttable.h
-  composer/qgsdoubleboxscalebarstyle.h
-  composer/qgsnumericscalebarstyle.h
   composer/qgspaperitem.h
-  composer/qgsscalebarstyle.h
-  composer/qgssingleboxscalebarstyle.h
-  composer/qgsticksscalebarstyle.h
 
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingutils.h
@@ -895,6 +891,13 @@ SET(QGIS_CORE_HDRS
   raster/qgssinglebandgrayrenderer.h
   raster/qgssinglebandpseudocolorrenderer.h
   raster/qgshillshaderenderer.h
+
+  scalebar/qgsdoubleboxscalebarrenderer.h
+  scalebar/qgsnumericscalebarrenderer.h
+  scalebar/qgsscalebarsettings.h
+  scalebar/qgsscalebarrenderer.h
+  scalebar/qgssingleboxscalebarrenderer.h
+  scalebar/qgsticksscalebarrenderer.h
 
   symbology-ng/qgs25drenderer.h
   symbology-ng/qgscategorizedsymbolrenderer.h
@@ -983,6 +986,7 @@ INCLUDE_DIRECTORIES(
   processing
   raster
   renderer
+  scalebar
   symbology-ng
   gps/qextserialport
 )

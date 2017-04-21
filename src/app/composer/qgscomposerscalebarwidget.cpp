@@ -55,10 +55,10 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scale
   mAlignmentComboBox->insertItem( 2, tr( "Right" ) );
 
   //units combo box
-  mUnitsComboBox->insertItem( 0, tr( "Map units" ), 0 );
-  mUnitsComboBox->insertItem( 1, tr( "Meters" ), 1 );
-  mUnitsComboBox->insertItem( 2, tr( "Feet" ), 2 );
-  mUnitsComboBox->insertItem( 3, tr( "Nautical Miles" ), 3 );
+  mUnitsComboBox->insertItem( 0, tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
+  mUnitsComboBox->insertItem( 1, tr( "Meters" ), QgsUnitTypes::DistanceMeters );
+  mUnitsComboBox->insertItem( 2, tr( "Feet" ), QgsUnitTypes::DistanceFeet );
+  mUnitsComboBox->insertItem( 3, tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
 
   mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
   mFillColorButton->setAllowAlpha( true );
@@ -143,7 +143,7 @@ void QgsComposerScaleBarWidget::setGuiElements()
   //units
   mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( ( int )mComposerScaleBar->units() ) );
 
-  if ( mComposerScaleBar->segmentSizeMode() == QgsComposerScaleBar::SegmentSizeFixed )
+  if ( mComposerScaleBar->segmentSizeMode() == QgsScaleBarSettings::SegmentSizeFixed )
   {
     mFixedSizeRadio->setChecked( true );
     mSegmentSizeSpinBox->setEnabled( true );
@@ -480,7 +480,7 @@ void QgsComposerScaleBarWidget::on_mAlignmentComboBox_currentIndexChanged( int i
 
   mComposerScaleBar->beginCommand( tr( "Scalebar alignment" ) );
   disconnectUpdateSignal();
-  mComposerScaleBar->setAlignment( ( QgsComposerScaleBar::Alignment ) index );
+  mComposerScaleBar->setAlignment( ( QgsScaleBarSettings::Alignment ) index );
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
@@ -499,32 +499,32 @@ void QgsComposerScaleBarWidget::on_mUnitsComboBox_currentIndexChanged( int index
   }
 
   disconnectUpdateSignal();
-  mComposerScaleBar->setUnits( ( QgsComposerScaleBar::ScaleBarUnits )unitData.toInt() );
+  mComposerScaleBar->setUnits( ( QgsUnitTypes::DistanceUnit )unitData.toInt() );
   switch ( mUnitsComboBox->currentIndex() )
   {
     case 0:
     {
       mComposerScaleBar->beginCommand( tr( "Scalebar changed to map units" ) );
-      mComposerScaleBar->applyDefaultSize( QgsComposerScaleBar::MapUnits );
+      mComposerScaleBar->applyDefaultSize( QgsUnitTypes::DistanceUnknownUnit );
       break;
     }
     case 2:
     {
       mComposerScaleBar->beginCommand( tr( "Scalebar changed to feet" ) );
-      mComposerScaleBar->applyDefaultSize( QgsComposerScaleBar::Feet );
+      mComposerScaleBar->applyDefaultSize( QgsUnitTypes::DistanceFeet );
       break;
     }
     case 3:
     {
       mComposerScaleBar->beginCommand( tr( "Scalebar changed to nautical miles" ) );
-      mComposerScaleBar->applyDefaultSize( QgsComposerScaleBar::NauticalMiles );
+      mComposerScaleBar->applyDefaultSize( QgsUnitTypes::DistanceNauticalMiles );
       break;
     }
     case 1:
     default:
     {
       mComposerScaleBar->beginCommand( tr( "Scalebar changed to meters" ) );
-      mComposerScaleBar->applyDefaultSize( QgsComposerScaleBar::Meters );
+      mComposerScaleBar->applyDefaultSize( QgsUnitTypes::DistanceMeters );
       break;
     }
   }
@@ -621,12 +621,12 @@ void QgsComposerScaleBarWidget::segmentSizeRadioChanged( QAbstractButton *radio 
   disconnectUpdateSignal();
   if ( mFixedSizeRadio->isChecked() )
   {
-    mComposerScaleBar->setSegmentSizeMode( QgsComposerScaleBar::SegmentSizeFixed );
+    mComposerScaleBar->setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeFixed );
     mComposerScaleBar->setNumUnitsPerSegment( mSegmentSizeSpinBox->value() );
   }
   else /*if(mFitWidthRadio->isChecked())*/
   {
-    mComposerScaleBar->setSegmentSizeMode( QgsComposerScaleBar::SegmentSizeFitWidth );
+    mComposerScaleBar->setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeFitWidth );
   }
   mComposerScaleBar->update();
   connectUpdateSignal();

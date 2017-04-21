@@ -444,7 +444,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent *e )
         QList<const QgsComposerMap *> mapItemList = composition()->composerMapItems();
         if ( !mapItemList.isEmpty() )
         {
-          newScaleBar->setComposerMap( mapItemList.at( 0 ) );
+          newScaleBar->setComposerMap( const_cast< QgsComposerMap *>( mapItemList.at( 0 ) ) );
         }
         newScaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
 
