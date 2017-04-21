@@ -334,6 +334,7 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
  :rtype: float
 %End
 
+<<<<<<< HEAD
     /**
      * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
      * \note
@@ -354,3 +355,6 @@ QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRe
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+=======
+};
+>>>>>>> added setting of mDistanceArea to constructor and copy operator.

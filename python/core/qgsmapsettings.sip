@@ -152,10 +152,6 @@ Get units of map's geographical coordinates - used for scale calculation
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 
-    void setBackgroundColor( const QColor &color );
-%Docstring
-Set the background color of the map
-%End
     /**
      * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
      * retrieved using QgsEllipsoidUtils::acronyms().
@@ -176,7 +172,6 @@ Set the background color of the map
     //! Set the background color of the map
     void setBackgroundColor( const QColor& color );
     //! Get the background color of the map
->>>>>>> first pull request corrections.
     QColor backgroundColor() const;
 %Docstring
 Get the background color of the map

@@ -31,6 +31,7 @@ QgsRenderContext::QgsRenderContext()
   : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  QgsDebugMsgLevel( QString( "QgsRenderContext::QgsRenderContex -0- " ), 4 );
 }
 
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
@@ -51,6 +52,13 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mSegmentationTolerance( rh.mSegmentationTolerance )
   , mSegmentationToleranceType( rh.mSegmentationToleranceType )
 {
+  mDistanceArea.setSourceCrs( rh.mDistanceArea.sourceCrs() );
+  mDistanceArea.setEllipsoid( rh.mDistanceArea.ellipsoid() );
+  QgsDebugMsgLevel( QString( "QgsRenderContext::QgsRenderContext -1-:  mapUnits[%1] from center[%2] sourceCrs[%3] ellipsoidAcronym[%4]" )
+                    .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
+                    .arg( mExtent.center().wellKnownText() )
+                    .arg( mDistanceArea.sourceCrs().description() )
+                    .arg( mDistanceArea.ellipsoid() ), 4 );
 }
 
 QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
@@ -71,6 +79,13 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mFeatureFilterProvider.reset( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr );
   mSegmentationTolerance = rh.mSegmentationTolerance;
   mSegmentationToleranceType = rh.mSegmentationToleranceType;
+  mDistanceArea.setSourceCrs( rh.mDistanceArea.sourceCrs() );
+  mDistanceArea.setEllipsoid( rh.mDistanceArea.ellipsoid() );
+  QgsDebugMsgLevel( QString( "QgsRenderContext::operator:  mapUnits[%1] from center[%2] sourceCrs[%3] ellipsoidAcronym[%4]" )
+                    .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
+                    .arg( mExtent.center().wellKnownText() )
+                    .arg( mDistanceArea.sourceCrs().description() )
+                    .arg( mDistanceArea.ellipsoid() ), 4 );
   return *this;
 }
 
@@ -86,6 +101,7 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   {
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
+  QgsDebugMsgLevel( QString( "QgsRenderContext::fromQPainter -0- " ), 4 );
   return context;
 }
 
@@ -135,6 +151,12 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
   ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
   ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
+  QgsDebugMsgLevel( QString( "QgsRenderContext::fromMapSettings:mapUnits[%1] from center[%2] sourceCrs[%3] ellipsoidAcronym[%4,%5]" )
+                    .arg( QgsUnitTypes::toString( ctx.mDistanceArea.sourceCrs().mapUnits() ) )
+                    .arg( mapSettings.visibleExtent().center().wellKnownText() )
+                    .arg( ctx.mDistanceArea.sourceCrs().description() )
+                    .arg( ctx.mDistanceArea.ellipsoid() )
+                    .arg( mapSettings.ellipsoid() ), 4 );
 
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
@@ -243,13 +265,14 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       {
         conversionFactor = 1.0;
       }
-      QgsDebugMsgLevel( QString( "convertToPainterUnits -1- : size[%1] mup[%2] mapUnitsPerPixel[%3] conversionFactor[%4] mapUnits[%5] from center[%6] sourceCrs[%7]" ).arg( size )
+      QgsDebugMsgLevel( QString( "convertToPainterUnits -1- : size[%1] mup[%2] mapUnitsPerPixel[%3] conversionFactor[%4] mapUnits[%5] from center[%6] sourceCrs[%7] isGeographic[%8]" ).arg( size )
                         .arg( mup )
                         .arg( mapToPixel().mapUnitsPerPixel() )
                         .arg( conversionFactor )
                         .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
                         .arg( mExtent.center().wellKnownText() )
-                        .arg( mDistanceArea.sourceCrs().description() ), 4 );
+                        .arg( mDistanceArea.sourceCrs().description() )
+                        .arg( mDistanceArea.sourceCrs().isGeographic() ), 4 );
       unit = QgsUnitTypes::RenderMapUnits;
       // Act as if RenderMapUnits with values of meters converted to MapUnits
       break;
@@ -265,7 +288,11 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       {
         conversionFactor = 1.0;
       }
-      QgsDebugMsgLevel( QString( "convertToPainterUnits -2- : size[%1]  mup[%2] conversionFactor[%3]" ).arg( size ).arg( mup ).arg( conversionFactor ), 4 );
+      QgsDebugMsgLevel( QString( "convertToPainterUnits -2- : size[%1]  mup[%2] conversionFactor[%3] sourceCrs[%4] isGeographic[%5]" ).arg( size )
+                        .arg( mup )
+                        .arg( conversionFactor )
+                        .arg( mDistanceArea.sourceCrs().description() )
+                        .arg( mDistanceArea.sourceCrs().isGeographic() ), 4 );
       break;
     }
     case QgsUnitTypes::RenderPixels:
