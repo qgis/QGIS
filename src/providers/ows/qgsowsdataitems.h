@@ -84,7 +84,11 @@ class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
   public:
     QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri );
     QVector<QgsDataItem *> createChildren() override;
+    virtual QList<QAction *> actions() override;
+
   private:
+    void editConnection();
+    void deleteConnection() { QgsGeoNodeConnection::deleteConnection( mConnection.mConnName ); mParent->refresh(); };
     QString mUri;
     QgsGeoNodeConnection mConnection;
 };
@@ -119,10 +123,10 @@ class QgsGeoNodeRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    /*virtual QList<QAction *> actions() override;
+    virtual QList<QAction *> actions() override;
 
   private slots:
-    void newConnection();*/
+    void newConnection();
 };
 
 //! Provider for Geonode root data item

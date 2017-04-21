@@ -91,7 +91,7 @@ void QgsGeoNodeNewConnection::accept()
   // on rename delete original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
-    settings.remove( mBaseKey + mOriginalConnName );
+    settings.remove( mBaseKey + '/' + mOriginalConnName );
     settings.remove( "qgis//" + mCredentialsBaseKey + '/' + mOriginalConnName );
     settings.sync();
   }

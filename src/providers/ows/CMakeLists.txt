@@ -8,7 +8,7 @@ SET(OWS_MOC_HDRS
 )
 
 INCLUDE_DIRECTORIES (
-  ${CMAKE_SOURCE_DIR}/app/geonode
+  ${CMAKE_SOURCE_DIR}/src/app/geonode
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -18,6 +18,7 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
 
+  ${CMAKE_BINARY_DIR}/src/app
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
@@ -32,6 +33,8 @@ ADD_LIBRARY (owsprovider MODULE ${OWS_SRCS} ${OWS_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (owsprovider
   qgis_core
+  qgis_gui
+  qgis_app
 )
 
 IF (WITH_GUI)

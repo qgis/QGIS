@@ -7,12 +7,13 @@
 
 #include "ui_qgsnewgeonodeconnectionbase.h"
 #include "qgisgui.h"
+#include "qgis_app.h"
 #include "qgshelp.h"
 #include "qgsauthconfigselect.h"
 
 #include <QNetworkReply>
 
-class QgsGeoNodeNewConnection : public QDialog, private Ui::QgsNewGeoNodeConnectionBase
+class APP_EXPORT QgsGeoNodeNewConnection : public QDialog, private Ui::QgsNewGeoNodeConnectionBase
 {
     Q_OBJECT
 
