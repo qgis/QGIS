@@ -463,6 +463,13 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
     else if ( webServiceType == "XYZ" )
     {
       QgsDebugMsg( "XYZ Url: " + serviceURL );
+      QgsDebugMsg( "Add XYZ from GeoNode : " + serviceURL );
+      QgsDataSourceUri uri;
+      uri.setParam( QStringLiteral( "url" ), serviceURL );
+      uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+      uri.setParam( QStringLiteral( "zmin" ), "0" );
+      uri.setParam( QStringLiteral( "zmax" ), "18" );
+      emit addRasterLayer( uri.encodedUri(), layerName, QStringLiteral( "wms" ) );
     }
   }
 
