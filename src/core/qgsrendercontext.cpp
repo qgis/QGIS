@@ -32,9 +32,13 @@ QgsRenderContext::QgsRenderContext()
   : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+<<<<<<< HEAD
   // For RenderMetersInMapUnits support, when rendering in Degrees, the Ellipsoid must be set
   // - for Previews/Icons the default Extent can be used
   mDistanceArea.setEllipsoid( mDistanceArea.sourceCrs().ellipsoidAcronym() );
+=======
+  QgsDebugMsgLevel( QString( "QgsRenderContext::QgsRenderContex -0- " ), 4 );
+>>>>>>> added setting of mDistanceArea to constructor and copy operator.
 }
 
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
@@ -56,6 +60,13 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mSegmentationTolerance( rh.mSegmentationTolerance )
   , mSegmentationToleranceType( rh.mSegmentationToleranceType )
 {
+  mDistanceArea.setSourceCrs( rh.mDistanceArea.sourceCrs() );
+  mDistanceArea.setEllipsoid( rh.mDistanceArea.ellipsoid() );
+  QgsDebugMsgLevel( QString( "QgsRenderContext::QgsRenderContext -1-:  mapUnits[%1] from center[%2] sourceCrs[%3] ellipsoidAcronym[%4]" )
+                    .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
+                    .arg( mExtent.center().wellKnownText() )
+                    .arg( mDistanceArea.sourceCrs().description() )
+                    .arg( mDistanceArea.ellipsoid() ), 4 );
 }
 
 QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
@@ -92,6 +103,7 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   {
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
+  QgsDebugMsgLevel( QString( "QgsRenderContext::fromQPainter -0- " ), 4 );
   return context;
 }
 
@@ -141,10 +153,6 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
   ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
   ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
-<<<<<<< HEAD
-=======
-
->>>>>>> first pull request corrections.
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
@@ -259,7 +267,6 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       {
         conversionFactor = 1.0;
       }
-      QgsDebugMsgLevel( QString( "convertToPainterUnits -2- : size[%1]  mup[%2] conversionFactor[%3]" ).arg( size ).arg( mup ).arg( conversionFactor ), 4 );
       break;
     }
     case QgsUnitTypes::RenderPixels:
