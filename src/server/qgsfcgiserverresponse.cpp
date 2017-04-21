@@ -160,6 +160,20 @@ void QgsFcgiServerResponse::clear()
   setDefaultHeaders();
 }
 
+
+QByteArray QgsFcgiServerResponse::data() const
+{
+  return mBuffer.data();
+}
+
+
+void QgsFcgiServerResponse::truncate()
+{
+  mBuffer.seek( 0 );
+  mBuffer.buffer().clear();
+}
+
+
 void QgsFcgiServerResponse::setDefaultHeaders()
 {
   setHeader( QStringLiteral( "Server" ), QStringLiteral( " Qgis FCGI server - QGis version %1" ).arg( Qgis::QGIS_VERSION ) );

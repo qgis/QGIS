@@ -36,27 +36,31 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
     QgsFcgiServerResponse( QgsServerRequest::Method method = QgsServerRequest::GetMethod );
     ~QgsFcgiServerResponse();
 
-    virtual void setHeader( const QString &key, const QString &value ) override;
+    void setHeader( const QString &key, const QString &value ) override;
 
-    virtual void clearHeader( const QString &key ) override;
+    void clearHeader( const QString &key ) override;
 
-    virtual QString getHeader( const QString &key ) const override;
+    QString getHeader( const QString &key ) const override;
 
-    virtual QList<QString> headerKeys() const override;
+    QList<QString> headerKeys() const override;
 
-    virtual bool headersSent() const override;
+    bool headersSent() const override;
 
-    virtual void setReturnCode( int code ) override;
+    void setReturnCode( int code ) override;
 
-    virtual void sendError( int code,  const QString &message ) override;
+    void sendError( int code,  const QString &message ) override;
 
-    virtual QIODevice *io() override;
+    QIODevice *io() override;
 
-    virtual void finish() override;
+    void finish() override;
 
-    virtual void flush() override;
+    void flush() override;
 
-    virtual void clear() override;
+    void clear() override;
+
+    QByteArray data() const override;
+
+    void truncate() override;
 
     /**
      * Set the default headers

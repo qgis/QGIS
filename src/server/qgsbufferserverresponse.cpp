@@ -130,6 +130,18 @@ void QgsBufferServerResponse::clear()
 }
 
 
+QByteArray QgsBufferServerResponse::data() const
+{
+  return mBuffer.data();
+}
+
+
+void QgsBufferServerResponse::truncate()
+{
+  mBuffer.seek( 0 );
+  mBuffer.buffer().clear();
+}
+
 //QgsBufferServerRequest
 //
 QgsBufferServerRequest::QgsBufferServerRequest( const QString &url, Method method, QByteArray *data )

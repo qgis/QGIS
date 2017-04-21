@@ -27,18 +27,18 @@ class QgsRequestHandler  /Abstract/
   public:
 
     /** Allow plugins to return a QgsServerException*/
-    void setServiceException( const QgsServerException& ex );
+    void setServiceException( const QgsServerException &ex );
 
     /** Set an HTTP header*/
     void setHeader( const QString &name, const QString &value );
 
     //! Retrieve header value
-    QString getHeader( const QString& name ) const;
+    QString getHeader( const QString &name ) const;
 
     //! Return the list of all header keys
     QList<QString> headerKeys() const;
 
-   /** Remove an HTTP header*/
+    /** Remove an HTTP header*/
     void removeHeader( const QString &name );
 
     /** Delete all HTTP headers*/
@@ -52,6 +52,12 @@ class QgsRequestHandler  /Abstract/
 
     /** Pointer to last raised exception*/
     bool exceptionRaised() const;
+
+    /** Clear response buffer */
+    void clearBody();
+
+    /** Return body data */
+    QByteArray body() const;
 
     /** Return a copy of the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)

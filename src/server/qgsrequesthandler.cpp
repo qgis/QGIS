@@ -89,6 +89,16 @@ void QgsRequestHandler::appendBody( const QByteArray &body )
   mResponse.write( body );
 }
 
+void QgsRequestHandler::clearBody()
+{
+  mResponse.truncate();
+}
+
+QByteArray QgsRequestHandler::body() const
+{
+  return mResponse.data();
+}
+
 void QgsRequestHandler::sendResponse()
 {
   // Send data to output
