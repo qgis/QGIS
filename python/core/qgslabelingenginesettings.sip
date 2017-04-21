@@ -30,6 +30,7 @@ class QgsLabelingEngineSettings
     };
     typedef QFlags<QgsLabelingEngineSettings::Flag> Flags;
 
+
     enum Search
     {
       Chain,
@@ -97,6 +98,7 @@ Write configuration of the labeling engine to a project
 
 QFlags<QgsLabelingEngineSettings::Flag> operator|(QgsLabelingEngineSettings::Flag f1, QFlags<QgsLabelingEngineSettings::Flag> f2);
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
@@ -104,3 +106,4 @@ QFlags<QgsLabelingEngineSettings::Flag> operator|(QgsLabelingEngineSettings::Fla
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+

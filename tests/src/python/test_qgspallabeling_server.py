@@ -138,20 +138,7 @@ class TestServerBase(TestQgsPalLabeling):
         # print params
         return params
 
-    def sync_map_settings(self):
-        """
-        Sync custom test QgsMapSettings to Project file
-        """
-        pass
-        """
-        pal = QgsPalLabeling()
-        pal.loadEngineSettings()
-        pal.init(self._TestMapSettings)
-        pal.saveEngineSettings()
-        """
-
     def checkTest(self, **kwargs):
-        self.sync_map_settings()
         self.lyr.writeToLayer(self.layer)
         # save project file
         self._TestProj.write()
