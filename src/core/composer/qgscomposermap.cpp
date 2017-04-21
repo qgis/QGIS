@@ -194,6 +194,8 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle &extent, QSizeF s
 
   jobMapSettings.datumTransformStore().setDestinationCrs( renderCrs );
 
+  jobMapSettings.setLabelingEngineSettings( mComposition->project()->labelingEngineSettings() );
+
   return jobMapSettings;
 }
 

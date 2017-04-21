@@ -19,6 +19,7 @@
 #define QGSSLDCONFIGPARSER_H
 
 #include "qgswmsconfigparser.h"
+#include <QFont>
 
 class QgsFeatureRenderer;
 class QgsVectorLayer;

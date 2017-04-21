@@ -20,8 +20,7 @@
 #include "qgsmapsettings.h"
 
 #include "qgspallabeling.h"
-
-#include <QFlags>
+#include "qgslabelingenginesettings.h"
 
 
 class QgsLabelingEngine;
@@ -130,7 +129,6 @@ class CORE_EXPORT QgsAbstractLabelProvider
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
 
 
-
 /** \ingroup core
  * \brief The QgsLabelingEngine class provides map labeling functionality.
  * The input for the engine is a list of label provider objects and map settings.
@@ -176,20 +174,13 @@ class CORE_EXPORT QgsLabelingEngine
     //! QgsLabelingEngine cannot be copied.
     QgsLabelingEngine &operator=( const QgsLabelingEngine &rh ) = delete;
 
-    enum Flag
-    {
-      UseAllLabels          = 1 << 1,  //!< Whether to draw all labels even if there would be collisions
-      UsePartialCandidates  = 1 << 2,  //!< Whether to use also label candidates that are partially outside of the map view
-      RenderOutlineLabels   = 1 << 3,  //!< Whether to render labels as text or outlines
-      DrawLabelRectOnly     = 1 << 4,  //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
-      DrawCandidates        = 1 << 5,  //!< Whether to draw rectangles of generated candidates (good for debugging)
-    };
-    Q_DECLARE_FLAGS( Flags, Flag )
-
     //! Associate map settings instance
     void setMapSettings( const QgsMapSettings &mapSettings ) { mMapSettings = mapSettings; }
     //! Get associated map settings
     const QgsMapSettings &mapSettings() const { return mMapSettings; }
+
+    //! Get associated labeling engine settings
+    const QgsLabelingEngineSettings &engineSettings() const { return mMapSettings.labelingEngineSettings(); }
 
     /**
      * Returns a list of layers with providers in the engine.
@@ -212,54 +203,21 @@ class CORE_EXPORT QgsLabelingEngine
     //! For internal use by the providers
     QgsLabelingResults *results() const { return mResults.get(); }
 
-    //! Set flags of the labeling engine
-    void setFlags( Flags flags ) { mFlags = flags; }
-    //! Get flags of the labeling engine
-    Flags flags() const { return mFlags; }
-    //! Test whether a particular flag is enabled
-    bool testFlag( Flag f ) const { return mFlags.testFlag( f ); }
-    //! Set whether a particual flag is enabled
-    void setFlag( Flag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~f; }
-
-    //! Get number of candidate positions that will be generated for each label feature (default to 8)
-    void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) { candPoint = mCandPoint; candLine = mCandLine; candPolygon = mCandPolygon; }
-    //! Set number of candidate positions that will be generated for each label feature
-    void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) { mCandPoint = candPoint; mCandLine = candLine; mCandPolygon = candPolygon; }
-
-    //! Set which search method to use for removal collisions between labels
-    void setSearchMethod( QgsPalLabeling::Search s ) { mSearchMethod = s; }
-    //! Which search method to use for removal collisions between labels
-    QgsPalLabeling::Search searchMethod() const { return mSearchMethod; }
-
-    //! Read configuration of the labeling engine from a project
-    void readSettingsFromProject( QgsProject *project );
-    //! Write configuration of the labeling engine to a project
-    void writeSettingsToProject( QgsProject *project );
-    //! Clear configuration of the labeling engine in a project
-    static void clearSettingsInProject( QgsProject *project );
-
   protected:
     void processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p );  //#spellok
 
   protected:
     //! Associated map settings instance
     QgsMapSettings mMapSettings;
+
     //! List of providers (the are owned by the labeling engine)
     QList<QgsAbstractLabelProvider *> mProviders;
     QList<QgsAbstractLabelProvider *> mSubProviders;
-    //! Flags
-    Flags mFlags;
-    //! search method to use for removal collisions between labels
-    QgsPalLabeling::Search mSearchMethod;
-    //! Number of candedate positions that will be generated for features
-    int mCandPoint, mCandLine, mCandPolygon;
 
     //! Resulting labeling layout
     std::unique_ptr< QgsLabelingResults > mResults;
 
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngine::Flags )
 
 
 /** \ingroup core

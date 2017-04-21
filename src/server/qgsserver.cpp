@@ -31,7 +31,6 @@
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
-#include "qgspallabeling.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsserverlogger.h"
 #include "qgseditorwidgetregistry.h"

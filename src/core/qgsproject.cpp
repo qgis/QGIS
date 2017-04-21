@@ -18,7 +18,7 @@
 #include "qgsproject.h"
 
 #include "qgsdatasourceuri.h"
-#include "qgsexception.h"
+#include "qgslabelingenginesettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertreeregistrybridge.h"
@@ -328,6 +328,7 @@ QgsProject::QgsProject( QObject *parent )
   , mAnnotationManager( new QgsAnnotationManager( this ) )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mRootGroup( new QgsLayerTree )
+  , mLabelingEngineSettings( new QgsLabelingEngineSettings )
   , mAutoTransaction( false )
   , mEvaluateDefaultValues( false )
   , mDirty( false )
@@ -471,6 +472,9 @@ void QgsProject::clear()
   emit mapThemeCollectionChanged();
 
   mRootGroup->clear();
+
+  mLabelingEngineSettings->clear();
+  emit labelingEngineSettingsChanged();
 
   // reset some default project properties
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
@@ -915,6 +919,9 @@ bool QgsProject::read()
   emit mapThemeCollectionChanged();
   mMapThemeCollection->readXml( *doc );
 
+  mLabelingEngineSettings->readSettingsFromProject( this );
+  emit labelingEngineSettingsChanged();
+
   mAnnotationManager->readXml( doc->documentElement(), *doc );
   mLayoutManager->readXml( doc->documentElement(), *doc );
 
@@ -1029,6 +1036,17 @@ void QgsProject::setCustomVariables( const QVariantMap &variables )
   mCustomVariables = variables;
 
   emit customVariablesChanged();
+}
+
+void QgsProject::setLabelingEngineSettings( const QgsLabelingEngineSettings &settings )
+{
+  *mLabelingEngineSettings = settings;
+  emit labelingEngineSettingsChanged();
+}
+
+const QgsLabelingEngineSettings &QgsProject::labelingEngineSettings() const
+{
+  return *mLabelingEngineSettings;
 }
 
 QList<QgsVectorLayer *> QgsProject::avoidIntersectionsLayers() const
@@ -1291,6 +1309,8 @@ bool QgsProject::write()
   }
 
   mMapThemeCollection->writeXml( *doc );
+
+  mLabelingEngineSettings->writeSettingsToProject( this );
 
   QDomElement annotationsElem = mAnnotationManager->writeXml( *doc );
   qgisNode.appendChild( annotationsElem );

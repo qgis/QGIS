@@ -514,55 +514,9 @@ class QgsPalLabeling
 
   public:
 
-    QgsPalLabeling();
-    ~QgsPalLabeling();
-
-    void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon );
-    void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
-
-    enum Search { Chain, Popmusic_Tabu, Popmusic_Chain, Popmusic_Tabu_Chain, Falp };
-
-    void setSearchMethod( Search s );
-    Search searchMethod() const;
-
-    bool isShowingCandidates() const;
-    void setShowingCandidates( bool showing );
-
-    bool isShowingAllLabels() const;
-    void setShowingAllLabels( bool showing );
-
-    bool isShowingPartialsLabels() const;
-    void setShowingPartialsLabels( bool showing );
-
-    //! @note added in 2.4
-    bool isDrawingOutlineLabels() const;
-    void setDrawingOutlineLabels( bool outline );
-
-    /** Returns whether the engine will only draw the outline rectangles of labels,
-     * not the label contents themselves. Used for debugging and testing purposes.
-     * @see setDrawLabelRectOnly
-     * @note added in QGIS 2.12
-     */
-    bool drawLabelRectOnly() const;
-
-    /** Sets whether the engine should only draw the outline rectangles of labels,
-     * not the label contents themselves. Used for debugging and testing purposes.
-     * @param drawRect set to true to enable rect drawing only
-     * @see drawLabelRectOnly
-     * @note added in QGIS 2.12
-     */
-    void setDrawLabelRectOnly( bool drawRect );
-
     //! called to find out whether the layer is used for labeling
-    //! @note added in 2.4
-    static bool staticWillUseLayer( QgsVectorLayer* layer );
-
-    //! @note not available in python bindings
-    // void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
-
-    //! load/save engine settings to project file
-    void loadEngineSettings();
-    void saveEngineSettings();
+    //! \since QGIS 2.4
+    static bool staticWillUseLayer( QgsVectorLayer *layer );
 
     /** Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
      * @param geometry geometry to prepare
@@ -604,26 +558,24 @@ class QgsPalLabeling
 
   protected:
     // update temporary QgsPalLayerSettings with any data defined text style values
-    void dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
-                               const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
+    static void dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
+                                      const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined text formatting values
-    void dataDefinedTextFormatting( QgsPalLayerSettings& tmpLyr,
-                                    const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
+    static void dataDefinedTextFormatting( QgsPalLayerSettings& tmpLyr,
+                                           const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined text buffer values
-    void dataDefinedTextBuffer( QgsPalLayerSettings& tmpLyr,
-                                const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
+    static void dataDefinedTextBuffer( QgsPalLayerSettings& tmpLyr,
+                                       const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined shape background values
-    void dataDefinedShapeBackground( QgsPalLayerSettings& tmpLyr,
-                                     const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
+    static void dataDefinedShapeBackground( QgsPalLayerSettings& tmpLyr,
+                                            const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined drop shadow values
-    void dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
-                                const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
-
-    void deleteTemporaryData();
+    static void dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
+                                       const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     /** Checks whether a geometry exceeds the minimum required size for a geometry to be labeled.
      * @param context render context

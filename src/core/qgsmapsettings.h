@@ -26,6 +26,7 @@
 #include "qgsabstractgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransformstore.h"
+#include "qgslabelingenginesettings.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
 #include "qgsscalecalculator.h"
@@ -291,6 +292,18 @@ class CORE_EXPORT QgsMapSettings
     //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
+    /**
+     * Sets global configuration of the labeling engine
+     * \since QGIS 3.0
+     */
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings ) { mLabelingEngineSettings = settings; }
+
+    /**
+     * Returns global configuration of the labeling engine
+     * \since QGIS 3.0
+     */
+    const QgsLabelingEngineSettings &labelingEngineSettings() const { return mLabelingEngineSettings; }
+
   protected:
 
     double mDpi;
@@ -321,6 +334,7 @@ class CORE_EXPORT QgsMapSettings
     double mSegmentationTolerance;
     QgsAbstractGeometry::SegmentationToleranceType mSegmentationToleranceType;
 
+    QgsLabelingEngineSettings mLabelingEngineSettings;
 
     // derived properties
     bool mValid; //!< Whether the actual settings are valid (set in updateDerived())

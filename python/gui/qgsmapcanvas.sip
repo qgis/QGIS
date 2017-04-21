@@ -101,6 +101,8 @@ class QgsMapCanvas : QGraphicsView
     QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
     bool annotationsVisible() const;
     void setAnnotationsVisible( bool visible );
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
+    const QgsLabelingEngineSettings &labelingEngineSettings() const;
 
   public slots:
 

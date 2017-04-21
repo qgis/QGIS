@@ -34,6 +34,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsfields.h"
+#include "qgslabelingenginesettings.h"
 #include "qgspoint.h"
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
@@ -705,55 +706,12 @@ class CORE_EXPORT QgsPalLabeling
 {
   public:
 
-    QgsPalLabeling();
-    ~QgsPalLabeling();
-
-    void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon );
-    void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
-
-    enum Search { Chain, Popmusic_Tabu, Popmusic_Chain, Popmusic_Tabu_Chain, Falp };
-
-    void setSearchMethod( Search s );
-    Search searchMethod() const;
-
-    bool isShowingCandidates() const;
-    void setShowingCandidates( bool showing );
-
-    bool isShowingAllLabels() const;
-    void setShowingAllLabels( bool showing );
-
-    bool isShowingPartialsLabels() const;
-    void setShowingPartialsLabels( bool showing );
-
-    //! \since QGIS 2.4
-    bool isDrawingOutlineLabels() const;
-    void setDrawingOutlineLabels( bool outline );
-
-    /** Returns whether the engine will only draw the outline rectangles of labels,
-     * not the label contents themselves. Used for debugging and testing purposes.
-     * \see setDrawLabelRectOnly
-     * \since QGIS 2.12
-     */
-    bool drawLabelRectOnly() const;
-
-    /** Sets whether the engine should only draw the outline rectangles of labels,
-     * not the label contents themselves. Used for debugging and testing purposes.
-     * \param drawRect set to true to enable rect drawing only
-     * \see drawLabelRectOnly
-     * \since QGIS 2.12
-     */
-    void setDrawLabelRectOnly( bool drawRect );
-
     //! called to find out whether the layer is used for labeling
     //! \since QGIS 2.4
     static bool staticWillUseLayer( QgsVectorLayer *layer );
 
     //! \note not available in Python bindings
     static void drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates = nullptr );
-
-    //! load/save engine settings to project file
-    void loadEngineSettings();
-    void saveEngineSettings();
 
     /** Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
      * \param geometry geometry to prepare
@@ -817,8 +775,6 @@ class CORE_EXPORT QgsPalLabeling
     friend class QgsVectorLayerLabelProvider; // to allow calling the static methods above
     friend class QgsDxfExport;                // to allow calling the static methods above
 
-    void deleteTemporaryData();
-
     /** Checks whether a geometry exceeds the minimum required size for a geometry to be labeled.
      * \param context render context
      * \param geom geometry
@@ -827,18 +783,6 @@ class CORE_EXPORT QgsPalLabeling
      * \since QGIS 2.9
      */
     static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );
-
-    //! hashtable of label providers, being filled during labeling (key = layer ID)
-    QHash<QString, QgsVectorLayerLabelProvider *> mLabelProviders;
-    //! hashtable of diagram providers (key = layer ID)
-    QHash<QString, QgsVectorLayerDiagramProvider *> mDiagramProviders;
-    QgsPalLayerSettings mInvalidLayerSettings;
-
-    //! New labeling engine to interface with PAL
-    QgsLabelingEngine *mEngine = nullptr;
-
-    // list of candidates from last labeling
-    QList<QgsLabelCandidate> mCandidates;
 
     friend class QgsPalLayerSettings;
 };

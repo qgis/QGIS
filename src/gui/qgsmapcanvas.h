@@ -494,6 +494,18 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void setAnnotationsVisible( bool visible );
 
+    /**
+     * Sets global labeling engine settings in the internal map settings
+     * \since QGIS 3.0
+     */
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
+
+    /**
+     * Returns global labeling engine settings from the internal map settings
+     * \since QGIS 3.0
+     */
+    const QgsLabelingEngineSettings &labelingEngineSettings() const;
+
   public slots:
 
     //! Repaints the canvas map

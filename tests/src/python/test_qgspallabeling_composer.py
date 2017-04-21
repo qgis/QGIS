@@ -100,7 +100,7 @@ class TestComposerBase(TestQgsPalLabeling):
         self._Mismatches.clear()
         self._ColorTols.clear()
 
-    def _set_up_composition(self, width, height, dpi):
+    def _set_up_composition(self, width, height, dpi, engine_settings):
         # set up composition and add map
         self._c = QgsComposition(QgsProject.instance())
         """:type: QgsComposition"""
@@ -126,6 +126,8 @@ class TestComposerBase(TestQgsPalLabeling):
         self._cmap.setNewExtent(self.aoiExtent())
         # self._cmap.updateCachedImage()
         self._c.setPlotStyle(QgsComposition.Print)
+        # composition takes labeling engine settings from project
+        QgsProject.instance().setLabelingEngineSettings(engine_settings)
 
     # noinspection PyUnusedLocal
     def _get_composer_image(self, width, height, dpi):
@@ -271,7 +273,7 @@ class TestComposerBase(TestQgsPalLabeling):
         ms = self._TestMapSettings
         osize = ms.outputSize()
         width, height, dpi = osize.width(), osize.height(), ms.outputDpi()
-        self._set_up_composition(width, height, dpi)
+        self._set_up_composition(width, height, dpi, ms.labelingEngineSettings())
         if kind == OutputKind.Svg:
             return self._get_composer_svg_image(width, height, dpi)
         elif kind == OutputKind.Pdf:

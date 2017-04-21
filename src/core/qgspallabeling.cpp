@@ -2761,16 +2761,6 @@ void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
 
 // -------------
 
-QgsPalLabeling::QgsPalLabeling()
-  : mEngine( new QgsLabelingEngine() )
-{
-}
-
-QgsPalLabeling::~QgsPalLabeling()
-{
-  delete mEngine;
-  mEngine = nullptr;
-}
 
 bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer *layer )
 {
@@ -3375,80 +3365,6 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
 }
 
 
-void QgsPalLabeling::deleteTemporaryData()
-{
-}
-
-void QgsPalLabeling::numCandidatePositions( int &candPoint, int &candLine, int &candPolygon )
-{
-  mEngine->numCandidatePositions( candPoint, candLine, candPolygon );
-}
-
-void QgsPalLabeling::setNumCandidatePositions( int candPoint, int candLine, int candPolygon )
-{
-  mEngine->setNumCandidatePositions( candPoint, candLine, candPolygon );
-}
-
-void QgsPalLabeling::setSearchMethod( QgsPalLabeling::Search s )
-{
-  mEngine->setSearchMethod( s );
-}
-
-QgsPalLabeling::Search QgsPalLabeling::searchMethod() const
-{
-  return mEngine->searchMethod();
-}
-
-bool QgsPalLabeling::isShowingCandidates() const
-{
-  return mEngine->testFlag( QgsLabelingEngine::DrawCandidates );
-}
-
-void QgsPalLabeling::setShowingCandidates( bool showing )
-{
-  mEngine->setFlag( QgsLabelingEngine::DrawCandidates, showing );
-}
-
-bool QgsPalLabeling::isShowingAllLabels() const
-{
-  return mEngine->testFlag( QgsLabelingEngine::UseAllLabels );
-}
-
-void QgsPalLabeling::setShowingAllLabels( bool showing )
-{
-  mEngine->setFlag( QgsLabelingEngine::UseAllLabels, showing );
-}
-
-bool QgsPalLabeling::isShowingPartialsLabels() const
-{
-  return mEngine->testFlag( QgsLabelingEngine::UsePartialCandidates );
-}
-
-void QgsPalLabeling::setShowingPartialsLabels( bool showing )
-{
-  mEngine->setFlag( QgsLabelingEngine::UsePartialCandidates, showing );
-}
-
-bool QgsPalLabeling::isDrawingOutlineLabels() const
-{
-  return mEngine->testFlag( QgsLabelingEngine::RenderOutlineLabels );
-}
-
-void QgsPalLabeling::setDrawingOutlineLabels( bool outline )
-{
-  mEngine->setFlag( QgsLabelingEngine::RenderOutlineLabels, outline );
-}
-
-bool QgsPalLabeling::drawLabelRectOnly() const
-{
-  return mEngine->testFlag( QgsLabelingEngine::DrawLabelRectOnly );
-}
-
-void QgsPalLabeling::setDrawLabelRectOnly( bool drawRect )
-{
-  mEngine->setFlag( QgsLabelingEngine::DrawLabelRectOnly, drawRect );
-}
-
 void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates )
 {
   QgsPoint outPt = xform->transform( lp->getX(), lp->getY() );
@@ -3506,18 +3422,6 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *p
   // show all parts of the multipart label
   if ( lp->getNextPart() )
     drawLabelCandidateRect( lp->getNextPart(), painter, xform, candidates );
-}
-
-// TODO: remove once not used in labeling tests
-void QgsPalLabeling::loadEngineSettings()
-{
-  mEngine->readSettingsFromProject( QgsProject::instance() );
-}
-
-// TODO: remove once not used in labeling tests
-void QgsPalLabeling::saveEngineSettings()
-{
-  mEngine->writeSettingsToProject( QgsProject::instance() );
 }
 
 QgsLabelingResults::QgsLabelingResults()

@@ -27,6 +27,8 @@
 #include "qgswmsconfigparser.h"
 #include "qgswmsserviceexception.h"
 
+class QgsRectangle;
+
 /**
  * \ingroup server
  * WMS implementation

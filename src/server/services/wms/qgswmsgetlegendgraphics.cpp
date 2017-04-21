@@ -22,6 +22,8 @@
 #include "qgswmsgetlegendgraphics.h"
 #include "qgswmsrenderer.h"
 
+#include <QImage>
+
 namespace QgsWms
 {
 

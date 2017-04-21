@@ -20,7 +20,6 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgspallabeling.h"
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
 #include "qgsmaplayerlistutils.h"
@@ -74,7 +73,6 @@ void QgsMapRendererCustomPainterJob::start()
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
     mLabelingEngineV2.reset( new QgsLabelingEngine() );
-    mLabelingEngineV2->readSettingsFromProject( QgsProject::instance() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 

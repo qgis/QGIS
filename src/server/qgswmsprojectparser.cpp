@@ -23,7 +23,6 @@
 #include "qgsproject.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapserviceexception.h"
-#include "qgspallabeling.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapsettings.h"
@@ -2201,7 +2200,7 @@ void QgsWmsProjectParser::loadLabelSettings() const
 
 void QgsWmsProjectParser::readLabelSettings( int &searchMethod, int &nCandPoint, int &nCandLine, int &nCandPoly, bool &showingCandidates, bool &drawRectOnly, bool &showingShadowRects, bool &showingAllLabels, bool &showingPartialsLabels, bool &drawOutlineLabels ) const
 {
-  searchMethod = static_cast< int >( QgsPalLabeling::Chain );
+  searchMethod = static_cast< int >( QgsLabelingEngineSettings::Chain );
   nCandPoint = 8;
   nCandLine = 8;
   nCandPoly = 8;

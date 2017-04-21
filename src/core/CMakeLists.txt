@@ -155,6 +155,7 @@ SET(QGIS_CORE_SRCS
   qgsjsonutils.cpp
   qgslabelfeature.cpp
   qgslabelingengine.cpp
+  qgslabelingenginesettings.cpp
   qgslabelsearchtree.cpp
   qgslayerdefinition.cpp
   qgslegendrenderer.cpp
@@ -729,6 +730,7 @@ SET(QGIS_CORE_HDRS
   qgslayerdefinition.h
   qgslabelfeature.h
   qgslabelingengine.h
+  qgslabelingenginesettings.h
   qgslabelsearchtree.h
   qgslegendrenderer.h
   qgslegendsettings.h
