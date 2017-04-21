@@ -732,6 +732,7 @@ SET(QGIS_CORE_HDRS
   qgslegendsettings.h
   qgslegendstyle.h
   qgslogger.h
+  qgsmapdecoration.h
   qgsmaplayerref.h
   qgsmaphittest.h
   qgsmaplayerdependency.h

@@ -47,7 +47,7 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
     //! Show the dialog box
     void run() override;
     //! render the copyright label
-    void render( QPainter * ) override;
+    void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
 
   private:
     //! This is the font that will be used for the copyright label

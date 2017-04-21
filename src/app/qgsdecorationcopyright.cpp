@@ -91,14 +91,15 @@ void QgsDecorationCopyright::run()
 }
 
 
-void QgsDecorationCopyright::render( QPainter *theQPainter )
+void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRenderContext &context )
 {
+  Q_UNUSED( mapSettings );
   //Large IF statement to enable/disable copyright label
   if ( enabled() )
   {
     // need width/height of paint device
-    int myHeight = theQPainter->device()->height();
-    int myWidth = theQPainter->device()->width();
+    int myHeight = context.painter()->device()->height();
+    int myWidth = context.painter()->device()->width();
 
     QTextDocument text;
     text.setDefaultFont( mQFont );
@@ -115,8 +116,8 @@ void QgsDecorationCopyright::render( QPainter *theQPainter )
     {
       case QgsUnitTypes::RenderMillimeters:
       {
-        int myPixelsInchX = theQPainter->device()->logicalDpiX();
-        int myPixelsInchY = theQPainter->device()->logicalDpiY();
+        int myPixelsInchX = context.painter()->device()->logicalDpiX();
+        int myPixelsInchY = context.painter()->device()->logicalDpiY();
         myXOffset = myPixelsInchX * INCHES_TO_MM * mMarginHorizontal;
         myYOffset = myPixelsInchY * INCHES_TO_MM * mMarginVertical;
         break;
@@ -156,11 +157,11 @@ void QgsDecorationCopyright::render( QPainter *theQPainter )
     }
 
     //Paint label to canvas
-    QMatrix worldMatrix = theQPainter->worldMatrix();
-    theQPainter->translate( myXOffset, myYOffset );
-    text.drawContents( theQPainter );
+    QMatrix worldMatrix = context.painter()->worldMatrix();
+    context.painter()->translate( myXOffset, myYOffset );
+    text.drawContents( context.painter() );
     // Put things back how they were
-    theQPainter->setWorldMatrix( worldMatrix );
+    context.painter()->setWorldMatrix( worldMatrix );
   }
 }
 
