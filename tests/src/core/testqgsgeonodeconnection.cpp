@@ -38,7 +38,8 @@ class TestQgsGeoNodeConnection: public QObject
     void cleanupTestCase()
     {
       QgsGeoNodeConnection::deleteConnection( mGeoNodeConnectionName );
-      QgsGeoNodeConnection::deleteConnection( "Demo GeoNode" );
+      QgsGeoNodeConnection::deleteConnection( mDemoGeoNodeName );
+      QgsGeoNodeConnection::deleteConnection( mKartozaGeoNodeName );
     }
     // will be called before each testfunction is executed.
     void init() {}
@@ -54,7 +55,13 @@ class TestQgsGeoNodeConnection: public QObject
   private:
     QString mGeoNodeConnectionName;
     QString mGeoNodeConnectionURL;
+
     QString mDemoGeoNodeName;
+    QString mDemoGeoNodeURL;
+
+    QString mKartozaGeoNodeName;
+    QString mKartozaGeoNodeURL;
+
     bool mSkipRemoteTest;
 };
 
@@ -62,9 +69,13 @@ class TestQgsGeoNodeConnection: public QObject
 void TestQgsGeoNodeConnection::initTestCase()
 {
   std::cout << "CTEST_FULL_OUTPUT" << std::endl;
-  mGeoNodeConnectionName = "ThisIsAGeoNodeConnection";
-  mGeoNodeConnectionURL = "www.thisisageonodeurl.com";
-  mDemoGeoNodeName = "Demo GeoNode";
+  mGeoNodeConnectionName = QStringLiteral( "ThisIsAGeoNodeConnection" );
+  mGeoNodeConnectionURL = QStringLiteral( "www.thisisageonodeurl.com" );
+  mDemoGeoNodeName = QStringLiteral( "Demo GeoNode" );
+  mDemoGeoNodeURL = QStringLiteral( "demo.geonode.org" );
+  mKartozaGeoNodeName = QStringLiteral( "Kartoza GeoNode" );
+  mKartozaGeoNodeURL = QStringLiteral( "geonode.kartoza.com" );
+
   // Change it to skip remote testing
   mSkipRemoteTest = true;
 
@@ -72,7 +83,9 @@ void TestQgsGeoNodeConnection::initTestCase()
   QgsSettings settings;
 
   // Testing real server, demo.geonode.org. Need to be changed later.
-  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection + QStringLiteral( "/%1/url" ).arg( mDemoGeoNodeName ), "demo.geonode.org" );
+  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection + QStringLiteral( "/%1/url" ).arg( mDemoGeoNodeName ), mDemoGeoNodeURL );
+  // Testing real server, geonode.kartoza.com. Need to be changed later.
+  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection + QStringLiteral( "/%1/url" ).arg( mKartozaGeoNodeName ), mKartozaGeoNodeURL );
 }
 
 // Test the creation of geonode connection
@@ -163,12 +176,18 @@ void TestQgsGeoNodeConnection::testGetGeoNodeUrl()
   QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
 
   QString WMSUrl = geonodeConnection.serviceUrl( QStringLiteral( "WMS" ) );
-  std::cout << WMSUrl.toStdString();
+  qDebug() << WMSUrl;
   QVERIFY( WMSUrl == "http://demo.geonode.org/geoserver/geonode/wms" );
 
   QString WFSUrl = geonodeConnection.serviceUrl( QStringLiteral( "WFS" ) );
-  std::cout << WFSUrl.toStdString();
+  qDebug() << WFSUrl;
   QVERIFY( WFSUrl == "http://demo.geonode.org/geoserver/geonode/wfs" );
+
+  QgsGeoNodeConnection kartozaGeoNodeConnection( mKartozaGeoNodeName );
+
+  QString XYZUrl = kartozaGeoNodeConnection.serviceUrl( QStringLiteral( "XYZ" ) );
+  qDebug() << XYZUrl;
+  QVERIFY( XYZUrl == "http://geonode.kartoza.com/qgis-server/tiles/LAYERNAME/{z}/{x}/{y}.png" );
 }
 
 QGSTEST_MAIN( TestQgsGeoNodeConnection )

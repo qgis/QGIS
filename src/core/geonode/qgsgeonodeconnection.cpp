@@ -297,6 +297,7 @@ QString QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceTy
   dom.setContent( response_data );
 
   QDomNodeList referenceNodeList = dom.elementsByTagName( "dct:references" );
+
   if ( !referenceNodeList.isEmpty() )
   {
     for ( int i = 0; i < referenceNodeList.size(); ++i )
@@ -305,11 +306,39 @@ QString QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceTy
       QDomNamedNodeMap attributes = referenceNode.attributes();
       QString scheme = attributes.namedItem( "scheme" ).firstChild().nodeValue();
       // Trick to get the WMS / WFS Url from CSW
-      if ( scheme.startsWith( "OGC" ) && scheme.contains( serviceType ) )
+      if ( serviceType == QStringLiteral( "WMS" ) || serviceType == QStringLiteral( "WFS" ) )
       {
-        QString url = referenceNode.firstChild().nodeValue();
-        return url;
+        if ( scheme.startsWith( "OGC" ) && scheme.contains( serviceType ) )
+        {
+          QString serviceUrlResult = referenceNode.firstChild().nodeValue();
+          return serviceUrlResult;
+        }
       }
+      else if ( serviceType == QStringLiteral( "XYZ" ) )
+      {
+        QDomNodeList titleNodeList = dom.elementsByTagName( "dc:title" );
+        QString title;
+        if ( !titleNodeList.isEmpty() )
+        {
+          QDomNode titleNode = titleNodeList.at( 0 );
+          title = titleNode.firstChild().nodeValue();
+        }
+        QString serviceUrlResult = referenceNode.firstChild().nodeValue();
+        if ( serviceUrlResult.contains( QStringLiteral( "{x}" ) ) && serviceUrlResult.contains( QStringLiteral( "{y}" ) ) && serviceUrlResult.contains( QStringLiteral( "{y}" ) ) )
+        {
+          // Hacky for QGIS Server backend
+          if ( serviceUrlResult.contains( QStringLiteral( "qgis-server" ) ) )
+          {
+            serviceUrlResult = uri().param( "url" ) + QStringLiteral( "/qgis-server/tiles/LAYERNAME/{z}/{x}/{y}.png" );
+            if ( !serviceUrlResult.contains( QLatin1String( "://" ) ) )
+            {
+              serviceUrlResult.prepend( "http://" );
+            }
+          }
+          return serviceUrlResult;
+        }
+      }
+
     }
   }
 
