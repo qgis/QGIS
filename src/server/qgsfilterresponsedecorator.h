@@ -63,7 +63,9 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     void clear() override { mResponse.clear(); }
 
+    QByteArray data() const override { return mResponse.data(); }
 
+    void truncate() override { mResponse.truncate(); }
 
   private:
     QgsServerFiltersMap  mFilters;

@@ -85,6 +85,12 @@ class SERVER_EXPORT QgsRequestHandler
     //! Pointer to last raised exception
     bool exceptionRaised() const;
 
+    //! Clear response buffer
+    void clearBody();
+
+    //! Return body data
+    QByteArray body() const;
+
     /** Return the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)
      * and removeParameter(const QString &key) must be used
