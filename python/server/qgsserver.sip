@@ -190,10 +190,11 @@ class QgsServer
      * but can be also passed in args and in this case overrides the environment
      * variable.
      *
-     * @param queryString QString containing the query string
+     * @param requestMethod QString that indicates the method. Only "GET" or "POST" are supported.
+     * @param data array of bytes containing post data
      * @return the response headers and body QPair of QByteArray
      */
-    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString );
+    QPair<QByteArray, QByteArray> handleRequest( const QString &urlstr, const QString &requestMethod = QString(), const char *data = nullptr );
 
     /** Returns a pointer to the server interface */
     QgsServerInterface* serverInterface();

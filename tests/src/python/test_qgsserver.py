@@ -123,7 +123,7 @@ class TestQgsServer(unittest.TestCase):
 
         # Test response when project is specified but without service
         project = self.testdata_path + "test_project_wfs.qgs"
-        qs = 'MAP=%s' % (urllib.parse.quote(project))
+        qs = '?MAP=%s' % (urllib.parse.quote(project))
         header, body = [_v for _v in self.server.handleRequest(qs)]
         response = self.strip_version_xmlns(header + body)
         expected = self.strip_version_xmlns(b'Content-Length: 206\nContent-Type: text/xml; charset=utf-8\n\n<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Service configuration error">Service unknown or unsupported</ServiceException>\n</ServiceExceptionReport>\n')
@@ -191,7 +191,7 @@ class TestQgsServer(unittest.TestCase):
         self.assertTrue(filter2 in serverIface.filters()[100])
         self.assertEqual(filter1, serverIface.filters()[101][0])
         self.assertEqual(filter2, serverIface.filters()[200][0])
-        header, body = [_v for _v in self.server.handleRequest('service=simple')]
+        header, body = [_v for _v in self.server.handleRequest('?service=simple')]
         response = header + body
         expected = b'Content-Length: 62\nContent-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
@@ -203,7 +203,7 @@ class TestQgsServer(unittest.TestCase):
         self.assertTrue(filter2 in serverIface.filters()[100])
         self.assertEqual(filter1, serverIface.filters()[101][0])
         self.assertEqual(filter2, serverIface.filters()[200][0])
-        header, body = [_v for _v in self.server.handleRequest('service=simple')]
+        header, body = [_v for _v in self.server.handleRequest('?service=simple')]
         response = header + body
         expected = b'Content-Length: 62\nContent-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
@@ -213,7 +213,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test_project.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.parse.quote(project), request)
+        query_string = '?MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.parse.quote(project), request)
         if extra is not None:
             query_string += extra
         header, body = self.server.handleRequest(query_string)
@@ -278,7 +278,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test_project_inspire.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.parse.quote(project), request)
+        query_string = '?MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.parse.quote(project), request)
         header, body = self.server.handleRequest(query_string)
         response = header + body
         f = open(self.testdata_path + request.lower() + '_inspire.txt', 'rb')
@@ -307,7 +307,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
+        query_string = '?MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
         header, body = self.server.handleRequest(query_string)
         self.assert_headers(header, body)
         response = header + body
@@ -337,7 +337,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
+        query_string = '?MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
         header, body = self.server.handleRequest(query_string)
         self.result_compare(
             'wfs_getfeature_' + requestid + '.txt',
@@ -351,7 +351,7 @@ class TestQgsServer(unittest.TestCase):
     def test_wfs_getcapabilities_url(self):
         # empty url in project
         project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WFS",
             "VERSION": "1.3.0",
@@ -367,7 +367,7 @@ class TestQgsServer(unittest.TestCase):
 
         # url well defined in project
         project = os.path.join(self.testdata_path, "test_project_with_urls.qgs")
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WFS",
             "VERSION": "1.3.0",
@@ -418,12 +418,8 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP={}'.format(urllib.parse.quote(project))
-        self.server.putenv("REQUEST_METHOD", "POST")
-        self.server.putenv("REQUEST_BODY", request)
-        header, body = self.server.handleRequest(query_string)
-        self.server.putenv("REQUEST_METHOD", '')
-        self.server.putenv("REQUEST_BODY", '')
+        query_string = '?MAP={}'.format(urllib.parse.quote(project))
+        header, body = self.server.handleRequest(query_string, requestMethod="POST", data=request)
 
         self.result_compare(
             'wfs_getfeature_{}.txt'.format(requestid),
@@ -458,7 +454,7 @@ class TestQgsServer(unittest.TestCase):
             self.wfs_getfeature_post_compare(id, req)
 
     def test_wms_getmap_basic(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -476,7 +472,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetMap_Basic")
 
     def test_wms_getmap_transparent(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -495,7 +491,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetMap_Transparent")
 
     def test_wms_getmap_background(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -513,7 +509,7 @@ class TestQgsServer(unittest.TestCase):
         r, h = self._result(self.server.handleRequest(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Background")
 
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -534,7 +530,7 @@ class TestQgsServer(unittest.TestCase):
     def test_wms_getcapabilities_url(self):
         # empty url in project
         project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
@@ -553,7 +549,7 @@ class TestQgsServer(unittest.TestCase):
 
         # url well defined in project
         project = os.path.join(self.testdata_path, "test_project_with_urls.qgs")
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
@@ -572,7 +568,7 @@ class TestQgsServer(unittest.TestCase):
 
     def test_wms_getmap_invalid_size(self):
         project = os.path.join(self.testdata_path, "test_project_with_size.qgs")
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
@@ -590,7 +586,7 @@ class TestQgsServer(unittest.TestCase):
         self.assertEqual(self.strip_version_xmlns(r), expected)
 
     def test_wms_getmap_order(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -608,7 +604,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetMap_LayerOrder")
 
     def test_wms_getmap_srs(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -627,7 +623,7 @@ class TestQgsServer(unittest.TestCase):
 
     def test_wms_getmap_style(self):
         # default style
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -645,7 +641,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetMap_StyleDefault")
 
         # custom style
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -663,7 +659,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetMap_StyleCustom")
 
     def test_wms_getmap_filter(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -682,7 +678,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetMap_Filter")
 
     def test_wms_getmap_selection(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -701,7 +697,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetMap_Selection")
 
     def test_wms_getmap_opacities(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -720,7 +716,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetMap_Opacities")
 
     def test_wms_getprint_basic(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -739,7 +735,7 @@ class TestQgsServer(unittest.TestCase):
 
     @unittest.skip('Randomly failing to draw the map layer')
     def test_wms_getprint_srs(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -757,7 +753,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetPrint_SRS")
 
     def test_wms_getprint_scale(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -776,7 +772,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetPrint_Scale")
 
     def test_wms_getprint_grid(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -796,7 +792,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetPrint_Grid")
 
     def test_wms_getprint_rotation(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -815,7 +811,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetPrint_Rotation")
 
     def test_wms_getprint_selection(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -845,7 +841,7 @@ class TestQgsServer(unittest.TestCase):
             # 'HEIGHT': '20', # optional
             'LAYER': 'testlayer%20èé',
         }
-        qs = '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         h, r = self.server.handleRequest(qs)
         self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
         self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
@@ -863,7 +859,7 @@ class TestQgsServer(unittest.TestCase):
             'LAYER': u'testlayer%20èé',
             'LAYERTITLE': 'TRUE',
         }
-        qs = '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self.server.handleRequest(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
 
@@ -878,12 +874,12 @@ class TestQgsServer(unittest.TestCase):
             'LAYER': u'testlayer%20èé',
             'LAYERTITLE': 'FALSE',
         }
-        qs = '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self.server.handleRequest(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test_layertitle_false", 250, QSize(15, 15))
 
     def test_wms_GetLegendGraphic_Basic(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -900,7 +896,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic")
 
     def test_wms_GetLegendGraphic_Transparent(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -918,7 +914,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Transparent")
 
     def test_wms_GetLegendGraphic_Background(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -935,7 +931,7 @@ class TestQgsServer(unittest.TestCase):
         r, h = self._result(self.server.handleRequest(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Background")
 
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -953,7 +949,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Background_Hex")
 
     def test_wms_GetLegendGraphic_BoxSpace(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -971,7 +967,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_BoxSpace")
 
     def test_wms_GetLegendGraphic_SymbolSpace(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -989,7 +985,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSpace")
 
     def test_wms_GetLegendGraphic_IconLabelSpace(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -1007,7 +1003,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_IconLabelSpace")
 
     def test_wms_GetLegendGraphic_SymbolSize(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -1026,7 +1022,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSize")
 
     def test_wms_GetLegendGraphic_BBox(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -1044,7 +1040,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox")
 
     def test_wms_GetLegendGraphic_BBox2(self):
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -1066,7 +1062,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.projectPath
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WCS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
+        query_string = '?MAP=%s&SERVICE=WCS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
         header, body = self.server.handleRequest(query_string)
         self.assert_headers(header, body)
         response = header + body
@@ -1096,7 +1092,7 @@ class TestQgsServer(unittest.TestCase):
     def test_wcs_getcapabilities_url(self):
         # empty url in project
         project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
@@ -1115,7 +1111,7 @@ class TestQgsServer(unittest.TestCase):
 
         # url well defined in project
         project = os.path.join(self.testdata_path, "test_project_with_urls.qgs")
-        qs = "&".join(["%s=%s" % i for i in list({
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
@@ -1161,6 +1157,7 @@ class TestQgsServer(unittest.TestCase):
         self.assertEqual(
             headers.get("Content-Type"), "image/png",
             "Content type is wrong: %s" % headers.get("Content-Type"))
+
         test, report = self._img_diff(response, image, max_diff, max_size_diff)
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:

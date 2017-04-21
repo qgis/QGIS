@@ -1372,9 +1372,10 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<qgs:pk>") != -1,
             "Project based layer subsetString not respected in GetFeature with restricted access\n%s" % response)
 
-    def _handle_request(self, restricted, *args):
+    def _handle_request(self, restricted, query_string, **kwargs):
         self._accesscontrol._active = restricted
-        result = self._result(self._server.handleRequest(*args))
+        qs = "?" + query_string if query_string is not None else None
+        result = self._result(self._server.handleRequest(qs, **kwargs))
         return result
 
     def _result(self, data):
@@ -1388,34 +1389,22 @@ class TestQgsServerAccessControl(unittest.TestCase):
         return data[1], headers
 
     def _get_fullaccess(self, query_string):
-        self._server.putenv("REQUEST_METHOD", "GET")
         result = self._handle_request(False, query_string)
-        self._server.putenv("REQUEST_METHOD", '')
         return result
 
     def _get_restricted(self, query_string):
-        self._server.putenv("REQUEST_METHOD", "GET")
         result = self._handle_request(True, query_string)
-        self._server.putenv("REQUEST_METHOD", '')
         return result
 
     def _post_fullaccess(self, data, query_string=None):
-        self._server.putenv("REQUEST_METHOD", "POST")
-        self._server.putenv("REQUEST_BODY", data)
         self._server.putenv("QGIS_PROJECT_FILE", self.projectPath)
-        result = self._handle_request(False, query_string)
-        self._server.putenv("REQUEST_METHOD", '')
-        self._server.putenv("REQUEST_BODY", '')
+        result = self._handle_request(False, query_string, requestMethod='POST', data=data)
         self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
     def _post_restricted(self, data, query_string=None):
-        self._server.putenv("REQUEST_METHOD", "POST")
-        self._server.putenv("REQUEST_BODY", data)
         self._server.putenv("QGIS_PROJECT_FILE", self.projectPath)
-        result = self._handle_request(True, query_string)
-        self._server.putenv("REQUEST_METHOD", '')
-        self._server.putenv("REQUEST_BODY", '')
+        result = self._handle_request(True, query_string, requestMethod='POST', data=data)
         self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
@@ -1437,6 +1426,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self.assertEqual(
             headers.get("Content-Type"), "image/png",
             "Content type is wrong: %s" % headers.get("Content-Type"))
+
         test, report = self._img_diff(response, image, max_diff, max_size_diff)
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:

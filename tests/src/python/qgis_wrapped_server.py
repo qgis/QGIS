@@ -104,13 +104,7 @@ class Handler(BaseHTTPRequestHandler):
         # CGI vars:
         for k, v in self.headers.items():
             qgs_server.putenv('HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper(), v)
-        qgs_server.putenv('SERVER_PORT', str(self.server.server_port))
-        if https:
-            qgs_server.putenv('HTTPS', 'ON')
-        qgs_server.putenv('SERVER_NAME', self.server.server_name)
-        qgs_server.putenv('REQUEST_URI', self.path)
-        parsed_path = urllib.parse.urlparse(self.path)
-        headers, body = qgs_server.handleRequest(parsed_path.query)
+        headers, body = qgs_server.handleRequest(self.path)
         headers_dict = dict(h.split(': ', 1) for h in headers.decode().split('\n') if h)
         try:
             self.send_response(int(headers_dict['Status'].split(' ')[0]))
