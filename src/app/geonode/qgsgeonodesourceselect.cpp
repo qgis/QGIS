@@ -187,6 +187,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 
   QString wmsURL = connection.serviceUrl( QStringLiteral( "WMS" ) );
   QString wfsURL = connection.serviceUrl( QStringLiteral( "WFS" ) );
+  QString xyzURL = connection.serviceUrl( QStringLiteral( "XYZ" ) );
 
   QVariantList validWMSLayer = connection.getLayers( QStringLiteral( "WMS" ) );
   QVariantList validWFSLayer = connection.getLayers( QStringLiteral( "WFS" ) );
@@ -241,6 +242,24 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 
         titleItem->setData( uuid,  Qt::UserRole + 1 );
         titleItem->setData( wfsURL,  Qt::UserRole + 2 );
+        titleItem->setData( typeName,  Qt::UserRole + 3 );
+        typedef QList< QStandardItem * > StandardItemList;
+        mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
+      }
+      if ( xyzURL.contains( QStringLiteral( "qgis-server" ) ) )
+      {
+        QStandardItem *titleItem = new QStandardItem( layer.toMap()["title"].toString() );
+        QStandardItem *nameItem = new QStandardItem( layerName );
+        QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
+        QStandardItem *webServiceTypeItem = new QStandardItem( tr( "XYZ" ) );
+
+        QString typeName = layer.toMap()["typename"].toString();
+
+        // Specific for QGIS Server backend only
+        QString layerXYZURL = xyzURL.replace( "LAYERNAME", layerName );
+
+        titleItem->setData( uuid,  Qt::UserRole + 1 );
+        titleItem->setData( layerXYZURL,  Qt::UserRole + 2 );
         titleItem->setData( typeName,  Qt::UserRole + 3 );
         typedef QList< QStandardItem * > StandardItemList;
         mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
@@ -440,6 +459,10 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
 
       QgsDebugMsg( "Add WFS from GeoNode : " + uri );
       emit addWfsLayer( uri, typeName );
+    }
+    else if ( webServiceType == "XYZ" )
+    {
+      QgsDebugMsg( "XYZ Url: " + serviceURL );
     }
   }
 
