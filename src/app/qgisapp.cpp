@@ -272,7 +272,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsvectorlayerutils.h"
 #include "qgshelp.h"
 #include "qgsvectorfilewritertask.h"
+#include "qgsmapsavedialog.h"
 #include "qgsmaprenderertask.h"
+#include "qgsmapdecoration.h"
 #include "qgsnewnamedialog.h"
 
 #include "qgssublayersdialog.h"
@@ -5781,24 +5783,55 @@ void QgisApp::updateFilterLegend()
 
 void QgisApp::saveMapAsImage()
 {
+  QList< QgsMapDecoration * > decorations;
+  QString activeDecorations;
+  Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
+  {
+    if ( decoration->enabled() )
+    {
+      decorations << decoration;
+      if ( activeDecorations.isEmpty() )
+        activeDecorations = decoration->name().toLower();
+      else
+        activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
+    }
+  }
+
+  QgsMapSaveDialog dlg( this, mMapCanvas, activeDecorations );
+  if ( !dlg.exec() )
+    return;
+
   QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   if ( myFileNameAndFilter.first != QLatin1String( "" ) )
   {
-    //TODO: GUI
-    int dpi = qt_defaultDpiX();
-    QSize size = mMapCanvas->size() * ( dpi / qt_defaultDpiX() );
+    QSize size = mMapCanvas->size();
+    if ( dlg.extent() != mMapCanvas->extent() )
+    {
+      size.setWidth( mMapCanvas->size().width() * dlg.extent().width() / mMapCanvas->extent().width() );
+      size.setHeight( mMapCanvas->size().height() * dlg.extent().height() / mMapCanvas->extent().height() );
+    }
+    size *=  dlg.dpi() / qt_defaultDpiX();
 
     QgsMapSettings ms = QgsMapSettings();
     ms.setDestinationCrs( QgsProject::instance()->crs() );
-    ms.setExtent( mMapCanvas->extent() );
-    ms.setOutputSize( size );
-    ms.setOutputDpi( dpi );
+    ms.setExtent( dlg.extent() );
+    ms.setOutputSize( dlg.size() );
+    ms.setOutputDpi( dlg.dpi() );
     ms.setBackgroundColor( mMapCanvas->canvasColor() );
     ms.setRotation( mMapCanvas->rotation() );
     ms.setLayers( mMapCanvas->layers() );
 
     QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, myFileNameAndFilter.first, myFileNameAndFilter.second );
-    mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
+
+    if ( dlg.drawAnnotations() )
+    {
+      mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
+    }
+
+    if ( dlg.drawDecorations() )
+    {
+      mapRendererTask->addDecorations( decorations );
+    }
 
     connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
     {

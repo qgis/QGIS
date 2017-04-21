@@ -50,6 +50,7 @@ SET(QGIS_APP_SRCS
   qgsloadstylefromdbdialog.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstyleguiutils.cpp
+  qgsmapsavedialog.cpp
   qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
   qgssnappinglayertreemodel.cpp
@@ -230,6 +231,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsloadstylefromdbdialog.h
   qgsmapcanvasdockwidget.h
   qgsmaplayerstyleguiutils.h
+  qgsmapsavedialog.h
   qgsrulebasedlabelingwidget.h
   qgssavestyletodbdialog.h
   qgssnappinglayertreemodel.h

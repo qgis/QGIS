@@ -23,6 +23,7 @@
 #include "qgsannotation.h"
 #include "qgsannotationmanager.h"
 #include "qgsmapsettings.h"
+#include "qgsmapdecoration.h"
 #include "qgstaskmanager.h"
 #include "qgsmaprenderercustompainterjob.h"
 
@@ -67,6 +68,11 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
      */
     void addAnnotations( QList< QgsAnnotation * > annotations );
 
+    /**
+     * Adds \a decorations to be rendered on the map.
+     */
+    void addDecorations( QList< QgsMapDecoration * > decorations );
+
     void cancel() override;
 
   signals:
@@ -99,6 +105,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     QString mFileFormat;
 
     QList< QgsAnnotation * > mAnnotations;
+    QList< QgsMapDecoration * > mDecorations;
 
     int mError = 0;
 };
