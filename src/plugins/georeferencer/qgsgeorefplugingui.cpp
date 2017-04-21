@@ -1258,20 +1258,31 @@ bool QgsGeorefPluginGui::loadGCPs( /*bool verbose*/ )
 
     QgsPoint mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
     QgsPoint pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
+    QgsGeorefDataPoint* pnt;
     if ( ls.count() == 5 )
     {
       bool enable = ls.at( 4 ).toInt();
-      addPoint( pixelCoords, mapCoords, enable, false/*, verbose*/ ); // enabled
+      pnt = new QgsGeorefDataPoint( mCanvas, mIface->mapCanvas(), pixelCoords, mapCoords, enable );
     }
     else
-      addPoint( pixelCoords, mapCoords, true, false );
+      pnt = new QgsGeorefDataPoint( mCanvas, mIface->mapCanvas(), pixelCoords, mapCoords, true );
+
+    mPoints.append( pnt );
+    connect( mCanvas, SIGNAL( extentsChanged() ), pnt, SLOT( updateCoords() ) );
+    mGCPsDirty = true;
 
     ++i;
   }
 
   mInitialPoints = mPoints;
   //    showMessageInLog(tr("GCP points loaded from"), mGCPpointsFileName);
-  mCanvas->refresh();
+  if ( mGCPsDirty )
+  {
+    mGCPListWidget->setGCPList( &mPoints );
+    updateGeorefTransform();
+    mCanvas->refresh();
+    mIface->mapCanvas()->refresh();
+  }
 
   return true;
 }
