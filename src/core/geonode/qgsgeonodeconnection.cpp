@@ -156,7 +156,9 @@ QVariantList QgsGeoNodeConnection::getLayers()
 
 QVariantList QgsGeoNodeConnection::getLayers( QString serviceType )
 {
-  QString url = serviceUrl( serviceType ) + "?version=2.0.0&service=wfs&request=GetCapabilities";
+  QString param = QString( "?version=2.0.0&service=%1&request=GetCapabilities" ).arg( serviceType.toLower() );
+  QString url = serviceUrl( serviceType ) + param;
+
   if ( !url.contains( QLatin1String( "://" ) ) )
   {
     url.prepend( "http://" );
@@ -176,21 +178,40 @@ QVariantList QgsGeoNodeConnection::getLayers( QString serviceType )
   QByteArray response_data = reply->readAll();
 
   QDomDocument dom;
+  QDomNodeList featureNodeList;
   dom.setContent( response_data );
 
-  QDomNodeList featureNodeList = dom.elementsByTagName( "FeatureType" );
+  if ( serviceType == QString( "WFS" ) )
+  {
+    featureNodeList = dom.elementsByTagName( "FeatureType" );
+  }
+  else
+  {
+    featureNodeList = dom.elementsByTagName( "Layer" );
+  }
+
   QVariantList layerList;
 
   if ( !featureNodeList.isEmpty() )
   {
-    for ( int i = 0; i < featureNodeList.size(); ++i )
+    for ( int i = serviceType == QString( "WMS" ) ? 1 : 0; i < featureNodeList.size(); ++i )
     {
       QVariantMap layer;
 
       QDomNode featureNode = featureNodeList.at( i );
       QString layerName = featureNode.namedItem( "Name" ).firstChild().nodeValue();
       QString layerTitle = featureNode.namedItem( "Title" ).firstChild().nodeValue();
-      QString layerCRS = featureNode.namedItem( "DefaultCRS" ).firstChild().nodeValue();
+      QString layerCRS;
+
+      if ( serviceType == QString( "WFS" ) )
+      {
+        layerCRS = featureNode.namedItem( "DefaultCRS" ).firstChild().nodeValue();
+      }
+      else
+      {
+        layerCRS = featureNode.namedItem( "CRS" ).firstChild().nodeValue();
+      }
+
       QString geonodePrefix = QStringLiteral( "geonode:" );
       QString CRSPrefix = QStringLiteral( "urn:ogc:def:crs:" );
 
