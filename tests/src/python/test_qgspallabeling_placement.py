@@ -40,9 +40,6 @@ class TestPlacementBase(TestQgsPalLabeling):
     def setUpClass(cls):
         if not cls._BaseSetup:
             TestQgsPalLabeling.setUpClass()
-        engine_settings = QgsLabelingEngineSettings()
-        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly)
-        cls._MapSettings.setLabelingEngineSettings(engine_settings)
 
     @classmethod
     def tearDownClass(cls):
@@ -56,12 +53,16 @@ class TestPlacementBase(TestQgsPalLabeling):
         self.removeAllLayers()
         self.configTest('pal_placement', 'sp')
         self._TestImage = ''
-        # ensure per test map settings stay encapsulated
-        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+
         self._Mismatch = 0
         self._ColorTol = 0
         self._Mismatches.clear()
         self._ColorTols.clear()
+
+        # render only rectangles of the placed labels
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly)
+        self._MapSettings.setLabelingEngineSettings(engine_settings)
 
     def checkTest(self, **kwargs):
         self.lyr.writeToLayer(self.layer)

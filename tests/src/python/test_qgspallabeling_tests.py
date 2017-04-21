@@ -174,8 +174,8 @@ class TestPointBase(object):
         self.lyr.setFormat(format)
         # Enable partials labels
         engine_settings = QgsLabelingEngineSettings()
-        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates)
-        self._Canvas.setLabelingEngineSettings(engine_settings)
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, True)
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
         self._Mismatches['TestCanvasPoint'] = 779
         self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
@@ -189,8 +189,8 @@ class TestPointBase(object):
         self.lyr.setFormat(format)
         # Disable partials labels
         engine_settings = QgsLabelingEngineSettings()
-        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates)
-        self._Canvas.setLabelingEngineSettings(engine_settings)
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
         self.checkTest()
 
     def test_buffer(self):
