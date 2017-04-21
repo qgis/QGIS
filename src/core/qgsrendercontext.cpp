@@ -31,13 +31,13 @@ QgsRenderContext::QgsRenderContext()
   : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
-  QgsDebugMsgLevel( QString( "QgsRenderContext::QgsRenderContex -0- " ), 4 );
 }
 
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   : mFlags( rh.mFlags )
   , mPainter( rh.mPainter )
   , mCoordTransform( rh.mCoordTransform )
+  , mDistanceArea( rh.mDistanceArea )
   , mExtent( rh.mExtent )
   , mMapToPixel( rh.mMapToPixel )
   , mRenderingStopped( rh.mRenderingStopped )
@@ -52,13 +52,6 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mSegmentationTolerance( rh.mSegmentationTolerance )
   , mSegmentationToleranceType( rh.mSegmentationToleranceType )
 {
-  mDistanceArea.setSourceCrs( rh.mDistanceArea.sourceCrs() );
-  mDistanceArea.setEllipsoid( rh.mDistanceArea.ellipsoid() );
-  QgsDebugMsgLevel( QString( "QgsRenderContext::QgsRenderContext -1-:  mapUnits[%1] from center[%2] sourceCrs[%3] ellipsoidAcronym[%4]" )
-                    .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
-                    .arg( mExtent.center().wellKnownText() )
-                    .arg( mDistanceArea.sourceCrs().description() )
-                    .arg( mDistanceArea.ellipsoid() ), 4 );
 }
 
 QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
@@ -79,13 +72,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mFeatureFilterProvider.reset( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr );
   mSegmentationTolerance = rh.mSegmentationTolerance;
   mSegmentationToleranceType = rh.mSegmentationToleranceType;
-  mDistanceArea.setSourceCrs( rh.mDistanceArea.sourceCrs() );
-  mDistanceArea.setEllipsoid( rh.mDistanceArea.ellipsoid() );
-  QgsDebugMsgLevel( QString( "QgsRenderContext::operator:  mapUnits[%1] from center[%2] sourceCrs[%3] ellipsoidAcronym[%4]" )
-                    .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
-                    .arg( mExtent.center().wellKnownText() )
-                    .arg( mDistanceArea.sourceCrs().description() )
-                    .arg( mDistanceArea.ellipsoid() ), 4 );
+  mDistanceArea = rh.mDistanceArea;
   return *this;
 }
 
@@ -101,7 +88,7 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   {
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
-  QgsDebugMsgLevel( QString( "QgsRenderContext::fromQPainter -0- " ), 4 );
+  // QgsDebugMsgLevel( QString( "QgsRenderContext::fromQPainter -0- " ), 4 );
   return context;
 }
 
