@@ -313,8 +313,8 @@ QString QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceTy
     }
   }
 
-  QString result;
-  return result;
+  // return empty
+  return QStringLiteral( "" );
 }
 
 QString QgsGeoNodeConnection::serviceUrl( QString serviceType )
@@ -327,8 +327,12 @@ QString QgsGeoNodeConnection::serviceUrl( QString serviceType )
     Q_FOREACH ( const QVariant &layer, layers )
     {
       randomUUID = layer.toMap()["uuid"].toString();
-      break;
+      QString url = serviceUrl( randomUUID, serviceType );
+      if ( !url.isEmpty() )
+      {
+        return url;
+      }
     }
   }
-  return serviceUrl( randomUUID, serviceType );
+  return QStringLiteral( "" );
 }
