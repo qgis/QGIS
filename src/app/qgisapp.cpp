@@ -3484,9 +3484,12 @@ void QgisApp::createDecorations()
 
 void QgisApp::renderDecorationItems( QPainter *p )
 {
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mMapCanvas->mapSettings() );
+  context.setPainter( p );
+
   Q_FOREACH ( QgsDecorationItem *item, mDecorationItems )
   {
-    item->render( p );
+    item->render( mMapCanvas->mapSettings(), context );
   }
 }
 

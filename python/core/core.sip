@@ -82,6 +82,7 @@
 %Include qgslegendsettings.sip
 %Include qgslegendstyle.sip
 %Include qgslogger.sip
+%Include qgsmapdecoration.sip
 %Include qgsmaphittest.sip
 %Include qgsmaplayer.sip
 %Include qgsmaplayerdependency.sip

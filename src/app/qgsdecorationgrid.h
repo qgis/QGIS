@@ -146,7 +146,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     void saveToProject() override;
 
     //! this does the meaty bit of the work
-    void render( QPainter * ) override;
+    void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
     //! Show the dialog box
     void run() override;
 
@@ -212,11 +212,12 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 
     /** Returns the grid lines with associated coordinate value
         \returns 0 in case of success*/
-    int xGridLines( QList< QPair< qreal, QLineF > > &lines ) const;
+    int xGridLines( const QgsMapSettings &mapSettings, QList< QPair< qreal, QLineF > > &lines ) const;
 
     /** Returns the grid lines for the y-coordinates. Not vertical in case of rotation
         \returns 0 in case of success*/
-    int yGridLines( QList< QPair< qreal, QLineF > > &lines ) const;
+    int yGridLines( const QgsMapSettings &mapSettings, QList< QPair< qreal, QLineF > > &lines ) const;
+
     //! Returns the item border of a point (in item coordinates)
     Border borderForLineCoord( QPointF point, QPainter *p ) const;
 
