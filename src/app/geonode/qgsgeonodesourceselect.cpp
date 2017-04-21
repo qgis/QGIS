@@ -188,6 +188,20 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
   QString wmsURL = connection.serviceUrl( QStringLiteral( "WMS" ) );
   QString wfsURL = connection.serviceUrl( QStringLiteral( "WFS" ) );
 
+  QVariantList validWMSLayer = connection.getLayers( QStringLiteral( "WMS" ) );
+  QVariantList validWFSLayer = connection.getLayers( QStringLiteral( "WFS" ) );
+
+  QVariantList validWMSLayerNames = QVariantList();
+  Q_FOREACH ( const QVariant &wmsLayer, validWMSLayer )
+  {
+    validWMSLayerNames.append( wmsLayer.toMap()["name"] );
+  }
+  QVariantList validWFSLayerNames = QVariantList();
+  Q_FOREACH ( const QVariant &wfsLayer, validWFSLayer )
+  {
+    validWFSLayerNames.append( wfsLayer.toMap()["name"] );
+  }
+
   if ( mModel )
   {
     mModel->removeRows( 0, mModel->rowCount() );
@@ -199,11 +213,12 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
     {
       QString uuid = layer.toMap()["uuid"].toString();
 
+      QString layerName = layer.toMap()["name"].toString();
 
-      if ( !wmsURL.isEmpty() )
+      if ( !wmsURL.isEmpty() && validWMSLayerNames.contains( layerName ) )
       {
         QStandardItem *titleItem = new QStandardItem( layer.toMap()["title"].toString() );
-        QStandardItem *nameItem = new QStandardItem( layer.toMap()["name"].toString() );
+        QStandardItem *nameItem = new QStandardItem( layerName );
         QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
         QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WMS" ) );
 
@@ -215,10 +230,10 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
         typedef QList< QStandardItem * > StandardItemList;
         mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
       }
-      if ( !wfsURL.isEmpty() )
+      if ( !wfsURL.isEmpty() && validWFSLayerNames.contains( layerName ) )
       {
         QStandardItem *titleItem = new QStandardItem( layer.toMap()["title"].toString() );
-        QStandardItem *nameItem = new QStandardItem( layer.toMap()["name"].toString() );
+        QStandardItem *nameItem = new QStandardItem( layerName );
         QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
         QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WFS" ) );
 
@@ -247,28 +262,28 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
   }
 
   // Currently we don't have obvious way to add Map, comment these lines until the time comes.
-  QVariantList maps = connection.getMaps();
-  if ( !maps.isEmpty() )
-  {
-    Q_FOREACH ( const QVariant &map, maps )
-    {
-      QStandardItem *titleItem = new QStandardItem( map.toMap()["title"].toString() );
-      QStandardItem *nameItem = new QStandardItem( "-" );
-      QStandardItem *serviceTypeItem = new QStandardItem( tr( "Map" ) );
-      QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WMS" ) );
-      typedef QList< QStandardItem * > StandardItemList;
-      mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
-    }
-  }
+//  QVariantList maps = connection.getMaps();
+//  if ( !maps.isEmpty() )
+//  {
+//    Q_FOREACH ( const QVariant &map, maps )
+//    {
+//      QStandardItem *titleItem = new QStandardItem( map.toMap()["title"].toString() );
+//      QStandardItem *nameItem = new QStandardItem( "-" );
+//      QStandardItem *serviceTypeItem = new QStandardItem( tr( "Map" ) );
+//      QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WMS" ) );
+//      typedef QList< QStandardItem * > StandardItemList;
+//      mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
+//    }
+//  }
 
-  else
-  {
-    QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Error" ), tr( "Cannot get any map services" ), QMessageBox::Ok, this );
-    box->setAttribute( Qt::WA_DeleteOnClose );
-    box->setModal( true );
-    box->setObjectName( QStringLiteral( "GeonodeCapabilitiesErrorBox" ) );
-    box->open();
-  }
+//  else
+//  {
+//    QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Error" ), tr( "Cannot get any map services" ), QMessageBox::Ok, this );
+//    box->setAttribute( Qt::WA_DeleteOnClose );
+//    box->setModal( true );
+//    box->setObjectName( QStringLiteral( "GeonodeCapabilitiesErrorBox" ) );
+//    box->open();
+//  }
 
   treeView->resizeColumnToContents( MODEL_IDX_TITLE );
   treeView->resizeColumnToContents( MODEL_IDX_NAME );
