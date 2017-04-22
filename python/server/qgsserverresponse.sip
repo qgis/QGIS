@@ -51,7 +51,7 @@ class QgsServerResponse
     /**
      * Return the header value
      */
-    virtual QString getHeader( const QString &key ) const = 0;
+    virtual QString header( const QString &key ) const = 0;
 
     /**
      * Return the list of all header keys

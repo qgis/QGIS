@@ -54,7 +54,7 @@ void QgsBufferServerResponse::setStatusCode( int code )
   mReturnCode = code;
 }
 
-QString QgsBufferServerResponse::getHeader( const QString &key ) const
+QString QgsBufferServerResponse::header( const QString &key ) const
 {
   return mHeaders.value( key );
 }

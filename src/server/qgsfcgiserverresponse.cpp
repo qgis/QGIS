@@ -51,7 +51,7 @@ void QgsFcgiServerResponse::setHeader( const QString &key, const QString &value 
   mHeaders.insert( key, value );
 }
 
-QString QgsFcgiServerResponse::getHeader( const QString &key ) const
+QString QgsFcgiServerResponse::header( const QString &key ) const
 {
   return mHeaders.value( key );
 }

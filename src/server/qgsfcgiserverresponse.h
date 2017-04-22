@@ -40,7 +40,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 
     void clearHeader( const QString &key ) override;
 
-    QString getHeader( const QString &key ) const override;
+    QString header( const QString &key ) const override;
 
     QList<QString> headerKeys() const override;
 

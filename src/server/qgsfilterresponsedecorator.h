@@ -45,7 +45,7 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     void clearHeader( const QString &key ) override { mResponse.clearHeader( key ); }
 
-    QString getHeader( const QString &key ) const override { return mResponse.getHeader( key ); }
+    QString header( const QString &key ) const override { return mResponse.header( key ); }
 
     QList<QString> headerKeys() const override { return mResponse.headerKeys(); }
 

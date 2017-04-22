@@ -71,7 +71,7 @@ void QgsRequestHandler::removeHeader( const QString &name )
 
 QString QgsRequestHandler::header( const QString &name ) const
 {
-  return mResponse.getHeader( name );
+  return mResponse.header( name );
 }
 
 QList<QString> QgsRequestHandler::headerKeys() const
