@@ -23,7 +23,7 @@ from qgis.testing import unittest
 from utilities import unitTestDataPath
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
-from qgis.server import QgsServer, QgsAccessControlFilter
+from qgis.server import QgsServer, QgsAccessControlFilter, QgsServerRequest
 from qgis.core import QgsRenderChecker, QgsApplication
 from qgis.PyQt.QtCore import QSize
 import tempfile
@@ -1374,7 +1374,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
 
     def _handle_request(self, restricted, query_string, **kwargs):
         self._accesscontrol._active = restricted
-        qs = "?" + query_string if query_string is not None else None
+        qs = "?" + query_string if query_string is not None else ''
         result = self._result(self._server.handleRequest(qs, **kwargs))
         return result
 
@@ -1398,13 +1398,13 @@ class TestQgsServerAccessControl(unittest.TestCase):
 
     def _post_fullaccess(self, data, query_string=None):
         self._server.putenv("QGIS_PROJECT_FILE", self.projectPath)
-        result = self._handle_request(False, query_string, requestMethod='POST', data=data)
+        result = self._handle_request(False, query_string, requestMethod=QgsServerRequest.PostMethod, data=data)
         self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
     def _post_restricted(self, data, query_string=None):
         self._server.putenv("QGIS_PROJECT_FILE", self.projectPath)
-        result = self._handle_request(True, query_string, requestMethod='POST', data=data)
+        result = self._handle_request(True, query_string, requestMethod=QgsServerRequest.PostMethod, data=data)
         self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
