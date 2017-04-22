@@ -71,7 +71,7 @@ class SERVER_EXPORT QgsRequestHandler
     void removeHeader( const QString &name );
 
     //! Retrieve header value
-    QString getHeader( const QString &name ) const;
+    QString header( const QString &name ) const;
 
     //! Return the list of all header keys
     QList<QString> headerKeys() const;
@@ -88,8 +88,14 @@ class SERVER_EXPORT QgsRequestHandler
     //! Clear response buffer
     void clearBody();
 
-    //! Return body data
+    //! Return response body data
     QByteArray body() const;
+
+    //! Set response http status code
+    void setStatusCode( int code );
+
+    //! Return response http status code
+    int statusCode( ) const;
 
     /** Return the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)

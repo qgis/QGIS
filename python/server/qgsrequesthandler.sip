@@ -33,7 +33,7 @@ class QgsRequestHandler  /Abstract/
     void setHeader( const QString &name, const QString &value );
 
     //! Retrieve header value
-    QString getHeader( const QString &name ) const;
+    QString header( const QString &name ) const;
 
     //! Return the list of all header keys
     QList<QString> headerKeys() const;
@@ -49,6 +49,12 @@ class QgsRequestHandler  /Abstract/
 
     /** Send out HTTP headers and flush output buffer*/
     void sendResponse();
+
+    //! Set response http status code
+    void setStatusCode( int code );
+
+    //! Return response http status code
+    int statusCode(  ) const;
 
     /** Pointer to last raised exception*/
     bool exceptionRaised() const;

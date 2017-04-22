@@ -51,7 +51,9 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     bool headersSent() const override { return mResponse.headersSent(); }
 
-    void setReturnCode( int code ) override { mResponse.setReturnCode( code ); }
+    void setStatusCode( int code ) override { mResponse.setStatusCode( code ); }
+
+    int statusCode( ) const override { return mResponse.statusCode( ); }
 
     void sendError( int code,  const QString &message ) override { mResponse.sendError( code, message ); }
 

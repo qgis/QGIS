@@ -46,7 +46,9 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 
     bool headersSent() const override;
 
-    void setReturnCode( int code ) override;
+    void setStatusCode( int code ) override;
+
+    int statusCode( ) const override { return mStatusCode; }
 
     void sendError( int code,  const QString &message ) override;
 
@@ -73,6 +75,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
     bool mFinished    = false;
     bool mHeadersSent = false;
     QgsServerRequest::Method mMethod;
+    int mStatusCode = 0;
 };
 
 /**

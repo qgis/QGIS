@@ -66,10 +66,12 @@ bool QgsFcgiServerResponse::headersSent() const
   return mHeadersSent;
 }
 
-void QgsFcgiServerResponse::setReturnCode( int code )
+void QgsFcgiServerResponse::setStatusCode( int code )
 {
   // fcgi applications must return HTTP status in header
   mHeaders.insert( QStringLiteral( "Status" ), QStringLiteral( " %1" ).arg( code ) );
+  // Store the code to make it available for plugins
+  mStatusCode = code;
 }
 
 void QgsFcgiServerResponse::sendError( int code,  const QString &message )
@@ -81,7 +83,7 @@ void QgsFcgiServerResponse::sendError( int code,  const QString &message )
   }
 
   clear();
-  setReturnCode( code );
+  setStatusCode( code );
   setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/html;charset=utf-8" ) );
   write( QStringLiteral( "<html><body>%1</body></html>" ).arg( message ) );
   finish();

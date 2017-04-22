@@ -69,7 +69,7 @@ void QgsRequestHandler::removeHeader( const QString &name )
   mResponse.clearHeader( name );
 }
 
-QString QgsRequestHandler::getHeader( const QString &name ) const
+QString QgsRequestHandler::header( const QString &name ) const
 {
   return mResponse.getHeader( name );
 }
@@ -97,6 +97,16 @@ void QgsRequestHandler::clearBody()
 QByteArray QgsRequestHandler::body() const
 {
   return mResponse.data();
+}
+
+void QgsRequestHandler::setStatusCode( int code )
+{
+  mResponse.setStatusCode( code );
+}
+
+int QgsRequestHandler::statusCode() const
+{
+  return mResponse.statusCode();
 }
 
 void QgsRequestHandler::sendResponse()

@@ -48,7 +48,9 @@ class QgsBufferServerResponse: public QgsServerResponse
 
     bool headersSent() const override;
 
-    void setReturnCode( int code ) override;
+    void setStatusCode( int code ) override;
+
+    int statusCode( ) const override { return mReturnCode; }
 
     void sendError( int code,  const QString &message ) override;
 
@@ -74,10 +76,6 @@ class QgsBufferServerResponse: public QgsServerResponse
      */
     QMap<QString, QString> headers() const { return mHeaders; }
 
-    /**
-     * Return the status code
-     */
-    int returnCode() const { return mReturnCode; }
 
   private:
     QMap<QString, QString> mHeaders;

@@ -18,7 +18,10 @@ class Response(QgsServerResponse):
         self._buffer.open(QIODevice.ReadWrite)
 
     def setReturnCode(self, code):
-        pass
+        self.code = code
+
+    def returnCode(self):
+        return self.code
 
     def setHeader(self, key, val):
         pass
@@ -93,6 +96,7 @@ class TestServices(unittest.TestCase):
         io.seek(0)
 
         self.assertEqual(QTextStream(io).readLine(), "Hello world")
+        self.assertEqual(response.returnCode(), 201)
 
     def test_0_version_registration(self):
 

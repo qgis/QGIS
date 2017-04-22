@@ -49,7 +49,7 @@ void QgsBufferServerResponse::setHeader( const QString &key, const QString &valu
     mHeaders.insert( key, value );
 }
 
-void QgsBufferServerResponse::setReturnCode( int code )
+void QgsBufferServerResponse::setStatusCode( int code )
 {
   mReturnCode = code;
 }
@@ -78,7 +78,7 @@ void QgsBufferServerResponse::sendError( int code,  const QString &message )
   }
 
   clear();
-  setReturnCode( code );
+  setStatusCode( code );
   setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/plain; charset=utf-8" ) );
   write( message );
   finish();

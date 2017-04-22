@@ -63,10 +63,14 @@ class QgsServerResponse
      */
     virtual bool headersSent() const = 0;
 
-    /** Set the http return code
+    /** Return the http status code
+     */
+    virtual int statusCode( ) const = 0;
+
+    /** Set the http status code
      * @param code HTTP return code value
      */
-    virtual void setReturnCode( int code ) = 0;
+    virtual void setStatusCode( int code ) = 0;
 
     /**
      * Send error
