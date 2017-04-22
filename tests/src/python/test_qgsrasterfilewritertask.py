@@ -34,6 +34,7 @@ def create_temp_filename(base_file):
 
 
 class TestQgsRasterFileWriterTask(unittest.TestCase):
+
     def setUp(self):
         self.success = False
         self.fail = False

@@ -45,6 +45,7 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestFieldValueConverter(QgsVectorFileWriter.FieldValueConverter):
+
     def __init__(self, layer):
         QgsVectorFileWriter.FieldValueConverter.__init__(self)
         self.layer = layer
