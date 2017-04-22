@@ -21,8 +21,8 @@ import urllib.error
 import email
 
 from io import StringIO
-from qgis.server import QgsServer
-from qgis.core import QgsMessageLog, QgsRenderChecker, QgsApplication
+from qgis.server import QgsServer, QgsServerRequest
+from qgis.core import QgsRenderChecker, QgsApplication
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
 from utilities import unitTestDataPath
@@ -346,7 +346,7 @@ class TestQgsServer(unittest.TestCase):
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = '?MAP={}'.format(urllib.parse.quote(project))
-        header, body = self.server.handleRequest(query_string, requestMethod="POST", data=request)
+        header, body = self.server.handleRequest(query_string, requestMethod=QgsServerRequest.PostMethod, data=request)
 
         self.result_compare(
             'wfs_getfeature_{}.txt'.format(requestid),

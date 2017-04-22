@@ -426,35 +426,26 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
 }
 
-QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &urlstr, const QString &requestMethod, const char *data )
+QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &urlstr, const QgsServerRequest::Method &requestMethod, const char *data )
 {
-  /*
-   * This is mainly for python bindings, passing QUERY_STRING
-   * to handleRequest without using os.environment
-   *
-   * XXX To be removed because query string is now handled in QgsServerRequest
-   *
-   */
+
   QUrl url( urlstr );
 
-  QgsServerRequest::Method method = QgsServerRequest::GetMethod;
   QByteArray ba;
 
-  // XXX This is mainly used in tests
-  if ( !requestMethod.isEmpty() && requestMethod.compare( QStringLiteral( "POST" ), Qt::CaseInsensitive ) == 0 )
+  if ( requestMethod == QgsServerRequest::PostMethod )
   {
-    method = QgsServerRequest::PostMethod;
     if ( data )
     {
       ba.append( data );
     }
   }
-  else if ( !requestMethod.isEmpty() && requestMethod.compare( QStringLiteral( "GET" ), Qt::CaseInsensitive ) != 0 )
+  else if ( requestMethod !=  QgsServerRequest::GetMethod )
   {
     throw QgsServerException( QStringLiteral( "Invalid method in handleRequest(): only GET or POST is supported" ) );
   }
 
-  QgsBufferServerRequest request( url, method, &ba );
+  QgsBufferServerRequest request( url, requestMethod, &ba );
   QgsBufferServerResponse response;
 
   handleRequest( request, response );
