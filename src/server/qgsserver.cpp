@@ -426,7 +426,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
 }
 
-QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &queryString )
+QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &urlstr, const QString &requestMethod, const char *data )
 {
   /*
    * This is mainly for python bindings, passing QUERY_STRING
@@ -435,26 +435,24 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &queryStri
    * XXX To be removed because query string is now handled in QgsServerRequest
    *
    */
-  if ( ! queryString.isEmpty() )
-    putenv( QStringLiteral( "QUERY_STRING" ), queryString );
+  QUrl url( urlstr );
 
   QgsServerRequest::Method method = QgsServerRequest::GetMethod;
   QByteArray ba;
 
   // XXX This is mainly used in tests
-  char *requestMethod = getenv( "REQUEST_METHOD" );
-  if ( requestMethod && strcmp( requestMethod, "POST" ) == 0 )
+  if ( !requestMethod.isEmpty() && requestMethod.compare( QStringLiteral( "POST" ), Qt::CaseInsensitive ) == 0 )
   {
     method = QgsServerRequest::PostMethod;
-    const char *data = getenv( "REQUEST_BODY" );
     if ( data )
     {
       ba.append( data );
     }
   }
-
-  QUrl url;
-  url.setQuery( queryString );
+  else if ( !requestMethod.isEmpty() && requestMethod.compare( QStringLiteral( "GET" ), Qt::CaseInsensitive ) != 0 )
+  {
+    throw QgsServerException( QStringLiteral( "Invalid method in handleRequest(): only GET or POST is supported" ) );
+  }
 
   QgsBufferServerRequest request( url, method, &ba );
   QgsBufferServerResponse response;
