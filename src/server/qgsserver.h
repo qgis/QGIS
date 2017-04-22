@@ -83,7 +83,7 @@ class SERVER_EXPORT QgsServer
      * \param data array of bytes containing post data
      * \returns the response headers and body QPair of QByteArray
      */
-    QPair<QByteArray, QByteArray> handleRequest( const QString &urlstr, const QgsServerRequest::Method &requestMethod = QgsServerRequest::GetMethod, const char *data = nullptr );
+    QPair<QByteArray, QByteArray> handleRequest( const QString &urlstr, const QgsServerRequest::Method requestMethod = QgsServerRequest::GetMethod, const char *data = nullptr );
 
     //! Returns a pointer to the server interface
     QgsServerInterfaceImpl *serverInterface() { return sServerInterface; }

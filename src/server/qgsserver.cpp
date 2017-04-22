@@ -426,7 +426,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
 }
 
-QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &urlstr, const QgsServerRequest::Method &requestMethod, const char *data )
+QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &urlstr, const QgsServerRequest::Method requestMethod, const char *data )
 {
 
   QUrl url( urlstr );
