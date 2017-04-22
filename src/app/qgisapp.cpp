@@ -92,6 +92,7 @@
 #include <QtWinExtras/QWinJumpListCategory>
 #endif
 
+Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 //
 // Mac OS X Includes
@@ -5784,8 +5785,8 @@ void QgisApp::saveMapAsImage()
   if ( myFileNameAndFilter.first != QLatin1String( "" ) )
   {
     //TODO: GUI
-    int dpi = 90;
-    QSize size = mMapCanvas->size() * ( dpi / 90 );
+    int dpi = qt_defaultDpiX();
+    QSize size = mMapCanvas->size() * ( dpi / qt_defaultDpiX() );
 
     QgsMapSettings ms = QgsMapSettings();
     ms.setDestinationCrs( QgsProject::instance()->crs() );

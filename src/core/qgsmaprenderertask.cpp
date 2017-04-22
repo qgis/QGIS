@@ -63,6 +63,9 @@ bool QgsMapRendererTask::run()
       return false;
     }
 
+    img.setDotsPerMeterX( 1000 * mMapSettings.outputDpi() / 25.4 );
+    img.setDotsPerMeterY( 1000 * mMapSettings.outputDpi() / 25.4 );
+
     tempPainter.reset( new QPainter( &img ) );
     destPainter = tempPainter.get();
   }
