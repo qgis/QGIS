@@ -179,11 +179,19 @@ void TestQgsComposerScaleBar::doubleBox()
 
 void TestQgsComposerScaleBar::numeric()
 {
+  QFont f = mComposerScaleBar->font();
+
+  QFont newFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
+  newFont.setPointSizeF( 12 );
+  mComposerScaleBar->setFont( newFont );
+
   mComposerScaleBar->setStyle( QStringLiteral( "Numeric" ) );
   mComposerScaleBar->setSceneRect( QRectF( 20, 180, 50, 20 ) );
   QgsCompositionChecker checker( QStringLiteral( "composerscalebar_numeric" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_scalebar" ) );
-  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+  bool result = checker.testComposition( mReport, 0, 0 );
+  mComposerScaleBar->setFont( f );
+  QVERIFY( result );
 }
 
 void TestQgsComposerScaleBar::tick()
