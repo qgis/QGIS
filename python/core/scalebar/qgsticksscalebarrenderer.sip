@@ -28,6 +28,9 @@ class QgsTicksScaleBarRenderer: QgsScaleBarRenderer
     };
 
     QgsTicksScaleBarRenderer();
+%Docstring
+ Constructor for QgsTicksScaleBarRenderer.
+%End
 
     virtual QString name() const;
 

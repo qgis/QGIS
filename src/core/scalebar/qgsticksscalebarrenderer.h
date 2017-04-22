@@ -38,6 +38,9 @@ class CORE_EXPORT QgsTicksScaleBarRenderer: public QgsScaleBarRenderer
       TicksMiddle, //!< Render ticks crossing line
     };
 
+    /**
+     * Constructor for QgsTicksScaleBarRenderer.
+     */
     QgsTicksScaleBarRenderer() = default;
 
     QString name() const override;

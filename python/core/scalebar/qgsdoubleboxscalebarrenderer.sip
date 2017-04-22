@@ -19,7 +19,11 @@ class QgsDoubleBoxScaleBarRenderer: QgsScaleBarRenderer
 #include "qgsdoubleboxscalebarrenderer.h"
 %End
   public:
+
     QgsDoubleBoxScaleBarRenderer();
+%Docstring
+ Constructor for QgsDoubleBoxScaleBarRenderer.
+%End
 
     virtual QString name() const;
 

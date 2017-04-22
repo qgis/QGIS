@@ -30,6 +30,10 @@
 class CORE_EXPORT QgsDoubleBoxScaleBarRenderer: public QgsScaleBarRenderer
 {
   public:
+
+    /**
+     * Constructor for QgsDoubleBoxScaleBarRenderer.
+     */
     QgsDoubleBoxScaleBarRenderer() = default;
 
     QString name() const override { return QStringLiteral( "Double Box" ); }

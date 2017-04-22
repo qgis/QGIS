@@ -19,7 +19,11 @@ class QgsNumericScaleBarRenderer: QgsScaleBarRenderer
 #include "qgsnumericscalebarrenderer.h"
 %End
   public:
+
     QgsNumericScaleBarRenderer();
+%Docstring
+ Constructor for QgsNumericScaleBarRenderer.
+%End
 
     virtual QString name() const;
 

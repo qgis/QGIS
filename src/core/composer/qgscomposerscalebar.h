@@ -215,7 +215,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     double height() const { return mSettings.height(); }
     void setHeight( double h ) { mSettings.setHeight( h );}
 
+    /**
+     * Sets the \a map item linked to the scalebar.
+     */
     void setComposerMap( QgsComposerMap *map );
+
+    /**
+     * Returns the map item linked to the scalebar.
+     */
     QgsComposerMap *composerMap() const {return mComposerMap;}
 
     double labelBarSpace() const {return mSettings.labelBarSpace();}
@@ -224,13 +231,24 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     double boxContentSpace() const {return mSettings.boxContentSpace();}
     void setBoxContentSpace( double space );
 
-    //! Left / Middle/ Right
+    /**
+     * Returns the alignment of the scalebar.
+     */
     QgsScaleBarSettings::Alignment alignment() const { return mSettings.alignment(); }
 
-    void setAlignment( QgsScaleBarSettings::Alignment a );
+    /**
+     * Sets the \a alignment of the scalebar.
+     */
+    void setAlignment( QgsScaleBarSettings::Alignment alignment );
 
+    /**
+     * Returns the scalebar distance units.
+     */
     QgsUnitTypes::DistanceUnit units() const { return mSettings.units(); }
 
+    /**
+     * Sets the scalebar distance units.
+     */
     void setUnits( QgsUnitTypes::DistanceUnit u );
 
     /** Returns the join style used for drawing lines in the scalebar

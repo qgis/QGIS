@@ -30,6 +30,10 @@
 class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
 {
   public:
+
+    /**
+     * Constructor for QgsNumericScaleBarRenderer.
+     */
     QgsNumericScaleBarRenderer() = default;
 
     QString name() const override { return QStringLiteral( "Numeric" ); }

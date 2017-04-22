@@ -22,6 +22,9 @@ class QgsSingleBoxScaleBarRenderer: QgsScaleBarRenderer
   public:
 
     QgsSingleBoxScaleBarRenderer();
+%Docstring
+ Constructor for QgsSingleBoxScaleBarRenderer.
+%End
 
     virtual QString name() const;
 

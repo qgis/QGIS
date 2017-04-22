@@ -47,6 +47,9 @@ Scale denominator
     };
 
     QgsScaleBarRenderer();
+%Docstring
+ Constructor for QgsScaleBarRenderer.
+%End
     virtual ~QgsScaleBarRenderer();
 
     virtual QString name() const = 0;

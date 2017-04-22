@@ -58,6 +58,9 @@ class CORE_EXPORT QgsScaleBarRenderer
 
     };
 
+    /**
+     * Constructor for QgsScaleBarRenderer.
+     */
     QgsScaleBarRenderer() = default;
     virtual ~QgsScaleBarRenderer() = default;
 
