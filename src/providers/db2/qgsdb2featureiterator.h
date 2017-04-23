@@ -34,7 +34,7 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QgsFields mFields;
     QString mFidColName;
     long mSRId;

@@ -30,7 +30,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
     QgsExpression *mSubsetExpression = nullptr;
     QgsExpressionContext mExpressionContext;
@@ -77,6 +77,8 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
 
   protected:
     virtual bool fetchFeature( QgsFeature &feature ) override;
+
+  private:
 
     bool setNextFeatureId( qint64 fid );
 

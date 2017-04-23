@@ -34,7 +34,7 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QgsFields mFields;
     QString mFidColName;
     long mSRId;
@@ -79,10 +79,13 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     virtual bool close() override;
 
   protected:
-    void BuildStatement( const QgsFeatureRequest &request );
 
     virtual bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
+
+  private:
+    void BuildStatement( const QgsFeatureRequest &request );
+
 
   private:
 

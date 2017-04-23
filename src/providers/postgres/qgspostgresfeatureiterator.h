@@ -34,7 +34,7 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
 
     QString mConnInfo;
 
@@ -83,6 +83,8 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
+  private:
+
     QgsPostgresConn *mConn = nullptr;
 
 
@@ -110,7 +112,6 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
 
     bool mIsTransactionConnection;
 
-  private:
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 
     virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;

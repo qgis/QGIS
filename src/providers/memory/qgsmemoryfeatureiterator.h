@@ -35,7 +35,7 @@ class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QgsFields mFields;
     QgsFeatureMap mFeatures;
     QgsSpatialIndex *mSpatialIndex = nullptr;
@@ -60,6 +60,7 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
 
     virtual bool fetchFeature( QgsFeature &feature ) override;
 
+  private:
     bool nextFeatureUsingList( QgsFeature &feature );
     bool nextFeatureTraverseAll( QgsFeature &feature );
 

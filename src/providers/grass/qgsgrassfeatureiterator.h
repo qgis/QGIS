@@ -32,7 +32,7 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
 #if 0
     enum Selection
     {
@@ -79,19 +79,24 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     virtual bool rewind() override;
     virtual bool close() override;
 
-    // create QgsFeatureId from GRASS geometry object id, cat and layer number (editing)
-    static QgsFeatureId makeFeatureId( int grassId, int cat, int layer = 0 );
-
-    // Get layer number from QGIS fid
-    static int layerFromFid( QgsFeatureId fid );
-
-    // Get GRASS line id from QGIS fid
+    /**
+     * Get GRASS line id from a QGIS \a fid.
+     */
     static int lidFromFid( QgsFeatureId fid );
 
-    // Get GRASS cat from QGIS fid
+    /**
+     * Get GRASS cat from QGIS \a fid.
+     */
     static int catFromFid( QgsFeatureId fid );
 
-    // get attribute value to be used in different layer when it is edited
+    /**
+     * Get layer number from QGIS \a fid.
+     */
+    static int layerFromFid( QgsFeatureId fid );
+
+    /**
+     * Get attribute value to be used in different layer when it is edited.
+     */
     static QVariant nonEditableValue( int layerNumber );
 
   public slots:
@@ -102,7 +107,11 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
 
     void doClose();
 
-  protected:
+  private:
+
+    // create QgsFeatureId from GRASS geometry object id, cat and layer number (editing)
+    static QgsFeatureId makeFeatureId( int grassId, int cat, int layer = 0 );
+
     //void lock();
     //void unlock();
 

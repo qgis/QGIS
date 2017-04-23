@@ -63,6 +63,8 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
 
     virtual bool fetchFeature( QgsFeature &feature ) override;
 
+  private:
+
     std::unique_ptr<Sqlite::Query> mQuery;
 
     QgsAttributeList mAttributes;
