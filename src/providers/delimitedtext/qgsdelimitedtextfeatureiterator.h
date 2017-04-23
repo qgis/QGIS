@@ -88,12 +88,12 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     void fetchAttribute( QgsFeature &feature, int fieldIdx, const QStringList &tokens );
 
     QList<QgsFeatureId> mFeatureIds;
-    IteratorMode mMode;
-    long mNextId;
-    bool mTestSubset;
-    bool mTestGeometry;
-    bool mTestGeometryExact;
-    bool mLoadGeometry;
+    IteratorMode mMode = FileScan;
+    long mNextId = 0;
+    bool mTestSubset = false;
+    bool mTestGeometry = false;
+    bool mTestGeometryExact = false;
+    bool mLoadGeometry = false;
 };
 
 

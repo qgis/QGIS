@@ -69,9 +69,6 @@ void copy_boxlist_and_destroy( struct boxlist *blist, struct ilist *list )
 
 QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>( source, ownSource, request )
-  , mCanceled( false )
-  , mNextCidx( 0 )
-  , mNextLid( 1 )
 {
 
   // WARNING: the iterater cannot use mutex lock for its whole life, because QgsVectorLayerFeatureIterator is opening

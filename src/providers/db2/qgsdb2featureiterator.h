@@ -99,7 +99,7 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
     bool mExpressionCompiled;
     bool mOrderByCompiled;
 
-    int mFetchCount;
+    int mFetchCount = 0;
 };
 
 #endif // QGSDB2FEATUREITERATOR_H

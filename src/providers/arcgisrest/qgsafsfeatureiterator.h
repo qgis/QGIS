@@ -47,7 +47,7 @@ class QgsAfsFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsAfs
     bool fetchFeature( QgsFeature &f ) override;
 
   private:
-    QgsFeatureId mFeatureIterator;
+    QgsFeatureId mFeatureIterator = 0;
 };
 
 #endif // QGSAFSFEATUREITERATOR_H

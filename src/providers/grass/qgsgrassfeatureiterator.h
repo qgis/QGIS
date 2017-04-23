@@ -136,18 +136,16 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList &attlist, QgsGrassVectorMap::TopoSymbol symbol );
 
     //! Canceled -> close when possible
-    bool mCanceled;
+    bool mCanceled = false;
 
     //! Selection array
     QBitArray mSelection; // !UPDATE!
 
     // Edit mode is using mNextLid + mNextCidx
     // Next index in cidxFieldIndex to be read in standard mode or next index of line Cats in editing mode
-    int mNextCidx;
+    int mNextCidx = 0;
     // Next topology line/node id to be read in topo mode or next line id in edit mode, starts from 1
-    int mNextLid;
-
-
+    int mNextLid = 1;
 
     static QMutex sMutex;
 };

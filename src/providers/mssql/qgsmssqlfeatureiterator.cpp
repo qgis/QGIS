@@ -28,8 +28,6 @@
 
 QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>( source, ownSource, request )
-  , mExpressionCompiled( false )
-  , mOrderByCompiled( false )
 {
   mClosed = false;
 
@@ -443,6 +441,8 @@ bool QgsMssqlFeatureIterator::close()
 QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   : mFields( p->mAttributeFields )
   , mFidColName( p->mFidColName )
+  , mSRId( p->mSRId )
+  , mIsGeography( p->mParser.IsGeography )
   , mGeometryColName( p->mGeometryColName )
   , mGeometryColType( p->mGeometryColType )
   , mSchemaName( p->mSchemaName )
@@ -453,10 +453,7 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   , mDatabaseName( p->mDatabaseName )
   , mHost( p->mHost )
   , mSqlWhereClause( p->mSqlWhereClause )
-{
-  mSRId = p->mSRId;
-  mIsGeography = p->mParser.IsGeography;
-}
+{}
 
 QgsFeatureIterator QgsMssqlFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {

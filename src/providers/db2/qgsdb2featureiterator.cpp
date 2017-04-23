@@ -32,7 +32,6 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
   : QgsAbstractFeatureIteratorFromSource<QgsDb2FeatureSource>( source, ownSource, request )
 {
   mClosed = false;
-  mFetchCount = 0;
 
   BuildStatement( request );
 
@@ -446,15 +445,14 @@ bool QgsDb2FeatureIterator::close()
 QgsDb2FeatureSource::QgsDb2FeatureSource( const QgsDb2Provider *p )
   : mFields( p->mAttributeFields )
   , mFidColName( p->mFidColName )
+  , mSRId( p->mSRId )
   , mGeometryColName( p->mGeometryColName )
   , mGeometryColType( p->mGeometryColType )
   , mSchemaName( p->mSchemaName )
   , mTableName( p->mTableName )
   , mConnInfo( p->mConnInfo )
   , mSqlWhereClause( p->mSqlWhereClause )
-{
-  mSRId = p->mSRId;
-}
+{}
 
 QgsDb2FeatureSource::~QgsDb2FeatureSource()
 {

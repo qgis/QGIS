@@ -40,7 +40,7 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
     long mSRId;
 
     /* sql geo type */
-    bool mIsGeography;
+    bool mIsGeography = false;
 
     QString mGeometryColName;
     QString mGeometryColType;
@@ -104,7 +104,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     QString mFallbackStatement;
 
     // Field index of FID column
-    long mFidCol;
+    long mFidCol = -1;
 
     // List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;
@@ -112,8 +112,8 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     // for parsing sql geometries
     QgsMssqlGeometryParser mParser;
 
-    bool mExpressionCompiled;
-    bool mOrderByCompiled;
+    bool mExpressionCompiled = false;
+    bool mOrderByCompiled = false;
 };
 
 #endif // QGSMSSQLFEATUREITERATOR_H

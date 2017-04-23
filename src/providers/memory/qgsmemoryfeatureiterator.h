@@ -65,7 +65,7 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
 
     QgsGeometry mSelectRectGeom;
     QgsFeatureMap::const_iterator mSelectIterator;
-    bool mUsingFeatureIdList;
+    bool mUsingFeatureIdList = false;
     QList<QgsFeatureId> mFeatureIdList;
     QList<QgsFeatureId>::const_iterator mFeatureIdListIterator;
     QgsExpression *mSubsetExpression = nullptr;

@@ -28,8 +28,7 @@
 
 QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
-  , mNextId( 0 )
-  , mTestGeometryExact( false )
+  , mTestSubset( mSource->mSubsetExpression )
 {
 
   // Determine mode to use based on request...
@@ -38,14 +37,6 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   // Does the layer have geometry - will revise later to determine if we actually need to
   // load it.
   bool hasGeometry = mSource->mGeomRep != QgsDelimitedTextProvider::GeomNone;
-
-  // Does the layer have an explicit or implicit subset (implicit subset is if we have geometry which can
-  // be invalid)
-
-  mTestSubset = mSource->mSubsetExpression;
-  mTestGeometry = false;
-
-  mMode = FileScan;
 
   if ( !request.filterRect().isNull() && hasGeometry )
   {

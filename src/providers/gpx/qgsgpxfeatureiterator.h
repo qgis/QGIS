@@ -79,7 +79,7 @@ class QgsGPXFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsGPX
     //! Current track iterator
     QgsGPSData::TrackIterator mTrkIter;
 
-    bool mFetchedFid;
+    bool mFetchedFid = false;
 };
 
 #endif // QGSGPXFEATUREITERATOR_H
