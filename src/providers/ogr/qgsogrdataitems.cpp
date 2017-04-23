@@ -117,43 +117,46 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-  QStringList sa_list_sublayer = name.split( ":" );
-  int i_field_geometry=0;
-  //  'layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type'
-  if ( sa_list_sublayer.size() > 5 )
-  { // Some Layers (GML) may contain more than 1 geometry
-    bool ok;
-    i_field_geometry = sa_list_sublayer[5].toInt( &ok );
-  }
-  OGRwkbGeometryType ogrType = QgsOgrProviderUtils::getOgrGeomType( hLayer, i_field_geometry );
-  switch ( ogrType )
+  int layerIndex;
+  QString layerName;
+  qlonglong featuresCounted;
+  OGRwkbGeometryType ogrGeometryType;
+  QString geometryName;
+  int geometryIndex;
+  QgsOgrProviderUtils::OgrGetType ogrType = QgsOgrProviderUtils::UnknownGetType;
+  if ( QgsOgrProviderUtils::OGRParseSubLayerStringWrapper( name, layerIndex, layerName, featuresCounted, ogrGeometryType, geometryName, geometryIndex, ogrType )
+       != QString::null )
   {
-    case wkbUnknown:
-    case wkbGeometryCollection:
-      break;
-    case wkbNone:
-      layerType = QgsLayerItem::TableLayer;
-      break;
-    case wkbPoint:
-    case wkbMultiPoint:
-    case wkbPoint25D:
-    case wkbMultiPoint25D:
-      layerType = QgsLayerItem::Point;
-      break;
-    case wkbLineString:
-    case wkbMultiLineString:
-    case wkbLineString25D:
-    case wkbMultiLineString25D:
-      layerType = QgsLayerItem::Line;
-      break;
-    case wkbPolygon:
-    case wkbMultiPolygon:
-    case wkbPolygon25D:
-    case wkbMultiPolygon25D:
-      layerType = QgsLayerItem::Polygon;
-      break;
-    default:
-      break;
+    ogrGeometryType = QgsOgrProviderUtils::getOgrGeomType( hLayer, geometryIndex );
+    switch ( ogrGeometryType )
+    {
+      case wkbUnknown:
+      case wkbGeometryCollection:
+        break;
+      case wkbNone:
+        layerType = QgsLayerItem::TableLayer;
+        break;
+      case wkbPoint:
+      case wkbMultiPoint:
+      case wkbPoint25D:
+      case wkbMultiPoint25D:
+        layerType = QgsLayerItem::Point;
+        break;
+      case wkbLineString:
+      case wkbMultiLineString:
+      case wkbLineString25D:
+      case wkbMultiLineString25D:
+        layerType = QgsLayerItem::Line;
+        break;
+      case wkbPolygon:
+      case wkbMultiPolygon:
+      case wkbPolygon25D:
+      case wkbMultiPolygon25D:
+        layerType = QgsLayerItem::Polygon;
+        break;
+      default:
+        break;
+    }
   }
 
   QgsDebugMsgLevel( QString( "ogrType = %1 layertype = %2" ).arg( ogrType ).arg( layerType ), 2 );
@@ -194,18 +197,24 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
     return children;
   QStringList listSubLayers = QgsOgrProviderUtils::OGRGetSubLayersWrapper( hDataSource );
   int numLayers = listSubLayers.size();
-
+  int layerIndex;
+  QString layerName;
+  qlonglong featuresCounted;
+  OGRwkbGeometryType ogrGeometryType;
+  QString geometryName;
+  int geometryIndex;
+  QgsOgrProviderUtils::OgrGetType ogrType = QgsOgrProviderUtils::UnknownGetType;
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
   {
-    QStringList sa_list_id_fields = listSubLayers[i].split( ":" );
-    bool ok;
-    long lLayerIndex = sa_list_id_fields[0].toLong( &ok, 10 );
-    QString sLayerName = sa_list_id_fields[1];
-    // 's_sublayer' result will determin how the the layer should be opened (depending on duplicate-layers, layer-name conventions)
-    QString s_sublayer = QgsOgrProviderUtils::OGRGetSubLayerWrapper( sLayerName, lLayerIndex, listSubLayers );
-    QgsOgrLayerItem *item = dataItemForLayer( this, s_sublayer, mPath, hDataSource, i );
-    children.append( item );
+    if ( QgsOgrProviderUtils::OGRParseSubLayerStringWrapper( listSubLayers[i], layerIndex, layerName, featuresCounted, ogrGeometryType, geometryName, geometryIndex, ogrType )
+         != QString::null )
+    {
+      long  llayerIndex;
+      QString subLayer = QgsOgrProviderUtils::OGRGetSubLayerWrapper( layerName, llayerIndex, listSubLayers );
+      QgsOgrLayerItem *item = dataItemForLayer( this, subLayer, mPath, hDataSource, i );
+      children.append( item );
+    }
   }
 
   OGR_DS_Destroy( hDataSource );

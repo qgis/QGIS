@@ -1089,7 +1089,7 @@ void QgsApplication::registerOgrDrivers()
 {
   if ( 0 >= OGRGetDriverCount() )
   {
-     OGRRegisterAll();
+    OGRRegisterAll();
   }
 }
 

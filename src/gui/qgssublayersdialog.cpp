@@ -62,11 +62,11 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   restoreGeometry( settings.value( "/Windows/" + mName + "SubLayers/geometry" ).toByteArray() );
 
   // Checkbox about adding sublayers to a group
-  checkboxAddToGroup = new QCheckBox( tr( "Add layers to a group" ) );
+  mCheckboxAddToGroup = new QCheckBox( tr( "Add layers to a group" ) );
   bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
-  checkboxAddToGroup->setChecked( addToGroup );
+  mCheckboxAddToGroup->setChecked( addToGroup );
   if ( mShowAddToGroupCheckbox )
-    buttonBox->addButton( checkboxAddToGroup, QDialogButtonBox::ActionRole );
+    buttonBox->addButton( mCheckboxAddToGroup, QDialogButtonBox::ActionRole );
 }
 
 QgsSublayersDialog::~QgsSublayersDialog()
@@ -108,15 +108,16 @@ QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
         def.type = item->text( mShowCount ? 3 : 2 );
     }
     if ( mProviderType == QgsSublayersDialog::Ogr )
-    { // Ogr-Internal use only - no needed to show to user
-     def.count = item->text( 2 ).toInt();
-     if (item->text( 3 ) != "Unknown")
-     {
-      def.type = item->text( 3 );
-     }
-     def.geometryName = item->text(  mShowCount ? 4 : 3 );
-     def.geometryId = item->text(  mShowCount ? 5 : 4 ).toInt();
-     def.getType = item->text(  mShowCount ? 6 : 5 ).toInt();
+    {
+      // Ogr-Internal use only - no needed to show to user
+      def.count = item->text( 2 ).toInt();
+      if ( item->text( 3 ) != "Unknown" )
+      {
+        def.type = item->text( 3 );
+      }
+      def.geometryName = item->text( mShowCount ? 4 : 3 );
+      def.geometryId = item->text( mShowCount ? 5 : 4 ).toInt();
+      def.retrievalMethod = item->text( mShowCount ? 6 : 5 ).toInt();
     }
 
     list << def;
@@ -136,10 +137,11 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
     if ( mShowType )
       elements << item.type;
     if ( mProviderType == QgsSublayersDialog::Ogr )
-    {  //  layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type
-     elements << item.geometryName;
-     elements << QString::number( item.geometryId );
-     elements << QString::number( item.getType );
+    {
+      //  layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type
+      elements << item.geometryName;
+      elements << QString::number( item.geometryId );
+      elements << QString::number( item.retrievalMethod );
     }
     layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );
   }
@@ -203,6 +205,6 @@ int QgsSublayersDialog::exec()
   if ( overrideCursor )
     QApplication::setOverrideCursor( cursor );
 
-  settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), checkboxAddToGroup->isChecked() );
+  settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCheckboxAddToGroup->isChecked() );
   return ret;
 }

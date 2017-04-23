@@ -4235,7 +4235,8 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
       elements.removeAt( 2 );
     }
     if ( elements.count() == 7 )
-    { //  layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type
+    {
+      //  layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type
       QgsSublayersDialog::LayerDefinition def;
       def.layerId = elements[0].toInt();
       def.layerName = elements[1];
@@ -4243,7 +4244,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
       def.type = elements[3];
       def.geometryName = elements[4];
       def.geometryId = elements[5].toInt();
-      def.getType = elements[6].toInt();
+      def.retrievalMethod = elements[6].toInt();
       list << def;
     }
     else
@@ -4294,7 +4295,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     }
     if ( def.geometryId >= 0 )
     {
-      composedURI += "|geometryid=" + QString::number(def.geometryId);
+      composedURI += "|geometryid=" + QString::number( def.geometryId );
     }
     if ( !def.type.isEmpty() )
     {
@@ -4302,11 +4303,11 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     }
     if ( def.count >= 0 )
     {
-      composedURI += "|featurescounted=" + QString::number(def.count);
+      composedURI += "|featurescounted=" + QString::number( def.count );
     }
-    if ( def.getType >= 0 )
+    if ( def.retrievalMethod >= 0 )
     {
-      composedURI += "|ogrtype=" + QString::number(def.getType);
+      composedURI += "|ogrtype=" + QString::number( def.retrievalMethod );
     }
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );

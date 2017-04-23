@@ -20,7 +20,6 @@
 #include "qgsfields.h"
 #include <QTextCodec>
 #include <QUuid>
-#include <QtDebug>
 
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For QGIS purposes, both
@@ -204,11 +203,6 @@ bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature &featur
     return false;
   // Note: this will not work correctly with features that contain more than 1 geometry (GML)
   // Note: 2017-03-30: not used anywhere. Should not be used when OGR_F_GetGeomFieldCount( ogrFet) > 1
-#if 0
-    int i_field_count=OGR_F_GetGeomFieldCount( ogrFet);
-    int i_feature_id=feature.id();
-    qDebug() << QString( "-I-> QgsOgrUtils::readOgrFeatureGeometry 03a: GetGeomFieldCount[%1] id[%2] Wkt[%3]" ).arg( i_field_count).arg(i_feature_id).arg(feature.geometry().exportToWkt());
-#endif
   OGRGeometryH geom = OGR_F_GetGeometryRef( ogrFet );
   if ( !geom )
     feature.clearGeometry();

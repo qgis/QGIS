@@ -38,10 +38,10 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     };
 
     //! A structure that defines layers for the purpose of this dialog
-    //! @note added in 2.16
+    //! \since added in 2.16
     typedef struct LayerDefinition
     {
-      LayerDefinition() : layerId( -1 ), count( -1 ), geometryId(-1), getType(-1){}
+      LayerDefinition() : layerId( -1 ), count( -1 ), geometryId( -1 ), retrievalMethod( -1 ) {}
       // 'layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type'
       int layerId;        //!< Identifier of the layer (one unique layer id may have multiple types though)
       QString layerName;  //!< Name of the layer (not necessarily unique)
@@ -49,37 +49,37 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
       QString geometryName;  //!< Name of the geometry (not necessarily unique)
       int geometryId;        //!< Identifier of the layer-geometry
-      int getType;          //!< ogr retrievel method, internal use only
+      int retrievalMethod;          //!< Ogr retrievel method, internal use only
     } LayerDefinition;
 
     //! List of layer definitions for the purpose of this dialog
-    //! @note added in 2.16
+    //! \since added in 2.16
     typedef QList<LayerDefinition> LayerDefinitionList;
 
     QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsSublayersDialog();
 
     //! Populate the table with layers
-    //! @note added in 2.16
+    //! \since added in 2.16
     void populateLayerTable( const LayerDefinitionList &list );
 
     //! Returns list of selected layers
-    //! @note Provider specific strings are parse here
+    //! \since Provider specific strings are parse here
     //! QgsOgrProvider: layer-id is set to -1 if layer-name is unique
-    //! @note added in 2.16
+    //! \since added in 2.16
     LayerDefinitionList selection();
 
     //! Set if we should display the add to group checkbox
-    //! @note added in 3.0
+    //! \since added in 3.0
     void setShowAddToGroupCheckbox( bool showAddToGroupCheckbox ) { mShowAddToGroupCheckbox = showAddToGroupCheckbox; }
 
     //! If we should display the add to group checkbox
-    //! @note added in 3.0
+    //! \since added in 3.0
     bool showAddToGroupCheckbox() const { return mShowAddToGroupCheckbox; }
 
     //! If we should add layers in a group
-    //! @note added in 3.0
-    bool addToGroupCheckbox() const { return checkboxAddToGroup->isChecked(); }
+    //! \since added in 3.0
+    bool addToGroupCheckbox() const { return mCheckboxAddToGroup->isChecked(); }
 
   public slots:
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
@@ -88,13 +88,16 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
   protected:
     QString mName;
     QStringList mSelectedSubLayers;
-    bool mShowCount;  //!< Whether to show number of features in the table
-    bool mShowType;   //!< Whether to show type in the table
-    bool mShowAddToGroupCheckbox;   //!< Whether to show the add to group checkbox
-    QCheckBox *checkboxAddToGroup = nullptr;
+    bool mShowCount = false;  //!< Whether to show number of features in the table
+    bool mShowType = false;   //!< Whether to show type in the table
     //! Needed to parse Provider specific strings
-    //! @note added in 3.00
+    //! \since added in 3.00
     ProviderType mProviderType;
+
+  private:
+
+    bool mShowAddToGroupCheckbox = false;   //!< Whether to show the add to group checkbox
+    QCheckBox *mCheckboxAddToGroup = nullptr;
 };
 
 #endif
