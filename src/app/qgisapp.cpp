@@ -5784,20 +5784,20 @@ void QgisApp::updateFilterLegend()
 void QgisApp::saveMapAsImage()
 {
   QList< QgsMapDecoration * > decorations;
-  QString activeDecorations;
+  QString currentDecorations;
   Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
   {
     if ( decoration->enabled() )
     {
       decorations << decoration;
-      if ( activeDecorations.isEmpty() )
-        activeDecorations = decoration->name().toLower();
+      if ( currentDecorations.isEmpty() )
+        currentDecorations = decoration->name().toLower();
       else
-        activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
+        currentDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
     }
   }
 
-  QgsMapSaveDialog dlg( this, mMapCanvas, activeDecorations );
+  QgsMapSaveDialog dlg( this, mMapCanvas, currentDecorations );
   if ( !dlg.exec() )
     return;
 

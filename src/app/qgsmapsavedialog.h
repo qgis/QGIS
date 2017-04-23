@@ -39,7 +39,7 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 
     /** Constructor for QgsMapSaveDialog
      */
-    QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QString &activeDecorations = QString() );
+    QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QString &decorations = QString() );
 
     //! returns extent rectangle
     QgsRectangle extent() const;
