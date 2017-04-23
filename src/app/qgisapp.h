@@ -593,10 +593,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! \since QGIS 2.1
     static QString normalizedMenuName( const QString &name ) { return name.normalized( QString::NormalizationForm_KD ).remove( QRegExp( "[^a-zA-Z]" ) ); }
 
-#ifdef Q_OS_WIN
-    static LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo );
-#endif
-
     void parseVersionInfo( QNetworkReply *reply, int &latestVersion, QStringList &versionInfo );
 
     //! Register a new tab in the layer properties dialog
