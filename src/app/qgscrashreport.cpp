@@ -128,15 +128,14 @@ const QString QgsCrashReport::crashID() const
   {
     QFileInfo fileInfo( line.fileName );
     QString filename( fileInfo.fileName() );
-    data += line.moduleName + line.symbolName + line.lineNumber + filename;
+    data += line.symbolName;
   }
 
   if ( data.isNull() )
     return "ID not generated due to missing information";
 
   QString hash = QString( QCryptographicHash::hash( data.toAscii(), QCryptographicHash::Sha1 ).toHex() );
-  return hash + " ||data(" + data + ")";
-
+  return hash;
 }
 
 bool QgsCrashReport::StackLine::isQgisModule() const

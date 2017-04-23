@@ -30,10 +30,10 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   mCrashMessage->setText( tr( "Sorry. It looks something unexpected happened that we didn't handle and QGIS crashed." ) );
   connect( mCopyReportButton, &QPushButton::clicked, this, &QgsCrashDialog::createBugReport );
 
-  mHelpLabel->setText( tr( "Keen to help us fix bugs?"
+  mHelpLabel->setText( tr( "Keen to help us fix bugs? "
                            "<a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\">Follow the steps to help our developers.</a>"
                            "<br><br>"
-                           "You can also send us a helpful bug report using the Copy Report button and opening a ticket at "
+                           "You can also send us a helpful bug report using the Copy Report button <br>and opening a ticket at "
                            "<a href=\"http://hub.qgis.org/\">hub.qgis.org</a>" ) );
   mHelpLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
   mHelpLabel->setOpenExternalLinks( true );
