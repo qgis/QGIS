@@ -73,9 +73,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " and it will help to avoid confusion if you refer to each by"
                         " its name:"
                         "<ul>"
+                        "<li><strong>QGIS Desktop</strong> - this is the desktop application that you know and love so much :-).</li>"
                         "<li><strong>QGIS Library</strong> - this is the C++ library that contains"
                         " the core logic that is used to build the QGIS user interface and other applications.</li>"
-                        "<li><strong>QGIS Desktop</strong> - this is the desktop application that you know and love so much :-).</li>"
                         "<li><strong>QGIS Server</strong> - this is a server-side application based on the QGIS Library"
                         " that will serve up your .qgs projects using OGC standard protocols.</li>"
                         "</ul>"
@@ -137,7 +137,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "Numeric scale value in map layout linked to map frame" ) );
   myTip.setContent( tr( "If you want to place a text label as a placeholder for the"
                         " current scale, linked to a map frame, you need to place a scalebar and"
-                        " set the style to 'Numeric'. You also need to select the map frame, if there"
+                        " set the style to 'Numeric'. You also need to select the map frame if there"
                         " is more than one."
                       ) );
   addGuiTip( myTip );
@@ -151,17 +151,6 @@ QgsTipFactory::QgsTipFactory() : QObject()
                     .arg( tr( "Map tools" ) )
                   );
   addGuiTip( myTip );
-  addGuiTip( myTip );
-  // by Tim
-  myTip.setTitle( tr( "Disabling rendering" ) );
-  myTip.setContent( tr( "Sometimes you have a very large dataset which takes ages"
-                        " to draw. If you are going to be performing several"
-                        " actions (e.g. modifying symbology options) and wish to temporarily"
-                        " disable map rendering while you do so, you can uncheck the 'Render'"
-                        " checkbox in the bottom right of the status bar. Don't forget to check"
-                        " it on again when you are ready to have the map draw itself again!"
-                      ) );
-  addGuiTip( myTip );
   // Tip contributed by Alister Hood
   myTip.setTitle( tr( "Join intersected polylines when rendering" ) );
   myTip.setContent( tr( "When applying layered styles to a polyline layer, you can join"
@@ -172,11 +161,10 @@ QgsTipFactory::QgsTipFactory() : QObject()
                   );
   addGuiTip( myTip );
   // by Tim
-  myTip.setTitle( tr( "Auto-enable on the fly projection" ) );
-  myTip.setContent( tr( "In the options dialog, under the CRS tab, you can set QGIS so that"
-                        " whenever you create a new project, 'on the fly projection' is enabled"
-                        " automatically and a pre-selected Coordinate Reference System of your"
-                        " choice is used."
+  myTip.setTitle( tr( "Auto-enable your favorite coordinate reference system (CRS)" ) );
+  myTip.setContent( tr( "In the <strong>options</strong> dialog, under the <strong>CRS</strong> tab,"
+                        " you can configure QGIS so that whenever you create a new project"
+                        " your favorite CRS is predefined automatically."
                       ) );
   addGuiTip( myTip );
   // by Tim
@@ -184,8 +172,8 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "If QGIS is saving you money or you like our work and"
                         " have the financial ability to help, please consider sponsoring the"
                         " development of QGIS. We use money from sponsors to pay for"
-                        " travel and costs related to our regular hackfest meetings, and to generally"
-                        " support the goals of our project. Please see the <a"
+                        " travel and costs related to our regular hackfest meetings and invest it into"
+                        " stability enhancements and infrastructure maintenance expenses. Please see the <a"
                         " href=\"https://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html\">QGIS Sponsorship Web"
                         " Page</a> for more details."
                       ) );
@@ -193,9 +181,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
   // by gsherman
   myTip.setTitle( tr( "QGIS has Plugins!" ) );
   myTip.setContent( tr( "QGIS has plugins that extend its functionality."
-                        " QGIS ships with some core plugins you can explore from the"
+                        " QGIS ships with some core plugins which you can explore from the"
                         " <strong> %1 -> %2</strong> menu. In addition there"
-                        " are a lot of <a href=\"https://plugins.qgis.org/\">Python plugins </a>"
+                        " are a lot of <a href=\"https://plugins.qgis.org/\">Python plugins</a>"
                         " contributed by the user community that can be"
                         " installed via this same menu. Don't miss out on all QGIS has to offer!"
                         " Check out the plugins and see what they can do for you." )
@@ -205,10 +193,11 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGuiTip( myTip );
   addGenericTip( myTip );
   // by yjacolin
-  myTip.setTitle( tr( "Add an action to layer" ) );
-  myTip.setContent( tr( "Action in a layer allows user to trigger action when clicking on a geometry"
-                        " with 'Run Feature Action' tools."
-                        "For example, you can open a HTML page using the field value of the geometry "
+  myTip.setTitle( tr( "Add an action to a layer" ) );
+  myTip.setContent( tr( "Actions on a layer allow users to trigger actions when clicking on a geometry"
+                        " with the <strong>Run Feature Action</strong> tool"
+                        " or from the feature form."
+                        "For example, you can open a HTML page using a field value of the feature "
                         "as a parameter. Look at the <a href=\"https://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
                       ) );
   addGuiTip( myTip );
@@ -242,12 +231,11 @@ QgsTipFactory::QgsTipFactory() : QObject()
                   );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
-  myTip.setTitle( tr( "Switch quickly between different styles of the layer" ) );
-  myTip.setContent( tr( "From the Layer properties dialog, use the <strong>Styles -> Add</strong> combobox"
-                        " to create as many combinations of layer properties settings (symbology, labeling,"
+  myTip.setTitle( tr( "Switch quickly between different styles of a layer" ) );
+  myTip.setContent( tr( "From the layer properties dialog, use the <strong>Styles -> Add</strong> combobox"
+                        " to create as many combinations of layer properties (symbology, labeling,"
                         " diagram, fields form, actions...) as you want. Then, simply switch between styles"
-                        " from the context menu of the layer in <strong>%1</strong> to automatically"
-                        " get different custom representations of your data." )
+                        " in the context menu of the layer in the <strong>%1</strong>." )
                     .arg( tr( "Layers Panel" ) )
                   );
   addGuiTip( myTip );
@@ -255,25 +243,27 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "Live update rendering" ) );
   myTip.setContent( tr( "Press F7 to activate the <strong>%1</strong> panel from which you can"
                         " easily and quickly configure the layer rendering. Check the <strong>%2</strong>"
-                        " option to automatically apply to the map canvas each of your modifications." )
+                        " option to immediately see each of your modifications on the map canvas." )
                     .arg( tr( "Layer Styling" ) )
                     .arg( tr( "Live update" ) )
                   );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
   myTip.setTitle( tr( "Print or export a specific feature from an atlas composition" ) );
-  myTip.setContent( tr( "If you want to print or export the composition of only one feature of the atlas,"
+  myTip.setContent( tr( "If you want to print or export the composition for only one feature of the atlas,"
                         " start the atlas preview, select the desired feature in the drop-down list"
-                        " and click on <strong>Composer -> Print</strong> menu (or use <strong>Composer ->"
-                        " Export...</strong> to any supported file format)."
+                        " and click the <strong>Composer -> Print</strong> menu (or use <strong>Composer ->"
+                        " Export...</strong> for any supported file format).<br>"
+                        "Atlas features can also be selected from the canvas by using the <strong>Run feature action</strong>"
+                        " tool 'Set as atlas feature' from the attributes toolbar."
                       ) );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
   myTip.setTitle( tr( "Start QGIS from command line" ) );
   myTip.setContent( tr( "QGIS can be launched from command line and supports a number of options. This can be"
-                        " handy if you need to use QGIS with particular configurations such as custom"
-                        " user profile or, without plugins... To get the list of the options,"
-                        " enter qgis --help on the command line."
+                        " handy if you need to use QGIS with particular configurations such as a custom"
+                        " user profile or without plugins... To get the list of the options"
+                        " enter <pre>qgis --help</pre> on the command line."
                       ) );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
