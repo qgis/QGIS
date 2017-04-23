@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsmapdecoration.h
+                          qgsmapdecoration.cpp
                           ----------------
     begin                : April 2017
     copyright            : (C) 2017 by Mathieu Pellerin
@@ -15,37 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAPDECORATION_H
-#define QGSMAPDECORATION_H
+#include "qgsmapdecoration.h"
 
-#include "qgis_core.h"
-#include "qgsmapsettings.h"
-#include "qgsrendercontext.h"
-
-/**
- * \ingroup core
- * \class QgsMapDecoration
- * \brief Interface for map decorations.
- *
- * \since QGIS 3.0
- */
-class CORE_EXPORT QgsMapDecoration
+QgsMapDecoration::QgsMapDecoration()
 {
-
-  public:
-
-    /**
-     * Constructor for QgsMapDecoration.
-     */
-    QgsMapDecoration();
-
-    virtual ~QgsMapDecoration() = default;
-
-    /**
-     * Renders a map decoration.
-     */
-    virtual void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) = 0;
-
-};
-
-#endif //QGSMAPDECORATION_H
+}

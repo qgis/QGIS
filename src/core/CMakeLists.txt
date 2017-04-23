@@ -163,6 +163,7 @@ SET(QGIS_CORE_SRCS
   qgslegendstyle.cpp
   qgslocalec.cpp
   qgslogger.cpp
+  qgsmapdecoration.cpp
   qgsmaphittest.cpp
   qgsmaplayer.cpp
   qgsmaplayerlegend.cpp
