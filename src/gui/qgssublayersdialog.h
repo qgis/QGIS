@@ -86,9 +86,9 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
   protected:
     QString mName;
     QStringList mSelectedSubLayers;
+    ProviderType mProviderType; //!< Needed to parse Provider specific strings Added in QGIS 3.0
     bool mShowCount = false;  //!< Whether to show number of features in the table
     bool mShowType = false;   //!< Whether to show type in the table
-    ProviderType mProviderType; //!< Needed to parse Provider specific strings Added in QGIS 3.0
 
   private:
 
