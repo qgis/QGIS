@@ -24,8 +24,10 @@
 #include "qgsannotationmanager.h"
 #include "qgsmapsettings.h"
 #include "qgstaskmanager.h"
+#include "qgsmaprenderercustompainterjob.h"
 
 #include <QPainter>
+class QgsMapRendererCustomPainterJob;
 
 /**
  * \class QgsMapRendererTask
@@ -65,6 +67,8 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
      */
     void addAnnotations( QList< QgsAnnotation * > annotations );
 
+    void cancel() override;
+
   signals:
 
     /**
@@ -85,6 +89,9 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
   private:
 
     QgsMapSettings mMapSettings;
+
+    QMutex mJobMutex;
+    std::unique_ptr< QgsMapRendererCustomPainterJob > mJob;
 
     QPainter *mPainter = nullptr;
 

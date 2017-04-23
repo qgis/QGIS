@@ -18,7 +18,6 @@
 #include "qgsannotation.h"
 #include "qgsannotationmanager.h"
 #include "qgsmaprenderertask.h"
-#include "qgsmaprenderercustompainterjob.h"
 
 
 QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat )
@@ -47,6 +46,16 @@ void QgsMapRendererTask::addAnnotations( QList< QgsAnnotation * > annotations )
   }
 }
 
+void QgsMapRendererTask::cancel()
+{
+  mJobMutex.lock();
+  if ( mJob )
+    mJob->cancelWithoutBlocking();
+  mJobMutex.unlock();
+
+  QgsTask::cancel();
+}
+
 bool QgsMapRendererTask::run()
 {
   QImage img;
@@ -73,14 +82,26 @@ bool QgsMapRendererTask::run()
   if ( !destPainter )
     return false;
 
-  QgsMapRendererCustomPainterJob r( mMapSettings, destPainter );
-  r.renderSynchronously();
+  mJobMutex.lock();
+  mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, destPainter ) );
+  mJobMutex.unlock();
+  mJob->renderSynchronously();
+
+  mJobMutex.lock();
+  mJob.reset( nullptr );
+  mJobMutex.unlock();
+
+  if ( isCanceled() )
+    return false;
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mMapSettings );
   context.setPainter( destPainter );
 
   Q_FOREACH ( QgsAnnotation *annotation, mAnnotations )
   {
+    if ( isCanceled() )
+      return false;
+
     if ( !annotation || !annotation->isVisible() )
     {
       continue;

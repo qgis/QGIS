@@ -47,6 +47,9 @@ class QgsMapRendererTask : QgsTask
  Adds ``annotations`` to be rendered on the map.
 %End
 
+    virtual void cancel();
+
+
   signals:
 
     void renderingComplete();
