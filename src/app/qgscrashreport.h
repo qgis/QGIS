@@ -33,23 +33,23 @@ class APP_EXPORT QgsCrashReport
      */
     struct StackLine
     {
-      QString ModuleName;
-      QString SymbolName;
-      QString FileName;
-      QString LineNumber;
+      QString moduleName;
+      QString symbolName;
+      QString fileName;
+      QString lineNumber;
 
       /**
        * Check if this stack line is part of QGIS.
        * \return True if part of QGIS.
        */
-      bool isQGISModule();
+      bool isQgisModule() const;
 
       /**
        * Check if this stack line is valid.  Considered valid when the filename and line
        * number are known.
        * \return True of the line is valid.
        */
-      bool isValid();
+      bool isValid() const;
     };
 
     /**
