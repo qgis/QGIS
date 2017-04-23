@@ -38,7 +38,6 @@
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
-  , mFeatureFetched( false )
   , mConn( nullptr )
   , ogrLayer( nullptr )
   , mSubsetStringSet( false )

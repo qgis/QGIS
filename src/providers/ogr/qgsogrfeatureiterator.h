@@ -69,8 +69,6 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     //! Get an attribute associated with a feature
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
 
-    bool mFeatureFetched;
-
     QgsOgrConn *mConn = nullptr;
     OGRLayerH ogrLayer;
 
