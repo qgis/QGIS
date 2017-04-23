@@ -184,7 +184,7 @@ Get units of map's geographical coordinates - used for scale calculation
      * \since QGIS 3.0
      * \see setEllipsoid()
      */
-    QString ellipsoid() const { return mEllipsoid; }
+    QString ellipsoid() const;
 
     //! Set the background color of the map
     void setBackgroundColor( const QColor& color );
