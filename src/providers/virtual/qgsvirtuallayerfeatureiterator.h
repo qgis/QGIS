@@ -27,7 +27,6 @@ class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider *p );
-    ~QgsVirtualLayerFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 

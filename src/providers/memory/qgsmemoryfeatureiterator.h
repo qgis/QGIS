@@ -31,14 +31,13 @@ class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsMemoryFeatureSource( const QgsMemoryProvider *p );
-    ~QgsMemoryFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
     QgsFields mFields;
     QgsFeatureMap mFeatures;
-    QgsSpatialIndex *mSpatialIndex = nullptr;
+    std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
     QString mSubsetString;
     QgsExpressionContext mExpressionContext;
 

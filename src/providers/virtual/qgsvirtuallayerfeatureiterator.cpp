@@ -262,10 +262,6 @@ QgsVirtualLayerFeatureSource::QgsVirtualLayerFeatureSource( const QgsVirtualLaye
 {
 }
 
-QgsVirtualLayerFeatureSource::~QgsVirtualLayerFeatureSource()
-{
-}
-
 QgsFeatureIterator QgsVirtualLayerFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsVirtualLayerFeatureIterator( this, false, request ) );

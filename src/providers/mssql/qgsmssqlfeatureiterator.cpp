@@ -32,7 +32,6 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
   , mOrderByCompiled( false )
 {
   mClosed = false;
-  mQuery = nullptr;
 
   mParser.IsGeography = mSource->mIsGeography;
 
@@ -49,7 +48,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
   }
 
   // create sql query
-  mQuery = new QSqlQuery( mDatabase );
+  mQuery.reset( new QSqlQuery( mDatabase ) );
 
   // start selection
   rewind();
@@ -399,8 +398,7 @@ bool QgsMssqlFeatureIterator::rewind()
   if ( !result )
   {
     QgsDebugMsg( mQuery->lastError().text() );
-    delete mQuery;
-    mQuery = nullptr;
+    mQuery.reset();
     if ( mDatabase.isOpen() )
       mDatabase.close();
 
@@ -429,11 +427,7 @@ bool QgsMssqlFeatureIterator::close()
     mQuery->finish();
   }
 
-  if ( mQuery )
-  {
-    delete mQuery;
-    mQuery = nullptr;
-  }
+  mQuery.reset();
 
   if ( mDatabase.isOpen() )
     mDatabase.close();

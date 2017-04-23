@@ -85,7 +85,7 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
     QString mOrderByClause;
 
     // The current sql query
-    QSqlQuery *mQuery = nullptr;
+    std::unique_ptr< QSqlQuery > mQuery;
 
     // The current sql statement
     QString mStatement;

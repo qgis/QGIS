@@ -221,11 +221,6 @@ QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider *p )
   mExpressionContext.setFields( mFields );
 }
 
-QgsMemoryFeatureSource::~QgsMemoryFeatureSource()
-{
-  delete mSpatialIndex;
-}
-
 QgsFeatureIterator QgsMemoryFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsMemoryFeatureIterator( this, false, request ) );

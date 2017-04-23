@@ -271,7 +271,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
 {
   QStringList tokens;
 
-  QgsDelimitedTextFile *file = mSource->mFile;
+  QgsDelimitedTextFile *file = mSource->mFile.get();
 
   // If the iterator is not scanning the file, then it will have requested a specific
   // record, so only need to load that one.
@@ -506,7 +506,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
     url.removeQueryItem( QStringLiteral( "watchFile" ) );
   }
 
-  mFile = new QgsDelimitedTextFile();
+  mFile.reset( new QgsDelimitedTextFile() );
   mFile->setFromUrl( url );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()
@@ -517,8 +517,6 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
 QgsDelimitedTextFeatureSource::~QgsDelimitedTextFeatureSource()
 {
   delete mSubsetExpression;
-  delete mSpatialIndex;
-  delete mFile;
 }
 
 QgsFeatureIterator QgsDelimitedTextFeatureSource::getFeatures( const QgsFeatureRequest &request )
