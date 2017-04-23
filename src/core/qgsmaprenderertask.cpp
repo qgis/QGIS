@@ -46,6 +46,12 @@ void QgsMapRendererTask::addAnnotations( QList< QgsAnnotation * > annotations )
   }
 }
 
+void QgsMapRendererTask::addDecorations( QList< QgsMapDecoration * > decorations )
+{
+  mDecorations = decorations;
+}
+
+
 void QgsMapRendererTask::cancel()
 {
   mJobMutex.lock();
@@ -96,6 +102,11 @@ bool QgsMapRendererTask::run()
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mMapSettings );
   context.setPainter( destPainter );
+
+  Q_FOREACH ( QgsMapDecoration *decoration, mDecorations )
+  {
+    decoration->render( mMapSettings, context );
+  }
 
   Q_FOREACH ( QgsAnnotation *annotation, mAnnotations )
   {

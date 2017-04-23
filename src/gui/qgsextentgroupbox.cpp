@@ -29,6 +29,8 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   mYMinLineEdit->setValidator( new QDoubleValidator( this ) );
   mYMaxLineEdit->setValidator( new QDoubleValidator( this ) );
 
+  mOriginalExtentButton->setVisible( false );
+
   connect( mCurrentExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromCurrent );
   connect( mOriginalExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromOriginal );
   connect( this, &QGroupBox::clicked, this, &QgsExtentGroupBox::groupBoxClicked );
@@ -39,6 +41,8 @@ void QgsExtentGroupBox::setOriginalExtent( const QgsRectangle &originalExtent, c
 {
   mOriginalExtent = originalExtent;
   mOriginalCrs = originalCrs;
+
+  mOriginalExtentButton->setVisible( true );
 }
 
 
