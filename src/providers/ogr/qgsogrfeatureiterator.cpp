@@ -47,7 +47,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mFilterFids( mRequest.filterFids() )
   , mFilterFidsIt( mFilterFids.constBegin() )
 {
-  mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mProvider->dataSourceUri() );
+  mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mDataSource );
   if ( !mConn->ds )
   {
     return;
@@ -353,7 +353,6 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
 
 
 QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
-  : mProvider( p )
 {
   mDataSource = p->dataSourceUri();
   mLayerName = p->layerName();
