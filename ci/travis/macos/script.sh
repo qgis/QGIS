@@ -1,5 +1,5 @@
 ###########################################################################
-#    install.sh
+#    script.sh
 #    ---------------------
 #    Date                 : August 2015
 #    Copyright            : (C) 2015 by Nyall Dawson
@@ -13,24 +13,26 @@
 #                                                                         #
 ###########################################################################
 
-mkdir build
-cd build
-#no PGTEST for OSX - can't get postgres to start with brew install
-#no APIDOC for OSX - doxygen tests and warnings are covered by linux build
-#no deprecated-declarations warnings... requires QGIS ported to Cocoa
-cmake \
-  -DWITH_SERVER=ON \
-  -DWITH_STAGED_PLUGINS=ON \
-  -DWITH_GRASS=OFF \
-  -DSUPPRESS_SIP_WARNINGS=ON \
-  -DSUPPRESS_QT_WARNINGS=ON \
-  -DENABLE_MODELTEST=ON \
-  -DENABLE_PGTEST=OFF \
-  -DWITH_QWTPOLAR=OFF \
-  -DWITH_PYSPATIALITE=ON \
-  -DQWT_INCLUDE_DIR=/usr/local/opt/qwt/lib/qwt.framework/Headers/ \
-  -DQWT_LIBRARY=/usr/local/opt/qwt/lib/qwt.framework/qwt \
-  -DGDAL_CONFIG=/usr/local/opt/gdal-20/bin/gdal-config \
-  -DGRASS_PREFIX7=/usr/local/opt/grass-70/grass-7.0.4 \
-  -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations" \
-  ..
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo $PATH
+
+export PATH=/usr/bin:${PATH}
+
+ccache -s
+ccache -M 1G
+
+# Allow a maximum of 25 minutes for the tests to run in order to timeout before
+# travis does and in order to have some time left to upload the ccache to have
+# a chance to finish a rebuild in time.
+#
+# Travis will kill the job after approx 48 minutes, so this leaves us 23 minutes
+# for setup and cache uploading
+gtimeout 25m ctest -V -E "$(cat ${DIR}/blacklist.txt | gsed -r '/^(#.*?)?$/d' | gpaste -sd '|' -)" -S ${DIR}/travis.ctest --output-on-failure
+
+rv=$?
+
+if [ $? -eq 124 ] ; then
+    echo '\033[0;33mBuild and test timeout. Please restart the build for useful results.\033[0m'
+fi
+
+exit $rv
