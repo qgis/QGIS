@@ -303,7 +303,6 @@ SET (QGIS_APP_MOC_HDRS
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
   qgstipgui.h
-  qgstipfactory.h
   qgsundowidget.h
   qgsvectorlayerproperties.h
   qgsmapthemes.h
