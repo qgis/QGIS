@@ -25,8 +25,6 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
                                         QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mName( name )
-  , mShowCount( false )
-  , mShowType( false )
   , mProviderType( providerType )
 {
   setupUi( this );
