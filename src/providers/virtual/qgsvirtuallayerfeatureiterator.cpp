@@ -29,43 +29,52 @@ static QString quotedColumn( QString name )
 QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>( source, ownSource, request )
 {
+
+  // NOTE: this is really bad and should be removed.
+  // it's only here to guard mSource->mSqlite - because if the provider is removed
+  // then mSqlite will be meaningless.
+  // this needs to be totally reworked so that mSqlite no longer depends on the provider
+  // and can be fully encapsulated in the source
+  if ( !mSource->mProvider )
+  {
+    close();
+    return;
+  }
+
   try
   {
-    mSqlite = mSource->provider()->mSqlite.get();
-    mDefinition = mSource->provider()->mDefinition;
-
-    QString tableName = mSource->provider()->mTableName;
+    QString tableName = mSource->mTableName;
 
     QStringList wheres;
-    QString subset = mSource->provider()->mSubset;
+    QString subset = mSource->mSubset;
     if ( !subset.isNull() )
     {
       wheres << subset;
     }
 
-    if ( !mDefinition.uid().isNull() )
+    if ( !mSource->mDefinition.uid().isNull() )
     {
       // filters are only available when a column with unique id exists
-      if ( mDefinition.hasDefinedGeometry() && !request.filterRect().isNull() )
+      if ( mSource->mDefinition.hasDefinedGeometry() && !request.filterRect().isNull() )
       {
         bool do_exact = request.flags() & QgsFeatureRequest::ExactIntersect;
         QgsRectangle rect( request.filterRect() );
         QString mbr = QStringLiteral( "%1,%2,%3,%4" ).arg( rect.xMinimum() ).arg( rect.yMinimum() ).arg( rect.xMaximum() ).arg( rect.yMaximum() );
-        wheres << quotedColumn( mDefinition.geometryField() ) + " is not null";
+        wheres << quotedColumn( mSource->mDefinition.geometryField() ) + " is not null";
         wheres <<  QStringLiteral( "%1Intersects(%2,BuildMbr(%3))" )
                .arg( do_exact ? "" : "Mbr",
-                     quotedColumn( mDefinition.geometryField() ),
+                     quotedColumn( mSource->mDefinition.geometryField() ),
                      mbr );
       }
       else if ( request.filterType() == QgsFeatureRequest::FilterFid )
       {
         wheres << QStringLiteral( "%1=%2" )
-               .arg( quotedColumn( mDefinition.uid() ) )
+               .arg( quotedColumn( mSource->mDefinition.uid() ) )
                .arg( request.filterFid() );
       }
       else if ( request.filterType() == QgsFeatureRequest::FilterFids )
       {
-        QString values = quotedColumn( mDefinition.uid() ) + " IN (";
+        QString values = quotedColumn( mSource->mDefinition.uid() ) + " IN (";
         bool first = true;
         Q_FOREACH ( QgsFeatureId v, request.filterFids() )
         {
@@ -81,7 +90,6 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       }
     }
 
-    mFields = mSource->provider()->fields();
     if ( request.flags() & QgsFeatureRequest::SubsetOfAttributes )
     {
       // copy only selected fields
@@ -95,7 +103,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       {
         Q_FOREACH ( const QString &field, request.filterExpression()->referencedColumns() )
         {
-          int attrIdx = mFields.lookupField( field );
+          int attrIdx = mSource->mFields.lookupField( field );
           if ( !mAttributes.contains( attrIdx ) )
             mAttributes << attrIdx;
         }
@@ -103,15 +111,15 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     }
     else
     {
-      mAttributes = mFields.allAttributesList();
+      mAttributes = mSource->mFields.allAttributesList();
     }
 
     QString columns;
     {
       // the first column is always the uid (or 0)
-      if ( !mDefinition.uid().isNull() )
+      if ( !mSource->mDefinition.uid().isNull() )
       {
-        columns = quotedColumn( mDefinition.uid() );
+        columns = quotedColumn( mSource->mDefinition.uid() );
       }
       else
       {
@@ -120,16 +128,16 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       Q_FOREACH ( int i, mAttributes )
       {
         columns += QLatin1String( "," );
-        QString cname = mFields.at( i ).name().toLower();
+        QString cname = mSource->mFields.at( i ).name().toLower();
         columns += quotedColumn( cname );
       }
     }
     // the last column is the geometry, if any
     if ( ( !( request.flags() & QgsFeatureRequest::NoGeometry )
            || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() ) )
-         && !mDefinition.geometryField().isNull() && mDefinition.geometryField() != QLatin1String( "*no*" ) )
+         && !mSource->mDefinition.geometryField().isNull() && mSource->mDefinition.geometryField() != QLatin1String( "*no*" ) )
     {
-      columns += "," + quotedColumn( mDefinition.geometryField() );
+      columns += "," + quotedColumn( mSource->mDefinition.geometryField() );
     }
 
     mSqlQuery = "SELECT " + columns + " FROM " + tableName;
@@ -138,7 +146,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       mSqlQuery += " WHERE " + wheres.join( QStringLiteral( " AND " ) );
     }
 
-    mQuery.reset( new Sqlite::Query( mSqlite, mSqlQuery ) );
+    mQuery.reset( new Sqlite::Query( mSource->mSqlite, mSqlQuery ) );
 
     mFid = 0;
   }
@@ -193,9 +201,9 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
     return false;
   }
 
-  feature.setFields( mFields, /* init */ true );
+  feature.setFields( mSource->mFields, /* init */ true );
 
-  if ( mDefinition.uid().isNull() )
+  if ( mSource->mDefinition.uid().isNull() )
   {
     // no id column => autoincrement
     feature.setId( mFid++ );
@@ -246,6 +254,11 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
 
 QgsVirtualLayerFeatureSource::QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider *p )
   : mProvider( p )
+  , mDefinition( p->mDefinition )
+  , mFields( p->fields() )
+  , mSqlite( p->mSqlite.get() )
+  , mTableName( p->mTableName )
+  , mSubset( p->mSubset )
 {
 }
 
