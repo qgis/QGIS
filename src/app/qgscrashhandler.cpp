@@ -118,26 +118,27 @@ LONG WINAPI QgsCrashHandler::handle( struct _EXCEPTION_POINTERS *ExceptionInfo )
   return EXCEPTION_EXECUTE_HANDLER;
 }
 
-void QgsCrashHandler::showCrashDialog(const QList<QgsCrashReport::StackLine> &value)
+void QgsCrashHandler::showCrashDialog( const QList<QgsCrashReport::StackLine> &value )
 {
+
   QgsCrashDialog dlg( QApplication::activeWindow() );
   QgsCrashReport report;
   report.setStackTrace( stack );
   dlg.setBugReport( report.toString() );
   if ( dlg.exec() )
   {
-      restartApplication();
+    restartApplication();
   }
 }
 
 void QgsCrashHandler::restartApplication()
 {
-    QStringList arguments;
-    arguments = QCoreApplication::arguments();
-    QString path = arguments.at( 0 );
-    arguments.removeFirst();
-    arguments << QgsProject::instance()->fileName();
-    QProcess::startDetached( path, arguments, QDir::toNativeSeparators( QCoreApplication::applicationDirPath() ) );
+  QStringList arguments;
+  arguments = QCoreApplication::arguments();
+  QString path = arguments.at( 0 );
+  arguments.removeFirst();
+  arguments << QgsProject::instance()->fileName();
+  QProcess::startDetached( path, arguments, QDir::toNativeSeparators( QCoreApplication::applicationDirPath() ) );
 
 }
 #endif

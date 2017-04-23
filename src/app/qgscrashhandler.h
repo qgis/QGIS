@@ -31,7 +31,7 @@
 class APP_EXPORT QgsCrashHandler
 {
 
-public:
+  public:
 #ifdef Q_OS_WIN
     static LONG WINAPI handle( struct _EXCEPTION_POINTERS *ExceptionInfo );
 #endif
@@ -48,7 +48,8 @@ public:
      */
     static void restartApplication();
 
-private:
+  private:
+
     /**
      * This class doesn't need to be created by anyone as is only used to handle
      * crashes in the application.
