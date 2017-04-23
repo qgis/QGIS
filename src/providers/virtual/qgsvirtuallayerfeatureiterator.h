@@ -21,18 +21,32 @@ email                : hugo dot mercier at oslandia dot com
 #include <qgsvirtuallayerprovider.h>
 #include <qgsfeatureiterator.h>
 #include <memory>
+#include <QPointer>
 
 class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider *p );
-    ~QgsVirtualLayerFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-    const QgsVirtualLayerProvider *provider() const { return mProvider; }
   private:
-    const QgsVirtualLayerProvider *mProvider = nullptr;
+
+    // NOTE: this is really bad and should be removed.
+    // it's only here to guard mSqlite - because if the provider is removed
+    // then mSqlite will be meaningless.
+    // this needs to be totally reworked so that mSqlite no longer depends on the provider
+    // and can be fully encapsulated here
+    QPointer< const QgsVirtualLayerProvider  > mProvider;
+
+    QString mPath;
+    QgsVirtualLayerDefinition mDefinition;
+    QgsFields mFields;
+    sqlite3 *mSqlite = nullptr;
+    QString mTableName;
+    QString mSubset;
+
+    friend class QgsVirtualLayerFeatureIterator;
 };
 
 class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>
@@ -48,18 +62,14 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
 
     virtual bool fetchFeature( QgsFeature &feature ) override;
 
+  private:
+
     std::unique_ptr<Sqlite::Query> mQuery;
 
+    QgsAttributeList mAttributes;
+    QString mSqlQuery;
     QgsFeatureId mFid;
 
-    QString mPath;
-    sqlite3 *mSqlite = nullptr;
-    QgsVirtualLayerDefinition mDefinition;
-    QgsFields mFields;
-
-    QString mSqlQuery;
-
-    QgsAttributeList mAttributes;
 };
 
 #endif

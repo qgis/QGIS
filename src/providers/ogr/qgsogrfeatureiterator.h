@@ -32,8 +32,7 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
-    const QgsOgrProvider *mProvider = nullptr;
+  private:
     QString mDataSource;
     QString mLayerName;
     int mLayerIndex;
@@ -63,12 +62,12 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     virtual bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
+  private:
+
     bool readFeature( OGRFeatureH fet, QgsFeature &feature ) const;
 
     //! Get an attribute associated with a feature
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
-
-    bool mFeatureFetched;
 
     QgsOgrConn *mConn = nullptr;
     OGRLayerH ogrLayer;
@@ -78,7 +77,6 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
 
-  private:
     bool mExpressionCompiled;
     QgsFeatureIds mFilterFids;
     QgsFeatureIds::const_iterator mFilterFidsIt;

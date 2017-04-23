@@ -39,9 +39,7 @@ QgsAfsProvider *QgsAfsFeatureSource::provider() const
 
 QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsAfsFeatureSource>( source, ownSource, request )
-{
-  mFeatureIterator = 0;
-}
+{}
 
 QgsAfsFeatureIterator::~QgsAfsFeatureIterator()
 {

@@ -2,6 +2,23 @@
 // abstract feature iterator implementations are not part of public API
 
 
+class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
+{
+%TypeHeaderCode
+#include <qgsvectorlayerfeatureiterator.h>
+%End
+  public:
+
+    /** Constructor for QgsVectorLayerFeatureSource.
+     * \param layer source layer
+     */
+    explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
+
+    ~QgsVectorLayerFeatureSource();
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() );
+};
+
 class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIterator
 {
 %TypeHeaderCode

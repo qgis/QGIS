@@ -437,7 +437,7 @@ class CORE_EXPORT QgsAbstractFeatureSource
      * \param request The request
      * \returns A feature iterator
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0;
 
   protected:
     void iteratorOpened( QgsAbstractFeatureIterator *it );

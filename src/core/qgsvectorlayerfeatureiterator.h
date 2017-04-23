@@ -36,7 +36,6 @@ class QgsVectorLayerFeatureIterator;
 
 /** \ingroup core
  * Partial snapshot of vector layer's state (only the members necessary for access to features)
- * \note not available in Python bindings
 */
 class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
@@ -49,7 +48,7 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 
     ~QgsVectorLayerFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) override;
 
     friend class QgsVectorLayerFeatureIterator;
 

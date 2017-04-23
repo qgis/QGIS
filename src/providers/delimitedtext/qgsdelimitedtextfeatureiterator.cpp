@@ -28,8 +28,7 @@
 
 QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
-  , mNextId( 0 )
-  , mTestGeometryExact( false )
+  , mTestSubset( mSource->mSubsetExpression )
 {
 
   // Determine mode to use based on request...
@@ -38,14 +37,6 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   // Does the layer have geometry - will revise later to determine if we actually need to
   // load it.
   bool hasGeometry = mSource->mGeomRep != QgsDelimitedTextProvider::GeomNone;
-
-  // Does the layer have an explicit or implicit subset (implicit subset is if we have geometry which can
-  // be invalid)
-
-  mTestSubset = mSource->mSubsetExpression;
-  mTestGeometry = false;
-
-  mMode = FileScan;
 
   if ( !request.filterRect().isNull() && hasGeometry )
   {
@@ -271,7 +262,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
 {
   QStringList tokens;
 
-  QgsDelimitedTextFile *file = mSource->mFile;
+  QgsDelimitedTextFile *file = mSource->mFile.get();
 
   // If the iterator is not scanning the file, then it will have requested a specific
   // record, so only need to load that one.
@@ -506,7 +497,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
     url.removeQueryItem( QStringLiteral( "watchFile" ) );
   }
 
-  mFile = new QgsDelimitedTextFile();
+  mFile.reset( new QgsDelimitedTextFile() );
   mFile->setFromUrl( url );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()
@@ -517,8 +508,6 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
 QgsDelimitedTextFeatureSource::~QgsDelimitedTextFeatureSource()
 {
   delete mSubsetExpression;
-  delete mSpatialIndex;
-  delete mFile;
 }
 
 QgsFeatureIterator QgsDelimitedTextFeatureSource::getFeatures( const QgsFeatureRequest &request )

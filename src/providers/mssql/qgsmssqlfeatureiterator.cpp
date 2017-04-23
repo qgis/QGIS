@@ -28,11 +28,8 @@
 
 QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>( source, ownSource, request )
-  , mExpressionCompiled( false )
-  , mOrderByCompiled( false )
 {
   mClosed = false;
-  mQuery = nullptr;
 
   mParser.IsGeography = mSource->mIsGeography;
 
@@ -49,7 +46,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
   }
 
   // create sql query
-  mQuery = new QSqlQuery( mDatabase );
+  mQuery.reset( new QSqlQuery( mDatabase ) );
 
   // start selection
   rewind();
@@ -399,8 +396,7 @@ bool QgsMssqlFeatureIterator::rewind()
   if ( !result )
   {
     QgsDebugMsg( mQuery->lastError().text() );
-    delete mQuery;
-    mQuery = nullptr;
+    mQuery.reset();
     if ( mDatabase.isOpen() )
       mDatabase.close();
 
@@ -429,11 +425,7 @@ bool QgsMssqlFeatureIterator::close()
     mQuery->finish();
   }
 
-  if ( mQuery )
-  {
-    delete mQuery;
-    mQuery = nullptr;
-  }
+  mQuery.reset();
 
   if ( mDatabase.isOpen() )
     mDatabase.close();
@@ -449,6 +441,8 @@ bool QgsMssqlFeatureIterator::close()
 QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   : mFields( p->mAttributeFields )
   , mFidColName( p->mFidColName )
+  , mSRId( p->mSRId )
+  , mIsGeography( p->mParser.IsGeography )
   , mGeometryColName( p->mGeometryColName )
   , mGeometryColType( p->mGeometryColType )
   , mSchemaName( p->mSchemaName )
@@ -459,10 +453,7 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   , mDatabaseName( p->mDatabaseName )
   , mHost( p->mHost )
   , mSqlWhereClause( p->mSqlWhereClause )
-{
-  mSRId = p->mSRId;
-  mIsGeography = p->mParser.IsGeography;
-}
+{}
 
 QgsFeatureIterator QgsMssqlFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {

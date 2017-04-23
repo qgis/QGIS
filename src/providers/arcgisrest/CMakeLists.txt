@@ -25,7 +25,6 @@ SET (AFS_SRCS
 SET (AFS_MOC_HDRS
   qgsarcgisrestutils.h
   qgsafsdataitems.h
-  qgsafsfeatureiterator.h
   qgsafsprovider.h
   qgsafssourceselect.h
 )

@@ -255,7 +255,7 @@ class QgsWFSFeatureSource : public QgsAbstractFeatureSource
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
 
     std::shared_ptr<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
 

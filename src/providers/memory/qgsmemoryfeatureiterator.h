@@ -31,14 +31,13 @@ class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsMemoryFeatureSource( const QgsMemoryProvider *p );
-    ~QgsMemoryFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QgsFields mFields;
     QgsFeatureMap mFeatures;
-    QgsSpatialIndex *mSpatialIndex = nullptr;
+    std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
     QString mSubsetString;
     QgsExpressionContext mExpressionContext;
 
@@ -60,12 +59,13 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
 
     virtual bool fetchFeature( QgsFeature &feature ) override;
 
+  private:
     bool nextFeatureUsingList( QgsFeature &feature );
     bool nextFeatureTraverseAll( QgsFeature &feature );
 
     QgsGeometry mSelectRectGeom;
     QgsFeatureMap::const_iterator mSelectIterator;
-    bool mUsingFeatureIdList;
+    bool mUsingFeatureIdList = false;
     QList<QgsFeatureId> mFeatureIdList;
     QList<QgsFeatureId>::const_iterator mFeatureIdListIterator;
     QgsExpression *mSubsetExpression = nullptr;

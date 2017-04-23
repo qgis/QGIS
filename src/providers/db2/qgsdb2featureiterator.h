@@ -34,7 +34,7 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QgsFields mFields;
     QString mFidColName;
     long mSRId;
@@ -85,7 +85,7 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
     QString mOrderByClause;
 
     // The current sql query
-    QSqlQuery *mQuery = nullptr;
+    std::unique_ptr< QSqlQuery > mQuery;
 
     // The current sql statement
     QString mStatement;
@@ -99,7 +99,7 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
     bool mExpressionCompiled;
     bool mOrderByCompiled;
 
-    int mFetchCount;
+    int mFetchCount = 0;
 };
 
 #endif // QGSDB2FEATUREITERATOR_H

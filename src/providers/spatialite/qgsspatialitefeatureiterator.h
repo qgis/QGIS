@@ -34,7 +34,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QString mGeometryColumn;
     QString mSubsetString;
     QgsFields mFields;
@@ -67,6 +67,8 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     virtual bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
+  private:
+
     QString whereClauseRect();
     QString whereClauseFid();
     QString whereClauseFids();
@@ -95,7 +97,6 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     bool mHasPrimaryKey;
     QgsFeatureId mRowNumber;
 
-  private:
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
     bool mOrderByCompiled;

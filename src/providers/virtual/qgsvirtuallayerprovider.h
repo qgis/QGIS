@@ -113,7 +113,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     bool createIt();
     bool loadSourceLayers();
 
-    friend class QgsVirtualLayerFeatureIterator;
+    friend class QgsVirtualLayerFeatureSource;
 
   private slots:
     void invalidateStatistics();
