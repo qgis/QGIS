@@ -101,10 +101,10 @@ LONG WINAPI QgsCrashHandler::handle( struct _EXCEPTION_POINTERS *ExceptionInfo )
         moduleName = "(unknown module)";
       }
       QgsCrashReport::StackLine stackline;
-      stackline.ModuleName = moduleName;
-      stackline.FileName = fileName;
-      stackline.LineNumber = lineNumber;
-      stackline.SymbolName = QString( symbol->Name );
+      stackline.moduleName = moduleName;
+      stackline.fileName = fileName;
+      stackline.lineNumber = lineNumber;
+      stackline.symbolName = QString( symbol->Name );
       stack.append( stackline );
     }
   }
@@ -118,7 +118,7 @@ LONG WINAPI QgsCrashHandler::handle( struct _EXCEPTION_POINTERS *ExceptionInfo )
   return EXCEPTION_EXECUTE_HANDLER;
 }
 
-void QgsCrashHandler::showCrashDialog( const QList<QgsCrashReport::StackLine> &value )
+void QgsCrashHandler::showCrashDialog( const QList<QgsCrashReport::StackLine> &stack )
 {
 
   QgsCrashDialog dlg( QApplication::activeWindow() );
