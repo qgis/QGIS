@@ -343,7 +343,7 @@ class QgsAbstractFeatureSource
      * @param request The request
      * @return A feature iterator
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) = 0;
 
   protected:
     void iteratorOpened( QgsAbstractFeatureIterator* it );
