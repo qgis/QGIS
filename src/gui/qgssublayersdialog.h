@@ -38,7 +38,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     };
 
     //! A structure that defines layers for the purpose of this dialog
-    //! \since added in 2.16
+    //! \since QGIS 2.16
     typedef struct LayerDefinition
     {
       LayerDefinition() : layerId( -1 ), count( -1 ), geometryId( -1 ), retrievalMethod( -1 ) {}
@@ -53,32 +53,32 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     } LayerDefinition;
 
     //! List of layer definitions for the purpose of this dialog
-    //! \since added in 2.16
+    //! \since QGIS 2.16
     typedef QList<LayerDefinition> LayerDefinitionList;
 
     QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsSublayersDialog();
 
     //! Populate the table with layers
-    //! \since added in 2.16
+    //! \since QGIS 2.16
     void populateLayerTable( const LayerDefinitionList &list );
 
     //! Returns list of selected layers
     //! \since Provider specific strings are parse here
     //! QgsOgrProvider: layer-id is set to -1 if layer-name is unique
-    //! \since added in 2.16
+    //! \since QGIS 2.16
     LayerDefinitionList selection();
 
     //! Set if we should display the add to group checkbox
-    //! \since added in 3.0
+    //! \since QGIS 3.0
     void setShowAddToGroupCheckbox( bool showAddToGroupCheckbox ) { mShowAddToGroupCheckbox = showAddToGroupCheckbox; }
 
     //! If we should display the add to group checkbox
-    //! \since added in 3.0
+    //! \since QGIS 3.0
     bool showAddToGroupCheckbox() const { return mShowAddToGroupCheckbox; }
 
     //! If we should add layers in a group
-    //! \since added in 3.0
+    //! \since QGIS 3.0
     bool addToGroupCheckbox() const { return mCheckboxAddToGroup->isChecked(); }
 
   public slots:
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     bool mShowCount = false;  //!< Whether to show number of features in the table
     bool mShowType = false;   //!< Whether to show type in the table
     //! Needed to parse Provider specific strings
-    //! \since added in 3.00
+    //! \since QGIS 3.00
     ProviderType mProviderType;
 
   private:
