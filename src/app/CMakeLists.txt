@@ -181,6 +181,7 @@ SET(QGIS_APP_SRCS
   qgssettingstree.cpp
   qgsvariantdelegate.cpp
   qgscrashdialog.cpp
+  qgscrashhandler.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS

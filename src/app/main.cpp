@@ -96,6 +96,7 @@ typedef SInt32 SRefCon;
 #include "qgsmapthemes.h"
 #include "qgsvectorlayer.h"
 #include "qgis_app.h"
+#include "qgscrashhandler.h"
 
 /** Print usage text
  */
@@ -468,7 +469,7 @@ int main( int argc, char *argv[] )
 #endif
 
 #ifdef Q_OS_WIN
-  SetUnhandledExceptionFilter( QgisApp::qgisCrashDump );
+  SetUnhandledExceptionFilter( QgsCrashHandler::handle );
 #endif
 
   // initialize random number seed

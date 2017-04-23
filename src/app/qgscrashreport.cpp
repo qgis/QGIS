@@ -51,9 +51,9 @@ const QString QgsCrashReport::toString() const
     {
       Q_FOREACH ( const QgsCrashReport::StackLine &line, mStackTrace )
       {
-        QFileInfo fileInfo( line.FileName );
+        QFileInfo fileInfo( line.fileName );
         QString filename( fileInfo.fileName() );
-        reportData.append( QString( "(%1) %2 %3:%4" ).arg( line.ModuleName, line.SymbolName, filename, line.LineNumber ) );
+        reportData.append( QString( "(%1) %2 %3:%4" ).arg( line.moduleName, line.symbolName, filename, line.lineNumber ) );
       }
     }
   }
@@ -126,9 +126,9 @@ const QString QgsCrashReport::crashID() const
   // Hashes the full stack.
   Q_FOREACH ( QgsCrashReport::StackLine line, mStackTrace )
   {
-    QFileInfo fileInfo( line.FileName );
+    QFileInfo fileInfo( line.fileName );
     QString filename( fileInfo.fileName() );
-    data += line.ModuleName + line.SymbolName + line.LineNumber + filename;
+    data += line.moduleName + line.symbolName + line.lineNumber + filename;
   }
 
   if ( data.isNull() )
@@ -139,15 +139,15 @@ const QString QgsCrashReport::crashID() const
 
 }
 
-bool QgsCrashReport::StackLine::isQGISModule()
+bool QgsCrashReport::StackLine::isQgisModule() const
 {
-  return ModuleName.toLower().contains( "qgis" );
+  return moduleName.toLower().contains( "qgis" );
 }
 
-bool QgsCrashReport::StackLine::isValid()
+bool QgsCrashReport::StackLine::isValid() const
 {
-  return !( FileName.toLower().contains( "exe_common" ) ||
-            FileName.toLower().contains( "unknown" ) ||
-            LineNumber.toLower().contains( "unknown" ) );
+  return !( fileName.toLower().contains( "exe_common" ) ||
+            fileName.toLower().contains( "unknown" ) ||
+            lineNumber.toLower().contains( "unknown" ) );
 
 }
