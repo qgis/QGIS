@@ -41,12 +41,15 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     //! \since QGIS 2.16
     typedef struct LayerDefinition
     {
-      LayerDefinition() : layerId( -1 ), count( -1 ) {}
-
+      LayerDefinition() : layerId( -1 ), count( -1 ), geometryId( -1 ), retrievalMethod( -1 ) {}
+      // 'layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type'
       int layerId;        //!< Identifier of the layer (one unique layer id may have multiple types though)
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count;          //!< Number of features (might be unused)
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
+      QString geometryName;  //!< Name of the geometry (not necessarily unique)
+      int geometryId;        //!< Identifier of the layer-geometry
+      int retrievalMethod;          //!< Ogr retrievel method, internal use only
     } LayerDefinition;
 
     //! List of layer definitions for the purpose of this dialog
@@ -81,6 +84,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     int exec();
 
   protected:
+    ProviderType mProviderType; //!< Needed to parse Provider specific strings Added in QGIS 3.0
     QString mName;
     QStringList mSelectedSubLayers;
     bool mShowCount = false;  //!< Whether to show number of features in the table

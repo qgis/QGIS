@@ -36,7 +36,9 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     const QgsOgrProvider *mProvider = nullptr;
     QString mDataSource;
     QString mLayerName;
+    QString mGeometryName;
     int mLayerIndex;
+    int mGeometryIndex;
     QString mSubsetString;
     QTextCodec *mEncoding = nullptr;
     QgsFields mFields;
@@ -44,6 +46,8 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     QgsFields mFieldsWithoutFid;
     OGRwkbGeometryType mOgrGeometryTypeFilter;
     QString mDriverName;
+    // mSubLayerList entry that was actually used to open the layer
+    QString mSubLayerString;
 
     friend class QgsOgrFeatureIterator;
     friend class QgsOgrExpressionCompiler;

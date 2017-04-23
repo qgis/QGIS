@@ -26,9 +26,10 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   : QDialog( parent, fl )
   , mName( name )
 {
+  mProviderType = providerType;
   setupUi( this );
 
-  if ( providerType == QgsSublayersDialog::Ogr )
+  if ( mProviderType == QgsSublayersDialog::Ogr )
   {
     setWindowTitle( tr( "Select vector layers to add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
@@ -36,7 +37,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
     mShowCount = true;
     mShowType = true;
   }
-  else if ( providerType == QgsSublayersDialog::Gdal )
+  else if ( mProviderType == QgsSublayersDialog::Gdal )
   {
     setWindowTitle( tr( "Select raster layers to add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) );
@@ -106,6 +107,18 @@ QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
       if ( !_isLayerIdUnique( def.layerId, layersTable ) )
         def.type = item->text( mShowCount ? 3 : 2 );
     }
+    if ( mProviderType == QgsSublayersDialog::Ogr )
+    {
+      // Ogr-Internal use only - no needed to show to user
+      def.count = item->text( 2 ).toInt();
+      if ( item->text( 3 ) != "Unknown" )
+      {
+        def.type = item->text( 3 );
+      }
+      def.geometryName = item->text( mShowCount ? 4 : 3 );
+      def.geometryId = item->text( mShowCount ? 5 : 4 ).toInt();
+      def.retrievalMethod = item->text( mShowCount ? 6 : 5 ).toInt();
+    }
 
     list << def;
   }
@@ -123,6 +136,13 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
       elements << QString::number( item.count );
     if ( mShowType )
       elements << item.type;
+    if ( mProviderType == QgsSublayersDialog::Ogr )
+    {
+      //  layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type
+      elements << item.geometryName;
+      elements << QString::number( item.geometryId );
+      elements << QString::number( item.retrievalMethod );
+    }
     layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );
   }
 
