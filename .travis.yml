@@ -64,11 +64,15 @@ matrix:
             - expect-dev  # unbuffer
             - coreutils
     # OSX based build with QT4 and Python 2
-    # - os: osx
-    #  env:
-    #    - BUILD=osx
-    #    - IGNORE_BUILD_FAILURES=YES
-
+    - os: osx
+      osx_image: xcode8.3 # MacOS 10.12: Sierra
+      cache:
+        pip: true
+        directories:
+          - $HOME/.ccache
+      env:
+        - TRAVIS_CONFIG=macos
+        - IGNORE_BUILD_FAILURES=YES
 
 git:
   depth: 30
