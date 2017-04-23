@@ -64,8 +64,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     void populateLayerTable( const LayerDefinitionList &list );
 
     //! Returns list of selected layers
-    //! \since Provider specific strings are parse here
-    //! QgsOgrProvider: layer-id is set to -1 if layer-name is unique
     //! \since QGIS 2.16
     LayerDefinitionList selection();
 
