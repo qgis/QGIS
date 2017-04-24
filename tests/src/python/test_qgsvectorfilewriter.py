@@ -688,5 +688,6 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         gdal.Unlink(filename)
 
+
 if __name__ == '__main__':
     unittest.main()
