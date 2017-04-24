@@ -15,6 +15,10 @@ __revision__ = '$Format:%H$'
 
 from qgis.utils import spatialite_connect
 import os
+
+# Needed on Qt 5 so that the serialization of XML is consistent among all executions
+os.environ['QT_HASH_SEED'] = '1'
+
 import time
 import urllib.parse
 from shutil import copyfile
