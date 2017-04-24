@@ -36,6 +36,7 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace(_EXCEPTION_POINTERS *Exce
 
   HANDLE process = GetCurrentProcess();
   // TOOD Pull symbols from symbol server.
+  SymSetOptions( SYMOPT_DEFERRED_LOADS | SYMOPT_INCLUDE_32BIT_MODULES | SYMOPT_UNDNAME );
   SymInitialize( process, NULL, TRUE );
 
   // StackWalk64() may modify context record passed to it, so we will
