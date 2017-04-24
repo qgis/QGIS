@@ -852,6 +852,7 @@ SET(QGIS_CORE_HDRS
   composer/qgspaperitem.h
 
   processing/qgsprocessingalgorithm.h
+  processing/qgsprocessingcontext.h
   processing/qgsprocessingutils.h
 
   raster/qgsbilinearrasterresampler.h
