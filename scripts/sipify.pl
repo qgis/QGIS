@@ -127,6 +127,7 @@ while ($line_idx < $line_count){
                     }
                     elsif ( $line =~ m/^\s*#endif/ ){
                         if ( $nesting_index == 0 ){
+                            $comment = '';
                             $SIP_RUN = 0;
                             last;
                         }
@@ -156,6 +157,7 @@ while ($line_idx < $line_count){
                 }
                 elsif ( $line =~ m/^\s*#endif/ ){
                     if ( $nesting_index == 0 ){
+                        $comment = '';
                         $SIP_RUN = 0;
                         last;
                     }
@@ -205,18 +207,26 @@ while ($line_idx < $line_count){
     if ( $line =~ m/^\s*private( slots)?:/ ){
         $ACCESS = PRIVATE;
         $private_section_line = $line;
+        $comment = '';
         next;
     }
     elsif ( $line =~ m/^\s*(public)( slots)?:.*$/ ){
         $ACCESS = PUBLIC;
+        $comment = '';
     }
     elsif ( $line =~ m/^\};.*$/ ) {
         $ACCESS = PUBLIC;
+        $comment = '';
     }
     elsif ( $line =~ m/^\s*(protected)( slots)?:.*$/ ){
         $ACCESS = PROTECTED;
+        $comment = '';
+    }
+    elsif ( $ACCESS == PRIVATE && $line =~ m/SIP_FORCE/){
+        push @output, $private_section_line."\n";
     }
     elsif ( $ACCESS == PRIVATE && $SIP_RUN == 0 ) {
+      $comment = '';
       next;
     }
     # Skip assignment operator
@@ -236,7 +246,7 @@ while ($line_idx < $line_count){
             $line = $lines[$line_idx];
             $line_idx++;
             $comment .= processDoxygenLine( $line =~ s/\s*\*?(.*?)(\/)?\n?$/$1/r );
-            if ( $line =~ m/\*\/$/ ){
+            if ( $line =~ m/\*\/\s*(\/\/.*?)?$/ ){
                 last;
             }
         }
@@ -466,6 +476,8 @@ while ($line_idx < $line_count){
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
     $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
     $line =~ s/=\s+[^=]*?\s+SIP_PYDEFAULTVALUE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
+
+    $line =~ s/SIP_FORCE//;
 
     # fix astyle placing space after % character
     $line =~ s/\s*% (MappedType|TypeHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;
