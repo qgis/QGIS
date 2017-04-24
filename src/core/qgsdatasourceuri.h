@@ -36,7 +36,15 @@
 class CORE_EXPORT QgsDataSourceUri
 {
   public:
-    enum SslMode { SslPrefer, SslDisable, SslAllow, SslRequire, SslVerifyCa, SslVerifyFull };
+    enum SslMode
+    {
+      SslPrefer,
+      SslDisable,
+      SslAllow,
+      SslRequire,
+      SslVerifyCa,
+      SslVerifyFull
+    };
 
     //! default constructor
     QgsDataSourceUri();
@@ -44,8 +52,11 @@ class CORE_EXPORT QgsDataSourceUri
     //! constructor which parses input URI
     QgsDataSourceUri( QString uri );
 
-    //! constructor which parses input encoded URI (generic mode)
-    QgsDataSourceUri( const QByteArray &uri );
+    /**
+     * \brief constructor which parses input encoded URI (generic mode)
+     * \note not available in Python bindings
+     */
+    QgsDataSourceUri( const QByteArray &uri ) SIP_SKIP;
 
     //! return connection part of URI
     QString connectionInfo( bool expandAuthConfig = true ) const;
@@ -56,9 +67,11 @@ class CORE_EXPORT QgsDataSourceUri
     //! return complete encoded uri (generic mode)
     QByteArray encodedUri() const;
 
-    //! set complete encoded uri (generic mode)
-    // \note not available in Python bindings
-    void setEncodedUri( const QByteArray &uri );
+    /**
+     * \brief set complete encoded uri (generic mode)
+     * \note not available in Python bindings
+     */
+    void setEncodedUri( const QByteArray &uri ) SIP_SKIP;
 
     //! set complete encoded uri (generic mode)
     void setEncodedUri( const QString &uri );
@@ -70,7 +83,7 @@ class CORE_EXPORT QgsDataSourceUri
     // \note if key exists, another is inserted
     void setParam( const QString &key, const QString &value );
     //! \note available in Python as setParamList
-    void setParam( const QString &key, const QStringList &value );
+    void setParam( const QString &key, const QStringList &value ) SIP_PYNAME( setParamList );
 
     //! Remove generic param (generic mode)
     // \note remove all occurrences of key, returns number of params removed
@@ -178,7 +191,7 @@ class CORE_EXPORT QgsDataSourceUri
     //! Returns the password
     QString password() const;
     //! Returns the SSL mode
-    enum SslMode sslMode() const;
+    SslMode sslMode() const;
 
     //! Returns the service name
     QString service() const;
