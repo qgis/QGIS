@@ -20,6 +20,7 @@
 #include <QStringList>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
@@ -44,7 +45,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     Q_OBJECT
   public:
     //! Create the instance that synchronizes given project with a layer tree root
-    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent = nullptr );
+    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     void setEnabled( bool enabled ) { mEnabled = enabled; }
     bool isEnabled() const { return mEnabled; }

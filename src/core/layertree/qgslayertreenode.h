@@ -20,6 +20,7 @@
 #include <QObject>
 
 #include "qgsobjectcustomproperties.h"
+#include "qgis.h"
 
 class QDomElement;
 
@@ -69,6 +70,25 @@ class QgsMapLayer;
 class CORE_EXPORT QgsLayerTreeNode : public QObject
 {
     Q_OBJECT
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->inherits( "QgsLayerTreeNode" ) )
+    {
+      sipType = sipType_QgsLayerTreeNode;
+      QgsLayerTreeNode *node = qobject_cast<QgsLayerTreeNode *>( sipCpp );
+      if ( QgsLayerTree::isLayer( node ) )
+        sipType = sipType_QgsLayerTreeLayer;
+      else if ( qobject_cast<QgsLayerTree *>( sipCpp ) )
+        sipType = sipType_QgsLayerTree;
+      else if ( QgsLayerTree::isGroup( node ) )
+        sipType = sipType_QgsLayerTreeGroup;
+    }
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
 
     //! Enumeration of possible tree node types
@@ -87,7 +107,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Get list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode *> children() { return mChildren; }
     //! Get list of children of the node. Children are owned by the parent
-    QList<QgsLayerTreeNode *> children() const { return mChildren; }
+    QList<QgsLayerTreeNode *> children() const { return mChildren; } SIP_SKIP
 
     //! Return name of the node
     //! \since QGIS 3.0
@@ -98,11 +118,11 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
     //! Read layer tree from XML. Returns new instance.
     //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
-    static QgsLayerTreeNode *readXml( QDomElement &element );
+    static QgsLayerTreeNode *readXml( QDomElement &element ) SIP_FACTORY;
     //! Read layer tree from XML. Returns new instance.
     //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
     //! \since QGIS 3.0
-    static QgsLayerTreeNode *readXml( QDomElement &element, const QgsProject *project );
+    static QgsLayerTreeNode *readXml( QDomElement &element, const QgsProject *project ) SIP_FACTORY;
 
     //! Write layer tree to XML
     virtual void writeXml( QDomElement &parentElement ) = 0;
@@ -111,7 +131,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     virtual QString dump() const = 0;
 
     //! Create a copy of the node. Returns new instance
-    virtual QgsLayerTreeNode *clone() const = 0;
+    virtual QgsLayerTreeNode *clone() const = 0 SIP_FACTORY;
 
     /**
      * Turn textual references to layers into map layer object from project.

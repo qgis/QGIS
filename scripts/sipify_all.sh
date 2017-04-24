@@ -25,6 +25,8 @@ fi
 
 pushd ${DIR} > /dev/null
 
+count=0
+
 while read -r sipfile; do
   if ! grep -Fxq "$sipfile" python/auto_sip.blacklist; then
     echo "$sipfile"
@@ -34,11 +36,14 @@ while read -r sipfile; do
     else
       ./scripts/sipify.pl $header > python/$sipfile
     fi
+    count=$((count+1))
   fi
 done < <(
 ${GP}sed -n -r 's/^%Include (.*\.sip)/core\/\1/p' python/core/core.sip
 ${GP}sed -n -r 's/^%Include (.*\.sip)/gui\/\1/p' python/gui/gui.sip
 ${GP}sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis.sip
   )
+
+echo " => $count files sipified!"
 
 popd > /dev/null
