@@ -200,12 +200,6 @@ core/fieldformatter/qgslistfieldformatter.sip
 core/fieldformatter/qgsrelationreferencefieldformatter.sip
 core/fieldformatter/qgsvaluemapfieldformatter.sip
 core/fieldformatter/qgsvaluerelationfieldformatter.sip
-core/layertree/qgslayertree.sip
-core/layertree/qgslayertreemodel.sip
-core/layertree/qgslayertreemodellegendnode.sip
-core/layertree/qgslayertreenode.sip
-core/layertree/qgslayertreeregistrybridge.sip
-core/layertree/qgslayertreeutils.sip
 core/raster/qgsbilinearrasterresampler.sip
 core/raster/qgsbrightnesscontrastfilter.sip
 core/raster/qgscliptominmaxenhancement.sip

@@ -53,11 +53,21 @@ class QgsLayerTree;
  */
 class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->inherits( "QgsLayerTreeModel" ) )
+      sipType = sipType_QgsLayerTreeModel;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
     //! Construct a new tree model with given layer tree (root node must not be null pointer).
     //! The root node is not transferred by the model.
-    explicit QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
+    explicit QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsLayerTreeModel();
 
@@ -204,7 +214,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Get hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
     //! If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
     //! \since QGIS 2.6
-    void legendMapViewData( double *mapUnitsPerPixel, int *dpi, double *scale ) const;
+    void legendMapViewData( double *mapUnitsPerPixel SIP_OUT, int *dpi SIP_OUT, double *scale  SIP_OUT ) const;
 
     //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
     //! \since QGIS 2.10
@@ -292,6 +302,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! 2. some legend nodes have non-null parent rule key (accessible via data(ParentRuleKeyRole) method)
     //! The tree structure (parents and children of each node) is extracted by analyzing nodes' parent rules.
     //! \note not available in Python bindings
+#ifndef SIP_RUN
     struct LayerLegendTree
     {
       //! Pointer to parent for each active node. Top-level nodes have null parent. Pointers are not owned.
@@ -299,9 +310,11 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       //! List of children for each active node. Top-level nodes are under null pointer key. Pointers are not owned.
       QMap<QgsLayerTreeModelLegendNode *, QList<QgsLayerTreeModelLegendNode *> > children;
     };
+#endif
 
     //! Structure that stores all data associated with one map layer
     //! \note not available in Python bindings
+#ifndef SIP_RUN
     struct LayerLegendData
     {
       LayerLegendData()
@@ -323,9 +336,10 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       //! Optional pointer to a tree structure - see LayerLegendTree for details
       LayerLegendTree *tree = nullptr;
     };
+#endif
 
     //! \note not available in Python bindings
-    LayerLegendTree *tryBuildLegendTree( const QList<QgsLayerTreeModelLegendNode *> &nodes );
+    LayerLegendTree *tryBuildLegendTree( const QList<QgsLayerTreeModelLegendNode *> &nodes ) SIP_SKIP;
 
     //! Overrides of map layers' styles: key = layer ID, value = style XML.
     //! This allows to show legend that is different from the current style of layers
