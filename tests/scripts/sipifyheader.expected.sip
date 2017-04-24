@@ -262,6 +262,8 @@ Removing function body with virtual const reference
   public:
     void FallBackToPublic();
 
+  private:
+    void ShowThisPrivateOne() ;
 };
 
 class ClassWithPrivateInheritanceOnly
