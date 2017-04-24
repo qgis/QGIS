@@ -38,7 +38,8 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
     QString name() const override { return mName; }
     QString displayName() const override { return mName; }
-
+    virtual bool run( const QVariantMap &,
+                      QgsProcessingContext &, QgsProcessingFeedback *, QVariantMap & ) const override { return true; }
     QString mName;
 };
 
@@ -114,6 +115,7 @@ class TestQgsProcessing: public QObject
     void uniqueValues();
     void createIndex();
     void createFeatureSink();
+    void parameters();
 
   private:
 
@@ -847,6 +849,78 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->featureCount(), 1L );
   delete layer;
   layer = nullptr;
+}
+
+void TestQgsProcessing::parameters()
+{
+  // test parameter utilities
+  QVariantMap params;
+  params.insert( QStringLiteral( "prop" ), QgsProperty::fromField( "a_field" ) );
+  params.insert( QStringLiteral( "string" ), QStringLiteral( "a string" ) );
+  params.insert( QStringLiteral( "double" ), 5.2 );
+  params.insert( QStringLiteral( "int" ), 15 );
+  params.insert( QStringLiteral( "bool" ), true );
+
+  QgsProcessingContext context;
+
+  // isDynamic
+  QVERIFY( QgsProcessingParameters::isDynamic( params, QStringLiteral( "prop" ) ) );
+  QVERIFY( !QgsProcessingParameters::isDynamic( params, QStringLiteral( "string" ) ) );
+  QVERIFY( !QgsProcessingParameters::isDynamic( params, QStringLiteral( "bad" ) ) );
+
+  // parameterAsString
+  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "string" ), context ), QStringLiteral( "a string" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "double" ), context ), QStringLiteral( "5.2" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "int" ), context ), QStringLiteral( "15" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "bool" ), context ), QStringLiteral( "true" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "bad" ), context ), QString() );
+
+  // string with dynamic property (feature not set)
+  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "prop" ), context ), QString() );
+
+  // correctly setup feature
+  QgsFields fields;
+  fields.append( QgsField( "a_field", QVariant::String ) );
+  QgsFeature f( fields );
+  f.setAttribute( 0, QStringLiteral( "field value" ) );
+  context.expressionContext().setFeature( f );
+  context.expressionContext().setFields( fields );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "prop" ), context ), QStringLiteral( "field value" ) );
+
+  // as double
+  QCOMPARE( QgsProcessingParameters::parameterAsDouble( params, QStringLiteral( "double" ), context ), 5.2 );
+  QCOMPARE( QgsProcessingParameters::parameterAsDouble( params, QStringLiteral( "int" ), context ), 15.0 );
+  f.setAttribute( 0, QStringLiteral( "6.2" ) );
+  context.expressionContext().setFeature( f );
+  QCOMPARE( QgsProcessingParameters::parameterAsDouble( params, QStringLiteral( "prop" ), context ), 6.2 );
+
+  // as int
+  QCOMPARE( QgsProcessingParameters::parameterAsInt( params, QStringLiteral( "double" ), context ), 5 );
+  QCOMPARE( QgsProcessingParameters::parameterAsInt( params, QStringLiteral( "int" ), context ), 15 );
+  QCOMPARE( QgsProcessingParameters::parameterAsInt( params, QStringLiteral( "prop" ), context ), 6 );
+
+  // as bool
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( params, QStringLiteral( "double" ), context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( params, QStringLiteral( "int" ), context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( params, QStringLiteral( "bool" ), context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( params, QStringLiteral( "prop" ), context ), true );
+  f.setAttribute( 0, false );
+  context.expressionContext().setFeature( f );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( params, QStringLiteral( "prop" ), context ), false );
+
+  // as layer
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( params, QStringLiteral( "double" ), context ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( params, QStringLiteral( "int" ), context ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( params, QStringLiteral( "bool" ), context ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( params, QStringLiteral( "prop" ), context ) );
+
+  QVERIFY( context.temporaryLayerStore()->mapLayers().isEmpty() );
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  f.setAttribute( 0, testDataDir + "/raster/band1_float32_noct_epsg4326.tif" );
+  context.expressionContext().setFeature( f );
+  QVERIFY( QgsProcessingParameters::parameterAsLayer( params, QStringLiteral( "prop" ), context ) );
+  // make sure layer was loaded
+  QVERIFY( !context.temporaryLayerStore()->mapLayers().isEmpty() );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

@@ -282,6 +282,7 @@
 %Include processing/qgsprocessingalgorithm.sip
 %Include processing/qgsprocessingcontext.sip
 %Include processing/qgsprocessingfeedback.sip
+%Include processing/qgsprocessingparameters.sip
 %Include processing/qgsprocessingprovider.sip
 %Include processing/qgsprocessingregistry.sip
 %Include processing/qgsprocessingutils.sip

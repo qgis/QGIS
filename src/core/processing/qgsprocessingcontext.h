@@ -82,7 +82,12 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Returns the expression context.
      */
-    QgsExpressionContext expressionContext() const { return mExpressionContext; }
+    QgsExpressionContext &expressionContext() { return mExpressionContext; }
+
+    /**
+     * Returns the expression context.
+     */
+    SIP_SKIP const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
 
     /**
      * Sets the expression \a context.

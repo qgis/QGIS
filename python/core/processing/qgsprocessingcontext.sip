@@ -64,7 +64,7 @@ class QgsProcessingContext
 .. seealso:: project()
 %End
 
-    QgsExpressionContext expressionContext() const;
+    QgsExpressionContext &expressionContext();
 %Docstring
  Returns the expression context.
  :rtype: QgsExpressionContext
