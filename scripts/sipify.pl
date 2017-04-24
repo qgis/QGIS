@@ -404,7 +404,7 @@ while ($line_idx < $line_count){
         }
 
         # remove function bodies
-        if ( $line =~  m/^(\s*)?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
+        if ( $SIP_RUN != 1 && $line =~  m/^(\s*)?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
             my $newline = "$1$2$3$4;";
             if ($line !~ m/\{.*?\}$/){
                 $line = $lines[$line_idx];
@@ -468,7 +468,7 @@ while ($line_idx < $line_count){
     $line =~ s/=\s+[^=]*?\s+SIP_PYDEFAULTVALUE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
 
     # fix astyle placing space after % character
-    $line =~ s/\s*% (MappedType|TypeHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;
+    $line =~ s/\s*% (MappedType|TypeCode|TypeHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;
     $line =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
     push @output, "$line\n";
