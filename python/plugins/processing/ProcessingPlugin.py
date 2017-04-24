@@ -42,7 +42,6 @@ from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.ResultsDock import ResultsDock
-from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
@@ -75,7 +74,6 @@ class ProcessingPlugin(object):
         Processing.initialize()
 
     def initGui(self):
-        self.commander = None
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
@@ -126,15 +124,6 @@ class ProcessingPlugin(object):
         menuBar.insertMenu(
             self.iface.firstRightStandardMenu().menuAction(), self.menu)
 
-        self.commanderAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'commander.svg')),
-            self.tr('&Commander'), self.iface.mainWindow())
-        self.commanderAction.setObjectName('commanderAction')
-        self.commanderAction.triggered.connect(self.openCommander)
-        self.menu.addAction(self.commanderAction)
-        self.iface.registerMainWindowAction(self.commanderAction,
-                                            self.tr('Ctrl+Alt+D'))
-
         self.menu.addSeparator()
 
         initializeMenus()
@@ -158,20 +147,11 @@ class ProcessingPlugin(object):
         self.iface.unregisterMainWindowAction(self.modelerAction)
         self.iface.unregisterMainWindowAction(self.historyAction)
         self.iface.unregisterMainWindowAction(self.resultsAction)
-        self.iface.unregisterMainWindowAction(self.commanderAction)
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
 
         removeMenus()
         Processing.deinitialize()
-
-    def openCommander(self):
-        if self.commander is None:
-            self.commander = CommanderWindow(
-                self.iface.mainWindow(),
-                self.iface.mapCanvas())
-        self.commander.prepareGui()
-        self.commander.show()
 
     def openToolbox(self):
         if self.toolbox.isVisible():
