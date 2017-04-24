@@ -269,5 +269,6 @@ class TestAuthManager(unittest.TestCase):
         setattr(self, args[0] + '_was_called', True)
         setattr(self, args[0] + '_args', args)
 
+
 if __name__ == '__main__':
     unittest.main()
