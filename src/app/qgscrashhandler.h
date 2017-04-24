@@ -40,7 +40,7 @@ class APP_EXPORT QgsCrashHandler
      * Show the crash dialog.
      * @param stack The current stack of the crash point.
      */
-    static void showCrashDialog( const QList<QgsCrashReport::StackLine> &stack );
+    static void showCrashDialog( const QgsStackLines &stack );
 
     /**
      * Restart the application.

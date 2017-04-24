@@ -49,7 +49,7 @@ const QString QgsCrashReport::toString() const
     }
     else
     {
-      Q_FOREACH ( const QgsCrashReport::StackLine &line, mStackTrace )
+      Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )
       {
         QFileInfo fileInfo( line.fileName );
         QString filename( fileInfo.fileName() );
@@ -119,12 +119,12 @@ const QString QgsCrashReport::toString() const
 const QString QgsCrashReport::crashID() const
 {
   if ( mStackTrace.isEmpty() )
-    return "ID not generated due to missing information";
+    return "ID not generated due to missing information\n\n Your version of QGIS install might not have debug information included.";
 
   QString data = QString::null;
 
   // Hashes the full stack.
-  Q_FOREACH ( QgsCrashReport::StackLine line, mStackTrace )
+  Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )
   {
     QFileInfo fileInfo( line.fileName );
     QString filename( fileInfo.fileName() );
@@ -136,17 +136,4 @@ const QString QgsCrashReport::crashID() const
 
   QString hash = QString( QCryptographicHash::hash( data.toAscii(), QCryptographicHash::Sha1 ).toHex() );
   return hash;
-}
-
-bool QgsCrashReport::StackLine::isQgisModule() const
-{
-  return moduleName.toLower().contains( "qgis" );
-}
-
-bool QgsCrashReport::StackLine::isValid() const
-{
-  return !( fileName.toLower().contains( "exe_common" ) ||
-            fileName.toLower().contains( "unknown" ) ||
-            lineNumber.toLower().contains( "unknown" ) );
-
 }
