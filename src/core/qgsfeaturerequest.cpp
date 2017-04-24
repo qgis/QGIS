@@ -111,6 +111,12 @@ QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCheck( QgsFeatureRequest
   return *this;
 }
 
+QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( std::function<void ( const QgsFeature & )> callback )
+{
+  mInvalidGeometryCallback = callback;
+  return *this;
+}
+
 QgsFeatureRequest &QgsFeatureRequest::setFilterExpression( const QString &expression )
 {
   mFilter = FilterExpression;

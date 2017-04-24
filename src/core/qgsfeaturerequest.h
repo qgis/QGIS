@@ -294,6 +294,25 @@ class CORE_EXPORT QgsFeatureRequest
      */
     InvalidGeometryCheck invalidGeometryCheck() const { return mInvalidGeometryFilter; }
 
+    /**
+     * Sets a callback function to use when encountering an invalid geometry and
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
+     * called using the feature with invalid geometry as a parameter.
+     * \since QGIS 3.0
+     * \note not available in Python bindings
+     * \see invalidGeometryCallback()
+     */
+    QgsFeatureRequest &setInvalidGeometryCallback( std::function< void( const QgsFeature & ) > callback );
+
+    /**
+     * Returns the callback function to use when encountering an invalid geometry and
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid.
+     * \since QGIS 3.0
+     * \note not available in Python bindings
+     * \see setInvalidGeometryCallback()
+     */
+    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
+
     /** Set the filter expression. {\see QgsExpression}
      * \param expression expression string
      * \see filterExpression
@@ -440,6 +459,7 @@ class CORE_EXPORT QgsFeatureRequest
     long mLimit = -1;
     OrderBy mOrderBy;
     InvalidGeometryCheck mInvalidGeometryFilter = GeometryNoCheck;
+    std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
