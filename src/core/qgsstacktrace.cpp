@@ -27,7 +27,7 @@
 ///@cond PRIVATE
 
 #ifdef Q_OS_WIN
-QVector<QgsStackTrace::StackLine> QgsStackTrace::trace(_EXCEPTION_POINTERS *ExceptionInfo)
+QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *ExceptionInfo )
 {
   QgsStackLines stack;
 #ifndef QGISDEBUG
@@ -126,6 +126,7 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace(_EXCEPTION_POINTERS *Exce
 
 QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )
 {
+  Q_UNUSED( maxFrames );
   QgsStackLines stack;
 #ifndef QGISDEBUG
   return stack;
