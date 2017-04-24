@@ -24,6 +24,7 @@
 #include <QProcess>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 /** \ingroup core
  * Provides a context based help browser for a dialog.
@@ -46,9 +47,9 @@ class CORE_EXPORT QgsContextHelp : public QObject
 
   private:
     //! Constructor
-    QgsContextHelp();
+    QgsContextHelp() SIP_FORCE;
 
-    ~QgsContextHelp();
+    ~QgsContextHelp() SIP_FORCE;
 
     QProcess *start();
     void showContext( const QString &context );

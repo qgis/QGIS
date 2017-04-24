@@ -24,6 +24,7 @@
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 /** \ingroup core
  * List of colors paired with a friendly display name identifying the color
@@ -42,6 +43,24 @@ typedef QList< QPair< QColor, QString > > QgsNamedColorList;
  */
 class CORE_EXPORT QgsColorScheme
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsUserColorScheme *>( sipCpp ) != NULL )
+      sipType = sipType_QgsUserColorScheme;
+    else if ( dynamic_cast<QgsRecentColorScheme *>( sipCpp ) != NULL )
+      sipType = sipType_QgsRecentColorScheme;
+    else if ( dynamic_cast<QgsCustomColorScheme *>( sipCpp ) != NULL )
+      sipType = sipType_QgsCustomColorScheme;
+    else if ( dynamic_cast<QgsProjectColorScheme *>( sipCpp ) != NULL )
+      sipType = sipType_QgsProjectColorScheme;
+    else if ( dynamic_cast<QgsGplColorScheme *>( sipCpp ) != NULL )
+      sipType = sipType_QgsGplColorScheme;
+    else
+      sipType = sipType_QgsColorScheme;
+    SIP_END
+#endif
+
   public:
 
     /** Flags for controlling behavior of color scheme
@@ -102,7 +121,7 @@ class CORE_EXPORT QgsColorScheme
     /** Clones a color scheme
      * \returns copy of color scheme
      */
-    virtual QgsColorScheme *clone() const = 0;
+    virtual QgsColorScheme *clone() const = 0 SIP_FACTORY;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsColorScheme::SchemeFlags )
@@ -149,7 +168,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
     virtual QString schemeName() const override;
 
-    virtual QgsUserColorScheme *clone() const override;
+    virtual QgsUserColorScheme *clone() const override SIP_FACTORY;
 
     virtual bool isEditable() const override { return true; }
 
@@ -199,7 +218,7 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) override;
 
-    QgsRecentColorScheme *clone() const override;
+    QgsRecentColorScheme *clone() const override SIP_FACTORY;
 
     /** Adds a color to the list of recent colors.
      * \param color color to add
@@ -237,7 +256,7 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsCustomColorScheme *clone() const override;
+    QgsCustomColorScheme *clone() const override SIP_FACTORY;
 };
 
 /** \ingroup core
@@ -262,7 +281,7 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsProjectColorScheme *clone() const override;
+    QgsProjectColorScheme *clone() const override SIP_FACTORY;
 };
 
 #endif

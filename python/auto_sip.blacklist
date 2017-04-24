@@ -2,13 +2,6 @@ core/conversions.sip
 core/qgsexception.sip
 core/qgis.sip
 core/qgsapplication.sip
-core/qgsbearingutils.sip
-core/qgsbrowsermodel.sip
-core/qgscolorscheme.sip
-core/qgscolorschemeregistry.sip
-core/qgscontexthelp.sip
-core/qgscoordinatereferencesystem.sip
-core/qgscoordinatetransform.sip
 core/qgscredentials.sip
 core/qgscrscache.sip
 core/qgsdataitem.sip
@@ -28,7 +21,6 @@ core/qgsexpressioncontextgenerator.sip
 core/qgsfeaturefilterprovider.sip
 core/qgsfeatureiterator.sip
 core/qgsfeaturerequest.sip
-core/qgsfeedback.sip
 core/qgsfield.sip
 core/qgsfieldconstraints.sip
 core/qgsfields.sip

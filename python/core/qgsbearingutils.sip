@@ -1,21 +1,42 @@
-/**
- * \class QgsBearingUtils
- * \ingroup core
- * Utilities for calculating bearings and directions.
- * \note Added in version 2.18
-*/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbearingutils.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsBearingUtils
 {
+%Docstring
+ Utilities for calculating bearings and directions.
+.. versionadded:: 2.18
+%End
+
 %TypeHeaderCode
-#include <qgsbearingutils.h>
+#include "qgsbearingutils.h"
 %End
   public:
 
-    /**
-     * Returns the direction to true north from a specified point and for a specified
-     * coordinate reference system. The returned value is in degrees clockwise from
-     * vertical. An exception will be thrown if the bearing could not be calculated.
-     */
-    static double bearingTrueNorth( const QgsCoordinateReferenceSystem& crs,
-                                    const QgsPoint& point );
+    static double bearingTrueNorth( const QgsCoordinateReferenceSystem &crs,
+                                    const QgsPoint &point );
+%Docstring
+ Returns the direction to true north from a specified point and for a specified
+ coordinate reference system. The returned value is in degrees clockwise from
+ vertical. An exception will be thrown if the bearing could not be calculated.
+ :rtype: float
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbearingutils.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

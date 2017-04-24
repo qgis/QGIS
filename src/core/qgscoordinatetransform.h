@@ -167,7 +167,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \note not available in Python bindings
      */
-    void transformInPlace( float &x, float &y, double &z, TransformDirection direction = ForwardTransform ) const;
+    void transformInPlace( float &x, float &y, double &z, TransformDirection direction = ForwardTransform ) const SIP_SKIP;
 
     /** Transforms an array of x, y and z float coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \note not available in Python bindings
      */
-    void transformInPlace( float &x, float &y, float &z, TransformDirection direction = ForwardTransform ) const;
+    void transformInPlace( float &x, float &y, float &z, TransformDirection direction = ForwardTransform ) const SIP_SKIP;
 
     /** Transforms a vector of x, y and z float coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \note not available in Python bindings
      */
     void transformInPlace( QVector<float> &x, QVector<float> &y, QVector<float> &z,
-                           TransformDirection direction = ForwardTransform ) const;
+                           TransformDirection direction = ForwardTransform ) const SIP_SKIP;
 
     /** Transforms a vector of x, y and z double coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \note not available in Python bindings
      */
     void transformInPlace( QVector<double> &x, QVector<double> &y, QVector<double> &z,
-                           TransformDirection direction = ForwardTransform ) const;
+                           TransformDirection direction = ForwardTransform ) const SIP_SKIP;
 
     /** Transforms a polygon to the destination coordinate system.
      * \param polygon polygon to transform (occurs in place)
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed rectangle
      */
-    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const;
+    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const SIP_SKIP;
 
     /** Transform an array of coordinates to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -243,7 +243,8 @@ class CORE_EXPORT QgsCoordinateTransform
     /** Returns list of datum transformations for the given src and dest CRS
      * \note not available in Python bindings
      */
-    static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destinationCrs );
+    static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_SKIP;
+
     static QString datumTransformString( int datumTransform );
 
     /** Gets name of source and dest geographical CRS (to show in a tooltip)
@@ -281,6 +282,7 @@ class CORE_EXPORT QgsCoordinateTransform
 };
 
 //! Output stream operator
+#ifndef SIP_RUN
 inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateTransform &r )
 {
   QString mySummary( QStringLiteral( "\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:" ) );
@@ -334,6 +336,7 @@ inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateTransfor
   mySummary += QLatin1String( "\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n" );
   return os << mySummary.toLocal8Bit().data() << std::endl;
 }
+#endif
 
 
 #endif // QGSCOORDINATETRANSFORM_H
