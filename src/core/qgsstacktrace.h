@@ -60,16 +60,17 @@ class CORE_EXPORT QgsStackTrace
     };
 
 #ifdef Q_OS_WIN
+
     /**
      * Return a demangled stack backtrace of the caller function.
      *
      * \note Added in QGIS 3.0
      */
-    static QVector<QgsStackTrace::StackLine> trace(  struct _EXCEPTION_POINTERS *ExceptionInfo );
+    static QVector<QgsStackTrace::StackLine> trace( struct _EXCEPTION_POINTERS *ExceptionInfo );
 #endif
 
     /**
-     * Return a demangled stack backtrace of the caller function.
+    * Return a demangled stack backtrace of the caller function.
      *
      * \note Added in QGIS 3.0
      */
