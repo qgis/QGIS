@@ -29,9 +29,10 @@ __revision__ = '$Format:%H$'
 import os
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
-                       QgsProcessingProvider)
+                       QgsProcessingProvider,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.core.ProcessingLog import ProcessingLog
 from .Grass7Utils import Grass7Utils
 from .Grass7Algorithm import Grass7Algorithm
 from processing.tools.system import isWindows, isMac
@@ -97,12 +98,12 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
                     if alg.name().strip() != '':
                         algs.append(alg)
                     else:
-                        ProcessingLog.addToLog(
-                            ProcessingLog.LOG_ERROR,
+                        QgsProcessingUtils.logMessage(
+                            QgsMessageLog.CRITICAL,
                             self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile))
                 except Exception as e:
-                    ProcessingLog.addToLog(
-                        ProcessingLog.LOG_ERROR,
+                    QgsProcessingUtils.logMessage(
+                        QgsMessageLog.CRITICAL,
                         self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)))
         algs.append(nviz7())
         return algs

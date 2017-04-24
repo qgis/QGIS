@@ -30,11 +30,14 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import (QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
@@ -83,8 +86,8 @@ class EliminateSelection(GeoAlgorithm):
         smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
 
         if inLayer.selectedFeatureCount() == 0:
-            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   self.tr('{0}: (No selection in input layer "{1}")').format(self.displayName(), self.getParameterValue(self.INPUT)))
+            QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
+                                          self.tr('{0}: (No selection in input layer "{1}")').format(self.displayName(), self.getParameterValue(self.INPUT)))
 
         featToEliminate = []
         selFeatIds = inLayer.selectedFeatureIds()

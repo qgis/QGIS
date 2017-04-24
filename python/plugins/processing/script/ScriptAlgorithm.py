@@ -33,13 +33,14 @@ from qgis.core import (QgsExpressionContextUtils,
                        QgsExpressionContext,
                        QgsProcessingAlgorithm,
                        QgsProject,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
-from processing.core.ProcessingLog import ProcessingLog
 from processing.script.WrongScriptException import WrongScriptException
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -195,7 +196,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             if context.hasVariable(varname):
                 script = script.replace(var, context.variable(varname))
             else:
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, self.tr('Cannot find variable: {0}').format(varname))
+                QgsProcessingUtils.logMessage(QgsMessageLog.WARNING, self.tr('Cannot find variable: {0}').format(varname))
 
         exec((script), ns)
         for out in self.outputs:

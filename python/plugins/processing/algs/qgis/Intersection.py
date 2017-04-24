@@ -29,10 +29,14 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -113,10 +117,10 @@ class Intersection(GeoAlgorithm):
                             int_sym = geom.symDifference(tmpGeom)
                             int_geom = QgsGeometry(int_com.difference(int_sym))
                     if int_geom.isEmpty() or not int_geom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry.'))
+                        QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
+                                                      self.tr('GEOS geoprocessing error: One or '
+                                                              'more input features have invalid '
+                                                              'geometry.'))
                     try:
                         if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
                             outFeat.setGeometry(int_geom)
@@ -126,8 +130,8 @@ class Intersection(GeoAlgorithm):
                             outFeat.setAttributes(attrs)
                             writer.addFeature(outFeat)
                     except:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                               self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                        QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
+                                                      self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
                         continue
 
         del writer

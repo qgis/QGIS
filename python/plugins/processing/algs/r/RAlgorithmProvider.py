@@ -30,9 +30,10 @@ import os
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
-                       QgsProcessingProvider)
+                       QgsProcessingProvider,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
@@ -139,10 +140,10 @@ class RAlgorithmProvider(QgsProcessingProvider):
                         if alg.name().strip() != '':
                             self.algs.append(alg)
                     except WrongScriptException as e:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
+                        QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL, e.msg)
                     except Exception as e:
-                        ProcessingLog.addToLog(
-                            ProcessingLog.LOG_ERROR,
+                        QgsProcessingUtils.logMessage(
+                            QgsMessageLog.CRITICAL,
                             self.tr('Could not load R script: {0}\n{1}').format(descriptionFile, str(e)))
         return
 

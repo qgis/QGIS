@@ -22,6 +22,7 @@
 
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsmessagelog.h"
 
 class QgsProject;
 class QgsProcessingContext;
@@ -129,6 +130,11 @@ class CORE_EXPORT QgsProcessingUtils
      * return unique values from selected features in the layer.
      */
     static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );
+
+    /**
+     * Logs a processing \a message of a specified \a level to the QGIS message log.
+     */
+    static void logMessage( QgsMessageLog::MessageLevel level, const QString &message );
 
   private:
 

@@ -31,7 +31,16 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsFields, QgsField, QgsFeatureRequest, QgsProcessingUtils
+from qgis.core import (QgsWkbTypes,
+                       QgsUnitTypes,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsFields,
+                       QgsField,
+                       QgsFeatureRequest,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -41,7 +50,6 @@ from qgis.analysis import (QgsVectorLayerDirector,
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import (ParameterVector,
                                         ParameterPoint,
                                         ParameterNumber,
@@ -238,7 +246,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
             if tree[idxEnd] == -1:
                 msg = self.tr('There is no route from start point ({}) to end point ({}).'.format(points[i].toString(), endPoint.toString()))
                 feedback.setProgressText(msg)
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, msg)
+                QgsProcessingUtils.logMessage(QgsMessageLog.WARNING, msg)
                 continue
 
             cost = 0.0

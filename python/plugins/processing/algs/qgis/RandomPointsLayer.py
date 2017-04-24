@@ -31,10 +31,11 @@ import random
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsGeometry, QgsFields, QgsField, QgsSpatialIndex, QgsWkbTypes,
-                       QgsPoint, QgsFeature, QgsFeatureRequest)
+                       QgsPoint, QgsFeature, QgsFeatureRequest,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
@@ -121,8 +122,8 @@ class RandomPointsLayer(GeoAlgorithm):
             nIterations += 1
 
         if nPoints < pointCount:
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                   self.tr('Can not generate requested number of random points. '
-                                           'Maximum number of attempts exceeded.'))
+            QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
+                                          self.tr('Can not generate requested number of random points. '
+                                                  'Maximum number of attempts exceeded.'))
 
         del writer

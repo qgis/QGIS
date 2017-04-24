@@ -34,9 +34,10 @@ import os
 import importlib
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
+from qgis.core import (QgsProcessingUtils,
+                       QgsMessageLog)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import (getParameterFromString,
                                         ParameterExtent,
@@ -273,7 +274,7 @@ class SagaAlgorithm(GeoAlgorithm):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+            QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)
         SagaUtils.executeSaga(feedback)
 
         if self.crs is not None:

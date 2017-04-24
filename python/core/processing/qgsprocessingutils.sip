@@ -124,6 +124,11 @@ class QgsProcessingUtils
  :rtype: list of QVariant
 %End
 
+    static void logMessage( QgsMessageLog::MessageLevel level, const QString &message );
+%Docstring
+ Logs a processing ``message`` of a specified ``level`` to the QGIS message log.
+%End
+
 };
 
 

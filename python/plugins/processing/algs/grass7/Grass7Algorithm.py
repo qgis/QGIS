@@ -34,12 +34,13 @@ import importlib
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 
 from qgis.core import (QgsRasterLayer,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 from processing.core.parameters import (getParameterFromString,
@@ -188,9 +189,7 @@ class Grass7Algorithm(GeoAlgorithm):
                                                       "txt"))
                     line = lines.readline().strip('\n').strip()
                 except Exception as e:
-                    ProcessingLog.addToLog(
-                        ProcessingLog.LOG_ERROR,
-                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line))
+                    QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL, self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line))
                     raise e
 
         self.addParameter(ParameterExtent(
@@ -300,7 +299,7 @@ class Grass7Algorithm(GeoAlgorithm):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+            QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)
 
         Grass7Utils.executeGrass7(self.commands, feedback, self.outputCommands)
 

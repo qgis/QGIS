@@ -28,13 +28,13 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsWkbTypes,
                        QgsGeometry,
                        QgsApplication,
+                       QgsMessageLog,
                        QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools import dataobjects, vector
 
 
@@ -88,8 +88,8 @@ class FixGeometry(GeoAlgorithm):
             if inputFeature.geometry():
                 outputGeometry = inputFeature.geometry().makeValid()
                 if not outputGeometry:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           'makeValid failed for feature {}'.format(inputFeature.id()))
+                    QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
+                                                  'makeValid failed for feature {}'.format(inputFeature.id()))
 
                 if outputGeometry.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(outputGeometry.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                     tmpGeometries = outputGeometry.asGeometryCollection()

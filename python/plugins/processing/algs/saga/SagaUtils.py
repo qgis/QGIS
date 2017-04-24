@@ -31,9 +31,10 @@ import subprocess
 import time
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isWindows, isMac, userFolder
 
 SAGA_LOG_COMMANDS = 'SAGA_LOG_COMMANDS'
@@ -85,8 +86,8 @@ def sagaPath():
     folder = ProcessingConfig.getSetting(SAGA_FOLDER)
     if folder and not os.path.isdir(folder):
         folder = None
-        ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                               'Specified SAGA folder does not exist. Will try to find built-in binaries.')
+        QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
+                                      'Specified SAGA folder does not exist. Will try to find built-in binaries.')
     if folder is None or folder == '':
         folder = findSagaFolder()
 
@@ -199,4 +200,4 @@ def executeSaga(feedback):
             pass
 
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+        QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)

@@ -29,9 +29,10 @@ __revision__ = '$Format:%H$'
 import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsProcessingProvider
+from qgis.core import (QgsProcessingProvider,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isWindows, isMac
 
 from .SagaAlgorithm import SagaAlgorithm
@@ -87,13 +88,13 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def loadAlgorithms(self):
         version = SagaUtils.getInstalledVersion(True)
         if version is None:
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
+            QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
+                                          self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
             return
 
         if not version.startswith('2.3.'):
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   self.tr('Problem with SAGA installation: unsupported SAGA version found.'))
+            QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
+                                          self.tr('Problem with SAGA installation: unsupported SAGA version found.'))
             return
 
         self.algs = []
@@ -105,11 +106,11 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
                     if alg.name().strip() != '':
                         self.algs.append(alg)
                     else:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('Could not open SAGA algorithm: {}'.format(descriptionFile)))
+                        QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
+                                                      self.tr('Could not open SAGA algorithm: {}'.format(descriptionFile)))
                 except Exception as e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                           self.tr('Could not open SAGA algorithm: {}\n{}'.format(descriptionFile, str(e))))
+                    QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
+                                                  self.tr('Could not open SAGA algorithm: {}\n{}'.format(descriptionFile, str(e))))
 
         self.algs.append(SplitRGBBands())
         for a in self.algs:

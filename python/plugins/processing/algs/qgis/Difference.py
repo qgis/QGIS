@@ -29,8 +29,12 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
-from processing.core.ProcessingLog import ProcessingLog
+from qgis.core import (QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -98,8 +102,8 @@ class Difference(GeoAlgorithm):
                 outFeat.setAttributes(attrs)
                 writer.addFeature(outFeat)
             except:
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                       self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
+                                              self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
                 continue
 
             feedback.setProgress(int(current * total))

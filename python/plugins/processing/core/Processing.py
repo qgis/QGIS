@@ -38,13 +38,13 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.utils import iface
 from qgis.core import (QgsMessageLog,
                        QgsApplication,
-                       QgsProcessingProvider)
+                       QgsProcessingProvider,
+                       QgsProcessingUtils)
 
 import processing
 from processing.script.ScriptUtils import ScriptUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -150,8 +150,8 @@ class Processing(object):
                 QgsMessageLog.logMessage(
                     Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name),
                     Processing.tr("Processing"))
-                ProcessingLog.addToLog(
-                    ProcessingLog.LOG_ERROR,
+                QgsProcessingUtils.logMessage(
+                    QgsMessageLog.CRITICAL,
                     Processing.tr('Error in {0}. Wrong parameter value {1} for parameter {2}.').format(
                         alg.name(), value, name
                     )
@@ -166,8 +166,8 @@ class Processing(object):
                         QgsMessageLog.logMessage(
                             Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name),
                             Processing.tr("Processing"))
-                        ProcessingLog.addToLog(
-                            ProcessingLog.LOG_ERROR,
+                        QgsProcessingUtils.logMessage(
+                            QgsMessageLog.CRITICAL,
                             Processing.tr('Error in {0}. Missing parameter value for parameter {1}.').format(
                                 alg.name(), param.name)
                         )

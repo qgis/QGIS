@@ -33,9 +33,10 @@ import stat
 import subprocess
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsSettings
+from qgis.core import (QgsSettings,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import userFolder, isWindows, mkdir, getTempFilenameInTempFolder
 
 
@@ -158,7 +159,7 @@ class RUtils(object):
         loglines += RUtils.allConsoleResults
         for line in loglines:
             feedback.pushConsoleInfo(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+        QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)
 
     @staticmethod
     def createConsoleOutput():

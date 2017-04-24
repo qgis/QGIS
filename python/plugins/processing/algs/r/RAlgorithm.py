@@ -31,11 +31,12 @@ __revision__ = '$Format:%H$'
 import os
 import json
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.Help2Html import getHtmlFromHelpFile
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterTable
@@ -212,7 +213,7 @@ class RAlgorithm(GeoAlgorithm):
         loglines += self.getFullSetOfRCommands()
         for line in loglines:
             feedback.pushCommandInfo(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+        QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)
         RUtils.executeRAlgorithm(self, feedback)
         if self.showPlots:
             htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)

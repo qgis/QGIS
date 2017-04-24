@@ -29,10 +29,11 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -80,8 +81,8 @@ class Centroids(GeoAlgorithm):
             if input_feature.geometry():
                 output_geometry = input_feature.geometry().centroid()
                 if not output_geometry:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           'Error calculating centroid for feature {}'.format(input_feature.id()))
+                    QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
+                                                  'Error calculating centroid for feature {}'.format(input_feature.id()))
                 output_feature.setGeometry(output_geometry)
 
             writer.addFeature(output_feature)

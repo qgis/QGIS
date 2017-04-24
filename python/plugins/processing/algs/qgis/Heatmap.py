@@ -29,10 +29,11 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsProcessingUtils
+from qgis.core import (QgsFeatureRequest,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from qgis.analysis import QgsKernelDensityEstimation
 
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -175,8 +176,8 @@ class Heatmap(GeoAlgorithm):
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             if kde.addFeature(f) != QgsKernelDensityEstimation.Success:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       self.tr('Error adding feature with ID {} to heatmap').format(f.id()))
+                QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
+                                              self.tr('Error adding feature with ID {} to heatmap').format(f.id()))
 
             feedback.setProgress(int(current * total))
 

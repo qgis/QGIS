@@ -37,7 +37,8 @@ from qgis.core import (QgsExpressionContextUtils,
                        QgsProcessingFeedback,
                        QgsSettings,
                        QgsProcessingUtils,
-                       QgsMapLayerProxyModel)
+                       QgsMapLayerProxyModel,
+                       QgsMessageLog)
 from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -223,8 +224,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         try:
             if self.setParamValues():
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
-                                       self.alg.getAsCommand())
+                ProcessingLog.addToLog(self.alg.getAsCommand())
 
                 self.executed = execute(self.alg, None, self.feedback)
                 if self.executed:
@@ -245,4 +245,4 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def error(self, text):
         QMessageBox.critical(self, "Error", text)
-        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, text)
+        QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL, text)

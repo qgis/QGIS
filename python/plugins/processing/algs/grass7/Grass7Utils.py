@@ -31,10 +31,12 @@ import stat
 import shutil
 import subprocess
 import os
-from qgis.core import QgsApplication
+
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
 from processing.tests.TestData import points
 
@@ -333,7 +335,7 @@ class Grass7Utils(object):
                         feedback.pushConsoleInfo(line)
 
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+            QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)
 
     # GRASS session is used to hold the layers already exported or
     # produced in GRASS between multiple calls to GRASS algorithms.

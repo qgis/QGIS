@@ -37,12 +37,12 @@ from qgis.core import (QgsApplication,
                        QgsSettings,
                        QgsProcessingAlgorithm,
                        QgsProject,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 
 from builtins import str
 from builtins import object
 from processing.gui.ParametersPanel import ParametersPanel
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
@@ -203,14 +203,14 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         except GeoAlgorithmExecutionException as gaee:
             lines = [self.tr('Error while executing algorithm')]
             lines.append(traceback.format_exc())
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
+            QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL, gaee.msg)
             raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
         except Exception as e:
             # If something goes wrong and is not caught in the
             # algorithm, we catch it here and wrap it
             lines = [self.tr('Uncaught error while executing algorithm')]
             lines.append(traceback.format_exc())
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
+            QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL, lines)
             raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
 
     def _checkParameterValuesBeforeExecuting(self):
@@ -252,8 +252,8 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                     script += line
             exec(script, ns)
         except Exception as e:
-            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   "Error in hook script: " + str(e))
+            QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
+                                          "Error in hook script: " + str(e))
             # A wrong script should not cause problems, so we swallow
             # all exceptions
             pass

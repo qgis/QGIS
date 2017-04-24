@@ -29,10 +29,14 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -107,8 +111,8 @@ class Union(GeoAlgorithm):
                 except:
                     # This really shouldn't happen, as we haven't
                     # edited the input geom at all
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                    QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
+                                                  self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
             else:
                 request = QgsFeatureRequest().setFilterFids(intersects)
 
@@ -127,8 +131,8 @@ class Union(GeoAlgorithm):
 
                         if not int_geom:
                             # There was a problem creating the intersection
-                            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                                   self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
+                            QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
+                                                          self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
                             int_geom = QgsGeometry()
                         else:
                             int_geom = QgsGeometry(int_geom)
@@ -144,8 +148,8 @@ class Union(GeoAlgorithm):
                                         outFeat.setAttributes(atMapA + atMapB)
                                         writer.addFeature(outFeat)
                                     except:
-                                        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                                               self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                                        QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
+                                                                      self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
                         else:
                             # Geometry list: prevents writing error
                             # in geometries of different types
@@ -157,8 +161,8 @@ class Union(GeoAlgorithm):
                                     outFeat.setAttributes(atMapA + atMapB)
                                     writer.addFeature(outFeat)
                                 except:
-                                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                                    QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
+                                                                  self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
 
                 # the remaining bit of inFeatA's geometry
                 # if there is nothing left, this will just silently fail and we're good
@@ -177,8 +181,8 @@ class Union(GeoAlgorithm):
                     outFeat.setAttributes(atMapA)
                     writer.addFeature(outFeat)
                 except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                    QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
+                                                  self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
 
         length = len(vlayerA.fields())
         atMapA = [None] * length
@@ -200,8 +204,8 @@ class Union(GeoAlgorithm):
                     outFeat.setAttributes(atMap)
                     writer.addFeature(outFeat)
                 except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                    QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
+                                                  self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
             else:
                 request = QgsFeatureRequest().setFilterFids(intersects)
 
@@ -224,8 +228,8 @@ class Union(GeoAlgorithm):
                             outFeat.setAttributes(atMap)
                             writer.addFeature(outFeat)
                         except:
-                            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                                   self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                            QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
+                                                          self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
 
             if add:
                 try:
@@ -233,8 +237,8 @@ class Union(GeoAlgorithm):
                     outFeat.setAttributes(atMap)
                     writer.addFeature(outFeat)
                 except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                    QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
+                                                  self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
             nElement += 1
 
         del writer
