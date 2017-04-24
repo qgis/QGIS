@@ -31,24 +31,23 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QString &decorations )
   : QDialog( parent )
+  , mExtent( mapCanvas->mapSettings().visibleExtent() )
+  , mDpi( mapCanvas->mapSettings().outputDpi() )
+  , mSize( mapCanvas->mapSettings().outputSize() )
 {
   setupUi( this );
-
-  mExtent = mapCanvas->mapSettings().visibleExtent();
-  mDpi = mapCanvas->mapSettings().outputDpi();
-  mSize = mapCanvas->mapSettings().outputSize();
 
   mResolutionSpinBox->setValue( qt_defaultDpiX() );
 
   mExtentGroupBox->setOutputCrs( mapCanvas->mapSettings().destinationCrs() );
-  mExtentGroupBox->setCurrentExtent( mapCanvas->mapSettings().visibleExtent(), mapCanvas->mapSettings().destinationCrs() );
+  mExtentGroupBox->setCurrentExtent( mExtent, mapCanvas->mapSettings().destinationCrs() );
   mExtentGroupBox->setOutputExtentFromCurrent();
 
   mScaleWidget->setScale( 1 / mapCanvas->mapSettings().scale() );
   mScaleWidget->setMapCanvas( mapCanvas );
   mScaleWidget->setShowCurrentScaleButton( true );
 
-  mDrawDecorations->setText( QString( "Draw active decorations: %1" ).arg( !decorations.isEmpty() ? decorations : tr( "none" ) ) );
+  mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !decorations.isEmpty() ? decorations : tr( "none" ) ) );
 
   connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsMapSaveDialog::updateDpi );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsMapSaveDialog::updateExtent );
@@ -88,7 +87,7 @@ void QgsMapSaveDialog::updateScale( double scale )
 
 void QgsMapSaveDialog::updateOutputSize()
 {
-  mOutputSize->setText( QString( "Output size: %1 x %2 pixels" ).arg( mSize.width() ).arg( mSize.height() ) );
+  mOutputSize->setText( tr( "Output size: %1 x %2 pixels" ).arg( mSize.width() ).arg( mSize.height() ) );
 }
 
 QgsRectangle QgsMapSaveDialog::extent() const

@@ -5835,26 +5835,17 @@ void QgisApp::saveMapAsImage()
 
     connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
     {
-      QgsMessageBarItem *successMsg = new QgsMessageBarItem(
-        tr( "Successfully saved canvas to image" ),
-        QgsMessageBar::SUCCESS );
-      messageBar()->pushItem( successMsg );
+      messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved canvas to image" ) );
     } );
     connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int error )
     {
       if ( error == QgsMapRendererTask::ImageAllocationFail )
       {
-        QgsMessageBarItem *errorMsg = new QgsMessageBarItem(
-          tr( "Could not allocate required memory for image" ),
-          QgsMessageBar::WARNING );
-        messageBar()->pushItem( errorMsg );
+        messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
       }
       else if ( error == QgsMapRendererTask::ImageAllocationFail )
       {
-        QgsMessageBarItem *errorMsg = new QgsMessageBarItem(
-          tr( "Could not save the image to file" ),
-          QgsMessageBar::WARNING );
-        messageBar()->pushItem( errorMsg );
+        messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not save the image to file" ) );
       }
     } );
 
