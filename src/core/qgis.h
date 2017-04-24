@@ -439,6 +439,11 @@ typedef unsigned long long qgssize;
 #define SIP_SKIP
 
 /*
+  * force a private line to be written
+  */
+#define SIP_FORCE
+
+/*
   * specify an alternative type for SIP methods
   */
 #define SIP_PYTYPE(type)

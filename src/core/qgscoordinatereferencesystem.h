@@ -28,25 +28,25 @@
 #include <QHash>
 #include <QReadWriteLock>
 
+//qgis includes
+#include "qgis.h"
+#include "qgsunittypes.h"
+
 class QDomNode;
 class QDomDocument;
 class QgsCoordinateReferenceSystemPrivate;
 
 // forward declaration for sqlite3
-typedef struct sqlite3 sqlite3;
-
-//qgis includes
-#include "qgis.h"
-#include "qgsunittypes.h"
+typedef struct sqlite3 sqlite3 SIP_SKIP;
 
 #ifdef DEBUG
-typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH;
+typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH SIP_SKIP;
 #else
-typedef void *OGRSpatialReferenceH;
+typedef void *OGRSpatialReferenceH SIP_SKIP;
 #endif
 
 class QgsCoordinateReferenceSystem;
-typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & );
+typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SKIP;
 
 /** \ingroup core
  * This class represents a coordinate reference system (CRS).
@@ -217,8 +217,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * If no prefix is specified, WKT definition is assumed.
      * \param definition A String containing a coordinate reference system definition.
      * \see createFromString()
-     */
-    // TODO QGIS 3: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
+     */ // TODO QGIS 3: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
     explicit QgsCoordinateReferenceSystem( const QString &definition );
 
     /** Constructor a CRS object using a postgis SRID, an EPSG code or an internal QGIS CRS ID.
@@ -226,8 +225,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
      * \param id The ID valid for the chosen CRS ID type
      * \param type One of the types described in CrsType
-     */
-    // TODO QGIS 3: remove type and always use EPSG code
+     */ // TODO QGIS 3: remove type and always use EPSG code
     explicit QgsCoordinateReferenceSystem( const long id, CrsType type = PostgisCrsId );
 
     //! Copy constructor
@@ -300,8 +298,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
      * \returns True on success else false
-     */
-    // TODO QGIS 3: remove type and always use EPSG code, rename to createFromEpsg
+     */     // TODO QGIS 3: remove type and always use EPSG code, rename to createFromEpsg
     bool createFromId( const long id, CrsType type = PostgisCrsId );
 
     /**
@@ -313,15 +310,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \returns True on success else false
      * \see fromOgcWmsCrs()
-     */
-    // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
+     */     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
     bool createFromOgcWmsCrs( const QString &crs );
 
     /** Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
      * \param srid The postgis SRID for the desired spatial reference system.
      * \returns True on success else false
-     */
-    // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
+     */     // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
     bool createFromSrid( const long srid );
 
     /** Sets this CRS using a WKT definition.
@@ -401,8 +396,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * passes it to createFromWkt() function.
      * \param definition A String containing a coordinate reference system definition.
      * \returns True on success else false
-     */
-    // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
+     */    // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
     bool createFromUserInput( const QString &definition );
 
     /** Make sure that ESRI WKT import is done properly.
@@ -435,8 +429,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *  pieces of information about CRS.
      *  \note The ellipsoid and projection acronyms must be set as well as the proj4string!
      *  \returns long the SrsId of the matched CRS, zero if no match was found
-     */
-    // TODO QGIS 3: seems completely obsolete now (only compares proj4 - already done in createFromProj4)
+     */    // TODO QGIS 3: seems completely obsolete now (only compares proj4 - already done in createFromProj4)
     long findMatchingProj();
 
     /** Overloaded == operator used to compare to CRS's.
@@ -469,12 +462,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *  QGIS uses implementation in QgisGui::customSrsValidation
      * \note not available in Python bindings
      */
-    static void setCustomCrsValidation( CUSTOM_CRS_VALIDATION f );
+    static void setCustomCrsValidation( CUSTOM_CRS_VALIDATION f ) SIP_SKIP;
 
     /** Gets custom function
      * \note not available in Python bindings
      */
-    static CUSTOM_CRS_VALIDATION customCrsValidation();
+    static CUSTOM_CRS_VALIDATION customCrsValidation() SIP_SKIP;
 
     // Accessors -----------------------------------
 
@@ -485,8 +478,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /** Returns PostGIS SRID for the CRS.
      * \returns the PostGIS spatial_ref_sys identifier for this CRS (defaults to 0)
-     */
-    // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
+     */    // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
     long postgisSrid() const;
 
     /** Returns the authority identifier for the CRS.
@@ -722,6 +714,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 Q_DECLARE_METATYPE( QgsCoordinateReferenceSystem )
 
 //! Output stream operator
+#ifndef SIP_RUN
 inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateReferenceSystem &r )
 {
   QString mySummary( QStringLiteral( "\n\tSpatial Reference System:" ) );
@@ -766,5 +759,6 @@ inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateReferenc
   // Using streams we need to use local 8 Bit
   return os << mySummary.toLocal8Bit().data() << std::endl;
 }
+#endif
 
 #endif // QGSCOORDINATEREFERENCESYSTEM_H

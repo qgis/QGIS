@@ -29,7 +29,7 @@
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QString &decorations )
+QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QString &activeDecorations )
   : QDialog( parent )
   , mExtent( mapCanvas->mapSettings().visibleExtent() )
   , mDpi( mapCanvas->mapSettings().outputDpi() )
@@ -47,7 +47,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mScaleWidget->setMapCanvas( mapCanvas );
   mScaleWidget->setShowCurrentScaleButton( true );
 
-  mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !decorations.isEmpty() ? decorations : tr( "none" ) ) );
+  mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
   connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsMapSaveDialog::updateDpi );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsMapSaveDialog::updateExtent );

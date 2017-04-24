@@ -272,6 +272,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void PrivateAgain();
     /* Single line block comments shouldn't break the parser */
 
+    void ShowThisPrivateOne() SIP_FORCE;
+
     struct ProcessFeatureWrapper
     {
       QgsGeometrySnapper *instance = nullptr;
