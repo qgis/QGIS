@@ -206,6 +206,12 @@ Removing function body with virtual const reference
  :rtype: QgsLayerMetadata
 %End
 
+    bool myMultiLineBody();
+%Docstring
+Mulitline body
+ :rtype: bool
+%End
+
 
     virtual int overriddenProperty();
     virtual int overrideWithoutVirtual();

@@ -230,6 +230,19 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     //! Removing function body with virtual const reference
     virtual const QgsLayerMetadata &metadata() const { return mMetadata; }
 
+    //! Mulitline body
+    bool myMultiLineBody()
+    {
+      if (isTrue())
+      {
+        return false;
+      }
+      else
+      {
+        return true;
+      }
+    }
+
     bool deletedFunction() = delete; // some comments
 
     virtual int overriddenProperty() override { return 42; } // if in doubt, comment it out

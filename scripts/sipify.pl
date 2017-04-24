@@ -434,12 +434,19 @@ while ($line_idx < $line_count){
             if ($line !~ m/\{.*?\}$/){
                 $line = $lines[$line_idx];
                 $line_idx++;
+                my $nesting_index = 1;
                 if ( $line =~ m/^\s*\{\s*$/ ){
                     while ($line_idx < $line_count){
                         $line = $lines[$line_idx];
                         $line_idx++;
-                        if ( $line =~ m/\}\s*$/ ){
-                            last;
+                        if ( $line =~ m/^\s*{/ ){
+                            $nesting_index++;
+                        }
+                        elsif ( $line =~ m/\}\s*$/ ){
+                            $nesting_index--;
+                            if ($nesting_index == 0){
+                                last;
+                            }
                         }
                     }
                 }
