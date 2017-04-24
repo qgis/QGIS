@@ -45,6 +45,10 @@ __revision__ = '$Format:%H$'
 
 
 import os
+
+# Needed on Qt 5 so that the serialization of XML is consistent among all executions
+os.environ['QT_HASH_SEED'] = '1'
+
 import sys
 import signal
 import ssl

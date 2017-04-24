@@ -1,7 +1,7 @@
-
+Content-Length: 1676
 Content-Type: text/xml; charset=utf-8
 
-<CoverageDescription xmlns="http://www.opengis.net/wcs" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0.0" updateSequence="0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wcs http://schemas.opengis.net/wcs/1.0.0/describeCoverage.xsd" xmlns:gml="http://www.opengis.net/gml">
+<CoverageDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns="http://www.opengis.net/wcs" xsi:schemaLocation="http://www.opengis.net/wcs http://schemas.opengis.net/wcs/1.0.0/describeCoverage.xsd" version="1.0.0" xmlns:xlink="http://www.w3.org/1999/xlink" updateSequence="0">
  <CoverageOffering>
   <name>dem</name>
   <label>dem</label>
