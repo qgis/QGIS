@@ -250,6 +250,11 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     bool initializedMember{ false };
 
+    struct CORE_EXPORT PublicStruct
+    {
+      int var;
+    }
+
   protected:
     bool thisShouldBeListed();
 

@@ -250,6 +250,11 @@ Removing function body with virtual const reference
 
     bool initializedMember;
 
+    struct PublicStruct
+    {
+      int var;
+    }
+
   protected:
     bool thisShouldBeListed();
 %Docstring
