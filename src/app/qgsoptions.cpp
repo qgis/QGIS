@@ -101,7 +101,22 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( this, &QDialog::rejected, this, &QgsOptions::rejectOptions );
 
   QStringList styles = QStyleFactory::keys();
-  cmbStyle->addItems( styles );
+  QStringList filteredStyles = styles;
+  for ( int i = filteredStyles.count() - 1; i >= 0; --i )
+  {
+    // filter out the broken adwaita styles - see note in main.cpp
+    if ( filteredStyles.at( i ).contains( QStringLiteral( "adwaita" ), Qt::CaseInsensitive ) )
+    {
+      filteredStyles.removeAt( i );
+    }
+  }
+  if ( filteredStyles.isEmpty() )
+  {
+    //oops - none left!.. have to let user use a broken style
+    filteredStyles = styles;
+  }
+
+  cmbStyle->addItems( filteredStyles );
 
   QStringList themes = QgsApplication::uiThemes().keys();
   cmbUITheme->addItems( themes );
