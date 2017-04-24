@@ -320,7 +320,7 @@ while ($line_idx < $line_count){
         if ($line =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
           # one line declaration
           $line !~ m/=/ or die 'spify.pl does not handle enum one liners with value assignment. Use multiple lines instead.';
-          push @output, "$line\n";
+          next;
         }
         else
         {

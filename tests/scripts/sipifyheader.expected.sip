@@ -71,8 +71,6 @@ class QgsSipifyHeader : QtClass<QVariant>
 
 
     enum OneLiner { Success, NoSuccess };
-    enum OneLiner { Success, NoSuccess };
-    enum OneLiner;
 
     struct Data
     {
