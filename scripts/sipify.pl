@@ -200,6 +200,13 @@ while ($line_idx < $line_count){
         }
         $MULTILINE_DEFINITION = 0;
       }
+      # also skip method body if there is one
+      if ($lines[$line_idx] =~ m/^\s*\{/){
+        while($lines[$line_idx] !~ m/^\s*\}/){
+          $line_idx++;
+        }
+        $line_idx++;
+      }
       next;
     }
 
@@ -310,23 +317,31 @@ while ($line_idx < $line_count){
     # Enum declaration
     if ( $line =~ m/^\s*enum\s+\w+.*?$/ ){
         push @output, "$line\n";
-        $line = $lines[$line_idx];
-        $line_idx++;
-        $line =~ m/^\s*\{\s*$/ || die "Unexpected content: enum should be followed by {\nline: $line";
-        push @output, "$line\n";
-        while ($line_idx < $line_count){
+        if ($line =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
+          # one line declaration
+          $line !~ m/=/ or die 'spify.pl does not handle enum one liners with value assignment. Use multiple lines instead.';
+          push @output, "$line\n";
+        }
+        else
+        {
             $line = $lines[$line_idx];
             $line_idx++;
-            if ($line =~ m/\};/){
-                last;
-            }
-            $line =~ s/(\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?).*$/$1$3/;
+            $line =~ m/^\s*\{\s*$/ || die "Unexpected content: enum should be followed by {\nline: $line";
             push @output, "$line\n";
+            while ($line_idx < $line_count){
+                $line = $lines[$line_idx];
+                $line_idx++;
+                if ($line =~ m/\};/){
+                    last;
+                }
+                $line =~ s/(\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?).*$/$1$3/;
+                push @output, "$line\n";
+            }
+            push @output, "$line\n";
+            # enums don't have Docstring apparently
+            $comment = '';
+            next;
         }
-        push @output, "$line\n";
-        # enums don't have Docstring apparently
-        $comment = '';
-        next;
     }
 
     # skip non-method member declaration in non-public sections

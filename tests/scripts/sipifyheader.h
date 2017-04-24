@@ -106,6 +106,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     };
     Q_DECLARE_FLAGS( Flags, MyEnum )
 
+    enum OneLiner { Success, NoSuccess };
+
     /**
      * Docstring headers for structs are not supported by sip (as of 4.18) and
      * therefore this docstring must not to be copied to the sipfile.
@@ -216,6 +218,11 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void removeProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFERBACK );
 
     bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl ) { doSomething; return true; }   // some comments
+
+    static inline QgsMapLayer *skippedMethodWithBody() SIP_SKIP
+    {
+      OhNoYouShouldnotHaveReadThis();
+    }
 
     //! Removing function body with namespaced return value
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const { return mBuildPyramidsFlag; }
