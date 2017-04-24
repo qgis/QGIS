@@ -99,33 +99,19 @@ def features(layer, request=QgsFeatureRequest()):
         def __init__(self, layer, request):
             self.layer = layer
             self.selection = False
+
+            invalidFeaturesMethod = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+            if invalidFeaturesMethod == self.IGNORE:
+                request.setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid)
+            elif invalidFeaturesMethod == self.RAISE_EXCEPTION:
+                request.setInvalidGeometryCheck(QgsFeatureRequest.GeometryAbortOnInvalid)
+
             if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)\
                     and layer.selectedFeatureCount() > 0:
                 self.iter = layer.selectedFeaturesIterator(request)
                 self.selection = True
             else:
                 self.iter = layer.getFeatures(request)
-
-            invalidFeaturesMethod = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
-
-            def filterFeature(f, ignoreInvalid):
-                geom = f.geometry()
-                if geom is None:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Feature with NULL geometry found.'))
-                elif not geom.isGeosValid():
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                           self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
-                    if ignoreInvalid:
-                        return False
-                    else:
-                        raise GeoAlgorithmExecutionException(self.tr('Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
-                return True
-
-            if invalidFeaturesMethod == self.IGNORE:
-                self.iter = filter(lambda x: filterFeature(x, True), self.iter)
-            elif invalidFeaturesMethod == self.RAISE_EXCEPTION:
-                self.iter = filter(lambda x: filterFeature(x, False), self.iter)
 
         def __iter__(self):
             return self.iter
