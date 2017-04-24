@@ -74,7 +74,7 @@ push @output, " ****************************************************************
 while ($line_idx < $line_count){
     $line = $lines[$line_idx];
     $line_idx++;
-    #push @output, "$line\n";
+    #print "$line\n";
 
     if ($line =~ m/^\s*SIP_FEATURE\( (\w+) \)(.*)$/){
         push @output, "%Feature $1$2\n";
@@ -312,7 +312,7 @@ while ($line_idx < $line_count){
         push @output, "$line\n";
         $line = $lines[$line_idx];
         $line_idx++;
-        $line =~ m/^\s*\{\s*$/ || die 'Unexpected content: enum should be followed by {';
+        $line =~ m/^\s*\{\s*$/ || die "Unexpected content: enum should be followed by {\nline: $line";
         push @output, "$line\n";
         while ($line_idx < $line_count){
             $line = $lines[$line_idx];
@@ -463,6 +463,9 @@ while ($line_idx < $line_count){
       $comment = '';
       next;
     }
+
+    # remove export macro from struct definition
+    $line =~ s/^(\s*struct )\w+_EXPORT (.+)$/$1$2/;
 
     $line =~ s/\bSIP_FACTORY\b/\/Factory\//;
     $line =~ s/\bSIP_OUT\b/\/Out\//g;
