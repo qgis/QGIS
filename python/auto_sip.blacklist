@@ -1,7 +1,6 @@
 core/conversions.sip
 core/qgsexception.sip
 core/qgis.sip
-core/qgsapplication.sip
 core/qgsbearingutils.sip
 core/qgsbrowsermodel.sip
 core/qgscolorscheme.sip
