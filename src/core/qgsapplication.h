@@ -40,6 +40,9 @@ class QgsMessageLog;
 class QgsProcessingRegistry;
 class QgsAnnotationRegistry;
 
+
+SIP_FEATURE( ANDROID )
+
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
@@ -56,6 +59,55 @@ class QgsAnnotationRegistry;
 
 class CORE_EXPORT QgsApplication : public QApplication
 {
+
+#ifdef SIP_RUN
+    % TypeCode
+    // Convert a Python argv list to a conventional C argc count and argv array.
+    static char **qtgui_ArgvToC( PyObject *argvlist, int &argc )
+    {
+      char **argv;
+
+      argc = PyList_GET_SIZE( argvlist );
+
+      // Allocate space for two copies of the argument pointers, plus the
+      // terminating NULL.
+      if ( ( argv = ( char ** )sipMalloc( 2 * ( argc + 1 ) * sizeof( char * ) ) ) == NULL )
+        return NULL;
+
+      // Convert the list.
+      for ( int a = 0; a < argc; ++a )
+      {
+        char *arg;
+        // Get the argument and allocate memory for it.
+        if ( ( arg = PyBytes_AsString( PyList_GET_ITEM( argvlist, a ) ) ) == NULL ||
+             ( argv[a] = ( char * )sipMalloc( strlen( arg ) + 1 ) ) == NULL )
+          return NULL;
+        // Copy the argument and save a pointer to it.
+        strcpy( argv[a], arg );
+        argv[a + argc + 1] = argv[a];
+      }
+
+      argv[argc + argc + 1] = argv[argc] = NULL;
+
+      return argv;
+    }
+
+    // Remove arguments from the Python argv list that have been removed from the
+    // C argv array.
+    static void qtgui_UpdatePyArgv( PyObject *argvlist, int argc, char **argv )
+    {
+      for ( int a = 0, na = 0; a < argc; ++a )
+      {
+        // See if it was removed.
+        if ( argv[na] == argv[a + argc + 1] )
+          ++na;
+        else
+          PyList_SetSlice( argvlist, na, na + 1, NULL );
+      }
+    }
+    % End
+#endif
+
     Q_OBJECT
 
   public:
@@ -63,7 +115,32 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char *QGIS_ORGANIZATION_NAME;
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
+#ifndef SIP_RUN
     QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath = QString(), const QString &platformName = "desktop" );
+#else
+    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString customConfigPath = QString() ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath = QString() )];
+    % MethodCode
+    // The Python interface is a list of argument strings that is modified.
+
+    int argc;
+    char **argv;
+
+    // Convert the list.
+    if ( ( argv = qtgui_ArgvToC( a0, argc ) ) == NULL )
+      sipIsErr = 1;
+    else
+    {
+      // Create it now the arguments are right.
+      static int nargc = argc;
+
+      sipCpp = new sipQgsApplication( nargc, argv, a1, *a2 );
+
+      // Now modify the original list.
+      qtgui_UpdatePyArgv( a0, argc, argv );
+    }
+    % End
+#endif
+
     virtual ~QgsApplication();
 
     /**
@@ -79,7 +156,7 @@ class CORE_EXPORT QgsApplication : public QApplication
         the above case.
         \note not available in Python bindings
       */
-    static void init( QString customConfigPath = QString() );
+    static void init( QString customConfigPath = QString() ) SIP_SKIP;
 
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent *event ) override;
@@ -312,6 +389,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /** Swap the endianness of the specified value.
      * \note not available in Python bindings
      */
+#ifndef SIP_RUN
     template<typename T>
     static void endian_swap( T &value )
     {
@@ -322,6 +400,7 @@ class CORE_EXPORT QgsApplication : public QApplication
         std::swap( data[i], data[n - 1 - i] );
       }
     }
+#endif
 
     /** \brief get a standard css style sheet for reports.
      * Typically you will use this method by doing:
@@ -353,7 +432,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Indicates whether running from build directory (not installed)
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
 #ifdef _MSC_VER
-    static QString cfgIntDir() { return ABISYM( mCfgIntDir ); }
+    static QString cfgIntDir() { return ABISYM( mCfgIntDir ); } SIP_SKIP
 #endif
     //! Returns path to the source directory. Valid only when running from build directory
     static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
@@ -422,7 +501,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.0
      * \note not available in Python bindings
      */
-    static QgsRasterRendererRegistry *rasterRendererRegistry();
+    static QgsRasterRendererRegistry *rasterRendererRegistry() SIP_SKIP;
 
     /**
      * Returns the application's data item provider registry, which keeps a list of data item
@@ -474,7 +553,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.0
      * \note not available in Python bindings
      */
-    static QgsAnnotationRegistry *annotationRegistry();
+    static QgsAnnotationRegistry *annotationRegistry() SIP_SKIP;
 
     /**
      * Returns the action scope registry.
@@ -535,9 +614,16 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void setCustomVariable( const QString &name, const QVariant &value );
 
+#ifdef SIP_RUN
+    SIP_IF_FEATURE( ANDROID )
+    //dummy method to workaround sip generation issue
+    bool x11EventFilter( XEvent *event );
+    SIP_END
+#endif
+
   signals:
     //! \note not available in Python bindings
-    void preNotify( QObject *receiver, QEvent *event, bool *done );
+    void preNotify( QObject *receiver, QEvent *event, bool *done ) SIP_SKIP;
 
     /**
      * Emitted whenever a custom global variable changes.
