@@ -24,6 +24,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsdistancearea.h"
 #include "qgsproject.h"
+#include "qgsmessagelog.h"
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
@@ -241,8 +242,15 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mFetchedFid )
       return false;
     bool res = nextFeatureFid( f );
-    mFetchedFid = true;
-    return res;
+    if ( res && checkGeometry( f ) )
+    {
+      mFetchedFid = true;
+      return res;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   if ( !mRequest.filterRect().isNull() )
@@ -305,6 +313,9 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
       updateFeatureGeometry( f );
 
+    if ( !checkGeometry( f ) )
+      continue;
+
     return true;
   }
   // no more provider features
@@ -366,6 +377,9 @@ bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )
       // skip features which are not accepted by the filter
       continue;
 
+    if ( !checkGeometry( *mFetchAddedFeaturesIt ) )
+      continue;
+
     useAddedFeature( *mFetchAddedFeaturesIt, f );
 
     return true;
@@ -416,9 +430,12 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedGeomFeature( QgsFeature &f )
 
     useChangedAttributeFeature( fid, *mFetchChangedGeomIt, f );
 
-    // return complete feature
-    mFetchChangedGeomIt++;
-    return true;
+    if ( checkGeometry( f ) )
+    {
+      // return complete feature
+      mFetchChangedGeomIt++;
+      return true;
+    }
   }
 
   return false; // no more changed geometries
@@ -440,7 +457,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
       addVirtualAttributes( f );
 
     mRequest.expressionContext()->setFeature( f );
-    if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
+    if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() && checkGeometry( f ) )
     {
       return true;
     }
@@ -656,6 +673,39 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
       break;
     }
   }
+}
+
+bool QgsVectorLayerFeatureIterator::checkGeometry( const QgsFeature &feature )
+{
+  if ( !feature.hasGeometry() )
+    return true;
+
+  switch ( mRequest.invalidGeometryCheck() )
+  {
+    case QgsFeatureRequest::GeometryNoCheck:
+      return true;
+
+    case QgsFeatureRequest::GeometrySkipInvalid:
+    {
+      if ( !feature.geometry().isGeosValid() )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), QgsMessageLog::CRITICAL );
+        return false;
+      }
+      break;
+    }
+
+    case QgsFeatureRequest::GeometryAbortOnInvalid:
+      if ( !feature.geometry().isGeosValid() )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), QgsMessageLog::CRITICAL);
+        close();
+        return false;
+      }
+      break;
+  }
+
+  return true;
 }
 
 void QgsVectorLayerFeatureIterator::prepareField( int fieldIdx )

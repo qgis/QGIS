@@ -16,7 +16,14 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsField, NULL, QgsProject, QgsVectorLayerJoinInfo
+from qgis.core import (QgsVectorLayer,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsField,
+                       NULL,
+                       QgsProject,
+                       QgsVectorLayerJoinInfo,
+                       QgsGeometry)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QVariant
 
@@ -273,6 +280,33 @@ class TestQgsFeatureIterator(unittest.TestCase):
 
         QgsProject.instance().removeMapLayers([layer.id(), joinLayer.id()])
 
+    def test_invalidGeometryFilter(self):
+        layer = QgsVectorLayer(
+            "Polygon?field=x:string",
+            "joinlayer", "memory")
+
+        # add some features, one has invalid geometry
+        pr = layer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes(["a"])
+        f1.setGeometry(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))')) # valid
+        f2 = QgsFeature()
+        f2.setAttributes(["b"])
+        f2.setGeometry(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 0 1, 1 1, 0 0))'))  # invalid
+        f3 = QgsFeature()
+        f3.setAttributes(["c"])
+        f3.setGeometry(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))  # valid
+        self.assertTrue(pr.addFeatures([f1, f2, f3]))
+
+        res = [f['x'] for f in
+               layer.getFeatures(QgsFeatureRequest().setInvalidGeometryCheck(QgsFeatureRequest.GeometryNoCheck))]
+        self.assertEqual(res, ['a', 'b', 'c'])
+        res = [f['x'] for f in
+               layer.getFeatures(QgsFeatureRequest().setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid))]
+        self.assertEqual(res, ['a', 'c'])
+        res = [f['x'] for f in
+               layer.getFeatures(QgsFeatureRequest().setInvalidGeometryCheck(QgsFeatureRequest.GeometryAbortOnInvalid))]
+        self.assertEqual(res, ['a'])
 
 if __name__ == '__main__':
     unittest.main()

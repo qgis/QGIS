@@ -76,6 +76,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   {
     mFilterExpression.reset( nullptr );
   }
+  mInvalidGeometryFilter = rh.mInvalidGeometryFilter;
   mExpressionContext = rh.mExpressionContext;
   mAttrs = rh.mAttrs;
   mSimplifyMethod = rh.mSimplifyMethod;
@@ -101,6 +102,12 @@ QgsFeatureRequest &QgsFeatureRequest::setFilterFids( const QgsFeatureIds &fids )
 {
   mFilter = FilterFids;
   mFilterFids = fids;
+  return *this;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check )
+{
+  mInvalidGeometryFilter = check;
   return *this;
 }
 

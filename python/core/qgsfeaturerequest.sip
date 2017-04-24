@@ -26,6 +26,14 @@ class QgsFeatureRequest
       FilterFids        //!< Filter using feature IDs
     };
 
+    //! Handling of features with invalid geometries
+    enum InvalidGeometryCheck
+    {
+      GeometryNoCheck,
+      GeometrySkipInvalid,
+      GeometryAbortOnInvalid,
+    };
+
     /**
      * The OrderByClause class represents an order by clause for a QgsFeatureRequest.
      *
@@ -195,6 +203,22 @@ class QgsFeatureRequest
     QgsFeatureRequest& setFilterFids( const QgsFeatureIds& fids );
     //! Get feature IDs that should be fetched.
     const QgsFeatureIds& filterFids() const;
+
+    /**
+     * Sets invalid geometry checking behavior.
+     * \note Invalid geometry checking is not performed when retrieving features
+     * directly from a QgsVectorDataProvider.
+     * \see invalidGeometryCheck()
+     * \since QGIS 3.0
+     */
+    QgsFeatureRequest &setInvalidGeometryCheck( InvalidGeometryCheck check );
+
+    /**
+     * Returns the invalid geometry checking behavior.
+     * \see setInvalidGeometryCheck()
+     * \since QGIS 3.0
+     */
+    InvalidGeometryCheck invalidGeometryCheck() const;
 
     /** Set the filter expression. {@see QgsExpression}
      * @param expression expression string

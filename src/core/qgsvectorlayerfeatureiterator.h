@@ -221,6 +221,11 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 
     void createOrderedJoinList();
+
+    /**
+     * Performs any geometry validity checking.
+     */
+    bool checkGeometry( const QgsFeature &feature );
 };
 
 #endif // QGSVECTORLAYERFEATUREITERATOR_H

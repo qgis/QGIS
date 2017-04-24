@@ -85,6 +85,14 @@ class CORE_EXPORT QgsFeatureRequest
       FilterFids        //!< Filter using feature IDs
     };
 
+    //! Handling of features with invalid geometries
+    enum InvalidGeometryCheck
+    {
+      GeometryNoCheck = 0, //!< No invalid geometry checking
+      GeometrySkipInvalid = 1, //!< Skip any features with invalid geometry. This requires a slow geometry validity check for every feature.
+      GeometryAbortOnInvalid = 2, //!< Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
+    };
+
     /** \ingroup core
      * The OrderByClause class represents an order by clause for a QgsFeatureRequest.
      *
@@ -270,6 +278,22 @@ class CORE_EXPORT QgsFeatureRequest
     //! Get feature IDs that should be fetched.
     const QgsFeatureIds &filterFids() const { return mFilterFids; }
 
+    /**
+     * Sets invalid geometry checking behavior.
+     * \note Invalid geometry checking is not performed when retrieving features
+     * directly from a QgsVectorDataProvider.
+     * \see invalidGeometryCheck()
+     * \since QGIS 3.0
+     */
+    QgsFeatureRequest &setInvalidGeometryCheck( InvalidGeometryCheck check );
+
+    /**
+     * Returns the invalid geometry checking behavior.
+     * \see setInvalidGeometryCheck()
+     * \since QGIS 3.0
+     */
+    InvalidGeometryCheck invalidGeometryCheck() const { return mInvalidGeometryFilter; }
+
     /** Set the filter expression. {\see QgsExpression}
      * \param expression expression string
      * \see filterExpression
@@ -415,6 +439,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsSimplifyMethod mSimplifyMethod;
     long mLimit = -1;
     OrderBy mOrderBy;
+    InvalidGeometryCheck mInvalidGeometryFilter = GeometryNoCheck;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
