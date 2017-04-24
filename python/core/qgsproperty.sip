@@ -80,8 +80,6 @@ class QgsProperty
     };
 
     QgsProperty();
-    virtual ~QgsProperty();
-
     static QgsProperty fromExpression( const QString& expression, bool isActive = true );
     static QgsProperty fromField( const QString& fieldName, bool isActive = true );
     static QgsProperty fromValue( const QVariant& value, bool isActive = true );
