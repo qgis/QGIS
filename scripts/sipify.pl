@@ -526,4 +526,4 @@ push @output,  " * Do not edit manually ! Edit header and run scripts/sipify.pl 
 push @output,  " ************************************************************************/\n";
 
 
-print join('',@output)."\n";
+print join('',@output);

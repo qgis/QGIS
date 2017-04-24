@@ -122,4 +122,3 @@ Emitted when an annotation is about to be removed from the manager
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

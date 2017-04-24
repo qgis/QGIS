@@ -95,4 +95,3 @@ Get style label, translated, used in UI
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

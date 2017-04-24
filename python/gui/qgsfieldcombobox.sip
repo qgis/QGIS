@@ -103,4 +103,3 @@ setField sets the currently selected field
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

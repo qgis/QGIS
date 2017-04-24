@@ -182,4 +182,3 @@ Checks if the action is runable on the current platform
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

@@ -157,4 +157,3 @@ emitted as soon as the current file or directory is changed
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

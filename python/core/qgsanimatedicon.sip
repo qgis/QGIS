@@ -101,4 +101,3 @@ class QgsAnimatedIcon : QObject
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-
