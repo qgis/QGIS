@@ -40,13 +40,15 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 
     void clearHeader( const QString &key ) override;
 
-    QString getHeader( const QString &key ) const override;
+    QString header( const QString &key ) const override;
 
     QList<QString> headerKeys() const override;
 
     bool headersSent() const override;
 
-    void setReturnCode( int code ) override;
+    void setStatusCode( int code ) override;
+
+    int statusCode( ) const override { return mStatusCode; }
 
     void sendError( int code,  const QString &message ) override;
 
@@ -73,6 +75,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
     bool mFinished    = false;
     bool mHeadersSent = false;
     QgsServerRequest::Method mMethod;
+    int mStatusCode = 0;
 };
 
 /**

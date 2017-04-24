@@ -42,13 +42,15 @@ class QgsBufferServerResponse: public QgsServerResponse
 
     void clearHeader( const QString &key ) override;
 
-    QString getHeader( const QString &key ) const override;
+    QString header( const QString &key ) const override;
 
     QList<QString> headerKeys() const override;
 
     bool headersSent() const override;
 
-    void setReturnCode( int code ) override;
+    void setStatusCode( int code ) override;
+
+    int statusCode( ) const override { return mReturnCode; }
 
     void sendError( int code,  const QString &message ) override;
 
@@ -74,10 +76,6 @@ class QgsBufferServerResponse: public QgsServerResponse
      */
     QMap<QString, QString> headers() const { return mHeaders; }
 
-    /**
-     * Return the status code
-     */
-    int returnCode() const { return mReturnCode; }
 
   private:
     QMap<QString, QString> mHeaders;

@@ -40,8 +40,8 @@
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
 #include "qgis_server.h"
+#include "qgsserverrequest.h"
 
-class QgsServerRequest;
 class QgsServerResponse;
 class QgsProject;
 
@@ -79,11 +79,11 @@ class SERVER_EXPORT QgsServer
      * variable.
      *
      * \param urlstr QString containing the request url (simple quely string must be preceded by '?')
-     * \param requestMethod QString that indicates the method. Only "GET" or "POST" are supported.
+     * \param requestMethod QgsServerRequest::Method that indicates the method. Only "GET" or "POST" are supported.
      * \param data array of bytes containing post data
      * \returns the response headers and body QPair of QByteArray
      */
-    QPair<QByteArray, QByteArray> handleRequest( const QString &urlstr, const QString &requestMethod = QString(), const char *data = nullptr );
+    QPair<QByteArray, QByteArray> handleRequest( const QString &urlstr, const QgsServerRequest::Method requestMethod = QgsServerRequest::GetMethod, const char *data = nullptr );
 
     //! Returns a pointer to the server interface
     QgsServerInterfaceImpl *serverInterface() { return sServerInterface; }

@@ -227,6 +227,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsGraphBuilder<td>addArc<td>addEdge
 <tr><td>QgsGraphBuilderInterface<td>addArc<td>addEdge
 <tr><td>QgsGraphDirectory<td>addProperter<td>addStrategy
+<tr><td>QgsRequestHandler<td>getHeader<td>header
 <tr><td>QgsStrategy<td>addProperter<td>addStrategy
 </table>
 
@@ -1835,6 +1836,13 @@ QgsRuntimeProfiler        {#qgis_api_break_3_0_QgsRuntimeProfiler}
 ------------------
 
 - This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::profiler() to access an application-wide profiler.
+
+
+QgsServer       {#qgis_api_break_3_0_QgsServer}
+----------
+
+-  QgsServer::handleRequest( const QString &urlstr ) now also takes two optional arguments: QgsServerRequest::Method and POST data
+
 
 QgsSimpleMarkerSymbolLayer        {#qgis_api_break_3_0_QgsSimpleMarkerSymbolLayer}
 --------------------------
