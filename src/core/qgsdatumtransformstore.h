@@ -43,10 +43,11 @@ class CORE_EXPORT QgsDatumTransformStore
 
     bool hasEntryForLayer( QgsMapLayer *layer ) const;
 
-    /** Will return transform from layer's CRS to current destination CRS.
-     *  Will emit datumTransformInfoRequested signal if the layer has no entry.
-     *  \returns transformation associated with layer, or an invalid QgsCoordinateTransform
-     *  if no transform is associated with the layer
+    /**
+     * Will return transform from layer's CRS to current destination CRS.
+     * Will emit datumTransformInfoRequested signal if the layer has no entry.
+     * \returns transformation associated with layer, or an invalid QgsCoordinateTransform
+     * if no transform is associated with the layer
      */
     QgsCoordinateTransform transformation( const QgsMapLayer *layer ) const;
 

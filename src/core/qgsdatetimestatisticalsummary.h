@@ -111,7 +111,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      * \param stat statistic to return
      * \returns calculated value of statistic
      */
-    QVariant statistic( Statistic stat ) const;
+    QVariant statistic( QgsDateTimeStatisticalSummary::Statistic stat ) const;
 
     /** Returns the calculated count of values.
      */
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     /** Returns the friendly display name for a statistic
      * \param statistic statistic to return name for
      */
-    static QString displayName( Statistic statistic );
+    static QString displayName( QgsDateTimeStatisticalSummary::Statistic statistic );
 
   private:
 

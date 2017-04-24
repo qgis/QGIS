@@ -55,6 +55,10 @@ class CORE_EXPORT QgsCoordinateTransformCache
 
     QgsCoordinateTransformCache();
 
+#ifdef SIP_RUN
+    QgsCoordinateTransformCache( const QgsCoordinateTransformCache &rh );
+#endif
+
 };
 
 #endif // QGSCRSCACHE_H

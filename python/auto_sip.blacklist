@@ -1,15 +1,10 @@
 core/conversions.sip
 core/qgsexception.sip
 core/qgis.sip
-core/qgscredentials.sip
-core/qgscrscache.sip
 core/qgsdataitem.sip
 core/qgsdataitemprovider.sip
 core/qgsdataitemproviderregistry.sip
 core/qgsdataprovider.sip
-core/qgsdatasourceuri.sip
-core/qgsdatetimestatisticalsummary.sip
-core/qgsdatumtransformstore.sip
 core/qgsdbfilterproxymodel.sip
 core/qgseditformconfig.sip
 core/qgseditorwidgetsetup.sip
