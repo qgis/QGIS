@@ -223,9 +223,14 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     void createOrderedJoinList();
 
     /**
-     * Performs any geometry validity checking.
+     * Performs any feature based validity checking, e.g. checking for geometry validity.
      */
-    bool checkGeometry( const QgsFeature &feature );
+    bool testFeature( const QgsFeature &feature );
+
+    /**
+     * Checks a feature's geometry for validity, if requested in feature request.
+     */
+    bool checkGeometryValidity( const QgsFeature &feature );
 };
 
 #endif // QGSVECTORLAYERFEATUREITERATOR_H

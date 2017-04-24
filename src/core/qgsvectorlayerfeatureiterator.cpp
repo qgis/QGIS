@@ -242,7 +242,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mFetchedFid )
       return false;
     bool res = nextFeatureFid( f );
-    if ( res && checkGeometry( f ) )
+    if ( res && testFeature( f ) )
     {
       mFetchedFid = true;
       return res;
@@ -313,7 +313,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
       updateFeatureGeometry( f );
 
-    if ( !checkGeometry( f ) )
+    if ( !testFeature( f ) )
       continue;
 
     return true;
@@ -377,7 +377,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )
       // skip features which are not accepted by the filter
       continue;
 
-    if ( !checkGeometry( *mFetchAddedFeaturesIt ) )
+    if ( !testFeature( *mFetchAddedFeaturesIt ) )
       continue;
 
     useAddedFeature( *mFetchAddedFeaturesIt, f );
@@ -430,7 +430,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedGeomFeature( QgsFeature &f )
 
     useChangedAttributeFeature( fid, *mFetchChangedGeomIt, f );
 
-    if ( checkGeometry( f ) )
+    if ( testFeature( f ) )
     {
       // return complete feature
       mFetchChangedGeomIt++;
@@ -457,7 +457,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
       addVirtualAttributes( f );
 
     mRequest.expressionContext()->setFeature( f );
-    if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() && checkGeometry( f ) )
+    if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() && testFeature( f ) )
     {
       return true;
     }
@@ -675,7 +675,13 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
   }
 }
 
-bool QgsVectorLayerFeatureIterator::checkGeometry( const QgsFeature &feature )
+bool QgsVectorLayerFeatureIterator::testFeature( const QgsFeature &feature )
+{
+  bool result = checkGeometryValidity( feature );
+  return result;
+}
+
+bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &feature )
 {
   if ( !feature.hasGeometry() )
     return true;
