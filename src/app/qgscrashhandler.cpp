@@ -26,14 +26,14 @@
 #ifdef Q_OS_WIN
 LONG WINAPI QgsCrashHandler::handle( struct _EXCEPTION_POINTERS *ExceptionInfo )
 {
-  QVector<QgsStackTrace::StackLine> stack = QgsStackTrace::trace( ExceptionInfo );
+  QgsStackLines stack = QgsStackTrace::trace( ExceptionInfo );
   showCrashDialog( stack );
 
   return EXCEPTION_EXECUTE_HANDLER;
 }
 #endif
 
-void QgsCrashHandler::showCrashDialog( const QVector<QgsStackTrace::StackLine> &stack )
+void QgsCrashHandler::showCrashDialog( const QgsStackLines &stack )
 {
 
   QgsCrashDialog dlg( QApplication::activeWindow() );

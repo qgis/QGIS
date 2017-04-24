@@ -24,10 +24,12 @@
 
 #include "qgis.h"
 
+///@cond PRIVATE
+
 #ifdef Q_OS_WIN
 QVector<QgsStackTrace::StackLine> QgsStackTrace::trace(_EXCEPTION_POINTERS *ExceptionInfo)
 {
-  QVector<QgsStackTrace::StackLine> stack;
+  QgsStackLines stack;
 #ifndef QGISDEBUG
   return stack;
 #endif
@@ -123,7 +125,7 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace(_EXCEPTION_POINTERS *Exce
 
 QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )
 {
-  QVector<QgsStackTrace::StackLine> stack;
+  QgsStackLines stack;
 #ifndef QGISDEBUG
   return stack;
 #endif
@@ -151,3 +153,4 @@ bool QgsStackTrace::StackLine::isValid() const
             lineNumber.toLower().contains( "unknown" ) );
 
 }
+///@endcond

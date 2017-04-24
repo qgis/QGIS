@@ -51,13 +51,13 @@ class APP_EXPORT QgsCrashReport
      * Sets the stack trace for the crash report.
      * \param value A string list for each line in the stack trace.
      */
-    void setStackTrace( const QVector<QgsStackTrace::StackLine> &value ) { mStackTrace = value; }
+    void setStackTrace( const QgsStackLines &value ) { mStackTrace = value; }
 
     /**
      * Returns the stack trace for this report.
      * \return A string list for each line in the stack trace.
      */
-    QVector<QgsStackTrace::StackLine> StackTrace() const { return mStackTrace; }
+    QgsStackLines StackTrace() const { return mStackTrace; }
 
     /**
      * Set the flags to mark which features are included in this crash report.
@@ -85,7 +85,7 @@ class APP_EXPORT QgsCrashReport
 
   private:
     Flags mFlags;
-    QVector<QgsStackTrace::StackLine> mStackTrace;
+    QgsStackLines mStackTrace;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsCrashReport::Flags )

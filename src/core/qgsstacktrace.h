@@ -20,6 +20,9 @@
 
 #include <QStringList>
 
+///@cond PRIVATE
+
+
 /**
 * \ingroup core
 * The QgsStacktrace class provides an interface to generate a stack trace for
@@ -60,7 +63,6 @@ class CORE_EXPORT QgsStackTrace
     /**
      * Return a demangled stack backtrace of the caller function.
      *
-     * \note Not available in python
      * \note Added in QGIS 3.0
      */
     static QVector<QgsStackTrace::StackLine> trace(  struct _EXCEPTION_POINTERS *ExceptionInfo );
@@ -69,7 +71,6 @@ class CORE_EXPORT QgsStackTrace
     /**
      * Return a demangled stack backtrace of the caller function.
      *
-     * \note Not available in python
      * \note Added in QGIS 3.0
      */
     static QVector<QgsStackTrace::StackLine> trace( unsigned int maxFrames = 63 );
@@ -78,5 +79,9 @@ class CORE_EXPORT QgsStackTrace
     QgsStackTrace();
 
 };
+
+typedef QVector<QgsStackTrace::StackLine> QgsStackLines;
+
+///@endcond
 
 #endif // QGSSTACKTRACE_H
