@@ -116,9 +116,60 @@
 
 #include <stdio.h>
 
+#include "cpl_vsi.h"
+
 #ifdef USE_DBMALLOC
 #include <dbmalloc.h>
 #endif
+
+#define SHPOpen qgis_SHPOpen
+#define SHPCreate qgis_SHPCreate
+#define SHPGetInfo qgis_SHPGetInfo
+#define SHPReadObject qgis_SHPReadObject
+#define SHPWriteObject qgis_SHPWriteObject
+#define SHPDestroyObject qgis_SHPDestroyObject
+#define SHPComputeExtents qgis_SHPComputeExtents
+#define SHPCreateObject qgis_SHPCreateObject
+#define SHPCreateSimpleObject qgis_SHPCreateSimpleObject
+#define SHPRewindObject qgis_SHPRewindObject
+#define SHPClose qgis_SHPClose
+#define SHPTypeName qgis_SHPTypeName
+#define SHPPartTypeName qgis_SHPPartTypeName
+#define SHPCreateTree qgis_SHPCreateTree
+#define SHPDestroyTree qgis_SHPDestroyTree
+#define SHPWriteTree qgis_SHPWriteTree
+#define SHPReadTree qgis_SHPReadTree
+#define SHPTreeAddObject qgis_SHPTreeAddObject
+#define SHPTreeAddShapeId qgis_SHPTreeAddShapeId
+#define SHPTreeRemoveShapeId qgis_SHPTreeRemoveShapeId
+#define SHPTreeTrimExtraNodes qgis_SHPTreeTrimExtraNodes
+#define SHPTreeFindLikelyShapes qgis_SHPTreeFindLikelyShapes
+#define SHPCheckBoundsOverlap qgis_SHPCheckBoundsOverlap
+#define DBFOpen qgis_DBFOpen
+#define DBFCreate qgis_DBFCreate
+#define DBFGetFieldCount qgis_DBFGetFieldCount
+#define DBFGetRecordCount qgis_DBFGetRecordCount
+#define DBFAddField qgis_DBFAddField
+#define DBFFieldType qgis_DBFFieldType
+#define DBFGetFieldInfo qgis_DBFGetFieldInfo
+#define DBFGetFieldIndex qgis_DBFGetFieldIndex
+#define DBFReadIntegerAttribute qgis_DBFReadIntegerAttribute
+#define DBFReadDoubleAttribute qgis_DBFReadDoubleAttribute
+#define DBFReadStringAttribute qgis_DBFReadStringAttribute
+#define DBFReadLogicalAttribute qgis_DBFReadLogicalAttribute
+#define DBFIsAttributeNULL qgis_DBFIsAttributeNULL
+#define DBFWriteIntegerAttribute qgis_DBFWriteIntegerAttribute
+#define DBFWriteDoubleAttribute qgis_DBFWriteDoubleAttribute
+#define DBFWriteStringAttribute qgis_DBFWriteStringAttribute
+#define DBFWriteNULLAttribute qgis_DBFWriteNULLAttribute
+#define DBFWriteLogicalAttribute qgis_DBFWriteLogicalAttribute
+#define DBFWriteAttributeDirectly qgis_DBFWriteAttributeDirectly
+#define DBFReadTuple qgis_DBFReadTuple
+#define DBFWriteTuple qgis_DBFWriteTuple
+#define DBFCloneEmpty qgis_DBFCloneEmpty
+#define DBFClose qgis_DBFClose
+#define DBFGetNativeFieldType qgis_DBFGetNativeFieldType
+
 
 #ifdef __cplusplus
 extern "C"
@@ -189,8 +240,8 @@ extern "C"
   /************************************************************************/
   typedef struct
   {
-    FILE        *fpSHP;
-    FILE *fpSHX;
+    VSILFILE        *fpSHP;
+    VSILFILE *fpSHX;
 
     int  nShapeType;    /* SHPT_* */
 
@@ -382,7 +433,7 @@ extern "C"
   /************************************************************************/
   typedef struct
   {
-    FILE *fp;
+    VSILFILE *fp;
 
     int         nRecords;
 

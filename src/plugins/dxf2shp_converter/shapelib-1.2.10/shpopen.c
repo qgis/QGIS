@@ -158,8 +158,10 @@
  *
  */
 
+#if 0
 static char rcsid[] =
   "$Id: shpopen.c,v 1.39 2002/08/26 06:46:56 warmerda Exp $";
+#endif
 
 #include "shapefil.h"
 
@@ -299,8 +301,8 @@ static void SHPWriteHeader( SHPHandle psSHP )
   /* -------------------------------------------------------------------- */
   /*      Write .shp file header.                                         */
   /* -------------------------------------------------------------------- */
-  fseek( psSHP->fpSHP, 0, 0 );
-  fwrite( abyHeader, 100, 1, psSHP->fpSHP );
+  VSIFSeekL( psSHP->fpSHP, 0, 0 );
+  VSIFWriteL( abyHeader, 100, 1, psSHP->fpSHP );
 
   /* -------------------------------------------------------------------- */
   /*      Prepare, and write .shx file header.                            */
@@ -309,8 +311,8 @@ static void SHPWriteHeader( SHPHandle psSHP )
   ByteCopy( &i32, abyHeader + 24, 4 );
   if ( !bBigEndian ) SwapWord( 4, abyHeader + 24 );
 
-  fseek( psSHP->fpSHX, 0, 0 );
-  fwrite( abyHeader, 100, 1, psSHP->fpSHX );
+  VSIFSeekL( psSHP->fpSHX, 0, 0 );
+  VSIFWriteL( abyHeader, 100, 1, psSHP->fpSHX );
 
   /* -------------------------------------------------------------------- */
   /*      Write out the .shx contents.                                    */
@@ -325,7 +327,7 @@ static void SHPWriteHeader( SHPHandle psSHP )
     if ( !bBigEndian ) SwapWord( 4, panSHX + i*2 + 1 );
   }
 
-  fwrite( panSHX, sizeof( int32 ) * 2, psSHP->nRecords, psSHP->fpSHX );
+  VSIFWriteL( panSHX, sizeof( int32 ) * 2, psSHP->nRecords, psSHP->fpSHX );
 
   free( panSHX );
 }
@@ -395,11 +397,11 @@ SHPOpen( const char * pszLayer, const char * pszAccess )
   /* -------------------------------------------------------------------- */
   pszFullname = ( char * ) malloc( strlen( pszBasename ) + 5 );
   sprintf( pszFullname, "%s.shp", pszBasename );
-  psSHP->fpSHP = fopen( pszFullname, pszAccess );
+  psSHP->fpSHP = VSIFOpenL( pszFullname, pszAccess );
   if ( psSHP->fpSHP == NULL )
   {
     sprintf( pszFullname, "%s.SHP", pszBasename );
-    psSHP->fpSHP = fopen( pszFullname, pszAccess );
+    psSHP->fpSHP = VSIFOpenL( pszFullname, pszAccess );
   }
 
   if ( psSHP->fpSHP == NULL )
@@ -411,16 +413,16 @@ SHPOpen( const char * pszLayer, const char * pszAccess )
   }
 
   sprintf( pszFullname, "%s.shx", pszBasename );
-  psSHP->fpSHX = fopen( pszFullname, pszAccess );
+  psSHP->fpSHX = VSIFOpenL( pszFullname, pszAccess );
   if ( psSHP->fpSHX == NULL )
   {
     sprintf( pszFullname, "%s.SHX", pszBasename );
-    psSHP->fpSHX = fopen( pszFullname, pszAccess );
+    psSHP->fpSHX = VSIFOpenL( pszFullname, pszAccess );
   }
 
   if ( psSHP->fpSHX == NULL )
   {
-    fclose( psSHP->fpSHP );
+    VSIFCloseL( psSHP->fpSHP );
     free( psSHP );
     free( pszBasename );
     free( pszFullname );
@@ -434,7 +436,7 @@ SHPOpen( const char * pszLayer, const char * pszAccess )
   /*  Read the file size from the SHP file.    */
   /* -------------------------------------------------------------------- */
   pabyBuf = ( uchar * ) malloc( 100 );
-  fread( pabyBuf, 100, 1, psSHP->fpSHP );
+  VSIFReadL( pabyBuf, 100, 1, psSHP->fpSHP );
 
   psSHP->nFileSize = ( pabyBuf[24] * 256 * 256 * 256
                        + pabyBuf[25] * 256 * 256
@@ -444,15 +446,15 @@ SHPOpen( const char * pszLayer, const char * pszAccess )
   /* -------------------------------------------------------------------- */
   /*  Read SHX file Header info                                           */
   /* -------------------------------------------------------------------- */
-  fread( pabyBuf, 100, 1, psSHP->fpSHX );
+  VSIFReadL( pabyBuf, 100, 1, psSHP->fpSHX );
 
   if ( pabyBuf[0] != 0
        || pabyBuf[1] != 0
        || pabyBuf[2] != 0x27
        || ( pabyBuf[3] != 0x0a && pabyBuf[3] != 0x0d ) )
   {
-    fclose( psSHP->fpSHP );
-    fclose( psSHP->fpSHX );
+    VSIFCloseL( psSHP->fpSHP );
+    VSIFCloseL( psSHP->fpSHX );
     free( psSHP );
     free( pabyBuf );
 
@@ -468,8 +470,8 @@ SHPOpen( const char * pszLayer, const char * pszAccess )
   if ( psSHP->nRecords < 0 || psSHP->nRecords > 256000000 )
   {
     /* this header appears to be corrupt.  Give up. */
-    fclose( psSHP->fpSHP );
-    fclose( psSHP->fpSHX );
+    VSIFCloseL( psSHP->fpSHP );
+    VSIFCloseL( psSHP->fpSHX );
     free( psSHP );
 
     free( pabyBuf );
@@ -526,7 +528,7 @@ SHPOpen( const char * pszLayer, const char * pszAccess )
     ( int * ) malloc( sizeof( int ) * MAX( 1, psSHP->nMaxRecords ) );
 
   pabyBuf = ( uchar * ) malloc( 8 * MAX( 1, psSHP->nRecords ) );
-  fread( pabyBuf, 8, psSHP->nRecords, psSHP->fpSHX );
+  VSIFReadL( pabyBuf, 8, psSHP->nRecords, psSHP->fpSHX );
 
   for ( i = 0; i < psSHP->nRecords; i++ )
   {
@@ -570,8 +572,8 @@ SHPClose( SHPHandle psSHP )
   free( psSHP->panRecOffset );
   free( psSHP->panRecSize );
 
-  fclose( psSHP->fpSHX );
-  fclose( psSHP->fpSHP );
+  VSIFCloseL( psSHP->fpSHX );
+  VSIFCloseL( psSHP->fpSHP );
 
   if ( psSHP->pabyRec != NULL )
   {
@@ -622,7 +624,7 @@ SHPCreate( const char * pszLayer, int nShapeType )
 {
   char *pszBasename, *pszFullname;
   int  i;
-  FILE *fpSHP, *fpSHX;
+  VSILFILE *fpSHP, *fpSHX;
   uchar      abyHeader[100];
   int32 i32;
   double dValue;
@@ -655,7 +657,7 @@ SHPCreate( const char * pszLayer, int nShapeType )
   /* -------------------------------------------------------------------- */
   pszFullname = ( char * ) malloc( strlen( pszBasename ) + 5 );
   sprintf( pszFullname, "%s.shp", pszBasename );
-  fpSHP = fopen( pszFullname, "wb" );
+  fpSHP = VSIFOpenL( pszFullname, "wb" );
   if ( fpSHP == NULL )
   {
     free( pszBasename );
@@ -664,12 +666,12 @@ SHPCreate( const char * pszLayer, int nShapeType )
   }
 
   sprintf( pszFullname, "%s.shx", pszBasename );
-  fpSHX = fopen( pszFullname, "wb" );
+  fpSHX = VSIFOpenL( pszFullname, "wb" );
   if ( fpSHX == NULL )
   {
     free( pszBasename );
     free( pszFullname );
-    fclose( fpSHP );
+    VSIFCloseL( fpSHP );
     return( NULL );
   }
 
@@ -706,7 +708,7 @@ SHPCreate( const char * pszLayer, int nShapeType )
   /* -------------------------------------------------------------------- */
   /*      Write .shp file header.                                         */
   /* -------------------------------------------------------------------- */
-  fwrite( abyHeader, 100, 1, fpSHP );
+  VSIFWriteL( abyHeader, 100, 1, fpSHP );
 
   /* -------------------------------------------------------------------- */
   /*      Prepare, and write .shx file header.                            */
@@ -715,13 +717,13 @@ SHPCreate( const char * pszLayer, int nShapeType )
   ByteCopy( &i32, abyHeader + 24, 4 );
   if ( !bBigEndian ) SwapWord( 4, abyHeader + 24 );
 
-  fwrite( abyHeader, 100, 1, fpSHX );
+  VSIFWriteL( abyHeader, 100, 1, fpSHX );
 
   /* -------------------------------------------------------------------- */
   /*      Close the files, and then open them as regular existing files.  */
   /* -------------------------------------------------------------------- */
-  fclose( fpSHP );
-  fclose( fpSHX );
+  VSIFCloseL( fpSHP );
+  VSIFCloseL( fpSHX );
 
   return( SHPOpen( pszLayer, "r+b" ) );
 }
@@ -1237,10 +1239,10 @@ SHPWriteObject( SHPHandle psSHP, int nShapeId, SHPObject * psObject )
   /* -------------------------------------------------------------------- */
   /*      Write out record.                                               */
   /* -------------------------------------------------------------------- */
-  if ( fseek( psSHP->fpSHP, nRecordOffset, 0 ) != 0
-       || fwrite( pabyRec, nRecordSize, 1, psSHP->fpSHP ) < 1 )
+  if ( VSIFSeekL( psSHP->fpSHP, nRecordOffset, 0 ) != 0
+       || VSIFWriteL( pabyRec, nRecordSize, 1, psSHP->fpSHP ) < 1 )
   {
-    printf( "Error in fseek() or fwrite().\n" );
+    printf( "Error in fseek() or VSIFWriteL().\n" );
     free( pabyRec );
     return -1;
   }
@@ -1308,8 +1310,8 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
   /* -------------------------------------------------------------------- */
   /*      Read the record.                                                */
   /* -------------------------------------------------------------------- */
-  fseek( psSHP->fpSHP, psSHP->panRecOffset[hEntity], 0 );
-  fread( psSHP->pabyRec, psSHP->panRecSize[hEntity] + 8, 1, psSHP->fpSHP );
+  VSIFSeekL( psSHP->fpSHP, psSHP->panRecOffset[hEntity], 0 );
+  VSIFReadL( psSHP->pabyRec, psSHP->panRecSize[hEntity] + 8, 1, psSHP->fpSHP );
 
   /* -------------------------------------------------------------------- */
   /* Allocate and minimally initialize the object.   */
@@ -1738,6 +1740,7 @@ SHPRewindObject( SHPHandle hSHP, SHPObject * psObject )
 
 {
   int  iOpRing, bAltered = 0;
+  ( void )hSHP;
 
   /* -------------------------------------------------------------------- */
   /*      Do nothing if this is not a polygon object.                     */
