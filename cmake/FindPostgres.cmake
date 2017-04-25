@@ -45,6 +45,7 @@ ELSE(WIN32)
     SET(POSTGRES_CONFIG_PREFER_PATH "$ENV{POSTGRES_HOME}/bin" CACHE STRING "preferred path to PG (pg_config)")
     FIND_PROGRAM(POSTGRES_CONFIG pg_config
       ${POSTGRES_CONFIG_PREFER_PATH}
+      /usr/pgsql-9.2/bin/
       /usr/local/pgsql/bin/
       /usr/local/bin/
       /usr/bin/
