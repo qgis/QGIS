@@ -18,6 +18,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgsprocessingcontext.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -170,5 +171,30 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
   normalized.replace( '\\', '/' );
   normalized.replace( '"', "'" );
   return normalized.trimmed();
+}
+
+QgsFeatureIterator QgsProcessingUtils::getFeatures( QgsVectorLayer *layer, const QgsProcessingContext &context, const QgsFeatureRequest &request )
+{
+  bool useSelection = context.flags() & QgsProcessingContext::UseSelection && layer->selectedFeatureCount() > 0;
+
+  QgsFeatureRequest req( request );
+  req.setInvalidGeometryCheck( context.invalidGeometryCheck() );
+  if ( useSelection )
+  {
+    return layer->selectedFeaturesIterator( req );
+  }
+  else
+  {
+    return layer->getFeatures( req );
+  }
+}
+
+long QgsProcessingUtils::featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context )
+{
+  bool useSelection = context.flags() & QgsProcessingContext::UseSelection && layer->selectedFeatureCount() > 0;
+  if ( useSelection )
+    return layer->selectedFeatureCount();
+  else
+    return layer->featureCount();
 }
 
