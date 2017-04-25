@@ -98,7 +98,20 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
 
   QgsDebugMsg( "Created empty layer" );
 
-  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->provider( providerKey, uri ) );
+  QString uriUpdated( uri );
+  // HACK sorry...
+  if ( providerKey == "ogr" )
+  {
+    QString layerName;
+    if ( options->contains( QStringLiteral( "layerName" ) ) )
+      layerName = options->value( QStringLiteral( "layerName" ) ).toString();
+    if ( !layerName.isEmpty() )
+    {
+      uriUpdated += "|layername=";
+      uriUpdated += layerName;
+    }
+  }
+  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->provider( providerKey, uriUpdated ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;

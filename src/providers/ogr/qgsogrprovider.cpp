@@ -228,6 +228,7 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
   QString encoding;
   QString driverName = QStringLiteral( "ESRI Shapefile" );
   QStringList dsOptions, layerOptions;
+  QString layerName;
 
   if ( options )
   {
@@ -242,6 +243,9 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
 
     if ( options->contains( QStringLiteral( "layerOptions" ) ) )
       layerOptions << options->value( QStringLiteral( "layerOptions" ) ).toStringList();
+
+    if ( options->contains( QStringLiteral( "layerName" ) ) )
+      layerName = options->value( QStringLiteral( "layerName" ) ).toString();
   }
 
   if ( oldToNewAttrIdxMap )
@@ -249,7 +253,35 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
   if ( errorMessage )
     errorMessage->clear();
 
-  if ( !overwrite )
+  QgsVectorFileWriter::ActionOnExistingFile action( QgsVectorFileWriter::CreateOrOverwriteFile );
+
+  bool update = false;
+  if ( options->contains( QStringLiteral( "update" ) ) )
+  {
+    update = options->value( QStringLiteral( "update" ) ).toBool();
+    if ( update )
+    {
+      if ( !overwrite && !layerName.isEmpty() )
+      {
+        OGRDataSourceH hDS = OGROpen( uri.toUtf8().constData(), TRUE, nullptr );
+        if ( hDS )
+        {
+          if ( OGR_DS_GetLayerByName( hDS, layerName.toUtf8().constData() ) )
+          {
+            OGR_DS_Destroy( hDS );
+            if ( errorMessage )
+              *errorMessage += QObject::tr( "Layer %2 of %1 exists and overwrite flag is false." )
+                               .arg( uri ).arg( layerName );
+            return QgsVectorLayerImport::ErrCreateDataSource;
+          }
+          OGR_DS_Destroy( hDS );
+        }
+      }
+      action = QgsVectorFileWriter::CreateOrOverwriteLayer;
+    }
+  }
+
+  if ( !overwrite && !update )
   {
     QFileInfo fi( uri );
     if ( fi.exists() )
@@ -263,7 +295,9 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
 
   QgsVectorFileWriter *writer = new QgsVectorFileWriter(
     uri, encoding, fields, wkbType,
-    srs, driverName, dsOptions, layerOptions );
+    srs, driverName, dsOptions, layerOptions, nullptr,
+    QgsVectorFileWriter::NoSymbology, nullptr,
+    layerName, action );
 
   QgsVectorFileWriter::WriterError error = writer->hasError();
   if ( error )
@@ -275,16 +309,37 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
     return ( QgsVectorLayerImport::ImportError ) error;
   }
 
+  QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
+  delete writer;
+
   if ( oldToNewAttrIdxMap )
   {
-    QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
+    bool firstFieldIsFid = false;
+    if ( !layerName.isEmpty() )
+    {
+      OGRDataSourceH hDS = OGROpen( uri.toUtf8().constData(), TRUE, nullptr );
+      if ( hDS )
+      {
+        OGRLayerH hLayer = OGR_DS_GetLayerByName( hDS, layerName.toUtf8().constData() );
+        if ( hLayer )
+        {
+          // Expose the OGR FID if it comes from a "real" column (typically GPKG)
+          // and make sure that this FID column is not exposed as a regular OGR field (shouldn't happen normally)
+          firstFieldIsFid = !( EQUAL( OGR_L_GetFIDColumn( hLayer ), "" ) ) &&
+                            OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), OGR_L_GetFIDColumn( hLayer ) ) < 0 &&
+                            fields.indexFromName( OGR_L_GetFIDColumn( hLayer ) ) < 0;
+
+        }
+        OGR_DS_Destroy( hDS );
+      }
+    }
+
     for ( QMap<int, int>::const_iterator attrIt = attrIdxMap.begin(); attrIt != attrIdxMap.end(); ++attrIt )
     {
-      oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt );
+      oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt + ( firstFieldIsFid ? 1 : 0 ) );
     }
   }
 
-  delete writer;
   return QgsVectorLayerImport::NoError;
 }
 
