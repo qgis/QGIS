@@ -337,7 +337,6 @@ gui/qgsfeatureselectiondlg.sip
 gui/qgsfieldvalidator.sip
 gui/qgsfieldvalueslineedit.sip
 gui/qgsfiledropedit.sip
-gui/qgsfiledownloader.sip
 gui/qgsfilterlineedit.sip
 gui/qgsfloatingwidget.sip
 gui/qgsfocuswatcher.sip

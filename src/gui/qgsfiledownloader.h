@@ -36,6 +36,7 @@
  * If the guiNotificationsEnabled parameter is set to false, the class can still
  * be used through the signals and slots mechanism.
  * The object will destroy itself when the request completes, errors or is canceled.
+ * An optional authentication configuration can be specified.
  *
  * \since QGIS 2.18.1
  */
@@ -49,8 +50,9 @@ class GUI_EXPORT QgsFileDownloader : public QObject
      * \param url the download url
      * \param outputFileName file name where the downloaded content will be stored
      * \param guiNotificationsEnabled if false, the downloader will not display any progress bar or error message
+     * \param authcfg optionally apply this authentication configuration
      */
-    QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool guiNotificationsEnabled = true );
+    QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool guiNotificationsEnabled = true, QString authcfg = QString() );
 
   signals:
     //! Emitted when the download has completed successfully
@@ -61,7 +63,7 @@ class GUI_EXPORT QgsFileDownloader : public QObject
     void downloadCanceled();
     //! Emitted when an error makes the download fail
     void downloadError( QStringList errorMessages );
-    //! Emitted when data ready to be processed
+    //! Emitted when data are ready to be processed
     void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
 
   public slots:
@@ -114,6 +116,7 @@ class GUI_EXPORT QgsFileDownloader : public QObject
     bool mDownloadCanceled;
     QStringList mErrors;
     bool mGuiNotificationsEnabled;
+    QString mAuthCfg;
 };
 
 #endif // QGSFILEDOWNLOADER_H

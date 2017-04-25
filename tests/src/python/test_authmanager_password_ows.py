@@ -8,7 +8,8 @@ and QGIS Server WFS/WMS that check if QGIS can use a stored auth manager auth
 configuration to access an HTTP Basic protected endpoint.
 
 
-From build dir, run: ctest -R PyQgsAuthManagerPasswordOWSTest -V
+From build dir, run from test directory:
+LC_ALL=EN ctest -R PyQgsAuthManagerPasswordOWSTest -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,6 +24,7 @@ import tempfile
 import random
 import string
 import urllib
+from functools import partial
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '18/09/2016'
@@ -39,9 +41,16 @@ from qgis.core import (
     QgsVectorLayer,
     QgsRasterLayer,
 )
+from qgis.gui import (
+    QgsFileDownloader,
+)
 from qgis.testing import (
     start_app,
     unittest,
+)
+from qgis.PyQt.QtCore import (
+    QEventLoop,
+    QUrl,
 )
 
 try:
@@ -179,6 +188,86 @@ class TestAuthManager(unittest.TestCase):
         self.assertFalse(wfs_layer.isValid())
         wms_layer = self._getWMSLayer('testlayer_èé')
         self.assertFalse(wms_layer.isValid())
+
+    def testInvalidAuthFileDownload(self):
+        """
+        Download a protected map tile without authcfg
+        """
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.project_path),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "testlayer_èé".replace('_', '%20'),
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+        url = '%s://%s:%s/%s' % (self.protocol, self.hostname, self.port, qs)
+
+        destination = tempfile.mktemp()
+        loop = QEventLoop()
+
+        downloader = QgsFileDownloader(QUrl(url), destination, False)
+        downloader.downloadCompleted.connect(partial(self._set_slot, 'completed'))
+        downloader.downloadExited.connect(partial(self._set_slot, 'exited'))
+        downloader.downloadCanceled.connect(partial(self._set_slot, 'canceled'))
+        downloader.downloadError.connect(partial(self._set_slot, 'error'))
+        downloader.downloadProgress.connect(partial(self._set_slot, 'progress'))
+
+        downloader.downloadExited.connect(loop.quit)
+
+        loop.exec_()
+
+        self.assertTrue(self.error_was_called)
+        self.assertTrue("Download failed: Host requires authentication" in str(self.error_args), "Error args is: %s" % str(self.error_args))
+
+    def testValidAuthFileDownload(self):
+        """
+        Download a map tile with valid authcfg
+        """
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.project_path),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "testlayer_èé".replace('_', '%20'),
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+        url = '%s://%s:%s/%s' % (self.protocol, self.hostname, self.port, qs)
+
+        destination = tempfile.mktemp()
+        loop = QEventLoop()
+
+        downloader = QgsFileDownloader(QUrl(url), destination, False, self.auth_config.id())
+        downloader.downloadCompleted.connect(partial(self._set_slot, 'completed'))
+        downloader.downloadExited.connect(partial(self._set_slot, 'exited'))
+        downloader.downloadCanceled.connect(partial(self._set_slot, 'canceled'))
+        downloader.downloadError.connect(partial(self._set_slot, 'error'))
+        downloader.downloadProgress.connect(partial(self._set_slot, 'progress'))
+
+        downloader.downloadExited.connect(loop.quit)
+
+        loop.exec_()
+
+        # Check the we've got a likely PNG image
+        self.assertTrue(self.completed_was_called)
+        self.assertTrue(os.path.getsize(destination) > 700000, "Image size: %s" % os.path.getsize(destination))  # > 1MB
+        with open(destination, 'rb') as f:
+            self.assertTrue(b'PNG' in f.read())  # is a PNG
+
+    def _set_slot(self, *args, **kwargs):
+        #print('_set_slot(%s) called' % args[0])
+        setattr(self, args[0] + '_was_called', True)
+        setattr(self, args[0] + '_args', args)
 
 
 if __name__ == '__main__':

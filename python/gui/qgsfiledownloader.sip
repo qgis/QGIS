@@ -1,68 +1,87 @@
-/***************************************************************************
-  qgsfiledownloader.sip
-  --------------------------------------
-  Date                 : November 2016
-  Copyright            : (C) 2016 by Alessandro Pasotti
-  Email                : elpaso at itopen dot it
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfiledownloader.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \ingroup gui
- * QgsFileDownloader is a utility class for downloading files.
- *
- * To use this class, it is necessary to pass the URL and an output file name as
- * arguments to the constructor, the download will start immediately.
- * The download is asynchronous and depending on the guiNotificationsEnabled
- * parameter accepted by the constructor (default = true) the class will
- * show a progress dialog and report all errors in a QMessageBox::warning dialog.
- * If the guiNotificationsEnabled parameter is set to false, the class can still
- * be used through the signals and slots mechanism.
- * The object will destroy itself when the request completes, errors or is canceled.
- *
- * @note added in QGIS 2.18.1
- */
-class QgsFileDownloader : public QObject
+
+
+class QgsFileDownloader : QObject
 {
-  %TypeHeaderCode
-  #include <qgsfiledownloader.h>
-  %End
+%Docstring
+ QgsFileDownloader is a utility class for downloading files.
+
+ To use this class, it is necessary to pass the URL and an output file name as
+ arguments to the constructor, the download will start immediately.
+ The download is asynchronous and depending on the guiNotificationsEnabled
+ parameter accepted by the constructor (default = true) the class will
+ show a progress dialog and report all errors in a QMessageBox.warning dialog.
+ If the guiNotificationsEnabled parameter is set to false, the class can still
+ be used through the signals and slots mechanism.
+ The object will destroy itself when the request completes, errors or is canceled.
+ An optional authentication configuration can be specified.
+
+.. versionadded:: 2.18.1
+%End
+
+%TypeHeaderCode
+#include "qgsfiledownloader.h"
+%End
   public:
-    /**
-     * QgsFileDownloader
-     * @param url the download url
-     * @param outputFileName file name where the downloaded content will be stored
-     * @param guiNotificationsEnabled if false, the downloader will not display any progress bar or error message
-     */
-    QgsFileDownloader(QUrl url, QString outputFileName, bool guiNotificationsEnabled = true);
 
-    signals:
-      /** Emitted when the download has completed successfully  */
-      void downloadCompleted();
-      /** Emitted always when the downloader exits */
-      void downloadExited();
-      /** Emitted when the download was canceled by the user */
-      void downloadCanceled();
-      /** Emitted when an error makes the download fail */
-       void downloadError( QStringList errorMessages );
-      /** Emitted when data ready to be processed */
-      void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool guiNotificationsEnabled = true, QString authcfg = QString() );
+%Docstring
+ QgsFileDownloader
+ \param url the download url
+ \param outputFileName file name where the downloaded content will be stored
+ \param guiNotificationsEnabled if false, the downloader will not display any progress bar or error message
+ \param authcfg optionally apply this authentication configuration
+%End
 
-    public slots:
-      /**
-       * Called when a download is canceled by the user
-       * this slot aborts the download and deletes the object
-       * Never call this slot directly: this is meant to
-       * be managed by the signal-slot system.
-       */
-      void onDownloadCanceled();
+  signals:
+    void downloadCompleted();
+%Docstring
+Emitted when the download has completed successfully
+%End
+    void downloadExited();
+%Docstring
+Emitted always when the downloader exits
+%End
+    void downloadCanceled();
+%Docstring
+Emitted when the download was canceled by the user
+%End
+    void downloadError( QStringList errorMessages );
+%Docstring
+Emitted when an error makes the download fail
+%End
+    void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
+%Docstring
+Emitted when data are ready to be processed
+%End
 
-    private:
-      ~QgsFileDownloader();
+  public slots:
+
+    void onDownloadCanceled();
+%Docstring
+ Called when a download is canceled by the user
+ this slot aborts the download and deletes
+ the object.
+ Never call this slot directly: this is meant to
+ be managed by the signal-slot system.
+%End
+
+  protected:
+    ~QgsFileDownloader();
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfiledownloader.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
