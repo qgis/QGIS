@@ -37,7 +37,26 @@ class CORE_EXPORT QgsProcessingContext
 {
   public:
 
+    //! Flags that affect how processing algorithms are run
+    enum Flag
+    {
+      UseSelection = 1 << 0,  //!< Filter to selected features when running algorithms
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     QgsProcessingContext() = default;
+
+    /**
+     * Returns any flags set in the context.
+     * \see setFlags()
+     */
+    QgsProcessingContext::Flags flags() const { return mFlags; }
+
+    /**
+     * Sets \a flags for the context.
+     * \see flags()
+     */
+    void setFlags( const QgsProcessingContext::Flags &flags ) { mFlags = flags; }
 
     /**
      * Returns the project in which the algorithm is being executed.
@@ -63,11 +82,21 @@ class CORE_EXPORT QgsProcessingContext
 
   private:
 
+    QgsProcessingContext::Flags mFlags = 0;
+
     QPointer< QgsProject > mProject;
 
     QgsExpressionContext mExpressionContext;
 
 };
+
+
+
+
+
+
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )
 
 #endif // QGSPROCESSINGPARAMETERS_H
 

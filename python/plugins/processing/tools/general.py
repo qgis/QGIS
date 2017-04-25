@@ -41,6 +41,7 @@ from qgis.core import (QgsApplication,
 from processing.core.Processing import Processing
 from processing.core.parameters import ParameterSelection
 from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.core.ProcessingConfig import ProcessingConfig
 
 
 def algorithmOptions(id):
@@ -102,4 +103,9 @@ def createContext():
     """
     context = QgsProcessingContext()
     context.setProject(QgsProject.instance())
+
+    use_selection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+    if use_selection:
+        context.setFlags(QgsProcessingContext.UseSelection)
+
     return context

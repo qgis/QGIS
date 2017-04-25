@@ -26,7 +26,27 @@ class QgsProcessingContext
 %End
   public:
 
+    enum Flag
+    {
+      UseSelection,
+    };
+    typedef QFlags<QgsProcessingContext::Flag> Flags;
+
+
     QgsProcessingContext();
+
+    QgsProcessingContext::Flags flags() const;
+%Docstring
+ Returns any flags set in the context.
+ \see setFlags()
+ :rtype: QgsProcessingContext.Flags
+%End
+
+    void setFlags( const QgsProcessingContext::Flags &flags );
+%Docstring
+ Sets ``flags`` for the context.
+ \see flags()
+%End
 
     QgsProject *project() const;
 %Docstring
@@ -58,6 +78,15 @@ class QgsProcessingContext
 
 
 
+
+
+QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFlags<QgsProcessingContext::Flag> f2);
+
+
+
+
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
@@ -65,4 +94,3 @@ class QgsProcessingContext
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-
