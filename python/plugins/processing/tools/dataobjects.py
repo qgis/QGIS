@@ -38,8 +38,10 @@ from qgis.core import (QgsVectorFileWriter,
                        QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsSettings,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingContext)
 from qgis.gui import QgsSublayersDialog
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -47,6 +49,7 @@ from processing.tools.system import (getTempFilenameInTempFolder,
                                      getTempFilename,
                                      removeInvalidChars,
                                      isWindows)
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 ALL_TYPES = [-1]
 
@@ -57,6 +60,29 @@ TYPE_VECTOR_POLYGON = 2
 TYPE_RASTER = 3
 TYPE_FILE = 4
 TYPE_TABLE = 5
+
+
+def createContext():
+    """
+    Creates a default processing context
+    """
+    context = QgsProcessingContext()
+    context.setProject(QgsProject.instance())
+
+    use_selection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+    if use_selection:
+        context.setFlags(QgsProcessingContext.UseSelectionIfPresent)
+
+    invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+    context.setInvalidGeometryCheck(invalid_features_method)
+
+    def raise_error(f):
+        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
+                                                                        'Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
+
+    context.setInvalidGeometryCallback(raise_error)
+
+    return context
 
 
 def getSupportedOutputRasterLayerExtensions():

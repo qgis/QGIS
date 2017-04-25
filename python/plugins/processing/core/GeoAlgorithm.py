@@ -48,7 +48,7 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools import dataobjects, vector, general
+from processing.tools import dataobjects
 from processing.algs.help import shortHelp
 
 
@@ -188,7 +188,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         if feedback is None:
             feedback = QgsProcessingFeedback()
         if context is None:
-            context = general.createContext()
+            context = dataobjects.createContext()
 
         self.model = model
         try:

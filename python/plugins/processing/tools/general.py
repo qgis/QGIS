@@ -35,15 +35,10 @@ try:
 except ImportError:
     import configparser as configparser
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingContext,
-                       QgsProject)
-from qgis.PyQt.QtCore import (QCoreApplication)
+from qgis.core import (QgsApplication)
 from processing.core.Processing import Processing
 from processing.core.parameters import ParameterSelection
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
 def algorithmOptions(id):
@@ -97,26 +92,3 @@ def version():
     cfg.read(os.path.join(pluginPath, 'metadata.txt'))
     ver = cfg.get('general', 'version').split('.')
     return 10000 * int(ver[0]) + 100 * int(ver[1]) + int(ver[2])
-
-
-def createContext():
-    """
-    Creates a default processing context
-    """
-    context = QgsProcessingContext()
-    context.setProject(QgsProject.instance())
-
-    use_selection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
-    if use_selection:
-        context.setFlags(QgsProcessingContext.UseSelectionIfPresent)
-
-    invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
-    context.setInvalidGeometryCheck(invalid_features_method)
-
-    def raise_error(f):
-        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
-                                                                        'Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
-
-    context.setInvalidGeometryCallback(raise_error)
-
-    return context

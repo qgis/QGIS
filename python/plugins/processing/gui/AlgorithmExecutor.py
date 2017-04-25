@@ -40,7 +40,6 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilename
-from processing.tools import vector, general
 
 
 def execute(alg, context=None, feedback=None):
@@ -54,7 +53,7 @@ def execute(alg, context=None, feedback=None):
     if feedback is None:
         feedback = QgsProcessingFeedback()
     if context is None:
-        context = general.createContext()
+        context = dataobjects.createContext()
 
     try:
         alg.execute(context, feedback)
