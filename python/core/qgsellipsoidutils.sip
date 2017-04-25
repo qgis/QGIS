@@ -8,7 +8,6 @@
 
 
 
-
 class QgsEllipsoidUtils
 {
 %Docstring

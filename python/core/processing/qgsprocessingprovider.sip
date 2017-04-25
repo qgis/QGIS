@@ -9,7 +9,6 @@
 
 
 
-
 class QgsProcessingProvider : QObject
 {
 %Docstring

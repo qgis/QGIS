@@ -19,6 +19,7 @@
 
 #include <QDockWidget>
 #include "qgis_gui.h"
+#include "qgis.h"
 
 /** \ingroup gui
  * \class QgsDockWidget
@@ -36,14 +37,14 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * \param parent parent widget
      * \param flags window flags
      */
-    explicit QgsDockWidget( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    explicit QgsDockWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = 0 );
 
     /** Constructor for QgsDockWidget.
      * \param title dock title
      * \param parent parent widget
      * \param flags window flags
      */
-    explicit QgsDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    explicit QgsDockWidget( const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = 0 );
 
   public slots:
 

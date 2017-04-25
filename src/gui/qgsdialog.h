@@ -24,6 +24,7 @@
 #include <QDialogButtonBox>
 #include <QLayout>
 #include "qgis_gui.h"
+#include "qgis.h"
 
 /** \ingroup gui
  * A generic dialog with layout and button box
@@ -36,7 +37,7 @@ class GUI_EXPORT QgsDialog : public QDialog
     /**
      * Constructor for QgsDialog.
      */
-    QgsDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
                QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
                Qt::Orientation orientation = Qt::Horizontal );
 

@@ -327,11 +327,6 @@ gui/qgscurveeditorwidget.sip
 gui/qgsdetaileditemdata.sip
 gui/qgsdetaileditemdelegate.sip
 gui/qgsdetaileditemwidget.sip
-gui/qgsdial.sip
-gui/qgsdialog.sip
-gui/qgsdockwidget.sip
-gui/qgsencodingfiledialog.sip
-gui/qgserrordialog.sip
 gui/qgsexpressionbuilderdialog.sip
 gui/qgsexpressionbuilderwidget.sip
 gui/qgsexpressionhighlighter.sip

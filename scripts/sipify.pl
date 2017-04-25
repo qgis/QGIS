@@ -59,7 +59,7 @@ my $is_override = 0;
 my %qflag_hash;
 
 my $line_count = @lines;
-my $line_idx = -1;
+my $line_idx = 0;
 my $line;
 my @output = ();
 
