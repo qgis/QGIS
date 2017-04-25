@@ -501,12 +501,31 @@ void TestQgsProcessing::features()
   ids = getIds( QgsProcessingUtils::getFeatures( layer, context, QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) ) );
   QCOMPARE( ids, QgsFeatureIds() << 2 << 4 );
 
-#if 0
-  // test exception is raised when filtering invalid geoms
-  context.setInvalidGeometryCheck( QgsFeatureRequest.GeometryAbortOnInvalid )
-#endif
+  // test callback is hit when filtering invalid geoms
+  bool encountered = false;
+  std::function< void( const QgsFeature & ) > callback = [ &encountered ]( const QgsFeature & )
+  {
+    encountered = true;
+  };
+
+  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  context.setInvalidGeometryCheck( QgsFeatureRequest::GeometryAbortOnInvalid );
+  context.setInvalidGeometryCallback( callback );
+  QgsVectorLayer *polyLayer = new QgsVectorLayer( "Polygon", "v2", "memory" );
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 1 0, 0 1, 1 1, 0 0))" ) ) );
+  polyLayer->dataProvider()->addFeatures( QgsFeatureList() << f );
+
+  ids = getIds( QgsProcessingUtils::getFeatures( polyLayer, context ) );
+  QVERIFY( encountered );
+
+  encountered = false;
+  context.setInvalidGeometryCheck( QgsFeatureRequest::GeometryNoCheck );
+  ids = getIds( QgsProcessingUtils::getFeatures( polyLayer, context ) );
+  QVERIFY( !encountered );
 
   delete layer;
+  delete polyLayer;
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

@@ -85,6 +85,29 @@ class QgsProcessingContext
  \see invalidGeometryCheck()
 %End
 
+
+    void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
+%Docstring
+ Sets a callback function to use when encountering an invalid geometry and
+ invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
+ called using the feature with invalid geometry as a parameter.
+.. versionadded:: 3.0
+ \see invalidGeometryCallback()
+%End
+%MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    Py_END_ALLOW_THREADS
+%End
+
+
 };
 QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFlags<QgsProcessingContext::Flag> f2);
 

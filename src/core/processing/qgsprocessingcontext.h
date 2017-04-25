@@ -93,12 +93,48 @@ class CORE_EXPORT QgsProcessingContext
      */
     void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check ) { mInvalidGeometryCheck = check; }
 
+
+    /**
+     * Sets a callback function to use when encountering an invalid geometry and
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
+     * called using the feature with invalid geometry as a parameter.
+     * \since QGIS 3.0
+     * \see invalidGeometryCallback()
+     */
+#ifndef SIP_RUN
+    void setInvalidGeometryCallback( std::function< void( const QgsFeature & ) > callback ) { mInvalidGeometryCallback = callback; }
+#else
+    void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    Py_END_ALLOW_THREADS
+    % End
+#endif
+
+    /**
+     * Returns the callback function to use when encountering an invalid geometry and
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid.
+     * \since QGIS 3.0
+     * \note not available in Python bindings
+     * \see setInvalidGeometryCallback()
+     */
+    SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
+
   private:
 
     QgsProcessingContext::Flags mFlags = 0;
     QPointer< QgsProject > mProject;
     QgsExpressionContext mExpressionContext;
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
+    std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
 
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )

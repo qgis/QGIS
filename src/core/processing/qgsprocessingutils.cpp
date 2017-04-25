@@ -179,6 +179,7 @@ QgsFeatureIterator QgsProcessingUtils::getFeatures( QgsVectorLayer *layer, const
 
   QgsFeatureRequest req( request );
   req.setInvalidGeometryCheck( context.invalidGeometryCheck() );
+  req.setInvalidGeometryCallback( context.invalidGeometryCallback() );
   if ( useSelection )
   {
     return layer->selectedFeaturesIterator( req );
