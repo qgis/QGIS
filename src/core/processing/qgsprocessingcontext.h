@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontext.h"
+#include "qgsfeaturerequest.h"
 
 /**
  * \class QgsProcessingContext
@@ -80,22 +81,26 @@ class CORE_EXPORT QgsProcessingContext
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
+    /**
+     * Returns the behavior used for checking invalid geometries in input layers.
+     * \see setInvalidGeometryCheck()
+     */
+    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const { return mInvalidGeometryCheck; }
+
+    /**
+     * Sets the behavior used for checking invalid geometries in input layers.
+     * \see invalidGeometryCheck()
+     */
+    void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check ) { mInvalidGeometryCheck = check; }
+
   private:
 
     QgsProcessingContext::Flags mFlags = 0;
-
     QPointer< QgsProject > mProject;
-
     QgsExpressionContext mExpressionContext;
+    QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
 
 };
-
-
-
-
-
-
-
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )
 
 #endif // QGSPROCESSINGPARAMETERS_H

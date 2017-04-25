@@ -108,4 +108,7 @@ def createContext():
     if use_selection:
         context.setFlags(QgsProcessingContext.UseSelection)
 
+    invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+    context.setInvalidGeometryCheck(invalid_features_method)
+
     return context

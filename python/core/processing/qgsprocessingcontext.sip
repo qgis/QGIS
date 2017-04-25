@@ -72,14 +72,20 @@ class QgsProcessingContext
  Sets the expression ``context``.
 %End
 
+    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
+%Docstring
+ Returns the behavior used for checking invalid geometries in input layers.
+ \see setInvalidGeometryCheck()
+ :rtype: QgsFeatureRequest.InvalidGeometryCheck
+%End
+
+    void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check );
+%Docstring
+ Sets the behavior used for checking invalid geometries in input layers.
+ \see invalidGeometryCheck()
+%End
+
 };
-
-
-
-
-
-
-
 QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFlags<QgsProcessingContext::Flag> f2);
 
 
