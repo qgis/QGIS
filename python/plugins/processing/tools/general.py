@@ -38,10 +38,12 @@ except ImportError:
 from qgis.core import (QgsApplication,
                        QgsProcessingContext,
                        QgsProject)
+from qgis.PyQt.QtCore import (QCoreApplication)
 from processing.core.Processing import Processing
 from processing.core.parameters import ParameterSelection
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
 def algorithmOptions(id):
@@ -110,5 +112,11 @@ def createContext():
 
     invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
     context.setInvalidGeometryCheck(invalid_features_method)
+
+    def raise_error(f):
+        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
+                                                                        'Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
+
+    context.setInvalidGeometryCallback(raise_error)
 
     return context
