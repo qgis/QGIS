@@ -94,7 +94,7 @@ def uniqueValues(layer, context, attribute):
     """
 
     fieldIndex = resolveFieldIndex(layer, attribute)
-    if context.flags() & QgsProcessingContext.UseSelection \
+    if context.flags() & QgsProcessingContext.UseSelectionIfPresent \
             and layer.selectedFeatureCount() > 0:
 
         # iterate through selected features

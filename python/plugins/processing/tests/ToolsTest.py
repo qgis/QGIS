@@ -86,7 +86,7 @@ class VectorTest(unittest.TestCase):
         self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # test with selected features
-        context.setFlags(QgsProcessingContext.UseSelection)
+        context.setFlags(QgsProcessingContext.UseSelectionIfPresent)
         test_layer.selectByIds([2, 4, 6])
         res = vector.values(test_layer, context, 1)
         self.assertEqual(set(res[1]), set([5, 7, 3]))
@@ -111,7 +111,7 @@ class VectorTest(unittest.TestCase):
         self.assertEqual(set(v), set([2, 1, 0]))
 
         # test with selected features
-        context.setFlags(QgsProcessingContext.UseSelection)
+        context.setFlags(QgsProcessingContext.UseSelectionIfPresent)
         test_layer.selectByIds([2, 4, 6])
         v = vector.uniqueValues(test_layer, context, 'id')
         self.assertEqual(len(v), len(set(v)))

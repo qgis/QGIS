@@ -175,7 +175,7 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
 
 QgsFeatureIterator QgsProcessingUtils::getFeatures( QgsVectorLayer *layer, const QgsProcessingContext &context, const QgsFeatureRequest &request )
 {
-  bool useSelection = context.flags() & QgsProcessingContext::UseSelection && layer->selectedFeatureCount() > 0;
+  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
 
   QgsFeatureRequest req( request );
   req.setInvalidGeometryCheck( context.invalidGeometryCheck() );
@@ -192,7 +192,7 @@ QgsFeatureIterator QgsProcessingUtils::getFeatures( QgsVectorLayer *layer, const
 
 long QgsProcessingUtils::featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context )
 {
-  bool useSelection = context.flags() & QgsProcessingContext::UseSelection && layer->selectedFeatureCount() > 0;
+  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
   if ( useSelection )
     return layer->selectedFeatureCount();
   else

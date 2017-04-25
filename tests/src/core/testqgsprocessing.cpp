@@ -465,7 +465,7 @@ void TestQgsProcessing::features()
   QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 5L );
 
   // test with selected features
-  context.setFlags( QgsProcessingContext::UseSelection );
+  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
   ids = getIds( QgsProcessingUtils::getFeatures( layer, context ) );
   QCOMPARE( ids, QgsFeatureIds() << 2 << 4 );
@@ -479,7 +479,7 @@ void TestQgsProcessing::features()
   QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 5L );
 
   // using selected features, but no selection
-  context.setFlags( QgsProcessingContext::UseSelection );
+  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
   layer->removeSelection();
   ids = getIds( QgsProcessingUtils::getFeatures( layer, context ) );
   QCOMPARE( ids, QgsFeatureIds() << 1 << 2 << 3 << 4 << 5 );
@@ -496,7 +496,7 @@ void TestQgsProcessing::features()
 
 
   //test that feature request is honored when using selections
-  context.setFlags( QgsProcessingContext::UseSelection );
+  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
   ids = getIds( QgsProcessingUtils::getFeatures( layer, context, QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) ) );
   QCOMPARE( ids, QgsFeatureIds() << 2 << 4 );

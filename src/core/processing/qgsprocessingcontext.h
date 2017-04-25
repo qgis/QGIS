@@ -41,7 +41,7 @@ class CORE_EXPORT QgsProcessingContext
     //! Flags that affect how processing algorithms are run
     enum Flag
     {
-      UseSelection = 1 << 0,  //!< Filter to selected features when running algorithms
+      UseSelectionIfPresent = 1 << 0,  //!< Filter to selected features when running algorithms (if a selection exists)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
