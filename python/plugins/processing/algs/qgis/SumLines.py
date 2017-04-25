@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, QgsDistanceArea
+from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, QgsDistanceArea, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -96,7 +96,7 @@ class SumLines(GeoAlgorithm):
         distArea = QgsDistanceArea()
 
         features = vector.features(polyLayer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
         hasIntersections = False
         for current, ftPoly in enumerate(features):
             inGeom = ftPoly.geometry()

@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 
 import random
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from collections import defaultdict
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -88,7 +89,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
         index = layer.fields().lookupField(field)
 
         features = vector.features(layer, context)
-        featureCount = len(features)
+        featureCount = QgsProcessingUtils.featureCount(layer, context)
         unique = vector.getUniqueValues(layer, context, index)
         value = int(self.getParameterValue(self.NUMBER))
         if method == 0:
@@ -121,7 +122,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
             selran.extend(random.sample(subset, selValue))
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for (i, feat) in enumerate(selran):
             writer.addFeature(feat)
             feedback.setProgress(int(i * total))

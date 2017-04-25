@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -91,7 +91,7 @@ class Union(GeoAlgorithm):
         count = 0
         nElement = 0
         featuresA = vector.features(vlayerA, context)
-        nFeat = len(featuresA)
+        nFeat = QgsProcessingUtils.featureCount(vlayerA, context)
         for inFeatA in featuresA:
             feedback.setProgress(nElement / float(nFeat) * 50)
             nElement += 1
@@ -184,7 +184,7 @@ class Union(GeoAlgorithm):
         atMapA = [None] * length
 
         featuresA = vector.features(vlayerB, context)
-        nFeat = len(featuresA)
+        nFeat = QgsProcessingUtils.featureCount(vlayerB, context)
         for inFeatA in featuresA:
             feedback.setProgress(nElement / float(nFeat) * 100)
             add = False

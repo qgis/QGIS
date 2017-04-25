@@ -33,7 +33,8 @@ from osgeo import gdal, ogr, osr
 
 from qgis.core import (QgsRectangle,
                        QgsGeometry,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -113,7 +114,7 @@ class HypsometricCurves(GeoAlgorithm):
         memRasterDriver = gdal.GetDriverByName('MEM')
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
             geom = f.geometry()

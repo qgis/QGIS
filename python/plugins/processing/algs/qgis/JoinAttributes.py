@@ -29,7 +29,8 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsFeature,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -96,7 +97,7 @@ class JoinAttributes(GeoAlgorithm):
         # Cache attributes of Layer 2
         cache = {}
         features = vector.features(layer2, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer2, context)
         for current, feat in enumerate(features):
             attrs = feat.attributes()
             joinValue2 = str(attrs[joinField2Index])
@@ -107,7 +108,7 @@ class JoinAttributes(GeoAlgorithm):
         # Create output vector layer with additional attribute
         outFeat = QgsFeature()
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, feat in enumerate(features):
             outFeat.setGeometry(feat.geometry())
             attrs = feat.attributes()

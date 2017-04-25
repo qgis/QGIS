@@ -115,15 +115,6 @@ def features(layer, context, request=QgsFeatureRequest()):
             '''Iterator next method in python 3'''
             return next(self.iter)
 
-        def __len__(self):
-            if self.selection:
-                return int(self.layer.selectedFeatureCount())
-            else:
-                return int(self.layer.featureCount())
-
-        def tr(self, string):
-            return QCoreApplication.translate("FeatureIterator", string)
-
     return Features(layer, context, request)
 
 

@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
 from qgis.core import (QgsApplication,
-                       QgsFeature)
+                       QgsFeature,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector, ParameterNumber, ParameterSelection
@@ -88,7 +89,7 @@ class SnapGeometriesToLayer(GeoAlgorithm):
 
         self.processed = 0
         self.feedback = feedback
-        self.total = 100.0 / len(features)
+        self.total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         if self.getParameterValue(self.INPUT) != self.getParameterValue(self.REFERENCE_LAYER):
             snapper = QgsGeometrySnapper(reference_layer)

@@ -33,7 +33,7 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsDistanceArea
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsDistanceArea, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -96,7 +96,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         A = float(A.width() * A.height())
 
         features = vector.features(layer, context)
-        count = len(features)
+        count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / count
         for current, feat in enumerate(features):
             neighbourID = spatialIndex.nearestNeighbor(

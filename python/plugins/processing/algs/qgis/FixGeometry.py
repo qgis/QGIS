@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsWkbTypes,
                        QgsGeometry,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -81,7 +82,7 @@ class FixGeometry(GeoAlgorithm):
         if len(features) == 0:
             raise GeoAlgorithmExecutionException(self.tr('There are no features in the input layer'))
 
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, inputFeature in enumerate(features):
             outputFeature = inputFeature
             if inputFeature.geometry():

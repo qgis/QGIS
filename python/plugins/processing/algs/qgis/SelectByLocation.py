@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsGeometry, QgsFeatureRequest
+from qgis.core import QgsGeometry, QgsFeatureRequest, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterSelection
@@ -114,7 +114,7 @@ class SelectByLocation(GeoAlgorithm):
         geom = QgsGeometry()
         selectedSet = []
         features = vector.features(selectLayer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(selectLayer, context)
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
             bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)

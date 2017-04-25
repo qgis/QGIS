@@ -34,7 +34,8 @@ from qgis.core import (QgsField,
                        QgsProject,
                        QgsFeature,
                        GEO_NONE,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterTable
@@ -153,7 +154,7 @@ class FieldsMapper(GeoAlgorithm):
         outFeat = QgsFeature()
         features = vector.features(layer, context)
         if len(features):
-            total = 100.0 / len(features)
+            total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
             for current, inFeat in enumerate(features):
                 rownum = current + 1
 

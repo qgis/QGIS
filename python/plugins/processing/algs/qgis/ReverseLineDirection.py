@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
                        QgsGeometry,
-                       QgsFeature)
+                       QgsFeature,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -73,7 +74,7 @@ class ReverseLineDirection(GeoAlgorithm):
         outFeat = QgsFeature()
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
             attrs = inFeat.attributes()

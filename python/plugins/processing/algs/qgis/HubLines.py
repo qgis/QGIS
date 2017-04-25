@@ -30,7 +30,8 @@ from qgis.core import (QgsFeature,
                        QgsGeometry,
                        QgsPoint,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -92,7 +93,7 @@ class HubLines(GeoAlgorithm):
 
         spokes = vector.features(layerSpoke, context)
         hubs = vector.features(layerHub, context)
-        total = 100.0 / len(spokes)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerSpoke, context)
 
         for current, spokepoint in enumerate(spokes):
             p = spokepoint.geometry().boundingBox().center()

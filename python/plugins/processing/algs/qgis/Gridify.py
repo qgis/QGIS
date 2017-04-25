@@ -29,7 +29,8 @@ from qgis.core import (QgsGeometry,
                        QgsFeature,
                        QgsPoint,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
@@ -84,7 +85,7 @@ class Gridify(GeoAlgorithm):
             layer.fields(), layer.wkbType(), layer.crs())
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
             geom = f.geometry()

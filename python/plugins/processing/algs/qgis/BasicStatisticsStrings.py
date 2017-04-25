@@ -33,7 +33,8 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsStringStatisticalSummary,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
@@ -111,7 +112,7 @@ class BasicStatisticsStrings(GeoAlgorithm):
                                                                                                    layer.fields())
         stat = QgsStringStatisticalSummary()
         features = vector.features(layer, context, request)
-        count = len(features)
+        count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / float(count)
         for current, ft in enumerate(features):
             stat.addValue(ft[fieldName])

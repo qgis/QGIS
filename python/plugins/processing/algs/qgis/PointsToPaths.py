@@ -36,7 +36,8 @@ from qgis.core import (QgsApplication,
                        QgsField,
                        QgsGeometry,
                        QgsDistanceArea,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -105,7 +106,7 @@ class PointsToPaths(GeoAlgorithm):
 
         points = dict()
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             point = f.geometry().asPoint()
             group = f[groupField]

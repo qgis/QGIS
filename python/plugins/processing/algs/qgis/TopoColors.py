@@ -36,7 +36,8 @@ from qgis.core import (QgsApplication,
                        QgsGeometry,
                        QgsSpatialIndex,
                        QgsPointV2,
-                       NULL)
+                       NULL,
+                       QgsProcessingUtils)
 
 from qgis.PyQt.QtCore import (QVariant)
 

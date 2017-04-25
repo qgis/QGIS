@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeature,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -78,7 +79,7 @@ class EquivalentNumField(GeoAlgorithm):
         classes = {}
 
         features = vector.features(vlayer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
         for current, feature in enumerate(features):
             feedback.setProgress(int(current * total))
             inGeom = feature.geometry()

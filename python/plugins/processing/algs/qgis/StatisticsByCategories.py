@@ -27,7 +27,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
-                       QgsStatisticalSummary)
+                       QgsStatisticalSummary,
+                       QgsProcessingUtils)
 from processing.core.outputs import OutputTable
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.tools import dataobjects, vector
@@ -79,7 +80,7 @@ class StatisticsByCategories(GeoAlgorithm):
         categoriesField = layer.fields().lookupField(categoriesFieldName)
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         values = {}
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))

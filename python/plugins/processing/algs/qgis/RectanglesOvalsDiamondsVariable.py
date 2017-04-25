@@ -32,7 +32,8 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint)
+                       QgsPoint,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog

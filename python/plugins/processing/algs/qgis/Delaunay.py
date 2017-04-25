@@ -31,7 +31,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -85,7 +85,7 @@ class Delaunay(GeoAlgorithm):
         ptNdx = -1
         c = voronoi.Context()
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, inFeat in enumerate(features):
             geom = QgsGeometry(inFeat.geometry())
             if geom.isNull():

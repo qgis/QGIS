@@ -35,7 +35,8 @@ from qgis.core import (QgsApplication,
                        QgsField,
                        QgsGeometry,
                        QgsPoint,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
 from processing.tools import vector, raster, dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -97,7 +98,7 @@ class PointsFromLines(GeoAlgorithm):
         self.pointId = 0
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             geom = f.geometry()
             if geom.isMultipart():

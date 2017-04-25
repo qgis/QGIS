@@ -31,7 +31,7 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsFields, QgsField, QgsFeatureRequest
+from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsFields, QgsField, QgsFeatureRequest, QgsProcessingUtils
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -215,7 +215,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
         features = vector.features(startPoints, context, request)
-        count = len(features)
+        count = QgsProcessingUtils.featureCount(startPoints, context)
 
         points = [endPoint]
         for f in features:

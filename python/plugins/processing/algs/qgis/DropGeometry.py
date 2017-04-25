@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsCoordinateReferenceSystem,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -76,7 +77,7 @@ class DropGeometry(GeoAlgorithm):
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
         features = vector.features(layer, context, request)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):
             writer.addFeature(input_feature)

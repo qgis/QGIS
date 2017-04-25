@@ -33,7 +33,8 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsStatisticalSummary,
                        QgsFeatureRequest,
-                       QgsProcessingAlgorithm)
+                       QgsProcessingAlgorithm,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
@@ -124,7 +125,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([fieldName], layer.fields())
         stat = QgsStatisticalSummary()
         features = vector.features(layer, context, request)
-        count = len(features)
+        count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / float(count)
         for current, ft in enumerate(features):
             stat.addVariant(ft[fieldName])

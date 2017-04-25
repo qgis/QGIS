@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 
 import random
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
@@ -79,7 +80,7 @@ class RandomExtract(GeoAlgorithm):
         method = self.getParameterValue(self.METHOD)
 
         features = vector.features(layer, context)
-        featureCount = len(features)
+        featureCount = QgsProcessingUtils.featureCount(layer, context)
         value = int(self.getParameterValue(self.NUMBER))
 
         if method == 0:

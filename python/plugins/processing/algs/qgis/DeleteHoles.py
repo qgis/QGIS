@@ -24,7 +24,8 @@ __copyright__ = '(C) 2015, Etienne Trimaille'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import (ParameterVector,
                                         ParameterNumber)
@@ -82,7 +83,7 @@ class DeleteHoles(GeoAlgorithm):
             layer.crs())
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
             if f.hasGeometry():

@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest
+from qgis.core import QgsFeatureRequest, QgsProcessingUtils
 from qgis.analysis import QgsKernelDensityEstimation
 
 from processing.core.ProcessingLog import ProcessingLog
@@ -172,7 +172,7 @@ class Heatmap(GeoAlgorithm):
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes(attrs)
         features = vector.features(layer, context, request)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             if kde.addFeature(f) != QgsKernelDensityEstimation.Success:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,

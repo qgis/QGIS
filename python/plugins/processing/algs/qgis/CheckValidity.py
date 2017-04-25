@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsSettings, QgsGeometry, QgsFeature, QgsField, QgsWkbTypes
+from qgis.core import QgsSettings, QgsGeometry, QgsFeature, QgsField, QgsWkbTypes, QgsProcessingUtils
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -137,7 +137,7 @@ class CheckValidity(GeoAlgorithm):
         error_count = 0
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, inFeat in enumerate(features):
             geom = inFeat.geometry()
             attrs = inFeat.attributes()

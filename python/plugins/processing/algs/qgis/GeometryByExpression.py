@@ -30,7 +30,8 @@ from qgis.core import (QgsWkbTypes,
                        QgsExpressionContext,
                        QgsExpressionContextUtils,
                        QgsGeometry,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -118,7 +119,7 @@ class GeometryByExpression(GeoAlgorithm):
                 self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, input_feature in enumerate(features):
             output_feature = input_feature
 

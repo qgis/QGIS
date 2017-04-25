@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -80,7 +80,7 @@ class Difference(GeoAlgorithm):
         outFeat = QgsFeature()
         index = vector.spatialindex(layerB)
         selectionA = vector.features(layerA, context)
-        total = 100.0 / len(selectionA)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
         for current, inFeatA in enumerate(selectionA):
             geom = inFeatA.geometry()
             diff_geom = QgsGeometry(geom)

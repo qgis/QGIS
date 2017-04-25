@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsFeature
+from qgis.core import QgsFeature, QgsProcessingUtils
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -76,7 +76,7 @@ class MergeLines(GeoAlgorithm):
                 layer.crs())
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, inFeat in enumerate(features):
             outFeat = QgsFeature()

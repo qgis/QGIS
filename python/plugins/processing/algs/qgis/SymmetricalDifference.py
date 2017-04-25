@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, NULL, QgsWkbTypes
+from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, NULL, QgsWkbTypes, QgsProcessingUtils
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -85,7 +85,7 @@ class SymmetricalDifference(GeoAlgorithm):
         featuresA = vector.features(layerA, context)
         featuresB = vector.features(layerB, context)
 
-        total = 100.0 / (len(featuresA) * len(featuresB))
+        total = 100.0 / (QgsProcessingUtils.featureCount(layerA, context) * QgsProcessingUtils.featureCount(layerB, context))
         count = 0
 
         for featA in featuresA:

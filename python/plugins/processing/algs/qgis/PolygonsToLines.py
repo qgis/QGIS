@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsGeometry, QgsWkbTypes
+from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -72,7 +72,7 @@ class PolygonsToLines(GeoAlgorithm):
             layer.fields().toList(), QgsWkbTypes.LineString, layer.crs())
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             if f.hasGeometry():
                 lines = QgsGeometry(f.geometry().geometry().boundary()).asGeometryCollection()

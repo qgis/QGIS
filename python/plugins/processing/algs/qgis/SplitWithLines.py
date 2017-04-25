@@ -31,7 +31,8 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsGeometry,
                        QgsSpatialIndex,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -93,10 +94,10 @@ class SplitWithLines(GeoAlgorithm):
         outFeat = QgsFeature()
         features = vector.features(layerA, context)
 
-        if len(features) == 0:
+        if lQgsProcessingUtils.featureCount(layerA, context) == 0:
             total = 100
         else:
-            total = 100.0 / float(len(features))
+            total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
 
         for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()

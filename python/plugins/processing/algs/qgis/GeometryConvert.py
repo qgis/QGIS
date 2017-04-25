@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsFeature,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -96,7 +97,7 @@ class GeometryConvert(GeoAlgorithm):
             layer.fields(), newType, layer.crs())
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
             geom = f.geometry()

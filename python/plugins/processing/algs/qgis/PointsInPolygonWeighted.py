@@ -31,7 +31,8 @@ from qgis.core import (QgsApplication,
                        QgsField,
                        QgsFeatureRequest,
                        QgsFeature,
-                       QgsGeometry)
+                       QgsGeometry,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -102,7 +103,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         geom = QgsGeometry()
 
         features = vector.features(polyLayer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
         for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()
             engine = QgsGeometry.createGeometryEngine(geom.geometry())

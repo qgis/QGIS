@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes
+from qgis.core import QgsField, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -134,7 +134,7 @@ class ExtentFromLayer(GeoAlgorithm):
 
     def featureExtent(self, layer, context, writer, feedback):
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         feat = QgsFeature()
         for current, f in enumerate(features):
             rect = f.geometry().boundingBox()

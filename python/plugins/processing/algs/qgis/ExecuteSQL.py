@@ -30,7 +30,8 @@ from qgis.core import (QgsFeature,
                        QgsVectorLayer,
                        QgsCoordinateReferenceSystem,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -152,7 +153,7 @@ class ExecuteSQL(GeoAlgorithm):
             vLayer.crs())
 
         features = vector.features(vLayer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(vLayer, context)
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             outFeat.setAttributes(inFeat.attributes())

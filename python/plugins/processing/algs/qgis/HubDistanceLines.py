@@ -34,7 +34,8 @@ from qgis.core import (QgsField,
                        QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsApplication,
-                       QgsProject)
+                       QgsProject,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -122,7 +123,7 @@ class HubDistanceLines(GeoAlgorithm):
 
         # Scan source points, find nearest hub, and write to output file
         features = vector.features(layerPoints, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerPoints, context)
         for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 

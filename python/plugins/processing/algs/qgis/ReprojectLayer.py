@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsFeature
+from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsFeature, QgsProcessingUtils
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
@@ -81,7 +81,7 @@ class ReprojectLayer(GeoAlgorithm):
 
         outFeat = QgsFeature()
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             geom = f.geometry()
             geom.transform(crsTransform)

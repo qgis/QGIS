@@ -31,7 +31,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -116,7 +116,7 @@ class ConvexHull(GeoAlgorithm):
         if useField:
             unique = layer.uniqueValues(index)
             current = 0
-            total = 100.0 / (len(features) * len(unique))
+            total = 100.0 / (QgsProcessingUtils.featureCount(layer, context) * len(unique))
             for i in unique:
                 first = True
                 hull = []

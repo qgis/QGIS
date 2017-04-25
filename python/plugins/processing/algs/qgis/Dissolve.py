@@ -30,7 +30,7 @@ from collections import defaultdict
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry
+from qgis.core import QgsFeature, QgsGeometry, QgsProcessingUtils
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -87,7 +87,7 @@ class Dissolve(GeoAlgorithm):
 
         outFeat = QgsFeature()
         features = vector.features(vlayerA, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayerA, context)
 
         if not useField:
             first = True

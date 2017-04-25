@@ -31,7 +31,8 @@ import sys
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFeature,
                        QgsField,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -145,7 +146,7 @@ class FieldsPyculator(GeoAlgorithm):
 
         # Run
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))
             attrs = feat.attributes()

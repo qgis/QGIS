@@ -40,7 +40,7 @@ def buffering(feedback, context, writer, distance, field, useField, layer, disso
 
     current = 0
     features = vector.features(layer, context)
-    total = 100.0 / float(len(features))
+    total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
     # With dissolve
     if dissolve:

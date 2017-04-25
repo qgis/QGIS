@@ -32,7 +32,8 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -90,7 +91,7 @@ class Polygonize(GeoAlgorithm):
         allLinesList = []
         features = vector.features(vlayer, context, QgsFeatureRequest().setSubsetOfAttributes([]))
         feedback.pushInfo(self.tr('Processing lines...'))
-        total = 40.0 / len(features)
+        total = 40.0 / QgsProcessingUtils.featureCount(vlayer, context)
         for current, inFeat in enumerate(features):
             if inFeat.geometry():
                 allLinesList.append(inFeat.geometry())

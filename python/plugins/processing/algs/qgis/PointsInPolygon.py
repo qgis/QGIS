@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsGeometry, QgsFeatureRequest, QgsFeature, QgsField
+from qgis.core import QgsGeometry, QgsFeatureRequest, QgsFeature, QgsField, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -91,7 +91,7 @@ class PointsInPolygon(GeoAlgorithm):
         geom = QgsGeometry()
 
         features = vector.features(polyLayer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
         for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()
             engine = QgsGeometry.createGeometryEngine(geom.geometry())

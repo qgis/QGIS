@@ -32,7 +32,8 @@ from math import sqrt
 from qgis.core import (QgsPoint,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -82,7 +83,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
                                          layer.wkbType(), layer.crs())
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             feature = f
             if feature.hasGeometry():

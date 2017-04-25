@@ -31,7 +31,7 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField
+from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -79,7 +79,7 @@ class ExtractNodes(GeoAlgorithm):
             fields, QgsWkbTypes.Point, layer.crs())
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             input_geometry = f.geometry()
             if not input_geometry:

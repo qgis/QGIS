@@ -36,7 +36,8 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeature,
                        QgsGeometry,
                        QgsField,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from qgis.PyQt.QtCore import QVariant
 
 
@@ -94,7 +95,7 @@ class ExtractSpecificNodes(GeoAlgorithm):
                     self.tr('\'{}\' is not a valid node index').format(node))
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
 

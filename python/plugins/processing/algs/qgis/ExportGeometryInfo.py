@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsProject, QgsCoordinateTransform, QgsFeature, QgsField, QgsWkbTypes
+from qgis.core import QgsProject, QgsCoordinateTransform, QgsFeature, QgsField, QgsWkbTypes, QgsProcessingUtils
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -133,7 +133,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         outFeat.setFields(fields)
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             inGeom = f.geometry()
 

@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -87,7 +87,7 @@ class Intersection(GeoAlgorithm):
         outFeat = QgsFeature()
         index = vector.spatialindex(vlayerB)
         selectionA = vector.features(vlayerA, context)
-        total = 100.0 / len(selectionA)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayerA, context)
         for current, inFeatA in enumerate(selectionA):
             feedback.setProgress(int(current * total))
             geom = inFeatA.geometry()

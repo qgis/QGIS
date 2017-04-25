@@ -29,7 +29,8 @@ import os
 
 from qgis.core import (QgsApplication,
                        QgsGeometry,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -112,7 +113,7 @@ class SingleSidedBuffer(GeoAlgorithm):
         miter_limit = self.getParameterValue(self.MITRE_LIMIT)
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature

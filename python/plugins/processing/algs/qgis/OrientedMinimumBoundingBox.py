@@ -32,7 +32,8 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsFeatureRequest,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -102,7 +103,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
     def layerOmmb(self, layer, context, writer, feedback):
         req = QgsFeatureRequest().setSubsetOfAttributes([])
         features = vector.features(layer, context, req)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         newgeometry = QgsGeometry()
         first = True
         for current, inFeat in enumerate(features):
@@ -128,7 +129,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
     def featureOmbb(self, layer, context, writer, feedback):
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             geometry, area, angle, width, height = inFeat.geometry().orientedMinimumBoundingBox()

@@ -31,7 +31,8 @@ import os
 from qgis.core import (QgsGeometry,
                        QgsPoint,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -88,7 +89,7 @@ class DensifyGeometries(GeoAlgorithm):
                                          layer.wkbType(), layer.crs())
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             feature = f
             if feature.hasGeometry():

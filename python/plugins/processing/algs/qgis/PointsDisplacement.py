@@ -31,7 +31,8 @@ from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint)
+                       QgsPoint,
+                       QgsProcessingUtils)
 from processing.tools import dataobjects, vector
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -84,7 +85,7 @@ class PointsDisplacement(GeoAlgorithm):
 
         features = vector.features(layer, context)
 
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         duplicates = dict()
         for current, f in enumerate(features):

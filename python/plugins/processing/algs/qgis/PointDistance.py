@@ -33,7 +33,7 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsDistanceArea
+from qgis.core import QgsFeatureRequest, QgsDistanceArea, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterNumber
@@ -103,7 +103,7 @@ class PointDistance(GeoAlgorithm):
         outputFile = self.getOutputFromName(self.DISTANCE_MATRIX)
 
         if nPoints < 1:
-            nPoints = len(vector.features(targetLayer, context))
+            nPoints = QgsProcessingUtils.featureCount(targetLayer, context)
 
         self.writer = outputFile.getTableWriter([])
 
@@ -135,7 +135,7 @@ class PointDistance(GeoAlgorithm):
         distArea = QgsDistanceArea()
 
         features = vector.features(inLayer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
             inID = str(inFeat.attributes()[inIdx])
@@ -174,7 +174,7 @@ class PointDistance(GeoAlgorithm):
 
         first = True
         features = vector.features(inLayer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(inLayer, context)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
             inID = str(inFeat.attributes()[inIdx])

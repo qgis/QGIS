@@ -30,7 +30,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -84,7 +84,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         collection_attrs = {}
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, feature in enumerate(features):
             atMap = feature.attributes()
             idVar = atMap[index]

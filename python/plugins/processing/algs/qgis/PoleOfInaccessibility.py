@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsWkbTypes, QgsField, NULL
+from qgis.core import QgsWkbTypes, QgsField, NULL, QgsProcessingUtils
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
@@ -85,7 +85,7 @@ class PoleOfInaccessibility(GeoAlgorithm):
                 layer.crs())
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature

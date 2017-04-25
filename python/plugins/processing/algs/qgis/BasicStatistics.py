@@ -34,7 +34,8 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsDateTimeStatisticalSummary,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
@@ -145,7 +146,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         self.createHTML(output_file, data)
 
     def calcNumericStats(self, features, feedback, field):
-        count = len(features)
+        count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / float(count)
         stat = QgsStatisticalSummary()
         for current, ft in enumerate(features):
@@ -193,7 +194,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         return data
 
     def calcStringStats(self, features, feedback, field):
-        count = len(features)
+        count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / float(count)
         stat = QgsStringStatisticalSummary()
         for current, ft in enumerate(features):
@@ -224,7 +225,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         return data
 
     def calcDateTimeStats(self, features, feedback, field):
-        count = len(features)
+        count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / float(count)
         stat = QgsDateTimeStatisticalSummary()
         for current, ft in enumerate(features):

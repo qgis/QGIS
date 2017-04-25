@@ -26,7 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -106,7 +107,7 @@ class ExtractByLocation(GeoAlgorithm):
 
         selectedSet = []
         features = vector.features(selectLayer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(selectLayer, context)
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
             bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
@@ -134,7 +135,7 @@ class ExtractByLocation(GeoAlgorithm):
             selectedSet = selectedSet + disjoinSet
 
         features = vector.features(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             if f.id() in selectedSet:
                 writer.addFeature(f)
