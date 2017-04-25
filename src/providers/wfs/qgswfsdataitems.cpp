@@ -20,6 +20,7 @@
 #include "qgswfsdataitems.h"
 #include "qgswfsdatasourceuri.h"
 #include "qgssettings.h"
+#include "qgsgeonodeconnection.h"
 
 #ifdef HAVE_GUI
 #include "qgsnewhttpconnection.h"
@@ -222,6 +223,19 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     {
       QgsWfsConnection connection( connectionName );
       return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, connection.uri().uri() );
+    }
+  }
+  else if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
+  {
+    QString connectionName = path.split( '/' ).last();
+    if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
+    {
+      QgsGeoNodeConnection connection( connectionName );
+      QgsWFSDataSourceURI sourceUri( connection.serviceUrl( QStringLiteral( "WFS" ) ) );
+
+      QgsDebugMsg( QString( "WFS full uri: '%1'." ).arg( QString( sourceUri.uri() ) ) );
+
+      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, sourceUri.uri() );
     }
   }
 

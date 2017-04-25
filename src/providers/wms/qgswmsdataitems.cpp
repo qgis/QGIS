@@ -28,6 +28,7 @@
 #include "qgstilescalewidget.h"
 #include "qgsxyzconnectiondialog.h"
 #endif
+#include "qgsgeonodeconnection.h"
 
 #include <QInputDialog>
 
@@ -463,6 +464,19 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
     {
       QgsWMSConnection connection( connectionName );
       return new QgsWMSConnectionItem( parentItem, QStringLiteral( "WMS" ), path, connection.uri().encodedUri() );
+    }
+  }
+  else if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
+  {
+    QString connectionName = path.split( '/' ).last();
+    if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
+    {
+      QgsGeoNodeConnection connection( connectionName );
+      QgsDataSourceUri sourceUri( connection.serviceUrl( QStringLiteral( "WFS" ) ) );
+
+      QgsDebugMsg( QString( "WMS full uri: '%1'." ).arg( QString( sourceUri.encodedUri() ) ) );
+
+      return new QgsWMSConnectionItem( parentItem, QStringLiteral( "WMS" ), path, sourceUri.encodedUri() );
     }
   }
 

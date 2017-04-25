@@ -1,10 +1,11 @@
 SET(OWS_SRCS
   qgsowsprovider.cpp
   qgsowsdataitems.cpp
-)
+  qgsgeonodedataitems.cpp)
 SET(OWS_MOC_HDRS
   qgsowsprovider.h
   qgsowsdataitems.h
+  qgsgeonodedataitems.h
 )
 
 INCLUDE_DIRECTORIES (
