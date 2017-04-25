@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsLayerTreeModelLegendNode : QObject
 {
 %Docstring
@@ -166,7 +168,14 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 #include "qgslayertreemodellegendnode.h"
 %End
   public:
+
     QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsSymbolLegendNode.
+ \param nodeLayer layer node
+ \param item the legend symbol item
+ \param parent attach a parent QObject to the legend node.
+%End
 
     virtual Qt::ItemFlags flags() const;
     virtual QVariant data( int role ) const;
@@ -260,7 +269,16 @@ class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 #include "qgslayertreemodellegendnode.h"
 %End
   public:
+
     QgsSimpleLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label, const QIcon &icon = QIcon(), QObject *parent /TransferThis/ = 0, const QString &key = QString() );
+%Docstring
+ Constructor for QgsSimpleLegendNode.
+ \param nodeLayer layer node
+ \param label label
+ \param icon icon
+ \param parent attach a parent QObject to the legend node.
+ \param key the rule key
+%End
 
     virtual QVariant data( int role ) const;
 
@@ -279,7 +297,14 @@ class QgsImageLegendNode : QgsLayerTreeModelLegendNode
 #include "qgslayertreemodellegendnode.h"
 %End
   public:
+
     QgsImageLegendNode( QgsLayerTreeLayer *nodeLayer, const QImage &img, QObject *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsImageLegendNode.
+ \param nodeLayer layer node
+ \param img the image
+ \param parent attach a parent QObject to the legend node.
+%End
 
     virtual QVariant data( int role ) const;
 
@@ -300,7 +325,15 @@ class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
 #include "qgslayertreemodellegendnode.h"
 %End
   public:
+
     QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsRasterSymbolLegendNode.
+ \param nodeLayer layer node
+ \param color color
+ \param label label
+ \param parent attach a parent QObject to the legend node.
+%End
 
     virtual QVariant data( int role ) const;
 
@@ -327,7 +360,7 @@ class QgsWmsLegendNode : QgsLayerTreeModelLegendNode
 %Docstring
  Constructor for QgsWmsLegendNode.
  \param nodeLayer layer node
- \param parent parent object
+ \param parent attach a parent QObject to the legend node.
 %End
 
     virtual QVariant data( int role ) const;
