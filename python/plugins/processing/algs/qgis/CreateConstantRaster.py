@@ -67,7 +67,7 @@ class CreateConstantRaster(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT,
                                     self.tr('Constant')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         value = self.getParameterValue(self.NUMBER)

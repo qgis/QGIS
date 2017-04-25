@@ -103,7 +103,7 @@ class ExecuteSQL(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('SQL Output')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layers = self.getParameterValue(self.INPUT_DATASOURCES)
         query = self.getParameterValue(self.INPUT_QUERY)
         uid_field = self.getParameterValue(self.INPUT_UID_FIELD)

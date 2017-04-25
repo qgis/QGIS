@@ -74,7 +74,7 @@ class Intersection(GeoAlgorithm):
                                           self.tr('Intersect layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         vlayerA = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         vlayerB = dataobjects.getLayerFromString(

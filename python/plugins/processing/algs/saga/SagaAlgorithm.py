@@ -135,7 +135,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     self.addOutput(getOutputFromString(line))
                 line = lines.readline().strip('\n').strip()
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         commands = list()
         self.exportedLayers = {}
 

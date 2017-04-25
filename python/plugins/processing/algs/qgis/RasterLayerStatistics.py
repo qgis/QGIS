@@ -78,7 +78,7 @@ class RasterLayerStatistics(GeoAlgorithm):
         self.addOutput(OutputNumber(self.COUNT, self.tr('No-data cells count')))
         self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
         uri = self.getParameterValue(self.INPUT)
         layer = dataobjects.getLayerFromString(uri)

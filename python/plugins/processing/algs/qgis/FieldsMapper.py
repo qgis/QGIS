@@ -110,7 +110,7 @@ class FieldsMapper(GeoAlgorithm):
                                     self.tr('Refactored'),
                                     base_input=self.INPUT_LAYER))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = self.getParameterValue(self.INPUT_LAYER)
         mapping = self.getParameterValue(self.FIELDS_MAPPING)
         output = self.getOutputFromName(self.OUTPUT_LAYER)

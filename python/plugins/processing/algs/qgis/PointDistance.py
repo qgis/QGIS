@@ -90,7 +90,7 @@ class PointDistance(GeoAlgorithm):
 
         self.addOutput(OutputTable(self.DISTANCE_MATRIX, self.tr('Distance matrix')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         inLayer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         inField = self.getParameterValue(self.INPUT_FIELD)

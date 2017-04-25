@@ -83,7 +83,7 @@ class AddTableField(GeoAlgorithm):
         self.addOutput(OutputVector(
             self.OUTPUT_LAYER, self.tr('Added')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         fieldType = self.getParameterValue(self.FIELD_TYPE)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldLength = self.getParameterValue(self.FIELD_LENGTH)

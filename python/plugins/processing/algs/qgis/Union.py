@@ -74,7 +74,7 @@ class Union(GeoAlgorithm):
                                           self.tr('Input layer 2')))
         self.addOutput(OutputVector(Union.OUTPUT, self.tr('Union')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         vlayerA = dataobjects.getLayerFromString(self.getParameterValue(Union.INPUT))
         vlayerB = dataobjects.getLayerFromString(self.getParameterValue(Union.INPUT2))
 

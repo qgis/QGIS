@@ -65,7 +65,7 @@ class VectorSplit(GeoAlgorithm):
                                               self.tr('Unique ID field'), self.INPUT))
         self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)

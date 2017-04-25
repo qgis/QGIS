@@ -94,7 +94,7 @@ class HubDistancePoints(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layerPoints = dataobjects.getLayerFromString(
             self.getParameterValue(self.POINTS))
         layerHubs = dataobjects.getLayerFromString(

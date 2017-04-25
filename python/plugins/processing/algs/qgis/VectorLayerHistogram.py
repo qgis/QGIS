@@ -70,7 +70,7 @@ class VectorLayerHistogram(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Histogram')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         fieldname = self.getParameterValue(self.FIELD)

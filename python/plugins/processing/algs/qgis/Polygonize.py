@@ -75,7 +75,7 @@ class Polygonize(GeoAlgorithm):
                                            self.tr('Create geometry columns'), True))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         vlayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         if self.getParameterValue(self.FIELDS):

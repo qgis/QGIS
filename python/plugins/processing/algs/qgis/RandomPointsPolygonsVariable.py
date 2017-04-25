@@ -80,7 +80,7 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.VECTOR))
         fieldName = self.getParameterValue(self.FIELD)

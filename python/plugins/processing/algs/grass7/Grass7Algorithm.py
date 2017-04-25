@@ -247,7 +247,7 @@ class Grass7Algorithm(GeoAlgorithm):
             cellsize = 100
         return cellsize
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         if system.isWindows():
             path = Grass7Utils.grassPath()
             if path == '':

@@ -73,7 +73,7 @@ class RandomSelection(GeoAlgorithm):
                                           self.tr('Number/percentage of selected features'), 0, None, 10))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = dataobjects.getLayerFromString(filename)
         method = self.getParameterValue(self.METHOD)

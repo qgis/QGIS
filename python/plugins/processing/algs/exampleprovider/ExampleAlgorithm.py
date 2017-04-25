@@ -79,8 +79,10 @@ class ExampleAlgorithm(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Output layer with selected features')))
 
-    def processAlgorithm(self, feedback):
-        """Here is where the processing itself takes place."""
+    def processAlgorithm(self, context, feedback):
+        """Here is where the processing itself takes place.
+        :param context:
+        """
 
         # The first thing to do is retrieve the values of the parameters
         # entered by the user

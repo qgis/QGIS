@@ -35,7 +35,9 @@ try:
 except ImportError:
     import configparser as configparser
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingContext,
+                       QgsProject)
 from processing.core.Processing import Processing
 from processing.core.parameters import ParameterSelection
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -92,3 +94,12 @@ def version():
     cfg.read(os.path.join(pluginPath, 'metadata.txt'))
     ver = cfg.get('general', 'version').split('.')
     return 10000 * int(ver[0]) + 100 * int(ver[1]) + int(ver[2])
+
+
+def createContext():
+    """
+    Creates a default processing context
+    """
+    context = QgsProcessingContext()
+    context.setProject(QgsProject.instance())
+    return context

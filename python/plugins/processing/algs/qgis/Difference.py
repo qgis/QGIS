@@ -65,7 +65,7 @@ class Difference(GeoAlgorithm):
                                           self.tr('Difference layer')))
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layerA = dataobjects.getLayerFromString(
             self.getParameterValue(Difference.INPUT))
         layerB = dataobjects.getLayerFromString(

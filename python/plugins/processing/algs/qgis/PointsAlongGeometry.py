@@ -76,7 +76,7 @@ class PointsAlongGeometry(GeoAlgorithm):
                                           self.tr('End offset'), default=0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         distance = self.getParameterValue(self.DISTANCE)

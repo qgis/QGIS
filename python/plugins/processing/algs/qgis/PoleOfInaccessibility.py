@@ -70,7 +70,7 @@ class PoleOfInaccessibility(GeoAlgorithm):
                                           self.tr('Tolerance (layer units)'), default=1.0, minValue=0.0))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Point'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         tolerance = self.getParameterValue(self.TOLERANCE)

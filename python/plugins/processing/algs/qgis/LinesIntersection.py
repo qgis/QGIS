@@ -80,7 +80,7 @@ class LinesIntersection(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layerA = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_A))
         layerB = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_B))
         fieldA = self.getParameterValue(self.FIELD_A)

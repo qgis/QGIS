@@ -81,7 +81,7 @@ class HypsometricCurves(GeoAlgorithm):
         self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY,
                                        self.tr('Hypsometric curves')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT_DEM)
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.BOUNDARY_LAYER))

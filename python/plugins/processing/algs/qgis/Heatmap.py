@@ -130,7 +130,7 @@ class Heatmap(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Heatmap')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 

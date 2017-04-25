@@ -81,7 +81,7 @@ class PointsLayerFromTable(GeoAlgorithm):
                                        self.tr('Target CRS'), 'EPSG:4326'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         source = self.getParameterValue(self.INPUT)
         vlayer = dataobjects.getLayerFromString(source)
         output = self.getOutputFromName(self.OUTPUT)

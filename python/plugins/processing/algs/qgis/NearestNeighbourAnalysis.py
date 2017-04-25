@@ -82,7 +82,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
                                     self.tr('Number of points')))
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
         output = self.getOutputValue(self.OUTPUT)
 

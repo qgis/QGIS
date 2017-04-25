@@ -65,7 +65,7 @@ class Clip(GeoAlgorithm):
                                           self.tr('Clip layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         source_layer = dataobjects.getLayerFromString(
             self.getParameterValue(Clip.INPUT))
         mask_layer = dataobjects.getLayerFromString(

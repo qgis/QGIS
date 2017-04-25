@@ -209,7 +209,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if command:
                     ProcessingLog.addToLog(
                         ProcessingLog.LOG_ALGORITHM, command)
-                if execute(self.alg, self.feedback):
+                if execute(self.alg, None, self.feedback):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()

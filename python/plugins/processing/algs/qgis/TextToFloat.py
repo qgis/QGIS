@@ -63,7 +63,7 @@ class TextToFloat(GeoAlgorithm):
                                               self.INPUT, ParameterTableField.DATA_TYPE_STRING))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Float from text')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
         idx = layer.fields().lookupField(fieldName)

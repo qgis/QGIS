@@ -85,7 +85,7 @@ class ExtractByLocation(GeoAlgorithm):
                                           0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (location)')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = dataobjects.getLayerFromString(filename)
         filename = self.getParameterValue(self.INTERSECT)

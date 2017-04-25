@@ -72,7 +72,7 @@ class SumLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         lineLayer = dataobjects.getLayerFromString(self.getParameterValue(self.LINES))
         polyLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POLYGONS))
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)

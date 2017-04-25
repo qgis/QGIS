@@ -49,7 +49,7 @@ from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute
-from processing.tools import dataobjects
+from processing.tools import dataobjects, general
 
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
@@ -233,8 +233,9 @@ class Processing(object):
             feedback = kwargs["feedback"]
         elif iface is not None:
             feedback = MessageBarProgress(alg.displayName())
+        context = general.createContext()
 
-        ret = execute(alg, feedback)
+        ret = execute(alg, context, feedback)
         if ret:
             if onFinish is not None:
                 onFinish(alg, feedback)

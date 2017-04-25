@@ -48,7 +48,7 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects, vector, general
 from processing.algs.help import shortHelp
 
 
@@ -98,12 +98,13 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             text = self._formatHelp(text)
         return text
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         """Here goes the algorithm itself.
 
         There is no return value from this method.
         A GeoAlgorithmExecutionException should be raised in case
         something goes wrong.
+        :param context:
         """
         pass
 
@@ -173,7 +174,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
     # =========================================================
 
-    def execute(self, feedback=None, model=None):
+    def execute(self, context=None, feedback=None, model=None):
         """The method to use to call a processing algorithm.
 
         Although the body of the algorithm is in processAlgorithm(),
@@ -186,6 +187,8 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
         if feedback is None:
             feedback = QgsProcessingFeedback()
+        if context is None:
+            context = general.createContext()
 
         self.model = model
         try:
@@ -193,7 +196,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             self.resolveOutputs()
             self.evaluateParameterValues()
             self.runPreExecutionScript(feedback)
-            self.processAlgorithm(feedback)
+            self.processAlgorithm(context, feedback)
             feedback.setProgress(100)
             self.convertUnsupportedFormats(feedback)
             self.runPostExecutionScript(feedback)

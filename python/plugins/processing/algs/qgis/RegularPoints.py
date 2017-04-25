@@ -84,7 +84,7 @@ class RegularPoints(GeoAlgorithm):
                                        self.tr('Output layer CRS'), 'ProjectCrs'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         extent = str(self.getParameterValue(self.EXTENT)).split(',')
 
         spacing = float(self.getParameterValue(self.SPACING))

@@ -80,7 +80,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection stratified'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
         layer = dataobjects.getLayerFromString(filename)

@@ -80,7 +80,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Weighted count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         polyLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POLYGONS))
         pointLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)

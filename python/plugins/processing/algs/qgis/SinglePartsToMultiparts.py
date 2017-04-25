@@ -66,7 +66,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
 

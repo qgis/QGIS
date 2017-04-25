@@ -75,7 +75,7 @@ class ExportGeometryInfo(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         method = self.getParameterValue(self.METHOD)

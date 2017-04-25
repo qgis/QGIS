@@ -73,7 +73,7 @@ class DefineProjection(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Layer with projection'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = dataobjects.getLayerFromString(fileName)
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))

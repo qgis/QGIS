@@ -63,7 +63,7 @@ class SetVectorStyle(GeoAlgorithm):
                                         self.tr('Style file'), False, False, 'qml'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Styled'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
         style = self.getParameterValue(self.STYLE)

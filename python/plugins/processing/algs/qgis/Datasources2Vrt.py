@@ -76,7 +76,7 @@ class Datasources2Vrt(GeoAlgorithm):
         self.addOutput(OutputString(self.VRT_STRING,
                                     self.tr('Virtual string')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         input_layers = self.getParameterValue(self.DATASOURCES)
         unioned = self.getParameterValue(self.UNIONED)
         vrtPath = self.getOutputValue(self.VRT_FILE)

@@ -67,7 +67,7 @@ class ReprojectLayer(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem()

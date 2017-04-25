@@ -72,7 +72,7 @@ class SelectByExpression(GeoAlgorithm):
                                              self.tr('Modify current selection by'), self.methods, 0))
         self.addOutput(OutputVector(self.RESULT, self.tr('Selected (expression)'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.LAYERNAME)
         layer = dataobjects.getLayerFromString(filename)
         method = self.getParameterValue(self.METHOD)

@@ -73,7 +73,7 @@ class Dissolve(GeoAlgorithm):
                                               self.tr('Unique ID fields'), Dissolve.INPUT, optional=True, multiple=True))
         self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         field_names = self.getParameterValue(Dissolve.FIELD)
         vlayerA = dataobjects.getLayerFromString(

@@ -60,7 +60,7 @@ class RemoveNullGeometry(GeoAlgorithm):
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_ANY]))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Removed null geometry')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         writer = self.getOutputFromName(

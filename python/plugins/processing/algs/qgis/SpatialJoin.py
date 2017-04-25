@@ -108,7 +108,7 @@ class SpatialJoin(GeoAlgorithm):
                                              self.tr('Joined table'), self.keeps))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         target = dataobjects.getLayerFromString(
             self.getParameterValue(self.TARGET))
         join = dataobjects.getLayerFromString(

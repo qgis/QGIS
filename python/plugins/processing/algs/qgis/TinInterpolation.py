@@ -158,7 +158,7 @@ class TinInterpolation(GeoAlgorithm):
                                     self.tr('Triangulation'),
                                     ))  # datatype=dataobjects.TYPE_VECTOR_LINE))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
         method = self.getParameterValue(self.METHOD)
         columns = self.getParameterValue(self.COLUMNS)

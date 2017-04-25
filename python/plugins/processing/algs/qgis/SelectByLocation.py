@@ -93,7 +93,7 @@ class SelectByLocation(GeoAlgorithm):
                                              self.methods, 0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (location)'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         inputLayer = dataobjects.getLayerFromString(filename)
         method = self.getParameterValue(self.METHOD)

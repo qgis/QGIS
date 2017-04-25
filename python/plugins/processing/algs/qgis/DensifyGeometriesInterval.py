@@ -71,7 +71,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 

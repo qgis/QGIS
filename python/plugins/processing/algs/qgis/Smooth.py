@@ -67,7 +67,7 @@ class Smooth(GeoAlgorithm):
                                           self.tr('Maximum node angle to smooth'), default=180.0, minValue=0.0, maxValue=180.0))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Smoothed')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         iterations = self.getParameterValue(self.ITERATIONS)
