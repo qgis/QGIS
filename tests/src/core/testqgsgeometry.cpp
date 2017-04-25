@@ -3994,8 +3994,8 @@ void TestQgsGeometry::ellipse()
   // bounding box
   QCOMPARE( QgsEllipse().boundingBox(), QgsRectangle() );
   QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 5, 2 ).boundingBox(), QgsEllipse( QgsPointV2( 0, 0 ), 5, 2 ).orientedBoundingBox()->boundingBox() );
-  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 5, 5 ).boundingBox(), QgsRectangle( QgsPoint( -2.5, -2.5 ), QgsPoint( -2.5, 2.5 ) ) );
-  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 5, 5, 60 ).boundingBox(), QgsRectangle( QgsPoint( -2.5, -2.5 ), QgsPoint( -2.5, 2.5 ) ) );
+  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 5, 5 ).boundingBox(), QgsRectangle( QgsPoint( -5, -5 ), QgsPoint( 5, 5 ) ) );
+  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 5, 5, 60 ).boundingBox(), QgsRectangle( QgsPoint( -5, -5 ), QgsPoint( 5, 5 ) ) );
   QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 13, 9, 45 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPoint( -11.1803, -11.1803 ), QgsPoint( 11.1803, 11.1803 ) ).toString( 4 ).toStdString() );
   QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 13, 9, 60 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPoint( -12.12436, -10.14889 ), QgsPoint( 12.12436, 10.14889 ) ).toString( 4 ).toStdString() );
   QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 13, 9, 60 + 90 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPoint( -10.14889, -12.12436 ), QgsPoint( 10.14889, 12.12436 ) ).toString( 4 ).toStdString() );
