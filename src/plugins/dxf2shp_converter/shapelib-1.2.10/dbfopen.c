@@ -182,8 +182,10 @@
  * Added header.
  */
 
+#if 0
 static char rcsid[] =
   "$Id: dbfopen.c,v 1.48 2003/03/10 14:51:27 warmerda Exp $";
+#endif
 
 #include "shapefil.h"
 
@@ -256,9 +258,9 @@ static void DBFWriteHeader( DBFHandle psDBF )
   /*      Write the initial 32 byte file header, and all the field        */
   /*      descriptions.                                       */
   /* -------------------------------------------------------------------- */
-  fseek( psDBF->fp, 0, 0 );
-  fwrite( abyHeader, XBASE_FLDHDR_SZ, 1, psDBF->fp );
-  fwrite( psDBF->pszHeader, XBASE_FLDHDR_SZ, psDBF->nFields, psDBF->fp );
+  VSIFSeekL( psDBF->fp, 0, 0 );
+  VSIFWriteL( abyHeader, XBASE_FLDHDR_SZ, 1, psDBF->fp );
+  VSIFWriteL( psDBF->pszHeader, XBASE_FLDHDR_SZ, psDBF->nFields, psDBF->fp );
 
   /* -------------------------------------------------------------------- */
   /*      Write out the newline character if there is room for it.        */
@@ -268,7 +270,7 @@ static void DBFWriteHeader( DBFHandle psDBF )
     char cNewline;
 
     cNewline = 0x0d;
-    fwrite( &cNewline, 1, 1, psDBF->fp );
+    VSIFWriteL( &cNewline, 1, 1, psDBF->fp );
   }
 }
 
@@ -290,8 +292,8 @@ static void DBFFlushRecord( DBFHandle psDBF )
     nRecordOffset = psDBF->nRecordLength * psDBF->nCurrentRecord
                     + psDBF->nHeaderLength;
 
-    fseek( psDBF->fp, nRecordOffset, 0 );
-    fwrite( psDBF->pszCurrentRecord, psDBF->nRecordLength, 1, psDBF->fp );
+    VSIFSeekL( psDBF->fp, nRecordOffset, 0 );
+    VSIFWriteL( psDBF->pszCurrentRecord, psDBF->nRecordLength, 1, psDBF->fp );
   }
 }
 
@@ -342,12 +344,12 @@ DBFOpen( const char * pszFilename, const char * pszAccess )
   sprintf( pszFullname, "%s.dbf", pszBasename );
 
   psDBF = ( DBFHandle ) calloc( 1, sizeof( DBFInfo ) );
-  psDBF->fp = fopen( pszFullname, pszAccess );
+  psDBF->fp = VSIFOpenL( pszFullname, pszAccess );
 
   if ( psDBF->fp == NULL )
   {
     sprintf( pszFullname, "%s.DBF", pszBasename );
-    psDBF->fp = fopen( pszFullname, pszAccess );
+    psDBF->fp = VSIFOpenL( pszFullname, pszAccess );
   }
 
   free( pszBasename );
@@ -367,9 +369,9 @@ DBFOpen( const char * pszFilename, const char * pszAccess )
   /*  Read Table Header info                                              */
   /* -------------------------------------------------------------------- */
   pabyBuf = ( unsigned char * ) malloc( 500 );
-  if ( fread( pabyBuf, 32, 1, psDBF->fp ) != 1 )
+  if ( VSIFReadL( pabyBuf, 32, 1, psDBF->fp ) != 1 )
   {
-    fclose( psDBF->fp );
+    VSIFCloseL( psDBF->fp );
     free( pabyBuf );
     free( psDBF );
     return NULL;
@@ -389,12 +391,13 @@ DBFOpen( const char * pszFilename, const char * pszAccess )
   /*  Read in Field Definitions                                           */
   /* -------------------------------------------------------------------- */
 
-  pabyBuf = psDBF->pszHeader = ( unsigned char * ) SfRealloc( pabyBuf, nHeadLen );
+  psDBF->pszHeader = ( char * ) SfRealloc( pabyBuf, nHeadLen );
+  pabyBuf = ( unsigned char* )psDBF->pszHeader;
 
-  fseek( psDBF->fp, 32, 0 );
-  if ( fread( pabyBuf, nHeadLen - 32, 1, psDBF->fp ) != 1 )
+  VSIFSeekL( psDBF->fp, 32, 0 );
+  if ( VSIFReadL( pabyBuf, nHeadLen - 32, 1, psDBF->fp ) != 1 )
   {
-    fclose( psDBF->fp );
+    VSIFCloseL( psDBF->fp );
     free( pabyBuf );
     free( psDBF );
     return NULL;
@@ -456,8 +459,8 @@ DBFClose( DBFHandle psDBF )
   {
     unsigned char  abyFileHeader[32];
 
-    fseek( psDBF->fp, 0, 0 );
-    fread( abyFileHeader, 32, 1, psDBF->fp );
+    VSIFSeekL( psDBF->fp, 0, 0 );
+    VSIFReadL( abyFileHeader, 32, 1, psDBF->fp );
 
     abyFileHeader[1] = 95;   /* YY */
     abyFileHeader[2] = 7;   /* MM */
@@ -468,14 +471,14 @@ DBFClose( DBFHandle psDBF )
     abyFileHeader[6] = ( psDBF->nRecords / ( 256 * 256 ) ) % 256;
     abyFileHeader[7] = ( psDBF->nRecords / ( 256 * 256 * 256 ) ) % 256;
 
-    fseek( psDBF->fp, 0, 0 );
-    fwrite( abyFileHeader, 32, 1, psDBF->fp );
+    VSIFSeekL( psDBF->fp, 0, 0 );
+    VSIFWriteL( abyFileHeader, 32, 1, psDBF->fp );
   }
 
   /* -------------------------------------------------------------------- */
   /*      Close, and free resources.                                      */
   /* -------------------------------------------------------------------- */
-  fclose( psDBF->fp );
+  VSIFCloseL( psDBF->fp );
 
   if ( psDBF->panFieldOffset != NULL )
   {
@@ -509,7 +512,7 @@ DBFCreate( const char *pszFilename )
 
 {
   DBFHandle psDBF;
-  FILE *fp;
+  VSILFILE *fp;
   char *pszFullname, *pszBasename;
   int  i;
 
@@ -534,17 +537,20 @@ DBFCreate( const char *pszFilename )
   /* -------------------------------------------------------------------- */
   /*      Create the file.                                                */
   /* -------------------------------------------------------------------- */
-  fp = fopen( pszFullname, "wb" );
+  fp = VSIFOpenL( pszFullname, "wb" );
   if ( fp == NULL )
   {
     free( pszFullname );
     return( NULL );
   }
 
-  fputc( 0, fp );
-  fclose( fp );
+  {
+    char ch = 0;
+    VSIFWriteL( &ch, 1, 1, fp );
+  }
+  VSIFCloseL( fp );
 
-  fp = fopen( pszFullname, "rb+" );
+  fp = VSIFOpenL( pszFullname, "rb+" );
   if ( fp == NULL )
   {
     free( pszFullname );
@@ -716,17 +722,17 @@ static void *DBFReadAttribute( DBFHandle psDBF, int hEntity, int iField,
 
     nRecordOffset = psDBF->nRecordLength * hEntity + psDBF->nHeaderLength;
 
-    if ( fseek( psDBF->fp, nRecordOffset, 0 ) != 0 )
+    if ( VSIFSeekL( psDBF->fp, nRecordOffset, 0 ) != 0 )
     {
       fprintf( stderr, "fseek(%d) failed on DBF file.\n",
                nRecordOffset );
       return NULL;
     }
 
-    if ( fread( psDBF->pszCurrentRecord, psDBF->nRecordLength,
-                1, psDBF->fp ) != 1 )
+    if ( VSIFReadL( psDBF->pszCurrentRecord, psDBF->nRecordLength,
+                    1, psDBF->fp ) != 1 )
     {
-      fprintf( stderr, "fread(%d) failed on DBF file.\n",
+      fprintf( stderr, "VSIFReadL(%d) failed on DBF file.\n",
                psDBF->nRecordLength );
       return NULL;
     }
@@ -790,7 +796,7 @@ static void *DBFReadAttribute( DBFHandle psDBF, int hEntity, int iField,
 }
 
 /************************************************************************/
-/*                        DBFReadIntAttribute()                         */
+/*                        DBFReadIntegerAttribute()                         */
 /*                                                                      */
 /*      Read an integer attribute.                                      */
 /************************************************************************/
@@ -1013,8 +1019,8 @@ static int DBFWriteAttribute( DBFHandle psDBF, int hEntity, int iField,
 
     nRecordOffset = psDBF->nRecordLength * hEntity + psDBF->nHeaderLength;
 
-    fseek( psDBF->fp, nRecordOffset, 0 );
-    fread( psDBF->pszCurrentRecord, psDBF->nRecordLength, 1, psDBF->fp );
+    VSIFSeekL( psDBF->fp, nRecordOffset, 0 );
+    VSIFReadL( psDBF->pszCurrentRecord, psDBF->nRecordLength, 1, psDBF->fp );
 
     psDBF->nCurrentRecord = hEntity;
   }
@@ -1073,7 +1079,7 @@ static int DBFWriteAttribute( DBFHandle psDBF, int hEntity, int iField,
       {
         int  nWidth = psDBF->panFieldSize[iField];
 
-        if ( sizeof( szSField ) - 2 < nWidth )
+        if (( int )sizeof( szSField ) - 2 < nWidth )
           nWidth = sizeof( szSField ) - 2;
 
         sprintf( szFormat, "%%%dd", nWidth );
@@ -1091,7 +1097,7 @@ static int DBFWriteAttribute( DBFHandle psDBF, int hEntity, int iField,
       {
         int  nWidth = psDBF->panFieldSize[iField];
 
-        if ( sizeof( szSField ) - 2 < nWidth )
+        if (( int )sizeof( szSField ) - 2 < nWidth )
           nWidth = sizeof( szSField ) - 2;
 
         sprintf( szFormat, "%%%d.%df",
@@ -1182,8 +1188,8 @@ int DBFWriteAttributeDirectly( DBFHandle psDBF, int hEntity, int iField,
 
     nRecordOffset = psDBF->nRecordLength * hEntity + psDBF->nHeaderLength;
 
-    fseek( psDBF->fp, nRecordOffset, 0 );
-    fread( psDBF->pszCurrentRecord, psDBF->nRecordLength, 1, psDBF->fp );
+    VSIFSeekL( psDBF->fp, nRecordOffset, 0 );
+    VSIFReadL( psDBF->pszCurrentRecord, psDBF->nRecordLength, 1, psDBF->fp );
 
     psDBF->nCurrentRecord = hEntity;
   }
@@ -1328,8 +1334,8 @@ DBFWriteTuple( DBFHandle psDBF, int hEntity, void * pRawTuple )
 
     nRecordOffset = psDBF->nRecordLength * hEntity + psDBF->nHeaderLength;
 
-    fseek( psDBF->fp, nRecordOffset, 0 );
-    fread( psDBF->pszCurrentRecord, psDBF->nRecordLength, 1, psDBF->fp );
+    VSIFSeekL( psDBF->fp, nRecordOffset, 0 );
+    VSIFReadL( psDBF->pszCurrentRecord, psDBF->nRecordLength, 1, psDBF->fp );
 
     psDBF->nCurrentRecord = hEntity;
   }
@@ -1372,8 +1378,8 @@ DBFReadTuple( DBFHandle psDBF, int hEntity )
 
     nRecordOffset = psDBF->nRecordLength * hEntity + psDBF->nHeaderLength;
 
-    fseek( psDBF->fp, nRecordOffset, 0 );
-    fread( psDBF->pszCurrentRecord, psDBF->nRecordLength, 1, psDBF->fp );
+    VSIFSeekL( psDBF->fp, nRecordOffset, 0 );
+    VSIFReadL( psDBF->pszCurrentRecord, psDBF->nRecordLength, 1, psDBF->fp );
 
     psDBF->nCurrentRecord = hEntity;
   }
