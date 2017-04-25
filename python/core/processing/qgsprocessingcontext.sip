@@ -10,7 +10,6 @@
 
 
 
-
 class QgsProcessingContext
 {
 %Docstring
