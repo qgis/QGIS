@@ -17,8 +17,10 @@
 #define QGSCRASHREPORT_H
 
 #include "qgis_app.h"
+#include "qgsstacktrace.h"
 
 #include <QObject>
+#include <QVector>
 
 
 /**
@@ -27,30 +29,6 @@
 class APP_EXPORT QgsCrashReport
 {
   public:
-
-    /**
-     * Represents a line from a stack trace.
-     */
-    struct StackLine
-    {
-      QString moduleName;
-      QString symbolName;
-      QString fileName;
-      QString lineNumber;
-
-      /**
-       * Check if this stack line is part of QGIS.
-       * \return True if part of QGIS.
-       */
-      bool isQgisModule() const;
-
-      /**
-       * Check if this stack line is valid.  Considered valid when the filename and line
-       * number are known.
-       * \return True of the line is valid.
-       */
-      bool isValid() const;
-    };
 
     /**
      * Include information to generate user friendly crash report for QGIS.
@@ -73,13 +51,13 @@ class APP_EXPORT QgsCrashReport
      * Sets the stack trace for the crash report.
      * \param value A string list for each line in the stack trace.
      */
-    void setStackTrace( const QList<QgsCrashReport::StackLine> &value ) { mStackTrace = value; }
+    void setStackTrace( const QgsStackLines &value ) { mStackTrace = value; }
 
     /**
      * Returns the stack trace for this report.
      * \return A string list for each line in the stack trace.
      */
-    QList<QgsCrashReport::StackLine> StackTrace() const { return mStackTrace; }
+    QgsStackLines StackTrace() const { return mStackTrace; }
 
     /**
      * Set the flags to mark which features are included in this crash report.
@@ -107,7 +85,7 @@ class APP_EXPORT QgsCrashReport
 
   private:
     Flags mFlags;
-    QList<QgsCrashReport::StackLine> mStackTrace;
+    QgsStackLines mStackTrace;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsCrashReport::Flags )
