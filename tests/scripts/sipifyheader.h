@@ -233,7 +233,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     //! Mulitline body
     bool myMultiLineBody()
     {
-      if (isTrue())
+      if ( isTrue() )
       {
         return false;
       }
