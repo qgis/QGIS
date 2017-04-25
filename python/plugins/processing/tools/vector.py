@@ -44,7 +44,8 @@ from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.core import (QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsWkbTypes,
                        QgsSpatialIndex, QgsProject, QgsMapLayer, QgsVectorLayer,
                        QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceUri, QgsCredentials,
-                       QgsFeatureRequest, QgsSettings)
+                       QgsFeatureRequest, QgsSettings,
+                       QgsProcessingContext)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -133,15 +134,16 @@ def features(layer, context, request=QgsFeatureRequest()):
     return Features(layer, request)
 
 
-def uniqueValues(layer, attribute):
+def uniqueValues(layer, context, attribute):
     """Returns a list of unique values for a given attribute.
 
     Attribute can be defined using a field names or a zero-based
     field index. It considers the existing selection.
+    :param context:
     """
 
     fieldIndex = resolveFieldIndex(layer, attribute)
-    if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED) \
+    if context.flags() & QgsProcessingContext.UseSelection \
             and layer.selectedFeatureCount() > 0:
 
         # iterate through selected features
@@ -178,7 +180,7 @@ def resolveFieldIndex(layer, attr):
         return index
 
 
-def values(layer, *attributes):
+def values(layer, context, *attributes):
     """Returns the values in the attributes table of a vector layer,
     for the passed fields.
 
@@ -188,6 +190,7 @@ def values(layer, *attributes):
 
     It assummes fields are numeric or contain values that can be parsed
     to a number.
+    :param context:
     """
     ret = {}
     indices = []
@@ -341,17 +344,13 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
     return (attr1, attr2)
 
 
-def getUniqueValues(layer, fieldIndex):
+def getUniqueValues(layer, context, fieldIndex):
     values = []
     feats = features(layer, context)
     for feat in feats:
         if feat.attributes()[fieldIndex] not in values:
             values.append(feat.attributes()[fieldIndex])
     return values
-
-
-def getUniqueValuesCount(layer, fieldIndex):
-    return len(getUniqueValues(layer, fieldIndex))
 
 
 def combineVectorFields(layerA, layerB):

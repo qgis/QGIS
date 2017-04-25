@@ -89,7 +89,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         features = vector.features(layer, context)
         featureCount = len(features)
-        unique = vector.getUniqueValues(layer, index)
+        unique = vector.getUniqueValues(layer, context, index)
         value = int(self.getParameterValue(self.NUMBER))
         if method == 0:
             if value > featureCount:

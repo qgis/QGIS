@@ -81,7 +81,7 @@ class BarPlot(GeoAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, valuefieldname)
+        values = vector.values(layer, context, valuefieldname)
 
         x_var = [i[namefieldname] for i in layer.getFeatures()]
 

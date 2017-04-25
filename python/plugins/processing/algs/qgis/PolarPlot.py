@@ -77,7 +77,7 @@ class PolarPlot(GeoAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, valuefieldname)
+        values = vector.values(layer, context, valuefieldname)
 
         data = [go.Area(r=values[valuefieldname],
                         t=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))))]

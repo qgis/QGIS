@@ -82,7 +82,7 @@ class VectorLayerScatterplot(GeoAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, xfieldname, yfieldname)
+        values = vector.values(layer, context, xfieldname, yfieldname)
         data = [go.Scatter(x=values[xfieldname],
                            y=values[yfieldname],
                            mode='markers')]

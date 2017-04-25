@@ -78,7 +78,7 @@ class VectorLayerHistogram(GeoAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, fieldname)
+        values = vector.values(layer, context, fieldname)
 
         data = [go.Histogram(x=values[fieldname],
                              nbinsx=bins)]

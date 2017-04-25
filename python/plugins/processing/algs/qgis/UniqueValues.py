@@ -76,7 +76,7 @@ class UniqueValues(GeoAlgorithm):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
         outputFile = self.getOutputValue(self.OUTPUT)
-        values = vector.getUniqueValues(layer, layer.fields().lookupField(fieldName))
+        values = vector.getUniqueValues(layer, context, layer.fields().lookupField(fieldName))
         self.createHTML(outputFile, values)
         self.setOutputValue(self.TOTAL_VALUES, len(values))
         self.setOutputValue(self.UNIQUE_VALUES, ';'.join([str(v) for v in

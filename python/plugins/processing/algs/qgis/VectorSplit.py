@@ -74,7 +74,7 @@ class VectorSplit(GeoAlgorithm):
         mkdir(directory)
 
         fieldIndex = layer.fields().lookupField(fieldName)
-        uniqueValues = vector.uniqueValues(layer, fieldIndex)
+        uniqueValues = vector.uniqueValues(layer, context, fieldIndex)
         baseName = os.path.join(directory, '{0}_{1}'.format(layer.name(), fieldName))
 
         fields = layer.fields()
