@@ -38,7 +38,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-QgsColorButton::QgsColorButton( QWidget *parent SIP_TRANSFERTHIS, const QString &cdt, QgsColorSchemeRegistry *registry )
+QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSchemeRegistry *registry )
   : QToolButton( parent )
   , mBehavior( QgsColorButton::ShowDialog )
   , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )

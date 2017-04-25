@@ -36,7 +36,7 @@
 #include <QPushButton>
 #include <QWidget>
 
-QgsColorRampButton::QgsColorRampButton( QWidget *parent SIP_TRANSFERTHIS, const QString &dialogTitle )
+QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mColorRampDialogTitle( dialogTitle.isEmpty() ? tr( "Select Color Ramp" ) : dialogTitle )
   , mShowGradientOnly( false )
