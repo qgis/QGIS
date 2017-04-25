@@ -308,6 +308,23 @@ class TestQgsFeatureIterator(unittest.TestCase):
                layer.getFeatures(QgsFeatureRequest().setInvalidGeometryCheck(QgsFeatureRequest.GeometryAbortOnInvalid))]
         self.assertEqual(res, ['a'])
 
+        # with callback
+        self.callback_feature_val = None
+
+        def callback(feature):
+            self.callback_feature_val = feature['x']
+
+        res = [f['x'] for f in
+               layer.getFeatures(QgsFeatureRequest().setInvalidGeometryCheck(
+                   QgsFeatureRequest.GeometryAbortOnInvalid).setInvalidGeometryCallback(callback))]
+        self.assertEqual(res, ['a'])
+        self.assertEqual(self.callback_feature_val, 'b')
+        # clear callback
+        res = [f['x'] for f in
+               layer.getFeatures(QgsFeatureRequest().setInvalidGeometryCheck(
+                   QgsFeatureRequest.GeometryAbortOnInvalid).setInvalidGeometryCallback(None))]
+        self.assertEqual(res, ['a'])
+
         # check with filter fids
         res = [f['x'] for f in
                layer.getFeatures(QgsFeatureRequest().setFilterFid(f2.id()).setInvalidGeometryCheck(QgsFeatureRequest.GeometryNoCheck))]

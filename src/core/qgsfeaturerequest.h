@@ -299,7 +299,6 @@ class CORE_EXPORT QgsFeatureRequest
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
      * called using the feature with invalid geometry as a parameter.
      * \since QGIS 3.0
-     * \note not available in Python bindings
      * \see invalidGeometryCallback()
      */
     QgsFeatureRequest &setInvalidGeometryCallback( std::function< void( const QgsFeature & ) > callback );

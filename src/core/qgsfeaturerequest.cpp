@@ -77,6 +77,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
     mFilterExpression.reset( nullptr );
   }
   mInvalidGeometryFilter = rh.mInvalidGeometryFilter;
+  mInvalidGeometryCallback = rh.mInvalidGeometryCallback;
   mExpressionContext = rh.mExpressionContext;
   mAttrs = rh.mAttrs;
   mSimplifyMethod = rh.mSimplifyMethod;

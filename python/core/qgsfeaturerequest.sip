@@ -220,6 +220,35 @@ class QgsFeatureRequest
      */
     InvalidGeometryCheck invalidGeometryCheck() const;
 
+    /**
+     * Sets a callback function to use when encountering an invalid geometry and
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
+     * called using the feature with invalid geometry as a parameter.
+     * \since QGIS 3.0
+     * \see invalidGeometryCallback()
+     */
+    QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE /AllowNone/ );
+%MethodCode
+        Py_BEGIN_ALLOW_THREADS
+
+        sipRes = new QgsFeatureRequest( sipCpp->setInvalidGeometryCallback([a0](const QgsFeature &arg) {
+            SIP_BLOCK_THREADS
+            Py_XDECREF( sipCallMethod(NULL, a0, "N", new QgsFeature(arg), sipType_QgsFeature, NULL) );
+            SIP_UNBLOCK_THREADS
+        }) );
+
+        Py_END_ALLOW_THREADS
+%End
+
+    /**
+     * Returns the callback function to use when encountering an invalid geometry and
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid.
+     * \since QGIS 3.0
+     * \note not available in Python bindings
+     * \see setInvalidGeometryCallback()
+     */
+    // std::function< void( const QgsFeature & ) > invalidGeometryCallback() const;
+
     /** Set the filter expression. {@see QgsExpression}
      * @param expression expression string
      * @see filterExpression
