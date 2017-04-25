@@ -150,6 +150,13 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor for QgsSymbolLegendNode.
+     * \param nodeLayer layer node
+     * \param item the legend symbol item
+     * \param parent attach a parent QObject to the legend node.
+     */
     QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual Qt::ItemFlags flags() const override;
@@ -250,6 +257,15 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor for QgsSimpleLegendNode.
+     * \param nodeLayer layer node
+     * \param label label
+     * \param icon icon
+     * \param parent attach a parent QObject to the legend node.
+     * \param key the rule key
+     */
     QgsSimpleLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label, const QIcon &icon = QIcon(), QObject *parent SIP_TRANSFERTHIS = nullptr, const QString &key = QString() );
 
     virtual QVariant data( int role ) const override;
@@ -272,6 +288,13 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor for QgsImageLegendNode.
+     * \param nodeLayer layer node
+     * \param img the image
+     * \param parent attach a parent QObject to the legend node.
+     */
     QgsImageLegendNode( QgsLayerTreeLayer *nodeLayer, const QImage &img, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual QVariant data( int role ) const override;
@@ -292,6 +315,14 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor for QgsRasterSymbolLegendNode.
+     * \param nodeLayer layer node
+     * \param color color
+     * \param label label
+     * \param parent attach a parent QObject to the legend node.
+     */
     QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual QVariant data( int role ) const override;
@@ -316,9 +347,10 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
   public:
 
-    /** Constructor for QgsWmsLegendNode.
+    /**
+     * Constructor for QgsWmsLegendNode.
      * \param nodeLayer layer node
-     * \param parent parent object
+     * \param parent attach a parent QObject to the legend node.
      */
     QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
