@@ -2244,7 +2244,7 @@ static QVariant fcnMakeCircle( const QVariantList &values, const QgsExpressionCo
   }
   QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
   QgsCircle circ( *point, radius );
-  return QVariant::fromValue( QgsGeometry( circ.toPolygon( segment ).clone() ) );
+  return QVariant::fromValue( QgsGeometry( circ.toPolygon( segment ) ) );
 }
 
 static QVariant fcnMakeEllipse( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -2267,7 +2267,7 @@ static QVariant fcnMakeEllipse( const QVariantList &values, const QgsExpressionC
   }
   QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
   QgsEllipse elp( *point, majorAxis,  minorAxis, azimuth );
-  return QVariant::fromValue( QgsGeometry( elp.toPolygon( segment ).clone() ) );
+  return QVariant::fromValue( QgsGeometry( elp.toPolygon( segment ) ) );
 }
 
 static QVariant pointAt( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) // helper function

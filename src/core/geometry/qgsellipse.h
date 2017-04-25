@@ -30,7 +30,7 @@
  * \class QgsEllipse
  * \brief Ellipse geometry type.
  *
- * An ellipse is defined by a center point (mCenter) with a semi-major axis, a semi-minor axis and an azimuth.
+ * An ellipse is defined by a center point with a semi-major axis, a semi-minor axis and an azimuth.
  * The azimuth is the north angle to the first quadrant (always oriented on the semi-major axis), in degrees. By default, the semi-major axis is oriented to the east (90 degrees).
  * The semi-minor axis is always smaller than the semi-major axis. If it is set larger, it will be swapped and the azimuth will increase by 90 degrees.
  * \since QGIS 3.0
@@ -42,10 +42,10 @@ class CORE_EXPORT QgsEllipse
     QgsEllipse();
 
     /** Constructs an ellipse by defining all the members.
-     * @param center The center of the ellipse.
-     * @param semiMajorAxis Semi-major axis of the ellipse.
-     * @param semiMinorAxis Semi-minor axis of the ellipse.
-     * @param azimuth Angle in degrees started from the North to the first quadrant.
+     * \param center The center of the ellipse.
+     * \param semiMajorAxis Semi-major axis of the ellipse.
+     * \param semiMinorAxis Semi-minor axis of the ellipse.
+     * \param azimuth Angle in degrees started from the North to the first quadrant.
      */
     QgsEllipse( const QgsPointV2 &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
 
@@ -54,9 +54,9 @@ class CORE_EXPORT QgsEllipse
      * The center point can have z and m values which are the result from the midpoint operation between \a pt1 and \a pt2.
      * Axes are calculated from the 2D distance with the third point \a pt3.
      * The azimuth is the angle between \a pt1 and \a pt2.
-     * @param pt1 First focus.
-     * @param pt2 Second focus.
-     * @param pt3 A point to calculate the axes.
+     * \param pt1 First focus.
+     * \param pt2 Second focus.
+     * \param pt3 A point to calculate the axes.
      */
     static QgsEllipse fromFoci( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3 );
 
@@ -65,31 +65,31 @@ class CORE_EXPORT QgsEllipse
      * The center point can have z and m values which are the result from the midpoint operation between \a pt1 and \a pt2.
      * Axes are calculated from the 2D distance between \a pt1 and \a pt2.
      * The azimuth always takes the default value.
-     * @param pt1 First corner.
-     * @param pt2 Second corner.
+     * \param pt1 First corner.
+     * \param pt2 Second corner.
      */
-    static QgsEllipse byExtent( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsEllipse fromExtent( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
 
     /**
      * Constructs an ellipse by a center point and a another point.
-     * The center point keep z and m values from \a ptc.
+     * The center point keeps z and m values from \a ptc.
      * Axes are calculated from the 2D distance between \a ptc and \a pt1.
      * The azimuth always takes the default value.
-     * @param ptc Center point.
-     * @param pt1 First point.
+     * \param ptc Center point.
+     * \param pt1 First point.
      */
-    static QgsEllipse byCenterPoint( const QgsPointV2 &ptc, const QgsPointV2 &pt1 );
+    static QgsEllipse fromCenterPoint( const QgsPointV2 &ptc, const QgsPointV2 &pt1 );
 
     /**
      * Constructs an ellipse by a central point and two other points.
-     * The center point keep z and m values from \a ptc.
+     * The center point keeps z and m values from \a ptc.
      * Axes are calculated from the 2D distance between \a ptc and \a pt1 and \a pt2.
      * The azimuth is the angle between \a ptc and \a pt1.
-     * @param ptc Center point.
-     * @param pt1 First point.
-     * @param pt2 Second point.
+     * \param ptc Center point.
+     * \param pt1 First point.
+     * \param pt2 Second point.
      */
-    static QgsEllipse byCenter2Points( const QgsPointV2 &ptc, const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsEllipse fromCenter2Points( const QgsPointV2 &ptc, const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
 
     virtual bool operator ==( const QgsEllipse &elp ) const;
     virtual bool operator !=( const QgsEllipse &elp ) const;
@@ -98,102 +98,104 @@ class CORE_EXPORT QgsEllipse
     virtual bool isEmpty() const;
 
     /** Returns the center point.
-     * @see setCenter()
-     * @see rcenter()
+     * \see setCenter()
+     * \see rcenter()
      */
     QgsPointV2 center() const {return mCenter; }
 
     /** Returns the semi-major axis.
-     * @see setSemiMajorAxis()
+     * \see setSemiMajorAxis()
      */
     double semiMajorAxis() const {return mSemiMajorAxis; }
 
     /** Returns the semi-minor axis.
-     * @see setSemiMinorAxis()
+     * \see setSemiMinorAxis()
      */
     double semiMinorAxis() const {return mSemiMinorAxis; }
 
     /** Returns the azimuth.
-     * @see setAzimuth()
+     * \see setAzimuth()
      */
     double azimuth() const {return mAzimuth; }
 
     /** Returns a reference to the center point of this ellipse.
      * Using a reference makes it possible to directly manipulate center in place.
-     * @see center()
-     * @see setCenter()
-     * @note not available in Python bindings
+     * \see center()
+     * \see setCenter()
+     * \note not available in Python bindings
      */
-    QgsPointV2 &rcenter() { return mCenter; }
+    QgsPointV2 &rcenter() SIP_SKIP { return mCenter; }
 
     /** Sets the center point.
-     * @see center()
-     * @see rcenter()
+     * \see center()
+     * \see rcenter()
      */
     void setCenter( const QgsPointV2 &center ) {mCenter = center; }
 
     /** Sets the semi-major axis.
-     * @see semiMajorAxis()
+     * \see semiMajorAxis()
      */
     virtual void setSemiMajorAxis( const double semiMajorAxis );
 
     /** Sets the semi-minor axis.
-     * @see semiMinorAxis()
+     * \see semiMinorAxis()
      */
     virtual void setSemiMinorAxis( const double semiMinorAxis );
 
     /** Sets the azimuth (orientation).
-     * @see azimuth()
+     * \see azimuth()
      */
     void setAzimuth( const double azimuth );
 
     /** The distance between the center and each foci.
-     * @see fromFoci()
-     * @see foci()
-     * @return The distance between the center and each foci.
+     * \see fromFoci()
+     * \see foci()
+     * \return The distance between the center and each foci.
      */
     virtual double focusDistance() const;
 
     /** Two foci of the ellipse. The axes are oriented by the azimuth and are on the semi-major axis.
-     * @see fromFoci()
-     * @see focusDistance()
-     * @return the two foci.
+     * \see fromFoci()
+     * \see focusDistance()
+     * \return the two foci.
      */
     virtual QVector<QgsPointV2> foci() const;
 
-    //! The eccentricity of the ellipse.
+    /** The eccentricity of the ellipse.
+     * nan is returned if the ellipse is empty.
+     */
     virtual double eccentricity() const;
     //! The area of the ellipse.
     virtual double area() const;
     //! The circumference of the ellipse using first approximation of Ramanujan.
     virtual double perimeter() const;
 
-    /** The four quadrant of the ellipse.
-     * The are oriented and started always from semi-major axis.
-     * @return quadrant defined by four point.
+    /** The four quadrants of the ellipse.
+     * They are oriented and started always from semi-major axis.
+     * \return quadrants defined by four points.
      */
     virtual QVector<QgsPointV2> quadrant() const;
 
     /** Returns a list of points into \a pts, with segmentation from \a segments.
-     * @param pts List of points returned.
-     * @param segments Number of segments used to segment geometry.
+     * \param pts List of points returned.
+     * \param segments Number of segments used to segment geometry.
      */
     virtual void points( QgsPointSequence &pts, unsigned int segments = 36 ) const;
 
     /** Returns a segmented polygon.
-     * @param segments Number of segments used to segment geometry.
+     * \param segments Number of segments used to segment geometry.
      */
-    virtual QgsPolygonV2 toPolygon( unsigned int segments = 36 ) const;
+    virtual QgsPolygonV2 *toPolygon( unsigned int segments = 36 ) const;
 
     /** Returns a segmented linestring.
-     * @param segments Number of segments used to segment geometry.
+     * \param segments Number of segments used to segment geometry.
      */
-    virtual QgsLineString toLineString( unsigned int segments = 36 ) const;
+    virtual QgsLineString *toLineString( unsigned int segments = 36 ) const;
     //virtual QgsCurvePolygon toCurvePolygon() const;
 
     /** Returns the oriented minimal bounding box for the ellipse.
      */
-    virtual QgsPolygonV2 orientedBoundingBox() const;
+    virtual QgsPolygonV2 *orientedBoundingBox() const;
 
     /** Returns the minimal bounding box for the ellipse.
      */

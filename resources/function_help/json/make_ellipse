@@ -1,7 +1,7 @@
 {
   "name": "make_ellipse",
   "type": "function",
-  "description": "Creates a polygon geometry from an ellipse.",
+  "description": "Creates an elliptical polygon.",
   "variableLenArguments": true,
   "arguments": [
 	{"arg":"center", "description": "center point of the ellipse"},
