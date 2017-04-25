@@ -108,8 +108,8 @@ class GdalUtils(object):
                 else:
                     raise IOError(e.message + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(len(loglines), u'\n'.join(loglines[-10:])))
 
-        QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)
-        GdalUtils.consoleOutput = loglines
+            QgsProcessingUtils.logMessage(QgsMessageLog.INFO, '\n'.join(loglines))
+            GdalUtils.consoleOutput = loglines
 
     @staticmethod
     def getConsoleOutput():
