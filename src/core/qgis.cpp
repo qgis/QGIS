@@ -222,3 +222,49 @@ QString qgsVsiPrefix( const QString &path )
   else
     return QLatin1String( "" );
 }
+
+uint qHash( const QVariant &variant )
+{
+  if ( !variant.isValid() || variant.isNull() )
+    return -1;
+
+  switch ( variant.type() )
+  {
+    case QVariant::Int:
+      return qHash( variant.toInt() );
+    case QVariant::UInt:
+      return qHash( variant.toUInt() );
+    case QVariant::Bool:
+      return qHash( variant.toBool() );
+    case QVariant::Double:
+      return qHash( variant.toDouble() );
+    case QVariant::LongLong:
+      return qHash( variant.toLongLong() );
+    case QVariant::ULongLong:
+      return qHash( variant.toULongLong() );
+    case QVariant::String:
+      return qHash( variant.toString() );
+    case QVariant::Char:
+      return qHash( variant.toChar() );
+    case QVariant::List:
+      return qHash( variant.toList() );
+    case QVariant::StringList:
+      return qHash( variant.toStringList() );
+    case QVariant::ByteArray:
+      return qHash( variant.toByteArray() );
+    case QVariant::Date:
+      return qHash( variant.toDate() );
+    case QVariant::Time:
+      return qHash( variant.toTime() );
+    case QVariant::DateTime:
+      return qHash( variant.toDateTime() );
+    case QVariant::Url:
+    case QVariant::Locale:
+    case QVariant::RegExp:
+      return qHash( variant.toString() );
+    default:
+      return -1;
+  }
+
+  return -1;
+}

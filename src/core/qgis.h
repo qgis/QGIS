@@ -180,6 +180,9 @@ template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *ob
   return QgsSignalBlocker<Object>( object );
 }
 
+//! Hash for QVariant
+uint qHash( const QVariant &variant );
+
 //! Returns a string representation of a double
 //! \param a double value
 //! \param precision number of decimal places to retain
