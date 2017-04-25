@@ -78,7 +78,7 @@ class ExtendLines(GeoAlgorithm):
         start_distance = self.getParameterValue(self.START_DISTANCE)
         end_distance = self.getParameterValue(self.END_DISTANCE)
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
 
         for current, input_feature in enumerate(features):

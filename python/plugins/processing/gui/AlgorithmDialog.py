@@ -52,7 +52,7 @@ from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputTable
 
-from processing.tools import dataobjects
+from processing.tools import dataobjects, general
 
 
 class AlgorithmDialog(AlgorithmDialogBase):
@@ -198,8 +198,10 @@ class AlgorithmDialog(AlgorithmDialogBase):
             self.setInfo(
                 self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
 
+            context = general.createContext()
+
             if self.iterateParam:
-                if executeIterating(self.alg, self.iterateParam, self.feedback):
+                if executeIterating(self.alg, self.iterateParam, context, self.feedback):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()

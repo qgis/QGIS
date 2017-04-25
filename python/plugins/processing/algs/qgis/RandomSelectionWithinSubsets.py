@@ -114,7 +114,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
 
         if not len(unique) == featureCount:
             for i in unique:
-                features = vector.features(layer)
+                features = vector.features(layer, context)
                 FIDs = []
                 for inFeat in features:
                     attrs = inFeat.attributes()

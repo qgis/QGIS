@@ -30,8 +30,8 @@ from qgis.core import QgsFeature, QgsGeometry
 from processing.tools import vector
 
 
-def buffering(feedback, writer, distance, field, useField, layer, dissolve,
-              segments, endCapStyle=1, joinStyle=1, mitreLimit=2):
+def buffering(feedback, context, writer, distance, field, useField, layer, dissolve, segments, endCapStyle=1,
+              joinStyle=1, mitreLimit=2):
 
     if useField:
         field = layer.fields().lookupField(field)
@@ -39,7 +39,7 @@ def buffering(feedback, writer, distance, field, useField, layer, dissolve,
     outFeat = QgsFeature()
 
     current = 0
-    features = vector.features(layer)
+    features = vector.features(layer, context)
     total = 100.0 / float(len(features))
 
     # With dissolve

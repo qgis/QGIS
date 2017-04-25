@@ -71,7 +71,7 @@ class PolygonsToLines(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields().toList(), QgsWkbTypes.LineString, layer.crs())
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
             if f.hasGeometry():

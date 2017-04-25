@@ -95,7 +95,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
         outFeat = QgsFeature()
         geom = QgsGeometry()
 
-        features = vector.features(polyLayer)
+        features = vector.features(polyLayer, context)
         total = 100.0 / len(features)
         for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()

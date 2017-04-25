@@ -198,7 +198,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             self.runPreExecutionScript(feedback)
             self.processAlgorithm(context, feedback)
             feedback.setProgress(100)
-            self.convertUnsupportedFormats(feedback)
+            self.convertUnsupportedFormats(context, feedback)
             self.runPostExecutionScript(feedback)
         except GeoAlgorithmExecutionException as gaee:
             lines = [self.tr('Error while executing algorithm')]
@@ -258,7 +258,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             # all exceptions
             pass
 
-    def convertUnsupportedFormats(self, feedback):
+    def convertUnsupportedFormats(self, context, feedback):
         i = 0
         feedback.setProgressText(self.tr('Converting outputs'))
         for out in self.outputs:
@@ -273,7 +273,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                         layer.fields(),
                         layer.wkbType(), layer.crs()
                     )
-                    features = vector.features(layer)
+                    features = vector.features(layer, context)
                     for feature in features:
                         writer.addFeature(feature)
             elif isinstance(out, OutputRaster):
@@ -308,7 +308,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                 if out.compatible is not None:
                     layer = dataobjects.getLayerFromString(out.compatible)
                     writer = out.getTableWriter(layer.fields())
-                    features = vector.features(layer)
+                    features = vector.features(layer, context)
                     for feature in features:
                         writer.addRecord(feature)
             feedback.setProgress(100 * i / float(len(self.outputs)))

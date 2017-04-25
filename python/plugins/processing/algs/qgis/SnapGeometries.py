@@ -84,7 +84,7 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields(), layer.wkbType(), layer.crs())
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
 
         self.processed = 0
         self.feedback = feedback

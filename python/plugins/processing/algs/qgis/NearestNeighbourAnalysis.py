@@ -95,7 +95,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         A = layer.extent()
         A = float(A.width() * A.height())
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         count = len(features)
         total = 100.0 / count
         for current, feat in enumerate(features):

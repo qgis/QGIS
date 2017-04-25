@@ -93,7 +93,7 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
 
         da = QgsDistanceArea()
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         for current, f in enumerate(features):
             fGeom = f.geometry()
             bbox = fGeom.boundingBox()

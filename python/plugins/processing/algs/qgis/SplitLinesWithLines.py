@@ -87,7 +87,7 @@ class SplitLinesWithLines(GeoAlgorithm):
         spatialIndex = vector.spatialindex(layerB)
 
         outFeat = QgsFeature()
-        features = vector.features(layerA)
+        features = vector.features(layerA, context)
         total = 100.0 / float(len(features))
 
         for current, inFeatA in enumerate(features):

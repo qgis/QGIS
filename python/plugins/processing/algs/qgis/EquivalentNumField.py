@@ -77,7 +77,7 @@ class EquivalentNumField(GeoAlgorithm):
         outFeat = QgsFeature()
         classes = {}
 
-        features = vector.features(vlayer)
+        features = vector.features(vlayer, context)
         total = 100.0 / len(features)
         for current, feature in enumerate(features):
             feedback.setProgress(int(current * total))

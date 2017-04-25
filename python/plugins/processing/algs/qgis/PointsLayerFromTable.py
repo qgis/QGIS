@@ -108,7 +108,7 @@ class PointsLayerFromTable(GeoAlgorithm):
 
         writer = output.getVectorWriter(fields, wkb_type, target_crs)
 
-        features = vector.features(vlayer)
+        features = vector.features(vlayer, context)
         total = 100.0 / len(features)
 
         for current, feature in enumerate(features):

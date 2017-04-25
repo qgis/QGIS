@@ -83,7 +83,7 @@ TYPE_MAP_SPATIALITE_LAYER = {
 }
 
 
-def features(layer, request=QgsFeatureRequest()):
+def features(layer, context, request=QgsFeatureRequest()):
     """This returns an iterator over features in a vector layer,
     considering the selection that might exist in the layer, and the
     configuration that indicates whether to use only selected feature
@@ -91,6 +91,7 @@ def features(layer, request=QgsFeatureRequest()):
 
     This should be used by algorithms instead of calling the Qgis API
     directly, to ensure a consistent behavior across algorithms.
+    :param context:
     """
     class Features(object):
 
@@ -146,7 +147,7 @@ def uniqueValues(layer, attribute):
         # iterate through selected features
         values = []
         request = QgsFeatureRequest().setSubsetOfAttributes([fieldIndex]).setFlags(QgsFeatureRequest.NoGeometry)
-        feats = features(layer, request)
+        feats = features(layer, context, request)
         for feat in feats:
             if feat.attributes()[fieldIndex] not in values:
                 values.append(feat.attributes()[fieldIndex])
@@ -199,7 +200,7 @@ def values(layer, *attributes):
     # use an optimised feature request
     request = QgsFeatureRequest().setSubsetOfAttributes(indices).setFlags(QgsFeatureRequest.NoGeometry)
 
-    for feature in features(layer, request):
+    for feature in features(layer, context, request):
         for i in indices:
 
             # convert attribute value to number
@@ -342,7 +343,7 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
 
 def getUniqueValues(layer, fieldIndex):
     values = []
-    feats = features(layer)
+    feats = features(layer, context)
     for feat in feats:
         if feat.attributes()[fieldIndex] not in values:
             values.append(feat.attributes()[fieldIndex])

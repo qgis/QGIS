@@ -87,7 +87,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         index = layer.fields().lookupField(field)
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         featureCount = len(features)
         unique = vector.getUniqueValues(layer, index)
         value = int(self.getParameterValue(self.NUMBER))
@@ -108,7 +108,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         selran = []
         total = 100.0 / (featureCount * len(unique))
-        features = vector.features(layer)
+        features = vector.features(layer, context)
 
         classes = defaultdict(list)
         for i, feature in enumerate(features):
@@ -120,7 +120,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
             selValue = value if method != 1 else int(round(value * len(subset), 0))
             selran.extend(random.sample(subset, selValue))
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         for (i, feat) in enumerate(selran):
             writer.addFeature(feat)

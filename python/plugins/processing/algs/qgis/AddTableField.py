@@ -99,7 +99,7 @@ class AddTableField(GeoAlgorithm):
         writer = output.getVectorWriter(fields, layer.wkbType(),
                                         layer.crs())
         outFeat = QgsFeature()
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))

@@ -95,11 +95,11 @@ class CheckValidity(GeoAlgorithm):
         if method != 0:
             settings.setValue(settings_method_key, method)
         try:
-            self.doCheck(feedback)
+            self.doCheck(context, feedback)
         finally:
             settings.setValue(settings_method_key, initial_method_setting)
 
-    def doCheck(self, feedback):
+    def doCheck(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 
@@ -136,7 +136,7 @@ class CheckValidity(GeoAlgorithm):
             layer.crs())
         error_count = 0
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             geom = inFeat.geometry()

@@ -103,24 +103,24 @@ class PointDistance(GeoAlgorithm):
         outputFile = self.getOutputFromName(self.DISTANCE_MATRIX)
 
         if nPoints < 1:
-            nPoints = len(vector.features(targetLayer))
+            nPoints = len(vector.features(targetLayer, context))
 
         self.writer = outputFile.getTableWriter([])
 
         if matType == 0:
             # Linear distance matrix
-            self.linearMatrix(inLayer, inField, targetLayer, targetField,
+            self.linearMatrix(context, inLayer, inField, targetLayer, targetField,
                               matType, nPoints, feedback)
         elif matType == 1:
             # Standard distance matrix
-            self.regularMatrix(inLayer, inField, targetLayer, targetField,
+            self.regularMatrix(context, inLayer, inField, targetLayer, targetField,
                                nPoints, feedback)
         elif matType == 2:
             # Summary distance matrix
-            self.linearMatrix(inLayer, inField, targetLayer, targetField,
+            self.linearMatrix(context, inLayer, inField, targetLayer, targetField,
                               matType, nPoints, feedback)
 
-    def linearMatrix(self, inLayer, inField, targetLayer, targetField,
+    def linearMatrix(self, context, inLayer, inField, targetLayer, targetField,
                      matType, nPoints, feedback):
         if matType == 0:
             self.writer.addRecord(['InputID', 'TargetID', 'Distance'])
@@ -134,7 +134,7 @@ class PointDistance(GeoAlgorithm):
 
         distArea = QgsDistanceArea()
 
-        features = vector.features(inLayer)
+        features = vector.features(inLayer, context)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
@@ -164,7 +164,7 @@ class PointDistance(GeoAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-    def regularMatrix(self, inLayer, inField, targetLayer, targetField,
+    def regularMatrix(self, context, inLayer, inField, targetLayer, targetField,
                       nPoints, feedback):
         index = vector.spatialindex(targetLayer)
 
@@ -173,7 +173,7 @@ class PointDistance(GeoAlgorithm):
         distArea = QgsDistanceArea()
 
         first = True
-        features = vector.features(inLayer)
+        features = vector.features(inLayer, context)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()

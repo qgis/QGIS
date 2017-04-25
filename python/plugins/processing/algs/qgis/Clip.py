@@ -78,7 +78,7 @@ class Clip(GeoAlgorithm):
 
         # first build up a list of clip geometries
         clip_geoms = []
-        for maskFeat in vector.features(mask_layer, QgsFeatureRequest().setSubsetOfAttributes([])):
+        for maskFeat in vector.features(mask_layer, context, QgsFeatureRequest().setSubsetOfAttributes([])):
             clip_geoms.append(maskFeat.geometry())
 
         # are we clipping against a single feature? if so, we can show finer progress reports
@@ -96,7 +96,8 @@ class Clip(GeoAlgorithm):
         tested_feature_ids = set()
 
         for i, clip_geom in enumerate(clip_geoms):
-            input_features = [f for f in vector.features(source_layer, QgsFeatureRequest().setFilterRect(clip_geom.boundingBox()))]
+            input_features = [f for f in vector.features(source_layer, context,
+                                                         QgsFeatureRequest().setFilterRect(clip_geom.boundingBox()))]
 
             if not input_features:
                 continue

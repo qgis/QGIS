@@ -75,7 +75,7 @@ class DropGeometry(GeoAlgorithm):
                 QgsCoordinateReferenceSystem())
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
-        features = vector.features(layer, request)
+        features = vector.features(layer, context, request)
         total = 100.0 / len(features)
 
         for current, input_feature in enumerate(features):

@@ -78,7 +78,7 @@ class StatisticsByCategories(GeoAlgorithm):
         valuesField = layer.fields().lookupField(valuesFieldName)
         categoriesField = layer.fields().lookupField(categoriesFieldName)
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         values = {}
         for current, feat in enumerate(features):

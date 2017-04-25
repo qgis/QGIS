@@ -83,7 +83,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         collection_geom = {}
         collection_attrs = {}
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         for current, feature in enumerate(features):
             atMap = feature.attributes()

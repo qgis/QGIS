@@ -113,7 +113,7 @@ class ExampleAlgorithm(GeoAlgorithm):
         # selection that might exist in layer and the configuration that
         # indicates should algorithm use only selected features or all
         # of them
-        features = vector.features(vectorLayer)
+        features = vector.features(vectorLayer, context)
         for f in features:
             writer.addFeature(f)
 

@@ -108,7 +108,7 @@ class TopoColor(GeoAlgorithm):
             layer.wkbType(),
             layer.crs())
 
-        features = {f.id(): f for f in vector.features(layer)}
+        features = {f.id(): f for f in vector.features(layer, context)}
 
         topology, id_graph = self.compute_graph(features, feedback, min_distance=min_distance)
         feature_colors = ColoringAlgorithm.balanced(features,

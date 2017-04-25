@@ -65,7 +65,7 @@ def execute(alg, context=None, feedback=None):
         return False
 
 
-def executeIterating(alg, paramToIter, feedback):
+def executeIterating(alg, paramToIter, context, feedback):
     # Generate all single-feature layers
     settings = QgsSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
@@ -74,7 +74,7 @@ def executeIterating(alg, paramToIter, feedback):
     feat = QgsFeature()
     filelist = []
     outputs = {}
-    features = vector.features(layer)
+    features = vector.features(layer, context)
     for feat in features:
         output = getTempFilename('shp')
         filelist.append(output)

@@ -93,7 +93,7 @@ class ExtractSpecificNodes(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException(
                     self.tr('\'{}\' is not a valid node index').format(node))
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
 
         for current, f in enumerate(features):

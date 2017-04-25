@@ -72,7 +72,7 @@ class ReverseLineDirection(GeoAlgorithm):
 
         outFeat = QgsFeature()
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()

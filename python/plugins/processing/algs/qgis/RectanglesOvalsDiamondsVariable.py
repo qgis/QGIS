@@ -115,7 +115,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 QgsWkbTypes.Polygon,
                 layer.crs())
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
 
         if shape == 0:
             self.rectangles(writer, features, width, height, rotation)

@@ -90,7 +90,7 @@ class Union(GeoAlgorithm):
 
         count = 0
         nElement = 0
-        featuresA = vector.features(vlayerA)
+        featuresA = vector.features(vlayerA, context)
         nFeat = len(featuresA)
         for inFeatA in featuresA:
             feedback.setProgress(nElement / float(nFeat) * 50)
@@ -183,7 +183,7 @@ class Union(GeoAlgorithm):
         length = len(vlayerA.fields())
         atMapA = [None] * length
 
-        featuresA = vector.features(vlayerB)
+        featuresA = vector.features(vlayerB, context)
         nFeat = len(featuresA)
         for inFeatA in featuresA:
             feedback.setProgress(nElement / float(nFeat) * 100)

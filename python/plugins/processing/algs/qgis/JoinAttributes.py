@@ -95,7 +95,7 @@ class JoinAttributes(GeoAlgorithm):
 
         # Cache attributes of Layer 2
         cache = {}
-        features = vector.features(layer2)
+        features = vector.features(layer2, context)
         total = 100.0 / len(features)
         for current, feat in enumerate(features):
             attrs = feat.attributes()
@@ -106,7 +106,7 @@ class JoinAttributes(GeoAlgorithm):
 
         # Create output vector layer with additional attribute
         outFeat = QgsFeature()
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         for current, feat in enumerate(features):
             outFeat.setGeometry(feat.geometry())

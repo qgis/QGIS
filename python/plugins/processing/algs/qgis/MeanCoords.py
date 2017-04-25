@@ -101,7 +101,7 @@ class MeanCoords(GeoAlgorithm):
             fieldList, QgsWkbTypes.Point, layer.crs()
         )
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         means = {}
         for current, feat in enumerate(features):

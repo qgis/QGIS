@@ -112,7 +112,7 @@ class ConvexHull(GeoAlgorithm):
 
         fid = 0
         val = None
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         if useField:
             unique = layer.uniqueValues(index)
             current = 0
@@ -120,7 +120,7 @@ class ConvexHull(GeoAlgorithm):
             for i in unique:
                 first = True
                 hull = []
-                features = vector.features(layer)
+                features = vector.features(layer, context)
                 for f in features:
                     idVar = f[fieldName]
                     if str(idVar).strip() == str(i).strip():
@@ -149,7 +149,7 @@ class ConvexHull(GeoAlgorithm):
         else:
             hull = []
             total = 100.0 / layer.featureCount()
-            features = vector.features(layer)
+            features = vector.features(layer, context)
             for current, f in enumerate(features):
                 inGeom = f.geometry()
                 points = vector.extractPoints(inGeom)

@@ -171,7 +171,7 @@ class Heatmap(GeoAlgorithm):
 
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes(attrs)
-        features = vector.features(layer, request)
+        features = vector.features(layer, context, request)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
             if kde.addFeature(f) != QgsKernelDensityEstimation.Success:

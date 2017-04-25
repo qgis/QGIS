@@ -97,7 +97,7 @@ class OffsetLine(GeoAlgorithm):
         join_style = self.getParameterValue(self.JOIN_STYLE) + 1
         miter_limit = self.getParameterValue(self.MITRE_LIMIT)
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
 
         for current, input_feature in enumerate(features):

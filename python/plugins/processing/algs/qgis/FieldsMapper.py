@@ -151,7 +151,7 @@ class FieldsMapper(GeoAlgorithm):
         error_exp = None
         inFeat = QgsFeature()
         outFeat = QgsFeature()
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         if len(features):
             total = 100.0 / len(features)
             for current, inFeat in enumerate(features):

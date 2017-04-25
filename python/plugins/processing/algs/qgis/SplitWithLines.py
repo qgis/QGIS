@@ -85,13 +85,13 @@ class SplitWithLines(GeoAlgorithm):
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes([])
 
-        for aSplitFeature in vector.features(splitLayer, request):
+        for aSplitFeature in vector.features(splitLayer, context, request):
             splitGeoms[aSplitFeature.id()] = aSplitFeature.geometry()
             spatialIndex.insertFeature(aSplitFeature)
             # honor the case that user has selection on split layer and has setting "use selection"
 
         outFeat = QgsFeature()
-        features = vector.features(layerA)
+        features = vector.features(layerA, context)
 
         if len(features) == 0:
             total = 100

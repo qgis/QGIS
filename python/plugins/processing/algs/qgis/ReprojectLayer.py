@@ -80,7 +80,7 @@ class ReprojectLayer(GeoAlgorithm):
         crsTransform = QgsCoordinateTransform(layerCrs, targetCrs)
 
         outFeat = QgsFeature()
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
             geom = f.geometry()

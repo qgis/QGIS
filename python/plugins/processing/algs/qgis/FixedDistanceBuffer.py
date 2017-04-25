@@ -108,5 +108,5 @@ class FixedDistanceBuffer(GeoAlgorithm):
             self.OUTPUT).getVectorWriter(layer.fields().toList(),
                                          QgsWkbTypes.Polygon, layer.crs())
 
-        buff.buffering(feedback, writer, distance, None, False, layer,
-                       dissolve, segments, end_cap_style, join_style, miter_limit)
+        buff.buffering(feedback, context, writer, distance, None, False, layer, dissolve, segments, end_cap_style,
+                       join_style, miter_limit)

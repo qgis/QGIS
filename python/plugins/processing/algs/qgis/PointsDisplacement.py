@@ -82,7 +82,7 @@ class PointsDisplacement(GeoAlgorithm):
         writer = output.getVectorWriter(layer.fields(),
                                         layer.wkbType(), layer.crs())
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
 
         total = 100.0 / len(features)
 

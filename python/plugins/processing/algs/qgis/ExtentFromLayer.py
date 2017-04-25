@@ -93,7 +93,7 @@ class ExtentFromLayer(GeoAlgorithm):
                                                                      QgsWkbTypes.Polygon, layer.crs())
 
         if byFeature:
-            self.featureExtent(layer, writer, feedback)
+            self.featureExtent(layer, context, writer, feedback)
         else:
             self.layerExtent(layer, writer, feedback)
 
@@ -132,8 +132,8 @@ class ExtentFromLayer(GeoAlgorithm):
         feat.setAttributes(attrs)
         writer.addFeature(feat)
 
-    def featureExtent(self, layer, writer, feedback):
-        features = vector.features(layer)
+    def featureExtent(self, layer, context, writer, feedback):
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         feat = QgsFeature()
         for current, f in enumerate(features):

@@ -82,7 +82,7 @@ class PolygonCentroids(GeoAlgorithm):
 
         outFeat = QgsFeature()
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         for current, feat in enumerate(features):
             inGeom = feat.geometry()

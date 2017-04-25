@@ -104,7 +104,7 @@ class PointsToPaths(GeoAlgorithm):
             fields, QgsWkbTypes.LineString, layer.crs())
 
         points = dict()
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
             point = f.geometry().asPoint()

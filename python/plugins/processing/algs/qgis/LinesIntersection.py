@@ -110,7 +110,7 @@ class LinesIntersection(GeoAlgorithm):
         spatialIndex = vector.spatialindex(layerB)
 
         outFeat = QgsFeature()
-        features = vector.features(layerA)
+        features = vector.features(layerA, context)
         total = 100.0 / len(features)
         hasIntersections = False
 

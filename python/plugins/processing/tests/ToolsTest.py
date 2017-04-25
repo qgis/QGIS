@@ -29,7 +29,9 @@ import os
 import shutil
 import tempfile
 
-from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
+from qgis.core import (QgsVectorLayer,
+                       QgsFeatureRequest,
+                       QgsProcessingContext)
 from qgis.testing import start_app, unittest
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -58,60 +60,56 @@ class VectorTest(unittest.TestCase):
         test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
 
+        context = QgsProcessingContext()
+
         # disable check for geometry validity
-        prevInvalidGeoms = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
-        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 0)
+        context.setFlags(0)
 
         # test with all features
-        features = vector.features(test_layer)
+        features = vector.features(test_layer, context)
         self.assertEqual(len(features), 9)
         self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # test with selected features
-        previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
+        context.setFlags(QgsProcessingContext.UseSelection)
         test_layer.selectByIds([2, 4, 6])
-        features = vector.features(test_layer)
+        features = vector.features(test_layer, context)
         self.assertEqual(len(features), 3)
         self.assertEqual(set([f.id() for f in features]), set([2, 4, 6]))
 
         # selection, but not using selected features
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, False)
+        context.setFlags(0)
         test_layer.selectByIds([2, 4, 6])
-        features = vector.features(test_layer)
+        features = vector.features(test_layer, context)
         self.assertEqual(len(features), 9)
         self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # using selected features, but no selection
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
+        context.setFlags(QgsProcessingContext.UseSelection)
         test_layer.removeSelection()
-        features = vector.features(test_layer)
+        features = vector.features(test_layer, context)
         self.assertEqual(len(features), 9)
         self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # test that feature request is honored
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, False)
-        features = vector.features(test_layer, QgsFeatureRequest().setFilterFids([1, 3, 5]))
+        context.setFlags(0)
+        features = vector.features(test_layer, context, QgsFeatureRequest().setFilterFids([1, 3, 5]))
         self.assertEqual(set([f.id() for f in features]), set([1, 3, 5]))
 
         # test that feature request is honored when using selections
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
+        context.setFlags(QgsProcessingContext.UseSelection)
         test_layer.selectByIds([2, 4, 6])
-        features = vector.features(test_layer, QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))
+        features = vector.features(test_layer, context, QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))
         self.assertTrue(all([not f.hasGeometry() for f in features]))
-        features = vector.features(test_layer, QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))
+        features = vector.features(test_layer, context, QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))
         self.assertEqual(set([f.id() for f in features]), set([2, 4, 6]))
 
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
-
         # test exception is raised when filtering invalid geoms
-        #ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 2)
+        context.setInvalidGeometryCheck(QgsFeatureRequest.GeometryAbortOnInvalid)
         #test_layer_invalid_geoms = QgsVectorLayer(invalid_geometries(), 'test', 'ogr')
         #with self.assertRaises(GeoAlgorithmExecutionException):
-        #    features = vector.features(test_layer_invalid_geoms)
+        #    features = vector.features(test_layer_invalid_geoms, context)
         #    feats = [f for f in features]
-
-        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, prevInvalidGeoms)
 
     def testValues(self):
         ProcessingConfig.initialize()

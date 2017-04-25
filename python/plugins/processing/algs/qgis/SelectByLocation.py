@@ -108,12 +108,12 @@ class SelectByLocation(GeoAlgorithm):
 
         if 'disjoint' in predicates:
             disjoinSet = []
-            for feat in vector.features(inputLayer):
+            for feat in vector.features(inputLayer, context):
                 disjoinSet.append(feat.id())
 
         geom = QgsGeometry()
         selectedSet = []
-        features = vector.features(selectLayer)
+        features = vector.features(selectLayer, context)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)

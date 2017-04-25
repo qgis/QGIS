@@ -78,7 +78,7 @@ class RandomExtract(GeoAlgorithm):
         layer = dataobjects.getLayerFromString(filename)
         method = self.getParameterValue(self.METHOD)
 
-        features = vector.features(layer)
+        features = vector.features(layer, context)
         featureCount = len(features)
         value = int(self.getParameterValue(self.NUMBER))
 

@@ -82,8 +82,8 @@ class SymmetricalDifference(GeoAlgorithm):
         indexA = vector.spatialindex(layerB)
         indexB = vector.spatialindex(layerA)
 
-        featuresA = vector.features(layerA)
-        featuresB = vector.features(layerB)
+        featuresA = vector.features(layerA, context)
+        featuresB = vector.features(layerB, context)
 
         total = 100.0 / (len(featuresA) * len(featuresB))
         count = 0
