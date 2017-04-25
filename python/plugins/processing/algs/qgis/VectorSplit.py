@@ -75,7 +75,7 @@ class VectorSplit(GeoAlgorithm):
         mkdir(directory)
 
         fieldIndex = layer.fields().lookupField(fieldName)
-        uniqueValues = vector.uniqueValues(layer, context, fieldIndex)
+        uniqueValues = QgsProcessingUtils.uniqueValues(layer, fieldIndex, context)
         baseName = os.path.join(directory, '{0}_{1}'.format(layer.name(), fieldName))
 
         fields = layer.fields()

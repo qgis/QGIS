@@ -85,32 +85,6 @@ TYPE_MAP_SPATIALITE_LAYER = {
 }
 
 
-def uniqueValues(layer, context, attribute):
-    """Returns a list of unique values for a given attribute.
-
-    Attribute can be defined using a field names or a zero-based
-    field index. It considers the existing selection.
-    :param context:
-    """
-
-    fieldIndex = resolveFieldIndex(layer, attribute)
-    if context.flags() & QgsProcessingContext.UseSelectionIfPresent \
-            and layer.selectedFeatureCount() > 0:
-
-        # iterate through selected features
-        values = []
-        request = QgsFeatureRequest().setSubsetOfAttributes([fieldIndex]).setFlags(QgsFeatureRequest.NoGeometry)
-        feats = QgsProcessingUtils.getFeatures(layer, context, request)
-        for feat in feats:
-            if feat.attributes()[fieldIndex] not in values:
-                values.append(feat.attributes()[fieldIndex])
-        return values
-    else:
-        # no selection, or not considering selecting
-        # so we can take advantage of provider side unique value optimisations
-        return layer.uniqueValues(fieldIndex)
-
-
 def resolveFieldIndex(layer, attr):
     """This method takes an object and returns the index field it
     refers to in a layer. If the passed object is an integer, it
@@ -293,15 +267,6 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
             attr2 = None
 
     return (attr1, attr2)
-
-
-def getUniqueValues(layer, context, fieldIndex):
-    values = []
-    feats = QgsProcessingUtils.getFeatures(layer, context)
-    for feat in feats:
-        if feat.attributes()[fieldIndex] not in values:
-            values.append(feat.attributes()[fieldIndex])
-    return values
 
 
 def combineVectorFields(layerA, layerB):

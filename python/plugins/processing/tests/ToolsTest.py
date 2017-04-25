@@ -91,32 +91,6 @@ class VectorTest(unittest.TestCase):
         res = vector.values(test_layer, context, 1)
         self.assertEqual(set(res[1]), set([5, 7, 3]))
 
-    def testUniqueValues(self):
-
-        context = QgsProcessingContext()
-        # disable check for geometry validity
-        context.setFlags(QgsProcessingContext.Flags(0))
-
-        test_data = points()
-        test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
-
-        # field by index
-        v = vector.uniqueValues(test_layer, context, 2)
-        self.assertEqual(len(v), len(set(v)))
-        self.assertEqual(set(v), set([2, 1, 0]))
-
-        # field by name
-        v = vector.uniqueValues(test_layer, context, 'id2')
-        self.assertEqual(len(v), len(set(v)))
-        self.assertEqual(set(v), set([2, 1, 0]))
-
-        # test with selected features
-        context.setFlags(QgsProcessingContext.UseSelectionIfPresent)
-        test_layer.selectByIds([2, 4, 6])
-        v = vector.uniqueValues(test_layer, context, 'id')
-        self.assertEqual(len(v), len(set(v)))
-        self.assertEqual(set(v), set([5, 7, 3]))
-
     def testOgrLayerNameExtraction(self):
         outdir = tempfile.mkdtemp()
         self.cleanup_paths.append(outdir)

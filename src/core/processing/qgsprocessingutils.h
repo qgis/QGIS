@@ -122,6 +122,14 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static long featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context );
 
+    /**
+     * Returns a list of unique values contained in a single field in a \a layer, when
+     * the settings from the supplied \a context are respected. E.g. if the
+     * context is set to only use selected features, then calling this will
+     * return unique values from selected features in the layer.
+     */
+    static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );
+
   private:
 
     static bool canUseLayer( const QgsRasterLayer *layer );

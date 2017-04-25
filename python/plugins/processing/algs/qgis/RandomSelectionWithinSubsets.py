@@ -90,7 +90,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         layer.removeSelection()
         index = layer.fields().lookupField(field)
 
-        unique = vector.getUniqueValues(layer, context, index)
+        unique = QgsProcessingUtils.uniqueValues(layer, index, context)
         featureCount = layer.featureCount()
 
         value = int(self.getParameterValue(self.NUMBER))

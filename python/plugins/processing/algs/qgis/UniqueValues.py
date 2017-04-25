@@ -31,13 +31,15 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsProcessingUtils
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputString
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -76,7 +78,7 @@ class UniqueValues(GeoAlgorithm):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
         outputFile = self.getOutputValue(self.OUTPUT)
-        values = vector.getUniqueValues(layer, context, layer.fields().lookupField(fieldName))
+        values = QgsProcessingUtils.uniqueValues(layer, layer.fields().lookupField(fieldName), context)
         self.createHTML(outputFile, values)
         self.setOutputValue(self.TOTAL_VALUES, len(values))
         self.setOutputValue(self.UNIQUE_VALUES, ';'.join([str(v) for v in

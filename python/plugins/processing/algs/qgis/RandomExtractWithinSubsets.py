@@ -90,7 +90,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         featureCount = QgsProcessingUtils.featureCount(layer, context)
-        unique = vector.getUniqueValues(layer, context, index)
+        unique = QgsProcessingUtils.uniqueValues(layer, index, context)
         value = int(self.getParameterValue(self.NUMBER))
         if method == 0:
             if value > featureCount:

@@ -106,6 +106,7 @@ class TestQgsProcessing: public QObject
     void mapLayerFromString();
     void algorithm();
     void features();
+    void uniqueValues();
 
   private:
 
@@ -526,6 +527,46 @@ void TestQgsProcessing::features()
 
   delete layer;
   delete polyLayer;
+}
+
+void TestQgsProcessing::uniqueValues()
+{
+  QgsVectorLayer *layer = new QgsVectorLayer( "Point?field=a:integer&field=b:string", "v1", "memory" );
+  for ( int i = 0; i < 6; ++i )
+  {
+    QgsFeature f( i );
+    f.setAttributes( QgsAttributes() << i % 3 + 1 << QString( QChar( ( i % 3 ) + 65 ) ) );
+    layer->dataProvider()->addFeatures( QgsFeatureList() << f );
+  }
+
+  QgsProcessingContext context;
+  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+
+  // some bad checks
+  QVERIFY( QgsProcessingUtils::uniqueValues( nullptr, 0, context ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::uniqueValues( nullptr, -1, context ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::uniqueValues( nullptr, 10001, context ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::uniqueValues( layer, -1, context ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::uniqueValues( layer, 10001, context ).isEmpty() );
+
+  // good checks
+  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 0, context ), QList< QVariant >() << 1 << 2 << 3 );
+  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 1, context ), QList< QVariant >() << QString( "A" ) << QString( "B" ) << QString( "C" ) );
+
+  //using only selected features
+  layer->selectByIds( QgsFeatureIds() << 1 << 2 << 4 );
+  // but not using selection yet...
+  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 0, context ), QList< QVariant >() << 1 << 2 << 3 );
+  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 1, context ), QList< QVariant >() << QString( "A" ) << QString( "B" ) << QString( "C" ) );
+
+  // selection and using selection
+  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  QVERIFY( QgsProcessingUtils::uniqueValues( layer, -1, context ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::uniqueValues( layer, 10001, context ).isEmpty() );
+  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 0, context ), QList< QVariant >() << 1 << 2 );
+  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 1, context ), QList< QVariant >() << QString( "A" ) << QString( "B" ) );
+
+  delete layer;
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
