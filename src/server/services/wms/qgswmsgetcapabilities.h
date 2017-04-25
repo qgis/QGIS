@@ -24,6 +24,32 @@
 namespace QgsWms
 {
 
+  /**
+   * Create WFSLayers element for get capabilities document
+   */
+  QDomElement getWFSLayersElement( QDomDocument &doc, const QgsProject *project );
+
+  /**
+   * Create ComposerTemplates element for get capabilities document
+   */
+  QDomElement getComposerTemplatesElement( QDomDocument &doc, const QgsProject *project );
+
+  /**
+   * Create InspireCapabilities element for get capabilities document
+   */
+  QDomElement getInspireCapabilitiesElement( QDomDocument &doc, const QgsProject *project );
+
+  /**
+   * Create Capability element for get capabilities document
+   */
+  QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QString &version,
+                                    const QgsServerRequest &request, bool projectSettings );
+
+  /**
+   * Create Service element for get capabilities document
+   */
+  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version );
+
   /** Output GetCapabilities response
    */
   void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
