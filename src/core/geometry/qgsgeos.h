@@ -251,11 +251,11 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 /// @cond PRIVATE
 
 
-class GEOSException : public std::runtime_error
+class GEOSException : public QgsException
 {
   public:
     explicit GEOSException( const QString &message )
-      : std::runtime_error( message.toUtf8().constData() )
+      : QgsException( message )
     {
     }
 };

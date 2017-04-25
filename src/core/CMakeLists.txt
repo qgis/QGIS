@@ -231,6 +231,7 @@ SET(QGIS_CORE_SRCS
   qgssqlexpressioncompiler.cpp
   qgssqliteexpressioncompiler.cpp
   qgssqlstatement.cpp
+  qgsstacktrace.cpp
   qgsstatisticalsummary.cpp
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
@@ -782,6 +783,7 @@ SET(QGIS_CORE_HDRS
   qgssnappingutils.h
   qgsspatialindex.h
   qgssqlexpressioncompiler.h
+  qgsstacktrace.h
   qgsstatisticalsummary.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
