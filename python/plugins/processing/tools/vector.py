@@ -98,20 +98,13 @@ def features(layer, context, request=QgsFeatureRequest()):
 
         DO_NOT_CHECK, IGNORE, RAISE_EXCEPTION = range(3)
 
-        def __init__(self, layer, request):
+        def __init__(self, layer, context, request):
             self.layer = layer
-            self.selection = False
+            self.selection = context.flags() & QgsProcessingContext.UseSelection and layer.selectedFeatureCount() > 0
+            request.setInvalidGeometryCheck(context.invalidGeometryCheck())
 
-            invalidFeaturesMethod = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
-            if invalidFeaturesMethod == self.IGNORE:
-                request.setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid)
-            elif invalidFeaturesMethod == self.RAISE_EXCEPTION:
-                request.setInvalidGeometryCheck(QgsFeatureRequest.GeometryAbortOnInvalid)
-
-            if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)\
-                    and layer.selectedFeatureCount() > 0:
+            if self.selection:
                 self.iter = layer.selectedFeaturesIterator(request)
-                self.selection = True
             else:
                 self.iter = layer.getFeatures(request)
 
@@ -131,7 +124,7 @@ def features(layer, context, request=QgsFeatureRequest()):
         def tr(self, string):
             return QCoreApplication.translate("FeatureIterator", string)
 
-    return Features(layer, request)
+    return Features(layer, context, request)
 
 
 def uniqueValues(layer, context, attribute):

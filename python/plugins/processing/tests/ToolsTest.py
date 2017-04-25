@@ -60,7 +60,7 @@ class VectorTest(unittest.TestCase):
         context = QgsProcessingContext()
 
         # disable check for geometry validity
-        context.setFlags(0)
+        context.setFlags(QgsProcessingContext.Flags(0))
 
         # test with all features
         features = vector.features(test_layer, context)
@@ -75,7 +75,7 @@ class VectorTest(unittest.TestCase):
         self.assertEqual(set([f.id() for f in features]), set([2, 4, 6]))
 
         # selection, but not using selected features
-        context.setFlags(0)
+        context.setFlags(QgsProcessingContext.Flags(0))
         test_layer.selectByIds([2, 4, 6])
         features = vector.features(test_layer, context)
         self.assertEqual(len(features), 9)
@@ -89,7 +89,7 @@ class VectorTest(unittest.TestCase):
         self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # test that feature request is honored
-        context.setFlags(0)
+        context.setFlags(QgsProcessingContext.Flags(0))
         features = vector.features(test_layer, context, QgsFeatureRequest().setFilterFids([1, 3, 5]))
         self.assertEqual(set([f.id() for f in features]), set([1, 3, 5]))
 
@@ -112,45 +112,45 @@ class VectorTest(unittest.TestCase):
         context = QgsProcessingContext()
 
         # disable check for geometry validity
-        context.setFlags(0)
+        context.setFlags(QgsProcessingContext.Flags(0))
 
         test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
 
         # field by index
-        res = vector.values(test_layer, context)
+        res = vector.values(test_layer, context, 1)
         self.assertEqual(res[1], [1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         # field by name
-        res = vector.values(test_layer, context)
+        res = vector.values(test_layer, context, 'id')
         self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         # two fields
-        res = vector.values(test_layer, context, 2)
+        res = vector.values(test_layer, context, 1, 2)
         self.assertEqual(res[1], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # two fields by name
-        res = vector.values(test_layer, context, 'id2')
+        res = vector.values(test_layer, context, 'id', 'id2')
         self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res['id2'], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # two fields by name and index
-        res = vector.values(test_layer, context, 2)
+        res = vector.values(test_layer, context, 'id', 2)
         self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # test with selected features
         context.setFlags(QgsProcessingContext.UseSelection)
         test_layer.selectByIds([2, 4, 6])
-        res = vector.values(test_layer, context)
+        res = vector.values(test_layer, context, 1)
         self.assertEqual(set(res[1]), set([5, 7, 3]))
 
     def testUniqueValues(self):
 
         context = QgsProcessingContext()
         # disable check for geometry validity
-        context.setFlags(0)
+        context.setFlags(QgsProcessingContext.Flags(0))
 
         test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
