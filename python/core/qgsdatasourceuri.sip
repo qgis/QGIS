@@ -10,7 +10,6 @@
 
 
 
-
 class QgsDataSourceUri
 {
 %Docstring

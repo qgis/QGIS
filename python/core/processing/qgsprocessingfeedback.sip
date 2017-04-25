@@ -9,7 +9,6 @@
 
 
 
-
 class QgsProcessingFeedback : QgsFeedback
 {
 %Docstring

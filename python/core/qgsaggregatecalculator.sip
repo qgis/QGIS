@@ -11,7 +11,6 @@
 
 
 
-
 class QgsAggregateCalculator
 {
 %Docstring
