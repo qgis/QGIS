@@ -61,7 +61,8 @@ from processing.preconfigured.PreconfiguredAlgorithmProvider import Preconfigure
 from qgis.core import (QgsVectorLayer,
                        QgsRasterLayer,
                        QgsProject,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingContext)
 
 from qgis.testing import _UnexpectedSuccess
 
@@ -117,16 +118,20 @@ class AlgorithmsTest(object):
             exec(('\n'.join(defs['expectedFailure'][:-1])), globals(), locals())
             expectFailure = eval(defs['expectedFailure'][-1])
 
+        # ignore user setting for invalid geometry handling
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+
         if expectFailure:
             try:
-                alg.execute()
+                alg.execute(context)
                 self.check_results(alg.getOutputValuesAsDictionary(), defs['params'], defs['results'])
             except Exception:
                 pass
             else:
                 raise _UnexpectedSuccess
         else:
-            alg.execute()
+            alg.execute(context)
             self.check_results(alg.getOutputValuesAsDictionary(), defs['params'], defs['results'])
 
     def load_params(self, params):
