@@ -45,6 +45,9 @@ class CORE_EXPORT QgsProcessingContext
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
+    /**
+     * Constructor for QgsProcessingContext.
+     */
     QgsProcessingContext() = default;
 
     /**

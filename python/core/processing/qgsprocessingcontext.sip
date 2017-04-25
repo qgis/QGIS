@@ -34,6 +34,9 @@ class QgsProcessingContext
 
 
     QgsProcessingContext();
+%Docstring
+ Constructor for QgsProcessingContext.
+%End
 
     QgsProcessingContext::Flags flags() const;
 %Docstring
