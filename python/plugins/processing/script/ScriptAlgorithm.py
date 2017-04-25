@@ -175,6 +175,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         ns = {}
         ns['feedback'] = feedback
         ns['scriptDescriptionFile'] = self.descriptionFile
+        ns['context'] = context
 
         for param in self.parameters:
             ns[param.name] = param.value

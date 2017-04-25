@@ -32,7 +32,8 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsGeometry,
                        QgsFeature,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -83,7 +84,7 @@ class PolygonCentroids(GeoAlgorithm):
         outFeat = QgsFeature()
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, feat in enumerate(features):
             inGeom = feat.geometry()
             attrs = feat.attributes()

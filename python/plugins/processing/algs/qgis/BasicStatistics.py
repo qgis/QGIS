@@ -131,22 +131,22 @@ class BasicStatisticsForField(GeoAlgorithm):
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name], layer.fields())
         features = QgsProcessingUtils.getFeatures(layer, context, request)
+        count = QgsProcessingUtils.featureCount(layer, context)
 
         data = []
         data.append(self.tr('Analyzed layer: {}').format(layer.name()))
         data.append(self.tr('Analyzed field: {}').format(field_name))
 
         if field.isNumeric():
-            data.extend(self.calcNumericStats(features, feedback, field))
+            data.extend(self.calcNumericStats(features, feedback, field, count))
         elif field.type() in (QVariant.Date, QVariant.Time, QVariant.DateTime):
-            data.extend(self.calcDateTimeStats(features, feedback, field))
+            data.extend(self.calcDateTimeStats(features, feedback, field, count))
         else:
-            data.extend(self.calcStringStats(features, feedback, field))
+            data.extend(self.calcStringStats(features, feedback, field, count))
 
         self.createHTML(output_file, data)
 
-    def calcNumericStats(self, features, feedback, field):
-        count = QgsProcessingUtils.featureCount(layer, context)
+    def calcNumericStats(self, features, feedback, field, count):
         total = 100.0 / float(count)
         stat = QgsStatisticalSummary()
         for current, ft in enumerate(features):
@@ -193,8 +193,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         data.append(self.tr('Interquartile Range (IQR): {}').format(stat.interQuartileRange()))
         return data
 
-    def calcStringStats(self, features, feedback, field):
-        count = QgsProcessingUtils.featureCount(layer, context)
+    def calcStringStats(self, features, feedback, field, count):
         total = 100.0 / float(count)
         stat = QgsStringStatisticalSummary()
         for current, ft in enumerate(features):
@@ -224,8 +223,7 @@ class BasicStatisticsForField(GeoAlgorithm):
 
         return data
 
-    def calcDateTimeStats(self, features, feedback, field):
-        count = QgsProcessingUtils.featureCount(layer, context)
+    def calcDateTimeStats(self, features, feedback, field, count):
         total = 100.0 / float(count)
         stat = QgsDateTimeStatisticalSummary()
         for current, ft in enumerate(features):

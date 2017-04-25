@@ -79,7 +79,7 @@ class FixGeometry(GeoAlgorithm):
                 layer.crs())
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        if len(features) == 0:
+        if QgsProcessingUtils.featureCount(layer, context) == 0:
             raise GeoAlgorithmExecutionException(self.tr('There are no features in the input layer'))
 
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
