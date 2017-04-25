@@ -231,11 +231,13 @@ class QgsFeatureRequest
 %MethodCode
         Py_BEGIN_ALLOW_THREADS
 
-        sipRes = new QgsFeatureRequest( sipCpp->setInvalidGeometryCallback([a0](const QgsFeature &arg) {
+        sipCpp->setInvalidGeometryCallback([a0](const QgsFeature &arg) {
             SIP_BLOCK_THREADS
-            Py_XDECREF( sipCallMethod(NULL, a0, "N", new QgsFeature(arg), sipType_QgsFeature, NULL) );
+            Py_XDECREF( sipCallMethod(NULL, a0, "N", new QgsFeature( arg ), sipType_QgsFeature, NULL) );
             SIP_UNBLOCK_THREADS
-        }) );
+        });
+
+        sipRes = sipCpp;
 
         Py_END_ALLOW_THREADS
 %End
