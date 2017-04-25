@@ -317,9 +317,16 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             # get output params, update output URI
             self.outUri.setDataSource(schema, table, geom, "", pk)
-            uri = self.outUri.uri(False)
-
+            typeName = self.db.dbplugin().typeName()
             providerName = self.db.dbplugin().providerName()
+            if typeName == 'gpkg':
+                uri = self.outUri.database()
+                options['update'] = True
+                options['driverName'] = 'GPKG'
+                options['layerName'] = table
+            else:
+                uri = self.outUri.uri(False)
+
             if self.chkDropTable.isChecked():
                 options['overwrite'] = True
 
@@ -367,6 +374,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
         if self.chkSpatialIndex.isEnabled() and self.chkSpatialIndex.isChecked():
             self.db.connector.createSpatialIndex((schema, table), geom)
 
+        self.db.connection().reconnect()
+        self.db.refresh()
         QMessageBox.information(self, self.tr("Import to database"), self.tr("Import was successful."))
         return QDialog.accept(self)
 
