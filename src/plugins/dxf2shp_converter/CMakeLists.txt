@@ -8,6 +8,8 @@ SET (dxf2shpconverter_SRCS
      builder.cpp
      dxflib/src/dl_dxf.cpp
      dxflib/src/dl_writer_ascii.cpp
+     shapelib-1.2.10/dbfopen.c
+     shapelib-1.2.10/shpopen.c
      )
 
 SET (dxf2shpconverter_UIS dxf2shpconvertergui.ui)
@@ -32,6 +34,7 @@ ADD_LIBRARY (dxf2shpconverterplugin MODULE ${dxf2shpconverter_SRCS} ${dxf2shpcon
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
+     ${GDAL_INCLUDE_DIR}
      ../../core
      ../../core/geometry
      ../../core/raster
