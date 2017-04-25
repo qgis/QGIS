@@ -273,7 +273,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                         layer.fields(),
                         layer.wkbType(), layer.crs()
                     )
-                    features = vector.features(layer, context)
+                    features = QgsProcessingUtils.getFeatures(layer, context)
                     for feature in features:
                         writer.addFeature(feature)
             elif isinstance(out, OutputRaster):
@@ -308,7 +308,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                 if out.compatible is not None:
                     layer = dataobjects.getLayerFromString(out.compatible)
                     writer = out.getTableWriter(layer.fields())
-                    features = vector.features(layer, context)
+                    features = QgsProcessingUtils.getFeatures(layer, context)
                     for feature in features:
                         writer.addRecord(feature)
             feedback.setProgress(100 * i / float(len(self.outputs)))

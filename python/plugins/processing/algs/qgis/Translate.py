@@ -83,7 +83,7 @@ class Translate(GeoAlgorithm):
         delta_x = self.getParameterValue(self.DELTA_X)
         delta_y = self.getParameterValue(self.DELTA_Y)
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):

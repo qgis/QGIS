@@ -88,7 +88,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         index = layer.fields().lookupField(field)
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         featureCount = QgsProcessingUtils.featureCount(layer, context)
         unique = vector.getUniqueValues(layer, context, index)
         value = int(self.getParameterValue(self.NUMBER))
@@ -109,7 +109,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         selran = []
         total = 100.0 / (featureCount * len(unique))
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
 
         classes = defaultdict(list)
         for i, feature in enumerate(features):
@@ -121,7 +121,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
             selValue = value if method != 1 else int(round(value * len(subset), 0))
             selran.extend(random.sample(subset, selValue))
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for (i, feat) in enumerate(selran):
             writer.addFeature(feat)

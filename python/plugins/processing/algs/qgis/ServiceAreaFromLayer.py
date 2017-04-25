@@ -218,7 +218,7 @@ class ServiceAreaFromLayer(GeoAlgorithm):
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
-        features = vector.features(startPoints, context, request)
+        features = QgsProcessingUtils.getFeatures(startPoints, context, request)
         points = []
         for f in features:
             points.append(f.geometry().asPoint())

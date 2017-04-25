@@ -136,7 +136,7 @@ class CheckValidity(GeoAlgorithm):
             layer.crs())
         error_count = 0
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, inFeat in enumerate(features):
             geom = inFeat.geometry()

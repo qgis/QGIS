@@ -86,7 +86,7 @@ class Intersection(GeoAlgorithm):
                                                                      geomType, vlayerA.crs())
         outFeat = QgsFeature()
         index = vector.spatialindex(vlayerB)
-        selectionA = vector.features(vlayerA, context)
+        selectionA = QgsProcessingUtils.getFeatures(vlayerA, context)
         total = 100.0 / QgsProcessingUtils.featureCount(vlayerA, context)
         for current, inFeatA in enumerate(selectionA):
             feedback.setProgress(int(current * total))

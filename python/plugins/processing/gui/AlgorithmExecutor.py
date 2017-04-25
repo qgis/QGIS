@@ -33,7 +33,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsFeature,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
-                       QgsSettings)
+                       QgsSettings,
+                       QgsProcessingUtils)
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -74,7 +75,7 @@ def executeIterating(alg, paramToIter, context, feedback):
     feat = QgsFeature()
     filelist = []
     outputs = {}
-    features = vector.features(layer, context)
+    features = QgsProcessingUtils.getFeatures(layer, context)
     for feat in features:
         output = getTempFilename('shp')
         filelist.append(output)

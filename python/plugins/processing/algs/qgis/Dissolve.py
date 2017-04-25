@@ -86,7 +86,7 @@ class Dissolve(GeoAlgorithm):
                 vlayerA.crs())
 
         outFeat = QgsFeature()
-        features = vector.features(vlayerA, context)
+        features = QgsProcessingUtils.getFeatures(vlayerA, context)
         total = 100.0 / QgsProcessingUtils.featureCount(vlayerA, context)
 
         if not useField:

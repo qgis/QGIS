@@ -90,7 +90,7 @@ class PointsInPolygon(GeoAlgorithm):
         outFeat = QgsFeature()
         geom = QgsGeometry()
 
-        features = vector.features(polyLayer, context)
+        features = QgsProcessingUtils.getFeatures(polyLayer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
         for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()

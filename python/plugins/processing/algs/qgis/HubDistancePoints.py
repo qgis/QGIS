@@ -122,7 +122,7 @@ class HubDistancePoints(GeoAlgorithm):
         distance.setEllipsoid(QgsProject.instance().ellipsoid())
 
         # Scan source points, find nearest hub, and write to output file
-        features = vector.features(layerPoints, context)
+        features = QgsProcessingUtils.getFeatures(layerPoints, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layerPoints, context)
         for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()

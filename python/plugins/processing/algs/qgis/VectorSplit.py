@@ -88,7 +88,7 @@ class VectorSplit(GeoAlgorithm):
             fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
 
             writer = vector.VectorWriter(fName, None, fields, geomType, crs)
-            for f in vector.features(layer, context):
+            for f in QgsProcessingUtils.getFeatures(layer, context):
                 if f[fieldName] == i:
                     writer.addFeature(f)
             del writer

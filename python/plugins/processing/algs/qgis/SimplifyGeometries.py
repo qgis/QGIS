@@ -88,7 +88,7 @@ class SimplifyGeometries(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields().toList(), layer.wkbType(), layer.crs())
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         if method != 0:

@@ -90,7 +90,7 @@ class Union(GeoAlgorithm):
 
         count = 0
         nElement = 0
-        featuresA = vector.features(vlayerA, context)
+        featuresA = QgsProcessingUtils.getFeatures(vlayerA, context)
         nFeat = QgsProcessingUtils.featureCount(vlayerA, context)
         for inFeatA in featuresA:
             feedback.setProgress(nElement / float(nFeat) * 50)
@@ -183,7 +183,7 @@ class Union(GeoAlgorithm):
         length = len(vlayerA.fields())
         atMapA = [None] * length
 
-        featuresA = vector.features(vlayerB, context)
+        featuresA = QgsProcessingUtils.getFeatures(vlayerB, context)
         nFeat = QgsProcessingUtils.featureCount(vlayerB, context)
         for inFeatA in featuresA:
             feedback.setProgress(nElement / float(nFeat) * 100)

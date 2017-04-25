@@ -134,7 +134,7 @@ class PointDistance(GeoAlgorithm):
 
         distArea = QgsDistanceArea()
 
-        features = vector.features(inLayer, context)
+        features = QgsProcessingUtils.getFeatures(inLayer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
@@ -173,7 +173,7 @@ class PointDistance(GeoAlgorithm):
         distArea = QgsDistanceArea()
 
         first = True
-        features = vector.features(inLayer, context)
+        features = QgsProcessingUtils.getFeatures(inLayer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(inLayer, context)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()

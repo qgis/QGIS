@@ -73,7 +73,7 @@ class LinesToPolygons(GeoAlgorithm):
         )
 
         outFeat = QgsFeature()
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             outGeomList = []

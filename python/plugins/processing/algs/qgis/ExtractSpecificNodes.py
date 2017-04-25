@@ -94,7 +94,7 @@ class ExtractSpecificNodes(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException(
                     self.tr('\'{}\' is not a valid node index').format(node))
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):

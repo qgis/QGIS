@@ -95,7 +95,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         A = layer.extent()
         A = float(A.width() * A.height())
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / count
         for current, feat in enumerate(features):

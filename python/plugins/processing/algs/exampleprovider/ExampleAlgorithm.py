@@ -25,7 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsVectorFileWriter, QgsSettings
+from qgis.core import QgsVectorFileWriter, QgsSettings, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -113,7 +113,7 @@ class ExampleAlgorithm(GeoAlgorithm):
         # selection that might exist in layer and the configuration that
         # indicates should algorithm use only selected features or all
         # of them
-        features = vector.features(vectorLayer, context)
+        features = QgsProcessingUtils.getFeatures(vectorLayer, context)
         for f in features:
             writer.addFeature(f)
 

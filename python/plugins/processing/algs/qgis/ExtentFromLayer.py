@@ -133,7 +133,7 @@ class ExtentFromLayer(GeoAlgorithm):
         writer.addFeature(feat)
 
     def featureExtent(self, layer, context, writer, feedback):
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         feat = QgsFeature()
         for current, f in enumerate(features):

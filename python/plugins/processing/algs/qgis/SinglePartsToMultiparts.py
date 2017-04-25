@@ -83,7 +83,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         collection_geom = {}
         collection_attrs = {}
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, feature in enumerate(features):
             atMap = feature.attributes()

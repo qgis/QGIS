@@ -89,7 +89,7 @@ class Polygonize(GeoAlgorithm):
             fields.append(QgsField('perimeter', QVariant.Double,
                                    'double', 16, 2))
         allLinesList = []
-        features = vector.features(vlayer, context, QgsFeatureRequest().setSubsetOfAttributes([]))
+        features = QgsProcessingUtils.getFeatures(vlayer, context, QgsFeatureRequest().setSubsetOfAttributes([]))
         feedback.pushInfo(self.tr('Processing lines...'))
         total = 40.0 / QgsProcessingUtils.featureCount(vlayer, context)
         for current, inFeat in enumerate(features):

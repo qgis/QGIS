@@ -160,11 +160,11 @@ class SpatialJoin(GeoAlgorithm):
         index = vector.spatialindex(join)
 
         mapP2 = dict()
-        features = vector.features(join, context)
+        features = QgsProcessingUtils.getFeatures(join, context)
         for f in features:
             mapP2[f.id()] = QgsFeature(f)
 
-        features = vector.features(target, context)
+        features = QgsProcessingUtils.getFeatures(target, context)
         total = 100.0 / QgsProcessingUtils.featureCount(target, context)
         for c, f in enumerate(features):
             atMap1 = f.attributes()

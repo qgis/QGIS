@@ -102,11 +102,11 @@ class ExtractByLocation(GeoAlgorithm):
 
         if 'disjoint' in predicates:
             disjoinSet = []
-            for feat in vector.features(layer, context):
+            for feat in QgsProcessingUtils.getFeatures(layer, context):
                 disjoinSet.append(feat.id())
 
         selectedSet = []
-        features = vector.features(selectLayer, context)
+        features = QgsProcessingUtils.getFeatures(selectLayer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(selectLayer, context)
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
@@ -134,7 +134,7 @@ class ExtractByLocation(GeoAlgorithm):
         if 'disjoint' in predicates:
             selectedSet = selectedSet + disjoinSet
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             if f.id() in selectedSet:

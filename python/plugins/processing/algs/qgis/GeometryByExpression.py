@@ -118,7 +118,7 @@ class GeometryByExpression(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, input_feature in enumerate(features):
             output_feature = input_feature

@@ -152,7 +152,7 @@ class ExecuteSQL(GeoAlgorithm):
             vLayer.wkbType() if geometry_type != 1 else 1,
             vLayer.crs())
 
-        features = vector.features(vLayer, context)
+        features = QgsProcessingUtils.getFeatures(vLayer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(vLayer, context)
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):

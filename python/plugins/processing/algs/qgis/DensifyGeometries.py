@@ -88,7 +88,7 @@ class DensifyGeometries(GeoAlgorithm):
             self.OUTPUT).getVectorWriter(layer.fields().toList(),
                                          layer.wkbType(), layer.crs())
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             feature = f

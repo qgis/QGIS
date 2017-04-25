@@ -111,7 +111,7 @@ class BasicStatisticsStrings(GeoAlgorithm):
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([fieldName],
                                                                                                    layer.fields())
         stat = QgsStringStatisticalSummary()
-        features = vector.features(layer, context, request)
+        features = QgsProcessingUtils.getFeatures(layer, context, request)
         count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / float(count)
         for current, ft in enumerate(features):

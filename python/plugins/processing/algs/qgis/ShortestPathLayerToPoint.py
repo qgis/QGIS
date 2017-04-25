@@ -214,7 +214,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
-        features = vector.features(startPoints, context, request)
+        features = QgsProcessingUtils.getFeatures(startPoints, context, request)
         count = QgsProcessingUtils.featureCount(startPoints, context)
 
         points = [endPoint]

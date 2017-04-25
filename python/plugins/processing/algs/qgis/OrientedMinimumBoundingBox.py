@@ -102,7 +102,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
     def layerOmmb(self, layer, context, writer, feedback):
         req = QgsFeatureRequest().setSubsetOfAttributes([])
-        features = vector.features(layer, context, req)
+        features = QgsProcessingUtils.getFeatures(layer, context, req)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         newgeometry = QgsGeometry()
         first = True
@@ -128,7 +128,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
             writer.addFeature(outFeat)
 
     def featureOmbb(self, layer, context, writer, feedback):
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):

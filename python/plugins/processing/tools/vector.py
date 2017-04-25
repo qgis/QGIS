@@ -45,7 +45,8 @@ from qgis.core import (QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsWkbTyp
                        QgsSpatialIndex, QgsProject, QgsMapLayer, QgsVectorLayer,
                        QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceUri, QgsCredentials,
                        QgsFeatureRequest, QgsSettings,
-                       QgsProcessingContext)
+                       QgsProcessingContext,
+                       QgsProcessingUtils)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -84,40 +85,6 @@ TYPE_MAP_SPATIALITE_LAYER = {
 }
 
 
-def features(layer, context, request=QgsFeatureRequest()):
-    """This returns an iterator over features in a vector layer,
-    considering the selection that might exist in the layer, and the
-    configuration that indicates whether to use only selected feature
-    or all of them.
-
-    This should be used by algorithms instead of calling the Qgis API
-    directly, to ensure a consistent behavior across algorithms.
-    :param context:
-    """
-    class Features(object):
-
-        DO_NOT_CHECK, IGNORE, RAISE_EXCEPTION = range(3)
-
-        def __init__(self, layer, context, request):
-            self.layer = layer
-            self.selection = context.flags() & QgsProcessingContext.UseSelection and layer.selectedFeatureCount() > 0
-            request.setInvalidGeometryCheck(context.invalidGeometryCheck())
-
-            if self.selection:
-                self.iter = layer.selectedFeaturesIterator(request)
-            else:
-                self.iter = layer.getFeatures(request)
-
-        def __iter__(self):
-            return self.iter
-
-        def __next__(self):
-            '''Iterator next method in python 3'''
-            return next(self.iter)
-
-    return Features(layer, context, request)
-
-
 def uniqueValues(layer, context, attribute):
     """Returns a list of unique values for a given attribute.
 
@@ -133,7 +100,7 @@ def uniqueValues(layer, context, attribute):
         # iterate through selected features
         values = []
         request = QgsFeatureRequest().setSubsetOfAttributes([fieldIndex]).setFlags(QgsFeatureRequest.NoGeometry)
-        feats = features(layer, context, request)
+        feats = QgsProcessingUtils.getFeatures(layer, context, request)
         for feat in feats:
             if feat.attributes()[fieldIndex] not in values:
                 values.append(feat.attributes()[fieldIndex])
@@ -187,7 +154,7 @@ def values(layer, context, *attributes):
     # use an optimised feature request
     request = QgsFeatureRequest().setSubsetOfAttributes(indices).setFlags(QgsFeatureRequest.NoGeometry)
 
-    for feature in features(layer, context, request):
+    for feature in QgsProcessingUtils.getFeatures(layer, context, request):
         for i in indices:
 
             # convert attribute value to number
@@ -330,7 +297,7 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
 
 def getUniqueValues(layer, context, fieldIndex):
     values = []
-    feats = features(layer, context)
+    feats = QgsProcessingUtils.getFeatures(layer, context)
     for feat in feats:
         if feat.attributes()[fieldIndex] not in values:
             values.append(feat.attributes()[fieldIndex])

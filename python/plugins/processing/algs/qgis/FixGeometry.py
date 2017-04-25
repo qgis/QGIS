@@ -78,7 +78,7 @@ class FixGeometry(GeoAlgorithm):
                 QgsWkbTypes.multiType(layer.wkbType()),
                 layer.crs())
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         if len(features) == 0:
             raise GeoAlgorithmExecutionException(self.tr('There are no features in the input layer'))
 

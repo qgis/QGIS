@@ -79,7 +79,7 @@ class RandomExtract(GeoAlgorithm):
         layer = dataobjects.getLayerFromString(filename)
         method = self.getParameterValue(self.METHOD)
 
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         featureCount = QgsProcessingUtils.featureCount(layer, context)
         value = int(self.getParameterValue(self.NUMBER))
 

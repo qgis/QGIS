@@ -145,7 +145,7 @@ class FieldsPyculator(GeoAlgorithm):
                 self.tr("FieldPyculator code execute error. Field code block can't be executed!\n{0}\n{1}").format(str(sys.exc_info()[0].__name__), str(sys.exc_info()[1])))
 
         # Run
-        features = vector.features(layer, context)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))

@@ -44,7 +44,7 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
                        QgsProject,
                        QgsVectorFileWriter)
 
-from processing.tools.vector import resolveFieldIndex, features
+from processing.tools.vector import resolveFieldIndex
 from processing.tools import dataobjects, general
 from processing.core.outputs import OutputNumber, OutputRaster, OutputVector
 
@@ -1082,7 +1082,7 @@ class ParameterSelection(Parameter):
             if layer.isValid():
                 try:
                     index = resolveFieldIndex(layer, options[1])
-                    feats = features(layer, general.createContext())
+                    feats = QgsProcessingUtils.getFeatures(layer, general.createContext())
                     for feature in feats:
                         self.options.append(str(feature.attributes()[index]))
                 except ValueError:

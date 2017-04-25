@@ -91,8 +91,8 @@ class HubLines(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layerSpoke.fields(), QgsWkbTypes.LineString, layerSpoke.crs())
 
-        spokes = vector.features(layerSpoke, context)
-        hubs = vector.features(layerHub, context)
+        spokes = QgsProcessingUtils.getFeatures(layerSpoke, context)
+        hubs = QgsProcessingUtils.getFeatures(layerHub, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layerSpoke, context)
 
         for current, spokepoint in enumerate(spokes):

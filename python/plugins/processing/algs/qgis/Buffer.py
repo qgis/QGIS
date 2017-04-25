@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeature, QgsGeometry
+from qgis.core import QgsFeature, QgsGeometry, QgsProcessingUtils
 
 from processing.tools import vector
 
@@ -39,7 +39,7 @@ def buffering(feedback, context, writer, distance, field, useField, layer, disso
     outFeat = QgsFeature()
 
     current = 0
-    features = vector.features(layer, context)
+    features = QgsProcessingUtils.getFeatures(layer, context)
     total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
     # With dissolve

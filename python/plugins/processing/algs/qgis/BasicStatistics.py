@@ -130,7 +130,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         output_file = self.getOutputValue(self.OUTPUT_HTML_FILE)
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name], layer.fields())
-        features = vector.features(layer, context, request)
+        features = QgsProcessingUtils.getFeatures(layer, context, request)
 
         data = []
         data.append(self.tr('Analyzed layer: {}').format(layer.name()))

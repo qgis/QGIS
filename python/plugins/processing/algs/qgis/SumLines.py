@@ -95,7 +95,7 @@ class SumLines(GeoAlgorithm):
         outGeom = QgsGeometry()
         distArea = QgsDistanceArea()
 
-        features = vector.features(polyLayer, context)
+        features = QgsProcessingUtils.getFeatures(polyLayer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
         hasIntersections = False
         for current, ftPoly in enumerate(features):

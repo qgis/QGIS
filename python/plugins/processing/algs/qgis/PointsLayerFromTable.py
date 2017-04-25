@@ -109,7 +109,7 @@ class PointsLayerFromTable(GeoAlgorithm):
 
         writer = output.getVectorWriter(fields, wkb_type, target_crs)
 
-        features = vector.features(vlayer, context)
+        features = QgsProcessingUtils.getFeatures(vlayer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
 
         for current, feature in enumerate(features):

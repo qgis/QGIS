@@ -82,8 +82,8 @@ class SymmetricalDifference(GeoAlgorithm):
         indexA = vector.spatialindex(layerB)
         indexB = vector.spatialindex(layerA)
 
-        featuresA = vector.features(layerA, context)
-        featuresB = vector.features(layerB, context)
+        featuresA = QgsProcessingUtils.getFeatures(layerA, context)
+        featuresB = QgsProcessingUtils.getFeatures(layerB, context)
 
         total = 100.0 / (QgsProcessingUtils.featureCount(layerA, context) * QgsProcessingUtils.featureCount(layerB, context))
         count = 0
