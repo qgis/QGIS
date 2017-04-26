@@ -53,9 +53,9 @@ Constructor
  \see crs()
 %End
 
-    virtual bool addFeature( QgsFeature &feature /In,Out/ );
+    virtual bool addFeature( QgsFeature &feature );
 
-    virtual bool addFeatures( QgsFeatureList &features /In,Out/ );
+    virtual bool addFeatures( QgsFeatureList &features );
 
 
     QgsFeatureList features() const;

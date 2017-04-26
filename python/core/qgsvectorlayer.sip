@@ -901,7 +901,7 @@ Return the provider type for this layer
  :rtype: QgsFeatureIterator
 %End
 
-    virtual bool addFeature( QgsFeature &feature /In,Out/ );
+    virtual bool addFeature( QgsFeature &feature );
 
 %Docstring
  Adds a single ``feature`` to the layer.
@@ -1260,7 +1260,7 @@ Delete an attribute field (but does not commit it)
  :rtype: bool
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features /In,Out/ );
+    virtual bool addFeatures( QgsFeatureList &features );
 
 
     bool deleteFeature( QgsFeatureId fid );

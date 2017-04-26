@@ -881,7 +881,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see addFeatures()
      * \returns true in case of success and false in case of failure
      */
-    bool addFeature( QgsFeature &feature SIP_INOUT ) override;
+    bool addFeature( QgsFeature &feature ) override;
 
     /** Updates an existing feature. This method needs to query the datasource
         on every call. Consider using changeAttributeValue() or
@@ -1205,7 +1205,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool deleteAttributes( QList<int> attrs );
 
-    bool addFeatures( QgsFeatureList &features SIP_INOUT ) override;
+    bool addFeatures( QgsFeatureList &features ) override;
 
     //! Delete a feature from the layer (but does not commit it)
     bool deleteFeature( QgsFeatureId fid );

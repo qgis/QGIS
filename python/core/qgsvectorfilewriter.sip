@@ -380,8 +380,8 @@ class QgsVectorFileWriter : QgsFeatureSink
     /** Retrieves error message */
     QString errorMessage();
 
-    bool addFeature( QgsFeature &feature /In,Out/ );
-    bool addFeatures( QgsFeatureList &features /In,Out/ );
+    bool addFeature( QgsFeature &feature );
+    bool addFeatures( QgsFeatureList &features );
 
     /** Add feature to the currently opened data source */
     bool addFeature( QgsFeature& feature, QgsFeatureRenderer* renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );

@@ -61,8 +61,8 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
-    bool addFeature( QgsFeature &feature SIP_INOUT ) override;
-    bool addFeatures( QgsFeatureList &features SIP_INOUT ) override;
+    bool addFeature( QgsFeature &feature ) override;
+    bool addFeatures( QgsFeatureList &features ) override;
 
     /**
      * Returns the list of features contained in the store.

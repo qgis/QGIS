@@ -40,14 +40,14 @@ class CORE_EXPORT QgsFeatureSink
      * \see addFeatures()
      * \returns true in case of success and false in case of failure
      */
-    virtual bool addFeature( QgsFeature &feature SIP_INOUT ) = 0;
+    virtual bool addFeature( QgsFeature &feature ) = 0;
 
     /**
      * Adds a list of \a features to the sink.
      * \see addFeature()
      * \returns true in case of success and false in case of failure
      */
-    virtual bool addFeatures( QgsFeatureList &features SIP_INOUT ) = 0;
+    virtual bool addFeatures( QgsFeatureList &features ) = 0;
 
 };
 
