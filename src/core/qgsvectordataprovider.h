@@ -30,6 +30,7 @@ class QTextCodec;
 #include "qgsaggregatecalculator.h"
 #include "qgsmaplayerdependency.h"
 #include "qgsrelation.h"
+#include "qgsfeaturesink.h"
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -49,7 +50,7 @@ class QgsFeedback;
  *
  *
  */
-class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
+class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeatureSink
 {
     Q_OBJECT
 
@@ -247,11 +248,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual void enumValues( int index, QStringList &enumList ) const { Q_UNUSED( index ); enumList.clear(); }
 
-    /**
-     * Adds a list of features
-     * \returns true in case of success and false in case of failure
-     */
-    virtual bool addFeatures( QgsFeatureList &flist );
+    virtual bool addFeatures( QgsFeatureList &flist ) override;
 
     /**
      * Deletes one or more features from the provider. This requires the DeleteFeatures capability.

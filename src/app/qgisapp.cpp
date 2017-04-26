@@ -7632,7 +7632,7 @@ void QgisApp::mergeSelectedFeatures()
     vl->deleteFeature( *feature_it );
   }
 
-  vl->addFeature( newFeature, false );
+  vl->addFeature( newFeature );
 
   vl->endEditCommand();
 
@@ -7934,7 +7934,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     // now create new feature using pasted feature as a template. This automatically handles default
     // values and field constraints
     QgsFeature newFeature = QgsVectorLayerUtils::createFeature( pasteVectorLayer, geom, dstAttr, &context );
-    pasteVectorLayer->addFeature( newFeature, false );
+    pasteVectorLayer->addFeature( newFeature );
     newIds << newFeature.id();
 
     ++featureIt;
@@ -8131,7 +8131,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
       feature.setGeometry( g );
     }
   }
-  if ( ! layer->addFeatures( features, false ) || !layer->commitChanges() )
+  if ( ! layer->addFeatures( features ) || !layer->commitChanges() )
   {
     QgsDebugMsg( "Cannot add features or commit changes" );
     delete layer;

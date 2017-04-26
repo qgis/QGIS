@@ -1,39 +1,92 @@
-class QgsFeatureStore
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturestore.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsFeatureStore : QgsFeatureSink
 {
+%Docstring
+ A container for features with the same fields and crs.
+%End
+
 %TypeHeaderCode
-#include <qgsfeaturestore.h>
+#include "qgsfeaturestore.h"
 %End
   public:
-    //! Constructor
     QgsFeatureStore();
+%Docstring
+Constructor
+%End
 
-    //! Constructor
-    QgsFeatureStore( const QgsFields& fields, const QgsCoordinateReferenceSystem& crs );
+    QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Constructor
+%End
 
-    /** Get fields list */
-    QgsFields& fields();
+    QgsFields fields() const;
+%Docstring
+ Returns the store's field list.
+ \see setFields()
+ :rtype: QgsFields
+%End
 
-    /** Set fields. Resets feature's fields to pointer to new internal fields. */
-    void setFields( const QgsFields & fields );
+    void setFields( const QgsFields &fields );
+%Docstring
+ Sets the store's ``fields``. Every contained feature's fields will be reset to match ``fields``.
+ \see fields()
+%End
 
-    /** Get crs */
     QgsCoordinateReferenceSystem crs() const;
+%Docstring
+ Returns the store's coordinate reference system.
+ \see setCrs()
+ :rtype: QgsCoordinateReferenceSystem
+%End
 
-    /** Set crs */
-    void setCrs( const QgsCoordinateReferenceSystem& crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+ Sets the store's ``crs``.
+ \see crs()
+%End
 
-    /** Add feature. Feature's fields will be set to pointer to the store fields.
-     * @param feature
-     * @note added in 2.1
-     */
-    void addFeature( const QgsFeature& feature );
+    virtual bool addFeature( QgsFeature &feature );
 
-    /** Get features list reference */
-    QgsFeatureList& features();
+    virtual bool addFeatures( QgsFeatureList &features );
 
-    /** Set map of optional parameters */
-    void setParams( const QMap<QString, QVariant> &params );
 
-    /** Get map of optional parameters */
+    QgsFeatureList features() const;
+%Docstring
+ Returns the list of features contained in the store.
+ :rtype: QgsFeatureList
+%End
+
+    void setParams( const QMap<QString, QVariant> &parameters );
+%Docstring
+ Sets a map of optional ``parameters`` for the store.
+ \see params()
+%End
+
     QMap<QString, QVariant> params() const;
+%Docstring
+ Returns the map of optional parameters.
+ \see setParams()
+ :rtype: QMap<str, QVariant>
+%End
+
 };
+
+typedef QList<QgsFeatureStore> QgsFeatureStoreList;
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturestore.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -348,7 +348,7 @@ typedef QList<QgsPointV2> QgsPointSequence;
  * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
  * \see QgsVectorLayerUtils()
  */
-class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator
+class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsFeatureSink
 {
     Q_OBJECT
 
@@ -872,12 +872,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       return getFeatures( QgsFeatureRequest( rectangle ) );
     }
 
-    /** Adds a feature
-        \param feature feature to add
-        \param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
-        \returns                    True in case of success and False in case of error
-     */
-    bool addFeature( QgsFeature &feature, bool alsoUpdateExtent = true );
+    bool addFeature( QgsFeature &feature ) override;
 
     /** Updates an existing feature. This method needs to query the datasource
         on every call. Consider using changeAttributeValue() or
@@ -1201,8 +1196,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool deleteAttributes( QList<int> attrs );
 
-    //! Insert a copy of the given features into the layer  (but does not commit it)
-    bool addFeatures( QgsFeatureList features, bool makeSelected = true );
+    bool addFeatures( QgsFeatureList &features ) override;
 
     //! Delete a feature from the layer (but does not commit it)
     bool deleteFeature( QgsFeatureId fid );

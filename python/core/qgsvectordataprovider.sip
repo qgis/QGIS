@@ -1,5 +1,5 @@
 
-class QgsVectorDataProvider : QgsDataProvider
+class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
 {
 %TypeHeaderCode
 #include <qgsvectordataprovider.h>
@@ -197,10 +197,6 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual void enumValues( int index, QStringList& enumList /Out/ ) const;
 
-    /**
-     * Adds a list of features
-     * @return true in case of success and false in case of failure
-     */
     virtual bool addFeatures( QList<QgsFeature> &flist /In,Out/ );
 
     /**

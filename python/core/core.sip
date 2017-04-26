@@ -56,6 +56,7 @@
 %Include qgsfeaturefilterprovider.sip
 %Include qgsfeatureiterator.sip
 %Include qgsfeaturerequest.sip
+%Include qgsfeaturesink.sip
 %Include qgsfeedback.sip
 %Include qgsfield.sip
 %Include qgsfieldconstraints.sip

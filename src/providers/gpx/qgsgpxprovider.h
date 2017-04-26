@@ -75,8 +75,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     void changeAttributeValues( QgsGPSObject &obj,
                                 const QgsAttributeMap &attrs );
 
-    //! Adds one feature (used by addFeatures())
-    bool addFeature( QgsFeature &f );
+    bool addFeature( QgsFeature &f ) override;
 
 
     enum DataType

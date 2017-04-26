@@ -4,7 +4,7 @@
  1. static call to QgsVectorFileWriter::writeAsVectorFormat(...) which saves the whole vector layer
  2. create an instance of the class and issue calls to addFeature(...)
  */
-class QgsVectorFileWriter
+class QgsVectorFileWriter : QgsFeatureSink
 {
 %TypeHeaderCode
 #include <qgsvectorfilewriter.h>
@@ -380,8 +380,11 @@ class QgsVectorFileWriter
     /** Retrieves error message */
     QString errorMessage();
 
+    bool addFeature( QgsFeature &feature );
+    bool addFeatures( QgsFeatureList &features );
+
     /** Add feature to the currently opened data source */
-    bool addFeature( QgsFeature& feature, QgsFeatureRenderer* renderer = 0, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
+    bool addFeature( QgsFeature& feature, QgsFeatureRenderer* renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 
     //! @note not available in python bindings
     // QMap<int, int> attrIdxToOgrIdx();

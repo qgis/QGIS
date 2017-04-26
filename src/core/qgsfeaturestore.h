@@ -19,15 +19,16 @@
 #include "qgis.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
+#include "qgsfeaturesink.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QList>
 #include <QMetaType>
 #include <QVariant>
 
 /** \ingroup core
- * Container for features with the same fields and crs.
+ * A container for features with the same fields and crs.
  */
-class CORE_EXPORT QgsFeatureStore
+class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
 {
   public:
     //! Constructor
@@ -36,31 +37,48 @@ class CORE_EXPORT QgsFeatureStore
     //! Constructor
     QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs );
 
-    //! Get fields list
-    QgsFields &fields() { return mFields; }
+    /**
+     * Returns the store's field list.
+     * \see setFields()
+     */
+    QgsFields fields() const { return mFields; }
 
-    //! Set fields. Resets feature's fields to pointer to new internal fields.
+    /**
+     * Sets the store's \a fields. Every contained feature's fields will be reset to match \a fields.
+     * \see fields()
+     */
     void setFields( const QgsFields &fields );
 
-    //! Get crs
+    /**
+     * Returns the store's coordinate reference system.
+     * \see setCrs()
+     */
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
-    //! Set crs
+    /**
+     * Sets the store's \a crs.
+     * \see crs()
+     */
     void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
-    /** Add feature. Feature's fields will be set to pointer to the store fields.
-     * \param feature
-     * \since QGIS 2.1
+    bool addFeature( QgsFeature &feature ) override;
+    bool addFeatures( QgsFeatureList &features ) override;
+
+    /**
+     * Returns the list of features contained in the store.
      */
-    void addFeature( const QgsFeature &feature );
+    QgsFeatureList features() const { return mFeatures; }
 
-    //! Get features list reference
-    QgsFeatureList &features() { return mFeatures; }
+    /**
+     * Sets a map of optional \a parameters for the store.
+     * \see params()
+     */
+    void setParams( const QMap<QString, QVariant> &parameters ) { mParams = parameters; }
 
-    //! Set map of optional parameters
-    void setParams( const QMap<QString, QVariant> &params ) { mParams = params; }
-
-    //! Get map of optional parameters
+    /**
+     * Returns the map of optional parameters.
+     * \see setParams()
+     */
     QMap<QString, QVariant> params() const { return mParams; }
 
   private:

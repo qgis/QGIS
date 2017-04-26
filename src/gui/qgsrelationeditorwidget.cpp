@@ -371,6 +371,11 @@ void QgsRelationEditorWidget::linkFeature()
       }
 
       mRelation.referencingLayer()->addFeatures( newFeatures );
+      QgsFeatureIds ids;
+      Q_FOREACH ( const QgsFeature &f, newFeatures )
+        ids << f.id();
+      mRelation.referencingLayer()->selectByIds( ids );
+
 
       updateUi();
     }
