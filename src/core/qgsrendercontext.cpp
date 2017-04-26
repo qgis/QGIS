@@ -92,7 +92,6 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   {
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
-  // QgsDebugMsgLevel( QString( "QgsRenderContext::fromQPainter -0- " ), 4 );
   return context;
 }
 
@@ -142,6 +141,10 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
   ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
   ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
+<<<<<<< HEAD
+=======
+
+>>>>>>> RenderMetersInMapUnits now renders properly in application.
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
@@ -243,7 +246,10 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       size = convertMetersToMapUnits( size );
       unit = QgsUnitTypes::RenderMapUnits;
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
+<<<<<<< HEAD
       FALLTHROUGH;
+=======
+>>>>>>> RenderMetersInMapUnits now renders properly in application.
     }
     case QgsUnitTypes::RenderMapUnits:
     {
@@ -278,7 +284,6 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       convertedSize = qMax( convertedSize, scale.minSizeMM * mScaleFactor );
     if ( scale.maxSizeMMEnabled )
       convertedSize = qMin( convertedSize, scale.maxSizeMM * mScaleFactor );
-    QgsDebugMsgLevel( QString( "convertToPainterUnits -3- : convertedSize[%1]" ).arg( convertedSize ), 4 );
   }
 
   return convertedSize;
@@ -356,11 +361,6 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
   {
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
-      QgsDebugMsgLevel( QString( "convertFromMapUnits: meter[%1] sizeInMapUnits[%2] mapUnits[%3]from center[%4] sourceCrs[%5]" ).arg( convertMetersToMapUnits( 1.0 ) )
-                        .arg( sizeInMapUnits )
-                        .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
-                        .arg( mExtent.center().wellKnownText() )
-                        .arg( mDistanceArea.sourceCrs().description() ), 4 );
       return sizeInMapUnits / convertMetersToMapUnits( 1.0 );
     }
     case QgsUnitTypes::RenderMapUnits:
@@ -398,6 +398,7 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
   {
     case QgsUnitTypes::DistanceMeters:
       return meters;
+<<<<<<< HEAD
     case QgsUnitTypes::DistanceDegrees:
     {
       QgsPoint pointCenter = mExtent.center();
@@ -419,6 +420,19 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
     case QgsUnitTypes::DistanceMillimeters:
     case QgsUnitTypes::DistanceUnknownUnit:
       return ( meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mDistanceArea.sourceCrs().mapUnits() ) );
+=======
+      break;
+    case QgsUnitTypes::DistanceDegrees:
+    {
+      QgsPoint pointCenter = mExtent.center();
+      pointCenter = mCoordTransform.transform( pointCenter );
+      return mDistanceArea.measureLineProjected( pointCenter, meters );
+    }
+    break;
+    default:
+      return ( meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mDistanceArea.sourceCrs().mapUnits() ) );
+      break;
+>>>>>>> RenderMetersInMapUnits now renders properly in application.
   }
   return meters;
 }

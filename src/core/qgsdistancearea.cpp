@@ -60,8 +60,10 @@ bool QgsDistanceArea::willUseEllipsoid() const
 
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS )
 {
+  mSemiMajor = -1.0;
+  mSemiMinor = -1.0;
+  mInvFlattening = -1.0;
   mCoordTransform.setSourceCrs( srcCRS );
-  QgsDebugMsgLevel( QString( "QgsDistanceArea::setSourceCrs -51- : sourceCrs().description[%1] ellipsoid[%2] isGeographic[%3]" ).arg( sourceCrs().description() ).arg( sourceCrs().ellipsoidAcronym() ).arg( sourceCrs().isGeographic() ), 3 );
 }
 
 bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
@@ -74,7 +76,6 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
   }
 
   QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
-  QgsDebugMsgLevel( QString( "QgsDistanceArea::setEllipsoid -50- : sourceCrs().description[%1,%2] isGeographic[%3] valid[%4] semiMajor[%5] semiMinor[%6] inverseFlattening[%7]" ).arg( sourceCrs().description() ).arg( sourceCrs().ellipsoidAcronym() ).arg( sourceCrs().isGeographic() ).arg( params.valid ).arg( params.semiMajor ).arg( params.semiMinor ).arg( params.inverseFlattening ), 3 );
   if ( !params.valid )
   {
     return false;
@@ -357,23 +358,13 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
   {
     p2 = computeSpheroidProject( p1, distance, azimuth );
     result = p1.distance( p2 );
-    QgsDebugMsgLevel( QString( "Converted meters distance of %1 %2 to Geographic distance %3 %4, using azimuth[%5] from point[%6] to point[%7] sourceCrs[%8,%9] isGeographic[%10]" ).arg( distance )
-                      .arg( QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ) )
-                      .arg( result )
-                      .arg( QgsUnitTypes::toString( sourceCrs().mapUnits() ) )
-                      .arg( azimuth )
-                      .arg( p1.wellKnownText() )
-                      .arg( p2.wellKnownText() )
-                      .arg( sourceCrs().description() )
-                      .arg( mEllipsoid )
-                      .arg( sourceCrs().isGeographic() ), 4 );
   }
   else // cartesian coordinates
   {
     result = distance; // Avoid rounding errors when using meters [return as sent]
-    if ( sourceCrs().mapUnits() != QgsUnitTypes::DistanceMeters )
+    if ( mCoordTransform.sourceCrs().isGeographic() )
     {
-      distance = ( distance * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, sourceCrs().mapUnits() ) );
+      p2 = computeSpheroidProject( p1, distance, azimuth );
       result = p1.distance( p2 );
     }
     p2 = p1.project( distance, azimuth );
@@ -412,10 +403,19 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   double a = mSemiMajor;
   double b = mSemiMinor;
   double f = 1 / mInvFlattening;
+<<<<<<< HEAD
   if ( ( ( a < 0 ) && ( b < 0 ) ) ||
        ( ( p1.x() < -180.0 ) || ( p1.x() > 180.0 ) || ( p1.y() < -85.05115 ) || ( p1.y() > 85.05115 ) ) )
   {
     return QgsPoint( 0, 0 );
+=======
+  if ( ( a < 0 ) && ( b < 0 ) )
+  {
+    QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( mCoordTransform.sourceCrs().ellipsoidAcronym() );
+    a = params.semiMajor;
+    b = params.semiMinor;
+    f = 1 / params.inverseFlattening;
+>>>>>>> RenderMetersInMapUnits now renders properly in application.
   }
   double radians_lat = DEG2RAD( p1.y() );
   double radians_long = DEG2RAD( p1.x() );
