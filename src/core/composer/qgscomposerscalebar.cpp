@@ -19,12 +19,12 @@
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgsdistancearea.h"
-#include "qgsscalebarstyle.h"
-#include "qgsdoubleboxscalebarstyle.h"
+#include "qgsscalebarrenderer.h"
+#include "qgsdoubleboxscalebarrenderer.h"
 #include "qgsmapsettings.h"
-#include "qgsnumericscalebarstyle.h"
-#include "qgssingleboxscalebarstyle.h"
-#include "qgsticksscalebarstyle.h"
+#include "qgsnumericscalebarrenderer.h"
+#include "qgssingleboxscalebarrenderer.h"
+#include "qgsticksscalebarrenderer.h"
 #include "qgsrectangle.h"
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
@@ -42,17 +42,8 @@
 QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition *composition )
   : QgsComposerItem( composition )
   , mComposerMap( nullptr )
-  , mNumUnitsPerSegment( 0 )
-  , mSegmentSizeMode( SegmentSizeFixed )
-  , mMinBarWidth( 50 )
-  , mMaxBarWidth( 150 )
-  , mFontColor( QColor( 0, 0, 0 ) )
   , mStyle( nullptr )
   , mSegmentMillimeters( 0.0 )
-  , mAlignment( Left )
-  , mUnits( MapUnits )
-  , mLineJoinStyle( Qt::MiterJoin )
-  , mLineCapStyle( Qt::SquareCap )
 {
   applyDefaultSettings();
   applyDefaultSize();
@@ -78,11 +69,9 @@ void QgsComposerScaleBar::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
   drawBackground( painter );
 
-  //x-offset is half of first label width because labels are drawn centered
-  QString firstLabel = firstLabelString();
-  double firstLabelWidth = QgsComposerUtils::textWidthMM( mFont, firstLabel );
+  QgsRenderContext c = QgsComposerUtils::createRenderContextForMap( mComposerMap, painter );
 
-  mStyle->draw( painter, firstLabelWidth / 2 );
+  mStyle->draw( c, mSettings, createScaleContext() );
 
   //draw frame and selection boxes if necessary
   drawFrame( painter );
@@ -96,12 +85,12 @@ void QgsComposerScaleBar::setNumSegments( int nSegments )
 {
   if ( !mStyle )
   {
-    mNumSegments = nSegments;
+    mSettings.setNumberOfSegments( nSegments );
     return;
   }
-  double width = mStyle->calculateBoxSize().width();
-  mNumSegments = nSegments;
-  double widthAfter = mStyle->calculateBoxSize().width();
+  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
+  mSettings.setNumberOfSegments( nSegments );
+  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
   emit itemChanged();
 }
@@ -110,28 +99,28 @@ void QgsComposerScaleBar::setNumUnitsPerSegment( double units )
 {
   if ( !mStyle )
   {
-    mNumUnitsPerSegment = units;
+    mSettings.setUnitsPerSegment( units );
     return;
   }
-  double width = mStyle->calculateBoxSize().width();
-  mNumUnitsPerSegment = units;
+  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
+  mSettings.setUnitsPerSegment( units );
   refreshSegmentMillimeters();
-  double widthAfter = mStyle->calculateBoxSize().width();
+  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
   emit itemChanged();
 }
 
-void QgsComposerScaleBar::setSegmentSizeMode( SegmentSizeMode mode )
+void QgsComposerScaleBar::setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeMode mode )
 {
   if ( !mStyle )
   {
-    mSegmentSizeMode = mode;
+    mSettings.setSegmentSizeMode( mode );
     return;
   }
-  double width = mStyle->calculateBoxSize().width();
-  mSegmentSizeMode = mode;
+  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
+  mSettings.setSegmentSizeMode( mode );
   refreshSegmentMillimeters();
-  double widthAfter = mStyle->calculateBoxSize().width();
+  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
   emit itemChanged();
 }
@@ -140,13 +129,13 @@ void QgsComposerScaleBar::setMinBarWidth( double minWidth )
 {
   if ( !mStyle )
   {
-    mMinBarWidth = minWidth;
+    mSettings.setMinimumBarWidth( minWidth );
     return;
   }
-  double width = mStyle->calculateBoxSize().width();
-  mMinBarWidth = minWidth;
+  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
+  mSettings.setMinimumBarWidth( minWidth );
   refreshSegmentMillimeters();
-  double widthAfter = mStyle->calculateBoxSize().width();
+  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
   emit itemChanged();
 }
@@ -155,13 +144,13 @@ void QgsComposerScaleBar::setMaxBarWidth( double maxWidth )
 {
   if ( !mStyle )
   {
-    mMaxBarWidth = maxWidth;
+    mSettings.setMaximumBarWidth( maxWidth );
     return;
   }
-  double width = mStyle->calculateBoxSize().width();
-  mMaxBarWidth = maxWidth;
+  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
+  mSettings.setMaximumBarWidth( maxWidth );
   refreshSegmentMillimeters();
-  double widthAfter = mStyle->calculateBoxSize().width();
+  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
   emit itemChanged();
 }
@@ -170,12 +159,12 @@ void QgsComposerScaleBar::setNumSegmentsLeft( int nSegmentsLeft )
 {
   if ( !mStyle )
   {
-    mNumSegmentsLeft = nSegmentsLeft;
+    mSettings.setNumberOfSegmentsLeft( nSegmentsLeft );
     return;
   }
-  double width = mStyle->calculateBoxSize().width();
-  mNumSegmentsLeft = nSegmentsLeft;
-  double widthAfter = mStyle->calculateBoxSize().width();
+  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
+  mSettings.setNumberOfSegmentsLeft( nSegmentsLeft );
+  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
   emit itemChanged();
 }
@@ -184,17 +173,17 @@ void QgsComposerScaleBar::setBoxContentSpace( double space )
 {
   if ( !mStyle )
   {
-    mBoxContentSpace = space;
+    mSettings.setBoxContentSpace( space );
     return;
   }
-  double width = mStyle->calculateBoxSize().width();
-  mBoxContentSpace = space;
-  double widthAfter = mStyle->calculateBoxSize().width();
+  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
+  mSettings.setBoxContentSpace( space );
+  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
   emit itemChanged();
 }
 
-void QgsComposerScaleBar::setComposerMap( const QgsComposerMap *map )
+void QgsComposerScaleBar::setComposerMap( QgsComposerMap *map )
 {
   if ( mComposerMap )
   {
@@ -236,22 +225,30 @@ void QgsComposerScaleBar::refreshDataDefinedProperty( const QgsComposerObject::D
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::ScalebarFillColor || property == QgsComposerObject::AllProperties )
   {
-    mBrush.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarFillColor, *evalContext, mFillColor ) );
+    QBrush b = mSettings.brush();
+    b.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarFillColor, *evalContext, mSettings.fillColor() ) );
+    mSettings.setBrush( b );
     forceUpdate = true;
   }
   if ( property == QgsComposerObject::ScalebarFillColor2 || property == QgsComposerObject::AllProperties )
   {
-    mBrush2.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarFillColor2, *evalContext, mFillColor2 ) );
+    QBrush b = mSettings.brush2();
+    b.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarFillColor2, *evalContext, mSettings.fillColor2() ) );
+    mSettings.setBrush2( b );
     forceUpdate = true;
   }
   if ( property == QgsComposerObject::ScalebarLineColor || property == QgsComposerObject::AllProperties )
   {
-    mPen.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarLineColor, *evalContext, mLineColor ) );
+    QPen p = mSettings.pen();
+    p.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarLineColor, *evalContext, mSettings.lineColor() ) );
+    mSettings.setPen( p );
     forceUpdate = true;
   }
   if ( property == QgsComposerObject::ScalebarLineWidth || property == QgsComposerObject::AllProperties )
   {
-    mPen.setWidthF( mDataDefinedProperties.valueAsDouble( QgsComposerObject::ScalebarLineWidth, *evalContext, mLineWidth ) );
+    QPen p = mSettings.pen();
+    p.setWidthF( mDataDefinedProperties.valueAsDouble( QgsComposerObject::ScalebarLineWidth, *evalContext, mSettings.lineWidth() ) );
+    mSettings.setPen( p );
     forceUpdate = true;
   }
   if ( forceUpdate )
@@ -283,23 +280,23 @@ void QgsComposerScaleBar::refreshSegmentMillimeters()
     //get mm dimension of composer map
     QRectF composerItemRect = mComposerMap->rect();
 
-    if ( mSegmentSizeMode == SegmentSizeFixed )
+    if ( mSettings.segmentSizeMode() == QgsScaleBarSettings::SegmentSizeFixed )
     {
       //calculate size depending on mNumUnitsPerSegment
-      mSegmentMillimeters = composerItemRect.width() / mapWidth() * mNumUnitsPerSegment;
+      mSegmentMillimeters = composerItemRect.width() / mapWidth() * mSettings.unitsPerSegment();
     }
     else /*if(mSegmentSizeMode == SegmentSizeFitWidth)*/
     {
-      if ( mMaxBarWidth < mMinBarWidth )
+      if ( mSettings.maximumBarWidth() < mSettings.minimumBarWidth() )
       {
         mSegmentMillimeters = 0;
       }
       else
       {
-        double nSegments = ( mNumSegmentsLeft != 0 ) + mNumSegments;
+        double nSegments = ( mSettings.numberOfSegmentsLeft() != 0 ) + mSettings.numberOfSegments();
         // unitsPerSegments which fit minBarWidth resp. maxBarWidth
-        double minUnitsPerSeg = ( mMinBarWidth * mapWidth() ) / ( nSegments * composerItemRect.width() );
-        double maxUnitsPerSeg = ( mMaxBarWidth * mapWidth() ) / ( nSegments * composerItemRect.width() );
+        double minUnitsPerSeg = ( mSettings.minimumBarWidth() * mapWidth() ) / ( nSegments * composerItemRect.width() );
+        double maxUnitsPerSeg = ( mSettings.maximumBarWidth() * mapWidth() ) / ( nSegments * composerItemRect.width() );
 
         // Start with coarsest "nice" number closest to minUnitsPerSeg resp
         // maxUnitsPerSeg, then proceed to finer numbers as long as neither
@@ -317,8 +314,8 @@ void QgsComposerScaleBar::refreshSegmentMillimeters()
         }
 
         // Pick mNumUnitsPerSegment from {lowerNiceUnitsPerSeg, upperNiceUnitsPerSeg}, use the larger if possible
-        mNumUnitsPerSegment = upperNiceUnitsPerSeg < minUnitsPerSeg ? lowerNiceUnitsPerSeg : upperNiceUnitsPerSeg;
-        mSegmentMillimeters = composerItemRect.width() / mapWidth() * mNumUnitsPerSegment;
+        mSettings.setUnitsPerSegment( upperNiceUnitsPerSeg < minUnitsPerSeg ? lowerNiceUnitsPerSeg : upperNiceUnitsPerSeg );
+        mSegmentMillimeters = composerItemRect.width() / mapWidth() * mSettings.unitsPerSegment();
       }
     }
   }
@@ -332,7 +329,7 @@ double QgsComposerScaleBar::mapWidth() const
   }
 
   QgsRectangle composerMapRect = *( mComposerMap->currentMapExtent() );
-  if ( mUnits == MapUnits )
+  if ( mSettings.units() == QgsUnitTypes::DistanceUnknownUnit )
   {
     return composerMapRect.width();
   }
@@ -345,108 +342,84 @@ double QgsComposerScaleBar::mapWidth() const
     QgsUnitTypes::DistanceUnit units = da.lengthUnits();
     double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ),
                                      QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
-    switch ( mUnits )
-    {
-      case QgsComposerScaleBar::Feet:
-        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, units );
-        break;
-      case QgsComposerScaleBar::NauticalMiles:
-        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceNauticalMiles, units );
-        break;
-      case QgsComposerScaleBar::Meters:
-        measure /= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, units );
-        break;
-      case QgsComposerScaleBar::MapUnits:
-        //avoid warning
-        break;
-    }
+    measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
     return measure;
   }
 }
 
-void QgsComposerScaleBar::setAlignment( Alignment a )
+QgsScaleBarRenderer::ScaleBarContext QgsComposerScaleBar::createScaleContext() const
 {
-  mAlignment = a;
+  QgsScaleBarRenderer::ScaleBarContext scaleContext;
+  scaleContext.size = rect().size();
+  scaleContext.segmentWidth = mSegmentMillimeters;
+  scaleContext.scale = mComposerMap ? mComposerMap->scale() : 1.0;
+  return scaleContext;
+}
+
+void QgsComposerScaleBar::setAlignment( QgsScaleBarSettings::Alignment a )
+{
+  mSettings.setAlignment( a );
   update();
   emit itemChanged();
 }
 
-void QgsComposerScaleBar::setUnits( ScaleBarUnits u )
+void QgsComposerScaleBar::setUnits( QgsUnitTypes::DistanceUnit u )
 {
-  mUnits = u;
+  mSettings.setUnits( u );
   refreshSegmentMillimeters();
   emit itemChanged();
 }
 
 void QgsComposerScaleBar::setLineJoinStyle( Qt::PenJoinStyle style )
 {
-  if ( mLineJoinStyle == style )
+  if ( mSettings.lineJoinStyle() == style )
   {
     //no change
     return;
   }
-  mLineJoinStyle = style;
-  mPen.setJoinStyle( mLineJoinStyle );
+  mSettings.setLineJoinStyle( style );
   update();
   emit itemChanged();
 }
 
 void QgsComposerScaleBar::setLineCapStyle( Qt::PenCapStyle style )
 {
-  if ( mLineCapStyle == style )
+  if ( mSettings.lineCapStyle() == style )
   {
     //no change
     return;
   }
-  mLineCapStyle = style;
-  mPen.setCapStyle( mLineCapStyle );
+  mSettings.setLineCapStyle( style );
   update();
   emit itemChanged();
 }
 
 void QgsComposerScaleBar::applyDefaultSettings()
 {
-  mNumSegments = 2;
-  mNumSegmentsLeft = 0;
-
-  mNumMapUnitsPerScaleBarUnit = 1.0;
-
   //style
   delete mStyle;
-  mStyle = new QgsSingleBoxScaleBarStyle( this );
-
-  mHeight = 3;
+  mStyle = new QgsSingleBoxScaleBarRenderer();
 
   //default to no background
   setBackgroundEnabled( false );
 
-  mPen = QPen( mLineColor );
-  mPen.setJoinStyle( mLineJoinStyle );
-  mPen.setCapStyle( mLineCapStyle );
-  mPen.setWidthF( mLineWidth );
-
-  mBrush.setColor( mFillColor );
-  mBrush.setStyle( Qt::SolidPattern );
-
-  mBrush2.setColor( mFillColor2 );
-  mBrush2.setStyle( Qt::SolidPattern );
-
   //get default composer font from settings
   QgsSettings settings;
   QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
+  QFont f;
   if ( !defaultFontString.isEmpty() )
   {
-    mFont.setFamily( defaultFontString );
+    f.setFamily( defaultFontString );
   }
-  mFont.setPointSizeF( 12.0 );
-  mFontColor = QColor( 0, 0, 0 );
+  f.setPointSizeF( 12.0 );
+  mSettings.setFont( f );
 
-  mLabelBarSpace = 3.0;
-  mBoxContentSpace = 1.0;
+  mSettings.setUnits( QgsUnitTypes::DistanceUnknownUnit );
+
   emit itemChanged();
 }
 
-void QgsComposerScaleBar::applyDefaultSize( QgsComposerScaleBar::ScaleBarUnits u )
+void QgsComposerScaleBar::applyDefaultSize( QgsUnitTypes::DistanceUnit u )
 {
   if ( mComposerMap )
   {
@@ -456,15 +429,15 @@ void QgsComposerScaleBar::applyDefaultSize( QgsComposerScaleBar::ScaleBarUnits u
     double initialUnitsPerSegment =  widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
     setNumUnitsPerSegment( initialUnitsPerSegment );
 
-    switch ( mUnits )
+    switch ( u )
     {
-      case MapUnits:
+      case QgsUnitTypes::DistanceUnknownUnit:
       {
         upperMagnitudeMultiplier = 1.0;
         setUnitLabeling( tr( "units" ) );
         break;
       }
-      case Meters:
+      case QgsUnitTypes::DistanceMeters:
       {
         if ( initialUnitsPerSegment > 1000.0 )
         {
@@ -478,7 +451,7 @@ void QgsComposerScaleBar::applyDefaultSize( QgsComposerScaleBar::ScaleBarUnits u
         }
         break;
       }
-      case Feet:
+      case QgsUnitTypes::DistanceFeet:
       {
         if ( initialUnitsPerSegment > 5419.95 )
         {
@@ -492,12 +465,11 @@ void QgsComposerScaleBar::applyDefaultSize( QgsComposerScaleBar::ScaleBarUnits u
         }
         break;
       }
-      case NauticalMiles:
-      {
+
+      default:
+        setUnitLabeling( QgsUnitTypes::toAbbreviatedString( u ) );
         upperMagnitudeMultiplier = 1;
-        setUnitLabeling( tr( "Nm" ) );
         break;
-      }
     }
 
     double segmentWidth = initialUnitsPerSegment / upperMagnitudeMultiplier;
@@ -528,7 +500,7 @@ void QgsComposerScaleBar::adjustBoxSize()
     return;
   }
 
-  QRectF box = mStyle->calculateBoxSize();
+  QRectF box = QRectF( pos(), mStyle->calculateBoxSize( mSettings, createScaleContext() ) );
   if ( rect().height() > box.height() )
   {
     //keep user specified item height if higher than minimum scale bar height
@@ -553,7 +525,7 @@ void QgsComposerScaleBar::adjustBoxSize()
 
 void QgsComposerScaleBar::setSceneRect( const QRectF &rectangle )
 {
-  QRectF box = mStyle->calculateBoxSize();
+  QRectF box = QRectF( pos(), mStyle->calculateBoxSize( mSettings, createScaleContext() ) );
   if ( rectangle.height() > box.height() )
   {
     //keep user specified item height if higher than minimum scale bar height
@@ -593,33 +565,12 @@ void QgsComposerScaleBar::updateSegmentSize()
   {
     return;
   }
-  double width = mStyle->calculateBoxSize().width();
+  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   refreshSegmentMillimeters();
-  double widthAfter = mStyle->calculateBoxSize().width();
+  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
   update();
   emit itemChanged();
-}
-
-void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> > &posWidthList ) const
-{
-  posWidthList.clear();
-  double mCurrentXCoord = mPen.widthF() + mBoxContentSpace;
-
-  //left segments
-  double leftSegmentSize = mSegmentMillimeters / mNumSegmentsLeft;
-  for ( int i = 0; i < mNumSegmentsLeft; ++i )
-  {
-    posWidthList.push_back( qMakePair( mCurrentXCoord, leftSegmentSize ) );
-    mCurrentXCoord += leftSegmentSize;
-  }
-
-  //right segments
-  for ( int i = 0; i < mNumSegments; ++i )
-  {
-    posWidthList.push_back( qMakePair( mCurrentXCoord, mSegmentMillimeters ) );
-    mCurrentXCoord += mSegmentMillimeters;
-  }
 }
 
 void QgsComposerScaleBar::setStyle( const QString &styleName )
@@ -630,32 +581,32 @@ void QgsComposerScaleBar::setStyle( const QString &styleName )
   //switch depending on style name
   if ( styleName == QLatin1String( "Single Box" ) )
   {
-    mStyle = new QgsSingleBoxScaleBarStyle( this );
+    mStyle = new QgsSingleBoxScaleBarRenderer();
   }
   else if ( styleName == QLatin1String( "Double Box" ) )
   {
-    mStyle = new QgsDoubleBoxScaleBarStyle( this );
+    mStyle = new QgsDoubleBoxScaleBarRenderer();
   }
   else if ( styleName == QLatin1String( "Line Ticks Middle" )  || styleName == QLatin1String( "Line Ticks Down" ) || styleName == QLatin1String( "Line Ticks Up" ) )
   {
-    QgsTicksScaleBarStyle *tickStyle = new QgsTicksScaleBarStyle( this );
+    QgsTicksScaleBarRenderer *tickStyle = new QgsTicksScaleBarRenderer();
     if ( styleName == QLatin1String( "Line Ticks Middle" ) )
     {
-      tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksMiddle );
+      tickStyle->setTickPosition( QgsTicksScaleBarRenderer::TicksMiddle );
     }
     else if ( styleName == QLatin1String( "Line Ticks Down" ) )
     {
-      tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksDown );
+      tickStyle->setTickPosition( QgsTicksScaleBarRenderer::TicksDown );
     }
     else if ( styleName == QLatin1String( "Line Ticks Up" ) )
     {
-      tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksUp );
+      tickStyle->setTickPosition( QgsTicksScaleBarRenderer::TicksUp );
     }
     mStyle = tickStyle;
   }
   else if ( styleName == QLatin1String( "Numeric" ) )
   {
-    mStyle = new QgsNumericScaleBarStyle( this );
+    mStyle = new QgsNumericScaleBarRenderer();
   }
   emit itemChanged();
 }
@@ -672,26 +623,14 @@ QString QgsComposerScaleBar::style() const
   }
 }
 
-QString QgsComposerScaleBar::firstLabelString() const
-{
-  if ( mNumSegmentsLeft > 0 )
-  {
-    return QString::number( mNumUnitsPerSegment / mNumMapUnitsPerScaleBarUnit );
-  }
-  else
-  {
-    return QStringLiteral( "0" );
-  }
-}
-
 QFont QgsComposerScaleBar::font() const
 {
-  return mFont;
+  return mSettings.font();
 }
 
 void QgsComposerScaleBar::setFont( const QFont &font )
 {
-  mFont = font;
+  mSettings.setFont( font );
   update();
   emit itemChanged();
 }
@@ -704,23 +643,23 @@ bool QgsComposerScaleBar::writeXml( QDomElement &elem, QDomDocument &doc ) const
   }
 
   QDomElement composerScaleBarElem = doc.createElement( QStringLiteral( "ComposerScaleBar" ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "height" ), QString::number( mHeight ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "labelBarSpace" ), QString::number( mLabelBarSpace ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "boxContentSpace" ), QString::number( mBoxContentSpace ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "numSegments" ), mNumSegments );
-  composerScaleBarElem.setAttribute( QStringLiteral( "numSegmentsLeft" ), mNumSegmentsLeft );
-  composerScaleBarElem.setAttribute( QStringLiteral( "numUnitsPerSegment" ), QString::number( mNumUnitsPerSegment ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "segmentSizeMode" ), mSegmentSizeMode );
-  composerScaleBarElem.setAttribute( QStringLiteral( "minBarWidth" ), mMinBarWidth );
-  composerScaleBarElem.setAttribute( QStringLiteral( "maxBarWidth" ), mMaxBarWidth );
+  composerScaleBarElem.setAttribute( QStringLiteral( "height" ), QString::number( mSettings.height() ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "labelBarSpace" ), QString::number( mSettings.labelBarSpace() ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "boxContentSpace" ), QString::number( mSettings.boxContentSpace() ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "numSegments" ), mSettings.numberOfSegments() );
+  composerScaleBarElem.setAttribute( QStringLiteral( "numSegmentsLeft" ), mSettings.numberOfSegmentsLeft() );
+  composerScaleBarElem.setAttribute( QStringLiteral( "numUnitsPerSegment" ), QString::number( mSettings.unitsPerSegment() ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "segmentSizeMode" ), mSettings.segmentSizeMode() );
+  composerScaleBarElem.setAttribute( QStringLiteral( "minBarWidth" ), mSettings.minimumBarWidth() );
+  composerScaleBarElem.setAttribute( QStringLiteral( "maxBarWidth" ), mSettings.maximumBarWidth() );
   composerScaleBarElem.setAttribute( QStringLiteral( "segmentMillimeters" ), QString::number( mSegmentMillimeters ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QString::number( mNumMapUnitsPerScaleBarUnit ) );
-  composerScaleBarElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "scaleBarFont" ) ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mLineWidth ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "unitLabel" ), mUnitLabeling );
-  composerScaleBarElem.setAttribute( QStringLiteral( "units" ), mUnits );
-  composerScaleBarElem.setAttribute( QStringLiteral( "lineJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mLineJoinStyle ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "lineCapStyle" ), QgsSymbolLayerUtils::encodePenCapStyle( mLineCapStyle ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QString::number( mSettings.mapUnitsPerScaleBarUnit() ) );
+  composerScaleBarElem.appendChild( QgsFontUtils::toXmlElement( mSettings.font(), doc, QStringLiteral( "scaleBarFont" ) ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mSettings.lineWidth() ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "unitLabel" ), mSettings.unitLabel() );
+  composerScaleBarElem.setAttribute( QStringLiteral( "unitType" ), QgsUnitTypes::encodeUnit( mSettings.units() ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "lineJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mSettings.lineJoinStyle() ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "lineCapStyle" ), QgsSymbolLayerUtils::encodePenCapStyle( mSettings.lineCapStyle() ) );
 
   //style
   if ( mStyle )
@@ -738,38 +677,38 @@ bool QgsComposerScaleBar::writeXml( QDomElement &elem, QDomDocument &doc ) const
 
   //fill color
   QDomElement fillColorElem = doc.createElement( QStringLiteral( "fillColor" ) );
-  fillColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFillColor.red() ) );
-  fillColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFillColor.green() ) );
-  fillColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFillColor.blue() ) );
-  fillColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFillColor.alpha() ) );
+  fillColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mSettings.fillColor().red() ) );
+  fillColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mSettings.fillColor().green() ) );
+  fillColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mSettings.fillColor().blue() ) );
+  fillColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mSettings.fillColor().alpha() ) );
   composerScaleBarElem.appendChild( fillColorElem );
 
   //fill color 2
   QDomElement fillColor2Elem = doc.createElement( QStringLiteral( "fillColor2" ) );
-  fillColor2Elem.setAttribute( QStringLiteral( "red" ), QString::number( mFillColor2.red() ) );
-  fillColor2Elem.setAttribute( QStringLiteral( "green" ), QString::number( mFillColor2.green() ) );
-  fillColor2Elem.setAttribute( QStringLiteral( "blue" ), QString::number( mFillColor2.blue() ) );
-  fillColor2Elem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFillColor2.alpha() ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "red" ), QString::number( mSettings.fillColor2().red() ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "green" ), QString::number( mSettings.fillColor2().green() ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "blue" ), QString::number( mSettings.fillColor2().blue() ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "alpha" ), QString::number( mSettings.fillColor2().alpha() ) );
   composerScaleBarElem.appendChild( fillColor2Elem );
 
   //pen color
   QDomElement strokeColorElem = doc.createElement( QStringLiteral( "strokeColor" ) );
-  strokeColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mLineColor.red() ) );
-  strokeColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mLineColor.green() ) );
-  strokeColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mLineColor.blue() ) );
-  strokeColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mLineColor.alpha() ) );
+  strokeColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mSettings.lineColor().red() ) );
+  strokeColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mSettings.lineColor().green() ) );
+  strokeColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mSettings.lineColor().blue() ) );
+  strokeColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mSettings.lineColor().alpha() ) );
   composerScaleBarElem.appendChild( strokeColorElem );
 
   //font color
   QDomElement fontColorElem = doc.createElement( QStringLiteral( "textColor" ) );
-  fontColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFontColor.red() ) );
-  fontColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFontColor.green() ) );
-  fontColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFontColor.blue() ) );
-  fontColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFontColor.alpha() ) );
+  fontColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mSettings.fontColor().red() ) );
+  fontColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mSettings.fontColor().green() ) );
+  fontColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mSettings.fontColor().blue() ) );
+  fontColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mSettings.fontColor().alpha() ) );
   composerScaleBarElem.appendChild( fontColorElem );
 
   //alignment
-  composerScaleBarElem.setAttribute( QStringLiteral( "alignment" ), QString::number( static_cast< int >( mAlignment ) ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "alignment" ), QString::number( static_cast< int >( mSettings.alignment() ) ) );
 
   elem.appendChild( composerScaleBarElem );
   return _writeXml( composerScaleBarElem, doc );
@@ -782,28 +721,27 @@ bool QgsComposerScaleBar::readXml( const QDomElement &itemElem, const QDomDocume
     return false;
   }
 
-  mHeight = itemElem.attribute( QStringLiteral( "height" ), QStringLiteral( "5.0" ) ).toDouble();
-  mLabelBarSpace = itemElem.attribute( QStringLiteral( "labelBarSpace" ), QStringLiteral( "3.0" ) ).toDouble();
-  mBoxContentSpace = itemElem.attribute( QStringLiteral( "boxContentSpace" ), QStringLiteral( "1.0" ) ).toDouble();
-  mNumSegments = itemElem.attribute( QStringLiteral( "numSegments" ), QStringLiteral( "2" ) ).toInt();
-  mNumSegmentsLeft = itemElem.attribute( QStringLiteral( "numSegmentsLeft" ), QStringLiteral( "0" ) ).toInt();
-  mNumUnitsPerSegment = itemElem.attribute( QStringLiteral( "numUnitsPerSegment" ), QStringLiteral( "1.0" ) ).toDouble();
-  mSegmentSizeMode = static_cast<SegmentSizeMode>( itemElem.attribute( QStringLiteral( "segmentSizeMode" ), QStringLiteral( "0" ) ).toInt() );
-  mMinBarWidth = itemElem.attribute( QStringLiteral( "minBarWidth" ), QStringLiteral( "50" ) ).toInt();
-  mMaxBarWidth = itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toInt();
+  mSettings.setHeight( itemElem.attribute( QStringLiteral( "height" ), QStringLiteral( "5.0" ) ).toDouble() );
+  mSettings.setLabelBarSpace( itemElem.attribute( QStringLiteral( "labelBarSpace" ), QStringLiteral( "3.0" ) ).toDouble() );
+  mSettings.setBoxContentSpace( itemElem.attribute( QStringLiteral( "boxContentSpace" ), QStringLiteral( "1.0" ) ).toDouble() );
+  mSettings.setNumberOfSegments( itemElem.attribute( QStringLiteral( "numSegments" ), QStringLiteral( "2" ) ).toInt() );
+  mSettings.setNumberOfSegmentsLeft( itemElem.attribute( QStringLiteral( "numSegmentsLeft" ), QStringLiteral( "0" ) ).toInt() );
+  mSettings.setUnitsPerSegment( itemElem.attribute( QStringLiteral( "numUnitsPerSegment" ), QStringLiteral( "1.0" ) ).toDouble() );
+  mSettings.setSegmentSizeMode( static_cast<QgsScaleBarSettings::SegmentSizeMode>( itemElem.attribute( QStringLiteral( "segmentSizeMode" ), QStringLiteral( "0" ) ).toInt() ) );
+  mSettings.setMinimumBarWidth( itemElem.attribute( QStringLiteral( "minBarWidth" ), QStringLiteral( "50" ) ).toInt() );
+  mSettings.setMaximumBarWidth( itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toInt() );
   mSegmentMillimeters = itemElem.attribute( QStringLiteral( "segmentMillimeters" ), QStringLiteral( "0.0" ) ).toDouble();
-  mNumMapUnitsPerScaleBarUnit = itemElem.attribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QStringLiteral( "1.0" ) ).toDouble();
-  mLineWidth = itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble();
-  mPen.setWidthF( mLineWidth );
-  mUnitLabeling = itemElem.attribute( QStringLiteral( "unitLabel" ) );
-  mLineJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) );
-  mPen.setJoinStyle( mLineJoinStyle );
-  mLineCapStyle = QgsSymbolLayerUtils::decodePenCapStyle( itemElem.attribute( QStringLiteral( "lineCapStyle" ), QStringLiteral( "square" ) ) );
-  mPen.setCapStyle( mLineCapStyle );
-  if ( !QgsFontUtils::setFromXmlChildNode( mFont, itemElem, QStringLiteral( "scaleBarFont" ) ) )
+  mSettings.setMapUnitsPerScaleBarUnit( itemElem.attribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QStringLiteral( "1.0" ) ).toDouble() );
+  mSettings.setLineWidth( itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble() );
+  mSettings.setUnitLabel( itemElem.attribute( QStringLiteral( "unitLabel" ) ) );
+  mSettings.setLineJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) ) );
+  mSettings.setLineCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( itemElem.attribute( QStringLiteral( "lineCapStyle" ), QStringLiteral( "square" ) ) ) );
+  QFont f;
+  if ( !QgsFontUtils::setFromXmlChildNode( f, itemElem, QStringLiteral( "scaleBarFont" ) ) )
   {
-    mFont.fromString( itemElem.attribute( QStringLiteral( "font" ), QLatin1String( "" ) ) );
+    f.fromString( itemElem.attribute( QStringLiteral( "font" ), QLatin1String( "" ) ) );
   }
+  mSettings.setFont( f );
 
   //colors
   //fill color
@@ -821,14 +759,12 @@ bool QgsComposerScaleBar::readXml( const QDomElement &itemElem, const QDomDocume
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      mFillColor = QColor( fillRed, fillGreen, fillBlue, fillAlpha );
-      mBrush.setColor( mFillColor );
+      mSettings.setFillColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
     }
   }
   else
   {
-    mFillColor = QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) );
-    mBrush.setColor( mFillColor );
+    mSettings.setFillColor( QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) ) );
   }
 
   //fill color 2
@@ -846,14 +782,12 @@ bool QgsComposerScaleBar::readXml( const QDomElement &itemElem, const QDomDocume
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      mFillColor2 = QColor( fillRed, fillGreen, fillBlue, fillAlpha );
-      mBrush2.setColor( mFillColor2 );
+      mSettings.setFillColor2( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
     }
   }
   else
   {
-    mFillColor2 = QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) );
-    mBrush2.setColor( mFillColor2 );
+    mSettings.setFillColor2( QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) ) );
   }
 
   //stroke color
@@ -871,14 +805,18 @@ bool QgsComposerScaleBar::readXml( const QDomElement &itemElem, const QDomDocume
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      mLineColor = QColor( strokeRed, strokeGreen, strokeBlue, strokeAlpha );
-      mPen.setColor( mLineColor );
+      mSettings.setLineColor( QColor( strokeRed, strokeGreen, strokeBlue, strokeAlpha ) );
+      QPen p = mSettings.pen();
+      p.setColor( mSettings.lineColor() );
+      mSettings.setPen( p );
     }
   }
   else
   {
-    mLineColor = QColor( itemElem.attribute( QStringLiteral( "penColor" ), QStringLiteral( "#000000" ) ) );
-    mPen.setColor( mLineColor );
+    mSettings.setLineColor( QColor( itemElem.attribute( QStringLiteral( "penColor" ), QStringLiteral( "#000000" ) ) ) );
+    QPen p = mSettings.pen();
+    p.setColor( mSettings.lineColor() );
+    mSettings.setPen( p );
   }
 
   //font color
@@ -896,12 +834,14 @@ bool QgsComposerScaleBar::readXml( const QDomElement &itemElem, const QDomDocume
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      mFontColor = QColor( textRed, textGreen, textBlue, textAlpha );
+      mSettings.setFontColor( QColor( textRed, textGreen, textBlue, textAlpha ) );
     }
   }
   else
   {
-    mFontColor.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
+    QColor c;
+    c.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
+    mSettings.setFontColor( c );
   }
 
   //style
@@ -910,15 +850,38 @@ bool QgsComposerScaleBar::readXml( const QDomElement &itemElem, const QDomDocume
   QString styleString = itemElem.attribute( QStringLiteral( "style" ), QLatin1String( "" ) );
   setStyle( tr( styleString.toLocal8Bit().data() ) );
 
-  mUnits = static_cast< ScaleBarUnits >( itemElem.attribute( QStringLiteral( "units" ) ).toInt() );
-  mAlignment = static_cast< Alignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() );
+  if ( itemElem.attribute( QStringLiteral( "unitType" ) ).isEmpty() )
+  {
+    QgsUnitTypes::DistanceUnit u = QgsUnitTypes::DistanceUnknownUnit;
+    switch ( itemElem.attribute( QStringLiteral( "units" ) ).toInt() )
+    {
+      case 0:
+        u = QgsUnitTypes::DistanceUnknownUnit;
+        break;
+      case 1:
+        u = QgsUnitTypes::DistanceMeters;
+        break;
+      case 2:
+        u = QgsUnitTypes::DistanceFeet;
+        break;
+      case 3:
+        u = QgsUnitTypes::DistanceNauticalMiles;
+        break;
+    }
+    mSettings.setUnits( u );
+  }
+  else
+  {
+    mSettings.setUnits( QgsUnitTypes::decodeDistanceUnit( itemElem.attribute( QStringLiteral( "unitType" ) ) ) );
+  }
+  mSettings.setAlignment( static_cast< QgsScaleBarSettings::Alignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() ) );
 
   //map
   int mapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
   if ( mapId >= 0 )
   {
     const QgsComposerMap *composerMap = mComposition->getComposerMapById( mapId );
-    mComposerMap = composerMap;
+    mComposerMap = const_cast< QgsComposerMap *>( composerMap );
     if ( mComposerMap )
     {
       connect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerScaleBar::updateSegmentSize );
@@ -947,11 +910,11 @@ void QgsComposerScaleBar::correctXPositionAlignment( double width, double widthA
     return;
   }
 
-  if ( mAlignment == Middle )
+  if ( mSettings.alignment() == QgsScaleBarSettings::AlignMiddle )
   {
     move( -( widthAfter - width ) / 2.0, 0 );
   }
-  else if ( mAlignment == Right )
+  else if ( mSettings.alignment() == QgsScaleBarSettings::AlignRight )
   {
     move( -( widthAfter - width ), 0 );
   }

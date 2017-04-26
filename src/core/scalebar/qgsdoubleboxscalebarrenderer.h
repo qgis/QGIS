@@ -1,6 +1,6 @@
 /***************************************************************************
-                            qgssingleboxscalebarstyle.h
-                            ------------------
+                            qgsdoubleboxscalebarrenderer.h
+                            ------------------------------
     begin                : June 2008
     copyright            : (C) 2008 by Marco Hugentobler
     email                : marco.hugentobler@karto.baug.ethz.ch
@@ -14,32 +14,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSINGLEBOXSCALEBARSTYLE_H
-#define QGSSINGLEBOXSCALEBARSTYLE_H
+#ifndef QGSDOUBLEBOXSCALEBARRENDERER_H
+#define QGSDOUBLEBOXSCALEBARRENDERER_H
 
 #include "qgis_core.h"
-#include "qgsscalebarstyle.h"
+#include "qgsscalebarrenderer.h"
+#include <QString>
 
-/** \ingroup core
- * Scalebar style that draws a single box with alternating
- * color for the segments.
+/**
+ * \class QgsDoubleBoxScaleBarRenderer
+ * \ingroup core
+ * Double box with alternating colors.
+ * \since QGIS 3.0
  */
-class CORE_EXPORT QgsSingleBoxScaleBarStyle: public QgsScaleBarStyle
+class CORE_EXPORT QgsDoubleBoxScaleBarRenderer: public QgsScaleBarRenderer
 {
   public:
-    QgsSingleBoxScaleBarStyle( const QgsComposerScaleBar *bar );
-    ~QgsSingleBoxScaleBarStyle();
 
-    QString name() const override;
-
-    /** Draw method
-     \param p painter object
-     \param xOffset x offset
+    /**
+     * Constructor for QgsDoubleBoxScaleBarRenderer.
      */
-    void draw( QPainter *p, double xOffset = 0 ) const override;
+    QgsDoubleBoxScaleBarRenderer() = default;
 
-  private:
-    QgsSingleBoxScaleBarStyle(); //forbidden
+    QString name() const override { return QStringLiteral( "Double Box" ); }
+
+    void draw( QgsRenderContext &context,
+               const QgsScaleBarSettings &settings,
+               const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
+
 };
 
-#endif
+#endif // QGSDOUBLEBOXSCALEBARRENDERER_H
