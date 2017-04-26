@@ -480,6 +480,8 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void removeMapLayer( QgsMapLayer* layer );
 
+    QgsMapLayer *takeMapLayer( QgsMapLayer *layer ) /TransferBack/;
+
     /**
      * Removes all registered layers. If the registry has ownership
      * of any layers these layers will also be deleted.
