@@ -106,7 +106,7 @@ A constructor with some special character types
 Default constructor
 %End
 
-//     QgsSipifyHeader &operator=( const QgsSipifyHeader other );
+
     bool operator==( const QgsSipifyHeader other );
 %Docstring
 Comparison operator should be kept
@@ -280,6 +280,19 @@ Mulitline body
       int vertex;
       VertexType type;
     }
+
+    void simple(  );
+%Docstring
+remove argument
+%End
+    void method( );
+    void test( );
+    void avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
+
+    void position(  );
+    void position(  bool keep );
+    void position( bool keep, bool keep );
+    void position( bool keep );
 
     void ZshouldBeShown();
 

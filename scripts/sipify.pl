@@ -277,9 +277,8 @@ while ($line_idx < $line_count){
       $comment = '';
       next;
     }
-    # Skip assignment operator
-    if ( $line =~ m/operator=\s*\(/ ){
-        push @output, "// $line";
+    # Skip operators
+    if ( $line =~ m/operator(=|<<|>>)\s*\(/ ){
         next;
     }
 
@@ -515,8 +514,27 @@ while ($line_idx < $line_count){
     $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//;
 
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
-    $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
-    $line =~ s/=\s+[^=]*?\s+SIP_PYDEFAULTVALUE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
+    $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYARGTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
+    $line =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
+
+    # remove argument
+    if ($line =~ m/SIP_PYARGREMOVE/){
+        if ( $MULTILINE_DEFINITION == 1 ){
+            my $prev_line = pop(@output) =~ s/\n$//r;
+            # update multi line status
+            my $parenthesis_balance = 0;
+            $parenthesis_balance += $prev_line =~ tr/\(//;
+            $parenthesis_balance -= $prev_line =~ tr/\)//;
+            if ($parenthesis_balance == 1){
+               $MULTILINE_DEFINITION = 0;
+            }
+            # concat with above line to bring previous commas
+            $line =~ s/^\s+//;
+            $line = "$prev_line $line\n";
+        }
+        # see https://regex101.com/r/5iNptO/4
+        $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)? [\w&*]+ SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+    }
 
     $line =~ s/SIP_FORCE//;
 

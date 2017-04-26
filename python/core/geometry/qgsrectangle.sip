@@ -271,7 +271,7 @@ Copy constructor
  :rtype: bool
 %End
 
-//     QgsRectangle &operator=( const QgsRectangle &r1 );
+
     void unionRect( const QgsRectangle &rect );
 %Docstring
  Updates the rectangle to include another rectangle.

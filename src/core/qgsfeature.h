@@ -350,7 +350,7 @@ class CORE_EXPORT QgsFeature
      * \since QGIS 2.9
      * \see fields
      */
-    void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYDEFAULTVALUE( true ) );
+    void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYARGDEFAULT( true ) );
 
     /** Returns the field map associated with the feature.
      * \see setFields

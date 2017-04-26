@@ -335,7 +335,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
 
     virtual ~QgsVectorLayer();
 
-//     QgsVectorLayer &operator=( QgsVectorLayer const &rhs ) = delete;
+
     QString storageType() const;
 %Docstring
 Returns the permanent storage type for this layer as a friendly name.

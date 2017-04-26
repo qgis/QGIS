@@ -205,7 +205,7 @@ Constructs an invalid CRS object
 Copy constructor
 %End
 
-//     QgsCoordinateReferenceSystem &operator=( const QgsCoordinateReferenceSystem &srs );
+
     operator QVariant() const;
 %Docstring
 Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
