@@ -201,7 +201,7 @@ while ($line_idx < $line_count){
     }
 
     # Skip forward declarations
-    if ($line =~ m/^\s*class \w+;$/){
+    if ($line =~ m/^\s*(class|struct) \w+;$/){
         next;
     }
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET
@@ -440,43 +440,18 @@ while ($line_idx < $line_count){
         $line =~ s/\bnullptr\b/0/g;
         $line =~ s/\s*=\s*default\b//g;
 
-        # remove constructor definition
-        if ( $line =~  m/^(\s*)?(explicit )?(\w+)\([\w\=\(\)\s\,\&\*\<\>]*\)(?!;)$/ ){
-            my $newline = $line =~ s/\n/;\n/r;
-            my $nesting_index = 0;
-            while ($line_idx < $line_count){
-                $line = $lines[$line_idx];
-                $line_idx++;
-                if ( $nesting_index == 0 ){
-                    if ( $line =~ m/^\s*(:|,)/ ){
-                        next;
-                    }
-                    $line =~ m/^\s*\{/ or die 'Constructor definition misses {';
-                    if ( $line =~ m/^\s*\{.*?\}/ ){
-                        last;
-                    }
-                    $nesting_index = 1;
-                    next;
-                }
-                else {
-                    $nesting_index += $line =~ tr/\{//;
-                    $nesting_index -= $line =~ tr/\}//;
-                    if ($nesting_index eq 0){
-                        last;
-                    }
-                }
-            }
-            $line = $newline;
-        }
-
-        # remove function bodies
-        if ( $SIP_RUN != 1 && $line =~  m/^(\s*)?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
-            my $newline = "$1$2$3$4;";
+        # remove constructor definition, function bodies, member initializing list
+        if ( $SIP_RUN != 1 && $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\([\w=()\/ ,&*<>:]*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
+            my $newline = "$1$2$3$4$5;";
             if ($line !~ m/\{.*?\}$/){
                 $line = $lines[$line_idx];
                 $line_idx++;
+                while ( $line =~ m/^\s*[:,] \w+\(.*?\)/){
+                  $line = $lines[$line_idx];
+                  $line_idx++;
+                }
                 my $nesting_index = 1;
-                if ( $line =~ m/^\s*\{\s*$/ ){
+                if ( $line =~ m/^\s*\{$/ ){
                     while ($line_idx < $line_count){
                         $line = $lines[$line_idx];
                         $line_idx++;
@@ -532,6 +507,7 @@ while ($line_idx < $line_count){
 
     $line =~ s/\bSIP_FACTORY\b/\/Factory\//;
     $line =~ s/\bSIP_OUT\b/\/Out\//g;
+    $line =~ s/\bSIP_IN\b/\/In\//g;
     $line =~ s/\bSIP_INOUT\b/\/In,Out\//g;
     $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
     $line =~ s/\bSIP_KEEPREFERENCE\b/\/KeepReference\//;

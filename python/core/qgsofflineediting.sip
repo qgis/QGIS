@@ -9,7 +9,6 @@
 
 
 
-struct sqlite3;
 
 class QgsOfflineEditing : QObject
 {

@@ -39,6 +39,7 @@ class QgsFeedback : QObject
 %Docstring
 Construct a feedback object
 %End
+
     void cancel();
 %Docstring
 Tells the internal routines that the current operation should be canceled. This should be run by the main thread

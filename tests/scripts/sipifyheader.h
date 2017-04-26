@@ -276,7 +276,24 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     struct CORE_EXPORT PublicStruct
     {
-      int var;
+      explicit PublicStruct( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex )
+        : part( _part )
+        , ring( _ring )
+        , vertex( _vertex )
+        , type( _type )
+      {}
+
+      bool isValid( const QgsAbstractGeometry *geom ) const
+      {
+        return ( part >= 0 && part < geom->partCount() ) &&
+               ( ring < geom->ringCount( part ) ) &&
+               ( vertex < 0 || vertex < geom->vertexCount( part, ring ) );
+      }
+
+      int part;
+      int ring;
+      int vertex;
+      VertexType type;
     }
 
 #if 0

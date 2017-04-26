@@ -604,7 +604,7 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
     void setSchemeName( const QString &schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
     void setVariantName( const QString &variantName ) { mVariantName = variantName; mFileLoaded = false; }
     void setVariantList( const QStringList &variantList ) { mVariantList = variantList; }
-    void setName( const QString &schemeName, const QString &variantName = "", const QStringList &variantList = QStringList() )
+    void setName( const QString &schemeName, const QString &variantName = QString(), const QStringList &variantList = QStringList() )
     { mSchemeName = schemeName; mVariantName = variantName; mVariantList = variantList; mFileLoaded = false; }
 
     void loadPalette() { loadFile(); }

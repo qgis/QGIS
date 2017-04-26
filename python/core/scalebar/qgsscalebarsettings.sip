@@ -38,6 +38,7 @@ class QgsScaleBarSettings
 %Docstring
  Constructor for QgsScaleBarSettings.
 %End
+
     int numberOfSegments() const;
 %Docstring
  Returns the number of segments included in the scalebar.

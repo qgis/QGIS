@@ -32,8 +32,11 @@ class QgsIdentifyMenu : QMenu
     struct ActionData
     {
       ActionData();
+
       ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = 0 );
+
       ActionData( QgsMapLayer *layer, QgsFeatureId fid, QgsMapLayerAction *mapLayerAction = 0 );
+
       bool mIsValid;
       bool mAllResults;
       bool mIsExternalAction;

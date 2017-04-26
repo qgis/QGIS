@@ -97,7 +97,6 @@ A constructor with no empty `()`
 %Docstring
 A constructor with some special character types
 %End
-    {}
 
     QgsSipifyHeader();
 %Docstring
@@ -261,7 +260,17 @@ Mulitline body
 
     struct PublicStruct
     {
-      int var;
+      explicit PublicStruct( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex );
+
+      bool isValid( const QgsAbstractGeometry *geom ) const;
+%Docstring
+ :rtype: bool
+%End
+
+      int part;
+      int ring;
+      int vertex;
+      VertexType type;
     }
 
     void ZshouldBeShown();

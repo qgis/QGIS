@@ -29,6 +29,7 @@ class QgsActionManager
 %Docstring
 Constructor
 %End
+
     QUuid addAction( QgsAction::ActionType type, const QString &name, const QString &command, bool capture = false );
 %Docstring
  Add an action with the given name and action details.

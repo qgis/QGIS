@@ -24,6 +24,7 @@ class QgsOptionsPageWidget : QWidget
 %Docstring
  Constructor for QgsOptionsPageWidget.
 %End
+
   public slots:
 
     virtual void apply() = 0;
@@ -49,10 +50,12 @@ QGIS crashing when a plugin crashes/exits without deregistering a factory
 %Docstring
 Constructor
 %End
+
     QgsOptionsWidgetFactory( const QString &title, const QIcon &icon );
 %Docstring
 Constructor
 %End
+
     virtual QIcon icon() const;
 %Docstring
  The icon that will be shown in the UI for the panel.

@@ -414,6 +414,11 @@ typedef unsigned long long qgssize;
 #define SIP_OUT
 
 /*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-In
+ */
+#define SIP_IN
+
+/*
  * Combination of
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-In
  * and
