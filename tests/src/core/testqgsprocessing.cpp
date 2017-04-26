@@ -22,6 +22,7 @@
 #include "qgsprocessingcontext.h"
 #include <QObject>
 #include <QtTest/QSignalSpy>
+#include "qgis.h"
 #include "qgstest.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
@@ -550,21 +551,43 @@ void TestQgsProcessing::uniqueValues()
   QVERIFY( QgsProcessingUtils::uniqueValues( layer, 10001, context ).isEmpty() );
 
   // good checks
-  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 0, context ), QList< QVariant >() << 1 << 2 << 3 );
-  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 1, context ), QList< QVariant >() << QString( "A" ) << QString( "B" ) << QString( "C" ) );
+  QList< QVariant > vals = QgsProcessingUtils::uniqueValues( layer, 0, context );
+  QCOMPARE( vals.count(), 3 );
+  QVERIFY( vals.contains( 1 ) );
+  QVERIFY( vals.contains( 2 ) );
+  QVERIFY( vals.contains( 3 ) );
+  vals = QgsProcessingUtils::uniqueValues( layer, 1, context );
+  QCOMPARE( vals.count(), 3 );
+  QVERIFY( vals.contains( QString( "A" ) ) );
+  QVERIFY( vals.contains( QString( "B" ) ) );
+  QVERIFY( vals.contains( QString( "C" ) ) );
 
   //using only selected features
   layer->selectByIds( QgsFeatureIds() << 1 << 2 << 4 );
   // but not using selection yet...
-  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 0, context ), QList< QVariant >() << 1 << 2 << 3 );
-  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 1, context ), QList< QVariant >() << QString( "A" ) << QString( "B" ) << QString( "C" ) );
+  vals = QgsProcessingUtils::uniqueValues( layer, 0, context );
+  QCOMPARE( vals.count(), 3 );
+  QVERIFY( vals.contains( 1 ) );
+  QVERIFY( vals.contains( 2 ) );
+  QVERIFY( vals.contains( 3 ) );
+  vals = QgsProcessingUtils::uniqueValues( layer, 1, context );
+  QCOMPARE( vals.count(), 3 );
+  QVERIFY( vals.contains( QString( "A" ) ) );
+  QVERIFY( vals.contains( QString( "B" ) ) );
+  QVERIFY( vals.contains( QString( "C" ) ) );
 
   // selection and using selection
   context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
   QVERIFY( QgsProcessingUtils::uniqueValues( layer, -1, context ).isEmpty() );
   QVERIFY( QgsProcessingUtils::uniqueValues( layer, 10001, context ).isEmpty() );
-  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 0, context ), QList< QVariant >() << 1 << 2 );
-  QCOMPARE( QgsProcessingUtils::uniqueValues( layer, 1, context ), QList< QVariant >() << QString( "A" ) << QString( "B" ) );
+  vals = QgsProcessingUtils::uniqueValues( layer, 0, context );
+  QCOMPARE( vals.count(), 2 );
+  QVERIFY( vals.contains( 1 ) );
+  QVERIFY( vals.contains( 2 ) );
+  vals = QgsProcessingUtils::uniqueValues( layer, 1, context );
+  QCOMPARE( vals.count(), 2 );
+  QVERIFY( vals.contains( QString( "A" ) ) );
+  QVERIFY( vals.contains( QString( "B" ) ) );
 
   delete layer;
 }
