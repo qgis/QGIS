@@ -200,7 +200,7 @@ class RAlgorithm(GeoAlgorithm):
             raise WrongScriptException(
                 self.tr('Could not load R script: {0}.\n Problem with line {1}').format(self.descriptionFile, line))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         if isWindows():
             path = RUtils.RFolder()
             if path == '':

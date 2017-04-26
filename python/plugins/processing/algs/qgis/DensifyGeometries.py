@@ -31,7 +31,8 @@ import os
 from qgis.core import (QgsGeometry,
                        QgsPoint,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -76,7 +77,7 @@ class DensifyGeometries(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Densified')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         vertices = self.getParameterValue(self.VERTICES)
@@ -87,8 +88,8 @@ class DensifyGeometries(GeoAlgorithm):
             self.OUTPUT).getVectorWriter(layer.fields().toList(),
                                          layer.wkbType(), layer.crs())
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             feature = f
             if feature.hasGeometry():

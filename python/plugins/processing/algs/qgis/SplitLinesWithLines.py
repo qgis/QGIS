@@ -32,7 +32,8 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsGeometry,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -74,7 +75,7 @@ class SplitLinesWithLines(GeoAlgorithm):
                                           self.tr('Split layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Split'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layerA = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_A))
         layerB = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_B))
 
@@ -87,8 +88,8 @@ class SplitLinesWithLines(GeoAlgorithm):
         spatialIndex = vector.spatialindex(layerB)
 
         outFeat = QgsFeature()
-        features = vector.features(layerA)
-        total = 100.0 / float(len(features))
+        features = QgsProcessingUtils.getFeatures(layerA, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
 
         for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()

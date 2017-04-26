@@ -218,7 +218,7 @@ def _executeAlgorithm(alg):
             canvas.setMapTool(prevMapTool)
     else:
         feedback = MessageBarProgress()
-        execute(alg, feedback)
+        execute(alg, None, feedback)
         handleAlgorithmResults(alg, feedback)
         feedback.close()
 

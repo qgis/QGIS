@@ -35,7 +35,7 @@ try:
 except ImportError:
     import configparser as configparser
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication)
 from processing.core.Processing import Processing
 from processing.core.parameters import ParameterSelection
 from processing.gui.Postprocessing import handleAlgorithmResults

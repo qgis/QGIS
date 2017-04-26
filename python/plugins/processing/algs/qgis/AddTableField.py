@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeature,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -83,7 +84,7 @@ class AddTableField(GeoAlgorithm):
         self.addOutput(OutputVector(
             self.OUTPUT_LAYER, self.tr('Added')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         fieldType = self.getParameterValue(self.FIELD_TYPE)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldLength = self.getParameterValue(self.FIELD_LENGTH)
@@ -99,8 +100,8 @@ class AddTableField(GeoAlgorithm):
         writer = output.getVectorWriter(fields, layer.wkbType(),
                                         layer.crs())
         outFeat = QgsFeature()
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))
             geom = feat.geometry()

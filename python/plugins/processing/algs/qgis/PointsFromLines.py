@@ -35,7 +35,8 @@ from qgis.core import (QgsApplication,
                        QgsField,
                        QgsGeometry,
                        QgsPoint,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
 from processing.tools import vector, raster, dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -72,7 +73,7 @@ class PointsFromLines(GeoAlgorithm):
                                           self.tr('Vector layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points along line'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
@@ -96,8 +97,8 @@ class PointsFromLines(GeoAlgorithm):
         self.lineId = 0
         self.pointId = 0
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             geom = f.geometry()
             if geom.isMultipart():

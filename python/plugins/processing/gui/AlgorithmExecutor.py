@@ -33,16 +33,16 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsFeature,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
-                       QgsSettings)
+                       QgsSettings,
+                       QgsProcessingUtils)
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilename
-from processing.tools import vector
 
 
-def execute(alg, feedback=None):
+def execute(alg, context=None, feedback=None):
     """Executes a given algorithm, showing its progress in the
     progress object passed along.
 
@@ -52,9 +52,11 @@ def execute(alg, feedback=None):
 
     if feedback is None:
         feedback = QgsProcessingFeedback()
+    if context is None:
+        context = dataobjects.createContext()
 
     try:
-        alg.execute(feedback)
+        alg.execute(context, feedback)
         return True
     except GeoAlgorithmExecutionException as e:
         ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
@@ -63,7 +65,7 @@ def execute(alg, feedback=None):
         return False
 
 
-def executeIterating(alg, paramToIter, feedback):
+def executeIterating(alg, paramToIter, context, feedback):
     # Generate all single-feature layers
     settings = QgsSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
@@ -72,7 +74,7 @@ def executeIterating(alg, paramToIter, feedback):
     feat = QgsFeature()
     filelist = []
     outputs = {}
-    features = vector.features(layer)
+    features = QgsProcessingUtils.getFeatures(layer, context)
     for feat in features:
         output = getTempFilename('shp')
         filelist.append(output)
@@ -96,7 +98,7 @@ def executeIterating(alg, paramToIter, feedback):
             out.value = filename
         feedback.setProgressText(tr('Executing iteration {0}/{1}...').format(i, len(filelist)))
         feedback.setProgress(i * 100 / len(filelist))
-        if execute(alg, feedback):
+        if execute(alg, None, feedback):
             handleAlgorithmResults(alg, None, False)
         else:
             return False

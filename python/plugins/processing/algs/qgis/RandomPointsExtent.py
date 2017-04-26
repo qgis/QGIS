@@ -78,7 +78,7 @@ class RandomPointsExtent(GeoAlgorithm):
                                        self.tr('Output layer CRS'), 'ProjectCrs'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
         extent = str(self.getParameterValue(self.EXTENT)).split(',')

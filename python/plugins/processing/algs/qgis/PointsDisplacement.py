@@ -31,7 +31,8 @@ from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint)
+                       QgsPoint,
+                       QgsProcessingUtils)
 from processing.tools import dataobjects, vector
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -72,7 +73,7 @@ class PointsDisplacement(GeoAlgorithm):
                                            self.tr('Horizontal distribution for two point case')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         radius = self.getParameterValue(self.DISTANCE)
         horizontal = self.getParameterValue(self.HORIZONTAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
@@ -82,9 +83,9 @@ class PointsDisplacement(GeoAlgorithm):
         writer = output.getVectorWriter(layer.fields(),
                                         layer.wkbType(), layer.crs())
 
-        features = vector.features(layer)
+        features = QgsProcessingUtils.getFeatures(layer, context)
 
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         duplicates = dict()
         for current, f in enumerate(features):

@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes
+from qgis.core import QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -60,15 +60,15 @@ class MultipartToSingleparts(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Single parts')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         geomType = QgsWkbTypes.singleType(layer.wkbType())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields().toList(), geomType, layer.crs())
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             input_geometry = f.geometry()
             if input_geometry:

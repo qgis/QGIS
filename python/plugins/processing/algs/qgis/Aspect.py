@@ -66,7 +66,7 @@ class Aspect(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Aspect')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         inputFile = self.getParameterValue(self.INPUT_LAYER)
         zFactor = self.getParameterValue(self.Z_FACTOR)
         outputFile = self.getOutputValue(self.OUTPUT_LAYER)

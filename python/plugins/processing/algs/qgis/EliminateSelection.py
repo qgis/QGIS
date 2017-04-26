@@ -77,7 +77,7 @@ class EliminateSelection(GeoAlgorithm):
                                              self.modes))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Eliminated'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         inLayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
         smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA

@@ -73,7 +73,7 @@ class BarPlot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         namefieldname = self.getParameterValue(self.NAME_FIELD)
@@ -81,7 +81,7 @@ class BarPlot(GeoAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, valuefieldname)
+        values = vector.values(layer, context, valuefieldname)
 
         x_var = [i[namefieldname] for i in layer.getFeatures()]
 

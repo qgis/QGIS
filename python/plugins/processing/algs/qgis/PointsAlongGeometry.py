@@ -31,7 +31,7 @@ import math
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsWkbTypes, QgsField
+from qgis.core import QgsFeature, QgsWkbTypes, QgsField, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector, ParameterNumber
@@ -76,7 +76,7 @@ class PointsAlongGeometry(GeoAlgorithm):
                                           self.tr('End offset'), default=0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         distance = self.getParameterValue(self.DISTANCE)
@@ -90,8 +90,8 @@ class PointsAlongGeometry(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, QgsWkbTypes.Point, layer.crs())
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, input_feature in enumerate(features):
             input_geometry = input_feature.geometry()
             if not input_geometry:

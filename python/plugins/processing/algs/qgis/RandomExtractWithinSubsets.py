@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 
 import random
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from collections import defaultdict
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -78,7 +79,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (random stratified)')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
         layer = dataobjects.getLayerFromString(filename)
@@ -87,9 +88,9 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         index = layer.fields().lookupField(field)
 
-        features = vector.features(layer)
-        featureCount = len(features)
-        unique = vector.getUniqueValues(layer, index)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        featureCount = QgsProcessingUtils.featureCount(layer, context)
+        unique = QgsProcessingUtils.uniqueValues(layer, index, context)
         value = int(self.getParameterValue(self.NUMBER))
         if method == 0:
             if value > featureCount:
@@ -108,7 +109,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         selran = []
         total = 100.0 / (featureCount * len(unique))
-        features = vector.features(layer)
+        features = QgsProcessingUtils.getFeatures(layer, context)
 
         classes = defaultdict(list)
         for i, feature in enumerate(features):
@@ -120,8 +121,8 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
             selValue = value if method != 1 else int(round(value * len(subset), 0))
             selran.extend(random.sample(subset, selValue))
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for (i, feat) in enumerate(selran):
             writer.addFeature(feat)
             feedback.setProgress(int(i * total))

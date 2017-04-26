@@ -32,7 +32,8 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -75,7 +76,7 @@ class Polygonize(GeoAlgorithm):
                                            self.tr('Create geometry columns'), True))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         vlayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         if self.getParameterValue(self.FIELDS):
@@ -88,9 +89,9 @@ class Polygonize(GeoAlgorithm):
             fields.append(QgsField('perimeter', QVariant.Double,
                                    'double', 16, 2))
         allLinesList = []
-        features = vector.features(vlayer, QgsFeatureRequest().setSubsetOfAttributes([]))
+        features = QgsProcessingUtils.getFeatures(vlayer, context, QgsFeatureRequest().setSubsetOfAttributes([]))
         feedback.pushInfo(self.tr('Processing lines...'))
-        total = 40.0 / len(features)
+        total = 40.0 / QgsProcessingUtils.featureCount(vlayer, context)
         for current, inFeat in enumerate(features):
             if inFeat.geometry():
                 allLinesList.append(inFeat.geometry())

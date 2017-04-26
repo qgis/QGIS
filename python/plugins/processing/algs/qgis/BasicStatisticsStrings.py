@@ -33,7 +33,8 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsStringStatisticalSummary,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
@@ -100,7 +101,7 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.addOutput(OutputNumber(self.MIN_VALUE, self.tr('Minimum string value')))
         self.addOutput(OutputNumber(self.MAX_VALUE, self.tr('Maximum string value')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
@@ -110,8 +111,8 @@ class BasicStatisticsStrings(GeoAlgorithm):
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([fieldName],
                                                                                                    layer.fields())
         stat = QgsStringStatisticalSummary()
-        features = vector.features(layer, request)
-        count = len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context, request)
+        count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / float(count)
         for current, ft in enumerate(features):
             stat.addValue(ft[fieldName])

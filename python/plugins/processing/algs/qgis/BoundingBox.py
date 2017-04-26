@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsGeometry, QgsWkbTypes
+from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -62,7 +62,7 @@ class BoundingBox(GeoAlgorithm):
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Bounds'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 
@@ -72,8 +72,8 @@ class BoundingBox(GeoAlgorithm):
                 QgsWkbTypes.Polygon,
                 layer.crs())
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature

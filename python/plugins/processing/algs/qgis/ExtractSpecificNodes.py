@@ -36,7 +36,8 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeature,
                        QgsGeometry,
                        QgsField,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from qgis.PyQt.QtCore import QVariant
 
 
@@ -68,7 +69,7 @@ class ExtractSpecificNodes(GeoAlgorithm):
                                           self.tr('Node indices'), default='0'))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Nodes'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 
@@ -93,8 +94,8 @@ class ExtractSpecificNodes(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException(
                     self.tr('\'{}\' is not a valid node index').format(node))
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
 

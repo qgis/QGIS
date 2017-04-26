@@ -31,7 +31,8 @@ import random
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields, QgsField, QgsDistanceArea, QgsGeometry, QgsWkbTypes,
-                       QgsSpatialIndex, QgsPoint, QgsFeature)
+                       QgsSpatialIndex, QgsPoint, QgsFeature,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -79,7 +80,7 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.VECTOR))
         value = float(self.getParameterValue(self.VALUE))
@@ -93,7 +94,7 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
 
         da = QgsDistanceArea()
 
-        features = vector.features(layer)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         for current, f in enumerate(features):
             fGeom = f.geometry()
             bbox = fGeom.boundingBox()

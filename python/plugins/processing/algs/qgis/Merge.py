@@ -63,7 +63,7 @@ class Merge(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Merged')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         inLayers = self.getParameterValue(self.LAYERS)
 
         layers = []

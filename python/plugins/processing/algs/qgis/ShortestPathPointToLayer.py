@@ -31,7 +31,7 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsFields, QgsField, QgsFeatureRequest
+from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsFields, QgsField, QgsFeatureRequest, QgsProcessingUtils
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -146,7 +146,7 @@ class ShortestPathPointToLayer(GeoAlgorithm):
                                     self.tr('Shortest path'),
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_VECTOR))
         startPoint = self.getParameterValue(self.START_POINT)
@@ -214,8 +214,8 @@ class ShortestPathPointToLayer(GeoAlgorithm):
         feedback.pushInfo(self.tr('Loading end points...'))
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
-        features = vector.features(endPoints, request)
-        count = len(features)
+        features = QgsProcessingUtils.getFeatures(endPoints, context, request)
+        count = QgsProcessingUtils.featureCount(endPoints, context)
 
         points = [startPoint]
         for f in features:

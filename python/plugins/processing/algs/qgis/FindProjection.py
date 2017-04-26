@@ -82,7 +82,7 @@ class FindProjection(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
                                   self.tr('Candidates')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
 

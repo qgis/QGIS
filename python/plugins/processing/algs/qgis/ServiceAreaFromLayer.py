@@ -31,7 +31,7 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsField, QgsFields, QgsFeatureRequest
+from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsField, QgsFields, QgsFeatureRequest, QgsProcessingUtils
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -149,7 +149,7 @@ class ServiceAreaFromLayer(GeoAlgorithm):
                                     self.tr('Service area (convex hull)'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_VECTOR))
         startPoints = dataobjects.getLayerFromString(
@@ -218,7 +218,7 @@ class ServiceAreaFromLayer(GeoAlgorithm):
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
-        features = vector.features(startPoints, request)
+        features = QgsProcessingUtils.getFeatures(startPoints, context, request)
         points = []
         for f in features:
             points.append(f.geometry().asPoint())

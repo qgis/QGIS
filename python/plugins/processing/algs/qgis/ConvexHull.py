@@ -31,7 +31,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -76,7 +76,7 @@ class ConvexHull(GeoAlgorithm):
                                              self.tr('Method'), self.methods))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         useField = self.getParameterValue(self.METHOD) == 1
@@ -112,15 +112,15 @@ class ConvexHull(GeoAlgorithm):
 
         fid = 0
         val = None
-        features = vector.features(layer)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         if useField:
             unique = layer.uniqueValues(index)
             current = 0
-            total = 100.0 / (len(features) * len(unique))
+            total = 100.0 / (QgsProcessingUtils.featureCount(layer, context) * len(unique))
             for i in unique:
                 first = True
                 hull = []
-                features = vector.features(layer)
+                features = QgsProcessingUtils.getFeatures(layer, context)
                 for f in features:
                     idVar = f[fieldName]
                     if str(idVar).strip() == str(i).strip():
@@ -149,7 +149,7 @@ class ConvexHull(GeoAlgorithm):
         else:
             hull = []
             total = 100.0 / layer.featureCount()
-            features = vector.features(layer)
+            features = QgsProcessingUtils.getFeatures(layer, context)
             for current, f in enumerate(features):
                 inGeom = f.geometry()
                 points = vector.extractPoints(inGeom)

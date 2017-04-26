@@ -36,7 +36,8 @@ from qgis.core import (QgsApplication,
                        QgsGeometry,
                        QgsSpatialIndex,
                        QgsPointV2,
-                       NULL)
+                       NULL,
+                       QgsProcessingUtils)
 
 from qgis.PyQt.QtCore import (QVariant)
 
@@ -92,7 +93,7 @@ class TopoColor(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Colored'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         min_colors = self.getParameterValue(self.MIN_COLORS)
@@ -108,7 +109,7 @@ class TopoColor(GeoAlgorithm):
             layer.wkbType(),
             layer.crs())
 
-        features = {f.id(): f for f in vector.features(layer)}
+        features = {f.id(): f for f in QgsProcessingUtils.getFeatures(layer, context)}
 
         topology, id_graph = self.compute_graph(features, feedback, min_distance=min_distance)
         feature_colors = ColoringAlgorithm.balanced(features,

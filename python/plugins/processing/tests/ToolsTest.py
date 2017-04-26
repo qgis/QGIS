@@ -29,10 +29,11 @@ import os
 import shutil
 import tempfile
 
-from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
+from qgis.core import (QgsVectorLayer,
+                       QgsFeatureRequest,
+                       QgsProcessingContext)
 from qgis.testing import start_app, unittest
 
-from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tests.TestData import points
 from processing.tools import vector
 
@@ -52,140 +53,43 @@ class VectorTest(unittest.TestCase):
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 
-    def testFeatures(self):
-        ProcessingConfig.initialize()
-
-        test_data = points()
-        test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
-
-        # disable check for geometry validity
-        prevInvalidGeoms = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
-        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 0)
-
-        # test with all features
-        features = vector.features(test_layer)
-        self.assertEqual(len(features), 9)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
-
-        # test with selected features
-        previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
-        test_layer.selectByIds([2, 4, 6])
-        features = vector.features(test_layer)
-        self.assertEqual(len(features), 3)
-        self.assertEqual(set([f.id() for f in features]), set([2, 4, 6]))
-
-        # selection, but not using selected features
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, False)
-        test_layer.selectByIds([2, 4, 6])
-        features = vector.features(test_layer)
-        self.assertEqual(len(features), 9)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
-
-        # using selected features, but no selection
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
-        test_layer.removeSelection()
-        features = vector.features(test_layer)
-        self.assertEqual(len(features), 9)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
-
-        # test that feature request is honored
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, False)
-        features = vector.features(test_layer, QgsFeatureRequest().setFilterFids([1, 3, 5]))
-        self.assertEqual(set([f.id() for f in features]), set([1, 3, 5]))
-
-        # test that feature request is honored when using selections
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
-        test_layer.selectByIds([2, 4, 6])
-        features = vector.features(test_layer, QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))
-        self.assertTrue(all([not f.hasGeometry() for f in features]))
-        features = vector.features(test_layer, QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))
-        self.assertEqual(set([f.id() for f in features]), set([2, 4, 6]))
-
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
-
-        # test exception is raised when filtering invalid geoms
-        #ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 2)
-        #test_layer_invalid_geoms = QgsVectorLayer(invalid_geometries(), 'test', 'ogr')
-        #with self.assertRaises(GeoAlgorithmExecutionException):
-        #    features = vector.features(test_layer_invalid_geoms)
-        #    feats = [f for f in features]
-
-        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, prevInvalidGeoms)
-
     def testValues(self):
-        ProcessingConfig.initialize()
+        context = QgsProcessingContext()
 
         # disable check for geometry validity
-        prevInvalidGeoms = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
-        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 0)
+        context.setFlags(QgsProcessingContext.Flags(0))
 
         test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
 
         # field by index
-        res = vector.values(test_layer, 1)
+        res = vector.values(test_layer, context, 1)
         self.assertEqual(res[1], [1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         # field by name
-        res = vector.values(test_layer, 'id')
+        res = vector.values(test_layer, context, 'id')
         self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         # two fields
-        res = vector.values(test_layer, 1, 2)
+        res = vector.values(test_layer, context, 1, 2)
         self.assertEqual(res[1], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # two fields by name
-        res = vector.values(test_layer, 'id', 'id2')
+        res = vector.values(test_layer, context, 'id', 'id2')
         self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res['id2'], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # two fields by name and index
-        res = vector.values(test_layer, 'id', 2)
+        res = vector.values(test_layer, context, 'id', 2)
         self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # test with selected features
-        previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
+        context.setFlags(QgsProcessingContext.UseSelectionIfPresent)
         test_layer.selectByIds([2, 4, 6])
-        res = vector.values(test_layer, 1)
+        res = vector.values(test_layer, context, 1)
         self.assertEqual(set(res[1]), set([5, 7, 3]))
-
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
-        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, prevInvalidGeoms)
-
-    def testUniqueValues(self):
-        ProcessingConfig.initialize()
-
-        # disable check for geometry validity
-        prevInvalidGeoms = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
-        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 0)
-
-        test_data = points()
-        test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
-
-        # field by index
-        v = vector.uniqueValues(test_layer, 2)
-        self.assertEqual(len(v), len(set(v)))
-        self.assertEqual(set(v), set([2, 1, 0]))
-
-        # field by name
-        v = vector.uniqueValues(test_layer, 'id2')
-        self.assertEqual(len(v), len(set(v)))
-        self.assertEqual(set(v), set([2, 1, 0]))
-
-        # test with selected features
-        previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
-        test_layer.selectByIds([2, 4, 6])
-        v = vector.uniqueValues(test_layer, 'id')
-        self.assertEqual(len(v), len(set(v)))
-        self.assertEqual(set(v), set([5, 7, 3]))
-
-        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
-        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, prevInvalidGeoms)
 
     def testOgrLayerNameExtraction(self):
         outdir = tempfile.mkdtemp()

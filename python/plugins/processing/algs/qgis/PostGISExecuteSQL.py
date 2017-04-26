@@ -62,7 +62,7 @@ class PostGISExecuteSQL(GeoAlgorithm):
                     'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}}))
         self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         connection = self.getParameterValue(self.DATABASE)
         self.db = postgis.GeoDB.from_name(connection)
         sql = self.getParameterValue(self.SQL).replace('\n', ' ')

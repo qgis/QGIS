@@ -33,7 +33,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsFields, QgsField, QgsFeature, QgsGeometry, NULL, QgsWkbTypes
+from qgis.core import QgsFields, QgsField, QgsFeature, QgsGeometry, NULL, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -108,7 +108,7 @@ class SpatialJoin(GeoAlgorithm):
                                              self.tr('Joined table'), self.keeps))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         target = dataobjects.getLayerFromString(
             self.getParameterValue(self.TARGET))
         join = dataobjects.getLayerFromString(
@@ -160,12 +160,12 @@ class SpatialJoin(GeoAlgorithm):
         index = vector.spatialindex(join)
 
         mapP2 = dict()
-        features = vector.features(join)
+        features = QgsProcessingUtils.getFeatures(join, context)
         for f in features:
             mapP2[f.id()] = QgsFeature(f)
 
-        features = vector.features(target)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(target, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(target, context)
         for c, f in enumerate(features):
             atMap1 = f.attributes()
             outFeat.setGeometry(f.geometry())

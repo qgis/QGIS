@@ -30,7 +30,8 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeatureRequest, QgsFeature, QgsGeometry,
-                       QgsWkbTypes, QgsFields)
+                       QgsWkbTypes, QgsFields,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -80,7 +81,7 @@ class LinesIntersection(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layerA = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_A))
         layerB = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_B))
         fieldA = self.getParameterValue(self.FIELD_A)
@@ -110,8 +111,8 @@ class LinesIntersection(GeoAlgorithm):
         spatialIndex = vector.spatialindex(layerB)
 
         outFeat = QgsFeature()
-        features = vector.features(layerA)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layerA, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
         hasIntersections = False
 
         for current, inFeatA in enumerate(features):

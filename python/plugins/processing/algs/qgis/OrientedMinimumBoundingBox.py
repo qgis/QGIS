@@ -32,7 +32,8 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsFeatureRequest,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -71,7 +72,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
@@ -93,16 +94,16 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
                                                                      QgsWkbTypes.Polygon, layer.crs())
 
         if byFeature:
-            self.featureOmbb(layer, writer, feedback)
+            self.featureOmbb(layer, context, writer, feedback)
         else:
-            self.layerOmmb(layer, writer, feedback)
+            self.layerOmmb(layer, context, writer, feedback)
 
         del writer
 
-    def layerOmmb(self, layer, writer, feedback):
+    def layerOmmb(self, layer, context, writer, feedback):
         req = QgsFeatureRequest().setSubsetOfAttributes([])
-        features = vector.features(layer, req)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context, req)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         newgeometry = QgsGeometry()
         first = True
         for current, inFeat in enumerate(features):
@@ -126,9 +127,9 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
                                    height])
             writer.addFeature(outFeat)
 
-    def featureOmbb(self, layer, writer, feedback):
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+    def featureOmbb(self, layer, context, writer, feedback):
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             geometry, area, angle, width, height = inFeat.geometry().orientedMinimumBoundingBox()

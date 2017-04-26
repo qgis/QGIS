@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeature,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -64,7 +65,7 @@ class EquivalentNumField(GeoAlgorithm):
                                               self.tr('Class field'), self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Layer with index field')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = dataobjects.getLayerFromString(
@@ -77,8 +78,8 @@ class EquivalentNumField(GeoAlgorithm):
         outFeat = QgsFeature()
         classes = {}
 
-        features = vector.features(vlayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(vlayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
         for current, feature in enumerate(features):
             feedback.setProgress(int(current * total))
             inGeom = feature.geometry()

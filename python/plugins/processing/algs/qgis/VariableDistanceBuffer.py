@@ -75,7 +75,7 @@ class VariableDistanceBuffer(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         dissolve = self.getParameterValue(self.DISSOLVE)
         field = self.getParameterValue(self.FIELD)
@@ -84,5 +84,4 @@ class VariableDistanceBuffer(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields().toList(), QgsWkbTypes.Polygon, layer.crs())
 
-        buff.buffering(feedback, writer, 0, field, True, layer, dissolve,
-                       segments)
+        buff.buffering(feedback, context, writer, 0, field, True, layer, dissolve, segments)

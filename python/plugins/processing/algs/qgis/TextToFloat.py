@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
-                       QgsField)
+                       QgsField,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -63,7 +64,7 @@ class TextToFloat(GeoAlgorithm):
                                               self.INPUT, ParameterTableField.DATA_TYPE_STRING))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Float from text')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
         idx = layer.fields().lookupField(fieldName)
@@ -74,9 +75,9 @@ class TextToFloat(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      layer.wkbType(), layer.crs())
 
-        features = vector.features(layer)
+        features = QgsProcessingUtils.getFeatures(layer, context)
 
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             value = f[idx]
             try:

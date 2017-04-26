@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -65,7 +65,7 @@ class Difference(GeoAlgorithm):
                                           self.tr('Difference layer')))
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layerA = dataobjects.getLayerFromString(
             self.getParameterValue(Difference.INPUT))
         layerB = dataobjects.getLayerFromString(
@@ -79,8 +79,8 @@ class Difference(GeoAlgorithm):
 
         outFeat = QgsFeature()
         index = vector.spatialindex(layerB)
-        selectionA = vector.features(layerA)
-        total = 100.0 / len(selectionA)
+        selectionA = QgsProcessingUtils.getFeatures(layerA, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
         for current, inFeatA in enumerate(selectionA):
             geom = inFeatA.geometry()
             diff_geom = QgsGeometry(geom)

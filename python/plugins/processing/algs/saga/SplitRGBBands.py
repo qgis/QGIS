@@ -68,7 +68,7 @@ class SplitRGBBands(GeoAlgorithm):
         self.addOutput(OutputRaster(SplitRGBBands.B,
                                     self.tr('Output B band layer')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         # TODO: check correct num of bands
         input = self.getParameterValue(SplitRGBBands.INPUT)
         temp = getTempFilename(None).replace('.', '')

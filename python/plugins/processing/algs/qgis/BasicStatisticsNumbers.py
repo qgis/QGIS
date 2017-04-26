@@ -33,7 +33,8 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsStatisticalSummary,
                        QgsFeatureRequest,
-                       QgsProcessingAlgorithm)
+                       QgsProcessingAlgorithm,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
@@ -114,7 +115,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.addOutput(OutputNumber(self.NULLVALUES, self.tr('NULL (missed) values')))
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
@@ -123,8 +124,8 @@ class BasicStatisticsNumbers(GeoAlgorithm):
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([fieldName], layer.fields())
         stat = QgsStatisticalSummary()
-        features = vector.features(layer, request)
-        count = len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context, request)
+        count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / float(count)
         for current, ft in enumerate(features):
             stat.addVariant(ft[fieldName])

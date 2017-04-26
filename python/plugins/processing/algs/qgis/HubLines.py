@@ -30,7 +30,8 @@ from qgis.core import (QgsFeature,
                        QgsGeometry,
                        QgsPoint,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -74,7 +75,7 @@ class HubLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layerHub = dataobjects.getLayerFromString(
             self.getParameterValue(self.HUBS))
         layerSpoke = dataobjects.getLayerFromString(
@@ -90,9 +91,9 @@ class HubLines(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layerSpoke.fields(), QgsWkbTypes.LineString, layerSpoke.crs())
 
-        spokes = vector.features(layerSpoke)
-        hubs = vector.features(layerHub)
-        total = 100.0 / len(spokes)
+        spokes = QgsProcessingUtils.getFeatures(layerSpoke, context)
+        hubs = QgsProcessingUtils.getFeatures(layerHub, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerSpoke, context)
 
         for current, spokepoint in enumerate(spokes):
             p = spokepoint.geometry().boundingBox().center()

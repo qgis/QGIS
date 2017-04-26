@@ -25,7 +25,8 @@ __copyright__ = '(C) 2015, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterNumber
@@ -67,7 +68,7 @@ class Smooth(GeoAlgorithm):
                                           self.tr('Maximum node angle to smooth'), default=180.0, minValue=0.0, maxValue=180.0))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Smoothed')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         iterations = self.getParameterValue(self.ITERATIONS)
@@ -80,8 +81,8 @@ class Smooth(GeoAlgorithm):
                 layer.wkbType(),
                 layer.crs())
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature

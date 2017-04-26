@@ -34,7 +34,8 @@ from qgis.core import (QgsField,
                        QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsApplication,
-                       QgsProject)
+                       QgsProject,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -94,7 +95,7 @@ class HubDistancePoints(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layerPoints = dataobjects.getLayerFromString(
             self.getParameterValue(self.POINTS))
         layerHubs = dataobjects.getLayerFromString(
@@ -121,8 +122,8 @@ class HubDistancePoints(GeoAlgorithm):
         distance.setEllipsoid(QgsProject.instance().ellipsoid())
 
         # Scan source points, find nearest hub, and write to output file
-        features = vector.features(layerPoints)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layerPoints, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerPoints, context)
         for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 

@@ -31,7 +31,8 @@ import sys
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFeature,
                        QgsField,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -92,7 +93,7 @@ class FieldsPyculator(GeoAlgorithm):
                                           self.tr('Formula'), 'value = ', multiline=True))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.getParameterValue(self.FIELD_TYPE)
         fieldLength = self.getParameterValue(self.FIELD_LENGTH)
@@ -144,8 +145,8 @@ class FieldsPyculator(GeoAlgorithm):
                 self.tr("FieldPyculator code execute error. Field code block can't be executed!\n{0}\n{1}").format(str(sys.exc_info()[0].__name__), str(sys.exc_info()[1])))
 
         # Run
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))
             attrs = feat.attributes()

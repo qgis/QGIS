@@ -32,7 +32,8 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint)
+                       QgsPoint,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -100,7 +101,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                                     self.tr('Output'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         shape = self.getParameterValue(self.SHAPE)
@@ -115,7 +116,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 QgsWkbTypes.Polygon,
                 layer.crs())
 
-        features = vector.features(layer)
+        features = QgsProcessingUtils.getFeatures(layer, context)
 
         if shape == 0:
             self.rectangles(writer, features, width, height, rotation)

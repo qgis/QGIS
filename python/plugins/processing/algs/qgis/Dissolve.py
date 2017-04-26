@@ -30,7 +30,7 @@ from collections import defaultdict
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry
+from qgis.core import QgsFeature, QgsGeometry, QgsProcessingUtils
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -73,7 +73,7 @@ class Dissolve(GeoAlgorithm):
                                               self.tr('Unique ID fields'), Dissolve.INPUT, optional=True, multiple=True))
         self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         field_names = self.getParameterValue(Dissolve.FIELD)
         vlayerA = dataobjects.getLayerFromString(
@@ -86,8 +86,8 @@ class Dissolve(GeoAlgorithm):
                 vlayerA.crs())
 
         outFeat = QgsFeature()
-        features = vector.features(vlayerA)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(vlayerA, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayerA, context)
 
         if not useField:
             first = True

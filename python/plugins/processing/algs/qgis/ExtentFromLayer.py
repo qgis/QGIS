@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes
+from qgis.core import QgsField, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -71,7 +71,7 @@ class ExtentFromLayer(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extent'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
@@ -93,7 +93,7 @@ class ExtentFromLayer(GeoAlgorithm):
                                                                      QgsWkbTypes.Polygon, layer.crs())
 
         if byFeature:
-            self.featureExtent(layer, writer, feedback)
+            self.featureExtent(layer, context, writer, feedback)
         else:
             self.layerExtent(layer, writer, feedback)
 
@@ -132,9 +132,9 @@ class ExtentFromLayer(GeoAlgorithm):
         feat.setAttributes(attrs)
         writer.addFeature(feat)
 
-    def featureExtent(self, layer, writer, feedback):
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+    def featureExtent(self, layer, context, writer, feedback):
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         feat = QgsFeature()
         for current, f in enumerate(features):
             rect = f.geometry().boundingBox()

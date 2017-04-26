@@ -25,7 +25,8 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -60,7 +61,7 @@ class RemoveNullGeometry(GeoAlgorithm):
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_ANY]))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Removed null geometry')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         writer = self.getOutputFromName(
@@ -69,8 +70,8 @@ class RemoveNullGeometry(GeoAlgorithm):
                 layer.wkbType(),
                 layer.crs())
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):
             if input_feature.hasGeometry():

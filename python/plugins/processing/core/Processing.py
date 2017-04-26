@@ -233,8 +233,9 @@ class Processing(object):
             feedback = kwargs["feedback"]
         elif iface is not None:
             feedback = MessageBarProgress(alg.displayName())
+        context = dataobjects.createContext()
 
-        ret = execute(alg, feedback)
+        ret = execute(alg, context, feedback)
         if ret:
             if onFinish is not None:
                 onFinish(alg, feedback)

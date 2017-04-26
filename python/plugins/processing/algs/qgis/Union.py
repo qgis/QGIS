@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -74,7 +74,7 @@ class Union(GeoAlgorithm):
                                           self.tr('Input layer 2')))
         self.addOutput(OutputVector(Union.OUTPUT, self.tr('Union')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         vlayerA = dataobjects.getLayerFromString(self.getParameterValue(Union.INPUT))
         vlayerB = dataobjects.getLayerFromString(self.getParameterValue(Union.INPUT2))
 
@@ -90,8 +90,8 @@ class Union(GeoAlgorithm):
 
         count = 0
         nElement = 0
-        featuresA = vector.features(vlayerA)
-        nFeat = len(featuresA)
+        featuresA = QgsProcessingUtils.getFeatures(vlayerA, context)
+        nFeat = QgsProcessingUtils.featureCount(vlayerA, context)
         for inFeatA in featuresA:
             feedback.setProgress(nElement / float(nFeat) * 50)
             nElement += 1
@@ -183,8 +183,8 @@ class Union(GeoAlgorithm):
         length = len(vlayerA.fields())
         atMapA = [None] * length
 
-        featuresA = vector.features(vlayerB)
-        nFeat = len(featuresA)
+        featuresA = QgsProcessingUtils.getFeatures(vlayerB, context)
+        nFeat = QgsProcessingUtils.featureCount(vlayerB, context)
         for inFeatA in featuresA:
             feedback.setProgress(nElement / float(nFeat) * 100)
             add = False

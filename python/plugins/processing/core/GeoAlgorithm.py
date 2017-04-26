@@ -48,7 +48,7 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 from processing.algs.help import shortHelp
 
 
@@ -98,12 +98,13 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             text = self._formatHelp(text)
         return text
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         """Here goes the algorithm itself.
 
         There is no return value from this method.
         A GeoAlgorithmExecutionException should be raised in case
         something goes wrong.
+        :param context:
         """
         pass
 
@@ -173,7 +174,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
     # =========================================================
 
-    def execute(self, feedback=None, model=None):
+    def execute(self, context=None, feedback=None, model=None):
         """The method to use to call a processing algorithm.
 
         Although the body of the algorithm is in processAlgorithm(),
@@ -186,6 +187,8 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
         if feedback is None:
             feedback = QgsProcessingFeedback()
+        if context is None:
+            context = dataobjects.createContext()
 
         self.model = model
         try:
@@ -193,9 +196,9 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             self.resolveOutputs()
             self.evaluateParameterValues()
             self.runPreExecutionScript(feedback)
-            self.processAlgorithm(feedback)
+            self.processAlgorithm(context, feedback)
             feedback.setProgress(100)
-            self.convertUnsupportedFormats(feedback)
+            self.convertUnsupportedFormats(context, feedback)
             self.runPostExecutionScript(feedback)
         except GeoAlgorithmExecutionException as gaee:
             lines = [self.tr('Error while executing algorithm')]
@@ -255,7 +258,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             # all exceptions
             pass
 
-    def convertUnsupportedFormats(self, feedback):
+    def convertUnsupportedFormats(self, context, feedback):
         i = 0
         feedback.setProgressText(self.tr('Converting outputs'))
         for out in self.outputs:
@@ -270,7 +273,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                         layer.fields(),
                         layer.wkbType(), layer.crs()
                     )
-                    features = vector.features(layer)
+                    features = QgsProcessingUtils.getFeatures(layer, context)
                     for feature in features:
                         writer.addFeature(feature)
             elif isinstance(out, OutputRaster):
@@ -305,7 +308,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                 if out.compatible is not None:
                     layer = dataobjects.getLayerFromString(out.compatible)
                     writer = out.getTableWriter(layer.fields())
-                    features = vector.features(layer)
+                    features = QgsProcessingUtils.getFeatures(layer, context)
                     for feature in features:
                         writer.addRecord(feature)
             feedback.setProgress(100 * i / float(len(self.outputs)))

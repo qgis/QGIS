@@ -79,7 +79,7 @@ class VectorLayerScatterplot3D(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot 3D')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
 
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
@@ -89,7 +89,7 @@ class VectorLayerScatterplot3D(GeoAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, xfieldname, yfieldname, zfieldname)
+        values = vector.values(layer, context, xfieldname, yfieldname, zfieldname)
 
         data = [go.Scatter3d(
                 x=values[xfieldname],

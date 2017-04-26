@@ -66,7 +66,7 @@ class CreateAttributeIndex(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Indexed layer'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         file_name = self.getParameterValue(self.INPUT)
         layer = dataobjects.getLayerFromString(file_name)
         field = self.getParameterValue(self.FIELD)

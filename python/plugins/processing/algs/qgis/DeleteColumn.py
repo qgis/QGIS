@@ -25,7 +25,8 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -64,7 +65,7 @@ class DeleteColumn(GeoAlgorithm):
                                               self.tr('Fields to delete'), self.INPUT, multiple=True))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
 
         fields_to_delete = self.getParameterValue(self.COLUMNS).split(';')
@@ -85,8 +86,8 @@ class DeleteColumn(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      layer.wkbType(), layer.crs())
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
             attributes = f.attributes()

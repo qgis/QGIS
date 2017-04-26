@@ -25,13 +25,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeature, QgsGeometry
+from qgis.core import QgsFeature, QgsGeometry, QgsProcessingUtils
 
 from processing.tools import vector
 
 
-def buffering(feedback, writer, distance, field, useField, layer, dissolve,
-              segments, endCapStyle=1, joinStyle=1, mitreLimit=2):
+def buffering(feedback, context, writer, distance, field, useField, layer, dissolve, segments, endCapStyle=1,
+              joinStyle=1, mitreLimit=2):
 
     if useField:
         field = layer.fields().lookupField(field)
@@ -39,8 +39,8 @@ def buffering(feedback, writer, distance, field, useField, layer, dissolve,
     outFeat = QgsFeature()
 
     current = 0
-    features = vector.features(layer)
-    total = 100.0 / float(len(features))
+    features = QgsProcessingUtils.getFeatures(layer, context)
+    total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
     # With dissolve
     if dissolve:

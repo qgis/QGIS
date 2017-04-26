@@ -71,7 +71,7 @@ class MeanAndStdDevPlot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Plot')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT))
         namefieldname = self.getParameterValue(self.NAME_FIELD)
@@ -79,7 +79,7 @@ class MeanAndStdDevPlot(GeoAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, namefieldname, valuefieldname)
+        values = vector.values(layer, context, namefieldname, valuefieldname)
 
         d = {}
         for i in range(len(values[namefieldname])):

@@ -30,7 +30,8 @@ from qgis.core import (QgsApplication,
                        QgsField,
                        QgsFeatureRequest,
                        QgsFeature,
-                       QgsGeometry)
+                       QgsGeometry,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -73,7 +74,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
                                           self.tr('Count field name'), 'NUMPOINTS'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Unique count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         polyLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POLYGONS))
         pointLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
@@ -95,8 +96,8 @@ class PointsInPolygonUnique(GeoAlgorithm):
         outFeat = QgsFeature()
         geom = QgsGeometry()
 
-        features = vector.features(polyLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(polyLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
         for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()
             engine = QgsGeometry.createGeometryEngine(geom.geometry())

@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsGeometry, QgsFeatureRequest
+from qgis.core import QgsGeometry, QgsFeatureRequest, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterSelection
@@ -93,7 +93,7 @@ class SelectByLocation(GeoAlgorithm):
                                              self.methods, 0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (location)'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         inputLayer = dataobjects.getLayerFromString(filename)
         method = self.getParameterValue(self.METHOD)
@@ -108,13 +108,13 @@ class SelectByLocation(GeoAlgorithm):
 
         if 'disjoint' in predicates:
             disjoinSet = []
-            for feat in vector.features(inputLayer):
+            for feat in QgsProcessingUtils.getFeatures(inputLayer, context):
                 disjoinSet.append(feat.id())
 
         geom = QgsGeometry()
         selectedSet = []
-        features = vector.features(selectLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(selectLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(selectLayer, context)
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
             bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)

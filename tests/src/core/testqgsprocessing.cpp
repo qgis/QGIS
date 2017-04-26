@@ -19,11 +19,15 @@
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingutils.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
 #include <QObject>
 #include <QtTest/QSignalSpy>
+#include "qgis.h"
 #include "qgstest.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
+#include "qgspointv2.h"
+#include "qgsgeometry.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -102,6 +106,8 @@ class TestQgsProcessing: public QObject
     void normalizeLayerSource();
     void mapLayerFromString();
     void algorithm();
+    void features();
+    void uniqueValues();
 
   private:
 
@@ -428,6 +434,162 @@ void TestQgsProcessing::algorithm()
   QVERIFY( p3->algorithms().isEmpty() );
   r.addProvider( p3 );
   QCOMPARE( p3->algorithms().size(), 2 );
+}
+
+void TestQgsProcessing::features()
+{
+  QgsVectorLayer *layer = new QgsVectorLayer( "Point", "v1", "memory" );
+  for ( int i = 1; i < 6; ++i )
+  {
+    QgsFeature f( i );
+    f.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+    layer->dataProvider()->addFeatures( QgsFeatureList() << f );
+  }
+
+  QgsProcessingContext context;
+  // disable check for geometry validity
+  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+
+  std::function< QgsFeatureIds( QgsFeatureIterator it ) > getIds = []( QgsFeatureIterator it )
+  {
+    QgsFeature f;
+    QgsFeatureIds ids;
+    while ( it.nextFeature( f ) )
+    {
+      ids << f.id();
+    }
+    return ids;
+  };
+
+  // test with all features
+  QgsFeatureIds ids = getIds( QgsProcessingUtils::getFeatures( layer, context ) );
+  QCOMPARE( ids, QgsFeatureIds() << 1 << 2 << 3 << 4 << 5 );
+  QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 5L );
+
+  // test with selected features
+  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  layer->selectByIds( QgsFeatureIds() << 2 << 4 );
+  ids = getIds( QgsProcessingUtils::getFeatures( layer, context ) );
+  QCOMPARE( ids, QgsFeatureIds() << 2 << 4 );
+  QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 2L );
+
+  // selection, but not using selected features
+  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  layer->selectByIds( QgsFeatureIds() << 2 << 4 );
+  ids = getIds( QgsProcessingUtils::getFeatures( layer, context ) );
+  QCOMPARE( ids, QgsFeatureIds() << 1 << 2 << 3 << 4 << 5 );
+  QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 5L );
+
+  // using selected features, but no selection
+  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  layer->removeSelection();
+  ids = getIds( QgsProcessingUtils::getFeatures( layer, context ) );
+  QCOMPARE( ids, QgsFeatureIds() << 1 << 2 << 3 << 4 << 5 );
+  QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 5L );
+
+
+  // test that feature request is honored
+  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  ids = getIds( QgsProcessingUtils::getFeatures( layer, context, QgsFeatureRequest().setFilterFids( QgsFeatureIds() << 1 << 3 << 5 ) ) );
+  QCOMPARE( ids, QgsFeatureIds() << 1 << 3 << 5 );
+
+  // count is only rough - but we expect (for now) to see full layer count
+  QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 5L );
+
+
+  //test that feature request is honored when using selections
+  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  layer->selectByIds( QgsFeatureIds() << 2 << 4 );
+  ids = getIds( QgsProcessingUtils::getFeatures( layer, context, QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) ) );
+  QCOMPARE( ids, QgsFeatureIds() << 2 << 4 );
+
+  // test callback is hit when filtering invalid geoms
+  bool encountered = false;
+  std::function< void( const QgsFeature & ) > callback = [ &encountered ]( const QgsFeature & )
+  {
+    encountered = true;
+  };
+
+  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  context.setInvalidGeometryCheck( QgsFeatureRequest::GeometryAbortOnInvalid );
+  context.setInvalidGeometryCallback( callback );
+  QgsVectorLayer *polyLayer = new QgsVectorLayer( "Polygon", "v2", "memory" );
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 1 0, 0 1, 1 1, 0 0))" ) ) );
+  polyLayer->dataProvider()->addFeatures( QgsFeatureList() << f );
+
+  ids = getIds( QgsProcessingUtils::getFeatures( polyLayer, context ) );
+  QVERIFY( encountered );
+
+  encountered = false;
+  context.setInvalidGeometryCheck( QgsFeatureRequest::GeometryNoCheck );
+  ids = getIds( QgsProcessingUtils::getFeatures( polyLayer, context ) );
+  QVERIFY( !encountered );
+
+  delete layer;
+  delete polyLayer;
+}
+
+void TestQgsProcessing::uniqueValues()
+{
+  QgsVectorLayer *layer = new QgsVectorLayer( "Point?field=a:integer&field=b:string", "v1", "memory" );
+  for ( int i = 0; i < 6; ++i )
+  {
+    QgsFeature f( i );
+    f.setAttributes( QgsAttributes() << i % 3 + 1 << QString( QChar( ( i % 3 ) + 65 ) ) );
+    layer->dataProvider()->addFeatures( QgsFeatureList() << f );
+  }
+
+  QgsProcessingContext context;
+  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+
+  // some bad checks
+  QVERIFY( QgsProcessingUtils::uniqueValues( nullptr, 0, context ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::uniqueValues( nullptr, -1, context ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::uniqueValues( nullptr, 10001, context ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::uniqueValues( layer, -1, context ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::uniqueValues( layer, 10001, context ).isEmpty() );
+
+  // good checks
+  QList< QVariant > vals = QgsProcessingUtils::uniqueValues( layer, 0, context );
+  QCOMPARE( vals.count(), 3 );
+  QVERIFY( vals.contains( 1 ) );
+  QVERIFY( vals.contains( 2 ) );
+  QVERIFY( vals.contains( 3 ) );
+  vals = QgsProcessingUtils::uniqueValues( layer, 1, context );
+  QCOMPARE( vals.count(), 3 );
+  QVERIFY( vals.contains( QString( "A" ) ) );
+  QVERIFY( vals.contains( QString( "B" ) ) );
+  QVERIFY( vals.contains( QString( "C" ) ) );
+
+  //using only selected features
+  layer->selectByIds( QgsFeatureIds() << 1 << 2 << 4 );
+  // but not using selection yet...
+  vals = QgsProcessingUtils::uniqueValues( layer, 0, context );
+  QCOMPARE( vals.count(), 3 );
+  QVERIFY( vals.contains( 1 ) );
+  QVERIFY( vals.contains( 2 ) );
+  QVERIFY( vals.contains( 3 ) );
+  vals = QgsProcessingUtils::uniqueValues( layer, 1, context );
+  QCOMPARE( vals.count(), 3 );
+  QVERIFY( vals.contains( QString( "A" ) ) );
+  QVERIFY( vals.contains( QString( "B" ) ) );
+  QVERIFY( vals.contains( QString( "C" ) ) );
+
+  // selection and using selection
+  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  QVERIFY( QgsProcessingUtils::uniqueValues( layer, -1, context ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::uniqueValues( layer, 10001, context ).isEmpty() );
+  vals = QgsProcessingUtils::uniqueValues( layer, 0, context );
+  QCOMPARE( vals.count(), 2 );
+  QVERIFY( vals.contains( 1 ) );
+  QVERIFY( vals.contains( 2 ) );
+  vals = QgsProcessingUtils::uniqueValues( layer, 1, context );
+  QCOMPARE( vals.count(), 2 );
+  QVERIFY( vals.contains( QString( "A" ) ) );
+  QVERIFY( vals.contains( QString( "B" ) ) );
+
+  delete layer;
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

@@ -70,7 +70,7 @@ class OgrInfo(GdalAlgorithm):
         arguments.append(conn)
         return arguments
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         GdalUtils.runGdal(self.getConsoleCommands(), feedback)
         output = self.getOutputValue(self.OUTPUT)
         with open(output, 'w') as f:

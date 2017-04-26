@@ -30,7 +30,8 @@ from qgis.core import (QgsFeature,
                        QgsVectorLayer,
                        QgsCoordinateReferenceSystem,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -103,7 +104,7 @@ class ExecuteSQL(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('SQL Output')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layers = self.getParameterValue(self.INPUT_DATASOURCES)
         query = self.getParameterValue(self.INPUT_QUERY)
         uid_field = self.getParameterValue(self.INPUT_UID_FIELD)
@@ -151,8 +152,8 @@ class ExecuteSQL(GeoAlgorithm):
             vLayer.wkbType() if geometry_type != 1 else 1,
             vLayer.crs())
 
-        features = vector.features(vLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(vLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vLayer, context)
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             outFeat.setAttributes(inFeat.attributes())

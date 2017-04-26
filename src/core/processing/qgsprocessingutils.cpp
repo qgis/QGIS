@@ -18,6 +18,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgsprocessingcontext.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -170,5 +171,61 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
   normalized.replace( '\\', '/' );
   normalized.replace( '"', "'" );
   return normalized.trimmed();
+}
+
+QgsFeatureIterator QgsProcessingUtils::getFeatures( QgsVectorLayer *layer, const QgsProcessingContext &context, const QgsFeatureRequest &request )
+{
+  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
+
+  QgsFeatureRequest req( request );
+  req.setInvalidGeometryCheck( context.invalidGeometryCheck() );
+  req.setInvalidGeometryCallback( context.invalidGeometryCallback() );
+  if ( useSelection )
+  {
+    return layer->selectedFeaturesIterator( req );
+  }
+  else
+  {
+    return layer->getFeatures( req );
+  }
+}
+
+long QgsProcessingUtils::featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context )
+{
+  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
+  if ( useSelection )
+    return layer->selectedFeatureCount();
+  else
+    return layer->featureCount();
+}
+
+QList<QVariant> QgsProcessingUtils::uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context )
+{
+  if ( !layer )
+    return QList<QVariant>();
+
+  if ( fieldIndex < 0 || fieldIndex >= layer->fields().count() )
+    return QList<QVariant>();
+
+  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
+  if ( !useSelection )
+  {
+    // not using selection, so use provider optimised version
+    QList<QVariant> values;
+    layer->uniqueValues( fieldIndex, values );
+    return values;
+  }
+  else
+  {
+    // using selection, so we have to iterate through selected features
+    QSet<QVariant> values;
+    QgsFeature f;
+    QgsFeatureIterator it = layer->selectedFeaturesIterator( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << fieldIndex ).setFlags( QgsFeatureRequest::NoGeometry ) );
+    while ( it.nextFeature( f ) )
+    {
+      values.insert( f.attribute( fieldIndex ) );
+    }
+    return values.toList();
+  }
 }
 

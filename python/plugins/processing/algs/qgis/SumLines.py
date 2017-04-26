@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, QgsDistanceArea
+from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, QgsDistanceArea, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -72,7 +72,7 @@ class SumLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         lineLayer = dataobjects.getLayerFromString(self.getParameterValue(self.LINES))
         polyLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POLYGONS))
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
@@ -95,8 +95,8 @@ class SumLines(GeoAlgorithm):
         outGeom = QgsGeometry()
         distArea = QgsDistanceArea()
 
-        features = vector.features(polyLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(polyLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
         hasIntersections = False
         for current, ftPoly in enumerate(features):
             inGeom = ftPoly.geometry()

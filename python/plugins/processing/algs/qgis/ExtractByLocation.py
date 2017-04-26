@@ -26,7 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -85,7 +86,7 @@ class ExtractByLocation(GeoAlgorithm):
                                           0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (location)')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = dataobjects.getLayerFromString(filename)
         filename = self.getParameterValue(self.INTERSECT)
@@ -101,12 +102,12 @@ class ExtractByLocation(GeoAlgorithm):
 
         if 'disjoint' in predicates:
             disjoinSet = []
-            for feat in vector.features(layer):
+            for feat in QgsProcessingUtils.getFeatures(layer, context):
                 disjoinSet.append(feat.id())
 
         selectedSet = []
-        features = vector.features(selectLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(selectLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(selectLayer, context)
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
             bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
@@ -133,8 +134,8 @@ class ExtractByLocation(GeoAlgorithm):
         if 'disjoint' in predicates:
             selectedSet = selectedSet + disjoinSet
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             if f.id() in selectedSet:
                 writer.addFeature(f)

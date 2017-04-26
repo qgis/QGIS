@@ -65,7 +65,7 @@ class SpatialIndex(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Indexed layer'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = dataobjects.getLayerFromString(fileName)
         provider = layer.dataProvider()

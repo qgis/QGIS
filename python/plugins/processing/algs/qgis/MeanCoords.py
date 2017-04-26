@@ -31,7 +31,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -78,7 +78,7 @@ class MeanCoords(GeoAlgorithm):
 
         self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)
@@ -101,8 +101,8 @@ class MeanCoords(GeoAlgorithm):
             fieldList, QgsWkbTypes.Point, layer.crs()
         )
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         means = {}
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))

@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsMapToPixelSimplifier
+from qgis.core import QgsMapToPixelSimplifier, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -77,7 +77,7 @@ class SimplifyGeometries(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         tolerance = self.getParameterValue(self.TOLERANCE)
         method = self.getParameterValue(self.METHOD)
@@ -88,8 +88,8 @@ class SimplifyGeometries(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields().toList(), layer.wkbType(), layer.crs())
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         if method != 0:
             simplifier = QgsMapToPixelSimplifier(QgsMapToPixelSimplifier.SimplifyGeometry, tolerance, method)

@@ -36,7 +36,8 @@ from qgis.core import (QgsApplication,
                        QgsField,
                        QgsGeometry,
                        QgsDistanceArea,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -87,7 +88,7 @@ class PointsToPaths(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.VECTOR))
         groupField = self.getParameterValue(self.GROUP_FIELD)
@@ -104,8 +105,8 @@ class PointsToPaths(GeoAlgorithm):
             fields, QgsWkbTypes.LineString, layer.crs())
 
         points = dict()
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             point = f.geometry().asPoint()
             group = f[groupField]

@@ -27,7 +27,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
-                       QgsStatisticalSummary)
+                       QgsStatisticalSummary,
+                       QgsProcessingUtils)
 from processing.core.outputs import OutputTable
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.tools import dataobjects, vector
@@ -69,7 +70,7 @@ class StatisticsByCategories(GeoAlgorithm):
 
         self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics by category')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_LAYER))
         valuesFieldName = self.getParameterValue(self.VALUES_FIELD_NAME)
         categoriesFieldName = self.getParameterValue(self.CATEGORIES_FIELD_NAME)
@@ -78,8 +79,8 @@ class StatisticsByCategories(GeoAlgorithm):
         valuesField = layer.fields().lookupField(valuesFieldName)
         categoriesField = layer.fields().lookupField(categoriesFieldName)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         values = {}
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))

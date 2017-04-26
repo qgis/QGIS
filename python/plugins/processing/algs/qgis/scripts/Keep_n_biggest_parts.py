@@ -5,7 +5,7 @@ from builtins import range
 ##Biggest parts=output vector
 
 from processing.tools import dataobjects
-from qgis.core import QgsGeometry, QgsWkbTypes
+from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 from operator import itemgetter
 
 To_keep = int(To_keep)
@@ -21,7 +21,7 @@ writer = processing.VectorWriter(Results, None, polyPrder.fields(),
                                  QgsWkbTypes.MultiPolygon, polyPrder.crs())
 
 
-for n, feat in enumerate(processing.features(polyLayer)):
+for n, feat in enumerate(QgsProcessingUtils.getFeatures(polyLayer, context)):
     feedback.setProgress(int(100 * n / count))
     geom = feat.geometry()
     if geom.isMultipart():
