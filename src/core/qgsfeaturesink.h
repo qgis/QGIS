@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 
 /**
  * \class QgsFeatureSink
@@ -48,6 +49,12 @@ class CORE_EXPORT QgsFeatureSink
      * \returns true in case of success and false in case of failure
      */
     virtual bool addFeatures( QgsFeatureList &features ) = 0;
+
+    /**
+     * Adds all features from the specified \a iterator to the sink.
+     * \returns true if all features were added successfully, or false if any feature could not be added
+     */
+    virtual bool addFeatures( QgsFeatureIterator &iterator );
 
 };
 

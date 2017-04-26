@@ -40,6 +40,13 @@ class QgsFeatureSink
  :rtype: bool
 %End
 
+    virtual bool addFeatures( QgsFeatureIterator &iterator );
+%Docstring
+ Adds all features from the specified ``iterator`` to the sink.
+ :return: true if all features were added successfully, or false if any feature could not be added
+ :rtype: bool
+%End
+
 };
 
 /************************************************************************
