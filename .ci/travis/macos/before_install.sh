@@ -54,9 +54,6 @@ brew install \
     qtkeychain \
     gnu-sed
 
-brew link bison --force
-brew link flex --force
-
 
 # Fix qscintilla typo
 wget https://gist.githubusercontent.com/m-kuhn/f70e4b160dd7b18eb8d637ed2a75df6d/raw/6eb8a0c8601ec52ad9ad41c01d0fad68fe967aa1/qsci.patch
