@@ -28,6 +28,7 @@ class QgsFeatureSink
 %Docstring
  Adds a single ``feature`` to the sink.
  \see addFeatures()
+ :return: true in case of success and false in case of failure
  :rtype: bool
 %End
 
@@ -35,6 +36,7 @@ class QgsFeatureSink
 %Docstring
  Adds a list of ``features`` to the sink.
  \see addFeature()
+ :return: true in case of success and false in case of failure
  :rtype: bool
 %End
 
