@@ -245,4 +245,4 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def error(self, text):
         QMessageBox.critical(self, "Error", text)
-        QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL, text)
+        QgsMessageLog.logMessage(text, self.tr('Processing'), QgsMessageLog.CRITICAL)

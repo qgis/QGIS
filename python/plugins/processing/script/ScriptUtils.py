@@ -70,10 +70,11 @@ class ScriptUtils(object):
                         if alg.name().strip() != '':
                             algs.append(alg)
                     except WrongScriptException as e:
-                        QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL, e.msg)
+                        QgsMessageLog.logMessage(e.msg, QCoreApplication.translate('Processing', 'Processing'), QgsMessageLog.CRITICAL)
                     except Exception as e:
-                        QgsProcessingUtils.logMessage(
-                            QgsMessageLog.CRITICAL,
-                            QCoreApplication.translate('Processing', 'Could not load script: {0}\n{1}').format(descriptionFile, str(e))
+                        QgsMessageLog.logMessage(
+                            QCoreApplication.translate('Processing', 'Could not load script: {0}\n{1}').format(descriptionFile, str(e)),
+                            QCoreApplication.translate('Processing', 'Processing'),
+                            QgsMessageLog.CRITICAL
                         )
         return algs

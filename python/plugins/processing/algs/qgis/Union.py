@@ -111,8 +111,8 @@ class Union(GeoAlgorithm):
                 except:
                     # This really shouldn't happen, as we haven't
                     # edited the input geom at all
-                    QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
-                                                  self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                    QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
+                                             self.tr('Processing'), QgsMessageLog.INFO)
             else:
                 request = QgsFeatureRequest().setFilterFids(intersects)
 
@@ -131,8 +131,8 @@ class Union(GeoAlgorithm):
 
                         if not int_geom:
                             # There was a problem creating the intersection
-                            QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
-                                                          self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
+                            QgsMessageLog.logMessage(self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'),
+                                                     self.tr('Processing'), QgsMessageLog.INFO)
                             int_geom = QgsGeometry()
                         else:
                             int_geom = QgsGeometry(int_geom)
@@ -148,8 +148,8 @@ class Union(GeoAlgorithm):
                                         outFeat.setAttributes(atMapA + atMapB)
                                         writer.addFeature(outFeat)
                                     except:
-                                        QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
-                                                                      self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                                        QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
+                                                                 self.tr('Processing'), QgsMessageLog.INFO)
                         else:
                             # Geometry list: prevents writing error
                             # in geometries of different types
@@ -161,8 +161,8 @@ class Union(GeoAlgorithm):
                                     outFeat.setAttributes(atMapA + atMapB)
                                     writer.addFeature(outFeat)
                                 except:
-                                    QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
-                                                                  self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                                    QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
+                                                             self.tr('Processing'), QgsMessageLog.INFO)
 
                 # the remaining bit of inFeatA's geometry
                 # if there is nothing left, this will just silently fail and we're good
@@ -181,8 +181,8 @@ class Union(GeoAlgorithm):
                     outFeat.setAttributes(atMapA)
                     writer.addFeature(outFeat)
                 except:
-                    QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
-                                                  self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                    QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
+                                             self.tr('Processing'), QgsMessageLog.INFO)
 
         length = len(vlayerA.fields())
         atMapA = [None] * length
@@ -204,8 +204,8 @@ class Union(GeoAlgorithm):
                     outFeat.setAttributes(atMap)
                     writer.addFeature(outFeat)
                 except:
-                    QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
-                                                  self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                    QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
+                                             self.tr('Processing'), QgsMessageLog.INFO)
             else:
                 request = QgsFeatureRequest().setFilterFids(intersects)
 
@@ -228,8 +228,8 @@ class Union(GeoAlgorithm):
                             outFeat.setAttributes(atMap)
                             writer.addFeature(outFeat)
                         except:
-                            QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
-                                                          self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                            QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
+                                                     self.tr('Processing'), QgsMessageLog.INFO)
 
             if add:
                 try:
@@ -237,8 +237,8 @@ class Union(GeoAlgorithm):
                     outFeat.setAttributes(atMap)
                     writer.addFeature(outFeat)
                 except:
-                    QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
-                                                  self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                    QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
+                                             self.tr('Processing'), QgsMessageLog.INFO)
             nElement += 1
 
         del writer

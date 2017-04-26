@@ -159,7 +159,7 @@ class RUtils(object):
         loglines += RUtils.allConsoleResults
         for line in loglines:
             feedback.pushConsoleInfo(line)
-        QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)
+        QgsMessageLog.logMessage(loglines, RUtils.tr('Processing'), QgsMessageLog.INFO)
 
     @staticmethod
     def createConsoleOutput():

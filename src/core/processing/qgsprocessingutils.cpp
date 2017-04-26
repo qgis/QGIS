@@ -229,9 +229,4 @@ QList<QVariant> QgsProcessingUtils::uniqueValues( QgsVectorLayer *layer, int fie
   }
 }
 
-void QgsProcessingUtils::logMessage( QgsMessageLog::MessageLevel level, const QString &message )
-{
-  QgsMessageLog::logMessage( message, QObject::tr( "Processing" ), level );
-}
-
 

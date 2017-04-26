@@ -139,9 +139,8 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                 nIterations += 1
 
             if nPoints < pointCount:
-                QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
-                                              self.tr('Can not generate requested number of random '
-                                                      'points. Maximum number of attempts exceeded.'))
+                QgsMessageLog.logMessage(self.tr('Can not generate requested number of random '
+                                                 'points. Maximum number of attempts exceeded.'), self.tr('Processing'), QgsMessageLog.INFO)
 
             feedback.setProgress(0)
 

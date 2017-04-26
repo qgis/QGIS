@@ -88,8 +88,7 @@ class FixGeometry(GeoAlgorithm):
             if inputFeature.geometry():
                 outputGeometry = inputFeature.geometry().makeValid()
                 if not outputGeometry:
-                    QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
-                                                  'makeValid failed for feature {}'.format(inputFeature.id()))
+                    QgsMessageLog.logMessage('makeValid failed for feature {}'.format(inputFeature.id()), self.tr('Processing'), QgsMessageLog.WARNING)
 
                 if outputGeometry.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(outputGeometry.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                     tmpGeometries = outputGeometry.asGeometryCollection()

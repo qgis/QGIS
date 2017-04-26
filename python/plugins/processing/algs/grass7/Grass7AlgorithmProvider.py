@@ -98,13 +98,10 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
                     if alg.name().strip() != '':
                         algs.append(alg)
                     else:
-                        QgsProcessingUtils.logMessage(
-                            QgsMessageLog.CRITICAL,
-                            self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile))
+                        QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), QgsMessageLog.CRITICAL)
                 except Exception as e:
-                    QgsProcessingUtils.logMessage(
-                        QgsMessageLog.CRITICAL,
-                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)))
+                    QgsMessageLog.logMessage(
+                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)), self.tr('Processing'), QgsMessageLog.CRITICAL)
         algs.append(nviz7())
         return algs
 

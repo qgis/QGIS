@@ -176,8 +176,7 @@ class Heatmap(GeoAlgorithm):
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             if kde.addFeature(f) != QgsKernelDensityEstimation.Success:
-                QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
-                                              self.tr('Error adding feature with ID {} to heatmap').format(f.id()))
+                QgsMessageLog.logMessage(self.tr('Error adding feature with ID {} to heatmap').format(f.id()), self.tr('Processing'), QgsMessageLog.CRITICAL)
 
             feedback.setProgress(int(current * total))
 

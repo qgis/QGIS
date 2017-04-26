@@ -109,8 +109,8 @@ class SymmetricalDifference(GeoAlgorithm):
                 outFeat.setAttributes(attrs)
                 writer.addFeature(outFeat)
             except:
-                QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
-                                              self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
+                                         self.tr('Processing'), QgsMessageLog.WARNING)
                 continue
 
             count += 1
@@ -135,8 +135,8 @@ class SymmetricalDifference(GeoAlgorithm):
                 outFeat.setAttributes(attrs)
                 writer.addFeature(outFeat)
             except:
-                QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
-                                              self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
+                                         self.tr('Processing'), QgsMessageLog.WARNING)
                 continue
 
             count += 1

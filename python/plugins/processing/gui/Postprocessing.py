@@ -74,8 +74,7 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
                                      RenderingStyles.getStyle(alg.id(),
                                                               out.name))
             except Exception:
-                QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
-                                              "Error loading result layer:\n" + traceback.format_exc())
+                QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
                 wrongLayers.append(out.description)
         elif isinstance(out, OutputHTML):
             resultsList.addResult(alg.icon(), out.description, out.value)

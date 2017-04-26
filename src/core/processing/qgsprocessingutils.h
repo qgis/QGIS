@@ -131,11 +131,6 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );
 
-    /**
-     * Logs a processing \a message of a specified \a level to the QGIS message log.
-     */
-    static void logMessage( QgsMessageLog::MessageLevel level, const QString &message );
-
   private:
 
     static bool canUseLayer( const QgsRasterLayer *layer );

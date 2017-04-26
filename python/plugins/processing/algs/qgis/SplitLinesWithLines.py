@@ -135,8 +135,8 @@ class SplitLinesWithLines(GeoAlgorithm):
                                 try:
                                     result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
                                 except:
-                                    QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
-                                                                  self.tr('Geometry exception while splitting'))
+                                    QgsMessageLog.logMessage(self.tr('Geometry exception while splitting'),
+                                                             self.tr('Processing'), QgsMessageLog.WARNING)
                                     result = 1
 
                                 # splitGeometry: If there are several intersections

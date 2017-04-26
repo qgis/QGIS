@@ -86,8 +86,8 @@ class EliminateSelection(GeoAlgorithm):
         smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
 
         if inLayer.selectedFeatureCount() == 0:
-            QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
-                                          self.tr('{0}: (No selection in input layer "{1}")').format(self.displayName(), self.getParameterValue(self.INPUT)))
+            QgsMessageLog.logMessage(self.tr('{0}: (No selection in input layer "{1}")').format(self.displayName(), self.getParameterValue(self.INPUT)),
+                                     self.tr('Processing'), QgsMessageLog.WARNING)
 
         featToEliminate = []
         selFeatIds = inLayer.selectedFeatureIds()

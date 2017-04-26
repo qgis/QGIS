@@ -86,8 +86,7 @@ def sagaPath():
     folder = ProcessingConfig.getSetting(SAGA_FOLDER)
     if folder and not os.path.isdir(folder):
         folder = None
-        QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
-                                      'Specified SAGA folder does not exist. Will try to find built-in binaries.')
+        QgsMessageLog.logMessage('Specified SAGA folder does not exist. Will try to find built-in binaries.', 'Processing', QgsMessageLog.WARNING)
     if folder is None or folder == '':
         folder = findSagaFolder()
 
@@ -200,4 +199,4 @@ def executeSaga(feedback):
             pass
 
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):
-        QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)
+        QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)

@@ -113,5 +113,5 @@ class SimplifyGeometries(GeoAlgorithm):
 
         del writer
 
-        QgsProcessingUtils.logMessage(QgsMessageLog.INFO,
-                                      self.tr('Simplify: Input geometries have been simplified from {0} to {1} points').format(pointsBefore, pointsAfter))
+        QgsMessageLog.logMessage(self.tr('Simplify: Input geometries have been simplified from {0} to {1} points').format(pointsBefore, pointsAfter),
+                                 self.tr('Processing'), QgsMessageLog.INFO)

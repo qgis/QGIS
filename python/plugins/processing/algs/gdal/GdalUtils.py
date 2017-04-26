@@ -80,7 +80,7 @@ class GdalUtils(object):
                 os.putenv('PATH', envval)
 
         fused_command = ' '.join([str(c) for c in commands])
-        QgsProcessingUtils.logMessage(QgsMessageLog.INFO, fused_command)
+        QgsMessageLog.logMessage(fused_command, 'Processing', QgsMessageLog.INFO)
         feedback.pushInfo('GDAL command:')
         feedback.pushCommandInfo(fused_command)
         feedback.pushInfo('GDAL command output:')
@@ -108,7 +108,7 @@ class GdalUtils(object):
                 else:
                     raise IOError(e.message + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(len(loglines), u'\n'.join(loglines[-10:])))
 
-            QgsProcessingUtils.logMessage(QgsMessageLog.INFO, '\n'.join(loglines))
+            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
             GdalUtils.consoleOutput = loglines
 
     @staticmethod

@@ -2229,7 +2229,7 @@ object of type QgsProcessingFeedback, and will need to adapt their use of progre
 - SilentProgress was removed. Use the base QgsProcessingFeedback class instead.
 - algList was removed. Use QgsApplication.processingRegistry() instead.
 - Processing.algs was removed. QgsApplication.processingRegistry().algorithms() instead.
-- ProcessingLog should not be used when reporting log messages from algorithms. Use QgsProcessingUtils.logMessage() instead.
+- ProcessingLog should not be used when reporting log messages from algorithms. Use QgsMessageLog.logMessage() instead.
 
 Triangulation        {#qgis_api_break_3_0_Triangulation}
 -------------

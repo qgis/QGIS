@@ -141,10 +141,9 @@ class Clip(GeoAlgorithm):
                     out_feat.setAttributes(in_feat.attributes())
                     writer.addFeature(out_feat)
                 except:
-                    QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
-                                                  self.tr('Feature geometry error: One or more '
-                                                          'output features ignored due to '
-                                                          'invalid geometry.'))
+                    QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more '
+                                                     'output features ignored due to '
+                                                     'invalid geometry.'), self.tr('Processing'), QgsMessageLog.CRITICAL)
                     continue
 
                 if single_clip_feature:

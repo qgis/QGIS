@@ -140,11 +140,11 @@ class RAlgorithmProvider(QgsProcessingProvider):
                         if alg.name().strip() != '':
                             self.algs.append(alg)
                     except WrongScriptException as e:
-                        QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL, e.msg)
+                        QgsMessageLog.logMessage(e.msg, self.tr('Processing'), QgsMessageLog.CRITICAL)
                     except Exception as e:
-                        QgsProcessingUtils.logMessage(
-                            QgsMessageLog.CRITICAL,
-                            self.tr('Could not load R script: {0}\n{1}').format(descriptionFile, str(e)))
+                        QgsMessageLog.logMessage(
+                            self.tr('Could not load R script: {0}\n{1}').format(descriptionFile, str(e)),
+                            self.tr('Processing'), QgsMessageLog.CRITICAL)
         return
 
     def tr(self, string, context=''):

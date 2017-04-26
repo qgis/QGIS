@@ -106,8 +106,8 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
                             alg.descriptionFile = fullpath
                             self.algs.append(alg)
                         else:
-                            QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
-                                                          self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile))
+                            QgsMessageLog.logMessage(self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile),
+                                                     self.tr('Processing'), QgsMessageLog.CRITICAL)
                     except WrongModelException as e:
-                        QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
-                                                      self.tr('Could not load model {0}\n{1}', 'ModelerAlgorithmProvider').format(descriptionFile, e.msg))
+                        QgsMessageLog.logMessage(self.tr('Could not load model {0}\n{1}', 'ModelerAlgorithmProvider').format(descriptionFile, e.msg),
+                                                 self.tr('Processing'), QgsMessageLog.CRITICAL)

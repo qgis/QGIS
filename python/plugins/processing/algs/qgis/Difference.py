@@ -102,8 +102,7 @@ class Difference(GeoAlgorithm):
                 outFeat.setAttributes(attrs)
                 writer.addFeature(outFeat)
             except:
-                QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
-                                              self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'), self.tr('Processing'), QgsMessageLog.WARNING)
                 continue
 
             feedback.setProgress(int(current * total))

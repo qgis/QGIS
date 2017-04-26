@@ -150,11 +150,10 @@ class Processing(object):
                 QgsMessageLog.logMessage(
                     Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name),
                     Processing.tr("Processing"))
-                QgsProcessingUtils.logMessage(
-                    QgsMessageLog.CRITICAL,
-                    Processing.tr('Error in {0}. Wrong parameter value {1} for parameter {2}.').format(
-                        alg.name(), value, name
-                    )
+                QgsMessageLog.logMessage(Processing.tr('Error in {0}. Wrong parameter value {1} for parameter {2}.').format(
+                    alg.name(), value, name
+                ), Processing.tr("Processing"),
+                    QgsMessageLog.CRITICAL
                 )
                 return
             # fill any missing parameters with default values if allowed
@@ -166,11 +165,6 @@ class Processing(object):
                         QgsMessageLog.logMessage(
                             Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name),
                             Processing.tr("Processing"))
-                        QgsProcessingUtils.logMessage(
-                            QgsMessageLog.CRITICAL,
-                            Processing.tr('Error in {0}. Missing parameter value for parameter {1}.').format(
-                                alg.name(), param.name)
-                        )
                         return
         else:
             if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():

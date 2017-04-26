@@ -484,14 +484,15 @@ class ModelerDialog(BASE, WIDGET):
                 self.view.centerOn(0, 0)
                 self.hasChanged = False
             except WrongModelException as e:
-                QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
-                                              self.tr('Could not load model {0}\n{1}').format(filename, e.msg))
+                QgsMessageLog.logMessage(self.tr('Could not load model {0}\n{1}').format(filename, e.msg),
+                                         self.tr('Processing'),
+                                         QgsMessageLog.CRITICAL)
                 QMessageBox.critical(self, self.tr('Could not open model'),
                                      self.tr('The selected model could not be loaded.\n'
                                              'See the log for more information.'))
             except Exception as e:
-                QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
-                                              self.tr('Could not load model {0}\n{1}').format(filename, e.args[0]))
+                QgsMessageLog.logMessage(self.tr('Could not load model {0}\n{1}').format(filename, e.args[0]),
+                                         self.tr('Processing'), QgsMessageLog.CRITICAL)
                 QMessageBox.critical(self, self.tr('Could not open model'),
                                      self.tr('The selected model could not be loaded.\n'
                                              'See the log for more information.'))

@@ -213,7 +213,7 @@ class RAlgorithm(GeoAlgorithm):
         loglines += self.getFullSetOfRCommands()
         for line in loglines:
             feedback.pushCommandInfo(line)
-        QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)
+        QgsMessageLog.logMessage(loglines, self.tr('Processing'), QgsMessageLog.INFO)
         RUtils.executeRAlgorithm(self, feedback)
         if self.showPlots:
             htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)

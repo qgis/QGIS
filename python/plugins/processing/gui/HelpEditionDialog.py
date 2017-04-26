@@ -64,8 +64,7 @@ class HelpEditionDialog(BASE, WIDGET):
                         with open(helpfile) as f:
                             self.descriptions = json.load(f)
                     except Exception:
-                        QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
-                                                      self.tr('Cannot open help file: {0}').format(helpfile))
+                        QgsMessageLog.logMessage(self.tr('Cannot open help file: {0}').format(helpfile), self.tr('Processing'), QgsMessageLog.WARNING)
 
         self.currentName = self.ALG_DESC
         if self.ALG_DESC in self.descriptions:

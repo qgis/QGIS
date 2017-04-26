@@ -189,7 +189,7 @@ class Grass7Algorithm(GeoAlgorithm):
                                                       "txt"))
                     line = lines.readline().strip('\n').strip()
                 except Exception as e:
-                    QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL, self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line))
+                    QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line), self.tr('Processing'), QgsMessageLog.CRITICAL)
                     raise e
 
         self.addParameter(ParameterExtent(
@@ -299,7 +299,7 @@ class Grass7Algorithm(GeoAlgorithm):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
-            QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)
+            QgsMessageLog.logMessage(loglines, self.tr('Processing'), QgsMessageLog.INFO)
 
         Grass7Utils.executeGrass7(self.commands, feedback, self.outputCommands)
 

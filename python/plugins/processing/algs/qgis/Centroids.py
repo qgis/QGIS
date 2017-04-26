@@ -81,8 +81,7 @@ class Centroids(GeoAlgorithm):
             if input_feature.geometry():
                 output_geometry = input_feature.geometry().centroid()
                 if not output_geometry:
-                    QgsProcessingUtils.logMessage(QgsMessageLog.WARNING,
-                                                  'Error calculating centroid for feature {}'.format(input_feature.id()))
+                    QgsMessageLog.logMessage('Error calculating centroid for feature {}'.format(input_feature.id()), self.tr('Processing'), QgsMessageLog.WARNING)
                 output_feature.setGeometry(output_geometry)
 
             writer.addFeature(output_feature)

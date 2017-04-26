@@ -196,7 +196,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             if context.hasVariable(varname):
                 script = script.replace(var, context.variable(varname))
             else:
-                QgsProcessingUtils.logMessage(QgsMessageLog.WARNING, self.tr('Cannot find variable: {0}').format(varname))
+                QgsMessageLog.logMessage(self.tr('Cannot find variable: {0}').format(varname), self.tr('Processing'), QgsMessageLog.WARNING)
 
         exec((script), ns)
         for out in self.outputs:

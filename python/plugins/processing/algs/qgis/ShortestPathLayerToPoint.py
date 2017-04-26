@@ -246,7 +246,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
             if tree[idxEnd] == -1:
                 msg = self.tr('There is no route from start point ({}) to end point ({}).'.format(points[i].toString(), endPoint.toString()))
                 feedback.setProgressText(msg)
-                QgsProcessingUtils.logMessage(QgsMessageLog.WARNING, msg)
+                QgsMessageLog.logMessage(msg, self.tr('Processing'), QgsMessageLog.WARNING)
                 continue
 
             cost = 0.0

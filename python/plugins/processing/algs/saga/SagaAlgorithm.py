@@ -274,7 +274,7 @@ class SagaAlgorithm(GeoAlgorithm):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
-            QgsProcessingUtils.logMessage(QgsMessageLog.INFO, loglines)
+            QgsMessageLog.logMessage('\n'.join(loglines), self.tr('Processing'), QgsMessageLog.INFO)
         SagaUtils.executeSaga(feedback)
 
         if self.crs is not None:

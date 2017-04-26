@@ -88,13 +88,14 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def loadAlgorithms(self):
         version = SagaUtils.getInstalledVersion(True)
         if version is None:
-            QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
-                                          self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
+            QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'),
+                                     self.tr('Processing'), QgsMessageLog.CRITICAL)
             return
 
         if not version.startswith('2.3.'):
-            QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
-                                          self.tr('Problem with SAGA installation: unsupported SAGA version found.'))
+            QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: unsupported SAGA version found.'),
+                                     self.tr('Processing'),
+                                     QgsMessageLog.CRITICAL)
             return
 
         self.algs = []
@@ -106,11 +107,11 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
                     if alg.name().strip() != '':
                         self.algs.append(alg)
                     else:
-                        QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
-                                                      self.tr('Could not open SAGA algorithm: {}'.format(descriptionFile)))
+                        QgsMessageLog.logMessage(self.tr('Could not open SAGA algorithm: {}'.format(descriptionFile)),
+                                                 self.tr('Processing'), QgsMessageLog.CRITICAL)
                 except Exception as e:
-                    QgsProcessingUtils.logMessage(QgsMessageLog.CRITICAL,
-                                                  self.tr('Could not open SAGA algorithm: {}\n{}'.format(descriptionFile, str(e))))
+                    QgsMessageLog.logMessage(self.tr('Could not open SAGA algorithm: {}\n{}'.format(descriptionFile, str(e))),
+                                             self.tr('Processing'), QgsMessageLog.CRITICAL)
 
         self.algs.append(SplitRGBBands())
         for a in self.algs:
