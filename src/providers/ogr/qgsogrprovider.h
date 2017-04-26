@@ -225,8 +225,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     mutable QStringList mSubLayerList;
 
-    //! Adds one feature
-    bool addFeature( QgsFeature &f );
+    bool addFeature( QgsFeature &f ) override;
     //! Deletes one feature
     bool deleteFeature( QgsFeatureId id );
 
