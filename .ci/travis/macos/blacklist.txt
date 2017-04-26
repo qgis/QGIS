@@ -1,14 +1,9 @@
+qgis_spelling
 qgis_openstreetmaptest
 qgis_wcsprovidertest
 PyQgsServer
-ProcessingGdalAlgorithmsTest
-ProcessingScriptAlgorithmsTest
-ProcessingToolsTest
-ProcessingModelerTest
-ProcessingParametersTest
-ProcessingGrass7AlgorithmsImageryTest
-ProcessingGrass7AlgorithmsRasterTest
 PyQgsOfflineEditingWFS
+ProcessingGdalAlgorithmsTest
 ProcessingGrass7AlgorithmsImageryTest
 ProcessingGrass7AlgorithmsRasterTest
 qgis_composerhtmltest
@@ -36,8 +31,6 @@ PyQgsComposerLegend
 PyQgsComposerMapGrid
 PyQgsDistanceArea
 PyQgsJSONUtils
-PyQgsOGRProviderGpkg
-PyQgsOGRProviderSqlite
 PyQgsPalLabelingBase
 PyQgsPalLabelingPlacement
 PyQgsPalLabelingComposer
@@ -46,10 +39,7 @@ qgis_composermapgridtest
 qgis_composerpicturetest
 qgis_taskmanagertest
 PyQgsPalLabelingCanvas
-PyQgsShapefileProvider
-PyQgsTabfileProvider
 PyQgsTextRenderer
-PyQgsOGRProvider
 PyQgsSpatialiteProvider
 PyQgsSymbolLayer
 PyQgsVectorFileWriter
