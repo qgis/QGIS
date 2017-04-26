@@ -75,6 +75,7 @@ class QgsSipifyHeader : QtClass<QVariant>
     struct Data
     {
       Data( QgsMapLayer *layer, Qstring name );
+
       QString mName;
       int mCount;
       QgsMapLayer *mLayer;
@@ -84,6 +85,7 @@ class QgsSipifyHeader : QtClass<QVariant>
 %Docstring
 A constructor with definition in header
 %End
+
     QgsSipifyHeader( QWidget *parent /TransferThis/ = 0 );
 %Docstring
  A classic constructor with arguments
@@ -93,6 +95,7 @@ A constructor with definition in header
 %Docstring
 A constructor with no empty `()`
 %End
+
     QgsSipifyHeader( QList<Point> a, const Issues &b = Issues::weDontHaveIssues(), QgsClass *b = 0 );
 %Docstring
 A constructor with some special character types
@@ -188,10 +191,15 @@ complex default value and type (i.e. containing commas) should be given as a str
 
     void removeProxyFactory( QNetworkProxyFactory *factory /TransferBack/ );
 
-    bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl );
+    bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl, Some::Thing _part = -1 /*default =-1*/ );
 %Docstring
  :rtype: bool
 %End
+
+    void multilineBodyAndDefinition( const QList<int,
+                                     QString> &list,
+                                     QgsVectorLayer *vl,
+                                     Some::Thing _part = -1 /*default =-1*/ );
 
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
 %Docstring
@@ -306,6 +314,7 @@ class ClassWithPrivateInheritanceOnly
 %Docstring
 A constructor with definition in header on several lines
 %End
+
 };
 
 
@@ -323,6 +332,7 @@ class AbstractClass /Abstract/
 %Docstring
 A constructor
 %End
+
 };
 
 QFlags<QgsSipifyHeader::MyEnum> operator|(QgsSipifyHeader::MyEnum f1, QFlags<QgsSipifyHeader::MyEnum> f2);

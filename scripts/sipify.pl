@@ -441,12 +441,12 @@ while ($line_idx < $line_count){
         $line =~ s/\s*=\s*default\b//g;
 
         # remove constructor definition, function bodies, member initializing list
-        if ( $SIP_RUN != 1 && $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\([\w=()\/ ,&*<>:]*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
+        if ( $SIP_RUN != 1 && $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\([\w=()\/ ,&*<>:-]*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
             my $newline = "$1$2$3$4$5;";
             if ($line !~ m/\{.*?\}$/){
                 $line = $lines[$line_idx];
                 $line_idx++;
-                while ( $line =~ m/^\s*[:,] \w+\(.*?\)/){
+                while ( $line =~ m/^\s*[:,] [\w<>]+\(.*?\)/){
                   $line = $lines[$line_idx];
                   $line_idx++;
                 }
@@ -455,14 +455,11 @@ while ($line_idx < $line_count){
                     while ($line_idx < $line_count){
                         $line = $lines[$line_idx];
                         $line_idx++;
-                        if ( $line =~ m/^\s*{/ ){
-                            $nesting_index++;
-                        }
-                        elsif ( $line =~ m/\}\s*$/ ){
-                            $nesting_index--;
-                            if ($nesting_index == 0){
-                                last;
-                            }
+
+                        $nesting_index += $line =~ tr/\{//;
+                        $nesting_index -= $line =~ tr/\}//;
+                        if ($nesting_index == 0){
+                            last;
                         }
                     }
                 }
@@ -533,6 +530,24 @@ while ($line_idx < $line_count){
     if ( $MULTILINE_DEFINITION == 1 ){
       if ( $line =~ m/^[^()]*([^()]*\([^()]*\)[^()]*)*\)[^()]*$/){
           $MULTILINE_DEFINITION = 0;
+          # remove potential following body
+          if (  $lines[$line_idx] =~ m/^\s*\{$/ ){
+              my $last_line = $line;
+              my $nesting_index = 0;
+              while ($line_idx < $line_count){
+                  $line = $lines[$line_idx];
+                  $line_idx++;
+
+                  $nesting_index += $line =~ tr/\{//;
+                  $nesting_index -= $line =~ tr/\}//;
+                  if ($nesting_index == 0){
+                      last;
+                  }
+              }
+              # add missing semi column
+              pop(@output);
+              push @output, "$last_line;\n";
+          }
       }
       else
       {

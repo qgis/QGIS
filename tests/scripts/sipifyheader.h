@@ -217,7 +217,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     void removeProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFERBACK );
 
-    bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl ) { doSomething; return true; }   // some comments
+    bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl, Some::Thing _part = -1 /*default =-1*/ ) { doSomething; return true; }   // some comments
 
     static inline QgsMapLayer *skippedMethodWithBody() SIP_SKIP
     {
@@ -226,6 +226,15 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       {
         return false;
       }
+    }
+
+    void multilineBodyAndDefinition( const QList<int,
+                                     QString> &list,
+                                     QgsVectorLayer *vl,
+                                     Some::Thing _part = -1 /*default =-1*/ )
+    {
+      doSomething;
+      return true;
     }
 
     //! Removing function body with namespaced return value
