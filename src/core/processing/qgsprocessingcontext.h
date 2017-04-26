@@ -50,7 +50,9 @@ class CORE_EXPORT QgsProcessingContext
      */
     QgsProcessingContext() = default;
 
+    //! QgsProcessingContext cannot be copied
     QgsProcessingContext( const QgsProcessingContext &other ) = delete;
+    //! QgsProcessingContext cannot be copied
     QgsProcessingContext &operator=( const QgsProcessingContext &other ) = delete;
 
     /**
