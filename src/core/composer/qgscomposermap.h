@@ -43,6 +43,7 @@ class QgsFillSymbol;
 class QgsLineSymbol;
 class QgsVectorLayer;
 class QgsAnnotation;
+class QgsMapRendererCustomPainterJob;
 
 /** \ingroup core
  *  \class QgsComposerMap
@@ -491,6 +492,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
   private slots:
     void layersAboutToBeRemoved( QList<QgsMapLayer *> layers );
 
+    void painterJobFinished();
+
   private:
 
     //! Unique identifier
@@ -586,6 +589,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     AtlasScalingMode mAtlasScalingMode = Auto;
     //! Margin size for atlas driven extents (percentage of feature size) - when in auto scaling mode
     double mAtlasMargin = 0.10;
+
+    QPainter *mPainter = nullptr;
+    QgsMapRendererCustomPainterJob *mPainterJob = nullptr;
+    bool mPainterCancelWait = false;
 
     void init();
 
