@@ -21,13 +21,14 @@ export PATH=/usr/bin:${PATH}
 ccache -s
 ccache -M 1G
 
-# Allow a maximum of 25 minutes for the tests to run in order to timeout before
-# travis does and in order to have some time left to upload the ccache to have
-# a chance to finish a rebuild in time.
+# Calculate the timeout for the tests.
+# The tests should be aborted before travis times out, in order to allow uploading
+# the ccache and therefore speedup subsequent e builds.
 #
-# Travis will kill the job after approx 48 minutes, so this leaves us 23 minutes
-# for setup and cache uploading
-gtimeout 25m ctest -V -E "$(cat ${DIR}/blacklist.txt | gsed -r '/^(#.*?)?$/d' | gpaste -sd '|' -)" -S ${DIR}/travis.ctest --output-on-failure
+# Travis will kill the job after approx 48 minutes, we subtract 8 minutes for
+# uploading and initialization (40) and subtract the bootstrapping time from that.
+TIMEOUT=$(expr 40 \* 60 - `date +%s` + `cat /tmp/travis_timestamp`)
+gtimeout ${TIMEOUT}s ctest -V -E "$(cat ${DIR}/blacklist.txt | gsed -r '/^(#.*?)?$/d' | gpaste -sd '|' -)" -S ${DIR}/travis.ctest --output-on-failure
 
 rv=$?
 

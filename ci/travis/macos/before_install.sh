@@ -13,6 +13,8 @@
 #                                                                         #
 ###########################################################################
 
+echo `date +%s` > /tmp/travis_timestamp
+
 brew tap osgeo/osgeo4mac
 brew update
 brew install python3
