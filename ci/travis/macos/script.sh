@@ -28,7 +28,10 @@ ccache -M 1G
 # Travis will kill the job after approx 48 minutes, we subtract 8 minutes for
 # uploading and initialization (40) and subtract the bootstrapping time from that.
 TIMEOUT=$(expr 40 \* 60 - `date +%s` + `cat /tmp/travis_timestamp`)
-gtimeout ${TIMEOUT}s ctest -V -E "$(cat ${DIR}/blacklist.txt | gsed -r '/^(#.*?)?$/d' | gpaste -sd '|' -)" -S ${DIR}/travis.ctest --output-on-failure
+
+export CTEST_BUILD_COMMAND=/usr/local/bin/ninja
+
+gtimeout ${TIMEOUT}s ctest -V -E "$(cat ${DIR}/blacklist.txt | gsed -r '/^(#.*?)?$/d' | gpaste -sd '|' -)" -S ${DIR}/../travis.ctest --output-on-failure
 
 rv=$?
 
