@@ -29,10 +29,11 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsMapToPixelSimplifier, QgsProcessingUtils
+from qgis.core import (QgsMapToPixelSimplifier,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
@@ -112,5 +113,5 @@ class SimplifyGeometries(GeoAlgorithm):
 
         del writer
 
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                               self.tr('Simplify: Input geometries have been simplified from {0} to {1} points').format(pointsBefore, pointsAfter))
+        QgsMessageLog.logMessage(self.tr('Simplify: Input geometries have been simplified from {0} to {1} points').format(pointsBefore, pointsAfter),
+                                 self.tr('Processing'), QgsMessageLog.INFO)

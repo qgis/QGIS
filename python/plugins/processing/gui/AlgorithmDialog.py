@@ -209,8 +209,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             else:
                 command = self.alg.getAsCommand()
                 if command:
-                    ProcessingLog.addToLog(
-                        ProcessingLog.LOG_ALGORITHM, command)
+                    ProcessingLog.addToLog(command)
                 if execute(self.alg, None, self.feedback):
                     self.finish()
                 else:

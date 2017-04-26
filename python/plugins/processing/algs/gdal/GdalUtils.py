@@ -37,9 +37,10 @@ from osgeo import gdal
 from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
+                       QgsProcessingUtils,
+                       QgsMessageLog,
                        QgsSettings)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isWindows, isMac
 
 try:
@@ -79,7 +80,7 @@ class GdalUtils(object):
                 os.putenv('PATH', envval)
 
         fused_command = ' '.join([str(c) for c in commands])
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, fused_command)
+        QgsMessageLog.logMessage(fused_command, 'Processing', QgsMessageLog.INFO)
         feedback.pushInfo('GDAL command:')
         feedback.pushCommandInfo(fused_command)
         feedback.pushInfo('GDAL command output:')
@@ -107,8 +108,8 @@ class GdalUtils(object):
                 else:
                     raise IOError(e.message + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(len(loglines), u'\n'.join(loglines[-10:])))
 
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
-        GdalUtils.consoleOutput = loglines
+            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
+            GdalUtils.consoleOutput = loglines
 
     @staticmethod
     def getConsoleOutput():

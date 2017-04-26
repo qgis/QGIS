@@ -29,10 +29,14 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsFeature,
+                       QgsGeometry,
+                       QgsFeatureRequest,
+                       QgsWkbTypes,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -137,10 +141,9 @@ class Clip(GeoAlgorithm):
                     out_feat.setAttributes(in_feat.attributes())
                     writer.addFeature(out_feat)
                 except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                           self.tr('Feature geometry error: One or more '
-                                                   'output features ignored due to '
-                                                   'invalid geometry.'))
+                    QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more '
+                                                     'output features ignored due to '
+                                                     'invalid geometry.'), self.tr('Processing'), QgsMessageLog.CRITICAL)
                     continue
 
                 if single_clip_feature:

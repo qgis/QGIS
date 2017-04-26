@@ -22,6 +22,7 @@
 
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsmessagelog.h"
 
 class QgsProject;
 class QgsProcessingContext;

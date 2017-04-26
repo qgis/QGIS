@@ -28,10 +28,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from qgis.core import (QgsProcessingUtils,
+                       QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.WrongScriptException import WrongScriptException
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import mkdir, userFolder
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -69,10 +70,11 @@ class ScriptUtils(object):
                         if alg.name().strip() != '':
                             algs.append(alg)
                     except WrongScriptException as e:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
+                        QgsMessageLog.logMessage(e.msg, QCoreApplication.translate('Processing', 'Processing'), QgsMessageLog.CRITICAL)
                     except Exception as e:
-                        ProcessingLog.addToLog(
-                            ProcessingLog.LOG_ERROR,
-                            QCoreApplication.translate('Processing', 'Could not load script: {0}\n{1}').format(descriptionFile, str(e))
+                        QgsMessageLog.logMessage(
+                            QCoreApplication.translate('Processing', 'Could not load script: {0}\n{1}').format(descriptionFile, str(e)),
+                            QCoreApplication.translate('Processing', 'Processing'),
+                            QgsMessageLog.CRITICAL
                         )
         return algs

@@ -41,15 +41,26 @@ import psycopg2
 from osgeo import ogr
 
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
-from qgis.core import (QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsWkbTypes,
-                       QgsSpatialIndex, QgsProject, QgsMapLayer, QgsVectorLayer,
-                       QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceUri, QgsCredentials,
-                       QgsFeatureRequest, QgsSettings,
+from qgis.core import (QgsFields,
+                       QgsField,
+                       QgsGeometry,
+                       QgsRectangle,
+                       QgsWkbTypes,
+                       QgsSpatialIndex,
+                       QgsProject,
+                       QgsMapLayer,
+                       QgsVectorLayer,
+                       QgsVectorFileWriter,
+                       QgsDistanceArea,
+                       QgsDataSourceUri,
+                       QgsCredentials,
+                       QgsFeatureRequest,
+                       QgsSettings,
                        QgsProcessingContext,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import dataobjects, spatialite, postgis
 

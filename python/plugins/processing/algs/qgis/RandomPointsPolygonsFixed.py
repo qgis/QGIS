@@ -32,10 +32,10 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields, QgsField, QgsDistanceArea, QgsGeometry, QgsWkbTypes,
                        QgsSpatialIndex, QgsPoint, QgsFeature,
+                       QgsMessageLog,
                        QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
@@ -138,9 +138,8 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
                 nIterations += 1
 
             if nPoints < pointCount:
-                ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                       self.tr('Can not generate requested number of random '
-                                               'points. Maximum number of attempts exceeded.'))
+                QgsMessageLog.logMessage(self.tr('Can not generate requested number of random '
+                                                 'points. Maximum number of attempts exceeded.'), self.tr('Processing'), QgsMessageLog.INFO)
 
             feedback.setProgress(0)
 

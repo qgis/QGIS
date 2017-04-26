@@ -31,11 +31,12 @@ import traceback
 from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProject,
-                       QgsProcessingFeedback)
+                       QgsProcessingFeedback,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import resultsList
-from processing.core.ProcessingLog import ProcessingLog
 
 #from processing.gui.ResultsDock import ResultsDock
 from processing.gui.RenderingStyles import RenderingStyles
@@ -73,8 +74,7 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
                                      RenderingStyles.getStyle(alg.id(),
                                                               out.name))
             except Exception:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       "Error loading result layer:\n" + traceback.format_exc())
+                QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
                 wrongLayers.append(out.description)
         elif isinstance(out, OutputHTML):
             resultsList.addResult(alg.icon(), out.description, out.value)
