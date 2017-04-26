@@ -37,6 +37,7 @@ class QgsProcessingContext
  Constructor for QgsProcessingContext.
 %End
 
+//     QgsProcessingContext &operator=( const QgsProcessingContext &other ) = delete;
     QgsProcessingContext::Flags flags() const;
 %Docstring
  Returns any flags set in the context.
@@ -74,6 +75,9 @@ class QgsProcessingContext
  Sets the expression ``context``.
 %End
 
+
+
+
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring
  Returns the behavior used for checking invalid geometries in input layers.
@@ -110,6 +114,8 @@ class QgsProcessingContext
 %End
 
 
+  private:
+    QgsProcessingContext( const QgsProcessingContext &other );
 };
 QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFlags<QgsProcessingContext::Flag> f2);
 

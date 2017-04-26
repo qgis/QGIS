@@ -50,6 +50,9 @@ class CORE_EXPORT QgsProcessingContext
      */
     QgsProcessingContext() = default;
 
+    QgsProcessingContext( const QgsProcessingContext &other ) = delete;
+    QgsProcessingContext &operator=( const QgsProcessingContext &other ) = delete;
+
     /**
      * Returns any flags set in the context.
      * \see setFlags()
@@ -83,6 +86,17 @@ class CORE_EXPORT QgsProcessingContext
      * Sets the expression \a context.
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
+
+///@cond NOT_STABLE_API
+
+    /**
+     * Returns a reference to the project used for storing temporary layers during
+     * algorithm execution.
+     * \note not available in Python bindings
+     */
+    SIP_SKIP QgsProject &temporaryLayerStore() { return tempProject; }
+
+///@endcond
 
     /**
      * Returns the behavior used for checking invalid geometries in input layers.
@@ -135,10 +149,15 @@ class CORE_EXPORT QgsProcessingContext
 
     QgsProcessingContext::Flags mFlags = 0;
     QPointer< QgsProject > mProject;
+    //! Temporary project owned by the context, used for storing temporarily loaded map layers
+    QgsProject tempProject;
     QgsExpressionContext mExpressionContext;
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
 
+#ifdef SIP_RUN
+    QgsProcessingContext( const QgsProcessingContext &other );
+#endif
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )
 
