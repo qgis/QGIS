@@ -57,7 +57,7 @@ Default constructor, creates an invalid QgsCoordinateTransform.
  Copy constructor
 %End
 
-//     QgsCoordinateTransform &operator=( const QgsCoordinateTransform &o );
+
     ~QgsCoordinateTransform();
 %Docstring
  Assignment operator

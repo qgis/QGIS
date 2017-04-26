@@ -1358,8 +1358,8 @@ EXPAND_AS_DEFINED      = "SIP_TRANSFER" \
                          "SIP_KEEPREFERENCE" \
                          "SIP_PYNAME" \
                          "SIP_SKIP" \
-                         "SIP_PYDEFAULTVALUE" \
-                         "SIP_PYTYPE" \
+                         "SIP_PYARGDEFAULT" \
+                         "SIP_PYARGTYPE" \
                          "SIP_CONVERT_TO_SUBCLASS_CODE" \
                          "SIP_FEATURE" \
                          "SIP_IF_FEATURE" \

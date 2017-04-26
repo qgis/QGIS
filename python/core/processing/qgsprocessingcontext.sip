@@ -37,7 +37,7 @@ class QgsProcessingContext
  Constructor for QgsProcessingContext.
 %End
 
-//     QgsProcessingContext &operator=( const QgsProcessingContext &other ) = delete;
+
     QgsProcessingContext::Flags flags() const;
 %Docstring
  Returns any flags set in the context.

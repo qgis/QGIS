@@ -26,7 +26,7 @@ overhead of initialization for each redraw*
  :rtype: QgsCoordinateTransformCache
 %End
 
-//     QgsCoordinateTransformCache &operator=( const QgsCoordinateTransformCache &rh ) = delete;
+
     QgsCoordinateTransform transform( const QString &srcAuthId, const QString &destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
 %Docstring
  Returns coordinate transformation. Cache keeps ownership

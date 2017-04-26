@@ -30,7 +30,7 @@ class QgsProcessingProvider : QObject
 
     virtual ~QgsProcessingProvider();
 
-//     QgsProcessingProvider &operator=( const QgsProcessingProvider &other ) = delete;
+
     virtual QIcon icon() const;
 %Docstring
  Returns an icon for the provider.

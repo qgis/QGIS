@@ -462,14 +462,20 @@ typedef unsigned long long qgssize;
 #define SIP_FORCE
 
 /*
-  * specify an alternative type for SIP methods
+  * specify an alternative type for SIP argument
   */
-#define SIP_PYTYPE(type)
+#define SIP_PYARGTYPE(type)
 
 /*
-  * specify an alternative default value for SIP methods
+  * specify an alternative default value for SIP argument
   */
-#define SIP_PYDEFAULTVALUE(value)
+#define SIP_PYARGDEFAULT(value)
+
+/*
+  * remove argument in SIP method
+  */
+#define SIP_PYARGREMOVE
+
 
 /*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL

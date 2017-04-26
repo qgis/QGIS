@@ -66,7 +66,7 @@ class QgsMapLayer : QObject
 
     virtual ~QgsMapLayer();
 
-//     QgsMapLayer &operator=( QgsMapLayer const & ) = delete;
+
     QgsMapLayer::LayerType type() const;
 %Docstring
  Returns the type of the layer.

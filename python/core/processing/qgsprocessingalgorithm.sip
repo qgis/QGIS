@@ -39,7 +39,7 @@ class QgsProcessingAlgorithm
 
     virtual ~QgsProcessingAlgorithm();
 
-//     QgsProcessingAlgorithm &operator=( const QgsProcessingAlgorithm &other ) = delete;
+
     virtual QString name() const = 0;
 %Docstring
  Returns the algorithm name, used for identifying the algorithm. This string

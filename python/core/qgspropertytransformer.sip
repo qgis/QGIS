@@ -56,7 +56,7 @@ class QgsCurveTransform
  Copy constructor
 %End
 
-//     QgsCurveTransform &operator=( const QgsCurveTransform &other );
+
     QList< QgsPoint > controlPoints() const;
 %Docstring
  Returns a list of the control points for the transform.
@@ -187,7 +187,7 @@ class QgsPropertyTransformer
 %Docstring
  Copy constructor.
 %End
-//     QgsPropertyTransformer &operator=( const QgsPropertyTransformer &other );
+
     virtual ~QgsPropertyTransformer();
 
     virtual Type transformerType() const = 0;
@@ -343,7 +343,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 %Docstring
  Copy constructor.
 %End
-//     QgsGenericNumericTransformer &operator=( const QgsGenericNumericTransformer &other );
+
     virtual Type transformerType() const;
     virtual QgsGenericNumericTransformer *clone();
     virtual QVariant toVariant() const;
@@ -479,7 +479,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 %Docstring
  Copy constructor.
 %End
-//     QgsSizeScaleTransformer &operator=( const QgsSizeScaleTransformer &other );
+
     virtual Type transformerType() const;
     virtual QgsSizeScaleTransformer *clone() /Factory/;
     virtual QVariant toVariant() const;
@@ -619,7 +619,7 @@ class QgsColorRampTransformer : QgsPropertyTransformer
 Copy constructor
 %End
 
-//     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
+
     virtual Type transformerType() const;
     virtual QgsColorRampTransformer *clone() /Factory/;
     virtual QVariant toVariant() const;
