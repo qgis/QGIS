@@ -19,7 +19,7 @@ typedef QList<QgsPointV2> QgsPointSequence;
 
 
 
-class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
+class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSink
 {
 %Docstring
  Represents a vector layer which manages a vector based data sets.
@@ -901,12 +901,16 @@ Return the provider type for this layer
  :rtype: QgsFeatureIterator
 %End
 
-    bool addFeature( QgsFeature &feature, bool alsoUpdateExtent = true );
+    virtual bool addFeature( QgsFeature &feature /In,Out/ );
+
 %Docstring
- Adds a feature
-\param feature feature to add
-\param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
-:return:                    True in case of success and False in case of error
+ Adds a single ``feature`` to the layer.
+ Calling this method causes the layer to recalculate it's extents, which can be
+ expensive. If multiple features are to be added to the layer then it is more
+ efficient to call addFeatures(), as addFeatures() will only trigger a single
+ layer extent recalculation.
+ \see addFeatures()
+ :return: true in case of success and false in case of failure
  :rtype: bool
 %End
 
@@ -1256,11 +1260,8 @@ Delete an attribute field (but does not commit it)
  :rtype: bool
 %End
 
-    bool addFeatures( QgsFeatureList features, bool makeSelected = true );
-%Docstring
-Insert a copy of the given features into the layer  (but does not commit it)
- :rtype: bool
-%End
+    virtual bool addFeatures( QgsFeatureList &features /In,Out/ );
+
 
     bool deleteFeature( QgsFeatureId fid );
 %Docstring

@@ -955,9 +955,8 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest &request
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( new QgsVectorLayerFeatureSource( this ), true, request ) );
 }
 
-bool QgsVectorLayer::addFeature( QgsFeature &feature, bool alsoUpdateExtent )
+bool QgsVectorLayer::addFeature( QgsFeature &feature )
 {
-  Q_UNUSED( alsoUpdateExtent ); // TODO[MD]
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return false;
 
@@ -2559,23 +2558,12 @@ QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest r
   return getFeatures( request );
 }
 
-bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
+bool QgsVectorLayer::addFeatures( QgsFeatureList &features )
 {
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
   bool res = mEditBuffer->addFeatures( features );
-
-  if ( makeSelected )
-  {
-    QgsFeatureIds ids;
-
-    for ( QgsFeatureList::iterator iter = features.begin(); iter != features.end(); ++iter )
-      ids << iter->id();
-
-    selectByIds( ids );
-  }
-
   updateExtents();
 
   return res;

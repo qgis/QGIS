@@ -2113,6 +2113,8 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - snapPoint() has been removed - use QgsPointLocator class instead.
 - snapWithContext() has been removed - use QgsPointLocator class instead.
 - insertSegmentVerticesForSnap() has been removed - use addTopologicalPoints() directly.
+- addFeature() no longer accepts an alsoUpdateExtent boolean - this extra argument has been ignored for some time
+- addFeatures() no longer accepts a makeSelected boolean, and will not automatically select newly added features. If desired, features must be manually selected by calling selectByIds() after addFeatures()
 
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}

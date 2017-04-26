@@ -661,7 +661,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         }
         f.setAttributes( newAttrs );
 
-        newLayer->addFeature( f, false );
+        newLayer->addFeature( f );
 
         emit progressUpdated( featureCount++ );
       }
@@ -786,7 +786,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVec
 
     // respect constraints and provider default values
     QgsFeature f = QgsVectorLayerUtils::createFeature( remoteLayer, it->geometry(), newAttrs.toMap(), &context );
-    remoteLayer->addFeature( f, false );
+    remoteLayer->addFeature( f );
 
     emit progressUpdated( i++ );
   }
