@@ -18,5 +18,5 @@ export CORES=2
 mkdir build
 cd build
 
-cmake ../ci/travis/code_layout
+cmake ../.ci/travis/code_layout
 make -j${CORES}
