@@ -117,7 +117,6 @@ core/qgsvectorsimplifymethod.sip
 core/qgscachedfeatureiterator.sip
 core/qgscacheindex.sip
 core/qgscacheindexfeatureid.sip
-core/qgsfeaturestore.sip
 core/qgsgeometrycache.sip
 core/qgslayerdefinition.sip
 core/qgsprojectfiletransform.sip

@@ -35,9 +35,20 @@ void QgsFeatureStore::setFields( const QgsFields &fields )
   }
 }
 
-void QgsFeatureStore::addFeature( const QgsFeature &feature )
+bool QgsFeatureStore::addFeature( QgsFeature &feature )
 {
   QgsFeature f( feature );
   f.setFields( mFields );
   mFeatures.append( f );
+  return true;
+}
+
+bool QgsFeatureStore::addFeatures( QgsFeatureList &features )
+{
+  QgsFeatureList::iterator fIt = features.begin();
+  for ( ; fIt != features.end(); ++fIt )
+  {
+    addFeature( *fIt );
+  }
+  return true;
 }

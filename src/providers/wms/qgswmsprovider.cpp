@@ -2938,7 +2938,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint &point, QgsRast
               g.transform( coordinateTransform );
               feature->setGeometry( g );
             }
-            featureStore.features().append( QgsFeature( *feature ) );
+            featureStore.addFeature( *feature );
           }
           featureStoreList.append( featureStore );
         }
@@ -3073,7 +3073,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint &point, QgsRast
             featureStore.setParams( params );
 
             feature.setValid( true );
-            featureStore.features().append( feature );
+            featureStore.addFeature( feature );
 
             featureStoreList.append( featureStore );
           }
