@@ -185,17 +185,17 @@ class CORE_EXPORT QgsEllipse
     /** Returns a segmented polygon.
      * \param segments Number of segments used to segment geometry.
      */
-    virtual QgsPolygonV2 *toPolygon( unsigned int segments = 36 ) const;
+    virtual QgsPolygonV2 *toPolygon( unsigned int segments = 36 ) const SIP_FACTORY;
 
     /** Returns a segmented linestring.
      * \param segments Number of segments used to segment geometry.
      */
-    virtual QgsLineString *toLineString( unsigned int segments = 36 ) const;
+    virtual QgsLineString *toLineString( unsigned int segments = 36 ) const SIP_FACTORY;
     //virtual QgsCurvePolygon toCurvePolygon() const;
 
     /** Returns the oriented minimal bounding box for the ellipse.
      */
-    virtual QgsPolygonV2 *orientedBoundingBox() const;
+    virtual QgsPolygonV2 *orientedBoundingBox() const SIP_FACTORY;
 
     /** Returns the minimal bounding box for the ellipse.
      */

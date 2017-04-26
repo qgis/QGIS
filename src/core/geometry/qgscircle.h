@@ -161,7 +161,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \return quadrants defined by four points.
      * \see quadrant()
      */
-    QVector<QgsPointV2> northQuadrant() const;
+    QVector<QgsPointV2> northQuadrant() const SIP_FACTORY;
 
     /** Returns a circular string from the circle.
      * \param oriented If oriented is true the start point is from azimuth instead from north.
