@@ -248,7 +248,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void enumValues( int index, QStringList &enumList ) const { Q_UNUSED( index ); enumList.clear(); }
 
-    virtual bool addFeature( QgsFeature &feature ) override;
     virtual bool addFeatures( QgsFeatureList &flist ) override;
 
     /**

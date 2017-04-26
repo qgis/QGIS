@@ -495,11 +495,6 @@ QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate agg
   return QVariant();
 }
 
-bool QgsVectorDataProvider::addFeature( QgsFeature &feature )
-{
-  return addFeatures( QgsFeatureList() << feature );
-}
-
 void QgsVectorDataProvider::clearMinMaxCache()
 {
   mCacheMinMaxDirty = true;

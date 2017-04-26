@@ -17,6 +17,17 @@
 
 #include "qgsfeaturestore.h"
 
+bool QgsFeatureSink::addFeature( QgsFeature &feature )
+{
+  QgsFeatureList features;
+  features << feature;
+  bool result = addFeatures( features );
+
+  // need to update the passed feature reference to the updated copy from the features list
+  feature = features.at( 0 );
+  return result;
+}
+
 bool QgsFeatureSink::addFeatures( QgsFeatureIterator &iterator )
 {
   QgsFeature f;

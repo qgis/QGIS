@@ -197,7 +197,6 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      */
     virtual void enumValues( int index, QStringList& enumList /Out/ ) const;
 
-    virtual bool addFeature( QgsFeature &feature /In,Out/ );
     virtual bool addFeatures( QList<QgsFeature> &flist /In,Out/ );
 
     /**

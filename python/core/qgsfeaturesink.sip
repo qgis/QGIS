@@ -24,7 +24,7 @@ class QgsFeatureSink
 
     virtual ~QgsFeatureSink();
 
-    virtual bool addFeature( QgsFeature &feature ) = 0;
+    virtual bool addFeature( QgsFeature &feature );
 %Docstring
  Adds a single ``feature`` to the sink.
  \see addFeatures()
