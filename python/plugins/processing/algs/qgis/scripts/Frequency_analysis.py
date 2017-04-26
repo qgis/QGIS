@@ -5,6 +5,7 @@
 
 from processing.tools.vector import TableWriter
 from collections import defaultdict
+from qgis.core import QgsProcessingUtils
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import dataobjects
 
@@ -20,8 +21,8 @@ for f in fields:
 writer = TableWriter(Frequency, None, fields + ['FREQ'])
 
 counts = {}
-feats = processing.features(layer)
-nFeats = len(feats)
+feats = QgsProcessingUtils.getFeatures(layer, context)
+nFeats = QgsProcessingUtils.featureCount(layer, context)
 counts = defaultdict(int)
 for i, feat in enumerate(feats):
     feedback.setProgress(int(100 * i / nFeats))

@@ -5,7 +5,7 @@
 ##N_unique_values=output vector
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsFeature, QgsField
+from qgis.core import QgsFeature, QgsField, QgsProcessingUtils
 from processing.tools.vector import VectorWriter
 from processing.tools import dataobjects
 
@@ -20,8 +20,8 @@ value_field_index = layer.fields().lookupField(value_field)
 
 outFeat = QgsFeature()
 classes = {}
-feats = processing.features(layer)
-nFeat = len(feats)
+feats = QgsProcessingUtils.getFeatures(layer, context)
+nFeat = QgsProcessingUtils.featureCount(layer, context)
 for n, inFeat in enumerate(feats):
     feedback.setProgress(int(100 * n / nFeat))
     attrs = inFeat.attributes()

@@ -153,8 +153,9 @@ class FieldsMapper(GeoAlgorithm):
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(layer, context)
-        if len(features):
-            total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        count = QgsProcessingUtils.featureCount(layer, context)
+        if count > 0:
+            total = 100.0 / count
             for current, inFeat in enumerate(features):
                 rownum = current + 1
 
