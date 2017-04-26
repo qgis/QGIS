@@ -38,10 +38,10 @@ class QgsEllipse
 
     static QgsEllipse fromFoci( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3 );
 %Docstring
- Constructs an ellipse by foci (pt1 and pt2) and a point pt3.
- The center point can have z and m values which are the result from the midpoint operation between pt1 and pt2.
- Axes are calculated from the 2D distance with the third point pt3.
- The azimuth is the angle between pt1 and pt2.
+ Constructs an ellipse by foci (``pt1`` and ``pt2``) and a point ``pt3``.
+ The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
+ Axes are calculated from the 2D distance with the third point ``pt3``.
+ The azimuth is the angle between ``pt1`` and ``pt2``.
  \param pt1 First focus.
  \param pt2 Second focus.
  \param pt3 A point to calculate the axes.
@@ -51,8 +51,8 @@ class QgsEllipse
     static QgsEllipse fromExtent( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
 %Docstring
  Constructs an ellipse by an extent (aka bounding box / QgsRectangle).
- The center point can have z and m values which are the result from the midpoint operation between pt1 and pt2.
- Axes are calculated from the 2D distance between pt1 and pt2.
+ The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
+ Axes are calculated from the 2D distance between ``pt1`` and ``pt2``.
  The azimuth always takes the default value.
  \param pt1 First corner.
  \param pt2 Second corner.
@@ -62,8 +62,8 @@ class QgsEllipse
     static QgsEllipse fromCenterPoint( const QgsPointV2 &ptc, const QgsPointV2 &pt1 );
 %Docstring
  Constructs an ellipse by a center point and a another point.
- The center point keeps z and m values from ptc.
- Axes are calculated from the 2D distance between ptc and pt1.
+ The center point keeps z and m values from ``ptc``.
+ Axes are calculated from the 2D distance between ``ptc`` and ``pt1``.
  The azimuth always takes the default value.
  \param ptc Center point.
  \param pt1 First point.
@@ -73,9 +73,9 @@ class QgsEllipse
     static QgsEllipse fromCenter2Points( const QgsPointV2 &ptc, const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
 %Docstring
  Constructs an ellipse by a central point and two other points.
- The center point keeps z and m values from ptc.
- Axes are calculated from the 2D distance between ptc and pt1 and pt2.
- The azimuth is the angle between ptc and pt1.
+ The center point keeps z and m values from ``ptc``.
+ Axes are calculated from the 2D distance between ``ptc`` and ``pt1`` and ``pt2``.
+ The azimuth is the angle between ``ptc`` and ``pt1``.
  \param ptc Center point.
  \param pt1 First point.
  \param pt2 Second point.
@@ -191,7 +191,7 @@ The circumference of the ellipse using first approximation of Ramanujan.
 
     virtual void points( QgsPointSequence &pts, unsigned int segments = 36 ) const;
 %Docstring
- Returns a list of points into pts, with segmentation from segments.
+ Returns a list of points into ``pts``, with segmentation from ``segments``.
  \param pts List of points returned.
  \param segments Number of segments used to segment geometry.
 %End

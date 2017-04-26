@@ -15,6 +15,13 @@
 
 class QgsCircle : QgsEllipse
 {
+%Docstring
+ Circle geometry type.
+
+ A circle is defined by a center point with a radius and an azimuth.
+ The azimuth is the north angle to the semi-major axis, in degrees. By default, the semi-major axis is oriented to the north (0 degrees).
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
 #include "qgscircle.h"
@@ -33,9 +40,9 @@ class QgsCircle : QgsEllipse
     static QgsCircle from2Points( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
 %Docstring
  Constructs a circle by 2 points on the circle.
- The center point can have z and m values which are the result from the midpoint operation between pt1 and pt2.
- The radius is calculated from the 2D distance between pt1 and pt2.
- The azimuth is the angle between pt1 and pt2.
+ The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
+ The radius is calculated from the 2D distance between ``pt1`` and ``pt2``.
+ The azimuth is the angle between ``pt1`` and ``pt2``.
  \param pt1 First point.
  \param pt2 Second point.
  :rtype: QgsCircle
@@ -57,7 +64,7 @@ class QgsCircle : QgsEllipse
     static QgsCircle fromCenterDiameter( const QgsPointV2 &center, double diameter, double azimuth = 0 );
 %Docstring
  Constructs a circle by a center point and a diameter.
- The center point keeps z and m values from center.
+ The center point keeps z and m values from ``center``.
  \param center Center point.
  \param diameter Diameter of the circle.
  \param azimuth Azimuth of the circle.
@@ -68,9 +75,9 @@ class QgsCircle : QgsEllipse
     static QgsCircle fromCenterPoint( const QgsPointV2 &center, const QgsPointV2 &pt1 );
 %Docstring
  Constructs a circle by a center point and another point.
- The center point keeps z and m values from center.
- Axes are calculated from the 2D distance between center and pt1.
- The azimuth is the angle between center and pt1.
+ The center point keeps z and m values from ``center``.
+ Axes are calculated from the 2D distance between ``center`` and ``pt1``.
+ The azimuth is the angle between ``center`` and ``pt1``.
  \param center Center point.
  \param pt1 A point on the circle.
  :rtype: QgsCircle
@@ -97,33 +104,29 @@ class QgsCircle : QgsEllipse
     static QgsCircle fromExtent( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
 %Docstring
  Constructs a circle by an extent (aka bounding box / QgsRectangle).
- The center point can have z and m values which are the result from the midpoint operation between pt1 and pt2.
- Axes are calculated from the 2D distance between pt1 and pt2.
+ The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
+ Axes are calculated from the 2D distance between ``pt1`` and ``pt2``.
  The azimuth always takes the default value.
  \param pt1 First corner.
  \param pt2 Second corner.
  :rtype: QgsCircle
 %End
 
-    double area() const;
-%Docstring
- :rtype: float
-%End
-    double perimeter() const;
-%Docstring
- :rtype: float
-%End
+    virtual double area() const;
+
+    virtual double perimeter() const;
 
 
 
-    void setSemiMajorAxis( const double semiMajorAxis );
+
+    virtual void setSemiMajorAxis( const double semiMajorAxis );
 %Docstring
  Inherited method. Use setRadius instead.
  \see radius()
  \see setRadius()
 %End
 
-    void setSemiMinorAxis( const double semiMinorAxis );
+    virtual void setSemiMinorAxis( const double semiMinorAxis );
 %Docstring
  Inherited method. Use setRadius instead.
  \see radius()
@@ -157,15 +160,11 @@ Set the radius of the circle
 %End
 
 
-    QgsRectangle boundingBox() const;
-%Docstring
- :rtype: QgsRectangle
-%End
+    virtual QgsRectangle boundingBox() const;
 
-    QString toString( int pointPrecision = 17, int radiusPrecision = 17, int azimuthPrecision = 2 ) const;
-%Docstring
- :rtype: str
-%End
+
+    virtual QString toString( int pointPrecision = 17, int radiusPrecision = 17, int azimuthPrecision = 2 ) const;
+
 
 };
 
