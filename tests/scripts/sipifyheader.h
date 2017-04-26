@@ -222,6 +222,10 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     static inline QgsMapLayer *skippedMethodWithBody() SIP_SKIP
     {
       OhNoYouShouldnotHaveReadThis();
+      if ( ThisIsTrue() )
+      {
+        return false;
+      }
     }
 
     //! Removing function body with namespaced return value
@@ -274,6 +278,17 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     {
       int var;
     }
+
+#if 0
+#if Whatever
+    void X();
+#else
+    void Y();
+#endif
+#else
+    void ZshouldBeShown();
+#endif
+
 
   protected:
     bool thisShouldBeListed();

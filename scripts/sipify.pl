@@ -51,7 +51,7 @@ my $ACCESS = PUBLIC;
 my $MULTILINE_DEFINITION = 0;
 
 my $comment = '';
-my $nesting_index = 0;
+my $global_nesting_index = 0;
 my $private_section_line = '';
 my $classname = '';
 my $return_type = '';
@@ -96,6 +96,27 @@ while ($line_idx < $line_count){
 
     # Skip preprocessor stuff
     if ($line =~ m/^\s*#/){
+
+        # skip #if 0 blocks
+        if ( $line =~ m/^\s*#if 0/){
+          my $nesting_index = 0;
+          while ($line_idx < $line_count){
+              $line = $lines[$line_idx];
+              $line_idx++;
+              if ( $line =~ m/^\s*#if(def)?\s+/ ){
+                  $nesting_index++;
+              }
+              elsif ( $nesting_index == 0 && $line =~ m/^\s*#(endif|else)/ ){
+                  $comment = '';
+                  last;
+              }
+              elsif ( $nesting_index != 0 && $line =~ m/^\s*#(endif)/ ){
+                      $nesting_index--;
+              }
+          }
+          next;
+        }
+
         if ( $line =~ m/^\s*#ifdef SIP_RUN/){
             $SIP_RUN = 1;
             if ($ACCESS == PRIVATE){
@@ -105,34 +126,34 @@ while ($line_idx < $line_count){
         }
         if ( $SIP_RUN == 1 ){
             if ( $line =~ m/^\s*#endif/ ){
-                if ( $nesting_index == 0 ){
+                if ( $global_nesting_index == 0 ){
                     $SIP_RUN = 0;
                     next;
                 }
                 else {
-                    $nesting_index--;
+                    $global_nesting_index--;
                 }
             }
             if ( $line =~ m/^\s*#if(def)?\s+/ ){
-                $nesting_index++;
+                $global_nesting_index++;
             }
 
             # if there is an else at this level, code will be ignored i.e. not SIP_RUN
-            if ( $line =~ m/^\s*#else/ && $nesting_index == 0){
+            if ( $line =~ m/^\s*#else/ && $global_nesting_index == 0){
                 while ($line_idx < $line_count){
                     $line = $lines[$line_idx];
                     $line_idx++;
                     if ( $line =~ m/^\s*#if(def)?\s+/ ){
-                        $nesting_index++;
+                        $global_nesting_index++;
                     }
                     elsif ( $line =~ m/^\s*#endif/ ){
-                        if ( $nesting_index == 0 ){
+                        if ( $global_nesting_index == 0 ){
                             $comment = '';
                             $SIP_RUN = 0;
                             last;
                         }
                         else {
-                            $nesting_index--;
+                            $global_nesting_index--;
                         }
                     }
                 }
@@ -145,9 +166,9 @@ while ($line_idx < $line_count){
                 $line = $lines[$line_idx];
                 $line_idx++;
                 if ( $line =~ m/^\s*#if(def)?\s+/ ){
-                    $nesting_index++;
+                    $global_nesting_index++;
                 }
-                elsif ( $line =~ m/^\s*#else/ && $nesting_index == 0 ){
+                elsif ( $line =~ m/^\s*#else/ && $global_nesting_index == 0 ){
                     # code here will be printed out
                     if ($ACCESS == PRIVATE){
                         push @output, $private_section_line."\n";
@@ -156,13 +177,13 @@ while ($line_idx < $line_count){
                     last;
                 }
                 elsif ( $line =~ m/^\s*#endif/ ){
-                    if ( $nesting_index == 0 ){
+                    if ( $global_nesting_index == 0 ){
                         $comment = '';
                         $SIP_RUN = 0;
                         last;
                     }
                     else {
-                        $nesting_index--;
+                        $global_nesting_index--;
                     }
                 }
             }
@@ -202,11 +223,31 @@ while ($line_idx < $line_count){
       }
       # also skip method body if there is one
       if ($lines[$line_idx] =~ m/^\s*\{/){
-        while($lines[$line_idx] !~ m/^\s*\}/){
-          $line_idx++;
+        my $nesting_index = 0;
+        while ($line_idx < $line_count){
+            $line = $lines[$line_idx];
+            $line_idx++;
+            if ( $nesting_index == 0 ){
+                if ( $line =~ m/^\s*(:|,)/ ){
+                    next;
+                }
+                $line =~ m/^\s*\{/ or die 'Constructor definition misses {';
+                if ( $line =~ m/^\s*\{.*?\}/ ){
+                    last;
+                }
+                $nesting_index = 1;
+                next;
+            }
+            else {
+                $nesting_index += $line =~ tr/\{//;
+                $nesting_index -= $line =~ tr/\}//;
+                if ($nesting_index eq 0){
+                    last;
+                }
+            }
         }
-        $line_idx++;
       }
+      # line skipped, go to next iteration
       next;
     }
 
@@ -497,6 +538,8 @@ while ($line_idx < $line_count){
     $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
     $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
     $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
+    $line =~ s/\bSIP_ARRAY\b/\/Array\//;
+    $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//;
 
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
     $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;

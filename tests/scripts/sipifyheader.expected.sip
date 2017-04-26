@@ -264,6 +264,9 @@ Mulitline body
       int var;
     }
 
+    void ZshouldBeShown();
+
+
   protected:
     bool thisShouldBeListed();
 %Docstring

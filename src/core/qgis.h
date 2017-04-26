@@ -437,6 +437,16 @@ typedef unsigned long long qgssize;
 #define SIP_KEEPREFERENCE
 
 /*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-Array
+ */
+#define SIP_ARRAY
+
+/*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-ArraySize
+ */
+#define SIP_ARRAYSIZE
+
+/*
   * discard line
   */
 #define SIP_SKIP
