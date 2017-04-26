@@ -196,21 +196,21 @@ The circumference of the ellipse using first approximation of Ramanujan.
  \param segments Number of segments used to segment geometry.
 %End
 
-    virtual QgsPolygonV2 *toPolygon( unsigned int segments = 36 ) const;
+    virtual QgsPolygonV2 *toPolygon( unsigned int segments = 36 ) const /Factory/;
 %Docstring
  Returns a segmented polygon.
  \param segments Number of segments used to segment geometry.
  :rtype: QgsPolygonV2
 %End
 
-    virtual QgsLineString *toLineString( unsigned int segments = 36 ) const;
+    virtual QgsLineString *toLineString( unsigned int segments = 36 ) const /Factory/;
 %Docstring
  Returns a segmented linestring.
  \param segments Number of segments used to segment geometry.
  :rtype: QgsLineString
 %End
 
-    virtual QgsPolygonV2 *orientedBoundingBox() const;
+    virtual QgsPolygonV2 *orientedBoundingBox() const /Factory/;
 %Docstring
  Returns the oriented minimal bounding box for the ellipse.
  :rtype: QgsPolygonV2

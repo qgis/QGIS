@@ -140,7 +140,7 @@ Returns the radius of the circle
 Set the radius of the circle
 %End
 
-    QVector<QgsPointV2> northQuadrant() const;
+    QVector<QgsPointV2> northQuadrant() const /Factory/;
 %Docstring
  The four quadrants of the ellipse.
  They are oriented and started from North.
