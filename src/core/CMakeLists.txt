@@ -720,6 +720,7 @@ SET(QGIS_CORE_HDRS
   qgsfeaturefilterprovider.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h
+  qgsfeaturesink.h
   qgsfeaturestore.h
   qgsfieldformatter.h
   qgsfield_p.h
