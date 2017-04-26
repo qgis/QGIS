@@ -73,8 +73,8 @@ class ReprojectLayer(GeoAlgorithm):
         targetCrs = QgsCoordinateReferenceSystem()
         targetCrs.createFromUserInput(crsId)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), layer.wkbType(), targetCrs)
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), layer.wkbType(),
+                                                                     targetCrs, context)
 
         layerCrs = layer.crs()
         crsTransform = QgsCoordinateTransform(layerCrs, targetCrs)

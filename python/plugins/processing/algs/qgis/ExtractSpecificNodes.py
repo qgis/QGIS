@@ -80,10 +80,7 @@ class ExtractSpecificNodes(GeoAlgorithm):
         fields.append(QgsField('angle', QVariant.Double))
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                fields,
-                QgsWkbTypes.Point,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
 
         node_indices_string = self.getParameterValue(self.NODES)
         indices = []

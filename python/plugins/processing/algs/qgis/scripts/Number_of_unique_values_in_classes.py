@@ -6,14 +6,14 @@
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsFeature, QgsField, QgsProcessingUtils
-from processing.tools.vector import VectorWriter
+from processing.tools.vector import createVectorWriter
 from processing.tools import dataobjects
 
 layer = dataobjects.getLayerFromString(input)
 fields = layer.fields()
 fields.append(QgsField('UNIQ_COUNT', QVariant.Int))
-writer = VectorWriter(N_unique_values, None, fields, layer.wkbType(),
-                      layer.crs())
+writer, writer_dest, writer_layer = createVectorWriter(N_unique_values, None, fields, layer.wkbType(), layer.crs(),
+                                                       context)
 
 class_field_index = layer.fields().lookupField(class_field)
 value_field_index = layer.fields().lookupField(value_field)

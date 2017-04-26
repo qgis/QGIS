@@ -93,8 +93,8 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
                                                          polyLayer.fields(), fieldName)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), polyLayer.wkbType(), polyLayer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields.toList(), polyLayer.wkbType(),
+                                                                     polyLayer.crs(), context)
 
         spatialIndex = vector.spatialindex(pointLayer)
 

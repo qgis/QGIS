@@ -91,8 +91,7 @@ class JoinAttributes(GeoAlgorithm):
         joinField2Index = layer2.fields().lookupField(field2)
 
         outFields = vector.combineVectorFields(layer, layer2)
-        writer = output.getVectorWriter(outFields, layer.wkbType(),
-                                        layer.crs())
+        writer = output.getVectorWriter(outFields, layer.wkbType(), layer.crs(), context)
 
         # Cache attributes of Layer 2
         cache = {}

@@ -76,10 +76,7 @@ class PolygonCentroids(GeoAlgorithm):
             self.getParameterValue(self.INPUT_LAYER))
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                QgsWkbTypes.Point,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), QgsWkbTypes.Point, layer.crs(), context)
 
         outFeat = QgsFeature()
 

@@ -70,7 +70,8 @@ class ExtractByExpression(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         expression_string = self.getParameterValue(self.EXPRESSION)
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),
+                                                                     context)
 
         expression = QgsExpression(expression_string)
         if not expression.hasParserError():

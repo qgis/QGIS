@@ -103,8 +103,7 @@ class ConvexHull(GeoAlgorithm):
                   QgsField('perim', QVariant.Double, '', 20, 6)
                   ]
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Polygon, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

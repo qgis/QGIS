@@ -89,16 +89,11 @@ class CORE_EXPORT QgsProcessingContext
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
-///@cond NOT_STABLE_API
-
     /**
      * Returns a reference to the project used for storing temporary layers during
      * algorithm execution.
-     * \note not available in Python bindings
      */
-    SIP_SKIP QgsProject &temporaryLayerStore() { return tempProject; }
-
-///@endcond
+    QgsProject &temporaryLayerStore() { return tempProject; }
 
     /**
      * Returns the behavior used for checking invalid geometries in input layers.

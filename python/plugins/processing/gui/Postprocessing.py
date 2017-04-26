@@ -49,7 +49,7 @@ from processing.core.outputs import OutputHTML
 from processing.tools import dataobjects
 
 
-def handleAlgorithmResults(alg, feedback=None, showResults=True):
+def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
     wrongLayers = []
     if feedback is None:
         feedback = QgsProcessingFeedback()
@@ -63,7 +63,9 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
             try:
                 if hasattr(out, "layer") and out.layer is not None:
                     out.layer.setName(out.description)
-                    QgsProject.instance().addMapLayers([out.layer])
+                    QgsProject.instance().addMapLayer(context.temporaryLayerStore().takeMapLayer(out.layer))
+                    # temporary hack to work around mutable outputs
+                    out.layer = None
                 else:
                     if ProcessingConfig.getSetting(
                             ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):

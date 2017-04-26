@@ -76,10 +76,7 @@ class Smooth(GeoAlgorithm):
         max_angle = self.getParameterValue(self.MAX_ANGLE)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields().toList(),
-                layer.wkbType(),
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields().toList(), layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

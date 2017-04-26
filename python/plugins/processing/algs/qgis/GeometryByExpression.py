@@ -103,10 +103,7 @@ class GeometryByExpression(GeoAlgorithm):
             wkb_type = QgsWkbTypes.addM(wkb_type)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                wkb_type,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), wkb_type, layer.crs(), context)
 
         expression = QgsExpression(self.getParameterValue(self.EXPRESSION))
         if expression.hasParserError():

@@ -90,8 +90,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         fields.append(QgsField('width', QVariant.Double))
         fields.append(QgsField('height', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QgsWkbTypes.Polygon, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 
         if byFeature:
             self.featureOmbb(layer, context, writer, feedback)

@@ -77,9 +77,7 @@ class Difference(GeoAlgorithm):
 
         geomType = QgsWkbTypes.multiType(layerA.wkbType())
         writer = self.getOutputFromName(
-            Difference.OUTPUT).getVectorWriter(layerA.fields(),
-                                               geomType,
-                                               layerA.crs())
+            Difference.OUTPUT).getVectorWriter(layerA.fields(), geomType, layerA.crs(), context)
 
         outFeat = QgsFeature()
         index = vector.spatialindex(layerB)

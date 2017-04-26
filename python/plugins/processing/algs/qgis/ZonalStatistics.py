@@ -176,8 +176,8 @@ class ZonalStatistics(GeoAlgorithm):
             (idxMode, fields) = vector.findOrCreateField(layer, fields,
                                                          columnPrefix + 'mode', 21, 6)
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            fields.toList(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(fields.toList(), layer.wkbType(),
+                                                                           layer.crs(), context)
 
         outFeat = QgsFeature()
 

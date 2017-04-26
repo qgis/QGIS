@@ -12,6 +12,7 @@ from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.Processing import Processing
+from processing.tools import dataobjects
 
 algorithmsToolbar = None
 menusSettingsGroup = 'Menus'
@@ -202,6 +203,7 @@ def _executeAlgorithm(alg):
         dlg.exec_()
         return
     alg = alg.getCopy()
+    context = dataobjects.createContext()
     if (alg.getVisibleParametersCount() + alg.getVisibleOutputsCount()) > 0:
         dlg = alg.getCustomParametersDialog()
         if not dlg:
@@ -218,8 +220,8 @@ def _executeAlgorithm(alg):
             canvas.setMapTool(prevMapTool)
     else:
         feedback = MessageBarProgress()
-        execute(alg, None, feedback)
-        handleAlgorithmResults(alg, feedback)
+        execute(alg, context, feedback)
+        handleAlgorithmResults(alg, context, feedback)
         feedback.close()
 
 

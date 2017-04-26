@@ -72,8 +72,8 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
         geomType = QgsWkbTypes.multiType(layer.wkbType())
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), geomType, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), geomType, layer.crs(),
+                                                                     context)
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

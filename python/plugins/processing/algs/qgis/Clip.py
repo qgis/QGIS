@@ -75,10 +75,9 @@ class Clip(GeoAlgorithm):
         mask_layer = dataobjects.getLayerFromString(
             self.getParameterValue(Clip.OVERLAY))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            source_layer.fields(),
-            QgsWkbTypes.multiType(source_layer.wkbType()),
-            source_layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(source_layer.fields(),
+                                                                     QgsWkbTypes.multiType(source_layer.wkbType()),
+                                                                     source_layer.crs(), context)
 
         # first build up a list of clip geometries
         clip_geoms = []

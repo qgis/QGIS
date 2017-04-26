@@ -80,8 +80,7 @@ class PointsDisplacement(GeoAlgorithm):
 
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_LAYER))
 
-        writer = output.getVectorWriter(layer.fields(),
-                                        layer.wkbType(), layer.crs())
+        writer = output.getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
 

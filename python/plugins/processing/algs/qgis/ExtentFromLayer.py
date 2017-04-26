@@ -89,8 +89,7 @@ class ExtentFromLayer(GeoAlgorithm):
             QgsField('WIDTH', QVariant.Double),
         ]
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QgsWkbTypes.Polygon, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 
         if byFeature:
             self.featureExtent(layer, context, writer, feedback)

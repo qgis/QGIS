@@ -176,16 +176,10 @@ class ServiceAreaFromLayer(GeoAlgorithm):
         feat.setFields(fields)
 
         writerPoints = self.getOutputFromName(
-            self.OUTPUT_POINTS).getVectorWriter(
-                fields,
-                QgsWkbTypes.MultiPoint,
-                layer.crs())
+            self.OUTPUT_POINTS).getVectorWriter(fields, QgsWkbTypes.MultiPoint, layer.crs(), context)
 
         writerPolygons = self.getOutputFromName(
-            self.OUTPUT_POLYGON).getVectorWriter(
-                fields,
-                QgsWkbTypes.Polygon,
-                layer.crs())
+            self.OUTPUT_POLYGON).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 
         directionField = -1
         if directionFieldName is not None:

@@ -99,7 +99,7 @@ def executeIterating(alg, paramToIter, context, feedback):
         feedback.setProgressText(tr('Executing iteration {0}/{1}...').format(i, len(filelist)))
         feedback.setProgress(i * 100 / len(filelist))
         if execute(alg, None, feedback):
-            handleAlgorithmResults(alg, None, False)
+            handleAlgorithmResults(alg, context, None, False)
         else:
             return False
 

@@ -5,13 +5,14 @@
 
 from qgis.core import QgsWkbTypes, QgsGeometry, QgsProcessingUtils
 
-from processing.tools.vector import VectorWriter
+from processing.tools.vector import createVectorWriter
 from processing.tools import dataobjects
 
 layer = dataobjects.getLayerFromString(INPUT_LAYER)
 fields = layer.fields()
 
-writer = VectorWriter(OUTPUT_LAYER, 'utf-8', fields, QgsWkbTypes.Point, layer.crs())
+writer, writer_dest, writer_layer = createVectorWriter(OUTPUT_LAYER, 'utf-8', fields, QgsWkbTypes.Point, layer.crs(),
+                                                       context)
 
 features = QgsProcessingUtils.getFeatures(layer, context)
 count = QgsProcessingUtils.featureCount(layer, context)

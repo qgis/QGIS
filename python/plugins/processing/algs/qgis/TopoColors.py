@@ -104,10 +104,7 @@ class TopoColor(GeoAlgorithm):
         fields.append(QgsField('color_id', QVariant.Int))
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-            fields,
-            layer.wkbType(),
-            layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
 
         features = {f.id(): f for f in QgsProcessingUtils.getFeatures(layer, context)}
 

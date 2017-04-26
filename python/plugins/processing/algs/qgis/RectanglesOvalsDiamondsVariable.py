@@ -111,10 +111,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
         segments = self.getParameterValue(self.SEGMENTS)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields().toList(),
-                QgsWkbTypes.Polygon,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields().toList(), QgsWkbTypes.Polygon, layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
 

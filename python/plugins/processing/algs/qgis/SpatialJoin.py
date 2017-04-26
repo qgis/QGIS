@@ -150,8 +150,7 @@ class SpatialJoin(GeoAlgorithm):
         for f in list(targetFields.values()):
             fields.append(f)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, target.wkbType(), target.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, target.wkbType(), target.crs(), context)
 
         outFeat = QgsFeature()
         inFeatB = QgsFeature()

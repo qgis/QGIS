@@ -108,10 +108,7 @@ class CheckValidity(GeoAlgorithm):
 
         valid_output = self.getOutputFromName(self.VALID_OUTPUT)
         valid_fields = layer.fields()
-        valid_writer = valid_output.getVectorWriter(
-            valid_fields,
-            layer.wkbType(),
-            layer.crs())
+        valid_writer = valid_output.getVectorWriter(valid_fields, layer.wkbType(), layer.crs(), context)
         valid_count = 0
 
         invalid_output = self.getOutputFromName(self.INVALID_OUTPUT)
@@ -119,10 +116,7 @@ class CheckValidity(GeoAlgorithm):
             QgsField(name='_errors',
                      type=QVariant.String,
                      len=255)]
-        invalid_writer = invalid_output.getVectorWriter(
-            invalid_fields,
-            layer.wkbType(),
-            layer.crs())
+        invalid_writer = invalid_output.getVectorWriter(invalid_fields, layer.wkbType(), layer.crs(), context)
         invalid_count = 0
 
         error_output = self.getOutputFromName(self.ERROR_OUTPUT)
@@ -130,10 +124,7 @@ class CheckValidity(GeoAlgorithm):
             QgsField(name='message',
                      type=QVariant.String,
                      len=255)]
-        error_writer = error_output.getVectorWriter(
-            error_fields,
-            QgsWkbTypes.Point,
-            layer.crs())
+        error_writer = error_output.getVectorWriter(error_fields, QgsWkbTypes.Point, layer.crs(), context)
         error_count = 0
 
         features = QgsProcessingUtils.getFeatures(layer, context)

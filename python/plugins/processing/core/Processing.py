@@ -232,7 +232,7 @@ class Processing(object):
         ret = execute(alg, context, feedback)
         if ret:
             if onFinish is not None:
-                onFinish(alg, feedback)
+                onFinish(alg, context, feedback)
         else:
             QgsMessageLog.logMessage(Processing.tr("There were errors executing the algorithm."),
                                      Processing.tr("Processing"))

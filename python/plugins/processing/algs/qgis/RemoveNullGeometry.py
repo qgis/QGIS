@@ -65,10 +65,7 @@ class RemoveNullGeometry(GeoAlgorithm):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                layer.wkbType(),
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

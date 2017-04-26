@@ -72,8 +72,7 @@ class TextToFloat(GeoAlgorithm):
         fields = layer.fields()
         fields[idx] = QgsField(fieldName, QVariant.Double, '', 24, 15)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
 

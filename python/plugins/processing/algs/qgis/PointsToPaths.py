@@ -101,8 +101,8 @@ class PointsToPaths(GeoAlgorithm):
         fields.append(QgsField('group', QVariant.String, '', 254, 0))
         fields.append(QgsField('begin', QVariant.String, '', 254, 0))
         fields.append(QgsField('end', QVariant.String, '', 254, 0))
-        writer = self.getOutputFromName(self.OUTPUT_LINES).getVectorWriter(
-            fields, QgsWkbTypes.LineString, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LINES).getVectorWriter(fields, QgsWkbTypes.LineString, layer.crs(),
+                                                                           context)
 
         points = dict()
         features = QgsProcessingUtils.getFeatures(layer, context)

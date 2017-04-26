@@ -78,8 +78,7 @@ class SymmetricalDifference(GeoAlgorithm):
 
         geomType = QgsWkbTypes.multiType(layerA.wkbType())
         fields = vector.combineVectorFields(layerA, layerB)
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, geomType, layerA.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, geomType, layerA.crs(), context)
 
         featB = QgsFeature()
         outFeat = QgsFeature()

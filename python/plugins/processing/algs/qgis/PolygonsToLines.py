@@ -68,8 +68,8 @@ class PolygonsToLines(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), QgsWkbTypes.LineString, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), QgsWkbTypes.LineString,
+                                                                     layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

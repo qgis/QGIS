@@ -93,8 +93,7 @@ class GeometryConvert(GeoAlgorithm):
         else:
             newType = QgsWkbTypes.Point
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields(), newType, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), newType, layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

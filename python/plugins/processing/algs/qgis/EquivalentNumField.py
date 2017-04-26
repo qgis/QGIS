@@ -73,8 +73,7 @@ class EquivalentNumField(GeoAlgorithm):
         fieldindex = vlayer.fields().lookupField(fieldname)
         fields = vlayer.fields()
         fields.append(QgsField('NUM_FIELD', QVariant.Int))
-        writer = output.getVectorWriter(fields, vlayer.wkbType(),
-                                        vlayer.crs())
+        writer = output.getVectorWriter(fields, vlayer.wkbType(), vlayer.crs(), context)
         outFeat = QgsFeature()
         classes = {}
 

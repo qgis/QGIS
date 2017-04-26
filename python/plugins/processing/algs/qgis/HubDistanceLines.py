@@ -112,8 +112,8 @@ class HubDistanceLines(GeoAlgorithm):
         fields.append(QgsField('HubName', QVariant.String))
         fields.append(QgsField('HubDist', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.LineString, layerPoints.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.LineString, layerPoints.crs(),
+                                                                     context)
 
         index = vector.spatialindex(layerHubs)
 

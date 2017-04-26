@@ -78,10 +78,7 @@ class Boundary(GeoAlgorithm):
             output_wkb = QgsWkbTypes.addM(output_wkb)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                output_wkb,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), output_wkb, layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
