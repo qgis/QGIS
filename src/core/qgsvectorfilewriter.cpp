@@ -1818,6 +1818,22 @@ QString QgsVectorFileWriter::errorMessage()
   return mErrorMessage;
 }
 
+bool QgsVectorFileWriter::addFeature( QgsFeature &feature )
+{
+  return addFeature( feature, nullptr, QgsUnitTypes::DistanceMeters );
+}
+
+bool QgsVectorFileWriter::addFeatures( QgsFeatureList &features )
+{
+  QgsFeatureList::iterator fIt = features.begin();
+  bool result = true;
+  for ( ; fIt != features.end(); ++fIt )
+  {
+    result = result && addFeature( *fIt, nullptr, QgsUnitTypes::DistanceMeters );
+  }
+  return result;
+}
+
 bool QgsVectorFileWriter::addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit )
 {
   // create the feature

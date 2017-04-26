@@ -40,7 +40,7 @@ class QgsFeatureIterator;
  1. static call to QgsVectorFileWriter::writeAsVectorFormat(...) which saves the whole vector layer
  2. create an instance of the class and issue calls to addFeature(...)
  */
-class CORE_EXPORT QgsVectorFileWriter
+class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 {
   public:
     enum OptionType
@@ -497,8 +497,11 @@ class CORE_EXPORT QgsVectorFileWriter
     //! Retrieves error message
     QString errorMessage();
 
+    bool addFeature( QgsFeature &feature ) override;
+    bool addFeatures( QgsFeatureList &features ) override;
+
     //! Add feature to the currently opened data source
-    bool addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer = nullptr, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
+    bool addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 
     //! \note not available in Python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
