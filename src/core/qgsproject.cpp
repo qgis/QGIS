@@ -2201,6 +2201,27 @@ void QgsProject::removeMapLayer( QgsMapLayer *layer )
     removeMapLayers( QList<QgsMapLayer *>() << layer );
 }
 
+QgsMapLayer *QgsProject::takeMapLayer( QgsMapLayer *layer )
+{
+  if ( !layer )
+    return nullptr;
+
+  if ( mMapLayers.contains( layer->id() ) )
+  {
+    emit layersWillBeRemoved( QStringList() << layer->id() );
+    emit layersWillBeRemoved( QList<QgsMapLayer *>() << layer );
+    emit layerWillBeRemoved( layer->id() );
+    emit layerWillBeRemoved( layer );
+
+    mMapLayers.remove( layer->id() );
+    layer->setParent( nullptr );
+    emit layerRemoved( layer->id() );
+    emit layersRemoved( QStringList() << layer->id() );
+    return layer;
+  }
+  return nullptr; //don't return layer - it wasn't owned and accordingly we aren't transferring ownership
+}
+
 void QgsProject::removeAllMapLayers()
 {
   emit removeAll();

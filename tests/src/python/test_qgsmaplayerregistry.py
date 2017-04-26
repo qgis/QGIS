@@ -502,6 +502,35 @@ class TestQgsProjectMapLayers(unittest.TestCase):
         for k, layer in list(reg.mapLayers().items()):
             assert(layer is not None)
 
+    def testTakeLayer(self):
+        # test taking ownership of a layer from the project
+        l1 = createLayer('l1')
+        l2 = createLayer('l2')
+        p = QgsProject()
+
+        # add one layer to project
+        p.addMapLayer(l1)
+        self.assertEqual(p.mapLayers(), {l1.id(): l1})
+        self.assertEqual(l1.parent(), p)
+
+        # try taking some layers which don't exist in project
+        self.assertFalse(p.takeMapLayer(None))
+        self.assertFalse(p.takeMapLayer(l2))
+        # but l2 should still exist..
+        self.assertTrue(l2.isValid())
+
+        # take layer from project
+        self.assertEqual(p.takeMapLayer(l1), l1)
+        self.assertFalse(p.mapLayers()) # no layers left
+        # but l1 should still exist
+        self.assertTrue(l1.isValid())
+        # layer should have no parent now
+        self.assertFalse(l1.parent())
+
+        # destroy project
+        p = None
+        self.assertTrue(l1.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()

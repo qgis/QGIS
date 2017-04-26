@@ -700,6 +700,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void removeMapLayer( QgsMapLayer *layer );
 
     /**
+     * Takes a layer from the registry. If the layer was owned by the project, the
+     * layer will be returned without deleting it. The caller takes ownership of
+     * the layer and is responsible for deleting it.
+     * \see removeMapLayer()
+     * \since QGIS 3.0
+     */
+    QgsMapLayer *takeMapLayer( QgsMapLayer *layer );
+
+    /**
      * Removes all registered layers. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
