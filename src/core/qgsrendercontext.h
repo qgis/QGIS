@@ -180,6 +180,13 @@ class CORE_EXPORT QgsRenderContext
     void setRenderingStopped( bool stopped ) {mRenderingStopped = stopped;}
 
     /**
+     * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+     * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
+     * \since QGIS 3.0
+     */
+    void setDistanceArea( QgsDistanceArea distanceArea ) {mDistanceArea = distanceArea ;}
+
+    /**
      * Sets the scaling factor for the render to convert painter units
      * to physical sizes. This should usually be equal to the number of pixels
      * per millimeter.

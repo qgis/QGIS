@@ -16,12 +16,19 @@ import qgis  # NOQA
 
 from qgis.core import (QgsRenderContext,
                        QgsMapSettings,
-                       QgsRectangle,
+                       QgsDistanceArea,
+                       QgsRectangle, QgsPoint,
+                       QgsCoordinateReferenceSystem,
                        QgsMapUnitScale,
                        QgsUnitTypes)
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QPainter, QImage
-from qgis.testing import unittest
+from qgis.testing import start_app, unittest
+import math
+
+# Convenience instances in case you may need them
+# to find the srs.db
+start_app()
 
 
 class TestQgsRenderContext(unittest.TestCase):
@@ -49,6 +56,35 @@ class TestQgsRenderContext(unittest.TestCase):
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
         self.assertAlmostEqual(c.scaleFactor(), dots_per_m / 1000, 3)  # scaleFactor should be pixels/mm
+
+    def testRenderMetersInMapUnits(self):
+
+        crs_wsg84 = QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326')
+        rt_extent = QgsRectangle(13.37768985634235, 52.51625705830762, 13.37771931686235, 52.51628651882762)
+        point_berlin_wsg84 = QgsPoint(13.37770458660236, 52.51627178856762)
+        length_wsg84_mapunits = 0.00001473026350140572
+        meters_test = 2.40
+        da_wsg84 = QgsDistanceArea()
+        da_wsg84.setSourceCrs(crs_wsg84)
+        if (da_wsg84.sourceCrs().isGeographic()):
+            da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
+        length_meter_mapunits = da_wsg84.measureLineProjected(point_berlin_wsg84, 1.0, (math.pi / 2))
+        meters_test_mapunits = meters_test * length_wsg84_mapunits
+        meters_test_pixel = meters_test * length_wsg84_mapunits
+        ms = QgsMapSettings()
+        ms.setDestinationCrs(crs_wsg84)
+        ms.setExtent(rt_extent)
+        r = QgsRenderContext.fromMapSettings(ms)
+        r.setExtent(rt_extent)
+        self.assertEqual(r.extent().center().toString(7), point_berlin_wsg84.toString(7))
+        c = QgsMapUnitScale()
+        r.setDistanceArea(da_wsg84)
+        result_test_painterunits = r.convertToPainterUnits(meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_painterunits, 7, QgsUnitTypes.DistanceUnknownUnit, True), QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceUnknownUnit, True))
+        result_test_mapunits = r.convertToMapUnits(meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True), QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True))
+        result_test_meters = r.convertFromMapUnits(meters_test_mapunits, QgsUnitTypes.RenderMetersInMapUnits)
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_meters, 1, QgsUnitTypes.DistanceMeters, True), QgsDistanceArea.formatDistance(meters_test, 1, QgsUnitTypes.DistanceMeters, True))
 
     def testConvertSingleUnit(self):
 

@@ -9,7 +9,6 @@
 
 
 
-
 class QgsDistanceArea
 {
 %Docstring

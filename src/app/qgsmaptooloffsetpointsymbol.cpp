@@ -248,6 +248,15 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPointXY &startPoi
       factor = 1.0;
       break;
 
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    {
+      QgsDistanceArea distanceArea;
+      distanceArea.setSourceCrs( mCanvas->mapSettings().destinationCrs() );
+      distanceArea.setEllipsoid( mCanvas->mapSettings().ellipsoid() );
+      // factor=1.0 / 1 meter in MapUnits
+      factor = 1.0 / distanceArea.measureLineProjected( startPoint );
+    }
+    break;
     case QgsUnitTypes::RenderUnknownUnit:
     case QgsUnitTypes::RenderPercentage:
       //no sensible value

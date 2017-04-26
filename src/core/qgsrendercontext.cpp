@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeaturefilterprovider.h"
 #include "qgslogger.h"
+#include "qgspointv2.h"
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
@@ -31,6 +32,10 @@ QgsRenderContext::QgsRenderContext()
   : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  QgsDistanceArea distanceArea;
+  distanceArea.setEllipsoid( distanceArea.sourceCrs().ellipsoidAcronym() );
+  setDistanceArea( distanceArea );
+  setExtent( QgsRectangle( 13.37768985634235, 52.51625705830762, 13.37771931686235, 52.51628651882762 ) );
 }
 
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
@@ -88,7 +93,6 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   {
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
-  // QgsDebugMsgLevel( QString( "QgsRenderContext::fromQPainter -0- " ), 4 );
   return context;
 }
 
@@ -138,12 +142,6 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
   ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
   ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
-  QgsDebugMsgLevel( QString( "QgsRenderContext::fromMapSettings:mapUnits[%1] from center[%2] sourceCrs[%3] ellipsoidAcronym[%4,%5]" )
-                    .arg( QgsUnitTypes::toString( ctx.mDistanceArea.sourceCrs().mapUnits() ) )
-                    .arg( mapSettings.visibleExtent().center().wellKnownText() )
-                    .arg( ctx.mDistanceArea.sourceCrs().description() )
-                    .arg( ctx.mDistanceArea.ellipsoid() )
-                    .arg( mapSettings.ellipsoid() ), 4 );
 
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
@@ -243,26 +241,9 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
 
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
-      double mup = mapToPixel().mapUnitsPerPixel() / convertMetersToMapUnits( 1.0 );
-      if ( mup > 0 )
-      {
-        conversionFactor = 1.0 / mup;
-      }
-      else
-      {
-        conversionFactor = 1.0;
-      }
-      QgsDebugMsgLevel( QString( "convertToPainterUnits -1- : size[%1] mup[%2] mapUnitsPerPixel[%3] conversionFactor[%4] mapUnits[%5] from center[%6] sourceCrs[%7] isGeographic[%8]" ).arg( size )
-                        .arg( mup )
-                        .arg( mapToPixel().mapUnitsPerPixel() )
-                        .arg( conversionFactor )
-                        .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
-                        .arg( mExtent.center().wellKnownText() )
-                        .arg( mDistanceArea.sourceCrs().description() )
-                        .arg( mDistanceArea.sourceCrs().isGeographic() ), 4 );
+      size = convertMetersToMapUnits( size );
       unit = QgsUnitTypes::RenderMapUnits;
-      // Act as if RenderMapUnits with values of meters converted to MapUnits
-      break;
+      // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
     }
     case QgsUnitTypes::RenderMapUnits:
     {
@@ -275,11 +256,6 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       {
         conversionFactor = 1.0;
       }
-      QgsDebugMsgLevel( QString( "convertToPainterUnits -2- : size[%1]  mup[%2] conversionFactor[%3] sourceCrs[%4] isGeographic[%5]" ).arg( size )
-                        .arg( mup )
-                        .arg( conversionFactor )
-                        .arg( mDistanceArea.sourceCrs().description() )
-                        .arg( mDistanceArea.sourceCrs().isGeographic() ), 4 );
       break;
     }
     case QgsUnitTypes::RenderPixels:
@@ -302,7 +278,6 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       convertedSize = qMax( convertedSize, scale.minSizeMM * mScaleFactor );
     if ( scale.maxSizeMMEnabled )
       convertedSize = qMin( convertedSize, scale.maxSizeMM * mScaleFactor );
-    QgsDebugMsgLevel( QString( "convertToPainterUnits -3- : convertedSize[%1]" ).arg( convertedSize ), 4 );
   }
 
   return convertedSize;
@@ -316,11 +291,6 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
   {
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
-      QgsDebugMsgLevel( QString( "convertToMapUnits: mup[%1] size[%2] mapUnits[%3]from center[%4] sourceCrs[%5]" ).arg( mup )
-                        .arg( size )
-                        .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
-                        .arg( mExtent.center().wellKnownText() )
-                        .arg( mDistanceArea.sourceCrs().description() ), 4 );
       size = convertMetersToMapUnits( size );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
     }
@@ -384,11 +354,6 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
   {
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
-      QgsDebugMsgLevel( QString( "convertFromMapUnits: meter[%1] sizeInMapUnits[%2] mapUnits[%3]from center[%4] sourceCrs[%5]" ).arg( convertMetersToMapUnits( 1.0 ) )
-                        .arg( sizeInMapUnits )
-                        .arg( QgsUnitTypes::toString( mDistanceArea.sourceCrs().mapUnits() ) )
-                        .arg( mExtent.center().wellKnownText() )
-                        .arg( mDistanceArea.sourceCrs().description() ), 4 );
       return sizeInMapUnits / convertMetersToMapUnits( 1.0 );
     }
     case QgsUnitTypes::RenderMapUnits:
@@ -422,9 +387,21 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
 
 double QgsRenderContext::convertMetersToMapUnits( double meters ) const
 {
-  if ( mDistanceArea.sourceCrs().mapUnits() != QgsUnitTypes::DistanceMeters )
+  switch ( mDistanceArea.sourceCrs().mapUnits() )
   {
-    return mDistanceArea.measureLineProjected( mExtent.center(), meters );
+    case QgsUnitTypes::DistanceMeters:
+      return meters;
+      break;
+    case QgsUnitTypes::DistanceDegrees:
+    {
+      QgsPoint pointCenter = mExtent.center();
+      pointCenter = mCoordTransform.transform( pointCenter );
+      return mDistanceArea.measureLineProjected( pointCenter, meters );
+    }
+    break;
+    default:
+      return ( meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mDistanceArea.sourceCrs().mapUnits() ) );
+      break;
   }
   return meters;
 }

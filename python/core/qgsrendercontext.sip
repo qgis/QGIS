@@ -194,6 +194,12 @@ Sets coordinate transformation.
     void setDrawEditingInformation( bool b );
 
     void setRenderingStopped( bool stopped );
+    /**
+     * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+     * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
+     * \since QGIS 3.0
+     */
+    void setDistanceArea( QgsDistanceArea distanceArea );
 
     void setScaleFactor( double factor );
 %Docstring
@@ -340,7 +346,6 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
  :rtype: float
 %End
 
-<<<<<<< HEAD
     /**
      * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
      * \note
@@ -351,14 +356,3 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 
 };
 
-QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRenderContext::Flag> f2);
-
-    /**
-     * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
-     * \note
-      * When the sourceCrs() is geographic, the center of the Extent will be used
-     * \since QGIS 3.0
-     */
-    double convertMetersToMapUnits( double meters ) const;
-
-};
