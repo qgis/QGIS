@@ -872,15 +872,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       return getFeatures( QgsFeatureRequest( rectangle ) );
     }
 
-    /**
-     * Adds a single \a feature to the layer.
-     * Calling this method causes the layer to recalculate it's extents, which can be
-     * expensive. If multiple features are to be added to the layer then it is more
-     * efficient to call addFeatures(), as addFeatures() will only trigger a single
-     * layer extent recalculation.
-     * \see addFeatures()
-     * \returns true in case of success and false in case of failure
-     */
     bool addFeature( QgsFeature &feature ) override;
 
     /** Updates an existing feature. This method needs to query the datasource

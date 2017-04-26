@@ -903,16 +903,6 @@ Return the provider type for this layer
 
     virtual bool addFeature( QgsFeature &feature );
 
-%Docstring
- Adds a single ``feature`` to the layer.
- Calling this method causes the layer to recalculate it's extents, which can be
- expensive. If multiple features are to be added to the layer then it is more
- efficient to call addFeatures(), as addFeatures() will only trigger a single
- layer extent recalculation.
- \see addFeatures()
- :return: true in case of success and false in case of failure
- :rtype: bool
-%End
 
     bool updateFeature( QgsFeature &f );
 %Docstring
