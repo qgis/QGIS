@@ -40,10 +40,6 @@
 // QWT Charting widget
 
 #include <qwt_global.h>
-#if (QWT_VERSION<0x060000)
-#include <qwt_array.h>
-#include <qwt_data.h>
-#endif
 #include <qwt_legend.h>
 #include <qwt_plot.h>
 #include <qwt_plot_grid.h>
@@ -502,12 +498,7 @@ void QgsGPSInformationWidget::disconnectGps()
 
 void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation &info )
 {
-#if QWT_VERSION<0x060000
-  QwtArray<double> myXData;//qwtarray is just a wrapped qvector
-  QwtArray<double> mySignalData;//qwtarray is just a wrapped qvector
-#else
   QVector<QPointF> data;
-#endif
 
   // set validity flag and status from GPS data
   // based on GGA, GSA and RMC sentences - the logic does not require all
@@ -563,21 +554,10 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation &in
 
     if ( mStackedWidget->currentIndex() == 1 && info.satInfoComplete ) //signal
     {
-#if QWT_VERSION<0x060000
-      myXData.append( i );
-      mySignalData.append( 0 );
-      myXData.append( i );
-      mySignalData.append( currentInfo.signal );
-      myXData.append( i + 1 );
-      mySignalData.append( currentInfo.signal );
-      myXData.append( i + 1 );
-      mySignalData.append( 0 );
-#else
       data << QPointF( i, 0 );
       data << QPointF( i, currentInfo.signal );
       data << QPointF( i + 1, currentInfo.signal );
       data << QPointF( i + 1, 0 );
-#endif
     } //signal
 
     if ( mStackedWidget->currentIndex() == 2 && info.satInfoComplete ) //satellites
@@ -631,11 +611,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation &in
 
   if ( mStackedWidget->currentIndex() == 1 && info.satInfoComplete ) //signal
   {
-#if (QWT_VERSION<0x060000)
-    mpCurve->setData( myXData, mySignalData );
-#else
     mpCurve->setSamples( data );
-#endif
     mpPlot->replot();
   } //signal
 #ifdef WITH_QWTPOLAR
