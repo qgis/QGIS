@@ -29,9 +29,7 @@ class QwtPlotMarker;
 class QwtPlotZoomer;
 
 // fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 typedef QPointF QwtDoublePoint;
-#endif
 
 /** \ingroup gui
  * Histogram widget

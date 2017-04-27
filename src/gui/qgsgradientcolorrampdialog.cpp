@@ -91,13 +91,9 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
 
   // hide the ugly canvas frame
   mPlot->setFrameStyle( QFrame::NoFrame );
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   QFrame *plotCanvasFrame = dynamic_cast<QFrame *>( mPlot->canvas() );
   if ( plotCanvasFrame )
     plotCanvasFrame->setFrameStyle( QFrame::NoFrame );
-#else
-  mPlot->canvas()->setFrameStyle( QFrame::NoFrame );
-#endif
 
   mPlot->setAxisScale( QwtPlot::yLeft, 0.0, 1.0 );
   mPlot->enableAxis( QwtPlot::yLeft, false );
@@ -461,11 +457,7 @@ void QgsGradientColorRampDialog::addPlotMarker( double x, double y, const QColor
   brushColor.setAlpha( 255 );
 
   QwtPlotMarker *marker = new QwtPlotMarker();
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 8, 8 ) ) );
-#else
-  marker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 8, 8 ) ) );
-#endif
   marker->setValue( x, y );
   marker->attach( mPlot );
   marker->setRenderHint( QwtPlotItem::RenderAntialiased, true );
@@ -537,17 +529,10 @@ void QgsGradientColorRampDialog::updatePlot()
   std::sort( saturationPoints.begin(), saturationPoints.end(), byX );
   std::sort( alphaPoints.begin(), alphaPoints.end(), byX );
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mLightnessCurve->setSamples( lightnessPoints );
   mHueCurve->setSamples( huePoints );
   mSaturationCurve->setSamples( saturationPoints );
   mAlphaCurve->setSamples( alphaPoints );
-#else
-  mLightnessCurve->setData( lightnessPoints );
-  mHueCurve->setData( huePoints );
-  mSaturationCurve->setData( saturationPoints );
-  mAlphaCurve->setData( alphaPoints );
-#endif
   mPlot->replot();
 }
 

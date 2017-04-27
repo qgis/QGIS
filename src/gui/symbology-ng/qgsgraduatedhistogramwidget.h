@@ -74,11 +74,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 
     void findClosestRange( double value, int &closestRangeIndex, int &pixelDistance ) const;
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     QwtPlotHistogram *createPlotHistogram( const QString &title, const QColor &color ) const;
-#else
-    HistogramItem *createHistoItem( const QString &title, const QColor &color ) const;
-#endif
 
 };
 

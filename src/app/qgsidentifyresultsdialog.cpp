@@ -672,39 +672,19 @@ QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attrib
   {
     color = QgsLimitedRandomColorRamp::randomColors( 1 ).at( 0 );
   }
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mPlotCurve->setSymbol( new QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),
                                         QPen( color, 2 ), QSize( 9, 9 ) ) );
   mPlotCurve->setPen( QPen( color, 2 ) ); // needed for legend
-#else
-  mPlotCurve->setSymbol( QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),
-                                    QPen( color, 2 ), QSize( 9, 9 ) ) );
-  mPlotCurve->setPen( QPen( color, 2 ) );
-#endif
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   QVector<QPointF> myData;
-#else
-  QVector<double> myX2Data;
-  QVector<double> myY2Data;
-#endif
   int i = 1;
 
   for ( QMap<QString, QString>::const_iterator it = attributes.begin();
         it != attributes.end(); ++it )
   {
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     myData << QPointF( double( i++ ), it.value().toDouble() );
-#else
-    myX2Data.append( double( i++ ) );
-    myY2Data.append( it.value().toDouble() );
-#endif
   }
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mPlotCurve->setSamples( myData );
-#else
-  mPlotCurve->setData( myX2Data, myY2Data );
-#endif
 
   mPlotCurve->attach( plot );
 

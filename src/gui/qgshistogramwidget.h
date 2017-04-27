@@ -35,10 +35,7 @@ class HistogramItem;
 class QwtPlotHistogram;
 
 // fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 typedef QPointF QwtDoublePoint;
-#endif
-
 
 /** \ingroup gui
  * \class QgsHistogramWidget
@@ -196,11 +193,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
     void clearHistogram();
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     QwtPlotHistogram *createPlotHistogram( const QString &title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
-#else
-    HistogramItem *createHistoItem( const QString &title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
-#endif
 
 };
 

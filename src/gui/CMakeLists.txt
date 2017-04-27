@@ -9,7 +9,6 @@ SET(QGIS_GUI_SRCS
   raster/qgsrendererrasterpropertieswidget.cpp
   raster/qgsrastertransparencywidget.cpp
   raster/qgshillshaderendererwidget.cpp
-  raster/qwt5_histogram_item.cpp
 
   symbology-ng/qgs25drendererwidget.cpp
   symbology-ng/characterwidget.cpp
