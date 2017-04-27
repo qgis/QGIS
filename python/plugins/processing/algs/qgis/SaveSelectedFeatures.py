@@ -69,10 +69,11 @@ class SaveSelectedFeatures(GeoAlgorithm):
         writer = output.getVectorWriter(vectorLayer.fields(), vectorLayer.wkbType(), vectorLayer.crs(), context)
 
         features = vectorLayer.getSelectedFeatures()
-        if len(features) == 0:
+        count = int(vectorLayer.selectedFeatureCount())
+        if count == 0:
             raise GeoAlgorithmExecutionException(self.tr('There are no selected features in the input layer.'))
 
-        total = 100.0 / len(features)
+        total = 100.0 / count
         for current, feat in enumerate(features):
             writer.addFeature(feat)
             feedback.setProgress(int(current * total))
