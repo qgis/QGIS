@@ -23,6 +23,7 @@ from qgis.core import (QgsGraduatedSymbolRenderer,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
+                       QgsPathResolver,
                        QgsPoint,
                        QgsRenderContext
                        )
@@ -372,8 +373,8 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         # Check save and reload from Dom works
 
         doc = QDomDocument()
-        element = renderer.save(doc)
-        renderer2 = QgsGraduatedSymbolRenderer.create(element)
+        element = renderer.save(doc, QgsPathResolver())
+        renderer2 = QgsGraduatedSymbolRenderer.create(element, QgsPathResolver())
         self.assertEqual(
             dumpGraduatedRenderer(renderer),
             dumpGraduatedRenderer(renderer2),
