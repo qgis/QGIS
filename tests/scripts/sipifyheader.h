@@ -160,7 +160,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
                           QgsVectorLayer *vl,
                           QgsSnappingResult::SnappingType snap_to ) const;
 
-    // Adding SIP_SKIP at the end of a line will discard this MethodCode
+    // Adding SIP_SKIP at the end of a line will discard this line
     bool thisShouldBeSkipped() const SIP_SKIP;
 
     void nonAnnotatedMethodFollowingSkip();
@@ -326,6 +326,20 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void ZshouldBeShown();
 #endif
 
+    void methodCodeWithMultiLineDef();
+#ifdef SIP_RUN
+    % MethodCode
+    if ( QgsWkbTypes::flatType( a0 ) != QgsWkbTypes::Point )
+    {
+      multiLineDef( PyExc_ValueError,
+                    QString( "%1 is not nice" ).arg( QgsWkbTypes::displayString( a0 ) ).toUtf8().constData() );
+    }
+    else
+    {
+      sipCpp = new sipQgsPointV2( a0, a1, a2, a3, a4 );
+    }
+    % End
+#endif
 
   protected:
     bool thisShouldBeListed();
