@@ -202,7 +202,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
             if self.iterateParam:
                 if executeIterating(self.alg, self.iterateParam, context, self.feedback):
-                    self.finish()
+                    self.finish(context)
                 else:
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
@@ -210,8 +210,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 command = self.alg.getAsCommand()
                 if command:
                     ProcessingLog.addToLog(command)
-                if execute(self.alg, None, self.feedback):
-                    self.finish()
+                if execute(self.alg, context, self.feedback):
+                    self.finish(context)
                 else:
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
@@ -228,11 +228,11 @@ class AlgorithmDialog(AlgorithmDialogBase):
             self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description),
                                  level=QgsMessageBar.WARNING, duration=5)
 
-    def finish(self):
+    def finish(self, context):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
-            if not handleAlgorithmResults(self.alg, self.feedback, not keepOpen):
+            if not handleAlgorithmResults(self.alg, context, self.feedback, not keepOpen):
                 self.resetGUI()
                 return
 

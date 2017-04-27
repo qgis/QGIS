@@ -83,8 +83,7 @@ class DeleteColumn(GeoAlgorithm):
         for index in field_indices:
             fields.remove(index)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

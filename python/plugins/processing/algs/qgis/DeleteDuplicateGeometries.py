@@ -65,8 +65,7 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
 
         fields = layer.fields()
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
 

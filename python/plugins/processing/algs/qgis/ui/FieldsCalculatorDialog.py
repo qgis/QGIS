@@ -226,9 +226,11 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 ProcessingLog.addToLog(self.alg.getAsCommand())
 
-                self.executed = execute(self.alg, None, self.feedback)
+                context = dataobjects.createContext()
+                self.executed = execute(self.alg, context, self.feedback)
                 if self.executed:
                     handleAlgorithmResults(self.alg,
+                                           context,
                                            self.feedback,
                                            not keepOpen)
                 if not keepOpen:

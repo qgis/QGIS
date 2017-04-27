@@ -70,10 +70,8 @@ class DropGeometry(GeoAlgorithm):
         layer = dataobjects.getLayerFromString(
             self.getParameterValue(self.INPUT_LAYER))
         writer = self.getOutputFromName(
-            self.OUTPUT_TABLE).getVectorWriter(
-                layer.fields(),
-                QgsWkbTypes.NoGeometry,
-                QgsCoordinateReferenceSystem())
+            self.OUTPUT_TABLE).getVectorWriter(layer.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem(),
+                                               context)
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
         features = QgsProcessingUtils.getFeatures(layer, context, request)

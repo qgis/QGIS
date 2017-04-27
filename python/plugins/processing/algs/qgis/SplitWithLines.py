@@ -78,8 +78,8 @@ class SplitWithLines(GeoAlgorithm):
         sameLayer = self.getParameterValue(self.INPUT_A) == self.getParameterValue(self.INPUT_B)
         fieldList = layerA.fields()
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                                                                     QgsWkbTypes.multiType(layerA.wkbType()), layerA.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList, QgsWkbTypes.multiType(layerA.wkbType()),
+                                                                     layerA.crs(), context)
 
         spatialIndex = QgsSpatialIndex()
         splitGeoms = {}

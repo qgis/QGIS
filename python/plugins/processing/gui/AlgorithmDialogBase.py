@@ -222,7 +222,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
     def accept(self):
         pass
 
-    def finish(self):
+    def finish(self, context):
         pass
 
     class InvalidParameterValue(Exception):

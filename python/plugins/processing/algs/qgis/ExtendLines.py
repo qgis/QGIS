@@ -71,10 +71,7 @@ class ExtendLines(GeoAlgorithm):
             self.getParameterValue(self.INPUT_LAYER))
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                layer.wkbType(),
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
 
         start_distance = self.getParameterValue(self.START_DISTANCE)
         end_distance = self.getParameterValue(self.END_DISTANCE)

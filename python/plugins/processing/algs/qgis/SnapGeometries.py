@@ -82,8 +82,8 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         tolerance = self.getParameterValue(self.TOLERANCE)
         mode = self.getParameterValue(self.BEHAVIOR)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),
+                                                                     context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
 

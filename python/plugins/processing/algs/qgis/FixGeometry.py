@@ -73,10 +73,7 @@ class FixGeometry(GeoAlgorithm):
             self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(
-                layer.fields(),
-                QgsWkbTypes.multiType(layer.wkbType()),
-                layer.crs())
+            self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.multiType(layer.wkbType()), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         if QgsProcessingUtils.featureCount(layer, context) == 0:

@@ -75,8 +75,7 @@ class ExtractNodes(GeoAlgorithm):
         fields.append(QgsField('distance', QVariant.Double))
         fields.append(QgsField('angle', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Point, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

@@ -92,8 +92,7 @@ class EliminateSelection(GeoAlgorithm):
         featToEliminate = []
         selFeatIds = inLayer.selectedFeatureIds()
         output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(inLayer.fields(),
-                                        inLayer.wkbType(), inLayer.crs())
+        writer = output.getVectorWriter(inLayer.fields(), inLayer.wkbType(), inLayer.crs(), context)
 
         for aFeat in inLayer.getFeatures():
             if aFeat.id() in selFeatIds:

@@ -268,10 +268,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                         # For the case of memory layer, if the
                         # getCompatible method has been called
                         continue
-                    writer = out.getVectorWriter(
-                        layer.fields(),
-                        layer.wkbType(), layer.crs()
-                    )
+                    writer = out.getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
                     features = QgsProcessingUtils.getFeatures(layer, context)
                     for feature in features:
                         writer.addFeature(feature)

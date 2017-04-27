@@ -75,8 +75,12 @@ class QgsProcessingContext
  Sets the expression ``context``.
 %End
 
-
-
+    QgsProject &temporaryLayerStore();
+%Docstring
+ Returns a reference to the project used for storing temporary layers during
+ algorithm execution.
+ :rtype: QgsProject
+%End
 
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring

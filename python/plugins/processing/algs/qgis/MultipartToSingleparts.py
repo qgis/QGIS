@@ -64,8 +64,8 @@ class MultipartToSingleparts(GeoAlgorithm):
         layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         geomType = QgsWkbTypes.singleType(layer.wkbType())
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), geomType, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), geomType, layer.crs(),
+                                                                     context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

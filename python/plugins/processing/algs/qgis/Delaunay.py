@@ -77,8 +77,7 @@ class Delaunay(GeoAlgorithm):
                   QgsField('POINTB', QVariant.Double, '', 24, 15),
                   QgsField('POINTC', QVariant.Double, '', 24, 15)]
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QgsWkbTypes.Polygon, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 
         pts = []
         ptDict = {}

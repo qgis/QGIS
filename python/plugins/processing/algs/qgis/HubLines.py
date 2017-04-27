@@ -88,8 +88,8 @@ class HubLines(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Same layer given for both hubs and spokes'))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layerSpoke.fields(), QgsWkbTypes.LineString, layerSpoke.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layerSpoke.fields(), QgsWkbTypes.LineString,
+                                                                     layerSpoke.crs(), context)
 
         spokes = QgsProcessingUtils.getFeatures(layerSpoke, context)
         hubs = QgsProcessingUtils.getFeatures(layerHub, context)

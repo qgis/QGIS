@@ -146,11 +146,9 @@ class ExecuteSQL(GeoAlgorithm):
         if not vLayer.isValid():
             raise GeoAlgorithmExecutionException(vLayer.dataProvider().error().message())
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            vLayer.fields().toList(),
-            # Create a point layer (without any points) if 'no geometry' is chosen
-            vLayer.wkbType() if geometry_type != 1 else 1,
-            vLayer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(vLayer.fields().toList(),
+                                                                           vLayer.wkbType() if geometry_type != 1 else 1,
+                                                                           vLayer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(vLayer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(vLayer, context)

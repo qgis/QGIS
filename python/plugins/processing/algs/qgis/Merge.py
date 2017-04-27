@@ -94,9 +94,8 @@ class Merge(GeoAlgorithm):
                     fields.append(sfield)
 
         total = 100.0 / totalFeatureCount
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), layers[0].wkbType(),
-            layers[0].crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields.toList(), layers[0].wkbType(),
+                                                                     layers[0].crs(), context)
 
         featureCount = 0
         for layer in layers:

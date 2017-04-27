@@ -130,8 +130,7 @@ class GridPolygon(GeoAlgorithm):
                   QgsField('id', QVariant.Int, '', 10, 0)
                   ]
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QgsWkbTypes.Polygon, crs)
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, crs, context)
 
         if idx == 0:
             self._rectangleGrid(

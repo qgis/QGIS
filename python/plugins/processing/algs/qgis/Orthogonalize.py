@@ -82,10 +82,7 @@ class Orthogonalize(GeoAlgorithm):
         max_iterations = self.getParameterValue(self.MAX_ITERATIONS)
         angle_tolerance = self.getParameterValue(self.ANGLE_TOLERANCE)
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                layer.wkbType(),
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

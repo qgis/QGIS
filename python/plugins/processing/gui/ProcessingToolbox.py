@@ -49,6 +49,7 @@ from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -249,6 +250,7 @@ class ProcessingToolbox(BASE, WIDGET):
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
+            context = dataobjects.createContext()
             alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
             message = alg.checkBeforeOpeningParametersDialog()
             if message:
@@ -281,8 +283,8 @@ class ProcessingToolbox(BASE, WIDGET):
                         self.addRecentAlgorithms(True)
             else:
                 feedback = MessageBarProgress()
-                execute(alg, None, feedback)
-                handleAlgorithmResults(alg, feedback)
+                execute(alg, context, feedback)
+                handleAlgorithmResults(alg, context, feedback)
                 feedback.close()
         if isinstance(item, TreeActionItem):
             action = item.action

@@ -105,8 +105,8 @@ class LinesIntersection(GeoAlgorithm):
         fieldListB = vector.testForUniqueness(fieldListA, fieldListB)
         fieldListA.extend(fieldListB)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldListA,
-                                                                     QgsWkbTypes.Point, layerA.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldListA, QgsWkbTypes.Point, layerA.crs(),
+                                                                     context)
 
         spatialIndex = vector.spatialindex(layerB)
 

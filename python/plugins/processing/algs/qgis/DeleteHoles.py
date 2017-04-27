@@ -77,10 +77,8 @@ class DeleteHoles(GeoAlgorithm):
         if min_area == 0.0:
             min_area = -1.0
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields(),
-            layer.wkbType(),
-            layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),
+                                                                     context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

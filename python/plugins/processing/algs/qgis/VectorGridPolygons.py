@@ -101,8 +101,7 @@ class VectorGridPolygons(GeoAlgorithm):
         fields.append(QgsField('ymin', QVariant.Double, '', 24, 15))
         fields.append(QgsField('ymax', QVariant.Double, '', 24, 15))
         fieldCount = 5
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Polygon, mapCRS)
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, mapCRS, context)
 
         feat = QgsFeature()
         feat.initAttributes(fieldCount)

@@ -67,10 +67,7 @@ class BoundingBox(GeoAlgorithm):
             self.getParameterValue(self.INPUT_LAYER))
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields().toList(),
-                QgsWkbTypes.Polygon,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields().toList(), QgsWkbTypes.Polygon, layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

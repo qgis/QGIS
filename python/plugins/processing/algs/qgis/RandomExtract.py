@@ -97,8 +97,8 @@ class RandomExtract(GeoAlgorithm):
 
         selran = random.sample(list(range(featureCount)), value)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), layer.wkbType(),
+                                                                     layer.crs(), context)
 
         total = 100.0 / featureCount
         for i, feat in enumerate(features):

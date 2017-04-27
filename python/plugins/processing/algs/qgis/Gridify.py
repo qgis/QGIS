@@ -81,8 +81,8 @@ class Gridify(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Invalid grid spacing: {0}/{1}').format(hSpacing, vSpacing))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),
+                                                                     context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

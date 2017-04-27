@@ -126,8 +126,7 @@ class GridLine(GeoAlgorithm):
                   QgsField('coord', QVariant.Double, '', 24, 15)
                   ]
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QgsWkbTypes.LineString, crs)
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.LineString, crs, context)
 
         if hOverlay > 0:
             hSpace = [hSpacing - hOverlay, hOverlay]

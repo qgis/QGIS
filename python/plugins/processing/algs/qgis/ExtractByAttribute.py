@@ -111,8 +111,7 @@ class ExtractByAttribute(GeoAlgorithm):
         value = self.getParameterValue(self.VALUE)
 
         fields = layer.fields()
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
 
         idx = layer.fields().lookupField(fieldName)
         fieldType = fields[idx].type()

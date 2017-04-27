@@ -97,8 +97,7 @@ class AddTableField(GeoAlgorithm):
         fields = layer.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
                                fieldLength, fieldPrecision))
-        writer = output.getVectorWriter(fields, layer.wkbType(),
-                                        layer.crs())
+        writer = output.getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

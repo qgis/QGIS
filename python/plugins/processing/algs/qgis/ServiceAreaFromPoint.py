@@ -231,10 +231,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_POINTS).getVectorWriter(
-                fields,
-                QgsWkbTypes.MultiPoint,
-                layer.crs())
+            self.OUTPUT_POINTS).getVectorWriter(fields, QgsWkbTypes.MultiPoint, layer.crs(), context)
 
         feat.setGeometry(geomUpper)
         feat['type'] = 'upper'
@@ -254,10 +251,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_POLYGON).getVectorWriter(
-                fields,
-                QgsWkbTypes.Polygon,
-                layer.crs())
+            self.OUTPUT_POLYGON).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 
         geom = geomUpper.convexHull()
         feat.setGeometry(geom)

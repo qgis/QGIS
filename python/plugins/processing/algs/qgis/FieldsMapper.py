@@ -144,9 +144,7 @@ class FieldsMapper(GeoAlgorithm):
                             str(expression.parserErrorString())))
             expressions.append(expression)
 
-        writer = output.getVectorWriter(fields,
-                                        layer.wkbType(),
-                                        layer.crs())
+        writer = output.getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
 
         # Create output vector layer with new attributes
         error_exp = None

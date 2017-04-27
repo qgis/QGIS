@@ -79,8 +79,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
 
         writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields().toList(),
-                                         layer.wkbType(), layer.crs())
+            self.OUTPUT).getVectorWriter(layer.fields().toList(), layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

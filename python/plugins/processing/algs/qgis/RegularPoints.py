@@ -101,8 +101,7 @@ class RegularPoints(GeoAlgorithm):
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Point, crs)
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, crs, context)
 
         if randomize:
             seed()

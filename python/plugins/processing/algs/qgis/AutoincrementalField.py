@@ -67,8 +67,7 @@ class AutoincrementalField(GeoAlgorithm):
             dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
         fields = vlayer.fields()
         fields.append(QgsField('AUTO', QVariant.Int))
-        writer = output.getVectorWriter(fields, vlayer.wkbType(),
-                                        vlayer.crs())
+        writer = output.getVectorWriter(fields, vlayer.wkbType(), vlayer.crs(), context)
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(vlayer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)

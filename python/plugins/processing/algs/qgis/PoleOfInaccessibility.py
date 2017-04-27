@@ -79,10 +79,7 @@ class PoleOfInaccessibility(GeoAlgorithm):
         fields.append(QgsField('dist_pole', QVariant.Double))
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                fields,
-                QgsWkbTypes.Point,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

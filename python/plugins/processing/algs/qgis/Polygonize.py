@@ -110,7 +110,7 @@ class Polygonize(GeoAlgorithm):
         feedback.setProgress(50)
 
         feedback.pushInfo('Saving polygons...')
-        writer = output.getVectorWriter(fields, QgsWkbTypes.Polygon, vlayer.crs())
+        writer = output.getVectorWriter(fields, QgsWkbTypes.Polygon, vlayer.crs(), context)
         total = 50.0 / polygons.geometry().numGeometries()
         for i in range(polygons.geometry().numGeometries()):
             outFeat = QgsFeature()

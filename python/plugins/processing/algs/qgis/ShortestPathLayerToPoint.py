@@ -182,10 +182,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
         feat.setFields(fields)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                fields.toList(),
-                QgsWkbTypes.LineString,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(fields.toList(), QgsWkbTypes.LineString, layer.crs(), context)
 
         tmp = endPoint.split(',')
         endPoint = QgsPoint(float(tmp[0]), float(tmp[1]))

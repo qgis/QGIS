@@ -97,9 +97,7 @@ class MeanCoords(GeoAlgorithm):
                      QgsField('MEAN_Y', QVariant.Double, '', 24, 15),
                      QgsField('UID', QVariant.String, '', 255)]
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fieldList, QgsWkbTypes.Point, layer.crs()
-        )
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList, QgsWkbTypes.Point, layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

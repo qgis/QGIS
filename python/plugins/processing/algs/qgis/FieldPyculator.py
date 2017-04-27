@@ -107,8 +107,7 @@ class FieldsPyculator(GeoAlgorithm):
         fields = layer.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
                                fieldLength, fieldPrecision))
-        writer = output.getVectorWriter(fields, layer.wkbType(),
-                                        layer.crs())
+        writer = output.getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
         outFeat = QgsFeature()
         new_ns = {}
 

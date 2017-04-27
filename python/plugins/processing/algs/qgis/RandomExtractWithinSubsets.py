@@ -104,8 +104,8 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
                             "correct value and try again."))
             value = value / 100.0
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), layer.wkbType(),
+                                                                     layer.crs(), context)
 
         selran = []
         total = 100.0 / (featureCount * len(unique))

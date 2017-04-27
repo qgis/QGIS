@@ -68,8 +68,7 @@ class Explode(GeoAlgorithm):
             self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         fields = vlayer.fields()
-        writer = output.getVectorWriter(fields, QgsWkbTypes.LineString,
-                                        vlayer.crs())
+        writer = output.getVectorWriter(fields, QgsWkbTypes.LineString, vlayer.crs(), context)
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(vlayer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
