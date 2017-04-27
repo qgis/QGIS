@@ -2531,7 +2531,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures() const
   }
   else
   {
-    QgsFeatureIterator it = selectedFeaturesIterator();
+    QgsFeatureIterator it = getSelectedFeatures();
 
     while ( it.nextFeature( f ) )
     {
@@ -2542,7 +2542,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures() const
   return features;
 }
 
-QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest request ) const
+QgsFeatureIterator QgsVectorLayer::getSelectedFeatures( QgsFeatureRequest request ) const
 {
   if ( mSelectedFeatureIds.isEmpty() )
     return QgsFeatureIterator();
@@ -3451,7 +3451,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   }
   else
   {
-    fit = selectedFeaturesIterator( request );
+    fit = getSelectedFeatures( request );
   }
 
   // create list of non-null attribute values

@@ -2100,6 +2100,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - Deprecated editor widget methods and enums and structs: struct RangeData, enum FeatureFormSuppress, enum EditType, addAttributeEditorWidget(), editorWidgetV2(), editorWidgetConfig(), attributeEditorElements(), editType(), setEditType(), editorLayout(), setEditorLayout, setEditorWidgetV2Config(), setCheckedState(), editForm(), setEditForm(), featureFormSuppress(), setFeatureFormSuppress(), editFormInit(), setEditFormInit(), valueMap(), range(), dateFormat(), fieldEditable(), labelOnTop(), setFieldEditable() and setLabelOnTop().  Use editFormConfig()
 - select() replaced by selectByRect()
 - selectedFeaturesIds() replaced by selectedFeatureIds()
+- selectedFeaturesIterator() was replaced by getSelectedFeatures()
 - setSelectedFeatures() replaced by selectByIds()
 - applyNamedStyle() replaced by applyNamedStyle()
 - isReadOnly() use readOnly()
