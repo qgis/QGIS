@@ -40,13 +40,19 @@
 
 white       [ \t\r\n]+
 
-dig     [0-9]
+dig     [0123456789]
 num1    {dig}+\.?([eE][-+]?{dig}+)?
 num2    {dig}*\.{dig}+([eE][-+]?{dig}+)?
 number  {num1}|{num2}
 
-non_ascii    [\x80-\xFF]
-raster_ref_char  [A-Za-z0-9_./:]|{non_ascii}|[-]
+U       [\x80-\xBF]
+U2      [\xC2-\xDF]
+U3      [\xE0-\xEF]
+U4      [\xF0-\xF4]
+
+UONLY   {U2}{U}|{U3}{U}{U}|{U4}{U}{U}{U}
+
+raster_ref_char  [A-Za-z_./:]|{UONLY}|[-]|{dig}
 raster_band_ref ({raster_ref_char}+)@{dig}+
 raster_band_ref_quoted  \"(\\.|[^"])*\"
 
