@@ -27,30 +27,28 @@ class QgsAbstractGeometry;
  * \class QgsGeometryEngine
  * \brief Contains geometry relation and modification algorithms.
  * \since QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsGeometryEngine
 {
   public:
-    QgsGeometryEngine( const QgsAbstractGeometry *geometry ): mGeometry( geometry ) {}
     virtual ~QgsGeometryEngine() = default;
 
     virtual void geometryChanged() = 0;
     virtual void prepareGeometry() = 0;
 
-    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry * > &, QString *errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString *errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const = 0;
+    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry * > &, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual bool centroid( QgsPointV2 &pt, QString *errorMsg = nullptr ) const = 0;
     virtual bool pointOnSurface( QgsPointV2 &pt, QString *errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const = 0;
+    virtual QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual double distance( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
     virtual bool intersects( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
     virtual bool touches( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
@@ -98,12 +96,14 @@ class CORE_EXPORT QgsGeometryEngine
       return 2;
     }
 
-    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString *errorMsg = nullptr ) const = 0;
+    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
 
   protected:
     const QgsAbstractGeometry *mGeometry = nullptr;
 
-    QgsGeometryEngine();
+    QgsGeometryEngine( const QgsAbstractGeometry *geometry )
+      : mGeometry( geometry )
+    {}
 };
 
 #endif // QGSGEOMETRYENGINE_H

@@ -16,15 +16,18 @@ email                : morb at ozemail dot com dot au
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H
 
-#include "qgis_core.h"
+#include <QDomDocument>
+#include <QSet>
 #include <QString>
 #include <QVector>
-#include <QDomDocument>
-
-#include "qgis.h"
 
 #include <geos_c.h>
 #include <climits>
+#include <limits>
+
+#include "qgis_core.h"
+#include "qgis.h"
+
 
 #if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR<3)
 #define GEOSGeometry struct GEOSGeom_t
@@ -32,12 +35,10 @@ email                : morb at ozemail dot com dot au
 #endif
 
 #include "qgsabstractgeometry.h"
+#include "qgsfeature.h"
 #include "qgspoint.h"
 #include "qgspointv2.h"
 
-#include "qgsfeature.h"
-#include <limits>
-#include <QSet>
 
 class QgsGeometryEngine;
 class QgsVectorLayer;
@@ -50,16 +51,32 @@ class QgsLineString;
 typedef QVector<QgsPoint> QgsPolyline;
 
 //! Polygon: first item of the list is outer ring, inner rings (if any) start from second item
+#ifndef SIP_RUN
 typedef QVector<QgsPolyline> QgsPolygon;
+#else
+typedef QVector<QVector<QgsPoint>> QgsPolygon;
+#endif
 
 //! A collection of QgsPoints that share a common collection of attributes
+#ifndef SIP_RUN
 typedef QVector<QgsPoint> QgsMultiPoint;
+#else
+typedef QVector<QgsPoint> QgsMultiPoint;
+#endif
 
 //! A collection of QgsPolylines that share a common collection of attributes
+#ifndef SIP_RUN
 typedef QVector<QgsPolyline> QgsMultiPolyline;
+#else
+typedef QVector<QVector<QgsPoint>> QgsMultiPolyline;
+#endif
 
 //! A collection of QgsPolygons that share a common collection of attributes
+#ifndef SIP_RUN
 typedef QVector<QgsPolygon> QgsMultiPolygon;
+#else
+typedef QVector<QVector<QVector<QgsPoint>>> QgsMultiPolygon;
+#endif
 
 class QgsRectangle;
 
@@ -88,13 +105,13 @@ class CORE_EXPORT QgsGeometry
     /** Assignments will prompt a deep copy of the object
      * \note not available in Python bindings
      */
-    QgsGeometry &operator=( QgsGeometry const &rhs );
+    QgsGeometry &operator=( QgsGeometry const &rhs ) SIP_SKIP;
 
     /** Creates a geometry from an abstract geometry object. Ownership of
      * geom is transferred.
      * \since QGIS 2.10
      */
-    explicit QgsGeometry( QgsAbstractGeometry *geom );
+    explicit QgsGeometry( QgsAbstractGeometry *geom SIP_TRANSFER );
 
 
     ~QgsGeometry();
@@ -109,7 +126,7 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 2.10
      * \see geometry
      */
-    void setGeometry( QgsAbstractGeometry *geometry );
+    void setGeometry( QgsAbstractGeometry *geometry SIP_TRANSFER );
 
     /** Returns true if the geometry is null (ie, contains no underlying geometry
      * accessible via geometry() ).
@@ -143,14 +160,14 @@ class CORE_EXPORT QgsGeometry
      * This class will take ownership of the buffer.
      * \note not available in Python bindings
      */
-    void fromGeos( GEOSGeometry *geos );
+    void fromGeos( GEOSGeometry *geos ) SIP_SKIP;
 
     /**
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
       This class will take ownership of the buffer.
       \note not available in Python bindings
      */
-    void fromWkb( unsigned char *wkb, int length );
+    void fromWkb( unsigned char *wkb, int length ) SIP_SKIP;
 
     /**
      * Set the geometry, feeding in the buffer containing OGC Well-Known Binary
@@ -163,7 +180,7 @@ class CORE_EXPORT QgsGeometry
      *  \since QGIS 3.0
      *  \note not available in Python bindings
      */
-    GEOSGeometry *exportToGeos( double precision = 0 ) const;
+    GEOSGeometry *exportToGeos( double precision = 0 ) const SIP_SKIP;
 
     /** Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
      * \see type
@@ -227,7 +244,7 @@ class CORE_EXPORT QgsGeometry
      * \returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
      */
     //TODO QGIS 3.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
-    QgsPoint closestVertex( const QgsPoint &point, int &atVertex, int &beforeVertex, int &afterVertex, double &sqrDist ) const;
+    QgsPoint closestVertex( const QgsPoint &point, int &atVertex SIP_OUT, int &beforeVertex SIP_OUT, int &afterVertex SIP_OUT, double &sqrDist SIP_OUT ) const;
 
     /**
      * Returns the distance along this geometry from its first vertex to the specified vertex.
@@ -258,7 +275,7 @@ class CORE_EXPORT QgsGeometry
      *    account the first vertex is equal to the last vertex (and will
      *    skip equal vertex positions).
      */
-    void adjacentVertices( int atVertex, int &beforeVertex, int &afterVertex ) const;
+    void adjacentVertices( int atVertex, int &beforeVertex SIP_OUT, int &afterVertex SIP_OUT ) const;
 
     /** Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
@@ -297,7 +314,7 @@ class CORE_EXPORT QgsGeometry
     /** Moves the vertex at the given position number
      *  and item (first number is index 0)
      *  to the given coordinates.
-    //     *  Returns false if atVertex does not correspond to a valid vertex
+     *  Returns false if atVertex does not correspond to a valid vertex
      *  on this geometry
      */
     bool moveVertex( const QgsPointV2 &p, int atVertex );
@@ -326,7 +343,7 @@ class CORE_EXPORT QgsGeometry
      *  to the given vertex index (vertex at the given position number,
      *  ring and item (first number is index 0))
      */
-    double sqrDistToVertexAt( QgsPoint &point, int atVertex ) const;
+    double sqrDistToVertexAt( QgsPoint &point SIP_IN, int atVertex ) const;
 
     /** Returns the nearest point on this geometry to another geometry.
      * \since QGIS 2.14
@@ -346,7 +363,7 @@ class CORE_EXPORT QgsGeometry
      * \param atVertex Receives index of the closest vertex
      * \returns The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestVertexWithContext( const QgsPoint &point, int &atVertex ) const;
+    double closestVertexWithContext( const QgsPoint &point, int &atVertex SIP_OUT ) const;
 
     /**
      * Searches for the closest segment of geometry to the given point
@@ -355,22 +372,26 @@ class CORE_EXPORT QgsGeometry
      * \param afterVertex Receives index of the vertex after the closest segment. The vertex
      * before the closest segment is always afterVertex - 1
      * \param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
-     * \param epsilon epsilon for segment snapping (added in 1.8)
+     * \param epsilon epsilon for segment snapping
      * \returns The squared cartesian distance is also returned in sqrDist, negative number on error
      */
+#ifndef SIP_RUN
     double closestSegmentWithContext( const QgsPoint &point, QgsPoint &minDistPoint, int &afterVertex, double *leftOf = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+#else
+    double closestSegmentWithContext( const QgsPoint &point, QgsPoint &minDistPoint SIP_OUT, int &afterVertex SIP_OUT ) const;
+#endif
 
     /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      \returns 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( const QList<QgsPoint> &ring );
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
 
     /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      \returns 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
+    int addRing( QgsCurve *ring SIP_TRANSFER );
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurve *ring );
 
     /** Adds a new part to a the geometry.
      * \param points points describing part to add
@@ -378,8 +399,8 @@ class CORE_EXPORT QgsGeometry
      * \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
+    int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPoints );
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new part to a the geometry.
      * \param points points describing part to add
@@ -387,8 +408,8 @@ class CORE_EXPORT QgsGeometry
      * \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
+    int addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPointsV2 );
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new part to this geometry.
      * \param part part to add (ownership is transferred)
@@ -396,8 +417,8 @@ class CORE_EXPORT QgsGeometry
      * \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
+    int addPart( QgsAbstractGeometry *part SIP_TRANSFER, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsAbstractGeometry *part, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
      * \param newPart part to add. Ownership is NOT transferred.
@@ -405,8 +426,8 @@ class CORE_EXPORT QgsGeometry
      * not disjoint with existing polygons of the feature
      * \note not available in Python bindings
      */
+    int addPart( GEOSGeometry *newPart ) SIP_SKIP;
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( GEOSGeometry *newPart );
 
     /** Adds a new island polygon to a multipolygon feature
      \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
@@ -414,8 +435,8 @@ class CORE_EXPORT QgsGeometry
      \note available in Python bindings as addPartGeometry
      \since QGIS 2.2
      */
+    int addPart( const QgsGeometry &newPart ) SIP_PYNAME( addPartGeometry );
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsGeometry &newPart );
 
     /**
      * Removes the interior rings from a (multi)polygon geometry. If the minimumAllowedArea
@@ -453,9 +474,9 @@ class CORE_EXPORT QgsGeometry
     \returns 0 in case of success, 1 if geometry has not been split, error else*/
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitGeometry( const QList<QgsPoint> &splitLine,
-                       QList<QgsGeometry> &newGeometries,
+                       QList<QgsGeometry> &newGeometries SIP_OUT,
                        bool topological,
-                       QList<QgsPoint> &topologyTestPoints );
+                       QList<QgsPoint> &topologyTestPoints SIP_OUT );
 
     /** Replaces a part of this geometry with another line
      * \returns 0 in case of success
@@ -490,7 +511,7 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.0
      * \see boundingBox()
      */
-    QgsGeometry orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const;
+    QgsGeometry orientedMinimumBoundingBox( double &area SIP_OUT, double &angle SIP_OUT, double &width SIP_OUT, double &height SIP_OUT ) const;
 
     /**
      * Attempts to orthogonalize a line or polygon geometry by shifting vertices to make the geometries
@@ -669,7 +690,7 @@ class CORE_EXPORT QgsGeometry
      * \see pointOnSurface()
      * \since QGIS 3.0
      */
-    QgsGeometry poleOfInaccessibility( double precision, double *distanceToBoundary = nullptr ) const;
+    QgsGeometry poleOfInaccessibility( double precision, double *distanceToBoundary SIP_OUT = nullptr ) const;
 
     //! Returns the smallest convex polygon that contains all the points in the geometry.
     QgsGeometry convexHull() const;
@@ -783,7 +804,7 @@ class CORE_EXPORT QgsGeometry
      * \returns the converted geometry or nullptr if the conversion fails.
      * \since QGIS 2.2
      */
-    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const;
+    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const SIP_FACTORY;
 
     /* Accessor functions for getting geometry data */
 
@@ -873,7 +894,7 @@ class CORE_EXPORT QgsGeometry
      *  \since QGIS 1.5
      */
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-                            const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+                            const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
 
     /**
      * Attempts to make an invalid geometry valid without losing vertices.
@@ -891,15 +912,25 @@ class CORE_EXPORT QgsGeometry
 
     /** \ingroup core
      */
-    class Error
+    class CORE_EXPORT Error
     {
         QString message;
         QgsPoint location;
         bool hasLocation;
+
       public:
-        Error() : message( QStringLiteral( "none" ) ), hasLocation( false ) {}
-        explicit Error( const QString &m ) : message( m ), hasLocation( false ) {}
-        Error( const QString &m, const QgsPoint &p ) : message( m ), location( p ), hasLocation( true ) {}
+        Error()
+          : message( QStringLiteral( "none" ) )
+          , hasLocation( false ) {}
+
+        explicit Error( const QString &m )
+          : message( m )
+          , hasLocation( false ) {}
+
+        Error( const QString &m, const QgsPoint &p )
+          : message( m )
+          , location( p )
+          , hasLocation( true ) {}
 
         QString what() { return message; }
         QgsPoint where() { return location; }
@@ -910,7 +941,7 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 1.5
      * \note Available in Python bindings since QGIS 1.6
      **/
-    void validateGeometry( QList<Error> &errors );
+    void validateGeometry( QList<QgsGeometry::Error> &errors SIP_OUT );
 
     /** Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
@@ -967,7 +998,7 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 2.10
      * \see vertexNrFromVertexId
      */
-    bool vertexIdFromVertexNr( int nr, QgsVertexId &id ) const;
+    bool vertexIdFromVertexNr( int nr, QgsVertexId &id SIP_OUT ) const;
 
     /** Returns the vertex number corresponding to a vertex idd
      * \param i vertex id
@@ -981,7 +1012,7 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 2.6
      * \note not available in Python
      */
-    static GEOSContextHandle_t getGEOSHandler();
+    static GEOSContextHandle_t getGEOSHandler() SIP_SKIP;
 
     /** Construct geometry from a QPointF
      * \param point source QPointF
@@ -1002,14 +1033,14 @@ class CORE_EXPORT QgsGeometry
      * \returns QgsPolyline
      * \see createPolygonFromQPolygonF
      */
-    static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon );
+    static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
 
     /** Creates a QgsPolygon from a QPolygonF.
      * \param polygon source polygon
      * \returns QgsPolygon
      * \see createPolylineFromQPolygonF
      */
-    static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon );
+    static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
 
     /** Compares two polylines for equality within a specified tolerance.
      * \param p1 first polyline
@@ -1019,7 +1050,8 @@ class CORE_EXPORT QgsGeometry
      * points are equal within the specified tolerance
      * \since QGIS 2.9
      */
-    static bool compare( const QgsPolyline &p1, const QgsPolyline &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
+    static bool compare( const QgsPolyline &p1, const QgsPolyline &p2,
+                         double epsilon = 4 * std::numeric_limits<double>::epsilon() SIP_PYARGDEFAULT( 4 * DBL_EPSILON ) ) SIP_PYNAME( comparePolylines );
 
     /** Compares two polygons for equality within a specified tolerance.
      * \param p1 first polygon
@@ -1029,7 +1061,8 @@ class CORE_EXPORT QgsGeometry
      * number of points and all points are equal within the specified tolerance
      * \since QGIS 2.9
      */
-    static bool compare( const QgsPolygon &p1, const QgsPolygon &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
+    static bool compare( const QgsPolygon &p1, const QgsPolygon &p2,
+                         double epsilon = 4 * std::numeric_limits<double>::epsilon() SIP_PYARGDEFAULT( 4 * DBL_EPSILON ) ) SIP_PYNAME( comparePolygons );
 
     /** Compares two multipolygons for equality within a specified tolerance.
      * \param p1 first multipolygon
@@ -1040,7 +1073,8 @@ class CORE_EXPORT QgsGeometry
      * tolerance
      * \since QGIS 2.9
      */
-    static bool compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
+    static bool compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2,
+                         double epsilon = 4 * std::numeric_limits<double>::epsilon() SIP_PYARGDEFAULT( 4 * DBL_EPSILON ) ) SIP_PYNAME( compareMultiPolygons );
 
     /** Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
      * roughly doubles the number of vertices in a geometry.
@@ -1058,7 +1092,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Creates and returns a new geometry engine
      */
-    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry );
+    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) SIP_FACTORY;
 
     /** Upgrades a point list from QgsPoint to QgsPointV2
      * \param input list of QgsPoint objects to be upgraded

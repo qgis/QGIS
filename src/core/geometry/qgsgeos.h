@@ -26,7 +26,6 @@ class QgsGeometry;
 
 /** \ingroup core
  * Does vector analysis using the geos library and handles import, export, exception handling*
- * \note this API is not considered stable and may change for 2.12
  * \note not available in Python bindings
  */
 class CORE_EXPORT QgsGeos: public QgsGeometryEngine

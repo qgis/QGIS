@@ -191,7 +191,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.commitChanges())
         reference = QgsGeometry.fromRect(QgsRectangle(0.5, 0.0, 1.0, 1.0))
         provider_extent = QgsGeometry.fromRect(vl.extent())
-        self.assertTrue(QgsGeometry.compare(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001),
+        self.assertTrue(QgsGeometry.comparePolylines(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001),
                         provider_extent.asPolygon()[0])
 
         # Test deleting a geometry that touches the bbox
@@ -200,7 +200,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.commitChanges())
         reference = QgsGeometry.fromRect(QgsRectangle(0.5, 0.0, 1.0, 0.5))
         provider_extent = QgsGeometry.fromRect(vl.extent())
-        self.assertTrue(QgsGeometry.compare(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001),
+        self.assertTrue(QgsGeometry.comparePolylines(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001),
                         provider_extent.asPolygon()[0])
 
     def testSelectSubsetString(self):

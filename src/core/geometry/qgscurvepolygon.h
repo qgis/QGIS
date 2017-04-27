@@ -19,6 +19,7 @@
 #define QGSCURVEPOLYGONV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgssurface.h"
 
 class QgsPolygonV2;
@@ -27,7 +28,6 @@ class QgsPolygonV2;
  * \class QgsCurvePolygon
  * \brief Curve polygon geometry type
  * \since QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 {
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     virtual QString geometryType() const override { return QStringLiteral( "CurvePolygon" ); }
     virtual int dimension() const override { return 2; }
-    virtual QgsCurvePolygon *clone() const override;
+    virtual QgsCurvePolygon *clone() const override SIP_FACTORY;
     void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
@@ -54,8 +54,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     //surface interface
     virtual double area() const override;
     virtual double perimeter() const override;
-    QgsPolygonV2 *surfaceToPolygon() const override;
-    virtual QgsAbstractGeometry *boundary() const override;
+    QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
+    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     //curve polygon interface
     int numInteriorRings() const;
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * of the curve.
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsPolygonV2 *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    virtual QgsPolygonV2 *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
 
     /** Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
      * of the exterior ring. For instance, setting a 2D exterior ring on a 3D CurvePolygon will drop the z dimension
@@ -75,12 +75,12 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * \see setInteriorRings()
      * \see exteriorRing()
      */
-    virtual void setExteriorRing( QgsCurve *ring );
+    virtual void setExteriorRing( QgsCurve *ring SIP_TRANSFER );
 
     //! Sets all interior rings (takes ownership)
-    void setInteriorRings( const QList<QgsCurve *> &rings );
+    void setInteriorRings( const QList<QgsCurve *> &rings SIP_TRANSFER );
     //! Adds an interior ring to the geometry (takes ownership)
-    virtual void addInteriorRing( QgsCurve *ring );
+    virtual void addInteriorRing( QgsCurve *ring SIP_TRANSFER );
 
     /**
      * Removes an interior ring from the polygon. The first interior ring has index 0.
@@ -111,15 +111,18 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     virtual QgsCoordinateSequence coordinateSequence() const override;
     virtual int nCoordinates() const override;
     bool isEmpty() const override;
-    double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const override;
-    bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const override;
+    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt SIP_OUT,
+                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
+                                   double epsilon ) const override;
+
+    bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex SIP_OUT ) const override;
 
     bool hasCurvedSegments() const override;
 
     /** Returns a geometry without curves. Caller takes ownership
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      *  \param vertex the vertex id
