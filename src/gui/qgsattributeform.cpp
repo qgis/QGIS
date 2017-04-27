@@ -911,15 +911,15 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString &constraint,
     switch ( result )
     {
       case QgsEditorWidgetWrapper::ConstraintResultFailHard:
-        buddy->setText( QStringLiteral( "%1<font color=\"red\">✘</font>" ).arg( text ) );
+        buddy->setText( trUtf8( "%1<font color=\"red\">✘</font>" ).arg( text ) );
         break;
 
       case QgsEditorWidgetWrapper::ConstraintResultFailSoft:
-        buddy->setText( QStringLiteral( "%1<font color=\"orange\">✘</font>" ).arg( text ) );
+        buddy->setText( trUtf8( "%1<font color=\"orange\">✘</font>" ).arg( text ) );
         break;
 
       case QgsEditorWidgetWrapper::ConstraintResultPass:
-        buddy->setText( QStringLiteral( "%1<font color=\"green\">✔</font>" ).arg( text ) );
+        buddy->setText( trUtf8( "%1<font color=\"green\">✔</font>" ).arg( text ) );
         break;
     }
   }
