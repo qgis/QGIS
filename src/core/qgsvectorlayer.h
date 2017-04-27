@@ -608,7 +608,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns A list of QgsFeature
      *
      * \see    selectedFeatureIds()
-     * \see    selectedFeaturesIterator() which is more memory friendly when handling large selections
+     * \see    getSelectedFeatures() which is more memory friendly when handling large selections
      */
     QgsFeatureList selectedFeatures() const;
 
@@ -623,7 +623,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see    selectedFeatureIds()
      * \see    selectedFeatures()
      */
-    QgsFeatureIterator selectedFeaturesIterator( QgsFeatureRequest request = QgsFeatureRequest() ) const;
+    QgsFeatureIterator getSelectedFeatures( QgsFeatureRequest request = QgsFeatureRequest() ) const;
 
     /**
      * Return reference to identifiers of selected features

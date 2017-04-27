@@ -67,7 +67,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
 
         writer = output.getVectorWriter(vectorLayer.fields(), vectorLayer.wkbType(), vectorLayer.crs(), context)
 
-        features = vectorLayer.selectedFeaturesIterator()
+        features = vectorLayer.getSelectedFeatures()
         total = 100.0 / int(vectorLayer.selectedFeatureCount())
         for current, feat in enumerate(features):
             writer.addFeature(feat)

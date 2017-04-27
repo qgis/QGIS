@@ -322,7 +322,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint> &splitLine, bo
 
   if ( !selectedIds.isEmpty() ) //consider only the selected features if there is a selection
   {
-    features = L->selectedFeaturesIterator();
+    features = L->getSelectedFeatures();
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
@@ -431,7 +431,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint> &splitLine, bool 
 
   if ( L->selectedFeatureCount() > 0 ) //consider only the selected features if there is a selection
   {
-    fit = L->selectedFeaturesIterator();
+    fit = L->getSelectedFeatures();
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {

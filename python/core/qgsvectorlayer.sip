@@ -586,11 +586,11 @@ Get all feature Ids
  :return: A list of QgsFeature
 
  \see    selectedFeatureIds()
- \see    selectedFeaturesIterator() which is more memory friendly when handling large selections
+ \see    getSelectedFeatures() which is more memory friendly when handling large selections
  :rtype: QgsFeatureList
 %End
 
-    QgsFeatureIterator selectedFeaturesIterator( QgsFeatureRequest request = QgsFeatureRequest() ) const;
+    QgsFeatureIterator getSelectedFeatures( QgsFeatureRequest request = QgsFeatureRequest() ) const;
 %Docstring
  Get an iterator of the selected features
 

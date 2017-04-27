@@ -182,7 +182,7 @@ QgsFeatureIterator QgsProcessingUtils::getFeatures( QgsVectorLayer *layer, const
   req.setInvalidGeometryCallback( context.invalidGeometryCallback() );
   if ( useSelection )
   {
-    return layer->selectedFeaturesIterator( req );
+    return layer->getSelectedFeatures( req );
   }
   else
   {
@@ -220,7 +220,7 @@ QList<QVariant> QgsProcessingUtils::uniqueValues( QgsVectorLayer *layer, int fie
     // using selection, so we have to iterate through selected features
     QSet<QVariant> values;
     QgsFeature f;
-    QgsFeatureIterator it = layer->selectedFeaturesIterator( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << fieldIndex ).setFlags( QgsFeatureRequest::NoGeometry ) );
+    QgsFeatureIterator it = layer->getSelectedFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << fieldIndex ).setFlags( QgsFeatureRequest::NoGeometry ) );
     while ( it.nextFeature( f ) )
     {
       values.insert( f.attribute( fieldIndex ) );
