@@ -686,7 +686,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
     }
     else
     {
-      if ( !addLayer( element, brokenNodes ) )
+      if ( !addLayer( element, brokenNodes, pathResolver() ) )
       {
         returnStatus = false;
       }
@@ -698,7 +698,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   return returnStatus;
 }
 
-bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes )
+bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, const QgsPathResolver &pathResolver )
 {
   QString type = layerElem.attribute( QStringLiteral( "type" ) );
   QgsDebugMsgLevel( "Layer type is " + type, 4 );
@@ -728,7 +728,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   Q_CHECK_PTR( mapLayer ); // NOLINT
 
   // have the layer restore state that is stored in Dom node
-  if ( mapLayer->readLayerXml( layerElem, pathResolver() ) && mapLayer->isValid() )
+  if ( mapLayer->readLayerXml( layerElem, pathResolver ) && mapLayer->isValid() )
   {
     emit readMapLayer( mapLayer, layerElem );
 
@@ -1190,7 +1190,7 @@ void QgsProject::cleanTransactionGroups( bool force )
 bool QgsProject::readLayer( const QDomNode &layerNode )
 {
   QList<QDomNode> brokenNodes;
-  if ( addLayer( layerNode.toElement(), brokenNodes ) )
+  if ( addLayer( layerNode.toElement(), brokenNodes, pathResolver() ) )
   {
     // have to try to update joins for all layers now - a previously added layer may be dependent on this newly
     // added layer for joins
@@ -1720,6 +1720,10 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     }
   }
 
+  QgsPathResolver embeddedPathResolver;
+  if ( !useAbsolutePaths )
+    embeddedPathResolver = QgsPathResolver( projectFilePath );
+
   QDomElement projectLayersElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) );
   if ( projectLayersElem.isNull() )
   {
@@ -1811,7 +1815,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         dsElem.appendChild( sProjectDocument.createTextNode( datasource ) );
       }
 
-      if ( addLayer( mapLayerElem, brokenNodes ) )
+      if ( addLayer( mapLayerElem, brokenNodes, embeddedPathResolver ) )
       {
         return true;
       }

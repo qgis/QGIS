@@ -232,6 +232,24 @@ void TestQgsProject::testPathResolverSvg()
   QCOMPARE( svg1, ourSvgPath );
   QCOMPARE( svg2, invalidSvgPath );
   QCOMPARE( svg3, librarySvgPath );
+
+  //
+  // now let's use these layers in embedded in another project...
+  //
+
+  QList<QDomNode> brokenNodes;
+  QgsProject projectMaster;
+  QVERIFY( projectMaster.createEmbeddedLayer( layer1->id(), projectFilename, brokenNodes ) );
+  QVERIFY( projectMaster.createEmbeddedLayer( layer2->id(), projectFilename, brokenNodes ) );
+  QVERIFY( projectMaster.createEmbeddedLayer( layer3->id(), projectFilename, brokenNodes ) );
+
+  QString svg1x = _getLayerSvgMarkerPath( projectMaster, "points 1" );
+  QString svg2x = _getLayerSvgMarkerPath( projectLoaded, "points 2" );
+  QString svg3x = _getLayerSvgMarkerPath( projectLoaded, "points 3" );
+  QCOMPARE( svg1x, ourSvgPath );
+  QCOMPARE( svg2x, invalidSvgPath );
+  QCOMPARE( svg3x, librarySvgPath );
+
 }
 
 
