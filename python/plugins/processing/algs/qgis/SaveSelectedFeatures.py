@@ -25,8 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
+from qgis.core import QgsApplication
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
@@ -68,7 +69,10 @@ class SaveSelectedFeatures(GeoAlgorithm):
         writer = output.getVectorWriter(vectorLayer.fields(), vectorLayer.wkbType(), vectorLayer.crs(), context)
 
         features = vectorLayer.getSelectedFeatures()
-        total = 100.0 / int(vectorLayer.selectedFeatureCount())
+        if len(features) == 0:
+            raise GeoAlgorithmExecutionException(self.tr('There are no selected features in the input layer.'))
+
+        total = 100.0 / len(features)
         for current, feat in enumerate(features):
             writer.addFeature(feat)
             feedback.setProgress(int(current * total))
