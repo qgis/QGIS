@@ -50,8 +50,8 @@ class QgsHtmlAnnotation: QgsAnnotation
  :rtype: str
 %End
 
-    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const;
-    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc );
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsPathResolver &pathResolver ) const;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsPathResolver &pathResolver );
 
     virtual void setAssociatedFeature( const QgsFeature &feature );
 

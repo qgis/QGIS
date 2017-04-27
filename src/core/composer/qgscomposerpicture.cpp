@@ -367,6 +367,7 @@ void QgsComposerPicture::loadLocalPicture( const QString &path )
       QColor fillColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::PictureSvgBackgroundColor, context, mSvgFillColor );
       QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::PictureSvgStrokeColor, context, mSvgStrokeColor );
       double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsComposerObject::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
+      // TODO: check that this works
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( pic.fileName(), rect().width(), fillColor, strokeColor, strokeWidth,
                                      1.0 );
       mSVG.load( svgContent );

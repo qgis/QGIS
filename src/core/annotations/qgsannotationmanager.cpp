@@ -83,7 +83,7 @@ QList<QgsAnnotation *> QgsAnnotationManager::cloneAnnotations() const
   return results;
 }
 
-bool QgsAnnotationManager::readXml( const QDomElement &element, const QDomDocument &doc )
+bool QgsAnnotationManager::readXml( const QDomElement &element, const QDomDocument &doc, const QgsPathResolver &pathResolver )
 {
   clear();
   //restore each annotation
@@ -94,35 +94,35 @@ bool QgsAnnotationManager::readXml( const QDomElement &element, const QDomDocume
   QDomNodeList annotationNodes = annotationsElem.elementsByTagName( QStringLiteral( "Annotation" ) );
   for ( int i = 0; i < annotationNodes.size(); ++i )
   {
-    createAnnotationFromXml( annotationNodes.at( i ).toElement(), doc );
+    createAnnotationFromXml( annotationNodes.at( i ).toElement(), doc, pathResolver );
   }
 
   // restore old (pre 3.0) project annotations
   QDomNodeList oldItemList = element.elementsByTagName( QStringLiteral( "TextAnnotationItem" ) );
   for ( int i = 0; i < oldItemList.size(); ++i )
   {
-    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc );
+    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc, pathResolver );
   }
   oldItemList = element.elementsByTagName( QStringLiteral( "FormAnnotationItem" ) );
   for ( int i = 0; i < oldItemList.size(); ++i )
   {
-    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc );
+    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc, pathResolver );
   }
   oldItemList = element.elementsByTagName( QStringLiteral( "HtmlAnnotationItem" ) );
   for ( int i = 0; i < oldItemList.size(); ++i )
   {
-    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc );
+    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc, pathResolver );
   }
   oldItemList = element.elementsByTagName( QStringLiteral( "SVGAnnotationItem" ) );
   for ( int i = 0; i < oldItemList.size(); ++i )
   {
-    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc );
+    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc, pathResolver );
   }
 
   return result;
 }
 
-QDomElement QgsAnnotationManager::writeXml( QDomDocument &doc ) const
+QDomElement QgsAnnotationManager::writeXml( QDomDocument &doc, const QgsPathResolver &pathResolver ) const
 {
   QDomElement annotationsElem = doc.createElement( QStringLiteral( "Annotations" ) );
   QListIterator<QgsAnnotation *> i( mAnnotations );
@@ -137,19 +137,19 @@ QDomElement QgsAnnotationManager::writeXml( QDomDocument &doc ) const
       continue;
     }
 
-    annotation->writeXml( annotationsElem, doc );
+    annotation->writeXml( annotationsElem, doc, pathResolver );
   }
   return annotationsElem;
 }
 
-void QgsAnnotationManager::createAnnotationFromXml( const QDomElement &element, const QDomDocument &doc )
+void QgsAnnotationManager::createAnnotationFromXml( const QDomElement &element, const QDomDocument &doc, const QgsPathResolver &pathResolver )
 {
   QString type = element.tagName();
   QgsAnnotation *annotation = QgsApplication::annotationRegistry()->create( type );
   if ( !annotation )
     return;
 
-  annotation->readXml( element, doc );
+  annotation->readXml( element, doc, pathResolver );
 
   if ( !annotation->mapPositionCrs().isValid() )
   {

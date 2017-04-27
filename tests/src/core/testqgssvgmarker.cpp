@@ -99,7 +99,7 @@ void TestQgsSvgMarkerSymbol::initTestCase()
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //setup symbol
-  mSvgMarkerLayer = new QgsSvgMarkerSymbolLayer();
+  mSvgMarkerLayer = new QgsSvgMarkerSymbolLayer( QStringLiteral( "/crosses/Star1.svg" ) );
   mMarkerSymbol = new QgsMarkerSymbol();
   mMarkerSymbol->changeSymbolLayer( 0, mSvgMarkerLayer );
   mSymbolRenderer = new QgsSingleSymbolRenderer( mMarkerSymbol );

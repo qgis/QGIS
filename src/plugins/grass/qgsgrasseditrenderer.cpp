@@ -202,24 +202,24 @@ QString QgsGrassEditRenderer::dump() const
   return QStringLiteral( "GRASS edit renderer" );
 }
 
-QDomElement QgsGrassEditRenderer::save( QDomDocument &doc )
+QDomElement QgsGrassEditRenderer::save( QDomDocument &doc, const QgsPathResolver &pathResolver )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "grassEdit" ) );
 
   QDomElement lineElem = doc.createElement( QStringLiteral( "line" ) );
   rendererElem.appendChild( lineElem );
-  lineElem.appendChild( mLineRenderer->save( doc ) );
+  lineElem.appendChild( mLineRenderer->save( doc, pathResolver ) );
 
   QDomElement pointElem = doc.createElement( QStringLiteral( "marker" ) );
   rendererElem.appendChild( pointElem );
-  pointElem.appendChild( mMarkerRenderer->save( doc ) );
+  pointElem.appendChild( mMarkerRenderer->save( doc, pathResolver ) );
 
   return rendererElem;
 }
 
 
-QgsFeatureRenderer *QgsGrassEditRenderer::create( QDomElement &element )
+QgsFeatureRenderer *QgsGrassEditRenderer::create( QDomElement &element, const QgsPathResolver &pathResolver )
 {
   QgsGrassEditRenderer *renderer = new QgsGrassEditRenderer();
 
@@ -234,7 +234,7 @@ QgsFeatureRenderer *QgsGrassEditRenderer::create( QDomElement &element )
       QgsRendererAbstractMetadata *meta = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );
       if ( meta )
       {
-        QgsFeatureRenderer *subRenderer = meta->createRenderer( elem );
+        QgsFeatureRenderer *subRenderer = meta->createRenderer( elem, pathResolver );
         if ( subRenderer )
         {
           QgsDebugMsg( "renderer created : " + renderer->type() );

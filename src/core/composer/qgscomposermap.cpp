@@ -28,6 +28,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsmapsettingsutils.h"
 #include "qgspainting.h"
+#include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
@@ -1393,7 +1394,7 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     }
     else
     {
-      lineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( gridSymbolElem );
+      lineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( gridSymbolElem, mComposition->project()->pathResolver() );
     }
     mapGrid->setLineSymbol( lineSymbol );
 
@@ -1438,7 +1439,7 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !overviewFrameSymbolElem.isNull() )
     {
-      fillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( overviewFrameSymbolElem );
+      fillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( overviewFrameSymbolElem, mComposition->project()->pathResolver() );
       mapOverview->setFrameSymbol( fillSymbol );
     }
     mOverviewStack->addOverview( mapOverview );

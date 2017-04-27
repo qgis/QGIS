@@ -38,6 +38,7 @@
 #include "qgsmapsettings.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
+#include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
@@ -823,7 +824,7 @@ bool QgsComposition::writeXml( QDomElement &composerElem, QDomDocument &doc )
   compositionElem.setAttribute( QStringLiteral( "paperHeight" ), QString::number( mPageHeight ) );
   compositionElem.setAttribute( QStringLiteral( "numPages" ), mPages.size() );
 
-  QDomElement pageStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mPageStyleSymbol, doc );
+  QDomElement pageStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mPageStyleSymbol, doc, mProject->pathResolver() );
   compositionElem.appendChild( pageStyleElem );
 
   //snapping
@@ -934,7 +935,7 @@ bool QgsComposition::readXml( const QDomElement &compositionElem, const QDomDocu
   if ( !pageStyleSymbolElem.isNull() )
   {
     delete mPageStyleSymbol;
-    mPageStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( pageStyleSymbolElem );
+    mPageStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( pageStyleSymbolElem, mProject->pathResolver() );
   }
 
   if ( widthConversionOk && heightConversionOk )

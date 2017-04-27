@@ -940,7 +940,7 @@ bool QgsProject::read()
   mLabelingEngineSettings->readSettingsFromProject( this );
   emit labelingEngineSettingsChanged();
 
-  mAnnotationManager->readXml( doc->documentElement(), *doc );
+  mAnnotationManager->readXml( doc->documentElement(), *doc, pathResolver() );
   mLayoutManager->readXml( doc->documentElement(), *doc );
 
   // reassign change dependencies now that all layers are loaded
@@ -1340,7 +1340,7 @@ bool QgsProject::write()
 
   mLabelingEngineSettings->writeSettingsToProject( this );
 
-  QDomElement annotationsElem = mAnnotationManager->writeXml( *doc );
+  QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, pathResolver() );
   qgisNode.appendChild( annotationsElem );
 
   QDomElement layoutElem = mLayoutManager->writeXml( *doc );

@@ -21,6 +21,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
 #include "qgsmapsettings.h"
+#include "qgspathresolver.h"
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QVector2D>
@@ -254,6 +255,8 @@ void QgsComposerArrow::drawSVGMarker( QPainter *p, MarkerType type, const QStrin
   if ( svgFileName.isEmpty() )
     return;
 
+  // TODO: make sure svgFileName is absolute path
+
   QSvgRenderer r;
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( svgFileName, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadStrokeColor, mArrowHeadStrokeWidth,
                                  1.0 );
@@ -432,7 +435,7 @@ bool QgsComposerArrow::writeXml( QDomElement &elem, QDomDocument &doc ) const
   composerArrowElem.setAttribute( QStringLiteral( "boundsBehaviorVersion" ), QString::number( mBoundsBehavior ) );
 
   QDomElement styleElem = doc.createElement( QStringLiteral( "lineStyle" ) );
-  QDomElement lineStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mLineSymbol, doc );
+  QDomElement lineStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mLineSymbol, doc, mComposition->project()->pathResolver() );
   styleElem.appendChild( lineStyleElem );
   composerArrowElem.appendChild( styleElem );
 
@@ -472,7 +475,7 @@ bool QgsComposerArrow::readXml( const QDomElement &itemElem, const QDomDocument 
     if ( !lineStyleElem.isNull() )
     {
       delete mLineSymbol;
-      mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( lineStyleElem );
+      mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( lineStyleElem, mComposition->project()->pathResolver() );
     }
   }
   else

@@ -1687,9 +1687,9 @@ void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
 //////////
 
 
-QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QString &name, double size, double angle, QgsSymbol::ScaleMethod scaleMethod )
+QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QString &path, double size, double angle, QgsSymbol::ScaleMethod scaleMethod )
 {
-  mPath = QgsSymbolLayerUtils::symbolNameToPath( name );
+  mPath = path;
   mSize = size;
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
@@ -1703,7 +1703,7 @@ QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QString &name, double si
 
 QgsSymbolLayer *QgsSvgMarkerSymbolLayer::create( const QgsStringMap &props )
 {
-  QString name = DEFAULT_SVGMARKER_NAME;
+  QString name;
   double size = DEFAULT_SVGMARKER_SIZE;
   double angle = DEFAULT_SVGMARKER_ANGLE;
   QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
@@ -1830,6 +1830,18 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::create( const QgsStringMap &props )
   m->restoreOldDataDefinedProperties( props );
 
   return m;
+}
+
+void QgsSvgMarkerSymbolLayer::resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving )
+{
+  QgsStringMap::iterator it = properties.find( QStringLiteral( "name" ) );
+  if ( it != properties.end() )
+  {
+    if ( saving )
+      it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value(), pathResolver );
+    else
+      it.value() = QgsSymbolLayerUtils::svgSymbolNameToPath( it.value(), pathResolver );
+  }
 }
 
 void QgsSvgMarkerSymbolLayer::setPath( const QString &path )
@@ -2089,7 +2101,7 @@ void QgsSvgMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext
 QgsStringMap QgsSvgMarkerSymbolLayer::properties() const
 {
   QgsStringMap map;
-  map[QStringLiteral( "name" )] = QgsSymbolLayerUtils::symbolPathToName( mPath );
+  map[QStringLiteral( "name" )] = mPath;
   map[QStringLiteral( "size" )] = QString::number( mSize );
   map[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( mSizeUnit );
   map[QStringLiteral( "size_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );

@@ -33,6 +33,7 @@
 #include "qgsmaplayer.h"
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
+#include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgsundowidget.h"
 #include "qgsrenderer.h"
@@ -214,7 +215,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   QDomDocument doc( QStringLiteral( "style" ) );
   mLastStyleXml = doc.createElement( QStringLiteral( "style" ) );
   doc.appendChild( mLastStyleXml );
-  mCurrentLayer->writeStyle( mLastStyleXml, doc, errorMsg );
+  mCurrentLayer->writeStyle( mLastStyleXml, doc, errorMsg, QgsPathResolver() );
 }
 
 void QgsLayerStylingWidget::apply()
@@ -495,7 +496,7 @@ void QgsLayerStylingWidget::pushUndoItem( const QString &name )
   QDomDocument doc( QStringLiteral( "style" ) );
   QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
   doc.appendChild( rootNode );
-  mCurrentLayer->writeStyle( rootNode, doc, errorMsg );
+  mCurrentLayer->writeStyle( rootNode, doc, errorMsg, QgsPathResolver() );
   mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, name, rootNode, mLastStyleXml ) );
   // Override the last style on the stack
   mLastStyleXml = rootNode.cloneNode();
@@ -514,14 +515,14 @@ QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QStr
 void QgsMapLayerStyleCommand::undo()
 {
   QString error;
-  mLayer->readStyle( mLastState, error );
+  mLayer->readStyle( mLastState, error, QgsPathResolver() );
   mLayer->triggerRepaint();
 }
 
 void QgsMapLayerStyleCommand::redo()
 {
   QString error;
-  mLayer->readStyle( mXml, error );
+  mLayer->readStyle( mXml, error, QgsPathResolver() );
   mLayer->triggerRepaint();
 }
 

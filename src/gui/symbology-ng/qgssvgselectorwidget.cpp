@@ -18,6 +18,7 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
@@ -401,7 +402,7 @@ void QgsSvgSelectorWidget::setSvgPath( const QString &svgPath )
   // skip possible urls, excepting those that may locally resolve
   if ( !svgPath.contains( QLatin1String( "://" ) ) || ( svgPath.contains( QLatin1String( "file://" ), Qt::CaseInsensitive ) ) )
   {
-    QString resolvedPath = QgsSymbolLayerUtils::symbolNameToPath( svgPath.trimmed() );
+    QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgPath.trimmed(), QgsProject::instance()->pathResolver() );
     if ( !resolvedPath.isNull() )
     {
       updatedPath = resolvedPath;
@@ -441,7 +442,7 @@ QString QgsSvgSelectorWidget::currentSvgPath() const
 
 QString QgsSvgSelectorWidget::currentSvgPathToName() const
 {
-  return QgsSymbolLayerUtils::symbolPathToName( mCurrentSvgPath );
+  return QgsSymbolLayerUtils::svgSymbolPathToName( mCurrentSvgPath, QgsProject::instance()->pathResolver() );
 }
 
 void QgsSvgSelectorWidget::updateCurrentSvgPath( const QString &svgPath )
@@ -514,7 +515,7 @@ void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, const QString &tip )
 
 void QgsSvgSelectorWidget::on_mFileLineEdit_textChanged( const QString &text )
 {
-  QString resolvedPath = QgsSymbolLayerUtils::symbolNameToPath( text );
+  QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( text, QgsProject::instance()->pathResolver() );
   bool validSVG = !resolvedPath.isNull();
 
   updateLineEditFeedback( validSVG, resolvedPath );

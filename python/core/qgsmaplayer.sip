@@ -629,20 +629,22 @@ A convenience function to (un)capitalize the layer name
 
 
 
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage ) = 0;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsPathResolver &pathResolver ) = 0;
 %Docstring
  Read the symbology for the current layer from the Dom node supplied.
  \param node node that will contain the symbology definition for this layer.
  \param errorMessage reference to string that will be updated with any error messages
+ \param pathResolver for transform from relative to absolute paths
  :return: true in case of success.
  :rtype: bool
 %End
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsPathResolver &pathResolver );
 %Docstring
  Read the style for the current layer from the Dom node supplied.
  \param node node that will contain the style definition for this layer.
  \param errorMessage reference to string that will be updated with any error messages
+ \param pathResolver for transform from relative to absolute paths
  :return: true in case of success.
 .. versionadded:: 2.16
 .. note::
@@ -651,22 +653,24 @@ A convenience function to (un)capitalize the layer name
  :rtype: bool
 %End
 
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const = 0;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsPathResolver &pathResolver ) const = 0;
 %Docstring
  Write the symbology for the layer into the docment provided.
   \param node the node that will have the style element added to it.
   \param doc the document that will have the QDomNode added.
   \param errorMessage reference to string that will be updated with any error messages
+  \param pathResolver for transform from absolute to relative paths
   :return: true in case of success.
  :rtype: bool
 %End
 
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsPathResolver &pathResolver ) const;
 %Docstring
  Write just the style information for the layer into the document
   \param node the node that will have the style element added to it.
   \param doc the document that will have the QDomNode added.
   \param errorMessage reference to string that will be updated with any error messages
+  \param pathResolver for transform from absolute to relative paths
   :return: true in case of success.
 .. versionadded:: 2.16
 .. note::
@@ -1026,14 +1030,14 @@ Set the extent
 Set whether layer is valid or not - should be used in constructor.
 %End
 
-    virtual bool readXml( const QDomNode &layer_node );
+    virtual bool readXml( const QDomNode &layer_node, const QgsPathResolver &pathResolver );
 %Docstring
  Called by readLayerXML(), used by children to read state specific to them from
   project files.
  :rtype: bool
 %End
 
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &document ) const;
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &document, const QgsPathResolver &pathResolver ) const;
 %Docstring
  Called by writeLayerXML(), used by children to write state specific to them to
   project files.

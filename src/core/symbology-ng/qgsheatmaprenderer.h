@@ -52,8 +52,8 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
     virtual QString dump() const override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
-    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
-    virtual QDomElement save( QDomDocument &doc ) override;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsPathResolver &pathResolver ) SIP_FACTORY;
+    virtual QDomElement save( QDomDocument &doc, const QgsPathResolver &pathResolver ) override;
     static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside

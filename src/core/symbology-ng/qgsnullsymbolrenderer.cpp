@@ -101,15 +101,17 @@ QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext & )
   return QgsSymbolList();
 }
 
-QgsFeatureRenderer *QgsNullSymbolRenderer::create( QDomElement &element )
+QgsFeatureRenderer *QgsNullSymbolRenderer::create( QDomElement &element, const QgsPathResolver &pathResolver )
 {
   Q_UNUSED( element );
+  Q_UNUSED( pathResolver );
   QgsNullSymbolRenderer *r = new QgsNullSymbolRenderer();
   return r;
 }
 
-QDomElement QgsNullSymbolRenderer::save( QDomDocument &doc )
+QDomElement QgsNullSymbolRenderer::save( QDomDocument &doc, const QgsPathResolver &pathResolver )
 {
+  Q_UNUSED( pathResolver );
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "nullSymbol" ) );
   return rendererElem;

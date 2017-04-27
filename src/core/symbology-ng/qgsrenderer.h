@@ -36,6 +36,7 @@
 class QgsFeature;
 class QgsVectorLayer;
 class QgsPaintEffect;
+class QgsPathResolver;
 
 typedef QMap<QString, QString> QgsStringMap;
 
@@ -220,10 +221,10 @@ class CORE_EXPORT QgsFeatureRenderer
     void setUsingSymbolLevels( bool usingSymbolLevels ) { mUsingSymbolLevels = usingSymbolLevels; }
 
     //! create a renderer from XML element
-    static QgsFeatureRenderer *load( QDomElement &symbologyElem ) SIP_FACTORY;
+    static QgsFeatureRenderer *load( QDomElement &symbologyElem, const QgsPathResolver &pathResolver ) SIP_FACTORY;
 
     //! store renderer info to XML element
-    virtual QDomElement save( QDomDocument &doc );
+    virtual QDomElement save( QDomDocument &doc, const QgsPathResolver &pathResolver );
 
     //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
     //! \since QGIS 2.8

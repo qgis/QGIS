@@ -24,6 +24,7 @@
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsmaptopixel.h"
+#include "qgspathresolver.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h" //for pointOnLineWithDistance
@@ -126,6 +127,7 @@ void QgsDecorationGrid::projectRead()
   QDomDocument doc;
   QDomElement elem;
   QString xml;
+  const QgsPathResolver &pathResolver = QgsProject::instance()->pathResolver();
 
   if ( mLineSymbol )
     setLineSymbol( nullptr );
@@ -134,7 +136,7 @@ void QgsDecorationGrid::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem );
+    mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, pathResolver );
   }
   if ( ! mLineSymbol )
     mLineSymbol = new QgsLineSymbol();
@@ -146,7 +148,7 @@ void QgsDecorationGrid::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elem );
+    mMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elem, pathResolver );
   }
   if ( ! mMarkerSymbol )
   {
@@ -180,9 +182,10 @@ void QgsDecorationGrid::saveToProject()
   // write symbol info to xml
   QDomDocument doc;
   QDomElement elem;
+  const QgsPathResolver &pathResolver = QgsProject::instance()->pathResolver();
   if ( mLineSymbol )
   {
-    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "line symbol" ), mLineSymbol, doc );
+    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "line symbol" ), mLineSymbol, doc, pathResolver );
     doc.appendChild( elem );
     // FIXME this works, but XML will not be valid as < is replaced by &lt;
     QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/LineSymbol" ), doc.toString() );
@@ -190,7 +193,7 @@ void QgsDecorationGrid::saveToProject()
   if ( mMarkerSymbol )
   {
     doc.setContent( QString() );
-    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol, doc );
+    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol, doc, pathResolver );
     doc.appendChild( elem );
     QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarkerSymbol" ), doc.toString() );
   }

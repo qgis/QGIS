@@ -378,7 +378,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
   QgsCoordinateReferenceSystem::setCustomCrsValidation( nullptr );
 
   // now let the children grab what they need from the Dom node.
-  layerError = !readXml( layerElement );
+  layerError = !readXml( layerElement, pathResolver );
 
   // overwrite CRS with what we read from project file before the raster/vector
   // file reading functions changed it. They will if projections is specified in the file.
@@ -512,9 +512,10 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
 } // bool QgsMapLayer::readLayerXML
 
 
-bool QgsMapLayer::readXml( const QDomNode &layer_node )
+bool QgsMapLayer::readXml( const QDomNode &layer_node, const QgsPathResolver &pathResolver )
 {
   Q_UNUSED( layer_node );
+  Q_UNUSED( pathResolver );
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -783,15 +784,16 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   writeCustomProperties( layerElement, document );
 
-  return writeXml( layerElement, document );
+  return writeXml( layerElement, document, pathResolver );
 
 } // bool QgsMapLayer::writeXml
 
 
-bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document ) const
+bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const QgsPathResolver &pathResolver ) const
 {
   Q_UNUSED( layer_node );
   Q_UNUSED( document );
+  Q_UNUSED( pathResolver );
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -1168,7 +1170,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
   }
 #endif
 
-  return readSymbology( myRoot, myErrorMessage );
+  return readSymbology( myRoot, myErrorMessage, QgsPathResolver() ); // TODO: support relative paths?
 }
 
 void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
@@ -1193,7 +1195,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
   myRootNode.appendChild( transparencyLevelIntElement );
 #endif
 
-  if ( !writeSymbology( myRootNode, myDocument, errorMsg ) )
+  if ( !writeSymbology( myRootNode, myDocument, errorMsg, QgsPathResolver() ) )  // TODO: support relative paths?
   {
     errorMsg = QObject::tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
     return;
@@ -1540,18 +1542,20 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   return QLatin1String( "" );
 }
 
-bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage )
+bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsPathResolver &pathResolver )
 {
   Q_UNUSED( node );
   Q_UNUSED( errorMessage );
+  Q_UNUSED( pathResolver );
   return false;
 }
 
-bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const
+bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsPathResolver &pathResolver ) const
 {
   Q_UNUSED( node );
   Q_UNUSED( doc );
   Q_UNUSED( errorMessage );
+  Q_UNUSED( pathResolver );
   return false;
 }
 

@@ -807,6 +807,8 @@ void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer *layer ) const
 
 void QgsTextBackgroundSettings::readXml( const QDomElement &elem )
 {
+  // TODO: convert relative path to absolute
+
   QDomElement backgroundElem = elem.firstChildElement( QStringLiteral( "background" ) );
   d->enabled = backgroundElem.attribute( QStringLiteral( "shapeDraw" ), QStringLiteral( "0" ) ).toInt();
   d->type = static_cast< ShapeType >( backgroundElem.attribute( QStringLiteral( "shapeType" ), QString::number( ShapeRectangle ) ).toUInt() );
@@ -924,6 +926,8 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem )
 
 QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc ) const
 {
+  // TODO: convert absolute path to relative
+
   QDomElement backgroundElem = doc.createElement( QStringLiteral( "background" ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeDraw" ), d->enabled );
   backgroundElem.setAttribute( QStringLiteral( "shapeType" ), static_cast< unsigned int >( d->type ) );
@@ -2109,7 +2113,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       return;
 
     QgsStringMap map; // for SVG symbology marker
-    map[QStringLiteral( "name" )] = QgsSymbolLayerUtils::symbolNameToPath( background.svgFile().trimmed() );
+    map[QStringLiteral( "name" )] = background.svgFile().trimmed();
     map[QStringLiteral( "size" )] = QString::number( sizeOut );
     map[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( QgsUnitTypes::RenderPixels );
     map[QStringLiteral( "angle" )] = QString::number( 0.0 ); // angle is handled by this local painter

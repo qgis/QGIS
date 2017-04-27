@@ -41,8 +41,8 @@ class CORE_EXPORT QgsSvgAnnotation: public QgsAnnotation
 
     QgsSvgAnnotation *clone() const override SIP_FACTORY;
 
-    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsPathResolver &pathResolver ) const override;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsPathResolver &pathResolver ) override;
 
     /**
      * Sets the file path for the source SVG file.

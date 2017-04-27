@@ -320,7 +320,7 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
 
     /////
 
-    static QgsFeatureRenderer *create( QDomElement &element ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element, const QgsPathResolver &pathResolver ) /Factory/;
 
     //! Constructs the renderer from given tree of rules (takes ownership)
     QgsRuleBasedRenderer( QgsRuleBasedRenderer::Rule *root /Transfer/ );
@@ -353,7 +353,7 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
     //! store renderer info to XML element
-    virtual QDomElement save( QDomDocument &doc );
+    virtual QDomElement save( QDomDocument& doc, const QgsPathResolver &pathResolver );
 
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );

@@ -22,6 +22,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
 #include "qgsmapsettings.h"
+#include "qgspathresolver.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
@@ -286,12 +287,12 @@ bool QgsComposerMapGrid::writeXml( QDomElement &elem, QDomDocument &doc ) const
   mapGridElem.setAttribute( QStringLiteral( "crossLength" ), qgsDoubleToString( mCrossLength ) );
 
   QDomElement lineStyleElem = doc.createElement( QStringLiteral( "lineStyle" ) );
-  QDomElement gridLineStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mGridLineSymbol, doc );
+  QDomElement gridLineStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mGridLineSymbol, doc, mComposition->project()->pathResolver() );
   lineStyleElem.appendChild( gridLineStyleElem );
   mapGridElem.appendChild( lineStyleElem );
 
   QDomElement markerStyleElem = doc.createElement( QStringLiteral( "markerStyle" ) );
-  QDomElement gridMarkerStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mGridMarkerSymbol, doc );
+  QDomElement gridMarkerStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mGridMarkerSymbol, doc, mComposition->project()->pathResolver() );
   markerStyleElem.appendChild( gridMarkerStyleElem );
   mapGridElem.appendChild( markerStyleElem );
 
@@ -374,7 +375,7 @@ bool QgsComposerMapGrid::readXml( const QDomElement &itemElem, const QDomDocumen
     if ( !symbolElem.isNull() )
     {
       delete mGridLineSymbol;
-      mGridLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem );
+      mGridLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, mComposition->project()->pathResolver() );
     }
   }
   else
@@ -394,7 +395,7 @@ bool QgsComposerMapGrid::readXml( const QDomElement &itemElem, const QDomDocumen
     if ( !symbolElem.isNull() )
     {
       delete mGridMarkerSymbol;
-      mGridMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem );
+      mGridMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, mComposition->project()->pathResolver() );
     }
   }
 

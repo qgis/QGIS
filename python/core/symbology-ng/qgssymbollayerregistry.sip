@@ -19,7 +19,8 @@ class QgsSymbolLayerAbstractMetadata
     /** Create widget for symbol layer of this type. Can return NULL if there's no GUI */
     virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer * ) /Factory/;
     /** Create a symbol layer of this type given the map of properties. */
-    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) /Factory/;
+    virtual QgsSymbolLayer* createSymbolLayerFromSld( QDomElement & ) /Factory/;
+    virtual void resolvePaths( QgsStringMap& properties, const QgsPathResolver& pathResolver, bool saving );
 };
 
 
@@ -33,9 +34,10 @@ class QgsSymbolLayerMetadata : QgsSymbolLayerAbstractMetadata
 %End
 
   public:
-    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) /Factory/;
-    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer *vl ) /Factory/;
-    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) /Factory/;
+    virtual QgsSymbolLayer* createSymbolLayer( const QgsStringMap& map ) /Factory/;
+    virtual QgsSymbolLayerWidget* createSymbolLayerWidget( const QgsVectorLayer* vl ) /Factory/;
+    virtual QgsSymbolLayer* createSymbolLayerFromSld( QDomElement& elem ) /Factory/;
+    virtual void resolvePaths( QgsStringMap& properties, const QgsPathResolver& pathResolver, bool saving );
 
   private:
     QgsSymbolLayerMetadata(); // pretend this is private
@@ -68,6 +70,8 @@ class QgsSymbolLayerRegistry
 
     //! create a new instance of symbol layer given symbol layer name and SLD
     QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const;
+
+    void resolvePaths( const QString &name, QgsStringMap& properties, const QgsPathResolver& pathResolver, bool saving ) const;
 
     //! return a list of available symbol layers for a specified symbol type
     QStringList symbolLayersForType( QgsSymbol::SymbolType type );

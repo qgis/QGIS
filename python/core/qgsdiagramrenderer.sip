@@ -365,8 +365,8 @@ class QgsDiagramRenderer
     /** Returns list with all diagram settings in the renderer*/
     virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
 
-    virtual void readXml( const QDomElement &elem, const QgsVectorLayer *layer ) = 0;
-    virtual void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const = 0;
+    virtual void readXml( const QDomElement& elem, const QgsVectorLayer* layer, const QgsPathResolver &pathResolver ) = 0;
+    virtual void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer, const QgsPathResolver &pathResolver ) const = 0;
 
     /** Returns list of legend nodes for the diagram
      * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
@@ -442,8 +442,8 @@ class QgsDiagramRenderer
     static int dpiPaintDevice( const QPainter* );
 
     //read / write diagram
-    void _readXml( const QDomElement &elem, const QgsVectorLayer *layer );
-    void _writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
+    void _readXml( const QDomElement& elem, const QgsVectorLayer* layer, const QgsPathResolver &pathResolver );
+    void _writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer, const QgsPathResolver &pathResolver ) const;
 };
 
 /** Renders the diagrams for all features with the same settings*/
@@ -467,8 +467,8 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRenderer
 
     QList<QgsDiagramSettings> diagramSettings() const;
 
-    void readXml( const QDomElement &elem, const QgsVectorLayer *layer );
-    void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
+    void readXml( const QDomElement& elem, const QgsVectorLayer* layer, const QgsPathResolver &pathResolver );
+    void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer, const QgsPathResolver &pathResolver ) const;
 
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 
@@ -533,8 +533,8 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
     bool classificationAttributeIsExpression() const;
     void setClassificationAttributeIsExpression( bool isExpression );
 
-    void readXml( const QDomElement &elem, const QgsVectorLayer *layer );
-    void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
+    void readXml( const QDomElement& elem, const QgsVectorLayer* layer, const QgsPathResolver &pathResolver );
+    void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer, const QgsPathResolver &pathResolver ) const;
 
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 

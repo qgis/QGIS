@@ -58,8 +58,8 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
      */
     QString designerForm() const { return mDesignerForm; }
 
-    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsPathResolver &pathResolver ) const override;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsPathResolver &pathResolver ) override;
 
     void setAssociatedFeature( const QgsFeature &feature ) override;
 

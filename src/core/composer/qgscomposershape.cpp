@@ -17,6 +17,7 @@
 
 #include "qgscomposershape.h"
 #include "qgscomposition.h"
+#include "qgspathresolver.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscomposermodel.h"
@@ -281,7 +282,7 @@ bool QgsComposerShape::writeXml( QDomElement &elem, QDomDocument &doc ) const
   composerShapeElem.setAttribute( QStringLiteral( "shapeType" ), mShape );
   composerShapeElem.setAttribute( QStringLiteral( "cornerRadius" ), mCornerRadius );
 
-  QDomElement shapeStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mShapeStyleSymbol, doc );
+  QDomElement shapeStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mShapeStyleSymbol, doc, mComposition->project()->pathResolver() );
   composerShapeElem.appendChild( shapeStyleElem );
 
   elem.appendChild( composerShapeElem );
@@ -313,7 +314,7 @@ bool QgsComposerShape::readXml( const QDomElement &itemElem, const QDomDocument 
   if ( !shapeStyleSymbolElem.isNull() )
   {
     delete mShapeStyleSymbol;
-    mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem );
+    mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem, mComposition->project()->pathResolver() );
   }
   else
   {

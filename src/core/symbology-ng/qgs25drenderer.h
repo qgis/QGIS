@@ -34,8 +34,8 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
      *
      * \param element XML information
      */
-    static QgsFeatureRenderer *create( QDomElement &element );
-    QDomElement save( QDomDocument &doc ) override;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsPathResolver &pathResolver );
+    QDomElement save( QDomDocument &doc, const QgsPathResolver &pathResolver ) override;
 
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;

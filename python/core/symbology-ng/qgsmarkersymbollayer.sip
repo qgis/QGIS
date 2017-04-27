@@ -373,15 +373,16 @@ class QgsSvgMarkerSymbolLayer : QgsMarkerSymbolLayer
 %End
 
   public:
-    QgsSvgMarkerSymbolLayer( const QString& name = DEFAULT_SVGMARKER_NAME,
+    QgsSvgMarkerSymbolLayer( const QString& path,
                                double size = DEFAULT_SVGMARKER_SIZE,
                                double angle = DEFAULT_SVGMARKER_ANGLE,
                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     // static stuff
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
+    static void resolvePaths( QgsStringMap& properties, const QgsPathResolver& pathResolver, bool saving );
 
     // implemented from base classes
 

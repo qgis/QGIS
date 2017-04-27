@@ -29,8 +29,8 @@ class QgsSvgAnnotation: QgsAnnotation
     virtual QgsSvgAnnotation *clone() const /Factory/;
 
 
-    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const;
-    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc );
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsPathResolver &pathResolver ) const;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsPathResolver &pathResolver );
 
     void setFilePath( const QString &file );
 %Docstring

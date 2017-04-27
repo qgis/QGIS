@@ -22,6 +22,7 @@
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
 #include "qgspainting.h"
+#include "qgspathresolver.h"
 #include "qgscomposerutils.h"
 #include "qgscsexception.h"
 
@@ -180,7 +181,7 @@ bool QgsComposerMapOverview::writeXml( QDomElement &elem, QDomDocument &doc ) co
   overviewFrameElem.setAttribute( QStringLiteral( "inverted" ), mInverted );
   overviewFrameElem.setAttribute( QStringLiteral( "centered" ), mCentered );
 
-  QDomElement frameStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFrameSymbol, doc );
+  QDomElement frameStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFrameSymbol, doc, mComposition->project()->pathResolver() );
   overviewFrameElem.appendChild( frameStyleElem );
 
   bool ok = QgsComposerMapItem::writeXml( overviewFrameElem, doc );
@@ -207,7 +208,7 @@ bool QgsComposerMapOverview::readXml( const QDomElement &itemElem, const QDomDoc
   if ( !frameStyleElem.isNull() )
   {
     delete mFrameSymbol;
-    mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem );
+    mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem, mComposition->project()->pathResolver() );
   }
   return ok;
 }

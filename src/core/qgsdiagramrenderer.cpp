@@ -531,7 +531,7 @@ int QgsDiagramRenderer::dpiPaintDevice( const QPainter *painter )
   return -1;
 }
 
-void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsVectorLayer *layer )
+void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver )
 {
   Q_UNUSED( layer )
 
@@ -558,11 +558,11 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsVectorLayer
   QDomElement sizeLegendSymbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !sizeLegendSymbolElem.isNull() && sizeLegendSymbolElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "sizeSymbol" ) )
   {
-    mSizeLegendSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( sizeLegendSymbolElem ) );
+    mSizeLegendSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( sizeLegendSymbolElem, pathResolver ) );
   }
 }
 
-void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsVectorLayer *layer ) const
+void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver ) const
 {
   Q_UNUSED( doc );
   Q_UNUSED( layer )
@@ -573,7 +573,7 @@ void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc
   }
   rendererElem.setAttribute( QStringLiteral( "attributeLegend" ), mShowAttributeLegend );
   rendererElem.setAttribute( QStringLiteral( "sizeLegend" ), mShowSizeLegend );
-  QDomElement sizeLegendSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "sizeSymbol" ), mSizeLegendSymbol.get(), doc );
+  QDomElement sizeLegendSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "sizeSymbol" ), mSizeLegendSymbol.get(), doc, pathResolver );
   rendererElem.appendChild( sizeLegendSymbolElem );
 }
 
@@ -605,7 +605,7 @@ QList<QgsDiagramSettings> QgsSingleCategoryDiagramRenderer::diagramSettings() co
   return settingsList;
 }
 
-void QgsSingleCategoryDiagramRenderer::readXml( const QDomElement &elem, const QgsVectorLayer *layer )
+void QgsSingleCategoryDiagramRenderer::readXml( const QDomElement &elem, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver )
 {
   QDomElement categoryElem = elem.firstChildElement( QStringLiteral( "DiagramCategory" ) );
   if ( categoryElem.isNull() )
@@ -614,14 +614,14 @@ void QgsSingleCategoryDiagramRenderer::readXml( const QDomElement &elem, const Q
   }
 
   mSettings.readXml( categoryElem, layer );
-  _readXml( elem, layer );
+  _readXml( elem, layer, pathResolver );
 }
 
-void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const
+void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver ) const
 {
   QDomElement rendererElem = doc.createElement( QStringLiteral( "SingleCategoryDiagramRenderer" ) );
   mSettings.writeXml( rendererElem, doc, layer );
-  _writeXml( rendererElem, doc, layer );
+  _writeXml( rendererElem, doc, layer, pathResolver );
   layerElem.appendChild( rendererElem );
 }
 
@@ -678,7 +678,7 @@ QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsFeature &fe
   return mDiagram->diagramSize( feature, c, mSettings, mInterpolationSettings );
 }
 
-void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, const QgsVectorLayer *layer )
+void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver )
 {
   mInterpolationSettings.lowerValue = elem.attribute( QStringLiteral( "lowerValue" ) ).toDouble();
   mInterpolationSettings.upperValue = elem.attribute( QStringLiteral( "upperValue" ) ).toDouble();
@@ -707,10 +707,10 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, c
   {
     mSettings.readXml( settingsElem, layer );
   }
-  _readXml( elem, layer );
+  _readXml( elem, layer, pathResolver );
 }
 
-void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const
+void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver ) const
 {
   QDomElement rendererElem = doc.createElement( QStringLiteral( "LinearlyInterpolatedDiagramRenderer" ) );
   rendererElem.setAttribute( QStringLiteral( "lowerValue" ), QString::number( mInterpolationSettings.lowerValue ) );
@@ -728,7 +728,7 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement &layerElem, Q
     rendererElem.setAttribute( QStringLiteral( "classificationField" ), mInterpolationSettings.classificationField );
   }
   mSettings.writeXml( rendererElem, doc, layer );
-  _writeXml( rendererElem, doc, layer );
+  _writeXml( rendererElem, doc, layer, pathResolver );
   layerElem.appendChild( rendererElem );
 }
 

@@ -50,9 +50,9 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
      * \param element DOM element
      * \returns new null symbol renderer
      */
-    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsPathResolver &pathResolver ) SIP_FACTORY;
 
-    virtual QDomElement save( QDomDocument &doc ) override;
+    virtual QDomElement save( QDomDocument &doc, const QgsPathResolver &pathResolver ) override;
 
     /** Creates a QgsNullSymbolRenderer from an existing renderer.
      * \param renderer renderer to convert from

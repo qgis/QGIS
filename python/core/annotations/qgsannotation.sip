@@ -56,8 +56,8 @@ class QgsAnnotation : QObject
 
     void render( QgsRenderContext &context ) const;
 
-    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const = 0;
-    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) = 0;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsPathResolver &pathResolver ) const = 0;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsPathResolver &pathResolver ) = 0;
 
     void setMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );
     QgsMarkerSymbol *markerSymbol() const;
@@ -80,8 +80,8 @@ class QgsAnnotation : QObject
 
     virtual QSizeF minimumFrameSize() const;
 
-    void _writeXml( QDomElement &itemElem, QDomDocument &doc ) const;
-    void _readXml( const QDomElement &annotationElem, const QDomDocument &doc );
+    void _writeXml( QDomElement &itemElem, QDomDocument &doc, const QgsPathResolver &pathResolver ) const;
+    void _readXml( const QDomElement &annotationElem, const QDomDocument &doc, const QgsPathResolver &pathResolver );
 
     void copyCommonProperties( QgsAnnotation *target ) const;
 

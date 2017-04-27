@@ -100,22 +100,22 @@ QSizeF QgsHtmlAnnotation::minimumFrameSize() const
   }
 }
 
-void QgsHtmlAnnotation::writeXml( QDomElement &elem, QDomDocument &doc ) const
+void QgsHtmlAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const QgsPathResolver &pathResolver ) const
 {
   QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "HtmlAnnotationItem" ) );
   formAnnotationElem.setAttribute( QStringLiteral( "htmlfile" ), sourceFile() );
 
-  _writeXml( formAnnotationElem, doc );
+  _writeXml( formAnnotationElem, doc, pathResolver );
   elem.appendChild( formAnnotationElem );
 }
 
-void QgsHtmlAnnotation::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+void QgsHtmlAnnotation::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsPathResolver &pathResolver )
 {
   mHtmlFile = itemElem.attribute( QStringLiteral( "htmlfile" ), QLatin1String( "" ) );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
-    _readXml( annotationElem, doc );
+    _readXml( annotationElem, doc, pathResolver );
   }
 
   // upgrade old layer
