@@ -26,7 +26,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgserror.h"
 
-typedef int dataCapabilities_t();
+typedef int dataCapabilities_t(); // SIP_SKIP
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
@@ -46,6 +46,23 @@ class QgsCoordinateReferenceSystem;
 
 class CORE_EXPORT QgsDataProvider : public QObject
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsVectorDataProvider *>( sipCpp ) )
+    {
+      sipType = sipType_QgsVectorDataProvider;
+    }
+    else if ( qobject_cast<QgsRasterDataProvider *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterDataProvider;
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
     Q_OBJECT
 
   public:
@@ -74,7 +91,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
       CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
 
-    QgsDataProvider( QString const &uri = "" )
+    /**
+     * Create a new dataprovider with the specified in the \a uri.
+     */
+    QgsDataProvider( const QString &uri = QString() )
       : mDataSourceURI( uri )
     {}
 
@@ -117,6 +137,25 @@ class CORE_EXPORT QgsDataProvider : public QObject
       }
     }
 
+    /**
+     * Set the data source specification.
+     *
+     * \since QGIS 3.0
+     */
+    void setUri( const QgsDataSourceUri &uri )
+    {
+      mDataSourceURI = uri.uri( true );
+    }
+
+    /**
+     * Get the data source specification.
+     *
+     * \since QGIS 3.0
+     */
+    QgsDataSourceUri uri() const
+    {
+      return QgsDataSourceUri( mDataSourceURI );
+    }
 
     /**
      * Returns the extent of the layer
@@ -373,7 +412,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \since QGIS 2.16
      */
-    void setProviderProperty( int property, const QVariant &value );
+    void setProviderProperty( int property, const QVariant &value ); // SIP_SKIP
 
     /**
      * Get the current value of a certain provider property.
@@ -389,7 +428,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \since QGIS 2.16
      */
-    QVariant providerProperty( int property, const QVariant &defaultValue ) const;
+    QVariant providerProperty( int property, const QVariant &defaultValue ) const; // SIP_SKIP
 
   signals:
 
@@ -420,7 +459,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     QgsError mError;
 
     //! Add error message
-    void appendError( const QgsErrorMessage &message ) { mError.append( message );}
+    void appendError( const QgsErrorMessage &message ) { mError.append( message ); }
 
     //! Set error message
     void setError( const QgsError &error ) { mError = error;}

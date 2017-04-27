@@ -4,7 +4,6 @@ core/qgis.sip
 core/qgsdataitem.sip
 core/qgsdataitemprovider.sip
 core/qgsdataitemproviderregistry.sip
-core/qgsdataprovider.sip
 core/qgsdbfilterproxymodel.sip
 core/qgseditformconfig.sip
 core/qgseditorwidgetsetup.sip
