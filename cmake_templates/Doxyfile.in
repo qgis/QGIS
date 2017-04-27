@@ -1356,10 +1356,13 @@ EXPAND_AS_DEFINED      = "SIP_TRANSFER" \
                          "SIP_TRANSFERBACK" \
                          "SIP_FACTORY" \
                          "SIP_KEEPREFERENCE" \
+                         "SIP_ARRAY" \
+                         "SIP_ARRAYSIZE" \
                          "SIP_PYNAME" \
                          "SIP_SKIP" \
                          "SIP_PYARGDEFAULT" \
                          "SIP_PYARGTYPE" \
+                         "SIP_PYARGREMOVE" \
                          "SIP_CONVERT_TO_SUBCLASS_CODE" \
                          "SIP_FEATURE" \
                          "SIP_IF_FEATURE" \
