@@ -196,6 +196,7 @@ complex default value and type (i.e. containing commas) should be given as a str
  :rtype: bool
 %End
 
+
     void multilineBodyAndDefinition( const QList<int,
                                      QString> &list,
                                      QgsVectorLayer *vl,
@@ -221,6 +222,7 @@ Mulitline body
 
 
     virtual int overriddenProperty();
+
     virtual int overrideWithoutVirtual();
 
 
@@ -296,6 +298,18 @@ remove argument
 
     void ZshouldBeShown();
 
+    void methodCodeWithMultiLineDef();
+%MethodCode
+    if ( QgsWkbTypes::flatType( a0 ) != QgsWkbTypes::Point )
+    {
+      multiLineDef( PyExc_ValueError,
+                    QString( "%1 is not nice" ).arg( QgsWkbTypes::displayString( a0 ) ).toUtf8().constData() );
+    }
+    else
+    {
+      sipCpp = new sipQgsPointV2( a0, a1, a2, a3, a4 );
+    }
+%End
 
   protected:
     bool thisShouldBeListed();

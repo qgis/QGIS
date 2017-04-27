@@ -2,14 +2,16 @@
 use strict;
 use warnings;
 use File::Basename;
+use Getopt::Long;
 
 use constant PRIVATE => 0;
 use constant PROTECTED => 1;
 use constant PUBLIC => 2;
 
-# TODO add contexts for
-# "multiline function signatures"
-# docustrings for QgsFeature::QgsAttributes
+# read arguments
+my $debug = 0;
+GetOptions ("debug" => \$debug) or die("Error in command line arguments\n");
+my $headerfile = $ARGV[0];
 
 sub processDoxygenLine
 {
@@ -38,8 +40,7 @@ sub processDoxygenLine
     return "$line\n";
 }
 
-my $headerfile = $ARGV[0];
-
+# read file
 open(my $handle, "<", $headerfile) || die "Couldn't open '".$headerfile."' for reading because: ".$!;
 chomp(my @lines = <$handle>);
 close $handle;
@@ -71,26 +72,40 @@ push @output, " *                                                               
 push @output, " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
 push @output, " ************************************************************************/\n";
 
+# write some code in front of line to know where the output comes from
+$debug == 0 or push @output, "CODE SIP_RUN MultiLine\n";
+sub dbg
+{
+    my $msg = '';
+    $debug == 0 or $msg = sprintf("%-4s %-1d %-1d   ", $_[0], $SIP_RUN, $MULTILINE_DEFINITION);
+    return $msg;
+}
+sub dbg_info
+{
+    $debug == 0 or push @output, $_[0]."\n";
+}
+
+# main loop
 while ($line_idx < $line_count){
     $line = $lines[$line_idx];
     $line_idx++;
     #print "$line\n";
 
     if ($line =~ m/^\s*SIP_FEATURE\( (\w+) \)(.*)$/){
-        push @output, "%Feature $1$2\n";
+        push @output, dbg("SF1")."%Feature $1$2\n";
         next;
     }
     if ($line =~ m/^\s*SIP_IF_FEATURE\( (\!?\w+) \)(.*)$/){
-        push @output, "%If ($1)$2\n";
+        push @output, dbg("SF2")."%If ($1)$2\n";
         next;
     }
     if ($line =~ m/^\s*SIP_CONVERT_TO_SUBCLASS_CODE(.*)$/){
-        push @output, "%ConvertToSubClassCode$1\n";
+        push @output, dbg("SCS")."%ConvertToSubClassCode$1\n";
         next;
     }
 
     if ($line =~ m/^\s*SIP_END(.*)$/){
-        push @output, "%End$1\n";
+        push @output, dbg("SEN")."%End$1\n";
         next;
     }
 
@@ -99,6 +114,7 @@ while ($line_idx < $line_count){
 
         # skip #if 0 blocks
         if ( $line =~ m/^\s*#if 0/){
+          dbg_info("skipping #if 0 block");
           my $nesting_index = 0;
           while ($line_idx < $line_count){
               $line = $lines[$line_idx];
@@ -120,7 +136,7 @@ while ($line_idx < $line_count){
         if ( $line =~ m/^\s*#ifdef SIP_RUN/){
             $SIP_RUN = 1;
             if ($ACCESS == PRIVATE){
-                push @output, $private_section_line."\n";
+                push @output, dbg("PRV1").$private_section_line."\n";
             }
             next;
         }
@@ -171,7 +187,7 @@ while ($line_idx < $line_count){
                 elsif ( $line =~ m/^\s*#else/ && $global_nesting_index == 0 ){
                     # code here will be printed out
                     if ($ACCESS == PRIVATE){
-                        push @output, $private_section_line."\n";
+                        push @output, dbg("PRV2").$private_section_line."\n";
                     }
                     $SIP_RUN = 1;
                     last;
@@ -197,7 +213,7 @@ while ($line_idx < $line_count){
     # TYPE HEADER CODE
     if ( $HEADER_CODE && $SIP_RUN == 0 ){
         $HEADER_CODE = 0;
-        push @output, "%End\n";
+        push @output, dbg("HCE")."%End\n";
     }
 
     # Skip forward declarations
@@ -219,11 +235,13 @@ while ($line_idx < $line_count){
             $opening_line = pop(@output);
             $#output >= 0 or die 'could not reach opening definition';
         }
+        dbg_info("removed multiline definition of SIP_SKIP method");
         $MULTILINE_DEFINITION = 0;
       }
       # also skip method body if there is one
       if ($lines[$line_idx] =~ m/^\s*\{/){
         my $nesting_index = 0;
+        dbg_info("skipping method body of SIP_SKIP method");
         while ($line_idx < $line_count){
             $line = $lines[$line_idx];
             $line_idx++;
@@ -271,7 +289,7 @@ while ($line_idx < $line_count){
         $comment = '';
     }
     elsif ( $ACCESS == PRIVATE && $line =~ m/SIP_FORCE/){
-        push @output, $private_section_line."\n";
+        push @output, dbg("PRV3").$private_section_line."\n";
     }
     elsif ( $ACCESS == PRIVATE && $SIP_RUN == 0 ) {
       $comment = '';
@@ -298,7 +316,7 @@ while ($line_idx < $line_count){
             }
         }
         $comment =~ s/\n+$//;
-        #push @output, $comment;
+        #push @output, dbg("XXX").$comment;
         next;
     }
 
@@ -341,7 +359,7 @@ while ($line_idx < $line_count){
         }
         $line .= "\n%TypeHeaderCode\n#include \"" . basename($headerfile) . "\"";
 
-        push @output, "$line\n";
+        push @output, dbg("CLS")."$line\n";
 
         # Skip opening curly bracket, we already added that above
         my $skip = $lines[$line_idx];
@@ -356,7 +374,7 @@ while ($line_idx < $line_count){
 
     # Enum declaration
     if ( $line =~ m/^\s*enum\s+\w+.*?$/ ){
-        push @output, "$line\n";
+        push @output, dbg("ENU1")."$line\n";
         if ($line =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
           # one line declaration
           $line !~ m/=/ or die 'spify.pl does not handle enum one liners with value assignment. Use multiple lines instead.';
@@ -367,7 +385,7 @@ while ($line_idx < $line_count){
             $line = $lines[$line_idx];
             $line_idx++;
             $line =~ m/^\s*\{\s*$/ || die "Unexpected content: enum should be followed by {\nline: $line";
-            push @output, "$line\n";
+            push @output, dbg("ENU2")."$line\n";
             while ($line_idx < $line_count){
                 $line = $lines[$line_idx];
                 $line_idx++;
@@ -375,9 +393,9 @@ while ($line_idx < $line_count){
                     last;
                 }
                 $line =~ s/(\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?).*$/$1$3/;
-                push @output, "$line\n";
+                push @output, dbg("ENU3")."$line\n";
             }
-            push @output, "$line\n";
+            push @output, dbg("ENU4")."$line\n";
             # enums don't have Docstring apparently
             $comment = '';
             next;
@@ -386,11 +404,13 @@ while ($line_idx < $line_count){
 
     # skip non-method member declaration in non-public sections
     if ( $SIP_RUN != 1 && $ACCESS != PUBLIC && $line =~ m/^\s*(?:mutable\s)?\w+[\w<> *&:,]* \*?\w+( = \w+(\([^()]+\))?)?;/){
+        dbg_info("skip non-method member declaration in non-public sections");
         next;
     }
 
     # remove struct member assignment
     if ( $SIP_RUN != 1 && $ACCESS == PUBLIC && $line =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
+        dbg_info("remove struct member assignment");
         $line = "$1;";
     }
 
@@ -417,6 +437,7 @@ while ($line_idx < $line_count){
             if ( $MULTILINE_DEFINITION == 1 ){
                 my $virtual_line = $line;
                 my $virtual_line_idx = $line_idx;
+                dbg_info("handle multiline definition to add virtual keyword on opening line");
                 while ( $virtual_line !~ m/^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$/){
                     $virtual_line_idx--;
                     $virtual_line = $lines[$virtual_line_idx];
@@ -441,11 +462,14 @@ while ($line_idx < $line_count){
 
         # remove constructor definition, function bodies, member initializing list
         if ( $SIP_RUN != 1 && $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\([\w=()\/ ,&*<>:-]*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
+            dbg_info("remove constructor definition, function bodies, member initializing list");
             my $newline = "$1$2$3$4$5;";
-            if ($line !~ m/\{.*?\}$/){
+            if ($line !~ m/\{.*?\}\s*(\/\/.*)?$/){
+                dbg_info("  go for multiline");
                 $line = $lines[$line_idx];
                 $line_idx++;
                 while ( $line =~ m/^\s*[:,] [\w<>]+\(.*?\)/){
+                  dbg_info("  member initializing list");
                   $line = $lines[$line_idx];
                   $line_idx++;
                 }
@@ -454,7 +478,6 @@ while ($line_idx < $line_count){
                     while ($line_idx < $line_count){
                         $line = $lines[$line_idx];
                         $line_idx++;
-
                         $nesting_index += $line =~ tr/\{//;
                         $nesting_index -= $line =~ tr/\}//;
                         if ($nesting_index == 0){
@@ -542,14 +565,16 @@ while ($line_idx < $line_count){
     $line =~ s/\s*% (MappedType|TypeCode|TypeHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;
     $line =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
-    push @output, "$line\n";
+    push @output, dbg("NOR")."$line\n";
 
     # multiline definition (parenthesis left open)
     if ( $MULTILINE_DEFINITION == 1 ){
-      if ( $line =~ m/^[^()]*([^()]*\([^()]*\)[^()]*)*\)[^()]*$/){
+      # see https://regex101.com/r/DN01iM/2
+      if ( $line =~ m/^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)[^()]*$/){
           $MULTILINE_DEFINITION = 0;
           # remove potential following body
-          if (  $lines[$line_idx] =~ m/^\s*\{$/ ){
+          if ( $SIP_RUN == 0 && $lines[$line_idx] =~ m/^\s*\{$/ ){
+              dbg_info("remove following body of multiline def");
               my $last_line = $line;
               my $nesting_index = 0;
               while ($line_idx < $line_count){
@@ -563,8 +588,8 @@ while ($line_idx < $line_count){
                   }
               }
               # add missing semi column
-              pop(@output);
-              push @output, "$last_line;\n";
+              my $dummy = pop(@output);
+              push @output, dbg("MLT")."$last_line;\n";
           }
       }
       else
@@ -573,6 +598,7 @@ while ($line_idx < $line_count){
       }
     }
     elsif ( $line =~ m/^[^()]+\([^()]*([^()]*\([^()]*\)[^()]*)*[^)]*$/ ){
+      dbg_info("Mulitline detected");
       $MULTILINE_DEFINITION = 1;
       next;
     }
@@ -592,14 +618,14 @@ while ($line_idx < $line_count){
             # parent class Docstring
         }
         else {
-            push @output, "%Docstring\n";
+            push @output, dbg("CM1")."%Docstring\n";
             if ( $comment !~ m/^\s*$/ ){
-                push @output, "$comment\n";
+                push @output, dbg("CM2")."$comment\n";
             }
             if ($return_type ne '' ){
-                push @output, " :rtype: $return_type\n";
+                push @output, dbg("CM3")." :rtype: $return_type\n";
             }
-            push @output, "%End\n";
+            push @output, dbg("CM4")."%End\n";
         }
         $comment = '';
         $return_type = '';
