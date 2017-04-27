@@ -267,7 +267,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   //locations of the QGIS help
-  QStringList helpPathList = mSettings->value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
+  QStringList helpPathList = mSettings->value( QStringLiteral( "help/helpSearchPath" ), "http://docs.qgis.org/$qgis_short_version/$qgis_locale/docs/user_manual/" ).toStringList();
   Q_FOREACH ( const QString &path, helpPathList )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
