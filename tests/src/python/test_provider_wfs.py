@@ -408,7 +408,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.featureCount(), 0)
         reference = QgsGeometry.fromRect(QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0))
         vl_extent = QgsGeometry.fromRect(vl.extent())
-        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+        assert QgsGeometry.comparePolylines(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
         with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631'), 'wb') as f:
             f.write("""
@@ -651,7 +651,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         reference = QgsGeometry.fromRect(QgsRectangle(399999.9999999680439942, 5399338.9090830031782389, 449999.9999999987776391, 5500658.0448500607162714))
         vl_extent = QgsGeometry.fromRect(vl.extent())
-        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+        assert QgsGeometry.comparePolylines(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
     def testWFST10(self):
         """Test WFS-T 1.0 (read-write)"""
@@ -2016,7 +2016,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         reference = QgsGeometry.fromRect(QgsRectangle(2, 49, 2, 49))
         vl_extent = QgsGeometry.fromRect(vl.extent())
-        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+        assert QgsGeometry.comparePolylines(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
         # Same with restrictToRequestBBOX=1
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' restrictToRequestBBOX=1", 'test', 'WFS')
@@ -2157,7 +2157,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # Extent before downloading features
         reference = QgsGeometry.fromRect(QgsRectangle(243900.3520259926444851, 4427769.1559739429503679, 1525592.3040170343592763, 5607994.6020106188952923))
         vl_extent = QgsGeometry.fromRect(vl.extent())
-        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+        assert QgsGeometry.comparePolylines(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
         # Download all features
         features = [f for f in vl.getFeatures()]
@@ -2165,7 +2165,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         reference = QgsGeometry.fromRect(QgsRectangle(500000, 4500000, 510000, 4510000))
         vl_extent = QgsGeometry.fromRect(vl.extent())
-        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+        assert QgsGeometry.comparePolylines(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
         self.assertEqual(features[0]['intfield'], 1)
         self.assertEqual(features[1]['intfield'], 2)
 

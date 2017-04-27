@@ -711,7 +711,7 @@ class ProviderTestCase(object):
             QgsRectangle(-71.123, 66.33, -65.32, 78.3))
         provider_extent = QgsGeometry.fromRect(self.provider.extent())
 
-        self.assertTrue(QgsGeometry.compare(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001))
+        self.assertTrue(QgsGeometry.comparePolylines(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001))
 
     def testUnique(self):
         self.assertEqual(set(self.provider.uniqueValues(1)), set([-200, 100, 200, 300, 400]))

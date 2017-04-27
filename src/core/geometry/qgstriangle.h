@@ -19,6 +19,7 @@
 #define QGSTRIANGLE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgspolygon.h"
 #include "qgscircle.h"
 #include "qgslinestring.h"
@@ -61,7 +62,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     // inherited: bool operator!=( const QgsTriangle& other ) const;
 
     virtual QString geometryType() const override { return QStringLiteral( "Triangle" ); }
-    virtual QgsTriangle *clone() const override;
+    virtual QgsTriangle *clone() const override SIP_FACTORY;
     void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr &wkbPtr ) override;
@@ -73,12 +74,12 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QString asJSON( int precision = 17 ) const;
 
-    QgsPolygonV2 *surfaceToPolygon() const override;
+    QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
 
-    QgsAbstractGeometry *toCurveType() const override;
+    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
 
     //! Inherited method not used. You cannot add an interior ring into a triangle.
-    void addInteriorRing( QgsCurve *ring ) override;
+    void addInteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
 
     /** Inherited method not used. You cannot add an interior ring into a triangle.
      * \note not available in Python bindings
@@ -90,9 +91,9 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
     bool moveVertex( QgsVertexId vId, const QgsPointV2 &newPos ) override;
 
-    virtual void setExteriorRing( QgsCurve *ring ) override;
+    virtual void setExteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
 
-    virtual QgsAbstractGeometry *boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     // inherited: double pointDistanceToBoundary( double x, double y ) const;
 
@@ -336,7 +337,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      * \returns True if the points can create a triangle, otherwise false.
      * \note not available in Python bindings
      */
-    bool validateGeom( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 );
+    bool validateGeom( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 ) SIP_SKIP;
 
 };
 #endif // QGSTRIANGLE_H

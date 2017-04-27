@@ -15,8 +15,6 @@
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
-typedef QList<QgsPointV2> QgsPointSequence;
-
 
 
 class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSink

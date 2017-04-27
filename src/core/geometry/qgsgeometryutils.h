@@ -16,9 +16,12 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOMETRYUTILS_H
 #define QGSGEOMETRYUTILS_H
 
-#include "qgis_core.h"
-#include "qgspointv2.h"
 #include <limits>
+
+#include "qgis_core.h"
+#include "qgis.h"
+#include "qgspointv2.h"
+
 
 class QgsLineString;
 
@@ -34,12 +37,12 @@ class CORE_EXPORT QgsGeometryUtils
     /** Returns list of linestrings extracted from the passed geometry. The returned objects
      *  have to be deleted by the caller.
      */
-    static QList<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom );
+    static QList<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom ) SIP_FACTORY;
 
     /** Returns the closest vertex to a geometry for a specified point.
      * On error null point will be returned and "id" argument will be invalid.
      */
-    static QgsPointV2 closestVertex( const QgsAbstractGeometry &geom, const QgsPointV2 &pt, QgsVertexId &id );
+    static QgsPointV2 closestVertex( const QgsAbstractGeometry &geom, const QgsPointV2 &pt, QgsVertexId &id SIP_OUT );
 
     /** Returns the distance along a geometry from its first vertex to the specified vertex.
      * \param geom geometry
@@ -61,12 +64,12 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
                                     double distance,
-                                    QgsVertexId &previousVertex,
-                                    QgsVertexId &nextVertex );
+                                    QgsVertexId &previousVertex SIP_OUT,
+                                    QgsVertexId &nextVertex SIP_OUT );
 
     /** Returns vertices adjacent to a specified vertex within a geometry.
      */
-    static void adjacentVertices( const QgsAbstractGeometry &geom, QgsVertexId atVertex, QgsVertexId &beforeVertex, QgsVertexId &afterVertex );
+    static void adjacentVertices( const QgsAbstractGeometry &geom, QgsVertexId atVertex, QgsVertexId &beforeVertex SIP_OUT, QgsVertexId &afterVertex SIP_OUT );
 
     /** Returns the squared 2D distance between two points.
      */
@@ -74,7 +77,7 @@ class CORE_EXPORT QgsGeometryUtils
 
     /** Returns the squared distance between a point and a line.
      */
-    static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX, double &minDistY, double epsilon );
+    static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon );
 
     /**
      * \brief Compute the intersection between two lines
@@ -85,7 +88,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param inter Output parameter, the intersection point
      * \returns Whether the lines intersect
      */
-    static bool lineIntersection( const QgsPointV2 &p1, QgsVector v, const QgsPointV2 &q1, QgsVector w, QgsPointV2 &inter );
+    static bool lineIntersection( const QgsPointV2 &p1, QgsVector v, const QgsPointV2 &q1, QgsVector w, QgsPointV2 &inter SIP_OUT );
 
     /**
      * \brief Compute the intersection between two segments
@@ -97,7 +100,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param tolerance The tolerance to use
      * \returns  Whether the segments intersect
      */
-    static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2 &inter, double tolerance );
+    static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2 &inter SIP_OUT, double tolerance );
 
     /**
      * \brief Project the point on a segment
@@ -115,7 +118,7 @@ class CORE_EXPORT QgsGeometryUtils
     }
 
     //! \note not available in Python bindings
-    struct SelfIntersection
+    struct SelfIntersection SIP_SKIP
     {
       int segment1;
       int segment2;
@@ -132,7 +135,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \note not available in Python bindings
      * \since QGIS 2.12
      */
-    static QList<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance );
+    static QList<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
     //! Returns < 0 if point(x/y) is left of the line x1,y1 -> x2,y2
     static double leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
@@ -145,8 +148,8 @@ class CORE_EXPORT QgsGeometryUtils
     static double ccwAngle( double dy, double dx );
 
     //! Returns radius and center of the circle through pt1, pt2, pt3
-    static void circleCenterRadius( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3, double &radius,
-                                    double &centerX, double &centerY );
+    static void circleCenterRadius( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3, double &radius SIP_OUT,
+                                    double &centerX SIP_OUT, double &centerY SIP_OUT );
 
     //! Returns true if circle is ordered clockwise
     static bool circleClockwise( double angle1, double angle2, double angle3 );
@@ -166,7 +169,7 @@ class CORE_EXPORT QgsGeometryUtils
     static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 );
 
     //! Calculates midpoint on circle passing through p1 and p2, closest to given coordinate
-    static bool segmentMidPoint( const QgsPointV2 &p1, const QgsPointV2 &p2, QgsPointV2 &result, double radius, const QgsPointV2 &mousePos );
+    static bool segmentMidPoint( const QgsPointV2 &p1, const QgsPointV2 &p2, QgsPointV2 &result SIP_OUT, double radius, const QgsPointV2 &mousePos );
 
     //! Calculates the direction angle of a circle tangent (clockwise from north in radians)
     static double circleTangentDirection( const QgsPointV2 &tangentPoint, const QgsPointV2 &cp1, const QgsPointV2 &cp2, const QgsPointV2 &cp3 );
@@ -174,7 +177,10 @@ class CORE_EXPORT QgsGeometryUtils
     /** Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
      * @note added in 3.0
      */
-    static void segmentizeArc( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3, QgsPointSequence &points, double tolerance = M_PI_2 / 90, QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle, bool hasZ = false, bool hasM = false );
+    static void segmentizeArc( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3,
+                               QgsPointSequence SIP_PYARGTYPE( QList<QgsPointV2> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
+                               QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
+                               bool hasZ = false, bool hasM = false );
 
     /** For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
      * Returns -1 if pt3 on the left side, 1 if pt3 is on the right side or 0 if pt3 lies on the line.
@@ -190,37 +196,37 @@ class CORE_EXPORT QgsGeometryUtils
     /** Returns a list of points contained in a WKT string.
      * \note not available in Python bindings
      */
-    static QgsPointSequence pointsFromWKT( const QString &wktCoordinateList, bool is3D, bool isMeasure );
+    static QgsPointSequence pointsFromWKT( const QString &wktCoordinateList, bool is3D, bool isMeasure ) SIP_SKIP;
 
     /**
      * Returns a LinearRing { uint32 numPoints; Point points[numPoints]; }
      * \note not available in Python bindings
      */
-    static void pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure );
+    static void pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure ) SIP_SKIP;
 
     /**
      * Returns a WKT coordinate list
      * \note not available in Python bindings
      */
-    static QString pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure );
+    static QString pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure ) SIP_SKIP;
 
     /**
      * Returns a gml::coordinates DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns );
+    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns ) SIP_SKIP;
 
     /**
      * Returns a gml::posList DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D );
+    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D ) SIP_SKIP;
 
     /**
      * Returns a geoJSON coordinates string.
      * \note not available in Python bindings
      */
-    static QString pointsToJSON( const QgsPointSequence &points, int precision );
+    static QString pointsToJSON( const QgsPointSequence &points, int precision ) SIP_SKIP;
 
     /** Ensures that an angle is in the range 0 <= angle < 2 pi.
      * \param angle angle in radians
@@ -274,7 +280,7 @@ class CORE_EXPORT QgsGeometryUtils
      * Parses a WKT block of the format "TYPE( contents )" and returns a pair of geometry type to contents ("Pair(wkbType, "contents")")
      * \note not available in Python bindings
      */
-    static QPair<QgsWkbTypes::Type, QString> wktReadBlock( const QString &wkt );
+    static QPair<QgsWkbTypes::Type, QString> wktReadBlock( const QString &wkt ) SIP_SKIP;
 
     /**
      * Parses a WKT string and returns of list of blocks contained in the WKT.
@@ -283,7 +289,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns list of WKT child block strings, e.g., List("TYPE1 (contents1)", "TYPE2 (TYPE3 (contents3), TYPE4 (contents4))")
      * \note not available in Python bindings
      */
-    static QStringList wktGetChildBlocks( const QString &wkt, const QString &defaultType = "" );
+    static QStringList wktGetChildBlocks( const QString &wkt, const QString &defaultType = "" ) SIP_SKIP;
 
     /** Returns a middle point between points pt1 and pt2.
      * Z value is computed if one of this point have Z.
@@ -323,7 +329,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \param c Output parameter, c coefficient of the equation.
      * \since QGIS 3.0
      */
-    static void coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2, double &a, double &b, double &c );
+    static void coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2,
+                              double &a SIP_OUT, double &b SIP_OUT, double &c SIP_OUT );
 
     /**
      * \brief Create a perpendicular line segment from p to segment [s1, s2]
@@ -335,7 +342,7 @@ class CORE_EXPORT QgsGeometryUtils
     static QgsLineString perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 );
 
     //! \note not available in Python bindings
-    enum ComponentType
+    enum ComponentType SIP_SKIP
     {
       Vertex,
       Ring,
@@ -343,7 +350,7 @@ class CORE_EXPORT QgsGeometryUtils
     };
 
     //! \note not available in Python bindings
-    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon )
+    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) SIP_SKIP
     {
       double minDist = std::numeric_limits<double>::max();
       double minDistSegmentX = 0.0, minDistSegmentY = 0.0;

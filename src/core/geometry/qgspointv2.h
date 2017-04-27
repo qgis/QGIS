@@ -19,6 +19,7 @@
 #define QGSPOINTV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 
@@ -59,6 +60,20 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \param m m-value of point, for PointM or PointZM types
      */
     QgsPointV2( QgsWkbTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
+#ifdef SIP_RUN
+    % MethodCode
+    if ( QgsWkbTypes::flatType( a0 ) != QgsWkbTypes::Point )
+    {
+      PyErr_SetString( PyExc_ValueError,
+                       QString( "%1 is not a valid WKB type for point geometries" ).arg( QgsWkbTypes::displayString( a0 ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp = new sipQgsPointV2( a0, a1, a2, a3, a4 );
+    }
+    % End
+#endif
 
     bool operator==( const QgsPointV2 &pt ) const;
     bool operator!=( const QgsPointV2 &pt ) const;
@@ -93,7 +108,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \see setX()
      * \note not available in Python bindings
      */
-    double &rx() { clearCache(); return mX; }
+    double &rx() SIP_SKIP { clearCache(); return mX; }
 
     /** Returns a reference to the y-coordinate of this point.
      * Using a reference makes it possible to directly manipulate y in place.
@@ -101,7 +116,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \see setY()
      * \note not available in Python bindings
      */
-    double &ry() { clearCache(); return mY; }
+    double &ry() SIP_SKIP { clearCache(); return mY; }
 
     /** Returns a reference to the z-coordinate of this point.
      * Using a reference makes it possible to directly manipulate z in place.
@@ -109,7 +124,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \see setZ()
      * \note not available in Python bindings
      */
-    double &rz() { clearCache(); return mZ; }
+    double &rz() SIP_SKIP { clearCache(); return mZ; }
 
     /** Returns a reference to the m value of this point.
      * Using a reference makes it possible to directly manipulate m in place.
@@ -117,7 +132,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \see setM()
      * \note not available in Python bindings
      */
-    double &rm() { clearCache(); return mM; }
+    double &rm() SIP_SKIP { clearCache(); return mM; }
 
     /** Sets the point's x-coordinate.
      * \see x()
@@ -292,7 +307,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     virtual QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
     virtual QString geometryType() const override { return QStringLiteral( "Point" ); }
     virtual int dimension() const override { return 0; }
-    virtual QgsPointV2 *clone() const override;
+    virtual QgsPointV2 *clone() const override SIP_FACTORY;
     void clear() override;
     virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
     virtual bool fromWkt( const QString &wkt ) override;
@@ -307,15 +322,17 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     void transform( const QTransform &t ) override;
     virtual QgsCoordinateSequence coordinateSequence() const override;
     virtual int nCoordinates() const override { return 1; }
-    virtual QgsAbstractGeometry *boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     //low-level editing
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override { Q_UNUSED( position ); return false; }
 
-    double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const override;
-    bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const override;
+    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt SIP_OUT,
+                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
+                                   double epsilon ) const override;
+    bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex SIP_OUT ) const override;
 
     /** Angle undefined. Always returns 0.0
         \param vertex the vertex id

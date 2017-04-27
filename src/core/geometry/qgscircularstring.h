@@ -18,15 +18,17 @@
 #ifndef QGSCIRCULARSTRING_H
 #define QGSCIRCULARSTRING_H
 
-#include "qgis_core.h"
-#include "qgscurve.h"
 #include <QVector>
+
+#include "qgis_core.h"
+#include "qgis.h"
+#include "qgscurve.h"
+
 
 /** \ingroup core
  * \class QgsCircularString
  * \brief Circular string geometry type
  * \since QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsCircularString: public QgsCurve
 {
@@ -38,7 +40,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     virtual QString geometryType() const override { return QStringLiteral( "CircularString" ); }
     virtual int dimension() const override { return 1; }
-    virtual QgsCircularString *clone() const override;
+    virtual QgsCircularString *clone() const override SIP_FACTORY;
     virtual void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
@@ -57,7 +59,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      */
     QgsPointV2 pointN( int i ) const;
 
-    void points( QgsPointSequence &pts ) const override;
+    void points( QgsPointSequence &pts SIP_OUT ) const override;
 
     /** Sets the circular string's points
      */
@@ -71,7 +73,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      * of the curve.
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
@@ -85,10 +87,12 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override;
 
-    double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const override;
+    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt SIP_OUT,
+                                   QgsVertexId &vertexAfter SIP_OUT,
+                                   bool *leftOf SIP_OUT, double epsilon ) const override;
 
     bool pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const override;
-    void sumUpArea( double &sum ) const override;
+    void sumUpArea( double &sum SIP_OUT ) const override;
     bool hasCurvedSegments() const override { return true; }
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
@@ -96,7 +100,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
         \returns rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
 
-    virtual QgsCircularString *reversed() const override;
+    virtual QgsCircularString *reversed() const override  SIP_FACTORY;
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;

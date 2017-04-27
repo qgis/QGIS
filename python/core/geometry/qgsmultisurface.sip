@@ -1,27 +1,57 @@
-class QgsMultiSurface: public QgsGeometryCollection
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsmultisurface.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMultiSurface: QgsGeometryCollection
 {
+%Docstring
+ Multi surface geometry collection.
+.. versionadded:: 2.10
+%End
+
 %TypeHeaderCode
-#include <qgsmultisurface.h>
+#include "qgsmultisurface.h"
 %End
   public:
+    QgsMultiSurface();
     virtual QString geometryType() const;
-    virtual QgsMultiSurface* clone() const /Factory/;
-
-    bool fromWkt( const QString& wkt );
-
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QString asJSON( int precision = 17 ) const;
+    virtual QgsMultiSurface *clone() const /Factory/;
 
 
-    /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometry* g /Transfer/ );
+    virtual bool fromWkt( const QString &wkt );
 
-    virtual QgsAbstractGeometry* boundary() const /Factory/;
 
-    /** Returns a geometry without curves. Caller takes ownership*/
-    QgsAbstractGeometry* segmentize() const /Factory/;
+    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+
+%Docstring
+inherited: QString asWkt( int precision = 17 ) const;
+ :rtype: QDomElement
+%End
+    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+
+    virtual QString asJSON( int precision = 17 ) const;
+
+
+
+    virtual bool addGeometry( QgsAbstractGeometry *g )  /Transfer/;
+%Docstring
+Adds a geometry and takes ownership. Returns true in case of success
+ :rtype: bool
+%End
+
+    virtual QgsAbstractGeometry *boundary() const /Factory/;
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsmultisurface.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
