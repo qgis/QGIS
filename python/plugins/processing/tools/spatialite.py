@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.utils import spatialite_connect
 import sqlite3 as sqlite
+import re
 
 
 class DbError(Exception):
