@@ -1046,6 +1046,9 @@ QgsPanelWidget *QgsComposer::createItemWidget( QgsComposerItem *item )
     case QgsComposerItem::ComposerPicture:
       return new QgsComposerPictureWidget( static_cast< QgsComposerPicture * >( item ) );
 
+    case QgsComposerItem::ComposerShape:
+      return new QgsComposerShapeWidget( static_cast< QgsComposerShape * >( item ) );
+
     case QgsComposerItem::ComposerFrame:
     {
       QgsComposerFrame *frame = static_cast< QgsComposerFrame * >( item );
