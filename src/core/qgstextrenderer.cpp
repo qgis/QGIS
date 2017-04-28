@@ -15,12 +15,14 @@
  ***************************************************************************/
 
 #include "qgstextrenderer.h"
+#include "qgis.h"
 #include "qgstextrenderer_p.h"
 #include "qgsfontutils.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgspainting.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgspainteffectregistry.h"
 #include <QFontDatabase>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
@@ -179,6 +181,17 @@ void QgsTextBufferSettings::setBlendMode( QPainter::CompositionMode mode )
   d->blendMode = mode;
 }
 
+QgsPaintEffect *QgsTextBufferSettings::paintEffect() const
+{
+  return d->paintEffect;
+}
+
+void QgsTextBufferSettings::setPaintEffect( QgsPaintEffect *effect )
+{
+  delete d->paintEffect;
+  d->paintEffect = effect;
+}
+
 void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
 {
   // text buffer
@@ -236,6 +249,16 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
   d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( QStringLiteral( "labeling/bufferJoinStyle" ), QVariant( Qt::RoundJoin ) ).toUInt() );
 
   d->fillBufferInterior = !layer->customProperty( QStringLiteral( "labeling/bufferNoFill" ), QVariant( false ) ).toBool();
+
+  if ( layer->customProperty( QStringLiteral( "labeling/bufferEffect" ) ).isValid() )
+  {
+    QDomDocument doc( QStringLiteral( "effect" ) );
+    doc.setContent( layer->customProperty( QStringLiteral( "labeling/bufferEffect" ) ).toString() );
+    QDomElement effectElem = doc.firstChildElement( QStringLiteral( "effect" ) ).firstChildElement( QStringLiteral( "effect" ) );
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+  }
+  else
+    setPaintEffect( nullptr );
 }
 
 void QgsTextBufferSettings::writeToLayer( QgsVectorLayer *layer ) const
@@ -249,6 +272,21 @@ void QgsTextBufferSettings::writeToLayer( QgsVectorLayer *layer ) const
   layer->setCustomProperty( QStringLiteral( "labeling/bufferOpacity" ), d->opacity );
   layer->setCustomProperty( QStringLiteral( "labeling/bufferJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
   layer->setCustomProperty( QStringLiteral( "labeling/bufferBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
+
+  if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect ) )
+  {
+    QDomDocument doc( QStringLiteral( "effect" ) );
+    QDomElement effectElem = doc.createElement( QStringLiteral( "effect" ) );
+    d->paintEffect->saveProperties( doc, effectElem );
+    QString effectProps;
+    QTextStream stream( &effectProps );
+    effectElem.save( stream, -1 );
+    layer->setCustomProperty( QStringLiteral( "labeling/bufferEffect" ), effectProps );
+  }
+  else
+  {
+    layer->removeCustomProperty( QStringLiteral( "labeling/bufferEffect" ) );
+  }
 }
 
 void QgsTextBufferSettings::readXml( const QDomElement &elem )
@@ -309,6 +347,11 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
                    static_cast< QgsPainting::BlendMode >( textBufferElem.attribute( QStringLiteral( "bufferBlendMode" ), QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
   d->joinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( QStringLiteral( "bufferJoinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
   d->fillBufferInterior = !textBufferElem.attribute( QStringLiteral( "bufferNoFill" ), QStringLiteral( "0" ) ).toInt();
+  QDomElement effectElem = textBufferElem.firstChildElement( QStringLiteral( "effect" ) );
+  if ( !effectElem.isNull() )
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+  else
+    setPaintEffect( nullptr );
 }
 
 QDomElement QgsTextBufferSettings::writeXml( QDomDocument &doc ) const
@@ -324,6 +367,8 @@ QDomElement QgsTextBufferSettings::writeXml( QDomDocument &doc ) const
   textBufferElem.setAttribute( QStringLiteral( "bufferOpacity" ), d->opacity );
   textBufferElem.setAttribute( QStringLiteral( "bufferJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
   textBufferElem.setAttribute( QStringLiteral( "bufferBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
+  if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect ) )
+    d->paintEffect->saveProperties( doc, textBufferElem );
   return textBufferElem;
 }
 
@@ -1809,9 +1854,25 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRender
   QPicture buffPict;
   QPainter buffp;
   buffp.begin( &buffPict );
-  buffp.setPen( pen );
-  buffp.setBrush( tmpColor );
-  buffp.drawPath( path );
+
+  if ( buffer.paintEffect() && buffer.paintEffect()->enabled() )
+  {
+    context.setPainter( &buffp );
+
+    buffer.paintEffect()->begin( context );
+    context.painter()->setPen( pen );
+    context.painter()->setBrush( tmpColor );
+    context.painter()->drawPath( path );
+    buffer.paintEffect()->end( context );
+
+    context.setPainter( p );
+  }
+  else
+  {
+    buffp.setPen( pen );
+    buffp.setBrush( tmpColor );
+    buffp.drawPath( path );
+  }
   buffp.end();
 
   if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowBuffer )
@@ -1822,7 +1883,6 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRender
     bufferComponent.pictureBuffer = penSize / 2.0;
     drawShadow( context, bufferComponent, format );
   }
-
   p->save();
   if ( context.useAdvancedEffects() )
   {
@@ -2562,3 +2622,4 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
     i++;
   }
 }
+

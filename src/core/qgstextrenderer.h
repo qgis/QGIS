@@ -31,6 +31,7 @@ class QgsTextBackgroundSettingsPrivate;
 class QgsTextShadowSettingsPrivate;
 class QgsTextSettingsPrivate;
 class QgsVectorLayer;
+class QgsPaintEffect;
 
 /** \class QgsTextBufferSettings
   * \ingroup core
@@ -191,6 +192,17 @@ class CORE_EXPORT QgsTextBufferSettings
      */
     QDomElement writeXml( QDomDocument &doc ) const;
 
+    /** Returns the current paint effect for the buffer.
+     * \returns paint effect
+     * \see setPaintEffect()
+     */
+    QgsPaintEffect *paintEffect() const;
+
+    /** Sets the current paint \a effect for the buffer.
+     * \param effect paint effect. Ownership is transferred to the buffer settings.
+     * \see paintEffect()
+     */
+    void setPaintEffect( QgsPaintEffect *effect );
 
   private:
 

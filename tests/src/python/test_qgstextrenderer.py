@@ -26,8 +26,9 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsMapSettings,
                        QgsRenderContext,
                        QgsRectangle,
-                       QgsRenderChecker)
-from qgis.PyQt.QtGui import (QColor, QPainter, QImage, QBrush, QPen)
+                       QgsRenderChecker,
+                       QgsBlurEffect)
+from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import unittest, start_app
@@ -1168,6 +1169,18 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.buffer().setSize(2)
         format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
         format.buffer().setFillBufferInterior(True)
+        #assert self.checkRender(format, 'text_buffer_interior', QgsTextRenderer.Buffer, text=['test'])
+
+    def testDrawBufferEffect(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.buffer().setPaintEffect( QgsBlurEffect.create({'blur_level':'10','enabled':'1'}) )
         assert self.checkRender(format, 'text_buffer_interior', QgsTextRenderer.Buffer, text=['test'])
 
     def testDrawShadow(self):

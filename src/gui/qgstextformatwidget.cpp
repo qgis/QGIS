@@ -24,6 +24,8 @@
 #include "qgssubstitutionlistwidget.h"
 #include "qgspallabeling.h" // for enum values
 #include "qgssettings.h"
+#include "qgseffectstack.h"
+#include "qgspainteffectregistry.h"
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
   : QWidget( parent )
@@ -258,6 +260,10 @@ void QgsTextFormatWidget::initWidget()
   mLabelingOptionsSplitter->restoreState( settings.value( QStringLiteral( "Windows/Labeling/OptionsSplitState" ) ).toByteArray() );
 
   mLabelingOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/Labeling/Tab" ), 0 ).toInt() );
+
+  mBufferEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  connect( mBufferEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
+  mBufferEffectWidget->setPaintEffect( mBufferEffect.get() );
 
   setDockMode( false );
 
@@ -611,7 +617,14 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mBufferJoinStyleComboBox->setPenJoinStyle( buffer.joinStyle() );
   mBufferTranspFillChbx->setChecked( buffer.fillBufferInterior() );
   comboBufferBlendMode->setBlendMode( buffer.blendMode() );
-
+  if ( buffer.paintEffect() )
+    mBufferEffect.reset( buffer.paintEffect()->clone() );
+  else
+  {
+    mBufferEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+    mBufferEffect->setEnabled( false );
+  }
+  mBufferEffectWidget->setPaintEffect( mBufferEffect.get() );
 
   mFontSizeUnitWidget->setUnit( format.sizeUnit() );
   mFontSizeUnitWidget->setMapUnitScale( format.sizeMapUnitScale() );
@@ -735,6 +748,10 @@ QgsTextFormat QgsTextFormatWidget::format() const
   buffer.setJoinStyle( mBufferJoinStyleComboBox->penJoinStyle() );
   buffer.setFillBufferInterior( mBufferTranspFillChbx->isChecked() );
   buffer.setBlendMode( comboBufferBlendMode->blendMode() );
+  if ( mBufferEffect && !QgsPaintEffectRegistry::isDefaultStack( mBufferEffect.get() ) )
+    buffer.setPaintEffect( mBufferEffect->clone() );
+  else
+    buffer.setPaintEffect( nullptr );
   format.setBuffer( buffer );
 
   // shape background

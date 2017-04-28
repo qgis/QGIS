@@ -130,7 +130,19 @@ class QgsTextBufferSettings
      */
     void setBlendMode( QPainter::CompositionMode mode );
 
-        /** Reads settings from a layer's custom properties.
+    /** Returns the current paint effect for the buffer.
+     * @returns paint effect
+     * @see setPaintEffect()
+     */
+    QgsPaintEffect* paintEffect() const;
+
+    /** Sets the current paint effect for the buffer.
+     * @param effect paint effect. Ownership is transferred to the buffer settings.
+     * @see paintEffect()
+     */
+    void setPaintEffect( QgsPaintEffect* effect /Transfer/ );
+
+    /** Reads settings from a layer's custom properties.
      * @param layer source vector layer
      * @see writeToLayer()
      */
