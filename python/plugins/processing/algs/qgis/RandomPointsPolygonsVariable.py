@@ -93,9 +93,12 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
             fGeom = QgsGeometry(f.geometry())
             bbox = fGeom.boundingBox()
             if strategy == 0:
-                pointCount = int(f[fieldName])
+                pointCount = int(f[fieldName]) if f[fieldName] else 0
             else:
-                pointCount = int(round(f[fieldName] * da.measure(fGeom)))
+                if f[fieldName]:
+                    pointCount = int(round(f[fieldName] * da.measure(fGeom)))
+                else:
+                    pointCount = 0
 
             if strategy == 0 and pointCount == 0:
                 continue
