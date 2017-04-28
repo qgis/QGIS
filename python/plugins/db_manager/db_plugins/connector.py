@@ -211,7 +211,9 @@ class DBConnector:
     def getSchemaTableName(self, table):
         if not hasattr(table, '__iter__'):
             return (None, table)
-        elif len(table) < 2:
+        if isinstance(table, str):
+            table = table.split('.')
+        if len(table) < 2:
             return (None, table[0])
         else:
             return (table[0], table[1])
