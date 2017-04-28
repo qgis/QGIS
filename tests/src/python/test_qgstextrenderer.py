@@ -988,6 +988,18 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.background().setStrokeWidth(3)
         format.background().setStrokeWidthUnit(QgsUnitTypes.RenderMillimeters)
         assert self.checkRender(format, 'background_outline', QgsTextRenderer.Background)
+		
+    def testDrawBackgroundEffect(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setPaintEffect( QgsBlurEffect.create({'blur_level':'10','enabled':'1'}) )
+        assert self.checkRender(format, 'text_buffer_interior', QgsTextRenderer.Buffer, text=['test'])		
 
     def testDrawText(self):
         format = QgsTextFormat()
@@ -1169,7 +1181,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.buffer().setSize(2)
         format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
         format.buffer().setFillBufferInterior(True)
-        #assert self.checkRender(format, 'text_buffer_interior', QgsTextRenderer.Buffer, text=['test'])
+        assert self.checkRender(format, 'text_buffer_interior', QgsTextRenderer.Buffer, text=['test'])
 
     def testDrawBufferEffect(self):
         format = QgsTextFormat()

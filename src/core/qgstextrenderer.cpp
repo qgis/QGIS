@@ -629,6 +629,17 @@ void QgsTextBackgroundSettings::setJoinStyle( Qt::PenJoinStyle style )
   d->joinStyle = style;
 }
 
+QgsPaintEffect *QgsTextBackgroundSettings::paintEffect() const
+{
+  return d->paintEffect;
+}
+
+void QgsTextBackgroundSettings::setPaintEffect( QgsPaintEffect *effect )
+{
+  delete d->paintEffect;
+  d->paintEffect = effect;
+}
+
 void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
 {
   d->enabled = layer->customProperty( QStringLiteral( "labeling/shapeDraw" ), QVariant( false ) ).toBool();
@@ -737,6 +748,16 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
   }
   d->blendMode = QgsPainting::getCompositionMode(
                    static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shapeBlendMode" ), QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
+
+  if ( layer->customProperty( QStringLiteral( "labeling/shapeEffect" ) ).isValid() )
+  {
+    QDomDocument doc( QStringLiteral( "effect" ) );
+    doc.setContent( layer->customProperty( QStringLiteral( "labeling/shapeEffect" ) ).toString() );
+    QDomElement effectElem = doc.firstChildElement( QStringLiteral( "effect" ) ).firstChildElement( QStringLiteral( "effect" ) );
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+  }
+  else
+    setPaintEffect( nullptr );
 }
 
 void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer *layer ) const
@@ -767,6 +788,21 @@ void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer *layer ) const
   layer->setCustomProperty( QStringLiteral( "labeling/shapeJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
   layer->setCustomProperty( QStringLiteral( "labeling/shapeOpacity" ), d->opacity );
   layer->setCustomProperty( QStringLiteral( "labeling/shapeBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
+
+  if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect ) )
+  {
+    QDomDocument doc( QStringLiteral( "effect" ) );
+    QDomElement effectElem = doc.createElement( QStringLiteral( "effect" ) );
+    d->paintEffect->saveProperties( doc, effectElem );
+    QString effectProps;
+    QTextStream stream( &effectProps );
+    effectElem.save( stream, -1 );
+    layer->setCustomProperty( QStringLiteral( "labeling/shapeEffect" ), effectProps );
+  }
+  else
+  {
+    layer->removeCustomProperty( QStringLiteral( "labeling/shapeEffect" ) );
+  }
 }
 
 void QgsTextBackgroundSettings::readXml( const QDomElement &elem )
@@ -879,6 +915,11 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem )
   d->blendMode = QgsPainting::getCompositionMode(
                    static_cast< QgsPainting::BlendMode >( backgroundElem.attribute( QStringLiteral( "shapeBlendMode" ), QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
 
+  QDomElement effectElem = backgroundElem.firstChildElement( QStringLiteral( "effect" ) );
+  if ( !effectElem.isNull() )
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+  else
+    setPaintEffect( nullptr );
 }
 
 QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc ) const
@@ -910,6 +951,8 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc ) const
   backgroundElem.setAttribute( QStringLiteral( "shapeJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeOpacity" ), d->opacity );
   backgroundElem.setAttribute( QStringLiteral( "shapeBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
+  if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect ) )
+    d->paintEffect->saveProperties( doc, backgroundElem );
   return backgroundElem;
 }
 
@@ -1952,7 +1995,14 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
 {
   QgsTextBackgroundSettings background = format.background();
 
+  QPainter *prevP = context.painter();
   QPainter *p = context.painter();
+  if ( background.paintEffect() && background.paintEffect()->enabled() )
+  {
+    background.paintEffect()->begin( context );
+    p = context.painter();
+  }
+
   //QgsDebugMsgLevel( QString( "Background label rotation: %1" ).arg( component.rotation() ), 4 );
 
   // shared calculations between shapes and SVG
@@ -2288,6 +2338,11 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     _fixQPictureDPI( p );
     p->drawPicture( 0, 0, shapePict );
     p->restore();
+  }
+  if ( background.paintEffect() && background.paintEffect()->enabled() )
+  {
+    background.paintEffect()->end( context );
+    context.setPainter( prevP );
   }
 }
 

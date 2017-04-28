@@ -538,6 +538,9 @@ class QgsTextBackgroundSettings
      */
     void readFromLayer( QgsVectorLayer* layer );
 
+    QgsPaintEffect* paintEffect() const;
+    void setPaintEffect( QgsPaintEffect* effect /Transfer/ );
+
     /** Writes settings to a layer's custom properties.
      * @param layer target vector layer
      * @see readFromLayer()

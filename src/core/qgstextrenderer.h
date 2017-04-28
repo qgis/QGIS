@@ -577,6 +577,18 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     void setJoinStyle( Qt::PenJoinStyle style );
 
+    /** Returns the current paint effect for the background shape.
+     * \returns paint effect
+     * \see setPaintEffect()
+     */
+    QgsPaintEffect *paintEffect() const;
+
+    /** Sets the current paint \a effect for the background shape.
+     * \param effect paint effect. Ownership is transferred to the background settings.
+     * \see paintEffect()
+     */
+    void setPaintEffect( QgsPaintEffect *effect );
+
     /** Reads settings from a layer's custom properties.
      * \param layer source vector layer
      * \see writeToLayer()

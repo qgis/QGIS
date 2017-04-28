@@ -264,6 +264,9 @@ void QgsTextFormatWidget::initWidget()
   mBufferEffect.reset( QgsPaintEffectRegistry::defaultStack() );
   connect( mBufferEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
   mBufferEffectWidget->setPaintEffect( mBufferEffect.get() );
+  mBackgroundEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  connect( mBackgroundEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
+  mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
 
   setDockMode( false );
 
@@ -695,6 +698,15 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mLoadSvgParams = false;
   on_mShapeTypeCmbBx_currentIndexChanged( background.type() ); // force update of shape background gui
 
+  if ( background.paintEffect() )
+    mBackgroundEffect.reset( background.paintEffect()->clone() );
+  else
+  {
+    mBackgroundEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+    mBackgroundEffect->setEnabled( false );
+  }
+  mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
+
   // drop shadow
   mShadowDrawChkBx->setChecked( shadow.enabled() );
   mShadowUnderCmbBx->setCurrentIndex( shadow.shadowPlacement() );
@@ -780,6 +792,10 @@ QgsTextFormat QgsTextFormatWidget::format() const
   background.setJoinStyle( mShapePenStyleCmbBx->penJoinStyle() );
   background.setOpacity( 1.0 - mShapeTranspSpinBox->value() / 100.0 );
   background.setBlendMode( mShapeBlendCmbBx->blendMode() );
+  if ( mBackgroundEffect && !QgsPaintEffectRegistry::isDefaultStack( mBackgroundEffect.get() ) )
+    background.setPaintEffect( mBackgroundEffect->clone() );
+  else
+    background.setPaintEffect( nullptr );
   format.setBackground( background );
 
   // drop shadow

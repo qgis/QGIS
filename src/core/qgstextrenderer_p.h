@@ -111,6 +111,7 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
       , strokeWidth( 0.0 )
       , strokeWidthUnits( QgsUnitTypes::RenderMillimeters )
       , joinStyle( Qt::BevelJoin )
+      , paintEffect( nullptr )
     {
     }
 
@@ -139,7 +140,13 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
       , strokeWidthUnits( other.strokeWidthUnits )
       , strokeWidthMapUnitScale( other.strokeWidthMapUnitScale )
       , joinStyle( other.joinStyle )
+      , paintEffect( other.paintEffect ? other.paintEffect->clone() : nullptr )
     {
+    }
+
+    ~QgsTextBackgroundSettingsPrivate()
+    {
+      delete paintEffect;
     }
 
     bool enabled;
@@ -165,6 +172,7 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
     QgsUnitTypes::RenderUnit strokeWidthUnits;
     QgsMapUnitScale strokeWidthMapUnitScale;
     Qt::PenJoinStyle joinStyle;
+    QgsPaintEffect *paintEffect;
 };
 
 
