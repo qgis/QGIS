@@ -198,6 +198,12 @@ void QgsAttributeTableConfig::readXml( const QDomNode &node )
 
   mSortExpression = configNode.toElement().attribute( QStringLiteral( "sortExpression" ) );
   mSortOrder = static_cast<Qt::SortOrder>( configNode.toElement().attribute( QStringLiteral( "sortOrder" ) ).toInt() );
+  // fix https://hub.qgis.org/issues/15803
+  // because static_cast give umpredictable value if value is not in the enum range
+  if ( mSortOrder != Qt::AscendingOrder && mSortOrder != Qt::DescendingOrder )
+  {
+    mSortOrder = Qt::AscendingOrder;
+  }
 }
 
 QString QgsAttributeTableConfig::sortExpression() const
@@ -242,6 +248,12 @@ Qt::SortOrder QgsAttributeTableConfig::sortOrder() const
 
 void QgsAttributeTableConfig::setSortOrder( Qt::SortOrder sortOrder )
 {
+  // fix https://hub.qgis.org/issues/15803
+  if ( sortOrder != Qt::AscendingOrder && sortOrder != Qt::DescendingOrder )
+  {
+    sortOrder = Qt::AscendingOrder;
+  }
+
   mSortOrder = sortOrder;
 }
 
