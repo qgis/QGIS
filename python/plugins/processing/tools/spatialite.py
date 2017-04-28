@@ -29,6 +29,7 @@ try:
     from pyspatialite import dbapi2 as sqlite
 except:
     pass
+import re
 
 
 class DbError(Exception):
