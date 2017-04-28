@@ -125,13 +125,11 @@ for f in $MODIFIED; do
         m=python/$sip_file.$REV.prepare
         touch python/$sip_file
         cp python/$sip_file $m
-        ${TOPLEVEL}/scripts/sipify.pl $f > $m
-        if diff -u $m python/$sip_file >>$SIPIFYDIFF; then
-          # no difference found
-          rm $m
-        else
+        ${TOPLEVEL}/scripts/sipify.pl $f > python/$sip_file
+        if ! diff -u $m python/$sip_file >>$SIPIFYDIFF; then
           echo "python/$sip_file is not up to date"
         fi
+        rm $m
       fi
     fi
   fi
