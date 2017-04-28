@@ -988,7 +988,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.background().setStrokeWidth(3)
         format.background().setStrokeWidthUnit(QgsUnitTypes.RenderMillimeters)
         assert self.checkRender(format, 'background_outline', QgsTextRenderer.Background)
-		
+
     def testDrawBackgroundEffect(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -998,12 +998,11 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
         format.background().setSize(QSizeF(30, 20))
         format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
-        format.background().setPaintEffect( QgsBlurEffect.create({'blur_level':'10','enabled':'1'}) )
-        assert self.checkRender(format, 'text_buffer_interior', QgsTextRenderer.Buffer, text=['test'])		
+        format.background().setPaintEffect(QgsBlurEffect.create({'blur_level': '10', 'enabled': '1'}))
+        assert self.checkRender(format, 'background_effect', QgsTextRenderer.Background, text=['test'])
 
     def testDrawText(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1011,7 +1010,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawTextPoint(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1031,7 +1029,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextColor(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setColor(QColor(0, 255, 0))
@@ -1040,7 +1037,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextOpacity(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setOpacity(0.7)
@@ -1048,7 +1044,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawTextBlendMode(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1059,14 +1054,12 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextAngle(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRender(format, 'text_angled', QgsTextRenderer.Text, angle=90 / 180 * 3.141, text=['test'])
 
     def testDrawTextMapUnits(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(5)
         format.setSizeUnit(QgsUnitTypes.RenderMapUnits)
@@ -1075,14 +1068,12 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextPixels(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(50)
         format.setSizeUnit(QgsUnitTypes.RenderPixels)
         assert self.checkRender(format, 'text_pixels', QgsTextRenderer.Text, text=['test'])
 
     def testDrawMultiLineText(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1091,14 +1082,12 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawMultiLineTextPoint(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRenderPoint(format, 'text_point_multiline', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
 
     def testDrawLineHeightText(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1107,7 +1096,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawBufferSizeMM(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1119,7 +1107,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawBufferDisabled(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.buffer().setEnabled(False)
@@ -1127,7 +1114,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawBufferSizeMapUnits(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1139,7 +1125,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawBufferSizePixels(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.buffer().setEnabled(True)
@@ -1149,7 +1134,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawBufferColor(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1162,7 +1146,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawBufferOpacity(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.buffer().setEnabled(True)
@@ -1173,7 +1156,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawBufferFillInterior(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1186,18 +1168,16 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawBufferEffect(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.buffer().setEnabled(True)
         format.buffer().setSize(2)
         format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
-        format.buffer().setPaintEffect( QgsBlurEffect.create({'blur_level':'10','enabled':'1'}) )
-        assert self.checkRender(format, 'text_buffer_interior', QgsTextRenderer.Buffer, text=['test'])
+        format.buffer().setPaintEffect(QgsBlurEffect.create({'blur_level': '10', 'enabled': '1'}))
+        assert self.checkRender(format, 'text_buffer_effect', QgsTextRenderer.Buffer, text=['test'])
 
     def testDrawShadow(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1212,7 +1192,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawShadowOffsetAngle(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1229,7 +1208,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawShadowOffsetMapUnits(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setColor(QColor(255, 255, 255))
@@ -1244,7 +1222,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawShadowOffsetPixels(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setColor(QColor(255, 255, 255))
@@ -1258,7 +1235,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawShadowBlurRadiusMM(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1275,7 +1251,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawShadowBlurRadiusMapUnits(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setColor(QColor(255, 255, 255))
@@ -1290,7 +1265,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawShadowBlurRadiusPixels(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1307,7 +1281,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawShadowOpacity(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setColor(QColor(255, 255, 255))
@@ -1321,7 +1294,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawShadowColor(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1337,7 +1309,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawShadowScale(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setColor(QColor(255, 255, 255))
@@ -1352,7 +1323,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawShadowScaleUp(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setColor(QColor(255, 255, 255))
@@ -1366,7 +1336,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawShadowBackgroundPlacement(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1386,7 +1355,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawShadowBufferPlacement(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setColor(QColor(255, 255, 255))
@@ -1403,7 +1371,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextWithBuffer(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.buffer().setEnabled(True)
@@ -1413,7 +1380,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawTextWithBackground(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1426,7 +1392,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawTextWithBufferAndBackground(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1444,7 +1409,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextWithShadowAndBuffer(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.shadow().setEnabled(True)
@@ -1461,7 +1425,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawTextWithShadowBelowTextAndBuffer(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1481,7 +1444,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextWithBackgroundAndShadow(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.shadow().setEnabled(True)
@@ -1499,7 +1461,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawTextWithShadowBelowTextAndBackground(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1519,7 +1480,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawTextWithBackgroundBufferAndShadow(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1542,7 +1502,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawTextWithBackgroundBufferAndShadowBelowText(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1568,7 +1527,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextWithBackgroundBufferAndShadowBelowBuffer(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.shadow().setEnabled(True)
@@ -1593,7 +1551,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextRectMultilineRightAlign(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRender(format, 'text_rect_multiline_right_aligned', text=['test', 'right', 'aligned'],
@@ -1602,7 +1559,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextRectRightAlign(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRender(format, 'text_rect_right_aligned', text=['test'],
@@ -1610,7 +1566,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawTextRectMultilineCenterAlign(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1629,7 +1584,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextPointMultilineRightAlign(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRenderPoint(format, 'text_point_right_multiline_aligned', text=['test', 'right', 'aligned'],
@@ -1637,7 +1591,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawTextPointMultilineCenterAlign(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -1647,7 +1600,6 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testDrawTextPointRightAlign(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
-        format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRenderPoint(format, 'text_point_right_aligned', text=['test'],
@@ -1655,7 +1607,6 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawTextPointCenterAlign(self):
         format = QgsTextFormat()
-        format.setFont(getTestFont('bold'))
         format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
