@@ -70,7 +70,7 @@ class SimplifyGeometries(GeoAlgorithm):
         pointsAfter = 0
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), layer.wkbType(), layer.crs())
+            layer.pendingFields().toList(), QGis.flatType(layer.wkbType()), layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / len(features)
