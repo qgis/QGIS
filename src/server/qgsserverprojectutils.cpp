@@ -154,7 +154,7 @@ QStringList QgsServerProjectUtils::wfsLayerIds( const QgsProject &project )
   return project.readListEntry( QStringLiteral( "WFSLayers" ), QStringLiteral( "/" ) );
 }
 
-int QgsServerProjectUtils::wfsLayerPrecision( const QString &layerId, const QgsProject &project )
+int QgsServerProjectUtils::wfsLayerPrecision( const QgsProject &project, const QString &layerId )
 {
   return project.readNumEntry( QStringLiteral( "WFSLayersPrecision" ), "/" + layerId, 6 );
 }

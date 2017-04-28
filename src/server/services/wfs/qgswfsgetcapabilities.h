@@ -33,6 +33,11 @@ namespace QgsWfs
   QDomElement getFeatureTypeListElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project );
 
   /**
+   * Create Capability element for get capabilities document
+   */
+  QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request );
+
+  /**
    * Create Service element for get capabilities document
    */
   QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project );

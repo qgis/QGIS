@@ -185,7 +185,13 @@ namespace QgsServerProjectUtils
     */
   SERVER_EXPORT QStringList wfsLayerIds( const QgsProject &project );
 
-  SERVER_EXPORT  int wfsLayerPrecision( const QString &layerId,  const QgsProject &project );
+  /** Returns the Layer precision defined in a QGIS project for the WFS GetFeature.
+    * @param project the QGIS project
+    * @param layerId the layer id in the project
+    * @return the layer precision for WFS GetFeature.
+    */
+
+  SERVER_EXPORT  int wfsLayerPrecision( const QgsProject &project, const QString &layerId );
 
   /** Returns the Layer ids list defined in a QGIS project as published as WFS-T with update capabilities.
     * @param project the QGIS project
