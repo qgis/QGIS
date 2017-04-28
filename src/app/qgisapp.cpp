@@ -4962,7 +4962,7 @@ void QgisApp::fileOpenAfterLaunch()
     return;
   }
 
-  if ( !projPath.endsWith( QLatin1String( "qgs" ), Qt::CaseInsensitive ) )
+  if ( !projPath.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
   {
     messageBar()->pushMessage( autoOpenMsgTitle,
                                tr( "Not valid project file: %1" ).arg( projPath ),

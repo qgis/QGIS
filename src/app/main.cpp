@@ -734,7 +734,7 @@ int main( int argc, char *argv[] )
     for ( int i = 0; i < args.size(); i++ )
     {
       QString arg = QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() );
-      if ( arg.contains( QLatin1String( ".qgs" ) ) )
+      if ( arg.endsWith( QLatin1String( ".qgs", Qt::CaseInsensitive ) ) )
       {
         sProjectFileName = arg;
         break;
@@ -1113,7 +1113,7 @@ int main( int argc, char *argv[] )
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.contains( QLatin1String( ".qgs" ) ) )
+    if ( !myLayerName.endsWith( QLatin1String( ".qgs", Qt::CaseInsensitive ) ) )
     {
       qgis->openLayer( myLayerName );
     }

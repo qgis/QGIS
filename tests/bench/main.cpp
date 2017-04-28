@@ -475,7 +475,7 @@ int main( int argc, char *argv[] )
     for ( int i = 0; i < argc; i++ )
     {
       QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
-      if ( arg.contains( QLatin1String( ".qgs" ) ) )
+      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
       {
         myProjectFileName = arg;
         break;
@@ -526,7 +526,7 @@ int main( int argc, char *argv[] )
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.contains( QLatin1String( ".qgs" ) ) )
+    if ( !myLayerName.endsWith( QLatin1String( ".qgs", Qt::CaseInsensitive ) ) )
     {
       fprintf( stderr, "Data files not yet supported\n" );
       return 1;
