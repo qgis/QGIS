@@ -141,10 +141,6 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
   ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
   ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
-<<<<<<< HEAD
-=======
-
->>>>>>> RenderMetersInMapUnits now renders properly in application.
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
@@ -246,10 +242,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       size = convertMetersToMapUnits( size );
       unit = QgsUnitTypes::RenderMapUnits;
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
-<<<<<<< HEAD
       FALLTHROUGH;
-=======
->>>>>>> RenderMetersInMapUnits now renders properly in application.
     }
     case QgsUnitTypes::RenderMapUnits:
     {
@@ -398,7 +391,6 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
   {
     case QgsUnitTypes::DistanceMeters:
       return meters;
-<<<<<<< HEAD
     case QgsUnitTypes::DistanceDegrees:
     {
       QgsPoint pointCenter = mExtent.center();
@@ -420,19 +412,6 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
     case QgsUnitTypes::DistanceMillimeters:
     case QgsUnitTypes::DistanceUnknownUnit:
       return ( meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mDistanceArea.sourceCrs().mapUnits() ) );
-=======
-      break;
-    case QgsUnitTypes::DistanceDegrees:
-    {
-      QgsPoint pointCenter = mExtent.center();
-      pointCenter = mCoordTransform.transform( pointCenter );
-      return mDistanceArea.measureLineProjected( pointCenter, meters );
-    }
-    break;
-    default:
-      return ( meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mDistanceArea.sourceCrs().mapUnits() ) );
-      break;
->>>>>>> RenderMetersInMapUnits now renders properly in application.
   }
   return meters;
 }

@@ -19,7 +19,6 @@
 #include "qgis_core.h"
 #include <QList>
 #include <QReadWriteLock>
-#include <QUuid>
 #include "qgscoordinatetransform.h"
 #include "qgsunittypes.h"
 #include "qgsellipsoidutils.h"

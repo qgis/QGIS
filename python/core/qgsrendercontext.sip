@@ -121,7 +121,7 @@ class QgsRenderContext
      * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
      * \since QGIS 3.0
      */
-    QgsDistanceArea distanceArea();
+    const QgsDistanceArea distanceArea() const;
 
     const QgsRectangle& extent() const;
 
