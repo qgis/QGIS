@@ -17,6 +17,7 @@
 #ifndef QGSTEXTRENDERER_H
 #define QGSTEXTRENDERER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsmapunitscale.h"
 #include "qgsunittypes.h"
@@ -202,7 +203,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * \param effect paint effect. Ownership is transferred to the buffer settings.
      * \see paintEffect()
      */
-    void setPaintEffect( QgsPaintEffect *effect );
+    void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
   private:
 
@@ -587,7 +588,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \param effect paint effect. Ownership is transferred to the background settings.
      * \see paintEffect()
      */
-    void setPaintEffect( QgsPaintEffect *effect );
+    void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
     /** Reads settings from a layer's custom properties.
      * \param layer source vector layer
@@ -899,7 +900,7 @@ class CORE_EXPORT QgsTextFormat
     /** Returns a reference to the text buffer settings.
      * \see setBuffer()
      */
-    QgsTextBufferSettings buffer() const { return mBufferSettings; }
+    SIP_SKIP QgsTextBufferSettings buffer() const { return mBufferSettings; }
 
     /** Sets the text's buffer settings.
      * \param bufferSettings buffer settings
@@ -915,9 +916,9 @@ class CORE_EXPORT QgsTextFormat
     /** Returns a reference to the text background settings.
      * \see setBackground()
      */
-    QgsTextBackgroundSettings background() const { return mBackgroundSettings; }
+    SIP_SKIP QgsTextBackgroundSettings background() const { return mBackgroundSettings; }
 
-    /** Sets the text's background settings.
+    /** Sets the text's background settings.q
      * \param backgroundSettings background settings
      * \see background()
      */
@@ -931,7 +932,7 @@ class CORE_EXPORT QgsTextFormat
     /** Returns a reference to the text drop shadow settings.
      * \see setShadow()
      */
-    QgsTextShadowSettings shadow() const { return mShadowSettings; }
+    SIP_SKIP QgsTextShadowSettings shadow() const { return mShadowSettings; }
 
     /** Sets the text's drop shadow settings.
      * \param shadowSettings shadow settings
