@@ -46,6 +46,9 @@
 QgsDistanceArea::QgsDistanceArea()
 {
   // init with default settings
+  mSemiMajor = -1.0;
+  mSemiMinor = -1.0;
+  mInvFlattening = -1.0;
   setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) ); // WGS 84
   setEllipsoid( GEO_NONE );
 }
@@ -57,9 +60,6 @@ bool QgsDistanceArea::willUseEllipsoid() const
 
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS )
 {
-  mSemiMajor = -1.0;
-  mSemiMinor = -1.0;
-  mInvFlattening = -1.0;
   mCoordTransform.setSourceCrs( srcCRS );
 }
 
@@ -359,22 +359,14 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
   else // cartesian coordinates
   {
     result = distance; // Avoid rounding errors when using meters [return as sent]
-    if ( mCoordTransform.sourceCrs().isGeographic() )
+    if ( sourceCrs().mapUnits() != QgsUnitTypes::DistanceMeters )
     {
-      p2 = computeSpheroidProject( p1, distance, azimuth );
+      distance = ( distance * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, sourceCrs().mapUnits() ) );
       result = p1.distance( p2 );
     }
-    else
-    {
-      if ( sourceCrs().mapUnits() != QgsUnitTypes::DistanceMeters )
-      {
-        distance = ( distance * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, sourceCrs().mapUnits() ) );
-        result = p1.distance( p2 );
-      }
-      p2 = p1.project( distance, azimuth );
-    }
+    p2 = p1.project( distance, azimuth );
   }
-  QgsDebugMsgLevel( QString( "Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9,%10] isGeographic[%11] [%12]" )
+  QgsDebugMsgLevel( QString( "Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]" )
                     .arg( QString::number( distance, 'f', 7 ) )
                     .arg( QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ) )
                     .arg( QString::number( result, 'f', 7 ) )
@@ -408,12 +400,10 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   double a = mSemiMajor;
   double b = mSemiMinor;
   double f = 1 / mInvFlattening;
-  if ( ( a < 0 ) && ( b < 0 ) )
+  if ( ( ( a < 0 ) && ( b < 0 ) ) ||
+       ( ( p1.x() < -180.0 ) || ( p1.x() > 180.0 ) || ( p1.y() < -85.05115 ) || ( p1.y() > 85.05115 ) ) )
   {
-    QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( mCoordTransform.sourceCrs().ellipsoidAcronym() );
-    a = params.semiMajor;
-    b = params.semiMinor;
-    f = 1 / params.inverseFlattening;
+    return QgsPoint( 0, 0 );
   }
   double radians_lat = DEG2RAD( p1.y() );
   double radians_long = DEG2RAD( p1.x() );

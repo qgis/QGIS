@@ -119,7 +119,7 @@ class CORE_EXPORT QgsRenderContext
      * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
      * \since QGIS 3.0
      */
-    QgsDistanceArea distanceArea() {return mDistanceArea;}
+    const QgsDistanceArea &distanceArea() const { return mDistanceArea; }
 
     const QgsRectangle &extent() const {return mExtent;}
 
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsRenderContext
      * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
      * \since QGIS 3.0
      */
-    void setDistanceArea( QgsDistanceArea distanceArea ) {mDistanceArea = distanceArea ;}
+    void setDistanceArea( const QgsDistanceArea distanceArea ) {mDistanceArea = distanceArea ;}
 
     /**
      * Sets the scaling factor for the render to convert painter units

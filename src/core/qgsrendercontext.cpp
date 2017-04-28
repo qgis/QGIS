@@ -32,10 +32,9 @@ QgsRenderContext::QgsRenderContext()
   : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
-  QgsDistanceArea distanceArea;
-  distanceArea.setEllipsoid( distanceArea.sourceCrs().ellipsoidAcronym() );
-  setDistanceArea( distanceArea );
-  setExtent( QgsRectangle( 13.37768985634235, 52.51625705830762, 13.37771931686235, 52.51628651882762 ) );
+  // For RenderMetersInMapUnits support, when rendering in Degrees, the Ellipsoid must be set
+  // - for Previews/Icons the default Extent can be used
+  mDistanceArea.setEllipsoid( mDistanceArea.sourceCrs().ellipsoidAcronym() );
 }
 
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
@@ -244,6 +243,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       size = convertMetersToMapUnits( size );
       unit = QgsUnitTypes::RenderMapUnits;
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
+      FALLTHROUGH;
     }
     case QgsUnitTypes::RenderMapUnits:
     {
@@ -293,6 +293,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
     {
       size = convertMetersToMapUnits( size );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
+      FALLTHROUGH;
     }
     case QgsUnitTypes::RenderMapUnits:
     {
@@ -391,17 +392,27 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
   {
     case QgsUnitTypes::DistanceMeters:
       return meters;
-      break;
     case QgsUnitTypes::DistanceDegrees:
     {
       QgsPoint pointCenter = mExtent.center();
-      pointCenter = mCoordTransform.transform( pointCenter );
+      // The Extent is in the sourceCrs(), when different from destinationCrs()
+      // - the point must be transformed, since DistanceArea uses the destinationCrs()
+      // Note: the default QgsCoordinateTransform() : authid() will return an expty String
+      if ( mCoordTransform.sourceCrs().authid() != mCoordTransform.destinationCrs().authid() )
+      {
+        pointCenter = mCoordTransform.transform( pointCenter );
+      }
       return mDistanceArea.measureLineProjected( pointCenter, meters );
     }
-    break;
-    default:
+    case QgsUnitTypes::DistanceKilometers:
+    case QgsUnitTypes::DistanceFeet:
+    case QgsUnitTypes::DistanceNauticalMiles:
+    case QgsUnitTypes::DistanceYards:
+    case QgsUnitTypes::DistanceMiles:
+    case QgsUnitTypes::DistanceCentimeters:
+    case QgsUnitTypes::DistanceMillimeters:
+    case QgsUnitTypes::DistanceUnknownUnit:
       return ( meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mDistanceArea.sourceCrs().mapUnits() ) );
-      break;
   }
   return meters;
 }
