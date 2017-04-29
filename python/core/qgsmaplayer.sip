@@ -177,11 +177,10 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  :rtype: str
 %End
 
+
     void setDataUrl( const QString &dataUrl );
 %Docstring
- Layer dataUrl information */
-
-/** Sets the DataUrl of the layer
+ Sets the DataUrl of the layer
   used by QGIS Server in GetCapabilities request.
   DataUrl is a a link to the underlying data represented by a particular layer.
  :return: the layer DataUrl
@@ -217,11 +216,10 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  :rtype: str
 %End
 
+
     void setAttribution( const QString &attrib );
 %Docstring
- Layer attribution information */
-
-/** Sets the attribution of the layer
+ Sets the attribution of the layer
   used by QGIS Server in GetCapabilities request.
   Attribution indicates the provider of a layer or collection of layers.
  :return: the layer attribution
@@ -257,11 +255,10 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  :rtype: str
 %End
 
+
     void setMetadataUrl( const QString &metaUrl );
 %Docstring
- Layer metadataUrl information */
-
-/** Sets the metadata URL of the layer
+ Sets the metadata URL of the layer
   used by QGIS Server in GetCapabilities request.
   MetadataUrl is a a link to the detailed, standardized metadata about the data.
  :return: the layer metadata URL
