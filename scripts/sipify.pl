@@ -495,7 +495,8 @@ while ($line_idx < $line_count){
         $line =~ s/\s*=\s*default\b//g;
 
         # remove constructor definition, function bodies, member initializing list
-        if ( $SIP_RUN != 1 && $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\([\w=()\/ ,&*<>:-]*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
+        # https://regex101.com/r/ZaP3tC/1
+        if ( $SIP_RUN != 1 && $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(~?\w+|operator.{1,2})\(([\w=()\/ ,&*<>-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/ ){
             dbg_info("remove constructor definition, function bodies, member initializing list");
             my $newline = "$1$2$3$4$5;";
             if ($line !~ m/\{.*?\}\s*(\/\/.*)?$/){
