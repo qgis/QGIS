@@ -286,6 +286,15 @@ QString QgsGdalProvider::metadata()
     QgsDebugMsg( "dataset has no metadata" );
   }
 
+  // compression
+  QString compression = QString( GDALGetMetadataItem( mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
+  if ( !compression.isEmpty() )
+  {
+    myMetadata += QLatin1String( "<p>" );
+    myMetadata += tr( "COMPRESSION=%1" ).arg( compression );
+    myMetadata += QLatin1String( "</p>\n" );
+  }
+
   for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); ++i )
   {
     myMetadata += "<p class=\"glossy\">" + tr( "Band %1" ).arg( i ) + "</p>\n";
