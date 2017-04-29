@@ -829,16 +829,19 @@ class CORE_EXPORT QgsExpression
 
     enum NodeType
     {
-      ntUnaryOperator,
-      ntBinaryOperator,
-      ntInOperator,
-      ntFunction,
-      ntLiteral,
-      ntColumnRef,
-      ntCondition
+      ntUnaryOperator, //!< \see QgsExpression::Node::NodeUnaryOperator
+      ntBinaryOperator, //!< \see QgsExpression::Node::NodeBinaryOperator
+      ntInOperator, //!< \see QgsExpression::Node::NodeInOperator
+      ntFunction,  //!< \see QgsExpression::Node::NodeFunction
+      ntLiteral, //!< \see QgsExpression::Node::NodeLiteral
+      ntColumnRef, //!< \see QgsExpression::Node::NodeColumnRef
+      ntCondition //!< \see QgsExpression::Node::NodeCondition
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
+     *
+     * Abstract base class for all nodes that can appear in an expression.
      */
     class CORE_EXPORT Node
     {
@@ -863,16 +866,16 @@ class CORE_EXPORT QgsExpression
         virtual ~Node() = default;
 
         /**
-         * Abstract virtual that returns the type of this node.
+         * Get the type of this node.
          *
          * \returns The type of this node
          */
         virtual QgsExpression::NodeType nodeType() const = 0;
 
         /**
-         * Abstract virtual dump method
-         *
-         * \returns An expression which represents this node as string
+         * Dump this node into a serialized (part) of an expression.
+         * The returned expression does not necessarily literally match
+         * the original expression, it's just guaranteed to behave the same way.
          */
         virtual QString dump() const = 0;
 
@@ -880,6 +883,8 @@ class CORE_EXPORT QgsExpression
          * Evaluate this node with the given context and parent.
          * This will return a cached value if it has been determined to be static
          * during the prepare() execution.
+         *
+         * \since QGIS 2.12
          */
         QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
 
@@ -906,7 +911,7 @@ class CORE_EXPORT QgsExpression
         virtual QSet<QString> referencedColumns() const = 0;
 
         /**
-         * Return a list of all variables which are used in this expression.
+         * Return a set of all variables which are used in this expression.
          */
         virtual QSet<QString> referencedVariables() const = 0;
 
@@ -920,24 +925,39 @@ class CORE_EXPORT QgsExpression
          */
         virtual bool needsGeometry() const = 0;
 
+        /**
+         * Returns true if this node can be evaluated for a static value. This is used during
+         * the prepare() step and in case it returns true, the value of this node will already
+         * be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
+         * to eval()). In case this returns true, prepareNode() will never be called.
+         *
+         * \since QGIS 3.0
+         */
         virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const = 0;
 
+        /**
+         * Prepare this node for evaluation.
+         * This will check if the node content is static and in this case cache the value.
+         * If it's not static it will call prepareNode() to allow the node to do initialization
+         * work like for example resolving a column name to an attribute index.
+         *
+         * \since QGIS 2.12
+         */
         bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
-
 
       private:
 
         /**
          * Abstract virtual preparation method
          * Errors are reported to the parent
-         * \since QGIS 2.12
+         * \since QGIS 3.0
          */
         virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
 
         /**
          * Abstract virtual eval method
          * Errors are reported to the parent
-         * \since QGIS 2.12
+         * \since QGIS 3.0
          */
         virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
 
