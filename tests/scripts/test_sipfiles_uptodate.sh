@@ -28,7 +28,7 @@ done < <(
 sed -n -r 's/^%Include (.*\.sip)/core\/\1/p' python/core/core.sip
 sed -n -r 's/^%Include (.*\.sip)/gui\/\1/p' python/gui/gui.sip
 sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis.sip
-sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/server/server.sip
+sed -n -r 's/^%Include (.*\.sip)/server\/\1/p' python/server/server.sip
   )
 
 
