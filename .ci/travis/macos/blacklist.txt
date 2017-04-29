@@ -28,7 +28,6 @@ PyQgsAtlasComposition
 PyQgsComposerLegend
 PyQgsComposerMapGrid
 PyQgsDistanceArea
-PyQgsJSONUtils
 PyQgsPalLabelingBase
 PyQgsPalLabelingPlacement
 PyQgsPalLabelingComposer

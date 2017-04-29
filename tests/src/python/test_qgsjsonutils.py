@@ -116,8 +116,11 @@ class TestQgsJSONUtils(unittest.TestCase):
         self.assertEqual(QgsJSONUtils.encodeValue(['a', 'b', 'c']), '["a","b","c"]')
         self.assertEqual(QgsJSONUtils.encodeValue(['a', 3, 'c']), '["a",3,"c"]')
         self.assertEqual(QgsJSONUtils.encodeValue(['a', 'c\nd']), '["a","c\\nd"]')
-        self.assertEqual(QgsJSONUtils.encodeValue({'key': 'value', 'key2': 5}), '{"key":"value",\n"key2":5}')
-        self.assertEqual(QgsJSONUtils.encodeValue({'key': [1, 2, 3], 'key2': {'nested': 'nested\\result'}}), '{"key":[1,2,3],\n"key2":{"nested":"nested\\\\result"}}')
+        # handle differences due to Qt5 version, where compact output now lacks \n
+        enc_str = QgsJSONUtils.encodeValue({'key': 'value', 'key2': 5})
+        self.assertTrue(enc_str == '{"key":"value",\n"key2":5}' or enc_str == '{"key":"value","key2":5}')
+        enc_str = QgsJSONUtils.encodeValue({'key': [1, 2, 3], 'key2': {'nested': 'nested\\result'}})
+        self.assertTrue(enc_str == '{"key":[1,2,3],\n"key2":{"nested":"nested\\\\result"}}' or enc_str == '{"key":[1,2,3],"key2":{"nested":"nested\\\\result"}}')
 
     def testExportAttributes(self):
         """ test exporting feature's attributes to JSON object """
@@ -375,7 +378,18 @@ class TestQgsJSONUtils(unittest.TestCase):
       "extra3":[1,2,3]
    }
 }"""
-        self.assertEqual(exporter.exportFeature(feature, extraProperties={"extra": "val1", "extra2": {"nested_map": 5, "nested_map2": "val"}, "extra3": [1, 2, 3]}), expected)
+        expected2 = """{
+   "type":"Feature",
+   "id":5,
+   "geometry":null,
+   "properties":{
+      "extra":"val1",
+      "extra2":{"nested_map":5,"nested_map2":"val"},
+      "extra3":[1,2,3]
+   }
+}"""
+        exp_f = exporter.exportFeature(feature, extraProperties={"extra": "val1", "extra2": {"nested_map": 5, "nested_map2": "val"}, "extra3": [1, 2, 3]})
+        self.assertTrue(exp_f == expected or exp_f == expected2)
         exporter.setIncludeGeometry(True)
 
     def testExportFeatureCrs(self):
