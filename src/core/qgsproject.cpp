@@ -765,8 +765,8 @@ bool QgsProject::read()
                            tr( "%1 at line %2 column %3" ).arg( errorMsg ).arg( line ).arg( column ) );
 #endif
 
-    QString errorString = tr( "Project file read error: %1 at line %2 column %3" )
-                          .arg( errorMsg ).arg( line ).arg( column );
+    QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" )
+                          .arg( mFile.fileName() ).arg( errorMsg ).arg( line ).arg( column );
 
     QgsDebugMsg( errorString );
 
