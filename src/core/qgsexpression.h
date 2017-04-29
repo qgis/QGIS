@@ -941,7 +941,8 @@ class CORE_EXPORT QgsExpression
          */
         virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
 
-        QVariant mStaticValue;
+        bool mHasCachedValue = false;
+        QVariant mCachedStaticValue;
     };
 
     //! Named node

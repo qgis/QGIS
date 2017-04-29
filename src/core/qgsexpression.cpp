@@ -5920,7 +5920,10 @@ bool QgsExpression::NodeCondition::isStatic( QgsExpression *parent, const QgsExp
       return false;
   }
 
-  return mElseExp->isStatic( parent, context );
+  if ( mElseExp )
+    return mElseExp->isStatic( parent, context );
+
+  return true;
 }
 
 
@@ -6330,9 +6333,9 @@ QSet<QString> QgsExpression::StaticFunction::referencedColumns( const NodeFuncti
 
 QVariant QgsExpression::Node::eval( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  if ( mStaticValue.isValid() )
+  if ( mHasCachedValue )
   {
-    return mStaticValue;
+    return mCachedStaticValue;
   }
   else
   {
@@ -6345,11 +6348,13 @@ bool QgsExpression::Node::prepare( QgsExpression *parent, const QgsExpressionCon
 {
   if ( isStatic( parent, context ) )
   {
-    mStaticValue = evalNode( parent, context );
+    mCachedStaticValue = evalNode( parent, context );
+    mHasCachedValue = true;
     return true;
   }
   else
   {
+    mHasCachedValue = false;
     return prepareNode( parent, context );
   }
 }
