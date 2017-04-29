@@ -870,25 +870,18 @@ class CORE_EXPORT QgsExpression
         virtual QgsExpression::NodeType nodeType() const = 0;
 
         /**
-         * Abstract virtual eval method
-         * Errors are reported to the parent
-         * \since QGIS 2.12
-         */
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
-
-        /**
-         * Abstract virtual preparation method
-         * Errors are reported to the parent
-         * \since QGIS 2.12
-         */
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
-
-        /**
          * Abstract virtual dump method
          *
          * \returns An expression which represents this node as string
          */
         virtual QString dump() const = 0;
+
+        /**
+         * Evaluate this node with the given context and parent.
+         * This will return a cached value if it has been determined to be static
+         * during the prepare() execution.
+         */
+        QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
 
         /**
          * Generate a clone of this node.
@@ -926,6 +919,29 @@ class CORE_EXPORT QgsExpression
          * \returns true if a geometry is required to evaluate this expression
          */
         virtual bool needsGeometry() const = 0;
+
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const = 0;
+
+        bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
+
+
+      private:
+
+        /**
+         * Abstract virtual preparation method
+         * Errors are reported to the parent
+         * \since QGIS 2.12
+         */
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
+
+        /**
+         * Abstract virtual eval method
+         * Errors are reported to the parent
+         * \since QGIS 2.12
+         */
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
+
+        QVariant mStaticValue;
     };
 
     //! Named node
@@ -1019,14 +1035,16 @@ class CORE_EXPORT QgsExpression
         QgsExpression::Node *operand() const { return mOperand; }
 
         virtual QgsExpression::NodeType nodeType() const override { return ntUnaryOperator; }
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
         virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override { return mOperand->needsGeometry(); }
         virtual QgsExpression::Node *clone() const override;
+
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
       protected:
         QgsExpression::UnaryOperator mOp;
@@ -1045,19 +1063,20 @@ class CORE_EXPORT QgsExpression
         {}
         ~NodeBinaryOperator() { delete mOpLeft; delete mOpRight; }
 
-        QgsExpression::BinaryOperator op() const { return mOp; }
-        QgsExpression::Node *opLeft() const { return mOpLeft; }
-        QgsExpression::Node *opRight() const { return mOpRight; }
+        BinaryOperator op() const { return mOp; }
+        Node *opLeft() const { return mOpLeft; }
+        Node *opRight() const { return mOpRight; }
 
         virtual QgsExpression::NodeType nodeType() const override { return ntBinaryOperator; }
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
         virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual QgsExpression::Node *clone() const override;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
         int precedence() const;
         bool leftAssociative() const;
@@ -1095,14 +1114,15 @@ class CORE_EXPORT QgsExpression
         QgsExpression::NodeList *list() const { return mList; }
 
         virtual QgsExpression::NodeType nodeType() const override { return ntInOperator; }
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
         virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual QgsExpression::Node *clone() const override;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
       protected:
         Node *mNode = nullptr;
@@ -1123,14 +1143,15 @@ class CORE_EXPORT QgsExpression
         QgsExpression::NodeList *args() const { return mArgs; }
 
         virtual QgsExpression::NodeType nodeType() const override { return ntFunction; }
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
         virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual QgsExpression::Node *clone() const override;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
         //! Tests whether the provided argument list is valid for the matching function
         static bool validateParams( int fnIndex, QgsExpression::NodeList *args, QString &error );
@@ -1154,14 +1175,15 @@ class CORE_EXPORT QgsExpression
         inline QVariant value() const { return mValue; }
 
         virtual QgsExpression::NodeType nodeType() const override { return ntLiteral; }
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
         virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override { return false; }
         virtual QgsExpression::Node *clone() const override;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
       protected:
         QVariant mValue;
@@ -1181,8 +1203,8 @@ class CORE_EXPORT QgsExpression
         QString name() const { return mName; }
 
         virtual QgsExpression::NodeType nodeType() const override { return ntColumnRef; }
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
@@ -1190,6 +1212,7 @@ class CORE_EXPORT QgsExpression
         virtual bool needsGeometry() const override { return false; }
 
         virtual QgsExpression::Node *clone() const override;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
       protected:
         QString mName;
@@ -1242,14 +1265,15 @@ class CORE_EXPORT QgsExpression
         ~NodeCondition() { delete mElseExp; qDeleteAll( mConditions ); }
 
         virtual QgsExpression::NodeType nodeType() const override { return ntCondition; }
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
         virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual QgsExpression::Node *clone() const override;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
       protected:
         QgsExpression::WhenThenList mConditions;
