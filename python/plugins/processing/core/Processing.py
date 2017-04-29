@@ -199,7 +199,13 @@ class Processing(object):
                         return
                     i = i + 1
 
-        msg = alg._checkParameterValuesBeforeExecuting()
+        context = None
+        if kwargs is not None and 'context' in list(kwargs.keys()):
+            context = kwargs["context"]
+        else:
+            context = dataobjects.createContext()
+
+        msg = alg._checkParameterValuesBeforeExecuting(context)
         if msg:
             # fix_print_with_import
             print('Unable to execute algorithm\n' + str(msg))
@@ -207,7 +213,7 @@ class Processing(object):
                                      Processing.tr("Processing"))
             return
 
-        if not alg.checkInputCRS():
+        if not alg.checkInputCRS(context):
             print('Warning: Not all input layers use the same CRS.\n' +
                   'This can cause unexpected results.')
             QgsMessageLog.logMessage(
@@ -231,7 +237,6 @@ class Processing(object):
             feedback = kwargs["feedback"]
         elif iface is not None:
             feedback = MessageBarProgress(alg.displayName())
-        context = dataobjects.createContext()
 
         ret = execute(alg, context, feedback)
         if ret:
