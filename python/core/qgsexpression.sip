@@ -161,7 +161,7 @@ Returns root node of the expression. Root node is null is parsing has failed
  all attributes from the layer are required for evaluation of the expression.
  QgsFeatureRequest.setSubsetOfAttributes automatically handles this case.
 
- \see referencedAttributeIndexes()
+.. seealso:: referencedAttributeIndexes()
  :rtype: set of str
 %End
 
@@ -267,9 +267,9 @@ expression() instead.
 %Docstring
  Return calculator used for distance and area calculations
  (used by $length, $area and $perimeter functions only)
- \see setGeomCalculator()
- \see distanceUnits()
- \see areaUnits()
+.. seealso:: setGeomCalculator()
+.. seealso:: distanceUnits()
+.. seealso:: areaUnits()
  :rtype: QgsDistanceArea
 %End
 
@@ -281,7 +281,7 @@ expression() instead.
  cartesian methods (ie no ellipsoidal calculations).
  \param calc geometry calculator. Ownership is not transferred. Set to a None to force
  cartesian calculations.
- \see geomCalculator()
+.. seealso:: geomCalculator()
 %End
 
     QgsUnitTypes::DistanceUnit distanceUnits() const;
@@ -291,8 +291,8 @@ expression() instead.
 
    distances are only converted when a geomCalculator() has been set
 .. versionadded:: 2.14
- \see setDistanceUnits()
- \see areaUnits()
+.. seealso:: setDistanceUnits()
+.. seealso:: areaUnits()
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 
@@ -303,8 +303,8 @@ expression() instead.
 
    distances are only converted when a geomCalculator() has been set
 .. versionadded:: 2.14
- \see distanceUnits()
- \see setAreaUnits()
+.. seealso:: distanceUnits()
+.. seealso:: setAreaUnits()
 %End
 
     QgsUnitTypes::AreaUnit areaUnits() const;
@@ -314,8 +314,8 @@ expression() instead.
 
    areas are only converted when a geomCalculator() has been set
 .. versionadded:: 2.14
- \see setAreaUnits()
- \see distanceUnits()
+.. seealso:: setAreaUnits()
+.. seealso:: distanceUnits()
  :rtype: QgsUnitTypes.AreaUnit
 %End
 
@@ -326,8 +326,8 @@ expression() instead.
 
    areas are only converted when a geomCalculator() has been set
 .. versionadded:: 2.14
- \see areaUnits()
- \see setDistanceUnits()
+.. seealso:: areaUnits()
+.. seealso:: setDistanceUnits()
 %End
 
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context,
@@ -613,7 +613,7 @@ Does this function use a geometry object.
 %Docstring
  Returns a list of the groups the function belongs to.
 .. versionadded:: 3.0
- \see group()
+.. seealso:: group()
  :rtype: list of str
 %End
 
@@ -662,7 +662,7 @@ The help text for the function.
  \param function function to register
  \param transferOwnership set to true to transfer ownership of function to expression engine
  :return: true on successful registration
- \see unregisterFunction
+.. seealso:: unregisterFunction
  :rtype: bool
 %End
 
@@ -670,7 +670,7 @@ The help text for the function.
 %Docstring
  Unregisters a function from the expression engine. The function will no longer be usable in expressions.
  \param name function name
- \see registerFunction
+.. seealso:: registerFunction
  :rtype: bool
 %End
 
@@ -703,16 +703,16 @@ return index of the function in Functions array
     static QString quotedColumnRef( QString name );
 %Docstring
  Returns a quoted column reference (in double quotes)
- \see quotedString()
- \see quotedValue()
+.. seealso:: quotedString()
+.. seealso:: quotedValue()
  :rtype: str
 %End
 
     static QString quotedString( QString text );
 %Docstring
  Returns a quoted version of a string (in single quotes)
- \see quotedValue()
- \see quotedColumnRef()
+.. seealso:: quotedValue()
+.. seealso:: quotedColumnRef()
  :rtype: str
 %End
 
@@ -722,8 +722,8 @@ return index of the function in Functions array
  quotations where required.
  \param value value to convert to a string representation
 .. versionadded:: 2.14
- \see quotedString()
- \see quotedColumnRef()
+.. seealso:: quotedString()
+.. seealso:: quotedColumnRef()
  :rtype: str
 %End
 
@@ -734,8 +734,8 @@ return index of the function in Functions array
  \param value value to convert to a string representation
  \param type value type
 .. versionadded:: 2.14
- \see quotedString()
- \see quotedColumnRef()
+.. seealso:: quotedString()
+.. seealso:: quotedColumnRef()
  :rtype: str
 %End
 
@@ -753,6 +753,10 @@ return index of the function in Functions array
 
     class Node
 {
+%Docstring
+
+ Abstract base class for all nodes that can appear in an expression.
+%End
 
 %TypeHeaderCode
 #include "qgsexpression.h"
@@ -761,14 +765,30 @@ return index of the function in Functions array
 %ConvertToSubClassCode
         switch ( sipCpp->nodeType() )
         {
-          case QgsExpression::ntUnaryOperator:   sipType = sipType_QgsExpression_NodeUnaryOperator; break;
-          case QgsExpression::ntBinaryOperator:  sipType = sipType_QgsExpression_NodeBinaryOperator; break;
-          case QgsExpression::ntInOperator:      sipType = sipType_QgsExpression_NodeInOperator; break;
-          case QgsExpression::ntFunction:        sipType = sipType_QgsExpression_NodeFunction; break;
-          case QgsExpression::ntLiteral:         sipType = sipType_QgsExpression_NodeLiteral; break;
-          case QgsExpression::ntColumnRef:       sipType = sipType_QgsExpression_NodeColumnRef; break;
-          case QgsExpression::ntCondition:       sipType = sipType_QgsExpression_NodeCondition; break;
-          default:                               sipType = 0; break;
+          case QgsExpression::ntUnaryOperator:
+            sipType = sipType_QgsExpression_NodeUnaryOperator;
+            break;
+          case QgsExpression::ntBinaryOperator:
+            sipType = sipType_QgsExpression_NodeBinaryOperator;
+            break;
+          case QgsExpression::ntInOperator:
+            sipType = sipType_QgsExpression_NodeInOperator;
+            break;
+          case QgsExpression::ntFunction:
+            sipType = sipType_QgsExpression_NodeFunction;
+            break;
+          case QgsExpression::ntLiteral:
+            sipType = sipType_QgsExpression_NodeLiteral;
+            break;
+          case QgsExpression::ntColumnRef:
+            sipType = sipType_QgsExpression_NodeColumnRef;
+            break;
+          case QgsExpression::ntCondition:
+            sipType = sipType_QgsExpression_NodeCondition;
+            break;
+          default:
+            sipType = 0;
+            break;
         }
 %End
       public:
@@ -776,34 +796,28 @@ return index of the function in Functions array
 
         virtual QgsExpression::NodeType nodeType() const = 0;
 %Docstring
- Abstract virtual that returns the type of this node.
+ Get the type of this node.
 
  :return: The type of this node
  :rtype: QgsExpression.NodeType
 %End
 
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
-%Docstring
- Abstract virtual eval method
- Errors are reported to the parent
-.. versionadded:: 2.12
- :rtype: QVariant
-%End
-
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
-%Docstring
- Abstract virtual preparation method
- Errors are reported to the parent
-.. versionadded:: 2.12
- :rtype: bool
-%End
-
         virtual QString dump() const = 0;
 %Docstring
- Abstract virtual dump method
-
- :return: An expression which represents this node as string
+ Dump this node into a serialized (part) of an expression.
+ The returned expression does not necessarily literally match
+ the original expression, it's just guaranteed to behave the same way.
  :rtype: str
+%End
+
+        QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
+%Docstring
+ Evaluate this node with the given context and parent.
+ This will return a cached value if it has been determined to be static
+ during the prepare() execution.
+
+.. versionadded:: 2.12
+ :rtype: QVariant
 %End
 
         virtual QgsExpression::Node *clone() const = 0;
@@ -832,7 +846,7 @@ return index of the function in Functions array
 
         virtual QSet<QString> referencedVariables() const = 0;
 %Docstring
- Return a list of all variables which are used in this expression.
+ Return a set of all variables which are used in this expression.
  :rtype: set of str
 %End
 
@@ -845,6 +859,45 @@ return index of the function in Functions array
 
  :return: true if a geometry is required to evaluate this expression
  :rtype: bool
+%End
+
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const = 0;
+%Docstring
+ Returns true if this node can be evaluated for a static value. This is used during
+ the prepare() step and in case it returns true, the value of this node will already
+ be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
+ to eval()). In case this returns true, prepareNode() will never be called.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+        bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
+%Docstring
+ Prepare this node for evaluation.
+ This will check if the node content is static and in this case cache the value.
+ If it's not static it will call prepareNode() to allow the node to do initialization
+ work like for example resolving a column name to an attribute index.
+
+.. versionadded:: 2.12
+ :rtype: bool
+%End
+
+      private:
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0 ;
+%Docstring
+ Abstract virtual preparation method
+ Errors are reported to the parent
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+      private:
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0 ;
+%Docstring
+ Abstract virtual eval method
+ Errors are reported to the parent
+.. versionadded:: 3.0
+ :rtype: QVariant
 %End
     };
 
@@ -937,18 +990,23 @@ Creates a deep copy of this list. Ownership is transferred to the caller
  :rtype: str
 %End
 
-      protected:
-
     };
 
     class NodeUnaryOperator : QgsExpression::Node
 {
+%Docstring
+ A unary node is either negative as in boolean (not) or as in numbers (minus).
+%End
 
 %TypeHeaderCode
 #include "qgsexpression.h"
 %End
       public:
+
         NodeUnaryOperator( QgsExpression::UnaryOperator op, QgsExpression::Node *operand /Transfer/ );
+%Docstring
+ A node unary operator is modifying the value of ``operand`` by negating it with \op.
+%End
         ~NodeUnaryOperator();
 
         QgsExpression::UnaryOperator op() const;
@@ -961,8 +1019,8 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 %End
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
@@ -970,7 +1028,8 @@ Creates a deep copy of this list. Ownership is transferred to the caller
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node *clone() const;
 
-      protected:
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
     };
 
     class NodeBinaryOperator : QgsExpression::Node
@@ -980,7 +1039,11 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 #include "qgsexpression.h"
 %End
       public:
+
         NodeBinaryOperator( QgsExpression::BinaryOperator op, QgsExpression::Node *opLeft /Transfer/, QgsExpression::Node *opRight /Transfer/ );
+%Docstring
+ Binary combination of the left and the right with op.
+%End
         ~NodeBinaryOperator();
 
         QgsExpression::BinaryOperator op() const;
@@ -997,14 +1060,15 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 %End
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
         virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node *clone() const;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
         int precedence() const;
 %Docstring
@@ -1024,7 +1088,11 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 #include "qgsexpression.h"
 %End
       public:
+
         NodeInOperator( QgsExpression::Node *node /Transfer/, QgsExpression::NodeList *list /Transfer/, bool notin = false );
+%Docstring
+ This node tests if the result of \node is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is false.
+%End
         virtual ~NodeInOperator();
 
         QgsExpression::Node *node() const;
@@ -1041,16 +1109,16 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 %End
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
         virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node *clone() const;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
-      protected:
     };
 
     class NodeFunction : QgsExpression::Node
@@ -1060,7 +1128,12 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 #include "qgsexpression.h"
 %End
       public:
+
         NodeFunction( int fnIndex, QgsExpression::NodeList *args /Transfer/ );
+%Docstring
+ A function node consists of an index of the function in the global function array and
+ a list of arguments that will be passed to it.
+%End
 
         virtual ~NodeFunction();
 
@@ -1074,14 +1147,15 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 %End
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
         virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node *clone() const;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
         static bool validateParams( int fnIndex, QgsExpression::NodeList *args, QString &error );
 %Docstring
@@ -1107,16 +1181,16 @@ The value of the literal.
 %End
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
         virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node *clone() const;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
-      protected:
     };
 
     class NodeColumnRef : QgsExpression::Node
@@ -1135,8 +1209,8 @@ The name of the column.
 %End
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
@@ -1144,9 +1218,10 @@ The name of the column.
         virtual bool needsGeometry() const;
 
         virtual QgsExpression::Node *clone() const;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
-      protected:
     };
+
 
     class WhenThen
 {
@@ -1155,12 +1230,19 @@ The name of the column.
 #include "qgsexpression.h"
 %End
       public:
-        WhenThen( QgsExpression::Node *whenExp /Transfer/, QgsExpression::Node *thenExp /Transfer/ );
+
+        WhenThen( QgsExpression::Node *whenExp, QgsExpression::Node *thenExp );
+%Docstring
+ A combination of when and then. Simple as that.
+%End
         ~WhenThen();
 
 
-        QgsExpression::Node *mWhenExp;
-        QgsExpression::Node *mThenExp;
+        QgsExpression::WhenThen *clone() const;
+%Docstring
+ Get a deep copy of this WhenThen combination.
+ :rtype: QgsExpression.WhenThen
+%End
 
       private:
         WhenThen( const QgsExpression::WhenThen &rh );
@@ -1174,29 +1256,33 @@ The name of the column.
 #include "qgsexpression.h"
 %End
       public:
+
         NodeCondition( QgsExpression::WhenThenList *conditions, QgsExpression::Node *elseExp = 0 );
+%Docstring
+ Create a new node with the given list of ``conditions`` and an optional ``elseExp`` expression.
+%End
 
 
         ~NodeCondition();
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
-        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
         virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node *clone() const;
+        virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
-      protected:
     };
 
     static QString helpText( QString name );
 %Docstring
  Returns the help text for a specified function.
  \param name function name
- \see variableHelpText()
+.. seealso:: variableHelpText()
  :rtype: str
 %End
 
@@ -1206,7 +1292,7 @@ The name of the column.
  \param variableName name of variable
  \param showValue set to true to include current value of variable in help text
  \param value current value of variable to show in help text
- \see helpText()
+.. seealso:: helpText()
 .. versionadded:: 2.12
  :rtype: str
 %End

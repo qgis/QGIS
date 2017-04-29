@@ -829,16 +829,19 @@ class CORE_EXPORT QgsExpression
 
     enum NodeType
     {
-      ntUnaryOperator,
-      ntBinaryOperator,
-      ntInOperator,
-      ntFunction,
-      ntLiteral,
-      ntColumnRef,
-      ntCondition
+      ntUnaryOperator, //!< \see QgsExpression::Node::NodeUnaryOperator
+      ntBinaryOperator, //!< \see QgsExpression::Node::NodeBinaryOperator
+      ntInOperator, //!< \see QgsExpression::Node::NodeInOperator
+      ntFunction,  //!< \see QgsExpression::Node::NodeFunction
+      ntLiteral, //!< \see QgsExpression::Node::NodeLiteral
+      ntColumnRef, //!< \see QgsExpression::Node::NodeColumnRef
+      ntCondition //!< \see QgsExpression::Node::NodeCondition
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
+     *
+     * Abstract base class for all nodes that can appear in an expression.
      */
     class CORE_EXPORT Node
     {
@@ -847,14 +850,30 @@ class CORE_EXPORT QgsExpression
         SIP_CONVERT_TO_SUBCLASS_CODE
         switch ( sipCpp->nodeType() )
         {
-          case QgsExpression::ntUnaryOperator:   sipType = sipType_QgsExpression_NodeUnaryOperator; break;
-          case QgsExpression::ntBinaryOperator:  sipType = sipType_QgsExpression_NodeBinaryOperator; break;
-          case QgsExpression::ntInOperator:      sipType = sipType_QgsExpression_NodeInOperator; break;
-          case QgsExpression::ntFunction:        sipType = sipType_QgsExpression_NodeFunction; break;
-          case QgsExpression::ntLiteral:         sipType = sipType_QgsExpression_NodeLiteral; break;
-          case QgsExpression::ntColumnRef:       sipType = sipType_QgsExpression_NodeColumnRef; break;
-          case QgsExpression::ntCondition:       sipType = sipType_QgsExpression_NodeCondition; break;
-          default:                               sipType = 0; break;
+          case QgsExpression::ntUnaryOperator:
+            sipType = sipType_QgsExpression_NodeUnaryOperator;
+            break;
+          case QgsExpression::ntBinaryOperator:
+            sipType = sipType_QgsExpression_NodeBinaryOperator;
+            break;
+          case QgsExpression::ntInOperator:
+            sipType = sipType_QgsExpression_NodeInOperator;
+            break;
+          case QgsExpression::ntFunction:
+            sipType = sipType_QgsExpression_NodeFunction;
+            break;
+          case QgsExpression::ntLiteral:
+            sipType = sipType_QgsExpression_NodeLiteral;
+            break;
+          case QgsExpression::ntColumnRef:
+            sipType = sipType_QgsExpression_NodeColumnRef;
+            break;
+          case QgsExpression::ntCondition:
+            sipType = sipType_QgsExpression_NodeCondition;
+            break;
+          default:
+            sipType = 0;
+            break;
         }
         SIP_END
 #endif
@@ -863,16 +882,16 @@ class CORE_EXPORT QgsExpression
         virtual ~Node() = default;
 
         /**
-         * Abstract virtual that returns the type of this node.
+         * Get the type of this node.
          *
          * \returns The type of this node
          */
         virtual QgsExpression::NodeType nodeType() const = 0;
 
         /**
-         * Abstract virtual dump method
-         *
-         * \returns An expression which represents this node as string
+         * Dump this node into a serialized (part) of an expression.
+         * The returned expression does not necessarily literally match
+         * the original expression, it's just guaranteed to behave the same way.
          */
         virtual QString dump() const = 0;
 
@@ -880,6 +899,8 @@ class CORE_EXPORT QgsExpression
          * Evaluate this node with the given context and parent.
          * This will return a cached value if it has been determined to be static
          * during the prepare() execution.
+         *
+         * \since QGIS 2.12
          */
         QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
 
@@ -906,7 +927,7 @@ class CORE_EXPORT QgsExpression
         virtual QSet<QString> referencedColumns() const = 0;
 
         /**
-         * Return a list of all variables which are used in this expression.
+         * Return a set of all variables which are used in this expression.
          */
         virtual QSet<QString> referencedVariables() const = 0;
 
@@ -920,26 +941,41 @@ class CORE_EXPORT QgsExpression
          */
         virtual bool needsGeometry() const = 0;
 
+        /**
+         * Returns true if this node can be evaluated for a static value. This is used during
+         * the prepare() step and in case it returns true, the value of this node will already
+         * be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
+         * to eval()). In case this returns true, prepareNode() will never be called.
+         *
+         * \since QGIS 3.0
+         */
         virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const = 0;
 
+        /**
+         * Prepare this node for evaluation.
+         * This will check if the node content is static and in this case cache the value.
+         * If it's not static it will call prepareNode() to allow the node to do initialization
+         * work like for example resolving a column name to an attribute index.
+         *
+         * \since QGIS 2.12
+         */
         bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
-
 
       private:
 
         /**
          * Abstract virtual preparation method
          * Errors are reported to the parent
-         * \since QGIS 2.12
+         * \since QGIS 3.0
          */
-        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
+        virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0 SIP_FORCE;
 
         /**
          * Abstract virtual eval method
          * Errors are reported to the parent
-         * \since QGIS 2.12
+         * \since QGIS 3.0
          */
-        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
+        virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0 SIP_FORCE;
 
         bool mHasCachedValue = false;
         QVariant mCachedStaticValue;
@@ -1020,10 +1056,15 @@ class CORE_EXPORT QgsExpression
     };
 
     /** \ingroup core
+     * A unary node is either negative as in boolean (not) or as in numbers (minus).
      */
     class CORE_EXPORT NodeUnaryOperator : public QgsExpression::Node
     {
       public:
+
+        /**
+         * A node unary operator is modifying the value of \a operand by negating it with \op.
+         */
         NodeUnaryOperator( QgsExpression::UnaryOperator op, QgsExpression::Node *operand SIP_TRANSFER )
           : mOp( op )
           , mOperand( operand )
@@ -1055,6 +1096,10 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeBinaryOperator : public QgsExpression::Node
     {
       public:
+
+        /**
+         * Binary combination of the left and the right with op.
+         */
         NodeBinaryOperator( QgsExpression::BinaryOperator op, QgsExpression::Node *opLeft SIP_TRANSFER, QgsExpression::Node *opRight SIP_TRANSFER )
           : mOp( op )
           , mOpLeft( opLeft )
@@ -1062,9 +1107,9 @@ class CORE_EXPORT QgsExpression
         {}
         ~NodeBinaryOperator() { delete mOpLeft; delete mOpRight; }
 
-        BinaryOperator op() const { return mOp; }
-        Node *opLeft() const { return mOpLeft; }
-        Node *opRight() const { return mOpRight; }
+        QgsExpression::BinaryOperator op() const { return mOp; }
+        QgsExpression::Node *opLeft() const { return mOpLeft; }
+        QgsExpression::Node *opRight() const { return mOpRight; }
 
         virtual QgsExpression::NodeType nodeType() const override { return ntBinaryOperator; }
         virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
@@ -1101,6 +1146,10 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeInOperator : public QgsExpression::Node
     {
       public:
+
+        /**
+         * This node tests if the result of \node is in the result of \a list. Optionally it can be inverted with \a notin which by default is false.
+         */
         NodeInOperator( QgsExpression::Node *node SIP_TRANSFER, QgsExpression::NodeList *list SIP_TRANSFER, bool notin = false )
           : mNode( node )
           , mList( list )
@@ -1134,6 +1183,11 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeFunction : public QgsExpression::Node
     {
       public:
+
+        /**
+         * A function node consists of an index of the function in the global function array and
+         * a list of arguments that will be passed to it.
+         */
         NodeFunction( int fnIndex, QgsExpression::NodeList *args SIP_TRANSFER );
 
         virtual ~NodeFunction() { delete mArgs; }
@@ -1225,6 +1279,10 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT WhenThen
     {
       public:
+
+        /**
+         * A combination of when and then. Simple as that.
+         */
         WhenThen( QgsExpression::Node *whenExp, QgsExpression::Node *thenExp );
         ~WhenThen();
 
@@ -1233,7 +1291,10 @@ class CORE_EXPORT QgsExpression
         //! WhenThen nodes cannot be copied.
         WhenThen &operator=( const WhenThen &rh ) = delete;
 
-        WhenThen *clone() const;
+        /**
+         * Get a deep copy of this WhenThen combination.
+         */
+        QgsExpression::WhenThen *clone() const;
 
       private:
 #ifdef SIP_RUN
@@ -1252,11 +1313,15 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeCondition : public QgsExpression::Node
     {
       public:
-        NodeCondition( QgsExpression::WhenThenList *conditions, QgsExpression::Node *elseExp = nullptr )
-          : mConditions( *conditions )
-          , mElseExp( elseExp )
-        { delete conditions; }
 
+        /**
+         * Create a new node with the given list of \a conditions and an optional \a elseExp expression.
+         */
+        NodeCondition( QgsExpression::WhenThenList *conditions, QgsExpression::Node *elseExp = nullptr );
+
+        /**
+         * Create a new node with the given list of \a conditions and an optional \a elseExp expression.
+         */
         NodeCondition( const QgsExpression::WhenThenList &conditions, QgsExpression::Node *elseExp = nullptr ) SIP_SKIP
       : mConditions( conditions )
         , mElseExp( elseExp )
