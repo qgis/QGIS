@@ -5920,7 +5920,10 @@ bool QgsExpression::NodeCondition::isStatic( QgsExpression *parent, const QgsExp
       return false;
   }
 
-  return mElseExp->isStatic( parent, context );
+  if ( mElseExp )
+    return mElseExp->isStatic( parent, context );
+
+  return true;
 }
 
 
