@@ -4950,13 +4950,13 @@ QVariant QgsExpression::NodeBinaryOperator::evalNode( QgsExpression *parent, con
           QgsExpression::NodeLiteral nL( lL.at( i ) );
           QgsExpression::NodeLiteral nR( lR.at( i ) );
           QgsExpression::NodeBinaryOperator eqNode( boEQ, nL.clone(), nR.clone() );
-          QVariant eq = eqNode.evalNode( parent, context );
+          QVariant eq = eqNode.eval( parent, context );
           ENSURE_NO_EVAL_ERROR;
           if ( eq == TVL_False )
           {
             // return the two items comparison
             QgsExpression::NodeBinaryOperator node( mOp, nL.clone(), nR.clone() );
-            QVariant v = node.evalNode( parent, context );
+            QVariant v = node.eval( parent, context );
             ENSURE_NO_EVAL_ERROR;
             return v;
           }
