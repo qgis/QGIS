@@ -78,39 +78,4 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
     int mStatusCode = 0;
 };
 
-/**
- * \ingroup server
- * QgsFcgiServerResquest
- * Class defining fcgi request
- */
-class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
-{
-  public:
-    QgsFcgiServerRequest();
-    ~QgsFcgiServerRequest();
-
-    virtual QByteArray data() const override;
-
-    /**
-     * Return true if an error occurred during initialization
-     */
-    bool hasError() const { return mHasError; }
-
-  private:
-    void readData();
-
-    // Log request info: print debug infos
-    // about the request
-    void printRequestInfos();
-
-
-    QByteArray mData;
-    bool       mHasError;
-};
-
 #endif
-
-
-
-
-
