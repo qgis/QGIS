@@ -15,7 +15,6 @@ qgis_composerrotationtest
 qgis_composerscalebartest
 qgis_composerutilstest
 qgis_composertablev2test
-qgis_distanceareatest
 qgis_diagramtest
 qgis_fontmarkertest
 qgis_labelingenginetest
