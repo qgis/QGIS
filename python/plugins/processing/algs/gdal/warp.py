@@ -36,7 +36,8 @@ from processing.core.parameters import (ParameterRaster,
                                         ParameterSelection,
                                         ParameterCrs,
                                         ParameterNumber,
-                                        ParameterString)
+                                        ParameterString,
+                                        ParameterBoolean)
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -56,6 +57,7 @@ class warp(GdalAlgorithm):
     EXT_CRS = 'EXT_CRS'
     RTYPE = 'RTYPE'
     OPTIONS = 'OPTIONS'
+    MULTITHREADING = 'MULTITHREADING'
 
     METHOD_OPTIONS = ['near', 'bilinear', 'cubic', 'cubicspline', 'lanczos']
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
@@ -105,6 +107,10 @@ class warp(GdalAlgorithm):
                                           self.tr('Additional creation options'),
                                           optional=True,
                                           metadata={'widget_wrapper': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}))
+        self.addParameter(ParameterBoolean(self.MULTITHREADING,
+                                           self.tr('Use multithreaded warping implementation'),
+                                           False
+                                           ))
         self.addParameter(ParameterSelection(self.RTYPE,
                                              self.tr('Output raster type'),
                                              self.TYPE, 5))
@@ -118,6 +124,7 @@ class warp(GdalAlgorithm):
         rastext_crs = self.getParameterValue(self.EXT_CRS)
         opts = self.getParameterValue(self.OPTIONS)
         noData = self.getParameterValue(self.NO_DATA)
+        multithreading = self.getParameterValue(self.MULTITHREADING)
 
         if noData is not None:
             noData = str(noData)
@@ -164,6 +171,9 @@ class warp(GdalAlgorithm):
         if opts:
             arguments.append('-co')
             arguments.append(opts)
+
+        if multithreading:
+            arguments.append('-multi')
 
         if GdalUtils.version() in [2010000, 2010100]:
             arguments.append("--config GDALWARP_IGNORE_BAD_CUTLINE YES")
