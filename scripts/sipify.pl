@@ -82,7 +82,10 @@ sub dbg
 }
 sub dbg_info
 {
-    $debug == 0 or push @output, $_[0]."\n";
+  if ($debug == 1){
+    push @output, $_[0]."\n";
+    print $_[0]."\n";
+  }
 }
 
 # main loop
@@ -468,7 +471,7 @@ while ($line_idx < $line_count){
                 dbg_info("  go for multiline");
                 $line = $lines[$line_idx];
                 $line_idx++;
-                while ( $line =~ m/^\s*[:,] [\w<>]+\(.*?\)/){
+                while ( $line =~ m/^\s*[:,]\s+[\w<>]+\(.*?\)/){
                   dbg_info("  member initializing list");
                   $line = $lines[$line_idx];
                   $line_idx++;
@@ -569,33 +572,45 @@ while ($line_idx < $line_count){
 
     # multiline definition (parenthesis left open)
     if ( $MULTILINE_DEFINITION == 1 ){
-      # see https://regex101.com/r/DN01iM/2
-      if ( $line =~ m/^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)[^()]*$/){
-          $MULTILINE_DEFINITION = 0;
-          # remove potential following body
-          if ( $SIP_RUN == 0 && $lines[$line_idx] =~ m/^\s*\{$/ ){
-              dbg_info("remove following body of multiline def");
-              my $last_line = $line;
-              my $nesting_index = 0;
-              while ($line_idx < $line_count){
-                  $line = $lines[$line_idx];
-                  $line_idx++;
+        dbg_info("on multiline");
+        # https://regex101.com/r/DN01iM/2
+        if ( $line =~ m/^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)[^()]*$/){
+            $MULTILINE_DEFINITION = 0;
+            dbg_info("ending multiline");
+            # remove potential following body
 
-                  $nesting_index += $line =~ tr/\{//;
-                  $nesting_index -= $line =~ tr/\}//;
-                  if ($nesting_index == 0){
-                      last;
-                  }
-              }
-              # add missing semi column
-              my $dummy = pop(@output);
-              push @output, dbg("MLT")."$last_line;\n";
-          }
-      }
-      else
-      {
-        next;
-      }
+
+            if ( $SIP_RUN == 0 && $line !~ m/(\{.*\}|;)\s*(\/\/.*)?$/ ){
+                dbg_info("remove following body of multiline def");
+                my $last_line = $line;
+                $line = $lines[$line_idx];
+                $line_idx++;
+                while ( $line =~ m/^\s*[:,]\s+[\w<>]+\(.*?\)/){
+                    dbg_info("  member initializing list");
+                    $line = $lines[$line_idx];
+                    $line_idx++;
+                }
+                my $nesting_index = 1;
+                if ( $line =~ m/^\s*\{$/ ){
+                    while ($line_idx < $line_count){
+                        $line = $lines[$line_idx];
+                        $line_idx++;
+                        $nesting_index += $line =~ tr/\{//;
+                        $nesting_index -= $line =~ tr/\}//;
+                        if ($nesting_index == 0){
+                            last;
+                        }
+                    }
+                }
+                # add missing semi column
+                my $dummy = pop(@output);
+                push @output, dbg("MLT")."$last_line;\n";
+            }
+        }
+        else
+        {
+            next;
+        }
     }
     elsif ( $line =~ m/^[^()]+\([^()]*([^()]*\([^()]*\)[^()]*)*[^)]*$/ ){
       dbg_info("Mulitline detected");
