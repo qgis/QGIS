@@ -48,11 +48,12 @@ close $handle;
 # contexts
 my $SIP_RUN = 0;
 my $HEADER_CODE = 0;
-my $ACCESS = PUBLIC;
+my @ACCESS = (PUBLIC);
 my $MULTILINE_DEFINITION = 0;
 
 my $comment = '';
-my $global_nesting_index = 0;
+my $global_ifdef_nesting_index = 0;
+my @global_bracket_nesting_index = (0);
 my $private_section_line = '';
 my $classname = '';
 my $return_type = '';
@@ -84,7 +85,7 @@ sub dbg_info
 {
   if ($debug == 1){
     push @output, $_[0]."\n";
-    print $_[0]."\n";
+    print $line_idx." ".@ACCESS." ".$SIP_RUN." ".$MULTILINE_DEFINITION." ".$_[0]."\n";
   }
 }
 
@@ -92,7 +93,7 @@ sub dbg_info
 while ($line_idx < $line_count){
     $line = $lines[$line_idx];
     $line_idx++;
-    #print "$line\n";
+    $debug == 0 or print sprintf('%d DEP:%d ACC:%d BRC:%d SIP:%d MLT:%d ', $line_idx, $#ACCESS, $ACCESS[$#ACCESS], $global_bracket_nesting_index[$#global_bracket_nesting_index], $SIP_RUN, $MULTILINE_DEFINITION).$line."\n";
 
     if ($line =~ m/^\s*SIP_FEATURE\( (\w+) \)(.*)$/){
         push @output, dbg("SF1")."%Feature $1$2\n";
@@ -138,41 +139,42 @@ while ($line_idx < $line_count){
 
         if ( $line =~ m/^\s*#ifdef SIP_RUN/){
             $SIP_RUN = 1;
-            if ($ACCESS == PRIVATE){
+            if ($ACCESS[$#ACCESS] == PRIVATE){
+                dbg_info("writing private content");
                 push @output, dbg("PRV1").$private_section_line."\n";
             }
             next;
         }
         if ( $SIP_RUN == 1 ){
             if ( $line =~ m/^\s*#endif/ ){
-                if ( $global_nesting_index == 0 ){
+                if ( $global_ifdef_nesting_index == 0 ){
                     $SIP_RUN = 0;
                     next;
                 }
                 else {
-                    $global_nesting_index--;
+                    $global_ifdef_nesting_index--;
                 }
             }
             if ( $line =~ m/^\s*#if(def)?\s+/ ){
-                $global_nesting_index++;
+                $global_ifdef_nesting_index++;
             }
 
             # if there is an else at this level, code will be ignored i.e. not SIP_RUN
-            if ( $line =~ m/^\s*#else/ && $global_nesting_index == 0){
+            if ( $line =~ m/^\s*#else/ && $global_ifdef_nesting_index == 0){
                 while ($line_idx < $line_count){
                     $line = $lines[$line_idx];
                     $line_idx++;
                     if ( $line =~ m/^\s*#if(def)?\s+/ ){
-                        $global_nesting_index++;
+                        $global_ifdef_nesting_index++;
                     }
                     elsif ( $line =~ m/^\s*#endif/ ){
-                        if ( $global_nesting_index == 0 ){
+                        if ( $global_ifdef_nesting_index == 0 ){
                             $comment = '';
                             $SIP_RUN = 0;
                             last;
                         }
                         else {
-                            $global_nesting_index--;
+                            $global_ifdef_nesting_index--;
                         }
                     }
                 }
@@ -185,24 +187,25 @@ while ($line_idx < $line_count){
                 $line = $lines[$line_idx];
                 $line_idx++;
                 if ( $line =~ m/^\s*#if(def)?\s+/ ){
-                    $global_nesting_index++;
+                    $global_ifdef_nesting_index++;
                 }
-                elsif ( $line =~ m/^\s*#else/ && $global_nesting_index == 0 ){
+                elsif ( $line =~ m/^\s*#else/ && $global_ifdef_nesting_index == 0 ){
                     # code here will be printed out
-                    if ($ACCESS == PRIVATE){
+                    if ($ACCESS[$#ACCESS] == PRIVATE){
+                        dbg_info("writing private content");
                         push @output, dbg("PRV2").$private_section_line."\n";
                     }
                     $SIP_RUN = 1;
                     last;
                 }
                 elsif ( $line =~ m/^\s*#endif/ ){
-                    if ( $global_nesting_index == 0 ){
+                    if ( $global_ifdef_nesting_index == 0 ){
                         $comment = '';
                         $SIP_RUN = 0;
                         last;
                     }
                     else {
-                        $global_nesting_index--;
+                        $global_ifdef_nesting_index--;
                     }
                 }
             }
@@ -272,37 +275,6 @@ while ($line_idx < $line_count){
       next;
     }
 
-    # Private members (exclude SIP_RUN)
-    if ( $line =~ m/^\s*private( slots)?:/ ){
-        $ACCESS = PRIVATE;
-        $private_section_line = $line;
-        $comment = '';
-        next;
-    }
-    elsif ( $line =~ m/^\s*(public)( slots)?:.*$/ ){
-        $ACCESS = PUBLIC;
-        $comment = '';
-    }
-    elsif ( $line =~ m/^\};.*$/ ) {
-        $ACCESS = PUBLIC;
-        $comment = '';
-    }
-    elsif ( $line =~ m/^\s*(protected)( slots)?:.*$/ ){
-        $ACCESS = PROTECTED;
-        $comment = '';
-    }
-    elsif ( $ACCESS == PRIVATE && $line =~ m/SIP_FORCE/){
-        push @output, dbg("PRV3").$private_section_line."\n";
-    }
-    elsif ( $ACCESS == PRIVATE && $SIP_RUN == 0 ) {
-      $comment = '';
-      next;
-    }
-    # Skip operators
-    if ( $line =~ m/operator(=|<<|>>)\s*\(/ ){
-        next;
-    }
-
     # Detect comment block
     if ($line =~ m/^\s*\/\*/){
         do {no warnings 'uninitialized';
@@ -310,16 +282,69 @@ while ($line_idx < $line_count){
         };
         $comment =~ s/^\s*$//;
         #$comment =~ s/^(\s*\n)*(.+)/$2/;
-        while ($line_idx < $line_count){
+        while ($line !~ m/\*\/\s*(\/\/.*?)?$/){
             $line = $lines[$line_idx];
             $line_idx++;
             $comment .= processDoxygenLine( $line =~ s/\s*\*?(.*?)(\/)?\n?$/$1/r );
-            if ( $line =~ m/\*\/\s*(\/\/.*?)?$/ ){
-                last;
-            }
         }
         $comment =~ s/\n+$//;
         #push @output, dbg("XXX").$comment;
+        next;
+    }
+
+    # bracket balance in class/struct tree
+    if ($SIP_RUN == 0){
+        my $bracket_balance = 0;
+        $bracket_balance += $line =~ tr/\{//;
+        $bracket_balance -= $line =~ tr/\}//;
+        if ($bracket_balance != 0){
+            $global_bracket_nesting_index[$#global_bracket_nesting_index] += $bracket_balance;
+            if ($global_bracket_nesting_index[$#global_bracket_nesting_index] == 0){
+                dbg_info(" going up in class/struct tree");
+                if ($#ACCESS > 1){
+                    pop(@global_bracket_nesting_index);
+                    pop(@ACCESS);
+                }
+                else{
+                    # top level should stasy public
+                    dbg_info
+                    $ACCESS[$#ACCESS] = PUBLIC;
+                    $comment = '';
+                }
+            }
+            dbg_info("new bracket balance: @global_bracket_nesting_index");
+        }
+    }
+
+    # Private members (exclude SIP_RUN)
+    if ( $line =~ m/^\s*private( slots)?:/ ){
+        $ACCESS[$#ACCESS] = PRIVATE;
+        $private_section_line = $line;
+        $comment = '';
+        dbg_info("going private");
+        next;
+    }
+    elsif ( $line =~ m/^\s*(public)( slots)?:.*$/ ){
+        dbg_info("going public");
+        $ACCESS[$#ACCESS] = PUBLIC;
+        $comment = '';
+    }
+    elsif ( $line =~ m/^\s*(protected)( slots)?:.*$/ ){
+        dbg_info("going protected");
+        $ACCESS[$#ACCESS] = PROTECTED;
+        $comment = '';
+    }
+    elsif ( $ACCESS[$#ACCESS] == PRIVATE && $line =~ m/SIP_FORCE/){
+        dbg_info("private with SIP_FORCE");
+        push @output, dbg("PRV3").$private_section_line."\n";
+    }
+    elsif ( $ACCESS[$#ACCESS] == PRIVATE && $SIP_RUN == 0 ) {
+        $comment = '';
+        next;
+    }
+    # Skip operators
+    if ( $line =~ m/operator(=|<<|>>)\s*\(/ ){
+        dbg_info("skip operator");
         next;
     }
 
@@ -334,11 +359,16 @@ while ($line_idx < $line_count){
     }
 
     if ( $line =~ m/^(\s*struct)\s+(\w+)$/ ) {
-      $ACCESS = PUBLIC;
+        dbg_info("  going to struct => public");
+        push @ACCESS, PUBLIC;
+        push @global_bracket_nesting_index, 0;
     }
 
     # class declaration started
     if ( $line =~ m/^(\s*class)\s*([A-Z]+_EXPORT)?\s+(\w+)(\s*\:.*)?(\s*SIP_ABSTRACT)?$/ ){
+        dbg_info("class definition started => private");
+        push @ACCESS, PRIVATE;
+        push @global_bracket_nesting_index, 0;
         do {no warnings 'uninitialized';
             $classname = $3;
             $line =~ m/\b[A-Z]+_EXPORT\b/ or die "Class$classname in $headerfile should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.";
@@ -368,10 +398,11 @@ while ($line_idx < $line_count){
         my $skip = $lines[$line_idx];
         $line_idx++;
         $skip =~ m/^\s*{\s*$/ || die "Unexpected content on line $skip";
+        $global_bracket_nesting_index[$#global_bracket_nesting_index]++;
 
         $comment = '';
         $HEADER_CODE = 1;
-        $ACCESS = PRIVATE;
+        $ACCESS[$#ACCESS] = PRIVATE;
         next;
     }
 
@@ -406,13 +437,13 @@ while ($line_idx < $line_count){
     }
 
     # skip non-method member declaration in non-public sections
-    if ( $SIP_RUN != 1 && $ACCESS != PUBLIC && $line =~ m/^\s*(?:mutable\s)?\w+[\w<> *&:,]* \*?\w+( = \w+(\([^()]+\))?)?;/){
+    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] != PUBLIC && $line =~ m/^\s*(?:mutable\s)?\w+[\w<> *&:,]* \*?\w+( = \w+(\([^()]+\))?)?;/){
         dbg_info("skip non-method member declaration in non-public sections");
         next;
     }
 
     # remove struct member assignment
-    if ( $SIP_RUN != 1 && $ACCESS == PUBLIC && $line =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
+    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $line =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
         dbg_info("remove struct member assignment");
         $line = "$1;";
     }
@@ -479,6 +510,7 @@ while ($line_idx < $line_count){
                 my $nesting_index = 1;
                 if ( $line =~ m/^\s*\{$/ ){
                     while ($line_idx < $line_count){
+                        dbg_info("  remove body");
                         $line = $lines[$line_idx];
                         $line_idx++;
                         $nesting_index += $line =~ tr/\{//;
