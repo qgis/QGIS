@@ -35,6 +35,10 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
 
+  // avoid wheel events such as those caused by temporarily hovering a spin box
+  // while scrolling a scroll area
+  setFocusPolicy( Qt::StrongFocus );
+
   setLineEdit( mLineEdit );
 
   QSize msz = minimumSizeHint();
@@ -66,6 +70,21 @@ void QgsSpinBox::paintEvent( QPaintEvent *event )
 {
   mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
   QSpinBox::paintEvent( event );
+}
+
+void QgsSpinBox::wheelEvent( QWheelEvent *event )
+{
+  // to avoid wheel events such as those caused by temporarily hovering a spin box
+  // while scrolling a scroll area, we only allow changing the value with a wheel
+  // event when the spin box is focused
+  if ( !hasFocus() )
+  {
+    event->ignore();
+  }
+  else
+  {
+    QSpinBox::wheelEvent( event );
+  }
 }
 
 void QgsSpinBox::changed( int value )

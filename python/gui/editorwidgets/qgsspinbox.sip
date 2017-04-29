@@ -81,4 +81,5 @@ class QgsSpinBox : QSpinBox
 
     virtual void changeEvent( QEvent* event );
     virtual void paintEvent( QPaintEvent* event );
+	void wheelEvent( QWheelEvent *event );
 };
