@@ -946,12 +946,11 @@ cp -fp /Applications/GPSBabelFE.app/Contents/MacOS/gpsbabel ~/QGIS.app/Contents/
 If you installed in /Applications, adjust the path accordingly and prefix the
 whole command with 'sudo '.
 
-**QGIS Mapserver**
+**QGIS Server**
 
-See the QGIS Mapserver wiki page at:
+See the QGIS Server documentation page at:
 
-http://hub.qgis.org/projects/quantum-gis/wiki/QGIS_Server_Tutorial
+http://docs.qgis.org/2.18/en/docs/user_manual/working_with_ogc/ogc_server_support.html
 
-for instructions on setting up Apache fastcgi and testing Mapserver, including
+for instructions on setting up Apache fastcgi and testing qgis server, including
 installing the mod-fastcgi that is missing on Lion.
-

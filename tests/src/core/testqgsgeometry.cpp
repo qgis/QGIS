@@ -5019,7 +5019,7 @@ QString TestQgsGeometry::elemToString( const QDomElement &elem ) const
 void TestQgsGeometry::wkbInOut()
 {
   // Premature end of WKB
-  // See http://hub.qgis.org/issues/14182
+  // See https://issues.qgis.org/issues/14182
   const char *hexwkb = "0102000000EF0000000000000000000000000000000000000000000000000000000000000000000000";
   int size;
   unsigned char *wkb = hex2bytes( hexwkb, &size );

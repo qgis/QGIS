@@ -526,7 +526,7 @@ key new features.
       a simple key lookup, no more index lookup and attribute maps.
       **Note:** Most plugins written for QGIS < 1.x will need to be
         ported to work correctly in QGIS 2.x. Please consult
-        http://hub.qgis.org/wiki/quantum-gis/Python_plugin_API_changes_from_18_to_20
+        https://github.com/qgis/QGIS/wiki/Python_plugin_API_changes_from_18_to_20
         for more details.
 - The raster data provider system has been completely overhauled. One of
       the best new features stemming from this work is the ability to 'Layer ->
