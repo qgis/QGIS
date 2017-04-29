@@ -145,6 +145,14 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       : mMember( nullptr )
     {}
 
+    Parameter( const QString &name,
+               bool optional = false,
+               const QVariant &defaultValue = QVariant() )
+      : mName( name )
+      , mOptional( optional )
+      , mDefaultValue( defaultValue )
+    {}
+
     //! Default constructor
     QgsSipifyHeader() = default;
 
