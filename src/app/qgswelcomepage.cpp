@@ -45,8 +45,8 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   recentProjectsContainer->layout()->setMargin( 0 );
 
   int titleSize = QApplication::fontMetrics().height() * 1.4;
-  QLabel *recentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold;'>%2</div>" ).arg( titleSize ).arg( tr( "Recent Projects" ) ) );
-  recentProjectsTitle->setContentsMargins( 0, 3, 0, 0 );
+  QLabel *recentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Recent Projects" ) ) );
+  recentProjectsTitle->setContentsMargins( 10, 3, 0, 0 );
 
   recentProjectsContainer->layout()->addWidget( recentProjectsTitle );
 
