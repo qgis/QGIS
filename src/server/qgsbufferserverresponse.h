@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsfcgiserverresponse.h
+                          qgsbufferserverresponse.h
 
   Define response wrapper for storing responsea in buffer
   -------------------
@@ -20,7 +20,6 @@
 #define QGSBUFFERSERVERRESPONSE_H
 
 #include "qgsserverresponse.h"
-#include "qgsserverrequest.h"
 
 #include <QBuffer>
 #include <QByteArray>
@@ -86,42 +85,4 @@ class QgsBufferServerResponse: public QgsServerResponse
     int                    mReturnCode = 200;
 };
 
-/**
- * \ingroup server
- * QgsBufferServerRequest
- * Class defining request with  data
- */
-class QgsBufferServerRequest : public QgsServerRequest
-{
-  public:
-
-    /**
-    * Constructor
-    *
-    * \param url the url string
-    * \param method the request method
-    */
-    QgsBufferServerRequest( const QString &url, Method method = GetMethod, QByteArray *data = nullptr );
-
-    /**
-     * Constructor
-     *
-     * \param url QUrl
-     * \param method the request method
-     */
-    QgsBufferServerRequest( const QUrl &url, Method method = GetMethod, QByteArray *data = nullptr );
-
-    ~QgsBufferServerRequest();
-
-    virtual QByteArray data() const { return mData; }
-
-  private:
-    QByteArray mData;
-};
-
 #endif
-
-
-
-
-

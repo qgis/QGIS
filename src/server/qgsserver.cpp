@@ -36,6 +36,7 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsserverrequest.h"
 #include "qgsbufferserverresponse.h"
+#include "qgsbufferserverrequest.h"
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
 #include "qgsserverprojectutils.h"

@@ -48,7 +48,9 @@ SET(qgis_mapserv_SRCS
   qgsserverrequest.cpp
   qgsserverresponse.cpp
   qgsfcgiserverresponse.cpp
+  qgsfcgiserverrequest.cpp
   qgsbufferserverresponse.cpp
+  qgsbufferserverrequest.cpp
   qgsfilterresponsedecorator.cpp
   qgsserverinterface.cpp
   qgsserverinterfaceimpl.cpp
