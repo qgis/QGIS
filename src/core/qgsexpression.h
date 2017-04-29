@@ -1011,11 +1011,9 @@ class CORE_EXPORT QgsExpression
 
         virtual QString dump() const;
 
-      protected:
-        QList<QgsExpression::Node *> mList;
-        QStringList mNameList;
-
       private:
+        QList<Node *> mList;
+        QStringList mNameList;
 
         bool mHasNamedNodes;
     };
@@ -1046,9 +1044,9 @@ class CORE_EXPORT QgsExpression
 
         virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
-      protected:
-        QgsExpression::UnaryOperator mOp;
-        QgsExpression::Node *mOperand = nullptr;
+      private:
+        UnaryOperator mOp;
+        Node *mOperand = nullptr;
     };
 
     /** \ingroup core
@@ -1124,7 +1122,7 @@ class CORE_EXPORT QgsExpression
         virtual QgsExpression::Node *clone() const override;
         virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
-      protected:
+      private:
         Node *mNode = nullptr;
         NodeList *mList = nullptr;
         bool mNotIn;
@@ -1185,7 +1183,7 @@ class CORE_EXPORT QgsExpression
         virtual QgsExpression::Node *clone() const override;
         virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
-      protected:
+      private:
         QVariant mValue;
     };
 
@@ -1214,35 +1212,36 @@ class CORE_EXPORT QgsExpression
         virtual QgsExpression::Node *clone() const override;
         virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
-      protected:
+      private:
         QString mName;
         int mIndex;
     };
+
+    class NodeCondition;
 
     /** \ingroup core
      */
     class CORE_EXPORT WhenThen
     {
       public:
-        WhenThen( QgsExpression::Node *whenExp SIP_TRANSFER, QgsExpression::Node *thenExp SIP_TRANSFER )
-          : mWhenExp( whenExp )
-          , mThenExp( thenExp )
-        {}
-        ~WhenThen() { delete mWhenExp; delete mThenExp; }
+        WhenThen( QgsExpression::Node *whenExp, QgsExpression::Node *thenExp );
+        ~WhenThen();
 
         //! WhenThen nodes cannot be copied.
         WhenThen( const WhenThen &rh ) = delete;
         //! WhenThen nodes cannot be copied.
         WhenThen &operator=( const WhenThen &rh ) = delete;
 
-        // protected:
-        QgsExpression::Node *mWhenExp = nullptr;
-        QgsExpression::Node *mThenExp = nullptr;
+        WhenThen *clone() const;
 
       private:
 #ifdef SIP_RUN
         WhenThen( const QgsExpression::WhenThen &rh );
 #endif
+        Node *mWhenExp = nullptr;
+        Node *mThenExp = nullptr;
+
+        friend class NodeCondition;
 
     };
     typedef QList<QgsExpression::WhenThen *> WhenThenList;
@@ -1275,9 +1274,9 @@ class CORE_EXPORT QgsExpression
         virtual QgsExpression::Node *clone() const override;
         virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
-      protected:
-        QgsExpression::WhenThenList mConditions;
-        QgsExpression::Node *mElseExp = nullptr;
+      private:
+        WhenThenList mConditions;
+        Node *mElseExp = nullptr;
     };
 
     /** Returns the help text for a specified function.

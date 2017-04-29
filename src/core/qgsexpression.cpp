@@ -5838,7 +5838,8 @@ bool QgsExpression::NodeCondition::prepareNode( QgsExpression *parent, const Qgs
   {
     res = cond->mWhenExp->prepare( parent, context )
           & cond->mThenExp->prepare( parent, context );
-    if ( !res ) return false;
+    if ( !res )
+      return false;
   }
 
   if ( mElseExp )
@@ -5907,7 +5908,7 @@ QgsExpression::Node *QgsExpression::NodeCondition::clone() const
 {
   WhenThenList conditions;
   Q_FOREACH ( WhenThen *wt, mConditions )
-    conditions.append( new WhenThen( wt->mWhenExp->clone(), wt->mThenExp->clone() ) );
+    conditions.append( wt->clone() );
   return new NodeCondition( conditions, mElseExp ? mElseExp->clone() : nullptr );
 }
 
@@ -6351,4 +6352,21 @@ bool QgsExpression::Node::prepare( QgsExpression *parent, const QgsExpressionCon
   {
     return prepareNode( parent, context );
   }
+}
+
+QgsExpression::WhenThen::WhenThen( QgsExpression::Node *whenExp, QgsExpression::Node *thenExp )
+  : mWhenExp( whenExp )
+  , mThenExp( thenExp )
+{
+}
+
+QgsExpression::WhenThen::~WhenThen()
+{
+  delete mWhenExp;
+  delete mThenExp;
+}
+
+QgsExpression::WhenThen *QgsExpression::WhenThen::clone() const
+{
+  return new WhenThen( mWhenExp->clone(), mThenExp->clone() );
 }
