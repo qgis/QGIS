@@ -329,6 +329,14 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void position( bool keep, bool middle_remove SIP_PYARGREMOVE, bool keep );
     void position( bool keep, bool last_remove SIP_PYARGREMOVE );
 
+    //! Some comment
+    Whatever &operator[]( int i ) SIP_FACTORY;
+#ifdef SIP_RUN
+    %MethodCode
+    ....
+    %End
+#endif
+
 #if 0
 #if Whatever
     void X();

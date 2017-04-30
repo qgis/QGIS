@@ -305,6 +305,11 @@ remove argument
     void position( bool keep, bool keep );
     void position( bool keep );
 
+    Whatever &operator[]( int i ) /Factory/;
+    %MethodCode
+    ....
+    %End
+
     void ZshouldBeShown();
 
     void methodCodeWithMultiLineDef();

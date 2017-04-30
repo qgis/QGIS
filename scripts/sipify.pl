@@ -569,9 +569,11 @@ while ($line_idx < $line_count){
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
 
     # combine multiple annotations
-    dbg_info("combine multiple annotations -- works only for 2");
     # https://regex101.com/r/uvCt4M/1
-    $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\/\s*;(\s*(\/\/.*)?)$/\/$1,$3\/$5;/;
+    do {no warnings 'uninitialized';
+        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\/\s*;(\s*(\/\/.*)?)$/\/$1,$3\/$5;/;
+        ($3 == undef) or dbg_info("combine multiple annotations -- works only for 2");
+    };
 
     # unprinted annotations
     $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYARGTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
@@ -657,7 +659,9 @@ while ($line_idx < $line_count){
         next;
     }
     elsif ( $line =~ m/\/\// || $line =~ m/\s*typedef / || $line =~ m/\s*struct / || $line =~ m/operator\[\]\(/ ){
+        dbg_info('skipping comment');
         $comment = '';
+        $return_type = '';
     }
     elsif ( $comment !~ m/^\s*$/ || $return_type ne ''){
         if ( $is_override == 1 && $comment =~ m/^\s*$/ ){
@@ -665,6 +669,7 @@ while ($line_idx < $line_count){
             # parent class Docstring
         }
         else {
+            dbg_info('writing comment');
             push @output, dbg("CM1")."%Docstring\n";
             if ( $comment !~ m/^\s*$/ ){
                 push @output, dbg("CM2")."$comment\n";
