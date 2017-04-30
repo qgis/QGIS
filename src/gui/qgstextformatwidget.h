@@ -136,6 +136,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     Mode mWidgetMode;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsCharacterSelectorDialog *mCharDlg = nullptr;
+    std::unique_ptr< QgsPaintEffect > mBufferEffect;
+    std::unique_ptr< QgsPaintEffect > mBackgroundEffect;
 
     QFontDatabase mFontDB;
 

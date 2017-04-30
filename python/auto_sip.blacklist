@@ -94,7 +94,6 @@ core/qgsstatisticalsummary.sip
 core/qgsstringstatisticalsummary.sip
 core/qgsstringutils.sip
 core/qgstaskmanager.sip
-core/qgstextrenderer.sip
 core/qgstolerance.sip
 core/qgstracer.sip
 core/qgstrackedvectorlayertools.sip
