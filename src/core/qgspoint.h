@@ -261,16 +261,6 @@ class CORE_EXPORT QgsPoint
     //! Divides the coordinates in this point by a scalar quantity in place
     QgsPoint &operator/=( double scalar ) { mX /= scalar; mY /= scalar; return *this; }
 
-  private:
-
-    //! x coordinate
-    double mX;
-
-    //! y coordinate
-    double mY;
-
-    friend uint qHash( const QgsPoint &pnt );
-
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -307,11 +297,21 @@ class CORE_EXPORT QgsPoint
     sipRes = qHash( *sipCpp );
     % End
 #endif
+
+  private:
+
+    //! x coordinate
+    double mX;
+
+    //! y coordinate
+    double mY;
+
+    friend uint qHash( const QgsPoint &pnt );
+
 }; // class QgsPoint
 
-#ifndef SIP_RUN
 
-inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 )
+inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 ) SIP_SKIP
 {
   if ( qgsDoubleNear( p1.x(), p2.x() ) && qgsDoubleNear( p1.y(), p2.y() ) )
   { return true; }
@@ -319,14 +319,14 @@ inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 )
   { return false; }
 }
 
-inline std::ostream &operator << ( std::ostream &os, const QgsPoint &p )
+inline std::ostream &operator << ( std::ostream &os, const QgsPoint &p ) SIP_SKIP
 {
   // Use Local8Bit for printouts
   os << p.toString().toLocal8Bit().data();
   return os;
 }
 
-inline uint qHash( const QgsPoint &p )
+inline uint qHash( const QgsPoint &p ) SIP_SKIP
 {
   uint hash;
   uint h1 = qHash( static_cast< quint64 >( p.mX ) );
@@ -335,6 +335,5 @@ inline uint qHash( const QgsPoint &p )
   return hash;
 }
 
-#endif
 
 #endif //QGSPOINT_H

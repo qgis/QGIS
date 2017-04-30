@@ -290,7 +290,6 @@ Divides the coordinates in this point by a scalar quantity in place
  :rtype: QgsPoint
 %End
 
-  private:
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = "(" + QString::number( sipCpp->x() ) + "," + QString::number( sipCpp->y() ) + ")";
@@ -331,7 +330,12 @@ Divides the coordinates in this point by a scalar quantity in place
 %MethodCode
     sipRes = qHash( *sipCpp );
 %End
+
 }; // class QgsPoint
+
+
+
+
 
 
 /************************************************************************
