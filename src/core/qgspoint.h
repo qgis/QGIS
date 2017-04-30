@@ -195,7 +195,7 @@ class CORE_EXPORT QgsPoint
     double distance( const QgsPoint &other ) const;
 
     //! Returns the minimum distance between this point and a segment
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint &minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint &minDistPoint SIP_OUT, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     //! Calculates azimuth between this point and other one (clockwise in degree, starting from north)
     double azimuth( const QgsPoint &other ) const;
@@ -271,8 +271,45 @@ class CORE_EXPORT QgsPoint
 
     friend uint qHash( const QgsPoint &pnt );
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = "(" + QString::number( sipCpp->x() ) + "," + QString::number( sipCpp->y() ) + ")";
+    //QString str("(%f,%f)").arg(sipCpp->x()).arg(sipCpp->y());
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    % End
+
+    int __len__();
+    % MethodCode
+    sipRes = 2;
+    % End
+
+
+    SIP_PYOBJECT __getitem__( int );
+    % MethodCode
+    if ( a0 == 0 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->x() );
+    }
+    else if ( a0 == 1 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->y() );
+    }
+    else
+    {
+      QString msg = QString( "Bad index: %1" ).arg( a0 );
+      PyErr_SetString( PyExc_IndexError, msg.toAscii().constData() );
+    }
+    % End
+
+    long __hash__() const;
+    % MethodCode
+    sipRes = qHash( *sipCpp );
+    % End
+#endif
 }; // class QgsPoint
 
+#ifndef SIP_RUN
 
 inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 )
 {
@@ -297,5 +334,7 @@ inline uint qHash( const QgsPoint &p )
   hash = h1 ^ ( h2 << 1 );
   return hash;
 }
+
+#endif
 
 #endif //QGSPOINT_H
