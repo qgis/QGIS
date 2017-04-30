@@ -23,7 +23,7 @@ class QgsLayerTreeModel : QAbstractItemModel
  Behavior of the model can be customized with flags. For example, whether to show legend or
  whether to allow changes to the layer tree.
 
- \see QgsLayerTreeView
+.. seealso:: QgsLayerTreeView
 .. versionadded:: 2.4
 %End
 
@@ -139,13 +139,13 @@ Return index for a given node. If the node does not belong to the layer tree, th
 
     QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false );
 %Docstring
-\see layerOriginalLegendNodes()
+.. seealso:: layerOriginalLegendNodes()
  :rtype: list of QgsLayerTreeModelLegendNode
 %End
 
     QList<QgsLayerTreeModelLegendNode *> layerOriginalLegendNodes( QgsLayerTreeLayer *nodeLayer );
 %Docstring
-\see layerLegendNodes()
+.. seealso:: layerLegendNodes()
  :rtype: list of QgsLayerTreeModelLegendNode
 %End
 

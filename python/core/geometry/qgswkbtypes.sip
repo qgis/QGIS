@@ -100,18 +100,18 @@ class QgsWkbTypes
     static Type singleType( Type type );
 %Docstring
  Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
- \see isSingleType()
- \see multiType()
- \see flatType()
+.. seealso:: isSingleType()
+.. seealso:: multiType()
+.. seealso:: flatType()
  :rtype: Type
 %End
 
     static Type multiType( Type type );
 %Docstring
  Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
- \see isMultiType()
- \see singleType()
- \see flatType()
+.. seealso:: isMultiType()
+.. seealso:: singleType()
+.. seealso:: flatType()
  :rtype: Type
 %End
 
@@ -119,8 +119,8 @@ class QgsWkbTypes
 %Docstring
  Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
  For example, for PolygonZM WKB types the single type would be Polygon.
- \see singleType()
- \see multiType()
+.. seealso:: singleType()
+.. seealso:: multiType()
  :rtype: Type
 %End
 
@@ -140,16 +140,16 @@ Returns the modified input geometry type according to hasZ / hasM
     static bool isSingleType( Type type );
 %Docstring
  Returns true if the WKB type is a single type.
- \see isMultiType()
- \see singleType()
+.. seealso:: isMultiType()
+.. seealso:: singleType()
  :rtype: bool
 %End
 
     static bool isMultiType( Type type );
 %Docstring
  Returns true if the WKB type is a multi type.
- \see isSingleType()
- \see multiType()
+.. seealso:: isSingleType()
+.. seealso:: multiType()
  :rtype: bool
 %End
 
@@ -166,7 +166,7 @@ Returns the modified input geometry type according to hasZ / hasM
  always be less than or equal to the coordinate dimension.
  :return: 0 for point geometries, 1 for line geometries, 2 for polygon geometries
  Invalid geometry types will return a dimension of 0.
- \see coordDimensions()
+.. seealso:: coordDimensions()
  :rtype: int
 %End
 
@@ -176,7 +176,7 @@ Returns the modified input geometry type according to hasZ / hasM
  be between 2-4, depending on whether the geometry type contains the Z or M dimensions.
  Invalid geometry types will return a dimension of 0.
 .. versionadded:: 2.14
- \see wkbDimensions()
+.. seealso:: wkbDimensions()
  :rtype: int
 %End
 
@@ -215,8 +215,8 @@ Returns the modified input geometry type according to hasZ / hasM
 %Docstring
  Tests whether a WKB type contains the z-dimension.
  :return: true if type has z values
- \see addZ()
- \see hasM()
+.. seealso:: addZ()
+.. seealso:: hasM()
  :rtype: bool
 %End
 
@@ -224,8 +224,8 @@ Returns the modified input geometry type according to hasZ / hasM
 %Docstring
  Tests whether a WKB type contains m values.
  :return: true if type has m values
- \see addM()
- \see hasZ()
+.. seealso:: addM()
+.. seealso:: hasZ()
  :rtype: bool
 %End
 
@@ -234,9 +234,9 @@ Returns the modified input geometry type according to hasZ / hasM
  Adds the z dimension to a WKB type and returns the new type
  \param type original type
 .. versionadded:: 2.12
- \see addM()
- \see dropZ()
- \see hasZ()
+.. seealso:: addM()
+.. seealso:: dropZ()
+.. seealso:: hasZ()
  :rtype: Type
 %End
 
@@ -245,9 +245,9 @@ Returns the modified input geometry type according to hasZ / hasM
  Adds the m dimension to a WKB type and returns the new type
  \param type original type
 .. versionadded:: 2.12
- \see addZ()
- \see dropM()
- \see hasM()
+.. seealso:: addZ()
+.. seealso:: dropM()
+.. seealso:: hasM()
  :rtype: Type
 %End
 
@@ -256,8 +256,8 @@ Returns the modified input geometry type according to hasZ / hasM
  Drops the z dimension (if present) for a WKB type and returns the new type.
  \param type original type
 .. versionadded:: 2.14
- \see dropM()
- \see addZ()
+.. seealso:: dropM()
+.. seealso:: addZ()
  :rtype: Type
 %End
 
@@ -266,8 +266,8 @@ Returns the modified input geometry type according to hasZ / hasM
  Drops the m dimension (if present) for a WKB type and returns the new type.
  \param type original type
 .. versionadded:: 2.14
- \see dropZ()
- \see addM()
+.. seealso:: dropZ()
+.. seealso:: addM()
  :rtype: Type
 %End
 

@@ -69,7 +69,7 @@ Copy constructor will prompt a deep copy of the object
 %Docstring
  Returns the underlying geometry store.
 .. versionadded:: 2.10
- \see setGeometry
+.. seealso:: setGeometry
  :rtype: QgsAbstractGeometry
 %End
 
@@ -77,16 +77,16 @@ Copy constructor will prompt a deep copy of the object
 %Docstring
  Sets the underlying geometry store. Ownership of geometry is transferred.
 .. versionadded:: 2.10
- \see geometry
+.. seealso:: geometry
 %End
 
     bool isNull() const;
 %Docstring
  Returns true if the geometry is null (ie, contains no underlying geometry
  accessible via geometry() ).
- \see geometry
+.. seealso:: geometry
 .. versionadded:: 2.10
- \see isEmpty()
+.. seealso:: isEmpty()
  :rtype: bool
 %End
 
@@ -148,14 +148,14 @@ Creates a new multipart geometry from a list of QgsGeometry objects
     QgsWkbTypes::Type wkbType() const;
 %Docstring
  Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
- \see type
+.. seealso:: type
  :rtype: QgsWkbTypes.Type
 %End
 
     QgsWkbTypes::GeometryType type() const;
 %Docstring
  Returns type of the geometry as a QgsWkbTypes.GeometryType
- \see wkbType
+.. seealso:: wkbType
  :rtype: QgsWkbTypes.GeometryType
 %End
 
@@ -164,7 +164,7 @@ Creates a new multipart geometry from a list of QgsGeometry objects
  Returns true if the geometry is empty (eg a linestring with no vertices,
  or a collection with no geometries). A null geometry will always
  return true for isEmpty().
- \see isNull()
+.. seealso:: isNull()
  :rtype: bool
 %End
 
@@ -231,7 +231,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  \param vertex vertex index to calculate bisector angle at
  :return: bisector angle, in radians clockwise from north
 .. versionadded:: 3.0
- \see interpolateAngle()
+.. seealso:: interpolateAngle()
  :rtype: float
 %End
 
@@ -333,7 +333,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
 %Docstring
  Returns the nearest point on this geometry to another geometry.
 .. versionadded:: 2.14
- \see shortestLine()
+.. seealso:: shortestLine()
  :rtype: QgsGeometry
 %End
 
@@ -341,7 +341,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
 %Docstring
  Returns the shortest line joining this geometry to another geometry.
 .. versionadded:: 2.14
- \see nearestPoint()
+.. seealso:: nearestPoint()
  :rtype: QgsGeometry
 %End
 
@@ -504,7 +504,7 @@ not disjoint with existing polygons of the feature
     QgsRectangle boundingBox() const;
 %Docstring
  Returns the bounding box of the geometry.
- \see orientedMinimumBoundingBox()
+.. seealso:: orientedMinimumBoundingBox()
  :rtype: QgsRectangle
 %End
 
@@ -514,7 +514,7 @@ not disjoint with existing polygons of the feature
  rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
  width and height of the rotated bounding box will also be returned.
 .. versionadded:: 3.0
- \see boundingBox()
+.. seealso:: boundingBox()
  :rtype: QgsGeometry
 %End
 
@@ -686,7 +686,7 @@ Returns a simplified version of this geometry using a specified tolerance value
  at the added nodes.
  Curved geometry types are automatically segmentized by this routine.
 .. versionadded:: 3.0
- \see densifyByDistance()
+.. seealso:: densifyByDistance()
  :rtype: QgsGeometry
 %End
 
@@ -703,7 +703,7 @@ Returns a simplified version of this geometry using a specified tolerance value
  at the added nodes.
  Curved geometry types are automatically segmentized by this routine.
 .. versionadded:: 3.0
- \see densifyByCount()
+.. seealso:: densifyByCount()
  :rtype: QgsGeometry
 %End
 
@@ -714,8 +714,8 @@ Returns a simplified version of this geometry using a specified tolerance value
 
    for line based geometries, the center point of the line is returned,
  and for point based geometries, the point itself is returned
- \see pointOnSurface()
- \see poleOfInaccessibility()
+.. seealso:: pointOnSurface()
+.. seealso:: poleOfInaccessibility()
  :rtype: QgsGeometry
 %End
 
@@ -724,8 +724,8 @@ Returns a simplified version of this geometry using a specified tolerance value
  Returns a point guaranteed to lie on the surface of a geometry. While the centroid()
  of a geometry may be located outside of the geometry itself (e.g., for concave shapes),
  the point on surface will always be inside the geometry.
- \see centroid()
- \see poleOfInaccessibility()
+.. seealso:: centroid()
+.. seealso:: poleOfInaccessibility()
  :rtype: QgsGeometry
 %End
 
@@ -738,8 +738,8 @@ Returns a simplified version of this geometry using a specified tolerance value
  tolerance. More precise tolerances require more iterations and will take longer
  to calculate.
  Optionally, the distance to the polygon boundary from the pole can be stored.
- \see centroid()
- \see pointOnSurface()
+.. seealso:: centroid()
+.. seealso:: pointOnSurface()
 .. versionadded:: 3.0
  :rtype: QgsGeometry
 %End
@@ -784,7 +784,7 @@ Returns the smallest convex polygon that contains all the points in the geometry
 %Docstring
  Return interpolated point on line at distance
 .. versionadded:: 1.9
- \see lineLocatePoint()
+.. seealso:: lineLocatePoint()
  :rtype: QgsGeometry
 %End
 
@@ -799,7 +799,7 @@ Returns the smallest convex polygon that contains all the points in the geometry
 .. note::
 
    only valid for linestring geometries
- \see interpolate()
+.. seealso:: interpolate()
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -812,7 +812,7 @@ Returns the smallest convex polygon that contains all the points in the geometry
  of the node is returned.
  \param distance distance along geometry
 .. versionadded:: 3.0
- \see angleAtVertex()
+.. seealso:: angleAtVertex()
  :rtype: float
 %End
 
@@ -1097,7 +1097,7 @@ Ring 0 is outer ring and can't be deleted.
 %Docstring
  Converts the geometry to straight line segments, if it is a curved geometry type.
 .. versionadded:: 2.10
- \see requiresConversionToStraightSegments
+.. seealso:: requiresConversionToStraightSegments
 %End
 
     bool requiresConversionToStraightSegments() const;
@@ -1105,7 +1105,7 @@ Ring 0 is outer ring and can't be deleted.
  Returns true if the geometry is a curved geometry type which requires conversion to
  display as straight line segments.
 .. versionadded:: 2.10
- \see convertToStraightSegment
+.. seealso:: convertToStraightSegment
  :rtype: bool
 %End
 
@@ -1131,7 +1131,7 @@ Ring 0 is outer ring and can't be deleted.
  \param id reference to QgsVertexId for storing result
  :return: true if vertex was found
 .. versionadded:: 2.10
- \see vertexNrFromVertexId
+.. seealso:: vertexNrFromVertexId
  :rtype: bool
 %End
 
@@ -1141,7 +1141,7 @@ Ring 0 is outer ring and can't be deleted.
  \param i vertex id
  :return: vertex number
 .. versionadded:: 2.10
- \see vertexIdFromVertexNr
+.. seealso:: vertexIdFromVertexNr
  :rtype: int
 %End
 
@@ -1169,7 +1169,7 @@ Ring 0 is outer ring and can't be deleted.
  Creates a QgsPolyline from a QPolygonF.
  \param polygon source polygon
  :return: QgsPolyline
- \see createPolygonFromQPolygonF
+.. seealso:: createPolygonFromQPolygonF
  :rtype: QgsPolyline
 %End
 
@@ -1178,7 +1178,7 @@ Ring 0 is outer ring and can't be deleted.
  Creates a QgsPolygon from a QPolygonF.
  \param polygon source polygon
  :return: QgsPolygon
- \see createPolylineFromQPolygonF
+.. seealso:: createPolylineFromQPolygonF
  :rtype: QgsPolygon
 %End
 

@@ -34,7 +34,7 @@ class QgsExternalResourceWidget : QWidget
 %Docstring
  QgsExternalResourceWidget creates a widget with a file widget and a document viewer
  Both part of the widget are optional.
- \see QgsFileWidget
+.. seealso:: QgsFileWidget
 %End
 
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;

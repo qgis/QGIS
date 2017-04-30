@@ -122,15 +122,15 @@ class QgsCircle : QgsEllipse
     virtual void setSemiMajorAxis( const double semiMajorAxis );
 %Docstring
  Inherited method. Use setRadius instead.
- \see radius()
- \see setRadius()
+.. seealso:: radius()
+.. seealso:: setRadius()
 %End
 
     virtual void setSemiMinorAxis( const double semiMinorAxis );
 %Docstring
  Inherited method. Use setRadius instead.
- \see radius()
- \see setRadius()
+.. seealso:: radius()
+.. seealso:: setRadius()
 %End
 
     double radius() const;
@@ -148,7 +148,7 @@ Set the radius of the circle
  The four quadrants of the ellipse.
  They are oriented and started from North.
  :return: quadrants defined by four points.
- \see quadrant()
+.. seealso:: quadrant()
  :rtype: list of QgsPointV2
 %End
 

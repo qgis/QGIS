@@ -18,7 +18,7 @@ class QgsRectangle
 
  QgsRectangle is used to store a rectangle when double values are required.
  Examples are storing a layer extent or the current view extent of a map
- \see QgsBox3d
+.. seealso:: QgsBox3d
 %End
 
 %TypeHeaderCode
@@ -112,16 +112,16 @@ Copy constructor
     double width() const;
 %Docstring
  Returns the width of the rectangle.
- \see height()
- \see area()
+.. seealso:: height()
+.. seealso:: area()
  :rtype: float
 %End
 
     double height() const;
 %Docstring
  Returns the height of the rectangle.
- \see width()
- \see area()
+.. seealso:: width()
+.. seealso:: area()
  :rtype: float
 %End
 
@@ -129,9 +129,9 @@ Copy constructor
 %Docstring
  Returns the area of the rectangle.
 .. versionadded:: 3.0
- \see width()
- \see height()
- \see perimeter()
+.. seealso:: width()
+.. seealso:: height()
+.. seealso:: perimeter()
  :rtype: float
 %End
 
@@ -139,7 +139,7 @@ Copy constructor
 %Docstring
  Returns the perimeter of the rectangle.
 .. versionadded:: 3.0
- \see area()
+.. seealso:: area()
  :rtype: float
 %End
 

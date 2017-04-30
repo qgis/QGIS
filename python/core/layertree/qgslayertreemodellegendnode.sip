@@ -224,7 +224,7 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
     const QgsSymbol *symbol() const;
 %Docstring
  Returns the symbol used by the legend node.
- \see setSymbol()
+.. seealso:: setSymbol()
 .. versionadded:: 2.14
  :rtype: QgsSymbol
 %End
@@ -234,7 +234,7 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
  Sets the symbol to be used by the legend node. The symbol change is also propagated
  to the associated vector layer's renderer.
  \param symbol new symbol for node. Ownership is transferred.
- \see symbol()
+.. seealso:: symbol()
 .. versionadded:: 2.14
 %End
 
@@ -244,14 +244,14 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 %Docstring
  Checks all items belonging to the same layer as this node.
 .. versionadded:: 2.14
- \see uncheckAllItems()
+.. seealso:: uncheckAllItems()
 %End
 
     void uncheckAllItems();
 %Docstring
  Unchecks all items belonging to the same layer as this node.
 .. versionadded:: 2.14
- \see checkAllItems()
+.. seealso:: checkAllItems()
 %End
 
 };

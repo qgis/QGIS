@@ -401,7 +401,6 @@ gui/qgstreewidgetitem.sip
 gui/qgsunitselectionwidget.sip
 gui/qgsuserinputdockwidget.sip
 gui/qgsvariableeditorwidget.sip
-gui/qgsvertexmarker.sip
 gui/attributetable/qgsattributetabledelegate.sip
 gui/attributetable/qgsattributetablefiltermodel.sip
 gui/attributetable/qgsattributetablemodel.sip

@@ -41,27 +41,27 @@ class QgsProcessingContext
     QgsProcessingContext::Flags flags() const;
 %Docstring
  Returns any flags set in the context.
- \see setFlags()
+.. seealso:: setFlags()
  :rtype: QgsProcessingContext.Flags
 %End
 
     void setFlags( const QgsProcessingContext::Flags &flags );
 %Docstring
  Sets ``flags`` for the context.
- \see flags()
+.. seealso:: flags()
 %End
 
     QgsProject *project() const;
 %Docstring
  Returns the project in which the algorithm is being executed.
- \see setProject()
+.. seealso:: setProject()
  :rtype: QgsProject
 %End
 
     void setProject( QgsProject *project );
 %Docstring
  Sets the ``project`` in which the algorithm will be executed.
- \see project()
+.. seealso:: project()
 %End
 
     QgsExpressionContext expressionContext() const;
@@ -85,14 +85,14 @@ class QgsProcessingContext
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring
  Returns the behavior used for checking invalid geometries in input layers.
- \see setInvalidGeometryCheck()
+.. seealso:: setInvalidGeometryCheck()
  :rtype: QgsFeatureRequest.InvalidGeometryCheck
 %End
 
     void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check );
 %Docstring
  Sets the behavior used for checking invalid geometries in input layers.
- \see invalidGeometryCheck()
+.. seealso:: invalidGeometryCheck()
 %End
 
 
@@ -102,7 +102,7 @@ class QgsProcessingContext
  invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
  called using the feature with invalid geometry as a parameter.
 .. versionadded:: 3.0
- \see invalidGeometryCallback()
+.. seealso:: invalidGeometryCallback()
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS

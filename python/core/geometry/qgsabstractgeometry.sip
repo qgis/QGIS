@@ -95,38 +95,38 @@ class QgsAbstractGeometry
     virtual QString geometryType() const = 0;
 %Docstring
  Returns a unique string representing the geometry type.
- \see wkbType
- \see wktTypeStr
+.. seealso:: wkbType
+.. seealso:: wktTypeStr
  :rtype: str
 %End
 
     QgsWkbTypes::Type wkbType() const;
 %Docstring
  Returns the WKB type of the geometry.
- \see geometryType
- \see wktTypeStr
+.. seealso:: geometryType
+.. seealso:: wktTypeStr
  :rtype: QgsWkbTypes.Type
 %End
 
     QString wktTypeStr() const;
 %Docstring
  Returns the WKT type string of the geometry.
- \see geometryType
- \see wkbType
+.. seealso:: geometryType
+.. seealso:: wkbType
  :rtype: str
 %End
 
     bool is3D() const;
 %Docstring
  Returns true if the geometry is 3D and contains a z-value.
- \see isMeasure
+.. seealso:: isMeasure
  :rtype: bool
 %End
 
     bool isMeasure() const;
 %Docstring
  Returns true if the geometry contains m values.
- \see is3D
+.. seealso:: is3D
  :rtype: bool
 %End
 
@@ -145,14 +145,14 @@ class QgsAbstractGeometry
 %Docstring
  Sets the geometry from a WKB string.
  After successful read the wkb argument will be at the position where the reading has stopped.
- \see fromWkt
+.. seealso:: fromWkt
  :rtype: bool
 %End
 
     virtual bool fromWkt( const QString &wkt ) = 0;
 %Docstring
  Sets the geometry from a WKT string.
- \see fromWkb
+.. seealso:: fromWkb
  :rtype: bool
 %End
 
@@ -160,10 +160,10 @@ class QgsAbstractGeometry
     virtual QByteArray asWkb() const = 0;
 %Docstring
  Returns a WKB representation of the geometry.
- \see asWkt
- \see asGML2
- \see asGML3
- \see asJSON
+.. seealso:: asWkt
+.. seealso:: asGML2
+.. seealso:: asGML3
+.. seealso:: asJSON
 .. versionadded:: 3.0
  :rtype: QByteArray
 %End
@@ -172,10 +172,10 @@ class QgsAbstractGeometry
 %Docstring
  Returns a WKT representation of the geometry.
  \param precision number of decimal places for coordinates
- \see asWkb
- \see asGML2
- \see asGML3
- \see asJSON
+.. seealso:: asWkb
+.. seealso:: asGML2
+.. seealso:: asGML3
+.. seealso:: asJSON
  :rtype: str
 %End
 
@@ -185,10 +185,10 @@ class QgsAbstractGeometry
  \param doc DOM document
  \param precision number of decimal places for coordinates
  \param ns XML namespace
- \see asWkb
- \see asWkt
- \see asGML3
- \see asJSON
+.. seealso:: asWkb
+.. seealso:: asWkt
+.. seealso:: asGML3
+.. seealso:: asJSON
  :rtype: QDomElement
 %End
 
@@ -198,10 +198,10 @@ class QgsAbstractGeometry
  \param doc DOM document
  \param precision number of decimal places for coordinates
  \param ns XML namespace
- \see asWkb
- \see asWkt
- \see asGML2
- \see asJSON
+.. seealso:: asWkb
+.. seealso:: asWkt
+.. seealso:: asGML2
+.. seealso:: asJSON
  :rtype: QDomElement
 %End
 
@@ -209,10 +209,10 @@ class QgsAbstractGeometry
 %Docstring
  Returns a GeoJSON representation of the geometry.
  \param precision number of decimal places for coordinates
- \see asWkb
- \see asWkt
- \see asGML2
- \see asGML3
+.. seealso:: asWkb
+.. seealso:: asWkt
+.. seealso:: asGML2
+.. seealso:: asGML3
  :rtype: str
 %End
 
@@ -295,8 +295,8 @@ class QgsAbstractGeometry
  \param position vertex id for position of inserted vertex
  \param vertex vertex to insert
  :return: true if insert was successful
- \see moveVertex
- \see deleteVertex
+.. seealso:: moveVertex
+.. seealso:: deleteVertex
  :rtype: bool
 %End
 
@@ -306,8 +306,8 @@ class QgsAbstractGeometry
  \param position vertex id for vertex to move
  \param newPos new position of vertex
  :return: true if move was successful
- \see insertVertex
- \see deleteVertex
+.. seealso:: insertVertex
+.. seealso:: deleteVertex
  :rtype: bool
 %End
 
@@ -316,32 +316,32 @@ class QgsAbstractGeometry
  Deletes a vertex within the geometry
  \param position vertex id for vertex to delete
  :return: true if delete was successful
- \see insertVertex
- \see moveVertex
+.. seealso:: insertVertex
+.. seealso:: moveVertex
  :rtype: bool
 %End
 
     virtual double length() const;
 %Docstring
  Returns the length of the geometry.
- \see area()
- \see perimeter()
+.. seealso:: area()
+.. seealso:: perimeter()
  :rtype: float
 %End
 
     virtual double perimeter() const;
 %Docstring
  Returns the perimeter of the geometry.
- \see area()
- \see length()
+.. seealso:: area()
+.. seealso:: length()
  :rtype: float
 %End
 
     virtual double area() const;
 %Docstring
  Returns the area of the geometry.
- \see length()
- \see perimeter()
+.. seealso:: length()
+.. seealso:: perimeter()
  :rtype: float
 %End
 
@@ -406,8 +406,8 @@ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
     virtual int partCount() const = 0;
 %Docstring
  Returns count of parts contained in the geometry.
- \see vertexCount
- \see ringCount
+.. seealso:: vertexCount
+.. seealso:: ringCount
  :rtype: int
 %End
 
@@ -417,8 +417,8 @@ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
  \param zValue initial z-value for all nodes
  :return: true on success
 .. versionadded:: 2.12
- \see dropZValue()
- \see addMValue()
+.. seealso:: dropZValue()
+.. seealso:: addMValue()
  :rtype: bool
 %End
 
@@ -428,8 +428,8 @@ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
  \param mValue initial m-value for all nodes
  :return: true on success
 .. versionadded:: 2.12
- \see dropMValue()
- \see addZValue()
+.. seealso:: dropMValue()
+.. seealso:: addZValue()
  :rtype: bool
 %End
 
@@ -437,8 +437,8 @@ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
 %Docstring
  Drops any z-dimensions which exist in the geometry.
  :return: true if Z values were present and have been removed
- \see addZValue()
- \see dropMValue()
+.. seealso:: addZValue()
+.. seealso:: dropMValue()
 .. versionadded:: 2.14
  :rtype: bool
 %End
@@ -447,8 +447,8 @@ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
 %Docstring
  Drops any measure values which exist in the geometry.
  :return: true if m-values were present and have been removed
- \see addMValue()
- \see dropZValue()
+.. seealso:: addMValue()
+.. seealso:: dropZValue()
 .. versionadded:: 2.14
  :rtype: bool
 %End

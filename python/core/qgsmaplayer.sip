@@ -84,14 +84,14 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  Set the display name of the layer
  \param name new name for the layer
 .. versionadded:: 2.16
- \see name()
+.. seealso:: name()
 %End
 
     QString name() const;
 %Docstring
  Returns the display name of the layer.
  :return: the layer name
- \see setName()
+.. seealso:: setName()
  :rtype: str
 %End
 
@@ -114,7 +114,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  Sets the short name of the layer
   used by QGIS Server to identify the layer.
  :return: the layer short name
- \see shortName()
+.. seealso:: shortName()
 %End
 
     QString shortName() const;
@@ -122,7 +122,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  Returns the short name of the layer
   used by QGIS Server to identify the layer.
  :return: the layer short name
- \see setShortName()
+.. seealso:: setShortName()
  :rtype: str
 %End
 
@@ -131,7 +131,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  Sets the title of the layer
   used by QGIS Server in GetCapabilities request.
  :return: the layer title
- \see title()
+.. seealso:: title()
 %End
 
     QString title() const;
@@ -139,7 +139,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  Returns the title of the layer
   used by QGIS Server in GetCapabilities request.
  :return: the layer title
- \see setTitle()
+.. seealso:: setTitle()
  :rtype: str
 %End
 
@@ -148,7 +148,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  Sets the abstract of the layer
   used by QGIS Server in GetCapabilities request.
  :return: the layer abstract
- \see abstract()
+.. seealso:: abstract()
 %End
 
     QString abstract() const;
@@ -156,7 +156,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  Returns the abstract of the layer
   used by QGIS Server in GetCapabilities request.
  :return: the layer abstract
- \see setAbstract()
+.. seealso:: setAbstract()
  :rtype: str
 %End
 
@@ -165,7 +165,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  Sets the keyword list of the layer
   used by QGIS Server in GetCapabilities request.
  :return: the layer keyword list
- \see keywordList()
+.. seealso:: keywordList()
 %End
 
     QString keywordList() const;
@@ -173,7 +173,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  Returns the keyword list of the layer
   used by QGIS Server in GetCapabilities request.
  :return: the layer keyword list
- \see setKeywordList()
+.. seealso:: setKeywordList()
  :rtype: str
 %End
 
@@ -184,7 +184,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   DataUrl is a a link to the underlying data represented by a particular layer.
  :return: the layer DataUrl
- \see dataUrl()
+.. seealso:: dataUrl()
 %End
 
     QString dataUrl() const;
@@ -193,7 +193,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   DataUrl is a a link to the underlying data represented by a particular layer.
  :return: the layer DataUrl
- \see setDataUrl()
+.. seealso:: setDataUrl()
  :rtype: str
 %End
 
@@ -203,7 +203,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   DataUrl is a a link to the underlying data represented by a particular layer.
  :return: the layer DataUrl format
- \see dataUrlFormat()
+.. seealso:: dataUrlFormat()
 %End
 
     QString dataUrlFormat() const;
@@ -212,7 +212,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   DataUrl is a a link to the underlying data represented by a particular layer.
  :return: the layer DataUrl format
- \see setDataUrlFormat()
+.. seealso:: setDataUrlFormat()
  :rtype: str
 %End
 
@@ -223,7 +223,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   Attribution indicates the provider of a layer or collection of layers.
  :return: the layer attribution
- \see attribution()
+.. seealso:: attribution()
 %End
 
     QString attribution() const;
@@ -232,7 +232,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   Attribution indicates the provider of a layer or collection of layers.
  :return: the layer attribution
- \see setAttribution()
+.. seealso:: setAttribution()
  :rtype: str
 %End
 
@@ -242,7 +242,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   Attribution indicates the provider of a layer or collection of layers.
  :return: the layer attribution URL
- \see attributionUrl()
+.. seealso:: attributionUrl()
 %End
 
     QString attributionUrl() const;
@@ -251,7 +251,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   Attribution indicates the provider of a layer or collection of layers.
  :return: the layer attribution URL
- \see setAttributionUrl()
+.. seealso:: setAttributionUrl()
  :rtype: str
 %End
 
@@ -262,7 +262,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   MetadataUrl is a a link to the detailed, standardized metadata about the data.
  :return: the layer metadata URL
- \see metadataUrl()
+.. seealso:: metadataUrl()
 %End
 
     QString metadataUrl() const;
@@ -271,7 +271,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   MetadataUrl is a a link to the detailed, standardized metadata about the data.
  :return: the layer metadata URL
- \see setMetadataUrl()
+.. seealso:: setMetadataUrl()
  :rtype: str
 %End
 
@@ -281,7 +281,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request
   MetadataUrlType indicates the standard to which the metadata complies.
  :return: the layer metadata type
- \see metadataUrlType()
+.. seealso:: metadataUrlType()
 %End
 
     QString metadataUrlType() const;
@@ -290,7 +290,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   MetadataUrlType indicates the standard to which the metadata complies.
  :return: the layer metadata type
- \see setMetadataUrlType()
+.. seealso:: setMetadataUrlType()
  :rtype: str
 %End
 
@@ -300,7 +300,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   MetadataUrlType indicates how the metadata is structured.
  :return: the layer metadata format
- \see metadataUrlFormat()
+.. seealso:: metadataUrlFormat()
 %End
 
     QString metadataUrlFormat() const;
@@ -309,7 +309,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
   used by QGIS Server in GetCapabilities request.
   MetadataUrlType indicates how the metadata is structured.
  :return: the layer metadata format
- \see setMetadataUrlFormat()
+.. seealso:: setMetadataUrlFormat()
  :rtype: str
 %End
 
@@ -317,13 +317,13 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
 %Docstring
  Set the blending mode used for rendering a layer.
  \param blendMode new blending mode
- \see blendMode()
+.. seealso:: blendMode()
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
  Returns the current blending mode for a layer.
- \see setBlendMode()
+.. seealso:: setBlendMode()
  :rtype: QPainter.CompositionMode
 %End
 
@@ -364,7 +364,7 @@ Returns the extent of the layer.
  Gets a version of the internal layer definition that has sensitive
   bits removed (for example, the password). This function should
  be used when displaying the source name for general viewing.
- \see source()
+.. seealso:: source()
  :rtype: str
 %End
 
@@ -372,7 +372,7 @@ Returns the extent of the layer.
 %Docstring
  Returns the source for the layer. This source may contain usernames, passwords
  and other sensitive information.
- \see publicSource()
+.. seealso:: publicSource()
  :rtype: str
 %End
 
@@ -451,21 +451,21 @@ Invoked by QgsProject.read().
     void setCustomProperty( const QString &key, const QVariant &value );
 %Docstring
  Set a custom property for layer. Properties are stored in a map and saved in project file.
- \see customProperty()
- \see removeCustomProperty()
+.. seealso:: customProperty()
+.. seealso:: removeCustomProperty()
 %End
 
     QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
  Read a custom property from layer. Properties are stored in a map and saved in project file.
- \see setCustomProperty()
+.. seealso:: setCustomProperty()
  :rtype: QVariant
 %End
 
     void removeCustomProperty( const QString &key );
 %Docstring
  Remove a custom property from layer. Properties are stored in a map and saved in project file.
- \see setCustomProperty()
+.. seealso:: setCustomProperty()
 %End
 
     virtual QgsError error() const;
@@ -500,7 +500,7 @@ A convenience function to (un)capitalize the layer name
  (either as a .qml file on disk or as a
  record in the users style table in their personal qgis.db)
  :return: a QString with the style file name
- \see also loadNamedStyle () and saveNamedStyle ();
+.. seealso:: also loadNamedStyle () and saveNamedStyle ();
  :rtype: str
 %End
 
@@ -512,7 +512,7 @@ A convenience function to (un)capitalize the layer name
  \param resultFlag a reference to a flag that will be set to false if
  we did not manage to load the default style.
  :return: a QString with any status messages
- \see also loadNamedStyle ();
+.. seealso:: also loadNamedStyle ();
  :rtype: str
 %End
 
@@ -529,7 +529,7 @@ A convenience function to (un)capitalize the layer name
  \param resultFlag a reference to a flag that will be set to false if
  we did not manage to load the default style.
  :return: a QString with any status messages
- \see also loadDefaultStyle ();
+.. seealso:: also loadDefaultStyle ();
  :rtype: str
 %End
 
@@ -579,7 +579,7 @@ A convenience function to (un)capitalize the layer name
  \param resultFlag a reference to a flag that will be set to false if
  we did not manage to save the default style.
  :return: a QString with any status messages
- \see loadNamedStyle() and \see saveNamedStyle()
+.. seealso:: loadNamedStyle() and \see saveNamedStyle()
  :rtype: str
 %End
 
@@ -596,7 +596,7 @@ A convenience function to (un)capitalize the layer name
  \param resultFlag a reference to a flag that will be set to false if
  we did not manage to save the default style.
  :return: a QString with any status messages
- \see saveDefaultStyle()
+.. seealso:: saveDefaultStyle()
  :rtype: str
 %End
 
@@ -607,7 +607,7 @@ A convenience function to (un)capitalize the layer name
  \param resultFlag a reference to a flag that will be set to false if
  the SLD file could not be generated
  :return: a string with any status or error messages
- \see loadSldStyle()
+.. seealso:: loadSldStyle()
  :rtype: str
 %End
 
@@ -618,7 +618,7 @@ A convenience function to (un)capitalize the layer name
  \param resultFlag a reference to a flag that will be set to false if
  the SLD file could not be loaded
  :return: a string with any status or error messages
- \see saveSldStyle()
+.. seealso:: saveSldStyle()
  :rtype: str
 %End
 
@@ -737,9 +737,9 @@ Return pointer to layer's undo stack
  \param scale scale denominator to test
  :return: true if the layer is visible at the given scale.
 .. versionadded:: 2.16
- \see minimumScale()
- \see maximumScale()
- \see hasScaleBasedVisibility()
+.. seealso:: minimumScale()
+.. seealso:: maximumScale()
+.. seealso:: hasScaleBasedVisibility()
  :rtype: bool
 %End
 
@@ -748,10 +748,10 @@ Return pointer to layer's undo stack
  Returns the minimum scale denominator at which the layer is visible.
  Scale based visibility is only used if hasScaleBasedVisibility is true.
  :return: minimum scale denominator at which the layer will render
- \see setMinimumScale()
- \see maximumScale()
- \see hasScaleBasedVisibility()
- \see isInScaleRange()
+.. seealso:: setMinimumScale()
+.. seealso:: maximumScale()
+.. seealso:: hasScaleBasedVisibility()
+.. seealso:: isInScaleRange()
  :rtype: float
 %End
 
@@ -760,10 +760,10 @@ Return pointer to layer's undo stack
  Returns the maximum scale denominator at which the layer is visible.
  Scale based visibility is only used if hasScaleBasedVisibility is true.
  :return: minimum scale denominator at which the layer will render
- \see setMaximumScale()
- \see minimumScale()
- \see hasScaleBasedVisibility()
- \see isInScaleRange()
+.. seealso:: setMaximumScale()
+.. seealso:: minimumScale()
+.. seealso:: hasScaleBasedVisibility()
+.. seealso:: isInScaleRange()
  :rtype: float
 %End
 
@@ -771,10 +771,10 @@ Return pointer to layer's undo stack
 %Docstring
  Returns whether scale based visibility is enabled for the layer.
  :return: true if scale based visibility is enabled
- \see minimumScale()
- \see maximumScale()
- \see setScaleBasedVisibility()
- \see isInScaleRange()
+.. seealso:: minimumScale()
+.. seealso:: maximumScale()
+.. seealso:: setScaleBasedVisibility()
+.. seealso:: isInScaleRange()
  :rtype: bool
 %End
 
@@ -782,8 +782,8 @@ Return pointer to layer's undo stack
 %Docstring
  Returns true if auto refresh is enabled for the layer.
 .. versionadded:: 3.0
- \see autoRefreshInterval()
- \see setAutoRefreshEnabled()
+.. seealso:: autoRefreshInterval()
+.. seealso:: setAutoRefreshEnabled()
  :rtype: bool
 %End
 
@@ -792,8 +792,8 @@ Return pointer to layer's undo stack
  Returns the auto refresh interval (in milliseconds). Note that
  auto refresh is only active when hasAutoRefreshEnabled() is true.
 .. versionadded:: 3.0
- \see autoRefreshEnabled()
- \see setAutoRefreshInterval()
+.. seealso:: autoRefreshEnabled()
+.. seealso:: setAutoRefreshInterval()
  :rtype: int
 %End
 
@@ -806,16 +806,16 @@ Return pointer to layer's undo stack
  Note that auto refresh triggers deferred repaints of the layer. Any map
  canvas must be refreshed separately in order to view the refreshed layer.
 .. versionadded:: 3.0
- \see autoRefreshInterval()
- \see setAutoRefreshEnabled()
+.. seealso:: autoRefreshInterval()
+.. seealso:: setAutoRefreshEnabled()
 %End
 
     void setAutoRefreshEnabled( bool enabled );
 %Docstring
  Sets whether auto refresh is enabled for the layer.
 .. versionadded:: 3.0
- \see hasAutoRefreshEnabled()
- \see setAutoRefreshInterval()
+.. seealso:: hasAutoRefreshEnabled()
+.. seealso:: setAutoRefreshInterval()
 %End
 
     virtual QString htmlMetadata() const;
@@ -833,7 +833,7 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 %Docstring
- Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
+.. seealso:: setDataDependencies)
  as well as dependencies given by the provider
 
  :return: a set of QgsMapLayerDependency
@@ -848,9 +848,9 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
  Sets the minimum scale denominator at which the layer will be visible.
  Scale based visibility is only used if setScaleBasedVisibility is set to true.
  \param scale minimum scale denominator at which the layer should render
- \see minimumScale
- \see setMaximumScale
- \see setScaleBasedVisibility
+.. seealso:: minimumScale
+.. seealso:: setMaximumScale
+.. seealso:: setScaleBasedVisibility
 %End
 
     void setMaximumScale( double scale );
@@ -858,18 +858,18 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
  Sets the maximum scale denominator at which the layer will be visible.
  Scale based visibility is only used if setScaleBasedVisibility is set to true.
  \param scale maximum scale denominator at which the layer should render
- \see maximumScale
- \see setMinimumScale
- \see setScaleBasedVisibility
+.. seealso:: maximumScale
+.. seealso:: setMinimumScale
+.. seealso:: setScaleBasedVisibility
 %End
 
     void setScaleBasedVisibility( const bool enabled );
 %Docstring
  Sets whether scale based visibility is enabled for the layer.
  \param enabled set to true to enable scale based visibility
- \see setMinimumScale
- \see setMaximumScale
- \see scaleBasedVisibility
+.. seealso:: setMinimumScale
+.. seealso:: setMaximumScale
+.. seealso:: scaleBasedVisibility
 %End
 
     void triggerRepaint( bool deferredUpdate = false );
@@ -893,7 +893,7 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
 %Docstring
  Sets the list of dependencies.
- \see dependencies()
+.. seealso:: dependencies()
 
  \param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
  :return: false if a dependency cycle has been detected
@@ -946,7 +946,7 @@ Signal emitted when the blend mode is changed, through QgsMapLayer.setBlendMode(
     void rendererChanged();
 %Docstring
  Signal emitted when renderer is changed.
- \see styleChanged()
+.. seealso:: styleChanged()
 %End
 
     void styleChanged();
@@ -955,7 +955,7 @@ Signal emitted when the blend mode is changed, through QgsMapLayer.setBlendMode(
  by renderer changes, label style changes, or other style changes such as blend
  mode or layer opacity changes.
 .. versionadded:: 2.16
- \see rendererChanged()
+.. seealso:: rendererChanged()
 %End
 
     void legendChanged();
@@ -986,7 +986,7 @@ Signal emitted when the blend mode is changed, through QgsMapLayer.setBlendMode(
     void autoRefreshIntervalChanged( int interval );
 %Docstring
  Emitted when the auto refresh interval changes.
- \see setAutoRefreshInterval()
+.. seealso:: setAutoRefreshInterval()
 .. versionadded:: 3.0
 %End
 

@@ -156,14 +156,14 @@ Reload the whole model
 %Docstring
  Adds a directory to the favorites group.
 .. versionadded:: 3.0
- \see removeFavorite()
+.. seealso:: removeFavorite()
 %End
 
     void removeFavorite( const QModelIndex &index );
 %Docstring
  Removes a favorite directory from its corresponding model index.
 .. versionadded:: 3.0
- \see addFavoriteDirectory()
+.. seealso:: addFavoriteDirectory()
 %End
 
     void updateProjectHome();

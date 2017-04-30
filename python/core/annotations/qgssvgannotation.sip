@@ -35,13 +35,13 @@ class QgsSvgAnnotation: QgsAnnotation
     void setFilePath( const QString &file );
 %Docstring
  Sets the file path for the source SVG file.
- \see filePath()
+.. seealso:: filePath()
 %End
 
     QString filePath() const;
 %Docstring
  Returns the file path for the source SVG file.
- \see setFilePath()
+.. seealso:: setFilePath()
  :rtype: str
 %End
 

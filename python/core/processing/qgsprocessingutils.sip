@@ -31,8 +31,8 @@ class QgsProcessingUtils
 
  If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
  value.
- \see compatibleVectorLayers()
- \see compatibleLayers()
+.. seealso:: compatibleVectorLayers()
+.. seealso:: compatibleLayers()
  :rtype: list of QgsRasterLayer
 %End
 
@@ -49,8 +49,8 @@ class QgsProcessingUtils
 
  If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
  value.
- \see compatibleRasterLayers()
- \see compatibleLayers()
+.. seealso:: compatibleRasterLayers()
+.. seealso:: compatibleLayers()
  :rtype: list of QgsVectorLayer
 %End
 
@@ -61,8 +61,8 @@ class QgsProcessingUtils
 
  If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
  value.
- \see compatibleRasterLayers()
- \see compatibleVectorLayers()
+.. seealso:: compatibleRasterLayers()
+.. seealso:: compatibleVectorLayers()
  :rtype: list of QgsMapLayer
 %End
 
@@ -76,7 +76,7 @@ class QgsProcessingUtils
  If the string matches a normalized version of any layer source
  for layers in the specified ``project``, then those matching layers will be
  returned.
- \see mapLayerFromString()
+.. seealso:: mapLayerFromString()
  :rtype: QgsMapLayer
 %End
 
@@ -86,7 +86,7 @@ class QgsProcessingUtils
  load a layer matching the passed ``string``. E.g. if the string is a file path,
  then the layer at this file path will be loaded.
  The caller takes responsibility for deleting the returned map layer.
- \see mapLayerFromProject()
+.. seealso:: mapLayerFromProject()
  :rtype: QgsMapLayer
 %End
 

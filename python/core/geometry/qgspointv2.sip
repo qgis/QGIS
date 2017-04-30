@@ -73,32 +73,32 @@ class QgsPointV2: QgsAbstractGeometry
     double x() const;
 %Docstring
  Returns the point's x-coordinate.
- \see setX()
- \see rx()
+.. seealso:: setX()
+.. seealso:: rx()
  :rtype: float
 %End
 
     double y() const;
 %Docstring
  Returns the point's y-coordinate.
- \see setY()
- \see ry()
+.. seealso:: setY()
+.. seealso:: ry()
  :rtype: float
 %End
 
     double z() const;
 %Docstring
  Returns the point's z-coordinate.
- \see setZ()
- \see rz()
+.. seealso:: setZ()
+.. seealso:: rz()
  :rtype: float
 %End
 
     double m() const;
 %Docstring
  Returns the point's m value.
- \see setM()
- \see rm()
+.. seealso:: setM()
+.. seealso:: rm()
  :rtype: float
 %End
 
@@ -109,15 +109,15 @@ class QgsPointV2: QgsAbstractGeometry
     void setX( double x );
 %Docstring
  Sets the point's x-coordinate.
- \see x()
- \see rx()
+.. seealso:: x()
+.. seealso:: rx()
 %End
 
     void setY( double y );
 %Docstring
  Sets the point's y-coordinate.
- \see y()
- \see ry()
+.. seealso:: y()
+.. seealso:: ry()
 %End
 
     void setZ( double z );
@@ -127,8 +127,8 @@ class QgsPointV2: QgsAbstractGeometry
 
    calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
  add a z value and force the point to have a z dimension.
- \see z()
- \see rz()
+.. seealso:: z()
+.. seealso:: rz()
 %End
 
     void setM( double m );
@@ -138,8 +138,8 @@ class QgsPointV2: QgsAbstractGeometry
 
    calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
  add a m value and force the point to have an m dimension.
- \see m()
- \see rm()
+.. seealso:: m()
+.. seealso:: rm()
 %End
 
     QPointF toQPointF() const;
@@ -155,7 +155,7 @@ class QgsPointV2: QgsAbstractGeometry
  cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
  when comparing distances.
 .. versionadded:: 3.0
- \see distanceSquared()
+.. seealso:: distanceSquared()
  :rtype: float
 %End
 
@@ -173,7 +173,7 @@ class QgsPointV2: QgsAbstractGeometry
  Returns the squared distance between this point a specified x, y coordinate. Calling
  this is faster than calling distance(), and may be useful in use cases such as comparing
  distances where the extra expense of calling distance() is not required.
- \see distance()
+.. seealso:: distance()
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -183,7 +183,7 @@ class QgsPointV2: QgsAbstractGeometry
  Returns the squared distance between this point another point. Calling
  this is faster than calling distance(), and may be useful in use cases such as comparing
  distances where the extra expense of calling distance() is not required.
- \see distance()
+.. seealso:: distance()
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -194,7 +194,7 @@ class QgsPointV2: QgsAbstractGeometry
  cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
  when comparing distances.
 .. versionadded:: 3.0
- \see distanceSquared()
+.. seealso:: distanceSquared()
  :rtype: float
 %End
 
@@ -212,7 +212,7 @@ class QgsPointV2: QgsAbstractGeometry
  Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
  this is faster than calling distance(), and may be useful in use cases such as comparing
  distances where the extra expense of calling distance() is not required.
- \see distance()
+.. seealso:: distance()
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -222,7 +222,7 @@ class QgsPointV2: QgsAbstractGeometry
  Returns the 3D squared distance between this point another point. Calling
  this is faster than calling distance(), and may be useful in use cases such as comparing
  distances where the extra expense of calling distance() is not required.
- \see distance()
+.. seealso:: distance()
 .. versionadded:: 3.0
  :rtype: float
 %End

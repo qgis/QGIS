@@ -44,7 +44,7 @@ class QgsTextBufferSettings
     bool enabled() const;
 %Docstring
  Returns whether the buffer is enabled.
- \see setEnabled()
+.. seealso:: setEnabled()
  :rtype: bool
 %End
 
@@ -52,14 +52,14 @@ class QgsTextBufferSettings
 %Docstring
  Sets whether the text buffer will be drawn.
  \param enabled set to true to draw buffer
- \see enabled()
+.. seealso:: enabled()
 %End
 
     double size() const;
 %Docstring
  Returns the size of the buffer.
- \see sizeUnit()
- \see setSize()
+.. seealso:: sizeUnit()
+.. seealso:: setSize()
  :rtype: float
 %End
 
@@ -67,15 +67,15 @@ class QgsTextBufferSettings
 %Docstring
  Sets the size of the buffer. The size units are specified using setSizeUnit().
  \param size buffer size
- \see size()
- \see setSizeUnit()
+.. seealso:: size()
+.. seealso:: setSizeUnit()
 %End
 
     QgsUnitTypes::RenderUnit sizeUnit() const;
 %Docstring
  Returns the units for the buffer size.
- \see size()
- \see setSizeUnit()
+.. seealso:: size()
+.. seealso:: setSizeUnit()
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -83,16 +83,16 @@ class QgsTextBufferSettings
 %Docstring
  Sets the units used for the buffer size.
  \param unit size unit
- \see setSize()
- \see sizeUnit()
+.. seealso:: setSize()
+.. seealso:: sizeUnit()
 %End
 
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
  Returns the map unit scale object for the buffer size. This is only used if the
  buffer size is set to QgsUnitTypes.RenderMapUnit.
- \see setSizeMapUnitScale()
- \see sizeUnit()
+.. seealso:: setSizeMapUnitScale()
+.. seealso:: sizeUnit()
  :rtype: QgsMapUnitScale
 %End
 
@@ -101,14 +101,14 @@ class QgsTextBufferSettings
  Sets the map unit scale object for the buffer size. This is only used if the
  buffer size is set to QgsUnitTypes.RenderMapUnit.
  \param scale scale for buffer size
- \see sizeMapUnitScale()
- \see setSizeUnit()
+.. seealso:: sizeMapUnitScale()
+.. seealso:: setSizeUnit()
 %End
 
     QColor color() const;
 %Docstring
  Returns the color of the buffer.
- \see setColor()
+.. seealso:: setColor()
  :rtype: QColor
 %End
 
@@ -116,7 +116,7 @@ class QgsTextBufferSettings
 %Docstring
  Sets the color for the buffer.
  \param color buffer color
- \see color()
+.. seealso:: color()
 %End
 
     bool fillBufferInterior() const;
@@ -124,7 +124,7 @@ class QgsTextBufferSettings
  Returns whether the interior of the buffer will be filled in. If false, only the stroke
  of the text will be drawn as the buffer. The effect of this setting is only visible for
  semi-transparent text.
- \see setFillBufferInterior()
+.. seealso:: setFillBufferInterior()
  :rtype: bool
 %End
 
@@ -133,14 +133,14 @@ class QgsTextBufferSettings
  Sets whether the interior of the buffer will be filled in.
  \param fill set to false to drawn only the stroke of the text as the buffer, or true to also
  shade the area inside the text. The effect of this setting is only visible for semi-transparent text.
- \see fillBufferInterior()
+.. seealso:: fillBufferInterior()
 %End
 
     double opacity() const;
 %Docstring
  Returns the buffer opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
  opaque).
- \see setOpacity()
+.. seealso:: setOpacity()
  :rtype: float
 %End
 
@@ -149,13 +149,13 @@ class QgsTextBufferSettings
  Sets the buffer opacity.
  \param opacity opacity as a double value between 0 (fully transparent) and 1 (totally
  opaque)
- \see opacity()
+.. seealso:: opacity()
 %End
 
     Qt::PenJoinStyle joinStyle() const;
 %Docstring
  Returns the buffer join style.
- \see setJoinStyle
+.. seealso:: setJoinStyle
  :rtype: Qt.PenJoinStyle
 %End
 
@@ -163,13 +163,13 @@ class QgsTextBufferSettings
 %Docstring
  Sets the join style used for drawing the buffer.
  \param style join style
- \see joinStyle()
+.. seealso:: joinStyle()
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
  Returns the blending mode used for drawing the buffer.
- \see setBlendMode()
+.. seealso:: setBlendMode()
  :rtype: QPainter.CompositionMode
 %End
 
@@ -177,33 +177,33 @@ class QgsTextBufferSettings
 %Docstring
  Sets the blending mode used for drawing the buffer.
  \param mode blending mode
- \see blendMode()
+.. seealso:: blendMode()
 %End
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
  Reads settings from a layer's custom properties.
  \param layer source vector layer
- \see writeToLayer()
+.. seealso:: writeToLayer()
 %End
 
     void writeToLayer( QgsVectorLayer *layer ) const;
 %Docstring
  Writes settings to a layer's custom properties.
  \param layer target vector layer
- \see readFromLayer()
+.. seealso:: readFromLayer()
 %End
 
     void readXml( const QDomElement &elem );
 %Docstring
  Read settings from a DOM element.
- \see writeXml()
+.. seealso:: writeXml()
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
  Write settings into a DOM element.
- \see readXml()
+.. seealso:: readXml()
  :rtype: QDomElement
 %End
 
@@ -211,7 +211,7 @@ class QgsTextBufferSettings
 %Docstring
  Returns the current paint effect for the buffer.
  :return: paint effect
- \see setPaintEffect()
+.. seealso:: setPaintEffect()
  :rtype: QgsPaintEffect
 %End
 
@@ -219,7 +219,7 @@ class QgsTextBufferSettings
 %Docstring
  Sets the current paint ``effect`` for the buffer.
  \param effect paint effect. Ownership is transferred to the buffer settings.
- \see paintEffect()
+.. seealso:: paintEffect()
 %End
 
 };
@@ -277,7 +277,7 @@ class QgsTextBackgroundSettings
     bool enabled() const;
 %Docstring
  Returns whether the background is enabled.
- \see setEnabled()
+.. seealso:: setEnabled()
  :rtype: bool
 %End
 
@@ -285,13 +285,13 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets whether the text background will be drawn.
  \param enabled set to true to draw background
- \see enabled()
+.. seealso:: enabled()
 %End
 
     ShapeType type() const;
 %Docstring
  Returns the type of background shape (e.g., square, ellipse, SVG).
- \see setType()
+.. seealso:: setType()
  :rtype: ShapeType
 %End
 
@@ -299,13 +299,13 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the type of background shape to draw (e.g., square, ellipse, SVG).
  \param type shape type
- \see type()
+.. seealso:: type()
 %End
 
     QString svgFile() const;
 %Docstring
  Returns the path to the background SVG file, if set.
- \see setSvgFile()
+.. seealso:: setSvgFile()
  :rtype: str
 %End
 
@@ -314,15 +314,15 @@ class QgsTextBackgroundSettings
  Sets the path to the background SVG file. This is only used if type() is set to
  QgsTextBackgroundSettings.ShapeSVG.
  \param file SVG file path
- \see svgFile()
+.. seealso:: svgFile()
 %End
 
     SizeType sizeType() const;
 %Docstring
  Returns the method used to determine the size of the background shape (e.g., fixed size or buffer
  around text).
- \see setSizeType()
- \see size()
+.. seealso:: setSizeType()
+.. seealso:: size()
  :rtype: SizeType
 %End
 
@@ -331,8 +331,8 @@ class QgsTextBackgroundSettings
  Sets the method used to determine the size of the background shape (e.g., fixed size or buffer
  around text).
  \param type size method
- \see sizeType()
- \see setSize()
+.. seealso:: sizeType()
+.. seealso:: setSize()
 %End
 
     QSizeF size() const;
@@ -341,8 +341,8 @@ class QgsTextBackgroundSettings
  e.g., for size types of QgsTextBackgroundSettings.SizeFixed the size will represent the actual width and
  height of the shape, for QgsTextBackgroundSettings.SizeBuffer the size will represent the horizontal
  and vertical margins to add to the text when calculating the size of the shape.
- \see setSize()
- \see sizeType()
+.. seealso:: setSize()
+.. seealso:: sizeType()
  :rtype: QSizeF
 %End
 
@@ -353,17 +353,17 @@ class QgsTextBackgroundSettings
  height of the shape, for QgsTextBackgroundSettings.SizeBuffer the size will represent the horizontal
  and vertical margins to add to the text when calculating the size of the shape.
  \param size QSizeF representing horizontal and vertical size components for shape
- \see size()
- \see setSizeType()
+.. seealso:: size()
+.. seealso:: setSizeType()
 %End
 
     QgsUnitTypes::RenderUnit sizeUnit() const;
 %Docstring
  Returns the units used for the shape's size. This value has no meaning if the sizeType() is set to
  QgsTextBackgroundSettings.SizePercent.
- \see setSizeUnit()
- \see sizeType()
- \see size()
+.. seealso:: setSizeUnit()
+.. seealso:: sizeType()
+.. seealso:: size()
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -372,17 +372,17 @@ class QgsTextBackgroundSettings
  Sets the units used for the shape's size. This value has no meaning if the sizeType() is set to
  QgsTextBackgroundSettings.SizePercent.
  \param unit size units
- \see sizeUnit()
- \see setSizeType()
- \see setSize()
+.. seealso:: sizeUnit()
+.. seealso:: setSizeType()
+.. seealso:: setSize()
 %End
 
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
  Returns the map unit scale object for the shape size. This is only used if the
  sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
- \see setSizeMapUnitScale()
- \see sizeUnit()
+.. seealso:: setSizeMapUnitScale()
+.. seealso:: sizeUnit()
  :rtype: QgsMapUnitScale
 %End
 
@@ -391,15 +391,15 @@ class QgsTextBackgroundSettings
  Sets the map unit scale object for the shape size. This is only used if the
  sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
  \param scale scale for shape size
- \see sizeMapUnitScale()
- \see setSizeUnit()
+.. seealso:: sizeMapUnitScale()
+.. seealso:: setSizeUnit()
 %End
 
     RotationType rotationType() const;
 %Docstring
  Returns the method used for rotating the background shape.
- \see setRotationType()
- \see rotation()
+.. seealso:: setRotationType()
+.. seealso:: rotation()
  :rtype: RotationType
 %End
 
@@ -407,15 +407,15 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the method used for rotating the background shape.
  \param type rotation method
- \see rotationType()
- \see setRotation()
+.. seealso:: rotationType()
+.. seealso:: setRotation()
 %End
 
     double rotation() const;
 %Docstring
  Returns the rotation for the background shape.
- \see rotationType()
- \see setRotation()
+.. seealso:: rotationType()
+.. seealso:: setRotation()
  :rtype: float
 %End
 
@@ -423,16 +423,16 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the rotation for the background shape.
  \param rotation angle in degrees to rotate
- \see rotation()
- \see setRotationType()
+.. seealso:: rotation()
+.. seealso:: setRotationType()
 %End
 
     QPointF offset() const;
 %Docstring
  Returns the offset used for drawing the background shape. Units are determined
  via offsetUnit().
- \see setOffset()
- \see offsetUnit()
+.. seealso:: setOffset()
+.. seealso:: offsetUnit()
  :rtype: QPointF
 %End
 
@@ -441,15 +441,15 @@ class QgsTextBackgroundSettings
  Sets the offset used for drawing the background shape. Units are specified using
  setOffsetUnit().
  \param offset offset for shape
- \see offset()
- \see setOffsetUnit()
+.. seealso:: offset()
+.. seealso:: setOffsetUnit()
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
  Returns the units used for the shape's offset.
- \see setOffsetUnit()
- \see offset()
+.. seealso:: setOffsetUnit()
+.. seealso:: offset()
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -457,16 +457,16 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the units used for the shape's offset.
  \param units offset units
- \see offsetUnit()
- \see setOffset()
+.. seealso:: offsetUnit()
+.. seealso:: setOffset()
 %End
 
     QgsMapUnitScale offsetMapUnitScale() const;
 %Docstring
  Returns the map unit scale object for the shape offset. This is only used if the
  offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
- \see setOffsetMapUnitScale()
- \see offsetUnit()
+.. seealso:: setOffsetMapUnitScale()
+.. seealso:: offsetUnit()
  :rtype: QgsMapUnitScale
 %End
 
@@ -475,16 +475,16 @@ class QgsTextBackgroundSettings
  Sets the map unit scale object for the shape offset. This is only used if the
  offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
  \param scale scale for shape offset
- \see offsetMapUnitScale()
- \see setOffsetUnit()
+.. seealso:: offsetMapUnitScale()
+.. seealso:: setOffsetUnit()
 %End
 
     QSizeF radii() const;
 %Docstring
  Returns the radii used for rounding the corners of shapes. Units are retrieved
  through radiiUnit().
- \see setRadii()
- \see radiiUnit()
+.. seealso:: setRadii()
+.. seealso:: radiiUnit()
  :rtype: QSizeF
 %End
 
@@ -494,15 +494,15 @@ class QgsTextBackgroundSettings
  type() is set to QgsTextBackgroundSettings.ShapeRectangle or QgsTextBackgroundSettings.ShapeSquare.
  \param radii QSizeF representing horizontal and vertical radii for rounded corners. Units are
  specified through setRadiiUnit()
- \see radii()
- \see setRadiiUnit()
+.. seealso:: radii()
+.. seealso:: setRadiiUnit()
 %End
 
     QgsUnitTypes::RenderUnit radiiUnit() const;
 %Docstring
  Returns the units used for the shape's radii.
- \see setRadiiUnit()
- \see radii()
+.. seealso:: setRadiiUnit()
+.. seealso:: radii()
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -510,16 +510,16 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the units used for the shape's radii.
  \param units radii units
- \see radiiUnit()
- \see setRadii()
+.. seealso:: radiiUnit()
+.. seealso:: setRadii()
 %End
 
     QgsMapUnitScale radiiMapUnitScale() const;
 %Docstring
  Returns the map unit scale object for the shape radii. This is only used if the
  radiiUnit() is set to QgsUnitTypes.RenderMapUnit.
- \see setRadiiMapUnitScale()
- \see radiiUnit()
+.. seealso:: setRadiiMapUnitScale()
+.. seealso:: radiiUnit()
  :rtype: QgsMapUnitScale
 %End
 
@@ -528,15 +528,15 @@ class QgsTextBackgroundSettings
  Sets the map unit scale object for the shape radii. This is only used if the
  radiiUnit() is set to QgsUnitTypes.RenderMapUnit.
  \param scale scale for shape radii
- \see radiiMapUnitScale()
- \see setRadiiUnit()
+.. seealso:: radiiMapUnitScale()
+.. seealso:: setRadiiUnit()
 %End
 
     double opacity() const;
 %Docstring
  Returns the background shape's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
  opaque).
- \see setOpacity()
+.. seealso:: setOpacity()
  :rtype: float
 %End
 
@@ -545,13 +545,13 @@ class QgsTextBackgroundSettings
  Sets the background shape's opacity.
  \param opacity opacity as a double value between 0 (fully transparent) and 1 (totally
  opaque)
- \see opacity()
+.. seealso:: opacity()
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
  Returns the blending mode used for drawing the background shape.
- \see setBlendMode()
+.. seealso:: setBlendMode()
  :rtype: QPainter.CompositionMode
 %End
 
@@ -559,14 +559,14 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the blending mode used for drawing the background shape.
  \param mode blending mode
- \see blendMode()
+.. seealso:: blendMode()
 %End
 
     QColor fillColor() const;
 %Docstring
  Returns the color used for filing the background shape.
- \see setFillColor()
- \see strokeColor()
+.. seealso:: setFillColor()
+.. seealso:: strokeColor()
  :rtype: QColor
 %End
 
@@ -574,15 +574,15 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the color used for filing the background shape.
  \param color background color
- \see fillColor()
- \see setStrokeColor()
+.. seealso:: fillColor()
+.. seealso:: setStrokeColor()
 %End
 
     QColor strokeColor() const;
 %Docstring
  Returns the color used for outlining the background shape.
- \see setStrokeColor()
- \see fillColor()
+.. seealso:: setStrokeColor()
+.. seealso:: fillColor()
  :rtype: QColor
 %End
 
@@ -590,16 +590,16 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the color used for outlining the background shape.
  \param color stroke color
- \see strokeColor()
- \see setFillColor()
+.. seealso:: strokeColor()
+.. seealso:: setFillColor()
 %End
 
     double strokeWidth() const;
 %Docstring
  Returns the width of the shape's stroke (stroke). Units are retrieved through
  strokeWidthUnit().
- \see setStrokeWidth()
- \see strokeWidthUnit()
+.. seealso:: setStrokeWidth()
+.. seealso:: strokeWidthUnit()
  :rtype: float
 %End
 
@@ -607,15 +607,15 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the width of the shape's stroke (stroke). Units are specified through
  setStrokeWidthUnit().
- \see strokeWidth()
- \see setStrokeWidthUnit()
+.. seealso:: strokeWidth()
+.. seealso:: setStrokeWidthUnit()
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
  Returns the units used for the shape's stroke width.
- \see setStrokeWidthUnit()
- \see strokeWidth()
+.. seealso:: setStrokeWidthUnit()
+.. seealso:: strokeWidth()
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -623,16 +623,16 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the units used for the shape's stroke width.
  \param units stroke width units
- \see strokeWidthUnit()
- \see setStrokeWidth()
+.. seealso:: strokeWidthUnit()
+.. seealso:: setStrokeWidth()
 %End
 
     QgsMapUnitScale strokeWidthMapUnitScale() const;
 %Docstring
  Returns the map unit scale object for the shape stroke width. This is only used if the
  strokeWidthUnit() is set to QgsUnitTypes.RenderMapUnit.
- \see setStrokeWidthMapUnitScale()
- \see strokeWidthUnit()
+.. seealso:: setStrokeWidthMapUnitScale()
+.. seealso:: strokeWidthUnit()
  :rtype: QgsMapUnitScale
 %End
 
@@ -641,14 +641,14 @@ class QgsTextBackgroundSettings
  Sets the map unit scale object for the shape stroke width. This is only used if the
  strokeWidthUnit() is set to QgsUnitTypes.RenderMapUnit.
  \param scale scale for shape stroke width
- \see strokeWidthMapUnitScale()
- \see setStrokeWidthUnit()
+.. seealso:: strokeWidthMapUnitScale()
+.. seealso:: setStrokeWidthUnit()
 %End
 
     Qt::PenJoinStyle joinStyle() const;
 %Docstring
  Returns the join style used for drawing the background shape.
- \see setJoinStyle
+.. seealso:: setJoinStyle
  :rtype: Qt.PenJoinStyle
 %End
 
@@ -656,14 +656,14 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the join style used for drawing the background shape.
  \param style join style
- \see joinStyle()
+.. seealso:: joinStyle()
 %End
 
     QgsPaintEffect *paintEffect() const;
 %Docstring
  Returns the current paint effect for the background shape.
  :return: paint effect
- \see setPaintEffect()
+.. seealso:: setPaintEffect()
  :rtype: QgsPaintEffect
 %End
 
@@ -671,33 +671,33 @@ class QgsTextBackgroundSettings
 %Docstring
  Sets the current paint ``effect`` for the background shape.
  \param effect paint effect. Ownership is transferred to the background settings.
- \see paintEffect()
+.. seealso:: paintEffect()
 %End
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
  Reads settings from a layer's custom properties.
  \param layer source vector layer
- \see writeToLayer()
+.. seealso:: writeToLayer()
 %End
 
     void writeToLayer( QgsVectorLayer *layer ) const;
 %Docstring
  Writes settings to a layer's custom properties.
  \param layer target vector layer
- \see readFromLayer()
+.. seealso:: readFromLayer()
 %End
 
     void readXml( const QDomElement &elem );
 %Docstring
  Read settings from a DOM element.
- \see writeXml()
+.. seealso:: writeXml()
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
  Write settings into a DOM element.
- \see readXml()
+.. seealso:: readXml()
  :rtype: QDomElement
 %End
 
@@ -741,7 +741,7 @@ class QgsTextShadowSettings
     bool enabled() const;
 %Docstring
  Returns whether the shadow is enabled.
- \see setEnabled()
+.. seealso:: setEnabled()
  :rtype: bool
 %End
 
@@ -749,7 +749,7 @@ class QgsTextShadowSettings
 %Docstring
  Sets whether the text shadow will be drawn.
  \param enabled set to true to draw shadow
- \see enabled()
+.. seealso:: enabled()
 %End
 
     QgsTextShadowSettings::ShadowPlacement shadowPlacement() const;
@@ -757,7 +757,7 @@ class QgsTextShadowSettings
  Returns the placement for the drop shadow. The placement determines
  both the z-order stacking position for the shadow and the what shape (e.g., text,
  background shape) is used for casting the shadow.
- \see setShadowPlacement()
+.. seealso:: setShadowPlacement()
  :rtype: QgsTextShadowSettings.ShadowPlacement
 %End
 
@@ -767,14 +767,14 @@ class QgsTextShadowSettings
  both the z-order stacking position for the shadow and the what shape (e.g., text,
  background shape) is used for casting the shadow.
  \param placement shadow placement
- \see shadowPlacement()
+.. seealso:: shadowPlacement()
 %End
 
     int offsetAngle() const;
 %Docstring
  Returns the angle for offsetting the position of the shadow from the text.
- \see setOffsetAngle
- \see offsetDistance()
+.. seealso:: setOffsetAngle
+.. seealso:: offsetDistance()
  :rtype: int
 %End
 
@@ -782,16 +782,16 @@ class QgsTextShadowSettings
 %Docstring
  Sets the angle for offsetting the position of the shadow from the text.
  \param angle offset angle in degrees
- \see offsetAngle()
- \see setOffsetDistance()
+.. seealso:: offsetAngle()
+.. seealso:: setOffsetDistance()
 %End
 
     double offsetDistance() const;
 %Docstring
  Returns the distance for offsetting the position of the shadow from the text. Offset units
  are retrieved via offsetUnit().
- \see setOffsetDistance()
- \see offsetUnit()
+.. seealso:: setOffsetDistance()
+.. seealso:: offsetUnit()
  :rtype: float
 %End
 
@@ -800,15 +800,15 @@ class QgsTextShadowSettings
  Sets the distance for offsetting the position of the shadow from the text. Offset units
  are specified via setOffsetUnit().
  \param distance offset distance
- \see offsetDistance()
- \see setOffsetUnit()
+.. seealso:: offsetDistance()
+.. seealso:: setOffsetUnit()
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
  Returns the units used for the shadow's offset.
- \see setOffsetUnit()
- \see offsetDistance()
+.. seealso:: setOffsetUnit()
+.. seealso:: offsetDistance()
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -816,16 +816,16 @@ class QgsTextShadowSettings
 %Docstring
  Sets the units used for the shadow's offset.
  \param units shadow distance units
- \see offsetUnit()
- \see setOffsetDistance()
+.. seealso:: offsetUnit()
+.. seealso:: setOffsetDistance()
 %End
 
     QgsMapUnitScale offsetMapUnitScale() const;
 %Docstring
  Returns the map unit scale object for the shadow offset distance. This is only used if the
  offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
- \see setOffsetMapUnitScale()
- \see offsetUnit()
+.. seealso:: setOffsetMapUnitScale()
+.. seealso:: offsetUnit()
  :rtype: QgsMapUnitScale
 %End
 
@@ -834,14 +834,14 @@ class QgsTextShadowSettings
  Sets the map unit scale object for the shadow offset distance. This is only used if the
  offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
  \param scale scale for shadow offset
- \see offsetMapUnitScale()
- \see setOffsetUnit()
+.. seealso:: offsetMapUnitScale()
+.. seealso:: setOffsetUnit()
 %End
 
     bool offsetGlobal() const;
 %Docstring
  Returns true if the global shadow offset will be used.
- \see setOffsetGlobal()
+.. seealso:: setOffsetGlobal()
  :rtype: bool
 %End
 
@@ -854,8 +854,8 @@ class QgsTextShadowSettings
     double blurRadius() const;
 %Docstring
  Returns the blur radius for the shadow. Radius units are retrieved via blurRadiusUnits().
- \see setBlurRadius()
- \see blurRadiusUnit()
+.. seealso:: setBlurRadius()
+.. seealso:: blurRadiusUnit()
  :rtype: float
 %End
 
@@ -863,15 +863,15 @@ class QgsTextShadowSettings
 %Docstring
  Sets the blur radius for the shadow. Radius units are specified via setBlurRadiusUnits().
  \param blurRadius blur radius
- \see blurRadius()
- \see setBlurRadiusUnit()
+.. seealso:: blurRadius()
+.. seealso:: setBlurRadiusUnit()
 %End
 
     QgsUnitTypes::RenderUnit blurRadiusUnit() const;
 %Docstring
  Returns the units used for the shadow's blur radius.
- \see setBlurRadiusUnit()
- \see blurRadius()
+.. seealso:: setBlurRadiusUnit()
+.. seealso:: blurRadius()
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -879,16 +879,16 @@ class QgsTextShadowSettings
 %Docstring
  Sets the units used for the shadow's blur radius.
  \param units shadow blur radius units
- \see blurRadiusUnit()
- \see setBlurRadius()
+.. seealso:: blurRadiusUnit()
+.. seealso:: setBlurRadius()
 %End
 
     QgsMapUnitScale blurRadiusMapUnitScale() const;
 %Docstring
  Returns the map unit scale object for the shadow blur radius. This is only used if the
  blurRadiusUnit() is set to QgsUnitTypes.RenderMapUnit.
- \see setBlurRadiusMapUnitScale()
- \see blurRadiusUnit()
+.. seealso:: setBlurRadiusMapUnitScale()
+.. seealso:: blurRadiusUnit()
  :rtype: QgsMapUnitScale
 %End
 
@@ -897,14 +897,14 @@ class QgsTextShadowSettings
  Sets the map unit scale object for the shadow blur radius. This is only used if the
  blurRadiusUnit() is set to QgsUnitTypes.RenderMapUnit.
  \param scale scale for shadow blur radius
- \see blurRadiusMapUnitScale()
- \see setBlurRadiusUnit()
+.. seealso:: blurRadiusMapUnitScale()
+.. seealso:: setBlurRadiusUnit()
 %End
 
     bool blurAlphaOnly() const;
 %Docstring
  Returns whether only the alpha channel for the shadow will be blurred.
- \see setBlurAlphaOnly()
+.. seealso:: setBlurAlphaOnly()
  :rtype: bool
 %End
 
@@ -913,14 +913,14 @@ class QgsTextShadowSettings
  Sets whether only the alpha channel for the shadow should be blurred.
  \param alphaOnly set to true to blur only the alpha channel. If false, all channels (including
  red, green and blue channel) will be blurred.
- \see blurAlphaOnly()
+.. seealso:: blurAlphaOnly()
 %End
 
     double opacity() const;
 %Docstring
  Returns the shadow's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
  opaque).
- \see setOpacity()
+.. seealso:: setOpacity()
  :rtype: float
 %End
 
@@ -929,13 +929,13 @@ class QgsTextShadowSettings
  Sets the shadow's opacity.
  \param opacity opacity as a double value between 0 (fully transparent) and 1 (totally
  opaque)
- \see opacity()
+.. seealso:: opacity()
 %End
 
     int scale() const;
 %Docstring
  Returns the scaling used for the drop shadow (in percentage of original size).
- \see setScale()
+.. seealso:: setScale()
  :rtype: int
 %End
 
@@ -943,13 +943,13 @@ class QgsTextShadowSettings
 %Docstring
  Sets the scaling used for the drop shadow (in percentage of original size).
  \param scale scale percent for drop shadow
- \see scale()
+.. seealso:: scale()
 %End
 
     QColor color() const;
 %Docstring
  Returns the color of the drop shadow.
- \see setColor()
+.. seealso:: setColor()
  :rtype: QColor
 %End
 
@@ -957,13 +957,13 @@ class QgsTextShadowSettings
 %Docstring
  Sets the color for the drop shadow.
  \param color shadow color
- \see color()
+.. seealso:: color()
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
  Returns the blending mode used for drawing the drop shadow.
- \see setBlendMode()
+.. seealso:: setBlendMode()
  :rtype: QPainter.CompositionMode
 %End
 
@@ -971,33 +971,33 @@ class QgsTextShadowSettings
 %Docstring
  Sets the blending mode used for drawing the drop shadow.
  \param mode blending mode
- \see blendMode()
+.. seealso:: blendMode()
 %End
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
  Reads settings from a layer's custom properties.
  \param layer source vector layer
- \see writeToLayer()
+.. seealso:: writeToLayer()
 %End
 
     void writeToLayer( QgsVectorLayer *layer ) const;
 %Docstring
  Writes settings to a layer's custom properties.
  \param layer target vector layer
- \see readFromLayer()
+.. seealso:: readFromLayer()
 %End
 
     void readXml( const QDomElement &elem );
 %Docstring
  Read settings from a DOM element.
- \see writeXml()
+.. seealso:: writeXml()
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
  Write settings into a DOM element.
- \see readXml()
+.. seealso:: readXml()
  :rtype: QDomElement
 %End
 
@@ -1034,7 +1034,7 @@ class QgsTextFormat
     QgsTextBufferSettings &buffer();
 %Docstring
  Returns a reference to the text buffer settings.
- \see setBuffer()
+.. seealso:: setBuffer()
  :rtype: QgsTextBufferSettings
 %End
 
@@ -1043,13 +1043,13 @@ class QgsTextFormat
 %Docstring
  Sets the text's buffer settings.
  \param bufferSettings buffer settings
- \see buffer()
+.. seealso:: buffer()
 %End
 
     QgsTextBackgroundSettings &background();
 %Docstring
  Returns a reference to the text background settings.
- \see setBackground()
+.. seealso:: setBackground()
  :rtype: QgsTextBackgroundSettings
 %End
 
@@ -1058,13 +1058,13 @@ class QgsTextFormat
 %Docstring
  Sets the text's background settings.q
  \param backgroundSettings background settings
- \see background()
+.. seealso:: background()
 %End
 
     QgsTextShadowSettings &shadow();
 %Docstring
  Returns a reference to the text drop shadow settings.
- \see setShadow()
+.. seealso:: setShadow()
  :rtype: QgsTextShadowSettings
 %End
 
@@ -1073,7 +1073,7 @@ class QgsTextFormat
 %Docstring
  Sets the text's drop shadow settings.
  \param shadowSettings shadow settings
- \see shadow()
+.. seealso:: shadow()
 %End
 
     QFont font() const;
@@ -1081,9 +1081,9 @@ class QgsTextFormat
  Returns the font used for rendering text. Note that the size of the font
  is not used, and size() should be called instead to determine the size
  of rendered text.
- \see scaledFont()
- \see setFont()
- \see namedStyle()
+.. seealso:: scaledFont()
+.. seealso:: setFont()
+.. seealso:: namedStyle()
  :rtype: QFont
 %End
 
@@ -1093,8 +1093,8 @@ class QgsTextFormat
  units and map unit scale) for a specified render context.
  \param context destination render context
  :return: font with scaled size
- \see font()
- \see size()
+.. seealso:: font()
+.. seealso:: size()
  :rtype: QFont
 %End
 
@@ -1104,15 +1104,15 @@ class QgsTextFormat
  is not used, and setSize() should be called instead to explicitly set the size
  of rendered text.
  \param font desired font
- \see font()
- \see setNamedStyle()
+.. seealso:: font()
+.. seealso:: setNamedStyle()
 %End
 
     QString namedStyle() const;
 %Docstring
  Returns the named style for the font used for rendering text (e.g., "bold").
- \see setNamedStyle()
- \see font()
+.. seealso:: setNamedStyle()
+.. seealso:: font()
  :rtype: str
 %End
 
@@ -1120,15 +1120,15 @@ class QgsTextFormat
 %Docstring
  Sets the named style for the font used for rendering text.
  \param style named style, e.g., "bold"
- \see namedStyle()
- \see setFont()
+.. seealso:: namedStyle()
+.. seealso:: setFont()
 %End
 
     double size() const;
 %Docstring
  Returns the size for rendered text. Units are retrieved using sizeUnit().
- \see setSize()
- \see sizeUnit()
+.. seealso:: setSize()
+.. seealso:: sizeUnit()
  :rtype: float
 %End
 
@@ -1136,16 +1136,16 @@ class QgsTextFormat
 %Docstring
  Sets the size for rendered text.
  \param size size of rendered text. Units are set using setSizeUnit()
- \see size()
- \see setSizeUnit()
+.. seealso:: size()
+.. seealso:: setSizeUnit()
 %End
 
     QgsUnitTypes::RenderUnit sizeUnit() const;
 %Docstring
  Returns the units for the size of rendered text.
- \see size()
- \see setSizeUnit()
- \see sizeMapUnitScale()
+.. seealso:: size()
+.. seealso:: setSizeUnit()
+.. seealso:: sizeMapUnitScale()
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -1153,17 +1153,17 @@ class QgsTextFormat
 %Docstring
  Sets the units for the size of rendered text.
  \param unit size units
- \see setSize()
- \see sizeUnit()
- \see setSizeMapUnitScale()
+.. seealso:: setSize()
+.. seealso:: sizeUnit()
+.. seealso:: setSizeMapUnitScale()
 %End
 
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
  Returns the map unit scale object for the size. This is only used if the
  sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
- \see setSizeMapUnitScale()
- \see sizeUnit()
+.. seealso:: setSizeMapUnitScale()
+.. seealso:: sizeUnit()
  :rtype: QgsMapUnitScale
 %End
 
@@ -1171,14 +1171,14 @@ class QgsTextFormat
 %Docstring
  Sets the map unit scale object for the size. This is only used if the
  sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
- \see sizeMapUnitScale()
- \see setSizeUnit()
+.. seealso:: sizeMapUnitScale()
+.. seealso:: setSizeUnit()
 %End
 
     QColor color() const;
 %Docstring
  Returns the color that text will be rendered in.
- \see setColor()
+.. seealso:: setColor()
  :rtype: QColor
 %End
 
@@ -1186,14 +1186,14 @@ class QgsTextFormat
 %Docstring
  Sets the color that text will be rendered in.
  \param color text color
- \see color()
+.. seealso:: color()
 %End
 
     double opacity() const;
 %Docstring
  Returns the text's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
  opaque).
- \see setOpacity()
+.. seealso:: setOpacity()
  :rtype: float
 %End
 
@@ -1202,13 +1202,13 @@ class QgsTextFormat
  Sets the text's opacity.
  \param opacity opacity as a double value between 0 (fully transparent) and 1 (totally
  opaque)
- \see opacity()
+.. seealso:: opacity()
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
  Returns the blending mode used for drawing the text.
- \see setBlendMode()
+.. seealso:: setBlendMode()
  :rtype: QPainter.CompositionMode
 %End
 
@@ -1216,7 +1216,7 @@ class QgsTextFormat
 %Docstring
  Sets the blending mode used for drawing the text.
  \param mode blending mode
- \see blendMode()
+.. seealso:: blendMode()
 %End
 
     double lineHeight() const;
@@ -1224,7 +1224,7 @@ class QgsTextFormat
  Returns the line height for text. This is a number between
  0.0 and 10.0 representing the leading between lines as a
  multiplier of line height.
- \see setLineHeight()
+.. seealso:: setLineHeight()
  :rtype: float
 %End
 
@@ -1234,33 +1234,33 @@ class QgsTextFormat
  \param height a number between
  0.0 and 10.0 representing the leading between lines as a
  multiplier of line height.
- \see lineHeight()
+.. seealso:: lineHeight()
 %End
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
  Reads settings from a layer's custom properties.
  \param layer source vector layer
- \see writeToLayer()
+.. seealso:: writeToLayer()
 %End
 
     void writeToLayer( QgsVectorLayer *layer ) const;
 %Docstring
  Writes settings to a layer's custom properties.
  \param layer target vector layer
- \see readFromLayer()
+.. seealso:: readFromLayer()
 %End
 
     void readXml( const QDomElement &elem );
 %Docstring
  Read settings from a DOM element.
- \see writeXml()
+.. seealso:: writeXml()
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
  Write settings into a DOM element.
- \see readXml()
+.. seealso:: readXml()
  :rtype: QDomElement
 %End
 
@@ -1275,7 +1275,7 @@ class QgsTextFormat
 %Docstring
  Returns true if the specified font was found on the system, or false
  if the font was not found and a replacement was used instead.
- \see resolvedFontFamily()
+.. seealso:: resolvedFontFamily()
  :rtype: bool
 %End
 
@@ -1284,7 +1284,7 @@ class QgsTextFormat
  Returns the family for the resolved font, ie if the specified font
  was not found on the system this will return the name of the replacement
  font.
- \see fontFound()
+.. seealso:: fontFound()
  :rtype: str
 %End
 

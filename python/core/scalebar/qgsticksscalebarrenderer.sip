@@ -42,13 +42,13 @@ class QgsTicksScaleBarRenderer: QgsScaleBarRenderer
     void setTickPosition( TickPosition position );
 %Docstring
  Sets the ``position`` for tick marks in the scalebar.
- \see tickPosition()
+.. seealso:: tickPosition()
 %End
 
     TickPosition tickPosition() const;
 %Docstring
  Returns the position for tick marks in the scalebar.
- \see setTickPosition()
+.. seealso:: setTickPosition()
  :rtype: TickPosition
 %End
 

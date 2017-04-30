@@ -92,7 +92,7 @@ class QgsColorScheme
 %Docstring
  Returns whether the color scheme is editable
  :return: true if scheme is editable
- \see setColors
+.. seealso:: setColors
  :rtype: bool
 %End
 
@@ -103,7 +103,7 @@ class QgsColorScheme
  \param context to set colors for
  \param baseColor base color to set colors for
  :return: true if colors were set successfully
- \see isEditable
+.. seealso:: isEditable
  :rtype: bool
 %End
 
@@ -232,14 +232,14 @@ class QgsRecentColorScheme : QgsColorScheme
  Adds a color to the list of recent colors.
  \param color color to add
 .. versionadded:: 2.14
- \see lastUsedColor()
+.. seealso:: lastUsedColor()
 %End
 
     static QColor lastUsedColor();
 %Docstring
  Returns the most recently used color.
 .. versionadded:: 3.0
- \see addRecentColor()
+.. seealso:: addRecentColor()
  :rtype: QColor
 %End
 };

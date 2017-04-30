@@ -55,8 +55,8 @@ Tells whether the operation has been canceled already
 %Docstring
  Sets the current progress for the feedback object. The ``progress``
  argument is in percentage and valid values range from 0-100.
- \see progress()
- \see progressChanged()
+.. seealso:: progress()
+.. seealso:: progressChanged()
 .. versionadded:: 3.0
 %End
 
@@ -65,8 +65,8 @@ Tells whether the operation has been canceled already
  Returns the current progress reported by the feedback object. Depending on how the
  feedback object is used progress reporting may not be supported. The returned value
  is in percentage and ranges from 0-100.
- \see setProgress()
- \see progressChanged()
+.. seealso:: setProgress()
+.. seealso:: progressChanged()
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -83,8 +83,8 @@ Internal routines can connect to this signal if they use event loop
  feedback object is used progress reporting may not be supported. The ``progress``
  argument is in percentage and ranges from 0-100.
 .. versionadded:: 3.0
- \see setProgress()
- \see progress()
+.. seealso:: setProgress()
+.. seealso:: progress()
 %End
 
 };

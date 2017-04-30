@@ -30,27 +30,27 @@ Constructor
     QgsFields fields() const;
 %Docstring
  Returns the store's field list.
- \see setFields()
+.. seealso:: setFields()
  :rtype: QgsFields
 %End
 
     void setFields( const QgsFields &fields );
 %Docstring
  Sets the store's ``fields``. Every contained feature's fields will be reset to match ``fields``.
- \see fields()
+.. seealso:: fields()
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
  Returns the store's coordinate reference system.
- \see setCrs()
+.. seealso:: setCrs()
  :rtype: QgsCoordinateReferenceSystem
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
  Sets the store's ``crs``.
- \see crs()
+.. seealso:: crs()
 %End
 
     virtual bool addFeature( QgsFeature &feature );
@@ -67,13 +67,13 @@ Constructor
     void setParams( const QMap<QString, QVariant> &parameters );
 %Docstring
  Sets a map of optional ``parameters`` for the store.
- \see params()
+.. seealso:: params()
 %End
 
     QMap<QString, QVariant> params() const;
 %Docstring
  Returns the map of optional parameters.
- \see setParams()
+.. seealso:: setParams()
  :rtype: QMap<str, QVariant>
 %End
 

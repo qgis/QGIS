@@ -31,6 +31,9 @@ sub processDoxygenLine
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
         return ".. versionadded:: $1\n";
     }
+    if ( $line =~ m/\\see (.*)/ ) {
+        return ".. seealso:: $1\n";
+    }
     if ( $line =~ m/[\\@]note (.*)/ ) {
         return ".. note::\n\n   $1\n";
     }

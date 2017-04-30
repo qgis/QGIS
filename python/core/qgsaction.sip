@@ -145,7 +145,7 @@ Checks if the action is runable on the current platform
  Action scopes may offer additional variables like the clicked
  coordinate.
 
- \see QgsActionScope
+.. seealso:: QgsActionScope
 .. versionadded:: 3.0
  :rtype: set of str
 %End

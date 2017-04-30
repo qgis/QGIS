@@ -1,13 +1,25 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsvertexmarker.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 
 class QgsVertexMarker : QgsMapCanvasItem
 {
-%TypeHeaderCode
-#include <qgsvertexmarker.h>
+%Docstring
+ A class for marking vertices of features using e.g. circles or 'x'.
 %End
 
+%TypeHeaderCode
+#include "qgsvertexmarker.h"
+%End
   public:
 
-    //! Icons
     enum IconType
     {
       ICON_NONE,
@@ -24,17 +36,58 @@ class QgsVertexMarker : QgsMapCanvasItem
     void setIconType( int iconType );
 
     void setIconSize( int iconSize );
+
     void setColor( const QColor &color );
+%Docstring
+ Sets the stroke ``color`` for the marker.
+.. seealso:: color()
+.. seealso:: setFillColor()
+%End
+
     QColor color() const;
+%Docstring
+ Returns the stroke color for the marker.
+.. seealso:: setColor()
+.. seealso:: fillColor()
+.. versionadded:: 3.0
+ :rtype: QColor
+%End
+
     void setFillColor( const QColor &color );
+%Docstring
+ Sets the fill ``color`` for the marker. This setting only
+ applies to some icon types.
+.. versionadded:: 3.0
+.. seealso:: fillColor()
+.. seealso:: setColor()
+%End
+
     QColor fillColor() const;
+%Docstring
+ Returns the fill ``color`` for the marker. This setting only
+ applies to some icon types.
+.. versionadded:: 3.0
+.. seealso:: setFillColor()
+.. seealso:: color()
+ :rtype: QColor
+%End
 
     void setPenWidth( int width );
 
-    void paint( QPainter *p );
+    virtual void paint( QPainter *p );
 
-    QRectF boundingRect() const;
+
+    virtual QRectF boundingRect() const;
+
 
     virtual void updatePosition();
+
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsvertexmarker.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
