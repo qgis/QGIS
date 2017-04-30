@@ -5778,7 +5778,7 @@ bool QgsExpression::NodeColumnRef::prepareNode( QgsExpression *parent, const Qgs
 
 QString QgsExpression::NodeColumnRef::dump() const
 {
-  return quotedColumnRef( mName );
+  return QRegExp( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ).exactMatch( mName ) ? mName : quotedColumnRef( mName );
 }
 
 QSet<QString> QgsExpression::NodeColumnRef::referencedColumns() const
@@ -5804,6 +5804,11 @@ bool QgsExpression::NodeColumnRef::isStatic( QgsExpression *parent, const QgsExp
 }
 
 //
+
+QgsExpression::NodeCondition::NodeCondition( QgsExpression::WhenThenList *conditions, QgsExpression::Node *elseExp )
+  : mConditions( *conditions )
+  , mElseExp( elseExp )
+{ delete conditions; }
 
 QVariant QgsExpression::NodeCondition::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
