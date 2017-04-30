@@ -22,7 +22,9 @@
 
 #include <ui_qgsadvanceddigitizingdockwidgetbase.h>
 #include "qgis_gui.h"
+#include "qgis.h"
 #include <memory>
+
 
 class QgsAdvancedDigitizingCanvasItem;
 class QgsMapCanvas;
@@ -32,8 +34,8 @@ class QgsPoint;
 
 // tolerances for soft constraints (last values, and common angles)
 // for angles, both tolerance in pixels and degrees are used for better performance
-static const double SOFT_CONSTRAINT_TOLERANCE_PIXEL = 15;
-static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10;
+static const double SOFT_CONSTRAINT_TOLERANCE_PIXEL = 15 SIP_SKIP;
+static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10 SIP_SKIP;
 
 /** \ingroup gui
  * \brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
@@ -423,7 +425,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     bool filterKeyPress( QKeyEvent *e );
 
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
-    bool eventFilter( QObject *obj, QEvent *event ) override;
+    //! \note defined as private in Python bindings
+    bool eventFilter( QObject *obj, QEvent *event ) override SIP_SKIP;
 
     //! trigger fake mouse move event to update map tool rubber band and/or show new constraints
     void triggerMouseMoveEvent();
@@ -477,6 +480,11 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QMap< QAction *, int > mCommonAngleActions; // map the common angle actions with their angle values
     QMap< QAction *, QgsMapMouseEvent::SnappingMode > mSnappingActions; // map the snapping mode actions with their values
 
+  private:
+#ifdef SIP_RUN
+    //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
+    bool eventFilter( QObject *obj, QEvent *event ) override SIP_SKIP;
+#endif
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAdvancedDigitizingDockWidget::CadCapacities )

@@ -1,75 +1,69 @@
-/***************************************************************************
-    qgsadvanceddigitizingdockwidget.sip  -  dock for CAD tools
-    ----------------------
-    begin                : October 2014
-    copyright            : (C) Denis Rouzaud
-    email                : denis.rouzaud@gmail.com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsadvanceddigitizingdockwidget.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
 
-/**
- * @brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
- * used to handle the CAD tools on top of a selection of map tools.
- * It handles both the UI and the constraints. Constraints are applied
- * by implementing filters called from QgsMapToolAdvancedDigitizing.
- */
-class QgsAdvancedDigitizingDockWidget : QDockWidget
+
+
+
+
+
+class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 {
+%Docstring
+ The QgsAdvancedDigitizingDockWidget class is a dockable widget
+ used to handle the CAD tools on top of a selection of map tools.
+ It handles both the UI and the constraints. Constraints are applied
+ by implementing filters called from QgsMapToolAdvancedDigitizing.
+%End
+
 %TypeHeaderCode
-#include <qgsadvanceddigitizingdockwidget.h>
+#include "qgsadvanceddigitizingdockwidget.h"
 %End
   public:
 
-    /**
-     * The CadCapacity enum defines the possible constraints to be set
-     * depending on the number of points in the CAD point list (the list of points
-     * currently digitized)
-     */
     enum CadCapacity
     {
-      AbsoluteAngle, //!< Azimuth
-      RelativeAngle, //!< also for parallel and perpendicular
-      RelativeCoordinates, //!< this corresponds to distance and relative coordinates
+      AbsoluteAngle,
+      RelativeAngle,
+      RelativeCoordinates,
     };
+    typedef QFlags<QgsAdvancedDigitizingDockWidget::CadCapacity> CadCapacities;
 
-    /**
-     * Additional constraints which can be enabled
-     */
+
     enum AdditionalConstraint
     {
-      NoConstraint,  //!< No additional constraint
-      Perpendicular, //!< Perpendicular
-      Parallel       //!< Parallel
+      NoConstraint,
+      Perpendicular,
+      Parallel
     };
 
-    /**
-     * Determines if the dock has to record one, two or many points.
-     */
     enum AdvancedDigitizingMode
     {
-      SinglePoint, //!< Capture a single point (e.g. for point digitizing)
-      TwoPoints,   //!< Capture two points (e.g. for translation)
-      ManyPoints   //!< Capture two or more points (e.g. line or polygon digitizing)
+      SinglePoint,
+      TwoPoints,
+      ManyPoints
     };
 
-    /**
-     * @brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
-     * It contains all values (locked, value, relative) and pointers to corresponding widgets.
-     * @note Relative is not mandatory since it is not used for distance.
-     */
     class CadConstraint
-    {
+{
+%Docstring
+ The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
+ It contains all values (locked, value, relative) and pointers to corresponding widgets.
+.. note::
+
+   Relative is not mandatory since it is not used for distance.
+%End
+
+%TypeHeaderCode
+#include "qgsadvanceddigitizingdockwidget.h"
+%End
       public:
-        /**
-         * The lock mode
-         */
+
         enum LockMode
         {
           NoLock,
@@ -77,261 +71,309 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
           HardLock
         };
 
-        /** Constructor for CadConstraint.
-         * @param lineEdit associated line edit for constraint value
-         * @param lockerButton associated button for locking constraint
-         * @param relativeButton optional button for toggling relative constraint mode
-         * @param repeatingLockButton optional button for toggling repeating lock mode
-         */
-        CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = nullptr, QToolButton* repeatingLockButton = nullptr );
+        CadConstraint( QLineEdit *lineEdit, QToolButton *lockerButton, QToolButton *relativeButton = 0, QToolButton *repeatingLockButton = 0 );
+%Docstring
+ Constructor for CadConstraint.
+ \param lineEdit associated line edit for constraint value
+ \param lockerButton associated button for locking constraint
+ \param relativeButton optional button for toggling relative constraint mode
+ \param repeatingLockButton optional button for toggling repeating lock mode
+%End
 
-        /**
-         * The current lock mode of this constraint
-         * @return Lock mode
-         */
         LockMode lockMode() const;
-        /**
-         * Is any kind of lock mode enabled
-         */
+%Docstring
+ The current lock mode of this constraint
+ :return: Lock mode
+ :rtype: LockMode
+%End
+
         bool isLocked() const;
+%Docstring
+ Is any kind of lock mode enabled
+ :rtype: bool
+%End
 
-        /** Returns true if a repeating lock is set for the constraint. Repeating locks are not
-         * automatically cleared after a new point is added.
-         * @note added in QGIS 2.16
-         * @see setRepeatingLock()
-         */
         bool isRepeatingLock() const;
+%Docstring
+ Returns true if a repeating lock is set for the constraint. Repeating locks are not
+ automatically cleared after a new point is added.
+.. versionadded:: 2.16
+.. seealso:: setRepeatingLock()
+ :rtype: bool
+%End
 
-        /**
-         * Is the constraint in relative mode
-         */
         bool relative() const;
-        /**
-         * The value of the constraint
-         */
+%Docstring
+ Is the constraint in relative mode
+ :rtype: bool
+%End
+
         double value() const;
+%Docstring
+ The value of the constraint
+ :rtype: float
+%End
 
-        /**
-         * The line edit that manages the value of the constraint
-         */
-        QLineEdit* lineEdit() const;
+        QLineEdit *lineEdit() const;
+%Docstring
+ The line edit that manages the value of the constraint
+ :rtype: QLineEdit
+%End
 
-        /**
-         * Set the lock mode
-         */
         void setLockMode( LockMode mode );
+%Docstring
+ Set the lock mode
+%End
 
-        /** Sets whether a repeating lock is set for the constraint. Repeating locks are not
-         * automatically cleared after a new point is added.
-         * @param repeating set to true to set the lock to repeat automatically
-         * @note added in QGIS 2.16
-         * @see isRepeatingLock()
-         */
         void setRepeatingLock( bool repeating );
+%Docstring
+ Sets whether a repeating lock is set for the constraint. Repeating locks are not
+ automatically cleared after a new point is added.
+ \param repeating set to true to set the lock to repeat automatically
+.. versionadded:: 2.16
+.. seealso:: isRepeatingLock()
+%End
 
-        /**
-         * Set if the constraint should be treated relative
-         */
         void setRelative( bool relative );
+%Docstring
+ Set if the constraint should be treated relative
+%End
 
-        /**
-         * Set the value of the constraint
-         * @param value new value for constraint
-         * @param updateWidget set to false to prevent automatically updating the associated widget's value
-         */
         void setValue( double value, bool updateWidget = true );
+%Docstring
+ Set the value of the constraint
+ \param value new value for constraint
+ \param updateWidget set to false to prevent automatically updating the associated widget's value
+%End
 
-        /**
-         * Toggle lock mode
-         */
         void toggleLocked();
+%Docstring
+ Toggle lock mode
+%End
 
-        /**
-         * Toggle relative mode
-         */
         void toggleRelative();
+%Docstring
+ Toggle relative mode
+%End
+
     };
 
-    //! performs the intersection of a circle and a line
-    //! @note from the two solutions, the intersection will be set to the closest point
-    static bool lineCircleIntersection( const QgsPoint& center, const double radius, const QList<QgsPoint>& segment, QgsPoint& intersection );
+    static bool lineCircleIntersection( const QgsPoint &center, const double radius, const QList<QgsPoint> &segment, QgsPoint &intersection );
+%Docstring
+.. note::
 
-    /**
-     * Create an advanced digitizing dock widget
-     * @param canvas The map canvas on which the widget operates
-     * @param parent The parent
-     */
-    explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent = 0 );
+   from the two solutions, the intersection will be set to the closest point
+ :rtype: bool
+%End
 
-    /**
-     * Disables the CAD tools when hiding the dock
-     */
-    void hideEvent( QHideEvent* );
+    explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
+%Docstring
+ Create an advanced digitizing dock widget
+ \param canvas The map canvas on which the widget operates
+ \param parent The parent
+%End
 
-    /**
-     * Will react on a canvas press event
-     *
-     * @param e A mouse event (may be modified)
-     * @return  If the event is hidden (construction mode hides events from the maptool)
-     */
-    bool canvasPressEvent( QgsMapMouseEvent* e );
-    /**
-     * Will react on a canvas release event
-     *
-     * @param e A mouse event (may be modified)
-     * @param mode determines if the dock has to record one, two or many points.
-     * @return  If the event is hidden (construction mode hides events from the maptool)
-     */
-    bool canvasReleaseEvent( QgsMapMouseEvent* e, AdvancedDigitizingMode mode );
-    /**
-     * Will react on a canvas move event
-     *
-     * @param e A mouse event (may be modified)
-     * @return  If the event is hidden (construction mode hides events from the maptool)
-     */
-    bool canvasMoveEvent( QgsMapMouseEvent* e );
-    /**
-     * Filter key events to e.g. toggle construction mode or adapt constraints
-     *
-     * @param e A mouse event (may be modified)
-     * @return  If the event is hidden (construction mode hides events from the maptool)
-     */
+    virtual void hideEvent( QHideEvent * );
+
+%Docstring
+ Disables the CAD tools when hiding the dock
+%End
+
+    bool canvasPressEvent( QgsMapMouseEvent *e );
+%Docstring
+ Will react on a canvas press event
+
+ \param e A mouse event (may be modified)
+ :return:  If the event is hidden (construction mode hides events from the maptool)
+ :rtype: bool
+%End
+
+    bool canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode );
+%Docstring
+ Will react on a canvas release event
+
+ \param e A mouse event (may be modified)
+ \param mode determines if the dock has to record one, two or many points.
+ :return:  If the event is hidden (construction mode hides events from the maptool)
+ :rtype: bool
+%End
+
+    bool canvasMoveEvent( QgsMapMouseEvent *e );
+%Docstring
+ Will react on a canvas move event
+
+ \param e A mouse event (may be modified)
+ :return:  If the event is hidden (construction mode hides events from the maptool)
+ :rtype: bool
+%End
+
     bool canvasKeyPressEventFilter( QKeyEvent *e );
+%Docstring
+ Filter key events to e.g. toggle construction mode or adapt constraints
 
-    //! apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
-    //! @return false if no solution was found (invalid constraints)
-    virtual bool applyConstraints( QgsMapMouseEvent* e );
+ \param e A mouse event (may be modified)
+ :return:  If the event is hidden (construction mode hides events from the maptool)
+ :rtype: bool
+%End
 
-    /**
-     * Clear any cached previous clicks and helper lines
-     */
+    virtual bool applyConstraints( QgsMapMouseEvent *e );
+%Docstring
+:return: false if no solution was found (invalid constraints)
+ :rtype: bool
+%End
+
     void clear();
+%Docstring
+ Clear any cached previous clicks and helper lines
+%End
 
-    /**
-     * The snapping mode
-     * @return Snapping mode
-     */
     QgsMapMouseEvent::SnappingMode snappingMode();
+%Docstring
+ The snapping mode
+ :return: Snapping mode
+ :rtype: QgsMapMouseEvent.SnappingMode
+%End
 
-    //! key press event on the dock
-    void keyPressEvent( QKeyEvent* e );
+    virtual void keyPressEvent( QKeyEvent *e );
 
-    //! determines if CAD tools are enabled or if map tools behaves "nomally"
+
     bool cadEnabled() const;
+%Docstring
+determines if CAD tools are enabled or if map tools behaves "nomally"
+ :rtype: bool
+%End
 
-    //! construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
     bool constructionMode() const;
+%Docstring
+construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
+ :rtype: bool
+%End
 
-    //! Additional constraints are used to place perpendicular/parallel segments to snapped segments on the canvas
     AdditionalConstraint additionalConstraint() const;
-    //! Constraint on the angle
-    const CadConstraint* constraintAngle()const;
-    //! Constraint on the distance
-    const CadConstraint* constraintDistance() const;
-    //! Constraint on the X coordinate
-    const CadConstraint* constraintX() const;
-    //! Constraint on the Y coordinate
-    const CadConstraint* constraintY() const;
-    //! Constraint on a common angle
+%Docstring
+Additional constraints are used to place perpendicular/parallel segments to snapped segments on the canvas
+ :rtype: AdditionalConstraint
+%End
+    const CadConstraint *constraintAngle() const;
+%Docstring
+Constraint on the angle
+ :rtype: CadConstraint
+%End
+    const CadConstraint *constraintDistance() const;
+%Docstring
+Constraint on the distance
+ :rtype: CadConstraint
+%End
+    const CadConstraint *constraintX() const;
+%Docstring
+Constraint on the X coordinate
+ :rtype: CadConstraint
+%End
+    const CadConstraint *constraintY() const;
+%Docstring
+Constraint on the Y coordinate
+ :rtype: CadConstraint
+%End
     bool commonAngleConstraint() const;
+%Docstring
+Constraint on a common angle
+ :rtype: bool
+%End
 
-    /**
-     * The last point.
-     * Helper for the CAD point list. The CAD point list is the list of points
-     * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
-     */
-    QgsPoint currentPoint( bool* exists  = 0 ) const;
+    QgsPoint currentPoint( bool *exists  = 0 ) const;
+%Docstring
+ The last point.
+ Helper for the CAD point list. The CAD point list is the list of points
+ currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+ :rtype: QgsPoint
+%End
 
-    /**
-     * The previous point.
-     * Helper for the CAD point list. The CAD point list is the list of points
-     * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
-     */
-    QgsPoint previousPoint( bool* exists = 0 ) const;
+    QgsPoint previousPoint( bool *exists = 0 ) const;
+%Docstring
+ The previous point.
+ Helper for the CAD point list. The CAD point list is the list of points
+ currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+ :rtype: QgsPoint
+%End
 
-    /**
-     * The penultimate point.
-     * Helper for the CAD point list. The CAD point list is the list of points
-     * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
-     */
-    QgsPoint penultimatePoint( bool* exists = 0 ) const;
+    QgsPoint penultimatePoint( bool *exists = 0 ) const;
+%Docstring
+ The penultimate point.
+ Helper for the CAD point list. The CAD point list is the list of points
+ currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+ :rtype: QgsPoint
+%End
 
-    /**
-     * The number of points in the CAD point helper list
-     */
     int pointsCount() const;
+%Docstring
+ The number of points in the CAD point helper list
+ :rtype: int
+%End
 
-    /**
-     * Is it snapped to a vertex
-     */
     bool snappedToVertex() const;
+%Docstring
+ Is it snapped to a vertex
+ :rtype: bool
+%End
 
-    /**
-     * Snapped to a segment
-     */
     QList<QgsPoint> snappedSegment() const;
+%Docstring
+ Snapped to a segment
+ :rtype: list of QgsPoint
+%End
 
-    //! return the action used to enable/disable the tools
-    QAction* enableAction();
+    QAction *enableAction();
+%Docstring
+return the action used to enable/disable the tools
+ :rtype: QAction
+%End
 
-    /**
-     * Enables the tool (call this when an appropriate map tool is set and in the condition to make use of
-     * cad digitizing)
-     * Normally done automatically from QgsMapToolAdvancedDigitizing::activate() but may need to be fine tuned
-     * if the map tool depends on preconditions like a feature selection.
-     */
     void enable();
+%Docstring
+ Enables the tool (call this when an appropriate map tool is set and in the condition to make use of
+ cad digitizing)
+ Normally done automatically from QgsMapToolAdvancedDigitizing.activate() but may need to be fine tuned
+ if the map tool depends on preconditions like a feature selection.
+%End
 
-    /**
-     * Disable the widget. Normally done automatically from QgsMapToolAdvancedDigitizing::deactivate().
-     */
     void disable();
+%Docstring
+ Disable the widget. Normally done automatically from QgsMapToolAdvancedDigitizing.deactivate().
+%End
 
   signals:
-    /**
-     * Push a warning
-     *
-     * @param message An informative message
-     */
-    void pushWarning( const QString& message );
 
-    /**
-     * Remove any previously emitted warnings (if any)
-     */
+    void pushWarning( const QString &message );
+%Docstring
+ Push a warning
+
+ \param message An informative message
+%End
+
     void popWarning();
+%Docstring
+ Remove any previously emitted warnings (if any)
+%End
 
-    /**
-     * Sometimes a constraint may change the current point out of a mouse event. This happens normally
-     * when a constraint is toggled.
-     *
-     * @param point The last known digitizing point. Can be used to emulate a mouse event.
-     */
-    void pointChanged( const QgsPoint& point );
+    void pointChanged( const QgsPoint &point );
+%Docstring
+ Sometimes a constraint may change the current point out of a mouse event. This happens normally
+ when a constraint is toggled.
 
-  private slots:
-    //! set the additiona constraint by clicking on the perpendicular/parallel buttons
-    void additionalConstraintClicked( bool activated );
-
-    //! lock/unlock a constraint and set its value
-    void lockConstraint( bool activate = true );
-
-    //! unlock all constraints
-    //! @param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
-    void releaseLocks( bool releaseRepeatingLocks = true );
-
-    //! set the relative properties of constraints
-    void setConstraintRelative( bool activate );
-
-    //! activate/deactivate tools. It is called when tools are activated manually (from the GUI)
-    //! it will call setCadEnabled to properly update the UI.
-    void activateCad( bool enabled );
-
-    //! enable/disable construction mode (events are not forwarded to the map tool)
-    void setConstructionMode( bool enabled );
-
-    //! settings button triggered
-    void settingsButtonTriggered( QAction* action );
+ \param point The last known digitizing point. Can be used to emulate a mouse event.
+%End
 
   private:
-    bool eventFilter( QObject *obj, QEvent *event );
+    //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
 };
+
+QFlags<QgsAdvancedDigitizingDockWidget::CadCapacity> operator|(QgsAdvancedDigitizingDockWidget::CadCapacity f1, QFlags<QgsAdvancedDigitizingDockWidget::CadCapacity> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsadvanceddigitizingdockwidget.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
