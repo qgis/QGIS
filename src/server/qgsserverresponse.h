@@ -51,7 +51,7 @@ class SERVER_EXPORT QgsServerResponse
     /**
      *  Set Header entry
      *  Add Header entry to the response
-     *  Note that it is usually an error to set Header after writing data
+     *  Note that it is usually an error to set Header after data have been sent through the wire
      */
     virtual void setHeader( const QString &key, const QString &value ) = 0;
 
@@ -59,7 +59,7 @@ class SERVER_EXPORT QgsServerResponse
      * Clear header
      * Undo a previous 'setHeader' call
      */
-    virtual void clearHeader( const QString &key ) = 0;
+    virtual void removeHeader( const QString &key ) = 0;
 
     /**
      * Return the header value
@@ -67,9 +67,9 @@ class SERVER_EXPORT QgsServerResponse
     virtual QString header( const QString &key ) const = 0;
 
     /**
-     * Return the list of all header keys
+     * Return the header value
      */
-    virtual QList<QString> headerKeys() const = 0;
+    virtual QMap<QString, QString> headers( ) const = 0;
 
     /**
      * Return true if the headers have alredy been sent

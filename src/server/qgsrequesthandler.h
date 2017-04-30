@@ -64,17 +64,29 @@ class SERVER_EXPORT QgsRequestHandler
      */
     void sendResponse();
 
-    //! Set an HTTP header
-    void setHeader( const QString &name, const QString &value );
+    //! Set an HTTP response header
+    void setResponseHeader( const QString &name, const QString &value );
 
-    //! Remove an HTTP header
-    void removeHeader( const QString &name );
+    //! Remove an HTTP response header
+    void removeResponseHeader( const QString &name );
 
-    //! Retrieve header value
-    QString header( const QString &name ) const;
+    //! Retrieve response header value
+    QString responseHeader( const QString &name ) const;
 
-    //! Return the list of all header keys
-    QList<QString> headerKeys() const;
+    //! Return the response headers
+    QMap<QString, QString> responseHeaders() const;
+
+    //! Set an HTTP request header
+    void setRequestHeader( const QString &name, const QString &value );
+
+    //! Remove an HTTP request header
+    void removeRequestHeader( const QString &name );
+
+    //! Retrieve request header value
+    QString requestHeader( const QString &name ) const;
+
+    //! Return the Request headers
+    QMap<QString, QString> requestHeaders() const;
 
     //! Clears the response body and headers
     void clear();

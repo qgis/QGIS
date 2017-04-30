@@ -100,7 +100,7 @@ namespace QgsWfs
     }
     else
     {
-      QString typeNames = request.getParameter( QStringLiteral( "TYPENAME" ) );
+      QString typeNames = request.parameter( QStringLiteral( "TYPENAME" ) );
       if ( !typeNames.isEmpty() )
       {
         QStringList typeNameSplit = typeNames.split( QStringLiteral( "," ) );

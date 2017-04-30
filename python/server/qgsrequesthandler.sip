@@ -29,20 +29,29 @@ class QgsRequestHandler  /Abstract/
     /** Allow plugins to return a QgsServerException*/
     void setServiceException( const QgsServerException &ex );
 
-    /** Set an HTTP header*/
-    void setHeader( const QString &name, const QString &value );
+    //! Set an HTTP response header
+    void setResponseHeader( const QString &name, const QString &value );
 
-    //! Retrieve header value
-    QString header( const QString &name ) const;
+    //! Remove an HTTP response header
+    void removeResponseHeader( const QString &name );
 
-    //! Return the list of all header keys
-    QList<QString> headerKeys() const;
+    //! Retrieve response header value
+    QString responseHeader( const QString &name ) const;
 
-    /** Remove an HTTP header*/
-    void removeHeader( const QString &name );
+    //! Return the response headers
+    QMap<QString, QString> responseHeaders() const;
 
-    /** Delete all HTTP headers*/
-    void clear();
+    //! Set an HTTP request header
+    void setRequestHeader( const QString &name, const QString &value );
+
+    //! Remove an HTTP request header
+    void removeRequestHeader( const QString &name );
+
+    //! Retrieve request header value
+    QString requestHeader( const QString &name ) const;
+
+    //! Return the Request headers
+    QMap<QString, QString> requestHeaders() const;
 
     /** Append the bytestream to response body*/
     void appendBody( const QByteArray &body );
@@ -61,6 +70,9 @@ class QgsRequestHandler  /Abstract/
 
     /** Clear response buffer */
     void clearBody();
+
+    //! Clears the response body and headers
+    void clear();
 
     /** Return body data */
     QByteArray body() const;

@@ -121,7 +121,7 @@ class TestQgsServerPlugins(unittest.TestCase):
                 QgsMessageLog.logMessage("SimpleHelloFilter.responseComplete")
                 if params.get('SERVICE', '').upper() == 'SIMPLE':
                     request.clear()
-                    request.setHeader('Content-type', 'text/plain')
+                    request.setResponseHeader('Content-type', 'text/plain')
                     request.appendBody('Hello from SimpleServer!'.encode('utf-8'))
 
         serverIface = self.server.serverInterface()
@@ -178,7 +178,7 @@ class TestQgsServerPlugins(unittest.TestCase):
                 global headers2
                 request = self.serverInterface().requestHandler()
                 request.clearBody()
-                headers2 = {k: request.header(k) for k in request.headerKeys()}
+                headers2 = request.responseHeaders()
                 request.appendBody('new body, new life!'.encode('utf-8'))
 
         filter1 = Filter1(serverIface)

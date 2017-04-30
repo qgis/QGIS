@@ -389,7 +389,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QString outputFileName = parameterMap.value( QStringLiteral( "FILE_NAME" ) );
       if ( !outputFileName.isEmpty() )
       {
-        requestHandler.setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
+        requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
       }
 
       // Lookup for service

@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsbufferserverrequest.h
 
-  Define response wrapper for storing responsea in buffer
+  Define response wrapper for storing request in buffer
   -------------------
   begin                : 2017-01-03
   copyright            : (C) 2017 by David Marteau
@@ -19,6 +19,7 @@
 #ifndef QGSBUFFERSERVERREQUEST_H
 #define QGSBUFFERSERVERREQUEST_H
 
+#include "qgis_server.h"
 #include "qgsserverrequest.h"
 
 #include <QBuffer>
@@ -30,7 +31,7 @@
  * QgsBufferServerRequest
  * Class defining request with  data
  */
-class QgsBufferServerRequest : public QgsServerRequest
+class SERVER_EXPORT QgsBufferServerRequest : public QgsServerRequest
 {
   public:
 
@@ -52,7 +53,7 @@ class QgsBufferServerRequest : public QgsServerRequest
 
     ~QgsBufferServerRequest();
 
-    virtual QByteArray data() const { return mData; }
+    virtual QByteArray data() const override { return mData; }
 
   private:
     QByteArray mData;
