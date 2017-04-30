@@ -1,7 +1,7 @@
 /***************************************************************************
-                          qgsfcgiserverresponse.cpp
+                          qgsbufferserverresponse.cpp
 
-  Define response wrapper for fcgi response
+  Define response wrapper for buffer response
   -------------------
   begin                : 2017-01-03
   copyright            : (C) 2017 by David Marteau
@@ -141,30 +141,3 @@ void QgsBufferServerResponse::truncate()
   mBuffer.seek( 0 );
   mBuffer.buffer().clear();
 }
-
-//QgsBufferServerRequest
-//
-QgsBufferServerRequest::QgsBufferServerRequest( const QString &url, Method method, QByteArray *data )
-  : QgsServerRequest( url, method )
-{
-  if ( data )
-  {
-    mData = *data;
-  }
-}
-
-QgsBufferServerRequest::QgsBufferServerRequest( const QUrl &url, Method method, QByteArray *data )
-  : QgsServerRequest( url, method )
-{
-  if ( data )
-  {
-    mData = *data;
-  }
-}
-
-QgsBufferServerRequest::~QgsBufferServerRequest()
-{
-}
-
-
-

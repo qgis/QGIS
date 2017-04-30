@@ -4127,9 +4127,9 @@ void TestQgsGeometry::circle()
 
 //test conversion
   QgsPointSequence ptsPol;
-  QgsPolygonV2 *pol = new QgsPolygonV2();
+  std::unique_ptr< QgsPolygonV2 > pol( new QgsPolygonV2() );
 // polygon
-  pol = QgsCircle( QgsPointV2( 0, 0 ), 5 ).toPolygon( 4 );
+  pol.reset( QgsCircle( QgsPointV2( 0, 0 ), 5 ).toPolygon( 4 ) );
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
 
@@ -4144,7 +4144,7 @@ void TestQgsGeometry::circle()
 // oriented
 //45
   double val = 5 * sin( M_PI / 4 );
-  pol = QgsCircle( QgsPointV2( 0, 0 ), 5, 45 ).toPolygon( 4 );
+  pol.reset( QgsCircle( QgsPointV2( 0, 0 ), 5, 45 ).toPolygon( 4 ) );
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
   pol->exteriorRing()->points( ptsPol );
@@ -4155,7 +4155,7 @@ void TestQgsGeometry::circle()
   QVERIFY( ptsPol.at( 3 ) == QgsPointV2( -val, val ) );
   QVERIFY( ptsPol.at( 4 ) == QgsPointV2( val, val ) );
 //135
-  pol = QgsCircle( QgsPointV2( 0, 0 ), 5, 135 ).toPolygon( 4 );
+  pol.reset( QgsCircle( QgsPointV2( 0, 0 ), 5, 135 ).toPolygon( 4 ) );
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
   pol->exteriorRing()->points( ptsPol );
@@ -4166,7 +4166,7 @@ void TestQgsGeometry::circle()
   QVERIFY( ptsPol.at( 3 ) == QgsPointV2( val, val ) );
   QVERIFY( ptsPol.at( 4 ) == QgsPointV2( val, -val ) );
 //225
-  pol = QgsCircle( QgsPointV2( 0, 0 ), 5, 225 ).toPolygon( 4 );
+  pol.reset( QgsCircle( QgsPointV2( 0, 0 ), 5, 225 ).toPolygon( 4 ) );
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
   pol->exteriorRing()->points( ptsPol );
@@ -4177,7 +4177,7 @@ void TestQgsGeometry::circle()
   QVERIFY( ptsPol.at( 3 ) == QgsPointV2( val, -val ) );
   QVERIFY( ptsPol.at( 4 ) == QgsPointV2( -val, -val ) );
 //315
-  pol = QgsCircle( QgsPointV2( 0, 0 ), 5, 315 ).toPolygon( 4 );
+  pol.reset( QgsCircle( QgsPointV2( 0, 0 ), 5, 315 ).toPolygon( 4 ) );
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
   pol->exteriorRing()->points( ptsPol );
@@ -5019,7 +5019,7 @@ QString TestQgsGeometry::elemToString( const QDomElement &elem ) const
 void TestQgsGeometry::wkbInOut()
 {
   // Premature end of WKB
-  // See http://hub.qgis.org/issues/14182
+  // See https://issues.qgis.org/issues/14182
   const char *hexwkb = "0102000000EF0000000000000000000000000000000000000000000000000000000000000000000000";
   int size;
   unsigned char *wkb = hex2bytes( hexwkb, &size );

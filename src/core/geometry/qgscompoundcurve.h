@@ -19,13 +19,13 @@
 #define QGSCOMPOUNDCURVEV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscurve.h"
 
 /** \ingroup core
  * \class QgsCompoundCurve
  * \brief Compound curve geometry type
  * \since QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 {
@@ -40,7 +40,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     virtual QString geometryType() const override { return QStringLiteral( "CompoundCurve" ); }
     virtual int dimension() const override { return 1; }
-    virtual QgsCompoundCurve *clone() const override;
+    virtual QgsCompoundCurve *clone() const override SIP_FACTORY;
     virtual void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual double length() const override;
     virtual QgsPointV2 startPoint() const override;
     virtual QgsPointV2 endPoint() const override;
-    virtual void points( QgsPointSequence &pts ) const override;
+    virtual void points( QgsPointSequence &pts SIP_OUT ) const override;
     virtual int numPoints() const override;
     bool isEmpty() const override;
 
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
      * of the curve.
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     /** Returns the number of curves in the geometry.
      */
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     /** Adds a curve to the geometr (takes ownership)
      */
-    void addCurve( QgsCurve *c );
+    void addCurve( QgsCurve *c SIP_TRANSFER );
 
     /** Removes a curve from the geometry.
      * \param i index of curve to remove
@@ -98,10 +98,13 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override;
 
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const override;
+    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt SIP_OUT,
+                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
+                                   double epsilon ) const override;
+
     bool pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const override;
 
-    void sumUpArea( double &sum ) const override;
+    void sumUpArea( double &sum SIP_OUT ) const override;
 
     //! Appends first point if not already closed.
     void close();
@@ -113,7 +116,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
         \returns rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
 
-    virtual QgsCompoundCurve *reversed() const override;
+    virtual QgsCompoundCurve *reversed() const override SIP_FACTORY;
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;

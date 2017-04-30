@@ -17,20 +17,20 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSMULTIPOLYGONV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsmultisurface.h"
 
 /** \ingroup core
  * \class QgsMultiPolygonV2
  * \brief Multi polygon geometry collection.
  * \since QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
 {
   public:
     QgsMultiPolygonV2();
     virtual QString geometryType() const override { return QStringLiteral( "MultiPolygon" ); }
-    QgsMultiPolygonV2 *clone() const override;
+    QgsMultiPolygonV2 *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -42,13 +42,13 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
     QString asJSON( int precision = 17 ) const override;
 
     //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g ) override;
+    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
 
     /** Returns the geometry converted to the more generic curve type QgsMultiSurface
     \returns the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry *toCurveType() const override;
+    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
 
-    virtual QgsAbstractGeometry *boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
   protected:
 

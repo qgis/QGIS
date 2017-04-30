@@ -72,8 +72,6 @@ class QgsFeedback;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
-typedef QList<QgsPointV2> QgsPointSequence;
-
 
 
 /** \ingroup core

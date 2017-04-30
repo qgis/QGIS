@@ -1,29 +1,63 @@
-class QgsMultiPointV2: public QgsGeometryCollection
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsmultipoint.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMultiPointV2: QgsGeometryCollection
 {
+%Docstring
+ Multi point geometry collection.
+.. versionadded:: 2.10
+%End
+
 %TypeHeaderCode
-#include <qgsmultipoint.h>
+#include "qgsmultipoint.h"
 %End
   public:
+    QgsMultiPointV2();
     virtual QString geometryType() const;
-    virtual QgsMultiPointV2* clone() const /Factory/;
+    virtual QgsMultiPointV2 *clone() const /Factory/;
 
-    bool fromWkt( const QString& wkt );
 
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QString asJSON( int precision = 17 ) const;
+    virtual bool fromWkt( const QString &wkt );
+
+
+    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+
+%Docstring
+inherited: QString asWkt( int precision = 17 ) const;
+ :rtype: QDomElement
+%End
+    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+
+    virtual QString asJSON( int precision = 17 ) const;
+
 
     virtual int nCoordinates() const;
 
-    /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometry* g /Transfer/ );
+    virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
+%Docstring
+Adds a geometry and takes ownership. Returns true in case of success
+ :rtype: bool
+%End
 
-    virtual QgsAbstractGeometry* boundary() const /Factory/;
+    virtual QgsAbstractGeometry *boundary() const /Factory/;
 
   protected:
 
     virtual bool wktOmitChildType() const;
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsmultipoint.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

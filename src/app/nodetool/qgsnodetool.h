@@ -206,7 +206,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     //! source layer for mFeatureBand (null if mFeatureBand is null)
     const QgsVectorLayer *mFeatureBandLayer = nullptr;
     //! source feature id for mFeatureBand (zero if mFeatureBand is null)
-    QgsFeatureId mFeatureBandFid;
+    QgsFeatureId mFeatureBandFid = 0;
     //! highlight of a vertex while mouse pointer is close to a vertex and not dragging anything
     QgsRubberBand *mVertexBand = nullptr;
     //! highlight of an edge while mouse pointer is close to an edge and not dragging anything

@@ -23,20 +23,21 @@
 #include "qpolygon.h"
 
 /** \ingroup core
- *  * Custom exception class for Wkb related exceptions.
- *   */
+ * Custom exception class for Wkb related exceptions.
+ * \note not available in Python bindings
+ */
+#ifndef SIP_RUN
 class CORE_EXPORT QgsWkbException : public QgsException
 {
   public:
     QgsWkbException( QString const &what ) : QgsException( what ) {}
 };
+#endif
 
 
 /** \ingroup core
  * \class QgsWkbPtr
- * \note not available in Python bindings
  */
-
 class CORE_EXPORT QgsWkbPtr
 {
     mutable unsigned char *mP;
@@ -68,36 +69,51 @@ class CORE_EXPORT QgsWkbPtr
 
   public:
     //! Construct WKB pointer from QByteArray
-    QgsWkbPtr( QByteArray &wkb );
-    QgsWkbPtr( unsigned char *p, int size );
+    QgsWkbPtr( QByteArray &wkb ) SIP_SKIP;
 
-    inline const QgsWkbPtr &operator>>( double &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; }
-    inline const QgsWkbPtr &operator>>( int &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( char &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( QgsWkbTypes::Type &v ) const { read( v ); return *this; }
+    QgsWkbPtr( unsigned char *p SIP_ARRAY, int size SIP_ARRAYSIZE );
 
-    inline QgsWkbPtr &operator<<( const double &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const float &r ) { double v = r; write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const int &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const unsigned int &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const char &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const QgsWkbTypes::Type &v ) { write( v ); return *this; }
+    inline const QgsWkbPtr &operator>>( double &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; } SIP_SKIP
+    inline const QgsWkbPtr &operator>>( int &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsWkbPtr &operator>>( char &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsWkbPtr &operator>>( QgsWkbTypes::Type &v ) const { read( v ); return *this; } SIP_SKIP
+
+    inline QgsWkbPtr &operator<<( const double &v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( const float &r ) { double v = r; write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( const int &v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( const unsigned int &v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( const char &v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( const QgsWkbTypes::Type &v ) { write( v ); return *this; } SIP_SKIP
     //! Append data from a byte array
-    inline QgsWkbPtr &operator<<( const QByteArray &data ) { write( data ); return *this; }
+    inline QgsWkbPtr &operator<<( const QByteArray &data ) { write( data ); return *this; } SIP_SKIP
 
-    inline void operator+=( int n ) { verifyBound( n ); mP += n; }
+    inline void operator+=( int n ) { verifyBound( n ); mP += n; } SIP_SKIP
 
-    inline operator unsigned char *() const { return mP; }
-    inline int size() const { return mEnd - mStart; }
-    inline int remaining() const { return mEnd - mP; }
-    inline int writtenSize() const { return mP - mStart; }
+    inline operator unsigned char *() const { return mP; } SIP_SKIP
+
+    /**
+     * \brief size
+     * \note note available in Python bindings
+     */
+    inline int size() const { return mEnd - mStart; } SIP_SKIP
+
+    /**
+     * \brief remaining
+     * \note note available in Python bindings
+     */
+    inline int remaining() const { return mEnd - mP; } SIP_SKIP
+
+    /**
+     * \brief writtenSize
+     * \note note available in Python bindings
+     */
+    inline int writtenSize() const { return mP - mStart; } SIP_SKIP
 };
 
 /** \ingroup core
  * \class QgsConstWkbPtr
- * \note not available in Python bindings
  */
 
 class CORE_EXPORT QgsConstWkbPtr
@@ -108,11 +124,17 @@ class CORE_EXPORT QgsConstWkbPtr
     mutable bool mEndianSwap;
     mutable QgsWkbTypes::Type mWkbType;
 
-    //! Verify bounds
-    void verifyBound( int size ) const;
+    /**
+     * \brief Verify bounds
+     * \note note available in Python bindings
+     */
+    void verifyBound( int size ) const SIP_SKIP;
 
-    //! Read a value
-    template<typename T> void read( T &v ) const
+    /**
+     * \brief Read a value
+     * \note note available in Python bindings
+     */
+    template<typename T> void read( T &v ) const SIP_SKIP
     {
       verifyBound( sizeof v );
       memcpy( &v, mP, sizeof( v ) );
@@ -123,26 +145,36 @@ class CORE_EXPORT QgsConstWkbPtr
 
   public:
     //! Construct WKB pointer from QByteArray
-    explicit QgsConstWkbPtr( const QByteArray &wkb );
-    QgsConstWkbPtr( const unsigned char *p, int size );
-    QgsWkbTypes::Type readHeader() const;
+    explicit QgsConstWkbPtr( const QByteArray &wkb ) SIP_SKIP;
+    QgsConstWkbPtr( const unsigned char *p SIP_ARRAY, int size SIP_ARRAYSIZE );
 
-    inline const QgsConstWkbPtr &operator>>( double &v ) const { read( v ); return *this; }
-    inline const QgsConstWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; }
-    inline const QgsConstWkbPtr &operator>>( int &v ) const { read( v ); return *this; }
-    inline const QgsConstWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; }
-    inline const QgsConstWkbPtr &operator>>( char &v ) const { read( v ); return *this; }
+    /**
+     * \brief readHeader
+     * \note note available in Python bindings
+     */
+    QgsWkbTypes::Type readHeader() const SIP_SKIP;
+
+    inline const QgsConstWkbPtr &operator>>( double &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsConstWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; } SIP_SKIP
+    inline const QgsConstWkbPtr &operator>>( int &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsConstWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsConstWkbPtr &operator>>( char &v ) const { read( v ); return *this; } SIP_SKIP
 
     //! Read a point
-    virtual const QgsConstWkbPtr &operator>>( QPointF &point ) const;
+    virtual const QgsConstWkbPtr &operator>>( QPointF &point ) const; SIP_SKIP
     //! Read a point array
-    virtual const QgsConstWkbPtr &operator>>( QPolygonF &points ) const;
+    virtual const QgsConstWkbPtr &operator>>( QPolygonF &points ) const; SIP_SKIP
 
-    inline void operator+=( int n ) { verifyBound( n ); mP += n; }
-    inline void operator-=( int n ) { mP -= n; }
+    inline void operator+=( int n ) { verifyBound( n ); mP += n; } SIP_SKIP
+    inline void operator-=( int n ) { mP -= n; } SIP_SKIP
 
-    inline operator const unsigned char *() const { return mP; }
-    inline int remaining() const { return mEnd - mP; }
+    inline operator const unsigned char *() const { return mP; } SIP_SKIP
+
+    /**
+     * \brief remaining
+     * \note note available in Python bindings
+     */
+    inline int remaining() const { return mEnd - mP; } SIP_SKIP
 };
 
 #endif // QGSWKBPTR_H

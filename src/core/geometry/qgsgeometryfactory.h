@@ -38,7 +38,6 @@ typedef QVector<QgsPolygon> QgsMultiPolygon;
  * \class QgsGeometryFactory
  * \brief Contains geometry creation routines.
  * \since QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
  * \note not available in Python bindings
  */
 class CORE_EXPORT QgsGeometryFactory

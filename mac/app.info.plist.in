@@ -15,7 +15,7 @@
 	<key>CFBundleSignature</key>
 	<string>QGIS</string>
 	<key>CFBundleGetInfoString</key>
-	<string>${QGIS_APP_NAME} ${COMPLETE_VERSION}-${RELEASE_NAME} (${SHA}), © 2002-2016 QGIS Development Team</string>
+	<string>${QGIS_APP_NAME} ${COMPLETE_VERSION}-${RELEASE_NAME} (${SHA}), © 2002-2017 QGIS Development Team</string>
 	<key>CFBundleShortVersionString</key>
 	<string>${COMPLETE_VERSION}</string>
 	<key>CFBundleVersion</key>
@@ -252,7 +252,7 @@
 			<array>
 				<string>sqlite</string>
 			</array>
-		</dict>		
+		</dict>
 	</array>
 	<key>CFBundleLocalizations</key>
 	<array>
@@ -304,5 +304,14 @@
 		<string>zh_CN</string>
 		<string>zh_TW</string>
 	</array>
+	<key>LSEnvironment</key>
+	<dict>
+		<key>QT_AUTO_SCREEN_SCALE_FACTOR</key>
+		<string>1</string>
+	</dict>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSHighResolutionCapable</key>
+	<string>True</string>
 </dict>
 </plist>

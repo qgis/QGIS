@@ -97,7 +97,7 @@ class TestPointBase(object):
         self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
         self._Mismatches['TestComposerImagePoint'] = 800
         # verify fix for issues
-        #   http://hub.qgis.org/issues/9057
+        #   https://issues.qgis.org/issues/9057
         #   http://gis.stackexchange.com/questions/86900
 
         format = self.lyr.format()

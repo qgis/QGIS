@@ -2014,7 +2014,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
 
   if ( context.renderContext().flags() & QgsRenderContext::Antialiasing )
   {
-    // workaround issue with nested QPictures forgetting antialiasing flag - see http://hub.qgis.org/issues/14960
+    // workaround issue with nested QPictures forgetting antialiasing flag - see https://issues.qgis.org/issues/14960
     p->setRenderHint( QPainter::Antialiasing );
   }
 
