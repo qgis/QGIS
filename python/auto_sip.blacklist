@@ -15,7 +15,6 @@ core/qgsfeatureiterator.sip
 core/qgsfeaturerequest.sip
 core/qgsfield.sip
 core/qgsfieldconstraints.sip
-core/qgsfields.sip
 core/qgsfieldformatterregistry.sip
 core/qgsfieldformatter.sip
 core/qgsgeometrysimplifier.sip
