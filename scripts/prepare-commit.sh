@@ -99,11 +99,9 @@ if [ -s "$ASTYLEDIFF" ]; then
   else
     echo "Files changed (see $ASTYLEDIFF)"
   fi
-  exit 1
 else
   rm $ASTYLEDIFF
 fi
-
 
 
 # verify SIP files
@@ -144,6 +142,9 @@ if [[ -s "$SIPIFYDIFF" ]]; then
   exit 1
 else
   rm $SIPIFYDIFF
+fi
+if [ -s "$ASTYLEDIFF" ]; then
+    exit 1
 fi
 
 # If there are whitespace errors, print the offending file names and fail.
