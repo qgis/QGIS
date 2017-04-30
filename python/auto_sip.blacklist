@@ -276,7 +276,6 @@ gui/qgsattributeforminterface.sip
 gui/qgsattributetypeloaddialog.sip
 gui/qgsbrowsertreeview.sip
 gui/qgsbusyindicatordialog.sip
-gui/qgscollapsiblegroupbox.sip
 gui/qgscodeeditor.sip
 gui/qgscodeeditorpython.sip
 gui/qgscodeeditorsql.sip
@@ -316,7 +315,6 @@ gui/qgsformannotation.sip
 gui/qgsgeometryrubberband.sip
 gui/qgsgradientcolorrampdialog.sip
 gui/qgsgradientstopeditor.sip
-gui/qgsgroupwmsdatadialog.sip
 gui/qgshelp.sip
 gui/qgshighlight.sip
 gui/qgshistogramwidget.sip
