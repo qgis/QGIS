@@ -19,7 +19,7 @@
 #define QGSSCALECOMBOBOX_H
 
 #include <QComboBox>
-#include "qgis.h";
+#include "qgis.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
