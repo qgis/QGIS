@@ -149,7 +149,7 @@ class QgsPropertyTransformer
 %TypeHeaderCode
 #include "qgspropertytransformer.h"
 %End
-  private:
+
 %ConvertToSubClassCode
     if ( sipCpp->transformerType() == QgsPropertyTransformer::GenericNumericTransformer )
       sipType = sipType_QgsGenericNumericTransformer;
