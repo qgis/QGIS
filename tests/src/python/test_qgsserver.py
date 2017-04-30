@@ -38,7 +38,7 @@ import urllib.error
 import email
 
 from io import StringIO
-from qgis.server import QgsServer, QgsServerRequest
+from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
 from qgis.core import QgsRenderChecker, QgsApplication
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
@@ -197,6 +197,16 @@ class TestQgsServer(QgsServerTestBase):
         for i in range(10):
             locals()["s%s" % i] = QgsServer()
             locals()["s%s" % i].handleRequest("")
+
+    def test_requestHandler(self):
+        """Test request handler"""
+        headers = {'header-key-1': 'header-value-1', 'header-key-2': 'header-value-2'}
+        request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response)
+        self.assertEqual(bytes(response.body()), b'<ServerException>Project file error</ServerException>\n')
+        self.assertEqual(response.headers(), {'Content-Length': '54', 'Content-Type': 'text/xml; charset=utf-8'})
+        self.assertEqual(response.statusCode(), 500)
 
     def test_api(self):
         """Using an empty query string (returns an XML exception)

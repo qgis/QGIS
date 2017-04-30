@@ -81,9 +81,10 @@ class SERVER_EXPORT QgsServer
      * \param urlstr QString containing the request url (simple quely string must be preceded by '?')
      * \param requestMethod QgsServerRequest::Method that indicates the method. Only "GET" or "POST" are supported.
      * \param data array of bytes containing post data
+     * \param map of request headers
      * \returns the response headers and body QPair of QByteArray
      */
-    QPair<QByteArray, QByteArray> handleRequest( const QString &urlstr, const QgsServerRequest::Method requestMethod = QgsServerRequest::GetMethod, const char *data = nullptr );
+    QPair<QByteArray, QByteArray> handleRequest( const QString &urlstr, const QgsServerRequest::Method requestMethod = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers(), const char *data = nullptr );
 
     //! Returns a pointer to the server interface
     QgsServerInterfaceImpl *serverInterface() { return sServerInterface; }

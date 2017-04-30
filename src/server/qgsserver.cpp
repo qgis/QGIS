@@ -427,7 +427,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
 }
 
-QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &urlstr, const QgsServerRequest::Method requestMethod, const char *data )
+QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &urlstr, const QgsServerRequest::Method requestMethod, const QgsServerRequest::Headers &headers, const char *data )
 {
 
   QUrl url( urlstr );
@@ -446,7 +446,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &urlstr, c
     throw QgsServerException( QStringLiteral( "Invalid method in handleRequest(): only GET or POST is supported" ) );
   }
 
-  QgsBufferServerRequest request( url, requestMethod, &ba );
+  QgsBufferServerRequest request( url, requestMethod, headers, &ba );
   QgsBufferServerResponse response;
 
   handleRequest( request, response );

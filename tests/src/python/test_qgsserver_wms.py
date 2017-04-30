@@ -26,13 +26,10 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
-from qgis.core import QgsRenderChecker
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
 
 import osgeo.gdal  # NOQA
-import tempfile
-import base64
 
 from test_qgsserver import QgsServerTestBase
 

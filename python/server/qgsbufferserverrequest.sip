@@ -21,7 +21,7 @@ class QgsBufferServerRequest : QgsServerRequest
 %End
   public:
 
-    QgsBufferServerRequest( const QString &url, Method method = GetMethod, QByteArray *data = 0 );
+    QgsBufferServerRequest( const QString &url, Method method = GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ), QByteArray *data = 0 );
 %Docstring
  Constructor
 
@@ -29,7 +29,7 @@ class QgsBufferServerRequest : QgsServerRequest
  \param method the request method
 %End
 
-    QgsBufferServerRequest( const QUrl &url, Method method = GetMethod, QByteArray *data = 0 );
+    QgsBufferServerRequest( const QUrl &url, Method method = GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ), QByteArray *data = 0 );
 %Docstring
  Constructor
 
@@ -40,9 +40,6 @@ class QgsBufferServerRequest : QgsServerRequest
     ~QgsBufferServerRequest();
 
     virtual QByteArray data() const;
-%Docstring
- :rtype: QByteArray
-%End
 
 };
 

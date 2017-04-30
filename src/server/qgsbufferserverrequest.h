@@ -41,7 +41,7 @@ class SERVER_EXPORT QgsBufferServerRequest : public QgsServerRequest
     * \param url the url string
     * \param method the request method
     */
-    QgsBufferServerRequest( const QString &url, Method method = GetMethod, QByteArray *data = nullptr );
+    QgsBufferServerRequest( const QString &url, Method method = GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ), QByteArray *data = nullptr );
 
     /**
      * Constructor
@@ -49,7 +49,7 @@ class SERVER_EXPORT QgsBufferServerRequest : public QgsServerRequest
      * \param url QUrl
      * \param method the request method
      */
-    QgsBufferServerRequest( const QUrl &url, Method method = GetMethod, QByteArray *data = nullptr );
+    QgsBufferServerRequest( const QUrl &url, Method method = GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ), QByteArray *data = nullptr );
 
     ~QgsBufferServerRequest();
 
