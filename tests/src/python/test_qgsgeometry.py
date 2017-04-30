@@ -4090,13 +4090,13 @@ class TestQgsGeometry(unittest.TestCase):
                  ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 30 30))", "POINT (25 25)"],
                  ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 20 20))", "POINT (15 15)"],
                  ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 20 20),MULTIPOINT ((20 10), (10 20)) )", "POINT (15 15)"],
-                 #["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 20 20),POINT EMPTY )","POINT (15 15)"],
-                 #["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING EMPTY,POINT EMPTY )","POINT (10 10)"],
+                 # ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 20 20),POINT EMPTY )","POINT (15 15)"],
+                 # ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING EMPTY,POINT EMPTY )","POINT (10 10)"],
                  ["GEOMETRYCOLLECTION (POLYGON ((20 100, 20 -20, 60 -20, 60 100, 20 100)),POLYGON ((-20 60, 100 60, 100 20, -20 20, -20 60)))", "POINT (40 40)"],
                  ["POLYGON ((40 160, 160 160, 160 160, 40 160, 40 160))", "POINT (100 160)"],
                  ["POLYGON ((10 10, 100 100, 100 100, 10 10))", "POINT (55 55)"],
-                 #["POLYGON EMPTY","POINT EMPTY"],
-                 #["MULTIPOLYGON(EMPTY,((0 0,1 0,1 1,0 1, 0 0)))","POINT (0.5 0.5)"],
+                 # ["POLYGON EMPTY","POINT EMPTY"],
+                 # ["MULTIPOLYGON(EMPTY,((0 0,1 0,1 1,0 1, 0 0)))","POINT (0.5 0.5)"],
                  ["POLYGON((56.528666666700 25.2101666667,56.529000000000 25.2105000000,56.528833333300 25.2103333333,56.528666666700 25.2101666667))", "POINT (56.52883333335 25.21033333335)"],
                  ["POLYGON((56.528666666700 25.2101666667,56.529000000000 25.2105000000,56.528833333300 25.2103333333,56.528666666700 25.2101666667))", "POINT (56.528833 25.210333)"]
                  ]
@@ -4113,6 +4113,7 @@ class TestQgsGeometry(unittest.TestCase):
                 result = QgsGeometry(input.geometry().centroid()).exportToWkt()
                 self.assertTrue(compareWkt(result, exp, 0.00001),
                                 "centroid: mismatch using QgsAbstractGeometry methods Input {} \n Expected:\n{}\nGot:\n{}\n".format(t[0], exp, result))
+
 
 if __name__ == '__main__':
     unittest.main()
