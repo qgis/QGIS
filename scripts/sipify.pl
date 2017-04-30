@@ -78,7 +78,7 @@ $debug == 0 or push @output, "CODE SIP_RUN MultiLine\n";
 sub dbg
 {
     my $msg = '';
-    $debug == 0 or $msg = sprintf("%-4s %-1d %-1d   ", $_[0], $SIP_RUN, $MULTILINE_DEFINITION);
+    $debug == 0 or $msg = sprintf("%d %-4s %-1d %-1d   ", $line_idx, $_[0], $SIP_RUN, $MULTILINE_DEFINITION);
     return $msg;
 }
 sub dbg_info
@@ -88,6 +88,42 @@ sub dbg_info
     print $line_idx." ".@ACCESS." ".$SIP_RUN." ".$MULTILINE_DEFINITION." ".$_[0]."\n";
   }
 }
+
+sub remove_constructor_or_body {
+    # https://regex101.com/r/ZaP3tC/1
+    do {no warnings 'uninitialized';
+        if ( $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(~?\w+|operator.{1,2})\(([\w=()\/ ,&*<>-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
+             || $line =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/ ){
+            dbg_info("remove constructor definition, function bodies, member initializing list");
+            my $newline = "$1$2$3$4$5;";
+            if ($line !~ m/{.*}(\s*SIP_\w+)?\s*(\/\/.*)?$/){
+                dbg_info("  go for multiline");
+                $line = $lines[$line_idx];
+                $line_idx++;
+                while ( $line =~ m/^\s*[:,]\s+[\w<>]+\(.*?\)/){
+                  dbg_info("  member initializing list");
+                  $line = $lines[$line_idx];
+                  $line_idx++;
+                }
+                if ( $line =~ m/^\s*\{/ ){
+                    my $nesting_index = 0;
+                    while ($line_idx < $line_count){
+                        dbg_info("  remove body");
+                        $nesting_index += $line =~ tr/\{//;
+                        $nesting_index -= $line =~ tr/\}//;
+                        if ($nesting_index == 0){
+                            last;
+                        }
+                        $line = $lines[$line_idx];
+                        $line_idx++;
+                    }
+                }
+            }
+            $line = $newline;
+        }
+    };
+}
+
 
 # main loop
 while ($line_idx < $line_count){
@@ -233,46 +269,23 @@ while ($line_idx < $line_count){
 
     # SIP_SKIP
     if ( $line =~ m/SIP_SKIP/ ){
-      $comment = '';
-      # if multiline definition, remove previous lines
-      if ( $MULTILINE_DEFINITION == 1){
-        my $opening_line = '';
-        while ( $opening_line !~ m/^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$/){
-            $opening_line = pop(@output);
-            $#output >= 0 or die 'could not reach opening definition';
-        }
+        dbg_info('SIP SKIP!');
+        $comment = '';
+        # if multiline definition, remove previous lines
+        if ( $MULTILINE_DEFINITION == 1){
+            dbg_info('SIP_SKIP with MultiLine');
+            my $opening_line = '';
+            while ( $opening_line !~ m/^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$/){
+                $opening_line = pop(@output);
+                $#output >= 0 or die 'could not reach opening definition';
+            }
         dbg_info("removed multiline definition of SIP_SKIP method");
         $MULTILINE_DEFINITION = 0;
-      }
-      # also skip method body if there is one
-      if ($lines[$line_idx] =~ m/^\s*\{/){
-        my $nesting_index = 0;
-        dbg_info("skipping method body of SIP_SKIP method");
-        while ($line_idx < $line_count){
-            $line = $lines[$line_idx];
-            $line_idx++;
-            if ( $nesting_index == 0 ){
-                if ( $line =~ m/^\s*(:|,)/ ){
-                    next;
-                }
-                $line =~ m/^\s*\{/ or die 'Constructor definition misses {';
-                if ( $line =~ m/^\s*\{.*?\}/ ){
-                    last;
-                }
-                $nesting_index = 1;
-                next;
-            }
-            else {
-                $nesting_index += $line =~ tr/\{//;
-                $nesting_index -= $line =~ tr/\}//;
-                if ($nesting_index eq 0){
-                    last;
-                }
-            }
         }
-      }
-      # line skipped, go to next iteration
-      next;
+        # also skip method body if there is one
+        remove_constructor_or_body();
+        # line skipped, go to next iteration
+        next;
     }
 
     # Detect comment block
@@ -305,12 +318,14 @@ while ($line_idx < $line_count){
                     pop(@global_bracket_nesting_index);
                     pop(@ACCESS);
                 }
-                else{
+                if ($#ACCESS == 1){
+                    dbg_info("reached top level");
                     # top level should stasy public
                     dbg_info
                     $ACCESS[$#ACCESS] = PUBLIC;
                     $comment = '';
                 }
+                $private_section_line = '';
             }
             dbg_info("new bracket balance: @global_bracket_nesting_index");
         }
@@ -495,35 +510,7 @@ while ($line_idx < $line_count){
         $line =~ s/\s*=\s*default\b//g;
 
         # remove constructor definition, function bodies, member initializing list
-        # https://regex101.com/r/ZaP3tC/1
-        if ( $SIP_RUN != 1 && $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(~?\w+|operator.{1,2})\(([\w=()\/ ,&*<>-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/ ){
-            dbg_info("remove constructor definition, function bodies, member initializing list");
-            my $newline = "$1$2$3$4$5;";
-            if ($line !~ m/\{.*?\}\s*(\/\/.*)?$/){
-                dbg_info("  go for multiline");
-                $line = $lines[$line_idx];
-                $line_idx++;
-                while ( $line =~ m/^\s*[:,]\s+[\w<>]+\(.*?\)/){
-                  dbg_info("  member initializing list");
-                  $line = $lines[$line_idx];
-                  $line_idx++;
-                }
-                my $nesting_index = 1;
-                if ( $line =~ m/^\s*\{$/ ){
-                    while ($line_idx < $line_count){
-                        dbg_info("  remove body");
-                        $line = $lines[$line_idx];
-                        $line_idx++;
-                        $nesting_index += $line =~ tr/\{//;
-                        $nesting_index -= $line =~ tr/\}//;
-                        if ($nesting_index == 0){
-                            last;
-                        }
-                    }
-                }
-            }
-            $line = $newline;
-        }
+        $SIP_RUN == 1 or remove_constructor_or_body();
 
         # remove inline declarations
         if ( $line =~  m/^(\s*)?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$/ ){

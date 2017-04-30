@@ -904,11 +904,10 @@ Returns an extruded version of this geometry.
  :rtype: QgsGeometry
 %End
 
+
     QgsPoint asPoint() const;
 %Docstring
- Accessor functions for getting geometry data */
-
-/** Return contents of the geometry as a point
+ Return contents of the geometry as a point
  if wkbType is WKBPoint, otherwise returns [0,0]
  :rtype: QgsPoint
 %End
