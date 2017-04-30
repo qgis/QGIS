@@ -99,7 +99,7 @@ sub remove_constructor_or_body {
              || $line =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/ ){
             dbg_info("remove constructor definition, function bodies, member initializing list");
             my $newline = "$1$2$3$4$5;";
-            if ($line !~ m/{.*}(\s*SIP_\w+)?\s*(\/\/.*)?$/){
+            if ($line !~ m/{.*}(\s*SIP_\w+)*\s*(\/\/.*)?$/){
                 dbg_info("  go for multiline");
                 $line = $lines[$line_idx];
                 $line_idx++;
@@ -554,6 +554,7 @@ while ($line_idx < $line_count){
     # remove export macro from struct definition
     $line =~ s/^(\s*struct )\w+_EXPORT (.+)$/$1$2/;
 
+    # printed annotations
     $line =~ s/\bSIP_FACTORY\b/\/Factory\//;
     $line =~ s/\bSIP_OUT\b/\/Out\//g;
     $line =~ s/\bSIP_IN\b/\/In\//g;
@@ -565,11 +566,16 @@ while ($line_idx < $line_count){
     $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
     $line =~ s/\bSIP_ARRAY\b/\/Array\//;
     $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//;
-
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
+
+    # combine multiple annotations
+    dbg_info("combine multiple annotations -- works only for 2");
+    # https://regex101.com/r/uvCt4M/1
+    $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\/\s*;(\s*(\/\/.*)?)$/\/$1,$3\/$5;/;
+
+    # unprinted annotations
     $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYARGTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
     $line =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
-
     # remove argument
     if ($line =~ m/SIP_PYARGREMOVE/){
         if ( $MULTILINE_DEFINITION == 1 ){
@@ -588,7 +594,6 @@ while ($line_idx < $line_count){
         # see https://regex101.com/r/5iNptO/4
         $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)? [\w&*]+ SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
     }
-
     $line =~ s/SIP_FORCE//;
 
     # fix astyle placing space after % character
