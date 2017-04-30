@@ -1180,7 +1180,7 @@ class CORE_EXPORT QgsExpression
         //! The name of the column.
         QString name() const { return mName; }
 
-        virtual NodeType nodeType() const override { return ntColumnRef; }
+        virtual QgsExpression::NodeType nodeType() const override { return ntColumnRef; }
         virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
