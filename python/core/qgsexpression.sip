@@ -1134,7 +1134,7 @@ The name of the column.
  :rtype: str
 %End
 
-        virtual NodeType nodeType() const;
+        virtual QgsExpression::NodeType nodeType() const;
         virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
         virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
         virtual QString dump() const;
