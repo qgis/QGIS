@@ -60,7 +60,7 @@ class QgsCurveTransform
     QList< QgsPoint > controlPoints() const;
 %Docstring
  Returns a list of the control points for the transform.
- \see setControlPoints()
+.. seealso:: setControlPoints()
  :rtype: list of QgsPoint
 %End
 
@@ -68,21 +68,21 @@ class QgsCurveTransform
 %Docstring
  Sets the list of control points for the transform. Any existing
  points are removed.
- \see controlPoints()
+.. seealso:: controlPoints()
 %End
 
     void addControlPoint( double x, double y );
 %Docstring
  Adds a control point to the transform. Behavior is undefined if duplicate
  x values exist in the control points list.
- \see removeControlPoint()
+.. seealso:: removeControlPoint()
 %End
 
     void removeControlPoint( double x, double y );
 %Docstring
  Removes a control point from the transform. This will have no effect if a
  matching control point does not exist.
- \see addControlPoint()
+.. seealso:: addControlPoint()
 %End
 
     double y( double x ) const;
@@ -104,7 +104,7 @@ class QgsCurveTransform
  Reads the curve's state from an XML element.
  \param elem source DOM element for transform's state
  \param doc DOM document
- \see writeXml()
+.. seealso:: writeXml()
  :rtype: bool
 %End
 
@@ -113,7 +113,7 @@ class QgsCurveTransform
  Writes the current state of the transform into an XML element
  \param transformElem destination element for the transform's state
  \param doc DOM document
- \see readXml()
+.. seealso:: readXml()
  :rtype: bool
 %End
 
@@ -122,7 +122,7 @@ class QgsCurveTransform
  Saves this curve transformer to a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
- \see loadVariant()
+.. seealso:: loadVariant()
  :rtype: QVariant
 %End
 
@@ -131,7 +131,7 @@ class QgsCurveTransform
  Load this curve transformer from a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.writeVariant to load it from an XML document.
 
- \see toVariant()
+.. seealso:: toVariant()
  :rtype: bool
 %End
 
@@ -149,7 +149,7 @@ class QgsPropertyTransformer
 %TypeHeaderCode
 #include "qgspropertytransformer.h"
 %End
-  private:
+
 %ConvertToSubClassCode
     if ( sipCpp->transformerType() == QgsPropertyTransformer::GenericNumericTransformer )
       sipType = sipType_QgsGenericNumericTransformer;
@@ -207,7 +207,7 @@ class QgsPropertyTransformer
  Loads this transformer from a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
- \see loadVariant()
+.. seealso:: loadVariant()
  :rtype: bool
 %End
 
@@ -216,15 +216,15 @@ class QgsPropertyTransformer
  Saves this transformer to a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
- \see toVariant()
+.. seealso:: toVariant()
  :rtype: QVariant
 %End
 
     double minValue() const;
 %Docstring
  Returns the minimum value expected by the transformer.
- \see maxValue()
- \see setMinValue()
+.. seealso:: maxValue()
+.. seealso:: setMinValue()
  :rtype: float
 %End
 
@@ -232,15 +232,15 @@ class QgsPropertyTransformer
 %Docstring
  Sets the minimum value expected by the transformer.
  \param min minimum value
- \see setMaxValue()
- \see minValue()
+.. seealso:: setMaxValue()
+.. seealso:: minValue()
 %End
 
     double maxValue() const;
 %Docstring
  Returns the maximum value expected by the transformer.
- \see minValue()
- \see setMaxValue()
+.. seealso:: minValue()
+.. seealso:: setMaxValue()
  :rtype: float
 %End
 
@@ -248,15 +248,15 @@ class QgsPropertyTransformer
 %Docstring
  Sets the maximum value expected by the transformer.
  \param max maximum value
- \see setMinValue()
- \see maxValue()
+.. seealso:: setMinValue()
+.. seealso:: maxValue()
 %End
 
     QgsCurveTransform *curveTransform() const;
 %Docstring
  Returns the curve transform applied to input values before they are transformed
  by the individual transform subclasses.
- \see setCurveTransform()
+.. seealso:: setCurveTransform()
  :rtype: QgsCurveTransform
 %End
 
@@ -265,7 +265,7 @@ class QgsPropertyTransformer
  Sets a curve transform to apply to input values before they are transformed
  by the individual transform subclasses. Ownership of ``transform`` is transferred
  to the property transformer.
- \see curveTransform()
+.. seealso:: curveTransform()
 %End
 
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const = 0;
@@ -376,8 +376,8 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
     double minOutputValue() const;
 %Docstring
  Returns the minimum calculated size.
- \see setMinSize()
- \see maxSize()
+.. seealso:: setMinSize()
+.. seealso:: maxSize()
  :rtype: float
 %End
 
@@ -385,14 +385,14 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 %Docstring
  Sets the minimum calculated size.
  \param size minimum size
- \see minSize()
- \see setMaxSize()
+.. seealso:: minSize()
+.. seealso:: setMaxSize()
 %End
 
     double maxOutputValue() const;
 %Docstring
  Returns the maximum calculated size.
- \see minSize()
+.. seealso:: minSize()
  :rtype: float
 %End
 
@@ -400,14 +400,14 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 %Docstring
  Sets the maximum calculated size.
  \param size maximum size
- \see maxSize()
- \see setMinSize()
+.. seealso:: maxSize()
+.. seealso:: setMinSize()
 %End
 
     double nullOutputValue() const;
 %Docstring
  Returns the size value when an expression evaluates to NULL.
- \see setNullSize()
+.. seealso:: setNullSize()
  :rtype: float
 %End
 
@@ -415,14 +415,14 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 %Docstring
  Sets the size value for when an expression evaluates to NULL.
  \param size null size
- \see nullSize()
+.. seealso:: nullSize()
 %End
 
     double exponent() const;
 %Docstring
  Returns the exponent for an exponential expression.
- \see setExponent()
- \see type()
+.. seealso:: setExponent()
+.. seealso:: type()
  :rtype: float
 %End
 
@@ -430,7 +430,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 %Docstring
  Sets the exponent for an exponential expression.
  \param exponent exponent
- \see exponent()
+.. seealso:: exponent()
 %End
 
 };
@@ -513,8 +513,8 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
     double minSize() const;
 %Docstring
  Returns the minimum calculated size.
- \see setMinSize()
- \see maxSize()
+.. seealso:: setMinSize()
+.. seealso:: maxSize()
  :rtype: float
 %End
 
@@ -522,14 +522,14 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 %Docstring
  Sets the minimum calculated size.
  \param size minimum size
- \see minSize()
- \see setMaxSize()
+.. seealso:: minSize()
+.. seealso:: setMaxSize()
 %End
 
     double maxSize() const;
 %Docstring
  Returns the maximum calculated size.
- \see minSize()
+.. seealso:: minSize()
  :rtype: float
 %End
 
@@ -537,14 +537,14 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 %Docstring
  Sets the maximum calculated size.
  \param size maximum size
- \see maxSize()
- \see setMinSize()
+.. seealso:: maxSize()
+.. seealso:: setMinSize()
 %End
 
     double nullSize() const;
 %Docstring
  Returns the size value when an expression evaluates to NULL.
- \see setNullSize()
+.. seealso:: setNullSize()
  :rtype: float
 %End
 
@@ -552,14 +552,14 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 %Docstring
  Sets the size value for when an expression evaluates to NULL.
  \param size null size
- \see nullSize()
+.. seealso:: nullSize()
 %End
 
     double exponent() const;
 %Docstring
  Returns the exponent for an exponential expression.
- \see setExponent()
- \see type()
+.. seealso:: setExponent()
+.. seealso:: type()
  :rtype: float
 %End
 
@@ -567,14 +567,14 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 %Docstring
  Sets the exponent for an exponential expression.
  \param exponent exponent
- \see exponent()
+.. seealso:: exponent()
 %End
 
     ScaleType type() const;
 %Docstring
  Returns the size transformer's scaling type (the method used to calculate
  the size from a value).
- \see setType()
+.. seealso:: setType()
  :rtype: ScaleType
 %End
 
@@ -583,7 +583,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
  Sets the size transformer's scaling type (the method used to calculate
  the size from a value).
  \param type scale type
- \see type()
+.. seealso:: type()
 %End
 
 };
@@ -639,7 +639,7 @@ Copy constructor
 %Docstring
  Returns the color ramp used for calculating property colors.
  :return: color ramp
- \see setColorRamp()
+.. seealso:: setColorRamp()
  :rtype: QgsColorRamp
 %End
 
@@ -647,13 +647,13 @@ Copy constructor
 %Docstring
  Sets the color ramp to use for calculating property colors.
  \param ramp color ramp, ownership of ramp is transferred to the transformer.
- \see colorRamp()
+.. seealso:: colorRamp()
 %End
 
     QColor nullColor() const;
 %Docstring
  Returns the color corresponding to a null value.
- \see setNullColor()
+.. seealso:: setNullColor()
  :rtype: QColor
 %End
 
@@ -661,13 +661,13 @@ Copy constructor
 %Docstring
  Sets the color corresponding to a null value.
  \param color null color
- \see nullSize()
+.. seealso:: nullSize()
 %End
 
     QString rampName() const;
 %Docstring
  Returns the color ramp's name.
- \see setRampName()
+.. seealso:: setRampName()
  :rtype: str
 %End
 
@@ -676,7 +676,7 @@ Copy constructor
  Sets the color ramp's ``name``. The ramp name must be set to match
  a color ramp available in the style database for conversion to expression
  to work correctly.
- \see rampName()
+.. seealso:: rampName()
 %End
 
 };

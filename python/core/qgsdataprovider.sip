@@ -13,7 +13,6 @@
 
 
 
-
 class QgsDataProvider : QObject
 {
 %Docstring
@@ -354,7 +353,6 @@ Current time stamp of data source
 .. versionadded:: 2.16
 %End
 
-
     QVariant providerProperty( ProviderProperty property, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
  Get the current value of a certain provider property.
@@ -363,7 +361,6 @@ Current time stamp of data source
 .. versionadded:: 2.16
  :rtype: QVariant
 %End
-
 
   signals:
 

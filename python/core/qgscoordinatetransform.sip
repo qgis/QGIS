@@ -75,24 +75,24 @@ Default constructor, creates an invalid QgsCoordinateTransform.
 %Docstring
  Sets the source coordinate reference system.
  \param crs CRS to transform coordinates from
- \see sourceCrs()
- \see setDestinationCrs()
+.. seealso:: sourceCrs()
+.. seealso:: setDestinationCrs()
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
  Sets the destination coordinate reference system.
  \param crs CRS to transform coordinates to
- \see destinationCrs()
- \see setSourceCrs()
+.. seealso:: destinationCrs()
+.. seealso:: setSourceCrs()
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
  Returns the source coordinate reference system, which the transform will
  transform coordinates from.
- \see setSourceCrs()
- \see destinationCrs()
+.. seealso:: setSourceCrs()
+.. seealso:: destinationCrs()
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -100,8 +100,8 @@ Default constructor, creates an invalid QgsCoordinateTransform.
 %Docstring
  Returns the destination coordinate reference system, which the transform will
  transform coordinates to.
- \see setDestinationCrs()
- \see sourceCrs()
+.. seealso:: setDestinationCrs()
+.. seealso:: sourceCrs()
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -221,7 +221,7 @@ initialize is used to actually create the Transformer instance
  Restores state from the given Dom node.
  \param node The node from which state will be restored
  :return: bool True on success, False on failure
- \see writeXml()
+.. seealso:: writeXml()
  :rtype: bool
 %End
 
@@ -231,7 +231,7 @@ initialize is used to actually create the Transformer instance
  \param node The node in which state will be restored
  \param document The document in which state will be stored
  :return: bool True on success, False on failure
- \see readXml()
+.. seealso:: readXml()
  :rtype: bool
 %End
 

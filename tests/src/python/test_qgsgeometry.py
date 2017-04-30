@@ -340,7 +340,7 @@ class TestQgsGeometry(unittest.TestCase):
         """Test we can simplify a complex geometry.
 
         Note: there is a ticket related to this issue here:
-        http://hub.qgis.org/issues/4189
+        https://issues.qgis.org/issues/4189
 
         Backstory: Ole Nielson pointed out an issue to me
         (Tim Sutton) where simplify ftools was dropping
@@ -1671,7 +1671,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert compareWkt(expWkt, wkt), "convertToType failed: from multiline to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
     def testRegression13053(self):
-        """ See http://hub.qgis.org/issues/13053 """
+        """ See https://issues.qgis.org/issues/13053 """
         p = QgsGeometry.fromWkt('MULTIPOLYGON(((62.0 18.0, 62.0 19.0, 63.0 19.0, 63.0 18.0, 62.0 18.0)), ((63.0 19.0, 63.0 20.0, 64.0 20.0, 64.0 19.0, 63.0 19.0)))')
         assert p is not None
 
@@ -1680,7 +1680,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert compareWkt(expWkt, wkt), "testRegression13053 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
     def testRegression13055(self):
-        """ See http://hub.qgis.org/issues/13055
+        """ See https://issues.qgis.org/issues/13055
             Testing that invalid WKT with z values but not using PolygonZ is still parsed
             by QGIS.
         """
@@ -1692,7 +1692,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert compareWkt(expWkt, wkt), "testRegression13055 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
     def testRegression13274(self):
-        """ See http://hub.qgis.org/issues/13274
+        """ See https://issues.qgis.org/issues/13274
             Testing that two combined linestrings produce another line string if possible
         """
         a = QgsGeometry.fromWkt('LineString (0 0, 1 0)')
@@ -1711,7 +1711,7 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
-        # Test reshape a geometry involving the first/last vertex (http://hub.qgis.org/issues/14443)
+        # Test reshape a geometry involving the first/last vertex (https://issues.qgis.org/issues/14443)
         g.reshapeGeometry([QgsPoint(0.5, 1), QgsPoint(0, 0.5)])
 
         expWkt = 'Polygon ((0 0.5, 0 0, 1 0, 1 0.5, 0.5 1, 0 0.5))'
@@ -4090,13 +4090,13 @@ class TestQgsGeometry(unittest.TestCase):
                  ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 30 30))", "POINT (25 25)"],
                  ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 20 20))", "POINT (15 15)"],
                  ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 20 20),MULTIPOINT ((20 10), (10 20)) )", "POINT (15 15)"],
-                 #["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 20 20),POINT EMPTY )","POINT (15 15)"],
-                 #["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING EMPTY,POINT EMPTY )","POINT (10 10)"],
+                 # ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 20 20),POINT EMPTY )","POINT (15 15)"],
+                 # ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING EMPTY,POINT EMPTY )","POINT (10 10)"],
                  ["GEOMETRYCOLLECTION (POLYGON ((20 100, 20 -20, 60 -20, 60 100, 20 100)),POLYGON ((-20 60, 100 60, 100 20, -20 20, -20 60)))", "POINT (40 40)"],
                  ["POLYGON ((40 160, 160 160, 160 160, 40 160, 40 160))", "POINT (100 160)"],
                  ["POLYGON ((10 10, 100 100, 100 100, 10 10))", "POINT (55 55)"],
-                 #["POLYGON EMPTY","POINT EMPTY"],
-                 #["MULTIPOLYGON(EMPTY,((0 0,1 0,1 1,0 1, 0 0)))","POINT (0.5 0.5)"],
+                 # ["POLYGON EMPTY","POINT EMPTY"],
+                 # ["MULTIPOLYGON(EMPTY,((0 0,1 0,1 1,0 1, 0 0)))","POINT (0.5 0.5)"],
                  ["POLYGON((56.528666666700 25.2101666667,56.529000000000 25.2105000000,56.528833333300 25.2103333333,56.528666666700 25.2101666667))", "POINT (56.52883333335 25.21033333335)"],
                  ["POLYGON((56.528666666700 25.2101666667,56.529000000000 25.2105000000,56.528833333300 25.2103333333,56.528666666700 25.2101666667))", "POINT (56.528833 25.210333)"]
                  ]
@@ -4113,6 +4113,22 @@ class TestQgsGeometry(unittest.TestCase):
                 result = QgsGeometry(input.geometry().centroid()).exportToWkt()
                 self.assertTrue(compareWkt(result, exp, 0.00001),
                                 "centroid: mismatch using QgsAbstractGeometry methods Input {} \n Expected:\n{}\nGot:\n{}\n".format(t[0], exp, result))
+
+    def testCompare(self):
+        lp = [QgsPoint(1, 1), QgsPoint(2, 2), QgsPoint(1, 2), QgsPoint(1, 1)]
+        lp2 = [QgsPoint(1, 1.0000001), QgsPoint(2, 2), QgsPoint(1, 2), QgsPoint(1, 1)]
+        self.assertTrue(QgsGeometry.compare(lp, lp))  # line-line
+        self.assertTrue(QgsGeometry.compare([lp], [lp]))  # pylygon-polygon
+        self.assertTrue(QgsGeometry.compare([[lp]], [[lp]]))  # multipyolygon-multipolygon
+        # handling empty values
+        self.assertFalse(QgsGeometry.compare(None, None))
+        self.assertFalse(QgsGeometry.compare(lp, []))  # line-line
+        self.assertFalse(QgsGeometry.compare([lp], [[]]))  # pylygon-polygon
+        self.assertFalse(QgsGeometry.compare([[lp]], [[[]]]))  # multipolygon-multipolygon
+        # tolerance
+        self.assertFalse(QgsGeometry.compare(lp, lp2))
+        self.assertTrue(QgsGeometry.compare(lp, lp2, 1e-6))
+
 
 if __name__ == '__main__':
     unittest.main()

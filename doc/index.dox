@@ -50,7 +50,7 @@ users and developers.
 
 \section index_bugs Bug Reporting
 If you think you have found a bug, please report it using our <a
-href="http://hub.qgis.org/projects/quantum-gis">bug tracker</a>. When reporting bugs,
+href="https://issues.qgis.org/projects/qgis">bug tracker</a>. When reporting bugs,
 please include some contact information in case we need help with replicating
 your issue.
 

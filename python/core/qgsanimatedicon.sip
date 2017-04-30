@@ -89,7 +89,7 @@ class QgsAnimatedIcon : QObject
  to this signal directly.
  Connecting to this signal directly will cause the animation not to be started.
 
- \see connectFrameChanged
+.. seealso:: connectFrameChanged
 %End
 
 };

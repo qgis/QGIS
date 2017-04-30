@@ -299,7 +299,7 @@ class Grass7Algorithm(GeoAlgorithm):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
-            QgsMessageLog.logMessage(loglines, self.tr('Processing'), QgsMessageLog.INFO)
+            QgsMessageLog.logMessage("\n".join(loglines), self.tr('Processing'), QgsMessageLog.INFO)
 
         Grass7Utils.executeGrass7(self.commands, feedback, self.outputCommands)
 

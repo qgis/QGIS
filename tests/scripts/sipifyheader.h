@@ -145,6 +145,17 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       : mMember( nullptr )
     {}
 
+    Constructor() : mHasNamedNodes( false ) {}
+    virtual ~Destructor() { qDeleteAll( mList ); }
+
+    Constructor( const QString &name,
+                 bool optional = false,
+                 const QVariant &defaultValue = QVariant() )
+      : mName( name )
+      , mOptional( optional )
+      , mDefaultValue( defaultValue )
+    {}
+
     //! Default constructor
     QgsSipifyHeader() = default;
 

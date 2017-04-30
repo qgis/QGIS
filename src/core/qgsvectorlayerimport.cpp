@@ -103,7 +103,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
   if ( providerKey == "ogr" )
   {
     QString layerName;
-    if ( options->contains( QStringLiteral( "layerName" ) ) )
+    if ( options && options->contains( QStringLiteral( "layerName" ) ) )
       layerName = options->value( QStringLiteral( "layerName" ) ).toString();
     if ( !layerName.isEmpty() )
     {

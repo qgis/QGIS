@@ -734,7 +734,7 @@ int main( int argc, char *argv[] )
     for ( int i = 0; i < args.size(); i++ )
     {
       QString arg = QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() );
-      if ( arg.contains( QLatin1String( ".qgs" ) ) )
+      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
       {
         sProjectFileName = arg;
         break;
@@ -783,6 +783,9 @@ int main( int argc, char *argv[] )
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
 #ifdef Q_OS_MAC
+  // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
+  QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
+
   // Set 1024x1024 icon for dock, app switcher, etc., rendering
   myApp.setWindowIcon( QIcon( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) ) );
 #else
@@ -1113,7 +1116,7 @@ int main( int argc, char *argv[] )
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.contains( QLatin1String( ".qgs" ) ) )
+    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
     {
       qgis->openLayer( myLayerName );
     }

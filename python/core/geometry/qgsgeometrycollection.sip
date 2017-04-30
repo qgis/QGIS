@@ -1,97 +1,135 @@
-class QgsGeometryCollection: public QgsAbstractGeometry
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsgeometrycollection.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGeometryCollection: QgsAbstractGeometry
 {
-%TypeHeaderCode
-#include <qgsgeometrycollection.h>
+%Docstring
+ Geometry collection
+.. versionadded:: 2.10
 %End
 
+%TypeHeaderCode
+#include "qgsgeometrycollection.h"
+%End
   public:
     QgsGeometryCollection();
-    QgsGeometryCollection( const QgsGeometryCollection& c );
-    //QgsGeometryCollection& operator=( const QgsGeometryCollection& c );
+    QgsGeometryCollection( const QgsGeometryCollection &c );
     virtual ~QgsGeometryCollection();
 
-    virtual QgsGeometryCollection* clone() const /Factory/;
+    virtual QgsGeometryCollection *clone() const /Factory/;
 
-    /** Returns the number of geometries within the collection.
-     */
     int numGeometries() const;
+%Docstring
+ Returns the number of geometries within the collection.
+ :rtype: int
+%End
 
-    /** Returns a const reference to a geometry from within the collection.
-     * @param n index of geometry to return
-     */
-    //const QgsAbstractGeometry* geometryN( int n ) const;
 
-    /** Returns a geometry from within the collection.
-     * @param n index of geometry to return
-     */
-    QgsAbstractGeometry* geometryN( int n );
+    QgsAbstractGeometry *geometryN( int n );
+%Docstring
+ Returns a geometry from within the collection.
+ \param n index of geometry to return
+ :rtype: QgsAbstractGeometry
+%End
 
-    //methods inherited from QgsAbstractGeometry
-    bool isEmpty() const;
+    virtual bool isEmpty() const;
+
     virtual int dimension() const;
     virtual QString geometryType() const;
     virtual void clear();
-    virtual QgsAbstractGeometry* boundary() const /Factory/;
+    virtual QgsAbstractGeometry *boundary() const /Factory/;
 
-    /** Adds a geometry and takes ownership. Returns true in case of success.*/
-    virtual bool addGeometry( QgsAbstractGeometry* g /Transfer/ );
+    virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
+%Docstring
+Adds a geometry and takes ownership. Returns true in case of success.
+ :rtype: bool
+%End
 
-    /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
-     * @param g geometry to insert. Ownership is transferred to the collection.
-     * @param index position to insert geometry before
-     */
-    virtual bool insertGeometry( QgsAbstractGeometry* g /Transfer/, int index );
+    virtual bool insertGeometry( QgsAbstractGeometry *g, int index /Transfer/ );
+%Docstring
+ Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
+ \param g geometry to insert. Ownership is transferred to the collection.
+ \param index position to insert geometry before
+ :rtype: bool
+%End
 
-    /** Removes a geometry from the collection.
-     * @param nr index of geometry to remove
-     * @returns true if removal was successful.
-     */
     virtual bool removeGeometry( int nr );
+%Docstring
+ Removes a geometry from the collection.
+ \param nr index of geometry to remove
+ :return: true if removal was successful.
+ :rtype: bool
+%End
 
-    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false );
-    void transform( const QTransform& t );
+    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+                            bool transformZ = false );
+    virtual void transform( const QTransform &t );
 
-    //virtual void clip( const QgsRectangle& rect );
+    virtual void draw( QPainter &p ) const;
 
-    virtual void draw( QPainter& p ) const;
+    virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
-    bool fromWkb( QgsConstWkbPtr& wkb );
-    virtual bool fromWkt( const QString& wkt );
-    QByteArray asWkb() const;
-    QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QString asJSON( int precision = 17 ) const;
+    virtual bool fromWkt( const QString &wkt );
+    virtual QByteArray asWkb() const;
+
+    virtual QString asWkt( int precision = 17 ) const;
+
+    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+
+    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+
+    virtual QString asJSON( int precision = 17 ) const;
+
 
     virtual QgsRectangle boundingBox() const;
 
-    virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
+    virtual QgsCoordinateSequence coordinateSequence() const;
     virtual int nCoordinates() const;
-    virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
-    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
 
-    //low-level editing
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex );
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos );
+    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt /Out/,
+                                   QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/,
+                                   double epsilon ) const;
+    virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex /Out/ ) const;
+
+
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex );
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos );
     virtual bool deleteVertex( QgsVertexId position );
 
     virtual double length() const;
     virtual double area() const;
     virtual double perimeter() const;
 
-    bool hasCurvedSegments() const;
+    virtual bool hasCurvedSegments() const;
 
-    /** Returns a geometry without curves. Caller takes ownership
-    * @param tolerance segmentation tolerance
-    * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
-    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-     * @param vertex the vertex id
-     * @return rotation in radians, clockwise from north
-     */
-    double vertexAngle( QgsVertexId vertex ) const;
+    virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+
+%Docstring
+ Returns a geometry without curves. Caller takes ownership
+ \param tolerance segmentation tolerance
+ \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*
+ :rtype: QgsAbstractGeometry
+%End
+
+    virtual double vertexAngle( QgsVertexId vertex ) const;
+
+%Docstring
+ Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+ \param vertex the vertex id
+ :return: rotation in radians, clockwise from north
+ :rtype: float
+%End
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const;
     virtual int ringCount( int part = 0 ) const;
@@ -105,16 +143,28 @@ class QgsGeometryCollection: public QgsAbstractGeometry
 
   protected:
 
-    /** Returns whether child type names are omitted from Wkt representations of the collection
-     * @note added in QGIS 2.12
-     */
     virtual bool wktOmitChildType() const;
+%Docstring
+ Returns whether child type names are omitted from Wkt representations of the collection
+.. versionadded:: 2.12
+ :rtype: bool
+%End
 
-    /** Reads a collection from a WKT string.
-     */
-    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry*>& subtypes, const QString& defaultChildWkbType = QString() );
+    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
+%Docstring
+ Reads a collection from a WKT string.
+ :rtype: bool
+%End
 
     virtual QgsRectangle calculateBoundingBox() const;
     virtual void clearCache() const;
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsgeometrycollection.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

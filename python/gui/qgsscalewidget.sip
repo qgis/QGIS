@@ -75,7 +75,6 @@ Function to read the min scale
 
     static QString toString( double scale );
 %Docstring
-be expected.
  :rtype: str
 %End
     static double toDouble( const QString &scaleString, bool *ok = 0 );

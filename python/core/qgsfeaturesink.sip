@@ -27,7 +27,7 @@ class QgsFeatureSink
     virtual bool addFeature( QgsFeature &feature );
 %Docstring
  Adds a single ``feature`` to the sink.
- \see addFeatures()
+.. seealso:: addFeatures()
  :return: true in case of success and false in case of failure
  :rtype: bool
 %End
@@ -35,7 +35,7 @@ class QgsFeatureSink
     virtual bool addFeatures( QgsFeatureList &features ) = 0;
 %Docstring
  Adds a list of ``features`` to the sink.
- \see addFeature()
+.. seealso:: addFeature()
  :return: true in case of success and false in case of failure
  :rtype: bool
 %End

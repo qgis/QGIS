@@ -1558,12 +1558,14 @@ void QgsNodeTool::deleteVertex()
         for ( int i = 0; i < vertexIds.count(); ++i )
         {
           QgsVertexId vid;
-          geom.vertexIdFromVertexNr( vertexIds[i], vid );
-          int ringVertexCount = geom.geometry()->vertexCount( vid.part, vid.ring );
-          if ( vid.vertex == ringVertexCount - 1 )
+          if ( geom.vertexIdFromVertexNr( vertexIds[i], vid ) )
           {
-            // this is the last vertex of the ring - remove the first vertex from the list
-            duplicateVertexIndices << geom.vertexNrFromVertexId( QgsVertexId( vid.part, vid.ring, 0 ) );
+            int ringVertexCount = geom.geometry()->vertexCount( vid.part, vid.ring );
+            if ( vid.vertex == ringVertexCount - 1 )
+            {
+              // this is the last vertex of the ring - remove the first vertex from the list
+              duplicateVertexIndices << geom.vertexNrFromVertexId( QgsVertexId( vid.part, vid.ring, 0 ) );
+            }
           }
         }
         // now delete the duplicities

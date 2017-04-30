@@ -101,6 +101,13 @@ A constructor with no empty `()`
 A constructor with some special character types
 %End
 
+    Constructor();
+    virtual ~Destructor();
+
+    Constructor( const QString &name,
+                 bool optional = false,
+                 const QVariant &defaultValue = QVariant() );
+
     QgsSipifyHeader();
 %Docstring
 Default constructor

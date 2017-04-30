@@ -3,11 +3,11 @@
 
 If you find a bug in QGIS, you can search for it 
 
-http://hub.qgis.org/search/index/quantum-gis/issues
+https://issues.qgis.org/projects/qgis/search?issues=1
 
-If you can't find an exisitng ticket, report it using the QGIS ticket/bug database at:
+If you can't find an existing ticket, report it using the QGIS ticket/bug database at:
 
-http://hub.qgis.org/projects/quantum-gis/issues/new
+https://issues.qgis.org/projects/qgis/issues/new
 
 
 Some hints about when you should file a bug:

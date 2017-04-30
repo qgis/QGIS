@@ -68,7 +68,7 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
       // unless we can guarantee all values are unsigned
       // (in which case we could use pktUint64)
       // we'll have to use a Map type.
-      // See http://hub.qgis.org/issues/14262
+      // See https://issues.qgis.org/issues/14262
       return PktFidMap; // pktUint64
 
     case QVariant::Int:
@@ -168,7 +168,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   }
 
   // NOTE: mValid would be true after true return from
-  // getGeometryDetails, see http://hub.qgis.org/issues/13781
+  // getGeometryDetails, see https://issues.qgis.org/issues/13781
 
   if ( mSpatialColType == SctTopoGeometry )
   {

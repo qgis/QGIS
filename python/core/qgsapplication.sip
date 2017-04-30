@@ -362,7 +362,7 @@ Returns the short name regular expression for line edit validator
 %Docstring
  Returns the user's operating system login account name.
 .. versionadded:: 2.14
- \see userFullName()
+.. seealso:: userFullName()
  :rtype: str
 %End
 
@@ -370,7 +370,7 @@ Returns the short name regular expression for line edit validator
 %Docstring
  Returns the user's operating system login account full display name.
 .. versionadded:: 2.14
- \see userLoginName()
+.. seealso:: userLoginName()
  :rtype: str
 %End
 
@@ -378,7 +378,7 @@ Returns the short name regular expression for line edit validator
 %Docstring
  Returns a string name of the operating system QGIS is running on.
 .. versionadded:: 2.14
- \see platform()
+.. seealso:: platform()
  :rtype: str
 %End
 
@@ -386,7 +386,7 @@ Returns the short name regular expression for line edit validator
 %Docstring
  Returns the QGIS platform name, e.g., "desktop" or "server".
 .. versionadded:: 2.14
- \see osName()
+.. seealso:: osName()
  :rtype: str
 %End
 
@@ -574,9 +574,9 @@ Returns path to the build output directory. Valid only when running from build d
     static void applyGdalSkippedDrivers();
 %Docstring
  Apply the skipped drivers list to gdal
- \see skipGdalDriver
- \see restoreGdalDriver
- \see skippedGdalDrivers *
+.. seealso:: skipGdalDriver
+.. seealso:: restoreGdalDriver
+.. seealso:: skippedGdalDrivers *
 %End
 
     static int maxThreads();
@@ -720,7 +720,7 @@ Returns path to the build output directory. Valid only when running from build d
  Custom expression variables for this application.
  This does not include generated variables (like system name, user name etc.)
 
- \see QgsExpressionContextUtils.globalVariables().
+.. seealso:: QgsExpressionContextUtils.globalVariables().
 .. versionadded:: 3.0
  :rtype: QVariantMap
 %End
@@ -730,7 +730,7 @@ Returns path to the build output directory. Valid only when running from build d
  Custom expression variables for this application.
  Do not include generated variables (like system name, user name etc.)
 
- \see QgsExpressionContextUtils.globalVariables().
+.. seealso:: QgsExpressionContextUtils.globalVariables().
 .. versionadded:: 3.0
 %End
 

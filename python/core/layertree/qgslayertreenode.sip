@@ -50,7 +50,7 @@ class QgsLayerTreeNode : QObject
  - "legend/..." - properties for legend appearance customization
  - "expandedLegendNodes" - list of layer's legend nodes' rules in expanded state
 
- \see also QgsLayerTree, QgsLayerTreeLayer, QgsLayerTreeGroup
+.. seealso:: also QgsLayerTree, QgsLayerTreeLayer, QgsLayerTreeGroup
 .. versionadded:: 2.4
 %End
 

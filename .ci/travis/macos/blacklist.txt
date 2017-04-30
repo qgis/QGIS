@@ -15,9 +15,7 @@ qgis_composerrotationtest
 qgis_composerscalebartest
 qgis_composerutilstest
 qgis_composertablev2test
-qgis_distanceareatest
 qgis_diagramtest
-qgis_expressiontest
 qgis_fontmarkertest
 qgis_labelingenginetest
 qgis_legendrenderertest
@@ -30,7 +28,6 @@ PyQgsAtlasComposition
 PyQgsComposerLegend
 PyQgsComposerMapGrid
 PyQgsDistanceArea
-PyQgsJSONUtils
 PyQgsPalLabelingBase
 PyQgsPalLabelingPlacement
 PyQgsPalLabelingComposer

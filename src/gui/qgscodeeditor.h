@@ -20,6 +20,7 @@
 #include <QString>
 // qscintilla includes
 #include <Qsci/qsciapis.h>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 

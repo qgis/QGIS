@@ -50,14 +50,14 @@ class QgsDockWidget : QDockWidget
  - hiding a dock which is open and raised (ie, user visible) will cause the dock to
  be closed
  - hiding a dock which is closed has no effect and raises no signals
- \see isUserVisible()
+.. seealso:: isUserVisible()
 %End
 
     bool isUserVisible() const;
 %Docstring
  Returns true if the dock is both opened and raised to the front (ie not hidden by
  any other tabs.
- \see setUserVisible()
+.. seealso:: setUserVisible()
  :rtype: bool
 %End
 
@@ -71,31 +71,31 @@ class QgsDockWidget : QDockWidget
     void closed();
 %Docstring
  Emitted when dock widget is closed.
- \see closedStateChanged()
- \see opened()
+.. seealso:: closedStateChanged()
+.. seealso:: opened()
 %End
 
     void closedStateChanged( bool wasClosed );
 %Docstring
  Emitted when dock widget is closed (or opened).
  \param wasClosed will be true if dock widget was closed, or false if dock widget was opened
- \see closed()
- \see openedStateChanged()
+.. seealso:: closed()
+.. seealso:: openedStateChanged()
 %End
 
     void opened();
 %Docstring
  Emitted when dock widget is opened.
- \see openedStateChanged()
- \see closed()
+.. seealso:: openedStateChanged()
+.. seealso:: closed()
 %End
 
     void openedStateChanged( bool wasOpened );
 %Docstring
  Emitted when dock widget is opened (or closed).
  \param wasOpened will be true if dock widget was opened, or false if dock widget was closed
- \see closedStateChanged()
- \see opened()
+.. seealso:: closedStateChanged()
+.. seealso:: opened()
 %End
 
 };

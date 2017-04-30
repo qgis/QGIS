@@ -39,7 +39,7 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       ICON_CIRCLE
     };
 
-    QgsVertexMarker( QgsMapCanvas *mapCanvas );
+    QgsVertexMarker( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
     void setCenter( const QgsPoint &point );
 

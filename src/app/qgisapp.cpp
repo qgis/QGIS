@@ -4962,7 +4962,7 @@ void QgisApp::fileOpenAfterLaunch()
     return;
   }
 
-  if ( !projPath.endsWith( QLatin1String( "qgs" ), Qt::CaseInsensitive ) )
+  if ( !projPath.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
   {
     messageBar()->pushMessage( autoOpenMsgTitle,
                                tr( "Not valid project file: %1" ).arg( projPath ),
@@ -5839,13 +5839,18 @@ void QgisApp::saveMapAsImage()
     } );
     connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int error )
     {
-      if ( error == QgsMapRendererTask::ImageAllocationFail )
+      switch ( error )
       {
-        messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
-      }
-      else if ( error == QgsMapRendererTask::ImageAllocationFail )
-      {
-        messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not save the image to file" ) );
+        case QgsMapRendererTask::ImageAllocationFail:
+        {
+          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
+          break;
+        }
+        case QgsMapRendererTask::ImageSaveFail:
+        {
+          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not save the image to file" ) );
+          break;
+        }
       }
     } );
 

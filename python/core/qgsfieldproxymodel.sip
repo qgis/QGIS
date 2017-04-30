@@ -54,14 +54,14 @@ Returns the QgsFieldModel used in this QSortFilterProxyModel
 %Docstring
  Set flags that affect how fields are filtered in the model.
  \param filters are Filter flags
- \see filters()
+.. seealso:: filters()
  :rtype: QgsFieldProxyModel
 %End
 
     const Filters &filters() const;
 %Docstring
  Returns the filters controlling displayed fields.
- \see setFilters()
+.. seealso:: setFilters()
  :rtype: Filters
 %End
 

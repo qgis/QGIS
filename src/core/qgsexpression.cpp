@@ -2242,7 +2242,7 @@ static QVariant fcnMakeCircle( const QVariantList &values, const QgsExpressionCo
     parent->setEvalErrorString( QObject::tr( "Segment must be greater than 2" ) );
     return QVariant();
   }
-  QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
+  QgsPointV2 *point = static_cast< QgsPointV2 * >( geom.geometry() );
   QgsCircle circ( *point, radius );
   return QVariant::fromValue( QgsGeometry( circ.toPolygon( segment ) ) );
 }
@@ -2265,7 +2265,7 @@ static QVariant fcnMakeEllipse( const QVariantList &values, const QgsExpressionC
     parent->setEvalErrorString( QObject::tr( "Segment must be greater than 2" ) );
     return QVariant();
   }
-  QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
+  QgsPointV2 *point = static_cast< QgsPointV2 * >( geom.geometry() );
   QgsEllipse elp( *point, majorAxis,  minorAxis, azimuth );
   return QVariant::fromValue( QgsGeometry( elp.toPolygon( segment ) ) );
 }

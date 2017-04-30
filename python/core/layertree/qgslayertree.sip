@@ -54,9 +54,9 @@ class QgsLayerTree : QgsLayerTreeGroup
  Will only be used if the property hasCustomLayerOrder is true.
  If you need the current layer order that is active, prefer using layerOrder().
 
- \see setCustomLayerOrder
- \see layerOrder
- \see hasCustomLayerOrder
+.. seealso:: setCustomLayerOrder
+.. seealso:: layerOrder
+.. seealso:: hasCustomLayerOrder
 
 .. versionadded:: 3.0
  :rtype: list of QgsMapLayer
@@ -68,9 +68,9 @@ class QgsLayerTree : QgsLayerTreeGroup
  Will only be used if the property hasCustomLayerOrder is true.
  If you need the current layer order that is active, prefer using layerOrder().
 
- \see customLayerOrder
- \see layerOrder
- \see hasCustomLayerOrder
+.. seealso:: customLayerOrder
+.. seealso:: layerOrder
+.. seealso:: hasCustomLayerOrder
 
 .. versionadded:: 3.0
 %End
@@ -81,9 +81,9 @@ class QgsLayerTree : QgsLayerTreeGroup
  Will only be used if the property hasCustomLayerOrder is true.
  If you need the current layer order that is active, prefer using layerOrder().
 
- \see customLayerOrder
- \see layerOrder
- \see hasCustomLayerOrder
+.. seealso:: customLayerOrder
+.. seealso:: layerOrder
+.. seealso:: hasCustomLayerOrder
 
 .. versionadded:: 3.0
 %End
@@ -95,7 +95,7 @@ class QgsLayerTree : QgsLayerTreeGroup
  customLayerOrder or the layer order derived from the tree.
  This property is read only.
 
- \see customLayerOrder
+.. seealso:: customLayerOrder
 
 .. versionadded:: 3.0
  :rtype: list of QgsMapLayer
@@ -106,7 +106,7 @@ class QgsLayerTree : QgsLayerTreeGroup
  Determines if the layer order should be derived from the layer tree
  or if a custom override order shall be used instead.
 
- \see customLayerOrder
+.. seealso:: customLayerOrder
 
 .. versionadded:: 3.0
  :rtype: bool
@@ -117,7 +117,7 @@ class QgsLayerTree : QgsLayerTreeGroup
  Determines if the layer order should be derived from the layer tree
  or if a custom override order shall be used instead.
 
- \see setCustomLayerOrder
+.. seealso:: setCustomLayerOrder
 
 .. versionadded:: 3.0
 %End
@@ -172,7 +172,7 @@ class QgsLayerTree : QgsLayerTreeGroup
 %Docstring
  Emitted when the hasCustomLayerOrder flag changes.
 
- \see hasCustomLayerOrder
+.. seealso:: hasCustomLayerOrder
 
 .. versionadded:: 3.0
 %End

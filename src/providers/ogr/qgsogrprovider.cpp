@@ -256,7 +256,7 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
   QgsVectorFileWriter::ActionOnExistingFile action( QgsVectorFileWriter::CreateOrOverwriteFile );
 
   bool update = false;
-  if ( options->contains( QStringLiteral( "update" ) ) )
+  if ( options && options->contains( QStringLiteral( "update" ) ) )
   {
     update = options->value( QStringLiteral( "update" ) ).toBool();
     if ( update )

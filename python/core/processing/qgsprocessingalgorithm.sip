@@ -46,9 +46,9 @@ class QgsProcessingAlgorithm
  should be fixed for the algorithm, and must not be localised. The name should
  be unique within each provider. Names should contain lowercase alphanumeric characters
  only and no spaces or other formatting characters.
- \see displayName()
- \see group()
- \see tags()
+.. seealso:: displayName()
+.. seealso:: group()
+.. seealso:: tags()
  :rtype: str
 %End
 
@@ -56,8 +56,8 @@ class QgsProcessingAlgorithm
 %Docstring
  Returns the unique ID for the algorithm, which is a combination of the algorithm
  provider's ID and the algorithms unique name (e.g. "qgis:mergelayers" ).
- \see name()
- \see provider()
+.. seealso:: name()
+.. seealso:: provider()
  :rtype: str
 %End
 
@@ -65,7 +65,7 @@ class QgsProcessingAlgorithm
 %Docstring
  Returns the translated algorithm name, which should be used for any user-visible display
  of the algorithm name.
- \see name()
+.. seealso:: name()
  :rtype: str
 %End
 
@@ -79,14 +79,14 @@ class QgsProcessingAlgorithm
     virtual QIcon icon() const;
 %Docstring
  Returns an icon for the algorithm.
- \see svgIconPath()
+.. seealso:: svgIconPath()
  :rtype: QIcon
 %End
 
     virtual QString svgIconPath() const;
 %Docstring
  Returns a path to an SVG version of the algorithm's icon.
- \see icon()
+.. seealso:: icon()
  :rtype: str
 %End
 
@@ -94,7 +94,7 @@ class QgsProcessingAlgorithm
 %Docstring
  Returns the name of the group this algorithm belongs to. This string
  should be localised.
- \see tags()
+.. seealso:: tags()
  :rtype: str
 %End
 

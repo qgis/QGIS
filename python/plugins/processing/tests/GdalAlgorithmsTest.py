@@ -67,7 +67,7 @@ class TestGdalOgr2OgrToPostgis(unittest.TestCase):
     def tearDownClass(cls):
         pass
 
-    # See http://hub.qgis.org/issues/15706
+    # See https://issues.qgis.org/issues/15706
     def test_getConnectionString(self):
 
         obj = Ogr2OgrToPostGis()

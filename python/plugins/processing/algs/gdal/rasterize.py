@@ -163,3 +163,6 @@ class rasterize(GdalAlgorithm):
 
         arguments.append(out)
         return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]
+
+    def commandName(self):
+        return "gdal_rasterize"

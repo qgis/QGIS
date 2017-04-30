@@ -128,7 +128,7 @@ void TestQgsMarkerLineSymbol::lineOffset()
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mLinesLayer );
 
   // Negative offset on marker line
-  // See http://hub.qgis.org/issues/13811
+  // See https://issues.qgis.org/issues/13811
 
   QString qml = mTestDataDir + "marker_line_offset.qml";
   bool success = false;
@@ -139,7 +139,7 @@ void TestQgsMarkerLineSymbol::lineOffset()
   QVERIFY( render( "line_offset" ) );
 
   // TODO: -0.0 offset, see
-  // http://hub.qgis.org/issues/13811#note-1
+  // https://issues.qgis.org/issues/13811#note-1
 }
 
 void TestQgsMarkerLineSymbol::pointNumInterval()

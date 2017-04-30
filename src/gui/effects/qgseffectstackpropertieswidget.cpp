@@ -467,7 +467,16 @@ void QgsEffectStackCompactWidget::showDialog()
   }
   connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsEffectStackCompactWidget::updateEffectLive );
   connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsEffectStackCompactWidget::updateAcceptWidget );
-  openPanel( widget );
+
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  if ( panel && panel->dockMode() )
+  {
+    panel->openPanel( widget );
+  }
+  else
+  {
+    openPanel( widget );
+  }
 }
 
 void QgsEffectStackCompactWidget::enableToggled( bool checked )

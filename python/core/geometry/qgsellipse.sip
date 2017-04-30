@@ -94,29 +94,29 @@ An ellipse is empty if axes are equal to 0
     QgsPointV2 center() const;
 %Docstring
  Returns the center point.
- \see setCenter()
- \see rcenter()
+.. seealso:: setCenter()
+.. seealso:: rcenter()
  :rtype: QgsPointV2
 %End
 
     double semiMajorAxis() const;
 %Docstring
  Returns the semi-major axis.
- \see setSemiMajorAxis()
+.. seealso:: setSemiMajorAxis()
  :rtype: float
 %End
 
     double semiMinorAxis() const;
 %Docstring
  Returns the semi-minor axis.
- \see setSemiMinorAxis()
+.. seealso:: setSemiMinorAxis()
  :rtype: float
 %End
 
     double azimuth() const;
 %Docstring
  Returns the azimuth.
- \see setAzimuth()
+.. seealso:: setAzimuth()
  :rtype: float
 %End
 
@@ -124,33 +124,33 @@ An ellipse is empty if axes are equal to 0
     void setCenter( const QgsPointV2 &center );
 %Docstring
  Sets the center point.
- \see center()
- \see rcenter()
+.. seealso:: center()
+.. seealso:: rcenter()
 %End
 
     virtual void setSemiMajorAxis( const double semiMajorAxis );
 %Docstring
  Sets the semi-major axis.
- \see semiMajorAxis()
+.. seealso:: semiMajorAxis()
 %End
 
     virtual void setSemiMinorAxis( const double semiMinorAxis );
 %Docstring
  Sets the semi-minor axis.
- \see semiMinorAxis()
+.. seealso:: semiMinorAxis()
 %End
 
     void setAzimuth( const double azimuth );
 %Docstring
  Sets the azimuth (orientation).
- \see azimuth()
+.. seealso:: azimuth()
 %End
 
     virtual double focusDistance() const;
 %Docstring
  The distance between the center and each foci.
- \see fromFoci()
- \see foci()
+.. seealso:: fromFoci()
+.. seealso:: foci()
  :return: The distance between the center and each foci.
  :rtype: float
 %End
@@ -158,8 +158,8 @@ An ellipse is empty if axes are equal to 0
     virtual QVector<QgsPointV2> foci() const;
 %Docstring
  Two foci of the ellipse. The axes are oriented by the azimuth and are on the semi-major axis.
- \see fromFoci()
- \see focusDistance()
+.. seealso:: fromFoci()
+.. seealso:: focusDistance()
  :return: the two foci.
  :rtype: list of QgsPointV2
 %End

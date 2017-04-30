@@ -15,8 +15,8 @@ class QgsMapLayerModel : QAbstractItemModel
 {
 %Docstring
  The QgsMapLayerModel class is a model to display layers in widgets.
- \see QgsMapLayerProxyModel to sort and/filter the layers
- \see QgsFieldModel to combine in with a field selector.
+.. seealso:: QgsMapLayerProxyModel to sort and/filter the layers
+.. seealso:: QgsFieldModel to combine in with a field selector.
 .. versionadded:: 2.3
 %End
 
@@ -56,14 +56,14 @@ class QgsMapLayerModel : QAbstractItemModel
     void setAllowEmptyLayer( bool allowEmpty );
 %Docstring
  Sets whether an optional empty layer ("not set") option is present in the model.
- \see allowEmptyLayer()
+.. seealso:: allowEmptyLayer()
 .. versionadded:: 3.0
 %End
 
     bool allowEmptyLayer() const;
 %Docstring
  Returns true if the model allows the empty layer ("not set") choice.
- \see setAllowEmptyLayer()
+.. seealso:: setAllowEmptyLayer()
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -71,14 +71,14 @@ class QgsMapLayerModel : QAbstractItemModel
     void setShowCrs( bool showCrs );
 %Docstring
  Sets whether the CRS of layers is also included in the model's display role.
- \see showCrs()
+.. seealso:: showCrs()
 .. versionadded:: 3.0
 %End
 
     bool showCrs() const;
 %Docstring
  Returns true if the model includes layer's CRS in the display role.
- \see setShowCrs()
+.. seealso:: setShowCrs()
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -105,24 +105,20 @@ returns if the items can be checked or not
  Sets a list of additional (non map layer) items to include at the end of the model.
  These may represent additional layers such as layers which are not included in the map
  layer registry, or paths to layers which have not yet been loaded into QGIS.
- \see additionalItems()
+.. seealso:: additionalItems()
 .. versionadded:: 3.0
 %End
 
     QStringList additionalItems() const;
 %Docstring
  Return the list of additional (non map layer) items included at the end of the model.
- \see setAdditionalItems()
+.. seealso:: setAdditionalItems()
 .. versionadded:: 3.0
  :rtype: list of str
 %End
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 
-%Docstring
-QAbstractItemModel interface
- :rtype: QModelIndex
-%End
     virtual QModelIndex parent( const QModelIndex &child ) const;
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;

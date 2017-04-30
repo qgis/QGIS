@@ -160,7 +160,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
     @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2))
     def testGeopackageExtentUpdate(self):
-        ''' test http://hub.qgis.org/issues/15273 '''
+        ''' test https://issues.qgis.org/issues/15273 '''
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageExtentUpdate.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
         lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
