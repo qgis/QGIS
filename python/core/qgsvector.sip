@@ -67,21 +67,21 @@ Swaps the sign of the x and y components of the vector.
  :rtype: QgsVector
 %End
 
-    QgsVector &operator+=( QgsVector other );
+    QgsVector &operator+=( const QgsVector other );
 %Docstring
  Adds another vector to this vector in place.
 .. versionadded:: 3.0
  :rtype: QgsVector
 %End
 
-    QgsVector operator-( QgsVector other ) const;
+    QgsVector operator-( const QgsVector other ) const;
 %Docstring
  Subtracts another vector to this vector.
 .. versionadded:: 3.0
  :rtype: QgsVector
 %End
 
-    QgsVector &operator-=( QgsVector other );
+    QgsVector &operator-=( const QgsVector other );
 %Docstring
  Subtracts another vector to this vector in place.
 .. versionadded:: 3.0
