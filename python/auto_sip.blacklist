@@ -1,7 +1,6 @@
 core/conversions.sip
 core/qgsexception.sip
 core/qgis.sip
-core/qgsdataitem.sip
 core/qgsdataitemprovider.sip
 core/qgsdataitemproviderregistry.sip
 core/qgsdbfilterproxymodel.sip
@@ -99,7 +98,6 @@ core/qgstolerance.sip
 core/qgstracer.sip
 core/qgstrackedvectorlayertools.sip
 core/qgsunittypes.sip
-core/qgsvector.sip
 core/qgsvectordataprovider.sip
 core/qgsvectorfilewriter.sip
 core/qgsvectorfilewritertask.sip
