@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Saturday April 29, 2017
+Sunday April 30, 2017
 
 
-Last Updated: Saturday April 29, 2017
-Last Change : Saturday April 29, 2017
+Last Updated: Sunday April 30, 2017
+Last Change : Sunday April 30, 2017
 
 
   1. Introduction
@@ -1784,7 +1784,6 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
   cd build
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
   -D CMAKE_BUILD_TYPE=MINSIZEREL -D ENABLE_TESTS=FALSE \
-  -D WITH_PYSPATIALITE=FALSE \
   -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
   -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
   -D QWT_LIBRARY=/usr/local/qwt-6.0.2/lib/libqwt.dylib \
