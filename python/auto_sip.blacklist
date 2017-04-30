@@ -356,7 +356,6 @@ gui/qgsmessagebar.sip
 gui/qgsmessagebaritem.sip
 gui/qgsmessageviewer.sip
 gui/qgsnewhttpconnection.sip
-gui/qgsnewmemorylayerdialog.sip
 gui/qgsnewnamedialog.sip
 gui/qgsnewvectorlayerdialog.sip
 gui/qgsnewgeopackagelayerdialog.sip
@@ -505,7 +504,6 @@ gui/editorwidgets/qgsvaluerelationsearchwidgetwrapper.sip
 gui/layertree/qgslayertreeview.sip
 analysis/vector/qgsgeometryanalyzer.sip
 analysis/vector/qgsgeometrysnapper.sip
-analysis/vector/qgsoverlayanalyzer.sip
 analysis/vector/qgspointsample.sip
 analysis/vector/qgstransectsample.sip
 analysis/vector/qgszonalstatistics.sip
