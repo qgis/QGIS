@@ -656,7 +656,7 @@ while ($line_idx < $line_count){
         $is_override = 0;
         next;
     }
-    elsif ( $line =~ m/\/\// || $line =~ m/\s*typedef / || $line =~ m/\s*struct / ){
+    elsif ( $line =~ m/\/\// || $line =~ m/\s*typedef / || $line =~ m/\s*struct / || $line =~ m/operator\[\]\(/ ){
         $comment = '';
     }
     elsif ( $comment !~ m/^\s*$/ || $return_type ne ''){
