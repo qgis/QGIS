@@ -2250,7 +2250,7 @@ tests:
         type: vector
 
   - algorithm: qgis:singlepartstomultipart
-    name: single part to multipart
+    name: single part to multipart (with NULL values)
     params:
       FIELD: id
       INPUT:
