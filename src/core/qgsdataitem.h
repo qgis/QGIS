@@ -37,7 +37,7 @@ class QgsDataProvider;
 class QgsDataItem;
 class QgsAnimatedIcon;
 
-typedef QgsDataItem *dataItem_t( QString, QgsDataItem * );
+typedef QgsDataItem *dataItem_t( QString, QgsDataItem * ) SIP_SKIP;
 
 /** \ingroup core
  * Base class for all items in the model.
@@ -48,22 +48,22 @@ class CORE_EXPORT QgsDataItem : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->inherits( "QgsLayerItem" ) )
-      sipType = sipType_QgsLayerItem;
-    if ( sipCpp->inherits( "QgsErrorItem" ) )
-      sipType = sipType_QgsErrorItem;
-    if ( sipCpp->inherits( "QgsDirectoryItem" ) )
-      sipType = sipType_QgsDirectoryItem;
-    if ( sipCpp->inherits( "QgsFavoritesItem" ) )
-      sipType = sipType_QgsFavoritesItem;
-    if ( sipCpp->inherits( "QgsZipItem" ) )
-      sipType = sipType_QgsZipItem;
-    if ( sipCpp->inherits( "QgsDataCollectionItem" ) )
-      sipType = sipType_QgsDataCollectionItem;
-    if ( sipCpp->inherits( "QgsProjectItem" ) )
-      sipType = sipType_QgsProjectItem;
-    else
-      sipType = 0;
+        if (qobject_cast<QgsLayerItem*>(sipCpp))
+        sipType = sipType_QgsLayerItem;
+        else if (qobject_cast<QgsErrorItem*>(sipCpp))
+        sipType = sipType_QgsErrorItem;
+        else if (qobject_cast<QgsDirectoryItem*>(sipCpp))
+        sipType = sipType_QgsDirectoryItem;
+        else if (qobject_cast<QgsFavoritesItem*>(sipCpp))
+        sipType = sipType_QgsFavoritesItem;
+        else if (qobject_cast<QgsZipItem*>(sipCpp))
+        sipType = sipType_QgsZipItem;
+        else if (qobject_cast<QgsDataCollectionItem*>(sipCpp))
+        sipType = sipType_QgsDataCollectionItem;
+        else if (qobject_cast<QgsProjectItem*>(sipCpp))
+        sipType = sipType_QgsProjectItem;
+        else
+        sipType = 0;
     SIP_END
 #endif
 
