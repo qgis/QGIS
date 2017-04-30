@@ -326,8 +326,9 @@ while ($line_idx < $line_count){
                     # top level should stasy public
                     dbg_info
                     $ACCESS[$#ACCESS] = PUBLIC;
-                    $comment = '';
                 }
+                $comment = '';
+                $return_type = '';
                 $private_section_line = '';
             }
             dbg_info("new bracket balance: @global_bracket_nesting_index");
@@ -572,7 +573,7 @@ while ($line_idx < $line_count){
     # https://regex101.com/r/uvCt4M/1
     do {no warnings 'uninitialized';
         $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\/\s*;(\s*(\/\/.*)?)$/\/$1,$3\/$5;/;
-        ($3 == undef) or dbg_info("combine multiple annotations -- works only for 2");
+        (! $3) or dbg_info("combine multiple annotations -- works only for 2");
     };
 
     # unprinted annotations
