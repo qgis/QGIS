@@ -427,49 +427,6 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
 }
 
-QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &urlstr, const QgsServerRequest::Method requestMethod, const QgsServerRequest::Headers &headers, const char *data )
-{
-
-  QUrl url( urlstr );
-
-  QByteArray ba;
-
-  if ( requestMethod == QgsServerRequest::PostMethod )
-  {
-    if ( data )
-    {
-      ba.append( data );
-    }
-  }
-  else if ( requestMethod !=  QgsServerRequest::GetMethod )
-  {
-    throw QgsServerException( QStringLiteral( "Invalid method in handleRequest(): only GET or POST is supported" ) );
-  }
-
-  QgsBufferServerRequest request( url, requestMethod, headers, &ba );
-  QgsBufferServerResponse response;
-
-  handleRequest( request, response );
-
-  /*
-   * XXX For compatibility only:
-   * We should return a (moved) QgsBufferServerResponse instead
-   */
-  QByteArray headerBuffer;
-  QMap<QString, QString>::const_iterator it;
-  for ( it = response.headers().constBegin(); it != response.headers().constEnd(); ++it )
-  {
-    headerBuffer.append( it.key().toUtf8() );
-    headerBuffer.append( ": " );
-    headerBuffer.append( it.value().toUtf8() );
-    headerBuffer.append( "\n" );
-  }
-  headerBuffer.append( "\n" );
-
-  // TODO: check that this is not an evil bug!
-  return QPair<QByteArray, QByteArray>( headerBuffer, response.body() );
-
-}
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsServer::initPython()

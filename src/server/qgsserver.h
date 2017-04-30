@@ -73,18 +73,6 @@ class SERVER_EXPORT QgsServer
      */
     void handleRequest( QgsServerRequest &request, QgsServerResponse &response );
 
-    /** Handles the request from query string
-     * The query string is normally read from environment
-     * but can be also passed in args and in this case overrides the environment
-     * variable.
-     *
-     * \param urlstr QString containing the request url (simple quely string must be preceded by '?')
-     * \param requestMethod QgsServerRequest::Method that indicates the method. Only "GET" or "POST" are supported.
-     * \param data array of bytes containing post data
-     * \param map of request headers
-     * \returns the response headers and body QPair of QByteArray
-     */
-    QPair<QByteArray, QByteArray> handleRequest( const QString &urlstr, const QgsServerRequest::Method requestMethod = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers(), const char *data = nullptr );
 
     //! Returns a pointer to the server interface
     QgsServerInterfaceImpl *serverInterface() { return sServerInterface; }

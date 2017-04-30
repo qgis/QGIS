@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * ../src/server/qgsbufferserverrequest.h                               *
+ * src/server/qgsbufferserverrequest.h                                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -46,7 +46,7 @@ class QgsBufferServerRequest : QgsServerRequest
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * ../src/server/qgsbufferserverrequest.h                               *
+ * src/server/qgsbufferserverrequest.h                                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

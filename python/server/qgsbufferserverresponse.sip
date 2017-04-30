@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * ../src/server/qgsbufferserverresponse.h                              *
+ * src/server/qgsbufferserverresponse.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -141,13 +141,13 @@ class QgsBufferServerResponse: QgsServerResponse
 
 
   private:
-    QgsBufferServerResponse(const QgsBufferServerResponse &) ;
+    QgsBufferServerResponse( const QgsBufferServerResponse & ) ;
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * ../src/server/qgsbufferserverresponse.h                              *
+ * src/server/qgsbufferserverresponse.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
