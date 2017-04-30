@@ -301,10 +301,6 @@ class QgsPointV2: QgsAbstractGeometry
 %End
 
     virtual bool isEmpty() const;
-%Docstring
-implementation of inherited methods
- :rtype: bool
-%End
     virtual QgsRectangle boundingBox() const;
     virtual QString geometryType() const;
     virtual int dimension() const;
@@ -334,10 +330,6 @@ implementation of inherited methods
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex );
-%Docstring
-low-level editing
- :rtype: bool
-%End
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos );
     virtual bool deleteVertex( QgsVertexId position );
 

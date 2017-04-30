@@ -161,10 +161,6 @@ Closes the line string by appending the first point to the end of the line, if i
 
 
     virtual QString geometryType() const;
-%Docstring
-reimplemented methods
- :rtype: str
-%End
     virtual int dimension() const;
     virtual QgsLineString *clone() const /Factory/;
     virtual void clear();
@@ -186,10 +182,6 @@ reimplemented methods
 
 
     virtual double length() const;
-%Docstring
-curve interface
- :rtype: float
-%End
     virtual QgsPointV2 startPoint() const;
     virtual QgsPointV2 endPoint() const;
 

@@ -47,10 +47,6 @@ class QgsCompoundCurve: QgsCurve
 
 
     virtual double length() const;
-%Docstring
-curve interface
- :rtype: float
-%End
     virtual QgsPointV2 startPoint() const;
     virtual QgsPointV2 endPoint() const;
     virtual void points( QgsPointSequence &pts /Out/ ) const;

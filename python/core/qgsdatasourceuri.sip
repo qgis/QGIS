@@ -12,9 +12,6 @@
 
 class QgsDataSourceUri
 {
-%Docstring
-(Radim Blazek 4/2012)
-%End
 
 %TypeHeaderCode
 #include "qgsdatasourceuri.h"
@@ -229,9 +226,6 @@ Clears the schema
 %End
 
     void setSchema( const QString &schema );
-%Docstring
-.. versionadded:: 2.11
-%End
 
     void setSql( const QString &sql );
 %Docstring
@@ -255,13 +249,9 @@ Returns the port
 %End
     QString driver() const;
 %Docstring
-.. versionadded:: 2.16
  :rtype: str
 %End
     void setDriver( const QString &driver );
-%Docstring
-.. versionadded:: 2.16
-%End
     QString password() const;
 %Docstring
 Returns the password

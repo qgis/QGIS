@@ -965,25 +965,21 @@ changeGeometry() instead.
 
     int addRing( const QList<QgsPoint> &ring, QgsFeatureId *featureId = 0 );
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
     int addRing( QgsCurve *ring /Transfer/, QgsFeatureId *featureId = 0 ) /PyName=addCurvedRing/;
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
     int addPart( const QList<QgsPoint> &ring );
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
     int addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
@@ -1007,13 +1003,11 @@ TODO QGIS 3.0 returns an enum instead of a magic constant
 
     int splitParts( const QList<QgsPoint> &splitLine, bool topologicalEditing = false );
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
     int splitFeatures( const QList<QgsPoint> &splitLine, bool topologicalEditing = false );
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 

@@ -94,7 +94,7 @@ class CORE_EXPORT QgsMapToPixel
      */
     void transformInPlace( double &x, double &y ) const;
 
-    // \note not available in Python bindings
+    //! \note not available in Python bindings
     void transformInPlace( float &x, float &y ) const;
 
     /**

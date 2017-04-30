@@ -37,9 +37,6 @@ class QgsOptionsPageWidget : QWidget
 
 class QgsOptionsWidgetFactory : QObject
 {
-%Docstring
-QGIS crashing when a plugin crashes/exits without deregistering a factory
-%End
 
 %TypeHeaderCode
 #include "qgsoptionswidgetfactory.h"

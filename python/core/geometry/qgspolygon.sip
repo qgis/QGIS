@@ -41,17 +41,9 @@ class QgsPolygonV2: QgsCurvePolygon
 
     virtual QByteArray asWkb() const;
 
-%Docstring
-inherited: bool fromWkt( const QString &wkt );
- :rtype: QByteArray
-%End
 
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 
-%Docstring
-inherited: QString asJSON( int precision = 17 ) const;
- :rtype: QgsPolygonV2
-%End
 
     virtual QgsAbstractGeometry *toCurveType() const /Factory/;
 
@@ -64,9 +56,6 @@ inherited: QString asJSON( int precision = 17 ) const;
     virtual void addInteriorRing( QgsCurve *ring /Transfer/ );
 
     virtual void setExteriorRing( QgsCurve *ring /Transfer/ );
-%Docstring
-overridden to handle LineString25D rings
-%End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 

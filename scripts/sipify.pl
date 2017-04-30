@@ -366,9 +366,13 @@ while ($line_idx < $line_count){
     # save comments and do not print them, except in SIP_RUN
     if ( $SIP_RUN == 0 ){
         if ( $line =~ m/^\s*\/\// ){
-            $line =~ s/^\s*\/\/\!*\s*(.*?)\n?$/$1/;
-            $comment = processDoxygenLine( $line );
-            $comment =~ s/\n+$//;
+            if ($line =~ m/^\s*\/\/\!\s*(.*?)\n?$/){
+                $comment = processDoxygenLine( $1 );
+                $comment =~ s/\n+$//;
+            }
+            elsif ($lines[$line_idx-1] !~ m/\*\/.*/) {
+                $comment = '';
+            }
             next;
         }
     }

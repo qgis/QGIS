@@ -46,10 +46,6 @@ class QgsCurvePolygon: QgsSurface
 
 
     virtual double area() const;
-%Docstring
-surface interface
- :rtype: float
-%End
     virtual double perimeter() const;
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 
@@ -57,7 +53,6 @@ surface interface
 
     int numInteriorRings() const;
 %Docstring
-curve polygon interface
  :rtype: int
 %End
     const QgsCurve *exteriorRing() const;

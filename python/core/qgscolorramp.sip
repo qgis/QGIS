@@ -681,9 +681,6 @@ class QgsCptCityColorRamp : QgsGradientColorRamp
 %End
 
     void setSchemeName( const QString &schemeName );
-%Docstring
-lazy loading - have to call loadPalette() explicitly
-%End
     void setVariantName( const QString &variantName );
     void setVariantList( const QStringList &variantList );
     void setName( const QString &schemeName, const QString &variantName = QString(), const QStringList &variantList = QStringList() );

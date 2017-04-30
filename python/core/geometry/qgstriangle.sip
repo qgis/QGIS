@@ -51,10 +51,6 @@ class QgsTriangle : QgsPolygonV2
 
 
     virtual QString geometryType() const;
-%Docstring
-inherited: bool operator!=( const QgsTriangle& other ) const;
- :rtype: str
-%End
     virtual QgsTriangle *clone() const /Factory/;
     virtual void clear();
 
@@ -67,10 +63,6 @@ inherited: bool operator!=( const QgsTriangle& other ) const;
 
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 
-%Docstring
-inherited: QString asJSON( int precision = 17 ) const;
- :rtype: QgsPolygonV2
-%End
 
     virtual QgsAbstractGeometry *toCurveType() const /Factory/;
 
