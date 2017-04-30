@@ -526,7 +526,7 @@ int main( int argc, char *argv[] )
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.endsWith( QLatin1String( ".qgs", Qt::CaseInsensitive ) ) )
+    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
     {
       fprintf( stderr, "Data files not yet supported\n" );
       return 1;
