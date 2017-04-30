@@ -45,6 +45,6 @@ ${GP}sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis.s
 ${GP}sed -n -r 's/^%Include (.*\.sip)/server\/\1/p' python/server/server.sip
   )
 
-echo " => $count files sipified!"
+echo " => $count files sipified! 🍺"
 
 popd > /dev/null
