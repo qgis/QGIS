@@ -84,7 +84,6 @@ core/qgsruntimeprofiler.sip
 core/qgsscalecalculator.sip
 core/qgsscaleutils.sip
 core/qgssimplifymethod.sip
-core/qgssnapper.sip
 core/qgssnappingutils.sip
 core/qgsspatialindex.sip
 core/qgssqlstatement.sip
