@@ -23,6 +23,7 @@
 #include <QToolButton>
 #include <QMouseEvent>
 
+#include "qgis.h"
 #include "qgssettings.h"
 #include "qgis_gui.h"
 
@@ -37,7 +38,7 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
     Q_OBJECT
 
   public:
-    QgsGroupBoxCollapseButton( QWidget *parent = nullptr )
+    QgsGroupBoxCollapseButton( QWidget *parent SIP_TRANSFERTHIS = nullptr )
       : QToolButton( parent )
       , mAltDown( false )
       , mShiftDown( false )
@@ -95,8 +96,8 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     Q_PROPERTY( bool scrollOnExpand READ scrollOnExpand WRITE setScrollOnExpand )
 
   public:
-    QgsCollapsibleGroupBoxBasic( QWidget *parent = nullptr );
-    QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent = nullptr );
+    QgsCollapsibleGroupBoxBasic( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the current collapsed state of this group box
@@ -193,8 +194,8 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     Q_PROPERTY( bool saveCheckedState READ saveCheckedState WRITE setSaveCheckedState )
 
   public:
-    QgsCollapsibleGroupBox( QWidget *parent = nullptr, QgsSettings *settings = nullptr );
-    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = nullptr, QgsSettings *settings = nullptr );
+    QgsCollapsibleGroupBox( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsSettings *settings = nullptr );
+    QgsCollapsibleGroupBox( const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsSettings *settings = nullptr );
     ~QgsCollapsibleGroupBox();
 
     // set custom QgsSettings pointer if group box was already created from QtDesigner promotion
