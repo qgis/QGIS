@@ -381,7 +381,6 @@ gui/qgsrasterlayersaveasdialog.sip
 gui/qgsrasterpyramidsoptionswidget.sip
 gui/qgsrelationeditorwidget.sip
 gui/qgsrubberband.sip
-gui/qgsscalecombobox.sip
 gui/qgsscalerangewidget.sip
 gui/qgsscalevisibilitydialog.sip
 gui/qgsscrollarea.sip
