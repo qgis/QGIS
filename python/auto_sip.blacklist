@@ -65,7 +65,6 @@ core/qgspallabeling.sip
 core/qgspathresolver.sip
 core/qgspluginlayer.sip
 core/qgspluginlayerregistry.sip
-core/qgspoint.sip
 core/qgspointlocator.sip
 core/qgsproject.sip
 core/qgsprojectbadlayerhandler.sip
