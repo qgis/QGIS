@@ -316,6 +316,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       VertexType type;
     }
 
+    void combinedAnnotations() SIP_FACTORY SIP_PYNAME(otherName);
+
     //! remove argument
     void simple( bool test SIP_PYARGREMOVE );
     void method( bool myArg SIP_PYARGREMOVE =  test );

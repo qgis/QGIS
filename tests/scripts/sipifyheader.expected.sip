@@ -290,6 +290,8 @@ Mulitline body
       VertexType type;
     }
 
+    void combinedAnnotations() /Factory,PyName=otherName/;
+
     void simple(  );
 %Docstring
 remove argument
