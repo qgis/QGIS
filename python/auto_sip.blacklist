@@ -8,7 +8,6 @@ core/qgsdbfilterproxymodel.sip
 core/qgseditformconfig.sip
 core/qgseditorwidgetsetup.sip
 core/qgserror.sip
-core/qgsexpression.sip
 core/qgsexpressioncontext.sip
 core/qgsexpressioncontextgenerator.sip
 core/qgsfeaturefilterprovider.sip
