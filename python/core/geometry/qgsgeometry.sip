@@ -213,7 +213,6 @@ Returns true if WKB of the geometry is of WKBMulti* type
 
     QgsPoint closestVertex( const QgsPoint &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
 %Docstring
-TODO QGIS 3.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
  :rtype: QgsPoint
 %End
 
@@ -473,7 +472,6 @@ not disjoint with existing polygons of the feature
                        bool topological,
                        QList<QgsPoint> &topologyTestPoints /Out/ );
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 

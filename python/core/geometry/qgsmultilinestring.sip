@@ -29,10 +29,6 @@ class QgsMultiLineString: QgsMultiCurve
 
     virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-%Docstring
-inherited: QString asWkt( int precision = 17 ) const;
- :rtype: QDomElement
-%End
     virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
     virtual QString asJSON( int precision = 17 ) const;

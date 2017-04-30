@@ -48,10 +48,6 @@ The root node is not transferred by the model.
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
-%Docstring
-Implementation of virtual functions from QAbstractItemModel
- :rtype: int
-%End
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;

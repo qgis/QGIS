@@ -80,13 +80,13 @@ class CORE_EXPORT QgsDataSourceUri
     QString quotedTablename() const;
 
     //! Set generic param (generic mode)
-    // \note if key exists, another is inserted
+    //! \note if key exists, another is inserted
     void setParam( const QString &key, const QString &value );
     //! \note available in Python as setParamList
     void setParam( const QString &key, const QStringList &value ) SIP_PYNAME( setParamList );
 
     //! Remove generic param (generic mode)
-    // \note remove all occurrences of key, returns number of params removed
+    //! \note remove all occurrences of key, returns number of params removed
     int removeParam( const QString &key );
 
     //! Get generic param (generic mode)

@@ -44,10 +44,6 @@ class QgsGeometryCollection: QgsAbstractGeometry
 
     virtual bool isEmpty() const;
 
-%Docstring
-methods inherited from QgsAbstractGeometry
- :rtype: bool
-%End
     virtual int dimension() const;
     virtual QString geometryType() const;
     virtual void clear();
@@ -107,10 +103,6 @@ Adds a geometry and takes ownership. Returns true in case of success.
 
 
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex );
-%Docstring
-low-level editing
- :rtype: bool
-%End
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos );
     virtual bool deleteVertex( QgsVertexId position );
 

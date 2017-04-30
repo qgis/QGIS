@@ -119,10 +119,6 @@ returns if the items can be checked or not
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 
-%Docstring
-QAbstractItemModel interface
- :rtype: QModelIndex
-%End
     virtual QModelIndex parent( const QModelIndex &child ) const;
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
