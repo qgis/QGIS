@@ -338,7 +338,7 @@ while ($line_idx < $line_count){
     if ( $line =~ m/^(\s*class)\s*([A-Z]+_EXPORT)?\s+(\w+)(\s*\:.*)?(\s*SIP_ABSTRACT)?$/ ){
         do {no warnings 'uninitialized';
             $classname = $3;
-            $line =~ m/\b[A-Z]+_EXPORT\b/ or die "Class$classname in $headerfile should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.";
+            $line =~ m/\b[A-Z]+_EXPORT\b/ or die "Class $classname in $headerfile should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.";
         };
         $line = "$1 $3";
         # Inheritance
