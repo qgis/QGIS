@@ -6,3 +6,4 @@ Comment=QGIS layer settings
 Comment[de]=QGIS Layer Einstellungen
 Icon=qgis-qml-mime
 Patterns=*.qml;
+Name[en_US]=x-qgis-layer-settings.desktop
