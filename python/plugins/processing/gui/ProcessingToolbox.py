@@ -85,6 +85,10 @@ class ProcessingToolbox(BASE, WIDGET):
 
         self.fillTree()
 
+        # connect to existing providers
+        for p in QgsApplication.processingRegistry().providers():
+            p.algorithmsLoaded.connect(self.updateProvider)
+
         QgsApplication.processingRegistry().providerRemoved.connect(self.removeProvider)
         QgsApplication.processingRegistry().providerAdded.connect(self.addProvider)
         settingsWatcher.settingsChanged.connect(self.fillTree)
