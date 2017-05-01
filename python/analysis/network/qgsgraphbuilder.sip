@@ -1,32 +1,53 @@
-/**
-* \ingroup analysis
-* \class QgsGraphBuilder
-* \brief This class making the QgsGraph object
-*/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraphbuilder.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsGraphBuilder : QgsGraphBuilderInterface
 {
-%TypeHeaderCode
-#include <qgsgraphbuilder.h>
+%Docstring
+ This class used for making the QgsGraph object
 %End
 
+%TypeHeaderCode
+#include "qgsgraphbuilder.h"
+%End
   public:
-    /**
-     * Default constructor
-     */
+
     QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
+%Docstring
+ Default constructor
+%End
 
     ~QgsGraphBuilder();
 
-    /*
-     * MANDATORY BUILDER PROPERTY DECLARATION
-     */
     virtual void addVertex( int id, const QgsPoint &pt );
+%Docstring
+ MANDATORY BUILDER PROPERTY DECLARATION
+%End
 
     virtual void addEdge( int pt1id, const QgsPoint &pt1, int pt2id, const QgsPoint &pt2, const QVector< QVariant > &prop );
 
-    /**
-     * Returns generated QgsGraph
-     */
     QgsGraph *graph() /Factory/;
+%Docstring
+ Returns generated QgsGraph
+ :rtype: QgsGraph
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraphbuilder.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

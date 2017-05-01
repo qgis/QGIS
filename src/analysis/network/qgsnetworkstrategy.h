@@ -22,6 +22,13 @@
 #include <qgsfeaturerequest.h>
 #include "qgis_analysis.h"
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsnetworkspeedstrategy.h>
+#include <qgsnetworkdistancestrategy.h>
+% End
+#endif
+
 /**
  * \ingroup analysis
  * \class QgsNetworkStrategy
@@ -31,8 +38,21 @@
  * implemented in the analysis library: QgsNetworkDistanceStrategy and QgsNetworkSpeedStrategy.
  * QgsNetworkStrategy implemented using "strategy" design pattern.
  */
+
 class ANALYSIS_EXPORT QgsNetworkStrategy
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsNetworkDistanceStrategy * >( sipCpp ) != NULL )
+      sipType = sipType_QgsNetworkDistanceStrategy;
+    else if ( dynamic_cast< QgsNetworkSpeedStrategy * >( sipCpp ) != NULL )
+      sipType = sipType_QgsNetworkSpeedStrategy;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
   public:
 
     /**

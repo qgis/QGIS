@@ -19,6 +19,7 @@
 #include "qgsgraphbuilderinterface.h"
 #include "qgis.h"
 
+#include <qgis.h>
 #include <qgsspatialindex.h>
 #include "qgis_analysis.h"
 
