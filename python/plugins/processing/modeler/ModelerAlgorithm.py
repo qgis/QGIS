@@ -114,7 +114,7 @@ class Algorithm(object):
     @property
     def algorithm(self):
         if self._algInstance is None:
-            self._algInstance = QgsApplication.processingRegistry().algorithmById(self.consoleName).getCopy()
+            self._algInstance = QgsApplication.processingRegistry().algorithmById(self.consoleName)
         return self._algInstance
 
     def setName(self, model):
@@ -226,7 +226,7 @@ class ModelerAlgorithm(GeoAlgorithm):
     CANVAS_SIZE = 4000
 
     def getCopy(self):
-        newone = self
+        newone = ModelerAlgorithm()
 
         newone.algs = {}
         for algname, alg in self.algs.items():
@@ -612,14 +612,6 @@ class ModelerAlgorithm(GeoAlgorithm):
                 clazz = getattr(module, className)
                 instance = clazz()
                 for k, v in list(values.items()):
-                    # upgrade old model files
-                    if k == 'group':
-                        k = '_group'
-                    elif k == 'name':
-                        instance.__dict__['_name'] = v
-                        k = 'modeler_name'
-                        if not issubclass(clazz, GeoAlgorithm):
-                            instance.__dict__['name'] = v
                     instance.__dict__[k] = v
                 return instance
             except KeyError:
