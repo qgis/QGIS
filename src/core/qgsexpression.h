@@ -1038,6 +1038,7 @@ class CORE_EXPORT QgsExpression
         /**
          * Needs to be called by all subclasses as part of their clone() implementation.
          *
+         * \note Not available in python bindings
          * \since QGIS 3.0
          */
         void cloneTo( QgsExpression::Node *target ) const;

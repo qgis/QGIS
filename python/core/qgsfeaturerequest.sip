@@ -84,6 +84,15 @@ class QgsFeatureRequest
         QgsExpression expression() const;
 
         /**
+         * Prepare the expression with the given context.
+         *
+         * \see QgsExpression::prepare
+         *
+         * \since QGIS 3.0
+         */
+        bool prepare( QgsExpressionContext *context );
+
+        /**
          * Order ascending
          * @return If ascending order is requested
          */

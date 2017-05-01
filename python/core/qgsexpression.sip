@@ -928,6 +928,9 @@ return index of the function in Functions array
 %Docstring
  Needs to be called by all subclasses as part of their clone() implementation.
 
+.. note::
+
+   Not available in python bindings
 .. versionadded:: 3.0
 %End
 
