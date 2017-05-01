@@ -475,6 +475,12 @@ int main( int argc, char *argv[] )
   // initialize random number seed
   qsrand( time( nullptr ) );
 
+  if ( !Qgis::QGISRuntimeChecks() )
+  {
+    QMessageBox::critical( 0, QObject::tr( "QGIS runtime checks failed" ), QObject::tr( "Libraries that QGIS requires are currently missing or have not been loaded correctly" ) );
+    exit( 1 ); //exit due to missing components
+  }
+
   /////////////////////////////////////////////////////////////////
   // Command line options 'behavior' flag setup
   ////////////////////////////////////////////////////////////////

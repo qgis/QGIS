@@ -46,6 +46,53 @@ const int Qgis::QGIS_VERSION_INT = VERSION_INT;
 
 // Release name
 const QString Qgis::QGIS_RELEASE_NAME( QStringLiteral( RELEASE_NAME ) );
+// Gdal Version string at build/compile time
+QString Qgis::GDAL_BUILD_VERSION( QString::fromUtf8( GDAL_RELEASE_NAME ) );
+const int Qgis::GDAL_BUILD_VERSION_MAJOR = GDAL_VERSION_MAJOR;
+const int Qgis::GDAL_BUILD_VERSION_MINOR = GDAL_VERSION_MINOR;
+const int Qgis::GDAL_BUILD_VERSION_REV = GDAL_VERSION_REV;
+QString Qgis::GDAL_RUNTIME_VERSION = QString();
+int Qgis::GDAL_RUNTIME_VERSION_MAJOR = -1;
+int Qgis::GDAL_RUNTIME_VERSION_MINOR = -1;
+int Qgis::GDAL_RUNTIME_VERSION_REV = -1;
+bool Qgis::GDAL_OGR_RUNTIME_SUPPORTED = false;
+bool Qgis::ogrRuntimeSupport()
+{
+  // Called in QgisApp and tested in QgsOgrProvider constructor
+  if ( Qgis::GDAL_RUNTIME_VERSION.isEmpty() )
+  {
+    // do this only once
+    Qgis::GDAL_RUNTIME_VERSION = QString( "%1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) );
+    // Remove non-numeric characters (with the excetion of '.') : '2.2.0dev' to '2.2.0'
+    QString gdalVersionInfo = Qgis::GDAL_RUNTIME_VERSION;
+    gdalVersionInfo.remove( QRegExp( QString::fromUtf8( "[-`~!@#$%^&*()_—+=|:;<>«»,?/{a-zA-Z}\'\"\\[\\]\\\\]" ) ) );
+    QStringList saSplit = gdalVersionInfo.split( '.' );
+    if ( ( !saSplit.isEmpty() ) )
+    {
+      // setting gdal-runtime version
+      Qgis::GDAL_RUNTIME_VERSION_MAJOR = saSplit[0].toInt();
+      if ( saSplit.size() > 1 )
+        Qgis::GDAL_RUNTIME_VERSION_MINOR = saSplit[1].toInt();
+      if ( saSplit.size() > 2 )
+        Qgis::GDAL_RUNTIME_VERSION_REV = saSplit[2].toInt();
+    }
+    if ( Qgis::GDAL_RUNTIME_VERSION_MAJOR >= Qgis::GDAL_BUILD_VERSION_MAJOR )
+    {
+      // Deprecated gdal major-versions that are less than the major-version
+      Qgis::GDAL_OGR_RUNTIME_SUPPORTED = true;
+    }
+  }
+  return Qgis::GDAL_OGR_RUNTIME_SUPPORTED;
+}
+bool Qgis::QGISRuntimeChecks()
+{
+  if ( !Qgis::ogrRuntimeSupport() )
+  {
+    std::cerr << QObject::tr( "QGIS does not support this version of GDAL.\nGDAL[%1]\nPlease install a GDAL 2 version.\n" ).arg( Qgis::GDAL_RUNTIME_VERSION ).toUtf8().constData();
+    return false;
+  }
+  return true;
+}
 
 const QString GEOPROJ4 = QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
 
