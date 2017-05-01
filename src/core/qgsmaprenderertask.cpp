@@ -18,6 +18,7 @@
 #include "qgsannotation.h"
 #include "qgsannotationmanager.h"
 #include "qgsmaprenderertask.h"
+#include "qgsmapsettingsutils.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -159,23 +160,8 @@ bool QgsMapRendererTask::run()
 
     if ( mSaveWorldFile )
     {
-      QString content;
-      // note: use 17 places of precision for all numbers output
-      //Pixel XDim
-      content += qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ) + "\r\n";
-      //Rotation on y axis - hard coded
-      content += QLatin1String( "0 \r\n" );
-      //Rotation on x axis - hard coded
-      content += QLatin1String( "0 \r\n" );
-      //Pixel YDim - almost always negative - see
-      //http://en.wikipedia.org/wiki/World_file#cite_note-2
-      content += '-' + qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ) + "\r\n";
-      //Origin X (center of top left cell)
-      content += qgsDoubleToString( mMapSettings.visibleExtent().xMinimum() + ( mMapSettings.mapUnitsPerPixel() / 2 ) ) + "\r\n";
-      //Origin Y (center of top left cell)
-      content += qgsDoubleToString( mMapSettings.visibleExtent().yMaximum() - ( mMapSettings.mapUnitsPerPixel() / 2 ) ) + "\r\n";
-
       QFileInfo info  = QFileInfo( mFileName );
+
       // build the world file name
       QString outputSuffix = info.suffix();
       QString worldFileName = info.absolutePath() + '/' + info.baseName() + '.'
@@ -185,7 +171,7 @@ bool QgsMapRendererTask::run()
       if ( worldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) //don't use QIODevice::Text
       {
         QTextStream stream( &worldFile );
-        stream << content;
+        stream << QgsMapSettingsUtils::worldFileContent( mMapSettings );
       }
     }
   }
