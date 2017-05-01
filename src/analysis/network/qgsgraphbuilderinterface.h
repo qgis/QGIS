@@ -24,6 +24,12 @@
 #include <qgsdistancearea.h>
 #include "qgis_analysis.h"
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsgraphbuilder.h>
+% End
+#endif
+
 /**
 * \ingroup analysis
 * \class QgsGraphBuilderInterface
@@ -32,6 +38,16 @@
 */
 class ANALYSIS_EXPORT QgsGraphBuilderInterface
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsGraphBuilder * >( sipCpp ) != NULL )
+      sipType = sipType_QgsGraphBuilder;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
   public:
 
     /**
