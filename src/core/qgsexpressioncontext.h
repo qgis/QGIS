@@ -93,6 +93,8 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
 
     virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction *node ) const override;
 
+    virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
   private:
     bool mUsesGeometry;
     QSet<QString> mReferencedColumns;

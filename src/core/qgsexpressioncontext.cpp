@@ -1086,3 +1086,8 @@ QSet<QString> QgsScopedExpressionFunction::referencedColumns( const QgsExpressio
   Q_UNUSED( node )
   return mReferencedColumns;
 }
+
+bool QgsScopedExpressionFunction::isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  return allParamsStatic( node, parent, context );
+}

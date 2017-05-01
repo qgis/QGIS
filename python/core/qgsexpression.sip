@@ -667,6 +667,22 @@ The help text for the function.
  :rtype: bool
 %End
 
+      protected:
+
+        static bool allParamsStatic( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
+%Docstring
+ This will return true if all the params for the provided function ``node`` are static within the
+ constraints imposed by the ``context`` within the given ``parent``.
+
+ This can be used as callback for custom implementations of subclasses. It is the default for implementation
+ for StaticFunction.isStatic.
+
+.. note::
+
+   Added in QGIS 3.0
+ :rtype: bool
+%End
+
     };
 
 

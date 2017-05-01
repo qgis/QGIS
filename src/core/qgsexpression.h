@@ -650,6 +650,19 @@ class CORE_EXPORT QgsExpression
 
         virtual bool handlesNull() const { return mHandlesNull; }
 
+      protected:
+
+        /**
+         * This will return true if all the params for the provided function \a node are static within the
+         * constraints imposed by the \a context within the given \a parent.
+         *
+         * This can be used as callback for custom implementations of subclasses. It is the default for implementation
+         * for StaticFunction::isStatic.
+         *
+         * \note Added in QGIS 3.0
+         */
+        static bool allParamsStatic( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
+
       private:
         QString mName;
         int mParams;
@@ -800,8 +813,6 @@ class CORE_EXPORT QgsExpression
 
 
       private:
-        static bool allParamsStatic( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
-
         FcnEval mFnc;
         QStringList mAliases;
         bool mUsesGeometry;

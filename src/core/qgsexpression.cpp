@@ -6552,7 +6552,7 @@ void QgsExpression::StaticFunction::setPrepareFunction( std::function<bool ( con
   mPrepareFunc = prepareFunc;
 }
 
-bool QgsExpression::StaticFunction::allParamsStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context )
+bool QgsExpression::Function::allParamsStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context )
 {
   if ( node && node->args() )
   {
