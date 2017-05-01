@@ -130,7 +130,7 @@ class QgsInterval
      * @param string string to parse
      * @returns interval, or invalid interval if string could not be parsed
      */
-    static QgsInterval fromString( const QString& string );
+    static QgsInterval fromString( const QString &string );
 
     //! Allows direct construction of QVariants from intervals.
     operator QVariant() const;

@@ -11,13 +11,13 @@ class QgsUserInputDockWidget : QDockWidget
 %End
 
   public:
-    QgsUserInputDockWidget( QWidget* parent /TransferThis/ = 0 );
+    QgsUserInputDockWidget( QWidget *parent /TransferThis/ = 0 );
     ~QgsUserInputDockWidget();
 
     /** Add a widget to be displayed in the dock.
      * @param widget widget to add. Ownership is not transferred.
      */
-    void addUserInputWidget( QWidget* widget );
+    void addUserInputWidget( QWidget *widget );
 
   protected:
     //! will not display the dock if it contains no widget

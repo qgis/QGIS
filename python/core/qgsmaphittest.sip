@@ -17,10 +17,10 @@ class QgsMapHitTest
     //! @param settings Map settings used to evaluate symbols
     //! @param polygon Polygon geometry to refine the hit test
     //! @param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
-    QgsMapHitTest( const QgsMapSettings& settings, const QgsGeometry& polygon = QgsGeometry(), const QMap<QString, QString>& layerFilterExpression = QMap<QString, QString>() );
+    QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QMap<QString, QString> &layerFilterExpression = QMap<QString, QString>() );
 
     //! Constructor version used with only expressions to filter symbols (no extent or polygon intersection)
-    QgsMapHitTest( const QgsMapSettings& settings, const QMap<QString, QString>& layerFilterExpression );
+    QgsMapHitTest( const QgsMapSettings &settings, const QMap<QString, QString> &layerFilterExpression );
 
     //! Runs the map hit test
     void run();
@@ -31,7 +31,7 @@ class QgsMapHitTest
      * @note added in QGIS 2.12
      * @see legendKeyVisible()
      */
-    bool symbolVisible( QgsSymbol* symbol, QgsVectorLayer* layer ) const;
+    bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 
     /** Tests whether a given legend key is visible for a specified layer.
      * @param ruleKey legend rule key
@@ -39,7 +39,7 @@ class QgsMapHitTest
      * @note added in QGIS 2.14
      * @see symbolVisible()
      */
-    bool legendKeyVisible( const QString& ruleKey, QgsVectorLayer* layer ) const;
+    bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
 
   protected:
 
@@ -57,7 +57,7 @@ class QgsMapHitTest
      * @note added in QGIS 2.12
      * @note not available in Python bindings
      */
-    //void runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols, SymbolSet& usedSymbolsRuleKey, QgsRenderContext& context );
+    //void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context );
 
 
 };

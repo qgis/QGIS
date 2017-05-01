@@ -18,7 +18,7 @@ class QgsJSONExporter
      * @param vectorLayer associated vector layer (required for related attribute export)
      * @param precision maximum number of decimal places to use for geometry coordinates
      */
-    QgsJSONExporter( const QgsVectorLayer* vectorLayer = nullptr, int precision = 17 );
+    QgsJSONExporter( const QgsVectorLayer *vectorLayer = nullptr, int precision = 17 );
 
     /** Sets the maximum number of decimal places to use in geometry coordinates.
      * @param precision number of decimal places
@@ -71,12 +71,12 @@ class QgsJSONExporter
      * @param vectorLayer vector layer
      * @see vectorLayer()
      */
-    void setVectorLayer( const QgsVectorLayer* vectorLayer );
+    void setVectorLayer( const QgsVectorLayer *vectorLayer );
 
     /** Returns the associated vector layer, if set.
      * @see setVectorLayer()
      */
-    QgsVectorLayer* vectorLayer() const;
+    QgsVectorLayer *vectorLayer() const;
 
     /** Sets the source CRS for feature geometries. The source CRS must be set if geometries are to be
      * correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
@@ -84,7 +84,7 @@ class QgsJSONExporter
      * @note the source CRS will be overwritten when a vector layer is specified via setVectorLayer()
      * @see sourceCrs()
      */
-    void setSourceCrs( const QgsCoordinateReferenceSystem& crs );
+    void setSourceCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Returns the source CRS for feature geometries. The source CRS must be set if geometries are to be
      * correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
@@ -100,7 +100,7 @@ class QgsJSONExporter
      * @note Attributes excluded via setExcludedAttributes() take precedence over
      * attributes specified by this method.
      */
-    void setAttributes( const QgsAttributeList& attributes );
+    void setAttributes( const QgsAttributeList &attributes );
 
     /** Returns the list of attributes which will be included in the JSON exports, or
      * an empty list if all attributes will be included.
@@ -117,7 +117,7 @@ class QgsJSONExporter
      * @see excludedAttributes()
      * @see setAttributes()
      */
-    void setExcludedAttributes( const QgsAttributeList& attributes );
+    void setExcludedAttributes( const QgsAttributeList &attributes );
 
     /** Returns a list of attributes which will be specifically excluded from the JSON exports. Excluded attributes
      * take precedence over attributes included via attributes().
@@ -136,7 +136,7 @@ class QgsJSONExporter
      */
     QString exportFeature( const QgsFeature& feature,
                            const QVariantMap& extraProperties = QVariantMap(),
-                           const QVariant& id = QVariant() ) const;
+                           const QVariant &id = QVariant() ) const;
 
 
     /** Returns a GeoJSON string representation of a list of features (feature collection).
@@ -144,7 +144,7 @@ class QgsJSONExporter
      * @returns GeoJSON string
      * @see exportFeature()
      */
-    QString exportFeatures( const QgsFeatureList& features ) const;
+    QString exportFeatures( const QgsFeatureList &features ) const;
 
   private:
 
@@ -175,7 +175,7 @@ class QgsJSONUtils
      * @see stringToFields()
      * @note this function is a wrapper around QgsOgrUtils::stringToFeatureList()
      */
-    static QgsFeatureList stringToFeatureList( const QString& string, const QgsFields& fields, QTextCodec* encoding );
+    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding );
 
     /** Attempts to retrieve the fields from a GeoJSON string representing a collection of features.
      * @param string GeoJSON string to parse
@@ -184,24 +184,24 @@ class QgsJSONUtils
      * @see stringToFeatureList()
      * @note this function is a wrapper around QgsOgrUtils::stringToFields()
      */
-    static QgsFields stringToFields( const QString& string, QTextCodec* encoding );
+    static QgsFields stringToFields( const QString &string, QTextCodec *encoding );
 
     /** Encodes a value to a JSON string representation, adding appropriate quotations and escaping
      * where required.
      * @param value value to encode
      * @returns encoded value
      */
-    static QString encodeValue( const QVariant& value );
+    static QString encodeValue( const QVariant &value );
 
     /** Exports all attributes from a QgsFeature as a JSON map type.
      * @param feature feature to export
      */
-    static QString exportAttributes( const QgsFeature& feature );
+    static QString exportAttributes( const QgsFeature &feature );
 
     /** Parse a simple array (depth=1).
      * @param json the JSON to parse
      * @param type the type of the elements
      * @note added in QGIS 3.0
      */
-    static QVariantList parseArray( const QString& json, QVariant::Type type );
+    static QVariantList parseArray( const QString &json, QVariant::Type type );
 };

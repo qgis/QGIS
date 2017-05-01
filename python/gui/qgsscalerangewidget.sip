@@ -14,7 +14,7 @@ class QgsScaleRangeWidget : QWidget
      * @brief setMapCanvas set the map canvas which will be used for the current scale buttons
      * if not set, the buttons are hidden.
      */
-    void setMapCanvas( QgsMapCanvas* mapCanvas );
+    void setMapCanvas( QgsMapCanvas *mapCanvas );
 
     //! return the minimum scale
     double minimumScale();

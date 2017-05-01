@@ -6,7 +6,7 @@ class QgsMapOverviewCanvas : QWidget
 %End
 
   public:
-    QgsMapOverviewCanvas( QWidget * parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = NULL );
+    QgsMapOverviewCanvas( QWidget  *parent /TransferThis/ = 0, QgsMapCanvas *mapCanvas = NULL );
 
     ~QgsMapOverviewCanvas();
 
@@ -14,10 +14,10 @@ class QgsMapOverviewCanvas : QWidget
     void refresh();
 
     //! changes background color
-    void setBackgroundColor( const QColor& color );
+    void setBackgroundColor( const QColor &color );
 
     //! updates layer set for overview
-    void setLayers( const QList<QgsMapLayer*>& layers );
+    void setLayers( const QList<QgsMapLayer*> &layers );
 
     //! Returns list of layers visible in the overview
     QList<QgsMapLayer*> layers() const;
@@ -43,19 +43,19 @@ class QgsMapOverviewCanvas : QWidget
   protected:
 
     //! Overridden paint event
-    void paintEvent( QPaintEvent * pe );
+    void paintEvent( QPaintEvent  *pe );
 
     //! Overridden resize event
-    void resizeEvent( QResizeEvent * e );
+    void resizeEvent( QResizeEvent  *e );
 
     //! Overridden mouse move event
-    void mouseMoveEvent( QMouseEvent * e );
+    void mouseMoveEvent( QMouseEvent  *e );
 
     //! Overridden mouse press event
-    void mousePressEvent( QMouseEvent * e );
+    void mousePressEvent( QMouseEvent  *e );
 
     //! Overridden mouse release event
-    void mouseReleaseEvent( QMouseEvent * e );
+    void mouseReleaseEvent( QMouseEvent  *e );
 
     //! called when panning to reflect mouse movement
     void updatePanningWidget( QPoint pos );

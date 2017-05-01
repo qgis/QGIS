@@ -7,20 +7,20 @@ class QgsMapToolZoom : QgsMapTool
 
   public:
     //! constructor
-    QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut );
+    QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut );
 
     ~QgsMapToolZoom();
 
     virtual Flags flags() const;
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
 
     //! Flag to indicate a map canvas drag operation is taking place
     virtual void deactivate();

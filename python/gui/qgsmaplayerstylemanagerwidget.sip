@@ -15,7 +15,7 @@ class QgsMapLayerStyleManagerWidget : QgsMapLayerConfigWidget
      * @param canvas The canvas object.
      * @param parent The parent.
      */
-    QgsMapLayerStyleManagerWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget *parent = 0 );
+    QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 
   public slots:
     void apply();

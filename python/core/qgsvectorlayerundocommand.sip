@@ -40,7 +40,7 @@ class QgsVectorLayerUndoCommandAddFeature : QgsVectorLayerUndoCommand
      * @param buffer associated edit buffer
      * @param f feature to add to layer
      */
-    QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer* buffer /Transfer/, QgsFeature& f );
+    QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeature &f );
 
     virtual void undo();
     virtual void redo();
@@ -63,7 +63,7 @@ class QgsVectorLayerUndoCommandDeleteFeature : QgsVectorLayerUndoCommand
      * @param buffer associated edit buffer
      * @param fid feature ID of feature to delete from layer
      */
-    QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer* buffer /Transfer/, QgsFeatureId fid );
+    QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid );
 
     virtual void undo();
     virtual void redo();
@@ -87,7 +87,7 @@ class QgsVectorLayerUndoCommandChangeGeometry : QgsVectorLayerUndoCommand
      * @param fid feature ID of feature to modify geometry of
      * @param newGeom new geometry for feature
      */
-    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer /Transfer/, QgsFeatureId fid, const QgsGeometry& newGeom );
+    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid, const QgsGeometry &newGeom );
     ~QgsVectorLayerUndoCommandChangeGeometry();
 
     virtual void undo();
@@ -116,7 +116,7 @@ class QgsVectorLayerUndoCommandChangeAttribute : QgsVectorLayerUndoCommand
      * @param newValue new value of attribute
      * @param oldValue previous value of attribute
      */
-    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer /Transfer/, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
+    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
     virtual void undo();
     virtual void redo();
 };
@@ -138,7 +138,7 @@ class QgsVectorLayerUndoCommandAddAttribute : QgsVectorLayerUndoCommand
      * @param buffer associated edit buffer
      * @param field definition of new field to add
      */
-    QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer* buffer /Transfer/, const QgsField& field );
+    QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, const QgsField &field );
 
     virtual void undo();
     virtual void redo();
@@ -161,7 +161,7 @@ class QgsVectorLayerUndoCommandDeleteAttribute : QgsVectorLayerUndoCommand
      * @param buffer associated edit buffer
      * @param fieldIndex index of field to delete
      */
-    QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer* buffer /Transfer/, int fieldIndex );
+    QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, int fieldIndex );
 
     virtual void undo();
     virtual void redo();
@@ -187,7 +187,7 @@ class QgsVectorLayerUndoCommandRenameAttribute : QgsVectorLayerUndoCommand
      * @param fieldIndex index of field to rename
      * @param newName new name for field
      */
-    QgsVectorLayerUndoCommandRenameAttribute( QgsVectorLayerEditBuffer* buffer /Transfer/, int fieldIndex, const QString& newName );
+    QgsVectorLayerUndoCommandRenameAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, int fieldIndex, const QString &newName );
 
     virtual void undo();
     virtual void redo();

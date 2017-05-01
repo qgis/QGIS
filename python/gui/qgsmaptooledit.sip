@@ -22,7 +22,7 @@ class QgsMapToolEdit: QgsMapTool
 %End
 
   public:
-    QgsMapToolEdit( QgsMapCanvas* canvas );
+    QgsMapToolEdit( QgsMapCanvas *canvas );
     virtual ~QgsMapToolEdit();
 
     virtual Flags flags() const;
@@ -40,18 +40,18 @@ class QgsMapToolEdit: QgsMapTool
      *   @param geometryType
      *   @param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
      */
-    QgsRubberBand* createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) /Factory/;
+    QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) /Factory/;
 
-    QgsGeometryRubberBand* createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const /Factory/;
+    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const /Factory/;
 
     /** Returns the current vector layer of the map canvas or 0*/
-    QgsVectorLayer* currentVectorLayer();
+    QgsVectorLayer *currentVectorLayer();
 
     /** Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
      * @param geom list of points (in layer coordinate system)
      * @return 0 in case of success
      */
-    int addTopologicalPoints( const QList<QgsPoint>& geom );
+    int addTopologicalPoints( const QList<QgsPoint> &geom );
 
     /** Display a timed message bar noting the active layer is not vector. */
     void notifyNotVectorLayer();

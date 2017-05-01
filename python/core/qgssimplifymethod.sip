@@ -40,5 +40,5 @@ class QgsSimplifyMethod
     bool forceLocalOptimization() const;
 
     //! Creates a geometry simplifier according to specified method
-    static QgsAbstractGeometrySimplifier* createGeometrySimplifier( const QgsSimplifyMethod& simplifyMethod );
+    static QgsAbstractGeometrySimplifier *createGeometrySimplifier( const QgsSimplifyMethod &simplifyMethod );
 };

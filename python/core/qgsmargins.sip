@@ -29,7 +29,7 @@ class QgsMargins
     QgsMargins &operator/=( double divisor );
 
     QString toString() const;
-    static QgsMargins fromString( const QString& string );
+    static QgsMargins fromString( const QString &string );
 };
 
 bool operator==( const QgsMargins &lhs, const QgsMargins &rhs );

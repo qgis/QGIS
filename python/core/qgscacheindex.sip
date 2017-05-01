@@ -28,7 +28,7 @@ class QgsAbstractCacheIndex
      * @param featureRequest  The feature request that was answered
      * @param fids            The feature ids that have been returned
      */
-    virtual void requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids );
+    virtual void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 
     /**
      * Is called, when a feature request is issued on a cached layer.
@@ -44,5 +44,5 @@ class QgsAbstractCacheIndex
      * @return   True, if this index holds the information to answer the request.
      *
      */
-    virtual bool getCacheIterator( QgsFeatureIterator& featureIterator, const QgsFeatureRequest& featureRequest ) = 0;
+    virtual bool getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest ) = 0;
 };

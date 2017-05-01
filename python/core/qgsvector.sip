@@ -19,11 +19,11 @@ class QgsVector
 
     QgsVector operator+( QgsVector other ) const;
 
-    QgsVector& operator+=( QgsVector other );
+    QgsVector &operator+=( QgsVector other );
 
     QgsVector operator-( QgsVector other ) const;
 
-    QgsVector& operator-=( QgsVector other );
+    QgsVector &operator-=( QgsVector other );
 
     double length() const;
 

@@ -26,22 +26,22 @@ class QgsPointLocator : QObject
      *  @arg extent  if not null, will index only a subset of the layer
      */
     explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem& destinationCrs = QgsCoordinateReferenceSystem(),
-                              const QgsRectangle* extent = nullptr );
+                              const QgsRectangle *extent = nullptr );
 
     ~QgsPointLocator();
 
     //! Get associated layer
     //! @note added in QGIS 2.14
-    QgsVectorLayer* layer() const;
+    QgsVectorLayer *layer() const;
     //! Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
     //! @note added in QGIS 2.14
     QgsCoordinateReferenceSystem destinationCrs() const;
     //! Get extent of the area point locator covers - if null then it caches the whole layer
     //! @note added in QGIS 2.14
-    const QgsRectangle* extent() const;
+    const QgsRectangle *extent() const;
     //! Configure extent - if not null, it will index only that area
     //! @note added in QGIS 2.14
-    void setExtent( const QgsRectangle* extent );
+    void setExtent( const QgsRectangle *extent );
 
     enum Type
     {
@@ -68,7 +68,7 @@ class QgsPointLocator : QObject
       //! consruct invalid match
       Match();
 
-      Match( QgsPointLocator::Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0 );
+      Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPoint &pt, int vertexIndex = 0 );
 
       QgsPointLocator::Type type() const;
 
@@ -90,14 +90,14 @@ class QgsPointLocator : QObject
       int vertexIndex() const;
 
       //! reference vector layer
-      QgsVectorLayer* layer() const;
+      QgsVectorLayer *layer() const;
 
       QgsFeatureId featureId() const;
 
       //! Only for a valid edge match - obtain endpoints of the edge
-      void edgePoints( QgsPoint& pt1 /Out/, QgsPoint& pt2 /Out/ ) const;
+      void edgePoints( QgsPoint &pt1 /Out/, QgsPoint &pt2 /Out/ ) const;
 
-      bool operator==( const QgsPointLocator::Match& other ) const;
+      bool operator==( const QgsPointLocator::Match &other ) const;
     };
 
     typedef QList<QgsPointLocator::Match> MatchList;
@@ -108,28 +108,28 @@ class QgsPointLocator : QObject
     struct MatchFilter
     {
       virtual ~MatchFilter();
-      virtual bool acceptMatch( const QgsPointLocator::Match& match ) = 0;
+      virtual bool acceptMatch( const QgsPointLocator::Match &match ) = 0;
     };
 
     // intersection queries
 
     //! Find nearest vertex to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    Match nearestVertex( const QgsPoint& point, double tolerance, QgsPointLocator::MatchFilter* filter = 0 );
+    Match nearestVertex( const QgsPoint &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
     //! Find nearest edges to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    Match nearestEdge( const QgsPoint& point, double tolerance, QgsPointLocator::MatchFilter* filter = 0 );
+    Match nearestEdge( const QgsPoint &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
     //! Find edges within a specified recangle
     //! Optional filter may discard unwanted matches.
-    MatchList edgesInRect( const QgsRectangle& rect, QgsPointLocator::MatchFilter* filter = 0 );
+    MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
     //! Override of edgesInRect that construct rectangle from a center point and tolerance
-    MatchList edgesInRect( const QgsPoint& point, double tolerance, QgsPointLocator::MatchFilter* filter = 0 );
+    MatchList edgesInRect( const QgsPoint &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
 
     // point-in-polygon query
 
     // TODO: function to return just the first match?
     //! find out if the point is in any polygons
-    MatchList pointInPolygon( const QgsPoint& point );
+    MatchList pointInPolygon( const QgsPoint &point );
 
     //
 

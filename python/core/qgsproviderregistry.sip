@@ -17,13 +17,13 @@ class QgsProviderRegistry
   public:
 
     /** Means of accessing canonical single instance  */
-    static QgsProviderRegistry* instance( const QString& pluginPath = QString::null );
+    static QgsProviderRegistry *instance( const QString &pluginPath = QString::null );
 
     /** Virtual dectructor */
     virtual ~QgsProviderRegistry();
 
     /** Return path for the library of the provider */
-    QString library( const QString & providerKey ) const;
+    QString library( const QString  &providerKey ) const;
 
     /** Return list of provider plugins found */
     QString pluginList( bool asHtml = false ) const;
@@ -32,7 +32,7 @@ class QgsProviderRegistry
     QDir libraryDirectory() const;
 
     /** Set library directory where to search for plugins */
-    void setLibraryDirectory( const QDir & path );
+    void setLibraryDirectory( const QDir  &path );
 
     /** Create an instance of the provider
         @param providerKey identificator of the provider
@@ -40,18 +40,18 @@ class QgsProviderRegistry
         @return instance of provider or NULL on error
      */
     QgsDataProvider *provider( const QString & providerKey,
-                               const QString & dataSource );
+                               const QString  &dataSource );
 
     /** Return the provider capabilities
         @param providerKey identificator of the provider
         @note Added in 2.6
      */
-    int providerCapabilities( const QString& providerKey ) const;
+    int providerCapabilities( const QString &providerKey ) const;
 
     /** Returns a widget for selecting layers from a provider.
      */
     QWidget *selectWidget( const QString & providerKey,
-                           QWidget * parent = 0, const Qt::WindowFlags& fl = 0 );
+                           QWidget  *parent = 0, const Qt::WindowFlags &fl = 0 );
 
     /** Get pointer to provider function
         @param providerKey identificator of the provider
@@ -59,15 +59,15 @@ class QgsProviderRegistry
         @return pointer to function or NULL on error
      */
     QFunctionPointer function( const QString & providerKey,
-                               const QString & functionName );
+                               const QString  &functionName );
 
-    QLibrary *providerLibrary( const QString & providerKey ) const;
+    QLibrary *providerLibrary( const QString  &providerKey ) const;
 
     /** Return list of available providers by their keys */
     QStringList providerList() const;
 
     /** Return metadata of the provider or NULL if not found */
-    const QgsProviderMetadata* providerMetadata( const QString& providerKey ) const;
+    const QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /** Return vector file filter string
 

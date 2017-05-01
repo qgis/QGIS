@@ -183,7 +183,7 @@ class QgsServer
      * @param request a QgsServerRequest holding request parameters
      * @param response a QgsServerResponse for handling response I/O)
      */
-    void handleRequest( QgsServerRequest& request, QgsServerResponse& response );
+    void handleRequest( QgsServerRequest &request, QgsServerResponse &response );
 
     /** Handles the request from query string
      * The query string is normally read from environment
@@ -198,10 +198,10 @@ class QgsServer
     QPair<QByteArray, QByteArray> handleRequest( const QString &urlstr, const QgsServerRequest::Method requestMethod = QgsServerRequest::GetMethod, const char *data = nullptr );
 
     /** Returns a pointer to the server interface */
-    QgsServerInterface* serverInterface();
+    QgsServerInterface *serverInterface();
 
   private:
     QgsServer( const QgsServer& );
-    QgsServer & operator=( const QgsServer& );
+    QgsServer  &operator=( const QgsServer& );
 };
 

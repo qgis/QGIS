@@ -25,11 +25,11 @@ class QgsFieldFormatter
 
     virtual QString id() const = 0;
 
-    virtual QString representValue( QgsVectorLayer* layer, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIdx, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
-    virtual QVariant sortValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+    virtual QVariant sortValue( QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
-    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config ) const;
+    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config ) const;
 
-    virtual QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config ) const;
+    virtual QVariant createCache( QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config ) const;
 };

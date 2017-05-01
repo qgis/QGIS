@@ -63,7 +63,7 @@ class QgsStringStatisticalSummary
      * @see calculateFromVariants()
      * @see addString()
      */
-    void calculate( const QStringList& values );
+    void calculate( const QStringList &values );
 
     /** Calculates summary statistics for an entire list of variants at once. Any
      * non-string variants will be ignored.
@@ -71,7 +71,7 @@ class QgsStringStatisticalSummary
      * @see calculate()
      * @see addValue()
      */
-    void calculateFromVariants( const QVariantList& values );
+    void calculateFromVariants( const QVariantList &values );
 
     /** Adds a single string to the statistics calculation. Calling this method
      * allows strings to be added to the calculation one at a time. For large
@@ -86,7 +86,7 @@ class QgsStringStatisticalSummary
      * @see addValue()
      * @see finalize()
      */
-    void addString( const QString& string );
+    void addString( const QString &string );
 
     /** Adds a single variant to the statistics calculation. Calling this method
      * allows variants to be added to the calculation one at a time. For large
@@ -100,7 +100,7 @@ class QgsStringStatisticalSummary
      * @see calculateFromVariants()
      * @see finalize()
      */
-    void addValue( const QVariant& value );
+    void addValue( const QVariant &value );
 
     /** Must be called after adding all strings with addString() and before retrieving
      * any calculated string statistics.

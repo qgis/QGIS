@@ -14,7 +14,7 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
 %End
 
   public:
-    QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter );
+    QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter );
     ~QgsMapRendererCustomPainterJob();
 
     virtual void start();
@@ -23,7 +23,7 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
     virtual void waitForFinished();
     virtual bool isActive() const;
     virtual bool usedCachedLabels() const;
-    virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
+    virtual QgsLabelingResults *takeLabelingResults() /Transfer/;
 
     //! @note not available in python bindings
     // const LayerRenderJobs& jobs() const { return mLayerJobs; }

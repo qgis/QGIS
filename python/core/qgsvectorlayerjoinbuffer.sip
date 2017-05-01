@@ -4,58 +4,58 @@ class QgsVectorLayerJoinBuffer : QObject
 #include <qgsvectorlayerjoinbuffer.h>
 %End
   public:
-    QgsVectorLayerJoinBuffer( QgsVectorLayer* layer = 0 );
+    QgsVectorLayerJoinBuffer( QgsVectorLayer *layer = 0 );
     ~QgsVectorLayerJoinBuffer();
 
     /** Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field
       @return (since 2.6) whether the join was successfully added */
-    bool addJoin( const QgsVectorLayerJoinInfo& joinInfo );
+    bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 
     /** Removes a vector layer join
       @returns true if join was found and successfully removed */
-    bool removeJoin( const QString& joinLayerId );
+    bool removeJoin( const QString &joinLayerId );
 
     /** Updates field map with joined attributes
       @param fields map to append joined attributes
      */
-    void updateFields( QgsFields& fields );
+    void updateFields( QgsFields &fields );
 
     /** Calls cacheJoinLayer() for all vector joins*/
     void createJoinCaches();
 
     /** Saves mVectorJoins to xml under the layer node*/
-    void writeXml( QDomNode& layer_node, QDomDocument& document ) const;
+    void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
 
     /** Reads joins from project file*/
-    void readXml( const QDomNode& layer_node );
+    void readXml( const QDomNode &layer_node );
 
     //! Resolves layer IDs of joined layers using given project's available layers
     //! @note added in 3.0
-    void resolveReferences( QgsProject* project );
+    void resolveReferences( QgsProject *project );
 
     /** Quick way to test if there is any join at all*/
     bool containsJoins() const;
 
-    const QList< QgsVectorLayerJoinInfo >& vectorJoins() const;
+    const QList< QgsVectorLayerJoinInfo > &vectorJoins() const;
 
     /** Finds the vector join for a layer field index.
       @param index this layers attribute index
       @param fields fields of the vector layer (including joined fields)
       @param sourceFieldIndex Output: field's index in source layer */
-    const QgsVectorLayerJoinInfo* joinForFieldIndex( int index, const QgsFields& fields, int& sourceFieldIndex /Out/ ) const;
+    const QgsVectorLayerJoinInfo *joinForFieldIndex( int index, const QgsFields &fields, int &sourceFieldIndex /Out/ ) const;
 
     //! Find out what is the first index of the join within fields. Returns -1 if join is not present
     //! @note added in 2.6
-    int joinedFieldsOffset( const QgsVectorLayerJoinInfo* info, const QgsFields& fields );
+    int joinedFieldsOffset( const QgsVectorLayerJoinInfo *info, const QgsFields &fields );
 
     //! Return a vector of indices for use in join based on field names from the layer
     //! @note added in 2.6
-    static QVector<int> joinSubsetIndices( QgsVectorLayer* joinLayer, const QStringList& joinFieldsSubset );
+    static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );
 
     //! Create a copy of the join buffer
     //! @note added in 2.6
-    QgsVectorLayerJoinBuffer* clone() const /Factory/;
+    QgsVectorLayerJoinBuffer *clone() const /Factory/;
 
   signals:
     //! Emitted whenever the list of joined fields changes (e.g. added join or joined layer's fields change)

@@ -17,7 +17,7 @@ class QgsLegendFilterButton: public QToolButton
      *
      * @param parent The parent QWidget
      */
-    QgsLegendFilterButton( QWidget* parent = 0 );
+    QgsLegendFilterButton( QWidget *parent = 0 );
     ~QgsLegendFilterButton();
 
     /**
@@ -29,18 +29,18 @@ class QgsLegendFilterButton: public QToolButton
      * Sets the current text used as filter expression.
      * This will update the menu
      */
-    void setExpressionText( const QString& expression );
+    void setExpressionText( const QString &expression );
 
     /**
      * Returns the current associated vectorLayer
      * May be null
      */
-    QgsVectorLayer* vectorLayer() const;
+    QgsVectorLayer *vectorLayer() const;
     /**
      * Sets the associated vectorLayer
      * May be null
      */
-    void setVectorLayer( QgsVectorLayer* layer );
+    void setVectorLayer( QgsVectorLayer *layer );
 
   signals:
     /**
