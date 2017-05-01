@@ -16,8 +16,16 @@ email                : denis.rouzaud@gmail.com
 #ifndef SIPIFYHEADER_H
 #define SIPIFYHEADER_H
 
+
 #include "qgis_core.h"
 #include <QtClass>
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsnetworkspeedstrategy.h>
+#include <qgsnetworkdistancestrategy.h>
+% End
+#endif
 
 #include "sipifyheader.h"
 
@@ -25,6 +33,8 @@ email                : denis.rouzaud@gmail.com
 #include "qgis.h"
 
 class QgsForwardDeclaration;
+
+
 
 
 /***************************************************************************

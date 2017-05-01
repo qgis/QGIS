@@ -659,7 +659,11 @@ while ($line_idx < $line_count){
         $is_override = 0;
         next;
     }
-    elsif ( $line =~ m/\/\// || $line =~ m/\s*typedef / || $line =~ m/\s*struct / || $line =~ m/operator\[\]\(/ ){
+    elsif ( $line =~ m/\/\// ||
+            $line =~ m/\s*typedef / ||
+            $line =~ m/\s*struct / ||
+             $line =~ m/operator\[\]\(/ ||
+             $line =~ m/^\s*% \w+(.*)?$/ ){
         dbg_info('skipping comment');
         $comment = '';
         $return_type = '';
