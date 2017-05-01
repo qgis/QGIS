@@ -202,7 +202,13 @@ def _executeAlgorithm(alg):
                           'be run :-( </h3>\n{0}').format(message))
         dlg.exec_()
         return
+
+    # hack - remove when getCopy is removed
+    provider = alg.provider()
     alg = alg.getCopy()
+    #hack pt 2
+    alg.setProvider(provider)
+
     context = dataobjects.createContext()
     if (alg.getVisibleParametersCount() + alg.getVisibleOutputsCount()) > 0:
         dlg = alg.getCustomParametersDialog()

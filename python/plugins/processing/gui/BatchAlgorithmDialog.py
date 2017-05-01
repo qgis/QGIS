@@ -73,6 +73,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         for row in range(self.mainWidget.tblParameters.rowCount()):
             alg = self.alg.getCopy()
+            # hack - remove when getCopy is removed
+            alg.setProvider(self.alg.provider())
             col = 0
             for param in alg.parameters:
                 if param.hidden:

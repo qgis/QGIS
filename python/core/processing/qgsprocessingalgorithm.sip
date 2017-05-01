@@ -110,6 +110,8 @@ class QgsProcessingAlgorithm
  :rtype: QgsProcessingProvider
 %End
 
+    void setProvider( QgsProcessingProvider *provider );
+
   private:
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
 };
