@@ -9,7 +9,7 @@
 
 
 
-% ModuleHeaderCode
+%ModuleHeaderCode
 #include <qgsnetworkspeedstrategy.h>
 #include <qgsnetworkdistancestrategy.h>
 %End
