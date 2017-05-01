@@ -1005,7 +1005,7 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 
         NodeUnaryOperator( QgsExpression::UnaryOperator op, QgsExpression::Node *operand /Transfer/ );
 %Docstring
- A node unary operator is modifying the value of ``operand`` by negating it with \op.
+ A node unary operator is modifying the value of ``operand`` by negating it with ``op``.
 %End
         ~NodeUnaryOperator();
 
@@ -1091,7 +1091,7 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 
         NodeInOperator( QgsExpression::Node *node /Transfer/, QgsExpression::NodeList *list /Transfer/, bool notin = false );
 %Docstring
- This node tests if the result of \node is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is false.
+ This node tests if the result of ``node`` is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is false.
 %End
         virtual ~NodeInOperator();
 

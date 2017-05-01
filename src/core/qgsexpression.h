@@ -1063,7 +1063,7 @@ class CORE_EXPORT QgsExpression
       public:
 
         /**
-         * A node unary operator is modifying the value of \a operand by negating it with \op.
+         * A node unary operator is modifying the value of \a operand by negating it with \a op.
          */
         NodeUnaryOperator( QgsExpression::UnaryOperator op, QgsExpression::Node *operand SIP_TRANSFER )
           : mOp( op )
@@ -1148,7 +1148,7 @@ class CORE_EXPORT QgsExpression
       public:
 
         /**
-         * This node tests if the result of \node is in the result of \a list. Optionally it can be inverted with \a notin which by default is false.
+         * This node tests if the result of \a node is in the result of \a list. Optionally it can be inverted with \a notin which by default is false.
          */
         NodeInOperator( QgsExpression::Node *node SIP_TRANSFER, QgsExpression::NodeList *list SIP_TRANSFER, bool notin = false )
           : mNode( node )

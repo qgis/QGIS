@@ -6310,7 +6310,7 @@ bool QgsExpression::Function::operator==( const QgsExpression::Function &other )
   return ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 );
 }
 
-QgsExpression::StaticFunction::StaticFunction( const QString &fnname, const QgsExpression::ParameterList &params, QgsExpression::FcnEval fcn, const QString &group, const QString &helpText, std::function < bool ( const NodeFunction *node ) > usesGeometry, std::function < QSet<QString>( const NodeFunction *node ) > referencedColumns, bool lazyEval, const QStringList &aliases, bool handlesNull )
+QgsExpression::StaticFunction::StaticFunction( const QString &fnname, const QgsExpression::ParameterList &params, QgsExpression::FcnEval fcn, const QString &group, const QString &helpText, std::function < bool ( const QgsExpression::NodeFunction *node ) > usesGeometry, std::function < QSet<QString>( const QgsExpression::NodeFunction *node ) > referencedColumns, bool lazyEval, const QStringList &aliases, bool handlesNull )
   : Function( fnname, params, group, helpText, lazyEval, handlesNull )
   , mFnc( fcn )
   , mAliases( aliases )
