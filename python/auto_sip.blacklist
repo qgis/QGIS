@@ -280,11 +280,6 @@ gui/qgscodeeditorsql.sip
 gui/qgscodeeditorhtml.sip
 gui/qgscodeeditorcss.sip
 gui/qgscharacterselectdialog.sip
-gui/qgscolorbrewercolorrampdialog.sip
-gui/qgscolordialog.sip
-gui/qgscolorschemelist.sip
-gui/qgscolorswatchgrid.sip
-gui/qgscolorwidgets.sip
 gui/qgscomposerinterface.sip
 gui/qgscomposeritemcombobox.sip
 gui/qgscomposerruler.sip
