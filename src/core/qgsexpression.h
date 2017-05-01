@@ -661,7 +661,7 @@ class CORE_EXPORT QgsExpression
          *
          * \note Added in QGIS 3.0
          */
-        static bool allParamsStatic( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
+        static bool allParamsStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
 
       private:
         QString mName;
@@ -782,9 +782,9 @@ class CORE_EXPORT QgsExpression
 
         virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction *node ) const override;
 
-        virtual bool isStatic( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+        virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
-        virtual bool prepare( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+        virtual bool prepare( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
         /**
          * Set a function that will be called in the prepare step to determine if the function is

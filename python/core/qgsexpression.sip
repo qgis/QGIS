@@ -669,7 +669,7 @@ The help text for the function.
 
       protected:
 
-        static bool allParamsStatic( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
+        static bool allParamsStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
 %Docstring
  This will return true if all the params for the provided function ``node`` are static within the
  constraints imposed by the ``context`` within the given ``parent``.
