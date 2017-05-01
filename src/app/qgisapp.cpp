@@ -5835,7 +5835,7 @@ void QgisApp::saveMapAsImage()
 
     connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
     {
-      messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved canvas to image" ) );
+      messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to image" ) );
     } );
     connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int error )
     {

@@ -59,6 +59,8 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
   private:
 
     void updateDpi( int dpi );
+    void updateOutputWidth( int width );
+    void updateOutputHeight( int height );
     void updateExtent( const QgsRectangle &extent );
     void updateScale( double scale );
     void updateOutputSize();
