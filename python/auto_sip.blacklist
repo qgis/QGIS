@@ -519,7 +519,6 @@ analysis/raster/qgsrelief.sip
 analysis/raster/qgsruggednessfilter.sip
 analysis/raster/qgsslopefilter.sip
 analysis/raster/qgstotalcurvaturefilter.sip
-analysis/network/qgsgraphanalyzer.sip
 server/qgsserverfilter.sip
 server/qgsserverinterface.sip
 server/qgsaccesscontrolfilter.sip
