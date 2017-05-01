@@ -47,7 +47,7 @@ class QgsMapMouseEvent : QMouseEvent
      * @param mapCanvas The map canvas on which the event occurred
      * @param event     The original mouse event
      */
-    QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QMouseEvent* event );
+    QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QMouseEvent *event );
 
     /**
      * @brief snapPoint will snap the points using the map canvas snapping utils configuration
@@ -63,7 +63,7 @@ class QgsMapMouseEvent : QMouseEvent
      * @param snapped if given, determines if a segment has been snapped
      * @param allLayers if true, override snapping mode
      */
-    QList<QgsPoint> snapSegment( SnappingMode snappingMode, bool* snapped = 0, bool allLayers = false ) const;
+    QList<QgsPoint> snapSegment( SnappingMode snappingMode, bool *snapped = 0, bool allLayers = false ) const;
 
     /**
      * Returns true if there is a snapped point cached.
@@ -92,7 +92,7 @@ class QgsMapMouseEvent : QMouseEvent
      *
      * @param point The point in map coordinates
      */
-    void setMapPoint( const QgsPoint& point );
+    void setMapPoint( const QgsPoint &point );
 
     /**
      * Returns the original, unmodified map point of the mouse cursor.

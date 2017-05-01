@@ -34,7 +34,7 @@ class QgsProjectProperty
      *
      *  Used for restoring properties from project file
      */
-    virtual bool readXml( const QDomNode& keyNode ) = 0;
+    virtual bool readXml( const QDomNode &keyNode ) = 0;
 
     /**
      * adds property hierarchy to given Dom element
@@ -47,13 +47,13 @@ class QgsProjectProperty
      */
     virtual bool writeXml( const QString & nodeName,
                            QDomElement   & element,
-                           QDomDocument  & document ) = 0;
+                           QDomDocument   &document ) = 0;
 
     /** Return the node's value
      *
      * For QgsPropertyValue nodes, this is straightforward -- just return the
      * embedded QVariant, _value.  For QgsPropertyKey, this means returning
-     * the QgsPropertyValue _value that is keyed by its name, if it exists;
+      *the QgsPropertyValue _value that is keyed by its name, if it exists;
      * i.e., QgsPropertyKey "foo" will return the property value mapped to its
      * name, "foo", in its QHash of QProperties.
      *
@@ -91,11 +91,11 @@ class QgsProjectPropertyValue : QgsProjectProperty
 
     void dump( int tabs = 0 ) const;
 
-    bool readXml( const QDomNode& keyNode );
+    bool readXml( const QDomNode &keyNode );
 
     bool writeXml( const QString & nodeName,
                    QDomElement   & element,
-                   QDomDocument  & document );
+                   QDomDocument   &document );
 
 };
 
@@ -106,7 +106,7 @@ class QgsProjectPropertyKey : QgsProjectProperty
 %End
 
   public:
-    QgsProjectPropertyKey( const QString& name = QString() );
+    QgsProjectPropertyKey( const QString &name = QString() );
     virtual ~QgsProjectPropertyKey();
 
     /**
@@ -117,7 +117,7 @@ class QgsProjectPropertyKey : QgsProjectProperty
     /**
      * The name of the property is used as identifier.
      */
-    void setName( const QString& name );
+    void setName( const QString &name );
 
     /** If this key has a value, it will be stored by its name in its
      * properties
@@ -126,31 +126,31 @@ class QgsProjectPropertyKey : QgsProjectProperty
 
 
     /// add the given property key
-    QgsProjectPropertyKey * addKey( const QString & keyName );
+    QgsProjectPropertyKey  *addKey( const QString  &keyName );
 
     /// remove the given key
-    void removeKey( const QString & keyName );
+    void removeKey( const QString  &keyName );
 
     /** Set the value associated with this key
      * @param name is the key name
      * @param value is the value to set
      * @return pointer to property value
      */
-    QgsProjectPropertyValue * setValue( const QString & name, const QVariant & value );
+    QgsProjectPropertyValue  *setValue( const QString  &name, const QVariant  &value );
 
     /** Set the value associated with this key
      *
      * @note that the single value node associated with each key is always
      * stored keyed by the current key name
      */
-    QgsProjectPropertyValue * setValue( const QVariant & value );
+    QgsProjectPropertyValue  *setValue( const QVariant  &value );
 
 
     void dump( int tabs = 0 ) const;
 
-    bool readXml( const QDomNode& keyNode );
+    bool readXml( const QDomNode &keyNode );
 
-    bool writeXml( const QString &nodeName, QDomElement & element, QDomDocument & document );
+    bool writeXml( const QString &nodeName, QDomElement  &element, QDomDocument  &document );
 
     /// how many elements are contained within this one?
     int count() const;
@@ -165,10 +165,10 @@ class QgsProjectPropertyKey : QgsProjectProperty
     virtual bool isValue() const;
 
     /// return keys that do not contain other keys
-    void entryList( QStringList & entries ) const;
+    void entryList( QStringList  &entries ) const;
 
     /// return keys that contain other keys
-    void subkeyList( QStringList & entries ) const;
+    void subkeyList( QStringList  &entries ) const;
 
     /** Returns true if a leaf node
      * A leaf node is a key node that has either no value or a single value.
@@ -182,5 +182,5 @@ class QgsProjectPropertyKey : QgsProjectProperty
     /// delete any sub-nodes
     virtual void clearKeys();
 
-    QgsProjectProperty * find( QString & propertyName );
+    QgsProjectProperty  *find( QString  &propertyName );
 }; // class QgsPropertyKey

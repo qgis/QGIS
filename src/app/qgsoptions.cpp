@@ -1748,9 +1748,10 @@ void QgsOptions::on_mBtnRemovePluginPath_clicked()
 void QgsOptions::on_mBtnAddHelpPath_clicked()
 {
   QTreeWidgetItem *item = new QTreeWidgetItem();
-  item->setText( 0, QString() );
+  item->setText( 0, QStringLiteral( "HELP_LOCATION" ) );
   item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
   mHelpPathTreeWidget->addTopLevelItem( item );
+  mHelpPathTreeWidget->setCurrentItem( item );
 }
 
 void QgsOptions::on_mBtnRemoveHelpPath_clicked()

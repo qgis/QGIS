@@ -39,21 +39,21 @@ class QgsTabWidget : QTabWidget
      *
      * @note Added in QGIS 3.0
      */
-    void hideTab( QWidget* tab );
+    void hideTab( QWidget *tab );
 
     /**
      * Shows the tab with the given widget
      *
      * @note Added in QGIS 3.0
      */
-    void showTab( QWidget* tab );
+    void showTab( QWidget *tab );
 
     /**
      * Control the visibility for the tab with the given widget.
      *
      * @note Added in QGIS 3.0
      */
-    void setTabVisible( QWidget* tab, bool visible );
+    void setTabVisible( QWidget *tab, bool visible );
 
     /**
      * Returns the index of the tab with the given widget.
@@ -62,7 +62,7 @@ class QgsTabWidget : QTabWidget
      *
      * @note Added in QGIS 3.0
      */
-    int realTabIndex( QWidget* widget );
+    int realTabIndex( QWidget *widget );
 
     /**
      * Is called internally whenever a new tab has been inserted.

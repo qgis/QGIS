@@ -16,8 +16,16 @@ email                : denis.rouzaud@gmail.com
 #ifndef SIPIFYHEADER_H
 #define SIPIFYHEADER_H
 
+
 #include "qgis_core.h"
 #include <QtClass>
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsnetworkspeedstrategy.h>
+#include <qgsnetworkdistancestrategy.h>
+% End
+#endif
 
 #include "sipifyheader.h"
 
@@ -25,6 +33,8 @@ email                : denis.rouzaud@gmail.com
 #include "qgis.h"
 
 class QgsForwardDeclaration;
+
+
 
 
 /***************************************************************************
@@ -316,7 +326,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       VertexType type;
     }
 
-    void combinedAnnotations() SIP_FACTORY SIP_PYNAME(otherName);
+    void combinedAnnotations() SIP_FACTORY SIP_PYNAME( otherName );
 
     //! remove argument
     void simple( bool test SIP_PYARGREMOVE );
@@ -328,6 +338,14 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void position( bool first_remove SIP_PYARGREMOVE, bool keep );
     void position( bool keep, bool middle_remove SIP_PYARGREMOVE, bool keep );
     void position( bool keep, bool last_remove SIP_PYARGREMOVE );
+
+    //! Some comment
+    Whatever &operator[]( int i ) SIP_FACTORY;
+#ifdef SIP_RUN
+    % MethodCode
+    ....
+    % End
+#endif
 
 #if 0
 #if Whatever
@@ -410,7 +428,6 @@ class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass
       doWhatYouLike();
       haveFun();
     }
-
 };
 
 /**

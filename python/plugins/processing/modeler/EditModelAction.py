@@ -40,7 +40,10 @@ class EditModelAction(ContextAction):
         return isinstance(self.itemData, ModelerAlgorithm)
 
     def execute(self):
-        dlg = ModelerDialog(self.itemData.getCopy())
+        alg = self.itemData.getCopy()
+        #hack - remove when getCopy is removed
+        alg.setProvider(self.itemData.provider())
+        dlg = ModelerDialog(alg)
         dlg.update_model.connect(self.updateModel)
         dlg.show()
 

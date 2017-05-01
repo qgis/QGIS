@@ -282,7 +282,11 @@ class ModelerDialog(BASE, WIDGET):
             self.bar.pushMessage("", "Model doesn't contain any algorithm and/or parameter and can't be executed", level=QgsMessageBar.WARNING, duration=5)
             return
 
+        # hack - remove when above getCopy is removed
+        provider = self.alg.provider()
         alg = self.alg.getCopy()
+        # hack pt 2
+        alg.setProvider(provider)
         dlg = AlgorithmDialog(alg)
         dlg.exec_()
 

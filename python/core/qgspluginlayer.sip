@@ -6,7 +6,7 @@ class QgsPluginLayer : QgsMapLayer
 %End
 
   public:
-    QgsPluginLayer( const QString& layerType, const QString& layerName = QString() );
+    QgsPluginLayer( const QString &layerType, const QString &layerName = QString() );
 
     /** Return plugin layer type (the same as used in QgsPluginLayerRegistry) */
     QString pluginLayerType();
@@ -17,7 +17,7 @@ class QgsPluginLayer : QgsMapLayer
     /** Set source string. This is used for example in layer tree to show tooltip.
      * @note added in 2.16
      */
-    void setSource( const QString& source );
+    void setSource( const QString &source );
 
     //! return a list of symbology items for the legend
     //! (default implementation returns nothing)

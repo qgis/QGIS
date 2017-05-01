@@ -34,7 +34,7 @@ class QgsExpressionItem : QStandardItem
       *
       * @note The help text can be set as a html string.
       */
-    void setHelpText( const QString& helpText );
+    void setHelpText( const QString &helpText );
 
     /** Get the type of expression item, e.g., header, field, ExpressionNode.
       *
@@ -85,30 +85,30 @@ class QgsExpressionBuilderWidget : QWidget
     /** Sets layer in order to get the fields and values
       * @note this needs to be called before calling loadFieldNames().
       */
-    void setLayer( QgsVectorLayer* layer );
+    void setLayer( QgsVectorLayer *layer );
 
     /** Loads all the field names from the layer.
       * @remarks Should this really be public couldn't we just do this for the user?
       */
     void loadFieldNames();
 
-    void loadFieldNames( const QgsFields& fields );
+    void loadFieldNames( const QgsFields &fields );
 
     /** Loads field names and values from the specified map.
      *  @note The field values must be quoted appropriately if they are strings.
      *  @note added in QGIS 2.12
      */
-    void loadFieldsAndValues( const QMap<QString, QStringList>& fieldValues );
+    void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues );
 
     /** Sets geometry calculator used in distance/area calculations. */
-    void setGeomCalculator( const QgsDistanceArea & da );
+    void setGeomCalculator( const QgsDistanceArea  &da );
 
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */
     QString expressionText();
 
     /** Sets the expression string for the widget */
-    void setExpressionText( const QString& expression );
+    void setExpressionText( const QString &expression );
 
     /** Returns the expression context for the widget. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
@@ -123,7 +123,7 @@ class QgsExpressionBuilderWidget : QWidget
      * @see expressionContext
      * @note added in QGIS 2.12
      */
-    void setExpressionContext( const QgsExpressionContext& context );
+    void setExpressionContext( const QgsExpressionContext &context );
 
     /** Registers a node item for the expression builder.
       * @param group The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
@@ -145,17 +145,17 @@ class QgsExpressionBuilderWidget : QWidget
      * Adds the current expression to the given collection.
      * By default it is saved to the collection "generic".
      */
-    void saveToRecent( const QString& collection = "generic" );
+    void saveToRecent( const QString &collection = "generic" );
 
     /**
      * Loads the recent expressions from the given collection.
      * By default it is loaded from the collection "generic".
      */
-    void loadRecent( const QString& collection = "generic" );
+    void loadRecent( const QString &collection = "generic" );
 
     /** Create a new file in the function editor
      */
-    void newFunctionFile( const QString& fileName = "scratch" );
+    void newFunctionFile( const QString &fileName = "scratch" );
 
     /** Save the current function editor text to the given file.
      */
@@ -167,11 +167,11 @@ class QgsExpressionBuilderWidget : QWidget
 
     /** Load code into the function editor
      */
-    void loadFunctionCode( const QString& code );
+    void loadFunctionCode( const QString &code );
 
     /** Update the list of function files found at the given path
      */
-    void updateFunctionFileList( const QString& path );
+    void updateFunctionFileList( const QString &path );
 
   public slots:
 

@@ -904,9 +904,9 @@ class ParameterNumber(Parameter):
 
     def _layerVariables(self, element, alg=None):
         variables = {}
-        layer = getObject(element.value)
+        layer = dataobjects.getLayerFromString(element.value)
         if layer is not None:
-            name = element.name if alg is None else "%s_%s" % (alg.name(), element.name)
+            name = element.name if alg is None else "%s_%s" % (alg.name, element.name)
             variables['@%s_minx' % name] = layer.extent().xMinimum()
             variables['@%s_miny' % name] = layer.extent().yMinimum()
             variables['@%s_maxx' % name] = layer.extent().yMaximum()

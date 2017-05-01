@@ -17,13 +17,13 @@ class QgsSubstitutionListWidget : public QgsPanelWidget
      /** Constructor for QgsSubstitutionListWidget.
      * @param parent parent widget
      */
-    QgsSubstitutionListWidget( QWidget* parent /TransferThis/ = nullptr );
+    QgsSubstitutionListWidget( QWidget *parent /TransferThis/ = nullptr );
 
     /** Sets the list of substitutions to show in the widget.
      * @param substitutions substitution list
      * @see substitutions()
      */
-    void setSubstitutions( const QgsStringReplacementCollection& substitutions );
+    void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 
     /** Returns the list of substitutions currently defined by the widget.
      * @see setSubstitutions()
@@ -33,7 +33,7 @@ class QgsSubstitutionListWidget : public QgsPanelWidget
   signals:
 
     //! Emitted when the substitution definitions change.
-    void substitutionsChanged( const QgsStringReplacementCollection& substitutions );
+    void substitutionsChanged( const QgsStringReplacementCollection &substitutions );
 
 };
 
@@ -57,13 +57,13 @@ class QgsSubstitutionListDialog : public QDialog
     /** Constructor for QgsSubstitutionListDialog.
      * @param parent parent widget
      */
-    QgsSubstitutionListDialog( QWidget* parent /TransferThis/ = nullptr );
+    QgsSubstitutionListDialog( QWidget *parent /TransferThis/ = nullptr );
 
     /** Sets the list of substitutions to show in the dialog.
      * @param substitutions substitution list
      * @see substitutions()
      */
-    void setSubstitutions( const QgsStringReplacementCollection& substitutions );
+    void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 
     /** Returns the list of substitutions currently defined by the dialog.
      * @see setSubstitutions()

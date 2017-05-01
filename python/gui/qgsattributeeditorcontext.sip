@@ -28,18 +28,18 @@ class QgsAttributeEditorContext
     };
 
     QgsAttributeEditorContext();
-    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, FormMode formMode );
-    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, const QgsRelation& relation, RelationMode relationMode, FormMode formMode );
+    QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode );
+    QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, const QgsRelation &relation, RelationMode relationMode, FormMode formMode );
 
 
-    void setDistanceArea( const QgsDistanceArea& distanceArea );
-    const QgsDistanceArea& distanceArea() const;
+    void setDistanceArea( const QgsDistanceArea &distanceArea );
+    const QgsDistanceArea &distanceArea() const;
 
-    void setVectorLayerTools( QgsVectorLayerTools* vlTools );
-    const QgsVectorLayerTools* vectorLayerTools() const;
+    void setVectorLayerTools( QgsVectorLayerTools *vlTools );
+    const QgsVectorLayerTools *vectorLayerTools() const;
 
-    void setRelation( const QgsRelation& relation, RelationMode mode );
-    const QgsRelation& relation() const;
+    void setRelation( const QgsRelation &relation, RelationMode mode );
+    const QgsRelation &relation() const;
     RelationMode relationMode() const;
 
     /** Returns the form mode.
@@ -68,5 +68,5 @@ class QgsAttributeEditorContext
      */
     void setAllowCustomUi( bool allow );
 
-    const QgsAttributeEditorContext* parentContext() const;
+    const QgsAttributeEditorContext *parentContext() const;
 };

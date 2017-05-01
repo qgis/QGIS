@@ -4708,7 +4708,7 @@ QString QgsExpression::NodeList::dump() const
 
 //
 
-QVariant QgsExpression::NodeUnaryOperator::eval( QgsExpression *parent, const QgsExpressionContext *context )
+QVariant QgsExpression::NodeUnaryOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   QVariant val = mOperand->eval( parent, context );
   ENSURE_NO_EVAL_ERROR;
@@ -4735,7 +4735,7 @@ QVariant QgsExpression::NodeUnaryOperator::eval( QgsExpression *parent, const Qg
   return QVariant();
 }
 
-bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression *parent, const QgsExpressionContext *context )
+bool QgsExpression::NodeUnaryOperator::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   return mOperand->prepare( parent, context );
 }
@@ -4760,9 +4760,14 @@ QgsExpression::Node *QgsExpression::NodeUnaryOperator::clone() const
   return new NodeUnaryOperator( mOp, mOperand->clone() );
 }
 
+bool QgsExpression::NodeUnaryOperator::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  return mOperand->isStatic( parent, context );
+}
+
 //
 
-QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const QgsExpressionContext *context )
+QVariant QgsExpression::NodeBinaryOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   QVariant vL = mOpLeft->eval( parent, context );
   ENSURE_NO_EVAL_ERROR;
@@ -5186,7 +5191,7 @@ double QgsExpression::NodeBinaryOperator::computeDouble( double x, double y )
   }
 }
 
-bool QgsExpression::NodeBinaryOperator::prepare( QgsExpression *parent, const QgsExpressionContext *context )
+bool QgsExpression::NodeBinaryOperator::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool resL = mOpLeft->prepare( parent, context );
   bool resR = mOpRight->prepare( parent, context );
@@ -5326,9 +5331,14 @@ QgsExpression::Node *QgsExpression::NodeBinaryOperator::clone() const
   return new NodeBinaryOperator( mOp, mOpLeft->clone(), mOpRight->clone() );
 }
 
+bool QgsExpression::NodeBinaryOperator::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  return mOpLeft->isStatic( parent, context ) && mOpRight->isStatic( parent, context );
+}
+
 //
 
-QVariant QgsExpression::NodeInOperator::eval( QgsExpression *parent, const QgsExpressionContext *context )
+QVariant QgsExpression::NodeInOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   if ( mList->count() == 0 )
     return mNotIn ? TVL_True : TVL_False;
@@ -5378,7 +5388,7 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression *parent, const QgsEx
     return mNotIn ? TVL_True : TVL_False;
 }
 
-bool QgsExpression::NodeInOperator::prepare( QgsExpression *parent, const QgsExpressionContext *context )
+bool QgsExpression::NodeInOperator::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool res = mNode->prepare( parent, context );
   Q_FOREACH ( Node *n, mList->list() )
@@ -5398,9 +5408,23 @@ QgsExpression::Node *QgsExpression::NodeInOperator::clone() const
   return new NodeInOperator( mNode->clone(), mList->clone(), mNotIn );
 }
 
+bool QgsExpression::NodeInOperator::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  if ( !mNode->isStatic( parent, context ) )
+    return false;
+
+  Q_FOREACH ( Node *n, mList->list() )
+  {
+    if ( !n->isStatic( parent, context ) )
+      return false;
+  }
+
+  return true;
+}
+
 //
 
-QVariant QgsExpression::NodeFunction::eval( QgsExpression *parent, const QgsExpressionContext *context )
+QVariant QgsExpression::NodeFunction::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   QString name = Functions()[mFnIndex]->name();
   Function *fd = context && context->hasFunction( name ) ? context->function( name ) : Functions()[mFnIndex];
@@ -5476,7 +5500,7 @@ QgsExpression::NodeFunction::NodeFunction( int fnIndex, QgsExpression::NodeList 
   }
 }
 
-bool QgsExpression::NodeFunction::prepare( QgsExpression *parent, const QgsExpressionContext *context )
+bool QgsExpression::NodeFunction::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   Function *fd = Functions()[mFnIndex];
 
@@ -5564,6 +5588,14 @@ QgsExpression::Node *QgsExpression::NodeFunction::clone() const
   return new NodeFunction( mFnIndex, mArgs ? mArgs->clone() : nullptr );
 }
 
+bool QgsExpression::NodeFunction::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  Q_UNUSED( parent )
+  Q_UNUSED( context )
+  // TODO some functions are static!
+  return false;
+}
+
 bool QgsExpression::NodeFunction::validateParams( int fnIndex, QgsExpression::NodeList *args, QString &error )
 {
   if ( !args || !args->hasNamedNodes() )
@@ -5639,14 +5671,14 @@ bool QgsExpression::NodeFunction::validateParams( int fnIndex, QgsExpression::No
 
 //
 
-QVariant QgsExpression::NodeLiteral::eval( QgsExpression *parent, const QgsExpressionContext *context )
+QVariant QgsExpression::NodeLiteral::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   Q_UNUSED( context );
   Q_UNUSED( parent );
   return mValue;
 }
 
-bool QgsExpression::NodeLiteral::prepare( QgsExpression *parent, const QgsExpressionContext *context )
+bool QgsExpression::NodeLiteral::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   Q_UNUSED( parent );
   Q_UNUSED( context );
@@ -5689,9 +5721,16 @@ QgsExpression::Node *QgsExpression::NodeLiteral::clone() const
   return new NodeLiteral( mValue );
 }
 
+bool QgsExpression::NodeLiteral::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  Q_UNUSED( context )
+  Q_UNUSED( parent )
+  return true;
+}
+
 //
 
-QVariant QgsExpression::NodeColumnRef::eval( QgsExpression *parent, const QgsExpressionContext *context )
+QVariant QgsExpression::NodeColumnRef::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   Q_UNUSED( parent );
   int index = mIndex;
@@ -5717,7 +5756,7 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression *parent, const QgsExp
   return QVariant( '[' + mName + ']' );
 }
 
-bool QgsExpression::NodeColumnRef::prepare( QgsExpression *parent, const QgsExpressionContext *context )
+bool QgsExpression::NodeColumnRef::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   if ( !context || !context->hasVariable( QgsExpressionContext::EXPR_FIELDS ) )
     return false;
@@ -5757,9 +5796,21 @@ QgsExpression::Node *QgsExpression::NodeColumnRef::clone() const
   return new NodeColumnRef( mName );
 }
 
+bool QgsExpression::NodeColumnRef::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  Q_UNUSED( context )
+  Q_UNUSED( parent )
+  return false;
+}
+
 //
 
-QVariant QgsExpression::NodeCondition::eval( QgsExpression *parent, const QgsExpressionContext *context )
+QgsExpression::NodeCondition::NodeCondition( QgsExpression::WhenThenList *conditions, QgsExpression::Node *elseExp )
+  : mConditions( *conditions )
+  , mElseExp( elseExp )
+{ delete conditions; }
+
+QVariant QgsExpression::NodeCondition::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   Q_FOREACH ( WhenThen *cond, mConditions )
   {
@@ -5785,14 +5836,15 @@ QVariant QgsExpression::NodeCondition::eval( QgsExpression *parent, const QgsExp
   return QVariant();
 }
 
-bool QgsExpression::NodeCondition::prepare( QgsExpression *parent, const QgsExpressionContext *context )
+bool QgsExpression::NodeCondition::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool res;
   Q_FOREACH ( WhenThen *cond, mConditions )
   {
     res = cond->mWhenExp->prepare( parent, context )
           & cond->mThenExp->prepare( parent, context );
-    if ( !res ) return false;
+    if ( !res )
+      return false;
   }
 
   if ( mElseExp )
@@ -5861,8 +5913,22 @@ QgsExpression::Node *QgsExpression::NodeCondition::clone() const
 {
   WhenThenList conditions;
   Q_FOREACH ( WhenThen *wt, mConditions )
-    conditions.append( new WhenThen( wt->mWhenExp->clone(), wt->mThenExp->clone() ) );
+    conditions.append( wt->clone() );
   return new NodeCondition( conditions, mElseExp ? mElseExp->clone() : nullptr );
+}
+
+bool QgsExpression::NodeCondition::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  Q_FOREACH ( WhenThen *wt, mConditions )
+  {
+    if ( !wt->mWhenExp->isStatic( parent, context ) || !wt->mThenExp->isStatic( parent, context ) )
+      return false;
+  }
+
+  if ( mElseExp )
+    return mElseExp->isStatic( parent, context );
+
+  return true;
 }
 
 
@@ -6244,7 +6310,7 @@ bool QgsExpression::Function::operator==( const QgsExpression::Function &other )
   return ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 );
 }
 
-QgsExpression::StaticFunction::StaticFunction( const QString &fnname, const QgsExpression::ParameterList &params, QgsExpression::FcnEval fcn, const QString &group, const QString &helpText, std::function < bool ( const NodeFunction *node ) > usesGeometry, std::function < QSet<QString>( const NodeFunction *node ) > referencedColumns, bool lazyEval, const QStringList &aliases, bool handlesNull )
+QgsExpression::StaticFunction::StaticFunction( const QString &fnname, const QgsExpression::ParameterList &params, QgsExpression::FcnEval fcn, const QString &group, const QString &helpText, std::function < bool ( const QgsExpression::NodeFunction *node ) > usesGeometry, std::function < QSet<QString>( const QgsExpression::NodeFunction *node ) > referencedColumns, bool lazyEval, const QStringList &aliases, bool handlesNull )
   : Function( fnname, params, group, helpText, lazyEval, handlesNull )
   , mFnc( fcn )
   , mAliases( aliases )
@@ -6268,4 +6334,49 @@ QSet<QString> QgsExpression::StaticFunction::referencedColumns( const NodeFuncti
     return mReferencedColumnsFunc( node );
   else
     return mReferencedColumns;
+}
+
+QVariant QgsExpression::Node::eval( QgsExpression *parent, const QgsExpressionContext *context )
+{
+  if ( mHasCachedValue )
+  {
+    return mCachedStaticValue;
+  }
+  else
+  {
+    QVariant res =  evalNode( parent, context );
+    return res;
+  }
+}
+
+bool QgsExpression::Node::prepare( QgsExpression *parent, const QgsExpressionContext *context )
+{
+  if ( isStatic( parent, context ) )
+  {
+    mCachedStaticValue = evalNode( parent, context );
+    mHasCachedValue = true;
+    return true;
+  }
+  else
+  {
+    mHasCachedValue = false;
+    return prepareNode( parent, context );
+  }
+}
+
+QgsExpression::WhenThen::WhenThen( QgsExpression::Node *whenExp, QgsExpression::Node *thenExp )
+  : mWhenExp( whenExp )
+  , mThenExp( thenExp )
+{
+}
+
+QgsExpression::WhenThen::~WhenThen()
+{
+  delete mWhenExp;
+  delete mThenExp;
+}
+
+QgsExpression::WhenThen *QgsExpression::WhenThen::clone() const
+{
+  return new WhenThen( mWhenExp->clone(), mThenExp->clone() );
 }

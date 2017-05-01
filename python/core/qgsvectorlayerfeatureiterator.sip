@@ -35,14 +35,14 @@ class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIterator
 
   protected:
     //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature );
+    virtual bool fetchFeature( QgsFeature &feature );
 
     //! Overrides default method as we only need to filter features in the edit buffer
     //! while for others filtering is left to the provider implementation.
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
-    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
+    virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
 
     //! @note not available in Python bindings
     //void rewindEditBuffer();
@@ -51,17 +51,17 @@ class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIterator
     //! @note not available in Python bindings
     //void prepareExpressions();
     //! @note not available in Python bindings
-    //bool fetchNextAddedFeature( QgsFeature& f );
+    //bool fetchNextAddedFeature( QgsFeature &f );
     //! @note not available in Python bindings
-    //bool fetchNextChangedGeomFeature( QgsFeature& f );
+    //bool fetchNextChangedGeomFeature( QgsFeature &f );
     //! @note not available in Python bindings
-    //bool fetchNextChangedAttributeFeature( QgsFeature& f );
+    //bool fetchNextChangedAttributeFeature( QgsFeature &f );
     //! @note not available in Python bindings
-    //void useAddedFeature( const QgsFeature& src, QgsFeature& f );
+    //void useAddedFeature( const QgsFeature &src, QgsFeature &f );
     //! @note not available in Python bindings
-    //void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry& geom, QgsFeature& f );
+    //void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry &geom, QgsFeature &f );
     //! @note not available in Python bindings
-    //bool nextFeatureFid( QgsFeature& f );
+    //bool nextFeatureFid( QgsFeature &f );
     //! @note not available in Python bindings
     //void addJoinedAttributes( QgsFeature &f );
 
@@ -79,12 +79,12 @@ class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIterator
     /** Update feature with uncommitted attribute updates.
      * @note not available in Python bindings
      */
-    //void updateChangedAttributes( QgsFeature& f );
+    //void updateChangedAttributes( QgsFeature &f );
 
     /** Update feature with uncommitted geometry updates.
      * @note not available in Python bindings
      */
-    //void updateFeatureGeometry( QgsFeature& f );
+    //void updateFeatureGeometry( QgsFeature &f );
 
   private:
     QgsVectorLayerFeatureIterator( const QgsVectorLayerFeatureIterator &rhs );

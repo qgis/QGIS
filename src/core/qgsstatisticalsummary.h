@@ -69,7 +69,7 @@ class CORE_EXPORT QgsStatisticalSummary
     /** Constructor for QgsStatisticalSummary
      * \param stats flags for statistics to calculate
      */
-    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = All );
+    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::All );
 
     virtual ~QgsStatisticalSummary() = default;
 
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \param stats flags for statistics to calculate
      * \see statistics
      */
-    void setStatistics( Statistics stats ) { mStatistics = stats; }
+    void setStatistics( QgsStatisticalSummary::Statistics stats ) { mStatistics = stats; }
 
     /** Resets the calculated values
      */
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \returns calculated value of statistic. A NaN value may be returned for invalid
      * statistics.
      */
-    double statistic( Statistic stat ) const;
+    double statistic( QgsStatisticalSummary::Statistic stat ) const;
 
     /** Returns calculated count of values
      */
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsStatisticalSummary
     /** Returns the friendly display name for a statistic
      * \param statistic statistic to return name for
      */
-    static QString displayName( Statistic statistic );
+    static QString displayName( QgsStatisticalSummary::Statistic statistic );
 
   private:
 

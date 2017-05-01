@@ -5,7 +5,7 @@ class QgsProjectionSelectionTreeWidget : QWidget
 %End
 
   public:
-    QgsProjectionSelectionTreeWidget( QWidget* parent /TransferThis/ = 0 );
+    QgsProjectionSelectionTreeWidget( QWidget *parent /TransferThis/ = 0 );
 
     ~QgsProjectionSelectionTreeWidget();
 
@@ -19,8 +19,8 @@ class QgsProjectionSelectionTreeWidget : QWidget
 
   public slots:
 
-    void setCrs( const QgsCoordinateReferenceSystem& crs );
-    void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+    void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
     void pushProjectionToFront();
 
   signals:
@@ -30,8 +30,8 @@ class QgsProjectionSelectionTreeWidget : QWidget
     void projectionDoubleClicked();
 
   protected:
-    void showEvent( QShowEvent * event );
+    void showEvent( QShowEvent  *event );
 
-    void resizeEvent( QResizeEvent * event );
+    void resizeEvent( QResizeEvent  *event );
 };
 

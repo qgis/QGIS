@@ -59,7 +59,7 @@ def execute(alg, context=None, feedback=None):
         alg.execute(context, feedback)
         return True
     except GeoAlgorithmExecutionException as e:
-        QgsMessageLog.logMessage(sys.exc_info()[0], 'Processing', QgsMessageLog.CRITICAL)
+        QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', QgsMessageLog.CRITICAL)
         if feedback is not None:
             feedback.reportError(e.msg)
         return False

@@ -8,11 +8,11 @@ class QgsPropertyAssistantWidget : public QgsPanelWidget
 
     QgsPropertyAssistantWidget( QWidget* parent /TransferThis/ = 0, const QgsPropertyDefinition& definition = QgsPropertyDefinition(),
                                 const QgsProperty& initialState = QgsProperty(),
-                                const QgsVectorLayer* layer = 0 );
+                                const QgsVectorLayer *layer = 0 );
 
-    void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
-    void updateProperty( QgsProperty& property );
+    void updateProperty( QgsProperty &property );
 
     void setDockMode( bool dockMode );
 };

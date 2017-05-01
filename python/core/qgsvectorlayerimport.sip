@@ -86,7 +86,7 @@ class QProgressDialog;
     int errorCount() const;
 
     /** Add feature to the new created layer */
-    bool addFeature( QgsFeature& feature );
+    bool addFeature( QgsFeature &feature );
 
     /** Close the new created layer */
     ~QgsVectorLayerImport();
@@ -100,5 +100,5 @@ class QProgressDialog;
 
   private:
 
-    QgsVectorLayerImport( const QgsVectorLayerImport& rh );
+    QgsVectorLayerImport( const QgsVectorLayerImport &rh );
 };

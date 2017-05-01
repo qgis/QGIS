@@ -40,9 +40,9 @@ class QgsStringReplacement
      * @param input input string
      * @returns input string with any matches replaced by replacement string
      */
-    QString process( const QString& input ) const;
+    QString process( const QString &input ) const;
 
-    bool operator==( const QgsStringReplacement& other );
+    bool operator==( const QgsStringReplacement &other );
 
     /** Returns a map of the replacement properties.
      * @see fromProperties()
@@ -52,7 +52,7 @@ class QgsStringReplacement
     /** Creates a new QgsStringReplacement from an encoded properties map.
      * @see properties()
      */
-    static QgsStringReplacement fromProperties( const QgsStringMap& properties );
+    static QgsStringReplacement fromProperties( const QgsStringMap &properties );
 
 };
 
@@ -73,7 +73,7 @@ class QgsStringReplacementCollection
     /** Constructor for QgsStringReplacementCollection
      * @param replacements initial list of string replacements
      */
-    QgsStringReplacementCollection( const QList< QgsStringReplacement >& replacements = QList< QgsStringReplacement >() );
+    QgsStringReplacementCollection( const QList< QgsStringReplacement > &replacements = QList< QgsStringReplacement >() );
 
     /** Returns the list of string replacements in this collection.
      * @see setReplacements()
@@ -85,7 +85,7 @@ class QgsStringReplacementCollection
      * order they are specified here.
      * @see replacements()
      */
-    void setReplacements( const QList< QgsStringReplacement >& replacements );
+    void setReplacements( const QList< QgsStringReplacement > &replacements );
 
     /** Processes a given input string, applying any valid replacements which should be made
      * using QgsStringReplacement objects contained by this collection. Replacements
@@ -93,20 +93,20 @@ class QgsStringReplacementCollection
      * @param input input string
      * @returns input string with any matches replaced by replacement string
      */
-    QString process( const QString& input ) const;
+    QString process( const QString &input ) const;
 
     /** Writes the collection state to an XML element.
      * @param elem target DOM element
      * @param doc DOM document
      * @see readXml()
      */
-    void writeXml( QDomElement& elem, QDomDocument& doc ) const;
+    void writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Reads the collection state from an XML element.
      * @param elem DOM element
      * @see writeXml()
      */
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 };
 
 
@@ -139,7 +139,7 @@ class QgsStringUtils
      * @return capitalized string
      * @note added in QGIS 3.0
      */
-    static QString capitalize( const QString& string, Capitalization capitalization );
+    static QString capitalize( const QString &string, Capitalization capitalization );
 
     /** Returns the Levenshtein edit distance between two strings. This equates to the minimum
      * number of character edits (insertions, deletions or substitutions) required to change
@@ -185,5 +185,5 @@ class QgsStringUtils
      * @returns string with inserted links
      * @note added in QGIS 3.0
      */
-    static QString insertLinks( const QString& string, bool* foundLinks = nullptr );
+    static QString insertLinks( const QString &string, bool *foundLinks = nullptr );
 };

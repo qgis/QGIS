@@ -4,18 +4,18 @@ class QgsVectorLayerEditPassthrough : QgsVectorLayerEditBuffer
 #include <qgsvectorlayereditpassthrough.h>
 %End
   public:
-    QgsVectorLayerEditPassthrough( QgsVectorLayer* layer );
+    QgsVectorLayerEditPassthrough( QgsVectorLayer *layer );
     bool isModified() const;
-    bool addFeature( QgsFeature& f );
-    bool addFeatures( QgsFeatureList& features );
+    bool addFeature( QgsFeature &f );
+    bool addFeatures( QgsFeatureList &features );
     bool deleteFeature( QgsFeatureId fid );
-    bool deleteFeatures( const QgsFeatureIds& fids );
-    bool changeGeometry( QgsFeatureId fid, const QgsGeometry& geom );
+    bool deleteFeatures( const QgsFeatureIds &fids );
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom );
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
     bool addAttribute( const QgsField &field );
     bool deleteAttribute( int attr );
-    bool renameAttribute( int attr, const QString& newName );
-    bool commitChanges( QStringList& commitErrors );
+    bool renameAttribute( int attr, const QString &newName );
+    bool commitChanges( QStringList &commitErrors );
     void rollBack();
 
 };

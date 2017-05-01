@@ -30,7 +30,7 @@ class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSD
 
   public:
     //! Constructor
-    QgsGroupWmsDataDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsGroupWmsDataDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //~QgsGroupWMSDataDialog();
 
     //! return group WMS title

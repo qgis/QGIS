@@ -35,7 +35,7 @@ class QgsRelationEditorWidget : QgsCollapsibleGroupBox
     /**
      * @param parent parent widget
      */
-    QgsRelationEditorWidget( QWidget* parent /TransferThis/= 0 );
+    QgsRelationEditorWidget( QWidget *parent /TransferThis/= 0 );
 
     //! Define the view mode for the dual view
     void setViewMode( QgsDualView::ViewMode mode );
@@ -43,7 +43,7 @@ class QgsRelationEditorWidget : QgsCollapsibleGroupBox
     //! Get the view mode for the dual view
     QgsDualView::ViewMode viewMode();
 
-    void setRelationFeature( const QgsRelation& relation, const QgsFeature& feature );
+    void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
 
     /**
      * Set the relation(s) for this widget
@@ -54,17 +54,17 @@ class QgsRelationEditorWidget : QgsCollapsibleGroupBox
      * @param relation    Relation referencing the edited table
      * @param nmrelation  Optional reference from the referencing table to a 3rd N:M table
      */
-    void setRelations( const QgsRelation& relation, const QgsRelation& nmrelation );
+    void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 
-    void setFeature( const QgsFeature& feature );
+    void setFeature( const QgsFeature &feature );
 
-    void setEditorContext( const QgsAttributeEditorContext& context );
+    void setEditorContext( const QgsAttributeEditorContext &context );
 
     /**
      * The feature selection manager is responsible for the selected features
      * which are currently being edited.
      */
-    QgsIFeatureSelectionManager* featureSelectionManager();
+    QgsIFeatureSelectionManager *featureSelectionManager();
 
     /**
      * Defines if a title label should be shown for this widget.

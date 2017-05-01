@@ -118,12 +118,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     QgsProcessingProvider *provider() const;
 
-  private:
-
     /**
      * Associates this algorithm with its provider. No transfer of ownership is involved.
      */
+    //TEMPORARY - remove when algorithms are no longer copied in python code
     void setProvider( QgsProcessingProvider *provider );
+
+  private:
 
     QgsProcessingProvider *mProvider = nullptr;
 

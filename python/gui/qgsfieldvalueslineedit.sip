@@ -24,13 +24,13 @@ class QgsFieldValuesLineEdit: QgsFilterLineEdit
      * @see layer()
      * @see setAttributeIndex()
      */
-    void setLayer( QgsVectorLayer* layer );
+    void setLayer( QgsVectorLayer *layer );
 
     /** Returns the layer containing the field that values will be shown from.
      * @see setLayer()
      * @see attributeIndex()
      */
-    QgsVectorLayer* layer() const;
+    QgsVectorLayer *layer() const;
 
     /** Sets the attribute index for the field containing values to show in the widget.
      * @param index index of attribute
@@ -50,7 +50,7 @@ class QgsFieldValuesLineEdit: QgsFilterLineEdit
     /** Emitted when the layer associated with the widget changes.
      * @param layer vector layer
      */
-    void layerChanged( QgsVectorLayer* layer );
+    void layerChanged( QgsVectorLayer *layer );
 
     /** Emitted when the field associated with the widget changes.
      * @param index new attribute index for field

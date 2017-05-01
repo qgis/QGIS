@@ -14,7 +14,7 @@ class QgsMapLayerConfigWidgetFactory
     QgsMapLayerConfigWidgetFactory();
 
     /** Constructor */
-    QgsMapLayerConfigWidgetFactory( const QString& title, const QIcon& icon );
+    QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon );
 
     /** Destructor */
     virtual ~QgsMapLayerConfigWidgetFactory();
@@ -29,7 +29,7 @@ class QgsMapLayerConfigWidgetFactory
      * Set the icon for the factory object.
      * @param icon The icon to show in the interface.
      */
-    void setIcon( const QIcon& icon );
+    void setIcon( const QIcon &icon );
 
     /**
      * @brief The title of the panel.
@@ -44,7 +44,7 @@ class QgsMapLayerConfigWidgetFactory
      * e.g style dock uses this as a tooltip.
      * @param title The title to set.
      */
-    void setTitle( const QString& title );
+    void setTitle( const QString &title );
 
     /**
      * Flag if widget is supported for use in style dock.
@@ -85,5 +85,5 @@ class QgsMapLayerConfigWidgetFactory
      * @param parent The parent of the widget.
      * @return A new QgsMapStylePanel which is shown in the map style dock.
      */
-    virtual QgsMapLayerConfigWidget* createWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget* parent /TransferThis/ = 0 ) const = 0 /Factory/;
+    virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent /TransferThis/ = 0 ) const = 0 /Factory/;
 };
