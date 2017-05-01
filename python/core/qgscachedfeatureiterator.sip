@@ -11,7 +11,7 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
      * @param vlCache          The vector layer cache to use
      * @param featureRequest   The feature request to answer
      */
-    QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest );
+    QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 
     /**
      * Rewind to the beginning of the iterator
@@ -37,7 +37,7 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
      *
      * @see bool getFeature( QgsFeature& f )
      */
-    virtual bool fetchFeature( QgsFeature& f );
+    virtual bool fetchFeature( QgsFeature &f );
 
     /**
      * We have a local special iterator for FilterFids, no need to run the generic.
@@ -45,7 +45,7 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
      * @param f      Will write to this feature
      * @return bool  true if the operation was ok
      */
-    virtual bool nextFeatureFilterFids( QgsFeature& f );
+    virtual bool nextFeatureFilterFids( QgsFeature &f );
 
 };
 
@@ -66,7 +66,7 @@ class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator
      * @param vlCache          The vector layer cache to use
      * @param featureRequest   The feature request to answer
      */
-    QgsCachedFeatureWriterIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest );
+    QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 
     /**
      * Rewind to the beginning of the iterator
@@ -92,5 +92,5 @@ class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator
      *
      * @see bool getFeature( QgsFeature& f )
      */
-    virtual bool fetchFeature( QgsFeature& f );
+    virtual bool fetchFeature( QgsFeature &f );
 };

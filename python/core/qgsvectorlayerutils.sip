@@ -18,14 +18,14 @@ class QgsVectorLayerUtils
      * with IDs within this list are ignored when testing for existence of the value.
      * @see createUniqueValue()
      */
-    static bool valueExists( const QgsVectorLayer* layer, int fieldIndex, const QVariant& value, const QgsFeatureIds& ignoreIds = QgsFeatureIds() );
+    static bool valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds = QgsFeatureIds() );
 
     /**
      * Returns a new attribute value for the specified field index which is guaranteed to be unique. The optional seed
      * value can be used as a basis for generated values.
      * @see valueExists()
      */
-    static QVariant createUniqueValue( const QgsVectorLayer* layer, int fieldIndex, const QVariant& seed = QVariant() );
+    static QVariant createUniqueValue( const QgsVectorLayer *layer, int fieldIndex, const QVariant &seed = QVariant() );
 
     /**
      * Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
@@ -46,6 +46,6 @@ class QgsVectorLayerUtils
     static QgsFeature createFeature( QgsVectorLayer* layer,
                                      const QgsGeometry& geometry = QgsGeometry(),
                                      const QgsAttributeMap& attributes = QgsAttributeMap(),
-                                     QgsExpressionContext* context = nullptr );
+                                     QgsExpressionContext *context = nullptr );
 
 };

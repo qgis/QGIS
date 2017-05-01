@@ -26,19 +26,19 @@ class QgsTransaction : QObject /Abstract/
 %End
   public:
     /** Creates a transaction for the specified connection string and provider */
-    static QgsTransaction* create( const QString& connString, const QString& providerKey ) /Factory/;
+    static QgsTransaction *create( const QString &connString, const QString &providerKey ) /Factory/;
 
     /** Creates a transaction which includes the specified layers. Connection string
      *  and data provider are taken from the first layer */
-    static QgsTransaction* create( const QStringList& layerIds ) /Factory/;
+    static QgsTransaction *create( const QStringList &layerIds ) /Factory/;
 
     virtual ~QgsTransaction();
 
     /** Add layer to the transaction. The layer must not be in edit mode.*/
-    bool addLayer( const QString& layerId );
+    bool addLayer( const QString &layerId );
 
     /** Add layer to the transaction. The layer must not be in edit mode.*/
-    bool addLayer( QgsVectorLayer* layer );
+    bool addLayer( QgsVectorLayer *layer );
 
     /** Begin transaction
      *  The statement timeout, in seconds, specifies how long an sql statement
@@ -48,21 +48,21 @@ class QgsTransaction : QObject /Abstract/
      *  statements block until the conflicting transaction is committed or
      *  rolled back.
      *  Some providers might not honour the statement timeout. */
-    bool begin( QString& errorMsg /Out/, int statementTimeout = 20 );
+    bool begin( QString &errorMsg /Out/, int statementTimeout = 20 );
 
     /** Commit transaction. All layers need to be in read-only mode. */
-    bool commit( QString& errorMsg /Out/ );
+    bool commit( QString &errorMsg /Out/ );
 
     /** Roll back transaction. All layers need to be in read-only mode. */
-    bool rollback( QString& errorMsg /Out/ );
+    bool rollback( QString &errorMsg /Out/ );
 
     /** Executes sql */
-    virtual bool executeSql( const QString& sql, QString& error /Out/ ) = 0;
+    virtual bool executeSql( const QString &sql, QString &error /Out/ ) = 0;
 
     /**
      * Checks if a the provider of a give layer supports transactions.
      */
-    static bool supportsTransaction( const QgsVectorLayer* layer );
+    static bool supportsTransaction( const QgsVectorLayer *layer );
 
   signals:
     /**

@@ -51,47 +51,47 @@ class QgsMapTool : QObject
     virtual ~QgsMapTool();
 
     //! Mouse move event for overriding. Default implementation does nothing.
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
 
     //! Mouse double click event for overriding. Default implementation does nothing.
-    virtual void canvasDoubleClickEvent( QgsMapMouseEvent* e );
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e );
 
     //! Mouse press event for overriding. Default implementation does nothing.
-    virtual void canvasPressEvent( QgsMapMouseEvent* e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e );
 
     //! Mouse release event for overriding. Default implementation does nothing.
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
 
     //! Mouse wheel event for overriding. Default implementation does nothing.
-    virtual void wheelEvent( QWheelEvent* e );
+    virtual void wheelEvent( QWheelEvent *e );
 
     //! Key event for overriding. Default implementation does nothing.
-    virtual void keyPressEvent( QKeyEvent* e );
+    virtual void keyPressEvent( QKeyEvent *e );
 
     //! Key event for overriding. Default implementation does nothing.
-    virtual void keyReleaseEvent( QKeyEvent* e );
+    virtual void keyReleaseEvent( QKeyEvent *e );
 
     //! gesture event for overriding. Default implementation does nothing.
-    virtual bool gestureEvent( QGestureEvent* e );
+    virtual bool gestureEvent( QGestureEvent *e );
 
     /** Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
      * the previously used toolbutton to pop out. */
-    void setAction( QAction* action );
+    void setAction( QAction *action );
 
     /** Return associated action with map tool or NULL if no action is associated */
-    QAction* action();
+    QAction *action();
 
     /** Use this to associate a button to this maptool. It has the same meaning
      * as setAction() function except it works with a button instead of an QAction. */
-    void setButton( QAbstractButton* button );
+    void setButton( QAbstractButton *button );
 
     /** Return associated button with map tool or NULL if no button is associated */
-    QAbstractButton* button();
+    QAbstractButton *button();
 
     /** Set a user defined cursor */
-    virtual void setCursor( const QCursor& cursor );
+    virtual void setCursor( const QCursor &cursor );
 
     //! called when set as currently active map tool
     virtual void activate();
@@ -100,7 +100,7 @@ class QgsMapTool : QObject
     virtual void deactivate();
 
     //! returns pointer to the tool's map canvas
-    QgsMapCanvas* canvas();
+    QgsMapCanvas *canvas();
 
     //! Emit map tool changed with the old tool
     //! @note added in 2.3
@@ -115,16 +115,16 @@ class QgsMapTool : QObject
     /** Get search radius in map units for given context. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
      *  @note added in 2.3 */
-    static double searchRadiusMU( const QgsRenderContext& context );
+    static double searchRadiusMU( const QgsRenderContext &context );
 
     /** Get search radius in map units for given canvas. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
      *  @note added in 2.3 */
-    static double searchRadiusMU( QgsMapCanvas * canvas );
+    static double searchRadiusMU( QgsMapCanvas  *canvas );
 
   signals:
     //! emit a message
-    void messageEmitted( const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+    void messageEmitted( const QString &message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
 
     //! emit signal to clear previous message
     void messageDiscarded();
@@ -138,29 +138,29 @@ class QgsMapTool : QObject
   protected:
 
     //! constructor takes map canvas as a parameter
-    QgsMapTool( QgsMapCanvas* canvas /TransferThis/ );
+    QgsMapTool( QgsMapCanvas *canvas /TransferThis/ );
 
     //! transformation from screen coordinates to map coordinates
     QgsPoint toMapCoordinates( QPoint point );
 
     //! transformation from screen coordinates to layer's coordinates
-    QgsPoint toLayerCoordinates( const QgsMapLayer* layer, QPoint point );
+    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
 
     //! transformation from map coordinates to layer's coordinates
-    QgsPoint toLayerCoordinates( const QgsMapLayer* layer, const QgsPoint& point );
+    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point );
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
-    QgsPoint toMapCoordinates( const QgsMapLayer* layer, const QgsPoint& point );
+    QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point );
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
     //! @note available in python bindings as toMapCoordinatesV2
-    QgsPointV2 toMapCoordinates( const QgsMapLayer* layer, const QgsPointV2 &point ) /PyName=toMapCoordinatesV2/;
+    QgsPointV2 toMapCoordinates( const QgsMapLayer *layer, const QgsPointV2 &point ) /PyName=toMapCoordinatesV2/;
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
-    QgsRectangle toLayerCoordinates( const QgsMapLayer* layer, const QgsRectangle& rect );
+    QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
 
     //! transformation from map coordinates to screen coordinates
-    QPoint toCanvasCoordinates( const QgsPoint& point );
+    QPoint toCanvasCoordinates( const QgsPoint &point );
 
 
 };

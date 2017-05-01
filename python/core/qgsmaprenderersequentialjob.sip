@@ -14,7 +14,7 @@ class QgsMapRendererSequentialJob : QgsMapRendererQImageJob
 %End
 
   public:
-    QgsMapRendererSequentialJob( const QgsMapSettings& settings );
+    QgsMapRendererSequentialJob( const QgsMapSettings &settings );
     ~QgsMapRendererSequentialJob();
 
     virtual void start();
@@ -24,7 +24,7 @@ class QgsMapRendererSequentialJob : QgsMapRendererQImageJob
     virtual bool isActive() const;
     virtual bool usedCachedLabels() const;
 
-    virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
+    virtual QgsLabelingResults *takeLabelingResults() /Transfer/;
 
     // from QgsMapRendererJobWithPreview
     virtual QImage renderedImage();

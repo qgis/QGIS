@@ -15,7 +15,7 @@ class QgsTaskManagerWidget : QWidget
      * @param manager task manager associated with widget
      * @param parent parent widget
      */
-     QgsTaskManagerWidget( QgsTaskManager* manager, QWidget* parent /TransferThis/ = nullptr );
+     QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent /TransferThis/ = nullptr );
 
 };
 

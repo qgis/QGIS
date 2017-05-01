@@ -5,25 +5,25 @@ class QgsFormAnnotation : QgsAnnotation
 %End
   public:
 
-    QgsFormAnnotation( QObject* parent /TransferThis/ = nullptr );
+    QgsFormAnnotation( QObject *parent /TransferThis/ = nullptr );
 
     virtual QgsFormAnnotation *clone() const /Factory/;
 
     QSizeF minimumFrameSize() const;
     QSizeF preferredFrameSize() const;
 
-    void setDesignerForm( const QString& uiFile );
+    void setDesignerForm( const QString &uiFile );
     QString designerForm() const;
 
-    virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const;
-    virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    virtual void writeXml( QDomElement &elem, QDomDocument  &doc ) const;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
-    void setAssociatedFeature( const QgsFeature& feature );
+    void setAssociatedFeature( const QgsFeature &feature );
 
-    static QgsFormAnnotation* create() /Factory/;
+    static QgsFormAnnotation *create() /Factory/;
 
   protected:
 
-    void renderAnnotation( QgsRenderContext& context, QSizeF size ) const;
+    void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 
 };

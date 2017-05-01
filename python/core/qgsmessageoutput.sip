@@ -26,13 +26,13 @@ class QgsMessageOutput
     virtual ~QgsMessageOutput();
 
     //! set message, it won't be displayed until
-    virtual void setMessage( const QString& message, MessageType msgType ) = 0;
+    virtual void setMessage( const QString &message, MessageType msgType ) = 0;
 
     //! message to be appended to the current text
-    virtual void appendMessage( const QString& message ) = 0;
+    virtual void appendMessage( const QString &message ) = 0;
 
     //! set title for the messages
-    virtual void setTitle( const QString& title ) = 0;
+    virtual void setTitle( const QString &title ) = 0;
 
     //! display the message to the user
     virtual void showMessage( bool blocking = true ) = 0;
@@ -40,7 +40,7 @@ class QgsMessageOutput
     /** Display the blocking message to the user.
      *  @note added in 2.10
      */
-    static void showMessage( const QString& title, const QString& message, MessageType msgType );
+    static void showMessage( const QString &title, const QString &message, MessageType msgType );
 
     //! sets function that will be used to create message output
     //! @note not available in python bindings
@@ -49,7 +49,7 @@ class QgsMessageOutput
 
     //! function that returns new class derived from QgsMessageOutput
     //! (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
-    static QgsMessageOutput* createMessageOutput();
+    static QgsMessageOutput *createMessageOutput();
 
 };
 
@@ -70,11 +70,11 @@ class QgsMessageOutputConsole : QObject, QgsMessageOutput
 
     QgsMessageOutputConsole();
 
-    virtual void setMessage( const QString& message, MessageType msgType );
+    virtual void setMessage( const QString &message, MessageType msgType );
 
-    virtual void appendMessage( const QString& message );
+    virtual void appendMessage( const QString &message );
 
-    virtual void setTitle( const QString& title );
+    virtual void setTitle( const QString &title );
 
     //! sends the message to the standard output
     virtual void showMessage( bool blocking = true );

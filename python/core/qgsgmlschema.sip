@@ -5,15 +5,15 @@ class QgsGmlFeatureClass
 {
   public:
     QgsGmlFeatureClass();
-    QgsGmlFeatureClass( const QString& name, const QString& path );
+    QgsGmlFeatureClass( const QString &name, const QString &path );
 
-    QList<QgsField> & fields();
+    QList<QgsField>  &fields();
 
-    int fieldIndex( const QString & name );
+    int fieldIndex( const QString  &name );
 
     QString path() const;
 
-    QStringList & geometryAttributes();
+    QStringList  &geometryAttributes();
 };
 
 class QgsGmlSchema : QObject
@@ -42,10 +42,10 @@ class QgsGmlSchema : QObject
     QStringList typeNames() const;
 
     /** Get fields for type/class name parsed from GML or XSD */
-    QList<QgsField> fields( const QString & typeName );
+    QList<QgsField> fields( const QString  &typeName );
 
     /** Get list of geometry attributes for type/class name */
-    QStringList geometryAttributes( const QString & typeName );
+    QStringList geometryAttributes( const QString  &typeName );
 
     /** Get error if parseXSD() or guessSchema() failed */
     QgsError error() const;

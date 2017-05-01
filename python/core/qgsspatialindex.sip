@@ -17,33 +17,33 @@ class QgsSpatialIndex
      *
      * @note added in 2.8
      */
-    explicit QgsSpatialIndex( const QgsFeatureIterator& fi );
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi );
 
     /** Copy constructor */
-    QgsSpatialIndex( const QgsSpatialIndex& other );
+    QgsSpatialIndex( const QgsSpatialIndex &other );
 
     /** Destructor finalizes work with spatial index */
     ~QgsSpatialIndex();
 
     /** Implement assignment operator */
-    // QgsSpatialIndex& operator=( const QgsSpatialIndex& other );
+    // QgsSpatialIndex &operator=( const QgsSpatialIndex &other );
 
     /* operations */
 
     /** Add feature to index */
-    bool insertFeature( const QgsFeature& f );
+    bool insertFeature( const QgsFeature &f );
 
     /** Remove feature from index */
-    bool deleteFeature( const QgsFeature& f );
+    bool deleteFeature( const QgsFeature &f );
 
 
     /* queries */
 
     /** Returns features that intersect the specified rectangle */
-    QList<qint64> intersects( const QgsRectangle& rect ) const;
+    QList<qint64> intersects( const QgsRectangle &rect ) const;
 
     /** Returns nearest neighbors (their count is specified by second parameter) */
-    QList<qint64> nearestNeighbor( const QgsPoint& point, int neighbors ) const;
+    QList<qint64> nearestNeighbor( const QgsPoint &point, int neighbors ) const;
 
     /* debugging */
 
@@ -52,9 +52,9 @@ class QgsSpatialIndex
 
   protected:
     // @note not available in python bindings
-    // static SpatialIndex::Region rectToRegion( const QgsRectangle& rect );
+    // static SpatialIndex::Region rectToRegion( const QgsRectangle &rect );
     // @note not available in python bindings
-    // bool featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
+    // bool featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id );
 
 
 };

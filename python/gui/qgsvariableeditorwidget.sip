@@ -27,13 +27,13 @@ class QgsVariableEditorWidget : QWidget
      * @param context expression context
      * @see context()
      */
-    void setContext( QgsExpressionContext* context );
+    void setContext( QgsExpressionContext *context );
 
     /** Returns the current expression context for the widget. QgsVariableEditorWidget widgets
      * are created with an empty context by default.
      * @see setContext()
      */
-    QgsExpressionContext* context() const;
+    QgsExpressionContext *context() const;
 
     /** Reloads all scopes from the editor's current context. This method should be called
      * after adding or removing scopes from the attached context.
@@ -53,7 +53,7 @@ class QgsVariableEditorWidget : QWidget
      * @returns editable scope, or 0 if no editable scope is set
      * @see setEditableScopeIndex()
      */
-    QgsExpressionContextScope* editableScope() const;
+    QgsExpressionContextScope *editableScope() const;
 
     /** Sets the setting group for the widget. QgsVariableEditorWidget widgets with
      * the same setting group will synchronise their settings, e.g., the size

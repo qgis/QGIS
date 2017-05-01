@@ -33,7 +33,7 @@ class QgsProjectBadLayerHandler
      *
      * @note Added in QGIS 3.0
      */
-    virtual void handleBadLayers( const QList<QDomNode>& layers );
+    virtual void handleBadLayers( const QList<QDomNode> &layers );
     virtual ~QgsProjectBadLayerHandler();
 
 
@@ -63,7 +63,7 @@ class QgsProjectBadLayerHandler
      *
      * @note Added in QGIS 3.0
      */
-    DataType dataType( const QDomNode & layerNode );
+    DataType dataType( const QDomNode  &layerNode );
 
     /**
      * Return the data source for the given layer
@@ -74,7 +74,7 @@ class QgsProjectBadLayerHandler
      *
      * @note Added in QGIS 3.0
      */
-    QString dataSource( const QDomNode& layerNode );
+    QString dataSource( const QDomNode &layerNode );
 
     /**
      * Return the physical storage type associated with the given layer
@@ -92,12 +92,12 @@ class QgsProjectBadLayerHandler
      *
      * @note Added in QGIS 3.0
      */
-    ProviderType providerType( const QDomNode& layerNode );
+    ProviderType providerType( const QDomNode &layerNode );
 
     /**
      * Set the datasource element to the new value
      *
      * @note Added in QGIS 3.0
      */
-    void setDataSource( QDomNode& layerNode, const QString& dataSource );
+    void setDataSource( QDomNode &layerNode, const QString &dataSource );
 };

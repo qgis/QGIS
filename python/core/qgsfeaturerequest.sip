@@ -128,7 +128,7 @@ class QgsFeatureRequest
         /**
          * Create a new order by from a list of clauses
          */
-        OrderBy( const QList<QgsFeatureRequest::OrderByClause>& other );
+        OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
 
         /**
          * Get a copy as a list of OrderByClauses
@@ -141,12 +141,12 @@ class QgsFeatureRequest
         /**
          * Serialize to XML
          */
-        void save( QDomElement& elem ) const;
+        void save( QDomElement &elem ) const;
 
         /**
          * Deserialize from XML
          */
-        void load( const QDomElement& elem );
+        void load( const QDomElement &elem );
 
         /**
          * Returns a set of used attributes
@@ -169,11 +169,11 @@ class QgsFeatureRequest
     //! construct a request with feature ID filter
     explicit QgsFeatureRequest( QgsFeatureId fid );
     //! construct a request with rectangle filter
-    explicit QgsFeatureRequest( const QgsRectangle& rect );
+    explicit QgsFeatureRequest( const QgsRectangle &rect );
     //! construct a request with a filter expression
-    explicit QgsFeatureRequest( const QgsExpression& expr, const QgsExpressionContext& context = QgsExpressionContext() );
+    explicit QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context = QgsExpressionContext() );
     //! copy constructor
-    QgsFeatureRequest( const QgsFeatureRequest& rh );
+    QgsFeatureRequest( const QgsFeatureRequest &rh );
 
     ~QgsFeatureRequest();
 
@@ -187,22 +187,22 @@ class QgsFeatureRequest
     /**
      * Set rectangle from which features will be taken. Empty rectangle removes the filter.
      */
-    QgsFeatureRequest& setFilterRect( const QgsRectangle& rect );
+    QgsFeatureRequest &setFilterRect( const QgsRectangle &rect );
 
     /**
      * Get the rectangle from which features will be taken.
      */
-    const QgsRectangle& filterRect() const;
+    const QgsRectangle &filterRect() const;
 
     //! Set feature ID that should be fetched.
-    QgsFeatureRequest& setFilterFid( qint64 fid );
+    QgsFeatureRequest &setFilterFid( qint64 fid );
     //! Get the feature ID that should be fetched.
     qint64 filterFid() const;
 
     //! Set feature IDs that should be fetched.
-    QgsFeatureRequest& setFilterFids( const QgsFeatureIds& fids );
+    QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
     //! Get feature IDs that should be fetched.
-    const QgsFeatureIds& filterFids() const;
+    const QgsFeatureIds &filterFids() const;
 
     /**
      * Sets invalid geometry checking behavior.
@@ -256,34 +256,34 @@ class QgsFeatureRequest
      * @see filterExpression
      * @see setExpressionContext
      */
-    QgsFeatureRequest& setFilterExpression( const QString& expression );
+    QgsFeatureRequest &setFilterExpression( const QString &expression );
 
     /** Returns the filter expression if set.
      * @see setFilterExpression
      * @see expressionContext
      */
-    QgsExpression* filterExpression() const;
+    QgsExpression *filterExpression() const;
 
     /** Modifies the existing filter expression to add an additional expression filter. The
      * filter expressions are combined using AND, so only features matching both
      * the existing expression and the additional expression will be returned.
      * @note added in QGIS 2.14
      */
-    QgsFeatureRequest& combineFilterExpression( const QString& expression );
+    QgsFeatureRequest &combineFilterExpression( const QString &expression );
 
     /** Returns the expression context used to evaluate filter expressions.
      * @note added in QGIS 2.12
      * @see setExpressionContext
      * @see filterExpression
      */
-    QgsExpressionContext* expressionContext();
+    QgsExpressionContext *expressionContext();
 
     /** Sets the expression context used to evaluate filter expressions.
      * @note added in QGIS 2.12
      * @see expressionContext
      * @see setFilterExpression
      */
-    QgsFeatureRequest& setExpressionContext( const QgsExpressionContext& context );
+    QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 
     /**
      * Disables filter conditions.
@@ -293,7 +293,7 @@ class QgsFeatureRequest
      *
      * @note Added in 2.12
      */
-    QgsFeatureRequest& disableFilter();
+    QgsFeatureRequest &disableFilter();
 
     /**
      * Adds a new OrderByClause, appending it as the least important one.
@@ -306,7 +306,7 @@ class QgsFeatureRequest
      * @note added in QGIS 2.14
      */
 
-    QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending = true );
+    QgsFeatureRequest &addOrderBy( const QString &expression, bool ascending = true );
     /**
      * Adds a new OrderByClause, appending it as the least important one.
      *
@@ -316,7 +316,7 @@ class QgsFeatureRequest
      *
      * @note added in QGIS 2.14
      */
-    QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
+    QgsFeatureRequest &addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
 
     /**
      * Return a list of order by clauses specified for this feature request.
@@ -330,14 +330,14 @@ class QgsFeatureRequest
      *
      * @note added in 2.14
      */
-    QgsFeatureRequest& setOrderBy( const QgsFeatureRequest::OrderBy& orderBy );
+    QgsFeatureRequest &setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
 
     /** Set the maximum number of features to request.
      * @param limit maximum number of features, or -1 to request all features.
      * @see limit()
      * @note added in QGIS 2.14
      */
-    QgsFeatureRequest& setLimit( long limit );
+    QgsFeatureRequest &setLimit( long limit );
 
     /** Returns the maximum number of features to request, or -1 if no limit set.
      * @see setLimit
@@ -346,12 +346,12 @@ class QgsFeatureRequest
     long limit() const;
 
     //! Set flags that affect how features will be fetched
-    QgsFeatureRequest& setFlags( const Flags& flags );
-    const Flags& flags() const;
+    QgsFeatureRequest &setFlags( const Flags &flags );
+    const Flags &flags() const;
 
     //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
     //! To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
-    QgsFeatureRequest& setSubsetOfAttributes( const QgsAttributeList& attrs );
+    QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
     /**
      * Return the subset of attributes which at least need to be fetched
      * @return A list of attributes to be fetched
@@ -359,14 +359,14 @@ class QgsFeatureRequest
     QgsAttributeList subsetOfAttributes() const;
 
     //! Set a subset of attributes by names that will be fetched
-    QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
+    QgsFeatureRequest &setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields );
 
     //! Set a simplification method for geometries that will be fetched
     //! @note added in 2.2
-    QgsFeatureRequest& setSimplifyMethod( const QgsSimplifyMethod& simplifyMethod );
+    QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
     //! Get simplification method for geometries that will be fetched
     //! @note added in 2.2
-    const QgsSimplifyMethod& simplifyMethod() const;
+    const QgsSimplifyMethod &simplifyMethod() const;
 
     /**
      * Check if a feature is accepted by this requests filter
@@ -377,7 +377,7 @@ class QgsFeatureRequest
      *
      * @note added in 2.1
      */
-    bool acceptFeature( const QgsFeature& feature );
+    bool acceptFeature( const QgsFeature &feature );
 
 };
 
@@ -398,9 +398,9 @@ class QgsAbstractFeatureSource
      * @param request The request
      * @return A feature iterator
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0;
 
   protected:
-    void iteratorOpened( QgsAbstractFeatureIterator* it );
-    void iteratorClosed( QgsAbstractFeatureIterator* it );
+    void iteratorOpened( QgsAbstractFeatureIterator *it );
+    void iteratorClosed( QgsAbstractFeatureIterator *it );
 };

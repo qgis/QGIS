@@ -39,10 +39,10 @@ class QgsAttributeForm : QWidget
       FilterOr, /*!< Filter should be combined using "OR" */
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature& feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
+    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
     ~QgsAttributeForm();
 
-    const QgsFeature& feature();
+    const QgsFeature &feature();
 
     /**
      * Hides the button box (Ok/Cancel) and enables auto-commit
@@ -64,14 +64,14 @@ class QgsAttributeForm : QWidget
      * Takes ownership
      * @param iface
      */
-    void addInterface( QgsAttributeFormInterface* iface /Transfer/ );
+    void addInterface( QgsAttributeFormInterface *iface /Transfer/ );
 
     /**
      * Returns the layer for which this form is shown
      *
      * @return  Layer
      */
-    QgsVectorLayer* layer();
+    QgsVectorLayer *layer();
 
     /**
      * Returns if the form is currently in editable mode.
@@ -98,7 +98,7 @@ class QgsAttributeForm : QWidget
      *
      * @param message The message
      */
-    void setEditCommandMessage( const QString& message );
+    void setEditCommandMessage( const QString &message );
 
     /**
      * Intercepts keypress on custom form (escape should not close it)
@@ -108,20 +108,20 @@ class QgsAttributeForm : QWidget
      *
      * @return         true if the event has been handled (key was ESC)
      */
-    bool eventFilter( QObject* object, QEvent* event );
+    bool eventFilter( QObject *object, QEvent *event );
 
     /** Sets all feature IDs which are to be edited if the form is in multiedit mode
      * @param fids feature ID list
      * @note added in QGIS 2.16
      */
-    void setMultiEditFeatureIds( const QgsFeatureIds& fids );
+    void setMultiEditFeatureIds( const QgsFeatureIds &fids );
 
     /** Sets the message bar to display feedback from the form in. This is used in the search/filter
      * mode to display the count of selected features.
      * @param messageBar target message bar
      * @note added in QGIS 2.16
      */
-    void setMessageBar( QgsMessageBar* messageBar );
+    void setMessageBar( QgsMessageBar *messageBar );
 
   signals:
     /**
@@ -130,7 +130,7 @@ class QgsAttributeForm : QWidget
      * @param attribute The name of the attribute that changed.
      * @param value     The new value of the attribute.
      */
-    void attributeChanged( const QString& attribute, const QVariant& value );
+    void attributeChanged( const QString &attribute, const QVariant &value );
 
     /**
      * Will be emitted before the feature is saved. Use this signal to perform sanity checks.
@@ -140,19 +140,19 @@ class QgsAttributeForm : QWidget
      * @param ok  Set this parameter to false if you don't want the form to be saved
      * @note not available  in python bindings
      */
-    // void beforeSave( bool& ok );
+    // void beforeSave( bool &ok );
 
     /**
      * Is emitted, when a feature is changed or added
      */
-    void featureSaved( const QgsFeature& feature );
+    void featureSaved( const QgsFeature &feature );
 
     /** Is emitted when a filter expression is set using the form.
      * @param expression filter expression
      * @param type filter type
      * @note added in QGIS 2.16
      */
-    void filterExpressionSet( const QString& expression, QgsAttributeForm::FilterType type );
+    void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 
     /** Emitted when the form changes mode.
      * @param mode new mode
@@ -168,7 +168,7 @@ class QgsAttributeForm : QWidget
      * Emitted when the user chooses to zoom to a filtered set of features.
      * @note added in QGIS 3.0
      */
-    void zoomToFeatures( const QString& filter );
+    void zoomToFeatures( const QString &filter );
 
   public slots:
     /**
@@ -177,14 +177,14 @@ class QgsAttributeForm : QWidget
      * @param field The field to change
      * @param value The new value
      */
-    void changeAttribute( const QString& field, const QVariant& value );
+    void changeAttribute( const QString &field, const QVariant &value );
 
     /**
      * Update all editors to correspond to a different feature.
      *
      * @param feature The feature which will be represented by the form
      */
-    void setFeature( const QgsFeature& feature );
+    void setFeature( const QgsFeature &feature );
 
     /**
      * Save all the values from the editors to the layer.
