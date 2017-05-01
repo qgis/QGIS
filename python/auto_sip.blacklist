@@ -86,8 +86,6 @@ core/qgssimplifymethod.sip
 core/qgssnappingutils.sip
 core/qgsspatialindex.sip
 core/qgssqlstatement.sip
-core/qgsstatisticalsummary.sip
-core/qgsstringstatisticalsummary.sip
 core/qgsstringutils.sip
 core/qgstaskmanager.sip
 core/qgstolerance.sip
