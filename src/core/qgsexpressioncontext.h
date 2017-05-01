@@ -127,10 +127,11 @@ class CORE_EXPORT QgsExpressionContextScope
        * \param value initial variable value
        * \param readOnly true if variable should not be editable by users
        */
-      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false )
+      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false )
         : name( name )
         , value( value )
         , readOnly( readOnly )
+        , isStatic( isStatic )
       {}
 
       //! Variable name
@@ -141,6 +142,9 @@ class CORE_EXPORT QgsExpressionContextScope
 
       //! True if variable should not be editable by users
       bool readOnly;
+
+      //! A static variable can be cached for the lifetime of a context
+      bool isStatic;
     };
 
     /** Constructor for QgsExpressionContextScope
@@ -166,7 +170,7 @@ class CORE_EXPORT QgsExpressionContextScope
      * \param value variable value
      * \see addVariable()
      */
-    void setVariable( const QString &name, const QVariant &value );
+    void setVariable( const QString &name, const QVariant &value, bool isStatic = false );
 
     /** Adds a variable into the context scope. If a variable with the same name is already set then its
      * value is overwritten, otherwise a new variable is added to the scope.
@@ -218,6 +222,14 @@ class CORE_EXPORT QgsExpressionContextScope
      * \returns true if variable is read only
      */
     bool isReadOnly( const QString &name ) const;
+
+    /**
+     * Tests whether the variable with the specified \a name is static and can
+     * be cached.
+     *
+     * \note Added in QGIS 3.0
+     */
+    bool isStatic( const QString &name ) const;
 
     /** Returns the count of variables contained within the scope.
      */

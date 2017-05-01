@@ -4322,9 +4322,10 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
     varFunction->setIsStaticFunction(
       []( const NodeFunction * node, QgsExpression * parent, const QgsExpressionContext * context )
     {
-      /* A variable node is static if it has a static name and the name is defined at prepare time
-       * (e.g. global or layer variables)
-       * It is not static if a variable is set during iteration (e.g. geom_part variable)
+      /* A variable node is static if it has a static name and the name can be found at prepare
+       * time and is tagged with isStatic.
+       * It is not static if a variable is set during iteration or not tagged isStatic.
+       * (e.g. geom_part variable)
        */
       if ( node->args()->count() > 0 )
       {
@@ -4333,8 +4334,10 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
         if ( !argNode->isStatic( parent, context ) )
           return false;
 
-        if ( fcnGetVariable( QVariantList() << argNode->eval( parent, context ), context, parent ).isValid() )
-          return true;
+        QString varName = argNode->eval( parent, context ).toString();
+
+        const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
+        return scope ? scope->isStatic( varName ) : false;
       }
       return false;
     }
