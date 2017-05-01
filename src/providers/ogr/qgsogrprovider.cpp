@@ -2280,8 +2280,8 @@ QString createFilters( const QString &type )
       }
       else if ( driverName.startsWith( QLatin1String( "Interlis 2" ) ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), QStringLiteral( "*.itf *.xml *.ili" ) );
-        sExtensions << QStringLiteral( "itf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
+        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), QStringLiteral( "*.xtf *.xml *.ili" ) );
+        sExtensions << QStringLiteral( "xtf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
       }
       else if ( driverName.startsWith( QLatin1String( "Ingres" ) ) )
       {
