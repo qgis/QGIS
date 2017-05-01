@@ -25,7 +25,7 @@ class QgsFilterLineEdit : QLineEdit
      * @param parent parent widget
      * @param nullValue string for representing null values
      */
-    QgsFilterLineEdit( QWidget* parent /TransferThis/ = 0, const QString& nullValue = QString::null );
+    QgsFilterLineEdit( QWidget *parent /TransferThis/ = 0, const QString &nullValue = QString::null );
 
     /** Returns true if the widget's clear button is visible.
      * @see setShowClearButton()
@@ -60,7 +60,7 @@ class QgsFilterLineEdit : QLineEdit
      * @param nullValue string to show when widget's value is null
      * @see nullValue()
      */
-    void setNullValue( const QString& nullValue );
+    void setNullValue( const QString &nullValue );
 
     /** Returns the string used for representating null values in the widget.
      * @see setNullValue()
@@ -89,7 +89,7 @@ class QgsFilterLineEdit : QLineEdit
      * @see clearMode()
      * @note added in QGIS 3.0
      */
-    void setDefaultValue( const QString& defaultValue );
+    void setDefaultValue( const QString &defaultValue );
 
     /** Returns the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
@@ -107,7 +107,7 @@ class QgsFilterLineEdit : QLineEdit
      * widget will be set to the current nullValue().
      * @see value()
      */
-    void setValue( const QString& value );
+    void setValue( const QString &value );
 
     /**
      * Returns the text of this edit with support for handling null values. If the text
@@ -147,12 +147,12 @@ class QgsFilterLineEdit : QLineEdit
      *
      * @param value The current text or null string if it matches the nullValue() property.
      */
-    void valueChanged( const QString& value );
+    void valueChanged( const QString &value );
 
   protected:
-    void mousePressEvent( QMouseEvent* e );
-    void mouseMoveEvent( QMouseEvent* e );
-    void focusInEvent( QFocusEvent* e );
-    void paintEvent( QPaintEvent* e );
-    void leaveEvent( QEvent* e );
+    void mousePressEvent( QMouseEvent *e );
+    void mouseMoveEvent( QMouseEvent *e );
+    void focusInEvent( QFocusEvent *e );
+    void paintEvent( QPaintEvent *e );
+    void leaveEvent( QEvent *e );
 };

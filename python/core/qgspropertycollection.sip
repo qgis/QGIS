@@ -17,11 +17,11 @@ class QgsAbstractPropertyCollection
 
   public:
 
-    QgsAbstractPropertyCollection( const QString& name = QString() );
+    QgsAbstractPropertyCollection( const QString &name = QString() );
 
     QString name() const;
 
-    void setName( const QString& name );
+    void setName( const QString &name );
 
     virtual QSet<int> propertyKeys() const = 0;
 
@@ -31,21 +31,21 @@ class QgsAbstractPropertyCollection
 
     virtual QgsProperty property( int key ) const = 0;
 
-    virtual QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const = 0;
+    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
 
-    QString valueAsString( int key, const QgsExpressionContext& context, const QString& defaultString = QString(), bool* ok /Out/ = nullptr ) const;
+    QString valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok /Out/ = nullptr ) const;
 
-    QColor valueAsColor( int key, const QgsExpressionContext& context, const QColor& defaultColor = QColor(), bool* ok /Out/ = nullptr ) const;
+    QColor valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok /Out/ = nullptr ) const;
 
-    double valueAsDouble( int key, const QgsExpressionContext& context, double defaultValue = 0.0, bool* ok /Out/ = nullptr ) const;
+    double valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok /Out/ = nullptr ) const;
 
-    int valueAsInt( int key, const QgsExpressionContext& context, int defaultValue = 0, bool* ok /Out/ = nullptr ) const;
+    int valueAsInt( int key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok /Out/ = nullptr ) const;
 
-    bool valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue = false, bool* ok /Out/ = nullptr ) const;
+    bool valueAsBool( int key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok /Out/ = nullptr ) const;
 
-    virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const = 0;
+    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
 
-    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const = 0;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
 
     virtual bool isActive( int key ) const = 0;
 
@@ -53,8 +53,8 @@ class QgsAbstractPropertyCollection
 
     virtual bool hasDynamicProperties() const = 0;
 
-    virtual bool writeXml( QDomElement& collectionElem, const QgsPropertiesDefinition& definitions ) const = 0;
-    virtual bool readXml( const QDomElement& collectionElem, const QgsPropertiesDefinition &definitions ) = 0;
+    virtual bool writeXml( QDomElement &collectionElem, const QgsPropertiesDefinition &definitions ) const = 0;
+    virtual bool readXml( const QDomElement &collectionElem, const QgsPropertiesDefinition &definitions ) = 0;
     virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const = 0;
     virtual bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) = 0;
 };
@@ -68,32 +68,32 @@ class QgsPropertyCollection : QgsAbstractPropertyCollection
 
   public:
 
-    QgsPropertyCollection( const QString& name = QString() );
+    QgsPropertyCollection( const QString &name = QString() );
 
     ~QgsPropertyCollection();
 
-    QgsPropertyCollection( const QgsPropertyCollection& other );
+    QgsPropertyCollection( const QgsPropertyCollection &other );
 
-    //QgsPropertyCollection& operator=( const QgsPropertyCollection& other );
+    //QgsPropertyCollection &operator=( const QgsPropertyCollection &other );
 
     int count() const;
 
     QSet<int> propertyKeys() const;
     void clear();
     bool hasProperty( int key ) const;
-    QgsProperty& property( int key );
-    QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const;
-    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
-    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
+    QgsProperty &property( int key );
+    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const;
+    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
     bool isActive( int key ) const;
     bool hasActiveProperties() const;
     bool hasDynamicProperties() const;
 
     QVariant toVariant( const QgsPropertiesDefinition &definitions ) const;
     bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions );
-    void setProperty( int key, const QgsProperty& property );
+    void setProperty( int key, const QgsProperty &property );
 
-    void setProperty( int key, const QVariant& value );
+    void setProperty( int key, const QVariant &value );
 
 };
 
@@ -110,16 +110,16 @@ class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
 
     ~QgsPropertyCollectionStack();
 
-    QgsPropertyCollectionStack( const QgsPropertyCollectionStack& other );
+    QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other );
 
-    //QgsPropertyCollectionStack& operator=( const QgsPropertyCollectionStack& other );
+    //QgsPropertyCollectionStack &operator=( const QgsPropertyCollectionStack &other );
 
     int count() const;
     void clear();
-    void appendCollection( QgsPropertyCollection* collection /Transfer/ );
-    QgsPropertyCollection* at( int index );
-    //const QgsPropertyCollection* at( int index ) const;
-    QgsPropertyCollection* collection( const QString& name );
+    void appendCollection( QgsPropertyCollection *collection /Transfer/ );
+    QgsPropertyCollection *at( int index );
+    //const QgsPropertyCollection *at( int index ) const;
+    QgsPropertyCollection *collection( const QString &name );
 
     bool hasActiveProperties() const;
 
@@ -129,11 +129,11 @@ class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
 
     QgsProperty property( int key ) const;
 
-    QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const;
+    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const;
 
-    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
+    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
-    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     QSet<int> propertyKeys() const;
     bool hasProperty( int key ) const;

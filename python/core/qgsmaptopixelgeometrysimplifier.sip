@@ -44,7 +44,7 @@ class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm );
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const;
+    virtual QgsGeometry simplify( const QgsGeometry &geometry ) const;
 
     //! Sets the tolerance of the vector layer managed
     void setTolerance( double value );
@@ -53,5 +53,5 @@ class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
   public:
 
     //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-    static bool isGeneralizableByMapBoundingBox( const QgsRectangle& envelope, double map2pixelTol );
+    static bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope, double map2pixelTol );
 };

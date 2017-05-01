@@ -10,19 +10,19 @@ class QgsExpressionSelectionDialog : QDialog
      * @param startText A default expression text to be applied (Defaults to empty)
      * @param parent parent object (owner)
      */
-    QgsExpressionSelectionDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent /TransferThis/ = 0 );
+    QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent /TransferThis/ = 0 );
 
     /**
      * The builder widget that is used by the dialog
      * @return The builder widget that is used by the dialog
      */
-    QgsExpressionBuilderWidget* expressionBuilder();
+    QgsExpressionBuilderWidget *expressionBuilder();
 
     /**
      * Sets the current expression text
      * @param text the expression text to set
      */
-    void setExpressionText( const QString& text );
+    void setExpressionText( const QString &text );
 
     /**
      * Returns the current expression text
@@ -33,20 +33,20 @@ class QgsExpressionSelectionDialog : QDialog
     /**
      *Sets geometry calculator used in distance/area calculations.
      */
-    void setGeomCalculator( const QgsDistanceArea & da );
+    void setGeomCalculator( const QgsDistanceArea  &da );
 
     /** Sets the message bar to display feedback from the dialog. This is used when zooming to
      * features to display the count of selected features.
      * @param messageBar target message bar
      * @note added in QGIS 3.0
      */
-    void setMessageBar( QgsMessageBar* messageBar );
+    void setMessageBar( QgsMessageBar *messageBar );
 
     /**
      * Sets a map canvas associated with the dialog.
      * @note added in QGIS 3.0
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
   protected:
     /**

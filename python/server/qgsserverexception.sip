@@ -27,11 +27,11 @@ class QgsServerException
 #include <qgsserverexception.h>
 %End
   public:
-    QgsServerException( const QString& message, int responseCode = 500 );
+    QgsServerException( const QString &message, int responseCode = 500 );
 
     int responseCode() const;
 
-    virtual QByteArray formatResponse( QString& responseFormat ) const;
+    virtual QByteArray formatResponse( QString &responseFormat ) const;
 };
 
 
@@ -42,14 +42,14 @@ class QgsOgcServiceException
 %End
   public:
     QgsOgcServiceException( const QString& code, const QString& message, const QString& locator = QString(),
-                            int responseCode = 200, const QString& version = "1.3.0" );
+                            int responseCode = 200, const QString &version = "1.3.0" );
 
     QString message() const;
     QString code()    const;
     QString locator() const;
     QString version() const;
 
-    virtual QByteArray formatResponse( QString& responseFormat / Out / ) const;
+    virtual QByteArray formatResponse( QString &responseFormat / Out / ) const;
 };
 
 

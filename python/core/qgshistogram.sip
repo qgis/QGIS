@@ -20,9 +20,9 @@ class QgsHistogram
     /** Assigns numeric source values for the histogram.
      * @param values list of doubles
      */
-    void setValues( const QList<double>& values );
+    void setValues( const QList<double> &values );
 
-    bool setValues( const QgsVectorLayer* layer, const QString& fieldOrExpression, QgsFeedback* feedback = 0 );
+    bool setValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, QgsFeedback *feedback = 0 );
 
     /** Calculates the optimal bin width using the Freedman-Diaconis rule. Bins widths are
      * determined by the inter-quartile range of values and the number of values.

@@ -16,7 +16,7 @@ class QgsLimitedRandomColorRampWidget : QgsPanelWidget
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp& ramp, QWidget* parent /TransferThis/ = nullptr );
+    QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
@@ -27,7 +27,7 @@ class QgsLimitedRandomColorRampWidget : QgsPanelWidget
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsLimitedRandomColorRamp& ramp );
+    void setRamp( const QgsLimitedRandomColorRamp &ramp );
 
   signals:
 
@@ -70,7 +70,7 @@ class QgsLimitedRandomColorRampDialog : QDialog
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp& ramp, QWidget* parent /TransferThis/ = nullptr );
+    QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
@@ -81,7 +81,7 @@ class QgsLimitedRandomColorRampDialog : QDialog
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsLimitedRandomColorRamp& ramp );
+    void setRamp( const QgsLimitedRandomColorRamp &ramp );
 
   signals:
 

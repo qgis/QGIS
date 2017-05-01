@@ -9,14 +9,14 @@ class QgsProjectionSelectionDialog : QDialog //, private Ui::QgsGenericProjectio
      * Constructor
      */
     QgsProjectionSelectionDialog( QWidget *parent /TransferThis/ = 0,
-                                  const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+                                  const Qt::WindowFlags &fl = QgisGui::ModalDialogFlags );
 
     //! Destructor
     ~QgsProjectionSelectionDialog();
 
     QgsCoordinateReferenceSystem crs() const;
 
-    void setMessage( const QString& message );
+    void setMessage( const QString &message );
 
     void setShowNoProjection( bool show );
 
@@ -25,7 +25,7 @@ class QgsProjectionSelectionDialog : QDialog //, private Ui::QgsGenericProjectio
   public slots:
 
 
-    void setCrs( const QgsCoordinateReferenceSystem& crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * \brief filters this dialog by the given CRSs
@@ -39,5 +39,5 @@ class QgsProjectionSelectionDialog : QDialog //, private Ui::QgsGenericProjectio
      *
      * \warning This function's behavior is undefined if it is called after the dialog is shown.
      */
-    void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
+    void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
 };

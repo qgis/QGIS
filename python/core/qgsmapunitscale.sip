@@ -39,8 +39,8 @@ class QgsMapUnitScale
      * @param c render context
      * @returns map units per pixel, limited between minimum and maximum scales
      */
-    double computeMapUnitsPerPixel( const QgsRenderContext& c ) const;
+    double computeMapUnitsPerPixel( const QgsRenderContext &c ) const;
 
-    bool operator==( const QgsMapUnitScale& other ) const;
-    bool operator!=( const QgsMapUnitScale& other ) const;
+    bool operator==( const QgsMapUnitScale &other ) const;
+    bool operator!=( const QgsMapUnitScale &other ) const;
 };

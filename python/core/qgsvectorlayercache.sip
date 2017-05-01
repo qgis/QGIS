@@ -14,7 +14,7 @@ class QgsVectorLayerCache : QObject
 %End
 
   public:
-    QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent /TransferThis/ = NULL );
+    QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent /TransferThis/ = NULL );
 
     /**
      * Sets the maximum number of features to keep in the cache. Some features will be removed from
@@ -37,7 +37,7 @@ class QgsVectorLayerCache : QObject
 
     bool cacheGeometry() const;
 
-    void setCacheSubsetOfAttributes( const QgsAttributeList& attributes );
+    void setCacheSubsetOfAttributes( const QgsAttributeList &attributes );
 
     /**
      * If this is enabled, the subset of cached attributes will automatically be extended
@@ -87,12 +87,12 @@ class QgsVectorLayerCache : QObject
      * @param featureRequest  The request specifying filter and required data.
      * @return An iterator over the requested data.
      */
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& featureRequest = QgsFeatureRequest() );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &featureRequest = QgsFeatureRequest() );
 
     /**
      * Query the layer for features matching a given expression.
      */
-    QgsFeatureIterator getFeatures( const QString& expression );
+    QgsFeatureIterator getFeatures( const QString &expression );
 
     /**
      * Query the layer for the feature with the given id.
@@ -108,7 +108,7 @@ class QgsVectorLayerCache : QObject
     /**
      * Query the layer for the features which intersect the specified rectangle.
      */
-    QgsFeatureIterator getFeatures( const QgsRectangle& rectangle );
+    QgsFeatureIterator getFeatures( const QgsRectangle &rectangle );
 
     /**
      * Check if a certain feature id is cached.
@@ -143,7 +143,7 @@ class QgsVectorLayerCache : QObject
     /**
      * Returns the layer to which this cache belongs
      */
-    QgsVectorLayer* layer();
+    QgsVectorLayer *layer();
 
   protected:
     /**
@@ -154,7 +154,7 @@ class QgsVectorLayerCache : QObject
      * @param featureRequest  The feature request that was answered
      * @param fids            The feature ids that have been returned
      */
-    void requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids );
+    void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 
     /**
      * @brief
@@ -175,7 +175,7 @@ class QgsVectorLayerCache : QObject
      * @param featureRequest  The {@link QgsFeatureRequest} to be answered
      * @return                True if the information is being cached, false if not
      */
-    bool checkInformationCovered( const QgsFeatureRequest& featureRequest );
+    bool checkInformationCovered( const QgsFeatureRequest &featureRequest );
 
 
   signals:
@@ -189,7 +189,7 @@ class QgsVectorLayerCache : QObject
      *
      * @note not available in python bindings
      */
-    // void progress( int i, bool& cancel );
+    // void progress( int i, bool &cancel );
 
     /**
      * When filling the cache, this signal gets emitted once the cache is fully initialized.

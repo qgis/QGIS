@@ -9,7 +9,7 @@ class QgsAdvancedDigitizingCanvasItem : QgsMapCanvasItem
 %End
   public:
 
-    explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
+    explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
     ~QgsAdvancedDigitizingCanvasItem();
 
     void paint( QPainter *painter );

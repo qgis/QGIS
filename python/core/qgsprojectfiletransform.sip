@@ -12,12 +12,12 @@ class QgsProjectFileTransform
      * @param version Version number
      */
     QgsProjectFileTransform( QDomDocument & domDocument,
-                             const QgsProjectVersion& version );
-    bool updateRevision( const QgsProjectVersion& version );
+                             const QgsProjectVersion &version );
+    bool updateRevision( const QgsProjectVersion &version );
 
     /** Prints the contents via QgsDebugMsg()
      */
     void dump();
 
-    static void convertRasterProperties( QDomDocument& doc, QDomNode& parentNode, QDomElement& rasterPropertiesElem, QgsRasterLayer* rlayer );
+    static void convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer );
 };

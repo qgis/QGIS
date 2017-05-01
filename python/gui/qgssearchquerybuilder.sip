@@ -12,7 +12,7 @@ class QgsSearchQueryBuilder : QDialog
   public:
     //! Constructor - takes pointer to vector layer as a parameter
     QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget *parent /TransferThis/ = 0,
-                           const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+                           const Qt::WindowFlags &fl = QgisGui::ModalDialogFlags );
 
     ~QgsSearchQueryBuilder();
 
@@ -20,7 +20,7 @@ class QgsSearchQueryBuilder : QDialog
     QString searchString();
 
     //! change search string shown in text field
-    void setSearchString( const QString& searchString );
+    void setSearchString( const QString &searchString );
 
   public slots:
     void on_btnEqual_clicked();

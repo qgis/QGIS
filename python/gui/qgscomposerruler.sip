@@ -15,19 +15,19 @@ class QgsComposerRuler : QWidget
 
     QSize minimumSizeHint() const;
 
-    void setSceneTransform( const QTransform& transform );
+    void setSceneTransform( const QTransform &transform );
     void updateMarker( QPointF pos );
 
-    void setComposition( QgsComposition* c );
-    QgsComposition* composition();
+    void setComposition( QgsComposition *c );
+    QgsComposition *composition();
 
     int rulerSize();
 
   protected:
-    void paintEvent( QPaintEvent* event );
-    void mouseMoveEvent( QMouseEvent* event );
-    void mouseReleaseEvent( QMouseEvent* event );
-    void mousePressEvent( QMouseEvent* event );
+    void paintEvent( QPaintEvent *event );
+    void mouseMoveEvent( QMouseEvent *event );
+    void mouseReleaseEvent( QMouseEvent *event );
+    void mousePressEvent( QMouseEvent *event );
 
   signals:
     /** Is emitted when mouse cursor coordinates change*/

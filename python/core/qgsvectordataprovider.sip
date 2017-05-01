@@ -72,7 +72,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsVectorDataProvider( const QString& uri = QString() );
+    QgsVectorDataProvider( const QString &uri = QString() );
 
     /**
      * Destructor
@@ -107,7 +107,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      * @param request feature request describing parameters of features to return
      * @returns iterator for matching features from provider
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
 
     /**
      * Returns the geometry type which is returned by this layer
@@ -171,7 +171,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      * @returns list of unique strings containing substring
      */
     virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
-                                               QgsFeedback* feedback = nullptr ) const;
+                                               QgsFeedback *feedback = nullptr ) const;
 
     /** Calculates an aggregated value from the layer's features. The base implementation does nothing,
      * but subclasses can override this method to handoff calculation of aggregates to the provider.
@@ -187,7 +187,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
                                 int index,
                                 const QgsAggregateCalculator::AggregateParameters& parameters,
                                 QgsExpressionContext* context,
-                                bool& ok ) const;
+                                bool &ok ) const;
 
     /**
      * Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
@@ -195,7 +195,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      * @param index the index of the attribute
      * @param enumList reference to the list to fill
      */
-    virtual void enumValues( int index, QStringList& enumList /Out/ ) const;
+    virtual void enumValues( int index, QStringList &enumList /Out/ ) const;
 
     virtual bool addFeatures( QList<QgsFeature> &flist /In,Out/ );
 
@@ -236,7 +236,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      * @return true in case of success and false in case of failure
      * @note added in QGIS 2.16
      */
-    virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes );
+    virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes );
 
     /**
      * Changes attribute values of existing features.
@@ -293,7 +293,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      * @note added in QGIS 3.0
      * @see fieldConstraints()
      */
-    virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant& value = QVariant() ) const;
+    virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const;
 
     /**
      * Changes geometries of existing features
@@ -328,7 +328,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
     /**
      * Set encoding used for accessing data from layer
      */
-    virtual void setEncoding( const QString& e );
+    virtual void setEncoding( const QString &e );
 
     /**
      * Get encoding which is used for accessing data
@@ -338,7 +338,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
     /**
      * Returns the index of a field name or -1 if the field does not exist
      */
-    int fieldNameIndex( const QString& fieldName ) const;
+    int fieldNameIndex( const QString &fieldName ) const;
 
     /**
      * Return a map where the key is the name of the field and the value is its index
@@ -367,7 +367,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
 
     struct NativeType
     {
-      NativeType( const QString& typeDesc, const QString& typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Invalid );
+      NativeType( const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Invalid );
 
       QString mTypeDesc;
       QString mTypeName;
@@ -422,12 +422,12 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      */
     virtual bool isDeleteStyleFromDatabaseSupported() const;
 
-    static QVariant convertValue( QVariant::Type type, const QString& value );
+    static QVariant convertValue( QVariant::Type type, const QString &value );
 
     /**
      * Returns the transaction this data provider is included in, if any.
      */
-    virtual QgsTransaction* transaction() const;
+    virtual QgsTransaction *transaction() const;
 
     /**
      * Forces a reload of the underlying datasource if the provider implements this
@@ -450,7 +450,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      * @return the list of N-1 relations from this provider.
      * @note added in QGIS 3.0
      */
-    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const;
+    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer*> &layers ) const;
 
     /**
      * Get some metadata that will be display in the metadata tab of the layer properties.
@@ -463,7 +463,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      * @param mdKey The metadata key
      * @return The translated metadata value
      */
-    virtual QString translateMetadataKey( const QString& mdKey ) const;
+    virtual QString translateMetadataKey( const QString &mdKey ) const;
 
     /**
      * Get the translated metadata value.
@@ -471,7 +471,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      * @param value The metadata value
      * @return The translated metadata value
      */
-    virtual QString translateMetadataValue( const QString& mdKey, const QVariant& value ) const;
+    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const;
 
   signals:
     /**
@@ -479,7 +479,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      *
      * @note Added const in QGIS 3.0
      */
-    void raiseError( const QString& msg ) const;
+    void raiseError( const QString &msg ) const;
 
   protected:
     /**
@@ -502,13 +502,13 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      *
      * @note Added in QGIS 3.0
      */
-    void pushError( const QString& msg ) const;
+    void pushError( const QString &msg ) const;
 
     /**
      * Converts the geometry to the provider type if possible / necessary
      * @return the converted geometry or nullptr if no conversion was necessary or possible
      */
-    QgsGeometry* convertToProviderType( const QgsGeometry& geom ) const /Factory/;
+    QgsGeometry *convertToProviderType( const QgsGeometry &geom ) const /Factory/;
 
     /**
      * Set the list of native types supported by this provider.
@@ -516,14 +516,14 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      *
      * @note Added in QGIS 3.0
      */
-    void setNativeTypes(const QList<QgsVectorDataProvider::NativeType>& nativeTypes);
+    void setNativeTypes(const QList<QgsVectorDataProvider::NativeType> &nativeTypes);
 
     /**
      * Get this providers encoding
      *
      * @note Added in QGIS 3.0
      */
-    QTextCodec* textEncoding() const;
+    QTextCodec *textEncoding() const;
 
 };
 
