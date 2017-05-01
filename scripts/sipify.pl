@@ -604,7 +604,7 @@ while ($line_idx < $line_count){
     $line =~ s/SIP_FORCE//;
 
     # fix astyle placing space after % character
-    $line =~ s/\s*% (MappedType|TypeCode|TypeHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;
+    $line =~ s/\s*% (MappedType|TypeCode|TypeHeaderCode|ModuleHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;
     $line =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
     push @output, dbg("NOR")."$line\n";
