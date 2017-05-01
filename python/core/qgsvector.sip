@@ -97,14 +97,14 @@ Swaps the sign of the x and y components of the vector.
     double x() const;
 %Docstring
  Returns the vector's x-component.
- \see y()
+.. seealso:: y()
  :rtype: float
 %End
 
     double y() const;
 %Docstring
  Returns the vector's y-component.
- \see x()
+.. seealso:: x()
  :rtype: float
 %End
 

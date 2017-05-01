@@ -24,22 +24,22 @@ class QgsDataItem : QObject
 %End
 
 %ConvertToSubClassCode
-        if (qobject_cast<QgsLayerItem*>(sipCpp))
-        sipType = sipType_QgsLayerItem;
-        else if (qobject_cast<QgsErrorItem*>(sipCpp))
-        sipType = sipType_QgsErrorItem;
-        else if (qobject_cast<QgsDirectoryItem*>(sipCpp))
-        sipType = sipType_QgsDirectoryItem;
-        else if (qobject_cast<QgsFavoritesItem*>(sipCpp))
-        sipType = sipType_QgsFavoritesItem;
-        else if (qobject_cast<QgsZipItem*>(sipCpp))
-        sipType = sipType_QgsZipItem;
-        else if (qobject_cast<QgsDataCollectionItem*>(sipCpp))
-        sipType = sipType_QgsDataCollectionItem;
-        else if (qobject_cast<QgsProjectItem*>(sipCpp))
-        sipType = sipType_QgsProjectItem;
-        else
-        sipType = 0;
+    if ( qobject_cast<QgsLayerItem *>( sipCpp ) )
+      sipType = sipType_QgsLayerItem;
+    else if ( qobject_cast<QgsErrorItem *>( sipCpp ) )
+      sipType = sipType_QgsErrorItem;
+    else if ( qobject_cast<QgsDirectoryItem *>( sipCpp ) )
+      sipType = sipType_QgsDirectoryItem;
+    else if ( qobject_cast<QgsFavoritesItem *>( sipCpp ) )
+      sipType = sipType_QgsFavoritesItem;
+    else if ( qobject_cast<QgsZipItem *>( sipCpp ) )
+      sipType = sipType_QgsZipItem;
+    else if ( qobject_cast<QgsDataCollectionItem *>( sipCpp ) )
+      sipType = sipType_QgsDataCollectionItem;
+    else if ( qobject_cast<QgsProjectItem *>( sipCpp ) )
+      sipType = sipType_QgsProjectItem;
+    else
+      sipType = 0;
 %End
   public:
     enum Type
@@ -100,14 +100,14 @@ Create new data item.
  Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
  \param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
  \param refresh - set to true to refresh populated item, emitting relevant signals to the model
- \see deleteChildItem()
+.. seealso:: deleteChildItem()
 %End
 
     virtual void deleteChildItem( QgsDataItem *child );
 %Docstring
  Removes and deletes a child item, emitting relevant signals to the model.
  \param child child to remove. Item must exist as a current child.
- \see addChildItem()
+.. seealso:: addChildItem()
 %End
 
     virtual QgsDataItem *removeChildItem( QgsDataItem *child ) /TransferBack/;
@@ -140,7 +140,7 @@ Create new data item.
 %Docstring
  Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
  Subclasses should override this and handleDrop() to accept dropped layers.
- \see handleDrop()
+.. seealso:: handleDrop()
  :rtype: bool
 %End
 
@@ -148,7 +148,7 @@ Create new data item.
 %Docstring
  Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
  accept dropped layers.
- \see acceptDrop()
+.. seealso:: acceptDrop()
  :rtype: bool
 %End
 
@@ -157,7 +157,7 @@ Create new data item.
  Returns true if the item may be dragged.
  Default implementation returns false.
  A draggable item has to implement mimeUri() that will be used to pass data.
- \see mimeUri()
+.. seealso:: mimeUri()
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -166,7 +166,7 @@ Create new data item.
 %Docstring
  Return mime URI for the data item.
  Items that return valid URI will be returned in mime data when dragging a selection from browser model.
- \see hasDragEnabled()
+.. seealso:: hasDragEnabled()
 .. versionadded:: 3.0
  :rtype: QgsMimeDataUtils.Uri
 %End
@@ -190,7 +190,6 @@ Create new data item.
 
     virtual Capabilities capabilities2() const;
 %Docstring
-### QGIS 3 - rename to capabilities()
  :rtype: Capabilities
 %End
 
@@ -202,14 +201,12 @@ Create new data item.
 
     static int findItem( QVector<QgsDataItem *> items, QgsDataItem *item );
 %Docstring
-Find child index in vector of items using '==' operator
  :rtype: int
 %End
 
 
     Type type() const;
 %Docstring
-members
  :rtype: Type
 %End
 
@@ -250,9 +247,6 @@ Create path component replacing path separators
 %End
 
     void setIcon( const QIcon &icon );
-%Docstring
-or implement icon().
-%End
     void setIconName( const QString &iconName );
 
     void setToolTip( const QString &msg );
@@ -262,9 +256,6 @@ or implement icon().
 %End
 
     static void deleteLater( QVector<QgsDataItem *> &items );
-%Docstring
-deleteLater() items anc clear the vector
-%End
 
     void moveToThread( QThread *targetThread );
 %Docstring
@@ -304,9 +295,6 @@ Move object and all its descendants to thread
 %End
 
     virtual void populate( bool foreground = false );
-%Docstring
-\param foreground run createChildren in foreground
-%End
 
     virtual void depopulate();
 %Docstring
@@ -367,10 +355,6 @@ class QgsLayerItem : QgsDataItem
 
 
     virtual bool equal( const QgsDataItem *other );
-%Docstring
---- reimplemented from QgsDataItem ---
- :rtype: bool
-%End
 
     virtual bool hasDragEnabled() const;
 
@@ -471,9 +455,6 @@ class QgsDataCollectionItem : QgsDataItem
     static QIcon iconDir(); // shared icon: open/closed directory
     static QIcon iconDataCollection(); // default icon for data collection
 };
-%Docstring
- :rtype: QIcon
-%End
 
 class QgsDirectoryItem : QgsDataCollectionItem
 {
@@ -616,13 +597,13 @@ class QgsFavoritesItem : QgsDataCollectionItem
     void addDirectory( const QString &directory );
 %Docstring
  Adds a new directory to the favorites group.
- \see removeDirectory()
+.. seealso:: removeDirectory()
 %End
 
     void removeDirectory( QgsDirectoryItem *item );
 %Docstring
  Removes an existing directory from the favorites group.
- \see addDirectory()
+.. seealso:: addDirectory()
 %End
 
     static QIcon iconFavorites();
@@ -655,12 +636,6 @@ class QgsZipItem : QgsDataCollectionItem
  :rtype: list of str
 %End
 
-    static QVector<dataItem_t *> sDataItemPtr;
-%Docstring
-.. note::
-
-   not available via Python bindings
-%End
     static QStringList sProviderNames;
 
     static QString vsiPrefix( const QString &uri );
@@ -674,7 +649,7 @@ class QgsZipItem : QgsDataCollectionItem
  :rtype: QgsDataItem
 %End
 
-    static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &filePath, const QString &name, const QString &path ) /Factory/, /PyName=itemFromFilePath/;
+    static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &filePath, const QString &name, const QString &path ) /Factory,PyName=itemFromFilePath/;
 %Docstring
  Creates a new data item from the specified path.
 .. note::

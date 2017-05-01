@@ -326,8 +326,9 @@ while ($line_idx < $line_count){
                     # top level should stasy public
                     dbg_info
                     $ACCESS[$#ACCESS] = PUBLIC;
-                    $comment = '';
                 }
+                $comment = '';
+                $return_type = '';
                 $private_section_line = '';
             }
             dbg_info("new bracket balance: @global_bracket_nesting_index");
