@@ -52,7 +52,7 @@ class QgsStatisticalSummary
     typedef QFlags<QgsStatisticalSummary::Statistic> Statistics;
 
 
-    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = All );
+    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::All );
 %Docstring
  Constructor for QgsStatisticalSummary
  \param stats flags for statistics to calculate
@@ -68,7 +68,7 @@ class QgsStatisticalSummary
  :rtype: Statistics
 %End
 
-    void setStatistics( Statistics stats );
+    void setStatistics( QgsStatisticalSummary::Statistics stats );
 %Docstring
  Sets flags which specify which statistics will be calculated. Some statistics
  are always calculated (e.g., sum, min and max).
@@ -138,7 +138,7 @@ class QgsStatisticalSummary
 .. versionadded:: 2.16
 %End
 
-    double statistic( Statistic stat ) const;
+    double statistic( QgsStatisticalSummary::Statistic stat ) const;
 %Docstring
  Returns the value of a specified statistic
  \param stat statistic to return
@@ -278,7 +278,7 @@ class QgsStatisticalSummary
  :rtype: float
 %End
 
-    static QString displayName( Statistic statistic );
+    static QString displayName( QgsStatisticalSummary::Statistic statistic );
 %Docstring
  Returns the friendly display name for a statistic
  \param statistic statistic to return name for
