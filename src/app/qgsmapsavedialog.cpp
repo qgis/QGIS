@@ -143,3 +143,8 @@ bool QgsMapSaveDialog::drawDecorations() const
 {
   return mDrawDecorations->isChecked();
 }
+
+bool QgsMapSaveDialog::saveWorldFile() const
+{
+  return mSaveWorldFile->isChecked();
+}
