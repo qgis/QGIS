@@ -666,8 +666,8 @@ while ($line_idx < $line_count){
     elsif ( $line =~ m/\/\// ||
             $line =~ m/\s*typedef / ||
             $line =~ m/\s*struct / ||
-             $line =~ m/operator\[\]\(/ ||
-             $line =~ m/^\s*% \w+(.*)?$/ ){
+            $line =~ m/operator\[\]\(/ ||
+            $line =~ m/^\s*%\w+(.*)?$/ ){
         dbg_info('skipping comment');
         $comment = '';
         $return_type = '';
