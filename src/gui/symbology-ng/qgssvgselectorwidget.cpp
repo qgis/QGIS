@@ -88,7 +88,10 @@ void QgsSvgSelectorLoader::loadPath( const QString& path )
       if ( mCancelled )
         return;
 
-      loadPath( svgPath );
+      if ( !svgPath.isEmpty() )
+      {
+        loadPath( svgPath );
+      }
     }
   }
   else
