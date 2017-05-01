@@ -266,7 +266,6 @@ gui/qgsblendmodecombobox.sip
 gui/qgisinterface.sip
 gui/qgsactionmenu.sip
 gui/qgsadvanceddigitizingcanvasitem.sip
-gui/qgsadvanceddigitizingdockwidget.sip
 gui/qgsattributedialog.sip
 gui/qgsattributeeditorcontext.sip
 gui/qgsattributeform.sip
