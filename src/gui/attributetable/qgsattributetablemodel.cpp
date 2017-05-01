@@ -244,9 +244,8 @@ void QgsAttributeTableModel::updatedFields()
 
 void QgsAttributeTableModel::editCommandEnded()
 {
-  reload( createIndex( mChangedCellBounds.top(), mChangedCellBounds.left() ),
-          createIndex( mChangedCellBounds.bottom(), mChangedCellBounds.right() ) );
-
+  // do not do releoad(...) due would trigger (dataChanged) row sort
+  // giving issue: https://issues.qgis.org/issues/15976
   mChangedCellBounds = QRect();
 }
 
