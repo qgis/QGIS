@@ -107,7 +107,7 @@ class QgsAuthMethod : QObject
     /** Set the support expansions (points in providers where the authentication is injected) of the auth method */
     void setExpansions( QgsAuthMethod::Expansions expansions );
     /** Set list of data providers this auth method supports */
-    void setDataProviders( const QStringList& dataproviders );
+    void setDataProviders( const QStringList &dataproviders );
 };
 
 typedef QHash<QString, QgsAuthMethod*> QgsAuthMethodsMap;

@@ -22,18 +22,18 @@ class QgsOSMDownload : QObject
     static QString defaultServiceUrl();
 
     //! Create query (in Overpass Query Language) that fetches everything in given rectangle
-    static QString queryFromRect( const QgsRectangle& rect );
+    static QString queryFromRect( const QgsRectangle &rect );
 
     QgsOSMDownload();
     ~QgsOSMDownload();
 
-    void setServiceUrl( const QString& serviceUrl );
+    void setServiceUrl( const QString &serviceUrl );
     QString serviceUrl() const;
 
-    void setQuery( const QString& query );
+    void setQuery( const QString &query );
     QString query() const;
 
-    void setOutputFileName( const QString& outputFileName );
+    void setOutputFileName( const QString &outputFileName );
     QString outputFileName() const;
 
     bool hasError() const;

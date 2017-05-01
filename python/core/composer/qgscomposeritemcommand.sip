@@ -6,7 +6,7 @@ class QgsComposerItemCommand: QUndoCommand
   #include "qgscomposeritemcommand.h"
 %End
   public:
-    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent /TransferThis/ = 0 );
+    QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent /TransferThis/ = 0 );
     virtual ~QgsComposerItemCommand();
 
     /** Reverses the command*/
@@ -31,8 +31,8 @@ class QgsComposerItemCommand: QUndoCommand
     QgsComposerItem *item() const;
 
   protected:
-    void saveState( QDomDocument& stateDoc ) const;
-    void restoreState( QDomDocument& stateDoc ) const;
+    void saveState( QDomDocument &stateDoc ) const;
+    void restoreState( QDomDocument &stateDoc ) const;
 };
 
 /** A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
@@ -116,9 +116,9 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       ItemZoomContent
     };
 
-    QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );
+    QgsComposerMergeCommand( Context c, QgsComposerItem *item, const QString &text );
     ~QgsComposerMergeCommand();
 
-    bool mergeWith( const QUndoCommand * command );
+    bool mergeWith( const QUndoCommand  *command );
     int id() const;
 };

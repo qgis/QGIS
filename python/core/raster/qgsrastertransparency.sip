@@ -56,7 +56,7 @@ class QgsRasterTransparency
     /** True if there are no entries in the pixel lists except the nodata value*/
     bool isEmpty() const;
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 };

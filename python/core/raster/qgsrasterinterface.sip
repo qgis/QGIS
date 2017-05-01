@@ -12,7 +12,7 @@ class QgsRasterBlockFeedback : QgsFeedback
 
   public:
     //! Construct a new raster block feedback object
-    QgsRasterBlockFeedback( QObject* parent = nullptr );
+    QgsRasterBlockFeedback( QObject *parent = nullptr );
 
     //! May be emitted by raster data provider to indicate that some partial data are available
     //! and a new preview image may be produced
@@ -118,7 +118,7 @@ class QgsRasterInterface
       IdentifyFeature,
     };
 
-    QgsRasterInterface( QgsRasterInterface * input = 0 );
+    QgsRasterInterface( QgsRasterInterface  *input = 0 );
 
     virtual ~QgsRasterInterface();
 
@@ -171,14 +171,14 @@ class QgsRasterInterface
      * @param height pixel height of block
      * @param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0 /Factory/;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0 /Factory/;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
-    virtual bool setInput( QgsRasterInterface* input );
+    virtual bool setInput( QgsRasterInterface *input );
 
     /** Current input */
-    virtual QgsRasterInterface * input() const;
+    virtual QgsRasterInterface  *input() const;
 
     /** Is on/off */
     virtual bool on() const;
@@ -241,9 +241,9 @@ class QgsRasterInterface
                                 int sampleSize = 0 );
 
     /** Write base class members to xml. */
-    virtual void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
     /** Sets base class members from xml. Usually called from create() methods of subclasses */
-    virtual void readXml( const QDomElement& filterElem );
+    virtual void readXml( const QDomElement &filterElem );
 
   protected:
 

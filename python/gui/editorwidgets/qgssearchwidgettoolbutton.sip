@@ -19,7 +19,7 @@ class QgsSearchWidgetToolButton : QToolButton
 
     /** Sets the available filter flags to show in the widget. Any active flags
      * (see activeFlags()) which are not present in the new available filter
-     * flags will be cleared;
+      *flags will be cleared;
      * @param flags available flags to show in widget
      * @see availableFlags()
      * @see setActiveFlags()

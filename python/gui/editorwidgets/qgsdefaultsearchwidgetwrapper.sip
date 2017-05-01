@@ -8,7 +8,7 @@ class QgsDefaultSearchWidgetWrapper : QgsSearchWidgetWrapper
 %End
   public:
 
-    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent /TransferThis/ = nullptr );
+    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = nullptr );
 
     // QgsSearchWidgetWrapper interface
   public:
@@ -27,20 +27,20 @@ class QgsDefaultSearchWidgetWrapper : QgsSearchWidgetWrapper
     void setExpression( QString exp );
 
   protected:
-    QWidget* createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+    QWidget *createWidget( QWidget *parent );
+    void initWidget( QWidget *editor );
     bool valid() const;
 
     /** Returns a pointer to the line edit part of the widget.
      * @note this method is in place for unit testing only, and is not considered
      * stable API
      */
-    QgsFilterLineEdit* lineEdit();
+    QgsFilterLineEdit *lineEdit();
 
     /** Returns a pointer to the case sensitivity check box in the widget.
      * @note this method is in place for unit testing only, and is not considered
      * stable API
      */
-    QCheckBox* caseSensitiveCheckBox();
+    QCheckBox *caseSensitiveCheckBox();
 
 };

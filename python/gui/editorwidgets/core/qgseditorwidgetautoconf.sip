@@ -37,5 +37,5 @@ class QgsEditorWidgetAutoConfPlugin
      *
      * @return and integer value rating how good is the setup provided by this plugin.
      */
-    virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName, int& score /Out/ ) const = 0;
+    virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score /Out/ ) const = 0;
 };

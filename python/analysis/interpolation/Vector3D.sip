@@ -10,12 +10,12 @@ class Vector3D
     /** Default constructor*/
     Vector3D();
     /** Copy constructor*/
-    Vector3D( const Vector3D& v );
+    Vector3D( const Vector3D &v );
     /** Destructor*/
     ~Vector3D();
-    // Vector3D& operator=( const Vector3D& v );
-    bool operator==( const Vector3D& v ) const;
-    bool operator!=( const Vector3D& v ) const;
+    // Vector3D &operator=( const Vector3D &v );
+    bool operator==( const Vector3D &v ) const;
+    bool operator!=( const Vector3D &v ) const;
     /** Returns the x-component of the vector*/
     double getX() const;
     /** Returns the y-component of the vector*/

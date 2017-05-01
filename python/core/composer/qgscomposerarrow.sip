@@ -15,14 +15,14 @@ class QgsComposerArrow: QgsComposerItem
     /** Constructor
      * @param c parent composition
      */
-    QgsComposerArrow( QgsComposition* c /TransferThis/ );
+    QgsComposerArrow( QgsComposition *c /TransferThis/ );
 
     /** Constructor
      * @param startPoint start point for line
      * @param stopPoint end point for line
      * @param c parent composition
      */
-    QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition* c /TransferThis/ );
+    QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition *c /TransferThis/ );
 
     ~QgsComposerArrow();
 
@@ -30,11 +30,11 @@ class QgsComposerArrow: QgsComposerItem
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
     /** Modifies position of start and endpoint and calls QgsComposerItem::setSceneRect
      */
-    void setSceneRect( const QRectF& rectangle );
+    void setSceneRect( const QRectF &rectangle );
 
     /** Sets the width of the arrow head in mm
      * @param width width of arrow head
@@ -53,7 +53,7 @@ class QgsComposerArrow: QgsComposerItem
      * @see startMarker
      * @see setEndMarker
      */
-    void setStartMarker( const QString& svgPath );
+    void setStartMarker( const QString &svgPath );
 
     /** Returns the marker drawn at the start of the line
      * @returns file path for svg marker graphic
@@ -67,7 +67,7 @@ class QgsComposerArrow: QgsComposerItem
      * @see endMarker
      * @see setStartMarker
      */
-    void setEndMarker( const QString& svgPath );
+    void setEndMarker( const QString &svgPath );
 
     /** Returns the marker drawn at the end of the line
      * @returns file path for svg marker graphic
@@ -90,7 +90,7 @@ class QgsComposerArrow: QgsComposerItem
      * @see arrowHeadStrokeColor
      * @note added in 2.5
      */
-    void setArrowHeadStrokeColor( const QColor& color );
+    void setArrowHeadStrokeColor( const QColor &color );
 
     /** Returns the color used to fill the arrow head.
      * @returns arrow head fill color
@@ -106,7 +106,7 @@ class QgsComposerArrow: QgsComposerItem
      * @see setArrowHeadStrokeColor
      * @note added in 2.5
      */
-    void setArrowHeadFillColor( const QColor& color );
+    void setArrowHeadFillColor( const QColor &color );
 
     /** Sets the pen width for the stroke of the arrow head
      * @param width pen width for arrow head stroke
@@ -129,14 +129,14 @@ class QgsComposerArrow: QgsComposerItem
      * @see lineSymbol
      * @note added in 2.5
      */
-    void setLineSymbol( QgsLineSymbol* symbol /Transfer/ );
+    void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
 
     /** Returns the line symbol used for drawing the line portion of the arrow
      * @returns line symbol
      * @see setLineSymbol
      * @note added in 2.5
      */
-    QgsLineSymbol* lineSymbol();
+    QgsLineSymbol *lineSymbol();
 
     /** Returns marker mode, which controls how the arrow endpoints are drawn
      * @returns marker mode
@@ -154,11 +154,11 @@ class QgsComposerArrow: QgsComposerItem
      * @param elem is DOM element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
 
     /** Sets state from DOM document
      * @param itemElem is DOM node corresponding to item tag
      * @param doc is the document to read
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 };

@@ -21,19 +21,19 @@ class Triangulation
      * Adds a line (e.g. a break-, structure- or an isoline) to the triangulation.
      * The class takes ownership of the line object and its points
      */
-    virtual void addLine( Line3D* line /Transfer/, bool breakline ) = 0;
+    virtual void addLine( Line3D *line /Transfer/, bool breakline ) = 0;
 
     /**
      * Adds a point to the triangulation
      * Ownership is transferred to this class
      */
-    virtual int addPoint( Point3D* p ) = 0;
+    virtual int addPoint( Point3D *p ) = 0;
 
     /**
      * Calculates the normal at a point on the surface and assigns it to 'result'.
      * @return true in case of success and false in case of failure
      */
-    virtual bool calcNormal( double x, double y, Vector3D* result ) = 0;
+    virtual bool calcNormal( double x, double y, Vector3D *result ) = 0;
 
     /** Performs a consistency check, remove this later*/
     virtual void performConsistencyTest() = 0;
@@ -42,18 +42,18 @@ class Triangulation
      * Calculates x-, y and z-value of the point on the surface and assigns it to 'result'.
      * Returns true in case of success and flase in case of failure
      */
-    virtual bool calcPoint( double x, double y, Point3D* result ) = 0;
+    virtual bool calcPoint( double x, double y, Point3D *result ) = 0;
 
     /** Returns a pointer to the point with number i. Any virtual points must have the number -1*/
-    virtual Point3D* getPoint( unsigned int i ) const = 0;
+    virtual Point3D *getPoint( unsigned int i ) const = 0;
 
     /** Finds out in which triangle the point with coordinates x and y is and
      * assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
      */
-    virtual bool getTriangle( double x, double y, Point3D* p1, int* n1 /Out/, Point3D* p2 /Out/, int* n2 /Out/, Point3D* p3 /Out/, int* n3 /Out/ ) = 0;
+    virtual bool getTriangle( double x, double y, Point3D *p1, int *n1 /Out/, Point3D *p2 /Out/, int *n2 /Out/, Point3D *p3 /Out/, int *n3 /Out/ ) = 0;
 
     /** Finds out, in which triangle the point with coordinates x and y is and assigns the  points at the vertices to 'p1', 'p2' and 'p3*/
-    virtual bool getTriangle( double x, double y, Point3D* p1 /Out/, Point3D* p2 /Out/, Point3D* p3 /Out/ ) = 0;
+    virtual bool getTriangle( double x, double y, Point3D *p1 /Out/, Point3D *p2 /Out/, Point3D *p3 /Out/ ) = 0;
 
     /** Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)*/
     virtual int getOppositePoint( int p1, int p2 ) = 0;
@@ -80,17 +80,17 @@ class Triangulation
      * The value list has to be deleted by the code which called the method.
      * Any virtual point needs to have the number -1
      */
-    virtual QList<int>* getSurroundingTriangles( int pointno ) = 0;
+    virtual QList<int> *getSurroundingTriangles( int pointno ) = 0;
 
     /** Returns a value list with the numbers of the four points, which would be affected by an edge swap.
      * This function is e.g. needed by NormVecDecorator to know the points,
      * for which the normals have to be recalculated.
      * The list has to be deleted by the code which calls this method
      */
-    virtual QList<int>* getPointsAroundEdge( double x, double y ) = 0;
+    virtual QList<int> *getPointsAroundEdge( double x, double y ) = 0;
 
     /** Draws the points, edges and the forced lines*/
-    //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const=0;
+    //virtual void draw(QPainter *p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const=0;
     /** Sets the behavior of the triangulation in case of crossing forced lines*/
     virtual void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b ) = 0;
     /** Sets the color of the normal edges*/
@@ -100,7 +100,7 @@ class Triangulation
     /** Sets the color of the breaklines*/
     virtual void setBreakEdgeColor( int r, int g, int b ) = 0;
     /** Sets an interpolator object*/
-    virtual void setTriangleInterpolator( TriangleInterpolator* interpolator ) = 0;
+    virtual void setTriangleInterpolator( TriangleInterpolator *interpolator ) = 0;
     /** Eliminates the horizontal triangles by swapping*/
     virtual void eliminateHorizontalTriangles() = 0;
     /** Adds points to make the triangles better shaped (algorithm of ruppert)*/
@@ -115,5 +115,5 @@ class Triangulation
     virtual bool swapEdge( double x, double y ) = 0;
     /** Saves the triangulation as a (line) shapefile
     @return true in case of success*/
-    virtual bool saveAsShapefile( const QString& fileName ) const = 0;
+    virtual bool saveAsShapefile( const QString &fileName ) const = 0;
 };

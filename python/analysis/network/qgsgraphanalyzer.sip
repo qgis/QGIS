@@ -13,7 +13,7 @@ class QgsGraphAnalyzer
      * @param resultTree array represents the shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reacheble and resultTree[ vertexIndex ] == -1 others.
      * @param resultCost array of cost paths
      */
-    static SIP_PYLIST dijkstra( const QgsGraph* source, int startVertexIdx, int criterionNum );
+    static SIP_PYLIST dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum );
 %MethodCode
       QVector< int > treeResult;
       QVector< double > costResult;
@@ -49,5 +49,5 @@ class QgsGraphAnalyzer
      * @param startVertexIdx index of start vertex
      * @param criterionNum index of edge property as optimization criterion
      */
-    static QgsGraph* shortestTree( const QgsGraph* source, int startVertexIdx, int criterionNum );
+    static QgsGraph *shortestTree( const QgsGraph *source, int startVertexIdx, int criterionNum );
 };

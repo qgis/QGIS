@@ -13,11 +13,11 @@ class QgsRelationReferenceWidget : QWidget
       Scale
     };
 
-    explicit QgsRelationReferenceWidget( QWidget* parent /TransferThis/ );
+    explicit QgsRelationReferenceWidget( QWidget *parent /TransferThis/ );
 
     ~QgsRelationReferenceWidget();
 
-    void setRelation( const QgsRelation& relation, bool allowNullValue );
+    void setRelation( const QgsRelation &relation, bool allowNullValue );
 
     void setRelationEditable( bool editable );
 
@@ -27,7 +27,7 @@ class QgsRelationReferenceWidget : QWidget
     //! returns the related feature foreign key
     QVariant foreignKey();
 
-    void setEditorContext( const QgsAttributeEditorContext& context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
+    void setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
 
     //! determines if the form of the related feature will be shown
     bool embedForm();
@@ -46,7 +46,7 @@ class QgsRelationReferenceWidget : QWidget
     //! Set if the widget will order the combobox entries by value
     void setOrderByValue( bool orderByValue );
     //! Set the fields for which filter comboboxes will be created
-    void setFilterFields( const QStringList& filterFields );
+    void setFilterFields( const QStringList &filterFields );
 
     //! determines the open form button is visible in the widget
     bool openFormButtonVisible();
@@ -101,7 +101,7 @@ class QgsRelationReferenceWidget : QWidget
     void deleteForeignKey();
 
   protected:
-    virtual void showEvent( QShowEvent* e );
+    virtual void showEvent( QShowEvent *e );
 
     void init();
 

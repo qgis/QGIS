@@ -9,7 +9,7 @@ class QgsFeatureListView : QListView
      *
      * @param parent   owner
      */
-    explicit QgsFeatureListView( QWidget* parent /TransferThis/ = 0 );
+    explicit QgsFeatureListView( QWidget *parent /TransferThis/ = 0 );
 
     /**
      * Destructor
@@ -20,20 +20,20 @@ class QgsFeatureListView : QListView
      * Returns the layer cache
      * @return the layer cache used as backend
      */
-    QgsVectorLayerCache* layerCache();
+    QgsVectorLayerCache *layerCache();
 
     /**
      * Set the {@link QgsFeatureListModel} which is used to retrieve information
      *
      * @param featureListModel  The model to use
      */
-    virtual void setModel( QgsFeatureListModel* featureListModel );
+    virtual void setModel( QgsFeatureListModel *featureListModel );
     /**
      * Get the featureListModel used by this view
      *
      * @return The model in use
      */
-    QgsFeatureListModel* featureListModel();
+    QgsFeatureListModel *featureListModel();
 
     /**
      * The display expression is an expression used to render the fields into a single string
@@ -79,7 +79,7 @@ class QgsFeatureListView : QListView
      * @brief setFeatureSelectionManager
      * @param featureSelectionManager We will take ownership
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager /Transfer/ );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
 
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event );
@@ -100,9 +100,9 @@ class QgsFeatureListView : QListView
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString& expression );
+    void displayExpressionChanged( const QString &expression );
 
-    //void aboutToChangeEditSelection( bool& ok );
+    //void aboutToChangeEditSelection( bool &ok );
 
   public slots:
     /**
@@ -118,7 +118,7 @@ class QgsFeatureListView : QListView
      * @param index The selection to set
      * @param command selection update mode
      */
-    void setEditSelection( const QModelIndex& index, QItemSelectionModel::SelectionFlags command );
+    void setEditSelection( const QModelIndex &index, QItemSelectionModel::SelectionFlags command );
 
     /**
      * Select all currently visible features

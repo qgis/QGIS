@@ -18,7 +18,7 @@ class QgsOrganizeTableColumnsDialog : QDialog
      * @param parent parent object
      * @param flags window flags
      */
-    QgsOrganizeTableColumnsDialog(const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = nullptr, Qt::WindowFlags flags = Qt::Window );
+    QgsOrganizeTableColumnsDialog(const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = nullptr, Qt::WindowFlags flags = Qt::Window );
 
     /**
      * Destructor

@@ -20,16 +20,16 @@ class QgsPointDisplacementRenderer : QgsPointDistanceRenderer
     /** Constructor for QgsPointDisplacementRenderer.
      * @param labelAttributeName optional attribute name for labeling points
      */
-    QgsPointDisplacementRenderer( const QString& labelAttributeName = QString() );
+    QgsPointDisplacementRenderer( const QString &labelAttributeName = QString() );
 
-    virtual QgsPointDisplacementRenderer* clone() const /Factory/;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
-    void stopRender( QgsRenderContext& context );
-    QDomElement save( QDomDocument& doc );
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    virtual QgsPointDisplacementRenderer *clone() const /Factory/;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+    void stopRender( QgsRenderContext &context );
+    QDomElement save( QDomDocument &doc );
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
     //! Create a renderer from XML element
-    static QgsFeatureRenderer* create( QDomElement& symbologyElem ) /Factory/;
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem ) /Factory/;
 
     /** Sets the line width for the displacement group circle.
      * @param width line width in mm
@@ -49,7 +49,7 @@ class QgsPointDisplacementRenderer : QgsPointDistanceRenderer
      * @see circleColor()
      * @see setCircleWidth()
      */
-    void setCircleColor( const QColor& color );
+    void setCircleColor( const QColor &color );
 
     /** Returns the color used for drawing the displacement group circle.
      * @see setCircleColor()
@@ -84,24 +84,24 @@ class QgsPointDisplacementRenderer : QgsPointDistanceRenderer
     /** Returns the symbol for the center of a displacement group (but not ownership of the symbol).
      * @see setCenterSymbol()
     */
-    QgsMarkerSymbol* centerSymbol();
+    QgsMarkerSymbol *centerSymbol();
 
     /** Sets the center symbol for a displacement group.
      * @param symbol new center symbol. Ownership is transferred to the renderer.
      * @see centerSymbol()
     */
-    void setCenterSymbol( QgsMarkerSymbol* symbol /Transfer/ );
+    void setCenterSymbol( QgsMarkerSymbol *symbol /Transfer/ );
 
     /** Creates a QgsPointDisplacementRenderer from an existing renderer.
      * @note added in 2.5
      * @returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsPointDisplacementRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 
   private:
     QgsPointDisplacementRenderer( const QgsPointDisplacementRenderer & );
-    QgsPointDisplacementRenderer & operator=( const QgsPointDisplacementRenderer & );
+    QgsPointDisplacementRenderer  &operator=( const QgsPointDisplacementRenderer & );
 
-    void drawGroup( QPointF centerPoint, QgsRenderContext& context, const QgsPointDistanceRenderer::ClusteredGroup& group );
+    void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group );
 
 };

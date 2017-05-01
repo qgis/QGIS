@@ -5,18 +5,18 @@ class QgsComposerPolygon: QgsComposerNodesItem
 %End
   public:
 
-    QgsComposerPolygon( QgsComposition* c );
-    QgsComposerPolygon( const QPolygonF& polygon, QgsComposition* c );
+    QgsComposerPolygon( QgsComposition *c );
+    QgsComposerPolygon( const QPolygonF &polygon, QgsComposition *c );
     ~QgsComposerPolygon();
 
     /** Overridden to return shape name */
     virtual QString displayName() const;
 
     /** Returns the QgsSymbol used to draw the shape. */
-    QgsFillSymbol* polygonStyleSymbol();
+    QgsFillSymbol *polygonStyleSymbol();
 
     /** Set the QgsSymbol used to draw the shape. */
-    void setPolygonStyleSymbol( QgsFillSymbol* symbol );
+    void setPolygonStyleSymbol( QgsFillSymbol *symbol );
 
     /** Return correct graphics item type. */
     virtual int type() const;

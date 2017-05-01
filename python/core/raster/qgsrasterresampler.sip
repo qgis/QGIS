@@ -18,7 +18,7 @@ class QgsRasterResampler
 
   public:
     virtual ~QgsRasterResampler();
-    virtual void resample( const QImage& srcImage, QImage& dstImage ) = 0;
+    virtual void resample( const QImage &srcImage, QImage &dstImage ) = 0;
     virtual QString type() const = 0;
-    virtual QgsRasterResampler * clone() const = 0 /Factory/;
+    virtual QgsRasterResampler  *clone() const = 0 /Factory/;
 };

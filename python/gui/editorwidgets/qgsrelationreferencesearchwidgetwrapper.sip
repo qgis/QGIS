@@ -12,7 +12,7 @@ class QgsRelationReferenceSearchWidgetWrapper : QgsSearchWidgetWrapper
 %End
   public:
 
-    explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QgsMapCanvas* canvas, QWidget* parent = nullptr );
+    explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent = nullptr );
     bool applyDirectly();
     QString expression();
     bool valid() const;
@@ -27,13 +27,13 @@ class QgsRelationReferenceSearchWidgetWrapper : QgsSearchWidgetWrapper
     virtual void setEnabled( bool enabled );
 
   protected:
-    QWidget* createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+    QWidget *createWidget( QWidget *parent );
+    void initWidget( QWidget *editor );
 
   public slots:
 
     //! Called when current value of search widget changes
-    void onValueChanged( const QVariant& value );
+    void onValueChanged( const QVariant &value );
 
   protected slots:
     void setExpression( QString exp );

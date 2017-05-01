@@ -36,7 +36,7 @@ class QgsDateTimeEdit : QDateTimeEdit
     void setEmpty();
 
   protected:
-    virtual void resizeEvent( QResizeEvent* event );
+    virtual void resizeEvent( QResizeEvent *event );
 
     void mousePressEvent( QMouseEvent*event );
 };

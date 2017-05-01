@@ -18,7 +18,7 @@ class QgsDateTimeSearchWidgetWrapper : QgsSearchWidgetWrapper
      * @param fieldIdx index of associated field
      * @param parent parent widget
      */
-    explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent /TransferThis/ = nullptr );
+    explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = nullptr );
 
     /** Returns a variant representing the current state of the widget, respecting
      * the editor widget's configured field format for date/time values.
@@ -38,8 +38,8 @@ class QgsDateTimeSearchWidgetWrapper : QgsSearchWidgetWrapper
     virtual void setEnabled( bool enabled );
 
   protected:
-    QWidget* createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+    QWidget *createWidget( QWidget *parent );
+    void initWidget( QWidget *editor );
 
   protected slots:
     void setExpression( QString exp );

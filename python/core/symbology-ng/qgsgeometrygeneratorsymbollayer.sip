@@ -18,7 +18,7 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
 #include "qgsgeometrygeneratorsymbollayer.h"
 %End
   public:
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
 
     QString layerType() const;
 
@@ -38,36 +38,36 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
      */
     QgsSymbol::SymbolType symbolType() const;
 
-    void startRender( QgsSymbolRenderContext& context );
+    void startRender( QgsSymbolRenderContext &context );
 
-    void stopRender( QgsSymbolRenderContext& context );
+    void stopRender( QgsSymbolRenderContext &context );
 
-    QgsSymbolLayer* clone() const;
+    QgsSymbolLayer *clone() const;
 
     QgsStringMap properties() const;
 
-    void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size );
+    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 
     /**
      * Set the expression to generate this geometry.
      */
-    void setGeometryExpression( const QString& exp );
+    void setGeometryExpression( const QString &exp );
 
     /**
      * Get the expression to generate this geometry.
      */
     QString geometryExpression() const;
 
-    virtual QgsSymbol* subSymbol();
+    virtual QgsSymbol *subSymbol();
 
-    virtual bool setSubSymbol( QgsSymbol* symbol );
+    virtual bool setSubSymbol( QgsSymbol *symbol );
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
     //! Will always return true.
     //! This is a hybrid layer, it constructs its own geometry so it does not
     //! care about the geometry of its parents.
-    bool isCompatibleWithSymbol( QgsSymbol* symbol );
+    bool isCompatibleWithSymbol( QgsSymbol *symbol );
 
     /**
      * Will render this symbol layer using the context.
@@ -79,10 +79,10 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
      * @param context The rendering context which will be used to render and to
      *                construct a geometry.
      */
-    virtual void render( QgsSymbolRenderContext& context );
+    virtual void render( QgsSymbolRenderContext &context );
 
-    void setColor( const QColor& color );
+    void setColor( const QColor &color );
 
   private:
-    QgsGeometryGeneratorSymbolLayer( const QgsGeometryGeneratorSymbolLayer& copy );
+    QgsGeometryGeneratorSymbolLayer( const QgsGeometryGeneratorSymbolLayer &copy );
 };

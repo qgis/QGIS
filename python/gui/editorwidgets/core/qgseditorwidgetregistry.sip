@@ -30,7 +30,7 @@ class QgsEditorWidgetRegistry : QObject
      *
      * @return The one and only instance of the editor widget registry
      */
-    static QgsEditorWidgetRegistry* instance();
+    static QgsEditorWidgetRegistry *instance();
 
     /**
      * Registers all the default widgets.
@@ -42,7 +42,7 @@ class QgsEditorWidgetRegistry : QObject
      * @note Added in QGIS 2.8
      * @note Not required for plugins, the QGIS application does that already
      */
-    static void initEditors( QgsMapCanvas* mapCanvas = 0, QgsMessageBar* messageBar = 0 );
+    static void initEditors( QgsMapCanvas *mapCanvas = 0, QgsMessageBar *messageBar = 0 );
 
     /**
      * Find the best editor widget and its configuration for a given field.
@@ -52,7 +52,7 @@ class QgsEditorWidgetRegistry : QObject
      *
      * @return The id of the widget type to use and its config
      */
-    QgsEditorWidgetSetup findBest( const QgsVectorLayer* vl, const QString& fieldName ) const;
+    QgsEditorWidgetSetup findBest( const QgsVectorLayer *vl, const QString &fieldName ) const;
 
 
     /**
@@ -75,14 +75,14 @@ class QgsEditorWidgetRegistry : QObject
                                     const QVariantMap& config,
                                     QWidget* editor,
                                     QWidget* parent /TransferThis/,
-                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
+                                    const QgsAttributeEditorContext &context = QgsAttributeEditorContext() ) /Factory/;
 
     QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
         QgsVectorLayer* vl,
         int fieldIdx,
         const QVariantMap& config,
         QWidget* parent /TransferThis/,
-        const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
+        const QgsAttributeEditorContext &context = QgsAttributeEditorContext() ) /Factory/;
 
     /**
      * Creates a configuration widget
@@ -94,7 +94,7 @@ class QgsEditorWidgetRegistry : QObject
      *
      * @return A new configuration widget
      */
-    QgsEditorConfigWidget* createConfigWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) /Factory/;
+    QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) /Factory/;
 
     /**
      * Get the human readable name for a widget type
@@ -103,7 +103,7 @@ class QgsEditorWidgetRegistry : QObject
      *
      * @return A human readable name
      */
-    QString name( const QString& widgetId );
+    QString name( const QString &widgetId );
 
     /**
      * Get access to all registered factories
@@ -117,7 +117,7 @@ class QgsEditorWidgetRegistry : QObject
      *
      * @return A factory or Null if not existent
      */
-    QgsEditorWidgetFactory* factory( const QString& widgetId );
+    QgsEditorWidgetFactory *factory( const QString &widgetId );
 
     /**
      * Register a new widget factory with the given id
@@ -127,12 +127,12 @@ class QgsEditorWidgetRegistry : QObject
      *
      * @return true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
      */
-    bool registerWidget( const QString& widgetId, QgsEditorWidgetFactory* widgetFactory /Transfer/ );
+    bool registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory /Transfer/ );
 
      /**
      * Register a new auto-conf plugin.
      *
      * @param plugin The plugin (ownership is transferred)
      */
-    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin );
+    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin *plugin );
 };

@@ -26,18 +26,18 @@ class QgsFieldConditionalFormatWidget : QWidget
     /** Sets the vector layer associated with the widget.
      * @param layer vector layer
      */
-    void setLayer( QgsVectorLayer* layer );
+    void setLayer( QgsVectorLayer *layer );
 
     /** Switches the widget to the edit style mode for the specified style.
      * @param index index of conditional style to edit
      * @param style initial conditional styling options
      */
-    void editStyle( int index, const QgsConditionalStyle& style );
+    void editStyle( int index, const QgsConditionalStyle &style );
 
     /**
      * @param style initial conditional styling options
      */
-    void loadStyle( const QgsConditionalStyle& style );
+    void loadStyle( const QgsConditionalStyle &style );
 
     /** Resets the formatting options to their default state.
      */
@@ -47,7 +47,7 @@ class QgsFieldConditionalFormatWidget : QWidget
      * @brief Set the presets that can be used for quick pick
      * @param styles A list of styles used as presets
      */
-    void setPresets( const QList<QgsConditionalStyle>& styles );
+    void setPresets( const QList<QgsConditionalStyle> &styles );
 
     /**
      * @brief The default presets for the widget.  Normally set when the widget is
@@ -61,5 +61,5 @@ class QgsFieldConditionalFormatWidget : QWidget
     /** Emitted when the conditional styling rules are updated.
      * @param fieldName name of field whose rules have been modified.
      */
-    void rulesUpdated( const QString& fieldName );
+    void rulesUpdated( const QString &fieldName );
 };

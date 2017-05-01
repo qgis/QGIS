@@ -11,7 +11,7 @@ class QgsValueMapSearchWidgetWrapper : QgsSearchWidgetWrapper
 %End
   public:
 
-    explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent /TransferThis/ = nullptr );
+    explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = nullptr );
     bool applyDirectly();
     QString expression();
     bool valid() const;
@@ -25,8 +25,8 @@ class QgsValueMapSearchWidgetWrapper : QgsSearchWidgetWrapper
     virtual void setEnabled( bool enabled );
 
   protected:
-    QWidget* createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+    QWidget *createWidget( QWidget *parent );
+    void initWidget( QWidget *editor );
 
   protected slots:
     void setExpression( QString exp );

@@ -14,7 +14,7 @@ class QgsEffectDrawModeComboBox : QComboBox
 
   public:
 
-    QgsEffectDrawModeComboBox( QWidget* parent /TransferThis/ = NULL );
+    QgsEffectDrawModeComboBox( QWidget *parent /TransferThis/ = NULL );
 
     /** Returns the currently selected draw mode for the combo box
      * @returns current draw mode

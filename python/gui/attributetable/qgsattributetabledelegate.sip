@@ -9,7 +9,7 @@ class QgsAttributeTableDelegate : QItemDelegate
     /** Constructor
      * @param parent parent object
      */
-    QgsAttributeTableDelegate( QObject* parent /TransferThis/ = 0 );
+    QgsAttributeTableDelegate( QObject *parent /TransferThis/ = 0 );
     /** Used to create an editor for when the user tries to
      * change the contents of a cell */
     QWidget * createEditor(
@@ -21,7 +21,7 @@ class QgsAttributeTableDelegate : QItemDelegate
     void paint(
       QPainter * painter,
       const QStyleOptionViewItem & option,
-      const QModelIndex & index ) const;
+      const QModelIndex  &index ) const;
 
     /**
      * Sets data from editor back to model. Overloads default method
@@ -38,7 +38,7 @@ class QgsAttributeTableDelegate : QItemDelegate
      */
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
 
-    void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
+    void setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel );
 
   signals:
     /**
@@ -49,5 +49,5 @@ class QgsAttributeTableDelegate : QItemDelegate
      *       It is the consumers responsibility to check if initialization has already
      *       happened before.
      */
-    void actionColumnItemPainted( const QModelIndex& index ) const;
+    void actionColumnItemPainted( const QModelIndex &index ) const;
 };

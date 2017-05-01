@@ -15,7 +15,7 @@ class QgsRasterDrawer
      * @param qgsMapToPixel map to pixel converter
      * @param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
-    void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* qgsMapToPixel, QgsRasterBlockFeedback* feedback = nullptr );
+    void draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback = nullptr );
 
   protected:
     /** Draws raster part
@@ -27,5 +27,5 @@ class QgsRasterDrawer
      * @param mapToPixel map to device coordinate transformation info
      * @note not available in python bindings
      */
-    //void drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow ) const;
+    //void drawImage( QPainter *p, QgsRasterViewPort *viewPort, const QImage &img, int topLeftCol, int topLeftRow ) const;
 };

@@ -19,13 +19,13 @@ class QgsInterpolator
     /** A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)*/
     struct LayerData
     {
-      QgsVectorLayer* vectorLayer;
+      QgsVectorLayer *vectorLayer;
       bool zCoordInterpolation;
       int interpolationAttribute;
       QgsInterpolator::InputType mInputType;
     };
 
-    QgsInterpolator( const QList<QgsInterpolator::LayerData>& layerData );
+    QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 
     virtual ~QgsInterpolator();
 
@@ -34,10 +34,10 @@ class QgsInterpolator
        @param y y-coordinate (in map units)
        @param result out: interpolation result
        @return 0 in case of success*/
-    virtual int interpolatePoint( double x, double y, double& result ) = 0;
+    virtual int interpolatePoint( double x, double y, double &result ) = 0;
 
     // @note not available in python bindings
-    // const QList<LayerData>& layerData() const;
+    // const QList<LayerData> &layerData() const;
 
   protected:
     /** Caches the vertex and value data from the provider. All the vertex data

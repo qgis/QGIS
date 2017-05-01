@@ -5,12 +5,12 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 %End
 
   public:
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 
-    QgsCategorizedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsCategorizedSymbolRendererWidget();
 
-    virtual QgsFeatureRenderer* renderer();
+    virtual QgsFeatureRenderer *renderer();
 
     /** Replaces category symbols with the symbols from a style that have a matching
      * name.
@@ -20,12 +20,12 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
      * @see matchToSymbolsFromXml
      * @note added in QGIS 2.9
      */
-    int matchToSymbols( QgsStyle* style );
+    int matchToSymbols( QgsStyle *style );
 
   public slots:
     void changeCategorizedSymbol();
-    void categoryColumnChanged( const QString& field );
-    void categoriesDoubleClicked( const QModelIndex & idx );
+    void categoryColumnChanged( const QString &field );
+    void categoriesDoubleClicked( const QModelIndex  &idx );
     void addCategory();
     void addCategories();
     void applyColorRamp();
@@ -75,5 +75,5 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
     QList<QgsSymbol*> selectedSymbols();
     QgsCategoryList selectedCategoryList();
     void refreshSymbolView();
-    void keyPressEvent( QKeyEvent* event );
+    void keyPressEvent( QKeyEvent *event );
 };

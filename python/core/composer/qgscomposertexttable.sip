@@ -10,7 +10,7 @@ class QgsComposerTextTableV2 : QgsComposerTableV2
 %End
 
   public:
-    QgsComposerTextTableV2( QgsComposition* c /TransferThis/, bool createUndoCommands );
+    QgsComposerTextTableV2( QgsComposition *c /TransferThis/, bool createUndoCommands );
     ~QgsComposerTextTableV2();
 
     /** Adds a row to the table
@@ -20,17 +20,17 @@ class QgsComposerTextTableV2 : QgsComposerTableV2
      * of columns in the table then these extra strings will be ignored.
      * @note if adding many rows, @link setContents @endlink is much faster
      */
-    void addRow( const QStringList& row );
+    void addRow( const QStringList &row );
 
     /** Sets the contents of the text table.
      * @param contents list of table rows
      * @see addRow
      */
-    void setContents( const QList< QStringList >& contents );
+    void setContents( const QList< QStringList > &contents );
 
     bool getTableContents( QgsComposerTableContents &contents );
 
-    virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true );
+    virtual void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true );
 
 };
 

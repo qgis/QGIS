@@ -5,7 +5,7 @@ class QgsStyleManagerDialog : QDialog
 %End
 
   public:
-    QgsStyleManagerDialog( QgsStyle* style, QWidget* parent /TransferThis/ = NULL );
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = NULL );
 
     //! open add color ramp dialog, return color ramp's name if the ramp has been added
     static QString addColorRampStatic( QWidget* parent, QgsStyle* style,
@@ -17,7 +17,7 @@ class QgsStyleManagerDialog : QDialog
     void removeItem();
     void exportItemsSVG();
     void exportItemsPNG();
-    void exportSelectedItemsImages( const QString& dir, const QString& format, QSize size );
+    void exportSelectedItemsImages( const QString &dir, const QString &format, QSize size );
     void exportItems();
     void importItems();
 
@@ -30,7 +30,7 @@ class QgsStyleManagerDialog : QDialog
 
     void on_buttonBox_helpRequested();
 
-    void itemChanged( QStandardItem* item );
+    void itemChanged( QStandardItem *item );
 
     void groupChanged( const QModelIndex& );
     void groupRenamed( QStandardItem * );
@@ -57,7 +57,7 @@ class QgsStyleManagerDialog : QDialog
     void symbolSelected( const QModelIndex& );
 
     //! Perform tasks when the selected symbols change
-    void selectedSymbolsChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    void selectedSymbolsChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
     //! Context menu for the groupTree
     void grouptreeContextMenu( QPoint );
@@ -66,7 +66,7 @@ class QgsStyleManagerDialog : QDialog
     void listitemsContextMenu( QPoint );
 
   protected slots:
-    bool addColorRamp( QAction* action );
+    bool addColorRamp( QAction *action );
     //! Add selected symbols to favorites
     void addFavoriteSelectedSymbols();
     //! Remove selected symbols from favorites
@@ -87,10 +87,10 @@ class QgsStyleManagerDialog : QDialog
     void setSymbolsChecked( const QStringList& );
 
     //! populate list view with symbols of the current type with the given names
-    void populateSymbols( const QStringList& symbolNames, bool checkable = false );
+    void populateSymbols( const QStringList &symbolNames, bool checkable = false );
 
     //! populate list view with color ramps
-    void populateColorRamps( const QStringList& colorRamps, bool checkable = false );
+    void populateColorRamps( const QStringList &colorRamps, bool checkable = false );
 
     int currentItemType();
     QString currentItemName();

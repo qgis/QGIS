@@ -48,7 +48,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param c parent composition
      * @param createUndoCommands
      */
-    QgsComposerMultiFrame( QgsComposition* c /TransferThis/, bool createUndoCommands );
+    QgsComposerMultiFrame( QgsComposition *c /TransferThis/, bool createUndoCommands );
 
     virtual ~QgsComposerMultiFrame();
 
@@ -87,14 +87,14 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param frameIndex frame number for content
      * @note added in version 2.5
      */
-    virtual void render( QPainter* painter, const QRectF& renderExtent, const int frameIndex ) = 0;
+    virtual void render( QPainter *painter, const QRectF &renderExtent, const int frameIndex ) = 0;
 
     /** Adds a frame to the multiframe.
      * @param frame frame to add
      * @param recalcFrameSizes set to true to force recalculation of all existing frame sizes
      * @see removeFrame
      */
-    virtual void addFrame( QgsComposerFrame* frame /Transfer/, bool recalcFrameSizes = true ) = 0;
+    virtual void addFrame( QgsComposerFrame *frame /Transfer/, bool recalcFrameSizes = true ) = 0;
 
     /** Finds the optimal position to break a frame at.
      * @param yPos maximum vertical position for break
@@ -137,7 +137,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see _writeXML
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const = 0;
+    virtual bool writeXml( QDomElement &elem, QDomDocument  &doc, bool ignoreFrames = false ) const = 0;
 
     /** Stores state information about base multiframe object in DOM element. Implementations of writeXML
      * should call this method.
@@ -146,7 +146,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see writeXML
      */
-    bool _writeXml( QDomElement& elem, QDomDocument& doc, bool ignoreFrames = false ) const;
+    bool _writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const;
 
     /** Reads multiframe state information from a DOM element. Implementations of readXML
      * should also call the _readXML method to restore general multiframe properties.
@@ -155,7 +155,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid read state information about child frames from DOM
      * @see _readXML
      */
-    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) = 0;
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) = 0;
 
     /** Restores state information about base multiframe object from a DOM element. Implementations of readXML
      * should call this method.
@@ -164,12 +164,12 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid reading state information about child frames from DOM
      * @see readXML
      */
-    bool _readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+    bool _readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false );
 
     /** Returns the parent composition for the multiframe.
      * @returns composition
      */
-    QgsComposition* composition();
+    QgsComposition *composition();
 
     /** Returns whether undo commands should be created for interactions with the multiframe.
      * @returns true if undo commands should be created
@@ -193,7 +193,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @returns child frame if found
      * @see frameIndex
      */
-    QgsComposerFrame* frame( int i );
+    QgsComposerFrame *frame( int i );
 
     /** Returns the index of a frame within the multiframe
      * @param frame frame to find index of
@@ -211,7 +211,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @returns new QgsComposerFrame
      * @note added in version 2.3
      */
-    QgsComposerFrame* createNewFrame( QgsComposerFrame* currentFrame, QPointF pos, QSizeF size );
+    QgsComposerFrame *createNewFrame( QgsComposerFrame *currentFrame, QPointF pos, QSizeF size );
 
     /** Get multiframe display name.
      * @returns display name for item
@@ -260,7 +260,7 @@ class QgsComposerMultiFrame: QgsComposerObject
     /** Called before a frame is going to be removed. Updates frame list and recalculates
      * content of remaining frames.
      */
-    void handleFrameRemoval( QgsComposerItem* item );
+    void handleFrameRemoval( QgsComposerItem *item );
 
     /** Adapts to changed number of composition pages if resize type is RepeatOnEveryPage.
      */

@@ -26,7 +26,7 @@ class QgsGroupUngroupItemsCommand: QObject, QUndoCommand
      * @param parent parent command, if any
      *
      */
-    QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup* item, QgsComposition* c, const QString& text, QUndoCommand* parent = nullptr );
+    QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup *item, QgsComposition *c, const QString &text, QUndoCommand *parent = nullptr );
     ~QgsGroupUngroupItemsCommand();
 
     void redo();
@@ -34,9 +34,9 @@ class QgsGroupUngroupItemsCommand: QObject, QUndoCommand
 
   signals:
     /** Signals addition of an item (the group) */
-    void itemAdded( QgsComposerItem* item );
+    void itemAdded( QgsComposerItem *item );
     /** Signals removal of an item (the group) */
-    void itemRemoved( QgsComposerItem* item );
+    void itemRemoved( QgsComposerItem *item );
 
 };
 

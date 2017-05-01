@@ -7,7 +7,7 @@ class QgsNetworkSpeedStrategy : QgsNetworkStrategy
   public:
     QgsNetworkSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor );
 
-    QVariant cost( double distance, const QgsFeature& f ) const;
+    QVariant cost( double distance, const QgsFeature &f ) const;
 
     QgsAttributeList requiredAttributes() const;
 };

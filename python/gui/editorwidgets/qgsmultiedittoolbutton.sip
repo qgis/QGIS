@@ -33,7 +33,7 @@ class QgsMultiEditToolButton : QToolButton
      * and tooltips to match the field properties.
      * @param field associated field
      */
-    void setField( const QgsField& field );
+    void setField( const QgsField &field );
 
   public slots:
 

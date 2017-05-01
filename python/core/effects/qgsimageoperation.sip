@@ -76,7 +76,7 @@ class QgsImageOperation
      * @param image QImage to alter
      * @param color color to overlay (any alpha component of the color is ignored)
      */
-    static void overlayColor( QImage &image, const QColor& color );
+    static void overlayColor( QImage &image, const QColor &color );
 
     /** Struct for storing properties of a distance transform operation*/
     struct DistanceTransformProperties
@@ -96,7 +96,7 @@ class QgsImageOperation
       double spread;
       /** Color ramp to use for shading the distance transform
        */
-      QgsColorRamp* ramp;
+      QgsColorRamp *ramp;
     };
 
     /** Performs a distance transform on the source image and shades the result
@@ -105,7 +105,7 @@ class QgsImageOperation
      * @param properties DistanceTransformProperties object with parameters
      * for the distance transform operation
      */
-    static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties& properties );
+    static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties &properties );
 
     /** Performs a stack blur on an image. Stack blur represents a good balance between
      * speed and blur quality.
@@ -124,7 +124,7 @@ class QgsImageOperation
      * @returns blurred image
      * @note for fastest operation, ensure the source image is ARGB32_Premultiplied
      */
-    static QImage* gaussianBlur( QImage &image, const int radius ) /Factory/;
+    static QImage *gaussianBlur( QImage &image, const int radius ) /Factory/;
 
     /** Flips an image horizontally or vertically
      * @param image QImage to flip
@@ -141,7 +141,7 @@ class QgsImageOperation
      * @note added in QGIS 2.9
      * @see cropTransparent
      */
-    static QRect nonTransparentImageRect( const QImage & image, QSize minSize = QSize(), bool center = false );
+    static QRect nonTransparentImageRect( const QImage  &image, QSize minSize = QSize(), bool center = false );
 
     /** Crop any transparent border from around an image.
      * @param image source image
@@ -151,6 +151,6 @@ class QgsImageOperation
      * @param center cropped image will be centered on the center of the original image if set to true
      * @note added in QGIS 2.9
      */
-    static QImage cropTransparent( const QImage & image, QSize minSize = QSize(), bool center = false );
+    static QImage cropTransparent( const QImage  &image, QSize minSize = QSize(), bool center = false );
 
 };
