@@ -88,9 +88,9 @@ class ExtractByLocation(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(filename)
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(filename, context)
         filename = self.getParameterValue(self.INTERSECT)
-        selectLayer = dataobjects.getLayerFromString(filename)
+        selectLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(filename, context)
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)
 

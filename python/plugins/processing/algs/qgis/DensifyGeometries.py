@@ -78,8 +78,7 @@ class DensifyGeometries(GeoAlgorithm):
                                     self.tr('Densified')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         vertices = self.getParameterValue(self.VERTICES)
 
         isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry

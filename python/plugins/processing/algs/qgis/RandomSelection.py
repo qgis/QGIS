@@ -75,7 +75,7 @@ class RandomSelection(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(filename)
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)
 
         featureCount = layer.featureCount()

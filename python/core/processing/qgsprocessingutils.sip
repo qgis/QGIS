@@ -90,6 +90,11 @@ class QgsProcessingUtils
  :rtype: QgsMapLayer
 %End
 
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true );
+%Docstring
+ :rtype: QgsMapLayer
+%End
+
     static QString normalizeLayerSource( const QString &source );
 %Docstring
  Normalizes a layer ``source`` string for safe comparison across different

@@ -68,8 +68,7 @@ class CreateConstantRaster(GeoAlgorithm):
                                     self.tr('Constant')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         value = self.getParameterValue(self.NUMBER)
 
         output = self.getOutputFromName(self.OUTPUT)

@@ -153,6 +153,35 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string )
   return nullptr;
 }
 
+QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers )
+{
+  if ( string.isEmpty() )
+    return nullptr;
+
+  // prefer project layers
+  QgsMapLayer *layer = mapLayerFromProject( string, context.project() );
+  if ( layer )
+    return layer;
+
+  layer = mapLayerFromProject( string, &context.temporaryLayerStore() );
+  if ( layer )
+    return layer;
+
+  if ( !allowLoadingNewLayers )
+    return nullptr;
+
+  layer = mapLayerFromString( string );
+  if ( layer )
+  {
+    context.temporaryLayerStore().addMapLayer( layer );
+    return layer;
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
 {
   // only gdal file-based layers

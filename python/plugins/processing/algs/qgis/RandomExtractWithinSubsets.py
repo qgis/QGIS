@@ -82,7 +82,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
-        layer = dataobjects.getLayerFromString(filename)
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(filename, context)
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
 

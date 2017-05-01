@@ -75,7 +75,7 @@ class DefineProjection(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(fileName)
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(fileName, context)
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
 
         provider = layer.dataProvider()

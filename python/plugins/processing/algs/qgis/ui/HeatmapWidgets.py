@@ -190,8 +190,9 @@ class HeatmapPixelSizeWidgetWrapper(WidgetWrapper):
         self.setLayer(wrapper.value())
 
     def setLayer(self, layer):
+        context = dataobjects.createContext()
         if isinstance(layer, str):
-            layer = dataobjects.getLayerFromString(_resolveLayers(layer))
+            layer = dataobjects.QgsProcessingUtils.mapLayerFromString(_resolveLayers(layer), context)
         self.widget.setLayer(layer)
 
     def radiusChanged(self, wrapper):

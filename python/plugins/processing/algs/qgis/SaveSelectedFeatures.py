@@ -64,7 +64,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        vectorLayer = dataobjects.getLayerFromString(inputFilename)
+        vectorLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(inputFilename, context)
 
         writer = output.getVectorWriter(vectorLayer.fields(), vectorLayer.wkbType(), vectorLayer.crs(), context)
 

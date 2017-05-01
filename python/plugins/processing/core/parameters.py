@@ -264,6 +264,7 @@ class ParameterCrs(Parameter):
             self.value = QgsProject.instance().crs().authid()
 
     def setValue(self, value):
+        context = dataobjects.createContext()
         if not bool(value):
             if not self.optional:
                 return False
@@ -277,7 +278,7 @@ class ParameterCrs(Parameter):
             self.value = value.crs().authid()
             return True
         try:
-            layer = dataobjects.getLayerFromString(value)
+            layer = dataobjects.QgsProcessingUtils.mapLayerFromString(value, context)
             if layer is not None:
                 self.value = layer.crs().authid()
                 return True
@@ -343,6 +344,7 @@ class ParameterExtent(Parameter):
         self.skip_crs_check = False
 
     def setValue(self, value):
+        context = dataobjects.createContext()
         if not value:
             if not self.optional:
                 return False
@@ -356,7 +358,7 @@ class ParameterExtent(Parameter):
             return True
 
         try:
-            layer = dataobjects.getLayerFromString(value)
+            layer = dataobjects.QgsProcessingUtils.mapLayerFromString(value, context)
             if layer is not None:
                 rect = layer.extent()
                 self.value = '{},{},{},{}'.format(
@@ -406,6 +408,7 @@ class ParameterExtent(Parameter):
     def getMinCoveringExtent(self, alg):
         first = True
         found = False
+        context = dataobjects.createContext()
         for param in alg.parameters:
             if param.value:
                 if isinstance(param, (ParameterRaster, ParameterVector)):
@@ -413,7 +416,7 @@ class ParameterExtent(Parameter):
                                                 QgsVectorLayer)):
                         layer = param.value
                     else:
-                        layer = dataobjects.getLayerFromString(param.value)
+                        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(param.value, context)
                     if layer:
                         found = True
                         self.addToRegion(layer, first)
@@ -421,7 +424,7 @@ class ParameterExtent(Parameter):
                 elif isinstance(param, ParameterMultipleInput):
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getLayerFromString(layername)
+                        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(layername, context)
                         if layer:
                             found = True
                             self.addToRegion(layer, first)
@@ -697,7 +700,7 @@ class ParameterMultipleInput(ParameterDataObject):
         always return the same string, performing the export only the
         first time.
         """
-
+        context = dataobjects.createContext()
         if self.exported:
             return self.exported
         self.exported = self.value
@@ -706,7 +709,7 @@ class ParameterMultipleInput(ParameterDataObject):
             return self.value
         if self.datatype == dataobjects.TYPE_RASTER:
             for layerfile in layers:
-                layer = dataobjects.getLayerFromString(layerfile, False)
+                layer = dataobjects.QgsProcessingUtils.mapLayerFromString(layerfile, context, False)
                 if layer:
                     filename = dataobjects.exportRasterLayer(layer)
                     self.exported = self.exported.replace(layerfile, filename)
@@ -715,7 +718,7 @@ class ParameterMultipleInput(ParameterDataObject):
             return self.value
         else:
             for layerfile in layers:
-                layer = dataobjects.getLayerFromString(layerfile, False)
+                layer = dataobjects.QgsProcessingUtils.mapLayerFromString(layerfile, context, False)
                 if layer:
                     filename = dataobjects.exportVectorLayer(layer)
                     self.exported = self.exported.replace(layerfile, filename)
@@ -904,7 +907,8 @@ class ParameterNumber(Parameter):
 
     def _layerVariables(self, element, alg=None):
         variables = {}
-        layer = dataobjects.getLayerFromString(element.value)
+        context = dataobjects.createContext()
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(element.value, context)
         if layer is not None:
             name = element.name if alg is None else "%s_%s" % (alg.name, element.name)
             variables['@%s_minx' % name] = layer.extent().xMinimum()
@@ -1018,10 +1022,11 @@ class ParameterRaster(ParameterDataObject):
         return the same file, performing the export only the first
         time.
         """
+        context = dataobjects.createContext()
 
         if self.exported:
             return self.exported
-        layer = dataobjects.getLayerFromString(self.value, False)
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.value, context, False)
         if layer:
             self.exported = dataobjects.exportRasterLayer(layer)
         else:
@@ -1348,10 +1353,10 @@ class ParameterTable(ParameterDataObject):
         return the same file, performing the export only the first
         time.
         """
-
+        context = dataobjects.createContext()
         if self.exported:
             return self.exported
-        table = dataobjects.getLayerFromString(self.value, False)
+        table = dataobjects.QgsProcessingUtils.mapLayerFromString(self.value, context, False)
         if table:
             self.exported = dataobjects.exportTable(table)
         else:
@@ -1516,10 +1521,11 @@ class ParameterVector(ParameterDataObject):
         return the same file, performing the export only the first
         time.
         """
+        context = dataobjects.createContext()
 
         if self.exported:
             return self.exported
-        layer = dataobjects.getLayerFromString(self.value, False)
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.value, context, False)
         if layer:
             self.exported = dataobjects.exportVectorLayer(layer)
         else:

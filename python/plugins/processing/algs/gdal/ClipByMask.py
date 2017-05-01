@@ -103,8 +103,8 @@ class ClipByMask(GdalAlgorithm):
     def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
         mask = self.getParameterValue(self.MASK)
-        maskLayer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.MASK))
+        context = dataobjects.createContext()
+        maskLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.MASK), context)
         ogrMask = ogrConnectionString(mask)[1:-1]
         noData = self.getParameterValue(self.NO_DATA)
         opts = self.getParameterValue(self.OPTIONS)

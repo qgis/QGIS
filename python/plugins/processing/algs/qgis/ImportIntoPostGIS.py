@@ -127,7 +127,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         encoding = self.getParameterValue(self.ENCODING)
 
         layerUri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(layerUri)
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(layerUri, context)
 
         table = self.getParameterValue(self.TABLENAME)
         if table:

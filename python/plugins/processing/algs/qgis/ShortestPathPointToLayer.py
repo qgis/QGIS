@@ -148,11 +148,9 @@ class ShortestPathPointToLayer(GeoAlgorithm):
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
         startPoint = self.getParameterValue(self.START_POINT)
-        endPoints = dataobjects.getLayerFromString(
-            self.getParameterValue(self.END_POINTS))
+        endPoints = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.END_POINTS), context)
         strategy = self.getParameterValue(self.STRATEGY)
 
         directionFieldName = self.getParameterValue(self.DIRECTION_FIELD)

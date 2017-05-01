@@ -167,13 +167,14 @@ class nviz7(GeoAlgorithm):
 
     def getDefaultCellsize(self):
         cellsize = 0
+        context = dataobjects.createContext()
         for param in self.parameters:
             if param.value:
                 if isinstance(param, ParameterRaster):
                     if isinstance(param.value, QgsRasterLayer):
                         layer = param.value
                     else:
-                        layer = dataobjects.getLayerFromString(param.value)
+                        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(param.value, context)
                     cellsize = max(cellsize, (layer.extent().xMaximum() -
                                               layer.extent().xMinimum()) /
                                    layer.width())
@@ -181,7 +182,7 @@ class nviz7(GeoAlgorithm):
 
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getLayerFromString(layername)
+                        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(layername, context)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (
                                 layer.extent().xMaximum() -

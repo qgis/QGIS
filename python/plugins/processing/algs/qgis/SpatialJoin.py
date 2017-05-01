@@ -109,10 +109,8 @@ class SpatialJoin(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
     def processAlgorithm(self, context, feedback):
-        target = dataobjects.getLayerFromString(
-            self.getParameterValue(self.TARGET))
-        join = dataobjects.getLayerFromString(
-            self.getParameterValue(self.JOIN))
+        target = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.TARGET), context)
+        join = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.JOIN), context)
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)
 

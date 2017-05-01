@@ -214,6 +214,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
 
     def _checkParameterValuesBeforeExecuting(self):
+        context = dataobjects.createContext()
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector,
                                   ParameterMultipleInput)):
@@ -223,7 +224,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                     else:
                         inputlayers = [param.value]
                     for inputlayer in inputlayers:
-                        obj = dataobjects.getLayerFromString(inputlayer)
+                        obj = dataobjects.QgsProcessingUtils.mapLayerFromString(inputlayer, context)
                         if obj is None:
                             return "Wrong parameter value: " + param.value
         return self.checkParameterValuesBeforeExecuting()
@@ -263,7 +264,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         for out in self.outputs:
             if isinstance(out, OutputVector):
                 if out.compatible is not None:
-                    layer = dataobjects.getLayerFromString(out.compatible)
+                    layer = dataobjects.QgsProcessingUtils.mapLayerFromString(out.compatible, context)
                     if layer is None:
                         # For the case of memory layer, if the
                         # getCompatible method has been called
@@ -274,7 +275,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                         writer.addFeature(feature)
             elif isinstance(out, OutputRaster):
                 if out.compatible is not None:
-                    layer = dataobjects.getLayerFromString(out.compatible)
+                    layer = dataobjects.QgsProcessingUtils.mapLayerFromString(out.compatible, context)
                     format = self.getFormatShortNameFromFilename(out.value)
                     orgFile = out.compatible
                     destFile = out.value
@@ -302,7 +303,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
             elif isinstance(out, OutputTable):
                 if out.compatible is not None:
-                    layer = dataobjects.getLayerFromString(out.compatible)
+                    layer = dataobjects.QgsProcessingUtils.mapLayerFromString(out.compatible, context)
                     writer = out.getTableWriter(layer.fields())
                     features = QgsProcessingUtils.getFeatures(layer, context)
                     for feature in features:
@@ -337,6 +338,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             raise GeoAlgorithmExecutionException(str(e))
 
     def setOutputCRS(self):
+        context = dataobjects.createContext()
         layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
@@ -350,7 +352,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                             if layer.source() == inputlayer:
                                 self.crs = layer.crs()
                                 return
-                        p = dataobjects.getLayerFromString(inputlayer)
+                        p = dataobjects.QgsProcessingUtils.mapLayerFromString(inputlayer, context)
                         if p is not None:
                             self.crs = p.crs()
                             p = None
@@ -383,6 +385,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         """It checks that all input layers use the same CRS. If so,
         returns True. False otherwise.
         """
+        context = dataobjects.createContext()
         crsList = []
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
@@ -392,7 +395,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                     else:
                         layers = [param.value]
                     for item in layers:
-                        crs = dataobjects.getLayerFromString(item).crs()
+                        crs = dataobjects.QgsProcessingUtils.mapLayerFromString(item, context).crs()
                         if crs not in crsList:
                             crsList.append(crs)
         return len(crsList) < 2

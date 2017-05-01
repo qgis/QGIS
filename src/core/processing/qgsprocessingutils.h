@@ -101,6 +101,8 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QgsMapLayer *mapLayerFromString( const QString &string ) SIP_FACTORY;
 
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true );
+
     /**
      * Normalizes a layer \a source string for safe comparison across different
      * operating system environments.

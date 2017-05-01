@@ -407,7 +407,8 @@ def ogrConnectionString(uri):
     """
     ogrstr = None
 
-    layer = dataobjects.getLayerFromString(uri, False)
+    context = dataobjects.createContext()
+    layer = dataobjects.QgsProcessingUtils.mapLayerFromString(uri, context, False)
     if layer is None:
         return '"' + uri + '"'
     provider = layer.dataProvider().name()

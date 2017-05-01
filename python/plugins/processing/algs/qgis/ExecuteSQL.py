@@ -116,7 +116,7 @@ class ExecuteSQL(GeoAlgorithm):
         layerIdx = 1
         if layers:
             for layerSource in layers.split(';'):
-                layer = dataobjects.getLayerFromString(layerSource)
+                layer = dataobjects.QgsProcessingUtils.mapLayerFromString(layerSource, context)
                 if layer:
                     df.addSource('input{}'.format(layerIdx), layer.id())
                 layerIdx += 1

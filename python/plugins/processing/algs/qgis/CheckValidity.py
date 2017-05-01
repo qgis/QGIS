@@ -100,8 +100,7 @@ class CheckValidity(GeoAlgorithm):
             settings.setValue(settings_method_key, initial_method_setting)
 
     def doCheck(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         settings = QgsSettings()
         method = int(settings.value(settings_method_key, 1))

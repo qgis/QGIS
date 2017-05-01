@@ -83,7 +83,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         output = self.getOutputValue(self.OUTPUT)
 
         spatialIndex = vector.spatialindex(layer)

@@ -70,8 +70,8 @@ class PointsInPolygon(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        polyLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
+        polyLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)
+        pointLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         fieldName = self.getParameterValue(self.FIELD)
 
         fields = polyLayer.fields()

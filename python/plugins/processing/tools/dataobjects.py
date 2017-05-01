@@ -98,9 +98,10 @@ def getSupportedOutputRasterLayerExtensions():
 
 def extent(layers):
     first = True
+    context = createContext()
     for layer in layers:
         if not isinstance(layer, (QgsMapLayer.QgsRasterLayer, QgsMapLayer.QgsVectorLayer)):
-            layer = getLayerFromString(layer)
+            layer = QgsProcessingUtils.mapLayerFromString(layer, context)
             if layer is None:
                 continue
         if first:
@@ -169,27 +170,6 @@ def load(fileName, name=None, crs=None, style=None):
         settings.setValue('/Projections/defaultBehavior', prjSetting)
 
     return qgslayer
-
-
-def getLayerFromString(string, forceLoad=True):
-    """Returns an object (layer/table) given a source definition.
-
-    if forceLoad is true, it tries to load it if it is not currently open
-    Otherwise, it will return the object only if it is loaded in QGIS.
-    """
-
-    if string is None:
-        return None
-
-    # prefer project layers
-    layer = QgsProcessingUtils.mapLayerFromProject(string, QgsProject.instance())
-    if layer:
-        return layer
-
-    if not forceLoad:
-        return None
-
-    return QgsProcessingUtils.mapLayerFromString(string)
 
 
 def exportVectorLayer(layer, supported=None):

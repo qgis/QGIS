@@ -157,7 +157,7 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterVector):
                 if param.value is None:
                     continue
-                layer = dataobjects.getLayerFromString(param.value, False)
+                layer = dataobjects.QgsProcessingUtils.mapLayerFromString(param.value, context, False)
                 if layer:
                     filename = dataobjects.exportVectorLayer(layer)
                     self.exportedLayers[param.value] = filename
@@ -167,7 +167,7 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterTable):
                 if param.value is None:
                     continue
-                table = dataobjects.getLayerFromString(param.value, False)
+                table = dataobjects.QgsProcessingUtils.mapLayerFromString(param.value, context, False)
                 if table:
                     filename = dataobjects.exportTable(table)
                     self.exportedLayers[param.value] = filename
@@ -195,7 +195,7 @@ class SagaAlgorithm(GeoAlgorithm):
                                         dataobjects.TYPE_VECTOR_POLYGON,
                                         dataobjects.TYPE_VECTOR_POINT]:
                     for layerfile in layers:
-                        layer = dataobjects.getLayerFromString(layerfile, False)
+                        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(layerfile, context, False)
                         if layer:
                             filename = dataobjects.exportVectorLayer(layer)
                             self.exportedLayers[layerfile] = filename
@@ -319,6 +319,7 @@ class SagaAlgorithm(GeoAlgorithm):
 
     def exportRasterLayer(self, source):
         global sessionExportedLayers
+        context = dataobjects.createContext()
         if source in sessionExportedLayers:
             exportedLayer = sessionExportedLayers[source]
             if os.path.exists(exportedLayer):
@@ -326,7 +327,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 return None
             else:
                 del sessionExportedLayers[source]
-        layer = dataobjects.getLayerFromString(source, False)
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(source, context, False)
         if layer:
             filename = str(layer.name())
         else:
@@ -346,6 +347,7 @@ class SagaAlgorithm(GeoAlgorithm):
         supported by SAGA, and that raster layers have the same grid extent
         """
         extent = None
+        context = dataobjects.createContext()
         for param in self.parameters:
             files = []
             if isinstance(param, ParameterRaster):
@@ -355,7 +357,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if param.value is not None:
                     files = param.value.split(";")
             for f in files:
-                layer = dataobjects.getLayerFromString(f)
+                layer = dataobjects.QgsProcessingUtils.mapLayerFromString(f, context)
                 if layer is None:
                     continue
                 if layer.bandCount() > 1:

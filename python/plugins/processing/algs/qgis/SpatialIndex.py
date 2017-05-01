@@ -67,7 +67,7 @@ class SpatialIndex(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(fileName)
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(fileName, context)
         provider = layer.dataProvider()
 
         if provider.capabilities() & QgsVectorDataProvider.CreateSpatialIndex:

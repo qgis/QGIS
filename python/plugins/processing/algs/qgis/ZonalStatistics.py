@@ -96,7 +96,7 @@ class ZonalStatistics(GeoAlgorithm):
             :param context:
         """
 
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
         bandNumber = self.getParameterValue(self.RASTER_BAND)

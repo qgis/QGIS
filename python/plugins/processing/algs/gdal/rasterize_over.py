@@ -69,8 +69,9 @@ class rasterize_over(GdalAlgorithm):
                                           self.tr('Existing raster layer'), False))
 
     def getConsoleCommands(self):
-        inLayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
-        inRasterLayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_RASTER))
+        context = dataobjects.createContext()
+        inLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        inRasterLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_RASTER), context)
 
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         ogrRasterLayer = ogrConnectionString(inRasterLayer)[1:-1]

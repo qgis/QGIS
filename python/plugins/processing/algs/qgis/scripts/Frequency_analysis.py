@@ -9,7 +9,7 @@ from qgis.core import QgsProcessingUtils
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import dataobjects
 
-layer = dataobjects.getLayerFromString(Input)
+layer = dataobjects.QgsProcessingUtils.mapLayerFromString(Input, context)
 inputFields = layer.fields()
 fieldIdxs = []
 fields = Fields.split(',')

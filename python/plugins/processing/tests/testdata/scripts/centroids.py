@@ -8,7 +8,7 @@ from qgis.core import QgsWkbTypes, QgsGeometry, QgsProcessingUtils
 from processing.tools.vector import createVectorWriter
 from processing.tools import dataobjects
 
-layer = dataobjects.getLayerFromString(INPUT_LAYER)
+layer = dataobjects.QgsProcessingUtils.mapLayerFromString(INPUT_LAYER, context)
 fields = layer.fields()
 
 writer, writer_dest, writer_layer = createVectorWriter(OUTPUT_LAYER, 'utf-8', fields, QgsWkbTypes.Point, layer.crs(),

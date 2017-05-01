@@ -150,10 +150,8 @@ class ServiceAreaFromLayer(GeoAlgorithm):
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_VECTOR))
-        startPoints = dataobjects.getLayerFromString(
-            self.getParameterValue(self.START_POINTS))
+        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
+        startPoints = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.START_POINTS), context)
         strategy = self.getParameterValue(self.STRATEGY)
         travelCost = self.getParameterValue(self.TRAVEL_COST)
 

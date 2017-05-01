@@ -73,8 +73,8 @@ class SumLines(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        lineLayer = dataobjects.getLayerFromString(self.getParameterValue(self.LINES))
-        polyLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POLYGONS))
+        lineLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.LINES), context)
+        polyLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
         countFieldName = self.getParameterValue(self.COUNT_FIELD)
 
