@@ -18,9 +18,11 @@
 #define QGSRENDERERV2PROPERTIESDIALOG_H
 
 #include <QDialog>
+#include <QMetaMethod>
 
 #include "ui_qgsrendererv2propsdialogbase.h"
 
+#include "qgis.h"
 #include "qgsfeaturerequest.h"
 #include "qgis_gui.h"
 
@@ -49,7 +51,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * than shown as a dialog by itself
      * \param parent parent widget
      */
-    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent = nullptr );
+    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsRendererPropertiesDialog();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -131,7 +133,33 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * \param widgets The list of widgets to check.
      * \param slot The slot to connect to the signals.
      */
+#ifndef SIP_RUN
+    template <typename PointerToMemberFunction>
+    void connectValueChanged( const QList<QWidget *> &widgets, PointerToMemberFunction slot )
+    {
+      typedef QtPrivate::FunctionPointer<PointerToMemberFunction> SlotType;
+      Q_STATIC_ASSERT_X(QtPrivate::HasQ_OBJECT_Macro<typename SlotType::Object>::Value,
+                        "No Q_OBJECT in the class with the slot");
+      return connectValueChangedImpl( widgets, slot);
+    }
+#else
     void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
+#include <QMetaObject>
+    const QMetaObject *metaObject = sipCpp->metaObject();
+    QStringList methods;
+    for ( int i = metaObject->methodOffset(); i < metaObject->methodCount(); ++i )
+    {
+      QMetaMethod m = metaObject->method( i );
+      if ( m.methodType() == QMetaMethod::Slot )
+      {
+        if ( m.methodSignature() == QByteArray(a1) )
+        {
+          return sipCpp->connectValueChangedImpl( *a0, reinterpret_cast<void **>(&m) );
+        }
+      }
+    }
+    % End
+#endif
 
     // Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent *event ) override;
@@ -148,6 +176,8 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     QgsFeatureRequest::OrderBy mOrderBy;
 
   private:
+    void connectValueChangedImpl( const QList<QWidget *> &widgets, void **slot );
+
     bool mDockMode;
 };
 

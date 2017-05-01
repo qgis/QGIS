@@ -447,7 +447,6 @@ gui/symbology-ng/qgsnullsymbolrendererwidget.sip
 gui/symbology-ng/qgspenstylecombobox.sip
 gui/symbology-ng/qgspointclusterrendererwidget.sip
 gui/symbology-ng/qgspointdisplacementrendererwidget.sip
-gui/symbology-ng/qgsrendererpropertiesdialog.sip
 gui/symbology-ng/qgsrendererwidget.sip
 gui/symbology-ng/qgsrulebasedrendererwidget.sip
 gui/symbology-ng/qgssinglesymbolrendererwidget.sip

@@ -133,50 +133,50 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
           << mFeatureBlendComboBox
           << mEffectWidget;
 
-  connectValueChanged( widgets, SIGNAL( widgetChanged() ) );
+  //connectValueChanged( widgets, &QgsRendererPropertiesDialog::widgetChanged );
   connect( mEffectWidget, &QgsPanelWidget::showPanel, this, &QgsRendererPropertiesDialog::openPanel );
 }
 
-void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *> &widgets, const char *slot )
+void QgsRendererPropertiesDialog::connectValueChangedImpl( const QList<QWidget *> &widgets, void (QgsRendererPropertiesDialog::*slot)() )
 {
   Q_FOREACH ( QWidget *widget, widgets )
   {
     if ( QgsPropertyOverrideButton *w = qobject_cast<QgsPropertyOverrideButton *>( widget ) )
     {
-      connect( w, SIGNAL( changed ), this, slot );
+      connect( w, &QgsPropertyOverrideButton::changed, this, slot );
     }
     else if ( QgsFieldExpressionWidget *w = qobject_cast<QgsFieldExpressionWidget *>( widget ) )
     {
-      connect( w, SIGNAL( fieldChanged( QString ) ), this,  slot );
+      connect( w, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) > ( &QgsFieldExpressionWidget::fieldChanged ), this,  slot );
     }
     else if ( QComboBox *w =  qobject_cast<QComboBox *>( widget ) )
     {
-      connect( w, SIGNAL( currentIndexChanged( int ) ), this, slot );
+      connect( w, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, slot );
     }
     else if ( QSpinBox *w =  qobject_cast<QSpinBox *>( widget ) )
     {
-      connect( w, SIGNAL( valueChanged( int ) ), this, slot );
+      connect( w, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, slot );
     }
     else if ( QDoubleSpinBox *w =  qobject_cast<QDoubleSpinBox *>( widget ) )
     {
-      connect( w, SIGNAL( valueChanged( double ) ), this, slot );
+      connect( w, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, slot );
     }
     else if ( QgsColorButton *w =  qobject_cast<QgsColorButton *>( widget ) )
     {
-      connect( w, SIGNAL( colorChanged( QColor ) ), this, slot );
+      connect( w, static_cast < void ( QgsColorButton::* )( const QColor & ) > ( &QgsColorButton::colorChanged ), this, slot );
     }
     else if ( QCheckBox *w =  qobject_cast<QCheckBox *>( widget ) )
     {
-      connect( w, SIGNAL( toggled( bool ) ), this, slot );
+      connect( w, static_cast < void ( QCheckBox::* )( bool ) > ( &QCheckBox::toggled ), this, slot );
     }
     else if ( QLineEdit *w =  qobject_cast<QLineEdit *>( widget ) )
     {
-      connect( w, SIGNAL( textEdited( QString ) ), this, slot );
-      connect( w, SIGNAL( textChanged( QString ) ), this, slot );
+      connect( w, static_cast < void ( QLineEdit::* )( const QString & ) > ( &QLineEdit::textEdited ), this, slot );
+      connect( w, static_cast < void ( QLineEdit::* )( const QString & ) > ( &QLineEdit::textChanged ), this, slot );
     }
     else if ( QgsEffectStackCompactWidget *w = qobject_cast<QgsEffectStackCompactWidget *>( widget ) )
     {
-      connect( w, SIGNAL( changed() ), this, slot );
+      connect( w, &QgsEffectStackCompactWidget::changed, this, slot );
     }
   }
 }
