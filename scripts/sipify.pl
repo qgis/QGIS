@@ -22,8 +22,8 @@ sub processDoxygenLine
     $line =~ s/::/./g;
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
-	# replace \returns with :return:
-	$line =~ s/\\return(s)?/:return:/g;
+    # replace \returns with :return:
+    $line =~ s/\\return(s)?/:return:/g;
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
         return ""

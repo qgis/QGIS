@@ -506,3 +506,9 @@ typedef unsigned long long qgssize;
  * Class level annotation for abstract classes
  */
 #define SIP_ABSTRACT
+
+/*
+ * This is a PyObject * that is a Python list object
+ * http://pyqt.sourceforge.net/Docs/sip4/specification_files.html#additional-sip-types
+ */
+#define SIP_PYLIST
