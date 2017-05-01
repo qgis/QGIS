@@ -62,9 +62,6 @@ class InterpolationDataWidget(BASE, WIDGET):
         self.cmbFields.setFilters(QgsFieldProxyModel.Numeric)
         self.cmbFields.setLayer(self.cmbLayers.currentLayer())
 
-        #self.delegate = InterpolationTypeDelegate()
-        #self.layersTree.setItemDelegateForColumn(2, self.delegate)
-
     @pyqtSlot()
     def on_btnAdd_clicked(self):
         layer = self.cmbLayers.currentLayer()
@@ -87,6 +84,7 @@ class InterpolationDataWidget(BASE, WIDGET):
     @pyqtSlot(QgsMapLayer)
     def on_cmbLayers_layerChanged(self, layer):
         self.chkUseZCoordinate.setEnabled(False)
+        self.chkUseZCoordinate.setChecked(False)
 
         if layer is None or not layer.isValid():
             return
