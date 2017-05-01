@@ -111,6 +111,11 @@ class TestQgsExpressionContext : public QObject
           return new ModifiableFunction( mVal );
         }
 
+        virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override
+        {
+          return false;
+        }
+
       private:
 
         int *mVal = nullptr;
