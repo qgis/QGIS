@@ -507,7 +507,6 @@ analysis/interpolation/qgsidwinterpolator.sip
 analysis/interpolation/qgstininterpolator.sip
 analysis/openstreetmap/qgsosmbase.sip
 analysis/openstreetmap/qgsosmdatabase.sip
-analysis/openstreetmap/qgsosmdownload.sip
 analysis/openstreetmap/qgsosmimport.sip
 analysis/raster/qgsalignraster.sip
 analysis/raster/qgsderivativefilter.sip
