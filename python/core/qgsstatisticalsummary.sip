@@ -1,214 +1,299 @@
-/** \ingroup core
- * \class QgsStatisticalSummary
- * \brief Calculator for summary statistics for a list of doubles.
- *
- * Statistics are calculated by calling @link calculate @endlink and passing a list of doubles. The
- * individual statistics can then be retrieved using the associated methods. Note that not all statistics
- * are calculated by default. Statistics which require slower computations are only calculated by
- * specifying the statistic in the constructor or via @link setStatistics @endlink.
- *
- * \note Added in version 2.9
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsstatisticalsummary.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsStatisticalSummary
 {
-%TypeHeaderCode
-#include <qgsstatisticalsummary.h>
+%Docstring
+ Calculator for summary statistics for a list of doubles.
+
+ Statistics are calculated by calling calculate() and passing a list of doubles. The
+ individual statistics can then be retrieved using the associated methods. Note that not all statistics
+ are calculated by default. Statistics which require slower computations are only calculated by
+ specifying the statistic in the constructor or via setStatistics().
+
+.. versionadded:: 2.9
 %End
 
+%TypeHeaderCode
+#include "qgsstatisticalsummary.h"
+%End
   public:
 
-    //! Enumeration of flags that specify statistics to be calculated
     enum Statistic
     {
-      Count,  //!< Count
-      CountMissing, //!< Number of missing (null) values
-      Sum,  //!< Sum of values
-      Mean,  //!< Mean of values
-      Median, //!< Median of values
-      StDev, //!< Standard deviation of values
-      StDevSample, //!< Sample standard deviation of values
-      Min,  //!< Min of values
-      Max,  //!< Max of values
-      Range, //!< Range of values (max - min)
-      Minority, //!< Minority of values
-      Majority, //!< Majority of values
-      Variety, //!< Variety (count of distinct) values
-      FirstQuartile, //!< First quartile
-      ThirdQuartile, //!< Third quartile
-      InterQuartileRange, //!< Inter quartile range (IQR)
+      Count,
+      CountMissing,
+      Sum,
+      Mean,
+      Median,
+      StDev,
+      StDevSample,
+      Min,
+      Max,
+      Range,
+      Minority,
+      Majority,
+      Variety,
+      FirstQuartile,
+      ThirdQuartile,
+      InterQuartileRange,
       All
     };
     typedef QFlags<QgsStatisticalSummary::Statistic> Statistics;
 
-    /** Constructor for QgsStatisticalSummary
-     * @param stats flags for statistics to calculate
-     */
-    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::All );
+
+    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = All );
+%Docstring
+ Constructor for QgsStatisticalSummary
+ \param stats flags for statistics to calculate
+%End
 
     virtual ~QgsStatisticalSummary();
 
-    /** Returns flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (e.g., sum, min and max).
-     * @see setStatistics
-     */
-    QgsStatisticalSummary::Statistics statistics() const;
+    Statistics statistics() const;
+%Docstring
+ Returns flags which specify which statistics will be calculated. Some statistics
+ are always calculated (e.g., sum, min and max).
+.. seealso:: setStatistics
+ :rtype: Statistics
+%End
 
-    /** Sets flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (e.g., sum, min and max).
-     * @param stats flags for statistics to calculate
-     * @see statistics
-     */
-    void setStatistics( QgsStatisticalSummary::Statistics stats );
+    void setStatistics( Statistics stats );
+%Docstring
+ Sets flags which specify which statistics will be calculated. Some statistics
+ are always calculated (e.g., sum, min and max).
+ \param stats flags for statistics to calculate
+.. seealso:: statistics
+%End
 
-    /** Resets the calculated values
-     */
     void reset();
+%Docstring
+ Resets the calculated values
+%End
 
-    /** Calculates summary statistics for a list of values
-     * @param values list of doubles
-     */
-    void calculate( const QList<double>& values );
+    void calculate( const QList<double> &values );
+%Docstring
+ Calculates summary statistics for a list of values
+ \param values list of doubles
+%End
 
-    /** Adds a single value to the statistics calculation. Calling this method
-     * allows values to be added to the calculation one at a time. For large
-     * quantities of values this may be more efficient then first adding all the
-     * values to a list and calling calculate().
-     * @param value value to add
-     * @note call reset() before adding the first value using this method
-     * to clear the results from any previous calculations
-     * @note finalize() must be called after adding the final value and before
-     * retrieving calculated statistics.
-     * @see calculate()
-     * @see addVariant()
-     * @see finalize()
-     * @note added in QGIS 2.16
-     */
     void addValue( double value );
+%Docstring
+ Adds a single value to the statistics calculation. Calling this method
+ allows values to be added to the calculation one at a time. For large
+ quantities of values this may be more efficient then first adding all the
+ values to a list and calling calculate().
+ \param value value to add
+.. note::
 
-    /** Adds a single value to the statistics calculation. Calling this method
-     * allows values to be added to the calculation one at a time. For large
-     * quantities of values this may be more efficient then first adding all the
-     * values to a list and calling calculate().
-     * @param value variant containing to add. Non-numeric values are treated as null.
-     * @note call reset() before adding the first value using this method
-     * to clear the results from any previous calculations
-     * @note finalize() must be called after adding the final value and before
-     * retrieving calculated statistics.
-     * @see addValue()
-     * @see calculate()
-     * @see finalize()
-     * @note added in QGIS 2.16
-     */
-    void addVariant( const QVariant& value );
+   call reset() before adding the first value using this method
+ to clear the results from any previous calculations
+.. note::
 
-    /** Must be called after adding all values with addValues() and before retrieving
-     * any calculated statistics.
-     * @see addValue()
-     * @see addVariant()
-     * @note added in QGIS 2.16
-     */
+   finalize() must be called after adding the final value and before
+ retrieving calculated statistics.
+.. seealso:: calculate()
+.. seealso:: addVariant()
+.. seealso:: finalize()
+.. versionadded:: 2.16
+%End
+
+    void addVariant( const QVariant &value );
+%Docstring
+ Adds a single value to the statistics calculation. Calling this method
+ allows values to be added to the calculation one at a time. For large
+ quantities of values this may be more efficient then first adding all the
+ values to a list and calling calculate().
+ \param value variant containing to add. Non-numeric values are treated as null.
+.. note::
+
+   call reset() before adding the first value using this method
+ to clear the results from any previous calculations
+.. note::
+
+   finalize() must be called after adding the final value and before
+ retrieving calculated statistics.
+.. seealso:: addValue()
+.. seealso:: calculate()
+.. seealso:: finalize()
+.. versionadded:: 2.16
+%End
+
     void finalize();
+%Docstring
+ Must be called after adding all values with addValues() and before retrieving
+ any calculated statistics.
+.. seealso:: addValue()
+.. seealso:: addVariant()
+.. versionadded:: 2.16
+%End
 
-    /** Returns the value of a specified statistic
-     * @param stat statistic to return
-     * @returns calculated value of statistic
-     */
     double statistic( Statistic stat ) const;
+%Docstring
+ Returns the value of a specified statistic
+ \param stat statistic to return
+ :return: calculated value of statistic. A NaN value may be returned for invalid
+ statistics.
+ :rtype: float
+%End
 
-    /** Returns calculated count of values
-     */
     int count() const;
+%Docstring
+ Returns calculated count of values
+ :rtype: int
+%End
 
-    /** Returns the number of missing (null) values
-     * @note added in QGIS 2.16
-     */
     int countMissing() const;
+%Docstring
+ Returns the number of missing (null) values
+.. versionadded:: 2.16
+ :rtype: int
+%End
 
-    /** Returns calculated sum of values
-     */
     double sum() const;
+%Docstring
+ Returns calculated sum of values
+ :rtype: float
+%End
 
-    /** Returns calculated mean of values
-     */
     double mean() const;
+%Docstring
+ Returns calculated mean of values. A NaN value may be returned if the mean cannot
+ be calculated.
+ :rtype: float
+%End
 
-    /** Returns calculated median of values. This is only calculated if Statistic::Median has
-     * been specified in the constructor or via setStatistics.
-     */
     double median() const;
+%Docstring
+ Returns calculated median of values. This is only calculated if Statistic.Median has
+ been specified in the constructor or via setStatistics. A NaN value may be returned if the median cannot
+ be calculated.
+ :rtype: float
+%End
 
-    /** Returns calculated minimum from values.
-     */
     double min() const;
+%Docstring
+ Returns calculated minimum from values. A NaN value may be returned if the minimum cannot
+ be calculated.
+ :rtype: float
+%End
 
-    /** Returns calculated maximum from values.
-     */
     double max() const;
+%Docstring
+ Returns calculated maximum from values. A NaN value may be returned if the maximum cannot
+ be calculated.
+ :rtype: float
+%End
 
-    /** Returns calculated range (difference between maximum and minimum values).
-     */
     double range() const;
+%Docstring
+ Returns calculated range (difference between maximum and minimum values). A NaN value may be returned if the range cannot
+ be calculated.
+ :rtype: float
+%End
 
-    /** Returns population standard deviation. This is only calculated if Statistic::StDev has
-     * been specified in the constructor or via setStatistics.
-     * @see sampleStDev
-     */
     double stDev() const;
+%Docstring
+ Returns population standard deviation. This is only calculated if Statistic.StDev has
+ been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
+ be calculated.
+.. seealso:: sampleStDev
+ :rtype: float
+%End
 
-    /** Returns sample standard deviation. This is only calculated if Statistic::StDev has
-     * been specified in the constructor or via setStatistics.
-     * @see stDev
-     */
     double sampleStDev() const;
+%Docstring
+ Returns sample standard deviation. This is only calculated if Statistic.StDev has
+ been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
+ be calculated.
+.. seealso:: stDev
+ :rtype: float
+%End
 
-    /** Returns variety of values. The variety is the count of unique values from the list.
-     * This is only calculated if Statistic::Variety has been specified in the constructor
-     * or via setStatistics.
-     */
     int variety() const;
+%Docstring
+ Returns variety of values. The variety is the count of unique values from the list.
+ This is only calculated if Statistic.Variety has been specified in the constructor
+ or via setStatistics.
+ :rtype: int
+%End
 
-    /** Returns minority of values. The minority is the value with least occurrences in the list
-     * This is only calculated if Statistic::Minority has been specified in the constructor
-     * or via setStatistics.
-     * @see majority
-     */
     double minority() const;
+%Docstring
+ Returns minority of values. The minority is the value with least occurrences in the list
+ This is only calculated if Statistic.Minority has been specified in the constructor
+ or via setStatistics. A NaN value may be returned if the minority cannot
+ be calculated.
+.. seealso:: majority
+ :rtype: float
+%End
 
-    /** Returns majority of values. The majority is the value with most occurrences in the list
-     * This is only calculated if Statistic::Majority has been specified in the constructor
-     * or via setStatistics.
-     * @see minority
-     */
     double majority() const;
+%Docstring
+ Returns majority of values. The majority is the value with most occurrences in the list
+ This is only calculated if Statistic.Majority has been specified in the constructor
+ or via setStatistics. A NaN value may be returned if the majority cannot
+ be calculated.
+.. seealso:: minority
+ :rtype: float
+%End
 
-    /** Returns the first quartile of the values. The quartile is calculated using the
-     * "Tukey's hinges" method.
-     * @see thirdQuartile
-     * @see interQuartileRange
-     */
     double firstQuartile() const;
+%Docstring
+ Returns the first quartile of the values. The quartile is calculated using the
+ "Tukey's hinges" method. A NaN value may be returned if the first quartile cannot
+ be calculated.
+.. seealso:: thirdQuartile
+.. seealso:: interQuartileRange
+ :rtype: float
+%End
 
-    /** Returns the third quartile of the values. The quartile is calculated using the
-     * "Tukey's hinges" method.
-     * @see firstQuartile
-     * @see interQuartileRange
-     */
     double thirdQuartile() const;
+%Docstring
+ Returns the third quartile of the values. The quartile is calculated using the
+ "Tukey's hinges" method. A NaN value may be returned if the third quartile cannot
+ be calculated.
+.. seealso:: firstQuartile
+.. seealso:: interQuartileRange
+ :rtype: float
+%End
 
-    /** Returns the inter quartile range of the values. The quartiles are calculated using the
-     * "Tukey's hinges" method.
-     * @see firstQuartile
-     * @see thirdQuartile
-     */
     double interQuartileRange() const;
+%Docstring
+ Returns the inter quartile range of the values. The quartiles are calculated using the
+ "Tukey's hinges" method. A NaN value may be returned if the IQR cannot
+ be calculated.
+.. seealso:: firstQuartile
+.. seealso:: thirdQuartile
+ :rtype: float
+%End
 
-    /** Returns the friendly display name for a statistic
-     * @param statistic statistic to return name for
-     */
     static QString displayName( Statistic statistic );
+%Docstring
+ Returns the friendly display name for a statistic
+ \param statistic statistic to return name for
+ :rtype: str
+%End
 
 };
 
 QFlags<QgsStatisticalSummary::Statistic> operator|(QgsStatisticalSummary::Statistic f1, QFlags<QgsStatisticalSummary::Statistic> f2);
 
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsstatisticalsummary.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
