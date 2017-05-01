@@ -13,7 +13,6 @@ core/qgsexpressioncontextgenerator.sip
 core/qgsfeaturefilterprovider.sip
 core/qgsfeatureiterator.sip
 core/qgsfeaturerequest.sip
-core/qgsfieldformatterregistry.sip
 core/qgsgeometrysimplifier.sip
 core/qgsgeometryvalidator.sip
 core/qgsgml.sip
