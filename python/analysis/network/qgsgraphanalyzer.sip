@@ -1,19 +1,37 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraphanalyzer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsGraphAnalyzer
 {
-%TypeHeaderCode
-#include <qgsgraphanalyzer.h>
+%Docstring
+  This class performs graph analysis, e.g. calculates shortest path between two
+ points using different strategies with Dijkstra algorithm
 %End
 
+%TypeHeaderCode
+#include "qgsgraphanalyzer.h"
+%End
   public:
-    /**
-     * solve shortest path problem using dijkstra algorithm
-     * @param source The source graph
-     * @param startVertexIdx index of start vertex
-     * @param criterionNum index of arc property as optimization criterion
-     * @param resultTree array represents the shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reacheble and resultTree[ vertexIndex ] == -1 others.
-     * @param resultCost array of cost paths
-     */
-    static SIP_PYLIST dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum );
+
+    static SIP_PYLIST void dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = 0, QVector<double> *resultCost = 0 );
+%Docstring
+ Solve shortest path problem using Dijkstra algorithm
+ \param source source graph
+ \param startVertexIdx index of the start vertex
+ \param criterionNum index of the optimization strategy
+ \param resultTree array that represents shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reachable, otherwise resultTree[ vertexIndex ] == -1
+ \param resultCost array of the paths costs
+%End
+
 %MethodCode
       QVector< int > treeResult;
       QVector< double > costResult;
@@ -43,11 +61,20 @@ class QgsGraphAnalyzer
       PyTuple_SET_ITEM( sipRes, 1, l2 );
 %End
 
-    /**
-     * return shortest path tree with root-node in startVertexIdx
-     * @param source The source graph
-     * @param startVertexIdx index of start vertex
-     * @param criterionNum index of edge property as optimization criterion
-     */
     static QgsGraph *shortestTree( const QgsGraph *source, int startVertexIdx, int criterionNum );
+%Docstring
+ Returns shortest path tree with root-node in startVertexIdx
+ \param source source graph
+ \param startVertexIdx index of the start vertex
+ \param criterionNum index of the optimization strategy
+ :rtype: QgsGraph
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraphanalyzer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
