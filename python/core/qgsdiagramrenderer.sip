@@ -301,7 +301,7 @@ class QgsDiagramSettings
      * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
      * @note added in 2.10
      */
-    QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
+    QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 
 };
 
@@ -372,7 +372,7 @@ class QgsDiagramRenderer
      * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
      * @note added in 2.10
      */
-    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
+    virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 
     /** Returns true if renderer will show legend items for diagram attributes.
      * @note added in QGIS 2.16
@@ -470,7 +470,7 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRenderer
     void readXml( const QDomElement &elem, const QgsVectorLayer *layer );
     void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
 
-    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
+    virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const;
@@ -536,7 +536,7 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
     void readXml( const QDomElement &elem, const QgsVectorLayer *layer );
     void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
 
-    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
+    virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const;
