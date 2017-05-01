@@ -371,8 +371,8 @@ class ParameterRaster(Parameter):
 class ParameterSelection(Parameter):
 
     def __init__(self, name='', description='', options=[], default=None, isSource=False,
-                 multiple=False, optional=False):
-        Parameter.__init__(self, name, description, default, optional)
+                 multiple=False, optional=False, metadata={}):
+        Parameter.__init__(self, name, description, default, optional, metadata)
         self.multiple = multiple
         isSource = parseBool(isSource)
         self.options = options

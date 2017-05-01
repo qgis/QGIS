@@ -116,6 +116,7 @@ from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.core.outputs import (OutputFile, OutputRaster, OutputVector,
                                      OutputString, OutputTable, OutputExtent)
 from processing.tools import dataobjects
+from processing.gui.CheckboxesPanel import CheckboxesPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
@@ -730,7 +731,12 @@ class RasterWidgetWrapper(WidgetWrapper):
 
 class SelectionWidgetWrapper(WidgetWrapper):
 
-    def createWidget(self):
+    def createWidget(self, useCheckBoxes=False, columns=1):
+        self._useCheckBoxes = useCheckBoxes
+        if self._useCheckBoxes and not self.dialogType == DIALOG_BATCH:
+            return CheckboxesPanel(options=self.param.options(),
+                                   multiple=self.param.allowMultiple(),
+                                   columns=columns)
         if self.param.allowMultiple():
             return MultipleInputPanel(options=self.param.options())
         else:
@@ -742,12 +748,17 @@ class SelectionWidgetWrapper(WidgetWrapper):
             return widget
 
     def setValue(self, value):
+        if self._useCheckBoxes and not self.dialogType == DIALOG_BATCH:
+            self.widget.setValue(value)
+            return
         if self.param.allowMultiple():
             self.widget.setSelectedItems(value)
         else:
             self.widget.setCurrentIndex(self.widget.findData(value))
 
     def value(self):
+        if self._useCheckBoxes and not self.dialogType == DIALOG_BATCH:
+            return self.widget.value()
         if self.param.allowMultiple():
             return self.widget.selectedoptions
         else:
