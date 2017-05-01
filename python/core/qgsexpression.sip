@@ -574,6 +574,11 @@ Does this function use a geometry object.
  :rtype: bool
 %End
 
+        virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
+%Docstring
+ :rtype: bool
+%End
+
         virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction *node ) const;
 %Docstring
  Returns a set of field names which are required for this function.

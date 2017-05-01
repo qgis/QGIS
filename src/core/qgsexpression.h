@@ -578,6 +578,8 @@ class CORE_EXPORT QgsExpression
          * Functions are non lazy default and will be given the node return value when called **/
         bool lazyEval() const { return mLazyEval; }
 
+        virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
+
         /**
          * Returns a set of field names which are required for this function.
          * May contain QgsFeatureRequest::AllAttributes to signal that all
@@ -705,6 +707,30 @@ class CORE_EXPORT QgsExpression
                         const QStringList &aliases = QStringList(),
                         bool handlesNull = false );
 
+
+        /**
+         * Static function for evaluation against a QgsExpressionContext, using a named list of parameter values.
+         *
+         * Lambda functions can be provided that will be called to determine if a geometry is used an which
+         * columns are referenced.
+         * This is only required if this cannot be determined by calling each parameter node's usesGeometry() or
+         * referencedColumns() method. For example, an aggregate expression requires the geometry and all columns
+         * if the parent variable is used.
+         * If a nullptr is passed as a node to these functions, they should stay on the safe side and return if they
+         * could potentially require a geometry or columns.
+         */
+        StaticFunction( const QString &fnname,
+                        const QgsExpression::ParameterList &params,
+                        FcnEval fcn,
+                        const QString &group,
+                        const QString &helpText,
+                        std::function < bool ( const QgsExpression::NodeFunction *node ) > usesGeometry,
+                        std::function < QSet<QString>( const QgsExpression::NodeFunction *node ) > referencedColumns,
+                        std::function < bool( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) > isStatic,
+                        bool lazyEval = false,
+                        const QStringList &aliases = QStringList(),
+                        bool handlesNull = false );
+
         /** Static function for evaluation against a QgsExpressionContext, using a named list of parameter values and list
          * of groups.
          */
@@ -742,12 +768,17 @@ class CORE_EXPORT QgsExpression
 
         virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction *node ) const override;
 
+        virtual bool isStatic( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+        void setIsStaticFunction( std::function < bool( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) > isStatic );
+
       private:
         FcnEval mFnc;
         QStringList mAliases;
         bool mUsesGeometry;
         std::function < bool( const QgsExpression::NodeFunction *node ) > mUsesGeometryFunc;
         std::function < QSet<QString>( const QgsExpression::NodeFunction *node ) > mReferencedColumnsFunc;
+        std::function < bool( const NodeFunction *node,  QgsExpression *parent, const QgsExpressionContext *context ) > mIsStaticFunc;
         QSet<QString> mReferencedColumns;
     };
 #endif

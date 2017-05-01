@@ -4212,9 +4212,29 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
         << new StaticFunction( QStringLiteral( "layer_property" ), 2, fcnGetLayerProperty, QStringLiteral( "General" ) )
         << new StaticFunction( QStringLiteral( "raster_statistic" ), ParameterList() << Parameter( QStringLiteral( "layer" ) )
                                << Parameter( QStringLiteral( "band" ) )
-                               << Parameter( QStringLiteral( "statistic" ) ), fcnGetRasterBandStat, QStringLiteral( "General" ) )
-        << new StaticFunction( QStringLiteral( "var" ), 1, fcnGetVariable, QStringLiteral( "General" ) )
+                               << Parameter( QStringLiteral( "statistic" ) ), fcnGetRasterBandStat, QStringLiteral( "General" ) );
 
+    // **var** function
+    StaticFunction *varFunction =  new StaticFunction( QStringLiteral( "var" ), 1, fcnGetVariable, QStringLiteral( "General" ) );
+    varFunction->setIsStaticFunction(
+      []( const NodeFunction * node, QgsExpression * parent, const QgsExpressionContext * context )
+    {
+      if ( node->args()->count() > 0 )
+      {
+        Node *argNode = node->args()->at( 0 );
+
+        if ( !argNode->isStatic( parent, context ) )
+          return false;
+
+        if ( fcnGetVariable( QVariantList() << argNode->eval( parent, context ), context, parent ).isValid() )
+          return true;
+      }
+      return false;
+    }
+    );
+
+    sFunctions
+        << varFunction
         //return all attributes string for referencedColumns - this is caught by
         // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
         // feature request
@@ -5590,10 +5610,7 @@ QgsExpression::Node *QgsExpression::NodeFunction::clone() const
 
 bool QgsExpression::NodeFunction::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
 {
-  Q_UNUSED( parent )
-  Q_UNUSED( context )
-  // TODO some functions are static!
-  return false;
+  return Functions()[mFnIndex]->isStatic( this, parent, context );
 }
 
 bool QgsExpression::NodeFunction::validateParams( int fnIndex, QgsExpression::NodeList *args, QString &error )
@@ -6299,6 +6316,14 @@ bool QgsExpression::Function::usesGeometry( const QgsExpression::NodeFunction *n
   return true;
 }
 
+bool QgsExpression::Function::isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  Q_UNUSED( parent )
+  Q_UNUSED( context )
+  Q_UNUSED( node )
+  return false;
+}
+
 QSet<QString> QgsExpression::Function::referencedColumns( const NodeFunction *node ) const
 {
   Q_UNUSED( node )
@@ -6310,7 +6335,15 @@ bool QgsExpression::Function::operator==( const QgsExpression::Function &other )
   return ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 );
 }
 
-QgsExpression::StaticFunction::StaticFunction( const QString &fnname, const QgsExpression::ParameterList &params, QgsExpression::FcnEval fcn, const QString &group, const QString &helpText, std::function < bool ( const QgsExpression::NodeFunction *node ) > usesGeometry, std::function < QSet<QString>( const QgsExpression::NodeFunction *node ) > referencedColumns, bool lazyEval, const QStringList &aliases, bool handlesNull )
+QgsExpression::StaticFunction::StaticFunction( const QString &fnname, const QgsExpression::ParameterList &params,
+    QgsExpression::FcnEval fcn,
+    const QString &group,
+    const QString &helpText,
+    std::function < bool ( const QgsExpression::NodeFunction *node ) > usesGeometry,
+    std::function < QSet<QString>( const QgsExpression::NodeFunction *node ) > referencedColumns,
+    bool lazyEval,
+    const QStringList &aliases,
+    bool handlesNull )
   : Function( fnname, params, group, helpText, lazyEval, handlesNull )
   , mFnc( fcn )
   , mAliases( aliases )
@@ -6334,6 +6367,19 @@ QSet<QString> QgsExpression::StaticFunction::referencedColumns( const NodeFuncti
     return mReferencedColumnsFunc( node );
   else
     return mReferencedColumns;
+}
+
+bool QgsExpression::StaticFunction::isStatic( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  if ( mIsStaticFunc )
+    return mIsStaticFunc( node, parent, context );
+  else
+    return false;
+}
+
+void QgsExpression::StaticFunction::setIsStaticFunction( std::function<bool ( const NodeFunction *, QgsExpression *, const QgsExpressionContext * )> isStatic )
+{
+  mIsStaticFunc = isStatic;
 }
 
 QVariant QgsExpression::Node::eval( QgsExpression *parent, const QgsExpressionContext *context )
