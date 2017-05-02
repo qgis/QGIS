@@ -456,7 +456,7 @@ NOGEOMETRY_EXTENSIONS = [
 ]
 
 
-def createVectorWriter(destination, encoding, fields, geometryType, crs, context, options=None):
+def createVectorWriter(destination, encoding, fields, geometryType, crs, context):
     layer = None
     sink = None
 
