@@ -365,15 +365,15 @@ void TestQgsProcessing::mapLayerFromString()
   QCOMPARE( QgsProcessingUtils::mapLayerFromProject( v1->id(), &p ), v1 );
 
   // test mapLayerFromString
-  QgsMapLayer *l = QgsProcessingUtils::mapLayerFromString( raster2 );
+  QgsMapLayer *l = QgsProcessingUtils::loadMapLayerFromString( raster2 );
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayer::RasterLayer );
   delete l;
-  l = QgsProcessingUtils::mapLayerFromString( QString() );
+  l = QgsProcessingUtils::loadMapLayerFromString( QString() );
   QVERIFY( !l );
-  l = QgsProcessingUtils::mapLayerFromString( QStringLiteral( "so much room for activities!" ) );
+  l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "so much room for activities!" ) );
   QVERIFY( !l );
-  l = QgsProcessingUtils::mapLayerFromString( testDataDir + "multipoint.shp" );
+  l = QgsProcessingUtils::loadMapLayerFromString( testDataDir + "multipoint.shp" );
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
   delete l;

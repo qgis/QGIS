@@ -79,28 +79,14 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
 
-
     /**
-     * Interprets a \a string as a map layer from a project.
-     *
-     * This method attempts to match a string to a project map layer, using
-     * first the layer ID, then layer names, and finally layer source.
-     * If the string matches a normalized version of any layer source
-     * for layers in the specified \a project, then those matching layers will be
-     * returned.
-     * \see mapLayerFromString()
+     * Interprets a string as a map layer within the supplied \a context. The method will attempt to
+     * load a layer matching the passed \a string. E.g. if the string matches a layer ID or name
+     * within the current project this layer will be returned.
+     * If the string is a file path and \a allowLoadingNewLayers is true, then the layer at this
+     * file path will be loaded and added to the context's temporary layer store.
+     * Ownership of the layer remains with the \a context or the context's current project.
      */
-    static QgsMapLayer *mapLayerFromProject( const QString &string, QgsProject *project );
-
-    /**
-     * Interprets a string as a map layer. The method will attempt to
-     * load a layer matching the passed \a string. E.g. if the string is a file path,
-     * then the layer at this file path will be loaded.
-     * The caller takes responsibility for deleting the returned map layer.
-     * \see mapLayerFromProject()
-     */
-    static QgsMapLayer *mapLayerFromString( const QString &string ) SIP_FACTORY;
-
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true );
 
     /**
@@ -138,6 +124,28 @@ class CORE_EXPORT QgsProcessingUtils
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
                              const QList< QgsWkbTypes::GeometryType > &geometryTypes );
+
+    /**
+     * Interprets a \a string as a map layer from a project.
+     *
+     * This method attempts to match a string to a project map layer, using
+     * first the layer ID, then layer names, and finally layer source.
+     * If the string matches a normalized version of any layer source
+     * for layers in the specified \a project, then those matching layers will be
+     * returned.
+     * \see mapLayerFromString()
+     */
+    static QgsMapLayer *mapLayerFromProject( const QString &string, QgsProject *project );
+
+    /**
+     * Interprets a string as a map layer. The method will attempt to
+     * load a layer matching the passed \a string. E.g. if the string is a file path,
+     * then the layer at this file path will be loaded.
+     * The caller takes responsibility for deleting the returned map layer.
+     */
+    static QgsMapLayer *loadMapLayerFromString( const QString &string );
+
+    friend class TestQgsProcessing;
 
 };
 

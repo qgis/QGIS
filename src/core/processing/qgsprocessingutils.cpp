@@ -130,7 +130,7 @@ class ProjectionSettingRestorer
 };
 ///@endcond PRIVATE
 
-QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string )
+QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string )
 {
   if ( QFileInfo::exists( string ) )
   {
@@ -170,7 +170,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
   if ( !allowLoadingNewLayers )
     return nullptr;
 
-  layer = mapLayerFromString( string );
+  layer = loadMapLayerFromString( string );
   if ( layer )
   {
     context.temporaryLayerStore().addMapLayer( layer );
