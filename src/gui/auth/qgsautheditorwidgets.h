@@ -18,6 +18,7 @@
 #define QGSAUTHEDITORWIDGETS_H
 
 #include <QWidget>
+#include "qgis.h"
 #include "ui_qgsautheditorwidgets.h"
 #include "ui_qgsauthmethodplugins.h"
 #include "qgis_gui.h"
@@ -35,7 +36,7 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
      * Construct a dialog for viewing available authentication method plugins
      * \param parent Parent widget
      */
-    explicit QgsAuthMethodPlugins( QWidget *parent = nullptr );
+    explicit QgsAuthMethodPlugins( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private slots:
     void populateTable();
@@ -61,7 +62,7 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
      * Construct a widget to contain various authentication editors
      * \param parent Parent widget
      */
-    explicit QgsAuthEditorWidgets( QWidget *parent = nullptr );
+    explicit QgsAuthEditorWidgets( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private slots:
     void on_btnCertManager_clicked();

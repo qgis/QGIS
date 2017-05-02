@@ -62,7 +62,7 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
      * \param map properties string map
      * \returns new paint effect
      */
-    virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) = 0;
+    virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) = 0 SIP_FACTORY;
 
     /** Create configuration widget for paint effect of this class. Can return nullptr
      * if there's no GUI for the paint effect class.
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \param metadata effect metadata. Ownership is transferred to the registry.
      * \returns true if add was successful.
      */
-    bool addEffectType( QgsPaintEffectAbstractMetadata *metadata );
+    bool addEffectType( QgsPaintEffectAbstractMetadata *metadata SIP_TRANSFER );
 
     /** Creates a new paint effect given the effect name and properties map.
      * \param name unique name representing paint effect class
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \returns new paint effect of specified class, or nullptr if matching
      * paint effect could not be created
      */
-    QgsPaintEffect *createEffect( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const;
+    QgsPaintEffect *createEffect( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const SIP_FACTORY;
 
     /** Creates a new paint effect given a DOM element storing paint effect
      * properties.
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \returns new paint effect, or nullptr if matching
      * paint effect could not be created
      */
-    QgsPaintEffect *createEffect( const QDomElement &element ) const;
+    QgsPaintEffect *createEffect( const QDomElement &element ) const SIP_FACTORY;
 
     /** Returns a list of known paint effects.
      * \returns list of paint effect names
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \returns default effects stack
      * \see isDefaultStack()
      */
-    static QgsPaintEffect *defaultStack();
+    static QgsPaintEffect *defaultStack() SIP_FACTORY;
 
     /** Tests whether a paint effect matches the default effects stack.
      * \param effect paint effect to test

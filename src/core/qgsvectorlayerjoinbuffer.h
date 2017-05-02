@@ -19,6 +19,7 @@
 #define QGSVECTORLAYERJOINBUFFER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsvectorlayerjoininfo.h"
 
 #include <QHash>
@@ -73,7 +74,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
       \param index this layers attribute index
       \param fields fields of the vector layer (including joined fields)
       \param sourceFieldIndex Output: field's index in source layer */
-    const QgsVectorLayerJoinInfo *joinForFieldIndex( int index, const QgsFields &fields, int &sourceFieldIndex ) const;
+    const QgsVectorLayerJoinInfo *joinForFieldIndex( int index, const QgsFields &fields, int &sourceFieldIndex SIP_OUT ) const;
 
     //! Find out what is the first index of the join within fields. Returns -1 if join is not present
     //! \since QGIS 2.6
@@ -85,7 +86,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
 
     //! Create a copy of the join buffer
     //! \since QGIS 2.6
-    QgsVectorLayerJoinBuffer *clone() const;
+    QgsVectorLayerJoinBuffer *clone() const SIP_FACTORY;
 
   signals:
     //! Emitted whenever the list of joined fields changes (e.g. added join or joined layer's fields change)

@@ -17,6 +17,7 @@
 #define QGSCONFIGURESHORTCUTSDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 
 #include "ui_qgsconfigureshortcutsdialog.h"
 #include "qgis_gui.h"
@@ -41,7 +42,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
      * \param manager associated QgsShortcutsManager, or leave as null to use the default
      * singleton QgsShortcutsManager instance.
      */
-    QgsConfigureShortcutsDialog( QWidget *parent = nullptr, QgsShortcutsManager *manager = nullptr );
+    QgsConfigureShortcutsDialog( QWidget *parent SIP_TRANSFERTHIS = 0, QgsShortcutsManager *manager = nullptr );
 
     ~QgsConfigureShortcutsDialog();
 

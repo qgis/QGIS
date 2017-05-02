@@ -17,6 +17,7 @@
 #define QGSEDITORCONFIGWIDGET_H
 
 #include <QWidget>
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsexpressioncontextgenerator.h"
@@ -44,7 +45,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
      * \param fieldIdx The index of the field on the layer for which this dialog will be created
      * \param parent   A parent widget
      */
-    explicit QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
+    explicit QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS );
 
     /**
      * \brief Create a configuration from the current GUI state

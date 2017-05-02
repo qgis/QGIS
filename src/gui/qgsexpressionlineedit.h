@@ -17,6 +17,7 @@
 #define QGSEXPRESSIONLINEEDIT_H
 
 #include <QWidget>
+#include "qgis.h"
 #include "qgsexpressioncontext.h"
 #include "qgsdistancearea.h"
 #include "qgis_gui.h"
@@ -54,7 +55,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
      * Constructor for QgsExpressionLineEdit.
      * \param parent parent widget
      */
-    explicit QgsExpressionLineEdit( QWidget *parent = nullptr );
+    explicit QgsExpressionLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Sets the title used in the expression builder dialog
@@ -102,7 +103,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
       * Returns true if the current expression is valid.
       * \param expressionError will be set to any generated error message if specified
       */
-    bool isValidExpression( QString *expressionError = nullptr ) const;
+    bool isValidExpression( QString *expressionError SIP_OUT = 0 ) const;
 
     /**
      * Register an expression context generator class that will be used to retrieve

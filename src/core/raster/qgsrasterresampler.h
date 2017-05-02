@@ -19,6 +19,7 @@
 #define QGSRASTERRESAMPLER_H
 
 #include <QString>
+#include "qgis.h"
 
 class QImage;
 
@@ -42,7 +43,7 @@ class QgsRasterResampler
      * Needs to be reimplemented by subclasses.
      * Ownership is transferred to the caller.
      */
-    virtual QgsRasterResampler *clone() const = 0;
+    virtual QgsRasterResampler *clone() const = 0 SIP_FACTORY;
 };
 
 #endif // QGSRASTERRESAMPLER_H

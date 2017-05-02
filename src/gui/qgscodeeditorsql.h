@@ -17,6 +17,7 @@
 #define QGSCODEEDITORSQL_H
 
 #include "qgscodeeditor.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     Q_OBJECT
 
   public:
-    QgsCodeEditorSQL( QWidget *parent = nullptr );
+    QgsCodeEditorSQL( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private:
     //QgsCodeEditor *mSciWidget;

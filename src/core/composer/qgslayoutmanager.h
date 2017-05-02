@@ -17,6 +17,7 @@
 #define QGSLAYOUTMANAGER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposition.h"
 #include <QObject>
 
@@ -46,7 +47,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * Constructor for QgsLayoutManager. The project will become the parent object for this
      * manager.
      */
-    explicit QgsLayoutManager( QgsProject *project = nullptr );
+    explicit QgsLayoutManager( QgsProject *project SIP_TRANSFERTHIS = 0 );
 
     ~QgsLayoutManager();
 
@@ -57,7 +58,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * \see removeComposition()
      * \see compositionAdded()
      */
-    bool addComposition( QgsComposition *composition );
+    bool addComposition( QgsComposition *composition SIP_TRANSFER );
 
     /**
      * Removes a composition from the manager. The composition is deleted.

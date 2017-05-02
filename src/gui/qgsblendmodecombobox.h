@@ -19,6 +19,7 @@
 #define QGSBLENDMODECOMBOBOX_H
 
 #include <QComboBox>
+#include "qgis.h"
 #include <QPainter> // For QPainter::CompositionMode enum
 #include "qgis_gui.h"
 
@@ -29,7 +30,7 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
 {
     Q_OBJECT
   public:
-    QgsBlendModeComboBox( QWidget *parent = nullptr );
+    QgsBlendModeComboBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     //! Function to read the selected blend mode as QPainter::CompositionMode
     QPainter::CompositionMode blendMode();

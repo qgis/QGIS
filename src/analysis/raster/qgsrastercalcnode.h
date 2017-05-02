@@ -20,6 +20,7 @@
 #define QGSRASTERCALCNODE_H
 
 #include <QMap>
+#include "qgis.h"
 #include <QString>
 #include "qgis_analysis.h"
 
@@ -98,7 +99,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      */
     bool calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row = -1 ) const;
 
-    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg );
+    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
   private:
     Type mType;

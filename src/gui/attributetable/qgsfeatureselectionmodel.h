@@ -16,6 +16,7 @@
 #define QGSFEATURESELECTIONMODEL_H
 
 #include <QItemSelectionModel>
+#include "qgis.h"
 
 #include "qgsfeature.h"
 #include "qgis_gui.h"
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
 {
     Q_OBJECT
   public:
-    explicit QgsFeatureSelectionModel( QAbstractItemModel *model, QgsFeatureModel *featureModel, QgsIFeatureSelectionManager *featureSelectionHandler, QObject *parent );
+    explicit QgsFeatureSelectionModel( QAbstractItemModel *model, QgsFeatureModel *featureModel, QgsIFeatureSelectionManager *featureSelectionHandler, QObject *parent SIP_TRANSFERTHIS );
 
     /**
      * Enables or disables synchronisation to the QgsVectorLayer

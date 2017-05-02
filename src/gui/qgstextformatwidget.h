@@ -18,6 +18,7 @@
 #define QGSTEXTFORMATWIDGET_H
 
 #include <ui_qgstextformatwidgetbase.h>
+#include "qgis.h"
 #include "qgstextrenderer.h"
 #include "qgsstringutils.h"
 #include "qgisgui.h"
@@ -56,7 +57,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      * \param mapCanvas associated map canvas
      * \param parent parent widget
      */
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     ~QgsTextFormatWidget();
 
@@ -90,7 +91,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      * \param parent parent widget
      * \param mode widget mode
      */
-    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode );
+    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS, Mode mode );
 
     /** Updates the widget's state to reflect the settings in a QgsTextFormat.
      * \param format source format
@@ -221,7 +222,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      * \param parent parent widget
      * \param fl window flags for dialog
      */
-    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     virtual ~QgsTextFormatDialog();
 
@@ -256,7 +257,7 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
      * \param mapCanvas optional associated map canvas
      * \param parent parent widget
      */
-    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr );
+    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns the current formatting settings defined by the widget.
      */

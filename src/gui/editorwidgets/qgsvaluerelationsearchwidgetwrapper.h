@@ -17,6 +17,7 @@
 #define QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
+#include "qgis.h"
 #include "qgsvaluerelationfieldformatter.h"
 
 #include <QComboBox>
@@ -36,7 +37,7 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
 {
     Q_OBJECT
   public:
-    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;

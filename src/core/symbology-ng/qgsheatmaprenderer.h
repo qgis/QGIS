@@ -52,9 +52,9 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
     virtual QString dump() const override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
-    static QgsFeatureRenderer *create( QDomElement &element );
+    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
     virtual QDomElement save( QDomDocument &doc ) override;
-    static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * \param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
      * \see colorRamp
      */
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /** Returns the radius for the heatmap
      * \returns heatmap radius

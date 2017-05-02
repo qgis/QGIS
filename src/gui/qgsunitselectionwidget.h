@@ -19,6 +19,7 @@
 #define QGSUNITSELECTIONWIDGET_H
 
 #include <QWidget>
+#include "qgis.h"
 #include <QDialog>
 #include "qgspanelwidget.h"
 #include "qgssymbol.h"
@@ -47,7 +48,7 @@ class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsM
     /** Constructor for QgsMapUnitScaleWidget.
      * \param parent parent widget
      */
-    QgsMapUnitScaleWidget( QWidget *parent = nullptr );
+    QgsMapUnitScaleWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns a QgsMapUnitScale representing the settings shown in the
      * widget.
@@ -151,7 +152,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
     /** Constructor for QgsUnitSelectionWidget.
      * \param parent parent widget
      */
-    QgsUnitSelectionWidget( QWidget *parent = nullptr );
+    QgsUnitSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Sets the units which the user can choose from in the combobox.
      * \param units list of strings for custom units to display in the widget
@@ -178,7 +179,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
      * \param unitIndex index of unit to set as current
      * \note available in Python bindings as setUnitIndex
      */
-    void setUnit( int unitIndex );
+    void setUnit( int unitIndex ) SIP_PYNAME( setUnitIndex );
 
     /** Sets the selected unit
      * \param unit predefined unit to set as current

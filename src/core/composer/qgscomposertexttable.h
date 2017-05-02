@@ -19,6 +19,7 @@
 #define QGSCOMPOSERTEXTTABLE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposertablev2.h"
 
 /** \ingroup core
@@ -31,7 +32,7 @@ class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
     Q_OBJECT
 
   public:
-    QgsComposerTextTableV2( QgsComposition *c, bool createUndoCommands );
+    QgsComposerTextTableV2( QgsComposition *c SIP_TRANSFERTHIS, bool createUndoCommands );
 
     /** Adds a row to the table
      * \param row list of strings to use for each cell's value in the newly added row

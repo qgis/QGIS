@@ -17,6 +17,7 @@
 #define QGSPRESETCOLORRAMPDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
 #include "ui_qgspresetcolorrampwidgetbase.h"
@@ -38,7 +39,7 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
      * \param ramp initial ramp to show in dialog
      * \param parent parent widget
      */
-    QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent = nullptr );
+    QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * \see setRamp()
@@ -86,7 +87,7 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
      * \param ramp initial ramp to show in dialog
      * \param parent parent widget
      */
-    QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp &ramp, QWidget *parent = nullptr );
+    QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * \see setRamp()

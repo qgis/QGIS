@@ -17,6 +17,7 @@
 #define QGSRULEBASEDRENDERERV2WIDGET_H
 
 #include "qgsrendererwidget.h"
+#include "qgis.h"
 
 #include "qgsrulebasedrenderer.h"
 class QMenu;
@@ -105,7 +106,7 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
 
   public:
 
-    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     QgsRuleBasedRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsRuleBasedRendererWidget();
@@ -248,7 +249,7 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
      * \param parent parent widget
      * \param context symbol widget context
      */
-    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
+    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = 0, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 
     ~QgsRendererRulePropsDialog();
 

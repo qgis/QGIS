@@ -17,6 +17,7 @@
 #define QGSCOMPOSERSCALEBAR_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
 #include "scalebar/qgsscalebarsettings.h"
 #include "scalebar/qgsscalebarrenderer.h"
@@ -36,7 +37,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
   public:
 
-    QgsComposerScaleBar( QgsComposition *composition );
+    QgsComposerScaleBar( QgsComposition *composition SIP_TRANSFERTHIS );
     ~QgsComposerScaleBar();
 
     //! Return correct graphics item type.

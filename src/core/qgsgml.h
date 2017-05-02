@@ -356,7 +356,7 @@ class CORE_EXPORT QgsGml : public QObject
                      QgsRectangle *extent = nullptr,
                      const QString &userName = QString(),
                      const QString &password = QString(),
-                     const QString &authcfg = QString() );
+                     const QString &authcfg = QString() ) SIP_PYNAME( getFeaturesUri );
 
     /** Read from GML data. Constructor uri param is ignored
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.

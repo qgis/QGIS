@@ -17,6 +17,7 @@
 #define QGSRELATIONWIDGETWRAPPER_H
 
 #include "qgswidgetwrapper.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsRelationEditorWidget;
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
-    explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = nullptr, QWidget *parent = nullptr );
+    explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Defines if a title lable should be shown for this widget.

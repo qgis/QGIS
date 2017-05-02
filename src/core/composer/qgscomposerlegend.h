@@ -19,6 +19,7 @@
 #define QGSCOMPOSERLEGEND_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
@@ -42,7 +43,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
   public:
     //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = 0 );
 
     QVariant data( const QModelIndex &index, int role ) const override;
 

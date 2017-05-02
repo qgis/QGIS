@@ -16,6 +16,7 @@
 #define QGSPYTHONRUNNER_H
 
 #include <QString>
+#include "qgis.h"
 
 #include "qgis_core.h"
 
@@ -40,12 +41,12 @@ class CORE_EXPORT QgsPythonRunner
     static bool run( const QString &command, const QString &messageOnError = QString() );
 
     //! Eval a Python statement
-    static bool eval( const QString &command, QString &result );
+    static bool eval( const QString &command, QString &result SIP_OUT );
 
     /** Assign an instance of Python runner so that run() can be used.
       This method should be called during app initialization.
       Takes ownership of the object, deletes previous instance. */
-    static void setInstance( QgsPythonRunner *runner );
+    static void setInstance( QgsPythonRunner *runner SIP_TRANSFER );
 
   protected:
     //! Protected constructor: can be instantiated only from children

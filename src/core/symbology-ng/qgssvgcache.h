@@ -19,6 +19,7 @@
 #define QGSSVGCACHE_H
 
 #include <QColor>
+#include "qgis.h"
 #include <QMap>
 #include <QMultiHash>
 #include <QMutex>
@@ -106,7 +107,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
     /**
      * Constructor for QgsSvgCache.
      */
-    QgsSvgCache( QObject *parent = nullptr );
+    QgsSvgCache( QObject *parent SIP_TRANSFERTHIS = 0 );
 
     ~QgsSvgCache();
 
@@ -177,7 +178,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
                          bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
                          bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor,
                          bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
-                         bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const;
+                         bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const SIP_PYNAME( containsParamsV3 );
 
     //! Get image data
     QByteArray getImageData( const QString &path ) const;
@@ -242,7 +243,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
                              bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
                              bool &hasStrokeParam, bool &hasDefaultStroke, QColor &defaultStroke,
                              bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
-                             bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const;
+                             bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const SIP_PYNAME( containsParamsV3 );
 
     //! Calculates scaling for rendered image sizes to SVG logical sizes
     double calcSizeScaleFactor( QgsSvgCacheEntry *entry, const QDomElement &docElem, QSizeF &viewboxSize ) const;

@@ -19,6 +19,7 @@
 #define QGSCOMPOSERTABLEV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposermultiframe.h"
 #include <QFont>
 #include <QColor>
@@ -145,7 +146,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
       LastRow //!< Style last row only
     };
 
-    QgsComposerTableV2( QgsComposition *composition, bool createUndoCommands );
+    QgsComposerTableV2( QgsComposition *composition SIP_TRANSFERTHIS, bool createUndoCommands );
     QgsComposerTableV2();
 
     virtual ~QgsComposerTableV2();
@@ -420,7 +421,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * is transferred to the table.
      * \see columns
      */
-    void setColumns( const QgsComposerTableColumns &columns );
+    void setColumns( const QgsComposerTableColumns &columns SIP_TRANSFER );
 
     /** Sets the cell style for a cell group.
      * \param group group to set style for

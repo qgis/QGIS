@@ -17,6 +17,7 @@
 #define QGSMULTIEDITTOOLBUTTON_H
 
 #include "qgsfields.h"
+#include "qgis.h"
 #include <QToolButton>
 #include "qgis_gui.h"
 
@@ -44,7 +45,7 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     /** Constructor for QgsMultiEditToolButton.
      * \param parent parent object
      */
-    explicit QgsMultiEditToolButton( QWidget *parent = nullptr );
+    explicit QgsMultiEditToolButton( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns the current displayed state of the button.
      */

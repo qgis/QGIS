@@ -17,6 +17,7 @@
 #define QGSCODEEDITORCSS_H
 
 #include "qgscodeeditor.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 
@@ -30,7 +31,7 @@ class GUI_EXPORT QgsCodeEditorCSS : public QgsCodeEditor
     Q_OBJECT
 
   public:
-    QgsCodeEditorCSS( QWidget *parent = nullptr );
+    QgsCodeEditorCSS( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private:
     void setSciLexerCSS();

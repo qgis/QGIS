@@ -16,6 +16,7 @@
 #define QGSDIAGRAM_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QPen>
 #include <QBrush>
 #include "qgsexpression.h" //for QMap with QgsExpression
@@ -40,7 +41,7 @@ class CORE_EXPORT QgsDiagram
 
     /** Returns an instance that is equivalent to this one
      * \since QGIS 2.4 */
-    virtual QgsDiagram *clone() const = 0;
+    virtual QgsDiagram *clone() const = 0 SIP_FACTORY;
 
     void clearCache();
 

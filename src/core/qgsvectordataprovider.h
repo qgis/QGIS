@@ -146,7 +146,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \since QGIS 2.4
      * \returns new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
      */
-    virtual QgsAbstractFeatureSource *featureSource() const = 0;
+    virtual QgsAbstractFeatureSource *featureSource() const = 0 SIP_FACTORY;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * Default implementation simply iterates the features
      */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const;
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues SIP_OUT, int limit = -1 ) const;
 
     /**
      * Returns unique string values of an attribute which contain a specified subset string. Subset
@@ -576,7 +576,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Converts the geometry to the provider type if possible / necessary
      * \returns the converted geometry or nullptr if no conversion was necessary or possible
      */
-    QgsGeometry *convertToProviderType( const QgsGeometry &geom ) const;
+    QgsGeometry *convertToProviderType( const QgsGeometry &geom ) const SIP_FACTORY;
 
     /**
      * Set the list of native types supported by this provider.

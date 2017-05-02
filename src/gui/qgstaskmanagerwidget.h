@@ -18,6 +18,7 @@
 #define QGSTASKMANAGERWIDGET_H
 
 #include "qgsfloatingwidget.h"
+#include "qgis.h"
 #include "qgstaskmanager.h"
 #include <QStyledItemDelegate>
 #include <QToolButton>
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
      * \param manager task manager associated with widget
      * \param parent parent widget
      */
-    QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent = nullptr );
+    QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     ~QgsTaskManagerWidget();
 

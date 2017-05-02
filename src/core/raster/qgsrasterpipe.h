@@ -19,6 +19,7 @@
 #define QGSRASTERPIPE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QImage>
 #include <QMap>
 #include <QObject>
@@ -66,11 +67,11 @@ class CORE_EXPORT QgsRasterPipe
 
     /** Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
-    bool insert( int idx, QgsRasterInterface *interface );
+    bool insert( int idx, QgsRasterInterface *interface SIP_TRANSFER );
 
     /** Try to replace interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
-    bool replace( int idx, QgsRasterInterface *interface );
+    bool replace( int idx, QgsRasterInterface *interface SIP_TRANSFER );
 
     /** Insert a new known interface in default place or replace interface of the same
      * role if it already exists. Known interfaces are: QgsRasterDataProvider,
@@ -78,7 +79,7 @@ class CORE_EXPORT QgsRasterPipe
      * subclasses. For unknown interfaces it mus be explicitly specified position
      * where it should be inserted using insert() method.
      */
-    bool set( QgsRasterInterface *interface );
+    bool set( QgsRasterInterface *interface SIP_TRANSFER );
 
     //! Remove and delete interface at given index if possible
     bool remove( int idx );

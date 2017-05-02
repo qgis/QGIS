@@ -16,6 +16,7 @@
 #define QGSEDITORWIDGETAUTOCONF_H
 
 #include <QList>
+#include "qgis.h"
 #include "qgis_gui.h"
 #include <memory>
 
@@ -43,7 +44,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
      *
      * \returns and integer value rating how good is the setup provided by this plugin.
      */
-    virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const = 0;
+    virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score SIP_OUT ) const = 0;
 
 };
 

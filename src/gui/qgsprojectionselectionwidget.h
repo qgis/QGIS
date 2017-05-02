@@ -18,6 +18,7 @@
 #define QGSPROJECTIONSELECTIONWIDGET_H
 
 #include <QWidget>
+#include "qgis.h"
 #include <QLineEdit>
 #include <QToolButton>
 #include <QComboBox>
@@ -50,7 +51,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
       CrsNotSet, //!< Not set (hidden by default)
     };
 
-    explicit QgsProjectionSelectionWidget( QWidget *parent = nullptr );
+    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns a pointer to the projection selector dialog used by the widget.
      * Can be used to modify how the projection selector dialog behaves.

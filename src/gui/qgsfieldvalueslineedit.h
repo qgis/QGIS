@@ -16,6 +16,7 @@
 #define QGSFIELDVALUESLINEEDIT_H
 
 #include "qgsfilterlineedit.h"
+#include "qgis.h"
 #include "qgsfeedback.h"
 #include "qgsvectorlayer.h"
 #include <QStringListModel>
@@ -127,7 +128,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     /** Constructor for QgsFieldValuesLineEdit
      * \param parent parent widget
      */
-    QgsFieldValuesLineEdit( QWidget *parent = nullptr );
+    QgsFieldValuesLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     virtual ~QgsFieldValuesLineEdit();
 

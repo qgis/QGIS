@@ -18,6 +18,7 @@
 #define QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H
 
 #include <QComboBox>
+#include "qgis.h"
 #include "qgsauthcertutils.h"
 #include "qgis_gui.h"
 
@@ -37,7 +38,7 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
      * \param defaultpolicy Default trust policy
      */
     explicit QgsAuthCertTrustPolicyComboBox(
-      QWidget *parent = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = 0,
       QgsAuthCertUtils::CertTrustPolicy policy = QgsAuthCertUtils::DefaultTrust,
       QgsAuthCertUtils::CertTrustPolicy defaultpolicy =  QgsAuthCertUtils::DefaultTrust );
 
