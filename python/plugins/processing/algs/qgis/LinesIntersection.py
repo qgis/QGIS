@@ -103,7 +103,8 @@ class LinesIntersection(GeoAlgorithm):
             fieldListB = layerB.fields()
 
         fieldListB = vector.testForUniqueness(fieldListA, fieldListB)
-        fieldListA.extend(fieldListB)
+        for b in fieldListB:
+            fieldListA.append(b)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldListA, QgsWkbTypes.Point, layerA.crs(),
                                                                      context)

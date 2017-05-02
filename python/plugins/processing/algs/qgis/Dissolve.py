@@ -81,7 +81,7 @@ class Dissolve(GeoAlgorithm):
         vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Dissolve.INPUT), context)
 
         writer = self.getOutputFromName(
-            Dissolve.OUTPUT).getVectorWriter(vlayerA.fields().toList(), vlayerA.wkbType(), vlayerA.crs(), context)
+            Dissolve.OUTPUT).getVectorWriter(vlayerA.fields(), vlayerA.wkbType(), vlayerA.crs(), context)
 
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(vlayerA, context)

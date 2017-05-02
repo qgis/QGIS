@@ -280,7 +280,10 @@ def combineVectorFields(layerA, layerB):
             field = QgsField(newName, field.type(), field.typeName())
         fields.append(field)
 
-    return fields
+    real_fields = QgsFields()
+    for f in fields:
+        real_fields.append(f)
+    return real_fields
 
 
 def checkMinDistance(point, index, distance, points):
@@ -456,7 +459,7 @@ NOGEOMETRY_EXTENSIONS = [
 ]
 
 
-def createVectorWriter(destination, encoding, fields, geometryType, crs, context, options=None):
+def createVectorWriter(destination, encoding, fields, geometryType, crs, context):
     layer = None
     sink = None
 

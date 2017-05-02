@@ -73,7 +73,7 @@ class Translate(GeoAlgorithm):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields().toList(), layer.wkbType(), layer.crs(), context)
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
 
         delta_x = self.getParameterValue(self.DELTA_X)
         delta_y = self.getParameterValue(self.DELTA_Y)

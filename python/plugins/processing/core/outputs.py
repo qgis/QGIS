@@ -360,7 +360,7 @@ class OutputVector(Output):
                 self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
             return self.compatible
 
-    def getVectorWriter(self, fields, geomType, crs, context, options=None):
+    def getVectorWriter(self, fields, geomType, crs, context):
         """Returns a suitable writer to which features can be added as
         a result of the algorithm. Use this to transparently handle
         output values instead of creating your own method.
@@ -384,7 +384,7 @@ class OutputVector(Output):
             settings = QgsSettings()
             self.encoding = settings.value('/Processing/encoding', 'System', str)
 
-        w, w_dest, w_layer = createVectorWriter(self.value, self.encoding, fields, geomType, crs, context, options)
+        w, w_dest, w_layer = createVectorWriter(self.value, self.encoding, fields, geomType, crs, context)
         self.layer = w_layer
         self.value = w_dest
         return w
