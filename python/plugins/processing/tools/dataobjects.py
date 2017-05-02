@@ -99,31 +99,6 @@ def getSupportedOutputRasterLayerExtensions():
     return allexts
 
 
-def extent(layers):
-    first = True
-    context = createContext()
-    for layer in layers:
-        if not isinstance(layer, (QgsMapLayer.QgsRasterLayer, QgsMapLayer.QgsVectorLayer)):
-            layer = QgsProcessingUtils.mapLayerFromString(layer, context)
-            if layer is None:
-                continue
-        if first:
-            xmin = layer.extent().xMinimum()
-            xmax = layer.extent().xMaximum()
-            ymin = layer.extent().yMinimum()
-            ymax = layer.extent().yMaximum()
-        else:
-            xmin = min(xmin, layer.extent().xMinimum())
-            xmax = max(xmax, layer.extent().xMaximum())
-            ymin = min(ymin, layer.extent().yMinimum())
-            ymax = max(ymax, layer.extent().yMaximum())
-        first = False
-    if first:
-        return '0,0,0,0'
-    else:
-        return str(xmin) + ',' + str(xmax) + ',' + str(ymin) + ',' + str(ymax)
-
-
 def loadList(layers):
     for layer in layers:
         load(layer)
