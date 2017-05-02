@@ -68,9 +68,11 @@ class QgsProcessingUtils
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true );
 %Docstring
- Interprets a string as a map layer within the supplied ``context``. The method will attempt to
+ Interprets a string as a map layer within the supplied ``context``.
+
+ The method will attempt to
  load a layer matching the passed ``string``. E.g. if the string matches a layer ID or name
- within the current project this layer will be returned.
+ within the context's project or temporary layer store then this layer will be returned.
  If the string is a file path and ``allowLoadingNewLayers`` is true, then the layer at this
  file path will be loaded and added to the context's temporary layer store.
  Ownership of the layer remains with the ``context`` or the context's current project.
