@@ -557,6 +557,7 @@ def createVectorWriter(destination, encoding, fields, geometryType, crs, context
         layer = QgsVectorLayer(uri, destination, 'memory')
         sink = layer.dataProvider()
         context.temporaryLayerStore().addMapLayer(layer, False)
+        destination = layer.id()
     elif destination.startswith(POSTGIS_LAYER_PREFIX):
         uri = QgsDataSourceUri(destination[len(POSTGIS_LAYER_PREFIX):])
         connInfo = uri.connectionInfo()
