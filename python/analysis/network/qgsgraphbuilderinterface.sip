@@ -32,17 +32,13 @@ class QgsGraphBuilderInterface
 %End
   public:
 
-    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" )
+    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 %Docstring
  Default constructor
  \param crs Coordinate reference system for new graph vertex
  \param ctfEnabled enable coordinate transform from source graph CRS to CRS graph
  \param topologyTolerance sqrt distance between source point as one graph vertex
  \param ellipsoidID ellipsoid for edge measurement
-%End
-      : mCrs( crs );
-%Docstring
- :rtype: :
 %End
 
     virtual ~QgsGraphBuilderInterface();
