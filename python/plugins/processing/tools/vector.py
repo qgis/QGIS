@@ -460,6 +460,7 @@ NOGEOMETRY_EXTENSIONS = [
 
 
 def createVectorWriter(destination, encoding, fields, geometryType, crs, context):
+    return QgsProcessingUtils.createFeatureSink(destination, encoding, fields, geometryType, crs, context)
     layer = None
     sink = None
 

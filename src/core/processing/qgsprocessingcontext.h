@@ -142,6 +142,18 @@ class CORE_EXPORT QgsProcessingContext
      */
     SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
 
+    /**
+     * Returns the default encoding to use for newly created files.
+     * \see setDefaultEncoding()
+     */
+    QString defaultEncoding() const { return mDefaultEncoding; }
+
+    /**
+     * Sets the default \a encoding to use for newly created files.
+     * \see defaultEncoding()
+     */
+    void setDefaultEncoding( const QString &encoding ) { mDefaultEncoding = encoding; }
+
   private:
 
     QgsProcessingContext::Flags mFlags = 0;
@@ -151,11 +163,13 @@ class CORE_EXPORT QgsProcessingContext
     QgsExpressionContext mExpressionContext;
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+    QString mDefaultEncoding;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );
 #endif
 };
+
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )
 
 #endif // QGSPROCESSINGPARAMETERS_H
