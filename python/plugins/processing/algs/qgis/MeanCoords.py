@@ -79,7 +79,7 @@ class MeanCoords(GeoAlgorithm):
         self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)
 

@@ -86,7 +86,7 @@ class GeometryByExpression(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Modified geometry')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         geometry_type = self.getParameterValue(self.OUTPUT_GEOMETRY)
         wkb_type = None

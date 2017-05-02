@@ -82,8 +82,8 @@ class LinesIntersection(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, context, feedback):
-        layerA = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)
-        layerB = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_B), context)
+        layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)
+        layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_B), context)
         fieldA = self.getParameterValue(self.FIELD_A)
         fieldB = self.getParameterValue(self.FIELD_B)
 

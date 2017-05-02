@@ -78,7 +78,7 @@ class Dissolve(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         field_names = self.getParameterValue(Dissolve.FIELD)
-        vlayerA = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Dissolve.INPUT), context)
+        vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Dissolve.INPUT), context)
 
         writer = self.getOutputFromName(
             Dissolve.OUTPUT).getVectorWriter(vlayerA.fields().toList(), vlayerA.wkbType(), vlayerA.crs(), context)

@@ -92,8 +92,8 @@ class ExampleAlgorithm(GeoAlgorithm):
         # Input layers vales are always a string with its location.
         # That string can be converted into a QGIS layer (a
         # QgsVectorLayer in this case) using the
-        # dataobjects.QgsProcessingUtils.mapLayerFromString() method.
-        vectorLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(inputFilename, context)
+        # QgsProcessingUtils.mapLayerFromString() method.
+        vectorLayer = QgsProcessingUtils.mapLayerFromString(inputFilename, context)
 
         # And now we can process
 

@@ -71,8 +71,8 @@ class SymmetricalDifference(GeoAlgorithm):
                                     self.tr('Symmetrical difference')))
 
     def processAlgorithm(self, context, feedback):
-        layerA = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        layerB = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.OVERLAY), context)
+        layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.OVERLAY), context)
 
         geomType = QgsWkbTypes.multiType(layerA.wkbType())
         fields = vector.combineVectorFields(layerA, layerB)

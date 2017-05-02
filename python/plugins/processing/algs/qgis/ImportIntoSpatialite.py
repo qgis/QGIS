@@ -98,7 +98,7 @@ class ImportIntoSpatialite(GeoAlgorithm):
         encoding = self.getParameterValue(self.ENCODING)
 
         layerUri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(layerUri, context)
+        layer = QgsProcessingUtils.mapLayerFromString(layerUri, context)
 
         table = self.getParameterValue(self.TABLENAME)
         if table:

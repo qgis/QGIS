@@ -83,7 +83,7 @@ class FindProjection(GeoAlgorithm):
                                   self.tr('Candidates')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         extent = self.getParameterValue(self.TARGET_AREA).split(',')
         target_crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.TARGET_AREA_CRS))

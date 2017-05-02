@@ -64,7 +64,7 @@ class AutoincrementalField(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = \
-            dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+            QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fields = vlayer.fields()
         fields.append(QgsField('AUTO', QVariant.Int))
         writer = output.getVectorWriter(fields, vlayer.wkbType(), vlayer.crs(), context)

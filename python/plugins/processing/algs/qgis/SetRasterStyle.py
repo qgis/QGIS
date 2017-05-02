@@ -68,7 +68,7 @@ class SetRasterStyle(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(filename, context)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
 
         style = self.getParameterValue(self.STYLE)
         if layer is None:

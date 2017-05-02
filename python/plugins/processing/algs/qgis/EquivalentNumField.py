@@ -68,7 +68,7 @@ class EquivalentNumField(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputFromName(self.OUTPUT)
-        vlayer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        vlayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldindex = vlayer.fields().lookupField(fieldname)
         fields = vlayer.fields()
         fields.append(QgsField('NUM_FIELD', QVariant.Int))

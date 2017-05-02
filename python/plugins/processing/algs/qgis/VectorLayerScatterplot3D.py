@@ -81,7 +81,7 @@ class VectorLayerScatterplot3D(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
 
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         xfieldname = self.getParameterValue(self.XFIELD)
         yfieldname = self.getParameterValue(self.YFIELD)
         zfieldname = self.getParameterValue(self.ZFIELD)

@@ -77,7 +77,7 @@ class PointsAlongGeometry(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         distance = self.getParameterValue(self.DISTANCE)
         start_offset = self.getParameterValue(self.START_OFFSET)
         end_offset = self.getParameterValue(self.END_OFFSET)

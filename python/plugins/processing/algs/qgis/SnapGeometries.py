@@ -77,8 +77,8 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped geometries')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        reference_layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.REFERENCE_LAYER), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        reference_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.REFERENCE_LAYER), context)
         tolerance = self.getParameterValue(self.TOLERANCE)
         mode = self.getParameterValue(self.BEHAVIOR)
 

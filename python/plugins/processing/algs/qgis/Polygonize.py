@@ -77,7 +77,7 @@ class Polygonize(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        vlayer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        vlayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         output = self.getOutputFromName(self.OUTPUT)
         if self.getParameterValue(self.FIELDS):
             fields = vlayer.fields()

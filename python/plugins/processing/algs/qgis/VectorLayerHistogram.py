@@ -71,7 +71,7 @@ class VectorLayerHistogram(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Histogram')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldname = self.getParameterValue(self.FIELD)
         bins = self.getParameterValue(self.BINS)
 

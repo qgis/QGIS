@@ -227,7 +227,7 @@ class Grass7Algorithm(GeoAlgorithm):
                     if isinstance(param.value, QgsRasterLayer):
                         layer = param.value
                     else:
-                        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(param.value, context)
+                        layer = QgsProcessingUtils.mapLayerFromString(param.value, context)
                     cellsize = max(cellsize, (layer.extent().xMaximum() -
                                               layer.extent().xMinimum()) /
                                    layer.width())
@@ -235,7 +235,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(layername, context)
+                        layer = QgsProcessingUtils.mapLayerFromString(layername, context)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (
                                 layer.extent().xMaximum() -
@@ -514,11 +514,11 @@ class Grass7Algorithm(GeoAlgorithm):
         # but the functionality of v.in.ogr could be used for this.
         # We also export if there is a selection
         if not os.path.exists(orgFilename) or not orgFilename.endswith('shp'):
-            layer = dataobjects.QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
+            layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
             if layer:
                 filename = dataobjects.exportVectorLayer(layer)
         else:
-            layer = dataobjects.QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
+            layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
             if layer:
                 useSelection = \
                     ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
@@ -553,7 +553,7 @@ class Grass7Algorithm(GeoAlgorithm):
     def setSessionProjectionFromLayer(self, layer, commands):
         context = dataobjects.createContext()
         if not Grass7Utils.projectionSet:
-            qGisLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(layer, context)
+            qGisLayer = QgsProcessingUtils.mapLayerFromString(layer, context)
             if qGisLayer:
                 proj4 = str(qGisLayer.crs().toProj4())
                 command = 'g.proj'

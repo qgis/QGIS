@@ -76,8 +76,8 @@ class HubLines(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, context, feedback):
-        layerHub = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
-        layerSpoke = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.SPOKES), context)
+        layerHub = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
+        layerSpoke = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.SPOKES), context)
 
         fieldHub = self.getParameterValue(self.HUB_FIELD)
         fieldSpoke = self.getParameterValue(self.SPOKE_FIELD)

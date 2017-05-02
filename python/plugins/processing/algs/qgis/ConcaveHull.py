@@ -79,7 +79,7 @@ class ConcaveHull(GeoAlgorithm):
             OutputVector(ConcaveHull.OUTPUT, self.tr('Concave hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(ConcaveHull.INPUT), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(ConcaveHull.INPUT), context)
         alpha = self.getParameterValue(self.ALPHA)
         holes = self.getParameterValue(self.HOLES)
         no_multigeom = self.getParameterValue(self.NO_MULTIGEOMETRY)
@@ -87,7 +87,7 @@ class ConcaveHull(GeoAlgorithm):
         # Delaunay triangulation from input point layer
         feedback.setProgressText(self.tr('Creating Delaunay triangles...'))
         delone_triangles = processing.run("qgis:delaunaytriangulation", layer, None)['OUTPUT']
-        delaunay_layer = dataobjects.QgsProcessingUtils.mapLayerFromString(delone_triangles, context)
+        delaunay_layer = QgsProcessingUtils.mapLayerFromString(delone_triangles, context)
 
         # Get max edge length from Delaunay triangles
         feedback.setProgressText(self.tr('Computing edges max length...'))
@@ -127,7 +127,7 @@ class ConcaveHull(GeoAlgorithm):
         feedback.setProgressText(self.tr('Dissolving Delaunay triangles...'))
         dissolved = processing.run("qgis:dissolve", delaunay_layer,
                                    True, None, None)['OUTPUT']
-        dissolved_layer = dataobjects.QgsProcessingUtils.mapLayerFromString(dissolved, context)
+        dissolved_layer = QgsProcessingUtils.mapLayerFromString(dissolved, context)
 
         # Save result
         feedback.setProgressText(self.tr('Saving data...'))

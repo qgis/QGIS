@@ -70,8 +70,8 @@ class Clip(GeoAlgorithm):
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
 
     def processAlgorithm(self, context, feedback):
-        source_layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Clip.INPUT), context)
-        mask_layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Clip.OVERLAY), context)
+        source_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Clip.INPUT), context)
+        mask_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Clip.OVERLAY), context)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(source_layer.fields(),
                                                                      QgsWkbTypes.multiType(source_layer.wkbType()),

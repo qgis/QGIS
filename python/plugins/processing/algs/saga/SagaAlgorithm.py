@@ -157,7 +157,7 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterVector):
                 if param.value is None:
                     continue
-                layer = dataobjects.QgsProcessingUtils.mapLayerFromString(param.value, context, False)
+                layer = QgsProcessingUtils.mapLayerFromString(param.value, context, False)
                 if layer:
                     filename = dataobjects.exportVectorLayer(layer)
                     self.exportedLayers[param.value] = filename
@@ -167,7 +167,7 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterTable):
                 if param.value is None:
                     continue
-                table = dataobjects.QgsProcessingUtils.mapLayerFromString(param.value, context, False)
+                table = QgsProcessingUtils.mapLayerFromString(param.value, context, False)
                 if table:
                     filename = dataobjects.exportTable(table)
                     self.exportedLayers[param.value] = filename
@@ -195,7 +195,7 @@ class SagaAlgorithm(GeoAlgorithm):
                                         dataobjects.TYPE_VECTOR_POLYGON,
                                         dataobjects.TYPE_VECTOR_POINT]:
                     for layerfile in layers:
-                        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(layerfile, context, False)
+                        layer = QgsProcessingUtils.mapLayerFromString(layerfile, context, False)
                         if layer:
                             filename = dataobjects.exportVectorLayer(layer)
                             self.exportedLayers[layerfile] = filename
@@ -327,7 +327,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 return None
             else:
                 del sessionExportedLayers[source]
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(source, context, False)
+        layer = QgsProcessingUtils.mapLayerFromString(source, context, False)
         if layer:
             filename = str(layer.name())
         else:
@@ -357,7 +357,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if param.value is not None:
                     files = param.value.split(";")
             for f in files:
-                layer = dataobjects.QgsProcessingUtils.mapLayerFromString(f, context)
+                layer = QgsProcessingUtils.mapLayerFromString(f, context)
                 if layer is None:
                     continue
                 if layer.bandCount() > 1:

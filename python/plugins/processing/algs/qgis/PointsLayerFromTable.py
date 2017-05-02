@@ -84,7 +84,7 @@ class PointsLayerFromTable(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         source = self.getParameterValue(self.INPUT)
-        vlayer = dataobjects.QgsProcessingUtils.mapLayerFromString(source, context)
+        vlayer = QgsProcessingUtils.mapLayerFromString(source, context)
         output = self.getOutputFromName(self.OUTPUT)
 
         fields = vlayer.fields()

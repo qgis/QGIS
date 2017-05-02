@@ -69,7 +69,7 @@ class Smooth(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Smoothed')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         iterations = self.getParameterValue(self.ITERATIONS)
         offset = self.getParameterValue(self.OFFSET)
         max_angle = self.getParameterValue(self.MAX_ANGLE)

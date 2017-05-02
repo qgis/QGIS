@@ -332,7 +332,7 @@ def ogrConnectionString(uri):
     ogrstr = None
 
     context = dataobjects.createContext()
-    layer = dataobjects.QgsProcessingUtils.mapLayerFromString(uri, context, False)
+    layer = QgsProcessingUtils.mapLayerFromString(uri, context, False)
     if layer is None:
         return '"' + uri + '"'
     provider = layer.dataProvider().name()

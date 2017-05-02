@@ -132,7 +132,7 @@ class Heatmap(GeoAlgorithm):
                                     self.tr('Heatmap')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         radius = self.getParameterValue(self.RADIUS)
         kernel_shape = self.getParameterValue(self.KERNEL)

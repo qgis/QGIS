@@ -129,7 +129,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                 if layer.crs() != projectCRS:
                                     unmatchingCRS = True
 
-                        p = dataobjects.QgsProcessingUtils.mapLayerFromString(inputlayer, context)
+                        p = QgsProcessingUtils.mapLayerFromString(inputlayer, context)
                         if p is not None:
                             if p.crs() != projectCRS:
                                 unmatchingCRS = True

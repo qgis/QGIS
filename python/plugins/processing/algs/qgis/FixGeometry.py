@@ -69,7 +69,7 @@ class FixGeometry(GeoAlgorithm):
                                     self.tr('Layer with fixed geometries')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
         writer = self.getOutputFromName(
             self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.multiType(layer.wkbType()), layer.crs(), context)

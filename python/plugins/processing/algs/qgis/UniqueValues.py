@@ -75,7 +75,7 @@ class UniqueValues(GeoAlgorithm):
         self.addOutput(OutputString(self.UNIQUE_VALUES, self.tr('Unique values')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         outputFile = self.getOutputValue(self.OUTPUT)
         values = QgsProcessingUtils.uniqueValues(layer, layer.fields().lookupField(fieldName), context)

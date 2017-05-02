@@ -70,7 +70,7 @@ class Merge(GeoAlgorithm):
         fields = QgsFields()
         totalFeatureCount = 0
         for layerSource in inLayers.split(';'):
-            layer = dataobjects.QgsProcessingUtils.mapLayerFromString(layerSource, context)
+            layer = QgsProcessingUtils.mapLayerFromString(layerSource, context)
 
             if (len(layers) > 0):
                 if (layer.wkbType() != layers[0].wkbType()):

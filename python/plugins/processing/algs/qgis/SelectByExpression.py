@@ -74,7 +74,7 @@ class SelectByExpression(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.LAYERNAME)
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(filename, context)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)
 
         if method == 0:

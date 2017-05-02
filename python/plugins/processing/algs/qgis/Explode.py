@@ -64,7 +64,7 @@ class Explode(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, context, feedback):
-        vlayer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        vlayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         output = self.getOutputFromName(self.OUTPUT)
         fields = vlayer.fields()
         writer = output.getVectorWriter(fields, QgsWkbTypes.LineString, vlayer.crs(), context)

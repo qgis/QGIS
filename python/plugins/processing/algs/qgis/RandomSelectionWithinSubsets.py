@@ -83,7 +83,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(filename, context)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
 

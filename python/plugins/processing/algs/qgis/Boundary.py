@@ -64,7 +64,7 @@ class Boundary(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Boundary')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         input_wkb = layer.wkbType()
         if QgsWkbTypes.geometryType(input_wkb) == QgsWkbTypes.LineGeometry:

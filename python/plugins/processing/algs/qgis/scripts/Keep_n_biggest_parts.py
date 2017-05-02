@@ -14,7 +14,7 @@ if To_keep < 1:
     To_keep = 1
 
 
-polyLayer = dataobjects.QgsProcessingUtils.mapLayerFromString(Polygons, context)
+polyLayer = QgsProcessingUtils.mapLayerFromString(Polygons, context)
 polyPrder = polyLayer.dataProvider()
 count = polyLayer.featureCount()
 writer = processing.VectorWriter(Results, None, polyPrder.fields(),

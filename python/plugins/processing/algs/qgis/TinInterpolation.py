@@ -190,7 +190,7 @@ class TinInterpolation(GeoAlgorithm):
             data = QgsInterpolator.LayerData()
 
             # need to keep a reference until interpolation is complete
-            layer = dataobjects.QgsProcessingUtils.mapLayerFromString(v[0], context)
+            layer = QgsProcessingUtils.mapLayerFromString(v[0], context)
             data.vectorLayer = layer
             layers.append(layer)
 

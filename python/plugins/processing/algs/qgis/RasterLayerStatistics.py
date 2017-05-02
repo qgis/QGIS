@@ -81,7 +81,7 @@ class RasterLayerStatistics(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
         uri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.QgsProcessingUtils.mapLayerFromString(uri, context)
+        layer = QgsProcessingUtils.mapLayerFromString(uri, context)
         values = raster.scanraster(layer, feedback)
 
         n = 0
