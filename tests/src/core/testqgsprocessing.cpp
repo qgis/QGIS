@@ -109,6 +109,7 @@ class TestQgsProcessing: public QObject
     void algorithm();
     void features();
     void uniqueValues();
+    void createIndex();
 
   private:
 
@@ -656,6 +657,43 @@ void TestQgsProcessing::uniqueValues()
   QVERIFY( vals.contains( QString( "B" ) ) );
 
   delete layer;
+}
+
+void TestQgsProcessing::createIndex()
+{
+  QgsVectorLayer *layer = new QgsVectorLayer( "Point", "v1", "memory" );
+  for ( int i = 1; i < 6; ++i )
+  {
+    QgsFeature f( i );
+    f.setGeometry( QgsGeometry( new QgsPointV2( i, 2 ) ) );
+    layer->dataProvider()->addFeatures( QgsFeatureList() << f );
+  }
+
+  QgsProcessingContext context;
+  // disable selected features check
+  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  QgsSpatialIndex index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  QList<QgsFeatureId> ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
+
+  // selected features check, but none selected
+  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
+
+  // create selection
+  layer->selectByIds( QgsFeatureIds() << 4 << 5 );
+  index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  QCOMPARE( ids, QList<QgsFeatureId>() << 4 );
+
+  // selection but not using selection mode
+  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
+
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
