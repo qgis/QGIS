@@ -33,14 +33,12 @@ from qgis.core import QgsApplication
 
 from processing.gui.ContextAction import ContextAction
 
-from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 
 
 class DeleteScriptAction(ContextAction):
 
     SCRIPT_PYTHON = 0
-    SCRIPT_R = 1
 
     def __init__(self, scriptType):
         self.name = self.tr('Delete script', 'DeleteScriptAction')
@@ -49,8 +47,6 @@ class DeleteScriptAction(ContextAction):
     def isEnabled(self):
         if self.scriptType == self.SCRIPT_PYTHON:
             return isinstance(self.itemData, ScriptAlgorithm) and self.itemData.allowEdit
-        elif self.scriptType == self.SCRIPT_R:
-            return isinstance(self.itemData, RAlgorithm)
 
     def execute(self):
         reply = QMessageBox.question(None,
@@ -63,5 +59,3 @@ class DeleteScriptAction(ContextAction):
             os.remove(self.itemData.descriptionFile)
             if self.scriptType == self.SCRIPT_PYTHON:
                 QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
-            elif self.scriptType == self.SCRIPT_R:
-                QgsApplication.processingRegistry().providerById('r').refreshAlgorithms()
