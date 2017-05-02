@@ -85,30 +85,6 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   return layers;
 }
 
-QgsMapLayer *QgsProcessingUtils::mapLayerFromProject( const QString &string, QgsProject *project )
-{
-  if ( string.isEmpty() )
-    return nullptr;
-
-  QList< QgsMapLayer * > layers = compatibleLayers( project, false );
-  Q_FOREACH ( QgsMapLayer *l, layers )
-  {
-    if ( l->id() == string )
-      return l;
-  }
-  Q_FOREACH ( QgsMapLayer *l, layers )
-  {
-    if ( l->name() == string )
-      return l;
-  }
-  Q_FOREACH ( QgsMapLayer *l, layers )
-  {
-    if ( normalizeLayerSource( l->source() ) == normalizeLayerSource( string ) )
-      return l;
-  }
-  return nullptr;
-}
-
 QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMapLayerStore *store )
 {
   if ( !store || string.isEmpty() )
@@ -199,9 +175,13 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
     return nullptr;
 
   // prefer project layers
-  QgsMapLayer *layer = mapLayerFromProject( string, context.project() );
-  if ( layer )
-    return layer;
+  QgsMapLayer *layer = nullptr;
+  if ( context.project() )
+  {
+    QgsMapLayer *layer = mapLayerFromStore( string, context.project()->layerStore() );
+    if ( layer )
+      return layer;
+  }
 
   layer = mapLayerFromStore( string, &context.temporaryLayerStore() );
   if ( layer )

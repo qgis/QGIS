@@ -529,6 +529,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     // Functionality from QgsMapLayerRegistry
     //
 
+    /**
+     * Returns a pointer to the project's internal layer store.
+     * /since QGIS 3.0
+     */
+    QgsMapLayerStore *layerStore();
+
+    /**
+     * Returns a pointer to the project's internal layer store.
+     * /since QGIS 3.0
+     */
+    SIP_SKIP const QgsMapLayerStore *layerStore() const;
+
     //! Returns the number of registered layers.
     int count() const;
 

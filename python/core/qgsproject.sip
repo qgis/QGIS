@@ -422,6 +422,8 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 
+    QgsMapLayerStore *layerStore();
+
     int count() const;
 
     QgsMapLayer *mapLayer( const QString &layerId ) const;

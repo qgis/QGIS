@@ -138,18 +138,6 @@ class CORE_EXPORT QgsProcessingUtils
                              const QList< QgsWkbTypes::GeometryType > &geometryTypes = QList< QgsWkbTypes::GeometryType >() );
 
     /**
-     * Interprets a \a string as a map layer from a project.
-     *
-     * This method attempts to match a string to a project map layer, using
-     * first the layer ID, then layer names, and finally layer source.
-     * If the string matches a normalized version of any layer source
-     * for layers in the specified \a project, then those matching layers will be
-     * returned.
-     * \see mapLayerFromString()
-     */
-    static QgsMapLayer *mapLayerFromProject( const QString &string, QgsProject *project );
-
-    /**
      * Interprets a \a string as a map layer from a store.
      *
      * This method attempts to match a string to a store map layer, using

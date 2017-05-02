@@ -1067,6 +1067,16 @@ const QgsLabelingEngineSettings &QgsProject::labelingEngineSettings() const
   return *mLabelingEngineSettings;
 }
 
+QgsMapLayerStore *QgsProject::layerStore()
+{
+  return mLayerStore.get();
+}
+
+const QgsMapLayerStore *QgsProject::layerStore() const
+{
+  return mLayerStore.get();
+}
+
 QList<QgsVectorLayer *> QgsProject::avoidIntersectionsLayers() const
 {
   QList<QgsVectorLayer *> layers;
