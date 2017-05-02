@@ -2907,7 +2907,9 @@ static QVariant fcnOrderParts( const QVariantList &values, const QgsExpressionCo
     return values.at( 0 );
 
   QString expString = getStringValue( values.at( 1 ), parent );
-  QVariant cachedExpression = ctx->cachedValue( expString );
+  QVariant cachedExpression;
+  if ( ctx )
+    cachedExpression = ctx->cachedValue( expString );
   QgsExpression expression;
 
   if ( cachedExpression.isValid() )
