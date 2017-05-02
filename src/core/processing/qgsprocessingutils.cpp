@@ -111,7 +111,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromProject( const QString &string, Qgs
 
 QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMapLayerStore *store )
 {
-  if ( string.isEmpty() )
+  if ( !store || string.isEmpty() )
     return nullptr;
 
   QList< QgsMapLayer * > layers = store->mapLayers().values();
