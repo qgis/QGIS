@@ -176,6 +176,7 @@ SET(QGIS_CORE_SRCS
   qgsmaplayerlegend.cpp
   qgsmaplayermodel.cpp
   qgsmaplayerproxymodel.cpp
+  qgsmaplayerstore.cpp
   qgsmaplayerstylemanager.cpp
   qgsmaprenderercache.cpp
   qgsmaprenderercustompainterjob.cpp
@@ -525,6 +526,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaplayerlegend.h
   qgsmaplayermodel.h
   qgsmaplayerproxymodel.h
+  qgsmaplayerstore.h
   qgsmaplayerstylemanager.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
