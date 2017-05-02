@@ -275,6 +275,6 @@ class QgsComposerScaleBar: QgsComposerItem
     void updateSegmentSize();
     /** Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
 
 };

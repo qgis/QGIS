@@ -22,7 +22,7 @@ class QgsMapThemeCollection : QObject
     {
       public:
         //! Initialize layer record with a map layer - it will be stored as a weak pointer
-        MapThemeLayerRecord( QgsMapLayer *l = nullptr );
+        MapThemeLayerRecord( QgsMapLayer *l = 0 );
 
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const;
         bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const;

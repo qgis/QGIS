@@ -333,7 +333,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Read block of data using give extent and size
      * @note not available in python bindings
      */
-    //virtual void readBlock( int bandNo, QgsRectangle  const  &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr );
+    //virtual void readBlock( int bandNo, QgsRectangle  const  &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = 0 );
 
     /** Returns true if user no data contains value */
     bool userNoDataValuesContains( int bandNo, double value ) const;

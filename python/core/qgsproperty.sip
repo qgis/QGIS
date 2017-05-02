@@ -117,17 +117,17 @@ class QgsProperty
 
     virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
-    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok /Out/ = nullptr  ) const;
+    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok /Out/ = 0  ) const;
 
-    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok /Out/ = nullptr ) const;
+    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok /Out/ = 0 ) const;
 
-    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok /Out/ = nullptr  ) const;
+    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok /Out/ = 0  ) const;
 
-    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok /Out/ = nullptr  ) const;
+    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok /Out/ = 0  ) const;
 
-    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok /Out/ = nullptr ) const;
+    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok /Out/ = 0 ) const;
 
-    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok /Out/ = nullptr ) const;
+    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok /Out/ = 0 ) const;
     QVariant toVariant() const;
     bool loadVariant( const QVariant &property );
 

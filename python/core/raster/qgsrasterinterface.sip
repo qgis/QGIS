@@ -12,7 +12,7 @@ class QgsRasterBlockFeedback : QgsFeedback
 
   public:
     //! Construct a new raster block feedback object
-    QgsRasterBlockFeedback( QObject *parent = nullptr );
+    QgsRasterBlockFeedback( QObject *parent = 0 );
 
     //! May be emitted by raster data provider to indicate that some partial data are available
     //! and a new preview image may be produced
@@ -171,7 +171,7 @@ class QgsRasterInterface
      * @param height pixel height of block
      * @param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0 /Factory/;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */

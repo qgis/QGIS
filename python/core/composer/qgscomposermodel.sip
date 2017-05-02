@@ -244,7 +244,7 @@ class QgsComposerProxyModel: QSortFilterProxyModel
      * @param composition composition to attach model to
      * @param parent optional parent
      */
-    QgsComposerProxyModel( QgsComposition *composition, QObject *parent /TransferThis/ = nullptr );
+    QgsComposerProxyModel( QgsComposition *composition, QObject *parent /TransferThis/ = 0 );
 
     /** Returns the current item type filter, or QgsComposerItem::ComposerItem if no
      * item type filter is set.

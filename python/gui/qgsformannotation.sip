@@ -5,7 +5,7 @@ class QgsFormAnnotation : QgsAnnotation
 %End
   public:
 
-    QgsFormAnnotation( QObject *parent /TransferThis/ = nullptr );
+    QgsFormAnnotation( QObject *parent /TransferThis/ = 0 );
 
     virtual QgsFormAnnotation *clone() const /Factory/;
 

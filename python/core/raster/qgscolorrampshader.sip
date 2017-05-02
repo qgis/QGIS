@@ -29,7 +29,7 @@ class QgsColorRampShader : QgsRasterShaderFunction
      * @param colorRamp vector color ramp used to classify the color ramp shader
      * @returns new QgsColorRampShader
      */
-    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp = nullptr, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
+    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp = 0, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
 
     ~QgsColorRampShader();
 
@@ -88,14 +88,14 @@ class QgsColorRampShader : QgsRasterShaderFunction
      * @param extent extent used in classification (only used in quantile mode)
      * @param input raster input used in classification (only used in quantile mode)
      */
-    void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr );
+    void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 );
 
     /** Classify color ramp shader
      * @param band raster band used in classification (only used in quantile mode)
      * @param extent extent used in classification (only used in quantile mode)
      * @param input raster input used in classification (only used in quantile mode)
      */
-    void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr ) /PyName=classifyColorRampV2/;
+    void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 ) /PyName=classifyColorRampV2/;
 
 
     /** \brief Generates and new RGB value based on one input value */

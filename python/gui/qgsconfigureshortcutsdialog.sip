@@ -16,7 +16,7 @@ class QgsConfigureShortcutsDialog: QDialog
      * @param manager associated QgsShortcutsManager, or leave as null to use the default
      * singleton QgsShortcutsManager instance.
      */
-    QgsConfigureShortcutsDialog( QWidget *parent /TransferThis/ = nullptr, QgsShortcutsManager *manager = nullptr );
+    QgsConfigureShortcutsDialog( QWidget *parent /TransferThis/ = 0, QgsShortcutsManager *manager = 0 );
 
     ~QgsConfigureShortcutsDialog();
 

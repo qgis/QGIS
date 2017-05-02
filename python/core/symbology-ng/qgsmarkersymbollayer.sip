@@ -78,7 +78,7 @@ class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayer
      * @return decoded name
      * @see encodeShape()
      */
-    static Shape decodeShape( const QString &name, bool *ok = nullptr );
+    static Shape decodeShape( const QString &name, bool *ok = 0 );
 
     /** Encodes a shape to its string representation.
      * @param shape shape to encode

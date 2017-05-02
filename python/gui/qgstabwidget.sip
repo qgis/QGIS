@@ -32,7 +32,7 @@ class QgsTabWidget : QTabWidget
      *
      * @note Added in QGIS 3.0
      */
-    QgsTabWidget( QWidget *parent = nullptr );
+    QgsTabWidget( QWidget *parent = 0 );
 
     /**
      * Hides the tab with the given widget

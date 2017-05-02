@@ -22,7 +22,7 @@ class QgsShortcutsManager: QObject
      * as the default value to store settings alongside built in QGIS shortcuts, but care must be
      * taken to not register actions which conflict with the built in QGIS actions.
      */
-    QgsShortcutsManager( QObject *parent /TransferThis/ = nullptr, const QString &settingsRoot = "/shortcuts/" );
+    QgsShortcutsManager( QObject *parent /TransferThis/ = 0, const QString &settingsRoot = "/shortcuts/" );
 
     /** Automatically registers all QActions and QShortcuts which are children of the
      * passed object.

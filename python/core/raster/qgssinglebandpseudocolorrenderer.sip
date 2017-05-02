@@ -12,7 +12,7 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterDataProvider *provider ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) / Factory /;
 
     /** Takes ownership of the shader*/
     void setShader( QgsRasterShader *shader /Transfer/ );
@@ -30,7 +30,7 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
      * @param clip clip out of range values
      * @param extent extent used in classification (only used in quantile mode)
      */
-    void createShader( QgsColorRamp *colorRamp = nullptr, QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated, QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous, int classes = 0, bool clip = false, const QgsRectangle &extent = QgsRectangle() );
+    void createShader( QgsColorRamp *colorRamp = 0, QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated, QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous, int classes = 0, bool clip = false, const QgsRectangle &extent = QgsRectangle() );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 

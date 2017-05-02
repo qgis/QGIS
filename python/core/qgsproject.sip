@@ -28,7 +28,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      *
      * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
      */
-    explicit QgsProject( QObject *parent /TransferThis/ = nullptr );
+    explicit QgsProject( QObject *parent /TransferThis/ = 0 );
 
     ~QgsProject();
 

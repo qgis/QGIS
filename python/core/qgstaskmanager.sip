@@ -235,7 +235,7 @@ class QgsTaskManager : QObject
     /** Constructor for QgsTaskManager.
      * @param parent parent QObject
      */
-    QgsTaskManager( QObject *parent /TransferThis/ = nullptr );
+    QgsTaskManager( QObject *parent /TransferThis/ = 0 );
 
     virtual ~QgsTaskManager();
 

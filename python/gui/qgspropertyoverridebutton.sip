@@ -5,18 +5,18 @@ class QgsPropertyOverrideButton : QToolButton
 %End
   public:
 
-    QgsPropertyOverrideButton( QWidget* parent /TransferThis/ = nullptr,
-                            const QgsVectorLayer *layer = nullptr );
+    QgsPropertyOverrideButton( QWidget* parent /TransferThis/ = 0,
+                            const QgsVectorLayer *layer = 0 );
 
     void init( int propertyKey,
                const QgsProperty& property,
                const QgsPropertiesDefinition& definitions,
-               const QgsVectorLayer *layer = nullptr );
+               const QgsVectorLayer *layer = 0 );
 
     void init( int propertyKey,
                const QgsAbstractPropertyCollection& collection,
                const QgsPropertiesDefinition& definitions,
-               const QgsVectorLayer *layer = nullptr );
+               const QgsVectorLayer *layer = 0 );
 
     QgsProperty toProperty() const;
 

@@ -17,7 +17,7 @@ class QgsMapUnitScaleWidget : QgsPanelWidget
     /** Constructor for QgsMapUnitScaleWidget.
      * @param parent parent widget
      */
-    QgsMapUnitScaleWidget( QWidget *parent /TransferThis/ = nullptr );
+    QgsMapUnitScaleWidget( QWidget *parent /TransferThis/ = 0 );
 
     /** Returns a QgsMapUnitScale representing the settings shown in the
      * widget.

@@ -27,7 +27,7 @@ class QgsTextFormatWidget : QWidget
      * @param mapCanvas associated map canvas
      * @param parent parent widget
      */
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent /TransferThis/ = nullptr );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
 
     ~QgsTextFormatWidget();
 
@@ -111,7 +111,7 @@ class QgsTextFormatDialog : QDialog
      * @param parent parent widget
      * @param fl window flags for dialog
      */
-    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent /TransferThis/ = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     virtual ~QgsTextFormatDialog();
 
@@ -143,7 +143,7 @@ class QgsTextFormatPanelWidget : QgsPanelWidgetWrapper
      * @param mapCanvas optional associated map canvas
      * @param parent parent widget
      */
-    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent /TransferThis/ = nullptr );
+    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
 
     /** Returns the current formatting settings defined by the widget.
      */

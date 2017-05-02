@@ -230,7 +230,7 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
         /** Returns which legend keys match the feature
          * @note added in QGIS 2.14
          */
-        QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
+        QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = 0 );
 
         //! tell which rules will be used to render the feature
         QList<QgsRuleBasedRenderer::Rule*> rulesForFeature( QgsFeature &feat, QgsRenderContext *context = 0 );

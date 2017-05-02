@@ -171,7 +171,7 @@ class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
      * @returns list of unique strings containing substring
      */
     virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
-                                               QgsFeedback *feedback = nullptr ) const;
+                                               QgsFeedback *feedback = 0 ) const;
 
     /** Calculates an aggregated value from the layer's features. The base implementation does nothing,
      * but subclasses can override this method to handoff calculation of aggregates to the provider.

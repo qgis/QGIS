@@ -63,7 +63,7 @@ class QgsOgcUtils
      * @return valid OGC expression QDomElement on success,
      * otherwise null QDomElement
      */
-    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
+    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = 0 );
 
 };
 

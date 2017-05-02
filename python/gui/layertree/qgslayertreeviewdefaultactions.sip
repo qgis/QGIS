@@ -21,13 +21,13 @@ class QgsLayerTreeViewDefaultActions : QObject
     QAction *actionShowFeatureCount( QObject *parent = 0 ) /Factory/;
 
     //! Action to check a group and all its children
-    QAction *actionCheckAndAllChildren( QObject *parent = nullptr );
+    QAction *actionCheckAndAllChildren( QObject *parent = 0 );
 
     //! Action to uncheck a group and all its children
-    QAction *actionUncheckAndAllChildren( QObject *parent = nullptr );
+    QAction *actionUncheckAndAllChildren( QObject *parent = 0 );
 
     //! Action to check a group and all its parents
-    QAction *actionCheckAndAllParents( QObject *parent = nullptr );
+    QAction *actionCheckAndAllParents( QObject *parent = 0 );
 
     QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
     QAction *actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;

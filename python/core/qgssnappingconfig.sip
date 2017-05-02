@@ -87,7 +87,7 @@ class QgsSnappingConfig
     /**
      * Constructor with default parameters defined in global settings
      */
-    explicit QgsSnappingConfig( QgsProject *project = nullptr );
+    explicit QgsSnappingConfig( QgsProject *project = 0 );
 
     ~QgsSnappingConfig();
 
