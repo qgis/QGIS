@@ -9,7 +9,6 @@ core/qgseditorwidgetsetup.sip
 core/qgserror.sip
 core/qgsexpressioncontext.sip
 core/qgsexpressioncontextgenerator.sip
-core/qgsfeatureiterator.sip
 core/qgsfeaturerequest.sip
 core/qgsgeometrysimplifier.sip
 core/qgsgeometryvalidator.sip
