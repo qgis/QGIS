@@ -34,6 +34,8 @@
 
 class QgsCoordinateReferenceSystem;
 
+#ifndef SIP_RUN
+
 /** \ingroup core
  * This class builds features from GML data in a streaming way. The caller must call processData()
  * as soon it has new content from the source. At any point, it can call
@@ -325,6 +327,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     bool mFoundUnhandledGeometryElement;
 };
 
+#endif
 
 /** \ingroup core
  * This class reads data from a WFS server or alternatively from a GML file. It
@@ -373,18 +376,18 @@ class CORE_EXPORT QgsGml : public QObject
       \since QGIS 2.1 */
     QgsCoordinateReferenceSystem crs() const;
 
+  signals:
+    void dataReadProgress( int progress );
+    void totalStepsUpdate( int totalSteps );
+    //! Also emit signal with progress and totalSteps together (this is better for the status message)
+    void dataProgressAndSteps( int progress, int totalSteps );
+
   private slots:
 
     void setFinished();
 
     //! Takes progress value and total steps and emit signals 'dataReadProgress' and 'totalStepUpdate'
     void handleProgressEvent( qint64 progress, qint64 totalSteps );
-
-  signals:
-    void dataReadProgress( int progress );
-    void totalStepsUpdate( int totalSteps );
-    //also emit signal with progress and totalSteps together (this is better for the status message)
-    void dataProgressAndSteps( int progress, int totalSteps );
 
   private:
 
