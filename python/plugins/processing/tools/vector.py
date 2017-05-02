@@ -391,17 +391,6 @@ def snapToPrecision(geom, precision):
     return snapped
 
 
-def bufferedBoundingBox(bbox, buffer_size):
-    if buffer_size == 0.0:
-        return QgsRectangle(bbox)
-
-    return QgsRectangle(
-        bbox.xMinimum() - buffer_size,
-        bbox.yMinimum() - buffer_size,
-        bbox.xMaximum() + buffer_size,
-        bbox.yMaximum() + buffer_size)
-
-
 def ogrConnectionString(uri):
     """Generates OGR connection sting from layer source
     """

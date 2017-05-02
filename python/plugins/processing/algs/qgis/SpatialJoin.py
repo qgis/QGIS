@@ -173,8 +173,8 @@ class SpatialJoin(GeoAlgorithm):
                 bbox = inGeom.buffer(10, 2).boundingBox()
             else:
                 bbox = inGeom.boundingBox()
-            bufferedBox = vector.bufferedBoundingBox(bbox, 0.51 * precision)
-            joinList = index.intersects(bufferedBox)
+            bbox.grow(0.51 * precision)
+            joinList = index.intersects(bbox)
             if len(joinList) > 0:
                 count = 0
                 for i in joinList:

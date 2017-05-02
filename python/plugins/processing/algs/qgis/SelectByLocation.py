@@ -117,7 +117,8 @@ class SelectByLocation(GeoAlgorithm):
         total = 100.0 / QgsProcessingUtils.featureCount(selectLayer, context)
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
-            bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
+            bbox = geom.boundingBox()
+            bbox.grow(0.51 * precision)
             intersects = index.intersects(bbox)
 
             request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
