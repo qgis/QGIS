@@ -16,7 +16,7 @@ class QgsGradientColorRampDialog : QDialog
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent /TransferThis/ = nullptr );
+    QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
     ~QgsGradientColorRampDialog();
 
     /** Returns a color ramp representing the current settings from the dialog.

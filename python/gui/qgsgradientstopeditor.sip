@@ -17,7 +17,7 @@ class QgsGradientStopEditor : QWidget
      * @param parent parent widget
      * @param ramp optional initial gradient ramp
      */
-    QgsGradientStopEditor( QWidget *parent /TransferThis/ = nullptr, QgsGradientColorRamp *ramp = nullptr );
+    QgsGradientStopEditor( QWidget *parent /TransferThis/ = 0, QgsGradientColorRamp *ramp = 0 );
 
     /** Sets the current ramp shown in the editor.
      * @param ramp color ramp

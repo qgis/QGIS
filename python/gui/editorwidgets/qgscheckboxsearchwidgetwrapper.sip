@@ -16,7 +16,7 @@ class QgsCheckboxSearchWidgetWrapper : QgsSearchWidgetWrapper
      * @param fieldIdx index of associated field
      * @param parent parent widget
      */
-    explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = nullptr );
+    explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 
     /** Returns a variant representing the current state of the widget.
      * @note this will not be a boolean true or false value, it will instead

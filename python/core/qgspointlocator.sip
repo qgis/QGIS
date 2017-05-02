@@ -26,7 +26,7 @@ class QgsPointLocator : QObject
      *  @arg extent  if not null, will index only a subset of the layer
      */
     explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem& destinationCrs = QgsCoordinateReferenceSystem(),
-                              const QgsRectangle *extent = nullptr );
+                              const QgsRectangle *extent = 0 );
 
     ~QgsPointLocator();
 

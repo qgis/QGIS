@@ -12,7 +12,7 @@ class QgsRelationReferenceSearchWidgetWrapper : QgsSearchWidgetWrapper
 %End
   public:
 
-    explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent = nullptr );
+    explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent = 0 );
     bool applyDirectly();
     QString expression();
     bool valid() const;

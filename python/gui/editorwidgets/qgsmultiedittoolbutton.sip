@@ -23,7 +23,7 @@ class QgsMultiEditToolButton : QToolButton
     /** Constructor for QgsMultiEditToolButton.
      * @param parent parent object
      */
-    explicit QgsMultiEditToolButton( QWidget *parent /TransferThis/ = nullptr );
+    explicit QgsMultiEditToolButton( QWidget *parent /TransferThis/ = 0 );
 
     /** Returns the current displayed state of the button.
      */

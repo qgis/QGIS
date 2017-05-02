@@ -23,7 +23,7 @@ class QgsAnnotation : QObject
 
   public:
 
-    QgsAnnotation( QObject *parent /TransferThis/ = nullptr );
+    QgsAnnotation( QObject *parent /TransferThis/ = 0 );
 
     virtual QgsAnnotation *clone() const = 0 /Factory/;
 

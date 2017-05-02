@@ -21,7 +21,7 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     virtual QgsPalettedRasterRenderer  *clone() const /Factory/;
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) /Factory/;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
     /** Returns number of colors*/
     int nColors() const;

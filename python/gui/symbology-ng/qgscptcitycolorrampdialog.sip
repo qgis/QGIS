@@ -15,7 +15,7 @@ class QgsCptCityColorRampDialog : QDialog
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent /TransferThis/ = nullptr );
+    QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
     ~QgsCptCityColorRampDialog();
 
     /** Returns a color ramp representing the current settings from the dialog.

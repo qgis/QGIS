@@ -11,7 +11,7 @@ class QgsListWidget : public QgsTableWidgetBase
     /**
      * Constructor.
      */
-    explicit QgsListWidget( QVariant::Type subType, QWidget *parent = nullptr );
+    explicit QgsListWidget( QVariant::Type subType, QWidget *parent = 0 );
 
     /**
      * Set the initial value of the widget.

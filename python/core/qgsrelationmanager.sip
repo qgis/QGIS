@@ -11,7 +11,7 @@ class QgsRelationManager : QObject
     /** Constructor for QgsRelationManager.
      * @param project associated project (used to notify project of changes)
      */
-    explicit QgsRelationManager( QgsProject *project = nullptr );
+    explicit QgsRelationManager( QgsProject *project = 0 );
 
     /**
      * Will set the specified relations and remove any relation currently set.

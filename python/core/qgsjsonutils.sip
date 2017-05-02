@@ -18,7 +18,7 @@ class QgsJSONExporter
      * @param vectorLayer associated vector layer (required for related attribute export)
      * @param precision maximum number of decimal places to use for geometry coordinates
      */
-    QgsJSONExporter( const QgsVectorLayer *vectorLayer = nullptr, int precision = 17 );
+    QgsJSONExporter( const QgsVectorLayer *vectorLayer = 0, int precision = 17 );
 
     /** Sets the maximum number of decimal places to use in geometry coordinates.
      * @param precision number of decimal places

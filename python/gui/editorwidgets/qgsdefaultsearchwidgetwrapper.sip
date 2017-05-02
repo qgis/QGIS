@@ -8,7 +8,7 @@ class QgsDefaultSearchWidgetWrapper : QgsSearchWidgetWrapper
 %End
   public:
 
-    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = nullptr );
+    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 
     // QgsSearchWidgetWrapper interface
   public:

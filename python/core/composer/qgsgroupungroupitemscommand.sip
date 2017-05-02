@@ -26,7 +26,7 @@ class QgsGroupUngroupItemsCommand: QObject, QUndoCommand
      * @param parent parent command, if any
      *
      */
-    QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup *item, QgsComposition *c, const QString &text, QUndoCommand *parent = nullptr );
+    QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup *item, QgsComposition *c, const QString &text, QUndoCommand *parent = 0 );
     ~QgsGroupUngroupItemsCommand();
 
     void redo();

@@ -15,7 +15,7 @@ class QgsFieldValuesLineEdit: QgsFilterLineEdit
     /** Constructor for QgsFieldValuesLineEdit
      * @param parent parent widget
      */
-    QgsFieldValuesLineEdit( QWidget *parent /TransferThis/ = nullptr );
+    QgsFieldValuesLineEdit( QWidget *parent /TransferThis/ = 0 );
 
     virtual ~QgsFieldValuesLineEdit();
 

@@ -167,7 +167,7 @@ class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerWidget
      * @param vl associated vector layer
      * @param parent parent widget
      */
-    QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = nullptr );
+    QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     ~QgsFilledMarkerSymbolLayerWidget();
 
@@ -456,7 +456,7 @@ class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerWidget
 #include <qgssymbollayerwidget.h>
 %End
   public:
-    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = nullptr );
+    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     /**
      * Will be registered as factory

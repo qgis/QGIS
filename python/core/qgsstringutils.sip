@@ -185,5 +185,5 @@ class QgsStringUtils
      * @returns string with inserted links
      * @note added in QGIS 3.0
      */
-    static QString insertLinks( const QString &string, bool *foundLinks = nullptr );
+    static QString insertLinks( const QString &string, bool *foundLinks = 0 );
 };

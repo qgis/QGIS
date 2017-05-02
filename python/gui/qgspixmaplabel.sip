@@ -8,7 +8,7 @@ class QgsPixmapLabel : QLabel
 #include <qgspixmaplabel.h>
 %End
   public:
-    explicit QgsPixmapLabel( QWidget *parent /TransferThis/ = nullptr );
+    explicit QgsPixmapLabel( QWidget *parent /TransferThis/ = 0 );
     /**
      * Calculates the height for the given width.
      *

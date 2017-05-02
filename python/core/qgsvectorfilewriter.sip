@@ -210,7 +210,7 @@ class QgsVectorFileWriter : QgsFeatureSink
                                             bool forceMulti = false,
                                             bool includeZ = false,
                                             const QgsAttributeList& attributes = QgsAttributeList(),
-                                            FieldValueConverter* fieldValueConverter = nullptr
+                                            FieldValueConverter* fieldValueConverter = 0
                                           );
 
     /** Writes a layer out to a vector file.
@@ -255,7 +255,7 @@ class QgsVectorFileWriter : QgsFeatureSink
                                             bool forceMulti = false,
                                             bool includeZ = false,
                                             const QgsAttributeList& attributes = QgsAttributeList(),
-                                            FieldValueConverter* fieldValueConverter = nullptr
+                                            FieldValueConverter* fieldValueConverter = 0
                                           );
 
 
@@ -339,8 +339,8 @@ class QgsVectorFileWriter : QgsFeatureSink
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
                                             const SaveVectorOptions& options,
-                                            QString *newFilename = nullptr,
-                                            QString *errorMessage = nullptr );
+                                            QString *newFilename = 0,
+                                            QString *errorMessage = 0 );
 
     /** Create a new vector file writer */
     QgsVectorFileWriter( const QString& vectorFileName,
@@ -351,7 +351,7 @@ class QgsVectorFileWriter : QgsFeatureSink
                          const QString& driverName = "ESRI Shapefile",
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
-                         QString *newFilename = nullptr,
+                         QString *newFilename = 0,
                          SymbologyExport symbologyExport = NoSymbology
                        );
 

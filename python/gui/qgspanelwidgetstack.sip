@@ -16,7 +16,7 @@ class QgsPanelWidgetStack: public QWidget
       * for added panels.
       * @param parent
       */
-    QgsPanelWidgetStack( QWidget *parent = nullptr );
+    QgsPanelWidgetStack( QWidget *parent = 0 );
 
     /**
      * Adds the main panel widget to the stack and selects it for the user

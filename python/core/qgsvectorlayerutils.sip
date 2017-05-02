@@ -46,6 +46,6 @@ class QgsVectorLayerUtils
     static QgsFeature createFeature( QgsVectorLayer* layer,
                                      const QgsGeometry& geometry = QgsGeometry(),
                                      const QgsAttributeMap& attributes = QgsAttributeMap(),
-                                     QgsExpressionContext *context = nullptr );
+                                     QgsExpressionContext *context = 0 );
 
 };

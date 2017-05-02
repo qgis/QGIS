@@ -475,7 +475,7 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
      * @param dpi set to DPI of exported file, or leave as -1 to use composition's DPI.
      * @note added in QGIS 2.16
      */
-    void georeferenceOutput( const QString& file, QgsComposerMap* referenceMap = nullptr,
+    void georeferenceOutput( const QString& file, QgsComposerMap* referenceMap = 0,
                              const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
 
     /** Compute world file parameters. Assumes the whole page containing the associated map item
