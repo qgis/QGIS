@@ -126,6 +126,7 @@ class CORE_EXPORT QgsExpressionContextScope
        * \param name variable name (should be unique within the QgsExpressionContextScope)
        * \param value initial variable value
        * \param readOnly true if variable should not be editable by users
+       * \param isStatic true if the variable will not change during the lifteime of an iterator.
        */
       StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false )
         : name( name )
@@ -164,10 +165,10 @@ class CORE_EXPORT QgsExpressionContextScope
      */
     QString name() const { return mName; }
 
-    /** Convenience method for setting a variable in the context scope by name and value. If a variable
+    /** Convenience method for setting a variable in the context scope by \a name name and \a value. If a variable
      * with the same name is already set then its value is overwritten, otherwise a new variable is added to the scope.
-     * \param name variable name
-     * \param value variable value
+     * If the \a isStatic parameter is set to true, this variable can be cached during the execution
+     * of QgsExpression::prepare().
      * \see addVariable()
      */
     void setVariable( const QString &name, const QVariant &value, bool isStatic = false );

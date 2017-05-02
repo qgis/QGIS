@@ -111,8 +111,14 @@ class TestQgsExpressionContext : public QObject
           return new ModifiableFunction( mVal );
         }
 
+        /**
+         * This function is not static, it's value changes with every invocation.
+         */
         virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override
         {
+          Q_UNUSED( node )
+          Q_UNUSED( parent )
+          Q_UNUSED( context )
           return false;
         }
 
