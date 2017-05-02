@@ -12,7 +12,6 @@ core/qgsexpressioncontextgenerator.sip
 core/qgsfeaturerequest.sip
 core/qgsgeometrysimplifier.sip
 core/qgsgeometryvalidator.sip
-core/qgsgmlschema.sip
 core/qgsmaptopixelgeometrysimplifier.sip
 core/qgstransaction.sip
 core/qgstransactiongroup.sip
