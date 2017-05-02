@@ -28,6 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import QgsProcessingUtils
+
 from qgis.PyQt.QtGui import QIcon
 
 from processing.core.parameters import ParameterVector

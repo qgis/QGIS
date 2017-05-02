@@ -30,6 +30,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsProcessingUtils
 from osgeo import gdal
 
 from processing.core.parameters import (ParameterRaster,

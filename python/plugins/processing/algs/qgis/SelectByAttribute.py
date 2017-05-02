@@ -27,7 +27,9 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication)
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsExpression, QgsFeatureRequest
+from qgis.core import (QgsExpression,
+                       QgsFeatureRequest,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector

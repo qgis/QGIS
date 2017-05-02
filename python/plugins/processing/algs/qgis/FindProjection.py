@@ -32,7 +32,8 @@ from qgis.core import (QgsApplication,
                        QgsGeometry,
                        QgsRectangle,
                        QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransform)
+                       QgsCoordinateTransform,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector

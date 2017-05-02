@@ -26,7 +26,8 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
                        QgsExpression,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection

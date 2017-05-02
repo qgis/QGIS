@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsApplication,
-                       QgsVectorDataProvider)
+                       QgsVectorDataProvider,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
