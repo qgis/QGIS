@@ -2233,6 +2233,8 @@ object of type QgsProcessingFeedback, and will need to adapt their use of progre
 - ProcessingLog should not be used when reporting log messages from algorithms. Use QgsMessageLog.logMessage() instead.
 - dataobjects.getLayerFromString() was removed. Use QgsProcessingUtils.mapLayerFromString() instead.
 - vector.bufferedBoundingBox() was removed. Use QgsRectangle.grow() instead.
+- vector.duplicateInMemory() was removed.
+
 
 Triangulation        {#qgis_api_break_3_0_Triangulation}
 -------------

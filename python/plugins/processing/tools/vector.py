@@ -302,54 +302,6 @@ def combineVectorFields(layerA, layerB):
     return fields
 
 
-def duplicateInMemory(layer, newName='', addToRegistry=False):
-    """Return a memory copy of a layer
-
-    layer: QgsVectorLayer that shall be copied to memory.
-    new_name: The name of the copied layer.
-    add_to_registry: if True, the new layer will be added to the QgsMapRegistry
-
-    Returns an in-memory copy of a layer.
-    """
-    if newName is '':
-        newName = layer.name() + ' (Memory)'
-
-    if layer.type() == QgsMapLayer.VectorLayer:
-        geomType = layer.geometryType()
-        if geomType == QgsWkbTypes.PointGeometry:
-            strType = 'Point'
-        elif geomType == QgsWkbTypes.LineGeometry:
-            strType = 'Line'
-        elif geomType == QgsWkbTypes.PolygonGeometry:
-            strType = 'Polygon'
-        else:
-            raise RuntimeError('Layer is whether Point nor Line nor Polygon')
-    else:
-        raise RuntimeError('Layer is not a VectorLayer')
-
-    crs = layer.crs().authid().lower()
-    myUuid = str(uuid.uuid4())
-    uri = '%s?crs=%s&index=yes&uuid=%s' % (strType, crs, myUuid)
-    memLayer = QgsVectorLayer(uri, newName, 'memory')
-    memProvider = memLayer.dataProvider()
-
-    provider = layer.dataProvider()
-    fields = layer.fields().toList()
-    memProvider.addAttributes(fields)
-    memLayer.updateFields()
-
-    for ft in provider.getFeatures():
-        memProvider.addFeatures([ft])
-
-    if addToRegistry:
-        if memLayer.isValid():
-            QgsProject.instance().addMapLayer(memLayer)
-        else:
-            raise RuntimeError('Layer invalid')
-
-    return memLayer
-
-
 def checkMinDistance(point, index, distance, points):
     """Check if distance from given point to all other points is greater
     than given value.
