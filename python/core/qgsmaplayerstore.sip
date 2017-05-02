@@ -77,7 +77,8 @@ class QgsMapLayerStore : QObject
 %End
 
 
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &layers /Transfer/ );
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &layers /Transfer/);
+
 %Docstring
  \brief
  Add a list of ``layers`` to the store. Ownership of the layers is transferred
@@ -86,6 +87,9 @@ class QgsMapLayerStore : QObject
  The layersAdded() and layerWasAdded() signals will always be emitted.
 
  \param layers A list of layer which should be added to the store.
+ \param takeOwnership Ownership will be transferred to the layer store.
+                      If you specify false here you have take care of deleting
+                      the layers yourself. Not available in Python.
 
  :return: a list of the map layers that were added
          successfully. If a layer is invalid, or already exists in the store,
@@ -95,7 +99,8 @@ class QgsMapLayerStore : QObject
  :rtype: list of QgsMapLayer
 %End
 
-    QgsMapLayer *addMapLayer( QgsMapLayer *layer /Transfer/ );
+    QgsMapLayer *addMapLayer( QgsMapLayer *layer /Transfer/);
+
 %Docstring
  \brief
  Add a ``layer`` to the store. Ownership of the layer is transferred to the
@@ -106,6 +111,9 @@ class QgsMapLayerStore : QObject
  addMapLayers() instead.
 
  \param layer A layer to add to the store
+ \param takeOwnership Ownership will be transferred to the layer store.
+                      If you specify false here you have take care of deleting
+                      the layers yourself. Not available in Python.
 
  :return: None if unable to add layer, otherwise pointer to newly added layer
 
@@ -137,6 +145,19 @@ class QgsMapLayerStore : QObject
 %End
 
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
+%Docstring
+ \brief
+ Remove a set of ``layers`` from the store.
+
+ The specified layers will be removed from the store.
+ These layers will also be deleted.
+
+ \param layers A list of layers to remove. Null pointers are ignored.
+
+.. seealso:: takeMapLayer()
+.. seealso:: removeMapLayer()
+.. seealso:: removeAllMapLayers()
+%End
 
     void removeMapLayer( const QString &id );
 %Docstring

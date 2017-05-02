@@ -50,8 +50,7 @@ QList<QgsMapLayer *> QgsMapLayerStore::mapLayersByName( const QString &layerName
   return myResultList;
 }
 
-QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers(
-  const QList<QgsMapLayer *> &layers )
+QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> &layers, bool takeOwnership )
 {
   QList<QgsMapLayer *> myResultList;
   Q_FOREACH ( QgsMapLayer *myLayer, layers )
@@ -66,7 +65,10 @@ QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers(
     {
       mMapLayers[myLayer->id()] = myLayer;
       myResultList << mMapLayers[myLayer->id()];
-      myLayer->setParent( this );
+      if ( takeOwnership )
+      {
+        myLayer->setParent( this );
+      }
       connect( myLayer, &QObject::destroyed, this, &QgsMapLayerStore::onMapLayerDeleted );
       emit layerWasAdded( myLayer );
     }
@@ -79,10 +81,10 @@ QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers(
 }
 
 QgsMapLayer *
-QgsMapLayerStore::addMapLayer( QgsMapLayer *layer )
+QgsMapLayerStore::addMapLayer( QgsMapLayer *layer, bool takeOwnership )
 {
   QList<QgsMapLayer *> addedLayers;
-  addedLayers = addMapLayers( QList<QgsMapLayer *>() << layer );
+  addedLayers = addMapLayers( QList<QgsMapLayer *>() << layer, takeOwnership );
   return addedLayers.isEmpty() ? nullptr : addedLayers[0];
 }
 

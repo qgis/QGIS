@@ -511,7 +511,7 @@ class TestQgsProjectMapLayers(unittest.TestCase):
         # add one layer to project
         p.addMapLayer(l1)
         self.assertEqual(p.mapLayers(), {l1.id(): l1})
-        self.assertEqual(l1.parent(), p)
+        self.assertEqual(l1.parent().parent(), p)
 
         # try taking some layers which don't exist in project
         self.assertFalse(p.takeMapLayer(None))

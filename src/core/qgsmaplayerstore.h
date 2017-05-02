@@ -124,6 +124,9 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * The layersAdded() and layerWasAdded() signals will always be emitted.
      *
      * \param layers A list of layer which should be added to the store.
+     * \param takeOwnership Ownership will be transferred to the layer store.
+     *                      If you specify false here you have take care of deleting
+     *                      the layers yourself. Not available in Python.
      *
      * \returns a list of the map layers that were added
      *         successfully. If a layer is invalid, or already exists in the store,
@@ -131,7 +134,8 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *
      * \see addMapLayer()
      */
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &layers SIP_TRANSFER );
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &layers SIP_TRANSFER,
+                                       bool takeOwnership SIP_PYARGREMOVE = true );
 
     /**
      * \brief
@@ -143,6 +147,9 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * addMapLayers() instead.
      *
      * \param layer A layer to add to the store
+     * \param takeOwnership Ownership will be transferred to the layer store.
+     *                      If you specify false here you have take care of deleting
+     *                      the layers yourself. Not available in Python.
      *
      * \returns nullptr if unable to add layer, otherwise pointer to newly added layer
      *
@@ -151,7 +158,8 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \note Use addMapLayers() if adding more than one layer at a time.
      * \see addMapLayers()
      */
-    QgsMapLayer *addMapLayer( QgsMapLayer *layer SIP_TRANSFER );
+    QgsMapLayer *addMapLayer( QgsMapLayer *layer SIP_TRANSFER,
+                              bool takeOwnership SIP_PYARGREMOVE = true );
 
     /**
      * \brief
@@ -182,7 +190,6 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \see removeMapLayer()
      * \see removeAllMapLayers()
      */
-    //TODO QGIS 3.0 - add PyName alias to avoid list type conversion error
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
 
     /**
