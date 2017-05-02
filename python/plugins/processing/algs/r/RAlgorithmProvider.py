@@ -36,6 +36,7 @@ from qgis.core import (QgsApplication,
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
+from processing.algs.r.AddRScriptFromFileAction import AddRScriptFromFileAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.WrongScriptException import WrongScriptException
 from processing.gui.GetScriptsAndModels import GetRScriptsAction
@@ -58,6 +59,7 @@ class RAlgorithmProvider(QgsProcessingProvider):
         self.actions = []
         self.actions.append(CreateNewScriptAction(
             'Create new R script', CreateNewScriptAction.SCRIPT_R))
+        self.actions.append(AddRScriptFromFileAction())
         self.actions.append(GetRScriptsAction())
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_R),
