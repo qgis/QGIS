@@ -183,7 +183,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
       return layer;
   }
 
-  layer = mapLayerFromStore( string, &context.temporaryLayerStore() );
+  layer = mapLayerFromStore( string, context.temporaryLayerStore() );
   if ( layer )
     return layer;
 
@@ -193,7 +193,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
   layer = loadMapLayerFromString( string );
   if ( layer )
   {
-    context.temporaryLayerStore().addMapLayer( layer );
+    context.temporaryLayerStore()->addMapLayer( layer );
     return layer;
   }
   else

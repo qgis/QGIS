@@ -93,7 +93,7 @@ class CORE_EXPORT QgsProcessingContext
      * Returns a reference to the layer store used for storing temporary layers during
      * algorithm execution.
      */
-    QgsMapLayerStore &temporaryLayerStore() { return tempLayerStore; }
+    QgsMapLayerStore *temporaryLayerStore() { return &tempLayerStore; }
 
     /**
      * Returns the behavior used for checking invalid geometries in input layers.

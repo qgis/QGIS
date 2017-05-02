@@ -75,7 +75,7 @@ class QgsProcessingContext
  Sets the expression ``context``.
 %End
 
-    QgsMapLayerStore &temporaryLayerStore();
+    QgsMapLayerStore *temporaryLayerStore();
 %Docstring
  Returns a reference to the layer store used for storing temporary layers during
  algorithm execution.

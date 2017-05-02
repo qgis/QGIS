@@ -438,7 +438,7 @@ void TestQgsProcessing::mapLayerFromString()
   // check that layers in context temporary store are used
   QgsVectorLayer *v5 = new QgsVectorLayer( "Polygon", "V5", "memory" );
   QgsVectorLayer *v6 = new QgsVectorLayer( "Point", "v6", "memory" );
-  c.temporaryLayerStore().addMapLayers( QList<QgsMapLayer *>() << v5 << v6 );
+  c.temporaryLayerStore()->addMapLayers( QList<QgsMapLayer *>() << v5 << v6 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V5", c ), v5 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "v6", c ), v6 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( v5->id(), c ), v5 );
@@ -455,7 +455,7 @@ void TestQgsProcessing::mapLayerFromString()
   QVERIFY( loadedLayer->isValid() );
   QCOMPARE( loadedLayer->type(), QgsMapLayer::RasterLayer );
   // should now be in temporary store
-  QCOMPARE( c.temporaryLayerStore().mapLayer( loadedLayer->id() ), loadedLayer );
+  QCOMPARE( c.temporaryLayerStore()->mapLayer( loadedLayer->id() ), loadedLayer );
 
   // since it's now in temporary store, should be accessible even if we deny loading new layers
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( newRaster, c, false ), loadedLayer );
