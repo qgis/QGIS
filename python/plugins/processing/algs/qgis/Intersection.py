@@ -86,7 +86,7 @@ class Intersection(GeoAlgorithm):
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, geomType, vlayerA.crs(), context)
         outFeat = QgsFeature()
-        index = vector.spatialindex(vlayerB)
+        index = QgsProcessingUtils.createSpatialIndex(vlayerB, context)
         selectionA = QgsProcessingUtils.getFeatures(vlayerA, context)
         total = 100.0 / QgsProcessingUtils.featureCount(vlayerA, context)
         for current, inFeatA in enumerate(selectionA):

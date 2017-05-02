@@ -108,7 +108,7 @@ class LinesIntersection(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldListA, QgsWkbTypes.Point, layerA.crs(),
                                                                      context)
 
-        spatialIndex = vector.spatialindex(layerB)
+        spatialIndex = QgsProcessingUtils.createSpatialIndex(layerB, context)
 
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(layerA, context)

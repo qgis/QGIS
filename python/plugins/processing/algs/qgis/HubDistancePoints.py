@@ -113,7 +113,7 @@ class HubDistancePoints(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, layerPoints.crs(),
                                                                      context)
 
-        index = vector.spatialindex(layerHubs)
+        index = QgsProcessingUtils.createSpatialIndex(layerHubs, context)
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(layerPoints.crs())

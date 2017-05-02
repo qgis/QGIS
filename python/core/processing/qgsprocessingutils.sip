@@ -104,6 +104,15 @@ class QgsProcessingUtils
  :rtype: long
 %End
 
+    static QgsSpatialIndex createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context );
+%Docstring
+ Creates a spatial index for a layer, when
+ the settings from the supplied ``context`` are respected. E.g. if the
+ context is set to only use selected features, then calling this will
+ return an index containing only selected features in the layer.
+ :rtype: QgsSpatialIndex
+%End
+
     static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );
 %Docstring
  Returns a list of unique values contained in a single field in a ``layer``, when

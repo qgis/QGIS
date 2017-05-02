@@ -78,7 +78,7 @@ class RandomPointsLayer(GeoAlgorithm):
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
 
         bbox = layer.extent()
-        idxLayer = vector.spatialindex(layer)
+        idxLayer = QgsProcessingUtils.createSpatialIndex(layer, context)
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))

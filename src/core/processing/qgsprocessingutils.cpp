@@ -228,6 +228,17 @@ long QgsProcessingUtils::featureCount( QgsVectorLayer *layer, const QgsProcessin
     return layer->featureCount();
 }
 
+QgsSpatialIndex QgsProcessingUtils::createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context )
+{
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
+  if ( useSelection )
+    return QgsSpatialIndex( layer->getSelectedFeatures( request ) );
+  else
+    return QgsSpatialIndex( layer->getFeatures( request ) );
+}
+
 QList<QVariant> QgsProcessingUtils::uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context )
 {
   if ( !layer )

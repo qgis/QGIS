@@ -96,7 +96,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields.toList(), polyLayer.wkbType(),
                                                                      polyLayer.crs(), context)
 
-        spatialIndex = vector.spatialindex(pointLayer)
+        spatialIndex = QgsProcessingUtils.createSpatialIndex(pointLayer, context)
 
         ftPoint = QgsFeature()
         outFeat = QgsFeature()

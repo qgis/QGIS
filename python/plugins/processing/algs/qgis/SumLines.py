@@ -86,7 +86,7 @@ class SumLines(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList.toList(), polyLayer.wkbType(),
                                                                      polyLayer.crs(), context)
 
-        spatialIndex = vector.spatialindex(lineLayer)
+        spatialIndex = QgsProcessingUtils.createSpatialIndex(lineLayer, context)
 
         ftLine = QgsFeature()
         ftPoly = QgsFeature()

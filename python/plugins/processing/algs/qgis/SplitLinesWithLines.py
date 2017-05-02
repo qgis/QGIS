@@ -85,7 +85,7 @@ class SplitLinesWithLines(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList, QgsWkbTypes.LineString, layerA.crs(),
                                                                      context)
 
-        spatialIndex = vector.spatialindex(layerB)
+        spatialIndex = QgsProcessingUtils.createSpatialIndex(layerB, context)
 
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(layerA, context)

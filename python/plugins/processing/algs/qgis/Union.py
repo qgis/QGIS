@@ -88,8 +88,8 @@ class Union(GeoAlgorithm):
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        indexA = vector.spatialindex(vlayerB)
-        indexB = vector.spatialindex(vlayerA)
+        indexA = QgsProcessingUtils.createSpatialIndex(vlayerB, context)
+        indexB = QgsProcessingUtils.createSpatialIndex(vlayerA, context)
 
         count = 0
         nElement = 0

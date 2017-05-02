@@ -125,7 +125,7 @@ class PointDistance(GeoAlgorithm):
         else:
             self.writer.addRecord(['InputID', 'MEAN', 'STDDEV', 'MIN', 'MAX'])
 
-        index = vector.spatialindex(targetLayer)
+        index = QgsProcessingUtils.createSpatialIndex(targetLayer, context)
 
         inIdx = inLayer.fields().lookupField(inField)
         outIdx = targetLayer.fields().lookupField(targetField)
@@ -164,7 +164,7 @@ class PointDistance(GeoAlgorithm):
 
     def regularMatrix(self, context, inLayer, inField, targetLayer, targetField,
                       nPoints, feedback):
-        index = vector.spatialindex(targetLayer)
+        index = QgsProcessingUtils.createSpatialIndex(targetLayer, context)
 
         inIdx = inLayer.fields().lookupField(inField)
 

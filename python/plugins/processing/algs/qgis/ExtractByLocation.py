@@ -94,7 +94,7 @@ class ExtractByLocation(GeoAlgorithm):
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)
 
-        index = vector.spatialindex(layer)
+        index = QgsProcessingUtils.createSpatialIndex(layer, context)
 
         output = self.getOutputFromName(self.OUTPUT)
         writer = output.getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)

@@ -104,7 +104,7 @@ class SelectByLocation(GeoAlgorithm):
 
         oldSelection = set(inputLayer.selectedFeatureIds())
         inputLayer.removeSelection()
-        index = vector.spatialindex(inputLayer)
+        index = QgsProcessingUtils.createSpatialIndex(inputLayer, context)
 
         if 'disjoint' in predicates:
             disjoinSet = []

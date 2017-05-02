@@ -78,7 +78,7 @@ class Difference(GeoAlgorithm):
             Difference.OUTPUT).getVectorWriter(layerA.fields(), geomType, layerA.crs(), context)
 
         outFeat = QgsFeature()
-        index = vector.spatialindex(layerB)
+        index = QgsProcessingUtils.createSpatialIndex(layerB, context)
         selectionA = QgsProcessingUtils.getFeatures(layerA, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
         for current, inFeatA in enumerate(selectionA):

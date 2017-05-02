@@ -40,15 +40,12 @@ import uuid
 import psycopg2
 from osgeo import ogr
 
-from qgis.PyQt.QtCore import QVariant, QCoreApplication
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields,
                        QgsField,
                        QgsGeometry,
-                       QgsRectangle,
                        QgsWkbTypes,
                        QgsSpatialIndex,
-                       QgsProject,
-                       QgsMapLayer,
                        QgsVectorLayer,
                        QgsVectorFileWriter,
                        QgsDistanceArea,
@@ -57,8 +54,7 @@ from qgis.core import (QgsFields,
                        QgsFeatureRequest,
                        QgsSettings,
                        QgsProcessingContext,
-                       QgsProcessingUtils,
-                       QgsMessageLog)
+                       QgsProcessingUtils)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -170,19 +166,6 @@ def testForUniqueness(fieldList1, fieldList2):
                     fieldList2[j] = QgsField(name, field.type(), len=field.length(), prec=field.precision(), comment=field.comment())
                     changed = True
     return fieldList2
-
-
-def spatialindex(layer):
-    """Creates a spatial index for the passed vector layer.
-    """
-    request = QgsFeatureRequest()
-    request.setSubsetOfAttributes([])
-    if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED) \
-            and layer.selectedFeatureCount() > 0:
-        idx = QgsSpatialIndex(layer.getSelectedFeatures(request))
-    else:
-        idx = QgsSpatialIndex(layer.getFeatures(request))
-    return idx
 
 
 def createUniqueFieldName(fieldName, fieldList):

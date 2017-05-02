@@ -86,7 +86,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         layer = dataobjects.QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         output = self.getOutputValue(self.OUTPUT)
 
-        spatialIndex = vector.spatialindex(layer)
+        spatialIndex = QgsProcessingUtils.createSpatialIndex(layer, context)
 
         neighbour = QgsFeature()
         distance = QgsDistanceArea()

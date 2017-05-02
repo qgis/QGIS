@@ -154,7 +154,7 @@ class SpatialJoin(GeoAlgorithm):
         inFeatB = QgsFeature()
         inGeom = QgsGeometry()
 
-        index = vector.spatialindex(join)
+        index = QgsProcessingUtils.createSpatialIndex(join, context)
 
         mapP2 = dict()
         features = QgsProcessingUtils.getFeatures(join, context)

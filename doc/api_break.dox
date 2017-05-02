@@ -2234,7 +2234,7 @@ object of type QgsProcessingFeedback, and will need to adapt their use of progre
 - dataobjects.getLayerFromString() was removed. Use QgsProcessingUtils.mapLayerFromString() instead.
 - vector.bufferedBoundingBox() was removed. Use QgsRectangle.grow() instead.
 - vector.duplicateInMemory() was removed.
-
+- vector.spatialindex() was removed. Use QgsProcessingUtils.createSpatialIndex() instead.
 
 Triangulation        {#qgis_api_break_3_0_Triangulation}
 -------------

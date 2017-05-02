@@ -23,6 +23,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
+#include "qgsspatialindex.h"
 
 class QgsProject;
 class QgsProcessingContext;
@@ -112,6 +113,14 @@ class CORE_EXPORT QgsProcessingUtils
      * return the count of selected features in the layer.
      */
     static long featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context );
+
+    /**
+     * Creates a spatial index for a layer, when
+     * the settings from the supplied \a context are respected. E.g. if the
+     * context is set to only use selected features, then calling this will
+     * return an index containing only selected features in the layer.
+     */
+    static QgsSpatialIndex createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context );
 
     /**
      * Returns a list of unique values contained in a single field in a \a layer, when
