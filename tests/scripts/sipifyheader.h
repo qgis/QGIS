@@ -134,6 +134,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       QgsMapLayer *mLayer = nullptr;
     };
 
+    static const int MONTHS = 60 * 60 * 24 * 30; // something
+
     //! A constructor with definition in header
     explicit QgsSipifyHeader()
       : QtClass<QVariant>()

@@ -89,6 +89,8 @@ class QgsSipifyHeader : QtClass<QVariant>
       QgsMapLayer *mLayer;
     };
 
+    static const int MONTHS;
+
     explicit QgsSipifyHeader();
 %Docstring
 A constructor with definition in header

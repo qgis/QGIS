@@ -465,6 +465,10 @@ while ($line_idx < $line_count){
         next;
     }
 
+    # remove static const value assignment
+    # https://regex101.com/r/DyWkgn/1
+    $line =~ s/^(\s*static const \w+(<([\w()<>, ]|::)+>)? \w+) = .*;\s*(\/\/.*)?$/$1;/;
+
     # remove struct member assignment
     if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $line =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
         dbg_info("remove struct member assignment");
