@@ -41,7 +41,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputRaster
-from processing.tools import dataobjects, vector, raster
+from processing.tools import dataobjects, raster
 from processing.algs.qgis.ui.HeatmapWidgets import HeatmapPixelSizeWidgetWrapper
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -132,8 +132,7 @@ class Heatmap(GeoAlgorithm):
                                     self.tr('Heatmap')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         radius = self.getParameterValue(self.RADIUS)
         kernel_shape = self.getParameterValue(self.KERNEL)

@@ -75,8 +75,8 @@ class PointsInPolygonUnique(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Unique count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        polyLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
+        polyLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)
+        pointLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         fieldName = self.getParameterValue(self.FIELD)
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 
@@ -90,7 +90,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields.toList(), polyLayer.wkbType(),
                                                                      polyLayer.crs(), context)
 
-        spatialIndex = vector.spatialindex(pointLayer)
+        spatialIndex = QgsProcessingUtils.createSpatialIndex(pointLayer, context)
 
         ftPoint = QgsFeature()
         outFeat = QgsFeature()

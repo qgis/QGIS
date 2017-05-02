@@ -36,8 +36,7 @@ from qgis.core import (QgsApplication,
                        QgsMapLayer,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes,
-                       QgsProcessingUtils,
-                       QgsProject
+                       QgsProcessingUtils
                        )
 from qgis.core import QgsFieldProxyModel
 from qgis.analysis import QgsInterpolator
@@ -123,11 +122,12 @@ class InterpolationDataWidget(BASE, WIDGET):
 
     def value(self):
         layers = ''
+        context = dataobjects.createContext()
         for i in range(self.layersTree.topLevelItemCount()):
             item = self.layersTree.topLevelItem(i)
             if item:
                 layerName = item.text(0)
-                layer = QgsProcessingUtils.mapLayerFromProject(layerName, QgsProject.instance())
+                layer = QgsProcessingUtils.mapLayerFromString(layerName, context)
                 if not layer:
                     continue
 

@@ -40,15 +40,11 @@ import uuid
 import psycopg2
 from osgeo import ogr
 
-from qgis.PyQt.QtCore import QVariant, QCoreApplication
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields,
                        QgsField,
                        QgsGeometry,
-                       QgsRectangle,
                        QgsWkbTypes,
-                       QgsSpatialIndex,
-                       QgsProject,
-                       QgsMapLayer,
                        QgsVectorLayer,
                        QgsVectorFileWriter,
                        QgsDistanceArea,
@@ -57,10 +53,8 @@ from qgis.core import (QgsFields,
                        QgsFeatureRequest,
                        QgsSettings,
                        QgsProcessingContext,
-                       QgsProcessingUtils,
-                       QgsMessageLog)
+                       QgsProcessingUtils)
 
-from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import dataobjects, spatialite, postgis
 
@@ -170,19 +164,6 @@ def testForUniqueness(fieldList1, fieldList2):
                     fieldList2[j] = QgsField(name, field.type(), len=field.length(), prec=field.precision(), comment=field.comment())
                     changed = True
     return fieldList2
-
-
-def spatialindex(layer):
-    """Creates a spatial index for the passed vector layer.
-    """
-    request = QgsFeatureRequest()
-    request.setSubsetOfAttributes([])
-    if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED) \
-            and layer.selectedFeatureCount() > 0:
-        idx = QgsSpatialIndex(layer.getSelectedFeatures(request))
-    else:
-        idx = QgsSpatialIndex(layer.getFeatures(request))
-    return idx
 
 
 def createUniqueFieldName(fieldName, fieldList):
@@ -302,54 +283,6 @@ def combineVectorFields(layerA, layerB):
     return fields
 
 
-def duplicateInMemory(layer, newName='', addToRegistry=False):
-    """Return a memory copy of a layer
-
-    layer: QgsVectorLayer that shall be copied to memory.
-    new_name: The name of the copied layer.
-    add_to_registry: if True, the new layer will be added to the QgsMapRegistry
-
-    Returns an in-memory copy of a layer.
-    """
-    if newName is '':
-        newName = layer.name() + ' (Memory)'
-
-    if layer.type() == QgsMapLayer.VectorLayer:
-        geomType = layer.geometryType()
-        if geomType == QgsWkbTypes.PointGeometry:
-            strType = 'Point'
-        elif geomType == QgsWkbTypes.LineGeometry:
-            strType = 'Line'
-        elif geomType == QgsWkbTypes.PolygonGeometry:
-            strType = 'Polygon'
-        else:
-            raise RuntimeError('Layer is whether Point nor Line nor Polygon')
-    else:
-        raise RuntimeError('Layer is not a VectorLayer')
-
-    crs = layer.crs().authid().lower()
-    myUuid = str(uuid.uuid4())
-    uri = '%s?crs=%s&index=yes&uuid=%s' % (strType, crs, myUuid)
-    memLayer = QgsVectorLayer(uri, newName, 'memory')
-    memProvider = memLayer.dataProvider()
-
-    provider = layer.dataProvider()
-    fields = layer.fields().toList()
-    memProvider.addAttributes(fields)
-    memLayer.updateFields()
-
-    for ft in provider.getFeatures():
-        memProvider.addFeatures([ft])
-
-    if addToRegistry:
-        if memLayer.isValid():
-            QgsProject.instance().addMapLayer(memLayer)
-        else:
-            raise RuntimeError('Layer invalid')
-
-    return memLayer
-
-
 def checkMinDistance(point, index, distance, points):
     """Check if distance from given point to all other points is greater
     than given value.
@@ -391,23 +324,13 @@ def snapToPrecision(geom, precision):
     return snapped
 
 
-def bufferedBoundingBox(bbox, buffer_size):
-    if buffer_size == 0.0:
-        return QgsRectangle(bbox)
-
-    return QgsRectangle(
-        bbox.xMinimum() - buffer_size,
-        bbox.yMinimum() - buffer_size,
-        bbox.xMaximum() + buffer_size,
-        bbox.yMaximum() + buffer_size)
-
-
 def ogrConnectionString(uri):
     """Generates OGR connection sting from layer source
     """
     ogrstr = None
 
-    layer = dataobjects.getLayerFromString(uri, False)
+    context = dataobjects.createContext()
+    layer = QgsProcessingUtils.mapLayerFromString(uri, context, False)
     if layer is None:
         return '"' + uri + '"'
     provider = layer.dataProvider().name()
@@ -556,6 +479,7 @@ def createVectorWriter(destination, encoding, fields, geometryType, crs, context
         layer = QgsVectorLayer(uri, destination, 'memory')
         sink = layer.dataProvider()
         context.temporaryLayerStore().addMapLayer(layer, False)
+        destination = layer.id()
     elif destination.startswith(POSTGIS_LAYER_PREFIX):
         uri = QgsDataSourceUri(destination[len(POSTGIS_LAYER_PREFIX):])
         connInfo = uri.connectionInfo()

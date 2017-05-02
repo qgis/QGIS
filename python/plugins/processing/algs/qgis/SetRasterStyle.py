@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterRaster
@@ -68,7 +69,7 @@ class SetRasterStyle(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(filename)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
 
         style = self.getParameterValue(self.STYLE)
         if layer is None:

@@ -25,12 +25,12 @@ __copyright__ = '(C) 2017, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects
 
 
 class TruncateTable(GeoAlgorithm):
@@ -64,7 +64,7 @@ class TruncateTable(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         file_name = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(file_name)
+        layer = QgsProcessingUtils.mapLayerFromString(file_name, context)
         provider = layer.dataProvider()
 
         if not provider.truncate():

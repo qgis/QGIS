@@ -130,7 +130,7 @@ class ProjectionSettingRestorer
 };
 ///@endcond PRIVATE
 
-QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string )
+QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string )
 {
   if ( QFileInfo::exists( string ) )
   {
@@ -151,6 +151,35 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string )
     }
   }
   return nullptr;
+}
+
+QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers )
+{
+  if ( string.isEmpty() )
+    return nullptr;
+
+  // prefer project layers
+  QgsMapLayer *layer = mapLayerFromProject( string, context.project() );
+  if ( layer )
+    return layer;
+
+  layer = mapLayerFromProject( string, &context.temporaryLayerStore() );
+  if ( layer )
+    return layer;
+
+  if ( !allowLoadingNewLayers )
+    return nullptr;
+
+  layer = loadMapLayerFromString( string );
+  if ( layer )
+  {
+    context.temporaryLayerStore().addMapLayer( layer );
+    return layer;
+  }
+  else
+  {
+    return nullptr;
+  }
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
@@ -197,6 +226,17 @@ long QgsProcessingUtils::featureCount( QgsVectorLayer *layer, const QgsProcessin
     return layer->selectedFeatureCount();
   else
     return layer->featureCount();
+}
+
+QgsSpatialIndex QgsProcessingUtils::createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context )
+{
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
+  if ( useSelection )
+    return QgsSpatialIndex( layer->getSelectedFeatures( request ) );
+  else
+    return QgsSpatialIndex( layer->getFeatures( request ) );
 }
 
 QList<QVariant> QgsProcessingUtils::uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context )

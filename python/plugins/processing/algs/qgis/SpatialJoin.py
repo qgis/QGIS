@@ -41,7 +41,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -109,10 +109,8 @@ class SpatialJoin(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
     def processAlgorithm(self, context, feedback):
-        target = dataobjects.getLayerFromString(
-            self.getParameterValue(self.TARGET))
-        join = dataobjects.getLayerFromString(
-            self.getParameterValue(self.JOIN))
+        target = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.TARGET), context)
+        join = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.JOIN), context)
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)
 
@@ -156,7 +154,7 @@ class SpatialJoin(GeoAlgorithm):
         inFeatB = QgsFeature()
         inGeom = QgsGeometry()
 
-        index = vector.spatialindex(join)
+        index = QgsProcessingUtils.createSpatialIndex(join, context)
 
         mapP2 = dict()
         features = QgsProcessingUtils.getFeatures(join, context)
@@ -175,8 +173,8 @@ class SpatialJoin(GeoAlgorithm):
                 bbox = inGeom.buffer(10, 2).boundingBox()
             else:
                 bbox = inGeom.boundingBox()
-            bufferedBox = vector.bufferedBoundingBox(bbox, 0.51 * precision)
-            joinList = index.intersects(bufferedBox)
+            bbox.grow(0.51 * precision)
+            joinList = index.intersects(bbox)
             if len(joinList) > 0:
                 count = 0
                 for i in joinList:

@@ -39,7 +39,6 @@ from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputString
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -75,7 +74,7 @@ class UniqueValues(GeoAlgorithm):
         self.addOutput(OutputString(self.UNIQUE_VALUES, self.tr('Unique values')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         outputFile = self.getOutputValue(self.OUTPUT)
         values = QgsProcessingUtils.uniqueValues(layer, layer.fields().lookupField(fieldName), context)

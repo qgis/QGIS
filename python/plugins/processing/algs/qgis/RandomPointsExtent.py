@@ -36,7 +36,6 @@ from qgis.core import (QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbT
                        QgsCoordinateReferenceSystem,
                        QgsMessageLog,
                        QgsProcessingUtils)
-from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterExtent
