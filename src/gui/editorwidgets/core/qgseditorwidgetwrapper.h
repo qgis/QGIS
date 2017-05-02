@@ -217,7 +217,11 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param value The value
      * \note Python name valueChangedInt
      */
+#ifndef SIP_RUN
+    void valueChanged( int value );
+#else
     void valueChanged( int value ) SIP_PYNAME( valueChangedInt );
+#endif
 
     /**
      * If you emit to this slot in your implementation, an appropriate change notification
@@ -226,7 +230,11 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param value The value
      * \note Python name valueChangedDouble
      */
+#ifndef SIP_RUN
+    void valueChanged( double value );
+#else
     void valueChanged( double value ) SIP_PYNAME( valueChangedDouble );
+#endif
 
     /**
      * If you emit to this slot in your implementation, an appropriate change notification
@@ -235,7 +243,11 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param value The value
      * \note Python name valueChangedBool
      */
+#ifndef SIP_RUN
+    void valueChanged( bool value );
+#else
     void valueChanged( bool value ) SIP_PYNAME( valueChangedBool );
+#endif
 
     /**
      * If you emit to this slot in your implementation, an appropriate change notification
