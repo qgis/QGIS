@@ -94,6 +94,8 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
 
     virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction *node ) const override;
 
+    virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
   private:
     bool mUsesGeometry;
     QSet<QString> mReferencedColumns;
@@ -125,11 +127,13 @@ class CORE_EXPORT QgsExpressionContextScope
        * \param name variable name (should be unique within the QgsExpressionContextScope)
        * \param value initial variable value
        * \param readOnly true if variable should not be editable by users
+       * \param isStatic true if the variable will not change during the lifteime of an iterator.
        */
-      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false )
+      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false )
         : name( name )
         , value( value )
         , readOnly( readOnly )
+        , isStatic( isStatic )
       {}
 
       //! Variable name
@@ -140,6 +144,9 @@ class CORE_EXPORT QgsExpressionContextScope
 
       //! True if variable should not be editable by users
       bool readOnly;
+
+      //! A static variable can be cached for the lifetime of a context
+      bool isStatic;
     };
 
     /** Constructor for QgsExpressionContextScope
@@ -159,13 +166,13 @@ class CORE_EXPORT QgsExpressionContextScope
      */
     QString name() const { return mName; }
 
-    /** Convenience method for setting a variable in the context scope by name and value. If a variable
+    /** Convenience method for setting a variable in the context scope by \a name name and \a value. If a variable
      * with the same name is already set then its value is overwritten, otherwise a new variable is added to the scope.
-     * \param name variable name
-     * \param value variable value
+     * If the \a isStatic parameter is set to true, this variable can be cached during the execution
+     * of QgsExpression::prepare().
      * \see addVariable()
      */
-    void setVariable( const QString &name, const QVariant &value );
+    void setVariable( const QString &name, const QVariant &value, bool isStatic = false );
 
     /** Adds a variable into the context scope. If a variable with the same name is already set then its
      * value is overwritten, otherwise a new variable is added to the scope.
@@ -217,6 +224,14 @@ class CORE_EXPORT QgsExpressionContextScope
      * \returns true if variable is read only
      */
     bool isReadOnly( const QString &name ) const;
+
+    /**
+     * Tests whether the variable with the specified \a name is static and can
+     * be cached.
+     *
+     * \note Added in QGIS 3.0
+     */
+    bool isStatic( const QString &name ) const;
 
     /** Returns the count of variables contained within the scope.
      */

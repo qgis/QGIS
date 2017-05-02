@@ -139,10 +139,38 @@ class CORE_EXPORT QgsFeatureRequest
         OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
 
         /**
+         * Creates a new OrderByClause for a QgsFeatureRequest
+         *
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         *                   If the order is ascending, by default nulls are last
+         *                   If the order is descending, by default nulls are first
+         */
+        OrderByClause( const QgsExpression &expression, bool ascending = true );
+
+        /**
+         * Creates a new OrderByClause for a QgsFeatureRequest
+         *
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         */
+        OrderByClause( const QgsExpression &expression, bool ascending, bool nullsfirst );
+
+        /**
          * The expression
          * \returns the expression
          */
         QgsExpression expression() const;
+
+        /**
+         * Prepare the expression with the given context.
+         *
+         * \see QgsExpression::prepare
+         *
+         * \since QGIS 3.0
+         */
+        bool prepare( QgsExpressionContext *context );
 
         /**
          * Order ascending
