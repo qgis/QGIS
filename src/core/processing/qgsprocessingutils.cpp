@@ -108,6 +108,46 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromProject( const QString &string, Qgs
   }
   return nullptr;
 }
+
+QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMapLayerStore *store )
+{
+  if ( string.isEmpty() )
+    return nullptr;
+
+  QList< QgsMapLayer * > layers = store->mapLayers().values();
+
+  layers.erase( std::remove_if( layers.begin(), layers.end(), []( QgsMapLayer * layer )
+  {
+    switch ( layer->type() )
+    {
+      case QgsMapLayer::VectorLayer:
+        return !canUseLayer( qobject_cast< QgsVectorLayer * >( layer ) );
+      case QgsMapLayer::RasterLayer:
+        return !canUseLayer( qobject_cast< QgsRasterLayer * >( layer ) );
+      case QgsMapLayer::PluginLayer:
+        return true;
+    }
+    return true;
+  } ), layers.end() );
+
+  Q_FOREACH ( QgsMapLayer *l, layers )
+  {
+    if ( l->id() == string )
+      return l;
+  }
+  Q_FOREACH ( QgsMapLayer *l, layers )
+  {
+    if ( l->name() == string )
+      return l;
+  }
+  Q_FOREACH ( QgsMapLayer *l, layers )
+  {
+    if ( normalizeLayerSource( l->source() ) == normalizeLayerSource( string ) )
+      return l;
+  }
+  return nullptr;
+}
+
 ///@cond PRIVATE
 class ProjectionSettingRestorer
 {
@@ -163,7 +203,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
   if ( layer )
     return layer;
 
-  layer = mapLayerFromProject( string, &context.temporaryLayerStore() );
+  layer = mapLayerFromStore( string, &context.temporaryLayerStore() );
   if ( layer )
     return layer;
 

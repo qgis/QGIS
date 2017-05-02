@@ -105,6 +105,7 @@ class TestQgsProcessing: public QObject
     void compatibleLayers();
     void normalizeLayerSource();
     void mapLayers();
+    void mapLayerFromStore();
     void mapLayerFromString();
     void algorithm();
     void features();
@@ -379,6 +380,40 @@ void TestQgsProcessing::mapLayers()
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
   delete l;
+}
+
+void TestQgsProcessing::mapLayerFromStore()
+{
+  // test mapLayerFromStore
+
+  QgsMapLayerStore store;
+
+  // add a bunch of layers to a project
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString raster1 = testDataDir + "tenbytenraster.asc";
+  QString raster2 = testDataDir + "landsat.tif";
+  QFileInfo fi1( raster1 );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  QVERIFY( r1->isValid() );
+  QFileInfo fi2( raster2 );
+  QgsRasterLayer *r2 = new QgsRasterLayer( fi2.filePath(), "ar2" );
+  QVERIFY( r2->isValid() );
+
+  QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V4", "memory" );
+  QgsVectorLayer *v2 = new QgsVectorLayer( "Point", "v1", "memory" );
+  store.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << v1 << v2 );
+
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromStore( QString(), nullptr ) );
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromStore( QStringLiteral( "v1" ), nullptr ) );
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromStore( QString(), &store ) );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( raster1, &store ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( raster2, &store ), r2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( "R1", &store ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( "ar2", &store ), r2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( "V4", &store ), v1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( "v1", &store ), v2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( r1->id(), &store ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( v1->id(), &store ), v1 );
 }
 
 void TestQgsProcessing::mapLayerFromString()

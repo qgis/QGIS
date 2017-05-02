@@ -27,6 +27,7 @@
 
 class QgsProject;
 class QgsProcessingContext;
+class QgsMapLayerStore;
 
 #include <QString>
 
@@ -134,7 +135,7 @@ class CORE_EXPORT QgsProcessingUtils
 
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
-                             const QList< QgsWkbTypes::GeometryType > &geometryTypes );
+                             const QList< QgsWkbTypes::GeometryType > &geometryTypes = QList< QgsWkbTypes::GeometryType >() );
 
     /**
      * Interprets a \a string as a map layer from a project.
@@ -147,6 +148,18 @@ class CORE_EXPORT QgsProcessingUtils
      * \see mapLayerFromString()
      */
     static QgsMapLayer *mapLayerFromProject( const QString &string, QgsProject *project );
+
+    /**
+     * Interprets a \a string as a map layer from a store.
+     *
+     * This method attempts to match a string to a store map layer, using
+     * first the layer ID, then layer names, and finally layer source.
+     * If the string matches a normalized version of any layer source
+     * for layers in the specified \a store, then those matching layers will be
+     * returned.
+     * \see mapLayerFromString()
+     */
+    static QgsMapLayer *mapLayerFromStore( const QString &string, QgsMapLayerStore *store );
 
     /**
      * Interprets a string as a map layer. The method will attempt to
