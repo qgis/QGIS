@@ -90,10 +90,10 @@ class CORE_EXPORT QgsProcessingContext
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
     /**
-     * Returns a reference to the project used for storing temporary layers during
+     * Returns a reference to the layer store used for storing temporary layers during
      * algorithm execution.
      */
-    QgsProject &temporaryLayerStore() { return tempProject; }
+    QgsMapLayerStore &temporaryLayerStore() { return tempLayerStore; }
 
     /**
      * Returns the behavior used for checking invalid geometries in input layers.
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsProcessingContext
     QgsProcessingContext::Flags mFlags = 0;
     QPointer< QgsProject > mProject;
     //! Temporary project owned by the context, used for storing temporarily loaded map layers
-    QgsProject tempProject;
+    QgsMapLayerStore tempLayerStore;
     QgsExpressionContext mExpressionContext;
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
