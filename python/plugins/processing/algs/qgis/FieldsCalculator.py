@@ -33,7 +33,6 @@ from qgis.core import (QgsExpression,
                        QgsField,
                        QgsDistanceArea,
                        QgsProject,
-                       GEO_NONE,
                        QgsApplication,
                        QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -44,7 +43,6 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 

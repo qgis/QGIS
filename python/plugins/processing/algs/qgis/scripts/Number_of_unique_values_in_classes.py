@@ -7,7 +7,6 @@
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsFeature, QgsField, QgsProcessingUtils
 from processing.tools.vector import createVectorWriter
-from processing.tools import dataobjects
 
 layer = QgsProcessingUtils.mapLayerFromString(input, context)
 fields = layer.fields()

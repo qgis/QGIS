@@ -37,7 +37,6 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterSelection, ParameterBoolean, ParameterExpression
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class GeometryByExpression(GeoAlgorithm):

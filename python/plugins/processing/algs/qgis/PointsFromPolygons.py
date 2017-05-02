@@ -41,7 +41,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector, raster
+from processing.tools import dataobjects, raster
 
 
 class PointsFromPolygons(GeoAlgorithm):

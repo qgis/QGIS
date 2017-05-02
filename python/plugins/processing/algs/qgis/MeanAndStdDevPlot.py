@@ -36,7 +36,6 @@ from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 
 from processing.tools import vector
-from processing.tools import dataobjects
 
 
 class MeanAndStdDevPlot(GeoAlgorithm):

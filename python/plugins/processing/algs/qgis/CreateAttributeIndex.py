@@ -35,8 +35,6 @@ from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
-from processing.tools import dataobjects
-
 
 class CreateAttributeIndex(GeoAlgorithm):
 

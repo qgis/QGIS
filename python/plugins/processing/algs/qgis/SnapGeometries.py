@@ -34,7 +34,6 @@ from qgis.core import (QgsApplication,
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector, ParameterNumber, ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class SnapGeometriesToLayer(GeoAlgorithm):

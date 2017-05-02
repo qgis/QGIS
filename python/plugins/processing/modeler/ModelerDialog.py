@@ -42,7 +42,6 @@ from qgis.core import (QgsApplication,
                        QgsMessageLog,
                        QgsProcessingUtils)
 from qgis.gui import QgsMessageBar
-from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog

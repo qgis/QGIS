@@ -36,7 +36,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterTableField
-from processing.tools import dataobjects, spatialite
+from processing.tools import spatialite
 
 
 class ImportIntoSpatialite(GeoAlgorithm):

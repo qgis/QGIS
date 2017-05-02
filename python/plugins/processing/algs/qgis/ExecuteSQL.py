@@ -40,7 +40,6 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class ExecuteSQL(GeoAlgorithm):

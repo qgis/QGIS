@@ -36,8 +36,7 @@ from qgis.core import (QgsApplication,
                        QgsMapLayer,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes,
-                       QgsProcessingUtils,
-                       QgsProject
+                       QgsProcessingUtils
                        )
 from qgis.core import QgsFieldProxyModel
 from qgis.analysis import QgsInterpolator

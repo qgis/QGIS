@@ -34,7 +34,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputHTML
-from processing.tools import dataobjects, raster
+from processing.tools import raster
 
 
 class RasterLayerHistogram(GeoAlgorithm):

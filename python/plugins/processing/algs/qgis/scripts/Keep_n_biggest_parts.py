@@ -4,7 +4,6 @@ from builtins import range
 ##To_keep=number 1
 ##Biggest parts=output vector
 
-from processing.tools import dataobjects
 from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 from operator import itemgetter
 

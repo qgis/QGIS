@@ -34,7 +34,6 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterExpression
-from processing.tools import dataobjects
 
 
 class SelectByExpression(GeoAlgorithm):

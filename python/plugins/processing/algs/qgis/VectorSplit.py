@@ -35,7 +35,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputDirectory
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 from processing.tools.system import mkdir
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]

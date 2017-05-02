@@ -33,7 +33,7 @@ from qgis.core import (QgsApplication,
                        QgsGeometry,
                        QgsPoint,
                        QgsProcessingUtils)
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber

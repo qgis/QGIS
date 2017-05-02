@@ -34,7 +34,6 @@ from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools.raster import RasterWriter
-from processing.tools import dataobjects
 
 
 class CreateConstantRaster(GeoAlgorithm):

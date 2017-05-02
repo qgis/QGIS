@@ -37,7 +37,7 @@ from qgis.core import (QgsApplication,
                        QgsPoint,
                        QgsWkbTypes,
                        QgsProcessingUtils)
-from processing.tools import vector, raster, dataobjects
+from processing.tools import raster, dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector

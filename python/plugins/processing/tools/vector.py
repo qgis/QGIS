@@ -45,7 +45,6 @@ from qgis.core import (QgsFields,
                        QgsField,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsSpatialIndex,
                        QgsVectorLayer,
                        QgsVectorFileWriter,
                        QgsDistanceArea,
@@ -56,7 +55,6 @@ from qgis.core import (QgsFields,
                        QgsProcessingContext,
                        QgsProcessingUtils)
 
-from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import dataobjects, spatialite, postgis
 

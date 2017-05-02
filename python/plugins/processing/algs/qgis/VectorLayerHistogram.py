@@ -35,7 +35,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputHTML
-from processing.tools import vector, dataobjects
+from processing.tools import vector
 
 
 class VectorLayerHistogram(GeoAlgorithm):

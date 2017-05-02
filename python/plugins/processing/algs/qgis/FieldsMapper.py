@@ -33,7 +33,6 @@ from qgis.core import (QgsField,
                        QgsDistanceArea,
                        QgsProject,
                        QgsFeature,
-                       GEO_NONE,
                        QgsApplication,
                        QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -41,7 +40,6 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import Parameter
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class FieldsMapper(GeoAlgorithm):

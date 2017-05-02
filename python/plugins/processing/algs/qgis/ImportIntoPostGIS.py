@@ -36,7 +36,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterTableField
-from processing.tools import dataobjects, postgis
+from processing.tools import postgis
 
 
 class ImportIntoPostGIS(GeoAlgorithm):

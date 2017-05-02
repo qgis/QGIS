@@ -35,7 +35,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 
 class PolarPlot(GeoAlgorithm):

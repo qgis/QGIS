@@ -31,7 +31,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
 from processing.core.outputs import OutputTable
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 

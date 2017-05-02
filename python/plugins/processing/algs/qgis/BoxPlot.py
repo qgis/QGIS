@@ -36,7 +36,6 @@ from processing.core.parameters import ParameterSelection
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.outputs import OutputHTML
 from processing.tools import vector
-from processing.tools import dataobjects
 
 
 class BoxPlot(GeoAlgorithm):

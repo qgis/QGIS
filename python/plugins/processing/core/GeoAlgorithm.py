@@ -32,8 +32,7 @@ import copy
 
 from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingFeedback,
+from qgis.core import (QgsProcessingFeedback,
                        QgsSettings,
                        QgsProcessingAlgorithm,
                        QgsProject,
