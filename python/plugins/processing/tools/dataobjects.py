@@ -99,11 +99,6 @@ def getSupportedOutputRasterLayerExtensions():
     return allexts
 
 
-def loadList(layers):
-    for layer in layers:
-        load(layer)
-
-
 def load(fileName, name=None, crs=None, style=None):
     """Loads a layer/table into the current project, given its file.
     """
