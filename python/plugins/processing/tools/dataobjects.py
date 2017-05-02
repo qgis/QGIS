@@ -39,7 +39,8 @@ from qgis.core import (QgsVectorFileWriter,
                        QgsCoordinateReferenceSystem,
                        QgsSettings,
                        QgsProcessingUtils,
-                       QgsProcessingContext)
+                       QgsProcessingContext,
+                       QgsFeatureRequest)
 from qgis.gui import QgsSublayersDialog
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -74,6 +75,8 @@ def createContext():
         context.setFlags(QgsProcessingContext.UseSelectionIfPresent)
 
     invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+    if not invalid_features_method:
+        invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
     context.setInvalidGeometryCheck(invalid_features_method)
 
     def raise_error(f):
