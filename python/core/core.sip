@@ -100,6 +100,7 @@
 %Include qgsmaprenderersequentialjob.sip
 %Include qgsmaprenderertask.sip
 %Include qgsmapsettings.sip
+%Include qgsmapsettingsutils.sip
 %Include qgsmaptopixel.sip
 %Include qgsmapunitscale.sip
 %Include qgsmargins.sip

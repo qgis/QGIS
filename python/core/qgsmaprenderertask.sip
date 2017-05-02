@@ -52,6 +52,11 @@ class QgsMapRendererTask : QgsTask
  Adds ``decorations`` to be rendered on the map.
 %End
 
+    void setSaveWorldFile( bool save );
+%Docstring
+ Sets whether a world file will be created alongside an image file.
+%End
+
     virtual void cancel();
 
 
