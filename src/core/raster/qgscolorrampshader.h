@@ -22,6 +22,7 @@ originally part of the larger QgsRasterLayer class
 #define QGSCOLORRAMPSHADER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QColor>
 #include <QVector>
 #include <memory>
@@ -115,13 +116,13 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * \since QGIS 3.0
      * \see setSourceColorRamp()
      */
-    QgsColorRamp *sourceColorRamp() const;
+    QgsColorRamp *sourceColorRamp() const SIP_FACTORY;
 
     /** Set the source color ramp. Ownership is transferred to the renderer.
      * \since QGIS 3.0
      * \see sourceColorRamp()
      */
-    void setSourceColorRamp( QgsColorRamp *colorramp );
+    void setSourceColorRamp( QgsColorRamp *colorramp SIP_TRANSFER );
 
     //! \brief Set the color ramp type
     void setColorRampType( const QString &type );
@@ -139,7 +140,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * \param extent extent used in classification (quantile mode only)
      * \param input raster input used in classification (quantile mode only)
      */
-    void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr );
+    void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr ) SIP_PYNAME( classifyColorRampV2 );
 
     //! \brief Generates and new RGB value based on one input value
     bool shade( double, int *, int *, int *, int * ) override;

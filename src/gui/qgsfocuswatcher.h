@@ -17,6 +17,7 @@
 #define QGSFOCUSWATCHER_H
 
 #include <QObject>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
@@ -38,7 +39,7 @@ class GUI_EXPORT QgsFocusWatcher : public QObject
      * \param parent parent widget to catch focus events for. This class will automatically be
      * installed as an event filter for parent.
      */
-    explicit QgsFocusWatcher( QObject *parent );
+    explicit QgsFocusWatcher( QObject *parent SIP_TRANSFERTHIS );
 
     virtual bool eventFilter( QObject *obj, QEvent *event ) override;
 

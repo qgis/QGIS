@@ -17,6 +17,7 @@
 #define QGS25DRENDERERWIDGET_H
 
 #include "ui_qgs25drendererwidgetbase.h"
+#include "qgis.h"
 #include "qgsrendererwidget.h"
 #include "qgis_gui.h"
 
@@ -43,7 +44,7 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, Ui::Qgs25DRend
      * \param style
      * \param renderer the mask renderer (will not take ownership)
      */
-    Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer SIP_TRANSFER );
 
     QgsFeatureRenderer *renderer() override;
 

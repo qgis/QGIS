@@ -17,6 +17,7 @@
 #define QGSMAPLAYERLEGEND_H
 
 #include <QObject>
+#include "qgis.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
@@ -37,7 +38,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsMapLayerLegend( QObject *parent = nullptr );
+    explicit QgsMapLayerLegend( QObject *parent SIP_TRANSFERTHIS = 0 );
 
     // TODO: type, load/save settings
 
@@ -50,13 +51,13 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
     // TODO: support for layer tree view delegates
 
     //! Create new legend implementation for vector layer
-    static QgsMapLayerLegend *defaultVectorLegend( QgsVectorLayer *vl );
+    static QgsMapLayerLegend *defaultVectorLegend( QgsVectorLayer *vl ) SIP_FACTORY;
 
     //! Create new legend implementation for raster layer
-    static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl );
+    static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl ) SIP_FACTORY;
 
     //! Create new legend implementation for raster layer
-    static QgsMapLayerLegend *defaultPluginLegend( QgsPluginLayer *pl );
+    static QgsMapLayerLegend *defaultPluginLegend( QgsPluginLayer *pl ) SIP_FACTORY;
 
   signals:
     //! Emitted when existing items/nodes got invalid and should be replaced by new ones

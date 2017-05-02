@@ -203,7 +203,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param element DOM element representing symbol
      * \returns decoded symbol, if possible
      */
-    static QgsSymbol *loadSymbol( const QDomElement &element );
+    static QgsSymbol *loadSymbol( const QDomElement &element ) SIP_FACTORY;
 
     /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
       }
     }
 
-    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element );
+    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element ) SIP_FACTORY;
     static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc );
 
     /** Returns a string representing the symbol. Can be used to test for equality
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! \note available in Python as wellKnownMarkerFromSld2
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
-                                        double &strokeWidth, double &size );
+                                        double &strokeWidth, double &size ) SIP_PYNAME( wellKnownMarkerFromSld2 );
 
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
                                      const QString &path, const QString &format, int *markIndex = nullptr,
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QgsStringMap parseProperties( QDomElement &element );
     static void saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element );
 
-    static QgsSymbolMap loadSymbols( QDomElement &element );
+    static QgsSymbolMap loadSymbols( QDomElement &element ) SIP_FACTORY;
     static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc );
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
@@ -353,7 +353,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns new color ramp. Caller takes responsibility for deleting the returned value.
      * \see saveColorRamp()
      */
-    static QgsColorRamp *loadColorRamp( QDomElement &element );
+    static QgsColorRamp *loadColorRamp( QDomElement &element ) SIP_FACTORY;
 
     /** Encodes a color ramp's settings to an XML element
      * \param name name of ramp
@@ -521,7 +521,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * This is useful when accepting input which could be either a non-quoted field name or expression.
      * \since QGIS 2.2
      */
-    static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression );
+    static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) SIP_FACTORY;
 
     /** Return a field name if the whole expression is just a name of the field .
      *  Returns full expression string if the expression is more complex than just one field.
@@ -548,13 +548,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *  returns a copy of the original point
      * \since QGIS 3.0
      */
-    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props );
+    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props ) SIP_PYNAME( rescalePointUom );
 
     /** Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * \since QGIS 3.0
      */
-    static QVector<qreal> rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props );
+    static QVector<qreal> rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props ) SIP_PYNAME( rescaleArrayUom );
 
     /**
      * Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element

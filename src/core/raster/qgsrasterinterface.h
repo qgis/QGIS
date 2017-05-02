@@ -19,6 +19,7 @@
 #define QGSRASTERINTERFACE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <limits>
 
 #include <QCoreApplication> // for tr()
@@ -98,7 +99,7 @@ class CORE_EXPORT QgsRasterInterface
     virtual ~QgsRasterInterface() = default;
 
     //! Clone itself, create deep copy
-    virtual QgsRasterInterface *clone() const = 0;
+    virtual QgsRasterInterface *clone() const = 0 SIP_FACTORY;
 
     //! Returns a bitmask containing the supported capabilities
     virtual int capabilities() const
@@ -152,7 +153,7 @@ class CORE_EXPORT QgsRasterInterface
      * \param height pixel height of block
      * \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0 SIP_FACTORY;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */

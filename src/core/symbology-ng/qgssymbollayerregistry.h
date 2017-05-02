@@ -17,6 +17,7 @@
 #define QGSSYMBOLLAYERREGISTRY_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgssymbol.h"
 
 class QgsVectorLayer;
@@ -44,7 +45,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
     QgsSymbol::SymbolType type() const { return mType; }
 
     //! Create a symbol layer of this type given the map of properties.
-    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) = 0;
+    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) = 0 SIP_FACTORY;
     //! Create widget for symbol layer of this type. Can return NULL if there's no GUI
     virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer * ) { return nullptr; }
     //! Create a symbol layer of this type given the map of properties.
@@ -133,10 +134,10 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
 
     //! register a new symbol layer type. Takes ownership of the metadata instance.
-    bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata );
+    bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata SIP_TRANSFER );
 
     //! create a new instance of symbol layer given symbol layer name and properties
-    QgsSymbolLayer *createSymbolLayer( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const;
+    QgsSymbolLayer *createSymbolLayer( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const SIP_FACTORY;
 
     //! create a new instance of symbol layer given symbol layer name and SLD
     QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const;
@@ -145,7 +146,7 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     QStringList symbolLayersForType( QgsSymbol::SymbolType type );
 
     //! create a new instance of symbol layer for specified symbol type with default settings
-    static QgsSymbolLayer *defaultSymbolLayer( QgsSymbol::SymbolType type );
+    static QgsSymbolLayer *defaultSymbolLayer( QgsSymbol::SymbolType type ) SIP_FACTORY;
 
   private:
 

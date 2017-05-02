@@ -19,6 +19,7 @@
 #define QGSUSERINPUTDOCKWIDGET_H
 
 #include "qgsdockwidget.h"
+#include "qgis.h"
 #include <QMap>
 #include "qgis_gui.h"
 
@@ -36,7 +37,7 @@ class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsUserInputDockWidget( QWidget *parent = nullptr );
+    QgsUserInputDockWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Add a widget to be displayed in the dock.
      * \param widget widget to add. Ownership is not transferred.

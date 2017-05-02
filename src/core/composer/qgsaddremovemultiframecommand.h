@@ -19,6 +19,7 @@
 #define QGSADDREMOVEMULTIFRAMECOMMAND_H
 
 #include <QUndoCommand>
+#include "qgis.h"
 
 #include "qgis_core.h"
 
@@ -38,7 +39,7 @@ class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
       Removed
     };
 
-    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame *multiFrame, QgsComposition *c, const QString &text, QUndoCommand *parent = nullptr );
+    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame *multiFrame, QgsComposition *c, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = 0 );
     ~QgsAddRemoveMultiFrameCommand();
     void redo() override;
     void undo() override;

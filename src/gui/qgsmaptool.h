@@ -17,6 +17,7 @@
 #define QGSMAPTOOL_H
 
 #include "qgsconfig.h"
+#include "qgis.h"
 #include "qgsmessagebar.h"
 #include "qgspointv2.h"
 #include "qgsmapmouseevent.h"
@@ -164,7 +165,7 @@ class GUI_EXPORT QgsMapTool : public QObject
   protected:
 
     //! constructor takes map canvas as a parameter
-    QgsMapTool( QgsMapCanvas *canvas );
+    QgsMapTool( QgsMapCanvas *canvas SIP_TRANSFERTHIS );
 
     //! transformation from screen coordinates to map coordinates
     QgsPoint toMapCoordinates( QPoint point );
@@ -180,7 +181,7 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
     //! \note available in Python bindings as toMapCoordinatesV2
-    QgsPointV2 toMapCoordinates( const QgsMapLayer *layer, const QgsPointV2 &point );
+    QgsPointV2 toMapCoordinates( const QgsMapLayer *layer, const QgsPointV2 &point ) SIP_PYNAME( toMapCoordinatesV2 );
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );

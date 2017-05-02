@@ -19,6 +19,7 @@
 #define QGSEDITFORMCONFIG_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QMap>
 #include <QDomElement>
 #include <QDomDocument>
@@ -105,7 +106,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * This is only useful in combination with EditorLayout::TabLayout.
      */
-    void addTab( QgsAttributeEditorElement *data );
+    void addTab( QgsAttributeEditorElement *data SIP_TRANSFER );
 
     /**
      * Returns a list of tabs for EditorLayout::TabLayout obtained from the invisible root container.

@@ -19,6 +19,7 @@
 #define QGSSINGLEBANDGRAYRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsrasterrenderer.h"
 #include <memory>
 
@@ -54,7 +55,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     void setGrayBand( int band ) { mGrayBand = band; }
     const QgsContrastEnhancement *contrastEnhancement() const { return mContrastEnhancement.get(); }
     //! Takes ownership
-    void setContrastEnhancement( QgsContrastEnhancement *ce );
+    void setContrastEnhancement( QgsContrastEnhancement *ce SIP_TRANSFER );
 
     void setGradient( Gradient gradient ) { mGradient = gradient; }
     Gradient gradient() const { return mGradient; }

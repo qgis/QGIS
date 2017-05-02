@@ -18,6 +18,7 @@
 #define QGSSQLSTATEMENT_H
 
 #include <QCoreApplication>
+#include "qgis.h"
 #include <QMetaType>
 #include <QStringList>
 #include <QVariant>
@@ -60,7 +61,7 @@ class CORE_EXPORT QgsSQLStatement
     /** Performs basic validity checks. Basically checking that columns referencing
      * a table, references a specified table. Returns true if the validation is
      * successful */
-    bool doBasicValidationChecks( QString &errorMsgOut ) const;
+    bool doBasicValidationChecks( QString &errorMsgOut SIP_OUT ) const;
 
     class Node;
 

@@ -18,6 +18,7 @@
 #define QGSCOMPOSERITEM_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritemcommand.h"
 #include "qgscomposerobject.h"
 #include <QGraphicsRectItem>
@@ -108,7 +109,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Constructor
      \param composition parent composition
      \param manageZValue true if the z-Value of this object should be managed by mComposition*/
-    QgsComposerItem( QgsComposition *composition, bool manageZValue = true );
+    QgsComposerItem( QgsComposition *composition SIP_TRANSFERTHIS, bool manageZValue = true );
 
     /** Constructor with box position and composer object
      \param x x coordinate of item
@@ -117,7 +118,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      \param height height of item
      \param composition parent composition
      \param manageZValue true if the z-Value of this object should be managed by mComposition*/
-    QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition, bool manageZValue = true );
+    QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition SIP_TRANSFERTHIS, bool manageZValue = true );
     virtual ~QgsComposerItem();
 
     //! Return correct graphics item type.

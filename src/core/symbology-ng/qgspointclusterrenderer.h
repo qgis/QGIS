@@ -19,6 +19,7 @@
 #define QGSPOINTCLUSTERRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgspointdistancerenderer.h"
 
 /** \class QgsPointClusterRenderer
@@ -39,7 +40,7 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Creates a renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem );
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem ) SIP_FACTORY;
 
     /** Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
      * \see setClusterSymbol()
@@ -50,12 +51,12 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
      * \param symbol new cluster symbol. Ownership is transferred to the renderer.
      * \see clusterSymbol()
     */
-    void setClusterSymbol( QgsMarkerSymbol *symbol );
+    void setClusterSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /** Creates a QgsPointClusterRenderer from an existing renderer.
      * \returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
 

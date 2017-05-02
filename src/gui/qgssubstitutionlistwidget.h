@@ -19,6 +19,7 @@
 #define QGSSUBSTITUTIONLISTWIDGET_H
 
 #include <QDialog>
+#include "qgis.h"
 #include "qgspanelwidget.h"
 #include "ui_qgssubstitutionlistwidgetbase.h"
 #include "qgsstringutils.h"
@@ -41,7 +42,7 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
     /** Constructor for QgsSubstitutionListWidget.
      * \param parent parent widget
      */
-    QgsSubstitutionListWidget( QWidget *parent = nullptr );
+    QgsSubstitutionListWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Sets the list of substitutions to show in the widget.
      * \param substitutions substitution list
@@ -90,7 +91,7 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
     /** Constructor for QgsSubstitutionListDialog.
      * \param parent parent widget
      */
-    QgsSubstitutionListDialog( QWidget *parent = nullptr );
+    QgsSubstitutionListDialog( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Sets the list of substitutions to show in the dialog.
      * \param substitutions substitution list

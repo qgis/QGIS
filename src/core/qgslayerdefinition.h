@@ -17,6 +17,7 @@
 
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 #include <QString>
 #include <QVector>
@@ -41,7 +42,7 @@ class CORE_EXPORT QgsLayerDefinition
 {
   public:
     //! Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
-    static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage );
+    static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT );
     //! Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
     static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, const QgsPathResolver &pathResolver );
     //! Export the selected layer tree nodes to a QLR file

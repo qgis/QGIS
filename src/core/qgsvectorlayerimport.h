@@ -20,6 +20,7 @@
 #define QGSVECTORLAYERIMPORT_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsfeature.h"
 
 class QProgressDialog;
@@ -73,7 +74,7 @@ class CORE_EXPORT QgsVectorLayerImport
                                     const QString &providerKey,
                                     const QgsCoordinateReferenceSystem &destCRS,
                                     bool onlySelected = false,
-                                    QString *errorMessage = nullptr,
+                                    QString *errorMessage SIP_OUT = 0,
                                     bool skipAttributeCreation = false,
                                     QMap<QString, QVariant> *options = nullptr,
                                     QProgressDialog *progress = nullptr

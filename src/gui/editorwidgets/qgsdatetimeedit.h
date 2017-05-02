@@ -17,6 +17,7 @@
 #define QGSDATETIMEEDIT_H
 
 #include <QDateTimeEdit>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QToolButton;
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull )
 
   public:
-    explicit QgsDateTimeEdit( QWidget *parent = nullptr );
+    explicit QgsDateTimeEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     //! Determines if the widget allows setting null date/time.
     void setAllowNull( bool allowNull );

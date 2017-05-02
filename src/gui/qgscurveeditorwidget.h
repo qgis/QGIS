@@ -17,6 +17,7 @@
 #define QGSCURVEEDITORWIDGET_H
 
 #include <QWidget>
+#include "qgis.h"
 #include <QThread>
 #include <QMutex>
 #include <QPen>
@@ -141,7 +142,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     /**
      * Constructor for QgsCurveEditorWidget.
      */
-    QgsCurveEditorWidget( QWidget *parent = nullptr, const QgsCurveTransform &curve = QgsCurveTransform() );
+    QgsCurveEditorWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QgsCurveTransform &curve = QgsCurveTransform() );
 
     ~QgsCurveEditorWidget();
 

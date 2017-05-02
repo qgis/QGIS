@@ -18,6 +18,7 @@
 #define QGSCPTCITYARCHIVE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscolorramp.h"
 
 #include <QAbstractItemModel>
@@ -128,14 +129,14 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
-    virtual void addChildItem( QgsCptCityDataItem *child, bool refresh = false );
+    virtual void addChildItem( QgsCptCityDataItem *child SIP_TRANSFER, bool refresh = false );
 
     // remove and delete child item, signals to browser are emitted
     virtual void deleteChildItem( QgsCptCityDataItem *child );
 
     // remove child item but don't delete it, signals to browser are emitted
     // returns pointer to the removed item or null if no such item was found
-    virtual QgsCptCityDataItem *removeChildItem( QgsCptCityDataItem *child );
+    virtual QgsCptCityDataItem *removeChildItem( QgsCptCityDataItem *child ) SIP_TRANSFERBACK;
 
     virtual bool equal( const QgsCptCityDataItem *other );
 

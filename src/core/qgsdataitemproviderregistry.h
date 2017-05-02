@@ -17,6 +17,7 @@
 #define QGSDATAITEMPROVIDERREGISTRY_H
 
 #include <QList>
+#include "qgis.h"
 
 #include "qgis_core.h"
 
@@ -48,7 +49,7 @@ class CORE_EXPORT QgsDataItemProviderRegistry
     QList<QgsDataItemProvider *> providers() const { return mProviders; }
 
     //! Add a provider implementation. Takes ownership of the object.
-    void addProvider( QgsDataItemProvider *provider );
+    void addProvider( QgsDataItemProvider *provider SIP_TRANSFER );
 
     //! Remove provider implementation from the list (provider object is deleted)
     void removeProvider( QgsDataItemProvider *provider );

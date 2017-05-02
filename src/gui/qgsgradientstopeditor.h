@@ -17,6 +17,7 @@
 #define QGSGRADIENTSTOPEDITOR_H
 
 #include "qgscolorramp.h"
+#include "qgis.h"
 #include <QWidget>
 #include "qgis_gui.h"
 
@@ -38,7 +39,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      * \param parent parent widget
      * \param ramp optional initial gradient ramp
      */
-    QgsGradientStopEditor( QWidget *parent = nullptr, QgsGradientColorRamp *ramp = nullptr );
+    QgsGradientStopEditor( QWidget *parent SIP_TRANSFERTHIS = 0, QgsGradientColorRamp *ramp = nullptr );
 
     /** Sets the current ramp shown in the editor.
      * \param ramp color ramp

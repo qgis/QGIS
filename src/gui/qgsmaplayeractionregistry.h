@@ -17,6 +17,7 @@
 #define QGSMAPLAYERACTIONREGISTRY_H
 
 #include <QObject>
+#include "qgis.h"
 #include <QList>
 #include <QMap>
 #include <QAction>
@@ -46,13 +47,13 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     //! Creates a map layer action which can run on any layer
     //! \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
-    QgsMapLayerAction( const QString &name, QObject *parent, Targets targets = AllActions, const QIcon &icon = QIcon() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Targets targets = AllActions, const QIcon &icon = QIcon() );
 
     //! Creates a map layer action which can run only on a specific layer
-    QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon() );
 
     //! Creates a map layer action which can run on a specific type of layer
-    QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer::LayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer::LayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon() );
 
     ~QgsMapLayerAction();
 

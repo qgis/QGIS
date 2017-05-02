@@ -18,6 +18,7 @@
 #define QGSAUTHIMPORTIDENTITYDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 #include "ui_qgsauthimportidentitydialog.h"
 
 #include <QSslCertificate>
@@ -61,7 +62,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
      * \param parent Parent widget
      */
     explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-                                          QWidget *parent = nullptr );
+                                          QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     //! Get identity type
     QgsAuthImportIdentityDialog::IdentityType identityType();

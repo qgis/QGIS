@@ -17,6 +17,7 @@
 #define QGSMAPRENDERERJOB_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QImage>
@@ -149,7 +150,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * This should not be used if cached labeling was redrawn - see usedCachedLabels().
      * \see usedCachedLabels()
      */
-    virtual QgsLabelingResults *takeLabelingResults() = 0;
+    virtual QgsLabelingResults *takeLabelingResults() = 0 SIP_TRANSFER;
 
     //! \since QGIS 3.0
     //! Set the feature filter provider used by the QgsRenderContext of

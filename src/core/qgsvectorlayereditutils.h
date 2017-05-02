@@ -17,6 +17,7 @@
 
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsfeature.h"
 
 #include "qgsvectorlayer.h"
@@ -59,7 +60,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *  to the given coordinates
      *  \note available in Python bindings as moveVertexV2
      */
-    bool moveVertex( const QgsPointV2 &p, QgsFeatureId atFeatureId, int atVertex );
+    bool moveVertex( const QgsPointV2 &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
 
     /** Deletes a vertex from a feature.
      * \param featureId ID of feature to remove vertex from
@@ -99,7 +100,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \note available in Python bindings as addCurvedRing
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
+    int addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr ) SIP_PYNAME( addCurvedRing );
 
     /** Adds a new part polygon to a multipart feature
      * \returns
@@ -130,7 +131,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
 
     //! \note available in Python bindings as addCurvedPart
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsCurve *ring, QgsFeatureId featureId );
+    int addPart( QgsCurve *ring, QgsFeatureId featureId ) SIP_PYNAME( addCurvedPart );
 
     /** Translates feature by dx, dy
      * \param featureId id of the feature to translate

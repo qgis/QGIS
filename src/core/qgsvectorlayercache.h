@@ -20,6 +20,7 @@
 #define QgsVectorLayerCache_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QCache>
 
 #include "qgsvectorlayer.h"
@@ -163,7 +164,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      * \param cacheIndex  The cache index to add.
      */
-    void addCacheIndex( QgsAbstractCacheIndex *cacheIndex );
+    void addCacheIndex( QgsAbstractCacheIndex *cacheIndex SIP_TRANSFER );
 
     /**
      * Query this VectorLayerCache for features.

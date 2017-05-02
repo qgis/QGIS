@@ -19,6 +19,7 @@
 #define QGSGPSCONNECTION_H
 
 #include <QDateTime>
+#include "qgis.h"
 #include <QObject>
 #include <QString>
 
@@ -76,7 +77,7 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     /** Constructor
         \param dev input device for the connection (e.g. serial device). The class takes ownership of the object
       */
-    QgsGPSConnection( QIODevice *dev );
+    QgsGPSConnection( QIODevice *dev SIP_TRANSFER );
     virtual ~QgsGPSConnection();
     //! Opens connection to device
     bool connect();
@@ -84,7 +85,7 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     bool close();
 
     //! Sets the GPS source. The class takes ownership of the device class
-    void setSource( QIODevice *source );
+    void setSource( QIODevice *source SIP_TRANSFER );
 
     //! Returns the status. Possible state are not connected, connected, data received
     Status status() const { return mStatus; }

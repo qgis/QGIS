@@ -18,6 +18,7 @@
 #define QGSCOMPOSERITEMGROUP_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
 #include <QSet>
 
@@ -28,7 +29,7 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
 {
     Q_OBJECT
   public:
-    QgsComposerItemGroup( QgsComposition *c );
+    QgsComposerItemGroup( QgsComposition *c SIP_TRANSFERTHIS );
     ~QgsComposerItemGroup();
 
     //! Return correct graphics item type.

@@ -17,6 +17,7 @@
 #define QGSRELATIONREFERENCEWIDGET_H
 
 #include "qgsattributeeditorcontext.h"
+#include "qgis.h"
 #include "qgsfeature.h"
 
 #include <QComboBox>
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
       Scale
     };
 
-    explicit QgsRelationReferenceWidget( QWidget *parent );
+    explicit QgsRelationReferenceWidget( QWidget *parent SIP_TRANSFERTHIS );
 
     ~QgsRelationReferenceWidget();
 

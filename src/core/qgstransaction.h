@@ -19,6 +19,7 @@
 #define QGSTRANSACTION_H
 
 #include <QSet>
+#include "qgis.h"
 #include <QString>
 #include <QObject>
 
@@ -60,11 +61,11 @@ class CORE_EXPORT QgsTransaction : public QObject
     const QgsTransaction &operator=( const QgsTransaction &other ) = delete;
 
     //! Creates a transaction for the specified connection string and provider
-    static QgsTransaction *create( const QString &connString, const QString &providerKey );
+    static QgsTransaction *create( const QString &connString, const QString &providerKey ) SIP_FACTORY;
 
     /** Creates a transaction which includes the specified layers. Connection string
      *  and data provider are taken from the first layer */
-    static QgsTransaction *create( const QStringList &layerIds );
+    static QgsTransaction *create( const QStringList &layerIds ) SIP_FACTORY;
 
     virtual ~QgsTransaction();
 
@@ -82,16 +83,16 @@ class CORE_EXPORT QgsTransaction : public QObject
      *  statements block until the conflicting transaction is committed or
      *  rolled back.
      *  Some providers might not honour the statement timeout. */
-    bool begin( QString &errorMsg, int statementTimeout = 20 );
+    bool begin( QString &errorMsg SIP_OUT, int statementTimeout = 20 );
 
     //! Commit transaction.
-    bool commit( QString &errorMsg );
+    bool commit( QString &errorMsg SIP_OUT );
 
     //! Roll back transaction.
-    bool rollback( QString &errorMsg );
+    bool rollback( QString &errorMsg SIP_OUT );
 
     //! Executes sql
-    virtual bool executeSql( const QString &sql, QString &error ) = 0;
+    virtual bool executeSql( const QString &sql, QString &error SIP_OUT ) = 0;
 
     /**
      * Checks if a the provider of a give layer supports transactions.

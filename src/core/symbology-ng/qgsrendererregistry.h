@@ -69,7 +69,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
-    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) = 0;
+    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) = 0 SIP_FACTORY;
 
     /** Return new instance of settings widget for the renderer. Returns NULL on error.
      *
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsRendererRegistry
     //! \param metadata renderer metadata
     //! \returns true if renderer was added successfully, or false if renderer could not
     //! be added (e.g., a renderer with a duplicate name already exists)
-    bool addRenderer( QgsRendererAbstractMetadata *metadata );
+    bool addRenderer( QgsRendererAbstractMetadata *metadata SIP_TRANSFER );
 
     //! Removes a renderer from registry.
     //! \param rendererName name of renderer to remove from registry

@@ -50,7 +50,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
      * \param element DOM element
      * \returns new null symbol renderer
      */
-    static QgsFeatureRenderer *create( QDomElement &element );
+    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
 
     virtual QDomElement save( QDomDocument &doc ) override;
 
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
      * \param renderer renderer to convert from
      * \returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
 

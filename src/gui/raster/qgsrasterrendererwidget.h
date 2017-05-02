@@ -19,6 +19,7 @@
 #define QGSRASTERRENDERERWIDGET_H
 
 #include "qgsrectangle.h"
+#include "qgis.h"
 
 #include <QWidget>
 #include "qgis_gui.h"
@@ -44,7 +45,7 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
       , mCanvas( nullptr )
     {}
 
-    virtual QgsRasterRenderer *renderer() = 0;
+    virtual QgsRasterRenderer *renderer() = 0 SIP_FACTORY;
 
     void setRasterLayer( QgsRasterLayer *layer ) { mRasterLayer = layer; }
     const QgsRasterLayer *rasterLayer() const { return mRasterLayer; }

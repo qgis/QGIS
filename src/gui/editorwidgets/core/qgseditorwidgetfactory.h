@@ -17,6 +17,7 @@
 #define QGSEDITORWIDGETFACTORY_H
 
 #include <QDomNode>
+#include "qgis.h"
 #include <QMap>
 #include <QString>
 #include <QVariant>
@@ -62,9 +63,9 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * \returns         A new widget wrapper
      */
-    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const = 0;
+    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const = 0 SIP_FACTORY;
 
-    virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const;
+    virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const SIP_FACTORY;
 
     /**
      * Return The human readable identifier name of this widget type
@@ -83,7 +84,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * \returns         A configuration widget
      */
-    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0;
+    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0 SIP_FACTORY;
 
     /**
      * Check if this editor widget type supports a certain field.

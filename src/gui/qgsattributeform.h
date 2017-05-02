@@ -17,6 +17,7 @@
 #define QGSATTRIBUTEFORM_H
 
 #include "qgsfeature.h"
+#include "qgis.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetwrapper.h"
 
@@ -91,7 +92,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Takes ownership
      * \param iface
      */
-    void addInterface( QgsAttributeFormInterface *iface );
+    void addInterface( QgsAttributeFormInterface *iface SIP_TRANSFER );
 
     /**
      * Returns the layer for which this form is shown

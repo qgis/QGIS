@@ -20,6 +20,7 @@
 
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsrasterrenderer.h"
 
 class QgsRasterBlock;
@@ -53,7 +54,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      * \param input The raster input interface.
      * \returns A new QgsHillshadeRenderer.
      */
-    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 

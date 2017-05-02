@@ -17,6 +17,7 @@
 #define QGSCUSTOMLAYERORDERWIDGET_H
 
 #include <QWidget>
+#include "qgis.h"
 #include <QAbstractListModel>
 #include "qgis_gui.h"
 
@@ -43,7 +44,7 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent = nullptr );
+    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   signals:
 

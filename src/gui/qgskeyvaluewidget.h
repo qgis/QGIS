@@ -17,6 +17,7 @@
 #define QGSKEYVALUEWIDGET_H
 
 #include "qgstablewidgetbase.h"
+#include "qgis.h"
 #include <QAbstractTableModel>
 #include <QMap>
 #include "qgis_gui.h"
@@ -67,7 +68,7 @@ class GUI_EXPORT QgsKeyValueWidget: public QgsTableWidgetBase
     /**
      * Constructor.
      */
-    explicit QgsKeyValueWidget( QWidget *parent = nullptr );
+    explicit QgsKeyValueWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Set the initial value of the widget.

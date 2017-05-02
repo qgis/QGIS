@@ -17,6 +17,7 @@
 #define QGSCOMPOSITION_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <memory>
 
 #include <QDomDocument>
@@ -207,8 +208,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \see resizePageToContents()
      * \see setResizeToContentsMargins()
      */
-    void resizeToContentsMargins( double &marginTop, double &marginRight,
-                                  double &marginBottom, double &marginLeft ) const;
+    void resizeToContentsMargins( double &marginTop SIP_OUT, double &marginRight SIP_OUT,
+                                  double &marginBottom SIP_OUT, double &marginLeft SIP_OUT ) const;
 
     /** Returns the vertical space between pages in a composer view
      * \returns space between pages in mm

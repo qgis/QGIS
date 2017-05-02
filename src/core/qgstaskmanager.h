@@ -19,6 +19,7 @@
 #define QGSTASKMANAGER_H
 
 #include <QObject>
+#include "qgis.h"
 #include <QMap>
 #include <QFuture>
 #include <QReadWriteLock>
@@ -345,7 +346,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     /** Constructor for QgsTaskManager.
      * \param parent parent QObject
      */
-    QgsTaskManager( QObject *parent = nullptr );
+    QgsTaskManager( QObject *parent SIP_TRANSFERTHIS = 0 );
 
     virtual ~QgsTaskManager();
 
@@ -383,7 +384,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * taking precedence over lower priority numbers.
      * \returns unique task ID
      */
-    long addTask( QgsTask *task, int priority = 0 );
+    long addTask( QgsTask *task SIP_TRANSFER, int priority = 0 );
 
     /**
      * Adds a task to the manager, using a full task definition (including dependency
@@ -393,7 +394,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * taking precedence over lower priority numbers.
      * \returns unique task ID
      */
-    long addTask( const TaskDefinition &task, int priority = 0 );
+    long addTask( const TaskDefinition &task SIP_TRANSFER, int priority = 0 );
 
     /** Returns the task with matching ID.
      * \param id task ID

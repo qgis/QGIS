@@ -19,6 +19,7 @@
 #define QGSPAPERITEM_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
 #include <QGraphicsRectItem>
 
@@ -44,8 +45,8 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
     Q_OBJECT
 
   public:
-    QgsPaperItem( QgsComposition *c );
-    QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition );
+    QgsPaperItem( QgsComposition *c SIP_TRANSFERTHIS );
+    QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition SIP_TRANSFERTHIS );
     ~QgsPaperItem();
 
     //! Return correct graphics item type.

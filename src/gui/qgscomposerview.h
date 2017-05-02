@@ -18,6 +18,7 @@
 #define QGSCOMPOSERVIEW_H
 
 #include <QGraphicsView>
+#include "qgis.h"
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include <QGraphicsPolygonItem>
 #include "qgis_gui.h"
@@ -130,7 +131,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /** Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
      * be set BEFORE adding any items to the composition.
      */
-    void setComposition( QgsComposition *c );
+    void setComposition( QgsComposition *c SIP_KEEPREFERENCE );
 
     //! Returns the composition or 0 in case of error
     QgsComposition *composition();

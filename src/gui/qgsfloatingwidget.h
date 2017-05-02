@@ -16,6 +16,7 @@
 #define QGSFLOATINGWIDGET_H
 
 #include <QWidget>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsFloatingWidgetEventFilter;
@@ -55,7 +56,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
     /** Constructor for QgsFloatingWidget.
      * \param parent parent widget
      */
-    QgsFloatingWidget( QWidget *parent = nullptr );
+    QgsFloatingWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Sets the widget to "anchor" the floating widget to. The floating widget will be repositioned whenever the
      * anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.

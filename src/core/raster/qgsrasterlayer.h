@@ -224,7 +224,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     LayerType rasterType() { return mRasterType; }
 
     //! Set raster renderer. Takes ownership of the renderer object
-    void setRenderer( QgsRasterRenderer *renderer );
+    void setRenderer( QgsRasterRenderer *renderer SIP_TRANSFER );
     QgsRasterRenderer *renderer() const { return mPipe.renderer(); }
 
     //! Set raster resample filter. Takes ownership of the resample filter object

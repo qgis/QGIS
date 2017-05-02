@@ -195,7 +195,7 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
      * \param map encoded properties string map
      * \returns new QgsDropShadowEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsDropShadowEffect();
 
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect
      * \param map encoded properties string map
      * \returns new QgsInnerShadowEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsInnerShadowEffect();
 

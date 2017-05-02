@@ -18,6 +18,7 @@
 #define QGSRENDERERV2PROPERTIESDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 
 #include "ui_qgsrendererv2propsdialogbase.h"
 
@@ -49,7 +50,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * than shown as a dialog by itself
      * \param parent parent widget
      */
-    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent = nullptr );
+    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsRendererPropertiesDialog();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current

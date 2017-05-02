@@ -22,6 +22,7 @@
 #define QGSPROJECT_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <memory>
 #include <QHash>
 #include <QList>
@@ -94,7 +95,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
      */
-    explicit QgsProject( QObject *parent = nullptr );
+    explicit QgsProject( QObject *parent SIP_TRANSFERTHIS = 0 );
 
     ~QgsProject();
 
@@ -219,7 +220,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note The key string must be valid xml tag names in order to be saved to the file.
      * \note available in Python bindings as writeEntryBool
      */
-    bool writeEntry( const QString &scope, const QString &key, bool value );
+    bool writeEntry( const QString &scope, const QString &key, bool value ) SIP_PYNAME( writeEntryBool );
 
     /**
      * Write a double entry to the project file.
@@ -230,7 +231,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note The key string must be valid xml tag names in order to be saved to the file.
      * \note available in Python bindings as writeEntryDouble
      */
-    bool writeEntry( const QString &scope, const QString &key, double value );
+    bool writeEntry( const QString &scope, const QString &key, double value ) SIP_PYNAME( writeEntryDouble );
 
     /**
      * Write an integer entry to the project file.
@@ -321,7 +322,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /** Change handler for missing layers.
      * Deletes old handler and takes ownership of the new one.
      */
-    void setBadLayerHandler( QgsProjectBadLayerHandler *handler );
+    void setBadLayerHandler( QgsProjectBadLayerHandler *handler SIP_TRANSFER );
 
     //! Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded
     QString layerIsEmbedded( const QString &id ) const;
@@ -706,7 +707,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see removeMapLayer()
      * \since QGIS 3.0
      */
-    QgsMapLayer *takeMapLayer( QgsMapLayer *layer );
+    QgsMapLayer *takeMapLayer( QgsMapLayer *layer ) SIP_TRANSFERBACK;
 
     /**
      * Removes all registered layers. If the registry has ownership
