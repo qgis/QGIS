@@ -49,6 +49,7 @@
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
 #include <cpl_conv.h>
+#include <cpl_string.h>
 #include <gdal.h>
 
 QgsVectorFileWriter::FieldValueConverter::FieldValueConverter()
@@ -2749,21 +2750,27 @@ QString QgsVectorFileWriter::driverForExtension( const QString &extension )
   QString ext = extension.trimmed();
   if ( ext.isEmpty() )
     return QString();
-  QgsApplication::registerOgrDrivers();
-  int const drvCount = OGRGetDriverCount();
+
+  if ( ext.startsWith( '.' ) )
+    ext.remove( 0, 1 );
+
+  GDALAllRegister();
+  int const drvCount = GDALGetDriverCount();
 
   for ( int i = 0; i < drvCount; ++i )
   {
-    OGRSFDriverH drv = OGRGetDriver( i );
+    GDALDriverH drv = GDALGetDriver( i );
     if ( drv )
     {
-      QString drvName = OGR_Dr_GetName( drv );
-      if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
+      char **driverMetadata = GDALGetMetadata( drv, nullptr );
+      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_VECTOR, false ) )
       {
-        MetaData metadata;
-        if ( driverMetadata( drvName, metadata ) )
+        QString drvName = GDALGetDriverShortName( drv );
+        QStringList driverExtensions = QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
+
+        Q_FOREACH ( const QString &driver, driverExtensions )
         {
-          if ( metadata.glob.contains( ext, Qt::CaseInsensitive ) )
+          if ( driver.compare( ext, Qt::CaseInsensitive ) == 0 )
             return drvName;
         }
       }
