@@ -2744,6 +2744,34 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
   return resultMap;
 }
 
+QString QgsVectorFileWriter::driverForExtension( const QString &extension )
+{
+  QString ext = extension.trimmed();
+  if ( ext.isEmpty() )
+    return QString();
+  QgsApplication::registerOgrDrivers();
+  int const drvCount = OGRGetDriverCount();
+
+  for ( int i = 0; i < drvCount; ++i )
+  {
+    OGRSFDriverH drv = OGRGetDriver( i );
+    if ( drv )
+    {
+      QString drvName = OGR_Dr_GetName( drv );
+      if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
+      {
+        MetaData metadata;
+        if ( driverMetadata( drvName, metadata ) )
+        {
+          if ( metadata.glob.contains( ext, Qt::CaseInsensitive ) )
+            return drvName;
+        }
+      }
+    }
+  }
+  return QString();
+}
+
 QString QgsVectorFileWriter::fileFilterString()
 {
   QString filterString;

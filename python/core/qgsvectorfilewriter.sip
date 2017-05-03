@@ -365,6 +365,8 @@ class QgsVectorFileWriter : QgsFeatureSink
      */
     static QMap< QString, QString> ogrDriverList();
 
+    static QString driverForExtension( const QString &extension );
+
     /** Returns filter string that can be used for dialogs*/
     static QString fileFilterString();
 
