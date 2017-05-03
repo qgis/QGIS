@@ -39,3 +39,22 @@ bool QgsFeatureSink::addFeatures( QgsFeatureIterator &iterator )
   return result;
 }
 
+
+QgsProxyFeatureSink::QgsProxyFeatureSink( QgsFeatureSink *sink )
+  : mSink( sink )
+{}
+
+bool QgsProxyFeatureSink::addFeature( QgsFeature &feature )
+{
+  return mSink->addFeature( feature );
+}
+
+bool QgsProxyFeatureSink::addFeatures( QgsFeatureList &features )
+{
+  return mSink->addFeatures( features );
+}
+
+bool QgsProxyFeatureSink::addFeatures( QgsFeatureIterator &iterator )
+{
+  return mSink->addFeatures( iterator );
+}
