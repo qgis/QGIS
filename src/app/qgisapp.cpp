@@ -5804,14 +5804,6 @@ void QgisApp::saveMapAsImage()
   QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   if ( myFileNameAndFilter.first != QLatin1String( "" ) )
   {
-    QSize size = mMapCanvas->size();
-    if ( dlg.extent() != mMapCanvas->extent() )
-    {
-      size.setWidth( mMapCanvas->size().width() * dlg.extent().width() / mMapCanvas->extent().width() );
-      size.setHeight( mMapCanvas->size().height() * dlg.extent().height() / mMapCanvas->extent().height() );
-    }
-    size *=  dlg.dpi() / qt_defaultDpiX();
-
     QgsMapSettings ms = QgsMapSettings();
     ms.setDestinationCrs( QgsProject::instance()->crs() );
     ms.setExtent( dlg.extent() );
