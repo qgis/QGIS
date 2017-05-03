@@ -315,6 +315,8 @@ remove argument
     void position( bool keep, bool keep );
     void position( bool keep );
 
+    static SIP_PYLIST changeReturnType( QVector<int> *resultTree = 0, QVector<double> &resultCost = 0 );
+
     Whatever &operator[]( int i ) /Factory/;
 %MethodCode
     ....

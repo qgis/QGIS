@@ -581,7 +581,7 @@ while ($line_idx < $line_count){
     };
 
     # unprinted annotations
-    $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYARGTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
+    $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
     $line =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
     # remove argument
     if ($line =~ m/SIP_PYARGREMOVE/){

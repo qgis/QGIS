@@ -462,9 +462,9 @@ typedef unsigned long long qgssize;
 #define SIP_FORCE
 
 /*
-  * specify an alternative type for SIP argument
+  * specify an alternative type for SIP argument or return value
   */
-#define SIP_PYARGTYPE(type)
+#define SIP_PYTYPE(type)
 
 /*
   * specify an alternative default value for SIP argument

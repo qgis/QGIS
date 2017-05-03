@@ -2062,7 +2062,7 @@ EXPAND_AS_DEFINED      = "SIP_TRANSFER" \
                          "SIP_PYNAME" \
                          "SIP_SKIP" \
                          "SIP_PYARGDEFAULT" \
-                         "SIP_PYARGTYPE" \
+                         "SIP_PYTYPE" \
                          "SIP_PYARGREMOVE" \
                          "SIP_CONVERT_TO_SUBCLASS_CODE" \
                          "SIP_FEATURE" \

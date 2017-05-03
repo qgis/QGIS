@@ -50,10 +50,10 @@ typedef qint64 QgsFeatureId;
 typedef WhatEver ShouldNotBeDisplayed;
 #endif
 
-typedef QSet<QgsFeatureId SIP_PYARGTYPE( qint64 )> QgsFeatureIds;
-typedef QMap<QgsFeatureId SIP_PYARGTYPE( qint64 ), QgsAttributeMap SIP_PYARGTYPE( 'QMap<int, QVariant>' )> QgsChangedAttributesMap;
-typedef QMap<QgsFeatureId, QgsAttributeMap> SIP_PYARGTYPE( 'QMap<qint64, QMap<int, QVariant> >' ) QgsChangedAttributesMap;
-typedef QMap<QgsFeatureId, QPair<QMap<Something, Complex> >>  SIP_PYARGTYPE( 'QMap<qint64, QMap<int, QVariant>>' ) QgsChangedAttributesMap;
+typedef QSet<QgsFeatureId SIP_PYTYPE( qint64 )> QgsFeatureIds;
+typedef QMap<QgsFeatureId SIP_PYTYPE( qint64 ), QgsAttributeMap SIP_PYTYPE( 'QMap<int, QVariant>' )> QgsChangedAttributesMap;
+typedef QMap<QgsFeatureId, QgsAttributeMap> SIP_PYTYPE( 'QMap<qint64, QMap<int, QVariant> >' ) QgsChangedAttributesMap;
+typedef QMap<QgsFeatureId, QPair<QMap<Something, Complex> >>  SIP_PYTYPE( 'QMap<qint64, QMap<int, QVariant>>' ) QgsChangedAttributesMap;
 
 /** \ingroup core
  * A super QGIS class
@@ -227,10 +227,10 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     void differentDefaultValue( bool defaultValue = true SIP_PYARGDEFAULT( false ), QWidget *parent = nullptr, QString msg = QString() SIP_PYARGDEFAULT( "hello" ) );
 
-    void differentType( QList<QgsFeatureId> SIP_PYARGTYPE( QList<qint64> ) & list );
+    void differentType( QList<QgsFeatureId> SIP_PYTYPE( QList<qint64> ) & list );
 
     //! complex default value and type (i.e. containing commas) should be given as a string with single quotes
-    void complexDefaultValueAndType( QList<QPair<QgsFeatureId SIP_PYARGTYPE( qint64 ), QMap<int, QString>>> list = QList<QPair<QgsFeatureId, QMap<int, QString>>>() SIP_PYARGDEFAULT( 'QList<QPair<qint64, QMap<int, QString>>>()' ) );
+    void complexDefaultValueAndType( QList<QPair<QgsFeatureId SIP_PYTYPE( qint64 ), QMap<int, QString>>> list = QList<QPair<QgsFeatureId, QMap<int, QString>>>() SIP_PYARGDEFAULT( 'QList<QPair<qint64, QMap<int, QString>>>()' ) );
 
     inline int inlineKeyWordShouldNotAppear();
 
@@ -340,6 +340,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void position( bool first_remove SIP_PYARGREMOVE, bool keep );
     void position( bool keep, bool middle_remove SIP_PYARGREMOVE, bool keep );
     void position( bool keep, bool last_remove SIP_PYARGREMOVE );
+
+    static void SIP_PYTYPE(SIP_PYLIST) changeReturnType( QVector<int> *resultTree = 0, QVector<double> &resultCost = 0 );
 
     //! Some comment
     Whatever &operator[]( int i ) SIP_FACTORY;
