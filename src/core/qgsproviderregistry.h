@@ -52,7 +52,6 @@ class CORE_EXPORT QgsProviderRegistry
     //! Means of accessing canonical single instance
     static QgsProviderRegistry *instance( const QString &pluginPath = QString::null );
 
-    //! Virtual dectructor
     virtual ~QgsProviderRegistry();
 
     //! Return path for the library of the provider

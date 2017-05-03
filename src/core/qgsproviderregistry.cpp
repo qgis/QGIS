@@ -30,6 +30,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "providers/memory/qgsmemoryprovider.h"
 
 
 // typedefs for provider plugin functions of interest
@@ -75,6 +76,9 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
 
 void QgsProviderRegistry::init()
 {
+  // add standard providers
+  mProviders[ QgsMemoryProvider::providerKey() ] = new QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription(), &QgsMemoryProvider::createProvider );
+
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
 
@@ -233,16 +237,20 @@ void QgsProviderRegistry::clean()
   {
     QgsDebugMsg( QString( "cleanup:%1" ).arg( it->first ) );
     QString lib = it->second->library();
-    QLibrary myLib( lib );
-    if ( myLib.isLoaded() )
+    if ( !lib.isEmpty() )
     {
-      cleanupProviderFunction_t *cleanupFunc = reinterpret_cast< cleanupProviderFunction_t * >( cast_to_fptr( myLib.resolve( "cleanupProvider" ) ) );
-      if ( cleanupFunc )
-        cleanupFunc();
+      QLibrary myLib( lib );
+      if ( myLib.isLoaded() )
+      {
+        cleanupProviderFunction_t *cleanupFunc = reinterpret_cast< cleanupProviderFunction_t * >( cast_to_fptr( myLib.resolve( "cleanupProvider" ) ) );
+        if ( cleanupFunc )
+          cleanupFunc();
+      }
     }
     delete it->second;
     ++it;
   }
+  mProviders.clear();
 }
 
 QgsProviderRegistry::~QgsProviderRegistry()
@@ -351,6 +359,18 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const &providerKey, QStr
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
 
+  const QgsProviderMetadata *metadata = providerMetadata( providerKey );
+  if ( !metadata )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Invalid data provider %1" ).arg( providerKey ) );
+    return nullptr;
+  }
+
+  if ( metadata->createFunction() )
+  {
+    return metadata->createFunction()( dataSource );
+  }
+
   // load the plugin
   QString lib = library( providerKey );
 
@@ -435,6 +455,10 @@ QWidget *QgsProviderRegistry::selectWidget( const QString &providerKey,
 QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
     QString const &functionName )
 {
+  QString lib = library( providerKey );
+  if ( lib.isEmpty() )
+    return nullptr;
+
   QLibrary myLib( library( providerKey ) );
 
   QgsDebugMsg( "Library name is " + myLib.fileName() );
@@ -452,7 +476,11 @@ QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
 
 QLibrary *QgsProviderRegistry::providerLibrary( QString const &providerKey ) const
 {
-  std::unique_ptr< QLibrary > myLib( new QLibrary( library( providerKey ) ) );
+  QString lib = library( providerKey );
+  if ( lib.isEmpty() )
+    return nullptr;
+
+  std::unique_ptr< QLibrary > myLib( new QLibrary( lib ) );
 
   QgsDebugMsg( "Library name is " + myLib->fileName() );
 

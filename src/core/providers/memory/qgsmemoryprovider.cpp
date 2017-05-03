@@ -26,6 +26,7 @@
 #include <QUrl>
 #include <QRegExp>
 
+///@cond PRIVATE
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "memory" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Memory provider" );
@@ -188,6 +189,21 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri )
 QgsMemoryProvider::~QgsMemoryProvider()
 {
   delete mSpatialIndex;
+}
+
+QString QgsMemoryProvider::providerKey()
+{
+  return TEXT_PROVIDER_KEY;
+}
+
+QString QgsMemoryProvider::providerDescription()
+{
+  return TEXT_PROVIDER_DESCRIPTION;
+}
+
+QgsMemoryProvider *QgsMemoryProvider::createProvider( const QString &uri )
+{
+  return new QgsMemoryProvider( uri );
 }
 
 QgsAbstractFeatureSource *QgsMemoryProvider::featureSource() const
@@ -523,52 +539,15 @@ void QgsMemoryProvider::updateExtent()
   }
 }
 
-
-
-// --------------------------------
-
-QString  QgsMemoryProvider::name() const
+QString QgsMemoryProvider::name() const
 {
   return TEXT_PROVIDER_KEY;
 }
 
-QString  QgsMemoryProvider::description() const
+QString QgsMemoryProvider::description() const
 {
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
-// --------------------------------
 
-
-/**
- * Class factory to return a pointer to a newly created
- * QgsMemoryProvider object
- */
-QGISEXTERN QgsMemoryProvider *classFactory( const QString *uri )
-{
-  return new QgsMemoryProvider( *uri );
-}
-
-/** Required key function (used to map the plugin to a data store type)
- */
-QGISEXTERN QString providerKey()
-{
-  return TEXT_PROVIDER_KEY;
-}
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return TEXT_PROVIDER_DESCRIPTION;
-}
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
+///@endcond

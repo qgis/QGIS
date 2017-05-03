@@ -17,6 +17,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfields.h"
 
+///@cond PRIVATE
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
 class QgsSpatialIndex;
@@ -31,6 +32,13 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     explicit QgsMemoryProvider( const QString &uri = QString() );
 
     virtual ~QgsMemoryProvider();
+
+    //! Returns the memory provider key
+    static QString providerKey();
+    //! Returns the memory provider description
+    static QString providerDescription();
+
+    static QgsMemoryProvider *createProvider( const QString &uri );
 
     /* Implementation of functions from QgsVectorDataProvider */
 
@@ -88,3 +96,5 @@ class QgsMemoryProvider : public QgsVectorDataProvider
 
     friend class QgsMemoryFeatureSource;
 };
+
+///@endcond
