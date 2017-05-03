@@ -22,7 +22,7 @@ class QgsGraphAnalyzer
 %End
   public:
 
-    static SIP_PYLIST void dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = 0, QVector<double> *resultCost = 0 );
+    static SIP_PYLIST  dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = 0, QVector<double> *resultCost = 0 );
 %Docstring
  Solve shortest path problem using Dijkstra algorithm
  \param source source graph
