@@ -40,10 +40,14 @@ class CORE_EXPORT QgsFeatureFilterProvider
 {
   public:
 
+#ifndef SIP_RUN
+
     //! Constructor
     QgsFeatureFilterProvider() {}
 
     virtual ~QgsFeatureFilterProvider() = default;
+
+#endif
 
     /** Add additional filters to the feature request to further restrict the features returned by the request.
      * Derived classes must implement this method.
