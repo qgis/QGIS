@@ -59,7 +59,7 @@ class QgsComposerMultiFrameMergeCommand: QgsComposerMultiFrameCommand
     QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame *multiFrame, const QString &text );
     ~QgsComposerMultiFrameMergeCommand();
 
-    bool mergeWith( const QUndoCommand  *command );
+    bool mergeWith( const QUndoCommand *command );
     int id() const;
 
 };

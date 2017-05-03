@@ -9,9 +9,9 @@ class QgsSvgSelectorListModel : QAbstractListModel
     // Constructor to create model for icons in a specific path
     QgsSvgSelectorListModel( QObject *parent /TransferThis/, const QString &path );
 
-    int rowCount( const QModelIndex  &parent = QModelIndex() ) const;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
-    QVariant data( const QModelIndex  &index, int role = Qt::DisplayRole ) const;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 };
 
 class QgsSvgSelectorGroupsModel : QStandardItemModel

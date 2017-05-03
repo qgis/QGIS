@@ -100,7 +100,7 @@ class QgsComposerLabel : QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets state from Dom document
      * @param itemElem is Dom element corresponding to 'ComposerLabel' tag

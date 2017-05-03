@@ -46,8 +46,8 @@ class QgsProjectProperty
      * @param document the overall project file Dom document
      */
     virtual bool writeXml( const QString & nodeName,
-                           QDomElement   & element,
-                           QDomDocument   &document ) = 0;
+                           QDomElement & element,
+                           QDomDocument &document ) = 0;
 
     /** Return the node's value
      *
@@ -94,8 +94,8 @@ class QgsProjectPropertyValue : QgsProjectProperty
     bool readXml( const QDomNode &keyNode );
 
     bool writeXml( const QString & nodeName,
-                   QDomElement   & element,
-                   QDomDocument   &document );
+                   QDomElement & element,
+                   QDomDocument &document );
 
 };
 
@@ -126,31 +126,31 @@ class QgsProjectPropertyKey : QgsProjectProperty
 
 
     /// add the given property key
-    QgsProjectPropertyKey  *addKey( const QString  &keyName );
+    QgsProjectPropertyKey *addKey( const QString &keyName );
 
     /// remove the given key
-    void removeKey( const QString  &keyName );
+    void removeKey( const QString &keyName );
 
     /** Set the value associated with this key
      * @param name is the key name
      * @param value is the value to set
      * @return pointer to property value
      */
-    QgsProjectPropertyValue  *setValue( const QString  &name, const QVariant  &value );
+    QgsProjectPropertyValue *setValue( const QString &name, const QVariant &value );
 
     /** Set the value associated with this key
      *
      * @note that the single value node associated with each key is always
      * stored keyed by the current key name
      */
-    QgsProjectPropertyValue  *setValue( const QVariant  &value );
+    QgsProjectPropertyValue *setValue( const QVariant &value );
 
 
     void dump( int tabs = 0 ) const;
 
     bool readXml( const QDomNode &keyNode );
 
-    bool writeXml( const QString &nodeName, QDomElement  &element, QDomDocument  &document );
+    bool writeXml( const QString &nodeName, QDomElement &element, QDomDocument &document );
 
     /// how many elements are contained within this one?
     int count() const;
@@ -165,10 +165,10 @@ class QgsProjectPropertyKey : QgsProjectProperty
     virtual bool isValue() const;
 
     /// return keys that do not contain other keys
-    void entryList( QStringList  &entries ) const;
+    void entryList( QStringList &entries ) const;
 
     /// return keys that contain other keys
-    void subkeyList( QStringList  &entries ) const;
+    void subkeyList( QStringList &entries ) const;
 
     /** Returns true if a leaf node
      * A leaf node is a key node that has either no value or a single value.
@@ -182,5 +182,5 @@ class QgsProjectPropertyKey : QgsProjectProperty
     /// delete any sub-nodes
     virtual void clearKeys();
 
-    QgsProjectProperty  *find( QString  &propertyName );
+    QgsProjectProperty *find( QString &propertyName );
 }; // class QgsPropertyKey

@@ -31,7 +31,7 @@ class QgsSymbolSelectorWidget : QgsPanelWidget
 
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
-    void keyPressEvent( QKeyEvent  *event );
+    void keyPressEvent( QKeyEvent *event );
 
     void loadSymbol();
     //! @note not available in python bindings
@@ -105,7 +105,7 @@ class QgsSymbolSelectorDialog : QDialog
     QgsSymbol *symbol();
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
-    void keyPressEvent( QKeyEvent  *event );
+    void keyPressEvent( QKeyEvent *event );
 
     void loadSymbol();
     //! @note not available in python bindings

@@ -341,7 +341,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void position( bool keep, bool middle_remove SIP_PYARGREMOVE, bool keep );
     void position( bool keep, bool last_remove SIP_PYARGREMOVE );
 
-    static void SIP_PYTYPE(SIP_PYLIST) changeReturnType( QVector<int> *resultTree = 0, QVector<double> &resultCost = 0 );
+    static void SIP_PYTYPE( SIP_PYLIST ) changeReturnType( QVector<int> *resultTree = 0, QVector<double> &resultCost = 0 );
 
     //! Some comment
     Whatever &operator[]( int i ) SIP_FACTORY;

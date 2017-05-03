@@ -10,15 +10,15 @@ class QgsDetailedItemDelegate : QAbstractItemDelegate
 %End
 
   public:
-    QgsDetailedItemDelegate( QObject  *parent /TransferThis/ = 0 );
+    QgsDetailedItemDelegate( QObject *parent /TransferThis/ = 0 );
     ~QgsDetailedItemDelegate();
     /** Reimplement for parent class */
     void paint( QPainter * painter,
                 const QStyleOptionViewItem & option,
-                const QModelIndex  &index ) const;
+                const QModelIndex &index ) const;
     /** Reimplement for parent class */
     QSize sizeHint( const QStyleOptionViewItem & option,
-                    const QModelIndex  &index ) const;
+                    const QModelIndex &index ) const;
 
     void setVerticalSpacing( int value );
 

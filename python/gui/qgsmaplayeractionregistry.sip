@@ -65,12 +65,12 @@ class QgsMapLayerActionRegistry : QObject
 
   public:
     //! Returns the instance pointer, creating the object on the first call
-    static QgsMapLayerActionRegistry  *instance();
+    static QgsMapLayerActionRegistry *instance();
 
     ~QgsMapLayerActionRegistry();
 
     /** Adds a map layer action to the registry*/
-    void addMapLayerAction( QgsMapLayerAction  *action );
+    void addMapLayerAction( QgsMapLayerAction *action );
 
     /** Returns the map layer actions which can run on the specified layer*/
     QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions );
@@ -81,11 +81,11 @@ class QgsMapLayerActionRegistry : QObject
     /** Sets the default action for a layer*/
     void setDefaultActionForLayer( QgsMapLayer *layer, QgsMapLayerAction *action );
     /** Returns the default action for a layer*/
-    QgsMapLayerAction  *defaultActionForLayer( QgsMapLayer *layer );
+    QgsMapLayerAction *defaultActionForLayer( QgsMapLayer *layer );
 
   protected:
     //! protected constructor
-    QgsMapLayerActionRegistry( QObject  *parent = 0 );
+    QgsMapLayerActionRegistry( QObject *parent = 0 );
 
   signals:
     /** Triggered when an action is added or removed from the registry */

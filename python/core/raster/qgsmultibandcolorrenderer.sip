@@ -8,11 +8,11 @@ class QgsMultiBandColorRenderer: QgsRasterRenderer
                                QgsContrastEnhancement* redEnhancement = 0, QgsContrastEnhancement* greenEnhancement = 0,
                                QgsContrastEnhancement *blueEnhancement = 0 );
     ~QgsMultiBandColorRenderer();
-    virtual QgsMultiBandColorRenderer  *clone() const /Factory/;
+    virtual QgsMultiBandColorRenderer *clone() const /Factory/;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterDataProvider *provider ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
     int redBand() const;
     void setRedBand( int band );

@@ -74,8 +74,8 @@ class QgsSpinBox : QSpinBox
      */
     int clearValue() const;
 
-    virtual int valueFromText( const QString  &text ) const;
-    virtual QValidator::State validate( QString  &input, int  &pos ) const;
+    virtual int valueFromText( const QString &text ) const;
+    virtual QValidator::State validate( QString &input, int &pos ) const;
 
   protected:
 

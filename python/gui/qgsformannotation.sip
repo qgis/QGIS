@@ -15,7 +15,7 @@ class QgsFormAnnotation : QgsAnnotation
     void setDesignerForm( const QString &uiFile );
     QString designerForm() const;
 
-    virtual void writeXml( QDomElement &elem, QDomDocument  &doc ) const;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const;
     virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     void setAssociatedFeature( const QgsFeature &feature );

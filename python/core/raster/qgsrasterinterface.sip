@@ -118,7 +118,7 @@ class QgsRasterInterface
       IdentifyFeature,
     };
 
-    QgsRasterInterface( QgsRasterInterface  *input = 0 );
+    QgsRasterInterface( QgsRasterInterface *input = 0 );
 
     virtual ~QgsRasterInterface();
 
@@ -178,7 +178,7 @@ class QgsRasterInterface
     virtual bool setInput( QgsRasterInterface *input );
 
     /** Current input */
-    virtual QgsRasterInterface  *input() const;
+    virtual QgsRasterInterface *input() const;
 
     /** Is on/off */
     virtual bool on() const;

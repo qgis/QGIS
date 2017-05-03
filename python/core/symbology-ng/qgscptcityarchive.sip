@@ -17,7 +17,7 @@ class QgsCptCityArchive
     // collection + selection info
     QString copyingFileName( const QString &dirName ) const;
     QString descFileName( const QString &dirName ) const;
-    static QString findFileName( const QString  &target, const QString  &startDir, const QString  &baseDir );
+    static QString findFileName( const QString &target, const QString &startDir, const QString &baseDir );
     static QMap< QString, QString > copyingInfo( const QString &fileName );
     static QMap< QString, QString > description( const QString &fileName );
     //! @note not available in python bindings
@@ -82,14 +82,14 @@ class QgsCptCityDataItem : QObject
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
-    virtual void addChildItem( QgsCptCityDataItem  *child /Transfer/, bool refresh = false );
+    virtual void addChildItem( QgsCptCityDataItem *child /Transfer/, bool refresh = false );
 
     // remove and delete child item, signals to browser are emitted
-    virtual void deleteChildItem( QgsCptCityDataItem  *child );
+    virtual void deleteChildItem( QgsCptCityDataItem *child );
 
     // remove child item but don't delete it, signals to browser are emitted
     // returns pointer to the removed item or null if no such item was found
-    virtual QgsCptCityDataItem  *removeChildItem( QgsCptCityDataItem  *child ) /TransferBack/;
+    virtual QgsCptCityDataItem *removeChildItem( QgsCptCityDataItem *child ) /TransferBack/;
 
     virtual bool equal( const QgsCptCityDataItem *other );
 
@@ -107,7 +107,7 @@ class QgsCptCityDataItem : QObject
     // static methods
 
     // Find child index in vector of items using '==' operator
-    static int findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem  *item );
+    static int findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem *item );
 
     // members
 
@@ -287,7 +287,7 @@ class QgsCptCityBrowserModel : QAbstractItemModel
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
     /** Returns the index of the item in the model specified by the given row, column and parent index. */
-    virtual QModelIndex index( int row, int column, const QModelIndex  &parent = QModelIndex() ) const;
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 
     QModelIndex findItem( QgsCptCityDataItem *item, QgsCptCityDataItem *parent = 0 ) const;
 
@@ -323,15 +323,15 @@ class QgsCptCityBrowserModel : QAbstractItemModel
 
     void connectItem( QgsCptCityDataItem *item );
 
-    bool canFetchMore( const QModelIndex  &parent ) const;
-    void fetchMore( const QModelIndex  &parent );
+    bool canFetchMore( const QModelIndex &parent ) const;
+    void fetchMore( const QModelIndex &parent );
 
   signals:
 
   public slots:
-    //void removeItems( QgsCptCityDataItem  *parent, QVector<QgsCptCityDataItem *>items );
-    //void addItems( QgsCptCityDataItem  *parent, QVector<QgsCptCityDataItem *>items );
-    //void refreshItems( QgsCptCityDataItem  *parent, QVector<QgsCptCityDataItem *>items );
+    //void removeItems( QgsCptCityDataItem *parent, QVector<QgsCptCityDataItem *>items );
+    //void addItems( QgsCptCityDataItem *parent, QVector<QgsCptCityDataItem *>items );
+    //void refreshItems( QgsCptCityDataItem *parent, QVector<QgsCptCityDataItem *>items );
 
     void beginInsertItems( QgsCptCityDataItem *parent, int first, int last );
     void endInsertItems();

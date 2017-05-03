@@ -31,7 +31,7 @@ class QgsComposerFrame: QgsComposerItem
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
     void beginItemCommand( const QString &text );
     void endItemCommand();
-    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
     int type() const;
 

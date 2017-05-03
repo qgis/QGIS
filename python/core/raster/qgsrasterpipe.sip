@@ -53,17 +53,17 @@ class QgsRasterPipe
      * subclasses. For unknown interfaces it mus be explicitly specified position
      * where it should be inserted using insert() method.
      */
-    bool set( QgsRasterInterface  *interface /Transfer/ );
+    bool set( QgsRasterInterface *interface /Transfer/ );
 
     /** Remove and delete interface at given index if possible */
     bool remove( int idx );
 
     /** Remove and delete interface from pipe if possible */
-    bool remove( QgsRasterInterface  *interface );
+    bool remove( QgsRasterInterface *interface );
 
     int size() const;
-    QgsRasterInterface  *at( int idx ) const;
-    QgsRasterInterface  *last() const;
+    QgsRasterInterface *at( int idx ) const;
+    QgsRasterInterface *last() const;
 
     /** Set interface at index on/off
      *  Returns true on success */
@@ -73,13 +73,13 @@ class QgsRasterPipe
     bool canSetOn( int idx, bool on );
 
     // Getters for special types of interfaces
-    QgsRasterDataProvider  *provider() const;
-    QgsRasterRenderer  *renderer() const;
-    QgsRasterResampleFilter  *resampleFilter() const;
-    QgsBrightnessContrastFilter  *brightnessFilter() const;
-    QgsHueSaturationFilter  *hueSaturationFilter() const;
-    QgsRasterProjector  *projector() const;
-    QgsRasterNuller  *nuller() const;
+    QgsRasterDataProvider *provider() const;
+    QgsRasterRenderer *renderer() const;
+    QgsRasterResampleFilter *resampleFilter() const;
+    QgsBrightnessContrastFilter *brightnessFilter() const;
+    QgsHueSaturationFilter *hueSaturationFilter() const;
+    QgsRasterProjector *projector() const;
+    QgsRasterNuller *nuller() const;
 
   private:
 

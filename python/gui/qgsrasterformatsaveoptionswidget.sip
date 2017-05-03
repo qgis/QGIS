@@ -102,7 +102,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
     void updateControls();
 
   protected:
-    virtual void showEvent( QShowEvent  *event );
+    virtual void showEvent( QShowEvent *event );
 
   signals:
     void optionsChanged();

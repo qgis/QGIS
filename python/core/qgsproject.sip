@@ -444,7 +444,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *>& layers /Transfer/,
                                        bool addToLegend = true );
 
-    QgsMapLayer *addMapLayer( QgsMapLayer  *layer /Transfer/, bool addToLegend = true );
+    QgsMapLayer *addMapLayer( QgsMapLayer *layer /Transfer/, bool addToLegend = true );
 
     void removeMapLayers( const QStringList &layerIds );
 

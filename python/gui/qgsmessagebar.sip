@@ -106,5 +106,5 @@ class QgsMessageBar: QFrame
     void pushCritical( const QString &title, const QString &message );
 
   protected:
-    void mousePressEvent( QMouseEvent  *e );
+    void mousePressEvent( QMouseEvent *e );
 };

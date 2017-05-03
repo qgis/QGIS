@@ -4,7 +4,7 @@ class QgsSymbolsListWidget : QWidget
 #include <qgssymbolslistwidget.h>
 %End
   public:
-    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/ = 0, const QgsVectorLayer  *layer = 0 );
+    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/ = 0, const QgsVectorLayer *layer = 0 );
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
@@ -26,7 +26,7 @@ class QgsSymbolsListWidget : QWidget
 
   public slots:
 
-    void setSymbolFromStyle( const QModelIndex  &index );
+    void setSymbolFromStyle( const QModelIndex &index );
     void setSymbolColor( const QColor &color );
     void setMarkerAngle( double angle );
     void setMarkerSize( double size );

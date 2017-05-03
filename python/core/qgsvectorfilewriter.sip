@@ -278,7 +278,7 @@ class QgsVectorFileWriter : QgsFeatureSink
         /** Layer name. If let empty, it will be derived from the filename */
         QString layerName;
 
-        /** Action on existing file  */
+        /** Action on existing file */
         QgsVectorFileWriter::ActionOnExistingFile actionOnExistingFile;
 
         /** Encoding to use */

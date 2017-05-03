@@ -64,7 +64,7 @@ class QgsSvgCache : QObject
 
   public:
 
-    QgsSvgCache( QObject  *parent /TransferThis/ = 0 );
+    QgsSvgCache( QObject *parent /TransferThis/ = 0 );
 
     ~QgsSvgCache();
 

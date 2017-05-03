@@ -32,7 +32,7 @@ class QgsRendererCategory
 
   protected:
 
-    void swap( QgsRendererCategory  &other );
+    void swap( QgsRendererCategory &other );
 };
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
@@ -80,7 +80,7 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
      * @param sym source symbol to use for categories. Ownership is not transferred.
      * @see setSourceSymbol()
      */
-    void updateSymbols( QgsSymbol  *sym );
+    void updateSymbols( QgsSymbol *sym );
 
     const QgsCategoryList &categories() const;
 
@@ -195,6 +195,6 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
 
   private:
     QgsCategorizedSymbolRenderer( const QgsCategorizedSymbolRenderer & );
-    QgsCategorizedSymbolRenderer  &operator=( const QgsCategorizedSymbolRenderer & );
+    QgsCategorizedSymbolRenderer &operator=( const QgsCategorizedSymbolRenderer & );
 };
 
