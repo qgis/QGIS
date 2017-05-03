@@ -74,6 +74,7 @@ class TestQgsFeatureSink(unittest.TestCase):
 
         store = QgsFeatureStore(fields, QgsCoordinateReferenceSystem())
         proxy = QgsProxyFeatureSink(store)
+        self.assertEqual(proxy.destinationSink(), store)
 
         self.assertEqual(len(store), 0)
 

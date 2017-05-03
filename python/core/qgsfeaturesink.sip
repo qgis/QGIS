@@ -80,6 +80,12 @@ class QgsProxyFeatureSink : QgsFeatureSink
     virtual bool addFeatures( QgsFeatureIterator &iterator );
 
 
+    QgsFeatureSink *destinationSink();
+%Docstring
+ Returns the destination QgsFeatureSink which the proxy will forward features to.
+ :rtype: QgsFeatureSink
+%End
+
 };
 
 
