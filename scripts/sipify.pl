@@ -579,6 +579,10 @@ while ($line_idx < $line_count){
         $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\/\s*;(\s*(\/\/.*)?)$/\/$1,$3\/$5;/;
         (! $3) or dbg_info("combine multiple annotations -- works only for 2");
     };
+    # combine multiple argument annotations
+    do {no warnings 'uninitialized';
+        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
+    };
 
     # unprinted annotations
     $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
