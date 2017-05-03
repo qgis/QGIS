@@ -80,9 +80,9 @@ class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
      * Constructs a new QgsProxyFeatureSink which forwards features onto a destination \a sink.
      */
     QgsProxyFeatureSink( QgsFeatureSink *sink );
-    bool addFeature( QgsFeature &feature ) override;
-    bool addFeatures( QgsFeatureList &features ) override;
-    bool addFeatures( QgsFeatureIterator &iterator ) override;
+    bool addFeature( QgsFeature &feature ) override { return mSink->addFeature( feature ); }
+    bool addFeatures( QgsFeatureList &features ) override { return mSink->addFeatures( features ); }
+    bool addFeatures( QgsFeatureIterator &iterator ) override { return mSink->addFeatures( iterator ); }
 
     /**
      * Returns the destination QgsFeatureSink which the proxy will forward features to.

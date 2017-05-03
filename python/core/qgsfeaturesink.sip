@@ -74,11 +74,8 @@ class QgsProxyFeatureSink : QgsFeatureSink
  Constructs a new QgsProxyFeatureSink which forwards features onto a destination ``sink``.
 %End
     virtual bool addFeature( QgsFeature &feature );
-
     virtual bool addFeatures( QgsFeatureList &features );
-
     virtual bool addFeatures( QgsFeatureIterator &iterator );
-
 
     QgsFeatureSink *destinationSink();
 %Docstring
