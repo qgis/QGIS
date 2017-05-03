@@ -201,6 +201,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmessageviewer.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsmemoryproviderutils.h"
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -8060,8 +8061,6 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 
   QgsWkbTypes::Type wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : QgsWkbTypes::NoGeometry;
 
-  QString typeName = wkbType != QgsWkbTypes::NoGeometry ? QgsWkbTypes::displayString( wkbType ) : QStringLiteral( "none" );
-
   if ( features.isEmpty() )
   {
     // should not happen
@@ -8072,15 +8071,13 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   }
   else if ( typeCounts.size() > 1 )
   {
+    QString typeName = wkbType != QgsWkbTypes::NoGeometry ? QgsWkbTypes::displayString( wkbType ) : QStringLiteral( "none" );
     messageBar()->pushMessage( tr( "Paste features" ),
                                tr( "Multiple geometry types found, features with geometry different from %1 will be created without geometry." ).arg( typeName ),
                                QgsMessageBar::INFO, messageTimeout() );
   }
 
-  typeName += QStringLiteral( "?memoryid=%1" ).arg( QUuid::createUuid().toString() );
-  QgsDebugMsg( QString( "output wkbType = %1 typeName = %2" ).arg( wkbType ).arg( typeName ) );
-
-  QgsVectorLayer *layer = new QgsVectorLayer( typeName, QStringLiteral( "pasted_features" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = QgsMemoryProviderUtils::createMemoryLayer( QStringLiteral( "pasted_features" ), QgsFields(), wkbType, clipboard()->crs() );
 
   if ( !layer->isValid() || !layer->dataProvider() )
   {
@@ -8092,9 +8089,6 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   }
 
   layer->startEditing();
-  if ( wkbType != QgsWkbTypes::NoGeometry )
-    layer->setCrs( clipboard()->crs(), false );
-
   Q_FOREACH ( QgsField f, clipboard()->fields().toList() )
   {
     QgsDebugMsg( QString( "field %1 (%2)" ).arg( f.name(), QVariant::typeToName( f.type() ) ) );
