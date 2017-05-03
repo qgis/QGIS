@@ -286,6 +286,8 @@
 %Include processing/qgsprocessingregistry.sip
 %Include processing/qgsprocessingutils.sip
 
+%Include providers/memory/qgsmemoryproviderutils.sip
+
 %Include raster/qgsbilinearrasterresampler.sip
 %Include raster/qgsbrightnesscontrastfilter.sip
 %Include raster/qgscliptominmaxenhancement.sip

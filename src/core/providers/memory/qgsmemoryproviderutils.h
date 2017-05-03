@@ -19,6 +19,13 @@
 #define QGSMEMORYPROVIDERUTILS_H
 
 #include "qgis_core.h"
+#include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include <QString>
+#include <QVariant>
+
+class QgsVectorLayer;
+class QgsFields;
 
 /**
  * \class QgsMemoryProviderUtils
@@ -31,6 +38,18 @@ class CORE_EXPORT QgsMemoryProviderUtils
 
   public:
 
+    /**
+     * Creates a new memory layer using the specified parameters. The caller takes responsibility
+     * for deleting the newly created layer.
+     * \param name layer name
+     * \param fields fields for layer
+     * \param geometryType optional layer geometry type
+     * \param crs optional layer CRS for layers with geometry
+     */
+    static QgsVectorLayer *createMemoryLayer( const QString &name,
+        const QgsFields &fields,
+        QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry,
+        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) SIP_FACTORY;
 };
 
 #endif // QGSMEMORYPROVIDERUTILS_H

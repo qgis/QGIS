@@ -500,6 +500,7 @@ INCLUDE_DIRECTORIES(
   ../core/dxf
   ../core/geometry
   ../core/layertree
+  ../core/providers/memory
   ../core/raster
   ../core/scalebar
   ../core/symbology-ng
