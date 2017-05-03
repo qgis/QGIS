@@ -85,6 +85,7 @@ class QgsNativeMetadataValidator : QgsMetadataValidator
 
     virtual bool validate( const QgsLayerMetadata &metadata, QList< QgsMetadataValidator::ValidationResult > &results /Out/ ) const;
 
+
 };
 
 /************************************************************************

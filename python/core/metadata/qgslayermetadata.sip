@@ -50,7 +50,7 @@ class QgsLayerMetadata
       QgsCoordinateReferenceSystem extentCrs;
 %Docstring
  Coordinate reference system for spatial extent.
- \see spatial
+.. seealso:: spatial
 %End
 
       QgsBox3d bounds;
@@ -60,7 +60,7 @@ class QgsLayerMetadata
 
  While the spatial extent can include a Z dimension, this is not
  compulsory.
- \see extentCrs
+.. seealso:: extentCrs
 %End
     };
 
@@ -71,14 +71,14 @@ class QgsLayerMetadata
         QList< QgsLayerMetadata::SpatialExtent > spatialExtents() const;
 %Docstring
  Spatial extents of the resource.
- \see setSpatialExtents()
+.. seealso:: setSpatialExtents()
  :rtype: list of QgsLayerMetadata.SpatialExtent
 %End
 
         void setSpatialExtents( const QList< QgsLayerMetadata::SpatialExtent > &extents );
 %Docstring
  Sets the spatial ``extents`` of the resource.
- \see spatialExtents()
+.. seealso:: spatialExtents()
 %End
 
         QList< QgsDateTimeRange > temporalExtents() const;
@@ -87,14 +87,14 @@ class QgsLayerMetadata
  whether the temporal extent is a range or a single point in time.
  If QgsDateTimeRange.isInfinite() returns true then the temporal extent
  is considered to be indeterminate and continuous.
- \see setTemporalExtents()
+.. seealso:: setTemporalExtents()
  :rtype: list of QgsDateTimeRange
 %End
 
         void setTemporalExtents( const QList< QgsDateTimeRange > &extents );
 %Docstring
  Sets the temporal ``extents`` of the resource.
- \see temporalExtents()
+.. seealso:: temporalExtents()
 %End
 
 
@@ -276,21 +276,21 @@ class QgsLayerMetadata
     QString identifier() const;
 %Docstring
  A reference, URI, URL or some other mechanism to identify the resource.
- \see setIdentifier()
+.. seealso:: setIdentifier()
  :rtype: str
 %End
 
     void setIdentifier( const QString &identifier );
 %Docstring
  Sets the reference, URI, URL or some other mechanism to identify the resource.
- \see identifier()
+.. seealso:: identifier()
 %End
 
     QString parentIdentifier() const;
 %Docstring
  A reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.
  Returns an empty string if no parent identifier is set.
- \see setParentIdentifier()
+.. seealso:: setParentIdentifier()
  :rtype: str
 %End
 
@@ -298,7 +298,7 @@ class QgsLayerMetadata
 %Docstring
  Sets a reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.
  Set an empty string if no parent identifier is required.
- \see parentIdentifier()
+.. seealso:: parentIdentifier()
 %End
 
     QString language() const;
@@ -307,7 +307,7 @@ class QgsLayerMetadata
  will follow either the ISO 639.2 or ISO 3166 specifications, e.g. 'ENG' or 'SPA', however
  this is not a hard requirement and the caller must account for non compliant
  values.
- \see setLanguage()
+.. seealso:: setLanguage()
  :rtype: str
 %End
 
@@ -316,14 +316,14 @@ class QgsLayerMetadata
  Sets the human ``language`` associated with the resource. While a formal vocabulary is not imposed,
  ideally values should be taken from the ISO 639.2 or ISO 3166 specifications,
  e.g. 'ENG' or 'SPA' (ISO 639.2) or 'EN-AU' (ISO 3166).
- \see language()
+.. seealso:: language()
 %End
 
     QString type() const;
 %Docstring
  Returns the nature of the resource.  While a formal vocabulary is not imposed, it is advised
  to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
- \see setType()
+.. seealso:: setType()
  :rtype: str
 %End
 
@@ -331,40 +331,40 @@ class QgsLayerMetadata
 %Docstring
  Sets the ``type`` (nature) of the resource.  While a formal vocabulary is not imposed, it is advised
  to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
- \see type()
+.. seealso:: type()
 %End
 
     QString title() const;
 %Docstring
  Returns the human readable name of the resource, typically displayed in search results.
- \see setTitle()
+.. seealso:: setTitle()
  :rtype: str
 %End
 
     void setTitle( const QString &title );
 %Docstring
  Sets the human readable ``title`` (name) of the resource, typically displayed in search results.
- \see title()
+.. seealso:: title()
 %End
 
     QString abstract() const;
 %Docstring
  Returns a free-form description of the resource.
- \see setAbstract()
+.. seealso:: setAbstract()
  :rtype: str
 %End
 
     void setAbstract( const QString &abstract );
 %Docstring
  Sets a free-form ``abstract`` (description) of the resource.
- \see abstract()
+.. seealso:: abstract()
 %End
 
     QString fees() const;
 %Docstring
  Returns any fees associated with using the resource.
  An empty string will be returned if no fees are set.
- \see setFees()
+.. seealso:: setFees()
  :rtype: str
 %End
 
@@ -372,39 +372,39 @@ class QgsLayerMetadata
 %Docstring
  Sets the ``fees`` associated with using the resource.
  Use an empty string if no fees are set.
- \see fees()
+.. seealso:: fees()
 %End
 
     QgsLayerMetadata::ConstraintList constraints() const;
 %Docstring
  Returns a list of constraints associated with using the resource.
- \see setConstraints()
+.. seealso:: setConstraints()
  :rtype: QgsLayerMetadata.ConstraintList
 %End
 
     void setConstraints( const QgsLayerMetadata::ConstraintList &constraints );
 %Docstring
  Sets the list of ``constraints`` associated with using the resource.
- \see constraints()
+.. seealso:: constraints()
 %End
 
     QStringList rights() const;
 %Docstring
  Returns a list of attribution or copyright strings associated with the resource.
- \see setRights()
+.. seealso:: setRights()
  :rtype: list of str
 %End
 
     void setRights( const QStringList &rights );
 %Docstring
  Sets a list of ``rights`` (attribution or copyright strings) associated with the resource.
- \see rights()
+.. seealso:: rights()
 %End
 
     QStringList licenses() const;
 %Docstring
  Returns a list of licenses associated with the resource (examples: http://opendefinition.org/licenses/).
- \see setLicenses()
+.. seealso:: setLicenses()
  :rtype: list of str
 %End
 
@@ -412,13 +412,13 @@ class QgsLayerMetadata
 %Docstring
  Sets a list of ``licenses`` associated with the resource.
  (examples: http://opendefinition.org/licenses/).
- \see licenses()
+.. seealso:: licenses()
 %End
 
     QStringList history() const;
 %Docstring
  Returns a freeform description of the history or lineage of the resource.
- \see setHistory()
+.. seealso:: setHistory()
  :rtype: list of str
 %End
 
@@ -426,42 +426,42 @@ class QgsLayerMetadata
 %Docstring
  Sets the freeform description of the ``history`` or lineage of the resource.
  Any existing history items will be overwritten.
- \see addHistoryItem()
- \see history()
+.. seealso:: addHistoryItem()
+.. seealso:: history()
 %End
 
     void addHistoryItem( const QString &text );
 %Docstring
  Adds a single history ``text`` to the end of the existing history list.
- \see history()
- \see setHistory()
+.. seealso:: history()
+.. seealso:: setHistory()
 %End
 
     QString encoding() const;
 %Docstring
  Returns the character encoding of the data in the resource. An empty string will be returned if no encoding is set.
- \see setEncoding()
+.. seealso:: setEncoding()
  :rtype: str
 %End
 
     void setEncoding( const QString &encoding );
 %Docstring
  Sets the character ``encoding`` of the data in the resource. Use an empty string if no encoding is set.
- \see encoding()
+.. seealso:: encoding()
 %End
 
 
     QgsLayerMetadata::Extent &extent();
 %Docstring
  Returns the spatial and temporal extents associated with the resource.
- \see setExtent()
+.. seealso:: setExtent()
  :rtype: QgsLayerMetadata.Extent
 %End
 
     void setExtent( const QgsLayerMetadata::Extent &extent );
 %Docstring
  Sets the spatial and temporal extents associated with the resource.
- \see setExtent()
+.. seealso:: setExtent()
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -474,7 +474,7 @@ class QgsLayerMetadata
  CRS which is actually used to display and manipulate the layer within QGIS.
  This may be the case when a layer has an incorrect CRS within its metadata
  and a user has manually overridden the layer's CRS within QGIS.
- \see setCrs()
+.. seealso:: setCrs()
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -492,7 +492,7 @@ class QgsLayerMetadata
  CRS which is actually used to display and manipulate the layer within QGIS.
  This may be the case when a layer has an incorrect CRS within its metadata
  and a user has manually overridden the layer's CRS within QGIS.
- \see setCrs()
+.. seealso:: setCrs()
 %End
 
     KeywordMap keywords() const;
@@ -504,8 +504,8 @@ class QgsLayerMetadata
  The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
  associated with keyword list.
 
- \see setKeywords()
- \see keywordVocabularies()
+.. seealso:: setKeywords()
+.. seealso:: keywordVocabularies()
  :rtype: KeywordMap
 %End
 
@@ -519,8 +519,8 @@ class QgsLayerMetadata
  The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
  associated with keyword list.
 
- \see keywords()
- \see addKeywords()
+.. seealso:: keywords()
+.. seealso:: addKeywords()
 %End
 
     void addKeywords( const QString &vocabulary, const QStringList &keywords );
@@ -532,7 +532,7 @@ class QgsLayerMetadata
  The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
  associated with keyword list.
 
- \see setKeywords()
+.. seealso:: setKeywords()
 %End
 
     QStringList keywordVocabularies() const;
@@ -542,7 +542,7 @@ class QgsLayerMetadata
  The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
  associated with keyword list.
 
- \see keywords()
+.. seealso:: keywords()
  :rtype: list of str
 %End
 
@@ -555,14 +555,14 @@ class QgsLayerMetadata
  The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
  associated with keyword list.
 
- \see keywordVocabularies()
+.. seealso:: keywordVocabularies()
  :rtype: list of str
 %End
 
     QgsLayerMetadata::ContactList contacts() const;
 %Docstring
  Returns a list of contact persons or entities associated with the resource.
- \see setContacts()
+.. seealso:: setContacts()
  :rtype: QgsLayerMetadata.ContactList
 %End
 
@@ -570,21 +570,21 @@ class QgsLayerMetadata
 %Docstring
  Sets the list of ``contacts`` or entities associated with the resource. Any existing contacts
  will be replaced.
- \see contacts()
- \see addContact()
+.. seealso:: contacts()
+.. seealso:: addContact()
 %End
 
     void addContact( const QgsLayerMetadata::Contact &contact );
 %Docstring
  Adds an individual ``contact`` to the existing contacts.
- \see contacts()
- \see setContacts()
+.. seealso:: contacts()
+.. seealso:: setContacts()
 %End
 
     QgsLayerMetadata::LinkList links() const;
 %Docstring
  Returns a list of online resources associated with the resource.
- \see setLinks()
+.. seealso:: setLinks()
  :rtype: QgsLayerMetadata.LinkList
 %End
 
@@ -592,27 +592,27 @@ class QgsLayerMetadata
 %Docstring
  Sets the list of online resources associated with the resource. Any existing links
  will be replaced.
- \see links()
- \see addLink()
+.. seealso:: links()
+.. seealso:: addLink()
 %End
 
     void addLink( const QgsLayerMetadata::Link &link );
 %Docstring
  Adds an individual ``link`` to the existing links.
- \see links()
- \see setLinks()
+.. seealso:: links()
+.. seealso:: setLinks()
 %End
 
     void saveToLayer( QgsMapLayer *layer ) const;
 %Docstring
  Saves the metadata to a ``layer``'s custom properties (see QgsMapLayer.setCustomProperty() ).
- \see readFromLayer()
+.. seealso:: readFromLayer()
 %End
 
     void readFromLayer( const QgsMapLayer *layer );
 %Docstring
  Reads the metadata state from a ``layer``'s custom properties (see QgsMapLayer.customProperty() ).
- \see saveToLayer()
+.. seealso:: saveToLayer()
 %End
 
 };

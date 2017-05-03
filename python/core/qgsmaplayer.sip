@@ -822,8 +822,8 @@ Return pointer to layer's undo stack
 %Docstring
  Returns a reference to the layer's metadata store.
 .. versionadded:: 3.0
- \see setMetadata()
- \see metadataChanged()
+.. seealso:: setMetadata()
+.. seealso:: metadataChanged()
  :rtype: QgsLayerMetadata
 %End
 
@@ -831,8 +831,8 @@ Return pointer to layer's undo stack
 %Docstring
  Sets the layer's ``metadata`` store.
 .. versionadded:: 3.0
- \see metadata()
- \see metadataChanged()
+.. seealso:: metadata()
+.. seealso:: metadataChanged()
 %End
 
     virtual QString htmlMetadata() const;
@@ -1010,8 +1010,8 @@ Signal emitted when the blend mode is changed, through QgsMapLayer.setBlendMode(
     void metadataChanged();
 %Docstring
  Emitted when the layer's metadata is changed.
- \see setMetadata()
- \see metadata()
+.. seealso:: setMetadata()
+.. seealso:: metadata()
 .. versionadded:: 3.0
 %End
 
