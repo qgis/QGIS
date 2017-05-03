@@ -17,6 +17,8 @@
 #define QGSGRAPHANALYZER_H
 
 #include <QVector>
+
+#include <qgis.h>
 #include "qgis_analysis.h"
 
 class QgsGraph;
