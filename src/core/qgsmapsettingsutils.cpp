@@ -22,23 +22,60 @@
 
 QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings )
 {
-  double xOrigin = mapSettings.visiblePolygon().at( 0 ).x() + ( mapSettings.mapUnitsPerPixel() / 2 );
-  double yOrigin = mapSettings.visiblePolygon().at( 0 ).y() - ( mapSettings.mapUnitsPerPixel() / 2 );
+  QgsMapSettings ms = mapSettings;
+
+  double rotation = ms.rotation();
+  double alpha = rotation / 180 * M_PI;
+
+  // reset rotation to 0 to calculate world file parameters
+  ms.setRotation( 0 );
+
+  double xOrigin = ms.visibleExtent().xMinimum() + ( ms.mapUnitsPerPixel() / 2 );
+  double yOrigin = ms.visibleExtent().yMaximum() - ( ms.mapUnitsPerPixel() / 2 );
+
+  double xCenter = ms.visibleExtent().center().x();
+  double yCenter = ms.visibleExtent().center().y();
+
+  // scaling matrix
+  double s[6];
+  s[0] = ms.mapUnitsPerPixel();
+  s[1] = 0;
+  s[2] = xOrigin;
+  s[3] = 0;
+  s[4] = ms.mapUnitsPerPixel();
+  s[5] = yOrigin;
+
+  // rotation matrix
+  double r[6];
+  r[0] = cos( alpha );
+  r[1] = -sin( alpha );
+  r[2] = xCenter * ( 1 - cos( alpha ) ) + yCenter * sin( alpha );
+  r[3] = sin( alpha );
+  r[4] = cos( alpha );
+  r[5] = - xCenter * sin( alpha ) + yCenter * ( 1 - cos( alpha ) );
+
+  // result = rotation x scaling = rotation(scaling(X))
+  double a = r[0] * s[0] + r[1] * s[3];
+  double b = r[0] * s[1] + r[1] * s[4];
+  double c = r[0] * s[2] + r[1] * s[5] + r[2];
+  double d = r[3] * s[0] + r[4] * s[3];
+  double e = r[3] * s[1] + r[4] * s[4];
+  double f = r[3] * s[2] + r[4] * s[5] + r[5];
 
   QString content;
   // Pixel XDim
-  content += qgsDoubleToString( mapSettings.mapUnitsPerPixel() ) + "\r\n";
+  content += qgsDoubleToString( a ) + "\r\n";
   // Rotation on y axis
-  content += QString( "%1\r\n" ).arg( mapSettings.rotation() );
+  content += qgsDoubleToString( d ) + "\r\n";
   // Rotation on x axis
-  content += QString( "%1\r\n" ).arg( mapSettings.rotation() );
+  content += qgsDoubleToString( -b ) + "\r\n";
   // Pixel YDim - almost always negative
   // See https://en.wikipedia.org/wiki/World_file#cite_ref-3
-  content += '-' + qgsDoubleToString( mapSettings.mapUnitsPerPixel() ) + "\r\n";
+  content += "-" + qgsDoubleToString( e ) + "\r\n";
   // Origin X (center of top left cell)
-  content += qgsDoubleToString( xOrigin ) + "\r\n";
+  content += qgsDoubleToString( c ) + "\r\n";
   // Origin Y (center of top left cell)
-  content += qgsDoubleToString( yOrigin ) + "\r\n";
+  content += qgsDoubleToString( f ) + "\r\n";
 
   return content;
 }

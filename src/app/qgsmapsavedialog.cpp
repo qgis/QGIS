@@ -31,19 +31,23 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QString &activeDecorations )
   : QDialog( parent )
-  , mExtent( mapCanvas->mapSettings().visibleExtent() )
-  , mDpi( mapCanvas->mapSettings().outputDpi() )
-  , mSize( mapCanvas->mapSettings().outputSize() )
 {
   setupUi( this );
 
+  // Use unrotated visible extent to insure output size and scale matches canvas
+  QgsMapSettings ms = mapCanvas->mapSettings();
+  ms.setRotation( 0 );
+  mExtent = ms.visibleExtent();
+  mDpi = ms.outputDpi();
+  mSize = ms.outputSize();
+
   mResolutionSpinBox->setValue( qt_defaultDpiX() );
 
-  mExtentGroupBox->setOutputCrs( mapCanvas->mapSettings().destinationCrs() );
-  mExtentGroupBox->setCurrentExtent( mExtent, mapCanvas->mapSettings().destinationCrs() );
+  mExtentGroupBox->setOutputCrs( ms.destinationCrs() );
+  mExtentGroupBox->setCurrentExtent( mExtent, ms.destinationCrs() );
   mExtentGroupBox->setOutputExtentFromCurrent();
 
-  mScaleWidget->setScale( 1 / mapCanvas->mapSettings().scale() );
+  mScaleWidget->setScale( 1 / ms.scale() );
   mScaleWidget->setMapCanvas( mapCanvas );
   mScaleWidget->setShowCurrentScaleButton( true );
 

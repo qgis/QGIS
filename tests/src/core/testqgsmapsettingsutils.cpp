@@ -43,11 +43,15 @@ class TestQgsMapSettingsUtils : public QObject
 void TestQgsMapSettingsUtils::initTestCase()
 {
   mMapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
+  mMapSettings.setOutputSize( QSize( 1, 1 ) );
 }
 
 void TestQgsMapSettingsUtils::createWorldFileContent()
 {
   QCOMPARE( QgsMapSettingsUtils::worldFileContent( mMapSettings ), QString( "1\r\n0\r\n0\r\n-1\r\n0.5\r\n0.5\r\n" ) );
+
+  mMapSettings.setRotation( 45 );
+  QCOMPARE( QgsMapSettingsUtils::worldFileContent( mMapSettings ), QString( "0.70710678118654757\r\n0.70710678118654746\r\n0.70710678118654746\r\n-0.70710678118654757\r\n0.5\r\n0.49999999999999994\r\n" ) );
 }
 
 QGSTEST_MAIN( TestQgsMapSettingsUtils )
