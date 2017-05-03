@@ -6,13 +6,13 @@ class QgsSingleBandColorDataRenderer: QgsRasterRenderer
   public:
     QgsSingleBandColorDataRenderer( QgsRasterDataProvider *provider, int band );
     ~QgsSingleBandColorDataRenderer();
-    virtual QgsSingleBandColorDataRenderer  *clone() const /Factory/;
+    virtual QgsSingleBandColorDataRenderer *clone() const /Factory/;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterDataProvider *provider ) /Factory/;
 
     bool setInput( QgsRasterInterface *input );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) / Factory /;
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 

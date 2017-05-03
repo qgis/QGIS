@@ -65,5 +65,5 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 
   private:
     QgsSingleSymbolRenderer( const QgsSingleSymbolRenderer & );
-    QgsSingleSymbolRenderer  &operator=( const QgsSingleSymbolRenderer & );
+    QgsSingleSymbolRenderer &operator=( const QgsSingleSymbolRenderer & );
 };

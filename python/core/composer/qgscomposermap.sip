@@ -19,7 +19,7 @@ class QgsComposerMap : QgsComposerItem
     /** Return correct graphics item type. */
     virtual int type() const;
 
-    /** \brief Preview style  */
+    /** \brief Preview style */
     enum PreviewMode
     {
       Cache,       // Use raster cache
@@ -195,7 +195,7 @@ class QgsComposerMap : QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc Dom document
      */
-    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to 'ComposerMap' tag

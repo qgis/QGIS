@@ -80,7 +80,7 @@ class QgsComposerNodesItem: QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
   protected:
 

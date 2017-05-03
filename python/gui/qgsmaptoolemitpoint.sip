@@ -12,13 +12,13 @@ class QgsMapToolEmitPoint : QgsMapTool
     virtual Flags flags() const;
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent  *e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
 
     //! Overridden mouse press event - emits the signal
-    virtual void canvasPressEvent( QgsMapMouseEvent  *e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent  *e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
 
   signals:
     //! signal emitted on canvas click

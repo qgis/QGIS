@@ -21,7 +21,7 @@ class QgsComposerTableColumn: QObject
      * @note added in 2.3
      * @see readXML
      */
-    virtual bool writeXml( QDomElement &columnElem, QDomDocument  &doc ) const;
+    virtual bool writeXml( QDomElement &columnElem, QDomDocument &doc ) const;
 
     /** Reads the column's properties from xml.
      * @param columnElem a QDomElement holding the column's desired properties.

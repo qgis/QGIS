@@ -100,7 +100,7 @@ class QgsPointDisplacementRenderer : QgsPointDistanceRenderer
 
   private:
     QgsPointDisplacementRenderer( const QgsPointDisplacementRenderer & );
-    QgsPointDisplacementRenderer  &operator=( const QgsPointDisplacementRenderer & );
+    QgsPointDisplacementRenderer &operator=( const QgsPointDisplacementRenderer & );
 
     void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group );
 

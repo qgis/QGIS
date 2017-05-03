@@ -30,8 +30,8 @@ class QgsProjectionSelectionTreeWidget : QWidget
     void projectionDoubleClicked();
 
   protected:
-    void showEvent( QShowEvent  *event );
+    void showEvent( QShowEvent *event );
 
-    void resizeEvent( QResizeEvent  *event );
+    void resizeEvent( QResizeEvent *event );
 };
 

@@ -189,7 +189,7 @@ class QgisInterface : QObject
     virtual void addToolBar( QToolBar *toolbar /Transfer/, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
     /** Return a pointer to the map canvas */
-    virtual QgsMapCanvas  *mapCanvas() = 0;
+    virtual QgsMapCanvas *mapCanvas() = 0;
 
     /**
      * Returns a pointer to the layer tree canvas bridge
@@ -199,10 +199,10 @@ class QgisInterface : QObject
     virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
 
     /** Return a pointer to the main window (instance of QgisApp in case of QGIS) */
-    virtual QWidget  *mainWindow() = 0;
+    virtual QWidget *mainWindow() = 0;
 
     /** Return the message bar of the main app */
-    virtual QgsMessageBar  *messageBar() = 0;
+    virtual QgsMessageBar *messageBar() = 0;
 
     /** Open the message log dock widget **/
     virtual void openMessageLog() = 0;
@@ -265,10 +265,10 @@ class QgisInterface : QObject
     virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
 
     /** Add a dock widget to the main window */
-    virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget  *dockwidget ) = 0;
+    virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
 
     /** Remove specified dock widget from main window (doesn't delete it). */
-    virtual void removeDockWidget( QDockWidget  *dockwidget ) = 0;
+    virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 
     /** Advanced digitizing dock widget
      *  @note Added in 2.12

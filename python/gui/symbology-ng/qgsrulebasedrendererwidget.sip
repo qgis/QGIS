@@ -19,7 +19,7 @@ class QgsRuleBasedRendererModel : QAbstractItemModel
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
     // editing support
-    virtual bool setData( const QModelIndex  &index, const QVariant  &value, int role = Qt::EditRole );
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
     // drag'n'drop support
     Qt::DropActions supportedDropActions() const;
@@ -27,7 +27,7 @@ class QgsRuleBasedRendererModel : QAbstractItemModel
     QMimeData *mimeData( const QModelIndexList &indexes ) const;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
 
-    bool removeRows( int row, int count, const QModelIndex  &parent = QModelIndex() );
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
     // new methods
 

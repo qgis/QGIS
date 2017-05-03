@@ -65,14 +65,14 @@ class QgsRasterLayer : QgsMapLayer
      *  but some sort of error occurs in processing the file, the error is
      *  returned in retError.
      */
-    static bool isValidRasterFileName( const QString  &fileNameQString, QString &retError );
-    static bool isValidRasterFileName( const QString  &fileNameQString );
+    static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
+    static bool isValidRasterFileName( const QString &fileNameQString );
 
     /** Return time stamp for given file name */
     static QDateTime lastModified( const QString &  name );
 
     /** [ data provider interface ] Set the data provider */
-    void setDataProvider( const QString  &provider );
+    void setDataProvider( const QString &provider );
 
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType();
@@ -82,24 +82,24 @@ class QgsRasterLayer : QgsMapLayer
     QgsRasterRenderer *renderer() const;
 
     /** Set raster resample filter. Takes ownership of the resample filter object*/
-    QgsRasterResampleFilter  *resampleFilter() const;
+    QgsRasterResampleFilter *resampleFilter() const;
 
-    QgsBrightnessContrastFilter  *brightnessFilter() const;
-    QgsHueSaturationFilter  *hueSaturationFilter() const;
+    QgsBrightnessContrastFilter *brightnessFilter() const;
+    QgsHueSaturationFilter *hueSaturationFilter() const;
 
     /** Get raster pipe */
-    QgsRasterPipe  *pipe();
+    QgsRasterPipe *pipe();
 
-    /** \brief Accessor that returns the width of the (unclipped) raster  */
+    /** \brief Accessor that returns the width of the (unclipped) raster */
     int width() const;
 
     /** \brief Accessor that returns the height of the (unclipped) raster */
     int height() const;
 
-    /** \brief Get the number of bands in this layer  */
+    /** \brief Get the number of bands in this layer */
     int bandCount() const;
 
-    /** \brief Get the name of a band given its number  */
+    /** \brief Get the name of a band given its number */
     QString bandName( int bandNoInt ) const;
 
     /** Returns the data provider */
@@ -182,7 +182,7 @@ class QgsRasterLayer : QgsMapLayer
     virtual QDateTime timestamp() const;
 
   public slots:
-    void showStatusMessage( const QString  &message );
+    void showStatusMessage( const QString &message );
 
 
   signals:
@@ -209,6 +209,6 @@ class QgsRasterLayer : QgsMapLayer
     bool writeStyle(QDomNode &node, QDomDocument &doc, QString &errorMessage) const;
 
     /** \brief Write layer specific state to project file Dom node */
-    bool writeXml( QDomNode  &layer_node, QDomDocument  &doc ) const;
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const;
 };
 

@@ -33,7 +33,7 @@ class QgsRasterIdentifyResult
     QMap<int, QVariant> results() const;
 
     /** Set map of optional parameters */
-    void setParams( const QMap<QString, QVariant>  &params );
+    void setParams( const QMap<QString, QVariant> &params );
 
     /** Get map of optional parameters */
     QMap<QString, QVariant> params() const;
@@ -42,6 +42,6 @@ class QgsRasterIdentifyResult
     QgsError error() const;
 
     /** \brief Set error */
-    void setError( const QgsError  &error );
+    void setError( const QgsError &error );
 };
 

@@ -7,7 +7,7 @@ class QgsContrastEnhancement
 
   public:
 
-    /** \brief This enumerator describes the types of contrast enhancement algorithms that can be used.  */
+    /** \brief This enumerator describes the types of contrast enhancement algorithms that can be used. */
     enum ContrastEnhancementAlgorithm
     {
       NoEnhancement,                  //this should be the default color scaling algorithm

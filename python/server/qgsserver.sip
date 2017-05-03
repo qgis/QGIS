@@ -202,6 +202,6 @@ class QgsServer
 
   private:
     QgsServer( const QgsServer& );
-    QgsServer  &operator=( const QgsServer& );
+    QgsServer &operator=( const QgsServer& );
 };
 

@@ -13,11 +13,11 @@ class QgsMapCanvasItem : QGraphicsItem
     virtual ~QgsMapCanvasItem();
 
     //! function to be implemented by derived classes
-    virtual void paint( QPainter  *painter ) = 0;
+    virtual void paint( QPainter *painter ) = 0;
 
     virtual void paint( QPainter * painter,
                         const QStyleOptionGraphicsItem * option,
-                        QWidget  *widget = 0 );
+                        QWidget *widget = 0 );
 
     //! schedules map canvas for repaint
     void updateCanvas();

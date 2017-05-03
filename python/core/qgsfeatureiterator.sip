@@ -65,7 +65,7 @@ class QgsAbstractFeatureIterator
      * @param f The feature to write to
      * @return  true if a feature was written to f
      */
-    virtual bool nextFeatureFilterFids( QgsFeature  &f );
+    virtual bool nextFeatureFilterFids( QgsFeature &f );
 
     void ref(); //!< add reference
     void deref(); //!< remove reference, delete if refs == 0

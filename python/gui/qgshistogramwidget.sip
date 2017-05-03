@@ -135,5 +135,5 @@ class QgsHistogramWidget : QWidget
      */
     virtual void drawHistogram();
 
-    virtual void paintEvent( QPaintEvent  *event );
+    virtual void paintEvent( QPaintEvent *event );
 };

@@ -423,5 +423,5 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
 
   private:
     QgsRuleBasedRenderer( const QgsRuleBasedRenderer & );
-    QgsRuleBasedRenderer  &operator=( const QgsRuleBasedRenderer & );
+    QgsRuleBasedRenderer &operator=( const QgsRuleBasedRenderer & );
 };

@@ -18,10 +18,10 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
 
     QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes );
     ~QgsPalettedRasterRenderer();
-    virtual QgsPalettedRasterRenderer  *clone() const /Factory/;
+    virtual QgsPalettedRasterRenderer *clone() const /Factory/;
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
     /** Returns number of colors*/
     int nColors() const;

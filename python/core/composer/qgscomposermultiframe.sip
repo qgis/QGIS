@@ -137,7 +137,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see _writeXML
      */
-    virtual bool writeXml( QDomElement &elem, QDomDocument  &doc, bool ignoreFrames = false ) const = 0;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const = 0;
 
     /** Stores state information about base multiframe object in DOM element. Implementations of writeXML
      * should call this method.

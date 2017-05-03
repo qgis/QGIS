@@ -5,7 +5,7 @@ class QgsSlider : QSlider
 %End
   public:
     QgsSlider( QWidget *parent /TransferThis/ = 0 );
-    QgsSlider( Qt::Orientation orientation, QWidget  *parent /TransferThis/  = 0 );
+    QgsSlider( Qt::Orientation orientation, QWidget *parent /TransferThis/  = 0 );
 
     void setMinimum( const QVariant &min );
     void setMaximum( const QVariant &max );
@@ -18,7 +18,7 @@ class QgsSlider : QSlider
 
 
   protected:
-    virtual void paintEvent( QPaintEvent  *event );
+    virtual void paintEvent( QPaintEvent *event );
 };
 
 

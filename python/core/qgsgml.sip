@@ -8,7 +8,7 @@ class QgsGml: QObject
     QgsGml(
       const QString& typeName,
       const QString& geometryAttribute,
-      const QgsFields  &fields );
+      const QgsFields &fields );
 
     ~QgsGml();
 

@@ -74,8 +74,8 @@ class QgsDoubleSpinBox : QDoubleSpinBox
      */
     double clearValue() const;
 
-    virtual double valueFromText( const QString  &text ) const;
-    virtual QValidator::State validate( QString  &input, int  &pos ) const;
+    virtual double valueFromText( const QString &text ) const;
+    virtual QValidator::State validate( QString &input, int &pos ) const;
 
   protected:
     virtual void changeEvent( QEvent *event );

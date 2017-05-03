@@ -31,7 +31,7 @@ class QgsMapCanvasAnnotationItem : public QObject, public QgsMapCanvasItem
 
     QRectF boundingRect() const;
 
-    void paint( QPainter  *painter );
+    void paint( QPainter *painter );
 
     /**
      * Returns the mouse move behavior for a given position in scene coordinates

@@ -40,7 +40,7 @@ class QgsRendererRange
 
   protected:
     // for cpy+swap idiom
-    void swap( QgsRendererRange  &other );
+    void swap( QgsRendererRange &other );
 };
 
 typedef QList<QgsRendererRange> QgsRangeList;
@@ -56,8 +56,8 @@ class QgsRendererRangeLabelFormat
     QgsRendererRangeLabelFormat();
     QgsRendererRangeLabelFormat( const QString &format, int precision = 4, bool trimTrailingZeroes = false );
 
-    bool operator==( const QgsRendererRangeLabelFormat  &other ) const;
-    bool operator!=( const QgsRendererRangeLabelFormat  &other ) const;
+    bool operator==( const QgsRendererRangeLabelFormat &other ) const;
+    bool operator!=( const QgsRendererRangeLabelFormat &other ) const;
 
     QString format() const;
     void setFormat( const QString &format );
@@ -330,5 +330,5 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 
   private:
     QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer & );
-    QgsGraduatedSymbolRenderer  &operator=( const QgsGraduatedSymbolRenderer & );
+    QgsGraduatedSymbolRenderer &operator=( const QgsGraduatedSymbolRenderer & );
 };

@@ -104,11 +104,11 @@ class QgsGradientStopEditor : QWidget
 
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
-    virtual void mouseDoubleClickEvent( QMouseEvent  *event );
-    virtual void keyPressEvent( QKeyEvent  *event );
+    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+    virtual void keyPressEvent( QKeyEvent *event );
 
     //Reimplemented to accept dragged colors
-    void dragEnterEvent( QDragEnterEvent  *e );
+    void dragEnterEvent( QDragEnterEvent *e );
 
     //Reimplemented to accept dropped colors
     void dropEvent( QDropEvent *e );

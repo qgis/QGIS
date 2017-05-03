@@ -12,7 +12,7 @@ class QgsRasterRenderer : QgsRasterInterface
     QgsRasterRenderer( QgsRasterInterface *input = 0, const QString &type = "" );
     virtual ~QgsRasterRenderer();
 
-    virtual QgsRasterRenderer  *clone() const = 0 /Factory/;
+    virtual QgsRasterRenderer *clone() const = 0 /Factory/;
 
     virtual int bandCount() const;
 

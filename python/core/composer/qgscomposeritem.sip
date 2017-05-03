@@ -593,11 +593,11 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
   protected:
 
     //event handlers
-    virtual void mouseMoveEvent( QGraphicsSceneMouseEvent  *event );
-    virtual void mousePressEvent( QGraphicsSceneMouseEvent  *event );
-    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent  *event );
+    virtual void mouseMoveEvent( QGraphicsSceneMouseEvent *event );
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
 
-    virtual void hoverMoveEvent( QGraphicsSceneHoverEvent  *event );
+    virtual void hoverMoveEvent( QGraphicsSceneHoverEvent *event );
 
     /** Draws additional graphics on selected items. The base implementation has
      * no effect.

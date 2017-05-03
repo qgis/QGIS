@@ -95,7 +95,7 @@ class QgsDataDefinedValueDialog : QDialog
      * @param layer must not be null
      * @param label value label
      */
-    QgsDataDefinedValueDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer  *layer, const QString  &label );
+    QgsDataDefinedValueDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer, const QString &label );
     virtual ~QgsDataDefinedValueDialog();
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
@@ -141,12 +141,12 @@ class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
 %End
 
   public:
-    QgsDataDefinedSizeDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer  *layer );
+    QgsDataDefinedSizeDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer );
 
   protected:
     virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
 
-    double value( const QgsSymbol  *symbol ) const;
+    double value( const QgsSymbol *symbol ) const;
 
     void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 };
@@ -158,12 +158,12 @@ class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
 %End
 
   public:
-    QgsDataDefinedRotationDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer  *layer );
+    QgsDataDefinedRotationDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer );
 
   protected:
     virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
 
-    double value( const QgsSymbol  *symbol ) const;
+    double value( const QgsSymbol *symbol ) const;
 
     void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 };
@@ -176,12 +176,12 @@ class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
 %End
 
   public:
-    QgsDataDefinedWidthDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer  *layer );
+    QgsDataDefinedWidthDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer );
 
   protected:
     virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
 
-    double value( const QgsSymbol  *symbol ) const;
+    double value( const QgsSymbol *symbol ) const;
 
     void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 };

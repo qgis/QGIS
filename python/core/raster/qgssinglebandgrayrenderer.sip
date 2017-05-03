@@ -12,11 +12,11 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
 
     QgsSingleBandGrayRenderer( QgsRasterDataProvider *provider, int grayBand );
     ~QgsSingleBandGrayRenderer();
-    virtual QgsSingleBandGrayRenderer  *clone() const /Factory/;
+    virtual QgsSingleBandGrayRenderer *clone() const /Factory/;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterDataProvider *provider ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) / Factory /;
 
     int grayBand() const;
     void setGrayBand( int band );
