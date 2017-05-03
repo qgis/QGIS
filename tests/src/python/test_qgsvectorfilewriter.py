@@ -722,6 +722,16 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertFalse('exe' in formats)
         self.assertEqual(formats[0], 'shp')
 
+    def testDriverForExtension(self):
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('shp'), 'ESRI Shapefile')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('SHP'), 'ESRI Shapefile')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('sHp'), 'ESRI Shapefile')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('.shp'), 'ESRI Shapefile')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('tab'), 'MapInfo File')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('.GML'), 'GML')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('not a format'), '')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension(''), '')
+
 
 if __name__ == '__main__':
     unittest.main()
