@@ -10,6 +10,7 @@
 
 
 
+
 class QgsGraphAnalyzer
 {
 %Docstring

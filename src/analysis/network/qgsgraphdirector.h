@@ -54,7 +54,9 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     Q_OBJECT
 
   signals:
+    //! Emitted to report graph building progress
     void buildProgress( int, int ) const;
+    //! Emitted to report information about graph building
     void buildMessage( const QString & ) const;
 
   public:
