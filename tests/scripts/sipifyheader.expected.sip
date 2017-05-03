@@ -208,7 +208,7 @@ complex default value and type (i.e. containing commas) should be given as a str
 
     void removeProxyFactory( QNetworkProxyFactory *factory /TransferBack/ );
 
-    void multiAnnotationArg( SomeClass** object /Out,TransferBack/, int& another /Out/ );
+    void multiAnnotationArg( SomeClass **object /Out,TransferBack/, int &another /Out/ );
 
     bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl, Some::Thing _part = -1 /*default =-1*/ );
 %Docstring
