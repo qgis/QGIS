@@ -808,10 +808,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Count features for symbols. Feature counts may be get by featureCount().
-     * \param showProgress show progress dialog
+     * \param feedback optional feedback pointer
      * \returns true if calculated, false if failed or was canceled by user
      */
-    bool countSymbolFeatures( bool showProgress = true );
+    bool countSymbolFeatures( QgsFeedback *feedback = nullptr );
 
     /**
      * Set the string (typically sql) used to define a subset of the layer
