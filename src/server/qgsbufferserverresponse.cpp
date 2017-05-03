@@ -37,7 +37,7 @@ QgsBufferServerResponse::~QgsBufferServerResponse()
 
 }
 
-void QgsBufferServerResponse::clearHeader( const QString &key )
+void QgsBufferServerResponse::removeHeader( const QString &key )
 {
   if ( !mHeadersSent )
     mHeaders.remove( key );
@@ -51,17 +51,12 @@ void QgsBufferServerResponse::setHeader( const QString &key, const QString &valu
 
 void QgsBufferServerResponse::setStatusCode( int code )
 {
-  mReturnCode = code;
+  mStatusCode = code;
 }
 
 QString QgsBufferServerResponse::header( const QString &key ) const
 {
   return mHeaders.value( key );
-}
-
-QList<QString> QgsBufferServerResponse::headerKeys() const
-{
-  return mHeaders.keys();
 }
 
 bool QgsBufferServerResponse::headersSent() const

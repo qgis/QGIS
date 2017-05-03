@@ -26,9 +26,10 @@ from qgis.core import QgsApplication
 from qgis.server import QgsServer
 from qgis.testing import unittest
 from utilities import unitTestDataPath
+from test_qgsserver import QgsServerTestBase
 
 
-class TestQgsServerSecurity(unittest.TestCase):
+class TestQgsServerSecurity(QgsServerTestBase):
 
     @classmethod
     def setUpClass(cls):
@@ -320,7 +321,7 @@ class TestQgsServerSecurity(unittest.TestCase):
             "CRS": "EPSG:32613",
             "FILTER": filter_xml}.items())])
 
-        return self.server.handleRequest(qs)
+        return self._execute_request(qs)
 
     def handle_request_wms_getfeatureinfo(self, filter_sql):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -338,7 +339,7 @@ class TestQgsServerSecurity(unittest.TestCase):
             "CRS": "EPSG:32613",
             "FILTER": filter_sql}.items())])
 
-        return self._result(self.server.handleRequest(qs))
+        return self._result(self._execute_request(qs))
 
     def handle_request_wms_getmap(self, sld):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -356,7 +357,7 @@ class TestQgsServerSecurity(unittest.TestCase):
             "CRS": "EPSG:32613",
             "SLD": sld}.items())])
 
-        return self._result(self.server.handleRequest(qs))
+        return self._result(self._execute_request(qs))
 
     def is_point_table_still_exist(self):
         conn = spatialite_connect(self.db_clone)

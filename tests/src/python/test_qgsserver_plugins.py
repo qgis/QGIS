@@ -17,17 +17,13 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-import re
-import urllib.request
-import urllib.parse
-import urllib.error
-import email
 
-from io import StringIO
 from qgis.server import QgsServer
-from qgis.core import QgsMessageLog, QgsApplication
+from qgis.core import QgsMessageLog
 from qgis.testing import unittest
 from utilities import unitTestDataPath
+from test_qgsserver import QgsServerTestBase
+
 
 import osgeo.gdal  # NOQA
 
@@ -37,37 +33,7 @@ RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
 RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
 
-class TestQgsServerPlugins(unittest.TestCase):
-
-    def assertXMLEqual(self, response, expected, msg=''):
-        """Compare XML line by line and sorted attributes"""
-        response_lines = response.splitlines()
-        expected_lines = expected.splitlines()
-        line_no = 1
-        for expected_line in expected_lines:
-            expected_line = expected_line.strip()
-            response_line = response_lines[line_no - 1].strip()
-            # Compare tag
-            try:
-                self.assertEqual(re.findall(b'<([^>\s]+)[ >]', expected_line)[0],
-                                 re.findall(b'<([^>\s]+)[ >]', response_line)[0], msg=msg + "\nTag mismatch on line %s: %s != %s" % (line_no, expected_line, response_line))
-            except IndexError:
-                self.assertEqual(expected_line, response_line, msg=msg + "\nTag line mismatch %s: %s != %s" % (line_no, expected_line, response_line))
-            # print("---->%s\t%s == %s" % (line_no, expected_line, response_line))
-            # Compare attributes
-            if re.match(RE_ATTRIBUTES, expected_line):  # has attrs
-                expected_attrs = sorted(re.findall(RE_ATTRIBUTES, expected_line))
-                response_attrs = sorted(re.findall(RE_ATTRIBUTES, response_line))
-                self.assertEqual(expected_attrs, response_attrs, msg=msg + "\nXML attributes differ at line {0}: {1} != {2}".format(line_no, expected_attrs, response_attrs))
-            line_no += 1
-
-    @classmethod
-    def setUpClass(cls):
-        cls.app = QgsApplication([], False)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.app.exitQgis()
+class TestQgsServerPlugins(QgsServerTestBase):
 
     def setUp(self):
         """Create the server instance"""
@@ -84,20 +50,6 @@ class TestQgsServerPlugins(unittest.TestCase):
             except KeyError:
                 pass
         self.server = QgsServer()
-
-    def strip_version_xmlns(self, text):
-        """Order of attributes is random, strip version and xmlns"""
-        return text.replace(b'version="1.3.0"', b'').replace(b'xmlns="http://www.opengis.net/ogc"', b'')
-
-    def assert_headers(self, header, body):
-        stream = StringIO()
-        header_string = header.decode('utf-8')
-        stream.write(header_string)
-        headers = email.message_from_string(header_string)
-        if 'content-length' in headers:
-            content_length = int(headers['content-length'])
-            body_length = len(body)
-            self.assertEqual(content_length, body_length, msg="Header reported content-length: %d Actual body length was: %d" % (content_length, body_length))
 
     def test_pluginfilters(self):
         """Test python plugins filters"""
@@ -121,7 +73,7 @@ class TestQgsServerPlugins(unittest.TestCase):
                 QgsMessageLog.logMessage("SimpleHelloFilter.responseComplete")
                 if params.get('SERVICE', '').upper() == 'SIMPLE':
                     request.clear()
-                    request.setHeader('Content-type', 'text/plain')
+                    request.setResponseHeader('Content-type', 'text/plain')
                     request.appendBody('Hello from SimpleServer!'.encode('utf-8'))
 
         serverIface = self.server.serverInterface()
@@ -178,7 +130,7 @@ class TestQgsServerPlugins(unittest.TestCase):
                 global headers2
                 request = self.serverInterface().requestHandler()
                 request.clearBody()
-                headers2 = {k: request.header(k) for k in request.headerKeys()}
+                headers2 = request.responseHeaders()
                 request.appendBody('new body, new life!'.encode('utf-8'))
 
         filter1 = Filter1(serverIface)
@@ -193,7 +145,7 @@ class TestQgsServerPlugins(unittest.TestCase):
         self.assertTrue(filter2 in serverIface.filters()[100])
         self.assertEqual(filter1, serverIface.filters()[101][0])
         self.assertEqual(filter2, serverIface.filters()[200][0])
-        header, body = [_v for _v in self.server.handleRequest('?service=simple')]
+        header, body = [_v for _v in self._execute_request('?service=simple')]
         response = header + body
         expected = b'Content-Length: 62\nContent-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
@@ -211,7 +163,7 @@ class TestQgsServerPlugins(unittest.TestCase):
         self.assertTrue(filter2 in serverIface.filters()[100])
         self.assertEqual(filter1, serverIface.filters()[101][0])
         self.assertEqual(filter2, serverIface.filters()[200][0])
-        header, body = [_v for _v in self.server.handleRequest('?service=simple')]
+        header, body = [_v for _v in self._execute_request('?service=simple')]
         response = header + body
         expected = b'Content-Length: 62\nContent-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
@@ -219,7 +171,7 @@ class TestQgsServerPlugins(unittest.TestCase):
         # Now, re-run with body setter
         filter5 = Filter5(serverIface)
         serverIface.registerFilter(filter5, 500)
-        header, body = [_v for _v in self.server.handleRequest('?service=simple')]
+        header, body = [_v for _v in self._execute_request('?service=simple')]
         response = header + body
         expected = b'Content-Length: 19\nContent-type: text/plain\n\nnew body, new life!'
         self.assertEqual(response, expected)

@@ -9,7 +9,7 @@ configuration to access an HTTP Basic protected endpoint.
 
 
 From build dir, run from test directory:
-LC_ALL=EN ctest -R PyQgsAuthManagerPasswordOWSTest -V
+LC_ALL=en_US.UTF-8 ctest -R PyQgsAuthManagerPasswordOWSTest -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
