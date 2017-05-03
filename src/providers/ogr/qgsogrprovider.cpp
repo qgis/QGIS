@@ -1226,7 +1226,7 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
   return OGR_G_ForceTo( hGeom, layerGeomType, nullptr );
 }
 
-bool QgsOgrProvider::addFeature( QgsFeature &f )
+bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f )
 {
   bool returnValue = true;
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
@@ -1386,7 +1386,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist )
   bool returnvalue = true;
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
-    if ( !addFeature( *it ) )
+    if ( !addFeaturePrivate( *it ) )
     {
       returnvalue = false;
     }
