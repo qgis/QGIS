@@ -343,7 +343,7 @@ while ($line_idx < $line_count){
         dbg_info("going private");
         next;
     }
-    elsif ( $line =~ m/^\s*(public)( slots)?:.*$/ ){
+    elsif ( $line =~ m/^\s*(public( slots)?|signals):.*$/ ){
         dbg_info("going public");
         $ACCESS[$#ACCESS] = PUBLIC;
         $comment = '';
