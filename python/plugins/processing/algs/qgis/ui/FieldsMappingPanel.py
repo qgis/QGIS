@@ -27,11 +27,9 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 __revision__ = '$Format:%H$'
 
 import os
-
 from collections import OrderedDict
 
 from qgis.PyQt import uic
-
 from qgis.PyQt.QtCore import (
     QItemSelectionModel,
     QAbstractTableModel,
@@ -40,7 +38,6 @@ from qgis.PyQt.QtCore import (
     Qt,
     pyqtSlot,
 )
-from qgis.PyQt.QtGui import QBrush
 from qgis.PyQt.QtWidgets import (
     QComboBox,
     QHeaderView,
@@ -65,6 +62,7 @@ from qgis.gui import QgsFieldExpressionWidget
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_MODELER
 from processing.tools import dataobjects
 
+
 pluginPath = os.path.dirname(__file__)
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'fieldsmappingpanelbase.ui'))
@@ -83,7 +81,6 @@ class FieldsMappingModel(QAbstractTableModel):
     def __init__(self, parent=None):
         super(FieldsMappingModel, self).__init__(parent)
         self._mapping = []
-        self._errors = []
         self._layer = None
         self.configure()
 
