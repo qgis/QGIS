@@ -684,6 +684,7 @@ SET(QGIS_CORE_HDRS
   ../plugins/qgisplugin.h
 
   qgis.h
+  qgis_sip.h
   qgsaction.h
   qgsactionscope.h
   qgsactionmanager.h
