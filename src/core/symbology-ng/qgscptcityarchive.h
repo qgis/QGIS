@@ -18,6 +18,7 @@
 #define QGSCPTCITYARCHIVE_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgscolorramp.h"
 
@@ -61,7 +62,7 @@ class CORE_EXPORT QgsCptCityArchive
     static QMap< QString, QString > copyingInfo( const QString &fileName );
     static QMap< QString, QString > description( const QString &fileName );
     //! \note not available in Python bindings
-    static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString &fileName );
+    static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString &fileName ) SIP_SKIP;
 
     // archive management
     bool isEmpty();

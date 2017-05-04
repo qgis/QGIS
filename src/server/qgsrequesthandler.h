@@ -21,6 +21,7 @@
 #define QGSREQUESTHANDLER_H
 
 #include <QMap>
+#include "qgis_sip.h"
 #include <QString>
 #include <QStringList>
 #include <QPair>
@@ -127,7 +128,7 @@ class SERVER_EXPORT QgsRequestHandler
     /** Parses the input and creates a request neutral Parameter/Value map
      * \note not available in Python bindings
      */
-    void parseInput();
+    void parseInput() SIP_SKIP;
 
     //! Return the requested format string
     QString format() const { return mFormat; }

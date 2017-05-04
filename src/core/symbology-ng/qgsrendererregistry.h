@@ -16,6 +16,7 @@
 #define QGSRENDERERV2REGISTRY_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QIcon>
 #include <QMap>
 #include <QStringList>
@@ -115,12 +116,12 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
                          QgsRendererCreateFunc pfCreate,
                          const QIcon &icon = QIcon(),
                          QgsRendererWidgetFunc pfWidget = nullptr,
-                         QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All )
-      : QgsRendererAbstractMetadata( name, visibleName, icon )
-      , mCreateFunc( pfCreate )
-      , mWidgetFunc( pfWidget )
-      , mCreateFromSldFunc( nullptr )
-      , mLayerTypes( layerTypes )
+                         QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) SIP_SKIP
+  : QgsRendererAbstractMetadata( name, visibleName, icon )
+    , mCreateFunc( pfCreate )
+    , mWidgetFunc( pfWidget )
+    , mCreateFromSldFunc( nullptr )
+    , mLayerTypes( layerTypes )
     {}
 
     //! \note not available in Python bindings
@@ -130,12 +131,12 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
                          QgsRendererCreateFromSldFunc pfCreateFromSld,
                          const QIcon &icon = QIcon(),
                          QgsRendererWidgetFunc pfWidget = nullptr,
-                         QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All )
-      : QgsRendererAbstractMetadata( name, visibleName, icon )
-      , mCreateFunc( pfCreate )
-      , mWidgetFunc( pfWidget )
-      , mCreateFromSldFunc( pfCreateFromSld )
-      , mLayerTypes( layerTypes )
+                         QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) SIP_SKIP
+  : QgsRendererAbstractMetadata( name, visibleName, icon )
+    , mCreateFunc( pfCreate )
+    , mWidgetFunc( pfWidget )
+    , mCreateFromSldFunc( pfCreateFromSld )
+    , mLayerTypes( layerTypes )
     {}
 
     virtual ~QgsRendererMetadata() = default;
@@ -147,14 +148,14 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
     { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
 
     //! \note not available in Python bindings
-    QgsRendererCreateFunc createFunction() const { return mCreateFunc; }
+    QgsRendererCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
     //! \note not available in Python bindings
-    QgsRendererWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    QgsRendererWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
     //! \note not available in Python bindings
-    QgsRendererCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
+    QgsRendererCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; } SIP_SKIP
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsRendererWidgetFunc f ) { mWidgetFunc = f; }
+    void setWidgetFunction( QgsRendererWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const override { return mLayerTypes; }
 

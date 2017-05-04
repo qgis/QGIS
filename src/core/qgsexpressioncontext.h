@@ -16,6 +16,7 @@
 #define QGSEXPRESSIONCONTEXT_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <QVariant>
 #include <QHash>
@@ -403,7 +404,7 @@ class CORE_EXPORT QgsExpressionContext
      * \returns matching scope containing variable, or null if none found
      * \note not available in Python bindings
      */
-    const QgsExpressionContextScope *activeScopeForVariable( const QString &name ) const;
+    const QgsExpressionContextScope *activeScopeForVariable( const QString &name ) const SIP_SKIP;
 
     /** Returns the scope at the specified index within the context.
      * \param index index of scope

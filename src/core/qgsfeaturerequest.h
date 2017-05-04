@@ -16,6 +16,7 @@
 #define QGSFEATUREREQUEST_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QFlags>
 #include <QList>
 #include <memory>
@@ -338,7 +339,7 @@ class CORE_EXPORT QgsFeatureRequest
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
      */
-    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
+    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
 
     /** Set the filter expression. {\see QgsExpression}
      * \param expression expression string

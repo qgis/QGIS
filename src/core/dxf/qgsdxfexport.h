@@ -19,6 +19,7 @@
 #define QGSDXFEXPORT_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsgeometry.h"
 #include "qgssymbol.h" // for OutputUnit enum
@@ -257,7 +258,7 @@ class CORE_EXPORT QgsDxfExport
      * \note not available in Python bindings
      * \since QGIS 2.15
      */
-    void writePolyline( const QgsPointSequence &line, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
+    void writePolyline( const QgsPointSequence &line, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 ) SIP_SKIP;
 
     /**
      * Draw dxf filled polygon (HATCH)
@@ -268,7 +269,7 @@ class CORE_EXPORT QgsDxfExport
      * \note not available in Python bindings
      * \since QGIS 2.15
      */
-    void writePolygon( const QgsRingSequence &polygon, const QString &layer, const QString &hatchPattern, const QColor &color );
+    void writePolygon( const QgsRingSequence &polygon, const QString &layer, const QString &hatchPattern, const QColor &color ) SIP_SKIP;
 
     //! Write line (as a polyline)
     //! \since QGIS 2.15
@@ -318,7 +319,7 @@ class CORE_EXPORT QgsDxfExport
      * \param settings label settings
      * \note not available in Python bindings
      */
-    void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings );
+    void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) SIP_SKIP;
 
     /** Register name of layer for feature
      * \param layerId id of layer

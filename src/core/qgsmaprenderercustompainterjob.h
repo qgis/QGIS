@@ -17,6 +17,7 @@
 #define QGSMAPRENDERERCUSTOMPAINTERJOB_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsmaprendererjob.h"
 
 #include <QEventLoop>
@@ -46,7 +47,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     virtual QgsLabelingResults *takeLabelingResults() override;
 
     //! \note not available in Python bindings
-    const LayerRenderJobs &jobs() const { return mLayerJobs; }
+    const LayerRenderJobs &jobs() const { return mLayerJobs; } SIP_SKIP
 
     /**
      * Wait for the job to be finished - and keep the thread's event loop running while waiting.

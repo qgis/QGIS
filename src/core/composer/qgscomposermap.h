@@ -19,6 +19,7 @@
 
 //#include "ui_qgscomposermapbase.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgscomposeritem.h"
 #include "qgsrectangle.h"
@@ -168,7 +169,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     const QgsRectangle *currentMapExtent() const;
 
     //! \note not available in Python bindings
-    QgsRectangle *currentMapExtent();
+    QgsRectangle *currentMapExtent() SIP_SKIP;
 
     /**
      * Returns coordinate reference system used for rendering the map.

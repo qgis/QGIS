@@ -20,6 +20,7 @@
 #define QgsVectorLayerCache_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <QCache>
 
@@ -292,7 +293,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      * \note not available in Python bindings
      */
-    void progress( int i, bool &cancel );
+    void progress( int i, bool &cancel ) SIP_SKIP;
 
     /**
      * When filling the cache, this signal gets emitted once the cache is fully initialized.

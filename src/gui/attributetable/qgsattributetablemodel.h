@@ -18,6 +18,7 @@
 #define QGSATTRIBUTETABLEMODEL_H
 
 #include <QAbstractTableModel>
+#include "qgis_sip.h"
 #include <QModelIndex>
 #include <QObject>
 #include <QHash>
@@ -273,7 +274,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void modelChanged();
 
     //! \note not available in Python bindings
-    void progress( int i, bool &cancel );
+    void progress( int i, bool &cancel ) SIP_SKIP;
     void finished();
 
   private slots:

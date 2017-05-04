@@ -16,6 +16,7 @@
 #define QGSVECTORLAYERFEATUREITERATOR_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
@@ -106,34 +107,34 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
     //! \note not available in Python bindings
-    void rewindEditBuffer();
+    void rewindEditBuffer() SIP_SKIP;
 
     //! \note not available in Python bindings
-    void prepareJoin( int fieldIdx );
+    void prepareJoin( int fieldIdx ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    void prepareExpression( int fieldIdx );
+    void prepareExpression( int fieldIdx ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    void prepareFields();
+    void prepareFields() SIP_SKIP;
 
     //! \note not available in Python bindings
-    void prepareField( int fieldIdx );
+    void prepareField( int fieldIdx ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    bool fetchNextAddedFeature( QgsFeature &f );
+    bool fetchNextAddedFeature( QgsFeature &f ) SIP_SKIP;
     //! \note not available in Python bindings
-    bool fetchNextChangedGeomFeature( QgsFeature &f );
+    bool fetchNextChangedGeomFeature( QgsFeature &f ) SIP_SKIP;
     //! \note not available in Python bindings
-    bool fetchNextChangedAttributeFeature( QgsFeature &f );
+    bool fetchNextChangedAttributeFeature( QgsFeature &f ) SIP_SKIP;
     //! \note not available in Python bindings
-    void useAddedFeature( const QgsFeature &src, QgsFeature &f );
+    void useAddedFeature( const QgsFeature &src, QgsFeature &f ) SIP_SKIP;
     //! \note not available in Python bindings
-    void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry &geom, QgsFeature &f );
+    void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry &geom, QgsFeature &f ) SIP_SKIP;
     //! \note not available in Python bindings
-    bool nextFeatureFid( QgsFeature &f );
+    bool nextFeatureFid( QgsFeature &f ) SIP_SKIP;
     //! \note not available in Python bindings
-    void addJoinedAttributes( QgsFeature &f );
+    void addJoinedAttributes( QgsFeature &f ) SIP_SKIP;
 
     /**
      * Adds attributes that don't source from the provider but are added inside QGIS
@@ -144,7 +145,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * \param f The feature will be modified
      * \note not available in Python bindings
      */
-    void addVirtualAttributes( QgsFeature &f );
+    void addVirtualAttributes( QgsFeature &f ) SIP_SKIP;
 
     /** Adds an expression based attribute to a feature
      * \param f feature
@@ -152,17 +153,17 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * \since QGIS 2.14
      * \note not available in Python bindings
      */
-    void addExpressionAttribute( QgsFeature &f, int attrIndex );
+    void addExpressionAttribute( QgsFeature &f, int attrIndex ) SIP_SKIP;
 
     /** Update feature with uncommitted attribute updates.
      * \note not available in Python bindings
      */
-    void updateChangedAttributes( QgsFeature &f );
+    void updateChangedAttributes( QgsFeature &f ) SIP_SKIP;
 
     /** Update feature with uncommitted geometry updates.
      * \note not available in Python bindings
      */
-    void updateFeatureGeometry( QgsFeature &f );
+    void updateFeatureGeometry( QgsFeature &f ) SIP_SKIP;
 
     /** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
      * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
