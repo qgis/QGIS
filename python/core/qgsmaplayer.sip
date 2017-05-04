@@ -818,6 +818,23 @@ Return pointer to layer's undo stack
 .. seealso:: setAutoRefreshInterval()
 %End
 
+    virtual const QgsLayerMetadata &metadata() const;
+%Docstring
+ Returns a reference to the layer's metadata store.
+.. versionadded:: 3.0
+.. seealso:: setMetadata()
+.. seealso:: metadataChanged()
+ :rtype: QgsLayerMetadata
+%End
+
+    virtual void setMetadata( const QgsLayerMetadata &metadata );
+%Docstring
+ Sets the layer's ``metadata`` store.
+.. versionadded:: 3.0
+.. seealso:: metadata()
+.. seealso:: metadataChanged()
+%End
+
     virtual QString htmlMetadata() const;
 %Docstring
  Obtain a formatted HTML string containing assorted metadata for this layer.
@@ -987,6 +1004,14 @@ Signal emitted when the blend mode is changed, through QgsMapLayer.setBlendMode(
 %Docstring
  Emitted when the auto refresh interval changes.
 .. seealso:: setAutoRefreshInterval()
+.. versionadded:: 3.0
+%End
+
+    void metadataChanged();
+%Docstring
+ Emitted when the layer's metadata is changed.
+.. seealso:: setMetadata()
+.. seealso:: metadata()
 .. versionadded:: 3.0
 %End
 

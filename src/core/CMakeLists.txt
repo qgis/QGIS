@@ -71,6 +71,9 @@ SET(QGIS_CORE_SRCS
   layertree/qgslayertreeutils.cpp
   layertree/qgslayertree.cpp
 
+  metadata/qgslayermetadata.cpp
+  metadata/qgslayermetadatavalidator.cpp
+
   auth/qgsauthcertutils.cpp
   auth/qgsauthconfig.cpp
   auth/qgsauthcrypto.cpp
@@ -855,6 +858,9 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposertexttable.h
   composer/qgspaperitem.h
 
+  metadata/qgslayermetadata.h
+  metadata/qgslayermetadatavalidator.h
+
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingcontext.h
   processing/qgsprocessingutils.h
@@ -991,6 +997,7 @@ INCLUDE_DIRECTORIES(
   fieldformatter
   geometry
   layertree
+  metadata
   pal
   processing
   raster
