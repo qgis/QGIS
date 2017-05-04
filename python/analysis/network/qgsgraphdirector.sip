@@ -31,6 +31,16 @@ class QgsGraphDirector : QObject
     else
       sipType = NULL;
 %End
+  signals:
+    void buildProgress( int, int ) const;
+%Docstring
+Emitted to report graph building progress
+%End
+    void buildMessage( const QString & ) const;
+%Docstring
+Emitted to report information about graph building
+%End
+
   public:
 
     virtual ~QgsGraphDirector();
