@@ -292,7 +292,6 @@ void QgsComposerMap::cache()
 
 void QgsComposerMap::painterJobFinished()
 {
-  QgsDebugMsg( "Finished composer painter job" );
   mPainter->end();
   mPainterJob.reset( nullptr );
   mPainter.reset( nullptr );
@@ -1065,10 +1064,8 @@ void QgsComposerMap::updateItem()
 
   if ( mPreviewMode != QgsComposerMap::Rectangle && !mCacheUpdated )
   {
-    QgsDebugMsg( "Requesting new cache image item" );
     cache();
   }
-  QgsDebugMsg( "Updating item" );
   QgsComposerItem::updateItem();
 }
 
