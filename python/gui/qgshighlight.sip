@@ -23,11 +23,11 @@ class QgsHighlight : QgsMapCanvasItem
 
     /** Set line/stroke to color, polygon fill to color with alpha = 63.
      *  This is legacy function, use setFillColor() after setColor() if different fill color is required. */
-    void setColor( const QColor  &color );
+    void setColor( const QColor &color );
 
     /** Set polygons fill color.
      * @note: added in version 2.3 */
-    void setFillColor( const QColor  &fillColor );
+    void setFillColor( const QColor &fillColor );
 
     /** Set width. Ignored in feature mode. */
     void setWidth( int width );

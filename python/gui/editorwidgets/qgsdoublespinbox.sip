@@ -60,24 +60,24 @@ class QgsDoubleSpinBox : QDoubleSpinBox
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      * @see setClearValue()
      */
-    void setClearValue( double customValue, const QString& clearValueText = QString() );
+    void setClearValue( double customValue, const QString &clearValueText = QString() );
 
     /**
      * Defines if the clear value should be the minimum or maximum values of the widget or a custom value.
      * @param mode mode to user for clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
-    void setClearValueMode( ClearValueMode mode, const QString& clearValueText = QString() );
+    void setClearValueMode( ClearValueMode mode, const QString &clearValueText = QString() );
 
     /** Returns the value used when clear() is called.
      * @see setClearValue()
      */
     double clearValue() const;
 
-    virtual double valueFromText( const QString & text ) const;
-    virtual QValidator::State validate( QString & input, int & pos ) const;
+    virtual double valueFromText( const QString &text ) const;
+    virtual QValidator::State validate( QString &input, int &pos ) const;
 
   protected:
-    virtual void changeEvent( QEvent* event );
-    virtual void paintEvent( QPaintEvent* event );
+    virtual void changeEvent( QEvent *event );
+    virtual void paintEvent( QPaintEvent *event );
 };

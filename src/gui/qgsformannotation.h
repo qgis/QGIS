@@ -19,6 +19,7 @@
 #define QGSFORMANNOTATION_H
 
 #include "qgsannotation.h"
+#include "qgis.h"
 #include "qgsfeature.h"
 #include <QWidget>
 #include "qgis_gui.h"
@@ -37,7 +38,7 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsFormAnnotation.
      */
-    QgsFormAnnotation( QObject *parent = nullptr );
+    QgsFormAnnotation( QObject *parent SIP_TRANSFERTHIS = 0 );
 
     QgsFormAnnotation *clone() const override SIP_FACTORY;
 

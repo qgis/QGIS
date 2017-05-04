@@ -4,11 +4,11 @@ class QgsPalettedRendererWidget: QgsRasterRendererWidget
 #include <qgspalettedrendererwidget.h>
 %End
   public:
-    QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &extent ) /Factory/;
+    QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
     ~QgsPalettedRendererWidget();
 
-    QgsRasterRenderer* renderer();
+    QgsRasterRenderer *renderer();
 
-    void setFromRenderer( const QgsRasterRenderer* r );
+    void setFromRenderer( const QgsRasterRenderer *r );
 };

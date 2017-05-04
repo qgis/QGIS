@@ -36,7 +36,6 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class RandomExtract(GeoAlgorithm):
@@ -76,7 +75,7 @@ class RandomExtract(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(filename)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
@@ -97,7 +96,7 @@ class RandomExtract(GeoAlgorithm):
 
         selran = random.sample(list(range(featureCount)), value)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), layer.wkbType(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(),
                                                                      layer.crs(), context)
 
         total = 100.0 / featureCount

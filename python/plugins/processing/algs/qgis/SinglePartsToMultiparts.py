@@ -36,7 +36,6 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -67,12 +66,12 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldName = self.getParameterValue(self.FIELD)
 
         geomType = QgsWkbTypes.multiType(layer.wkbType())
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), geomType, layer.crs(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), geomType, layer.crs(),
                                                                      context)
 
         outFeat = QgsFeature()

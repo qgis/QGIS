@@ -19,6 +19,7 @@
 #define QGSIMAGEOPERATION_H
 
 #include <QImage>
+#include "qgis.h"
 #include <QColor>
 #include <QtCore/qmath.h>
 
@@ -159,7 +160,7 @@ class CORE_EXPORT QgsImageOperation
      * \returns blurred image
      * \note for fastest operation, ensure the source image is ARGB32_Premultiplied
      */
-    static QImage *gaussianBlur( QImage &image, const int radius );
+    static QImage *gaussianBlur( QImage &image, const int radius ) SIP_FACTORY;
 
     /** Flips an image horizontally or vertically
      * \param image QImage to flip

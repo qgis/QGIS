@@ -18,6 +18,7 @@
 #define QGSATTRIBUTETABLEFILTERMODEL_H
 
 #include <QSortFilterProxyModel>
+#include "qgis.h"
 #include <QModelIndex>
 
 #include "qgsattributetablemodel.h"
@@ -76,7 +77,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * \param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
      * \param canvas  The mapCanvas. Used to identify the currently visible features.
      */
-    QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent = nullptr );
+    QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Set the attribute table model that backs this model

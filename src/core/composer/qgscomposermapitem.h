@@ -18,6 +18,7 @@
 #define QGSCOMPOSERMAPITEM_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscomposerobject.h"
 
 class QgsComposerMap;
@@ -236,7 +237,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * \see item
      * \note not available in Python bindings
      */
-    QgsComposerMapItem &operator[]( int idx );
+    QgsComposerMapItem &operator[]( int idx ) SIP_SKIP;
 
     /** Returns a list of QgsComposerMapItems contained by the stack
      * \returns list of items

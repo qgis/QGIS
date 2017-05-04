@@ -1,131 +1,164 @@
-/**
- * \ingroup analysis
- * \class QgsGraphEdge
- * \brief This class implements a graph edge
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraph.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 class QgsGraphEdge
 {
-%TypeHeaderCode
-#include <qgsgraph.h>
+%Docstring
+.. versionadded:: 3.0
+ This class implements a graph edge
 %End
 
+%TypeHeaderCode
+#include "qgsgraph.h"
+%End
   public:
     QgsGraphEdge();
 
-    /**
-     * Returns edge cost calculated using specified strategy
-     * @param strategyIndex strategy index
-     */
     QVariant cost( int strategyIndex ) const;
+%Docstring
+ Returns edge cost calculated using specified strategy
+ \param strategyIndex strategy index
+ :rtype: QVariant
+%End
 
-    /**
-     * Returns array of available strategies
-     */
     QVector< QVariant > strategies() const;
+%Docstring
+ Returns array of available strategies
+ :rtype: list of QVariant
+%End
 
-    /**
-     * Returns index of the outgoing vertex
-     */
     int outVertex() const;
+%Docstring
+ Returns index of the outgoing vertex
+ :rtype: int
+%End
 
-    /**
-     * Returns index of the incoming vertex
-     */
     int inVertex() const;
+%Docstring
+ Returns index of the incoming vertex
+ :rtype: int
+%End
+
 };
 
 
 typedef QList< int > QgsGraphEdgeIds;
 
-/**
- * \ingroup analysis
- * \class QgsGraphVertex
- * \brief This class implements a graph vertex
- */
 class QgsGraphVertex
 {
-%TypeHeaderCode
-#include <qgsgraph.h>
+%Docstring
+ This class implements a graph vertex
 %End
 
+%TypeHeaderCode
+#include "qgsgraph.h"
+%End
   public:
-    /**
-     * Default constructor. It is needed for Qt's container, e.g. QVector
-     */
+
     QgsGraphVertex();
+%Docstring
+ Default constructor. It is needed for Qt's container, e.g. QVector
+%End
 
-    /**
-     * This constructor initializes QgsGraphVertex object and associates a vertex with a point
-     */
 
-    QgsGraphVertex( const QgsPoint& point );
+    QgsGraphVertex( const QgsPoint &point );
+%Docstring
+ This constructor initializes QgsGraphVertex object and associates a vertex with a point
+%End
 
-    /**
-     * Returns outgoing edges ids
-     */
     QgsGraphEdgeIds outEdges() const;
+%Docstring
+ Returns outgoing edges ids
+ :rtype: QgsGraphEdgeIds
+%End
 
-    /**
-     * Return incoming edges ids
-     */
     QgsGraphEdgeIds inEdges() const;
+%Docstring
+ Return incoming edges ids
+ :rtype: QgsGraphEdgeIds
+%End
 
-    /**
-     * Returns point associated with graph vertex
-     */
     QgsPoint point() const;
+%Docstring
+ Returns point associated with graph vertex
+ :rtype: QgsPoint
+%End
+
 };
 
-/**
- * \ingroup analysis
- * \class QgsGraph
- * \brief Mathematical graph representation
- */
 
 class QgsGraph
 {
-%TypeHeaderCode
-#include <qgsgraph.h>
+%Docstring
+ Mathematical graph representation
 %End
 
+%TypeHeaderCode
+#include "qgsgraph.h"
+%End
   public:
     QgsGraph();
 
-    // Graph constructing methods
 
-    /**
-     * Add a vertex to the graph
-     */
-    int addVertex( const QgsPoint& pt );
+    int addVertex( const QgsPoint &pt );
+%Docstring
+ Add a vertex to the graph
+ :rtype: int
+%End
 
-    /**
-     * Add an edge to the graph
-     */
-    int addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& strategies );
+    int addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant > &strategies );
+%Docstring
+ Add an edge to the graph
+ :rtype: int
+%End
 
-    /**
-     * Returns number of graph vertices
-     */
     int vertexCount() const;
+%Docstring
+ Returns number of graph vertices
+ :rtype: int
+%End
 
-    /**
-     * Returns vertex at given index
-     */
-    const QgsGraphVertex& vertex( int idx ) const;
+    const QgsGraphVertex &vertex( int idx ) const;
+%Docstring
+ Returns vertex at given index
+ :rtype: QgsGraphVertex
+%End
 
-    /**
-      * Returns number of graph edges
-      */
     int edgeCount() const;
+%Docstring
+ Returns number of graph edges
+ :rtype: int
+%End
 
-    /**
-     * Returns edge at given index
-     */
-    const QgsGraphEdge& edge( int idx ) const;
+    const QgsGraphEdge &edge( int idx ) const;
+%Docstring
+ Returns edge at given index
+ :rtype: QgsGraphEdge
+%End
 
-    /**
-     * Find vertex by associated point
-     * \return vertex index
-     */
-    int findVertex( const QgsPoint& pt ) const;
+    int findVertex( const QgsPoint &pt ) const;
+%Docstring
+ Find vertex by associated point
+ :return: vertex index
+ :rtype: int
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraph.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

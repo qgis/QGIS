@@ -24,10 +24,10 @@ class QgsLayerTreeEmbeddedWidgetProvider
     //! Factory to create widgets. The returned widget is owned by the caller.
     //! The widgetIndex argument may be used to identify which widget is being
     //! created (useful when using multiple widgets from the same provider for one layer).
-    virtual QWidget* createWidget( QgsMapLayer* layer, int widgetIndex ) = 0 /Factory/;
+    virtual QWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) = 0 /Factory/;
 
     //! Whether it makes sense to use this widget for a particular layer
-    virtual bool supportsLayer( QgsMapLayer* layer ) = 0;
+    virtual bool supportsLayer( QgsMapLayer *layer ) = 0;
 };
 
 /** \ingroup gui
@@ -47,8 +47,8 @@ class QgsLayerTreeEmbeddedWidgetRegistry
 
   public:
 
-    /** Means of accessing canonical single instance  */
-    static QgsLayerTreeEmbeddedWidgetRegistry* instance();
+    /** Means of accessing canonical single instance */
+    static QgsLayerTreeEmbeddedWidgetRegistry *instance();
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();
 
@@ -56,15 +56,15 @@ class QgsLayerTreeEmbeddedWidgetRegistry
     QStringList providers() const;
 
     /** Get provider object from the provider's ID */
-    QgsLayerTreeEmbeddedWidgetProvider* provider( const QString& providerId ) const;
+    QgsLayerTreeEmbeddedWidgetProvider *provider( const QString &providerId ) const;
 
     /** Register a provider, takes ownership of the object.
      * Returns true on success, false if the provider is already registered. */
-    bool addProvider( QgsLayerTreeEmbeddedWidgetProvider* provider /Transfer/ );
+    bool addProvider( QgsLayerTreeEmbeddedWidgetProvider *provider /Transfer/ );
 
     /** Unregister a provider, the provider object is deleted.
      * Returns true on success, false if the provider was not registered. */
-    bool removeProvider( const QString& providerId );
+    bool removeProvider( const QString &providerId );
 
   protected:
     //! Protected constructor - use instance() to access the registry.
@@ -72,5 +72,5 @@ class QgsLayerTreeEmbeddedWidgetRegistry
 
   private:
 
-    QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry& other );
+    QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry &other );
 };

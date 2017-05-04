@@ -41,7 +41,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputTable
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -91,11 +91,9 @@ class PointDistance(GeoAlgorithm):
         self.addOutput(OutputTable(self.DISTANCE_MATRIX, self.tr('Distance matrix')))
 
     def processAlgorithm(self, context, feedback):
-        inLayer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+        inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         inField = self.getParameterValue(self.INPUT_FIELD)
-        targetLayer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.TARGET_LAYER))
+        targetLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.TARGET_LAYER), context)
         targetField = self.getParameterValue(self.TARGET_FIELD)
         matType = self.getParameterValue(self.MATRIX_TYPE)
         nPoints = self.getParameterValue(self.NEAREST_POINTS)
@@ -127,7 +125,7 @@ class PointDistance(GeoAlgorithm):
         else:
             self.writer.addRecord(['InputID', 'MEAN', 'STDDEV', 'MIN', 'MAX'])
 
-        index = vector.spatialindex(targetLayer)
+        index = QgsProcessingUtils.createSpatialIndex(targetLayer, context)
 
         inIdx = inLayer.fields().lookupField(inField)
         outIdx = targetLayer.fields().lookupField(targetField)
@@ -166,7 +164,7 @@ class PointDistance(GeoAlgorithm):
 
     def regularMatrix(self, context, inLayer, inField, targetLayer, targetField,
                       nPoints, feedback):
-        index = vector.spatialindex(targetLayer)
+        index = QgsProcessingUtils.createSpatialIndex(targetLayer, context)
 
         inIdx = inLayer.fields().lookupField(inField)
 

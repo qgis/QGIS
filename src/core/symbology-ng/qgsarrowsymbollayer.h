@@ -17,6 +17,7 @@
 #define QGSARROWSYMBOLLAYERV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgssymbollayer.h"
 
 
@@ -39,7 +40,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
      *
      * \returns A new QgsArrowSymbolLayer
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     virtual QgsArrowSymbolLayer *clone() const override;
     virtual QgsSymbol *subSymbol() override { return mSymbol.get(); }

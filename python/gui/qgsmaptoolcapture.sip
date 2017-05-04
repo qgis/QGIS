@@ -47,7 +47,7 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *
      * @param e The mouse event
      */
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent  *e );
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
 
     /**
      * Intercept key events like Esc or Del to delete the last point

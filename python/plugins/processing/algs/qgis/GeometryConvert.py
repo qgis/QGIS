@@ -36,8 +36,6 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
-from processing.tools import dataobjects, vector
-
 
 class GeometryConvert(GeoAlgorithm):
     INPUT = 'INPUT'
@@ -74,8 +72,7 @@ class GeometryConvert(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         index = self.getParameterValue(self.TYPE)
 
         splitNodes = False

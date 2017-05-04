@@ -105,6 +105,7 @@ INCLUDE_DIRECTORIES(
   ../src/core/geometry
   ../src/core/gps
   ../src/core/layertree
+  ../src/core/metadata
   ../src/core/processing
   ../src/core/raster
   ../src/core/scalebar
@@ -148,7 +149,6 @@ SET(SIP_CORE_CPP_FILES ${cpp_files})
 INCLUDE_DIRECTORIES(
   ../src/gui
   ../src/gui/symbology-ng
-  ../src/gui/effects
   ../src/plugins
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui

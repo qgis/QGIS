@@ -19,6 +19,7 @@
 #define QGSFEATUREFILTERPROVIDER_H
 
 #include <QtGlobal>
+#include "qgis.h"
 
 #include "qgis_core.h"
 
@@ -39,10 +40,14 @@ class CORE_EXPORT QgsFeatureFilterProvider
 {
   public:
 
+#ifndef SIP_RUN
+
     //! Constructor
     QgsFeatureFilterProvider() {}
 
     virtual ~QgsFeatureFilterProvider() = default;
+
+#endif
 
     /** Add additional filters to the feature request to further restrict the features returned by the request.
      * Derived classes must implement this method.
@@ -54,7 +59,7 @@ class CORE_EXPORT QgsFeatureFilterProvider
     /** Create a clone of the feature filter provider
      * \returns a new clone
      */
-    virtual QgsFeatureFilterProvider *clone() const = 0;
+    virtual QgsFeatureFilterProvider *clone() const = 0 SIP_FACTORY;
 };
 
 #endif

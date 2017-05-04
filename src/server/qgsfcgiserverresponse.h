@@ -38,11 +38,11 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 
     void setHeader( const QString &key, const QString &value ) override;
 
-    void clearHeader( const QString &key ) override;
+    void removeHeader( const QString &key ) override;
 
     QString header( const QString &key ) const override;
 
-    QList<QString> headerKeys() const override;
+    QMap<QString, QString> headers() const override { return mHeaders; }
 
     bool headersSent() const override;
 

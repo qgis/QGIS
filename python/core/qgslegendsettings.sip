@@ -30,7 +30,7 @@ class QgsLegendSettings
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     /** Returns reference to modifiable style */
-    QgsLegendStyle  &rstyle( QgsLegendStyle::Style s );
+    QgsLegendStyle &rstyle( QgsLegendStyle::Style s );
     /** Returns style */
     QgsLegendStyle style( QgsLegendStyle::Style s ) const;
     void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style );

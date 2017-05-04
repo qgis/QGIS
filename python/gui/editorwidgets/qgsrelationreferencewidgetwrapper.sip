@@ -11,15 +11,15 @@ class QgsRelationReferenceWidgetWrapper : QgsEditorWidgetWrapper
         QWidget* editor,
         QgsMapCanvas* canvas,
         QgsMessageBar* messageBar,
-        QWidget* parent /TransferThis/ = 0 );
+        QWidget *parent /TransferThis/ = 0 );
 
-    virtual QWidget* createWidget( QWidget* parent );
-    virtual void initWidget( QWidget* editor );
+    virtual QWidget *createWidget( QWidget *parent );
+    virtual void initWidget( QWidget *editor );
     virtual QVariant value();
     bool valid() const;
 
   public slots:
-    virtual void setValue( const QVariant& value );
+    virtual void setValue( const QVariant &value );
     virtual void setEnabled( bool enabled );
 
   protected:

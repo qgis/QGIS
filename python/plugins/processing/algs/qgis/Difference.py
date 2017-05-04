@@ -38,7 +38,6 @@ from qgis.core import (QgsFeatureRequest,
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -70,17 +69,15 @@ class Difference(GeoAlgorithm):
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
     def processAlgorithm(self, context, feedback):
-        layerA = dataobjects.getLayerFromString(
-            self.getParameterValue(Difference.INPUT))
-        layerB = dataobjects.getLayerFromString(
-            self.getParameterValue(Difference.OVERLAY))
+        layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Difference.INPUT), context)
+        layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Difference.OVERLAY), context)
 
         geomType = QgsWkbTypes.multiType(layerA.wkbType())
         writer = self.getOutputFromName(
             Difference.OUTPUT).getVectorWriter(layerA.fields(), geomType, layerA.crs(), context)
 
         outFeat = QgsFeature()
-        index = vector.spatialindex(layerB)
+        index = QgsProcessingUtils.createSpatialIndex(layerB, context)
         selectionA = QgsProcessingUtils.getFeatures(layerA, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
         for current, inFeatA in enumerate(selectionA):

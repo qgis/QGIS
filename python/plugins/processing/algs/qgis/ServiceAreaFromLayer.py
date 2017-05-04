@@ -48,7 +48,7 @@ from processing.core.parameters import (ParameterVector,
                                         ParameterSelection
                                         )
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -150,10 +150,8 @@ class ServiceAreaFromLayer(GeoAlgorithm):
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_VECTOR))
-        startPoints = dataobjects.getLayerFromString(
-            self.getParameterValue(self.START_POINTS))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
+        startPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.START_POINTS), context)
         strategy = self.getParameterValue(self.STRATEGY)
         travelCost = self.getParameterValue(self.TRAVEL_COST)
 

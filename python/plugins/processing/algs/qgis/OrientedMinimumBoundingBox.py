@@ -39,7 +39,7 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class OrientedMinimumBoundingBox(GeoAlgorithm):
@@ -73,8 +73,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
         if byFeature and layer.geometryType() == QgsWkbTypes.PointGeometry and layer.featureCount() <= 2:

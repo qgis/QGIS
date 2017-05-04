@@ -18,6 +18,8 @@
 #define QGSRASTERHISTOGRAMWIDGET_H
 
 #include "ui_qgsrasterhistogramwidgetbase.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 
 #include "qgsmaplayerconfigwidget.h"
 #include "qgis_gui.h"
@@ -40,7 +42,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     Q_OBJECT
 
   public:
-    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent = nullptr );
+    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     //! Save the histogram as an image to disk
     bool histoSaveAsImage( const QString &filename, int width = 600, int height = 600, int quality = -1 );
@@ -83,7 +85,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     /** Called when a selection has been made using the plot picker (for qwt5 only).
       \note not available in Python bindings
       */
-    void histoPickerSelectedQwt5( QwtDoublePoint );
+    void histoPickerSelectedQwt5( QwtDoublePoint ) SIP_SKIP;
     //! Various actions that are stored in btnHistoActions.
     void histoActionTriggered( QAction * );
     //! Draw the min/max markers on the histogram plot.

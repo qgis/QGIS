@@ -18,6 +18,7 @@
 #define QGSAUTHMANAGER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QObject>
 #include <QMutex>
 #include <QNetworkReply>
@@ -146,7 +147,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Whether there is a scheduled opitonal erase of authentication database.
      * \note not available in Python bindings
      */
-    bool scheduledAuthDatabaseErase() { return mScheduledDbErase; }
+    bool scheduledAuthDatabaseErase() { return mScheduledDbErase; } SIP_SKIP
 
     /** Schedule an optional erase of authentication database, starting when mutex is lockable.
      * \note When an erase is scheduled, any attempt to set the master password,
@@ -159,7 +160,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * if no access to user interaction occurs wihtin 90 seconds, it cancels the schedule.
      * \note not available in Python bindings
      */
-    void setScheduledAuthDatabaseErase( bool scheduleErase );
+    void setScheduledAuthDatabaseErase( bool scheduleErase ) SIP_SKIP;
 
     /** Re-emit a signal to schedule an optional erase of authentication database.
      * \note This can be called from the slot connected to a previously emitted scheduling signal,
@@ -210,7 +211,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param dataprovider Provider key filter, returning only methods that support a particular provider
      * \note not available in Python bindings
      */
-    QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() );
+    QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() ) SIP_SKIP;
 
     /**
      * Get authentication method edit widget via its key
@@ -358,7 +359,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Get a certificate identity bundle by id (sha hash).
      * \note not available in Python bindings
      */
-    const QPair<QSslCertificate, QSslKey> getCertIdentityBundle( const QString &id );
+    const QPair<QSslCertificate, QSslKey> getCertIdentityBundle( const QString &id ) SIP_SKIP;
 
     //! Get a certificate identity bundle by id (sha hash) returned as PEM text
     const QStringList getCertIdentityBundleToPem( const QString &id );
@@ -397,7 +398,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
      * \note not available in Python bindings
      */
-    QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; }
+    QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; } SIP_SKIP
 
     //! Utility function to dump the cache for debug purposes
     void dumpIgnoredSslErrorsCache_();
@@ -442,7 +443,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Get all CA certs mapped to their sha1 from cache.
      * \note not available in Python bindings
      */
-    const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > getCaCertsCache()
+    const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > getCaCertsCache() SIP_SKIP
     {
       return mCaCertsCache;
     }
@@ -501,31 +502,31 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     //! Error message getter
     //! @note not available in Python bindings
-    const QString passwordHelperErrorMessage() { return mPasswordHelperErrorMessage; }
+    const QString passwordHelperErrorMessage() { return mPasswordHelperErrorMessage; } SIP_SKIP
 
     //! Delete master password from wallet
     //! @note not available in Python bindings
-    bool passwordHelperDelete();
+    bool passwordHelperDelete() SIP_SKIP;
 
     //! Password helper enabled getter
     //! @note not available in Python bindings
-    bool passwordHelperEnabled() const;
+    bool passwordHelperEnabled() const SIP_SKIP;
 
     //! Password helper enabled setter
     //! @note not available in Python bindings
-    void setPasswordHelperEnabled( const bool enabled );
+    void setPasswordHelperEnabled( const bool enabled ) SIP_SKIP;
 
     //! Password helper logging enabled getter
     //! @note not available in Python bindings
-    bool passwordHelperLoggingEnabled() const;
+    bool passwordHelperLoggingEnabled() const SIP_SKIP;
 
     //! Password helper logging enabled setter
     //! @note not available in Python bindings
-    void setPasswordHelperLoggingEnabled( const bool enabled );
+    void setPasswordHelperLoggingEnabled( const bool enabled ) SIP_SKIP;
 
     //! Store the password manager into the wallet
     //! @note not available in Python bindings
-    bool passwordHelperSync( );
+    bool passwordHelperSync( ) SIP_SKIP;
 
     //! The display name of the password helper (platform dependent)
     static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;

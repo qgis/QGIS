@@ -42,7 +42,6 @@ from qgis.core import (QgsExpression,
 from qgis.gui import QgsFieldExpressionWidget
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_MODELER
-from processing.tools import dataobjects
 
 pluginPath = os.path.dirname(__file__)
 WIDGET, BASE = uic.loadUiType(

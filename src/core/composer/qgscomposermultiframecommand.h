@@ -19,6 +19,7 @@
 #define QGSCOMPOSERMULTIFRAMECOMMAND_H
 
 #include <QUndoCommand>
+#include "qgis.h"
 #include <QDomDocument>
 
 #include "qgis_core.h"
@@ -31,7 +32,7 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
 {
   public:
-    QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent = nullptr );
+    QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = 0 );
 
     void undo() override;
     void redo() override;

@@ -79,7 +79,7 @@ class QgsExpressionBuilderWidget : QWidget
 %End
 
   public:
-    QgsExpressionBuilderWidget( QWidget *parent /TransferThis/ = nullptr );
+    QgsExpressionBuilderWidget( QWidget *parent /TransferThis/ = 0 );
     ~QgsExpressionBuilderWidget();
 
     /** Sets layer in order to get the fields and values
@@ -101,7 +101,7 @@ class QgsExpressionBuilderWidget : QWidget
     void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues );
 
     /** Sets geometry calculator used in distance/area calculations. */
-    void setGeomCalculator( const QgsDistanceArea  &da );
+    void setGeomCalculator( const QgsDistanceArea &da );
 
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */

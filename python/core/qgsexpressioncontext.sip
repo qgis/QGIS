@@ -76,7 +76,7 @@ class QgsExpressionContextScope
        * @param value initial variable value
        * @param readOnly true if variable should not be editable by users
        */
-      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false );
+      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false  );
 
       /** Variable name */
       QString name;
@@ -86,6 +86,9 @@ class QgsExpressionContextScope
 
       /** True if variable should not be editable by users */
       bool readOnly;
+
+      //! A static variable can be cached for the lifetime of a context
+      bool isStatic;
     };
 
     /** Constructor for QgsExpressionContextScope
@@ -109,7 +112,7 @@ class QgsExpressionContextScope
      * @param value variable value
      * @see addVariable()
      */
-    void setVariable( const QString &name, const QVariant &value );
+    void setVariable( const QString &name, const QVariant &value, bool isStatic = false );
 
     /** Adds a variable into the context scope. If a variable with the same name is already set then its
      * value is overwritten, otherwise a new variable is added to the scope.
@@ -161,6 +164,14 @@ class QgsExpressionContextScope
      * @returns true if variable is read only
      */
     bool isReadOnly( const QString &name ) const;
+
+    /**
+     * Tests whether the variable with the specified \a name is static and can
+     * be cached.
+     *
+     * \note Added in QGIS 3.0
+     */
+    bool isStatic( const QString &name ) const;
 
     /** Returns the count of variables contained within the scope.
      */
@@ -545,7 +556,7 @@ class QgsExpressionContextUtils
      * @param symbolScope pointer to an existing scope to update
      * @note added in QGIS 2.14
      */
-    static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = nullptr );
+    static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = 0 );
 
     /** Creates a new scope which contains variables and functions relating to a QgsComposition.
      * For instance, number of pages and page sizes.

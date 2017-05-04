@@ -18,6 +18,7 @@
 
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsmapsettings.h"
 #include "qgstolerance.h"
 #include "qgspointlocator.h"
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     Q_PROPERTY( QgsSnappingConfig config READ config WRITE setConfig NOTIFY configChanged )
 
   public:
-    QgsSnappingUtils( QObject *parent = nullptr );
+    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = 0 );
     ~QgsSnappingUtils();
 
     // main actions

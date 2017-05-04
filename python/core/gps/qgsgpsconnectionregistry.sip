@@ -10,13 +10,13 @@ class QgsGPSConnectionRegistry
     ~QgsGPSConnectionRegistry();
 
     /** Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again*/
-    void registerConnection( QgsGPSConnection* c );
+    void registerConnection( QgsGPSConnection *c );
     /** Unregisters connection. The registry does no longer own the connection*/
-    void unregisterConnection( QgsGPSConnection* c );
+    void unregisterConnection( QgsGPSConnection *c );
 
     QList< QgsGPSConnection *> connectionList() const;
 
   private:
 
-    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry& rh );
+    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry &rh );
 };

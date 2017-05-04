@@ -11,7 +11,7 @@ class QgsComposerTableColumn: QObject
     /** Constructor for QgsComposerTableColumn.
      * @param heading column heading
      */
-    QgsComposerTableColumn( const QString& heading = QString() );
+    QgsComposerTableColumn( const QString &heading = QString() );
 
     virtual ~QgsComposerTableColumn();
 
@@ -21,14 +21,14 @@ class QgsComposerTableColumn: QObject
      * @note added in 2.3
      * @see readXML
      */
-    virtual bool writeXml( QDomElement& columnElem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement &columnElem, QDomDocument &doc ) const;
 
     /** Reads the column's properties from xml.
      * @param columnElem a QDomElement holding the column's desired properties.
      * @note added in 2.3
      * @see writeXML
      */
-    virtual bool readXml( const QDomElement& columnElem );
+    virtual bool readXml( const QDomElement &columnElem );
 
     /** Returns the width for a column.
      * @returns column width in mm, or 0 if column width is automatically calculated.
@@ -58,7 +58,7 @@ class QgsComposerTableColumn: QObject
      * @note added in 2.3
      * @see heading
      */
-    void setHeading( const QString& heading );
+    void setHeading( const QString &heading );
 
     /** Returns the horizontal alignment for a column, which controls the alignment
      * used for drawing column values within cells.
@@ -112,7 +112,7 @@ class QgsComposerTableColumn: QObject
      * @note only applicable when used in a QgsComposerAttributeTable
      * @see attribute
      */
-    void setAttribute( const QString& attribute );
+    void setAttribute( const QString &attribute );
 
     /** Returns the sort order for the column. This property is only used when the column
      * is part of a QgsComposerAttributeTable and when sortByRank is > 0.
@@ -166,5 +166,5 @@ class QgsComposerTableColumn: QObject
      * @returns a new QgsComposerTableColumn with same properties as this column.
      * @note added in 2.3
      */
-    QgsComposerTableColumn* clone();
+    QgsComposerTableColumn *clone();
 };

@@ -42,7 +42,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
@@ -102,8 +102,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         shape = self.getParameterValue(self.SHAPE)
         width = self.getParameterValue(self.WIDTH)
         height = self.getParameterValue(self.HEIGHT)
@@ -111,7 +110,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
         segments = self.getParameterValue(self.SEGMENTS)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields().toList(), QgsWkbTypes.Polygon, layer.crs(), context)
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon, layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
 

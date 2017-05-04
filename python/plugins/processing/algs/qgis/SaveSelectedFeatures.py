@@ -25,12 +25,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 
 class SaveSelectedFeatures(GeoAlgorithm):
@@ -64,7 +64,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        vectorLayer = dataobjects.getLayerFromString(inputFilename)
+        vectorLayer = QgsProcessingUtils.mapLayerFromString(inputFilename, context)
 
         writer = output.getVectorWriter(vectorLayer.fields(), vectorLayer.wkbType(), vectorLayer.crs(), context)
 

@@ -39,7 +39,7 @@ from qgis.core import (QgsFeatureRequest,
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -79,8 +79,8 @@ class Union(GeoAlgorithm):
         self.addOutput(OutputVector(Union.OUTPUT, self.tr('Union')))
 
     def processAlgorithm(self, context, feedback):
-        vlayerA = dataobjects.getLayerFromString(self.getParameterValue(Union.INPUT))
-        vlayerB = dataobjects.getLayerFromString(self.getParameterValue(Union.INPUT2))
+        vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Union.INPUT), context)
+        vlayerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Union.INPUT2), context)
 
         geomType = vlayerA.wkbType()
         fields = vector.combineVectorFields(vlayerA, vlayerB)
@@ -88,8 +88,8 @@ class Union(GeoAlgorithm):
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        indexA = vector.spatialindex(vlayerB)
-        indexB = vector.spatialindex(vlayerA)
+        indexA = QgsProcessingUtils.createSpatialIndex(vlayerB, context)
+        indexB = QgsProcessingUtils.createSpatialIndex(vlayerA, context)
 
         count = 0
         nElement = 0

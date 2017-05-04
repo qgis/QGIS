@@ -58,7 +58,7 @@ from processing.core.parameters import (ParameterVector,
                                         ParameterSelection
                                         )
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -155,10 +155,8 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_VECTOR))
-        startPoints = dataobjects.getLayerFromString(
-            self.getParameterValue(self.START_POINTS))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
+        startPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.START_POINTS), context)
         endPoint = self.getParameterValue(self.END_POINT)
         strategy = self.getParameterValue(self.STRATEGY)
 
@@ -182,7 +180,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
         feat.setFields(fields)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(fields.toList(), QgsWkbTypes.LineString, layer.crs(), context)
+            self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.LineString, layer.crs(), context)
 
         tmp = endPoint.split(',')
         endPoint = QgsPoint(float(tmp[0]), float(tmp[1]))

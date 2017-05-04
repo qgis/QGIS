@@ -19,6 +19,7 @@
 #define QGSRASTERPYRAMIDSOPTIONSWIDGET_H
 
 #include "ui_qgsrasterpyramidsoptionswidgetbase.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QCheckBox;
@@ -33,7 +34,7 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
 
   public:
 
-    QgsRasterPyramidsOptionsWidget( QWidget *parent = nullptr, const QString &provider = "gdal" );
+    QgsRasterPyramidsOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &provider = "gdal" );
 
     QStringList configOptions() const { return mSaveOptionsWidget->options(); }
     QgsRasterFormatSaveOptionsWidget *createOptionsWidget() { return mSaveOptionsWidget; }

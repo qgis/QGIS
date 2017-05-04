@@ -34,6 +34,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayerdependency.h"
+#include "metadata/qgslayermetadata.h"
 
 class QgsDataProvider;
 class QgsMapLayerLegend;
@@ -56,6 +57,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
     Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
+    Q_PROPERTY( QgsLayerMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -733,6 +735,22 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setAutoRefreshEnabled( bool enabled );
 
     /**
+     * Returns a reference to the layer's metadata store.
+     * \since QGIS 3.0
+     * \see setMetadata()
+     * \see metadataChanged()
+     */
+    virtual const QgsLayerMetadata &metadata() const { return mMetadata; }
+
+    /**
+     * Sets the layer's \a metadata store.
+     * \since QGIS 3.0
+     * \see metadata()
+     * \see metadataChanged()
+     */
+    virtual void setMetadata( const QgsLayerMetadata &metadata );
+
+    /**
      * Obtain a formatted HTML string containing assorted metadata for this layer.
      * \since QGIS 3.0
      */
@@ -879,6 +897,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void autoRefreshIntervalChanged( int interval );
 
+    /**
+     * Emitted when the layer's metadata is changed.
+     * \see setMetadata()
+     * \see metadata()
+     * \since QGIS 3.0
+     */
+    void metadataChanged();
+
   protected:
     //! Set the extent
     virtual void setExtent( const QgsRectangle &rect );
@@ -1018,6 +1044,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Timer for triggering automatic refreshes of the layer
     QTimer mRefreshTimer;
+
+    QgsLayerMetadata mMetadata;
 
 };
 

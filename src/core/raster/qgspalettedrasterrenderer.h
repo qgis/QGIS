@@ -19,6 +19,7 @@
 #define QGSPALETTEDRASTERRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QVector>
 
 #include "qgsrasterrenderer.h"
@@ -67,7 +68,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     const QgsPalettedRasterRenderer &operator=( const QgsPalettedRasterRenderer & ) = delete;
 
     QgsPalettedRasterRenderer *clone() const override;
-    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
@@ -98,7 +99,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      * \since QGIS 3.0
      * \see sourceColorRamp()
      */
-    void setSourceColorRamp( QgsColorRamp *ramp );
+    void setSourceColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /** Get the source color ramp
      * \since QGIS 3.0

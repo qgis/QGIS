@@ -21,14 +21,14 @@ class QgsLayerTreeMapCanvasBridge : QObject
 
   public:
     //! Constructor: does not take ownership of the layer tree nor canvas
-    QgsLayerTreeMapCanvasBridge( QgsLayerTree* root, QgsMapCanvas* canvas, QObject* parent /TransferThis/ = 0 );
+    QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent /TransferThis/ = 0 );
 
     QgsLayerTree *rootGroup() const;
     QgsMapCanvas *mapCanvas() const;
 
     //! Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
     //! @note added in 3.0
-    void setOvervewCanvas( QgsMapOverviewCanvas* overviewCanvas );
+    void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas );
     //! Returns associated overview canvas (may be null)
     //! @note added in 3.0
     QgsMapOverviewCanvas *overviewCanvas() const;
@@ -41,6 +41,6 @@ class QgsLayerTreeMapCanvasBridge : QObject
     void setCanvasLayers();
 
   signals:
-    void canvasLayersChanged( const QList< QgsMapLayer* >& layers );
+    void canvasLayersChanged( const QList< QgsMapLayer* > &layers );
 
 };

@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsRectangle
+from qgis.core import (QgsRectangle,
+                       QgsProcessingUtils)
 from qgis.analysis import (QgsInterpolator,
                            QgsIDWInterpolator,
                            QgsGridFileWriter
@@ -43,7 +44,6 @@ from processing.core.parameters import (Parameter,
                                         _splitParameterOptions,
                                         _createDescriptiveName)
 from processing.core.outputs import OutputRaster
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -172,7 +172,7 @@ class IdwInterpolation(GeoAlgorithm):
             data = QgsInterpolator.LayerData()
 
             # need to keep a reference until interpolation is complete
-            layer = dataobjects.getLayerFromString(v[0])
+            layer = QgsProcessingUtils.mapLayerFromString(v[0], context)
             data.vectorLayer = layer
             layers.append(layer)
 

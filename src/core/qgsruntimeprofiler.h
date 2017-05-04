@@ -2,6 +2,7 @@
 #define QGSRUNTIMEPROFILER_H
 
 #include <QTime>
+#include "qgis_sip.h"
 #include <QPair>
 #include <QStack>
 
@@ -48,7 +49,7 @@ class CORE_EXPORT QgsRuntimeProfiler
      * \returns A list of profile event names and times.
      * \note not available in Python bindings
      */
-    const QList<QPair<QString, double > > profileTimes() const { return mProfileTimes; }
+    const QList<QPair<QString, double > > profileTimes() const { return mProfileTimes; } SIP_SKIP
 
     /**
      * \brief clear Clear all profile data.

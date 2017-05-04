@@ -19,6 +19,7 @@
 #define QGSNETWORKACCESSMANAGER_H
 
 #include <QList>
+#include "qgis.h"
 #include <QStringList>
 #include <QNetworkAccessManager>
 #include <QNetworkProxy>
@@ -55,10 +56,10 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QgsNetworkAccessManager( QObject *parent = nullptr );
 
     //! insert a factory into the proxy factories list
-    void insertProxyFactory( QNetworkProxyFactory *factory );
+    void insertProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFER );
 
     //! remove a factory from the proxy factories list
-    void removeProxyFactory( QNetworkProxyFactory *factory );
+    void removeProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFERBACK );
 
     //! retrieve proxy factory list
     const QList<QNetworkProxyFactory *> proxyFactories() const;

@@ -14,6 +14,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
@@ -128,6 +129,7 @@ SET(TESTS
  testqgsmaprendererjob.cpp
  testqgsmaprotation.cpp
  testqgsmapsettings.cpp
+ testqgsmapsettingsutils.cpp
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp

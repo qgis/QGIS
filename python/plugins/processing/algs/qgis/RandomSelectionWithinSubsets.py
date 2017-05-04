@@ -40,7 +40,6 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -83,7 +82,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
-        layer = dataobjects.getLayerFromString(filename)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
 

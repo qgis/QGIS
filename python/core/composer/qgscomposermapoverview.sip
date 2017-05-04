@@ -16,7 +16,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
     /** Constructor for QgsComposerMapOverviewStack.
      * @param map QgsComposerMap the overview stack is attached to
      */
-    QgsComposerMapOverviewStack( QgsComposerMap* map );
+    QgsComposerMapOverviewStack( QgsComposerMap *map );
 
     virtual ~QgsComposerMapOverviewStack();
 
@@ -28,7 +28,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see removeOverview
      */
-    void addOverview( QgsComposerMapOverview* overview /Transfer/ );
+    void addOverview( QgsComposerMapOverview *overview /Transfer/ );
 
     /** Removes an overview from the stack and deletes the corresponding QgsComposerMapOverview
      * @param overviewId id for the QgsComposerMapOverview to remove
@@ -36,7 +36,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see addOverview
      */
-    void removeOverview( const QString& overviewId );
+    void removeOverview( const QString &overviewId );
 
     /** Moves an overview up the stack, causing it to be rendered above other overviews
      * @param overviewId id for the QgsComposerMapOverview to move up
@@ -44,7 +44,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
      * called for the QgsComposerMap to redraw the map with the new overview stack order
      * @see moveOverviewDown
      */
-    void moveOverviewUp( const QString& overviewId );
+    void moveOverviewUp( const QString &overviewId );
 
     /** Moves an overview down the stack, causing it to be rendered below other overviews
      * @param overviewId id for the QgsComposerMapOverview to move down
@@ -52,28 +52,28 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
      * called for the QgsComposerMap to redraw the map with the new overview stack order
      * @see moveOverviewUp
      */
-    void moveOverviewDown( const QString& overviewId );
+    void moveOverviewDown( const QString &overviewId );
 
     /** Returns a const reference to an overview within the stack
      * @param overviewId id for the QgsComposerMapOverview to find
      * @returns const reference to overview, if found
      * @see overview
      */
-    const QgsComposerMapOverview* constOverview( const QString& overviewId ) const;
+    const QgsComposerMapOverview *constOverview( const QString &overviewId ) const;
 
     /** Returns a reference to an overview within the stack
      * @param overviewId id for the QgsComposerMapOverview to find
      * @returns reference to overview if found
      * @see constOverview
      */
-    QgsComposerMapOverview* overview( const QString& overviewId ) const;
+    QgsComposerMapOverview *overview( const QString &overviewId ) const;
 
     /** Returns a reference to an overview within the stack
      * @param index overview position in the stack
      * @returns reference to overview if found
      * @see constOverview
      */
-    QgsComposerMapOverview* overview( const int index ) const;
+    QgsComposerMapOverview *overview( const int index ) const;
 
     /** Returns a reference to an overview within the stack
      * @param idx overview position in the stack
@@ -94,7 +94,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
      * @returns true if read was successful
      * @see writeXML
      */
-    bool readXml( const QDomElement& elem, const QDomDocument& doc );
+    bool readXml( const QDomElement &elem, const QDomDocument &doc );
 
 };
 
@@ -117,28 +117,28 @@ class QgsComposerMapOverview : QgsComposerMapItem
      * @param name friendly display name for overview
      * @param map QgsComposerMap the overview is attached to
      */
-    QgsComposerMapOverview( const QString& name, QgsComposerMap* map );
+    QgsComposerMapOverview( const QString &name, QgsComposerMap *map );
 
     virtual ~QgsComposerMapOverview();
 
     /** Draws an overview
      * @param painter destination QPainter
      */
-    void draw( QPainter* painter );
+    void draw( QPainter *painter );
 
     /** Stores overview state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
      * @param doc DOM document
      * @see readXML
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets overview state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapOverview' tag
      * @param doc is DOM document
      * @see writeXML
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     bool usesAdvancedEffects() const;
 
@@ -157,13 +157,13 @@ class QgsComposerMapOverview : QgsComposerMapItem
      * @param symbol fill symbol for overview
      * @see frameSymbol
      */
-    void setFrameSymbol( QgsFillSymbol* symbol /Transfer/ );
+    void setFrameSymbol( QgsFillSymbol *symbol /Transfer/ );
 
     /** Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview
      * @see setFrameSymbol
      */
-    QgsFillSymbol* frameSymbol();
+    QgsFillSymbol *frameSymbol();
 
     /** Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview

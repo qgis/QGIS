@@ -17,6 +17,7 @@
 #define QGSCOMPOSERMULTIFRAME_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposerobject.h"
 #include <QObject>
 #include <QSizeF>
@@ -58,7 +59,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * \param c parent composition
      * \param createUndoCommands
      */
-    QgsComposerMultiFrame( QgsComposition *c, bool createUndoCommands );
+    QgsComposerMultiFrame( QgsComposition *c SIP_TRANSFERTHIS, bool createUndoCommands );
 
     virtual ~QgsComposerMultiFrame();
 
@@ -104,7 +105,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * \param recalcFrameSizes set to true to force recalculation of all existing frame sizes
      * \see removeFrame
      */
-    virtual void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true ) = 0;
+    virtual void addFrame( QgsComposerFrame *frame SIP_TRANSFER, bool recalcFrameSizes = true ) = 0;
 
     /** Finds the optimal position to break a frame at.
      * \param yPos maximum vertical position for break

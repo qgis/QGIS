@@ -29,12 +29,13 @@ import plotly as plt
 import plotly.graph_objs as go
 import numpy as np
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 
 class PolarPlot(GeoAlgorithm):
@@ -70,8 +71,7 @@ class PolarPlot(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Polar plot')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         namefieldname = self.getParameterValue(self.NAME_FIELD)  # NOQA  FIXME unused?
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
 

@@ -6,38 +6,38 @@ class QgsSymbolLayerUtils
 
   public:
 
-    static QString encodeColor( const QColor& color );
-    static QColor decodeColor( const QString& str );
+    static QString encodeColor( const QColor &color );
+    static QColor decodeColor( const QString &str );
 
     static QString encodeSldAlpha( int alpha );
-    static int decodeSldAlpha( const QString& str );
+    static int decodeSldAlpha( const QString &str );
 
     static QString encodeSldFontStyle( QFont::Style style );
-    static QFont::Style decodeSldFontStyle( const QString& str );
+    static QFont::Style decodeSldFontStyle( const QString &str );
 
     static QString encodeSldFontWeight( int weight );
-    static int decodeSldFontWeight( const QString& str );
+    static int decodeSldFontWeight( const QString &str );
 
     static QString encodePenStyle( Qt::PenStyle style );
-    static Qt::PenStyle decodePenStyle( const QString& str );
+    static Qt::PenStyle decodePenStyle( const QString &str );
 
     static QString encodePenJoinStyle( Qt::PenJoinStyle style );
-    static Qt::PenJoinStyle decodePenJoinStyle( const QString& str );
+    static Qt::PenJoinStyle decodePenJoinStyle( const QString &str );
 
     static QString encodePenCapStyle( Qt::PenCapStyle style );
-    static Qt::PenCapStyle decodePenCapStyle( const QString& str );
+    static Qt::PenCapStyle decodePenCapStyle( const QString &str );
 
     static QString encodeSldLineJoinStyle( Qt::PenJoinStyle style );
-    static Qt::PenJoinStyle decodeSldLineJoinStyle( const QString& str );
+    static Qt::PenJoinStyle decodeSldLineJoinStyle( const QString &str );
 
     static QString encodeSldLineCapStyle( Qt::PenCapStyle style );
-    static Qt::PenCapStyle decodeSldLineCapStyle( const QString& str );
+    static Qt::PenCapStyle decodeSldLineCapStyle( const QString &str );
 
     static QString encodeBrushStyle( Qt::BrushStyle style );
-    static Qt::BrushStyle decodeBrushStyle( const QString& str );
+    static Qt::BrushStyle decodeBrushStyle( const QString &str );
 
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
-    static Qt::BrushStyle decodeSldBrushStyle( const QString& str );
+    static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
     /** Encodes a QPointF to a string.
      * @see decodePoint()
@@ -49,7 +49,7 @@ class QgsSymbolLayerUtils
      * @see encodePoint()
      * @see decodeSize()
      */
-    static QPointF decodePoint( const QString& string );
+    static QPointF decodePoint( const QString &string );
 
     /** Encodes a QSizeF to a string.
      * @see decodeSize()
@@ -63,16 +63,16 @@ class QgsSymbolLayerUtils
      * @see decodePoint()
      * @note added in QGIS 3.0
      */
-    static QSizeF decodeSize( const QString& string );
+    static QSizeF decodeSize( const QString &string );
 
-    static QString encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale );
-    static QgsMapUnitScale decodeMapUnitScale( const QString& str );
+    static QString encodeMapUnitScale( const QgsMapUnitScale &mapUnitScale );
+    static QgsMapUnitScale decodeMapUnitScale( const QString &str );
 
-    static QString encodeRealVector( const QVector<qreal>& v );
-    static QVector<qreal> decodeRealVector( const QString& s );
+    static QString encodeRealVector( const QVector<qreal> &v );
+    static QVector<qreal> decodeRealVector( const QString &s );
 
-    static QString encodeSldRealVector( const QVector<qreal>& v );
-    static QVector<qreal> decodeSldRealVector( const QString& s );
+    static QString encodeSldRealVector( const QVector<qreal> &v );
+    static QVector<qreal> decodeSldRealVector( const QString &s );
 
     /** Encodes a render unit into an SLD unit of measure string.
      * @param unit unit to encode
@@ -88,12 +88,12 @@ class QgsSymbolLayerUtils
      * @returns matching render unit
      * @see encodeSldUom()
      */
-    static QgsUnitTypes::RenderUnit decodeSldUom( const QString& str, double *scaleFactor );
+    static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor );
 
     static QString encodeScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
-    static QgsSymbol::ScaleMethod decodeScaleMethod( const QString& str );
+    static QgsSymbol::ScaleMethod decodeScaleMethod( const QString &str );
 
-    static QPainter::CompositionMode decodeBlendMode( const QString& s );
+    static QPainter::CompositionMode decodeBlendMode( const QString &s );
 
     /** Returns an icon preview for a color ramp.
      * @param symbol symbol
@@ -101,7 +101,7 @@ class QgsSymbolLayerUtils
      * @param padding space between icon edge and symbol
      * @see symbolPreviewPixmap()
      */
-    static QIcon symbolPreviewIcon( QgsSymbol* symbol, QSize size, int padding = 0 );
+    static QIcon symbolPreviewIcon( QgsSymbol *symbol, QSize size, int padding = 0 );
 
     /** Returns a pixmap preview for a color ramp.
      * @param symbol symbol
@@ -111,7 +111,7 @@ class QgsSymbolLayerUtils
      * @note customContext parameter added in 2.6
      * @see symbolPreviewIcon()
      */
-    static QPixmap symbolPreviewPixmap( QgsSymbol* symbol, QSize size, int padding = 0, QgsRenderContext* customContext = 0 );
+    static QPixmap symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0 );
 
     /** Draws a symbol layer preview to a QPicture
      * @param layer symbol layer to draw
@@ -122,7 +122,7 @@ class QgsSymbolLayerUtils
      * @note added in QGIS 2.9
      * @see symbolLayerPreviewIcon()
      */
-    static QPicture symbolLayerPreviewPicture( QgsSymbolLayer* layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static QPicture symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 
     /** Draws a symbol layer preview to an icon.
      * @param layer symbol layer to draw
@@ -132,7 +132,7 @@ class QgsSymbolLayerUtils
      * @returns icon containing symbol layer preview
      * @see symbolLayerPreviewPicture()
      */
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 
     /** Returns a icon preview for a color ramp.
      * @param ramp color ramp
@@ -140,25 +140,25 @@ class QgsSymbolLayerUtils
      * @param padding space between icon edge and symbol
      * @see colorRampPreviewPixmap()
      */
-    static QIcon colorRampPreviewIcon( QgsColorRamp* ramp, QSize size, int padding = 0 );
+    static QIcon colorRampPreviewIcon( QgsColorRamp *ramp, QSize size, int padding = 0 );
     /** Returns a pixmap preview for a color ramp.
      * @param ramp color ramp
      * @param size target pixmap size
      * @param padding space between icon edge and symbol
      * @see colorRampPreviewIcon()
      */
-    static QPixmap colorRampPreviewPixmap( QgsColorRamp* ramp, QSize size, int padding = 0 );
+    static QPixmap colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding = 0 );
 
-    static void drawStippledBackground( QPainter* painter, QRect rect );
+    static void drawStippledBackground( QPainter *painter, QRect rect );
 
     /** Returns the maximum estimated bleed for the symbol */
-    static double estimateMaxSymbolBleed( QgsSymbol* symbol, const QgsRenderContext& context );
+    static double estimateMaxSymbolBleed( QgsSymbol *symbol, const QgsRenderContext &context );
 
     /** Attempts to load a symbol from a DOM element
      * @param element DOM element representing symbol
      * @returns decoded symbol, if possible
      */
-    static QgsSymbol* loadSymbol( const QDomElement& element ) /Factory/;
+    static QgsSymbol *loadSymbol( const QDomElement &element ) /Factory/;
 
     /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
@@ -166,22 +166,22 @@ class QgsSymbolLayerUtils
      * @returns decoded symbol cast to specified type, if possible
      * @note not available in python bindings
      */
-    //template <class SymbolType> static SymbolType* loadSymbol( const QDomElement& element );
+    //template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element );
 
-    static QgsSymbolLayer* loadSymbolLayer( QDomElement& element ) /Factory/;
-    static QDomElement saveSymbol( const QString& symbolName, QgsSymbol* symbol, QDomDocument& doc );
+    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element ) /Factory/;
+    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc );
 
     /** Returns a string representing the symbol. Can be used to test for equality
      * between symbols.
      * @note added in QGIS 2.12
      */
-    static QString symbolProperties( QgsSymbol* symbol );
+    static QString symbolProperties( QgsSymbol *symbol );
 
-    static bool createSymbolLayerListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
+    static bool createSymbolLayerListFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
 
-    static QgsSymbolLayer* createFillLayerFromSld( QDomElement &element );
-    static QgsSymbolLayer* createLineLayerFromSld( QDomElement &element );
-    static QgsSymbolLayer* createMarkerLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element );
 
     static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList );
     static bool hasExternalGraphic( QDomElement &element );
@@ -196,7 +196,7 @@ class QgsSymbolLayerUtils
     static bool needSvgFill( QDomElement &element );
 
     static void fillToSld( QDomDocument &doc, QDomElement &element,
-                           Qt::BrushStyle brushStyle, const QColor& color = QColor() );
+                           Qt::BrushStyle brushStyle, const QColor &color = QColor() );
     static bool fillFromSld( QDomElement &element,
                              Qt::BrushStyle &brushStyle, QColor &color );
 
@@ -214,7 +214,7 @@ class QgsSymbolLayerUtils
 
     static void externalGraphicToSld( QDomDocument &doc, QDomElement &element,
                                       const QString& path, const QString& mime,
-                                      const QColor& color, double size = -1 );
+                                      const QColor &color, double size = -1 );
     static bool externalGraphicFromSld( QDomElement &element,
                                         QString &path, QString &mime,
                                         QColor &color, double &size );
@@ -230,60 +230,60 @@ class QgsSymbolLayerUtils
 
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
                                      const QString& path, const QString& format, int *markIndex = 0,
-                                     const QColor& color = QColor(), double size = -1 );
+                                     const QColor &color = QColor(), double size = -1 );
     static bool externalMarkerFromSld( QDomElement &element,
                                        QString &path, QString &format, int &markIndex,
                                        QColor &color, double &size );
 
 
     static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString& label,
-                                const QFont &font, const QColor& color = QColor(), double size = -1 );
+                                const QFont &font, const QColor &color = QColor(), double size = -1 );
 
     /** Create ogr feature style string for pen */
     static QString ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor& c,
                                        Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
                                        Qt::PenCapStyle capStyle = Qt::FlatCap,
                                        double offset = 0.0,
-                                       const QVector<qreal>* dashPattern = 0 );
+                                       const QVector<qreal> *dashPattern = 0 );
     /** Create ogr feature style string for brush
      @param fillColr fill color*/
-    static QString ogrFeatureStyleBrush( const QColor& fillColr );
+    static QString ogrFeatureStyleBrush( const QColor &fillColr );
 
-    static void createRotationElement( QDomDocument &doc, QDomElement &element, const QString& rotationFunc );
+    static void createRotationElement( QDomDocument &doc, QDomElement &element, const QString &rotationFunc );
     static bool rotationFromSldElement( QDomElement &element, QString &rotationFunc );
 
-    static void createOpacityElement( QDomDocument &doc, QDomElement &element, const QString& alphaFunc );
+    static void createOpacityElement( QDomDocument &doc, QDomElement &element, const QString &alphaFunc );
     static bool opacityFromSldElement( QDomElement &element, QString &alphaFunc );
 
     static void createDisplacementElement( QDomDocument &doc, QDomElement &element, QPointF offset );
     static bool displacementFromSldElement( QDomElement &element, QPointF &offset );
 
-    static void createOnlineResourceElement( QDomDocument &doc, QDomElement &element, const QString& path, const QString& format );
+    static void createOnlineResourceElement( QDomDocument &doc, QDomElement &element, const QString &path, const QString &format );
     static bool onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format );
 
-    static void createGeometryElement( QDomDocument &doc, QDomElement &element, const QString& geomFunc );
+    static void createGeometryElement( QDomDocument &doc, QDomElement &element, const QString &geomFunc );
     static bool geometryFromSldElement( QDomElement &element, QString &geomFunc );
 
-    static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString& function );
-    static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString& function );
+    static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString &function );
+    static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function );
     static bool functionFromSldElement( QDomElement &element, QString &function );
 
-    static QDomElement createSvgParameterElement( QDomDocument &doc, const QString& name, const QString& value );
+    static QDomElement createSvgParameterElement( QDomDocument &doc, const QString &name, const QString &value );
     static QgsStringMap getSvgParameterList( QDomElement &element );
 
-    static QDomElement createVendorOptionElement( QDomDocument &doc, const QString& name, const QString& value );
+    static QDomElement createVendorOptionElement( QDomDocument &doc, const QString &name, const QString &value );
     static QgsStringMap getVendorOptionList( QDomElement &element );
 
-    static QgsStringMap parseProperties( QDomElement& element );
-    static void saveProperties( QgsStringMap props, QDomDocument& doc, QDomElement& element );
+    static QgsStringMap parseProperties( QDomElement &element );
+    static void saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element );
 
-    static QgsSymbolMap loadSymbols( QDomElement& element ) /Factory/;
-    static QDomElement saveSymbols( QgsSymbolMap& symbols, const QString& tagName, QDomDocument& doc );
+    static QgsSymbolMap loadSymbols( QDomElement &element ) /Factory/;
+    static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc );
 
-    static void clearSymbolMap( QgsSymbolMap& symbols );
+    static void clearSymbolMap( QgsSymbolMap &symbols );
 
-    static QgsColorRamp* loadColorRamp( QDomElement& element ) /Factory/;
-    static QDomElement saveColorRamp( const QString& name, QgsColorRamp* ramp, QDomDocument& doc );
+    static QgsColorRamp *loadColorRamp( QDomElement &element ) /Factory/;
+    static QDomElement saveColorRamp( const QString &name, QgsColorRamp *ramp, QDomDocument &doc );
     static QVariant colorRampToVariant( const QString &name, QgsColorRamp *ramp );
     static QgsColorRamp *loadColorRamp( const QVariant &value );
 
@@ -293,7 +293,7 @@ class QgsSymbolLayerUtils
      * @returns display name for color
      * @note added in 2.5
      */
-    static QString colorToName( const QColor& color );
+    static QString colorToName( const QColor &color );
 
     /**
      * Attempts to parse a string as a list of colors using a variety of common formats, including hex
@@ -302,7 +302,7 @@ class QgsSymbolLayerUtils
      * @returns list of parsed colors
      * @note added in 2.5
      */
-    static QList< QColor > parseColorList( const QString& colorStr );
+    static QList< QColor > parseColorList( const QString &colorStr );
 
     /**
      * Creates mime data from a color. Sets both the mime data's color data, and the
@@ -322,7 +322,7 @@ class QgsSymbolLayerUtils
      * invalid color
      * @note added in 2.5
      */
-    static QColor colorFromMimeData( const QMimeData *data, bool& hasAlpha );
+    static QColor colorFromMimeData( const QMimeData *data, bool &hasAlpha );
 
     /**
      * Attempts to parse mime data as a list of named colors
@@ -339,7 +339,7 @@ class QgsSymbolLayerUtils
      * @returns mime data containing encoded colors
      * @note added in 2.5
      */
-    static QMimeData* colorListToMimeData( const QgsNamedColorList& colorList, const bool allFormats = true );
+    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true );
 
     /**
      * Exports colors to a gpl GIMP palette file
@@ -349,7 +349,7 @@ class QgsSymbolLayerUtils
      * @returns true if export was successful
      * @see importColorsFromGpl
      */
-    static bool saveColorsToGpl( QFile &file, const QString& paletteName, const QgsNamedColorList& colors );
+    static bool saveColorsToGpl( QFile &file, const QString &paletteName, const QgsNamedColorList &colors );
 
     /**
      * Imports colors from a gpl GIMP palette file
@@ -359,7 +359,7 @@ class QgsSymbolLayerUtils
      * @returns list of imported colors
      * @see saveColorsToGpl
      */
-    static QgsNamedColorList importColorsFromGpl( QFile &file, bool &ok, QString& name );
+    static QgsNamedColorList importColorsFromGpl( QFile &file, bool &ok, QString &name );
 
     /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
@@ -369,7 +369,7 @@ class QgsSymbolLayerUtils
      * @returns parsed color
      * @note added in 2.3
      */
-    static QColor parseColor( const QString& colorStr, bool strictEval = false );
+    static QColor parseColor( const QString &colorStr, bool strictEval = false );
 
     /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
@@ -380,21 +380,21 @@ class QgsSymbolLayerUtils
      * @returns parsed color
      * @note added in 2.3
      */
-    static QColor parseColorWithAlpha( const QString& colorStr, bool &containsAlpha, bool strictEval = false );
+    static QColor parseColorWithAlpha( const QString &colorStr, bool &containsAlpha, bool strictEval = false );
 
     /** Multiplies opacity of image pixel values with a (global) transparency value*/
-    static void multiplyImageOpacity( QImage* image, qreal alpha );
+    static void multiplyImageOpacity( QImage *image, qreal alpha );
 
     /** Blurs an image in place, e.g. creating Qt-independent drop shadows */
-    static void blurImageInPlace( QImage& image, QRect rect, int radius, bool alphaOnly );
+    static void blurImageInPlace( QImage &image, QRect rect, int radius, bool alphaOnly );
 
     /** Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value
      * @note added in 2.3
      */
-    static void premultiplyColor( QColor& rgb, int alpha );
+    static void premultiplyColor( QColor &rgb, int alpha );
 
     /** Sorts the passed list in requested order*/
-    static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
+    static void sortVariantList( QList<QVariant> &list, Qt::SortOrder order );
     /** Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     static QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance );
 
@@ -402,7 +402,7 @@ class QgsSymbolLayerUtils
     static QStringList listSvgFiles();
 
     //! Return a list of svg files at the specified directory
-    static QStringList listSvgFilesAt( const QString& directory );
+    static QStringList listSvgFilesAt( const QString &directory );
 
     /** Get symbol's path from its name.
      *  If the name is not absolute path the file is searched in SVG paths specified
@@ -414,10 +414,10 @@ class QgsSymbolLayerUtils
     static QString symbolPathToName( QString path );
 
     //! Calculate the centroid point of a QPolygonF
-    static QPointF polygonCentroid( const QPolygonF& points );
+    static QPointF polygonCentroid( const QPolygonF &points );
 
     //! Calculate a point within of a QPolygonF
-    static QPointF polygonPointOnSurface( const QPolygonF& points );
+    static QPointF polygonPointOnSurface( const QPolygonF &points );
 
     //! Calculate whether a point is within of a QPolygonF
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
@@ -428,7 +428,7 @@ class QgsSymbolLayerUtils
      * This is useful when accepting input which could be either a non-quoted field name or expression.
      * @note added in 2.2
      */
-    static QgsExpression* fieldOrExpressionToExpression( const QString& fieldOrExpression ) /Factory/;
+    static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) /Factory/;
 
     /** Return a field name if the whole expression is just a name of the field .
      *  Returns full expression string if the expression is more complex than just one field.
@@ -436,7 +436,7 @@ class QgsSymbolLayerUtils
      *  wanted for saving (due to backward compatibility) or display in GUI.
      * @note added in 2.2
      */
-    static QString fieldOrExpressionFromExpression( QgsExpression* expression );
+    static QString fieldOrExpressionFromExpression( QgsExpression *expression );
 
     /** Computes a sequence of about 'classes' equally spaced round values
      *  which cover the range of values from 'minimum' to 'maximum'.
@@ -449,31 +449,31 @@ class QgsSymbolLayerUtils
      *  returns the value un-modified
      * @note added in 3.0
      */
-    static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
+    static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props );
 
     /** Rescales the given point based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * @note added in 3.0
      */
-    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props ) /PyName=rescalePointUom/;
+    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props ) /PyName=rescalePointUom/;
 
     /** Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * @note added in 3.0
      */
-    static QVector<qreal> rescaleUom( const QVector<qreal>& array, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props ) /PyName=rescaleArrayUom/;
+    static QVector<qreal> rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props ) /PyName=rescaleArrayUom/;
 
     /**
      * Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element
      * @note added in 3.0
      */
-    static void applyScaleDependency( QDomDocument& doc, QDomElement& ruleElem, QgsStringMap& props );
+    static void applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QgsStringMap &props );
 
     /**
       * Merges the local scale limits, if any, with the ones already in the map, if any
       * @note added in 3.0
       */
-    static void mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap& props );
+    static void mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap &props );
 
     /**
      * Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,
@@ -483,12 +483,12 @@ class QgsSymbolLayerUtils
      */
     static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
                                     const QString& path,
-                                    const QColor& fillColor, double size, const QColor& strokeColor, double strokeWidth );
+                                    const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth );
 
     /**
      * Encodes a reference to a parametric SVG into a path with parameters according to the SVG Parameters spec
      * @note added in 3.0
      */
-    static QString getSvgParametricPath( const QString& basePath, const QColor& fillColor, const QColor& strokeColor, double strokeWidth );
+    static QString getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth );
 
 };

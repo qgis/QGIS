@@ -22,7 +22,7 @@ class QgsValueRelationFieldFormatter : QgsFieldFormatter
   public:
     struct ValueRelationItem
     {
-      ValueRelationItem( const QVariant& key, const QString& value );
+      ValueRelationItem( const QVariant &key, const QString &value );
 
       ValueRelationItem();
 
@@ -41,5 +41,5 @@ class QgsValueRelationFieldFormatter : QgsFieldFormatter
 
     QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
 
-    static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap& config );
+    static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap &config );
 };

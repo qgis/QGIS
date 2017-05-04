@@ -38,7 +38,6 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class RandomExtractWithinSubsets(GeoAlgorithm):
@@ -82,7 +81,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
-        layer = dataobjects.getLayerFromString(filename)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
 
@@ -104,7 +103,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
                             "correct value and try again."))
             value = value / 100.0
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), layer.wkbType(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(),
                                                                      layer.crs(), context)
 
         selran = []

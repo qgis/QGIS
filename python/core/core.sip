@@ -100,6 +100,7 @@
 %Include qgsmaprenderersequentialjob.sip
 %Include qgsmaprenderertask.sip
 %Include qgsmapsettings.sip
+%Include qgsmapsettingsutils.sip
 %Include qgsmaptopixel.sip
 %Include qgsmapunitscale.sip
 %Include qgsmargins.sip
@@ -274,6 +275,9 @@
 %Include layertree/qgslayertreenode.sip
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include layertree/qgslayertreeutils.sip
+
+%Include metadata/qgslayermetadata.sip
+%Include metadata/qgslayermetadatavalidator.sip
 
 %Include processing/qgsprocessingalgorithm.sip
 %Include processing/qgsprocessingcontext.sip

@@ -17,6 +17,8 @@
 #define QGSCOMPOSITION_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <memory>
 
 #include <QDomDocument>
@@ -207,8 +209,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \see resizePageToContents()
      * \see setResizeToContentsMargins()
      */
-    void resizeToContentsMargins( double &marginTop, double &marginRight,
-                                  double &marginBottom, double &marginLeft ) const;
+    void resizeToContentsMargins( double &marginTop SIP_OUT, double &marginRight SIP_OUT,
+                                  double &marginBottom SIP_OUT, double &marginLeft SIP_OUT ) const;
 
     /** Returns the vertical space between pages in a composer view
      * \returns space between pages in mm
@@ -392,7 +394,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param itemList list of item type to store matching items in
      * \note not available in Python bindings
      */
-    template<class T> void composerItems( QList<T *> &itemList );
+    template<class T> void composerItems( QList<T *> &itemList ) SIP_SKIP;
 
     /** Return composer items of a specific type on a specified page
      * \param itemList list of item type to store matching items in
@@ -400,7 +402,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \note not available in Python bindings
      * \since QGIS 2.5
      */
-    template<class T> void composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const;
+    template<class T> void composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const SIP_SKIP;
 
     /** Returns the composer map with specified id
      * \returns QgsComposerMap or 0 pointer if the composer map item does not exist
@@ -490,7 +492,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in Python bindings
      */
     void addItemsFromXml( const QDomElement &elem, const QDomDocument &doc,
-                          bool addUndoCommands = false, QPointF *pos = nullptr, bool pasteInPlace = false );
+                          bool addUndoCommands = false, QPointF *pos = nullptr, bool pasteInPlace = false ) SIP_SKIP;
 
     //! Adds item to z list. Usually called from constructor of QgsComposerItem
     void addItemToZList( QgsComposerItem *item );
@@ -561,7 +563,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Returns pointer to selection handles
      * \note not available in Python bindings
      */
-    QgsComposerMouseHandles *selectionHandles() {return mSelectionHandles;}
+    QgsComposerMouseHandles *selectionHandles() {return mSelectionHandles;} SIP_SKIP
 
     //! Add a custom snap line (can be horizontal or vertical)
     QGraphicsLineItem *addSnapLine();
@@ -571,7 +573,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Get nearest snap line
      * \note not available in Python bindings
      */
-    QGraphicsLineItem *nearestSnapLine( const bool horizontal, const double x, const double y, const double tolerance, QList< QPair< QgsComposerItem *, QgsComposerItem::ItemPositionMode > > &snappedItems ) const;
+    QGraphicsLineItem *nearestSnapLine( const bool horizontal, const double x, const double y, const double tolerance, QList< QPair< QgsComposerItem *, QgsComposerItem::ItemPositionMode > > &snappedItems ) const SIP_SKIP;
 
     /** Allocates new item command and saves initial state in it
      * \param item target item
@@ -597,7 +599,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Adds an arrow item to the graphics scene and advises composer to create a widget for it (through signal)
       \note not available in Python bindings*/
-    void addComposerArrow( QgsComposerArrow *arrow );
+    void addComposerArrow( QgsComposerArrow *arrow ) SIP_SKIP;
     //! Adds label to the graphics scene and advises composer to create a widget for it (through signal)
     void addComposerLabel( QgsComposerLabel *label );
     //! Adds map to the graphics scene and advises composer to create a widget for it (through signal)

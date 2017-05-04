@@ -48,15 +48,15 @@ class QgsRasterProjector : QgsRasterInterface
     // Translated precision mode, for use in ComboBox etc.
     static QString precisionLabel( Precision precision );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) / Factory /;
 
     //! Calculate destination extent and size from source extent and size
     bool destExtentSize( const QgsRectangle& srcExtent, int srcXSize, int srcYSize,
-                         QgsRectangle& destExtent, int& destXSize, int& destYSize );
+                         QgsRectangle &destExtent, int &destXSize, int &destYSize );
 
     //! Calculate destination extent and size from source extent and size
     static bool extentSize( const QgsCoordinateTransform& ct,
                             const QgsRectangle& srcExtent, int srcXSize, int srcYSize,
-                            QgsRectangle& destExtent, int& destXSize, int& destYSize );
+                            QgsRectangle &destExtent, int &destXSize, int &destYSize );
 
 };

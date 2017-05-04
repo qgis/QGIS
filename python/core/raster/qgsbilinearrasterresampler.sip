@@ -7,7 +7,7 @@ class QgsBilinearRasterResampler : QgsRasterResampler
     QgsBilinearRasterResampler();
     ~QgsBilinearRasterResampler();
 
-    void resample( const QImage& srcImage, QImage& dstImage );
+    void resample( const QImage &srcImage, QImage &dstImage );
     QString type() const;
-    virtual QgsBilinearRasterResampler * clone() const /Factory/;
+    virtual QgsBilinearRasterResampler *clone() const /Factory/;
 };

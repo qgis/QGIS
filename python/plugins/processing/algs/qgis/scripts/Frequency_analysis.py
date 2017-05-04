@@ -7,9 +7,8 @@ from processing.tools.vector import TableWriter
 from collections import defaultdict
 from qgis.core import QgsProcessingUtils
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects
 
-layer = dataobjects.getLayerFromString(Input)
+layer = QgsProcessingUtils.mapLayerFromString(Input, context)
 inputFields = layer.fields()
 fieldIdxs = []
 fields = Fields.split(',')

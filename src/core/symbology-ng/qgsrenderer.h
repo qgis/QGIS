@@ -17,6 +17,7 @@
 #define QGSRENDERERV2_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
@@ -88,7 +89,7 @@ class CORE_EXPORT QgsFeatureRenderer
     // renderer takes ownership of its symbols!
 
     //! return a new renderer - used by default in vector layers
-    static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType );
+    static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
     QString type() const { return mType; }
 
@@ -164,7 +165,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \returns A copy of this renderer
      */
-    virtual QgsFeatureRenderer *clone() const = 0;
+    virtual QgsFeatureRenderer *clone() const = 0 SIP_FACTORY;
 
     /**
      * Render a feature using this renderer in the given context.
@@ -219,7 +220,7 @@ class CORE_EXPORT QgsFeatureRenderer
     void setUsingSymbolLevels( bool usingSymbolLevels ) { mUsingSymbolLevels = usingSymbolLevels; }
 
     //! create a renderer from XML element
-    static QgsFeatureRenderer *load( QDomElement &symbologyElem );
+    static QgsFeatureRenderer *load( QDomElement &symbologyElem ) SIP_FACTORY;
 
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument &doc );
@@ -238,7 +239,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * went wrong
      * \returns the renderer
      */
-    static QgsFeatureRenderer *loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage );
+    static QgsFeatureRenderer *loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage ) SIP_FACTORY;
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const
@@ -267,11 +268,11 @@ class CORE_EXPORT QgsFeatureRenderer
      * \param symbol new symbol for legend item. Ownership is transferred to renderer.
      * \since QGIS 2.14
      */
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol );
+    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER );
 
     //! return a list of item text / symbol
     //! \note not available in Python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) SIP_SKIP;
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! Default fallback implementation just uses legendSymbolItems() implementation

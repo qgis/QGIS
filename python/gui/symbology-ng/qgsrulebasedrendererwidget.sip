@@ -5,7 +5,7 @@ class QgsRuleBasedRendererModel : QAbstractItemModel
 %End
 
   public:
-    QgsRuleBasedRendererModel( QgsRuleBasedRenderer* r );
+    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *r );
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
@@ -19,7 +19,7 @@ class QgsRuleBasedRendererModel : QAbstractItemModel
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
     // editing support
-    virtual bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
     // drag'n'drop support
     Qt::DropActions supportedDropActions() const;
@@ -27,19 +27,19 @@ class QgsRuleBasedRendererModel : QAbstractItemModel
     QMimeData *mimeData( const QModelIndexList &indexes ) const;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
 
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
     // new methods
 
-    QgsRuleBasedRenderer::Rule* ruleForIndex( const QModelIndex& index ) const;
+    QgsRuleBasedRenderer::Rule *ruleForIndex( const QModelIndex &index ) const;
 
-    void insertRule( const QModelIndex& parent, int before, QgsRuleBasedRenderer::Rule* newrule );
-    void updateRule( const QModelIndex& parent, int row );
+    void insertRule( const QModelIndex &parent, int before, QgsRuleBasedRenderer::Rule *newrule );
+    void updateRule( const QModelIndex &parent, int row );
     // update rule and all its descendants
-    void updateRule( const QModelIndex& index );
-    void removeRule( const QModelIndex& index );
+    void updateRule( const QModelIndex &index );
+    void removeRule( const QModelIndex &index );
 
-    void willAddRules( const QModelIndex& parent, int count ); // call beginInsertRows
+    void willAddRules( const QModelIndex &parent, int count );
     void finishedAddingRules(); // call endInsertRows
 
     //! @note not available in python bindungs
@@ -56,18 +56,18 @@ class QgsRuleBasedRendererWidget : QgsRendererWidget
 
   public:
 
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 
-    QgsRuleBasedRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsRuleBasedRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsRuleBasedRendererWidget();
 
-    virtual QgsFeatureRenderer* renderer();
+    virtual QgsFeatureRenderer *renderer();
 
   public slots:
 
     void addRule();
     void editRule();
-    void editRule( const QModelIndex& index );
+    void editRule( const QModelIndex &index );
     void removeRule();
     void countFeatures();
     void clearFeatureCounts();
@@ -78,7 +78,7 @@ class QgsRuleBasedRendererWidget : QgsRendererWidget
 
     void setRenderingOrder();
 
-    void currentRuleChanged( const QModelIndex& current = QModelIndex(), const QModelIndex& previous = QModelIndex() );
+    void currentRuleChanged( const QModelIndex &current = QModelIndex(), const QModelIndex &previous = QModelIndex() );
     void selectedRulesChanged();
 
     void saveSectionWidth( int section, int oldSize, int newSize );
@@ -90,14 +90,14 @@ class QgsRuleBasedRendererWidget : QgsRendererWidget
     void refineRuleCategoriesGui();
     //! Opens the dialog for refining a rule using ranges
     void refineRuleRangesGui();
-    void refineRuleScalesGui( const QModelIndexList& index );
+    void refineRuleScalesGui( const QModelIndexList &index );
 
-    QgsRuleBasedRenderer::Rule* currentRule();
+    QgsRuleBasedRenderer::Rule *currentRule();
 
     QList<QgsSymbol*> selectedSymbols();
     QList<QgsRuleBasedRenderer::Rule*> selectedRules();
     void refreshSymbolView();
-    void keyPressEvent( QKeyEvent* event );
+    void keyPressEvent( QKeyEvent *event );
 };
 
 ///////
@@ -117,10 +117,10 @@ class QgsRendererRulePropsWidget: QgsPanelWidget
        * @param parent The parent widget.
        * @param context the symbol widget context
        */
-    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent /TransferThis/ = 0, const QgsSymbolWidgetContext& context= QgsSymbolWidgetContext() );
+    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent /TransferThis/ = 0, const QgsSymbolWidgetContext &context= QgsSymbolWidgetContext() );
     ~QgsRendererRulePropsWidget();
 
-    QgsRuleBasedRenderer::Rule* rule();
+    QgsRuleBasedRenderer::Rule *rule();
 
   public slots:
     void testFilter();
@@ -138,10 +138,10 @@ class QgsRendererRulePropsDialog : QDialog
 
   public:
 
-    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent /TransferThis/ = 0, const QgsSymbolWidgetContext& context = QgsSymbolWidgetContext() );
+    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent /TransferThis/ = 0, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
     ~QgsRendererRulePropsDialog();
 
-    QgsRuleBasedRenderer::Rule* rule();
+    QgsRuleBasedRenderer::Rule *rule();
 
   public slots:
     void testFilter();

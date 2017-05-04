@@ -35,7 +35,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputDirectory
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 from processing.tools.system import mkdir
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -67,8 +67,7 @@ class VectorSplit(GeoAlgorithm):
         self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldName = self.getParameterValue(self.FIELD)
         directory = self.getOutputValue(self.OUTPUT)
 
@@ -87,7 +86,7 @@ class VectorSplit(GeoAlgorithm):
         for current, i in enumerate(uniqueValues):
             fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
 
-            writer, dest, layer = vector.createVectorWriter(fName, None, fields, geomType, crs, context)
+            writer, dest, _layer = vector.createVectorWriter(fName, None, fields, geomType, crs, context)
             for f in QgsProcessingUtils.getFeatures(layer, context):
                 if f[fieldName] == i:
                     writer.addFeature(f)

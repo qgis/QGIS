@@ -30,7 +30,7 @@ from qgis.core import QgsVectorFileWriter, QgsSettings, QgsProcessingUtils
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class ExampleAlgorithm(GeoAlgorithm):
@@ -92,8 +92,8 @@ class ExampleAlgorithm(GeoAlgorithm):
         # Input layers vales are always a string with its location.
         # That string can be converted into a QGIS layer (a
         # QgsVectorLayer in this case) using the
-        # dataobjects.getLayerFromString() method.
-        vectorLayer = dataobjects.getLayerFromString(inputFilename)
+        # QgsProcessingUtils.mapLayerFromString() method.
+        vectorLayer = QgsProcessingUtils.mapLayerFromString(inputFilename, context)
 
         # And now we can process
 

@@ -22,8 +22,8 @@ sub processDoxygenLine
     $line =~ s/::/./g;
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
-	# replace \returns with :return:
-	$line =~ s/\\return(s)?/:return:/g;
+    # replace \returns with :return:
+    $line =~ s/\\return(s)?/:return:/g;
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
         return ""
@@ -93,9 +93,9 @@ sub dbg_info
 }
 
 sub remove_constructor_or_body {
-    # https://regex101.com/r/ZaP3tC/1
+    # https://regex101.com/r/ZaP3tC/3
     do {no warnings 'uninitialized';
-        if ( $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(~?\w+|operator.{1,2})\(([\w=()\/ ,&*<>-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
+        if ( $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(~?\w+|operator.{1,2})\(([\w=()\/ ,&*<>."-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
              || $line =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/ ){
             dbg_info("remove constructor definition, function bodies, member initializing list");
             my $newline = "$1$2$3$4$5;";
@@ -343,7 +343,7 @@ while ($line_idx < $line_count){
         dbg_info("going private");
         next;
     }
-    elsif ( $line =~ m/^\s*(public)( slots)?:.*$/ ){
+    elsif ( $line =~ m/^\s*(public( slots)?|signals):.*$/ ){
         dbg_info("going public");
         $ACCESS[$#ACCESS] = PUBLIC;
         $comment = '';
@@ -465,6 +465,10 @@ while ($line_idx < $line_count){
         next;
     }
 
+    # remove static const value assignment
+    # https://regex101.com/r/DyWkgn/1
+    $line =~ s/^(\s*static const \w+(<([\w()<>, ]|::)+>)? \w+) = .*;\s*(\/\/.*)?$/$1;/;
+
     # remove struct member assignment
     if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $line =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
         dbg_info("remove struct member assignment");
@@ -570,14 +574,14 @@ while ($line_idx < $line_count){
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
 
     # combine multiple annotations
-    # https://regex101.com/r/uvCt4M/1
+    # https://regex101.com/r/uvCt4M/3
     do {no warnings 'uninitialized';
-        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\/\s*;(\s*(\/\/.*)?)$/\/$1,$3\/$5;/;
+        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
         (! $3) or dbg_info("combine multiple annotations -- works only for 2");
     };
 
     # unprinted annotations
-    $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYARGTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
+    $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
     $line =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
     # remove argument
     if ($line =~ m/SIP_PYARGREMOVE/){
@@ -600,7 +604,7 @@ while ($line_idx < $line_count){
     $line =~ s/SIP_FORCE//;
 
     # fix astyle placing space after % character
-    $line =~ s/\s*% (MappedType|TypeCode|TypeHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;
+    $line =~ s/\s*% (MappedType|TypeCode|TypeHeaderCode|ModuleHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;
     $line =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
     push @output, dbg("NOR")."$line\n";
@@ -662,8 +666,8 @@ while ($line_idx < $line_count){
     elsif ( $line =~ m/\/\// ||
             $line =~ m/\s*typedef / ||
             $line =~ m/\s*struct / ||
-             $line =~ m/operator\[\]\(/ ||
-             $line =~ m/^\s*% \w+(.*)?$/ ){
+            $line =~ m/operator\[\]\(/ ||
+            $line =~ m/^\s*%\w+(.*)?$/ ){
         dbg_info('skipping comment');
         $comment = '';
         $return_type = '';

@@ -10,7 +10,7 @@ class QgsRasterTransparencyWidget: QgsMapLayerConfigWidget
     /**
      * @brief Widget to control a layers transparency and related options
      */
-    QgsRasterTransparencyWidget( QgsRasterLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
     ~QgsRasterTransparencyWidget();
 
   public slots:

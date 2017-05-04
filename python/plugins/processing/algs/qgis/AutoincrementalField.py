@@ -33,7 +33,6 @@ from qgis.core import (QgsField,
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class AutoincrementalField(GeoAlgorithm):
@@ -64,7 +63,7 @@ class AutoincrementalField(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = \
-            dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+            QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fields = vlayer.fields()
         fields.append(QgsField('AUTO', QVariant.Int))
         writer = output.getVectorWriter(fields, vlayer.wkbType(), vlayer.crs(), context)

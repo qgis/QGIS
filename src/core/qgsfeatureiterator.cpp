@@ -142,7 +142,7 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
     QgsExpressionContext *expressionContext( mRequest.expressionContext() );
     do
     {
-      orderByIt->expression().prepare( expressionContext );
+      orderByIt->prepare( expressionContext );
     }
     while ( ++orderByIt != preparedOrderBys.end() );
 

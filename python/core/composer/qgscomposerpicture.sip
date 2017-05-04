@@ -44,7 +44,7 @@ class QgsComposerPicture: QgsComposerItem
     virtual int type() const;
 
     /** Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
     /** Sets the source path of the image (may be svg or a raster format). Data defined
      * picture source may override this value. The path can either be a local path
@@ -54,7 +54,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see picturePath
      * @note added in QGIS 2.5
      */
-    void setPicturePath( const QString& path );
+    void setPicturePath( const QString &path );
 
     /** Returns the path of the source image. Data defined picture source may override
      * this value. The path can either be a local path or a remote (http) path.
@@ -68,19 +68,19 @@ class QgsComposerPicture: QgsComposerItem
     /** Sets this items bound in scene coordinates such that 1 item size units
      * corresponds to 1 scene size unit and resizes the svg symbol / image
      */
-    void setSceneRect( const QRectF& rectangle );
+    void setSceneRect( const QRectF &rectangle );
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc is Dom document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     /** Returns the rotation used for drawing the picture within the item's frame
      * @returns picture rotation in degrees
@@ -187,7 +187,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see setSvgStrokeColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgFillColor( const QColor& color );
+    void setSvgFillColor( const QColor &color );
 
     /** Returns the stroke color used for parametrized SVG files.
      * @see setSvgStrokeColor()
@@ -204,7 +204,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see setSvgFillColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgStrokeColor( const QColor& color );
+    void setSvgStrokeColor( const QColor &color );
 
     /** Returns the stroke width (in mm) used for parametrized SVG files.
      * @see setSvgStrokeWidth()
@@ -251,7 +251,7 @@ class QgsComposerPicture: QgsComposerItem
      * @param context expression context for evaluating data defined picture sources
      * @note added in 2.3
      */
-    void refreshPicture( const QgsExpressionContext* context = 0 );
+    void refreshPicture( const QgsExpressionContext *context = 0 );
 
     /** Forces a recalculation of the picture's frame size
      * @note added in 2.3

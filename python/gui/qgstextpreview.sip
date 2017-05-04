@@ -22,7 +22,7 @@ class QgsTextPreview : public QLabel
     /** Constructor for QgsTextPreview
      * @param parent parent widget
      */
-    QgsTextPreview( QWidget *parent = nullptr );
+    QgsTextPreview( QWidget *parent = 0 );
 
     void paintEvent( QPaintEvent *e );
 

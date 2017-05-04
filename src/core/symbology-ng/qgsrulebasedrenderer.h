@@ -17,6 +17,7 @@
 #define QGSRULEBASEDRENDERERV2_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgis.h"
@@ -151,7 +152,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 
         //! \note not available in Python bindings
-        QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) const;
+        QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) const SIP_SKIP;
 
         //! \since QGIS 2.6
         QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
@@ -213,7 +214,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         void setRuleKey( const QString &key ) { mRuleKey = key; }
 
         //! set a new symbol (or NULL). Deletes old symbol.
-        void setSymbol( QgsSymbol *sym );
+        void setSymbol( QgsSymbol *sym SIP_TRANSFER );
         void setLabel( const QString &label ) { mLabel = label; }
 
         /**
@@ -272,7 +273,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
         //! \note not available in Python bindings
-        void setNormZLevels( const QMap<int, int> &zLevelsToNormLevels );
+        void setNormZLevels( const QMap<int, int> &zLevelsToNormLevels ) SIP_SKIP;
 
         /**
          * Render a given feature, will recursively call subclasses and only render if the constraints apply.
@@ -404,12 +405,12 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     /////
 
-    static QgsFeatureRenderer *create( QDomElement &element );
+    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
 
     //! Constructs the renderer from given tree of rules (takes ownership)
-    QgsRuleBasedRenderer( QgsRuleBasedRenderer::Rule *root );
+    QgsRuleBasedRenderer( QgsRuleBasedRenderer::Rule *root SIP_TRANSFER );
     //! Constructor for convenience. Creates a root rule and adds a default rule with symbol (takes ownership)
-    QgsRuleBasedRenderer( QgsSymbol *defaultSymbol );
+    QgsRuleBasedRenderer( QgsSymbol *defaultSymbol SIP_TRANSFER );
 
     ~QgsRuleBasedRenderer();
 
@@ -432,7 +433,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
 
-    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
+    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
@@ -468,7 +469,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     //! creates a QgsRuleBasedRenderer from an existing renderer.
     //! \since QGIS 2.5
     //! \returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
     static void convertToDataDefinedSymbology( QgsSymbol *symbol, const QString &sizeScaleField, const QString &rotationField = QString() );

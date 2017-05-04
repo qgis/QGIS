@@ -19,6 +19,7 @@
 #define QGSPOINTDISPLACEMENTRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgspointdistancerenderer.h"
 
 /** \class QgsPointDisplacementRenderer
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Create a renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem );
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem ) SIP_FACTORY;
 
     /** Sets the line width for the displacement group circle.
      * \param width line width in mm
@@ -110,13 +111,13 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
      * \param symbol new center symbol. Ownership is transferred to the renderer.
      * \see centerSymbol()
     */
-    void setCenterSymbol( QgsMarkerSymbol *symbol );
+    void setCenterSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /** Creates a QgsPointDisplacementRenderer from an existing renderer.
      * \since QGIS 2.5
      * \returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
 

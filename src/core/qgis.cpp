@@ -27,7 +27,7 @@
 #include <QDateTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
-#include "geometry/qgswkbtypes.h"
+#include "qgswkbtypes.h"
 
 #include <ogr_api.h>
 

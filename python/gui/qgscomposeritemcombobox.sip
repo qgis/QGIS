@@ -19,7 +19,7 @@ class QgsComposerItemComboBox : QComboBox
      * @param composition composition to show items from. If not set, no items will be shown
      * until setComposition() is called
      */
-    explicit QgsComposerItemComboBox( QWidget *parent /TransferThis/ = nullptr, QgsComposition *composition = nullptr );
+    explicit QgsComposerItemComboBox( QWidget *parent /TransferThis/ = 0, QgsComposition *composition = 0 );
 
     /** Sets the composition containing the items to list in the combo box.
      */

@@ -33,7 +33,6 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class TextToFloat(GeoAlgorithm):
@@ -65,7 +64,7 @@ class TextToFloat(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Float from text')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldName = self.getParameterValue(self.FIELD)
         idx = layer.fields().lookupField(fieldName)
 

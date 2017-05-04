@@ -5,22 +5,22 @@ class QgsRendererWidget : QgsPanelWidget
 %End
 
   public:
-    QgsRendererWidget( QgsVectorLayer* layer, QgsStyle* style );
+    QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style );
 
     virtual ~QgsRendererWidget();
 
     //! return pointer to the renderer (no transfer of ownership)
-    virtual QgsFeatureRenderer* renderer() = 0;
+    virtual QgsFeatureRenderer *renderer() = 0;
 
     //! show a dialog with renderer's symbol level settings
-    void showSymbolLevelsDialog( QgsFeatureRenderer* r );
+    void showSymbolLevelsDialog( QgsFeatureRenderer *r );
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
-    void setContext( const QgsSymbolWidgetContext& context );
+    void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
@@ -31,7 +31,7 @@ class QgsRendererWidget : QgsPanelWidget
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
-    const QgsVectorLayer* vectorLayer() const;
+    const QgsVectorLayer *vectorLayer() const;
 
     /**
      * This method should be called whenever the renderer is actually set on the layer.
@@ -95,7 +95,7 @@ class QgsDataDefinedValueDialog : QDialog
      * @param layer must not be null
      * @param label value label
      */
-    QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer, const QString & label );
+    QgsDataDefinedValueDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer, const QString &label );
     virtual ~QgsDataDefinedValueDialog();
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
@@ -103,7 +103,7 @@ class QgsDataDefinedValueDialog : QDialog
      * @see context()
      * @note added in QGIS 3.0
      */
-    void setContext( const QgsSymbolWidgetContext& context );
+    void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
@@ -114,7 +114,7 @@ class QgsDataDefinedValueDialog : QDialog
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
-    const QgsVectorLayer* vectorLayer() const;
+    const QgsVectorLayer *vectorLayer() const;
 
   public slots:
     void dataDefinedChanged();
@@ -131,7 +131,7 @@ class QgsDataDefinedValueDialog : QDialog
     QgsProperty symbolDataDefined() const;
     virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const = 0;
     virtual double value( const QgsSymbol* ) const = 0;
-    virtual void setDataDefined( QgsSymbol* symbol, const QgsProperty& dd ) = 0;
+    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0;
 };
 
 class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
@@ -141,14 +141,14 @@ class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
 %End
 
   public:
-    QgsDataDefinedSizeDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer );
+    QgsDataDefinedSizeDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer );
 
   protected:
     virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
 
-    double value( const QgsSymbol * symbol ) const;
+    double value( const QgsSymbol *symbol ) const;
 
-    void setDataDefined( QgsSymbol* symbol, const QgsProperty& dd );
+    void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 };
 
 class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
@@ -158,14 +158,14 @@ class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
 %End
 
   public:
-    QgsDataDefinedRotationDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer );
+    QgsDataDefinedRotationDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer );
 
   protected:
     virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
 
-    double value( const QgsSymbol * symbol ) const;
+    double value( const QgsSymbol *symbol ) const;
 
-    void setDataDefined( QgsSymbol* symbol, const QgsProperty& dd );
+    void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 };
 
 
@@ -176,12 +176,12 @@ class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
 %End
 
   public:
-    QgsDataDefinedWidthDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer );
+    QgsDataDefinedWidthDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer );
 
   protected:
     virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
 
-    double value( const QgsSymbol * symbol ) const;
+    double value( const QgsSymbol *symbol ) const;
 
-    void setDataDefined( QgsSymbol* symbol, const QgsProperty& dd );
+    void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 };

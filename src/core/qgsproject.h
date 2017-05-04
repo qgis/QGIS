@@ -22,6 +22,8 @@
 #define QGSPROJECT_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <memory>
 #include <QHash>
 #include <QList>
@@ -94,7 +96,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
      */
-    explicit QgsProject( QObject *parent = nullptr );
+    explicit QgsProject( QObject *parent SIP_TRANSFERTHIS = 0 );
 
     ~QgsProject();
 
@@ -219,7 +221,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note The key string must be valid xml tag names in order to be saved to the file.
      * \note available in Python bindings as writeEntryBool
      */
-    bool writeEntry( const QString &scope, const QString &key, bool value );
+    bool writeEntry( const QString &scope, const QString &key, bool value ) SIP_PYNAME( writeEntryBool );
 
     /**
      * Write a double entry to the project file.
@@ -230,7 +232,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note The key string must be valid xml tag names in order to be saved to the file.
      * \note available in Python bindings as writeEntryDouble
      */
-    bool writeEntry( const QString &scope, const QString &key, double value );
+    bool writeEntry( const QString &scope, const QString &key, double value ) SIP_PYNAME( writeEntryDouble );
 
     /**
      * Write an integer entry to the project file.
@@ -321,7 +323,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /** Change handler for missing layers.
      * Deletes old handler and takes ownership of the new one.
      */
-    void setBadLayerHandler( QgsProjectBadLayerHandler *handler );
+    void setBadLayerHandler( QgsProjectBadLayerHandler *handler SIP_TRANSFER );
 
     //! Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded
     QString layerIsEmbedded( const QString &id ) const;
@@ -331,7 +333,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
-                              bool saveFlag = true );
+                              bool saveFlag = true ) SIP_SKIP;
 
     /** Create layer group instance defined in an arbitrary project file.
      * \since QGIS 2.4
@@ -458,7 +460,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 2.16
      * \note Not available in Python bindings
      */
-    QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups();
+    QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups() SIP_SKIP;
 
     /**
      * Should default values be evaluated on provider side when requested and not when committed.
@@ -563,7 +565,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 2.16
      * \see mapLayers()
      */
-    template <typename T>
+    template <typename T> SIP_SKIP
     QVector<T> layers() const
     {
       QVector<T> layers;
@@ -706,7 +708,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see removeMapLayer()
      * \since QGIS 3.0
      */
-    QgsMapLayer *takeMapLayer( QgsMapLayer *layer );
+    QgsMapLayer *takeMapLayer( QgsMapLayer *layer ) SIP_TRANSFERBACK;
 
     /**
      * Removes all registered layers. If the registry has ownership
@@ -984,22 +986,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /** Set error message from read/write operation
      * \note not available in Python bindings
      */
-    void setError( const QString &errorMessage );
+    void setError( const QString &errorMessage ) SIP_SKIP;
 
     /** Clear error message
      * \note not available in Python bindings
      */
-    void clearError();
+    void clearError() SIP_SKIP;
 
     //! Creates layer and adds it to maplayer registry
     //! \note not available in Python bindings
-    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes );
+    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group );
+    void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    void loadEmbeddedNodes( QgsLayerTreeGroup *group );
+    void loadEmbeddedNodes( QgsLayerTreeGroup *group ) SIP_SKIP;
 
     QMap<QString, QgsMapLayer *> mMapLayers;
 

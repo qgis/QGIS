@@ -30,13 +30,19 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsField,
+                       QgsPoint,
+                       QgsGeometry,
+                       QgsFeature,
+                       QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsFields)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -72,22 +78,20 @@ class ExtentFromLayer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extent'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
-        fields = [
-            QgsField('MINX', QVariant.Double),
-            QgsField('MINY', QVariant.Double),
-            QgsField('MAXX', QVariant.Double),
-            QgsField('MAXY', QVariant.Double),
-            QgsField('CNTX', QVariant.Double),
-            QgsField('CNTY', QVariant.Double),
-            QgsField('AREA', QVariant.Double),
-            QgsField('PERIM', QVariant.Double),
-            QgsField('HEIGHT', QVariant.Double),
-            QgsField('WIDTH', QVariant.Double),
-        ]
+        fields = QgsFields()
+        fields.append(QgsField('MINX', QVariant.Double))
+        fields.append(QgsField('MINY', QVariant.Double))
+        fields.append(QgsField('MAXX', QVariant.Double))
+        fields.append(QgsField('MAXY', QVariant.Double))
+        fields.append(QgsField('CNTX', QVariant.Double))
+        fields.append(QgsField('CNTY', QVariant.Double))
+        fields.append(QgsField('AREA', QVariant.Double))
+        fields.append(QgsField('PERIM', QVariant.Double))
+        fields.append(QgsField('HEIGHT', QVariant.Double))
+        fields.append(QgsField('WIDTH', QVariant.Double))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 

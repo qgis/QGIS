@@ -29,9 +29,7 @@ __revision__ = '$Format:%H$'
 
 from math import sqrt
 
-from qgis.core import (QgsPoint,
-                       QgsGeometry,
-                       QgsWkbTypes,
+from qgis.core import (QgsWkbTypes,
                        QgsApplication,
                        QgsProcessingUtils)
 
@@ -39,7 +37,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class DensifyGeometriesInterval(GeoAlgorithm):
@@ -73,13 +71,13 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         interval = self.getParameterValue(self.INTERVAL)
 
         isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
 
         writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields().toList(), layer.wkbType(), layer.crs(), context)
+            self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

@@ -20,6 +20,8 @@
 #define QGSRASTERCALCNODE_H
 
 #include <QMap>
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <QString>
 #include "qgis_analysis.h"
 
@@ -96,9 +98,9 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * \since QGIS 2.10
      * \note not available in Python bindings
      */
-    bool calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row = -1 ) const;
+    bool calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row = -1 ) const SIP_SKIP;
 
-    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg );
+    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
   private:
     Type mType;

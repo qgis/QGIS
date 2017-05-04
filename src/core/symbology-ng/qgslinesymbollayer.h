@@ -17,6 +17,7 @@
 #define QGSLINESYMBOLLAYERV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgssymbollayer.h"
 
 #include <QPen>
@@ -42,8 +43,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // implemented from base classes
 
@@ -175,7 +176,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \returns A new MarkerLineSymbolLayerV2
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     /**
      * Create a new MarkerLineSymbolLayerV2 from SLD
@@ -184,7 +185,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \returns A new MarkerLineSymbolLayerV2
      */
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // implemented from base classes
 

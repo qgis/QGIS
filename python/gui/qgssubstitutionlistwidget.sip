@@ -17,7 +17,7 @@ class QgsSubstitutionListWidget : public QgsPanelWidget
      /** Constructor for QgsSubstitutionListWidget.
      * @param parent parent widget
      */
-    QgsSubstitutionListWidget( QWidget *parent /TransferThis/ = nullptr );
+    QgsSubstitutionListWidget( QWidget *parent /TransferThis/ = 0 );
 
     /** Sets the list of substitutions to show in the widget.
      * @param substitutions substitution list
@@ -57,7 +57,7 @@ class QgsSubstitutionListDialog : public QDialog
     /** Constructor for QgsSubstitutionListDialog.
      * @param parent parent widget
      */
-    QgsSubstitutionListDialog( QWidget *parent /TransferThis/ = nullptr );
+    QgsSubstitutionListDialog( QWidget *parent /TransferThis/ = 0 );
 
     /** Sets the list of substitutions to show in the dialog.
      * @param substitutions substitution list

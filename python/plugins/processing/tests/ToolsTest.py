@@ -30,7 +30,6 @@ import shutil
 import tempfile
 
 from qgis.core import (QgsVectorLayer,
-                       QgsFeatureRequest,
                        QgsProcessingContext)
 from qgis.testing import start_app, unittest
 

@@ -1226,7 +1226,7 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
   return OGR_G_ForceTo( hGeom, layerGeomType, nullptr );
 }
 
-bool QgsOgrProvider::addFeature( QgsFeature &f )
+bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f )
 {
   bool returnValue = true;
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
@@ -1386,7 +1386,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist )
   bool returnvalue = true;
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
-    if ( !addFeature( *it ) )
+    if ( !addFeaturePrivate( *it ) )
     {
       returnvalue = false;
     }
@@ -2280,8 +2280,8 @@ QString createFilters( const QString &type )
       }
       else if ( driverName.startsWith( QLatin1String( "Interlis 2" ) ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), QStringLiteral( "*.itf *.xml *.ili" ) );
-        sExtensions << QStringLiteral( "itf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
+        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), QStringLiteral( "*.xtf *.xml *.ili" ) );
+        sExtensions << QStringLiteral( "xtf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
       }
       else if ( driverName.startsWith( QLatin1String( "Ingres" ) ) )
       {

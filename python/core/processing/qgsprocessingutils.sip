@@ -66,27 +66,16 @@ class QgsProcessingUtils
  :rtype: list of QgsMapLayer
 %End
 
-
-    static QgsMapLayer *mapLayerFromProject( const QString &string, QgsProject *project );
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true );
 %Docstring
- Interprets a ``string`` as a map layer from a project.
+ Interprets a string as a map layer within the supplied ``context``.
 
- This method attempts to match a string to a project map layer, using
- first the layer ID, then layer names, and finally layer source.
- If the string matches a normalized version of any layer source
- for layers in the specified ``project``, then those matching layers will be
- returned.
-.. seealso:: mapLayerFromString()
- :rtype: QgsMapLayer
-%End
-
-    static QgsMapLayer *mapLayerFromString( const QString &string ) /Factory/;
-%Docstring
- Interprets a string as a map layer. The method will attempt to
- load a layer matching the passed ``string``. E.g. if the string is a file path,
- then the layer at this file path will be loaded.
- The caller takes responsibility for deleting the returned map layer.
-.. seealso:: mapLayerFromProject()
+ The method will attempt to
+ load a layer matching the passed ``string``. E.g. if the string matches a layer ID or name
+ within the context's project or temporary layer store then this layer will be returned.
+ If the string is a file path and ``allowLoadingNewLayers`` is true, then the layer at this
+ file path will be loaded and added to the context's temporary layer store.
+ Ownership of the layer remains with the ``context`` or the context's current project.
  :rtype: QgsMapLayer
 %End
 
@@ -113,6 +102,15 @@ class QgsProcessingUtils
  context is set to only use selected features, then calling this will
  return the count of selected features in the layer.
  :rtype: long
+%End
+
+    static QgsSpatialIndex createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context );
+%Docstring
+ Creates a spatial index for a layer, when
+ the settings from the supplied ``context`` are respected. E.g. if the
+ context is set to only use selected features, then calling this will
+ return an index containing only selected features in the layer.
+ :rtype: QgsSpatialIndex
 %End
 
     static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );

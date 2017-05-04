@@ -29,13 +29,13 @@ import plotly as plt
 import plotly.graph_objs as go
 
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.outputs import OutputHTML
 from processing.tools import vector
-from processing.tools import dataobjects
 
 
 class BarPlot(GeoAlgorithm):
@@ -74,8 +74,7 @@ class BarPlot(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         namefieldname = self.getParameterValue(self.NAME_FIELD)
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
 

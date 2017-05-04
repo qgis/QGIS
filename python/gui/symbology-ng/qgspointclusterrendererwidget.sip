@@ -17,17 +17,17 @@ class QgsPointClusterRendererWidget: QgsRendererWidget
      * @param renderer source QgsPointClusterRenderer renderer
      * @returns new QgsRendererWidget
      */
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 
     /** Constructor for QgsPointClusterRendererWidget.
      * @param layer associated vector layer
      * @param style style collection
      * @param renderer source QgsPointClusterRenderer renderer
      */
-    QgsPointClusterRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsPointClusterRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
     ~QgsPointClusterRendererWidget();
 
-    QgsFeatureRenderer* renderer();
-    void setContext( const QgsSymbolWidgetContext& context );
+    QgsFeatureRenderer *renderer();
+    void setContext( const QgsSymbolWidgetContext &context );
 };

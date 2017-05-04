@@ -30,12 +30,17 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsSettings, QgsGeometry, QgsFeature, QgsField, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsSettings,
+                       QgsGeometry,
+                       QgsFeature,
+                       QgsField,
+                       QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsFields)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 settings_method_key = "/qgis/digitizing/validate_geometries"
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -100,8 +105,7 @@ class CheckValidity(GeoAlgorithm):
             settings.setValue(settings_method_key, initial_method_setting)
 
     def doCheck(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         settings = QgsSettings()
         method = int(settings.value(settings_method_key, 1))
@@ -112,18 +116,16 @@ class CheckValidity(GeoAlgorithm):
         valid_count = 0
 
         invalid_output = self.getOutputFromName(self.INVALID_OUTPUT)
-        invalid_fields = layer.fields().toList() + [
-            QgsField(name='_errors',
-                     type=QVariant.String,
-                     len=255)]
+        invalid_fields = layer.fields()
+        invalid_fields.append(QgsField('_errors',
+                                       QVariant.String,
+                                       255))
         invalid_writer = invalid_output.getVectorWriter(invalid_fields, layer.wkbType(), layer.crs(), context)
         invalid_count = 0
 
         error_output = self.getOutputFromName(self.ERROR_OUTPUT)
-        error_fields = [
-            QgsField(name='message',
-                     type=QVariant.String,
-                     len=255)]
+        error_fields = QgsFields()
+        error_fields.append(QgsField('message', QVariant.String, 255))
         error_writer = error_output.getVectorWriter(error_fields, QgsWkbTypes.Point, layer.crs(), context)
         error_count = 0
 

@@ -19,6 +19,7 @@
 #define QGSRASTERMINMAXWIDGET_H
 
 #include "ui_qgsrasterminmaxwidgetbase.h"
+#include "qgis.h"
 #include "qgsrectangle.h"
 
 #include "qgsraster.h"
@@ -36,7 +37,7 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
 {
     Q_OBJECT
   public:
-    QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent = nullptr );
+    QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Sets the extent to use for minimum and maximum value calculation.
      * \param extent extent in raster layer's CRS

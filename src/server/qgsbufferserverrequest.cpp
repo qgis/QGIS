@@ -23,8 +23,8 @@
 
 #include <QDebug>
 
-QgsBufferServerRequest::QgsBufferServerRequest( const QString &url, Method method, QByteArray *data )
-  : QgsServerRequest( url, method )
+QgsBufferServerRequest::QgsBufferServerRequest( const QString &url, Method method, const QgsServerRequest::Headers &headers, QByteArray *data )
+  : QgsServerRequest( url, method, headers )
 {
   if ( data )
   {
@@ -32,8 +32,8 @@ QgsBufferServerRequest::QgsBufferServerRequest( const QString &url, Method metho
   }
 }
 
-QgsBufferServerRequest::QgsBufferServerRequest( const QUrl &url, Method method, QByteArray *data )
-  : QgsServerRequest( url, method )
+QgsBufferServerRequest::QgsBufferServerRequest( const QUrl &url, Method method, const QgsServerRequest::Headers &headers, QByteArray *data )
+  : QgsServerRequest( url, method, headers )
 {
   if ( data )
   {

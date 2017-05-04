@@ -36,7 +36,7 @@ from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class PointsLayerFromTable(GeoAlgorithm):
@@ -84,7 +84,7 @@ class PointsLayerFromTable(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         source = self.getParameterValue(self.INPUT)
-        vlayer = dataobjects.getLayerFromString(source)
+        vlayer = QgsProcessingUtils.mapLayerFromString(source, context)
         output = self.getOutputFromName(self.OUTPUT)
 
         fields = vlayer.fields()

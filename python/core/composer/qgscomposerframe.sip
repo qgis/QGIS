@@ -6,7 +6,7 @@ class QgsComposerFrame: QgsComposerItem
 %End
 
   public:
-    QgsComposerFrame( QgsComposition* c /TransferThis/, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );
+    QgsComposerFrame( QgsComposition *c /TransferThis/, QgsComposerMultiFrame *mf, qreal x, qreal y, qreal width, qreal height );
 
     ~QgsComposerFrame();
 
@@ -15,24 +15,24 @@ class QgsComposerFrame: QgsComposerItem
      * @param section visible portion of content
      * @see extent
      */
-    void setContentSection( const QRectF& section );
+    void setContentSection( const QRectF &section );
 
     /** Returns the parent multiframe for the frame.
      * @returns parent multiframe
      */
-    QgsComposerMultiFrame* multiFrame() const;
+    QgsComposerMultiFrame *multiFrame() const;
 
     //Overridden to allow multiframe to set display name
     virtual QString displayName() const;
 
     //Overridden to handle fixed frame sizes set by multi frame
-    void setSceneRect( const QRectF& rectangle );
+    void setSceneRect( const QRectF &rectangle );
 
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
-    void beginItemCommand( const QString& text );
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+    void beginItemCommand( const QString &text );
     void endItemCommand();
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
     int type() const;
 
     /** Returns the visible portion of the multi frame's content which

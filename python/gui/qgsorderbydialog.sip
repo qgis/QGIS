@@ -10,7 +10,7 @@ class QgsOrderByDialog : QDialog
      * @param layer  The vector layer for which the order by should be produced
      * @param parent The parent widget, optional
      */
-    QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = nullptr );
+    QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
 
     /**
      * Set the order by to manage

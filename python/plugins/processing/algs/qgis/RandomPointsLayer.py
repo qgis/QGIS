@@ -73,13 +73,12 @@ class RandomPointsLayer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.VECTOR))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
 
         bbox = layer.extent()
-        idxLayer = vector.spatialindex(layer)
+        idxLayer = QgsProcessingUtils.createSpatialIndex(layer, context)
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))

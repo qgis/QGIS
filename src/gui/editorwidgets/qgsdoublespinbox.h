@@ -17,6 +17,7 @@
 #define QGSDOUBLESPINBOX_H
 
 #include <QDoubleSpinBox>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsSpinBoxLineEdit;
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     /** Constructor for QgsDoubleSpinBox.
      * \param parent parent widget
      */
-    explicit QgsDoubleSpinBox( QWidget *parent = nullptr );
+    explicit QgsDoubleSpinBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Sets whether the widget will show a clear button. The clear button
      * allows users to reset the widget to a default or empty state.

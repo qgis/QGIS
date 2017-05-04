@@ -19,6 +19,7 @@
 #define QGSCOMPOSERSHAPE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
 #include <QBrush>
 #include <QPen>
@@ -39,7 +40,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
       Triangle
     };
 
-    QgsComposerShape( QgsComposition *composition );
+    QgsComposerShape( QgsComposition *composition SIP_TRANSFERTHIS );
     QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition );
     ~QgsComposerShape();
 

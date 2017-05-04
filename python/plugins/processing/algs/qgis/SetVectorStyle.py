@@ -26,7 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -67,7 +68,7 @@ class SetVectorStyle(GeoAlgorithm):
         filename = self.getParameterValue(self.INPUT)
 
         style = self.getParameterValue(self.STYLE)
-        layer = dataobjects.getLayerFromString(filename, False)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context, False)
         if layer is None:
             dataobjects.load(filename, os.path.basename(filename), style=style)
             self.getOutputFromName(self.OUTPUT).open = False

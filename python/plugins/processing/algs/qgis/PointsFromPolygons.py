@@ -41,7 +41,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector, raster
+from processing.tools import dataobjects, raster
 
 
 class PointsFromPolygons(GeoAlgorithm):
@@ -74,7 +74,7 @@ class PointsFromPolygons(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points from polygons'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_VECTOR))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
 
@@ -87,7 +87,7 @@ class PointsFromPolygons(GeoAlgorithm):
         fields.append(QgsField('poly_id', QVariant.Int, '', 10, 0))
         fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(fields.toList(), QgsWkbTypes.Point,
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.Point,
                                                                            layer.crs(), context)
 
         outFeature = QgsFeature()

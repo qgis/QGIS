@@ -60,5 +60,5 @@ class QgsVectorLayerTools : QObject
      *
      * TODO QGIS 3: remove const qualifier
      */
-    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request /In,Out/, double dx = 0, double dy = 0, QString *errorMsg /Out/ = nullptr ) const;
+    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request /In,Out/, double dx = 0, double dy = 0, QString *errorMsg /Out/ = 0 ) const;
 };

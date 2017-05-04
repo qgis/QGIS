@@ -22,6 +22,7 @@
 #define QGSRASTERLAYER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <QDateTime>
 #include <QList>
@@ -224,7 +225,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     LayerType rasterType() { return mRasterType; }
 
     //! Set raster renderer. Takes ownership of the renderer object
-    void setRenderer( QgsRasterRenderer *renderer );
+    void setRenderer( QgsRasterRenderer *renderer SIP_TRANSFER );
     QgsRasterRenderer *renderer() const { return mPipe.renderer(); }
 
     //! Set raster resample filter. Takes ownership of the resample filter object
@@ -304,20 +305,20 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *  \note not available in Python bindings
      */
     // Used by QgisApp::legendLayerStretchUsingCurrentExtent()
-    void refreshContrastEnhancement( const QgsRectangle &extent );
+    void refreshContrastEnhancement( const QgsRectangle &extent ) SIP_SKIP;
 
     /** \brief Refresh renderer with new extent, if needed
      *  \note not available in Python bindings
      */
     // Used by QgsRasterLayerRenderer
-    void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
+    void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
 
     /** \brief Return default contrast enhancemnt settings for that type of raster.
      *  \note not available in Python bindings
      */
     bool defaultContrastEnhancementSettings(
       QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
-      QgsRasterMinMaxOrigin::Limits &myLimits ) const;
+      QgsRasterMinMaxOrigin::Limits &myLimits ) const SIP_SKIP;
 
     //! \brief Set default contrast enhancement
     void setDefaultContrastEnhancement();

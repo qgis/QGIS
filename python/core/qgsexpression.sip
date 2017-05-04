@@ -570,7 +570,31 @@ Does this function use a geometry object.
 %Docstring
  True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression.Node objects
  rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
- Functions are non lazy default and will be given the node return value when called **
+ Functions are non lazy default and will be given the node return value when called.
+ :rtype: bool
+%End
+
+        virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
+%Docstring
+ Will be called during prepare to determine if the function is static.
+ A function is static if it will return the same value for every feature with different
+ attributes and/or geometry.
+
+ By default this will return true, if all arguments that have been passed to the function
+ are also static.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+        virtual bool prepare( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
+%Docstring
+ This will be called during the prepare step() of an expression if it is not static.
+
+ This can be used by functions to do any preparation steps that might help to speedup the upcoming
+ evaluation.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -640,6 +664,22 @@ The help text for the function.
 
         virtual bool handlesNull() const;
 %Docstring
+ :rtype: bool
+%End
+
+      protected:
+
+        static bool allParamsStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
+%Docstring
+ This will return true if all the params for the provided function ``node`` are static within the
+ constraints imposed by the ``context`` within the given ``parent``.
+
+ This can be used as callback for custom implementations of subclasses. It is the default for implementation
+ for StaticFunction.isStatic.
+
+.. note::
+
+   Added in QGIS 3.0
  :rtype: bool
 %End
 
@@ -823,8 +863,6 @@ return index of the function in Functions array
         virtual QgsExpression::Node *clone() const = 0;
 %Docstring
  Generate a clone of this node.
- Make sure that the clone does not contain any information which is
- generated in prepare and context related.
  Ownership is transferred to the caller.
 
  :return: a deep copy of this node.
@@ -882,6 +920,10 @@ return index of the function in Functions array
 .. versionadded:: 2.12
  :rtype: bool
 %End
+
+
+      protected:
+
 
       private:
         virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0 ;

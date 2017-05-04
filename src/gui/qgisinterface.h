@@ -172,7 +172,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param widget widget to add. The toolbar will take ownership of this widget
      * \returns the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction *addToolBarWidget( QWidget *widget ) = 0;
+    virtual QAction *addToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
     //! Remove an action (icon) from the plugin toolbar
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
@@ -185,7 +185,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param widget widget to add. The toolbar will take ownership of this widget
      * \returns the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction *addRasterToolBarWidget( QWidget *widget ) = 0;
+    virtual QAction *addRasterToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
     //! Add an icon to the Raster toolbar
     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
@@ -204,7 +204,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param widget widget to add. The toolbar will take ownership of this widget
      * \returns the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction *addVectorToolBarWidget( QWidget *widget ) = 0;
+    virtual QAction *addVectorToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
     //! Remove an action (icon) from the Vector toolbar
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
@@ -220,7 +220,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param widget widget to add. The toolbar will take ownership of this widget
      * \returns the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction *addDatabaseToolBarWidget( QWidget *widget ) = 0;
+    virtual QAction *addDatabaseToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
     //! Remove an action (icon) from the Database toolbar
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
@@ -236,17 +236,17 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param widget widget to add. The toolbar will take ownership of this widget
      * \returns the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction *addWebToolBarWidget( QWidget *widget ) = 0;
+    virtual QAction *addWebToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
     //! Remove an action (icon) from the Web toolbar
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 
     //! Add toolbar with specified name
-    virtual QToolBar *addToolBar( const QString &name ) = 0;
+    virtual QToolBar *addToolBar( const QString &name ) = 0 SIP_FACTORY;
 
     //! Add a toolbar
     //! \since QGIS 2.3
-    virtual void addToolBar( QToolBar *toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
+    virtual void addToolBar( QToolBar *toolbar SIP_TRANSFER, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
     //! Return a pointer to the map canvas
     virtual QgsMapCanvas *mapCanvas() = 0;

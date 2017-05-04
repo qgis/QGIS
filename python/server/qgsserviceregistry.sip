@@ -79,7 +79,7 @@ class QgsServiceRegistry
      * @param nativeModulepath the native module path
      */
     // XXX Do we want this exposed to python ?
-    void init( const QString &nativeModulepath, QgsServerInterface *serverIface = nullptr );
+    void init( const QString &nativeModulepath, QgsServerInterface *serverIface = 0 );
 
     /**
      * Clean up registered service and unregister modules

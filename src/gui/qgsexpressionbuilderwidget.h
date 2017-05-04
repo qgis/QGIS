@@ -17,6 +17,7 @@
 #define QGSEXPRESSIONBUILDER_H
 
 #include <QWidget>
+#include "qgis.h"
 #include "ui_qgsexpressionbuilder.h"
 #include "qgsdistancearea.h"
 #include "qgsexpressioncontext.h"
@@ -130,7 +131,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /**
      * Create a new expression builder widget with an optional parent.
      */
-    QgsExpressionBuilderWidget( QWidget *parent = nullptr );
+    QgsExpressionBuilderWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsExpressionBuilderWidget();
 
     /** Sets layer in order to get the fields and values

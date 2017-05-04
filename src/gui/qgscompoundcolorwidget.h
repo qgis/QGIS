@@ -17,6 +17,7 @@
 #define QGSCOMPOUNDCOLORWIDGET_H
 
 #include "qgisgui.h"
+#include "qgis.h"
 #include "qgspanelwidget.h"
 #include "ui_qgscompoundcolorwidget.h"
 #include "qgis_gui.h"
@@ -47,7 +48,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * \param color initial color for dialog
      * \param layout widget layout to use
      */
-    QgsCompoundColorWidget( QWidget *parent = nullptr, const QColor &color = QColor(), Layout layout = LayoutDefault );
+    QgsCompoundColorWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QColor &color = QColor(), Layout layout = LayoutDefault );
 
     ~QgsCompoundColorWidget();
 

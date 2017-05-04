@@ -22,7 +22,7 @@ class QgsExpressionLineEdit : QWidget
      * Constructor for QgsExpressionLineEdit.
      * @param parent parent widget
      */
-    explicit QgsExpressionLineEdit( QWidget *parent /TransferThis/ = nullptr );
+    explicit QgsExpressionLineEdit( QWidget *parent /TransferThis/ = 0 );
         /** Sets the title used in the expression builder dialog
      * @param title dialog title
      * @see expressionDialogTitle()
@@ -60,7 +60,7 @@ class QgsExpressionLineEdit : QWidget
       * Returns true if the current expression is valid.
       * @param expressionError will be set to any generated error message if specified
       */
-    bool isValidExpression( QString *expressionError /Out/ = nullptr ) const;
+    bool isValidExpression( QString *expressionError /Out/ = 0 ) const;
 
     /**
      * Register an expression context generator class that will be used to retrieve

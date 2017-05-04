@@ -82,8 +82,8 @@ class LinesIntersection(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, context, feedback):
-        layerA = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_A))
-        layerB = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_B))
+        layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)
+        layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_B), context)
         fieldA = self.getParameterValue(self.FIELD_A)
         fieldB = self.getParameterValue(self.FIELD_B)
 
@@ -103,12 +103,13 @@ class LinesIntersection(GeoAlgorithm):
             fieldListB = layerB.fields()
 
         fieldListB = vector.testForUniqueness(fieldListA, fieldListB)
-        fieldListA.extend(fieldListB)
+        for b in fieldListB:
+            fieldListA.append(b)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldListA, QgsWkbTypes.Point, layerA.crs(),
                                                                      context)
 
-        spatialIndex = vector.spatialindex(layerB)
+        spatialIndex = QgsProcessingUtils.createSpatialIndex(layerB, context)
 
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(layerA, context)

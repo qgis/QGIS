@@ -65,6 +65,22 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
     bool addFeatures( QgsFeatureList &features ) override;
 
     /**
+     * Returns the number of features contained in the store.
+     */
+    int count() const { return mFeatures.size(); }
+
+#ifdef SIP_RUN
+
+    /**
+     * Returns the number of features contained in the store.
+     */
+    int __len__() const;
+    % MethodCode
+    sipRes = sipCpp->count();
+    % End
+#endif
+
+    /**
      * Returns the list of features contained in the store.
      */
     QgsFeatureList features() const { return mFeatures; }

@@ -17,6 +17,8 @@
 #define QGSMARKERSYMBOLLAYERV2_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgssymbollayer.h"
 
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
@@ -126,11 +128,11 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 
     //! Prepares the layer for drawing the specified shape (QPolygonF version)
     //! \note not available in Python bindings
-    bool prepareMarkerShape( Shape shape );
+    bool prepareMarkerShape( Shape shape ) SIP_SKIP;
 
     //! Prepares the layer for drawing the specified shape (QPainterPath version)
     //! \note not available in Python bindings
-    bool prepareMarkerPath( Shape symbol );
+    bool prepareMarkerPath( Shape symbol ) SIP_SKIP;
 
     /** Creates a polygon representing the specified shape.
      * \param shape shape to create
@@ -138,7 +140,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \returns true if shape was successfully stored in polygon
      * \note not available in Python bindings
      */
-    bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
+    bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const SIP_SKIP;
 
     /** Calculates the desired size of the marker, considering data defined size overrides.
      * \param context symbol render context
@@ -146,7 +148,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \returns marker size, in original size units
      * \note not available in Python bindings
      */
-    double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
+    double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const SIP_SKIP;
 
     /** Calculates the marker offset and rotation.
      * \param context symbol render context
@@ -156,7 +158,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \param angle will be set to calculated marker angle
      * \note not available in Python bindings
      */
-    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
+    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const SIP_SKIP;
 
     //! Polygon of points in shape. If polygon is empty then shape is using mPath.
     QPolygonF mPolygon;
@@ -210,13 +212,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \param properties a property map containing symbol properties (see properties())
      * \returns new QgsSimpleMarkerSymbolLayer
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     /** Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
      * \param element XML element containing SLD definition of symbol
      * \returns new QgsSimpleMarkerSymbolLayer
      */
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // reimplemented from base classes
 
@@ -409,7 +411,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \param properties a property map containing symbol properties (see properties())
      * \returns new QgsFilledMarkerSymbolLayer
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -450,8 +452,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // implemented from base classes
 
@@ -551,8 +553,8 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // implemented from base classes
 

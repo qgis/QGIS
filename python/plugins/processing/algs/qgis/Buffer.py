@@ -27,8 +27,6 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import QgsFeature, QgsGeometry, QgsProcessingUtils
 
-from processing.tools import vector
-
 
 def buffering(feedback, context, writer, distance, field, useField, layer, dissolve, segments, endCapStyle=1,
               joinStyle=1, mitreLimit=2):

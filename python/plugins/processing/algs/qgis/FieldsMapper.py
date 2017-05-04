@@ -29,11 +29,11 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsField,
+                       QgsFields,
                        QgsExpression,
                        QgsDistanceArea,
                        QgsProject,
                        QgsFeature,
-                       GEO_NONE,
                        QgsApplication,
                        QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -41,7 +41,6 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import Parameter
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class FieldsMapper(GeoAlgorithm):
@@ -116,8 +115,8 @@ class FieldsMapper(GeoAlgorithm):
         mapping = self.getParameterValue(self.FIELDS_MAPPING)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = dataobjects.getLayerFromString(layer)
-        fields = []
+        layer = QgsProcessingUtils.mapLayerFromString(layer, context)
+        fields = QgsFields()
         expressions = []
 
         da = QgsDistanceArea()
@@ -127,10 +126,10 @@ class FieldsMapper(GeoAlgorithm):
         exp_context = layer.createExpressionContext()
 
         for field_def in mapping:
-            fields.append(QgsField(name=field_def['name'],
-                                   type=field_def['type'],
-                                   len=field_def['length'],
-                                   prec=field_def['precision']))
+            fields.append(QgsField(field_def['name'],
+                                   field_def['type'],
+                                   field_def['length'],
+                                   field_def['precision']))
 
             expression = QgsExpression(field_def['expression'])
             expression.setGeomCalculator(da)

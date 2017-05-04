@@ -28,7 +28,7 @@ class QgsEditorWidgetFactory
      *
      * @param name A human readable name for this widget type
      */
-    QgsEditorWidgetFactory( const QString& name );
+    QgsEditorWidgetFactory( const QString &name );
 
     virtual ~QgsEditorWidgetFactory();
 
@@ -44,9 +44,9 @@ class QgsEditorWidgetFactory
      *
      * @return         A new widget wrapper
      */
-    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0 /Factory/;
+    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const = 0 /Factory/;
 
-    virtual QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const /Factory/;
+    virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const /Factory/;
 
     /**
      * Return The human readable identifier name of this widget type
@@ -65,7 +65,7 @@ class QgsEditorWidgetFactory
      *
      * @return         A configuration widget
      */
-    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const = 0 /Factory/;
+    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0 /Factory/;
 
     /**
      * Check if this editor widget type supports a certain field.
@@ -76,7 +76,7 @@ class QgsEditorWidgetFactory
      *
      * @see isFieldSupported( QgsVectorLayer* vl, ind fieldIdx )
      */
-    bool supportsField( QgsVectorLayer* vl, int fieldIdx );
+    bool supportsField( QgsVectorLayer *vl, int fieldIdx );
 
     /**
      * Returns a list of widget types which this editor widget supports.
@@ -106,5 +106,5 @@ class QgsEditorWidgetFactory
      *
      * @see supportsField( QgsVectorLayer* vl, fieldIdx )
      */
-    virtual unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const;
+    virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const;
 };

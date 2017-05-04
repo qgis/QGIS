@@ -3518,7 +3518,8 @@ void QgisApp::updateRecentProjectPaths()
 
   Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
   {
-    QAction *action = mRecentProjectsMenu->addAction( QStringLiteral( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName(), recentProject.path ) );
+    QAction *action = mRecentProjectsMenu->addAction( QStringLiteral( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName(),
+                      QDir::toNativeSeparators( recentProject.path ) ) );
     action->setEnabled( QFile::exists( ( recentProject.path ) ) );
     action->setData( recentProject.path );
   }
@@ -5382,7 +5383,7 @@ bool QgisApp::fileSave()
   if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ), 5000 );
+    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
 
     saveRecentProjectPath( fullPath.filePath() );
 
@@ -5392,7 +5393,7 @@ bool QgisApp::fileSave()
   else
   {
     QMessageBox::critical( this,
-                           tr( "Unable to save project %1" ).arg( QgsProject::instance()->fileName() ),
+                           tr( "Unable to save project %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ),
                            QgsProject::instance()->error() );
     return false;
   }
@@ -5434,7 +5435,7 @@ void QgisApp::fileSaveAs()
   if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ), 5000 );
+    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath.filePath() );
     mProjectLastModified = fullPath.lastModified();
@@ -5442,7 +5443,7 @@ void QgisApp::fileSaveAs()
   else
   {
     QMessageBox::critical( this,
-                           tr( "Unable to save project %1" ).arg( QgsProject::instance()->fileName() ),
+                           tr( "Unable to save project %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ),
                            QgsProject::instance()->error(),
                            QMessageBox::Ok,
                            Qt::NoButton );
@@ -5804,14 +5805,6 @@ void QgisApp::saveMapAsImage()
   QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   if ( myFileNameAndFilter.first != QLatin1String( "" ) )
   {
-    QSize size = mMapCanvas->size();
-    if ( dlg.extent() != mMapCanvas->extent() )
-    {
-      size.setWidth( mMapCanvas->size().width() * dlg.extent().width() / mMapCanvas->extent().width() );
-      size.setHeight( mMapCanvas->size().height() * dlg.extent().height() / mMapCanvas->extent().height() );
-    }
-    size *=  dlg.dpi() / qt_defaultDpiX();
-
     QgsMapSettings ms = QgsMapSettings();
     ms.setDestinationCrs( QgsProject::instance()->crs() );
     ms.setExtent( dlg.extent() );
@@ -5833,9 +5826,11 @@ void QgisApp::saveMapAsImage()
       mapRendererTask->addDecorations( decorations );
     }
 
+    mapRendererTask->setSaveWorldFile( dlg.saveWorldFile() );
+
     connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
     {
-      messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved canvas to image" ) );
+      messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to image" ) );
     } );
     connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int error )
     {

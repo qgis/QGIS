@@ -41,7 +41,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
-from processing.tools import vector, dataobjects
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -78,11 +78,10 @@ class Dissolve(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         field_names = self.getParameterValue(Dissolve.FIELD)
-        vlayerA = dataobjects.getLayerFromString(
-            self.getParameterValue(Dissolve.INPUT))
+        vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Dissolve.INPUT), context)
 
         writer = self.getOutputFromName(
-            Dissolve.OUTPUT).getVectorWriter(vlayerA.fields().toList(), vlayerA.wkbType(), vlayerA.crs(), context)
+            Dissolve.OUTPUT).getVectorWriter(vlayerA.fields(), vlayerA.wkbType(), vlayerA.crs(), context)
 
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(vlayerA, context)

@@ -19,6 +19,7 @@
 #define QGSMAPCANVAS_H
 
 #include "qgsconfig.h"
+#include "qgis_sip.h"
 
 #include "qgsexpressioncontext.h"
 #include "qgsfeature.h"
@@ -77,7 +78,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
   public:
 
     //! Constructor
-    QgsMapCanvas( QWidget *parent = nullptr );
+    QgsMapCanvas( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     ~QgsMapCanvas();
 
@@ -102,7 +103,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Get access to properties used for map rendering
     //! \since QGIS 2.4
-    const QgsMapSettings &mapSettings() const;
+    const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
 
     //! sets destination coordinate reference system
     //! \since QGIS 2.4
@@ -464,7 +465,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \see setExpressionContextScope()
      * \note not available in Python bindings
      */
-    const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; }
+    const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; } SIP_SKIP
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
     \param tolerance the segmentation tolerance*/

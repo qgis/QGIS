@@ -23,7 +23,7 @@ class QgsMultiEditToolButton : QToolButton
     /** Constructor for QgsMultiEditToolButton.
      * @param parent parent object
      */
-    explicit QgsMultiEditToolButton( QWidget *parent /TransferThis/ = nullptr );
+    explicit QgsMultiEditToolButton( QWidget *parent /TransferThis/ = 0 );
 
     /** Returns the current displayed state of the button.
      */
@@ -33,7 +33,7 @@ class QgsMultiEditToolButton : QToolButton
      * and tooltips to match the field properties.
      * @param field associated field
      */
-    void setField( const QgsField& field );
+    void setField( const QgsField &field );
 
   public slots:
 

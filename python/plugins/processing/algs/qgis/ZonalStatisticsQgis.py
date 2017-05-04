@@ -30,6 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsZonalStatistics
+from qgis.core import QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -105,8 +106,8 @@ class ZonalStatisticsQgis(GeoAlgorithm):
         columnPrefix = self.getParameterValue(self.COLUMN_PREFIX)
         st = self.getParameterValue(self.STATISTICS)
 
-        vectorLayer = dataobjects.getLayerFromString(vectorPath)
-        rasterLayer = dataobjects.getLayerFromString(rasterPath)
+        vectorLayer = QgsProcessingUtils.mapLayerFromString(vectorPath, context)
+        rasterLayer = QgsProcessingUtils.mapLayerFromString(rasterPath, context)
 
         keys = list(self.STATS.keys())
         selectedStats = 0

@@ -49,6 +49,14 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     static QString queryFromRect( const QgsRectangle &rect );
 
     QgsOSMDownload();
+
+    /** Constructor for QgsOSMDownload
+     * \param query The query to execute in the Overpass API.
+     *
+     * \since QGIS 3.0
+     */
+    QgsOSMDownload( const QString &query );
+
     ~QgsOSMDownload();
 
     void setServiceUrl( const QString &serviceUrl ) { mServiceUrl = serviceUrl; }
@@ -83,8 +91,11 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     bool isFinished() const;
 
   signals:
-    void finished(); //!< Emitted when the network reply has finished (with success or with an error)
-    void downloadProgress( qint64, qint64 ); //!< Normally the total length is not known (until we reach end)
+    //! Emitted when the network reply has finished (with success or with an error)
+    void finished();
+
+    //! Normally the total length is not known (until we reach end)
+    void downloadProgress( qint64, qint64 );
 
   private slots:
     void onReadyRead();

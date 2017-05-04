@@ -45,7 +45,7 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class PointsToPaths(GeoAlgorithm):
@@ -89,8 +89,7 @@ class PointsToPaths(GeoAlgorithm):
         self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.VECTOR))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         groupField = self.getParameterValue(self.GROUP_FIELD)
         orderField = self.getParameterValue(self.ORDER_FIELD)
         dateFormat = str(self.getParameterValue(self.DATE_FORMAT))

@@ -7,7 +7,7 @@ class QgsContrastEnhancement
 
   public:
 
-    /** \brief This enumerator describes the types of contrast enhancement algorithms that can be used.  */
+    /** \brief This enumerator describes the types of contrast enhancement algorithms that can be used. */
     enum ContrastEnhancementAlgorithm
     {
       NoEnhancement,                  //this should be the default color scaling algorithm
@@ -46,7 +46,7 @@ class QgsContrastEnhancement
 
     static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
 
-    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString );
+    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString );
 
     /*
      *
@@ -71,12 +71,12 @@ class QgsContrastEnhancement
     /** \brief Return the minimum value for the contrast enhancement range. */
     void setMinimumValue( double, bool generateTable = true );
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
   private:
 
-    const QgsContrastEnhancement& operator=( const QgsContrastEnhancement& );
+    const QgsContrastEnhancement &operator=( const QgsContrastEnhancement& );
 };
 

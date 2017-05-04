@@ -16,7 +16,7 @@ class QgsLimitedRandomColorRampWidget : QgsPanelWidget
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = nullptr );
+    QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
@@ -70,7 +70,7 @@ class QgsLimitedRandomColorRampDialog : QDialog
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = nullptr );
+    QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()

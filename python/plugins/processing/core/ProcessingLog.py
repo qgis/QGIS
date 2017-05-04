@@ -32,7 +32,6 @@ import codecs
 import datetime
 from processing.tools.system import userFolder
 from processing.core.ProcessingConfig import ProcessingConfig
-from qgis.core import QgsMessageLog
 from qgis.PyQt.QtCore import QCoreApplication
 
 

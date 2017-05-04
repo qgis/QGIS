@@ -16,6 +16,8 @@
 #define QGSGRADUATEDSYMBOLRENDERERV2_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
@@ -28,7 +30,7 @@ class CORE_EXPORT QgsRendererRange
 {
   public:
     QgsRendererRange();
-    QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol, const QString &label, bool render = true );
+    QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 
     // default dtor is ok
@@ -42,7 +44,7 @@ class CORE_EXPORT QgsRendererRange
     QgsSymbol *symbol() const;
     QString label() const;
 
-    void setSymbol( QgsSymbol *s );
+    void setSymbol( QgsSymbol *s SIP_TRANSFER );
     void setLabel( const QString &label );
     void setLowerValue( double lowerValue );
     void setUpperValue( double upperValue );
@@ -99,7 +101,7 @@ class CORE_EXPORT QgsRendererRangeLabelFormat
     void setTrimTrailingZeroes( bool trimTrailingZeroes ) { mTrimTrailingZeroes = trimTrailingZeroes; }
 
     //! \note labelForLowerUpper in Python bindings
-    QString labelForRange( double lower, double upper ) const;
+    QString labelForRange( double lower, double upper ) const SIP_PYNAME( labelForLowerUpper );
     QString labelForRange( const QgsRendererRange &range ) const;
     QString formatNumber( double value ) const;
 
@@ -150,7 +152,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     const QgsRangeList &ranges() const { return mRanges; }
 
-    bool updateRangeSymbol( int rangeIndex, QgsSymbol *symbol );
+    bool updateRangeSymbol( int rangeIndex, QgsSymbol *symbol SIP_TRANSFER );
     bool updateRangeLabel( int rangeIndex, const QString &label );
     bool updateRangeUpperValue( int rangeIndex, double value );
     bool updateRangeLowerValue( int rangeIndex, double value );
@@ -159,9 +161,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     void addClass( QgsSymbol *symbol );
     //! \note available in Python bindings as addClassRange
-    void addClass( const QgsRendererRange &range );
+    void addClass( const QgsRendererRange &range ) SIP_PYNAME( addClassRange );
     //! \note available in Python bindings as addClassLowerUpper
-    void addClass( double lower, double upper );
+    void addClass( double lower, double upper ) SIP_PYNAME( addClassLowerUpper );
 
     /** Add a breakpoint by splitting existing classes so that the specified
      * value becomes a break between two classes.
@@ -247,7 +249,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     );
 
     //! create renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &element );
+    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
 
     virtual QDomElement save( QDomDocument &doc ) override;
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
@@ -268,7 +270,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \see sourceSymbol()
      * \see setSourceColorRamp()
      */
-    void setSourceSymbol( QgsSymbol *sym );
+    void setSourceSymbol( QgsSymbol *sym SIP_TRANSFER );
 
     /** Returns the source color ramp, from which each classes' color is derived.
      * \see setSourceColorRamp()
@@ -279,13 +281,13 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     /** Sets the source color ramp.
      * \param ramp color ramp. Ownership is transferred to the renderer
      */
-    void setSourceColorRamp( QgsColorRamp *ramp );
+    void setSourceColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /** Update the color ramp used. Also updates all symbols colors.
      * Doesn't alter current breaks.
      * \param ramp color ramp. Ownership is transferred to the renderer
      */
-    void updateColorRamp( QgsColorRamp *ramp = nullptr );
+    void updateColorRamp( QgsColorRamp *ramp SIP_TRANSFER = 0 );
 
     /** Update all the symbols but leave breaks and colors. This method also sets the source
      * symbol for the renderer.
@@ -326,7 +328,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! creates a QgsGraduatedSymbolRenderer from an existing renderer.
     //! \since QGIS 2.6
     //! \returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   protected:
     QString mAttrName;
@@ -349,7 +351,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QString legendKeyForValue( double value ) const;
 
     //! \note not available in Python bindings
-    static const char *graduatedMethodStr( GraduatedMethod method );
+    static const char *graduatedMethodStr( GraduatedMethod method ) SIP_SKIP;
 
   private:
 

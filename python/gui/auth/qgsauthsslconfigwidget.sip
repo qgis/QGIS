@@ -8,7 +8,7 @@ class QgsAuthSslConfigWidget : QWidget
     explicit QgsAuthSslConfigWidget( QWidget *parent /TransferThis/ = 0,
                                      const QSslCertificate &cert = QSslCertificate(),
                                      const QString &hostport = QString(),
-                                     const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
+                                     const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
     ~QgsAuthSslConfigWidget();
 
     QGroupBox *certificateGroupBox();
@@ -31,9 +31,9 @@ class QgsAuthSslConfigWidget : QWidget
   public slots:
     void enableSslCustomOptions( bool enable );
 
-    void setSslCertificate( const QSslCertificate& cert, const QString &hostport = QString() );
+    void setSslCertificate( const QSslCertificate &cert, const QString &hostport = QString() );
 
-    void loadSslCustomConfig( const QgsAuthConfigSslServer& config = QgsAuthConfigSslServer() );
+    void loadSslCustomConfig( const QgsAuthConfigSslServer &config = QgsAuthConfigSslServer() );
 
     void saveSslCertConfig();
 
@@ -43,11 +43,11 @@ class QgsAuthSslConfigWidget : QWidget
 
     void resetSslProtocol();
 
-    void appendSslIgnoreErrors( const QList<QSslError>& errors );
+    void appendSslIgnoreErrors( const QList<QSslError> &errors );
 
-    void setSslIgnoreErrorEnums( const QList<QSslError::SslError>& errorenums );
+    void setSslIgnoreErrorEnums( const QList<QSslError::SslError> &errorenums );
 
-    void setSslIgnoreErrors( const QList<QSslError>& errors );
+    void setSslIgnoreErrors( const QList<QSslError> &errors );
 
     void resetSslIgnoreErrors();
 
@@ -55,7 +55,7 @@ class QgsAuthSslConfigWidget : QWidget
 
     void resetSslPeerVerify();
 
-    void setSslHost( const QString& host );
+    void setSslHost( const QString &host );
 
     void setConfigCheckable( bool checkable );
 

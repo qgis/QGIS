@@ -32,7 +32,6 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 from qgis.PyQt.QtGui import QIcon
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -68,12 +67,12 @@ class ReprojectLayer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem()
         targetCrs.createFromUserInput(crsId)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), layer.wkbType(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(),
                                                                      targetCrs, context)
 
         layerCrs = layer.crs()

@@ -26,7 +26,7 @@ class QgsPluginManagerInterface : QObject
     virtual void reloadModel() = 0;
 
     //! return given plugin metadata
-    virtual const QMap<QString, QString>  *pluginMetadata( const QString &key ) const = 0;
+    virtual const QMap<QString, QString> *pluginMetadata( const QString &key ) const = 0;
 
     //! clear the repository listWidget
     virtual void clearRepositoryList() = 0;

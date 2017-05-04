@@ -31,7 +31,7 @@ class QgsFloatingWidget : QWidget
     /** Constructor for QgsFloatingWidget.
      * @param parent parent widget
      */
-    QgsFloatingWidget( QWidget *parent /TransferThis/ = nullptr );
+    QgsFloatingWidget( QWidget *parent /TransferThis/ = 0 );
 
     /** Sets the widget to "anchor" the floating widget to. The floating widget will be repositioned whenever the
      * anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.

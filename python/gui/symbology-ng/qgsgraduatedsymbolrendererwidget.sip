@@ -4,22 +4,22 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 #include <qgsgraduatedsymbolrendererwidget.h>
 %End
   public:
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 
-    QgsGraduatedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsGraduatedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsGraduatedSymbolRendererWidget();
 
-    virtual QgsFeatureRenderer* renderer();
+    virtual QgsFeatureRenderer *renderer();
 
   public slots:
     void changeGraduatedSymbol();
-    void graduatedColumnChanged( const QString& field );
+    void graduatedColumnChanged( const QString &field );
     void classifyGraduated();
     void reapplyColorRamp();
     void reapplySizes();
-    void rangesDoubleClicked( const QModelIndex & idx );
-    void rangesClicked( const QModelIndex & idx );
-    void changeCurrentValue( QStandardItem * item );
+    void rangesDoubleClicked( const QModelIndex &idx );
+    void rangesClicked( const QModelIndex &idx );
+    void changeCurrentValue( QStandardItem *item );
 
     /** Adds a class manually to the classification*/
     void addClass();
@@ -59,8 +59,8 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
     void changeSelectedSymbols();
 
     QList<QgsSymbol*> selectedSymbols();
-    QgsSymbol* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;
+    QgsSymbol *findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList &ranges ) const;
     void refreshSymbolView();
 
-    void keyPressEvent( QKeyEvent* event );
+    void keyPressEvent( QKeyEvent *event );
 };

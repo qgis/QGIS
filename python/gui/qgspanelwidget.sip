@@ -159,7 +159,7 @@ class QgsPanelWidgetWrapper: public QgsPanelWidget
      * @param widget The widget to wrap.
      * @param parent The parent widget.
      */
-    QgsPanelWidgetWrapper( QWidget *widget, QWidget *parent = nullptr );
+    QgsPanelWidgetWrapper( QWidget *widget, QWidget *parent = 0 );
 
     /**
      * Returns the internal widget that is wrapped in this panel.

@@ -26,14 +26,14 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
                        QgsExpression,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterExpression
-from processing.tools import dataobjects
 
 
 class SelectByExpression(GeoAlgorithm):
@@ -74,7 +74,7 @@ class SelectByExpression(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.LAYERNAME)
-        layer = dataobjects.getLayerFromString(filename)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)
 
         if method == 0:

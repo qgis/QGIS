@@ -18,6 +18,7 @@
 #define QGSCOMPOSEROBJECT_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsobjectcustomproperties.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgspropertycollection.h"
@@ -116,7 +117,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     const QgsComposition *composition() const { return mComposition; }
 
     //! \note not available in Python bindings
-    QgsComposition *composition() { return mComposition; }
+    QgsComposition *composition() { return mComposition; } SIP_SKIP
 
     /** Stores item state in DOM element
      * \param elem is DOM element corresponding to item tag

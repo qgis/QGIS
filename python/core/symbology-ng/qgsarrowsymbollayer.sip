@@ -20,19 +20,19 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayer
      *
      * @return A new QgsArrowSymbolLayer
      */
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 
     /** Virtual constructor */
-    virtual QgsArrowSymbolLayer* clone() const /Factory/;
+    virtual QgsArrowSymbolLayer *clone() const /Factory/;
 
     /** Get the sub symbol used for filling */
-    virtual QgsSymbol* subSymbol();
+    virtual QgsSymbol *subSymbol();
 
     /** Set the sub symbol used for filling */
-    virtual bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
     /** Return a list of attributes required to render this feature */
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
     /** Get current arrow width */
     double arrowWidth() const;
@@ -45,7 +45,7 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayer
     /** Get the scale for the arrow width */
     QgsMapUnitScale arrowWidthUnitScale() const;
     /** Set the scale for the arrow width */
-    void setArrowWidthUnitScale( const QgsMapUnitScale& scale );
+    void setArrowWidthUnitScale( const QgsMapUnitScale &scale );
 
     /** Get current arrow start width. Only meaningfull for single headed arrows */
     double arrowStartWidth() const;
@@ -58,7 +58,7 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayer
     /** Get the scale for the arrow start width */
     QgsMapUnitScale arrowStartWidthUnitScale() const;
     /** Set the scale for the arrow start width */
-    void setArrowStartWidthUnitScale( const QgsMapUnitScale& scale );
+    void setArrowStartWidthUnitScale( const QgsMapUnitScale &scale );
 
     /** Get the current arrow head length */
     double headLength() const;
@@ -71,7 +71,7 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayer
     /** Get the scale for the head length */
     QgsMapUnitScale headLengthUnitScale() const;
     /** Set the scale for the head length */
-    void setHeadLengthUnitScale( const QgsMapUnitScale& scale );
+    void setHeadLengthUnitScale( const QgsMapUnitScale &scale );
 
     /** Get the current arrow head height */
     double headThickness() const;
@@ -84,7 +84,7 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayer
     /** Get the scale for the head height */
     QgsMapUnitScale headThicknessUnitScale() const;
     /** Set the scale for the head height */
-    void setHeadThicknessUnitScale( const QgsMapUnitScale& scale );
+    void setHeadThicknessUnitScale( const QgsMapUnitScale &scale );
 
     /** Return whether it is a curved arrow or a straight one */
     bool isCurved() const;
@@ -136,15 +136,15 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayer
     QString layerType() const;
 
     /** Prepare the rendering */
-    void startRender( QgsSymbolRenderContext& context );
+    void startRender( QgsSymbolRenderContext &context );
 
     /** End of the rendering */
-    void stopRender( QgsSymbolRenderContext& context );
+    void stopRender( QgsSymbolRenderContext &context );
 
     /** Main drawing method */
-    void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context );
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
-    void setColor( const QColor& c );
+    void setColor( const QColor &c );
     virtual QColor color() const;
 
   private:

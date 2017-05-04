@@ -566,17 +566,42 @@ class CORE_EXPORT QgsExpression
         //! Does this function use a geometry object.
         virtual bool usesGeometry( const QgsExpression::NodeFunction *node ) const;
 
-        /** Returns a list of possible aliases for the function. These include
+        /**
+         * Returns a list of possible aliases for the function. These include
          * other permissible names for the function, e.g., deprecated names.
          * \returns list of known aliases
          * \since QGIS 2.9
          */
         virtual QStringList aliases() const { return QStringList(); }
 
-        /** True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
+        /**
+         * True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
          * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
-         * Functions are non lazy default and will be given the node return value when called **/
+         * Functions are non lazy default and will be given the node return value when called.
+         */
         bool lazyEval() const { return mLazyEval; }
+
+        /**
+         * Will be called during prepare to determine if the function is static.
+         * A function is static if it will return the same value for every feature with different
+         * attributes and/or geometry.
+         *
+         * By default this will return true, if all arguments that have been passed to the function
+         * are also static.
+         *
+         * \since QGIS 3.0
+         */
+        virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+        /**
+         * This will be called during the prepare step() of an expression if it is not static.
+         *
+         * This can be used by functions to do any preparation steps that might help to speedup the upcoming
+         * evaluation.
+         *
+         * \since QGIS 3.0
+         */
+        virtual bool prepare( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
 
         /**
          * Returns a set of field names which are required for this function.
@@ -625,6 +650,19 @@ class CORE_EXPORT QgsExpression
 
         virtual bool handlesNull() const { return mHandlesNull; }
 
+      protected:
+
+        /**
+         * This will return true if all the params for the provided function \a node are static within the
+         * constraints imposed by the \a context within the given \a parent.
+         *
+         * This can be used as callback for custom implementations of subclasses. It is the default for implementation
+         * for StaticFunction::isStatic.
+         *
+         * \note Added in QGIS 3.0
+         */
+        static bool allParamsStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
+
       private:
         QString mName;
         int mParams;
@@ -662,7 +700,8 @@ class CORE_EXPORT QgsExpression
           , mAliases( aliases )
           , mUsesGeometry( usesGeometry )
           , mReferencedColumns( referencedColumns )
-        {}
+        {
+        }
 
         /** Static function for evaluation against a QgsExpressionContext, using a named list of parameter values.
          */
@@ -705,6 +744,7 @@ class CORE_EXPORT QgsExpression
                         const QStringList &aliases = QStringList(),
                         bool handlesNull = false );
 
+
         /** Static function for evaluation against a QgsExpressionContext, using a named list of parameter values and list
          * of groups.
          */
@@ -742,13 +782,46 @@ class CORE_EXPORT QgsExpression
 
         virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction *node ) const override;
 
+        virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+        virtual bool prepare( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+        /**
+         * Set a function that will be called in the prepare step to determine if the function is
+         * static or not.
+         * By default this is set to a function that checks all arguments that have been passed to the variable
+         * and if all of them are static, it will be assumed that the function is static as well.
+         */
+        void setIsStaticFunction( std::function < bool( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) > isStatic );
+
+        /**
+         * Tag this function as either static or not static.
+         * This will indicate that the function is always expected to return the same value for
+         * an iteration (or explicitly request that it's going to be called for every feature, if false).
+         *
+         * \see setIsStaticFunction
+         */
+        void setIsStatic( bool isStatic );
+
+        /**
+         * Set a function that will be called in the prepare step to determine if the function is
+         * static or not.
+         * By default this is set to a function that checks all arguments that have been passed to the variable
+         * and if all of them are static, it will be assumed that the function is static as well.
+         */
+        void setPrepareFunction( std::function < bool( const NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) > prepareFunc );
+
+
       private:
         FcnEval mFnc;
         QStringList mAliases;
         bool mUsesGeometry;
         std::function < bool( const QgsExpression::NodeFunction *node ) > mUsesGeometryFunc;
         std::function < QSet<QString>( const QgsExpression::NodeFunction *node ) > mReferencedColumnsFunc;
+        std::function < bool( const NodeFunction *node,  QgsExpression *parent, const QgsExpressionContext *context ) > mIsStaticFunc = allParamsStatic;
+        std::function < bool( const NodeFunction *node,  QgsExpression *parent, const QgsExpressionContext *context ) > mPrepareFunc;
         QSet<QString> mReferencedColumns;
+        bool mIsStatic = false;
     };
 #endif
 
@@ -906,8 +979,6 @@ class CORE_EXPORT QgsExpression
 
         /**
          * Generate a clone of this node.
-         * Make sure that the clone does not contain any information which is
-         * generated in prepare and context related.
          * Ownership is transferred to the caller.
          *
          * \returns a deep copy of this node.
@@ -960,6 +1031,20 @@ class CORE_EXPORT QgsExpression
          * \since QGIS 2.12
          */
         bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
+
+
+      protected:
+
+        /**
+         * Copies the members of this node to the node provided in \a target.
+         * Needs to be called by all subclasses as part of their clone() implementation.
+         *
+         * \note Not available in python bindings, QgsExpression::Node is not
+         * going to be subclassed from python. If that's what you are looking
+         * for, look into writing a custom python expression function.
+         * \since QGIS 3.0
+         */
+        void cloneTo( QgsExpression::Node *target ) const SIP_SKIP;
 
       private:
 
@@ -1474,5 +1559,6 @@ class CORE_EXPORT QgsExpression
 
 
 Q_DECLARE_METATYPE( QgsExpression::Node * )
+Q_DECLARE_METATYPE( QgsExpression )
 
 #endif // QGSEXPRESSION_H

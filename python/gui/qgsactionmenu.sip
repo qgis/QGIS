@@ -37,7 +37,7 @@ class QgsActionMenu : QMenu
      * @param parent   The usual QWidget parent.
      * @param actionScope The action scope this menu will run in
      */
-    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent /TransferThis/ = nullptr );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent /TransferThis/ = 0 );
 
     /**
      * Constructs a new QgsActionMenu
@@ -47,7 +47,7 @@ class QgsActionMenu : QMenu
      * @param parent   The usual QWidget parent.
      * @param actionScope The action scope this menu will run in
      */
-    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget *parent /TransferThis/ = nullptr );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget *parent /TransferThis/ = 0 );
 
     /**
      * Destructor

@@ -16,6 +16,7 @@
 #define QGSNULLSYMBOLRENDERERWIDGET_H
 
 #include "qgsrendererwidget.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsNullSymbolRenderer;
@@ -36,7 +37,7 @@ class GUI_EXPORT QgsNullSymbolRendererWidget : public QgsRendererWidget
   public:
 
     //! Creates a new QgsNullSymbolRendererWidget object
-    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     //! Constructor for QgsNullSymbolRendererWidget
     QgsNullSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );

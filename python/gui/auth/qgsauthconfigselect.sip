@@ -8,16 +8,16 @@ class QgsAuthConfigSelect : QWidget
     explicit QgsAuthConfigSelect( QWidget *parent /TransferThis/ = 0, const QString &dataprovider = QString() );
     ~QgsAuthConfigSelect();
 
-    void setConfigId( const QString& authcfg );
+    void setConfigId( const QString &authcfg );
 
     const QString configId() const;
 
     void setDataProviderKey( const QString &key );
 
   signals:
-     void selectedConfigIdChanged( const QString& authcfg );
+     void selectedConfigIdChanged( const QString &authcfg );
 
-     void selectedConfigIdRemoved( const QString& authcfg );
+     void selectedConfigIdRemoved( const QString &authcfg );
 
   public slots:
     void showMessage( const QString &msg );

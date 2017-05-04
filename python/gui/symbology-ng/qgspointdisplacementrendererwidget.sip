@@ -4,10 +4,10 @@ class QgsPointDisplacementRendererWidget: QgsRendererWidget
 #include <qgspointdisplacementrendererwidget.h>
 %End
   public:
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
-    QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
+    QgsPointDisplacementRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsPointDisplacementRendererWidget();
 
-    QgsFeatureRenderer* renderer();
-    void setContext( const QgsSymbolWidgetContext& context );
+    QgsFeatureRenderer *renderer();
+    void setContext( const QgsSymbolWidgetContext &context );
 };
