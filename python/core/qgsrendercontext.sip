@@ -123,7 +123,7 @@ class QgsRenderContext
      */
     const QgsDistanceArea distanceArea() const;
 
-    const QgsRectangle& extent() const;
+    const QgsRectangle &extent() const;
 
     const QgsMapToPixel &mapToPixel() const;
 %Docstring
