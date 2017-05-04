@@ -516,8 +516,15 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     // to manually tweak each atlas preview page without affecting the actual original map extent.
     QgsRectangle mAtlasFeatureExtent;
 
-    // Cache used in composer preview
-    std::unique_ptr< QImage > mCacheImage;
+    // We have two images used for rendering/storing cached map images.
+    // the first (mCacheFinalImage) is used ONLY for storing the most recent completed map render. It's always
+    // used when drawing map item previews. The second (mCacheRenderingImage) is used temporarily while
+    // rendering a new preview image in the background. If (and only if) the background render completes, then
+    // mCacheRenderingImage is pushed into mCacheFinalImage, and used from then on when drawing the item preview.
+    // This ensures that something is always shown in the map item, even while refreshing the preview image in the
+    // background
+    std::unique_ptr< QImage > mCacheFinalImage;
+    std::unique_ptr< QImage > mCacheRenderingImage;
 
     // Is cache up to date
     bool mCacheUpdated = false;
