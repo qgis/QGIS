@@ -76,9 +76,10 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
 
     QgsExpressionContext createExpressionContext() const override;
 
-    void refreshStatisticsMenu( QVariant::Type fieldType );
+    void refreshStatisticsMenu();
 
     QMenu *mStatisticsMenu = nullptr;
+    QVariant::Type mFieldType;
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H

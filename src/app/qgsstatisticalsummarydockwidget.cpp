@@ -23,7 +23,6 @@
 #include <QTableWidget>
 #include <QAction>
 #include <QMenu>
-#include <QDebug>
 
 QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::sDisplayStats =
   QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Count
@@ -96,7 +95,9 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
 
   mStatisticsMenu = new QMenu( mOptionsToolButton );
   mOptionsToolButton->setMenu( mStatisticsMenu );
-  refreshStatisticsMenu( QVariant::Int );
+
+  mFieldType = QVariant::Int;
+  refreshStatisticsMenu();
 }
 
 QgsStatisticalSummaryDockWidget::~QgsStatisticalSummaryDockWidget()
@@ -106,48 +107,42 @@ QgsStatisticalSummaryDockWidget::~QgsStatisticalSummaryDockWidget()
 
 void QgsStatisticalSummaryDockWidget::refreshStatistics()
 {
-  qDebug() << "refreshStatistics called...";
   if ( !mLayer || ( mFieldExpressionWidget->isExpression() && !mFieldExpressionWidget->isValidExpression() ) )
   {
     mStatisticsTable->setRowCount( 0 );
     return;
   }
 
-  // non numeric field?
-  bool isNumeric = true;
-  QVariant::Type fieldType = QVariant::Double;
+  // determine field type
+  mFieldType = QVariant::Double;
   if ( !mFieldExpressionWidget->isExpression() )
   {
     QString field = mFieldExpressionWidget->currentField();
-    fieldType = mLayer->fields().field( mLayer->fields().lookupField( field ) ).type();
-    if ( fieldType == QVariant::String || fieldType == QVariant::Date || fieldType == QVariant::DateTime )
-    {
-      isNumeric = false;
-    }
+    mFieldType = mLayer->fields().field( mLayer->fields().lookupField( field ) ).type();
   }
+
+  refreshStatisticsMenu();
 
   bool selectedOnly = mSelectedOnlyCheckBox->isChecked();
 
-  if ( isNumeric )
+  switch ( mFieldType )
   {
-    refreshStatisticsMenu( QVariant::Int );
-    updateNumericStatistics( selectedOnly );
-  }
-  else
-  {
-    refreshStatisticsMenu( fieldType );
-    switch ( fieldType )
-    {
-      case QVariant::String:
-        updateStringStatistics( selectedOnly );
-        break;
-      case QVariant::Date:
-      case QVariant::DateTime:
-        updateDateTimeStatistics( selectedOnly );
-        break;
-      default:
-        break;
-    }
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::Double:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+      updateNumericStatistics( selectedOnly );
+      break;
+    case QVariant::String:
+      updateStringStatistics( selectedOnly );
+      break;
+    case QVariant::Date:
+    case QVariant::DateTime:
+      updateDateTimeStatistics( selectedOnly );
+      break;
+    default:
+      break;
   }
 }
 
@@ -217,15 +212,26 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics( bool selectedOnly 
     return;
   }
 
+  QList< QgsStringStatisticalSummary::Statistic > statsToDisplay;
+  QgsStringStatisticalSummary::Statistics statsToCalc = 0;
+  Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, sDisplayStringStats )
+  {
+    if ( mStatsActions.value( stat )->isChecked() )
+    {
+      statsToDisplay << stat;
+      statsToCalc |= stat;
+    }
+  }
+
   QgsStringStatisticalSummary stats;
-  stats.setStatistics( QgsStringStatisticalSummary::All );
+  stats.setStatistics( statsToCalc );
   stats.calculateFromVariants( values );
 
-  mStatisticsTable->setRowCount( sDisplayStringStats.count() );
+  mStatisticsTable->setRowCount( statsToDisplay.count() );
   mStatisticsTable->setColumnCount( 2 );
 
   int row = 0;
-  Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, sDisplayStringStats )
+  Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, statsToDisplay )
   {
     addRow( row, QgsStringStatisticalSummary::displayName( stat ),
             stats.statistic( stat ).toString(),
@@ -263,18 +269,38 @@ void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 
 void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
 {
-  qDebug() << "statActionTriggered called...";
   QAction *action = dynamic_cast<QAction *>( sender() );
   int stat = action->data().toInt();
+
+  QString settingsKey;
+  switch ( mFieldType )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::Double:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+      settingsKey = QStringLiteral( "numeric" );
+      break;
+    case QVariant::String:
+      settingsKey = QStringLiteral( "string" );
+      break;
+    case QVariant::Date:
+    case QVariant::DateTime:
+      settingsKey = QStringLiteral( "datetime" );
+      break;
+    default:
+      break;
+  }
 
   QgsSettings settings;
   if ( stat >= 0 )
   {
-    settings.setValue( QStringLiteral( "StatisticalSummaryDock/checked_%1" ).arg( stat ), checked );
+    settings.setValue( QStringLiteral( "StatisticalSummaryDock/%1_%2" ).arg( settingsKey ).arg( stat ), checked );
   }
   else if ( stat == MISSING_VALUES )
   {
-    settings.setValue( QStringLiteral( "StatisticalSummaryDock/checked_missing_values" ).arg( stat ), checked );
+    settings.setValue( QStringLiteral( "StatisticalSummaryDock/numeric_missing_values" ), checked );
   }
 
   refreshStatistics();
@@ -307,15 +333,27 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics( bool selectedOnl
     return;
   }
 
+  QList< QgsDateTimeStatisticalSummary::Statistic > statsToDisplay;
+  QgsDateTimeStatisticalSummary::Statistics statsToCalc = 0;
+  Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, sDisplayDateTimeStats )
+  {
+    if ( mStatsActions.value( stat )->isChecked() )
+    {
+      statsToDisplay << stat;
+      statsToCalc |= stat;
+    }
+  }
+
+
   QgsDateTimeStatisticalSummary stats;
-  stats.setStatistics( QgsDateTimeStatisticalSummary::All );
+  stats.setStatistics( statsToCalc );
   stats.calculate( values );
 
-  mStatisticsTable->setRowCount( sDisplayDateTimeStats.count() );
+  mStatisticsTable->setRowCount( statsToDisplay.count() );
   mStatisticsTable->setColumnCount( 2 );
 
   int row = 0;
-  Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, sDisplayDateTimeStats )
+  Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, statsToDisplay )
   {
     QString value = ( stat == QgsDateTimeStatisticalSummary::Range
                       ? tr( "%1 seconds" ).arg( stats.range().seconds() )
@@ -346,21 +384,25 @@ void QgsStatisticalSummaryDockWidget::addRow( int row, const QString &name, cons
   mStatisticsTable->setItem( row, 1, valueItem );
 }
 
-void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu( QVariant::Type fieldType )
+void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
 {
   mStatisticsMenu->clear();
   mStatsActions.clear();
 
   QgsSettings settings;
-  switch ( fieldType )
+  switch ( mFieldType )
   {
     case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::Double:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
     {
       Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
       {
         QAction *action = new QAction( QgsStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
-        bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/checked_%1" ).arg( stat ), true ).toBool();
+        bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/numeric_%1" ).arg( stat ), true ).toBool();
         action->setChecked( checked );
         action->setData( stat );
         mStatsActions.insert( stat, action );
@@ -371,7 +413,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu( QVariant::Type fiel
       //count of null values statistic
       QAction *nullCountAction = new QAction( tr( "Missing (null) values" ), mStatisticsMenu );
       nullCountAction->setCheckable( true );
-      bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/checked_missing_values" ), true ).toBool();
+      bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/numeric_missing_values" ), true ).toBool();
       nullCountAction->setChecked( checked );
       nullCountAction->setData( MISSING_VALUES );
       mStatsActions.insert( MISSING_VALUES, nullCountAction );
@@ -386,7 +428,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu( QVariant::Type fiel
       {
         QAction *action = new QAction( QgsStringStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
-        bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/checked_%1" ).arg( stat ), true ).toBool();
+        bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/string_%1" ).arg( stat ), true ).toBool();
         action->setChecked( checked );
         action->setData( stat );
         mStatsActions.insert( stat, action );
@@ -402,7 +444,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu( QVariant::Type fiel
       {
         QAction *action = new QAction( QgsDateTimeStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
-        bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/checked_%1" ).arg( stat ), true ).toBool();
+        bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/datetime_%1" ).arg( stat ), true ).toBool();
         action->setChecked( checked );
         action->setData( stat );
         mStatsActions.insert( stat, action );
