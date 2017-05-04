@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLayerMetadata
     /**
      * Metadata spatial extent structure.
      */
-    struct SpatialExtent
+    struct CORE_EXPORT SpatialExtent
     {
 
       /**
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsLayerMetadata
     /**
      * Metadata extent structure.
      */
-    struct Extent
+    struct CORE_EXPORT Extent
     {
       public:
 
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsLayerMetadata
     /**
      * Metadata constraint structure.
      */
-    struct Constraint
+    struct CORE_EXPORT Constraint
     {
 
       /**
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsLayerMetadata
     /**
      * Metadata address structure.
      */
-    struct Address
+    struct CORE_EXPORT Address
     {
 
       /**
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsLayerMetadata
     /**
      * Metadata contact structure.
      */
-    struct Contact
+    struct CORE_EXPORT Contact
     {
 
       /**
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsLayerMetadata
     /**
      * Metadata link structure.
      */
-    struct Link
+    struct CORE_EXPORT Link
     {
 
       /**
