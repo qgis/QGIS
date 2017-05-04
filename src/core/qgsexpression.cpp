@@ -4181,7 +4181,7 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
                                << Parameter( QStringLiteral( "geometry" ) )
                                << Parameter( QStringLiteral( "number of sides/edges" ) )
                                << Parameter( QStringLiteral( "inscribed or circumscribed" ), true, 0 ),
-                               fcnMakeRegularPolygon, QStringLiteral( "GeometryGroup" ) )
+                               fcnMakeRegularPolygon, QStringLiteral( "GeometryGroup" ) );
 
     StaticFunction *xAtFunc = new StaticFunction( QStringLiteral( "$x_at" ), 1, fcnXat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "xat" ) << QStringLiteral( "x_at" ) );
     xAtFunc->setIsStatic( false );
