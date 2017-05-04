@@ -23,7 +23,7 @@ import sys
 import os
 import subprocess
 
-from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug
+from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug, QThreadPool
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
@@ -88,6 +88,8 @@ class TestComposerBase(TestQgsPalLabeling):
         TestQgsPalLabeling.tearDownClass()
         cls.removeMapLayer(cls.layer)
         cls.layer = None
+        # avoid crash on finish, probably related to https://bugreports.qt.io/browse/QTBUG-35760
+        QThreadPool.globalInstance().waitForDone()
 
     def setUp(self):
         """Run before each test."""
