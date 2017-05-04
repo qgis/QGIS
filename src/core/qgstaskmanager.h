@@ -19,6 +19,7 @@
 #define QGSTASKMANAGER_H
 
 #include <QObject>
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <QMap>
 #include <QFuture>
@@ -427,7 +428,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     //! Returns the set of task IDs on which a task is dependent
     //! \note not available in Python bindings
-    QSet< long > dependencies( long taskId ) const;
+    QSet< long > dependencies( long taskId ) const SIP_SKIP;
 
     /** Returns a list of layers on which as task is dependent. The task will automatically
      * be canceled if any of these layers are above to be removed.

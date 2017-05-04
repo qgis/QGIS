@@ -16,6 +16,7 @@
 #define QGSINVERTEDPOLYGONRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
@@ -103,7 +104,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     /** Proxy that will call this method on the embedded renderer.
      * \note not available in Python bindings
      */
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override;
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override SIP_SKIP;
 
     /** Proxy that will call this method on the embedded renderer.
      */

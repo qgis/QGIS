@@ -16,6 +16,7 @@
 #define QGSMAPHITTEST_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsmapsettings.h"
 #include "qgsgeometry.h"
 
@@ -68,10 +69,10 @@ class CORE_EXPORT QgsMapHitTest
   protected:
 
     //! \note not available in Python bindings
-    typedef QSet<QString> SymbolSet;
+    typedef QSet<QString> SymbolSet SIP_SKIP;
 
     //! \note not available in Python bindings
-    typedef QMap<QgsVectorLayer *, SymbolSet> HitTest;
+    typedef QMap<QgsVectorLayer *, SymbolSet> HitTest SIP_SKIP;
 
     /** Runs test for visible symbols within a layer
      * \param vl vector layer
@@ -81,7 +82,7 @@ class CORE_EXPORT QgsMapHitTest
      * \since QGIS 2.12
      * \note not available in Python bindings
      */
-    void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context );
+    void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context ) SIP_SKIP;
 
     //! The initial map settings
     QgsMapSettings mSettings;

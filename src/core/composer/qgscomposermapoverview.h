@@ -19,6 +19,7 @@
 #define QGSCOMPOSERMAPOVERVIEW_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgscomposermapitem.h"
 #include <QString>
@@ -195,7 +196,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * \see setFrameSymbol
      * \note not available in Python bindings
      */
-    const QgsFillSymbol *frameSymbol() const { return mFrameSymbol; }
+    const QgsFillSymbol *frameSymbol() const { return mFrameSymbol; } SIP_SKIP
 
     /** Retrieves the blending mode used for drawing the overview.
      * \returns blending mode for overview

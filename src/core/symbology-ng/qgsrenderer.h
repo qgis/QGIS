@@ -17,6 +17,7 @@
 #define QGSRENDERERV2_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
@@ -271,7 +272,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     //! return a list of item text / symbol
     //! \note not available in Python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) SIP_SKIP;
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! Default fallback implementation just uses legendSymbolItems() implementation

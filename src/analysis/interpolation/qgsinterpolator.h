@@ -19,6 +19,7 @@
 #define QGSINTERPOLATOR_H
 
 #include <QVector>
+#include "qgis_sip.h"
 #include "qgis_analysis.h"
 
 class QgsVectorLayer;
@@ -67,7 +68,7 @@ class ANALYSIS_EXPORT QgsInterpolator
     virtual int interpolatePoint( double x, double y, double &result ) = 0;
 
     //! \note not available in Python bindings
-    QList<LayerData> layerData() const { return mLayerData; }
+    QList<LayerData> layerData() const { return mLayerData; } SIP_SKIP
 
   protected:
 

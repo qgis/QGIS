@@ -19,6 +19,7 @@
 #define QGIS_H
 
 #include <QEvent>
+#include "qgis_sip.h"
 #include <QString>
 #include <QRegExp>
 #include <QMetaType>
@@ -138,7 +139,7 @@ class CORE_EXPORT Qgis
  * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> class QgsSignalBlocker SIP_SKIP // clazy:exclude=rule-of-three
+template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude=rule-of-three
 {
   public:
 
@@ -178,7 +179,7 @@ template<class Object> class QgsSignalBlocker SIP_SKIP // clazy:exclude=rule-of-
  * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP
+template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP
 {
   return QgsSignalBlocker<Object>( object );
 }

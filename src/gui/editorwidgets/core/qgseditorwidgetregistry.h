@@ -17,6 +17,7 @@
 #define QGSEDITORWIDGETREGISTRY_H
 
 #include <QObject>
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <QMap>
 #include "qgseditorwidgetfactory.h"
@@ -100,7 +101,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     const QVariantMap &config,
                                     QWidget *editor,
                                     QWidget *parent,
-                                    const QgsAttributeEditorContext &context = QgsAttributeEditorContext() ) SIP_FACTORY;
+                                    const QgsAttributeEditorContext &context = QgsAttributeEditorContext() ) SIP_FACTORY SIP_SKIP;
 
     /**
      * Create an attribute editor widget wrapper of the best type for a given field.
@@ -118,7 +119,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     int fieldIdx,
                                     QWidget *editor,
                                     QWidget *parent,
-                                    const QgsAttributeEditorContext &context = QgsAttributeEditorContext() ) SIP_FACTORY;
+                                    const QgsAttributeEditorContext &context = QgsAttributeEditorContext() ) SIP_FACTORY SIP_SKIP;
 
     QgsSearchWidgetWrapper *createSearchWidget( const QString &widgetId,
         QgsVectorLayer *vl,

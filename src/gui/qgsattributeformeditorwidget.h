@@ -17,6 +17,7 @@
 #define QGSATTRIBUTEFORMEDITORWIDGET_H
 
 #include <QWidget>
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <QVariant>
 #include "qgsattributeeditorcontext.h"
@@ -71,7 +72,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      */
     void createSearchWidgetWrappers( const QString &widgetId, int fieldIdx,
                                      const QVariantMap &config,
-                                     const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+                                     const QgsAttributeEditorContext &context = QgsAttributeEditorContext() ) SIP_SKIP;
 
     /** Sets the current mode for the widget. The widget will adapt its state and visible widgets to
      * reflect the updated mode. For example, showing multi edit tool buttons if the mode is set to MultiEditMode.

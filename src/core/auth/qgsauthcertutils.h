@@ -19,6 +19,7 @@
 #define QGSAUTHCERTUTILS_H
 
 #include <QFile>
+#include "qgis_sip.h"
 #include <QtCrypto>
 #include <QSslCertificate>
 #include <QSslError>
@@ -88,7 +89,7 @@ class CORE_EXPORT QgsAuthCertUtils
     /** Map certificates to their oraganization.
      * \note not available in Python bindings
      */
-    static QMap< QString, QList<QSslCertificate> > certsGroupedByOrg( const QList<QSslCertificate> &certs );
+    static QMap< QString, QList<QSslCertificate> > certsGroupedByOrg( const QList<QSslCertificate> &certs ) SIP_SKIP;
 
     /** Map SSL custom configs' certificate sha1 to custom config as simple cache
      */
@@ -97,7 +98,7 @@ class CORE_EXPORT QgsAuthCertUtils
     /** Map SSL custom configs' certificates to their oraganization.
      * \note not available in Python bindings
      */
-    static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer> &configs );
+    static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer> &configs ) SIP_SKIP;
 
     //! Return list of concatenated certs from a PEM or DER formatted file
     static QList<QSslCertificate> certsFromFile( const QString &certspath );
@@ -163,7 +164,7 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QString getCertDistinguishedName( const QSslCertificate &qcert,
         const QCA::Certificate &acert = QCA::Certificate(),
-        bool issuer = false );
+        bool issuer = false ) SIP_SKIP;
 
     //! Get the general name for certificate trust
     static QString getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust );
@@ -180,37 +181,37 @@ class CORE_EXPORT QgsAuthCertUtils
     /** Convert a QSslCertificate to a QCA::Certificate.
      * \note not available in Python bindings
      */
-    static QCA::Certificate qtCertToQcaCert( const QSslCertificate &cert );
+    static QCA::Certificate qtCertToQcaCert( const QSslCertificate &cert ) SIP_SKIP;
 
     /** Convert a QList of QSslCertificate to a QCA::CertificateCollection.
      * \note not available in Python bindings
      */
-    static QCA::CertificateCollection qtCertsToQcaCollection( const QList<QSslCertificate> &certs );
+    static QCA::CertificateCollection qtCertsToQcaCollection( const QList<QSslCertificate> &certs ) SIP_SKIP;
 
     /** PKI key/cert bundle from file path, e.g. from .p12 or pfx files.
      * \note not available in Python bindings
      */
-    static QCA::KeyBundle qcaKeyBundle( const QString &path, const QString &pass );
+    static QCA::KeyBundle qcaKeyBundle( const QString &path, const QString &pass ) SIP_SKIP;
 
     /** Certificate validity check messages per enum.
      * \note not available in Python bindings
      */
-    static QString qcaValidityMessage( QCA::Validity validity );
+    static QString qcaValidityMessage( QCA::Validity validity ) SIP_SKIP;
 
     /** Certificate signature algorithm strings per enum.
      * \note not available in Python bindings
      */
-    static QString qcaSignatureAlgorithm( QCA::SignatureAlgorithm algorithm );
+    static QString qcaSignatureAlgorithm( QCA::SignatureAlgorithm algorithm ) SIP_SKIP;
 
     /** Certificate well-known constraint strings per enum.
      * \note not available in Python bindings
      */
-    static QString qcaKnownConstraint( QCA::ConstraintTypeKnown constraint );
+    static QString qcaKnownConstraint( QCA::ConstraintTypeKnown constraint ) SIP_SKIP;
 
     /** Certificate usage type strings per enum
      * \note not available in Python bindings
      */
-    static QString certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype );
+    static QString certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype ) SIP_SKIP;
 
     //! Try to determine the certificates usage types
     static QList<QgsAuthCertUtils::CertUsageType> certificateUsageTypes( const QSslCertificate &cert );
@@ -236,7 +237,7 @@ class CORE_EXPORT QgsAuthCertUtils
     /** Get short strings describing SSL errors.
      * \note not available in Python bindings
      */
-    static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings();
+    static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings() SIP_SKIP;
 
   private:
     static void appendDirSegment_( QStringList &dirname, const QString &segment, QString value );

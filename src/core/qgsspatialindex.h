@@ -35,6 +35,7 @@ class QgsRectangle;
 class QgsPoint;
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QList>
 #include <QSharedDataPointer>
 
@@ -96,9 +97,9 @@ class CORE_EXPORT QgsSpatialIndex
 
   protected:
     //! \note not available in Python bindings
-    static SpatialIndex::Region rectToRegion( const QgsRectangle &rect );
+    static SpatialIndex::Region rectToRegion( const QgsRectangle &rect ) SIP_SKIP;
     //! \note not available in Python bindings
-    static bool featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id );
+    static bool featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id ) SIP_SKIP;
 
     friend class QgsFeatureIteratorDataStream; // for access to featureInfo()
 

@@ -17,6 +17,7 @@
 #define QGSMAPRENDERERJOB_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
@@ -203,7 +204,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * QgsMapRendererCache ID string for cached label image.
      * \note not available in Python bindings
      */
-    static const QString LABEL_CACHE_ID;
+    static const QString LABEL_CACHE_ID SIP_SKIP;
 
   signals:
 
@@ -234,26 +235,26 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * the render cannot use cached labels and should not cache the result.
      * \note not available in Python bindings
      */
-    bool prepareLabelCache() const;
+    bool prepareLabelCache() const SIP_SKIP;
 
     //! \note not available in Python bindings
-    LayerRenderJobs prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2 );
+    LayerRenderJobs prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2 ) SIP_SKIP;
 
     /**
      * Prepares a labeling job.
      * \note not available in Python bindings
      * \since QGIS 3.0
      */
-    LabelRenderJob prepareLabelingJob( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool canUseLabelCache = true );
+    LabelRenderJob prepareLabelingJob( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool canUseLabelCache = true ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    static QImage composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob );
+    static QImage composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    void logRenderingTime( const LayerRenderJobs &jobs, const LabelRenderJob &labelJob );
+    void logRenderingTime( const LayerRenderJobs &jobs, const LabelRenderJob &labelJob ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    void cleanupJobs( LayerRenderJobs &jobs );
+    void cleanupJobs( LayerRenderJobs &jobs ) SIP_SKIP;
 
     /**
      * Handles clean up tasks for a label job, including deletion of images and storing cached
@@ -261,10 +262,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * \since QGIS 3.0
      * \note not available in Python bindings
      */
-    void cleanupLabelJob( LabelRenderJob &job );
+    void cleanupLabelJob( LabelRenderJob &job ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    static void drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter );
+    static void drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter ) SIP_SKIP;
 
   private:
 

@@ -17,6 +17,7 @@
 #define OSMIMPORT_H
 
 #include <QFile>
+#include "qgis_sip.h"
 #include <QObject>
 
 #include "qgsosmbase.h"
@@ -72,7 +73,7 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
     bool closeDatabase();
 
     //! \note not available in Python bindings
-    void deleteStatement( sqlite3_stmt *&stmt );
+    void deleteStatement( sqlite3_stmt *&stmt ) SIP_SKIP;
 
     bool createIndexes();
 

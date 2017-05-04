@@ -71,12 +71,12 @@ class CORE_EXPORT QgsLogger
 
     //! Similar to the previous method, but prints a variable double-value pair
     //! \note not available in Python bindings
-    static void debug( const QString &var, double val, int debuglevel = 1, const char *file = nullptr, const char *function = nullptr, int line = -1 ) SIP_SKIP;
+    static void debug( const QString &var, double val, int debuglevel = 1, const char *file = nullptr, const char *function = nullptr, int line = -1 ) SIP_SKIP SIP_SKIP;
 
     //! Prints out a variable/value pair for types with overloaded operator<<
     //! \note not available in Python bindings
     template <typename T> static void debug( const QString &var, T val, const char *file = nullptr, const char *function = nullptr,
-        int line = -1, int debuglevel = 1 ) SIP_SKIP
+        int line = -1, int debuglevel = 1 ) SIP_SKIP SIP_SKIP
     {
       std::ostringstream os;
       os << var.toLocal8Bit().data() << " = " << val;

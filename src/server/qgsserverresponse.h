@@ -20,6 +20,7 @@
 #define QGSSERVERRESPONSE_H
 
 #include "qgis_server.h"
+#include "qgis_sip.h"
 
 #include <QString>
 #include <QIODevice>
@@ -121,7 +122,7 @@ class SERVER_EXPORT QgsServerResponse
      *
      *  \note not available in Python bindings
      */
-    virtual qint64 write( const char *data, qint64 maxsize );
+    virtual qint64 write( const char *data, qint64 maxsize ) SIP_SKIP;
 
     /**
      * Writes at most maxSize bytes of data
@@ -132,7 +133,7 @@ class SERVER_EXPORT QgsServerResponse
      *
      * \note not available in Python bindings
      */
-    virtual qint64 write( const char *data );
+    virtual qint64 write( const char *data ) SIP_SKIP;
 
     /**
      * Write server exception

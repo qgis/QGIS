@@ -17,6 +17,7 @@
 #define QGSMARKERSYMBOLLAYERV2_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgssymbollayer.h"
 
@@ -127,11 +128,11 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 
     //! Prepares the layer for drawing the specified shape (QPolygonF version)
     //! \note not available in Python bindings
-    bool prepareMarkerShape( Shape shape );
+    bool prepareMarkerShape( Shape shape ) SIP_SKIP;
 
     //! Prepares the layer for drawing the specified shape (QPainterPath version)
     //! \note not available in Python bindings
-    bool prepareMarkerPath( Shape symbol );
+    bool prepareMarkerPath( Shape symbol ) SIP_SKIP;
 
     /** Creates a polygon representing the specified shape.
      * \param shape shape to create
@@ -139,7 +140,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \returns true if shape was successfully stored in polygon
      * \note not available in Python bindings
      */
-    bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
+    bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const SIP_SKIP;
 
     /** Calculates the desired size of the marker, considering data defined size overrides.
      * \param context symbol render context
@@ -147,7 +148,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \returns marker size, in original size units
      * \note not available in Python bindings
      */
-    double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
+    double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const SIP_SKIP;
 
     /** Calculates the marker offset and rotation.
      * \param context symbol render context
@@ -157,7 +158,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \param angle will be set to calculated marker angle
      * \note not available in Python bindings
      */
-    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
+    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const SIP_SKIP;
 
     //! Polygon of points in shape. If polygon is empty then shape is using mPath.
     QPolygonF mPolygon;
