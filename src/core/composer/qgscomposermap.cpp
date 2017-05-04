@@ -115,6 +115,13 @@ QgsComposerMap::~QgsComposerMap()
 {
   delete mOverviewStack;
   delete mGridStack;
+
+  if ( mPainterJob )
+  {
+    disconnect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsComposerMap::painterJobFinished );
+    mPainterJob->cancel();
+    mPainter->end();
+  }
 }
 
 /* This function is called by paint() and cache() to render the map.  It does not override any functions
@@ -208,18 +215,26 @@ void QgsComposerMap::cache()
 
   if ( mPainterJob )
   {
-    if ( mPainterCancelWait )
+    disconnect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsComposerMap::painterJobFinished );
+    QgsMapRendererCustomPainterJob *oldJob = mPainterJob.release();
+    QPainter *oldPainter = mPainter.release();
+    QImage *oldImage = mCacheImage.release();
+    connect( oldJob, &QgsMapRendererCustomPainterJob::finished, this, [oldPainter, oldJob, oldImage]
     {
-      return; // Already waiting
-    }
-    QgsDebugMsg( "Aborting composer painter job" );
-    mPainterCancelWait = true;
-    mPainterJob->cancel();
-    mPainterCancelWait = false;
+      oldJob->deleteLater();
+      delete oldPainter;
+      delete oldImage;
+    } );
+    oldJob->cancelWithoutBlocking();
+  }
+  else
+  {
+    mCacheImage.reset( nullptr );
   }
 
   Q_ASSERT( !mPainterJob );
   Q_ASSERT( !mPainter );
+  Q_ASSERT( !mCacheImage );
 
   double horizontalVScaleFactor = horizontalViewScaleFactor();
   if ( horizontalVScaleFactor < 0 )
@@ -250,29 +265,28 @@ void QgsComposerMap::cache()
     }
   }
 
-  mCacheImage = QImage( w, h, QImage::Format_ARGB32 );
+  mCacheImage.reset( new QImage( w, h, QImage::Format_ARGB32 ) );
 
   // set DPI of the image
-  mCacheImage.setDotsPerMeterX( 1000 * w / widthMM );
-  mCacheImage.setDotsPerMeterY( 1000 * h / heightMM );
+  mCacheImage->setDotsPerMeterX( 1000 * w / widthMM );
+  mCacheImage->setDotsPerMeterY( 1000 * h / heightMM );
 
   if ( hasBackground() )
   {
     //Initially fill image with specified background color. This ensures that layers with blend modes will
     //preview correctly
-    mCacheImage.fill( backgroundColor().rgba() );
+    mCacheImage->fill( backgroundColor().rgba() );
   }
   else
   {
     //no background, but start with empty fill to avoid artifacts
-    mCacheImage.fill( QColor( 255, 255, 255, 0 ).rgba() );
+    mCacheImage->fill( QColor( 255, 255, 255, 0 ).rgba() );
   }
 
-  mPainter = new QPainter( &mCacheImage );
-  QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheImage.logicalDpiX() ) );
-  mPainterJob = new QgsMapRendererCustomPainterJob( settings, mPainter );
-  connect( mPainterJob, SIGNAL( finished() ), this, SLOT( painterJobFinished() ) );
-  QgsDebugMsg( "Starting new composer painter job" );
+  mPainter.reset( new QPainter( mCacheImage.get() ) );
+  QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheImage->logicalDpiX() ) );
+  mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
+  connect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsComposerMap::painterJobFinished );
   mPainterJob->start();
 }
 
@@ -280,10 +294,8 @@ void QgsComposerMap::painterJobFinished()
 {
   QgsDebugMsg( "Finished composer painter job" );
   mPainter->end();
-  delete mPainterJob;
-  mPainterJob = nullptr;
-  delete mPainter;
-  mPainter = nullptr;
+  mPainterJob.reset( nullptr );
+  mPainter.reset( nullptr );
   mCacheUpdated = true;
   updateItem();
 }
@@ -316,19 +328,22 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   }
   else if ( mComposition->plotStyle() == QgsComposition::Preview )
   {
-    if ( mCacheImage.isNull() )
+    if ( !mCacheImage || mCacheImage->isNull() )
+    {
       cache();
+      return;
+    }
 
     //Background color is already included in cached image, so no need to draw
 
-    double imagePixelWidth = mCacheImage.width(); //how many pixels of the image are for the map extent?
+    double imagePixelWidth = mCacheImage->width(); //how many pixels of the image are for the map extent?
     double scale = rect().width() / imagePixelWidth;
 
     painter->save();
 
     painter->translate( mXOffset, mYOffset );
     painter->scale( scale, scale );
-    painter->drawImage( 0, 0, mCacheImage );
+    painter->drawImage( 0, 0, *mCacheImage );
 
     //restore rotation
     painter->restore();

@@ -517,7 +517,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsRectangle mAtlasFeatureExtent;
 
     // Cache used in composer preview
-    QImage mCacheImage;
+    std::unique_ptr< QImage > mCacheImage;
 
     // Is cache up to date
     bool mCacheUpdated = false;
@@ -590,8 +590,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Margin size for atlas driven extents (percentage of feature size) - when in auto scaling mode
     double mAtlasMargin = 0.10;
 
-    QPainter *mPainter = nullptr;
-    QgsMapRendererCustomPainterJob *mPainterJob = nullptr;
+    std::unique_ptr< QPainter > mPainter;
+    std::unique_ptr< QgsMapRendererCustomPainterJob > mPainterJob;
     bool mPainterCancelWait = false;
 
     void init();
