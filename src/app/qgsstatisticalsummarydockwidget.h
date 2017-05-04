@@ -24,6 +24,7 @@
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
 
+class QMenu;
 class QgsBrowserModel;
 class QModelIndex;
 class QgsDockBrowserTreeView;
@@ -74,6 +75,10 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     void addRow( int row, const QString &name, const QString &value, bool showValue );
 
     QgsExpressionContext createExpressionContext() const override;
+
+    void refreshStatisticsMenu( QVariant::Type fieldType );
+
+    QMenu *mStatisticsMenu = nullptr;
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H
