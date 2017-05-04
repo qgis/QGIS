@@ -707,7 +707,7 @@ void QgsComposerMap::setSceneRect( const QRectF &rectangle )
   mCacheUpdated = false;
 
   updateBoundingRect();
-  update();
+  updateItem();
   emit itemChanged();
   emit extentChanged();
 }
