@@ -574,14 +574,10 @@ while ($line_idx < $line_count){
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
 
     # combine multiple annotations
-    # https://regex101.com/r/uvCt4M/1
-    do {no warnings 'uninitialized';
-        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\/\s*;(\s*(\/\/.*)?)$/\/$1,$3\/$5;/;
-        (! $3) or dbg_info("combine multiple annotations -- works only for 2");
-    };
-    # combine multiple argument annotations
+    # https://regex101.com/r/uvCt4M/3
     do {no warnings 'uninitialized';
         $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
+        (! $3) or dbg_info("combine multiple annotations -- works only for 2");
     };
 
     # unprinted annotations

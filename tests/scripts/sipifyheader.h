@@ -240,8 +240,6 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     void removeProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFERBACK );
 
-    void multiAnnotationArg( SomeClass **object SIP_OUT SIP_TRANSFERBACK, int &another SIP_OUT );
-
     bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl, Some::Thing _part = -1 /*default =-1*/ ) { doSomething; return true; }   // some comments
 
     static inline QgsMapLayer *skippedMethodWithBody() SIP_SKIP
@@ -331,6 +329,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     }
 
     void combinedAnnotations() SIP_FACTORY SIP_PYNAME( otherName );
+    void multiAnnotationArg( SomeClass **object SIP_OUT SIP_TRANSFERBACK, int &another SIP_OUT );
 
     //! remove argument
     void simple( bool test SIP_PYARGREMOVE );
