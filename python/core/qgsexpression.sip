@@ -924,15 +924,6 @@ return index of the function in Functions array
 
       protected:
 
-        void cloneTo( QgsExpression::Node *target ) const;
-%Docstring
- Needs to be called by all subclasses as part of their clone() implementation.
-
-.. note::
-
-   Not available in python bindings
-.. versionadded:: 3.0
-%End
 
       private:
         virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0 ;

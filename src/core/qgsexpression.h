@@ -1036,12 +1036,15 @@ class CORE_EXPORT QgsExpression
       protected:
 
         /**
+         * Copies the members of this node to the node provided in \a target.
          * Needs to be called by all subclasses as part of their clone() implementation.
          *
-         * \note Not available in python bindings
+         * \note Not available in python bindings, QgsExpression::Node is not
+         * going to be subclassed from python. If that's what you are looking
+         * for, look into writing a custom python expression function.
          * \since QGIS 3.0
          */
-        void cloneTo( QgsExpression::Node *target ) const;
+        void cloneTo( QgsExpression::Node *target ) const SIP_SKIP;
 
       private:
 
