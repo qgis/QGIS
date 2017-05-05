@@ -297,6 +297,8 @@ void QgsComposerMap::painterJobFinished()
   mPainter.reset( nullptr );
   mCacheUpdated = true;
   mCacheFinalImage = std::move( mCacheRenderingImage );
+  mLastRenderedImageOffsetX = 0;
+  mLastRenderedImageOffsetY = 0;
   updateItem();
 }
 
@@ -341,7 +343,7 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
 
     painter->save();
 
-    painter->translate( mXOffset, mYOffset );
+    painter->translate( mLastRenderedImageOffsetX + mXOffset, mLastRenderedImageOffsetY + mYOffset );
     painter->scale( scale, scale );
     painter->drawImage( 0, 0, *mCacheFinalImage );
 
@@ -599,6 +601,8 @@ void QgsComposerMap::resize( double dx, double dy )
 
 void QgsComposerMap::moveContent( double dx, double dy )
 {
+  mLastRenderedImageOffsetX -= dx;
+  mLastRenderedImageOffsetY -= dy;
   if ( !mDrawing )
   {
     transformShift( dx, dy );

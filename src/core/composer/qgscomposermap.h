@@ -543,6 +543,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Offset in y direction for showing map cache image
     double mYOffset = 0.0;
 
+    double mLastRenderedImageOffsetX = 0.0;
+    double mLastRenderedImageOffsetY = 0.0;
+
     //! Map rotation
     double mMapRotation = 0;
 
