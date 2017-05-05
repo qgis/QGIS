@@ -473,7 +473,7 @@ int main( int argc, char *argv[] )
   if ( !QgsApplication::isRunningFromBuildDir() )
   {
     QString symbolPath( getenv( "QGIS_PREFIX_PATH" ) );
-    symbolPath = symbolPath + "\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore ";
+    symbolPath = symbolPath + "\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore";
     QgsStackTrace::setSymbolPath( symbolPath );
   }
   SetUnhandledExceptionFilter( QgsCrashHandler::handle );
