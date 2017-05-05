@@ -54,7 +54,7 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
 {
   QString geomType = QgsWkbTypes::displayString( geometryType );
   if ( geomType.isNull() )
-    geomType = "none";
+    geomType = QStringLiteral( "none" );
 
   QString uri = geomType + '?';
 
