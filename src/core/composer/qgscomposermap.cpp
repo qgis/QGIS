@@ -348,9 +348,11 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
       painter->setFont( messageFont );
       painter->setPen( QColor( 255, 255, 255, 255 ) );
       painter->drawText( thisPaintRect, Qt::AlignCenter | Qt::AlignHCenter, tr( "Rendering map" ) );
-
-
-      cache();
+      if ( !mPainterJob )
+      {
+        // this is the map's very first paint - trigger a cache update
+        cache();
+      }
     }
     else
     {
