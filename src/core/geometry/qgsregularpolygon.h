@@ -27,111 +27,117 @@
 #include "qgscircle.h"
 #include "qgstriangle.h"
 
-enum ConstructionOption
-{
-  inscribedCircle,
-  circumscribedCircle
-};
 
 /** \ingroup core
  * \class QgsRegularPolygon
  * \brief Regular Polygon geometry type.
  *
- * A regular polygon is defined by a center point with a number of sides/vertices, a radius and the first vertice.
+ * A regular polygon is a polygon that is equiangular (all angles are equal in measure) and equilateral (all sides have the same length).
+ * The regular polygon is defined by a center point with a number of sides/vertices, a radius and the first vertex.
  *
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRegularPolygon
 {
   public:
+
+    /**
+     * A regular polygon can be constructed inscribed in a circle or circumscribed about a circle.
+     *
+     */
+    enum ConstructionOption
+    {
+      InscribedCircle, //! Inscribed in a circle (the radius is the distance between the center and vertices)
+      CircumscribedCircle //! Circumscribed about a circle (the radius is the distance from the center to the midpoints of the sides)
+    };
+
     QgsRegularPolygon();
 
-    /** Constructs a regular polygon by center and parameters for the first vertice. An empty regular polygon is returned if numSides < 3 or circle option isn't valid.
+    /** Constructs a regular polygon by \a center and parameters for the first vertex. An empty regular polygon is returned if \a numberSides < 3 or \a ConstructionOption isn't valid.
      * \param center The center of the regular polygon.
-     * \param radius Distance from the center and the first vertice or sides (see \a circle).
-     * \param azimuth Angle in degrees started from the North to the first vertice.
-     * \param numSides Number of sides of the regular polygon.
-     * \param circle Option to create the polygon: inscribed in circle (the radius is the distance between the center and vertices) or circumscribed about circle (the radius is the distance from the center to the midpoints of the sides).
+     * \param radius Distance from the center and the first vertex or sides (see \a ConstructionOption).
+     * \param azimuth Angle in degrees started from the North to the first vertex.
+     * \param numberSides Number of sides of the regular polygon.
+     * \param circle Option to create the polygon. \see ConstructionOption
      */
-    QgsRegularPolygon( const QgsPointV2 center, const double radius, const double azimuth, const int numSides, const int circle );
+    QgsRegularPolygon( const QgsPointV2 &center, const double radius, const double azimuth, const int numberSides, const ConstructionOption circle );
 
-    /** Constructs a regular polygon by center and another point.
+    /** Constructs a regular polygon by \a center and another point.
      * \param center The center of the regular polygon.
-     * \param pt1 The first vertice if the polygon is inscribed in circle or the midpoint of a side if the polygon is circumscribed about circle.
-     * \param numSides Number of sides of the regular polygon.
+     * \param pt1 The first vertex if the polygon is inscribed in circle or the midpoint of a side if the polygon is circumscribed about circle.
+     * \param numberSides Number of sides of the regular polygon.
      * \param circle Option to create the polygon inscribed in circle (the radius is the distance between the center and vertices) or circumscribed about circle (the radius is the distance from the center to the midpoints of the sides).
      */
-    QgsRegularPolygon( const QgsPointV2 center, const QgsPointV2 pt1, const int  numSides, const int circle );
+    QgsRegularPolygon( const QgsPointV2 &center, const QgsPointV2 &pt1, const int  numberSides, const ConstructionOption circle );
 
     /** Constructs a regular polygon by two points of the first side.
-     * \param pt1 The first vertice of the first side, also first vertice of the regular polygon.
-     * \param pt2 The second vertice of the first side.
-     * \param numSides Number of sides of the regular polygon.
+     * \param pt1 The first vertex of the first side, also first vertex of the regular polygon.
+     * \param pt2 The second vertex of the first side.
+     * \param numberSides Number of sides of the regular polygon.
      */
-    QgsRegularPolygon( const QgsPointV2 pt1, const QgsPointV2 pt2, const int  numSides );
+    QgsRegularPolygon( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const int  numberSides );
 
-    virtual bool operator ==( const QgsRegularPolygon &rp ) const;
-    virtual bool operator !=( const QgsRegularPolygon &rp ) const;
+    bool operator ==( const QgsRegularPolygon &rp ) const;
+    bool operator !=( const QgsRegularPolygon &rp ) const;
 
     //! A regular polygon is empty if radius equal to 0 or number of sides < 3
-    virtual bool isEmpty() const;
+    bool isEmpty() const;
 
     /** Returns the center point of the regular polygon.
      * \see setCenter()
      */
-    QgsPointV2 center() const {return mCenter; }
+    QgsPointV2 center() const { return mCenter; }
 
     /** Returns the radius.
      * This is also the radius of the circumscribing circle.
      * \see apothem()
      * \see setRadius()
      */
-    double radius() const {return mRadius; }
+    double radius() const { return mRadius; }
 
-    /** Returns the first vertice (corner) of the regular polygon.
+    /** Returns the first vertex (corner) of the regular polygon.
      * \see setVertice()
      */
-    QgsPointV2 vertice() const {return mVertice; }
+    QgsPointV2 firstVertex() const { return mFirstVertex; }
 
     /** Returns the apothem of the regular polygon.
      * The apothem is the radius of the inscribed circle.
      * \see radius()
      */
-    double apothem() const {return mRadius * cos( M_PI / mNumSides ); }
+    double apothem() const { return mRadius * cos( M_PI / mNumberSides ); }
 
     /** Returns the number of sides of the regular polygon.
-     * \see setNumSides()
+     * \see setNumberSides()
      */
-    int numSides() const {return mNumSides; }
+    int numberSides() const { return mNumberSides; }
 
     /** Sets the center point.
-     * Radius is unchanged. The first vertice is reprojected from the new center.
+     * Radius is unchanged. The first vertex is reprojected from the new center.
      * \see center()
      */
-    void setCenter( const QgsPointV2 center );
+    void setCenter( const QgsPointV2 &center );
 
     /** Sets the radius.
-     * Center is unchanged. The first vertice is reprojected from the center with the new radius.
+     * Center is unchanged. The first vertex is reprojected from the center with the new radius.
      * \see radius()
      */
     void setRadius( const double radius );
 
-    /** Sets the first vertice.
-     * Radius is unchanged. The center is reprojected from the new first vertice.
-     * \see vertice()
+    /** Sets the first vertex.
+     * Radius is unchanged. The center is reprojected from the new first vertex.
+     * \see firstVertex()
      */
-    void setVertice( const QgsPointV2 vertice );
+    void setFirstVertex( const QgsPointV2 &firstVertex );
 
     /** Sets the number of sides.
-     * If numSides < 3, the number of sides is unchanged.
-     * \see numSides()
+     * If numberSides < 3, the number of sides is unchanged.
+     * \see numberSides()
      */
-    void setNumSides( const int numSides );
+    void setNumberSides( const int numberSides );
 
-    /** Returns a list of points into \a pts.
-     * \param pts List of points returned.
+    /** Returns a list including the vertices of the regular polygon.
      */
-    void points( QgsPointSequence &pts SIP_OUT ) const;
+    QgsPointSequence points( ) const;
 
     /** Returns as a polygon.
      */
@@ -142,7 +148,7 @@ class CORE_EXPORT QgsRegularPolygon
     QgsLineString *toLineString( ) const SIP_FACTORY;
 
     /** Returns as a triangle.
-     * An empty triangle is returned if the regular polygon is empty.
+     * An empty triangle is returned if the regular polygon is empty or if the number of sides is different from 3.
      */
     QgsTriangle toTriangle( ) const;
 
@@ -160,7 +166,7 @@ class CORE_EXPORT QgsRegularPolygon
     QgsCircle circumscribedCircle( ) const;
 
     /**
-     * returns a string representation of the regular polygon.
+     * Returns a string representation of the regular polygon.
      * Members will be truncated to the specified precision.
      */
     QString toString( int pointPrecision = 17, int radiusPrecision = 17, int anglePrecision = 2 ) const;
@@ -188,17 +194,15 @@ class CORE_EXPORT QgsRegularPolygon
      */
     double length( ) const;
 
-  protected:
-    QgsPointV2 mCenter;
-    QgsPointV2 mVertice;
-    unsigned int mNumSides;
-    double mRadius;
-
   private:
+    QgsPointV2 mCenter;
+    QgsPointV2 mFirstVertex;
+    unsigned int mNumberSides;
+    double mRadius;
 
     /** Convenient method to convert an apothem to a radius.
      */
-    double apothemToRadius( const double apothem, const unsigned int numSides ) const;
+    double apothemToRadius( const double apothem, const unsigned int numberSides ) const;
 
     /** Convenient method for interiorAngle used by constructors.
      */

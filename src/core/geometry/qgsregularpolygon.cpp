@@ -22,77 +22,91 @@
 
 QgsRegularPolygon::QgsRegularPolygon()
   : mCenter( QgsPointV2() )
-  , mVertice( QgsPointV2() )
-  , mNumSides( 0 )
+  , mFirstVertex( QgsPointV2() )
+  , mNumberSides( 0 )
   , mRadius( 0.0 )
 {
 
 }
 
 
-QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 center, const double radius, const double azimuth, const int numSides, const int circle )
+QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 &center, const double radius, const double azimuth, const int numSides, const ConstructionOption circle )
   : mCenter( center )
+  , mFirstVertex( QgsPointV2() )
+  , mNumberSides( 0 )
+  , mRadius( 0.0 )
 {
-  mCenter = QgsPointV2();
-  mVertice = QgsPointV2();
-  mNumSides = 0;
-  mRadius = 0;
   // TODO: inclination
 
   if ( numSides >= 3 )
   {
-    mNumSides = numSides;
+    mNumberSides = numSides;
 
-    if ( circle == ConstructionOption::inscribedCircle )
+    switch ( circle )
     {
-      mRadius = qAbs( radius );
-      mVertice = mCenter.project( mRadius, azimuth );
+      case InscribedCircle:
+      {
+        mRadius = qAbs( radius );
+        mFirstVertex = mCenter.project( mRadius, azimuth );
+        break;
+      }
+      case CircumscribedCircle:
+      {
+        mRadius = apothemToRadius( qAbs( radius ), numSides );
+        mFirstVertex = mCenter.project( mRadius, azimuth - centralAngle( numSides ) / 2 );
+        break;
+      }
+      default:
+        break;
     }
-    else if ( circle == ConstructionOption::circumscribedCircle )
-    {
-      mRadius = apothemToRadius( qAbs( radius ), numSides );
-      mVertice = mCenter.project( mRadius, azimuth - centralAngle( numSides ) / 2 );
-    }
+
   }
+
 }
 
-QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 center, const QgsPointV2 pt1, const int numSides, const int circle )
+QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 &center, const QgsPointV2 &pt1, const int numSides, const ConstructionOption circle )
   : mCenter( center )
+  , mFirstVertex( QgsPointV2() )
+  , mNumberSides( 0 )
+  , mRadius( 0.0 )
 {
-  mCenter = QgsPointV2();
-  mVertice = QgsPointV2();
-  mNumSides = 0;
-  mRadius = 0;
-
   if ( numSides >= 3 )
   {
-    mNumSides = numSides;
+    mNumberSides = numSides;
 
-    if ( circle == ConstructionOption::inscribedCircle )
+    switch ( circle )
     {
-      mVertice = pt1;
-      mRadius = center.distance( pt1 );
+      case InscribedCircle:
+      {
+        mFirstVertex = pt1;
+        mRadius = center.distance( pt1 );
+        break;
+      }
+      case CircumscribedCircle:
+      {
+        mRadius = apothemToRadius( center.distance( pt1 ), numSides );
+        double azimuth = center.azimuth( pt1 );
+        // TODO: inclination
+        mFirstVertex = mCenter.project( mRadius, azimuth - centralAngle( numSides ) / 2 );
+        break;
+      }
+      default:
+        break;
     }
-    else if ( circle == ConstructionOption::circumscribedCircle )
-    {
-      mRadius = apothemToRadius( center.distance( pt1 ), numSides );
-      double azimuth = center.azimuth( pt1 );
-      // TODO: inclination
-      mVertice = mCenter.project( mRadius, azimuth - centralAngle( numSides ) / 2 );
-    }
+
   }
+
 }
 
-QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 pt1, const QgsPointV2 pt2, const int numSides )
+QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const int numSides )
+  : mCenter( QgsPointV2() )
+  , mFirstVertex( QgsPointV2() )
+  , mNumberSides( 0 )
+  , mRadius( 0.0 )
 {
-  mCenter = QgsPointV2();
-  mVertice = QgsPointV2();
-  mNumSides = 0;
-  mRadius = 0;
-
   if ( numSides >= 3 )
   {
-    mNumSides = numSides;
+    mNumberSides = numSides;
 
     double azimuth = pt1.azimuth( pt2 );
     QgsPointV2 pm = QgsGeometryUtils::midpoint( pt1, pt2 );
@@ -103,7 +117,7 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 pt1, const QgsPointV2 pt2
     // TODO: inclination
 
     mCenter = pt1.project( hypothenuse, azimuth + angle );
-    mVertice = pt1;
+    mFirstVertex = pt1;
     mRadius = qAbs( hypothenuse );
   }
 }
@@ -111,8 +125,8 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 pt1, const QgsPointV2 pt2
 bool QgsRegularPolygon::operator ==( const QgsRegularPolygon &rp ) const
 {
   return ( ( mCenter == rp.mCenter ) &&
-           ( mVertice == rp.mVertice ) &&
-           ( mNumSides == rp.mNumSides ) &&
+           ( mFirstVertex == rp.mFirstVertex ) &&
+           ( mNumberSides == rp.mNumberSides ) &&
            /* useless but... */
            ( mRadius == rp.mRadius )
          );
@@ -125,59 +139,59 @@ bool QgsRegularPolygon::operator !=( const QgsRegularPolygon &rp ) const
 
 bool QgsRegularPolygon::isEmpty() const
 {
-  return ( ( mNumSides < 3 ) ||
-           ( mCenter == mVertice ) ||
+  return ( ( mNumberSides < 3 ) ||
+           ( mCenter == mFirstVertex ) ||
            /* useless but... */
            ( qgsDoubleNear( mRadius, 0.0 ) )
          );
 }
 
-void QgsRegularPolygon::setCenter( const QgsPointV2 center )
+void QgsRegularPolygon::setCenter( const QgsPointV2 &center )
 {
-  double azimuth = mCenter.azimuth( mVertice );
-  // TODO: double inclination = mCenter.inclination(mVertice);
+  double azimuth = mCenter.azimuth( mFirstVertex );
+  // TODO: double inclination = mCenter.inclination(mFirstVertex);
   mCenter = center;
-  mVertice = center.project( mRadius, azimuth );
+  mFirstVertex = center.project( mRadius, azimuth );
 }
 
 void QgsRegularPolygon::setRadius( const double radius )
 {
   mRadius = qAbs( radius );
-  double azimuth = mCenter.azimuth( mVertice );
-  // TODO: double inclination = mCenter.inclination(mVertice);
-  mVertice = mCenter.project( mRadius, azimuth );
+  double azimuth = mCenter.azimuth( mFirstVertex );
+  // TODO: double inclination = mCenter.inclination(mFirstVertex);
+  mFirstVertex = mCenter.project( mRadius, azimuth );
 }
 
-void QgsRegularPolygon::setVertice( const QgsPointV2 vertice )
+void QgsRegularPolygon::setFirstVertex( const QgsPointV2 &firstVertex )
 {
-  double azimuth = mCenter.azimuth( mVertice );
-  // TODO: double inclination = mCenter.inclination(mVertice);
-  mVertice = vertice;
-  mCenter = mVertice.project( mRadius, azimuth );
+  double azimuth = mCenter.azimuth( mFirstVertex );
+  // TODO: double inclination = mCenter.inclination(firstVertex);
+  mFirstVertex = firstVertex;
+  mCenter = mFirstVertex.project( mRadius, azimuth );
 }
 
-void QgsRegularPolygon::setNumSides( const int numSides )
+void QgsRegularPolygon::setNumberSides( const int numSides )
 {
   if ( numSides >= 3 )
   {
-    mNumSides = numSides;
+    mNumberSides = numSides;
   }
 }
 
-void QgsRegularPolygon::points( QgsPointSequence &pts ) const
+QgsPointSequence QgsRegularPolygon::points( ) const
 {
-  pts.clear();
+  QgsPointSequence pts;
   if ( isEmpty() )
   {
-    return;
+    return pts;
   }
 
-  double azimuth =  mCenter.azimuth( mVertice );
+  double azimuth =  mCenter.azimuth( mFirstVertex );
   double azimuth_add = centralAngle();
   // TODO: inclination
 
   unsigned int n = 1;
-  while ( n <= mNumSides )
+  while ( n <= mNumberSides )
   {
     pts.push_back( mCenter.project( mRadius, azimuth ) );
     azimuth += azimuth_add;
@@ -189,6 +203,7 @@ void QgsRegularPolygon::points( QgsPointSequence &pts ) const
     n++;
   }
 
+  return pts;
 }
 
 QgsPolygonV2 *QgsRegularPolygon::toPolygon() const
@@ -213,7 +228,7 @@ QgsLineString *QgsRegularPolygon::toLineString() const
   }
 
   QgsPointSequence pts;
-  points( pts );
+  pts = points( );
 
   ext->setPoints( pts );
 
@@ -222,13 +237,13 @@ QgsLineString *QgsRegularPolygon::toLineString() const
 
 QgsTriangle QgsRegularPolygon::toTriangle() const
 {
-  if ( isEmpty() || ( mNumSides != 3 ) )
+  if ( isEmpty() || ( mNumberSides != 3 ) )
   {
     return QgsTriangle();
   }
 
   QgsPointSequence pts;
-  points( pts );
+  pts = points( );
 
   return QgsTriangle( pts.at( 0 ), pts.at( 1 ), pts.at( 2 ) );
 }
@@ -242,9 +257,10 @@ QList<QgsTriangle> QgsRegularPolygon::triangulate() const
   }
 
   QgsPointSequence pts;
-  points( pts );
+  pts = points( );
+
   unsigned int n = 0;
-  while ( n < mNumSides - 1 )
+  while ( n < mNumberSides - 1 )
   {
     l_tri.append( QgsTriangle( pts.at( n ), pts.at( n + 1 ), mCenter ) );
     n++;
@@ -272,13 +288,13 @@ QString QgsRegularPolygon::toString( int pointPrecision, int radiusPrecision, in
   if ( isEmpty() )
     rep = QStringLiteral( "Empty" );
   else
-    rep = QStringLiteral( "RegularPolygon (Center: %1, First Vertice: %2, Radius: %3, Azimuth: %4)" )
+    rep = QStringLiteral( "RegularPolygon (Center: %1, First Vertex: %2, Radius: %3, Azimuth: %4)" )
           .arg( mCenter.asWkt( pointPrecision ), 0, 's' )
-          .arg( mVertice.asWkt( pointPrecision ), 0, 's' )
+          .arg( mFirstVertex.asWkt( pointPrecision ), 0, 's' )
           .arg( qgsDoubleToString( mRadius, radiusPrecision ), 0, 'f' )
-          .arg( qgsDoubleToString( mCenter.azimuth( mVertice ), anglePrecision ), 0, 'f' );
+          .arg( qgsDoubleToString( mCenter.azimuth( mFirstVertex ), anglePrecision ), 0, 'f' );
   // TODO: inclination
-  // .arg( qgsDoubleToString( mCenter.inclination(mVertice), anglePrecision ), 0, 'f' );
+  // .arg( qgsDoubleToString( mCenter.inclination(mFirstVertex), anglePrecision ), 0, 'f' );
 
   return rep;
 }
@@ -290,7 +306,7 @@ double QgsRegularPolygon::area() const
     return 0.0;
   }
 
-  return ( mRadius * mRadius * mNumSides * sin( centralAngle() * M_PI / 180.0 ) ) / 2 ;
+  return ( mRadius * mRadius * mNumberSides * sin( centralAngle() * M_PI / 180.0 ) ) / 2 ;
 }
 
 double QgsRegularPolygon::perimeter() const
@@ -300,7 +316,7 @@ double QgsRegularPolygon::perimeter() const
     return 0.0;
   }
 
-  return length() * mNumSides;
+  return length() * mNumberSides;
 }
 
 double QgsRegularPolygon::length() const
@@ -310,7 +326,7 @@ double QgsRegularPolygon::length() const
     return 0.0;
   }
 
-  return mRadius * 2 * sin( M_PI / mNumSides );
+  return mRadius * 2 * sin( M_PI / mNumberSides );
 }
 
 double QgsRegularPolygon::apothemToRadius( const double apothem, const unsigned int numSides ) const
@@ -330,10 +346,10 @@ double QgsRegularPolygon::centralAngle( const unsigned int nbSides ) const
 
 double QgsRegularPolygon::interiorAngle() const
 {
-  return interiorAngle( mNumSides );
+  return interiorAngle( mNumberSides );
 }
 
 double QgsRegularPolygon::centralAngle() const
 {
-  return centralAngle( mNumSides );
+  return centralAngle( mNumberSides );
 }

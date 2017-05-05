@@ -2294,8 +2294,9 @@ static QVariant fcnMakeRegularPolygon( const QVariantList &values, const QgsExpr
     parent->setEvalErrorString( QObject::tr( "Number of edges/sides must be greater than 2" ) );
     return QVariant();
   }
-  int option = getIntValue( values.at( 3 ), parent );
-  if ( ( option < 0 ) || ( option > 1 ) )
+
+  QgsRegularPolygon::ConstructionOption option = static_cast< QgsRegularPolygon::ConstructionOption >( getIntValue( values.at( 3 ), parent ) );
+  if ( ( option < QgsRegularPolygon::InscribedCircle ) || ( option > QgsRegularPolygon::CircumscribedCircle ) )
   {
     parent->setEvalErrorString( QObject::tr( "Option can be 0 (inscribed) or 1 (circumscribed)" ) );
     return QVariant();
@@ -4171,16 +4172,16 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
                                fcnMakeCircle, QStringLiteral( "GeometryGroup" ) )
         << new StaticFunction( QStringLiteral( "make_ellipse" ), ParameterList()
                                << Parameter( QStringLiteral( "geometry" ) )
-                               << Parameter( QStringLiteral( "semi-major axis" ) )
-                               << Parameter( QStringLiteral( "semi-minor axis" ) )
+                               << Parameter( QStringLiteral( "semi_major_axis" ) )
+                               << Parameter( QStringLiteral( "semi_minor_axis" ) )
                                << Parameter( QStringLiteral( "azimuth" ) )
                                << Parameter( QStringLiteral( "segments" ), true, 36 ),
                                fcnMakeEllipse, QStringLiteral( "GeometryGroup" ) )
         << new StaticFunction( QStringLiteral( "make_regular_polygon" ), ParameterList()
                                << Parameter( QStringLiteral( "geometry" ) )
                                << Parameter( QStringLiteral( "geometry" ) )
-                               << Parameter( QStringLiteral( "number of sides/edges" ) )
-                               << Parameter( QStringLiteral( "inscribed or circumscribed" ), true, 0 ),
+                               << Parameter( QStringLiteral( "number_sides" ) )
+                               << Parameter( QStringLiteral( "circle" ), true, 0 ),
                                fcnMakeRegularPolygon, QStringLiteral( "GeometryGroup" ) );
 
     StaticFunction *xAtFunc = new StaticFunction( QStringLiteral( "$x_at" ), 1, fcnXat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "xat" ) << QStringLiteral( "x_at" ) );
