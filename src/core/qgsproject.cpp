@@ -348,12 +348,11 @@ QgsProject::QgsProject( QObject *parent )
 
 QgsProject::~QgsProject()
 {
+  clear();
   delete mBadLayerHandler;
   delete mRelationManager;
   delete mLayerTreeRegistryBridge;
   delete mRootGroup;
-
-  removeAllMapLayers();
 }
 
 
@@ -487,6 +486,7 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
+  removeAllMapLayers();
   setDirty( false );
 }
 
