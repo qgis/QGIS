@@ -89,6 +89,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
 
     QMenu *mStatisticsMenu = nullptr;
     DataType mFieldType;
+    DataType mPreviousFieldType;
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H

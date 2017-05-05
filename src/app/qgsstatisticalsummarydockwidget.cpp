@@ -97,6 +97,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   mOptionsToolButton->setMenu( mStatisticsMenu );
 
   mFieldType = DataType::Numeric;
+  mPreviousFieldType = DataType::Numeric;
   refreshStatisticsMenu();
 }
 
@@ -120,7 +121,11 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
     mFieldType = fieldType( mFieldExpressionWidget->currentField() );
   }
 
-  refreshStatisticsMenu();
+  if ( mFieldType != mPreviousFieldType )
+  {
+    refreshStatisticsMenu();
+    mPreviousFieldType = mFieldType;
+  }
 
   bool selectedOnly = mSelectedOnlyCheckBox->isChecked();
 
