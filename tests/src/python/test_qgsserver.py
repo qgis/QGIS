@@ -224,6 +224,26 @@ class TestQgsServer(unittest.TestCase):
                                  'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.quote(':"NAME" = \'two\''),
                                  'wms_getfeatureinfo_filter')
 
+        # Test a filter with OR condition results
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.quote(':"NAME" = \'two\' OR "NAME" = \'three\''),
+                                 'wms_getfeatureinfo_filter_or')
+
+        # Test a filter with OR condition and UTF results
+        # Note that the layer name that contains utf-8 chars cannot be
+        # to upper case.
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.quote(':"NAME" = \'two\' OR "utf8nameè" = \'three èé↓\''),
+                                 'wms_getfeatureinfo_filter_or_utf8')
+
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
         project = self.testdata_path + "test_project_inspire.qgs"
@@ -916,6 +936,7 @@ class TestQgsServer(unittest.TestCase):
                 )
 
         self.assertTrue(test, message)
+
 
 if __name__ == '__main__':
     unittest.main()

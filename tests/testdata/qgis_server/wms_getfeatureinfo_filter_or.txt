@@ -1,0 +1,22 @@
+Content-Length: 943
+Content-Type: text/xml; charset=utf-8
+
+<GetFeatureInfoResponse>
+ <BoundingBox CRS="EPSG:3857" maxx="913214.67407005" minx="913204.91280263" maxy="5606017.87425818" miny="5606011.45647302"/>
+ <Layer name="testlayer èé">
+  <Feature id="1">
+   <Attribute value="2" name="id"/>
+   <Attribute value="two" name="name"/>
+   <Attribute value="two àò" name="utf8nameè"/>
+   <BoundingBox CRS="EPSG:3857" maxx="913214.6741" minx="913214.6741" maxy="5606017.8743" miny="5606017.8743"/>
+   <Attribute value="Point (913214.6741 5606017.8743)" type="derived" name="geometry"/>
+  </Feature>
+  <Feature id="2">
+   <Attribute value="3" name="id"/>
+   <Attribute value="three" name="name"/>
+   <Attribute value="three èé↓" name="utf8nameè"/>
+   <BoundingBox CRS="EPSG:3857" maxx="913204.9128" minx="913204.9128" maxy="5606011.4565" miny="5606011.4565"/>
+   <Attribute value="Point (913204.9128 5606011.4565)" type="derived" name="geometry"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>
