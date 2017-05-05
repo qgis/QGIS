@@ -45,6 +45,9 @@
 #include <cpl_conv.h>
 #include <cpl_csv.h>
 
+//! The length of the string "+lat_1="
+const int LAT_PREFIX_LEN = 7;
+
 CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::mCustomSrsValidation = nullptr;
 
 QReadWriteLock QgsCoordinateReferenceSystem::sSrIdCacheLock;

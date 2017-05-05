@@ -79,18 +79,6 @@ class CORE_EXPORT Qgis
       ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
     };
 
-    //! User defined event types
-    enum UserEvent
-    {
-      // These first two are useful for threads to alert their parent data providers
-
-      //! The extents have been calculated by a provider of a layer
-      ProviderExtentCalcEvent = ( QEvent::User + 1 ),
-
-      //! The row count has been calculated by a provider of a layer
-      ProviderCountCalcEvent
-    };
-
     /** Identify search radius in mm
      *  \since QGIS 2.3 */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -320,12 +308,6 @@ const long GEOCRS_ID = 3452;
 const long GEO_EPSG_CRS_ID = 4326;
 //! Geographic coord sys from EPSG authority
 extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
-//! The length of the string "+proj="
-const int PROJ_PREFIX_LEN = 6;
-//! The length of the string "+ellps="
-const int ELLPS_PREFIX_LEN = 7;
-//! The length of the string "+lat_1="
-const int LAT_PREFIX_LEN = 7;
 
 /** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
