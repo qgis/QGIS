@@ -211,6 +211,9 @@
 %Include layertree/qgslayertreeview.sip
 %Include layertree/qgslayertreeviewdefaultactions.sip
 
+%Include locator/qgslocator.sip
+%Include locator/qgslocatorfilter.sip
+
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip
 %Include raster/qgsrasterbandcombobox.sip

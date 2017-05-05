@@ -188,6 +188,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgslayoutmanager.h"
+#include "qgslocatorwidget.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasdockwidget.h"
@@ -2629,11 +2630,18 @@ void QgisApp::createStatusBar()
   mMessageButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mMessageLogRead.svg" ) ) );
   mMessageButton->setToolTip( tr( "Messages" ) );
   mMessageButton->setWhatsThis( tr( "Messages" ) );
-  mMessageButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   mMessageButton->setObjectName( QStringLiteral( "mMessageLogViewerButton" ) );
   mMessageButton->setMaximumHeight( mScaleWidget->height() );
   mMessageButton->setCheckable( true );
   statusBar()->addPermanentWidget( mMessageButton, 0 );
+
+  mLocatorWidget = new QgsLocatorWidget( statusBar() );
+  statusBar()->addPermanentWidget( mLocatorWidget );
+  QShortcut *locatorShortCut = new QShortcut( QKeySequence( tr( "Ctrl+K" ) ), this );
+  connect( locatorShortCut, &QShortcut::activated, mLocatorWidget, [ = ] { mLocatorWidget->search( QString() ); } );
+  locatorShortCut->setObjectName( QStringLiteral( "Locator" ) );
+  locatorShortCut->setWhatsThis( tr( "Trigger Locator" ) );
+
 }
 
 void QgisApp::setIconSizes( int size )

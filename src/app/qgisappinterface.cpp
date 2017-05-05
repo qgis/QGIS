@@ -44,6 +44,8 @@
 #include "qgsfeatureaction.h"
 #include "qgsactionmanager.h"
 #include "qgsattributetabledialog.h"
+#include "qgslocatorwidget.h"
+#include "qgslocator.h"
 
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
@@ -732,4 +734,14 @@ QList<QgsMapLayer *> QgisAppInterface::editableLayers( bool modified ) const
 int QgisAppInterface::messageTimeout()
 {
   return qgis->messageTimeout();
+}
+
+void QgisAppInterface::registerLocatorFilter( QgsLocatorFilter *filter )
+{
+  qgis->mLocatorWidget->locator()->registerFilter( filter );
+}
+
+void QgisAppInterface::deregisterLocatorFilter( QgsLocatorFilter *filter )
+{
+  qgis->mLocatorWidget->locator()->deregisterFilter( filter );
 }
