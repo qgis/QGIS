@@ -526,17 +526,6 @@ void QgsMapCanvas::refreshMap()
   connect( mJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::rendererJobFinished );
   mJob->setCache( mCache );
 
-  QStringList layersForGeometryCache;
-  Q_FOREACH ( QgsMapLayer *layer, mSettings.layers() )
-  {
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
-    {
-      if ( vl->isEditable() )
-        layersForGeometryCache << vl->id();
-    }
-  }
-  mJob->setRequestedGeometryCacheForLayers( layersForGeometryCache );
-
   mJob->start();
 
   // from now on we can accept refresh requests again

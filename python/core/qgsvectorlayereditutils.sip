@@ -6,9 +6,6 @@ class QgsVectorLayerEditUtils
   public:
     QgsVectorLayerEditUtils( QgsVectorLayer *layer );
 
-    QgsGeometryCache *cache();
-
-
     /** Insert a new vertex before the given vertex number,
      *  in the given ring, item (first number is index 0), and feature
      *  Not meaningful for Point geometries

@@ -30,7 +30,6 @@
 
 #include "qgsmapsettings.h"
 
-#include "qgsgeometrycache.h"
 
 class QgsLabelingEngine;
 class QgsLabelingResults;
@@ -186,10 +185,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     //! Does not take ownership of the object.
     void setCache( QgsMapRendererCache *cache );
 
-    //! Set which vector layers should be cached while rendering
-    //! \note The way how geometries are cached is really suboptimal - this method may be removed in future releases
-    void setRequestedGeometryCacheForLayers( const QStringList &layerIds ) { mRequestedGeomCacheForLayers = layerIds; }
-
     //! Find out how long it took to finish the job (in milliseconds)
     int renderingTime() const { return mRenderingTime; }
 
@@ -278,14 +273,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 );
 
     bool needTemporaryImage( QgsMapLayer *ml );
-
-    //! called when rendering has finished to update all layers' geometry caches
-    void updateLayerGeometryCaches();
-
-    //! list of layer IDs for which the geometry cache should be updated
-    QStringList mRequestedGeomCacheForLayers;
-    //! map of geometry caches
-    QMap<QString, QgsGeometryCache> mGeometryCaches;
 
     const QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
 };

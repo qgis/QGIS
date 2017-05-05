@@ -155,7 +155,6 @@ SET(QGIS_CORE_SRCS
   qgsfieldproxymodel.cpp
   qgsfields.cpp
   qgsfontutils.cpp
-  qgsgeometrycache.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
   qgsgml.cpp
@@ -735,7 +734,6 @@ SET(QGIS_CORE_HDRS
   qgsfield_p.h
   qgsfields.h
   qgsfontutils.h
-  qgsgeometrycache.h
   qgshistogram.h
   qgsindexedfeature.h
   qgsinterval.h

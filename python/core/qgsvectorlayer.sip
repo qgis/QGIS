@@ -1590,7 +1590,6 @@ Returns the current transparency for the vector layer
     virtual QString htmlMetadata() const;
 
 
-
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 %Docstring
  Set the simplification settings for fast rendering of features

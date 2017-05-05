@@ -28,7 +28,6 @@
 #include "qgsfeature.h"
 
 class QgsGeometry;
-class QgsGeometryCache;
 
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
@@ -52,7 +51,6 @@ class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
 
     //! Returns the layer associated with the undo command
     inline QgsVectorLayer *layer() { return mBuffer->L; }
-    inline QgsGeometryCache *cache() { return mBuffer->L->cache(); }
 
     virtual int id() const override { return -1; }
     virtual bool mergeWith( const QUndoCommand * ) override { return false; }
