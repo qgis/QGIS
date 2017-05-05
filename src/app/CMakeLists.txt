@@ -509,6 +509,7 @@ INCLUDE_DIRECTORIES(
   ../gui/symbology-ng
   ../gui/attributetable
   ../gui/auth
+  ../gui/locator
   ../gui/raster
   ../gui/editorwidgets
   ../gui/editorwidgets/core

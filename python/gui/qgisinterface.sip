@@ -509,6 +509,28 @@ class QgisInterface : QObject
     /** Get timeout for timed messages: default of 5 seconds */
     virtual int messageTimeout() = 0;
 
+    /**
+     * Registers a locator \a filter for the app's locator bar. Ownership of the filter is transferred to the
+     * locator.
+     * \warning Plugins which register filters to the locator bar must take care to correctly call
+     * deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
+     * \see deregisterLocatorFilter()
+     * \since QGIS 3.0
+     */
+    virtual void registerLocatorFilter( QgsLocatorFilter *filter /Transfer/ ) = 0;
+
+    /**
+     * Deregisters a locator \a filter from the app's locator bar and deletes it. Calling this will block whilst
+     * any currently running query is terminated.
+     *
+     * Plugins which register filters to the locator bar must take care to correctly call
+     * deregisterLocatorFilter() to deregister their filters upon plugin unload to avoid crashes.
+     *
+     * \see registerLocatorFilter()
+     * \since QGIS 3.0
+     */
+    virtual void deregisterLocatorFilter( QgsLocatorFilter *filter ) = 0;
+
   signals:
     void currentLayerChanged( QgsMapLayer *layer );
     void currentThemeChanged( const QString &theme );
