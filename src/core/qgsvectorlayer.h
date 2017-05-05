@@ -54,7 +54,6 @@ class QgsEditorWidgetWrapper;
 class QgsExpressionFieldBuffer;
 class QgsFeatureRenderer;
 class QgsGeometry;
-class QgsGeometryCache;
 class QgsGeometryVertexIndex;
 class QgsMapToPixel;
 class QgsRectangle;
@@ -1487,9 +1486,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     QString htmlMetadata() const override;
 
-    //! \note not available in Python bindings
-    inline QgsGeometryCache *cache() SIP_SKIP { return mCache; }
-
     /** Set the simplification settings for fast rendering of features
      *  \since QGIS 2.2
      */
@@ -1970,9 +1966,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Annotation form for this layer
     QString mAnnotationForm;
-
-    //! cache for some vector layer data - currently only geometries for faster editing
-    QgsGeometryCache *mCache = nullptr;
 
     //! stores information about uncommitted changes to layer
     QgsVectorLayerEditBuffer *mEditBuffer = nullptr;

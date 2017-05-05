@@ -24,7 +24,6 @@ class QgsVectorLayerFeatureSource;
 class QgsDiagramRenderer;
 class QgsDiagramLayerSettings;
 
-class QgsGeometryCache;
 class QgsFeatureIterator;
 class QgsSingleSymbolRenderer;
 
@@ -72,10 +71,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     virtual bool render() override;
 
-    //! where to save the cached geometries
-    //! \note The way how geometries are cached is really suboptimal - this method may be removed in future releases
-    void setGeometryCachePointer( QgsGeometryCache *cache );
-
   private:
 
     /** Registers label and diagram layer
@@ -113,8 +108,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QgsVectorLayerFeatureSource *mSource = nullptr;
 
     QgsFeatureRenderer *mRenderer = nullptr;
-
-    QgsGeometryCache *mCache = nullptr;
 
     bool mDrawVertexMarkers;
     bool mVertexMarkerOnlyForSelection;

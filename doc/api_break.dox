@@ -264,6 +264,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
 - QgsGenericProjectionSelector. Use QgsProjectionSelectionTreeWidget instead.
+- QgsGeometryCache. It got redundant after removal of old snapping classes (QgsSnapper + friends).
 - QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - QgsLabelingEngineInterface. Replaced by QgsLabelingEngine.
 - QgsLegendInterface was removed. It was replaced by layer tree API (QgsLayerTreeNode class and others).
@@ -1446,6 +1447,7 @@ and subclasses are not designed to be subclassed in PyQGIS.
 be used instead of a null pointer if no transformation is required.
 - prepareJobs() and drawLabeling() (neither available in PyQGIS) do not take QgsPalLabeling parameter anymore. All drawing of labels is done by QgsLabelingEngine.
 - drawOldLabeling(), drawNewLabeling() were removed. The method drawLabeling() should be used instead.
+- setRequestedGeometryCacheForLayers() was removed. There is no extra caching done during rendering job.
 
 
 QgsMapTool        {#qgis_api_break_3_0_QgsMapTool}
@@ -2146,6 +2148,7 @@ QgsVectorLayerEditUtils        {#qgis_api_break_3_0_QgsVectorLayerEditUtils}
 
 - addTopologicalPoints() now accepts a geometry reference, not a pointer.
 - insertSegmentVerticesForSnap() has been removed.
+- cache() has been removed.
 
 
 QgsVectorLayerImport        {#qgis_api_break_3_0_QgsVectorLayerImport}
@@ -2168,6 +2171,7 @@ QgsVectorLayerUndoCommand        {#qgis_api_break_3_0_QgsVectorLayerUndoCommand}
 -------------------------
 
 - QgsVectorLayerUndoCommandChangeGeometry constructor now accepts a geometry reference, not a pointer.
+- cache() has been removed.
 
 
 QgsVisibilityPresetCollection        {#qgis_api_break_3_0_QgsVisibilityPresetCollection}

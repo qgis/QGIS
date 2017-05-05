@@ -176,7 +176,6 @@
 %Include qgscacheindex.sip
 %Include qgscacheindexfeatureid.sip
 %Include qgsfeaturestore.sip
-%Include qgsgeometrycache.sip
 %Include qgslayerdefinition.sip
 %Include qgsprojectfiletransform.sip
 %Include qgsvectorlayereditutils.sip

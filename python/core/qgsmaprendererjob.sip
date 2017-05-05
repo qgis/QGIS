@@ -61,10 +61,6 @@ class QgsMapRendererJob : QObject
     //! Does not take ownership of the object.
     void setCache( QgsMapRendererCache *cache );
 
-    //! Set which vector layers should be cached while rendering
-    //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
-    void setRequestedGeometryCacheForLayers( const QStringList &layerIds );
-
     //! Find out how long it took to finish the job (in milliseconds)
     int renderingTime() const;
 

@@ -23,7 +23,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 
-class QgsGeometryCache;
 class QgsCurve;
 
 /** \ingroup core
@@ -33,9 +32,6 @@ class CORE_EXPORT QgsVectorLayerEditUtils
 {
   public:
     QgsVectorLayerEditUtils( QgsVectorLayer *layer );
-
-    inline QgsGeometryCache *cache() { return L->cache(); }
-
 
     /** Insert a new vertex before the given vertex number,
      *  in the given ring, item (first number is index 0), and feature

@@ -49,7 +49,6 @@
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
-#include "qgsgeometrycache.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
@@ -142,7 +141,6 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
   , mLayerTransparency( 0 )
   , mVertexMarkerOnlyForSelection( false )
-  , mCache( new QgsGeometryCache() )
   , mEditBuffer( nullptr )
   , mJoinBuffer( nullptr )
   , mExpressionFieldBuffer( nullptr )
@@ -190,7 +188,6 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mEditBuffer;
   delete mJoinBuffer;
   delete mExpressionFieldBuffer;
-  delete mCache;
   delete mLabeling;
   delete mDiagramLayerSettings;
   delete mDiagramRenderer;
@@ -2438,11 +2435,6 @@ bool QgsVectorLayer::commitChanges()
     QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( QStringLiteral( "\n  " ) ) ) );
   }
 
-  if ( mCache )
-  {
-    mCache->deleteCachedGeometries();
-  }
-
   updateFields();
   mDataProvider->updateExtents();
 
@@ -2489,11 +2481,6 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     undoStack()->clear();
   }
   emit editingStopped();
-
-  if ( mCache )
-  {
-    mCache->deleteCachedGeometries();
-  }
 
   if ( rollbackExtent )
     updateExtents();
