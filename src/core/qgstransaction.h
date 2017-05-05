@@ -24,6 +24,7 @@
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QgsVectorDataProvider;
 class QgsVectorLayer;
@@ -49,7 +50,7 @@ class QgsVectorLayer;
  *
  * Edits on features can get rejected if another conflicting transaction is active.
  */
-class CORE_EXPORT QgsTransaction : public QObject
+class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
 {
     Q_OBJECT
 
@@ -123,13 +124,13 @@ class CORE_EXPORT QgsTransaction : public QObject
      */
     void afterRollback();
 
-  private slots:
-    void onLayersDeleted( const QStringList &layerids );
-
   protected:
-    QgsTransaction( const QString &connString );
+    QgsTransaction( const QString &connString ) SIP_SKIP;
 
     QString mConnString;
+
+  private slots:
+    void onLayersDeleted( const QStringList &layerids );
 
   private:
 
