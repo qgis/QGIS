@@ -1,0 +1,7 @@
+Content-Length: 151
+Content-Type: text/xml; charset=utf-8
+
+<GetFeatureInfoResponse>
+ <BoundingBox CRS="EPSG:3857" maxx="0" minx="0" maxy="0" miny="0"/>
+ <Layer name="testlayer èé"/>
+</GetFeatureInfoResponse>
