@@ -265,6 +265,9 @@ void QgsComposerMap::cache()
     }
   }
 
+  if ( w <= 0 || h <= 0 )
+    return;
+
   mCacheRenderingImage.reset( new QImage( w, h, QImage::Format_ARGB32 ) );
 
   // set DPI of the image
@@ -306,7 +309,7 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
 {
   Q_UNUSED( pWidget );
 
-  if ( !mComposition || !painter )
+  if ( !mComposition || !painter || !painter->device() )
   {
     return;
   }
@@ -316,6 +319,9 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   }
 
   QRectF thisPaintRect = QRectF( 0, 0, QGraphicsRectItem::rect().width(), QGraphicsRectItem::rect().height() );
+  if ( thisPaintRect.width() == 0 || thisPaintRect.height() == 0 )
+    return;
+
   painter->save();
   painter->setClipRect( thisPaintRect );
 
