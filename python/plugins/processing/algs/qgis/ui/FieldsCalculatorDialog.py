@@ -89,7 +89,6 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
         self.builder.loadRecent('fieldcalc')
 
-        self.initContext()
         self.updateLayer()
 
     def initContext(self):
@@ -103,6 +102,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def updateLayer(self):
         self.layer = dataobjects.getObject(self.cmbInputLayer.currentText())
+        self.initContext()
         self.builder.setLayer(self.layer)
         self.builder.loadFieldNames()
         self.populateFields()
