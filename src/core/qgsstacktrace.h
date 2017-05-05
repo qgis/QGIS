@@ -67,6 +67,12 @@ class CORE_EXPORT QgsStackTrace
      * \note Added in QGIS 3.0
      */
     static QVector<QgsStackTrace::StackLine> trace( struct _EXCEPTION_POINTERS *ExceptionInfo );
+
+    /**
+     * Set the paths to load the PDB symbols from on Windows.
+     * @param paths The path, or series of paths separated by a semicolon (;), that is used to search for symbol files.
+     */
+    static void setSymbolPath( QString searchPath );
 #endif
 
 #ifdef Q_OS_LINUX
@@ -81,6 +87,7 @@ class CORE_EXPORT QgsStackTrace
 
   private:
     QgsStackTrace();
+    static QString mSymbolPaths;
 
 };
 
