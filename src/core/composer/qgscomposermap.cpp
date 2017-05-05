@@ -332,23 +332,36 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   {
     if ( !mCacheFinalImage || mCacheFinalImage->isNull() )
     {
+      // No initial render available - so draw some preview text alerting user
+      drawBackground( painter );
+      painter->setBrush( QBrush( QColor( 125, 125, 125, 125 ) ) );
+      painter->drawRect( thisPaintRect );
+      painter->setBrush( Qt::NoBrush );
+      QFont messageFont;
+      messageFont.setPointSize( 12 );
+      painter->setFont( messageFont );
+      painter->setPen( QColor( 255, 255, 255, 255 ) );
+      painter->drawText( thisPaintRect, Qt::AlignCenter | Qt::AlignHCenter, tr( "Rendering map" ) );
+
+
       cache();
-      return;
     }
+    else
+    {
+      //Background color is already included in cached image, so no need to draw
 
-    //Background color is already included in cached image, so no need to draw
+      double imagePixelWidth = mCacheFinalImage->width(); //how many pixels of the image are for the map extent?
+      double scale = rect().width() / imagePixelWidth;
 
-    double imagePixelWidth = mCacheFinalImage->width(); //how many pixels of the image are for the map extent?
-    double scale = rect().width() / imagePixelWidth;
+      painter->save();
 
-    painter->save();
+      painter->translate( mLastRenderedImageOffsetX + mXOffset, mLastRenderedImageOffsetY + mYOffset );
+      painter->scale( scale, scale );
+      painter->drawImage( 0, 0, *mCacheFinalImage );
 
-    painter->translate( mLastRenderedImageOffsetX + mXOffset, mLastRenderedImageOffsetY + mYOffset );
-    painter->scale( scale, scale );
-    painter->drawImage( 0, 0, *mCacheFinalImage );
-
-    //restore rotation
-    painter->restore();
+      //restore rotation
+      painter->restore();
+    }
   }
   else if ( mComposition->plotStyle() == QgsComposition::Print ||
             mComposition->plotStyle() == QgsComposition::Postscript )
