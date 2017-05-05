@@ -62,6 +62,14 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
 
   private:
 
+    //! Enumeration of supported statistics types
+    enum DataType
+    {
+      Numeric,  //!< Numeric fields: int, double, etc
+      String,  //!< String fields
+      DateTime  //!< Date and DateTime fields
+    };
+
     QgsVectorLayer *mLayer = nullptr;
 
     QMap< int, QAction * > mStatsActions;
@@ -77,9 +85,10 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     QgsExpressionContext createExpressionContext() const override;
 
     void refreshStatisticsMenu();
+    DataType fieldType( const QString &fieldName );
 
     QMenu *mStatisticsMenu = nullptr;
-    QVariant::Type mFieldType;
+    DataType mFieldType;
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H

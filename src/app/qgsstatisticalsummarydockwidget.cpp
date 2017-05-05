@@ -96,7 +96,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   mStatisticsMenu = new QMenu( mOptionsToolButton );
   mOptionsToolButton->setMenu( mStatisticsMenu );
 
-  mFieldType = QVariant::Int;
+  mFieldType = DataType::Numeric;
   refreshStatisticsMenu();
 }
 
@@ -114,11 +114,10 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   }
 
   // determine field type
-  mFieldType = QVariant::Double;
+  mFieldType = DataType::Numeric;
   if ( !mFieldExpressionWidget->isExpression() )
   {
-    QString field = mFieldExpressionWidget->currentField();
-    mFieldType = mLayer->fields().field( mLayer->fields().lookupField( field ) ).type();
+    mFieldType = fieldType( mFieldExpressionWidget->currentField() );
   }
 
   refreshStatisticsMenu();
@@ -127,18 +126,13 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
 
   switch ( mFieldType )
   {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::Double:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
+    case DataType::Numeric:
       updateNumericStatistics( selectedOnly );
       break;
-    case QVariant::String:
+    case DataType::String:
       updateStringStatistics( selectedOnly );
       break;
-    case QVariant::Date:
-    case QVariant::DateTime:
+    case DataType::DateTime:
       updateDateTimeStatistics( selectedOnly );
       break;
     default:
@@ -275,18 +269,13 @@ void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
   QString settingsKey;
   switch ( mFieldType )
   {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::Double:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
+    case DataType::Numeric:
       settingsKey = QStringLiteral( "numeric" );
       break;
-    case QVariant::String:
+    case DataType::String:
       settingsKey = QStringLiteral( "string" );
       break;
-    case QVariant::Date:
-    case QVariant::DateTime:
+    case DataType::DateTime:
       settingsKey = QStringLiteral( "datetime" );
       break;
     default:
@@ -392,11 +381,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
   QgsSettings settings;
   switch ( mFieldType )
   {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::Double:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
+    case DataType::Numeric:
     {
       Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
       {
@@ -422,7 +407,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
 
       break;
     }
-    case QVariant::String:
+    case DataType::String:
     {
       Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, sDisplayStringStats )
       {
@@ -437,8 +422,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
       }
       break;
     }
-    case QVariant::Date:
-    case QVariant::DateTime:
+    case DataType::DateTime:
     {
       Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, sDisplayDateTimeStats )
       {
@@ -456,4 +440,26 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
     default:
       break;
   }
+}
+
+QgsStatisticalSummaryDockWidget::DataType QgsStatisticalSummaryDockWidget::fieldType( const QString &fieldName )
+{
+  QgsField field = mLayer->fields().field( mLayer->fields().lookupField( fieldName ) );
+  if ( field.isNumeric() )
+  {
+    return DataType::Numeric;
+  }
+
+  switch ( field.type() )
+  {
+    case QVariant::String:
+      return DataType::String;
+    case QVariant::Date:
+    case QVariant::DateTime:
+      return DataType::DateTime;
+    default:
+      break;
+  }
+
+  return DataType::Numeric;
 }
