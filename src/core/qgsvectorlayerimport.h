@@ -121,7 +121,7 @@ class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
     //! Close the new created layer
     ~QgsVectorLayerImport();
 
-  protected:
+  private:
     //! Flush the buffer writing the features to the new layer
     bool flushBuffer();
 
@@ -142,8 +142,6 @@ class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
 
     QgsFeatureList mFeatureBuffer;
     QProgressDialog *mProgress = nullptr;
-
-  private:
 
 #ifdef SIP_RUN
     QgsVectorLayerImport( const QgsVectorLayerImport &rh );

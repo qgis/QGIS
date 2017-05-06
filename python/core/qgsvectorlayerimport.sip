@@ -117,24 +117,6 @@ Retrieves error message
 Close the new created layer
 %End
 
-  protected:
-    bool flushBuffer();
-%Docstring
-Flush the buffer writing the features to the new layer
- :rtype: bool
-%End
-
-    bool createSpatialIndex();
-%Docstring
-Create index
- :rtype: bool
-%End
-
-
-
-
-
-
   private:
     QgsVectorLayerImport( const QgsVectorLayerImport &rh );
 };
