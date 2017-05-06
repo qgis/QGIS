@@ -206,8 +206,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Set the extents of the map canvas
     void setExtent( const QgsRectangle &rect );
-    //! Remove all layers from the map and legend - reimplements same method from qgisappbase
-    void removeAllLayers();
 
     /** Open a raster or vector file; ignore other files.
       Used to process a commandline argument, FileOpen or Drop event.

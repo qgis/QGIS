@@ -4768,8 +4768,6 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   closeProject();
 
   QgsProject *prj = QgsProject::instance();
-  prj->clear();
-
   prj->layerTreeRegistryBridge()->setNewLayersVisible( settings.value( QStringLiteral( "qgis/new_layers_visible" ), true ).toBool() );
 
   //set the color for selections
@@ -8737,11 +8735,6 @@ void QgisApp::removingLayers( const QStringList &layers )
   }
 }
 
-void QgisApp::removeAllLayers()
-{
-  QgsProject::instance()->removeAllMapLayers();
-}
-
 void QgisApp::removeLayer()
 {
   if ( !mLayerTreeView )
@@ -10032,7 +10025,7 @@ void QgisApp::closeProject()
   mMapCanvas->clearCache();
   mOverviewCanvas->setLayers( QList<QgsMapLayer *>() );
   mMapCanvas->freeze( false );
-  removeAllLayers();
+  QgsProject::instance()->clear();
 }
 
 
