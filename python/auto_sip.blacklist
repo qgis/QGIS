@@ -59,8 +59,6 @@ core/qgssnappingconfig.sip
 core/qgsprojectversion.sip
 core/qgsproperty.sip
 core/qgspropertycollection.sip
-core/qgsprovidermetadata.sip
-core/qgsproviderregistry.sip
 core/qgspythonrunner.sip
 core/qgsrange.sip
 core/qgsrelationmanager.sip

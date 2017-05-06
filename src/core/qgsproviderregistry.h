@@ -26,6 +26,7 @@
 #include <QString>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 
 class QgsDataProvider;
@@ -76,13 +77,14 @@ class CORE_EXPORT QgsProviderRegistry
     //! Set library directory where to search for plugins
     void setLibraryDirectory( const QDir &path );
 
-    /** Create an instance of the provider
-        \param providerKey identificator of the provider
-        \param dataSource  string containing data source for the provider
-        \returns instance of provider or NULL on error
+    /**
+     * Create a new instance of a provider.
+     * \param providerKey identificator of the provider
+     * \param dataSource  string containing data source for the provider
+     * \returns new instance of provider or NULL on error
      */
     QgsDataProvider *provider( const QString &providerKey,
-                               const QString &dataSource );
+                               const QString &dataSource ) SIP_FACTORY;
 
     /** Return the provider capabilities
         \param providerKey identificator of the provider
@@ -90,7 +92,10 @@ class CORE_EXPORT QgsProviderRegistry
      */
     int providerCapabilities( const QString &providerKey ) const;
 
-    /** Returns a widget for selecting layers from a provider.
+    /**
+     * Returns a new widget for selecting layers from a provider.
+     * Either the \a parent widget must be set or the caller becomes
+     * responsible for deleting the returned widget.
      */
     QWidget *selectWidget( const QString &providerKey,
                            QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
@@ -112,7 +117,7 @@ class CORE_EXPORT QgsProviderRegistry
      * If the provider uses direct provider function pointers instead of a library nullptr will
      * be returned.
      */
-    QLibrary *providerLibrary( const QString &providerKey ) const;
+    QLibrary *providerLibrary( const QString &providerKey ) const SIP_FACTORY;
 
     //! Return list of available providers by their keys
     QStringList providerList() const;
@@ -177,13 +182,16 @@ class CORE_EXPORT QgsProviderRegistry
      */
     //QgsDataProvider * openVector( QString const & dataSource, QString const & providerKey );
 
-
     //! Type for data provider metadata associative container
-    typedef std::map<QString, QgsProviderMetadata *> Providers;
+    SIP_SKIP typedef std::map<QString, QgsProviderMetadata *> Providers;
 
   private:
     //! Ctor private since instance() creates it
     QgsProviderRegistry( const QString &pluginPath );
+
+#ifdef SIP_RUN
+    QgsProviderRegistry( const QString &pluginPath );
+#endif
 
     void init();
     void clean();
