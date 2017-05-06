@@ -748,6 +748,7 @@ INCLUDE_DIRECTORIES(
   ../core/geometry
   ../core/layertree
   ../core/metadata
+  ../core/providers/memory
   ../core/raster
   ../core/scalebar
   ../core/symbology-ng

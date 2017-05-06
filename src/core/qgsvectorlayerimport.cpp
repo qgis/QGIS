@@ -63,7 +63,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
 
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
 
-  std::unique_ptr< QLibrary > myLib( pReg->providerLibrary( providerKey ) );
+  std::unique_ptr< QLibrary > myLib( pReg->createProviderLibrary( providerKey ) );
   if ( !myLib )
   {
     mError = ErrInvalidProvider;
@@ -111,7 +111,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
       uriUpdated += layerName;
     }
   }
-  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->provider( providerKey, uriUpdated ) );
+  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;

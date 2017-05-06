@@ -26,6 +26,7 @@
 #include <QString>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 
 class QgsDataProvider;
@@ -36,13 +37,16 @@ class QgsCoordinateReferenceSystem;
 
 /** \ingroup core
   * A registry / canonical manager of data providers.
-
-  This is a Singleton class that manages data provider access.
-
-  Loaded providers may be restricted using QGIS_PROVIDER_FILE environment variable.
-  QGIS_PROVIDER_FILE is regexp pattern applied to provider file name (not provider key).
-  For example, if the variable is set to gdal|ogr|postgres it will load only providers gdal,
-  ogr and postgres.
+  *
+  * This is a Singleton class that manages data provider access.
+  *
+  * Providers can be either loaded via libraries or native providers that
+  * are included in the core QGIS installation and accessed through function pointers.
+  *
+  * Loaded providers may be restricted using QGIS_PROVIDER_FILE environment variable.
+  * QGIS_PROVIDER_FILE is regexp pattern applied to provider file name (not provider key).
+  * For example, if the variable is set to gdal|ogr|postgres it will load only providers gdal,
+  * ogr and postgres.
 */
 class CORE_EXPORT QgsProviderRegistry
 {
@@ -52,28 +56,35 @@ class CORE_EXPORT QgsProviderRegistry
     //! Means of accessing canonical single instance
     static QgsProviderRegistry *instance( const QString &pluginPath = QString::null );
 
-    //! Virtual dectructor
     virtual ~QgsProviderRegistry();
 
-    //! Return path for the library of the provider
+    /**
+     * Return path for the library of the provider.
+     *
+     * If the provider uses direct provider function pointers instead of a library an empty string will
+     * be returned.
+     */
     QString library( const QString &providerKey ) const;
 
     //! Return list of provider plugins found
     QString pluginList( bool asHtml = false ) const;
 
-    //! Return library directory where plugins are found
+    /**
+     * Returns the library directory where plugins are found.
+     */
     QDir libraryDirectory() const;
 
     //! Set library directory where to search for plugins
     void setLibraryDirectory( const QDir &path );
 
-    /** Create an instance of the provider
-        \param providerKey identificator of the provider
-        \param dataSource  string containing data source for the provider
-        \returns instance of provider or NULL on error
+    /**
+     * Creates a new instance of a provider.
+     * \param providerKey identificator of the provider
+     * \param dataSource  string containing data source for the provider
+     * \returns new instance of provider or NULL on error
      */
-    QgsDataProvider *provider( const QString &providerKey,
-                               const QString &dataSource );
+    QgsDataProvider *createProvider( const QString &providerKey,
+                                     const QString &dataSource ) SIP_FACTORY;
 
     /** Return the provider capabilities
         \param providerKey identificator of the provider
@@ -81,15 +92,20 @@ class CORE_EXPORT QgsProviderRegistry
      */
     int providerCapabilities( const QString &providerKey ) const;
 
-    /** Returns a widget for selecting layers from a provider.
+    /**
+     * Returns a new widget for selecting layers from a provider.
+     * Either the \a parent widget must be set or the caller becomes
+     * responsible for deleting the returned widget.
      */
-    QWidget *selectWidget( const QString &providerKey,
-                           QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QWidget *createSelectionWidget( const QString &providerKey,
+                                    QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
-    /** Get pointer to provider function
-        \param providerKey identificator of the provider
-        \param functionName name of function
-        \returns pointer to function or NULL on error
+    /**
+     * Get pointer to provider function
+     * \param providerKey identificator of the provider
+     * \param functionName name of function
+     * \returns pointer to function or NULL on error. If the provider uses direct provider
+     * function pointers instead of a library nullptr will be returned.
      */
     QFunctionPointer function( const QString &providerKey,
                                const QString &functionName );
@@ -97,8 +113,11 @@ class CORE_EXPORT QgsProviderRegistry
     /**
      * Returns a new QLibrary for the specified \a providerKey. Ownership of the returned
      * object is transferred to the caller and the caller is responsible for deleting it.
+     *
+     * If the provider uses direct provider function pointers instead of a library nullptr will
+     * be returned.
      */
-    QLibrary *providerLibrary( const QString &providerKey ) const;
+    QLibrary *createProviderLibrary( const QString &providerKey ) const SIP_FACTORY;
 
     //! Return list of available providers by their keys
     QStringList providerList() const;
@@ -163,13 +182,16 @@ class CORE_EXPORT QgsProviderRegistry
      */
     //QgsDataProvider * openVector( QString const & dataSource, QString const & providerKey );
 
-
     //! Type for data provider metadata associative container
-    typedef std::map<QString, QgsProviderMetadata *> Providers;
+    SIP_SKIP typedef std::map<QString, QgsProviderMetadata *> Providers;
 
   private:
     //! Ctor private since instance() creates it
     QgsProviderRegistry( const QString &pluginPath );
+
+#ifdef SIP_RUN
+    QgsProviderRegistry( const QString &pluginPath );
+#endif
 
     void init();
     void clean();

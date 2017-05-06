@@ -92,6 +92,10 @@ SET(QGIS_CORE_SRCS
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
 
+  providers/memory/qgsmemoryfeatureiterator.cpp
+  providers/memory/qgsmemoryprovider.cpp
+  providers/memory/qgsmemoryproviderutils.cpp
+
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
   scalebar/qgsscalebarrenderer.cpp
@@ -619,6 +623,8 @@ SET(QGIS_CORE_MOC_HDRS
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
 
+  providers/memory/qgsmemoryprovider.h
+
   raster/qgsrasterfilewritertask.h
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
@@ -866,6 +872,9 @@ SET(QGIS_CORE_HDRS
   processing/qgsprocessingcontext.h
   processing/qgsprocessingutils.h
 
+  providers/memory/qgsmemoryfeatureiterator.h
+  providers/memory/qgsmemoryproviderutils.h
+
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
   raster/qgscliptominmaxenhancement.h
@@ -1001,6 +1010,8 @@ INCLUDE_DIRECTORIES(
   metadata
   pal
   processing
+  providers
+  providers/memory
   raster
   renderer
   scalebar

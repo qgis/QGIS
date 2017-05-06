@@ -118,7 +118,7 @@ struct VTable
       , mCrs( -1 )
       , mValid( true )
     {
-      mProvider = static_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->provider( provider, source ) );
+      mProvider = static_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, source ) );
       if ( !mProvider )
       {
         throw std::runtime_error( "Invalid provider" );

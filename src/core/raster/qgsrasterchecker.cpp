@@ -45,7 +45,7 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
   mReport += QLatin1String( "\n\n" );
 
   //QgsRasterDataProvider* verifiedProvider = QgsRasterLayer::loadProvider( verifiedKey, verifiedUri );
-  QgsRasterDataProvider *verifiedProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->provider( verifiedKey, verifiedUri ) );
+  QgsRasterDataProvider *verifiedProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( verifiedKey, verifiedUri ) );
   if ( !verifiedProvider || !verifiedProvider->isValid() )
   {
     error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( verifiedKey, verifiedUri ), mReport );
@@ -53,7 +53,7 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
   }
 
   //QgsRasterDataProvider* expectedProvider = QgsRasterLayer::loadProvider( expectedKey, expectedUri );
-  QgsRasterDataProvider *expectedProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->provider( expectedKey, expectedUri ) );
+  QgsRasterDataProvider *expectedProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( expectedKey, expectedUri ) );
   if ( !expectedProvider || !expectedProvider->isValid() )
   {
     error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( expectedKey, expectedUri ), mReport );
