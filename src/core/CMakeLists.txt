@@ -570,6 +570,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayereditbuffer.h
   qgsvectorlayereditpassthrough.h
   qgsvectorlayer.h
+  qgsvectorlayerexporter.h
   qgsvectorlayerfeaturecounter.h
   qgsvectorlayerjoinbuffer.h
   qgsvectorlayertools.h

@@ -463,3 +463,60 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
 
   return NoError;
 }
+
+
+//
+// QgsVectorLayerExporterTask
+//
+
+QgsVectorLayerExporterTask::QgsVectorLayerExporterTask( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, QMap<QString, QVariant> *options )
+  : QgsTask( tr( "Exporting %1" ).arg( layer->name() ), QgsTask::CanCancel )
+  , mLayer( layer )
+  , mDestUri( uri )
+  , mDestProviderKey( providerKey )
+  , mDestCrs( destinationCrs )
+  , mOptions( options ? * options : QMap<QString, QVariant>() )
+  , mOwnedFeedback( new QgsFeedback() )
+{
+  if ( mLayer )
+    setDependentLayers( QList< QgsMapLayer * >() << mLayer );
+}
+
+QgsVectorLayerExporterTask *QgsVectorLayerExporterTask::withLayerOwnership( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, QMap<QString, QVariant> *options )
+{
+  std::unique_ptr< QgsVectorLayerExporterTask > newTask( new QgsVectorLayerExporterTask( layer, uri, providerKey, destinationCrs, options ) );
+  newTask->mOwnsLayer = true;
+  return newTask.release();
+}
+
+void QgsVectorLayerExporterTask::cancel()
+{
+  mOwnedFeedback->cancel();
+  QgsTask::cancel();
+}
+
+bool QgsVectorLayerExporterTask::run()
+{
+  if ( !mLayer )
+    return false;
+
+  connect( mOwnedFeedback.get(), &QgsFeedback::progressChanged, this, &QgsVectorLayerExporterTask::setProgress );
+
+
+  mError = QgsVectorLayerExporter::exportLayer(
+             mLayer.data(), mDestUri, mDestProviderKey, mDestCrs, false, &mErrorMessage, false,
+             &mOptions );
+
+  if ( mOwnsLayer )
+    delete mLayer;
+
+  return mError == QgsVectorLayerExporter::NoError;
+}
+
+void QgsVectorLayerExporterTask::finished( bool result )
+{
+  if ( result )
+    emit exportComplete();
+  else
+    emit errorOccurred( mError, mErrorMessage );
+}

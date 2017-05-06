@@ -230,16 +230,8 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
   // TODO: probably should show a GUI with settings etc
   QgsDataSourceUri uri = QgsOracleConn::connUri( mName );
 
-  qApp->setOverrideCursor( Qt::WaitCursor );
-
-  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
-  progress->setWindowTitle( tr( "Import layer" ) );
-  progress->setWindowModality( Qt::WindowModal );
-  progress->show();
-
   QStringList importResults;
   bool hasError = false;
-  bool canceled = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
@@ -264,54 +256,52 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
         uri.setSrid( authid.mid( 5 ) );
       }
       QgsDebugMsgLevel( "URI " + uri.uri(), 3 );
-      QgsVectorLayerExporter::ExportError err;
-      QString importError;
-      err = QgsVectorLayerExporter::exportLayer( srcLayer, uri.uri(), "oracle", srcLayer->crs(), false, &importError, false, nullptr, progress );
-      if ( err == QgsVectorLayerExporter::NoError )
-        importResults.append( tr( "%1: OK!" ).arg( u.name ) );
-      else if ( err == QgsVectorLayerExporter::ErrUserCanceled )
-        canceled = true;
-      else
+
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri(), QStringLiteral( "oracle" ), srcLayer->crs() ) );
+
+      // when export is successful:
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
       {
-        importResults.append( QString( "%1: %2" ).arg( u.name ).arg( importError ) );
-        hasError = true;
-      }
+        // this is gross - TODO - find a way to get access to messageBar from data items
+        QMessageBox::information( nullptr, tr( "Import to Oracle database" ), tr( "Import was successful." ) );
+        if ( state() == Populated )
+          refresh();
+        else
+          populate();
+      } );
+
+      // when an error occurs:
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
+      {
+        if ( error != QgsVectorLayerExporter::ErrUserCanceled )
+        {
+          QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+          output->setTitle( tr( "Import to Oracle database" ) );
+          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+          output->showMessage();
+        }
+        if ( state() == Populated )
+          refresh();
+        else
+          populate();
+      } );
+
+      QgsApplication::taskManager()->addTask( exportTask.release() );
     }
     else
     {
-      importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
       hasError = true;
     }
-
-    delete srcLayer;
   }
 
-  delete progress;
-
-  qApp->restoreOverrideCursor();
-
-  if ( canceled )
-  {
-    QMessageBox::information( nullptr, tr( "Import to Oracle database" ), tr( "Import canceled." ) );
-    refresh();
-  }
-  else if ( hasError )
+  if ( hasError )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to Oracle database" ) );
     output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
-  else
-  {
-    QMessageBox::information( 0, tr( "Import to Oracle database" ), tr( "Import was successful." ) );
-    refresh();
-  }
-
-  if ( state() == Populated )
-    refresh();
-  else
-    populate();
 
   return true;
 }

@@ -24,6 +24,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsmessageoutput.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -316,16 +317,8 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
     return false;
 
   // TODO: probably should show a GUI with settings etc
-  qApp->setOverrideCursor( Qt::WaitCursor );
-
-  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
-  progress->setWindowTitle( tr( "Import layer" ) );
-  progress->setWindowModality( Qt::WindowModal );
-  progress->show();
-
   QStringList importResults;
   bool hasError = false;
-  bool canceled = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
@@ -357,60 +350,51 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
       if ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry )
         uri += QLatin1String( " (geom)" );
 
-      QgsVectorLayerExporter::ExportError err;
-      QString importError;
-      err = QgsVectorLayerExporter::exportLayer( srcLayer, uri, QStringLiteral( "DB2" ), srcLayer->crs(), false, &importError, false, nullptr, progress );
-      if ( err == QgsVectorLayerExporter::NoError )
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri, QStringLiteral( "DB2" ), srcLayer->crs() ) );
+
+      // when export is successful:
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
       {
-        importResults.append( tr( "%1: OK!" ).arg( u.name ) );
-        QgsDebugMsg( "import successful" );
-      }
-      else
-      {
-        if ( err == QgsVectorLayerExporter::ErrUserCanceled )
-        {
-          canceled = true;
-          QgsDebugMsg( "import canceled" );
-        }
+        // this is gross - TODO - find a way to get access to messageBar from data items
+        QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import was successful." ) );
+        if ( state() == Populated )
+          refresh();
         else
+          populate();
+      } );
+
+      // when an error occurs:
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
+      {
+        if ( error != QgsVectorLayerExporter::ErrUserCanceled )
         {
-          QString errMsg = QStringLiteral( "%1: %2" ).arg( u.name, importError );
-          QgsDebugMsg( "import failed: " + errMsg );
-          importResults.append( errMsg );
-          hasError = true;
+          QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+          output->setTitle( tr( "Import to DB2 database" ) );
+          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+          output->showMessage();
         }
-      }
+        if ( state() == Populated )
+          refresh();
+        else
+          populate();
+      } );
+
+      QgsApplication::taskManager()->addTask( exportTask.release() );
     }
     else
     {
-      importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
       hasError = true;
     }
-
-    delete srcLayer;
   }
 
-  delete progress;
-  qApp->restoreOverrideCursor();
-
-  if ( canceled )
+  if ( hasError )
   {
-    QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import canceled." ) );
-    refresh();
+    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+    output->setTitle( tr( "Import to DB2 database" ) );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
+    output->showMessage();
   }
-  else if ( hasError )
-  {
-    QMessageBox::warning( nullptr, tr( "Import to DB2 database" ), tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ) );
-  }
-  else
-  {
-    QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import was successful." ) );
-  }
-
-  if ( state() == Populated )
-    refresh();
-  else
-    populate();
 
   return true;
 }

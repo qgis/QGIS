@@ -130,6 +130,69 @@ class QgsVectorLayerExporter : QgsFeatureSink
     QgsVectorLayerExporter( const QgsVectorLayerExporter &rh );
 };
 
+
+class QgsVectorLayerExporterTask : QgsTask
+{
+%Docstring
+ QgsTask task which performs a QgsVectorLayerExporter layer export operation as a background
+ task. This can be used to export a vector layer out to a provider without blocking the
+ QGIS interface.
+.. versionadded:: 3.0
+.. seealso:: QgsVectorFileWriterTask
+.. seealso:: QgsRasterFileWriterTask
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerexporter.h"
+%End
+  public:
+
+    QgsVectorLayerExporterTask( QgsVectorLayer *layer,
+                                const QString &uri,
+                                const QString &providerKey,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                QMap<QString, QVariant> *options = 0 );
+%Docstring
+ Constructor for QgsVectorLayerExporterTask. Takes a source ``layer``, destination ``uri``
+ and ``providerKey``, and various export related parameters such as destination CRS
+ and export ``options``.
+%End
+
+    static QgsVectorLayerExporterTask *withLayerOwnership( QgsVectorLayer *layer /Transfer/,
+        const QString &uri,
+        const QString &providerKey,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        QMap<QString, QVariant> *options = 0 ) /Factory/;
+%Docstring
+ Creates a new QgsVectorLayerExporterTask which has ownership over a source ``layer``.
+ When the export task has completed (successfully or otherwise) ``layer`` will be
+ deleted. The destination ``uri`` and ``providerKey``, and various export related parameters such as destination CRS
+ and export ``options`` must be specified.
+ :rtype: QgsVectorLayerExporterTask
+%End
+
+    virtual void cancel();
+
+  signals:
+
+    void exportComplete();
+%Docstring
+ Emitted when exporting the layer is successfully completed.
+%End
+
+    void errorOccurred( int error, const QString &errorMessage );
+%Docstring
+ Emitted when an error occurs which prevented the layer being exported (or if
+ the task is canceled). The export ``error`` and ``errorMessage`` will be reported.
+%End
+
+  protected:
+
+    virtual bool run();
+    virtual void finished( bool result );
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

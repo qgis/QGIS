@@ -22,10 +22,12 @@
 #include "qgis.h"
 #include "qgsfeature.h"
 #include "qgsfeaturesink.h"
+#include "qgstaskmanager.h"
+#include "qgsfeedback.h"
+#include "qgsvectorlayer.h"
 
 class QProgressDialog;
 class QgsVectorDataProvider;
-class QgsVectorLayer;
 class QgsFields;
 
 /**
@@ -165,6 +167,83 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
 #ifdef SIP_RUN
     QgsVectorLayerExporter( const QgsVectorLayerExporter &rh );
 #endif
+
+};
+
+
+/**
+ * \class QgsVectorLayerExporterTask
+ * \ingroup core
+ * QgsTask task which performs a QgsVectorLayerExporter layer export operation as a background
+ * task. This can be used to export a vector layer out to a provider without blocking the
+ * QGIS interface.
+ * \since QGIS 3.0
+ * \see QgsVectorFileWriterTask
+ * \see QgsRasterFileWriterTask
+ */
+class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsVectorLayerExporterTask. Takes a source \a layer, destination \a uri
+     * and \a providerKey, and various export related parameters such as destination CRS
+     * and export \a options.
+    */
+    QgsVectorLayerExporterTask( QgsVectorLayer *layer,
+                                const QString &uri,
+                                const QString &providerKey,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                QMap<QString, QVariant> *options = nullptr );
+
+    /**
+     * Creates a new QgsVectorLayerExporterTask which has ownership over a source \a layer.
+     * When the export task has completed (successfully or otherwise) \a layer will be
+     * deleted. The destination \a uri and \a providerKey, and various export related parameters such as destination CRS
+     * and export \a options must be specified.
+    */
+    static QgsVectorLayerExporterTask *withLayerOwnership( QgsVectorLayer *layer SIP_TRANSFER,
+        const QString &uri,
+        const QString &providerKey,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        QMap<QString, QVariant> *options = nullptr ) SIP_FACTORY;
+
+    virtual void cancel() override;
+
+  signals:
+
+    /**
+     * Emitted when exporting the layer is successfully completed.
+     */
+    void exportComplete();
+
+    /**
+     * Emitted when an error occurs which prevented the layer being exported (or if
+     * the task is canceled). The export \a error and \a errorMessage will be reported.
+     */
+    void errorOccurred( int error, const QString &errorMessage );
+
+  protected:
+
+    virtual bool run() override;
+    virtual void finished( bool result ) override;
+
+  private:
+
+    QPointer< QgsVectorLayer > mLayer = nullptr;
+    bool mOwnsLayer = false;
+
+    QString mDestUri;
+    QString mDestProviderKey;
+    QgsCoordinateReferenceSystem mDestCrs;
+    QMap<QString, QVariant> mOptions;
+
+    std::unique_ptr< QgsFeedback > mOwnedFeedback;
+
+    QgsVectorLayerExporter::ExportError mError = QgsVectorLayerExporter::NoError;
+    QString mErrorMessage;
 
 };
 
