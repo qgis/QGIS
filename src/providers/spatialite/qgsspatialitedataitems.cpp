@@ -20,7 +20,7 @@
 
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
@@ -227,12 +227,12 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
     {
       destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
       QgsDebugMsg( "URI " + destUri.uri() );
-      QgsVectorLayerImport::ImportError err;
+      QgsVectorLayerExporter::ExportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), false, &importError, false, nullptr, progress );
-      if ( err == QgsVectorLayerImport::NoError )
+      err = QgsVectorLayerExporter::exportLayer( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), false, &importError, false, nullptr, progress );
+      if ( err == QgsVectorLayerExporter::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
-      else if ( err == QgsVectorLayerImport::ErrUserCanceled )
+      else if ( err == QgsVectorLayerExporter::ErrUserCanceled )
         canceled = true;
       else
       {

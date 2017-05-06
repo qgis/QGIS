@@ -20,7 +20,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgspostgresconn.h"
 #include "qgsfields.h"
 #include <memory>
@@ -55,7 +55,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * field names to lowercase), dropStringConstraints (set to true to remove
      * length constraints on character fields).
      */
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,

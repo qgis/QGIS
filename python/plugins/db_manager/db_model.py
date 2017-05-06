@@ -36,7 +36,7 @@ from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeD
 from . import resources_rc  # NOQA
 
 try:
-    from qgis.core import QgsVectorLayerImport  # NOQA
+    from qgis.core import QgsVectorLayerExporter  # NOQA
     isImportVectorAvail = True
 except:
     isImportVectorAvail = False

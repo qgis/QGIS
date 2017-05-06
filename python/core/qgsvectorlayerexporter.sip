@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsvectorlayerimport.h                                      *
+ * src/core/qgsvectorlayerexporter.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,24 +10,29 @@
 
 
 
-class QgsVectorLayerImport : QgsFeatureSink
+class QgsVectorLayerExporter : QgsFeatureSink
 {
 %Docstring
- A convenience class for writing vector files to disk.
-There are two possibilities how to use this class:
-1. static call to QgsVectorFileWriter.writeAsShapefile(...) which saves the whole vector layer
-2. create an instance of the class and issue calls to addFeature(...)
+ A convenience class for exporting vector layers to a destination data provider.
+
+ QgsVectorLayerExporter can be used in two ways:
+
+ 1. Using a static call to QgsVectorLayerExporter.exportLayer(...) which exports the
+ entire layer to the destination provider.
+
+ 2. Create an instance of the class and issue calls to addFeature(...)
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 %End
   public:
 
-    enum ImportError
+    enum ExportError
     {
       NoError,
-      ErrDriverNotFound,
       ErrCreateDataSource,
       ErrCreateLayer,
       ErrAttributeTypeUnsupported,
@@ -41,7 +46,7 @@ There are two possibilities how to use this class:
       ErrUserCanceled,
     };
 
-    static ImportError importLayer( QgsVectorLayer *layer,
+    static ExportError exportLayer( QgsVectorLayer *layer,
                                     const QString &uri,
                                     const QString &providerKey,
                                     const QgsCoordinateReferenceSystem &destCRS,
@@ -64,18 +69,18 @@ There are two possibilities how to use this class:
  \param options optional provider dataset options
  \param progress optional progress dialog to show progress of export
  :return: NoError for a successful export, or encountered error
- :rtype: ImportError
+ :rtype: ExportError
 %End
 
-    QgsVectorLayerImport( const QString &uri,
-                          const QString &provider,
-                          const QgsFields &fields,
-                          QgsWkbTypes::Type geometryType,
-                          const QgsCoordinateReferenceSystem &crs,
-                          bool overwrite = false,
-                          const QMap<QString, QVariant> *options = 0 );
+    QgsVectorLayerExporter( const QString &uri,
+                            const QString &provider,
+                            const QgsFields &fields,
+                            QgsWkbTypes::Type geometryType,
+                            const QgsCoordinateReferenceSystem &crs,
+                            bool overwrite = false,
+                            const QMap<QString, QVariant> *options = 0 );
 %Docstring
- Constructor for QgsVectorLayerImport.
+ Constructor for QgsVectorLayerExporter.
  \param uri URI for destination data source
  \param provider string key for destination data provider
  \param fields fields to include in created layer
@@ -87,20 +92,27 @@ There are two possibilities how to use this class:
 %End
 
 
-    ImportError hasError();
+    ExportError errorCode() const;
 %Docstring
-Checks whether there were any errors
- :rtype: ImportError
+ Returns any encountered error code, or false if no error was encountered.
+.. seealso:: errorMessage()
+.. seealso:: errorCount()
+ :rtype: ExportError
 %End
 
-    QString errorMessage();
+    QString errorMessage() const;
 %Docstring
-Retrieves error message
+ Returns any error message encountered during the export.
+.. seealso:: errorCount()
+.. seealso:: errorCode()
  :rtype: str
 %End
 
     int errorCount() const;
 %Docstring
+ Returns the number of error messages encountered during the export.
+.. seealso:: errorMessage()
+.. seealso:: errorCode()
  :rtype: int
 %End
 
@@ -109,19 +121,19 @@ Retrieves error message
     virtual bool addFeature( QgsFeature &feature );
 
 
-    ~QgsVectorLayerImport();
+    ~QgsVectorLayerExporter();
 %Docstring
-Close the new created layer
+ Finalizes the export and closes the new created layer.
 %End
 
   private:
-    QgsVectorLayerImport( const QgsVectorLayerImport &rh );
+    QgsVectorLayerExporter( const QgsVectorLayerExporter &rh );
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsvectorlayerimport.h                                      *
+ * src/core/qgsvectorlayerexporter.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

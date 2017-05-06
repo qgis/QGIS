@@ -22,7 +22,7 @@
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmssqlprovider.h"
 #include "qgssettings.h"
@@ -423,12 +423,12 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
       if ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry )
         uri += QLatin1String( " (geom)" );
 
-      QgsVectorLayerImport::ImportError err;
+      QgsVectorLayerExporter::ExportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri, QStringLiteral( "mssql" ), srcLayer->crs(), false, &importError, false, nullptr, progress );
-      if ( err == QgsVectorLayerImport::NoError )
+      err = QgsVectorLayerExporter::exportLayer( srcLayer, uri, QStringLiteral( "mssql" ), srcLayer->crs(), false, &importError, false, nullptr, progress );
+      if ( err == QgsVectorLayerExporter::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
-      else if ( err == QgsVectorLayerImport::ErrUserCanceled )
+      else if ( err == QgsVectorLayerExporter::ErrUserCanceled )
         canceled = true;
       else
       {

@@ -1,6 +1,5 @@
 /***************************************************************************
-                          qgsvectorlayerimport.cpp
-                          vector layer importer
+                          qgsvectorlayerexporter.h
                              -------------------
     begin                : Thu Aug 25 2011
     copyright            : (C) 2011 by Giuseppe Sucameli
@@ -16,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVECTORLAYERIMPORT_H
-#define QGSVECTORLAYERIMPORT_H
+#ifndef QGSVECTORLAYEREXPORTER_H
+#define QGSVECTORLAYEREXPORTER_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -29,31 +28,39 @@ class QgsVectorDataProvider;
 class QgsVectorLayer;
 class QgsFields;
 
-/** \ingroup core
-  * A convenience class for writing vector files to disk.
- There are two possibilities how to use this class:
- 1. static call to QgsVectorFileWriter::writeAsShapefile(...) which saves the whole vector layer
- 2. create an instance of the class and issue calls to addFeature(...)
+/**
+ * \class QgsVectorLayerExporter
+ * \ingroup core
+ * A convenience class for exporting vector layers to a destination data provider.
+ *
+ * QgsVectorLayerExporter can be used in two ways:
+ *
+ * 1. Using a static call to QgsVectorLayerExporter::exportLayer(...) which exports the
+ * entire layer to the destination provider.
+ *
+ * 2. Create an instance of the class and issue calls to addFeature(...)
+ *
+ * \since QGIS 3.0
  */
-class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
+class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
 {
   public:
 
-    enum ImportError
+    //! Error codes
+    enum ExportError
     {
-      NoError = 0,
-      ErrDriverNotFound,
-      ErrCreateDataSource,
-      ErrCreateLayer,
-      ErrAttributeTypeUnsupported,
-      ErrAttributeCreationFailed,
-      ErrProjection,
-      ErrFeatureWriteFailed,
-      ErrInvalidLayer,
-      ErrInvalidProvider,
-      ErrProviderUnsupportedFeature,
-      ErrConnectionFailed,
-      ErrUserCanceled, //!< User canceled the import
+      NoError = 0, //!< No errors were encountered
+      ErrCreateDataSource, //!< Could not create the destination data source
+      ErrCreateLayer, //!< Could not create destination layer
+      ErrAttributeTypeUnsupported, //!< Source layer has an attribute type which could not be handled by destination
+      ErrAttributeCreationFailed, //!< Destination provider was unable to create an attribute
+      ErrProjection, //!< An error occurred while reprojecting features to destination CRS
+      ErrFeatureWriteFailed, //!< An error occurred while writing a feature to the destination
+      ErrInvalidLayer, //!< Could not access newly created destination layer
+      ErrInvalidProvider, //!< Could not find a matching provider key
+      ErrProviderUnsupportedFeature, //!< Provider does not support creation of empty layers
+      ErrConnectionFailed, //!< Could not connect to destination
+      ErrUserCanceled, //!< User canceled the export
     };
 
     /**
@@ -70,7 +77,7 @@ class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
      * \param progress optional progress dialog to show progress of export
      * \returns NoError for a successful export, or encountered error
      */
-    static ImportError importLayer( QgsVectorLayer *layer,
+    static ExportError exportLayer( QgsVectorLayer *layer,
                                     const QString &uri,
                                     const QString &providerKey,
                                     const QgsCoordinateReferenceSystem &destCRS,
@@ -81,7 +88,8 @@ class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
                                     QProgressDialog *progress = nullptr
                                   );
 
-    /** Constructor for QgsVectorLayerImport.
+    /**
+     * Constructor for QgsVectorLayerExporter.
      * \param uri URI for destination data source
      * \param provider string key for destination data provider
      * \param fields fields to include in created layer
@@ -91,32 +99,47 @@ class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
      * \param overwrite set to true to overwrite any existing data source
      * \param options optional provider dataset options
      */
-    QgsVectorLayerImport( const QString &uri,
-                          const QString &provider,
-                          const QgsFields &fields,
-                          QgsWkbTypes::Type geometryType,
-                          const QgsCoordinateReferenceSystem &crs,
-                          bool overwrite = false,
-                          const QMap<QString, QVariant> *options = nullptr );
+    QgsVectorLayerExporter( const QString &uri,
+                            const QString &provider,
+                            const QgsFields &fields,
+                            QgsWkbTypes::Type geometryType,
+                            const QgsCoordinateReferenceSystem &crs,
+                            bool overwrite = false,
+                            const QMap<QString, QVariant> *options = nullptr );
 
-    //! QgsVectorLayerImport cannot be copied
-    QgsVectorLayerImport( const QgsVectorLayerImport &rh ) = delete;
-    //! QgsVectorLayerImport cannot be copied
-    QgsVectorLayerImport &operator=( const QgsVectorLayerImport &rh ) = delete;
+    //! QgsVectorLayerExporter cannot be copied
+    QgsVectorLayerExporter( const QgsVectorLayerExporter &rh ) = delete;
+    //! QgsVectorLayerExporter cannot be copied
+    QgsVectorLayerExporter &operator=( const QgsVectorLayerExporter &rh ) = delete;
 
-    //! Checks whether there were any errors
-    ImportError hasError();
+    /**
+     * Returns any encountered error code, or false if no error was encountered.
+     * \see errorMessage()
+     * \see errorCount()
+     */
+    ExportError errorCode() const;
 
-    //! Retrieves error message
-    QString errorMessage();
+    /**
+     * Returns any error message encountered during the export.
+     * \see errorCount()
+     * \see errorCode()
+     */
+    QString errorMessage() const;
 
+    /**
+     * Returns the number of error messages encountered during the export.
+     * \see errorMessage()
+     * \see errorCode()
+     */
     int errorCount() const { return mErrorCount; }
 
     bool addFeatures( QgsFeatureList &features ) override;
     bool addFeature( QgsFeature &feature ) override;
 
-    //! Close the new created layer
-    ~QgsVectorLayerImport();
+    /**
+     * Finalizes the export and closes the new created layer.
+     */
+    ~QgsVectorLayerExporter();
 
   private:
     //! Flush the buffer writing the features to the new layer
@@ -126,7 +149,7 @@ class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
     bool createSpatialIndex();
 
     //! Contains error value
-    ImportError mError;
+    ExportError mError;
     QString mErrorMessage;
 
     int mErrorCount;
@@ -140,9 +163,9 @@ class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
     QgsFeatureList mFeatureBuffer;
 
 #ifdef SIP_RUN
-    QgsVectorLayerImport( const QgsVectorLayerImport &rh );
+    QgsVectorLayerExporter( const QgsVectorLayerExporter &rh );
 #endif
 
 };
 
-#endif
+#endif // QGSVECTORLAYEREXPORTER_H

@@ -21,7 +21,7 @@
 #include "qgsdb2geometrycolumns.h"
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 
@@ -357,17 +357,17 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
       if ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry )
         uri += QLatin1String( " (geom)" );
 
-      QgsVectorLayerImport::ImportError err;
+      QgsVectorLayerExporter::ExportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri, QStringLiteral( "DB2" ), srcLayer->crs(), false, &importError, false, nullptr, progress );
-      if ( err == QgsVectorLayerImport::NoError )
+      err = QgsVectorLayerExporter::exportLayer( srcLayer, uri, QStringLiteral( "DB2" ), srcLayer->crs(), false, &importError, false, nullptr, progress );
+      if ( err == QgsVectorLayerExporter::NoError )
       {
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
         QgsDebugMsg( "import successful" );
       }
       else
       {
-        if ( err == QgsVectorLayerImport::ErrUserCanceled )
+        if ( err == QgsVectorLayerExporter::ErrUserCanceled )
         {
           canceled = true;
           QgsDebugMsg( "import canceled" );

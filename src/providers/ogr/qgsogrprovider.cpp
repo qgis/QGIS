@@ -29,7 +29,7 @@ email                : sherman at mrcc.com
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -216,7 +216,7 @@ void QgsOgrProvider::repack()
 }
 
 
-QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QString &uri,
+QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -272,7 +272,7 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
             if ( errorMessage )
               *errorMessage += QObject::tr( "Layer %2 of %1 exists and overwrite flag is false." )
                                .arg( uri ).arg( layerName );
-            return QgsVectorLayerImport::ErrCreateDataSource;
+            return QgsVectorLayerExporter::ErrCreateDataSource;
           }
           OGR_DS_Destroy( hDS );
         }
@@ -289,7 +289,7 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
       if ( errorMessage )
         *errorMessage += QObject::tr( "Unable to create the datasource. %1 exists and overwrite flag is false." )
                          .arg( uri );
-      return QgsVectorLayerImport::ErrCreateDataSource;
+      return QgsVectorLayerExporter::ErrCreateDataSource;
     }
   }
 
@@ -306,7 +306,7 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
       *errorMessage += writer->errorMessage();
 
     delete writer;
-    return ( QgsVectorLayerImport::ImportError ) error;
+    return ( QgsVectorLayerExporter::ExportError ) error;
   }
 
   QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
@@ -340,7 +340,7 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
     }
   }
 
-  return QgsVectorLayerImport::NoError;
+  return QgsVectorLayerExporter::NoError;
 }
 
 static QString AnalyzeURI( QString const &uri,
@@ -4233,7 +4233,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
+QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,

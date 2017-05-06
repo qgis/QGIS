@@ -28,7 +28,14 @@ from qgis.PyQt.QtCore import Qt, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from qgis.PyQt.QtGui import QCursor
 
-from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsMapLayer, QgsProviderRegistry, QgsCoordinateReferenceSystem, QgsVectorLayerImport, QgsProject, QgsSettings
+from qgis.core import (QgsDataSourceUri,
+                       QgsVectorLayer,
+                       QgsMapLayer,
+                       QgsProviderRegistry,
+                       QgsCoordinateReferenceSystem,
+                       QgsVectorLayerExporter,
+                       QgsProject,
+                       QgsSettings)
 from qgis.gui import QgsMessageViewer
 
 from .ui.ui_DlgImportVector import Ui_DbManagerDlgImportVector as Ui_Dialog
@@ -353,7 +360,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
             onlySelected = self.chkSelectedFeatures.isChecked()
 
             # do the import!
-            ret, errMsg = QgsVectorLayerImport.importLayer(self.inLayer, uri, providerName, outCrs, onlySelected, False, options)
+            ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs, onlySelected, False, options)
         except Exception as e:
             ret = -1
             errMsg = str(e)

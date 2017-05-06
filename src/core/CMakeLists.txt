@@ -270,7 +270,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayereditpassthrough.cpp
   qgsvectorlayereditutils.cpp
   qgsvectorlayerfeatureiterator.cpp
-  qgsvectorlayerimport.cpp
+  qgsvectorlayerexporter.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerlabeling.cpp
   qgsvectorlayerlabelprovider.cpp
@@ -819,7 +819,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerdiagramprovider.h
   qgsvectorlayereditutils.h
   qgsvectorlayerfeatureiterator.h
-  qgsvectorlayerimport.h
+  qgsvectorlayerexporter.h
   qgsvectorlayerjoininfo.h
   qgsvectorlayerlabelprovider.h
   qgsvectorlayerrenderer.h

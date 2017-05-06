@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Mathieu Pellerin'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsDataSourceUri,
-                       QgsVectorLayerImport,
+                       QgsVectorLayerExporter,
                        QgsApplication,
                        QgsProcessingUtils)
 
@@ -134,7 +134,7 @@ class ImportIntoSpatialite(GeoAlgorithm):
         if encoding:
             layer.setProviderEncoding(encoding)
 
-        (ret, errMsg) = QgsVectorLayerImport.importLayer(
+        (ret, errMsg) = QgsVectorLayerExporter.exportLayer(
             layer,
             uri.uri(),
             providerName,

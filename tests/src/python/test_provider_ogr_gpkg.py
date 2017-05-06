@@ -19,7 +19,7 @@ import tempfile
 import shutil
 from osgeo import gdal, ogr
 
-from qgis.core import QgsVectorLayer, QgsVectorLayerImport, QgsFeature, QgsGeometry, QgsRectangle, QgsSettings
+from qgis.core import QgsVectorLayer, QgsVectorLayerExporter, QgsFeature, QgsGeometry, QgsRectangle, QgsSettings
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app, unittest
 
@@ -416,8 +416,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         options['update'] = True
         options['driverName'] = 'GPKG'
         options['layerName'] = 'my_out_table'
-        err = QgsVectorLayerImport.importLayer(lyr, tmpfile, "ogr", lyr.crs(), False, False, options)
-        self.assertEqual(err[0], QgsVectorLayerImport.NoError,
+        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, False, options)
+        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
                          'unexpected import error {0}'.format(err))
         lyr = QgsVectorLayer(tmpfile + "|layername=my_out_table", "y", "ogr")
         self.assertTrue(lyr.isValid())
@@ -431,8 +431,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         features = None
 
         # Test overwriting without overwrite option
-        err = QgsVectorLayerImport.importLayer(lyr, tmpfile, "ogr", lyr.crs(), False, False, options)
-        self.assertEqual(err[0], QgsVectorLayerImport.ErrCreateDataSource)
+        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, False, options)
+        self.assertEqual(err[0], QgsVectorLayerExporter.ErrCreateDataSource)
 
         # Test overwriting
         lyr = QgsVectorLayer(uri, "x", "memory")
@@ -441,8 +441,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f['f1'] = 3
         lyr.dataProvider().addFeatures([f])
         options['overwrite'] = True
-        err = QgsVectorLayerImport.importLayer(lyr, tmpfile, "ogr", lyr.crs(), False, False, options)
-        self.assertEqual(err[0], QgsVectorLayerImport.NoError,
+        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, False, options)
+        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
                          'unexpected import error {0}'.format(err))
         lyr = QgsVectorLayer(tmpfile + "|layername=my_out_table", "y", "ogr")
         self.assertTrue(lyr.isValid())

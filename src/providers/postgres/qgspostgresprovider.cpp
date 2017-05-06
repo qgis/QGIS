@@ -28,7 +28,7 @@
 
 #include <QMessageBox>
 
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgspostgresprovider.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
@@ -3639,7 +3639,7 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
   return true;
 }
 
-QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const QString &uri,
+QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -3680,7 +3680,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "Connection to database failed" );
-    return QgsVectorLayerImport::ErrConnectionFailed;
+    return QgsVectorLayerExporter::ErrConnectionFailed;
   }
 
   // get the pk's name and type
@@ -3841,7 +3841,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
 
     conn->PQexecNR( QStringLiteral( "ROLLBACK" ) );
     conn->unref();
-    return QgsVectorLayerImport::ErrCreateLayer;
+    return QgsVectorLayerExporter::ErrCreateLayer;
   }
   conn->unref();
 
@@ -3856,7 +3856,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
       *errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( schemaTableName );
 
     delete provider;
-    return QgsVectorLayerImport::ErrInvalidLayer;
+    return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
   QgsDebugMsg( "layer loaded" );
@@ -3917,7 +3917,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 
         delete provider;
-        return QgsVectorLayerImport::ErrAttributeTypeUnsupported;
+        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
       QgsDebugMsg( QString( "creating field #%1 -> #%2 name %3 type %4 typename %5 width %6 precision %7" )
@@ -3937,12 +3937,12 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
       delete provider;
-      return QgsVectorLayerImport::ErrAttributeCreationFailed;
+      return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
 
     QgsDebugMsg( "Done creating fields" );
   }
-  return QgsVectorLayerImport::NoError;
+  return QgsVectorLayerExporter::NoError;
 }
 
 QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
@@ -4285,7 +4285,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
+QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
