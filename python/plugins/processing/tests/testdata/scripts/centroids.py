@@ -3,15 +3,13 @@
 ##INPUT_LAYER=vector
 ##OUTPUT_LAYER=output vector
 
-from qgis.core import QgsWkbTypes, QgsGeometry, QgsProcessingUtils
-
-from processing.tools.vector import createVectorWriter
+from qgis.core import QgsWkbTypes, QgsProcessingUtils
 
 layer = QgsProcessingUtils.mapLayerFromString(INPUT_LAYER, context)
 fields = layer.fields()
 
-writer, writer_dest, writer_layer = createVectorWriter(OUTPUT_LAYER, 'utf-8', fields, QgsWkbTypes.Point, layer.crs(),
-                                                       context)
+writer, writer_dest, writer_layer = QgsProcessingUtils.createFeatureSink(OUTPUT_LAYER, 'utf-8', fields, QgsWkbTypes.Point, layer.crs(),
+                                                                         context)
 
 features = QgsProcessingUtils.getFeatures(layer, context)
 count = QgsProcessingUtils.featureCount(layer, context)

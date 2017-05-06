@@ -118,9 +118,23 @@ class QgsProcessingContext
 %End
 
 
+    QString defaultEncoding() const;
+%Docstring
+ Returns the default encoding to use for newly created files.
+.. seealso:: setDefaultEncoding()
+ :rtype: str
+%End
+
+    void setDefaultEncoding( const QString &encoding );
+%Docstring
+ Sets the default ``encoding`` to use for newly created files.
+.. seealso:: defaultEncoding()
+%End
+
   private:
     QgsProcessingContext( const QgsProcessingContext &other );
 };
+
 QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFlags<QgsProcessingContext::Flag> f2);
 
 

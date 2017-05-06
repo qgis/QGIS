@@ -85,6 +85,9 @@ def createContext():
 
     context.setInvalidGeometryCallback(raise_error)
 
+    settings = QgsSettings()
+    context.setDefaultEncoding(settings.value("/Processing/encoding", "System"))
+
     return context
 
 
