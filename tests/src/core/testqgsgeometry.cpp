@@ -3494,6 +3494,14 @@ void TestQgsGeometry::triangle()
   QVERIFY( t3.exteriorRing() );
   QVERIFY( !t3.interiorRing( 0 ) );
 
+  // equality
+  QVERIFY( QgsTriangle() == QgsTriangle( ) ); // empty
+  QVERIFY( QgsTriangle() == QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 0, 10 ) ) ); // empty
+  QVERIFY( QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 0, 10 ) ) ==  QgsTriangle() ); // empty
+  QVERIFY( QgsTriangle() != QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 5, 5 ), QgsPointV2( 0, 10 ) ) );
+  QVERIFY( QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 5, 5 ), QgsPointV2( 0, 10 ) ) !=  QgsTriangle() );
+  QVERIFY( QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 5, 5 ), QgsPointV2( 0, 10 ) ) !=  QgsTriangle( QgsPointV2( 0, 10 ), QgsPointV2( 5, 5 ), QgsPointV2( 0, 0 ) ) );
+
   // clone
   QgsTriangle *t4 = t3.clone();
   QCOMPARE( t3, *t4 );

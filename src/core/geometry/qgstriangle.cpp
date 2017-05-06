@@ -87,14 +87,15 @@ QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
 
 bool QgsTriangle::operator==( const QgsTriangle &other ) const
 {
-  if ( isEmpty() )
+  if ( isEmpty() && other.isEmpty() )
   {
-    if ( other.isEmpty() )
-    {
-      return true;
-    }
+    return true;
+  }
+  else if ( isEmpty() || other.isEmpty() )
+  {
     return false;
   }
+
   return ( ( vertexAt( 0 ) == other.vertexAt( 0 ) ) &&
            ( vertexAt( 1 ) == other.vertexAt( 1 ) ) &&
            ( vertexAt( 2 ) == other.vertexAt( 2 ) )
