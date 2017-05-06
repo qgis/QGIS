@@ -84,7 +84,6 @@ core/qgsvectorfilewritertask.sip
 core/qgsvectorlayercache.sip
 core/qgsvectorlayereditbuffer.sip
 core/qgsvectorlayereditpassthrough.sip
-core/qgsvectorlayerimport.sip
 core/qgsvectorlayerjoinbuffer.sip
 core/qgsvectorlayerjoininfo.sip
 core/qgsvectorlayertools.sip

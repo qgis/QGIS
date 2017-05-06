@@ -143,6 +143,12 @@ class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
     QgsFeatureList mFeatureBuffer;
     QProgressDialog *mProgress = nullptr;
 
+  private:
+
+#ifdef SIP_RUN
+    QgsVectorLayerImport( const QgsVectorLayerImport &rh );
+#endif
+
 };
 
 #endif
