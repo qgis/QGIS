@@ -52,11 +52,9 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     QgsWkbTypes::Type geometryType,
     const QgsCoordinateReferenceSystem &crs,
     bool overwrite,
-    const QMap<QString, QVariant> *options,
-    QProgressDialog *progress )
+    const QMap<QString, QVariant> *options )
   : mErrorCount( 0 )
   , mAttributeCount( -1 )
-  , mProgress( progress )
 
 {
   mProvider = nullptr;
@@ -143,6 +141,17 @@ QgsVectorLayerImport::ImportError QgsVectorLayerImport::hasError()
 QString QgsVectorLayerImport::errorMessage()
 {
   return mErrorMessage;
+}
+
+bool QgsVectorLayerImport::addFeatures( QgsFeatureList &features )
+{
+  QgsFeatureList::iterator fIt = features.begin();
+  bool result = true;
+  for ( ; fIt != features.end(); ++fIt )
+  {
+    result = result && addFeature( *fIt );
+  }
+  return result;
 }
 
 bool QgsVectorLayerImport::addFeature( QgsFeature &feat )
@@ -297,7 +306,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
   }
 
   QgsVectorLayerImport *writer =
-    new QgsVectorLayerImport( uri, providerKey, fields, wkbType, outputCRS, overwrite, options, progress );
+    new QgsVectorLayerImport( uri, providerKey, fields, wkbType, outputCRS, overwrite, options );
 
   // check whether file creation was successful
   ImportError err = writer->hasError();
@@ -314,7 +323,6 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
     errorMessage->clear();
   }
 
-  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->attributeList();
   QgsFeature fet;
 
   QgsFeatureRequest req;
