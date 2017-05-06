@@ -105,6 +105,7 @@ class TestQgsProcessing: public QObject
     void compatibleLayers();
     void normalizeLayerSource();
     void mapLayers();
+    void mapLayerFromStore();
     void mapLayerFromString();
     void algorithm();
     void features();
@@ -335,9 +336,37 @@ void TestQgsProcessing::normalizeLayerSource()
 
 void TestQgsProcessing::mapLayers()
 {
-  // test mapLayerFromProject
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString raster = testDataDir + "landsat.tif";
+  QString vector = testDataDir + "points.shp";
 
-  QgsProject p;
+  // test loadMapLayerFromString with raster
+  QgsMapLayer *l = QgsProcessingUtils::loadMapLayerFromString( raster );
+  QVERIFY( l->isValid() );
+  QCOMPARE( l->type(), QgsMapLayer::RasterLayer );
+  delete l;
+
+  //test with vector
+  l = QgsProcessingUtils::loadMapLayerFromString( vector );
+  QVERIFY( l->isValid() );
+  QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
+  delete l;
+
+  l = QgsProcessingUtils::loadMapLayerFromString( QString() );
+  QVERIFY( !l );
+  l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "so much room for activities!" ) );
+  QVERIFY( !l );
+  l = QgsProcessingUtils::loadMapLayerFromString( testDataDir + "multipoint.shp" );
+  QVERIFY( l->isValid() );
+  QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
+  delete l;
+}
+
+void TestQgsProcessing::mapLayerFromStore()
+{
+  // test mapLayerFromStore
+
+  QgsMapLayerStore store;
 
   // add a bunch of layers to a project
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
@@ -352,33 +381,19 @@ void TestQgsProcessing::mapLayers()
 
   QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V4", "memory" );
   QgsVectorLayer *v2 = new QgsVectorLayer( "Point", "v1", "memory" );
-  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << v1 << v2 );
+  store.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << v1 << v2 );
 
-  QVERIFY( ! QgsProcessingUtils::mapLayerFromProject( QString(), nullptr ) );
-  QVERIFY( ! QgsProcessingUtils::mapLayerFromProject( QStringLiteral( "v1" ), nullptr ) );
-  QVERIFY( ! QgsProcessingUtils::mapLayerFromProject( QString(), &p ) );
-  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( raster1, &p ), r1 );
-  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( raster2, &p ), r2 );
-  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( "R1", &p ), r1 );
-  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( "ar2", &p ), r2 );
-  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( "V4", &p ), v1 );
-  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( "v1", &p ), v2 );
-  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( r1->id(), &p ), r1 );
-  QCOMPARE( QgsProcessingUtils::mapLayerFromProject( v1->id(), &p ), v1 );
-
-  // test loadMapLayerFromString
-  QgsMapLayer *l = QgsProcessingUtils::loadMapLayerFromString( raster2 );
-  QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayer::RasterLayer );
-  delete l;
-  l = QgsProcessingUtils::loadMapLayerFromString( QString() );
-  QVERIFY( !l );
-  l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "so much room for activities!" ) );
-  QVERIFY( !l );
-  l = QgsProcessingUtils::loadMapLayerFromString( testDataDir + "multipoint.shp" );
-  QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
-  delete l;
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromStore( QString(), nullptr ) );
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromStore( QStringLiteral( "v1" ), nullptr ) );
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromStore( QString(), &store ) );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( raster1, &store ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( raster2, &store ), r2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( "R1", &store ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( "ar2", &store ), r2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( "V4", &store ), v1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( "v1", &store ), v2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( r1->id(), &store ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromStore( v1->id(), &store ), v1 );
 }
 
 void TestQgsProcessing::mapLayerFromString()
@@ -423,7 +438,7 @@ void TestQgsProcessing::mapLayerFromString()
   // check that layers in context temporary store are used
   QgsVectorLayer *v5 = new QgsVectorLayer( "Polygon", "V5", "memory" );
   QgsVectorLayer *v6 = new QgsVectorLayer( "Point", "v6", "memory" );
-  c.temporaryLayerStore().addMapLayers( QList<QgsMapLayer *>() << v5 << v6 );
+  c.temporaryLayerStore()->addMapLayers( QList<QgsMapLayer *>() << v5 << v6 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V5", c ), v5 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "v6", c ), v6 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( v5->id(), c ), v5 );
@@ -440,7 +455,7 @@ void TestQgsProcessing::mapLayerFromString()
   QVERIFY( loadedLayer->isValid() );
   QCOMPARE( loadedLayer->type(), QgsMapLayer::RasterLayer );
   // should now be in temporary store
-  QCOMPARE( c.temporaryLayerStore().mapLayer( loadedLayer->id() ), loadedLayer );
+  QCOMPARE( c.temporaryLayerStore()->mapLayer( loadedLayer->id() ), loadedLayer );
 
   // since it's now in temporary store, should be accessible even if we deny loading new layers
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( newRaster, c, false ), loadedLayer );

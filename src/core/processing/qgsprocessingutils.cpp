@@ -85,12 +85,27 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   return layers;
 }
 
-QgsMapLayer *QgsProcessingUtils::mapLayerFromProject( const QString &string, QgsProject *project )
+QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMapLayerStore *store )
 {
-  if ( string.isEmpty() )
+  if ( !store || string.isEmpty() )
     return nullptr;
 
-  QList< QgsMapLayer * > layers = compatibleLayers( project, false );
+  QList< QgsMapLayer * > layers = store->mapLayers().values();
+
+  layers.erase( std::remove_if( layers.begin(), layers.end(), []( QgsMapLayer * layer )
+  {
+    switch ( layer->type() )
+    {
+      case QgsMapLayer::VectorLayer:
+        return !canUseLayer( qobject_cast< QgsVectorLayer * >( layer ) );
+      case QgsMapLayer::RasterLayer:
+        return !canUseLayer( qobject_cast< QgsRasterLayer * >( layer ) );
+      case QgsMapLayer::PluginLayer:
+        return true;
+    }
+    return true;
+  } ), layers.end() );
+
   Q_FOREACH ( QgsMapLayer *l, layers )
   {
     if ( l->id() == string )
@@ -108,6 +123,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromProject( const QString &string, Qgs
   }
   return nullptr;
 }
+
 ///@cond PRIVATE
 class ProjectionSettingRestorer
 {
@@ -159,11 +175,15 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
     return nullptr;
 
   // prefer project layers
-  QgsMapLayer *layer = mapLayerFromProject( string, context.project() );
-  if ( layer )
-    return layer;
+  QgsMapLayer *layer = nullptr;
+  if ( context.project() )
+  {
+    QgsMapLayer *layer = mapLayerFromStore( string, context.project()->layerStore() );
+    if ( layer )
+      return layer;
+  }
 
-  layer = mapLayerFromProject( string, &context.temporaryLayerStore() );
+  layer = mapLayerFromStore( string, context.temporaryLayerStore() );
   if ( layer )
     return layer;
 
@@ -173,7 +193,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
   layer = loadMapLayerFromString( string );
   if ( layer )
   {
-    context.temporaryLayerStore().addMapLayer( layer );
+    context.temporaryLayerStore()->addMapLayer( layer );
     return layer;
   }
   else

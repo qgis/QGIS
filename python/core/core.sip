@@ -92,6 +92,7 @@
 %Include qgsmaplayermodel.sip
 %Include qgsmaplayerproxymodel.sip
 %Include qgsmaplayerrenderer.sip
+%Include qgsmaplayerstore.sip
 %Include qgsmaplayerstylemanager.sip
 %Include qgsmaprenderercache.sip
 %Include qgsmaprenderercustompainterjob.sip

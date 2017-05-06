@@ -39,6 +39,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsprojectproperty.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerstore.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -529,6 +530,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     // Functionality from QgsMapLayerRegistry
     //
 
+    /**
+     * Returns a pointer to the project's internal layer store.
+     * /since QGIS 3.0
+     */
+    QgsMapLayerStore *layerStore();
+
+    /**
+     * Returns a pointer to the project's internal layer store.
+     * /since QGIS 3.0
+     */
+    SIP_SKIP const QgsMapLayerStore *layerStore() const;
+
     //! Returns the number of registered layers.
     int count() const;
 
@@ -568,17 +581,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     template <typename T> SIP_SKIP
     QVector<T> layers() const
     {
-      QVector<T> layers;
-      QMap<QString, QgsMapLayer *>::const_iterator layerIt = mMapLayers.constBegin();
-      for ( ; layerIt != mMapLayers.constEnd(); ++layerIt )
-      {
-        T tLayer = qobject_cast<T>( layerIt.value() );
-        if ( tLayer )
-        {
-          layers << tLayer;
-        }
-      }
-      return layers;
+      return mLayerStore->layers<T>();
     }
 
     /**
@@ -969,8 +972,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void onMapLayersRemoved( const QList<QgsMapLayer *> &layers );
     void cleanTransactionGroups( bool force = false );
 
-    void onMapLayerDeleted( QObject *obj );
-
   private:
 
     static QgsProject *sProject;
@@ -1003,7 +1004,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! \note not available in Python bindings
     void loadEmbeddedNodes( QgsLayerTreeGroup *group ) SIP_SKIP;
 
-    QMap<QString, QgsMapLayer *> mMapLayers;
+    std::unique_ptr< QgsMapLayerStore > mLayerStore;
 
     QString mErrorMessage;
 

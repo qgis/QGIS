@@ -481,7 +481,7 @@ def createVectorWriter(destination, encoding, fields, geometryType, crs, context
 
         layer = QgsVectorLayer(uri, destination, 'memory')
         sink = layer.dataProvider()
-        context.temporaryLayerStore().addMapLayer(layer, False)
+        context.temporaryLayerStore().addMapLayer(layer)
         destination = layer.id()
     elif destination.startswith(POSTGIS_LAYER_PREFIX):
         uri = QgsDataSourceUri(destination[len(POSTGIS_LAYER_PREFIX):])
@@ -518,7 +518,7 @@ def createVectorWriter(destination, encoding, fields, geometryType, crs, context
 
         layer = QgsVectorLayer(uri.uri(), uri.table(), "postgres")
         sink = layer.dataProvider()
-        context.temporaryLayerStore().addMapLayer(layer, False)
+        context.temporaryLayerStore().addMapLayer(layer)
     elif destination.startswith(SPATIALITE_LAYER_PREFIX):
         uri = QgsDataSourceUri(destination[len(SPATIALITE_LAYER_PREFIX):])
         try:
@@ -548,7 +548,7 @@ def createVectorWriter(destination, encoding, fields, geometryType, crs, context
 
         layer = QgsVectorLayer(uri.uri(), uri.table(), "spatialite")
         sink = layer.dataProvider()
-        context.temporaryLayerStore().addMapLayer(layer, False)
+        context.temporaryLayerStore().addMapLayer(layer)
     else:
         formats = QgsVectorFileWriter.supportedFiltersAndFormats()
         OGRCodes = {}
