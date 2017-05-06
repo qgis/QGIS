@@ -326,10 +326,10 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   QgsFeatureRequest req;
   if ( wkbType == QgsWkbTypes::NoGeometry )
     req.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( onlySelected )
+    req.setFilterFids( layer->selectedFeatureIds() );
 
   QgsFeatureIterator fit = layer->getFeatures( req );
-
-  const QgsFeatureIds &ids = layer->selectedFeatureIds();
 
   // Create our transform
   if ( destCRS.isValid() )
@@ -374,9 +374,6 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
       }
       break;
     }
-
-    if ( onlySelected && !ids.contains( fet.id() ) )
-      continue;
 
     if ( shallTransform )
     {
