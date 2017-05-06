@@ -74,7 +74,6 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      * not available
      * \param onlySelected set to true to export only selected features
      * \param errorMessage if non-null, will be set to any error messages
-     * \param skipAttributeCreation set to true to skip exporting feature attributes
      * \param options optional provider dataset options
      * \param progress optional progress dialog to show progress of export
      * \returns NoError for a successful export, or encountered error
@@ -85,7 +84,6 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
                                     const QgsCoordinateReferenceSystem &destCRS,
                                     bool onlySelected = false,
                                     QString *errorMessage SIP_OUT = 0,
-                                    bool skipAttributeCreation = false,
                                     QMap<QString, QVariant> *options = nullptr,
                                     QProgressDialog *progress = nullptr
                                   );

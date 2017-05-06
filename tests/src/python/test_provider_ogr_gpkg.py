@@ -416,7 +416,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         options['update'] = True
         options['driverName'] = 'GPKG'
         options['layerName'] = 'my_out_table'
-        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, False, options)
+        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, options)
         self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
                          'unexpected import error {0}'.format(err))
         lyr = QgsVectorLayer(tmpfile + "|layername=my_out_table", "y", "ogr")
@@ -431,7 +431,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         features = None
 
         # Test overwriting without overwrite option
-        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, False, options)
+        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, options)
         self.assertEqual(err[0], QgsVectorLayerExporter.ErrCreateDataSource)
 
         # Test overwriting
@@ -441,7 +441,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f['f1'] = 3
         lyr.dataProvider().addFeatures([f])
         options['overwrite'] = True
-        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, False, options)
+        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, options)
         self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
                          'unexpected import error {0}'.format(err))
         lyr = QgsVectorLayer(tmpfile + "|layername=my_out_table", "y", "ogr")

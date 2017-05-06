@@ -140,7 +140,6 @@ class ImportIntoSpatialite(GeoAlgorithm):
             providerName,
             self.crs,
             False,
-            False,
             options,
         )
         if ret != 0:

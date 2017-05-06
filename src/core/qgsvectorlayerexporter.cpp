@@ -231,7 +231,6 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
                                      const QgsCoordinateReferenceSystem &destCRS,
                                      bool onlySelected,
                                      QString *errorMessage,
-                                     bool skipAttributeCreation,
                                      QMap<QString, QVariant> *options,
                                      QProgressDialog *progress )
 {
@@ -263,7 +262,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
     forceSinglePartGeom = options->take( QStringLiteral( "forceSinglePartGeometryType" ) ).toBool();
   }
 
-  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->fields();
+  QgsFields fields = layer->fields();
   QgsWkbTypes::Type wkbType = layer->wkbType();
 
   // Special handling for Shapefiles
@@ -327,8 +326,6 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   QgsFeatureRequest req;
   if ( wkbType == QgsWkbTypes::NoGeometry )
     req.setFlags( QgsFeatureRequest::NoGeometry );
-  if ( skipAttributeCreation )
-    req.setSubsetOfAttributes( QgsAttributeList() );
 
   QgsFeatureIterator fit = layer->getFeatures( req );
 
@@ -404,10 +401,6 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
 
         return ErrProjection;
       }
-    }
-    if ( skipAttributeCreation )
-    {
-      fet.initAttributes( 0 );
     }
     if ( !writer->addFeature( fet ) )
     {
@@ -504,7 +497,7 @@ bool QgsVectorLayerExporterTask::run()
 
 
   mError = QgsVectorLayerExporter::exportLayer(
-             mLayer.data(), mDestUri, mDestProviderKey, mDestCrs, false, &mErrorMessage, false,
+             mLayer.data(), mDestUri, mDestProviderKey, mDestCrs, false, &mErrorMessage,
              &mOptions );
 
   if ( mOwnsLayer )

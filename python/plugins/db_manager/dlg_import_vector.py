@@ -360,7 +360,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
             onlySelected = self.chkSelectedFeatures.isChecked()
 
             # do the import!
-            ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs, onlySelected, False, options)
+            ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs, onlySelected, options)
         except Exception as e:
             ret = -1
             errMsg = str(e)

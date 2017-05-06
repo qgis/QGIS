@@ -179,7 +179,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
                 self.inLayer.setCrs(inCrs)
 
             # do the export!
-            ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs, False,
+            ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs,
                                                              False, options)
         except Exception as e:
             ret = -1
