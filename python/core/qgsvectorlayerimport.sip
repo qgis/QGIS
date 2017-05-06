@@ -4,7 +4,7 @@
  1. static call to QgsVectorFileWriter::writeAsShapefile(...) which saves the whole vector layer
  2. create an instance of the class and issue calls to addFeature(...)
  */
-class QgsVectorLayerImport
+class QgsVectorLayerImport : QgsFeatureSink
 {
 %TypeHeaderCode
 #include <qgsvectorlayerimport.h>
@@ -85,7 +85,7 @@ class QProgressDialog;
 
     int errorCount() const;
 
-    /** Add feature to the new created layer */
+    bool addFeatures( QgsFeatureList &features );
     bool addFeature( QgsFeature &feature );
 
     /** Close the new created layer */

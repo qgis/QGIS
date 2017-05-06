@@ -145,6 +145,17 @@ QString QgsVectorLayerImport::errorMessage()
   return mErrorMessage;
 }
 
+bool QgsVectorLayerImport::addFeatures( QgsFeatureList &features )
+{
+  QgsFeatureList::iterator fIt = features.begin();
+  bool result = true;
+  for ( ; fIt != features.end(); ++fIt )
+  {
+    result = result && addFeature( *fIt );
+  }
+  return result;
+}
+
 bool QgsVectorLayerImport::addFeature( QgsFeature &feat )
 {
   QgsAttributes attrs = feat.attributes();

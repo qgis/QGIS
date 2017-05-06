@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsfeature.h"
+#include "qgsfeaturesink.h"
 
 class QProgressDialog;
 class QgsVectorDataProvider;
@@ -34,7 +35,7 @@ class QgsFields;
  1. static call to QgsVectorFileWriter::writeAsShapefile(...) which saves the whole vector layer
  2. create an instance of the class and issue calls to addFeature(...)
  */
-class CORE_EXPORT QgsVectorLayerImport
+class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
 {
   public:
 
@@ -114,8 +115,8 @@ class CORE_EXPORT QgsVectorLayerImport
 
     int errorCount() const { return mErrorCount; }
 
-    //! Add feature to the new created layer
-    bool addFeature( QgsFeature &feature );
+    bool addFeatures( QgsFeatureList &features ) override;
+    bool addFeature( QgsFeature &feature ) override;
 
     //! Close the new created layer
     ~QgsVectorLayerImport();
