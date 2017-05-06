@@ -90,7 +90,6 @@ class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
      * not available
      * \param overwrite set to true to overwrite any existing data source
      * \param options optional provider dataset options
-     * \param progress optional progress dialog to show progress of export
      */
     QgsVectorLayerImport( const QString &uri,
                           const QString &provider,
@@ -98,9 +97,7 @@ class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
                           QgsWkbTypes::Type geometryType,
                           const QgsCoordinateReferenceSystem &crs,
                           bool overwrite = false,
-                          const QMap<QString, QVariant> *options = nullptr,
-                          QProgressDialog *progress = nullptr
-                        );
+                          const QMap<QString, QVariant> *options = nullptr );
 
     //! QgsVectorLayerImport cannot be copied
     QgsVectorLayerImport( const QgsVectorLayerImport &rh ) = delete;
@@ -141,7 +138,6 @@ class CORE_EXPORT QgsVectorLayerImport : public QgsFeatureSink
     int mAttributeCount;
 
     QgsFeatureList mFeatureBuffer;
-    QProgressDialog *mProgress = nullptr;
 
 #ifdef SIP_RUN
     QgsVectorLayerImport( const QgsVectorLayerImport &rh );

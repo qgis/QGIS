@@ -73,9 +73,7 @@ There are two possibilities how to use this class:
                           QgsWkbTypes::Type geometryType,
                           const QgsCoordinateReferenceSystem &crs,
                           bool overwrite = false,
-                          const QMap<QString, QVariant> *options = 0,
-                          QProgressDialog *progress = 0
-                        );
+                          const QMap<QString, QVariant> *options = 0 );
 %Docstring
  Constructor for QgsVectorLayerImport.
  \param uri URI for destination data source
@@ -86,7 +84,6 @@ There are two possibilities how to use this class:
  not available
  \param overwrite set to true to overwrite any existing data source
  \param options optional provider dataset options
- \param progress optional progress dialog to show progress of export
 %End
 
 
