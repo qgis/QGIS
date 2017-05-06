@@ -56,28 +56,17 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
   if ( geomType.isNull() )
     geomType = QStringLiteral( "none" );
 
-  QString uri = geomType + '?';
-
-  bool first = true;
+  QStringList parts;
   if ( crs.isValid() )
   {
-    uri += QStringLiteral( "crs=" ) + crs.authid();
-    first = false;
+    parts << QStringLiteral( "crs=" ) + crs.authid();
   }
-
-  QStringList fieldsStrings;
   Q_FOREACH ( const QgsField &field, fields )
   {
-    fieldsStrings << QStringLiteral( "field=%1:%2" ).arg( field.name(), memoryLayerFieldType( field.type() ) );
+    parts << QStringLiteral( "field=%1:%2" ).arg( field.name(), memoryLayerFieldType( field.type() ) );
   }
 
-  if ( !fieldsStrings.isEmpty() )
-  {
-    if ( !first )
-      uri += '&';
-    first = false;
-    uri += fieldsStrings.join( '&' );
-  }
+  QString uri = geomType + '?' + parts.join( '&' );
 
   return new QgsVectorLayer( uri, name, QStringLiteral( "memory" ) );
 }
