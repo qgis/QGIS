@@ -768,8 +768,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.settings.endGroup()
 
         # open provider window
-        ows_provider = QgsProviderRegistry.instance().selectWidget(stype[2],
-                                                                   self)
+        ows_provider = QgsProviderRegistry.instance().createSelectionWidget(stype[2],
+                                                                            self)
         service_type = stype[0]
 
         # connect dialog signals to iface slots

@@ -1676,6 +1676,14 @@ QgsProjectPropertyValue        {#qgis_api_break_3_0_QgsProjectPropertyValue}
 
 - The unused count() and entryList() methods were removed.
 
+QgsProviderRegistry        {#qgis_api_break_3_0_QgsProviderRegistry}
+-------------------
+
+- provider() was renamed to createProvider()
+- selectWidget() was renamed to createSelectionWidget()
+- providerLibrary() was renamed to createProviderLibrary()
+
+
 QgsRaster        {#qgis_api_break_3_0_QgsRaster}
 ---------
 

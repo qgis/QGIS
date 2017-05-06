@@ -806,7 +806,7 @@ void TestQgsGrassProvider::rasterImport()
     QString uri = QStringLiteral( TEST_DATA_DIR ) + "/" + rasterFile;
     QString name = QFileInfo( uri ).baseName();
     reportRow( "input raster: " + uri );
-    QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->provider( QStringLiteral( "gdal" ), uri ) );
+    QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), uri ) );
     if ( !provider )
     {
       reportRow( "Cannot create provider " + uri );
@@ -878,7 +878,7 @@ void TestQgsGrassProvider::vectorImport()
     QString uri = QStringLiteral( TEST_DATA_DIR ) + "/" + file;
     QString name = QFileInfo( uri ).baseName();
     reportRow( "input vector: " + uri );
-    QgsVectorDataProvider *provider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->provider( QStringLiteral( "ogr" ), uri ) );
+    QgsVectorDataProvider *provider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "ogr" ), uri ) );
     if ( !provider )
     {
       reportRow( "Cannot create provider " + uri );

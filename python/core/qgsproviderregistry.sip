@@ -69,10 +69,10 @@ Return list of provider plugins found
 Set library directory where to search for plugins
 %End
 
-    QgsDataProvider *provider( const QString &providerKey,
-                               const QString &dataSource ) /Factory/;
+    QgsDataProvider *createProvider( const QString &providerKey,
+                                     const QString &dataSource ) /Factory/;
 %Docstring
- Create a new instance of a provider.
+ Creates a new instance of a provider.
  \param providerKey identificator of the provider
  \param dataSource  string containing data source for the provider
  :return: new instance of provider or NULL on error
@@ -87,8 +87,8 @@ Set library directory where to search for plugins
  :rtype: int
 %End
 
-    QWidget *selectWidget( const QString &providerKey,
-                           QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QWidget *createSelectionWidget( const QString &providerKey,
+                                    QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
 %Docstring
  Returns a new widget for selecting layers from a provider.
  Either the ``parent`` widget must be set or the caller becomes
@@ -107,7 +107,7 @@ Set library directory where to search for plugins
  :rtype: QFunctionPointer
 %End
 
-    QLibrary *providerLibrary( const QString &providerKey ) const /Factory/;
+    QLibrary *createProviderLibrary( const QString &providerKey ) const /Factory/;
 %Docstring
  Returns a new QLibrary for the specified ``providerKey``. Ownership of the returned
  object is transferred to the caller and the caller is responsible for deleting it.

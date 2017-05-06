@@ -78,13 +78,13 @@ class CORE_EXPORT QgsProviderRegistry
     void setLibraryDirectory( const QDir &path );
 
     /**
-     * Create a new instance of a provider.
+     * Creates a new instance of a provider.
      * \param providerKey identificator of the provider
      * \param dataSource  string containing data source for the provider
      * \returns new instance of provider or NULL on error
      */
-    QgsDataProvider *provider( const QString &providerKey,
-                               const QString &dataSource ) SIP_FACTORY;
+    QgsDataProvider *createProvider( const QString &providerKey,
+                                     const QString &dataSource ) SIP_FACTORY;
 
     /** Return the provider capabilities
         \param providerKey identificator of the provider
@@ -97,8 +97,8 @@ class CORE_EXPORT QgsProviderRegistry
      * Either the \a parent widget must be set or the caller becomes
      * responsible for deleting the returned widget.
      */
-    QWidget *selectWidget( const QString &providerKey,
-                           QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QWidget *createSelectionWidget( const QString &providerKey,
+                                    QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
     /**
      * Get pointer to provider function
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsProviderRegistry
      * If the provider uses direct provider function pointers instead of a library nullptr will
      * be returned.
      */
-    QLibrary *providerLibrary( const QString &providerKey ) const SIP_FACTORY;
+    QLibrary *createProviderLibrary( const QString &providerKey ) const SIP_FACTORY;
 
     //! Return list of available providers by their keys
     QStringList providerList() const;

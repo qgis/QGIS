@@ -4371,7 +4371,7 @@ void QgisApp::addDatabaseLayer()
   QgsDebugMsg( "about to addRasterLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "postgres" ), this ) );
+  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "postgres" ), this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "PostgreSQL" ), tr( "Cannot get PostgreSQL select dialog from provider." ) );
@@ -4461,7 +4461,7 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
 void QgisApp::addSpatiaLiteLayer()
 {
   // show the SpatiaLite dialog
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "spatialite" ), this ) );
+  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "spatialite" ), this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "SpatiaLite" ), tr( "Cannot get SpatiaLite select dialog from provider." ) );
@@ -4476,7 +4476,7 @@ void QgisApp::addSpatiaLiteLayer()
 void QgisApp::addDelimitedTextLayer()
 {
   // show the Delimited text dialog
-  QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "delimitedtext" ), this ) );
+  QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "delimitedtext" ), this ) );
   if ( !dts )
   {
     QMessageBox::warning( this, tr( "Delimited Text" ), tr( "Cannot get Delimited Text select dialog from provider." ) );
@@ -4491,7 +4491,7 @@ void QgisApp::addDelimitedTextLayer()
 void QgisApp::addVirtualLayer()
 {
   // show the Delimited text dialog
-  QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "virtual" ), this ) );
+  QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "virtual" ), this ) );
   if ( !dts )
   {
     QMessageBox::warning( this, tr( "Virtual layer" ), tr( "Cannot get virtual layer select dialog from provider." ) );
@@ -4532,7 +4532,7 @@ void QgisApp::replaceSelectedVectorLayer( const QString &oldId, const QString &u
 void QgisApp::addMssqlLayer()
 {
   // show the MSSQL dialog
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "mssql" ), this ) );
+  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "mssql" ), this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "MSSQL" ), tr( "Cannot get MSSQL select dialog from provider." ) );
@@ -4548,7 +4548,7 @@ void QgisApp::addDb2Layer()
 {
   // show the DB2 dialog
   QgsDebugMsg( "Show dialog for DB2 " );
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "DB2" ), this ) );
+  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "DB2" ), this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "DB2" ), tr( "Cannot get DB2 select dialog from provider." ) );
@@ -4564,7 +4564,7 @@ void QgisApp::addOracleLayer()
 {
 #ifdef HAVE_ORACLE
   // show the Oracle dialog
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( "oracle", this ) );
+  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( "oracle", this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "Oracle" ), tr( "Cannot get Oracle select dialog from provider." ) );
@@ -4587,7 +4587,7 @@ void QgisApp::addWmsLayer()
   QgsDebugMsg( "about to addRasterLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QDialog *wmss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "wms" ), this ) );
+  QDialog *wmss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "wms" ), this ) );
   if ( !wmss )
   {
     QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
@@ -4604,7 +4604,7 @@ void QgisApp::addWcsLayer()
   QgsDebugMsg( "about to addWcsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QDialog *wcss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "wcs" ), this ) );
+  QDialog *wcss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "wcs" ), this ) );
   if ( !wcss )
   {
     QMessageBox::warning( this, tr( "WCS" ), tr( "Cannot get WCS select dialog from provider." ) );
@@ -4621,7 +4621,7 @@ void QgisApp::addWfsLayer()
   QgsDebugMsg( "about to addWfsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QDialog *wfss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "WFS" ), this ) );
+  QDialog *wfss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "WFS" ), this ) );
   if ( !wfss )
   {
     QMessageBox::warning( this, tr( "WFS" ), tr( "Cannot get WFS select dialog from provider." ) );
@@ -4650,7 +4650,7 @@ void QgisApp::addAfsLayer()
   QgsDebugMsg( "about to addAfsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QgsSourceSelectDialog *afss = dynamic_cast<QgsSourceSelectDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "arcgisfeatureserver" ), this ) );
+  QgsSourceSelectDialog *afss = dynamic_cast<QgsSourceSelectDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "arcgisfeatureserver" ), this ) );
   if ( !afss )
   {
     QMessageBox::warning( this, tr( "ArcGIS Feature Server" ), tr( "Cannot get ArcGIS Feature Server select dialog from provider." ) );
@@ -4684,7 +4684,7 @@ void QgisApp::addAmsLayer()
   QgsDebugMsg( "about to addAmsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QgsSourceSelectDialog *amss = dynamic_cast<QgsSourceSelectDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "arcgismapserver" ), this ) );
+  QgsSourceSelectDialog *amss = dynamic_cast<QgsSourceSelectDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "arcgismapserver" ), this ) );
   if ( !amss )
   {
     QMessageBox::warning( this, tr( "ArcGIS Map Server" ), tr( "Cannot get ArcGIS Map Server select dialog from provider." ) );

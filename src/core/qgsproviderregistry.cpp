@@ -354,7 +354,7 @@ typedef QgsDataProvider *classFactoryFunction_t( const QString * );
  *        It seems more sensible to provide the code in one place rather than
  *        in qgsrasterlayer, qgsvectorlayer, serversourceselect, etc.
  */
-QgsDataProvider *QgsProviderRegistry::provider( QString const &providerKey, QString const &dataSource )
+QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey, QString const &dataSource )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -422,7 +422,7 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const &providerKey, QStr
 
 int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) const
 {
-  std::unique_ptr< QLibrary > library( providerLibrary( providerKey ) );
+  std::unique_ptr< QLibrary > library( createProviderLibrary( providerKey ) );
   if ( !library )
   {
     return QgsDataProvider::NoDataCapabilities;
@@ -440,7 +440,7 @@ int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) cons
 // This should be QWidget, not QDialog
 typedef QWidget *selectFactoryFunction_t( QWidget *parent, Qt::WindowFlags fl );
 
-QWidget *QgsProviderRegistry::selectWidget( const QString &providerKey,
+QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
     QWidget *parent, Qt::WindowFlags fl )
 {
   selectFactoryFunction_t *selectFactory =
@@ -474,7 +474,7 @@ QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
   }
 }
 
-QLibrary *QgsProviderRegistry::providerLibrary( QString const &providerKey ) const
+QLibrary *QgsProviderRegistry::createProviderLibrary( QString const &providerKey ) const
 {
   QString lib = library( providerKey );
   if ( lib.isEmpty() )
