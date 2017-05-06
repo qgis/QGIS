@@ -485,6 +485,17 @@ double QgsPointV2::azimuth( const QgsPointV2 &other ) const
   return ( atan2( dx, dy ) * 180.0 / M_PI );
 }
 
+double QgsPointV2::inclination( const QgsPointV2 &other ) const
+{
+  double distance = distance3D( other );
+  if ( qgsDoubleNear( distance, 0.0 ) )
+  {
+    return 90.0;
+  }
+  double dz = other.z() - mZ;
+
+  return ( acos( dz / distance ) * 180.0 / M_PI );
+}
 
 QgsPointV2 QgsPointV2::project( double distance, double azimuth, double inclination ) const
 {
