@@ -752,7 +752,7 @@ were removed. Use setSnapTolerance() and snapTolerance() instead.
 of QgsDataDefined objects.
 - mapSettings() was removed. Use QgsComposerMap::mapSettings() instead.
 - The composerArrowAdded, composerPolygonAdded, composerPolylineAdded, composerHtmlFrameAdded, composerItemGroupAdded,
-composerLabelAdded, composerMapAdded, composerScaleBarAdded, composerLegendAdded, composerPictureAdded, 
+composerLabelAdded, composerMapAdded, composerScaleBarAdded, composerLegendAdded, composerPictureAdded,
 composerShapeAdded, and composerTableFrameAdded were removed. Use the general itemAdded signal instead to catch
 all these item added events.
 - addComposerMap no longer takes a setDefaultPreviewStyle argument.
@@ -1830,6 +1830,13 @@ QgsRendererRulePropsWidget        {#qgis_api_break_3_0_QgsRendererRulePropsWidge
 - expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()
 
 
+QgsRequestHandler       {#qgis_api_break_3_0_QgsRequestHandler}
+-----------------
+
+- setHeader() was renamed to setResponseHeader()
+- removeHeader() was renamed to removeResponseHeader()
+
+
 QgsRubberBand        {#qgis_api_break_3_0_QgsRubberBand}
 -------------
 
@@ -1864,7 +1871,9 @@ to the new draw() and calculateBoxSize() methods.
 QgsServer       {#qgis_api_break_3_0_QgsServer}
 ----------
 
--  QgsServer::handleRequest( const QString &urlstr ) now also takes two optional arguments: QgsServerRequest::Method and POST data
+-  QgsServer::handleRequest( const QString &urlstr ) has been removed in favour of the new
+-  QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response ) has been added
+
 
 
 QgsSimpleMarkerSymbolLayer        {#qgis_api_break_3_0_QgsSimpleMarkerSymbolLayer}
