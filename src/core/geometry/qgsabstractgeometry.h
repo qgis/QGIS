@@ -115,7 +115,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * 1 for a linestring and 2 for a polygon.
      */
     virtual int dimension() const = 0;
-    //virtual int coordDim() const { return mCoordDimension; }
 
     /** Returns a unique string representing the geometry type.
      * \see wkbType
@@ -144,16 +143,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see is3D
      */
     bool isMeasure() const;
-
-#if 0
-    virtual bool transform( const QgsCoordinateTransform &ct ) =  0;
-    virtual bool isEmpty() const = 0;
-    virtual bool isSimple() const = 0;
-    virtual bool isValid() const = 0;
-    virtual QgsMultiPointV2 *locateAlong() const = 0;
-    virtual QgsMultiCurve *locateBetween() const = 0;
-    virtual QgsRectangle envelope() const = 0;
-#endif
 
     /** Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
      * For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
@@ -245,10 +234,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param t QTransform transformation
      */
     virtual void transform( const QTransform &t ) = 0;
-
-#if 0
-    virtual void clip( const QgsRectangle &rect ); //todo
-#endif
 
     /** Draws the geometry using the specified QPainter.
      * \param p destination QPainter
