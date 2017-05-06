@@ -43,6 +43,7 @@ class QgsFillSymbol;
 class QgsLineSymbol;
 class QgsVectorLayer;
 class QgsAnnotation;
+class QgsMapRendererCustomPainterJob;
 
 /** \ingroup core
  *  \class QgsComposerMap
@@ -491,6 +492,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
   private slots:
     void layersAboutToBeRemoved( QList<QgsMapLayer *> layers );
 
+    void painterJobFinished();
+
   private:
 
     //! Unique identifier
@@ -513,8 +516,15 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     // to manually tweak each atlas preview page without affecting the actual original map extent.
     QgsRectangle mAtlasFeatureExtent;
 
-    // Cache used in composer preview
-    QImage mCacheImage;
+    // We have two images used for rendering/storing cached map images.
+    // the first (mCacheFinalImage) is used ONLY for storing the most recent completed map render. It's always
+    // used when drawing map item previews. The second (mCacheRenderingImage) is used temporarily while
+    // rendering a new preview image in the background. If (and only if) the background render completes, then
+    // mCacheRenderingImage is pushed into mCacheFinalImage, and used from then on when drawing the item preview.
+    // This ensures that something is always shown in the map item, even while refreshing the preview image in the
+    // background
+    std::unique_ptr< QImage > mCacheFinalImage;
+    std::unique_ptr< QImage > mCacheRenderingImage;
 
     // Is cache up to date
     bool mCacheUpdated = false;
@@ -532,6 +542,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mXOffset = 0.0;
     //! Offset in y direction for showing map cache image
     double mYOffset = 0.0;
+
+    double mLastRenderedImageOffsetX = 0.0;
+    double mLastRenderedImageOffsetY = 0.0;
 
     //! Map rotation
     double mMapRotation = 0;
@@ -586,6 +599,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     AtlasScalingMode mAtlasScalingMode = Auto;
     //! Margin size for atlas driven extents (percentage of feature size) - when in auto scaling mode
     double mAtlasMargin = 0.10;
+
+    std::unique_ptr< QPainter > mPainter;
+    std::unique_ptr< QgsMapRendererCustomPainterJob > mPainterJob;
+    bool mPainterCancelWait = false;
 
     void init();
 
