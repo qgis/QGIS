@@ -26,6 +26,7 @@ __revision__ = '$Format:%H$'
 from builtins import zip
 import os
 
+
 def setupenv():
     """
     Set the environment for Windows based on the .vars files from the
@@ -41,14 +42,18 @@ def setupenv():
     path_split = PurePath(os.path.dirname(os.path.realpath(__file__))).parts
 
     try:
-        appname =  os.environ['QGIS_ENVNAME']
+        appname = os.environ['QGIS_ENVNAME']
     except KeyError:
         appname = path_split[-3]
 
-    envfile= list(path_split[:-4])
+    envfile = list(path_split[:-4])
     envfile.append("bin")
     envfile.append("{0}-bin.env".format(appname))
     envfile = os.path.join(*envfile)
+
+    if not os.path.exists(envfile):
+        return
+
     with open(envfile) as f:
         for line in f:
             linedata = line.split("=")
