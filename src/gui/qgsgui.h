@@ -23,6 +23,7 @@
 class QgsEditorWidgetRegistry;
 class QgsShortcutsManager;
 class QgsLayerTreeEmbeddedWidgetRegistry;
+class QgsMapLayerActionRegistry;
 
 /**
  * \ingroup gui
@@ -60,6 +61,11 @@ class GUI_EXPORT QgsGui
      */
     static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry();
 
+    /**
+     * Returns the global map layer action registry, used for registering map layer actions.
+     */
+    static QgsMapLayerActionRegistry *mapLayerActionRegistry();
+
     ~QgsGui();
 
   private:
@@ -69,6 +75,7 @@ class GUI_EXPORT QgsGui
     QgsEditorWidgetRegistry *mEditorWidgetRegistry = nullptr;
     QgsShortcutsManager *mShortcutsManager = nullptr;
     QgsLayerTreeEmbeddedWidgetRegistry *mLayerTreeEmbeddedWidgetRegistry = nullptr;
+    QgsMapLayerActionRegistry *mMapLayerActionRegistry = nullptr;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );

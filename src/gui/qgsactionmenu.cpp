@@ -18,6 +18,7 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsactionmanager.h"
 #include "qgsfeatureiterator.h"
+#include "qgsgui.h"
 
 QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget  *parent )
   : QMenu( parent )
@@ -42,7 +43,7 @@ void QgsActionMenu::init()
 {
   setTitle( tr( "&Actions" ) );
 
-  connect( QgsMapLayerActionRegistry::instance(), &QgsMapLayerActionRegistry::changed, this, &QgsActionMenu::reloadActions );
+  connect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgsActionMenu::reloadActions );
 
   reloadActions();
 }
@@ -123,7 +124,7 @@ void QgsActionMenu::reloadActions()
     addAction( qAction );
   }
 
-  QList<QgsMapLayerAction *> mapLayerActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature );
+  QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature );
 
   if ( !mapLayerActions.isEmpty() )
   {
