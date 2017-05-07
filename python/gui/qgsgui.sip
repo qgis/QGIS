@@ -43,6 +43,12 @@ class QgsGui
  :rtype: QgsShortcutsManager
 %End
 
+    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry();
+%Docstring
+ Returns the global layer tree embedded widget registry, used for registering widgets that may be embedded into layer tree view.
+ :rtype: QgsLayerTreeEmbeddedWidgetRegistry
+%End
+
     ~QgsGui();
 
   private:

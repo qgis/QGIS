@@ -47,8 +47,7 @@ class QgsLayerTreeEmbeddedWidgetRegistry
 
   public:
 
-    /** Means of accessing canonical single instance */
-    static QgsLayerTreeEmbeddedWidgetRegistry *instance();
+    QgsLayerTreeEmbeddedWidgetRegistry();
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();
 
@@ -65,10 +64,6 @@ class QgsLayerTreeEmbeddedWidgetRegistry
     /** Unregister a provider, the provider object is deleted.
      * Returns true on success, false if the provider was not registered. */
     bool removeProvider( const QString &providerId );
-
-  protected:
-    //! Protected constructor - use instance() to access the registry.
-    QgsLayerTreeEmbeddedWidgetRegistry();
 
   private:
 
