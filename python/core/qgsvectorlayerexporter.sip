@@ -53,7 +53,7 @@ class QgsVectorLayerExporter : QgsFeatureSink
                                     bool onlySelected = false,
                                     QString *errorMessage /Out/ = 0,
                                     QMap<QString, QVariant> *options = 0,
-                                    QProgressDialog *progress = 0
+                                    QgsFeedback *feedback = 0
                                   );
 %Docstring
  Writes the contents of vector layer to a different datasource.
@@ -65,7 +65,7 @@ class QgsVectorLayerExporter : QgsFeatureSink
  \param onlySelected set to true to export only selected features
  \param errorMessage if non-null, will be set to any error messages
  \param options optional provider dataset options
- \param progress optional progress dialog to show progress of export
+ \param feedback optional feedback object to show progress and cancelation of export
  :return: NoError for a successful export, or encountered error
  :rtype: ExportError
 %End

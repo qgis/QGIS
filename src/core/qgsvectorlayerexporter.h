@@ -75,7 +75,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      * \param onlySelected set to true to export only selected features
      * \param errorMessage if non-null, will be set to any error messages
      * \param options optional provider dataset options
-     * \param progress optional progress dialog to show progress of export
+     * \param feedback optional feedback object to show progress and cancelation of export
      * \returns NoError for a successful export, or encountered error
      */
     static ExportError exportLayer( QgsVectorLayer *layer,
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
                                     bool onlySelected = false,
                                     QString *errorMessage SIP_OUT = 0,
                                     QMap<QString, QVariant> *options = nullptr,
-                                    QProgressDialog *progress = nullptr
+                                    QgsFeedback *feedback = nullptr
                                   );
 
     /**

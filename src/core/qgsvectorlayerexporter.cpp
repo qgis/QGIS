@@ -232,7 +232,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
                                      bool onlySelected,
                                      QString *errorMessage,
                                      QMap<QString, QVariant> *options,
-                                     QProgressDialog *progress )
+                                     QgsFeedback *feedback )
 {
   QgsCoordinateReferenceSystem outputCRS;
   QgsCoordinateTransform ct;
@@ -339,16 +339,12 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   if ( !ct.isValid() )
     shallTransform = false;
 
-  int n = 0;
+  long n = 0;
+  long approxTotal = onlySelected ? layer->selectedFeatureCount() : layer->featureCount();
 
   if ( errorMessage )
   {
     *errorMessage = QObject::tr( "Feature write errors:" );
-  }
-
-  if ( progress )
-  {
-    progress->setRange( 0, layer->featureCount() );
   }
 
   bool canceled = false;
@@ -356,12 +352,12 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   // write all features
   while ( fit.nextFeature( fet ) )
   {
-    if ( progress && progress->wasCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       canceled = true;
       if ( errorMessage )
       {
-        *errorMessage += '\n' + QObject::tr( "Import was canceled at %1 of %2" ).arg( progress->value() ).arg( progress->maximum() );
+        *errorMessage += '\n' + QObject::tr( "Import was canceled at %1 of %2" ).arg( n ).arg( approxTotal );
       }
       break;
     }
@@ -408,10 +404,11 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
     }
     n++;
 
-    if ( progress )
+    if ( feedback )
     {
-      progress->setValue( n );
+      feedback->setProgress( 100.0 * static_cast< double >( n ) / approxTotal );
     }
+
   }
 
   // flush the buffer to be sure that all features are written
@@ -495,7 +492,7 @@ bool QgsVectorLayerExporterTask::run()
 
   mError = QgsVectorLayerExporter::exportLayer(
              mLayer.data(), mDestUri, mDestProviderKey, mDestCrs, false, &mErrorMessage,
-             &mOptions );
+             &mOptions, mOwnedFeedback.get() );
 
   if ( mOwnsLayer )
     delete mLayer;
