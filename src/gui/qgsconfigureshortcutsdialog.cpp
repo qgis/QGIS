@@ -18,6 +18,7 @@
 #include "qgsshortcutsmanager.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QKeyEvent>
 #include <QKeySequence>
@@ -38,7 +39,7 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
   setupUi( this );
 
   if ( !mManager )
-    mManager = QgsShortcutsManager::instance();
+    mManager = QgsGui::shortcutsManager();
 
   connect( btnChangeShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::changeShortcut );
   connect( btnResetShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::resetShortcut );

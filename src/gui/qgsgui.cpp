@@ -17,6 +17,7 @@
 
 #include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsshortcutsmanager.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -29,12 +30,19 @@ QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
   return instance()->mEditorWidgetRegistry;
 }
 
+QgsShortcutsManager *QgsGui::shortcutsManager()
+{
+  return instance()->mShortcutsManager;
+}
+
 QgsGui::~QgsGui()
 {
   delete mEditorWidgetRegistry;
+  delete mShortcutsManager;
 }
 
 QgsGui::QgsGui()
 {
   mEditorWidgetRegistry = new QgsEditorWidgetRegistry();
+  mShortcutsManager = new QgsShortcutsManager();
 }

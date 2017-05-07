@@ -1160,7 +1160,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #endif
 
   // supposedly all actions have been added, now register them to the shortcut manager
-  QgsShortcutsManager::instance()->registerAllChildren( this );
+  QgsGui::shortcutsManager()->registerAllChildren( this );
 
   QgsProviderRegistry::instance()->registerGuis( this );
 

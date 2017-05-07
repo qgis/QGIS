@@ -1910,6 +1910,10 @@ QgsServer       {#qgis_api_break_3_0_QgsServer}
 -  QgsServer::handleRequest( const QString &urlstr ) has been removed in favour of the new
 -  QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response ) has been added
 
+QgsShortcutsManager       {#qgis_api_break_3_0_QgsShortcutsManager}
+-------------------
+
+-  QgsShortcutsManager::instance() was removed. Use QgsGui::shortcutsManager() instead.
 
 
 QgsSimpleMarkerSymbolLayer        {#qgis_api_break_3_0_QgsSimpleMarkerSymbolLayer}

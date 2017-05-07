@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 
 class QgsEditorWidgetRegistry;
+class QgsShortcutsManager;
 
 /**
  * \ingroup gui
@@ -45,9 +46,13 @@ class GUI_EXPORT QgsGui
 
     /**
      * Returns the global editor widget registry, used for managing all known edit widget factories.
-     * \since QGIS 3.0
      */
     static QgsEditorWidgetRegistry *editorWidgetRegistry();
+
+    /**
+     * Returns the global shortcuts manager, used for managing a QAction and QShortcut sequences.
+     */
+    static QgsShortcutsManager *shortcutsManager();
 
     ~QgsGui();
 
@@ -56,6 +61,7 @@ class GUI_EXPORT QgsGui
     QgsGui();
 
     QgsEditorWidgetRegistry *mEditorWidgetRegistry = nullptr;
+    QgsShortcutsManager *mShortcutsManager = nullptr;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );

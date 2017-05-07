@@ -31,6 +31,7 @@
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgscomposer.h"
 #include "qgscomposerview.h"
+#include "qgsgui.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmapcanvas.h"
@@ -491,12 +492,12 @@ void QgisAppInterface::removeWindow( QAction *action )
 
 bool QgisAppInterface::registerMainWindowAction( QAction *action, const QString &defaultShortcut )
 {
-  return QgsShortcutsManager::instance()->registerAction( action, defaultShortcut );
+  return QgsGui::shortcutsManager()->registerAction( action, defaultShortcut );
 }
 
 bool QgisAppInterface::unregisterMainWindowAction( QAction *action )
 {
-  return QgsShortcutsManager::instance()->unregisterAction( action );
+  return QgsGui::shortcutsManager()->unregisterAction( action );
 }
 
 void QgisAppInterface::registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory )
