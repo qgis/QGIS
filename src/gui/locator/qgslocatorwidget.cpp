@@ -272,6 +272,9 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
     case Qt::EditRole:
       return mResults.at( index.row() ).displayString;
 
+    case Qt::DecorationRole:
+      return mResults.at( index.row() ).icon;
+
     case ResultDataRole:
       return QVariant::fromValue( mResults.at( index.row() ) );
   }

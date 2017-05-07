@@ -154,6 +154,8 @@ SET(QGIS_APP_SRCS
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
 
+  locator/qgsinbuiltlocatorfilters.cpp
+
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsopenvectorlayerdialog.cpp
   ogr/qgsnewogrconnection.cpp
@@ -329,6 +331,8 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposerpolylinewidget.h
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
+
+  locator/qgsinbuiltlocatorfilters.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
@@ -518,6 +522,8 @@ INCLUDE_DIRECTORIES(
   openstreetmap
   dwg
   dwg/libdxfrw
+  dwg/libdxfrw
+  locator
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_BINARY_DIR}/src/native
 )
