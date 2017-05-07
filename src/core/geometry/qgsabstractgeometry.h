@@ -30,6 +30,7 @@ class QgsMultiCurve;
 class QgsMultiPointV2;
 class QgsPointV2;
 struct QgsVertexId;
+class QgsVertexIterator;
 class QPainter;
 class QDomDocument;
 class QDomElement;
@@ -408,6 +409,93 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual bool convertTo( QgsWkbTypes::Type type );
 
+#ifndef SIP_RUN
+
+    /**
+     * The vertex_iterator class provides STL-style iterator for vertices.
+     * \since QGIS 3.0
+     */
+    class CORE_EXPORT vertex_iterator
+    {
+      private:
+        //! A helper structure to keep track of vertex traversal within one level within a geometry.
+        //! For example, linestring geometry will have just one level, while multi-polygon has three levels
+        //! (part index, ring index, vertex index).
+        struct Level
+        {
+          const QgsAbstractGeometry *g;  //!< Current geometry
+          int index;               //!< Ptr in the current geometry
+        };
+
+        Level levels[3];  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
+        int depth;        //!< At what depth level are we right now
+
+        void digDown();   //!< Prepare the stack of levels so that it points to a leaf child geometry
+
+      public:
+        //! Create invalid iterator
+        vertex_iterator() : depth( -1 ) {}
+
+        //! Create vertex iterator for a geometry
+        vertex_iterator( const QgsAbstractGeometry *g, int index );
+
+        //! The prefix ++ operator (++it) advances the iterator to the next vertex and returns an iterator to the new current vertex.
+        //! Calling this function on iterator that is already past the last item leads to undefined results.
+        vertex_iterator &operator++();
+
+        //! The postfix ++ operator (it++) advances the iterator to the next vertex and returns an iterator to the previously current vertex.
+        vertex_iterator operator++( int );
+
+        //! Returns the current item.
+        QgsPointV2 operator*() const;
+
+        //! Returns vertex ID of the current item.
+        QgsVertexId vertexId() const;
+
+        bool operator==( const vertex_iterator &other ) const;
+        bool operator!=( const vertex_iterator &other ) const { return !( *this == other ); }
+    };
+
+    //! Returns STL-style iterator pointing to the first vertex of the geometry
+    //! \since QGIS 3.0
+    vertex_iterator vertices_begin() const
+    {
+      return vertex_iterator( this, 0 );
+    }
+
+    //! Returns STL-style iterator pointing to the imaginary vertex after the last vertex of the geometry
+    //! \since QGIS 3.0
+    vertex_iterator vertices_end() const
+    {
+      return vertex_iterator( this, childCount() );
+    }
+#endif
+
+    //! Returns Java-style iterator for traversal of vertices of the geometry
+    //! \since QGIS 3.0
+    QgsVertexIterator vertices() const;
+
+  protected:
+    //! Returns whether the geometry has any child geometries (false for point / curve, true otherwise)
+    //! \note used for vertex_iterator implementation
+    //! \since QGIS 3.0
+    virtual bool hasChildGeometries() const;
+
+    //! Returns number of child geometries (for geometries with child geometries) or child points (for geometries without child geometries - i.e. curve / point)
+    //! \note used for vertex_iterator implementation
+    //! \since QGIS 3.0
+    virtual int childCount() const { return 0; }
+
+    //! Returns pointer to child geometry (for geometries with child geometries - i.e. geom. collection / polygon)
+    //! \note used for vertex_iterator implementation
+    //! \since QGIS 3.0
+    virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ); return nullptr; }
+
+    //! Returns point at index (for geometries without child geometries - i.e. curve / point)
+    //! \note used for vertex_iterator implementation
+    //! \since QGIS 3.0
+    virtual QgsPointV2 childPoint( int index ) const;
+
   protected:
     QgsWkbTypes::Type mWkbType;
 
@@ -482,6 +570,52 @@ struct CORE_EXPORT QgsVertexId
   int ring;
   int vertex;
   VertexType type;
+};
+
+
+/** \ingroup core
+ * \brief Java-style iterator for traversal of vertices of a geometry
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsVertexIterator
+{
+  public:
+    QgsVertexIterator(): g( nullptr ) {}
+
+    QgsVertexIterator( const QgsAbstractGeometry *geometry )
+      : g( geometry )
+      , i( g->vertices_begin() )
+      , n( g->vertices_end() )
+    {
+    }
+
+    //! Find out whether there are more vertices
+    bool hasNext() const
+    {
+      return g && g->vertices_end() != i;
+    }
+
+    //! Return next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+    QgsPointV2 next();
+
+#ifdef SIP_RUN
+    QgsVertexIterator *__iter__();
+    % MethodCode
+    sipRes = sipCpp;
+    % End
+
+    SIP_PYOBJECT __next__();
+    % MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( new QgsPointV2( sipCpp->next() ), sipType_QgsPointV2, Py_None );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+    % End
+#endif
+
+  private:
+    const QgsAbstractGeometry *g;
+    QgsAbstractGeometry::vertex_iterator i, n;
 };
 
 #endif //QGSABSTRACTGEOMETRYV2

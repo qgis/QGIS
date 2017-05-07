@@ -459,6 +459,38 @@ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
  :rtype: bool
 %End
 
+
+    QgsVertexIterator vertices() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: QgsVertexIterator
+%End
+
+  protected:
+    virtual bool hasChildGeometries() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    virtual int childCount() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: int
+%End
+
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: QgsAbstractGeometry
+%End
+
+    virtual QgsPointV2 childPoint( int index ) const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: QgsPointV2
+%End
+
   protected:
 
     void setZMTypeFromSubGeometry( const QgsAbstractGeometry *subggeom, QgsWkbTypes::Type baseGeomType );
@@ -523,6 +555,52 @@ struct QgsVertexId
   int ring;
   int vertex;
   VertexType type;
+};
+
+
+class QgsVertexIterator
+{
+%Docstring
+ Java-style iterator for traversal of vertices of a geometry
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsabstractgeometry.h"
+%End
+  public:
+    QgsVertexIterator();
+
+    QgsVertexIterator( const QgsAbstractGeometry *geometry );
+
+    bool hasNext() const;
+%Docstring
+Find out whether there are more vertices
+ :rtype: bool
+%End
+
+    QgsPointV2 next();
+%Docstring
+Return next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+ :rtype: QgsPointV2
+%End
+
+    QgsVertexIterator *__iter__();
+%Docstring
+ :rtype: QgsVertexIterator
+%End
+%MethodCode
+    sipRes = sipCpp;
+%End
+
+    SIP_PYOBJECT __next__();
+%MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( new QgsPointV2( sipCpp->next() ), sipType_QgsPointV2, Py_None );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+%End
+
 };
 
 /************************************************************************

@@ -141,6 +141,10 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     virtual bool dropMValue() override;
 
   protected:
+    virtual int childCount() const;
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
+
+  protected:
 
     QgsCurve *mExteriorRing = nullptr;
     QList<QgsCurve *> mInteriorRings;

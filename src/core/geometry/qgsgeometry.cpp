@@ -1399,6 +1399,27 @@ double QgsGeometry::distance( const QgsGeometry &geom ) const
   return g.distance( *( geom.d->geometry ) );
 }
 
+QgsAbstractGeometry::vertex_iterator QgsGeometry::vertices_begin() const
+{
+  if ( !d->geometry )
+    return QgsAbstractGeometry::vertex_iterator();
+  return d->geometry->vertices_begin();
+}
+
+QgsAbstractGeometry::vertex_iterator QgsGeometry::vertices_end() const
+{
+  if ( !d->geometry )
+    return QgsAbstractGeometry::vertex_iterator();
+  return d->geometry->vertices_end();
+}
+
+QgsVertexIterator QgsGeometry::vertices() const
+{
+  if ( !d->geometry )
+    return QgsVertexIterator();
+  return QgsVertexIterator( d->geometry );
+}
+
 QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
 {
   if ( !d->geometry )

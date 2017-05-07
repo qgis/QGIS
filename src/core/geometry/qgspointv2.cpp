@@ -527,3 +527,14 @@ QgsPointV2 QgsPointV2::project( double distance, double azimuth, double inclinat
 
   return QgsPointV2( pType, mX + dx, mY + dy, mZ + dz, mM );
 }
+
+int QgsPointV2::childCount() const
+{
+  return 1;
+}
+
+QgsPointV2 QgsPointV2::childPoint( int index ) const
+{
+  Q_ASSERT( index == 0 );
+  return *this;
+}

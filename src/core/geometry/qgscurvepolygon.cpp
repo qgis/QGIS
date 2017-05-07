@@ -925,3 +925,16 @@ bool QgsCurvePolygon::dropMValue()
   clearCache();
   return true;
 }
+
+int QgsCurvePolygon::childCount() const
+{
+  return 1 + mInteriorRings.count();
+}
+
+QgsAbstractGeometry *QgsCurvePolygon::childGeometry( int index ) const
+{
+  if ( index == 0 )
+    return mExteriorRing;
+  else
+    return mInteriorRings.at( index - 1 );
+}

@@ -357,6 +357,10 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     virtual bool dropMValue() override;
     bool convertTo( QgsWkbTypes::Type type ) override;
 
+  protected:
+    virtual int childCount() const;
+    virtual QgsPointV2 childPoint( int index ) const;
+
   private:
     double mX;
     double mY;

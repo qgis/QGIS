@@ -79,6 +79,14 @@ class TestQgsGeometry(unittest.TestCase):
         g = QgsGeometry.fromWkt('MultiPoint ()')
         self.assertTrue(g.isEmpty())
 
+    def testVertexIterator(self):
+        g = QgsGeometry.fromWkt('Linestring(11 12, 13 14)')
+        it = g.vertices()
+        self.assertEqual(next(it), QgsPointV2(11, 12))
+        self.assertEqual(next(it), QgsPointV2(13, 14))
+        with self.assertRaises(StopIteration):
+            next(it)
+
     def testWktPointLoading(self):
         myWKT = 'Point (10 10)'
         myGeometry = QgsGeometry.fromWkt(myWKT)
