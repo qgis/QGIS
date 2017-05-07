@@ -23,6 +23,9 @@ class QgsLocatorResult
   public:
 
     QgsLocatorResult();
+%Docstring
+ Constructor for QgsLocatorResult.
+%End
 
     QgsLocatorResult( QgsLocatorFilter *filter, const QString &displayString, const QVariant &userData = QVariant() );
 %Docstring

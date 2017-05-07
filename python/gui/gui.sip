@@ -213,6 +213,7 @@
 
 %Include locator/qgslocator.sip
 %Include locator/qgslocatorfilter.sip
+%Include locator/qgslocatorwidget.sip
 
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip
