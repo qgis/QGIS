@@ -21,6 +21,7 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
+#include "qgsgui.h"
 
 #include <QMenu>
 #include <QContextMenuEvent>
@@ -142,7 +143,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
       for ( int i = 0; i < widgetsCount; ++i )
       {
         QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
-        if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
+        if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
         {
           QModelIndex index = layerTreeModel()->legendNode2index( legendNodes[i] );
           setIndexWidget( index, provider->createWidget( layer, i ) );

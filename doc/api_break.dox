@@ -1308,6 +1308,12 @@ QgsLayerPropertiesWidget        {#qgis_api_break_3_0_QgsLayerPropertiesWidget}
 - expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()
 
 
+QgsLayerTreeEmbeddedWidgetRegistry        {#qgis_api_break_3_0_QgsLayerTreeEmbeddedWidgetRegistry}
+----------------------------------
+
+- QgsLayerTreeEmbeddedWidgetRegistry::instance() has been removed. Use QgsGui::layerTreeEmbeddedWidgetRegistry() instead.
+
+
 QgsLayerTreeGroup        {#qgis_api_break_3_0_QgsLayerTreeGroup}
 -----------------
 

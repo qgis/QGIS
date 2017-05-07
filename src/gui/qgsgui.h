@@ -22,6 +22,7 @@
 
 class QgsEditorWidgetRegistry;
 class QgsShortcutsManager;
+class QgsLayerTreeEmbeddedWidgetRegistry;
 
 /**
  * \ingroup gui
@@ -54,6 +55,11 @@ class GUI_EXPORT QgsGui
      */
     static QgsShortcutsManager *shortcutsManager();
 
+    /**
+     * Returns the global layer tree embedded widget registry, used for registering widgets that may be embedded into layer tree view.
+     */
+    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry();
+
     ~QgsGui();
 
   private:
@@ -62,6 +68,7 @@ class GUI_EXPORT QgsGui
 
     QgsEditorWidgetRegistry *mEditorWidgetRegistry = nullptr;
     QgsShortcutsManager *mShortcutsManager = nullptr;
+    QgsLayerTreeEmbeddedWidgetRegistry *mLayerTreeEmbeddedWidgetRegistry = nullptr;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );
