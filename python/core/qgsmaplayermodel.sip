@@ -134,6 +134,13 @@ returns if the items can be checked or not
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
 
+    static QIcon iconForLayer( QgsMapLayer *layer );
+%Docstring
+ Returns the icon corresponding to a specified map ``layer``.
+.. versionadded:: 3.0
+ :rtype: QIcon
+%End
+
   protected slots:
     void removeLayers( const QStringList &layerIds );
     void addLayers( const QList<QgsMapLayer *> &layers );

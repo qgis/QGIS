@@ -44,6 +44,11 @@ class QgsLocatorResult
  Custom reference or other data set by the filter.
 %End
 
+    QIcon icon;
+%Docstring
+ Icon for result.
+%End
+
 };
 
 class QgsLocatorFilter : QObject

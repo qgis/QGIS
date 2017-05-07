@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include <QString>
 #include <QVariant>
+#include <QIcon>
 
 class QgsFeedback;
 class QgsLocatorFilter;
@@ -61,6 +62,11 @@ class GUI_EXPORT QgsLocatorResult
      * Custom reference or other data set by the filter.
      */
     QVariant userData;
+
+    /**
+     * Icon for result.
+     */
+    QIcon icon;
 
 };
 

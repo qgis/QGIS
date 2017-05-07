@@ -189,6 +189,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgslayoutmanager.h"
 #include "qgslocatorwidget.h"
+#include "qgslocator.h"
+#include "qgsinbuiltlocatorfilters.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasdockwidget.h"
@@ -2642,6 +2644,9 @@ void QgisApp::createStatusBar()
   connect( locatorShortCut, &QShortcut::activated, mLocatorWidget, [ = ] { mLocatorWidget->search( QString() ); } );
   locatorShortCut->setObjectName( QStringLiteral( "Locator" ) );
   locatorShortCut->setWhatsThis( tr( "Trigger Locator" ) );
+
+  mLocatorWidget->locator()->registerFilter( new QgsLayerTreeLocatorFilter() );
+  mLocatorWidget->locator()->registerFilter( new QgsLayoutLocatorFilter() );
 
 }
 
@@ -7197,7 +7202,9 @@ QgsComposer *QgisApp::openComposer( QgsComposition *composition )
   {
     if ( composer->composition() == composition )
     {
-      composer->open();
+      composer->show();
+      composer->activate();
+      composer->raise();
       return composer;
     }
   }
