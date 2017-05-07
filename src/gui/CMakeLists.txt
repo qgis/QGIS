@@ -226,6 +226,7 @@ SET(QGIS_GUI_SRCS
   qgsgradientcolorrampdialog.cpp
   qgsgradientstopeditor.cpp
   qgsgroupwmsdatadialog.cpp
+  qgsgui.cpp
   qgshighlight.cpp
   qgshistogramwidget.cpp
   qgshelp.cpp
@@ -621,6 +622,7 @@ SET(QGIS_GUI_HDRS
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsfiledropedit.h
+  qgsgui.h
   qgshelp.h
   qgshighlight.h
   qgsmapcanvasitem.h

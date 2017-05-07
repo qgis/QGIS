@@ -28,6 +28,7 @@
 #include "qgsstatisticalsummary.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <limits>
 #include <QComboBox>
@@ -115,7 +116,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   mHiddenAttributes.clear();
   for ( int idx = 0; idx < mFields.count(); ++idx )
   {
-    const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mVectorLayer, mFields.at( idx ).name() );
+    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mVectorLayer, mFields.at( idx ).name() );
     if ( setup.type() == QLatin1String( "Hidden" ) || setup.type() == QLatin1String( "Immutable" ) )
     {
       mHiddenAttributes.insert( idx );
@@ -155,7 +156,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
       QTableWidgetItem *attributeValItem = new QTableWidgetItem( attrs.at( idx ).toString() );
       attributeValItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mTableWidget->setItem( i + 1, j, attributeValItem );
-      QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( mVectorLayer, idx, nullptr, mTableWidget, context );
+      QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( mVectorLayer, idx, nullptr, mTableWidget, context );
       if ( eww )
       {
         eww->setValue( attrs.at( idx ) );

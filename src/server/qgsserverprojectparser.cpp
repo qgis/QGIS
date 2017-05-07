@@ -31,6 +31,7 @@
 #include "qgslayertreegroup.h"
 #include "qgslogger.h"
 #include "qgseditorwidgetsetup.h"
+#include "qgsgui.h"
 
 #include <QDomDocument>
 #include <QFileInfo>
@@ -272,7 +273,7 @@ QgsMapLayer *QgsServerProjectParser::createLayerFromElement( const QDomElement &
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
       // see QgsEditorWidgetRegistry::mapLayerAdded()
-      QObject::connect( layer, SIGNAL( readCustomSymbology( const QDomElement &, QString & ) ), QgsEditorWidgetRegistry::instance(), SLOT( readSymbology( const QDomElement &, QString & ) ) );
+      QObject::connect( layer, SIGNAL( readCustomSymbology( const QDomElement &, QString & ) ), QgsGui::editorWidgetRegistry(), SLOT( readSymbology( const QDomElement &, QString & ) ) );
     }
 
     QgsReadWriteContext context;

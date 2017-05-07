@@ -49,6 +49,7 @@
 #include "qgsfields.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsfieldproxymodel.h"
+#include "qgsgui.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -412,7 +413,7 @@ void QgsAttributeTableDialog::columnBoxInit()
     if ( idx < 0 )
       continue;
 
-    if ( QgsEditorWidgetRegistry::instance()->findBest( mLayer, field.name() ).type() != QLatin1String( "Hidden" ) )
+    if ( QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() ).type() != QLatin1String( "Hidden" ) )
     {
       QIcon icon = mLayer->fields().iconForField( idx );
       QString alias = mLayer->attributeDisplayName( idx );
@@ -560,8 +561,8 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject *filterAction )
   int fldIdx = mLayer->fields().lookupField( fieldName );
   if ( fldIdx < 0 )
     return;
-  const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, fieldName );
-  mCurrentSearchWidgetWrapper = QgsEditorWidgetRegistry::instance()->
+  const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, fieldName );
+  mCurrentSearchWidgetWrapper = QgsGui::editorWidgetRegistry()->
                                 createSearchWidget( setup.type(), mLayer, fldIdx, setup.config(), mFilterContainer, mEditorContext );
   if ( mCurrentSearchWidgetWrapper->applyDirectly() )
   {

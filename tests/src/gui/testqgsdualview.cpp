@@ -26,6 +26,7 @@
 #include "qgsvectordataprovider.h"
 #include <qgsmapcanvas.h>
 #include <qgsfeature.h>
+#include "qgsgui.h"
 
 #include "qgstest.h"
 
@@ -72,7 +73,7 @@ void TestQgsDualView::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  QgsEditorWidgetRegistry::initEditors();
+  QgsGui::editorWidgetRegistry()->initEditors();
 
   // Setup a map canvas with a vector layer loaded...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt

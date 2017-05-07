@@ -278,6 +278,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaprenderertask.h"
 #include "qgsmapdecoration.h"
 #include "qgsnewnamedialog.h"
+#include "qgsgui.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -924,7 +925,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mVectorLayerTools = new QgsGuiVectorLayerTools();
 
   // Init the editor widget types
-  QgsEditorWidgetRegistry::initEditors( mMapCanvas, mInfoBar );
+  QgsGui::editorWidgetRegistry()->initEditors( mMapCanvas, mInfoBar );
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, &QgsClipboard::changed, this, &QgisApp::clipboardChanged );
@@ -6810,7 +6811,7 @@ QVariant QgisAppFieldValueConverter::convert( int idx, const QVariant &value )
   {
     return value;
   }
-  const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, mLayer->fields().field( idx ).name() );
+  const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, mLayer->fields().field( idx ).name() );
   QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
   return fieldFormatter->representValue( mLayer, idx, setup.config(), QVariant(), value );
 }
