@@ -25,7 +25,7 @@
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 #include "qgisapp.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgssettings.h"
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
@@ -277,7 +277,7 @@ void QgsDecorationGridDialog::on_mPbtnUpdateFromLayer_clicked()
 void QgsDecorationGridDialog::on_mAnnotationFontButton_clicked()
 {
   bool ok;
-  QFont newFont = QgisGui::getFont( ok, mDeco.gridAnnotationFont() );
+  QFont newFont = QgsGuiUtils::getFont( ok, mDeco.gridAnnotationFont() );
   if ( ok )
   {
     mDeco.setGridAnnotationFont( newFont );

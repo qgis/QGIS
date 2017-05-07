@@ -23,7 +23,7 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgscontexthelp.h"
 
 #include <QStringList>
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     };
 
     //! Constructor
-    QgsOWSSourceSelect( const QString &service, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOWSSourceSelect( const QString &service, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
 
     ~QgsOWSSourceSelect();
 

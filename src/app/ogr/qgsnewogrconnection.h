@@ -18,7 +18,7 @@
 #ifndef QGSNEWOGRCONNECTION_H
 #define QGSNEWOGRCONNECTION_H
 #include "ui_qgsnewogrconnectionbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgscontexthelp.h"
 
 /** \class QgsNewOgrConnection
@@ -31,7 +31,7 @@ class QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConnectionBase
 
   public:
     //! Constructor
-    QgsNewOgrConnection( QWidget *parent = nullptr, const QString &connType = QString::null, const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewOgrConnection( QWidget *parent = nullptr, const QString &connType = QString::null, const QString &connName = QString::null, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     ~QgsNewOgrConnection();
     //! Tests the connection using the parameters supplied

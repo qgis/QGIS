@@ -63,6 +63,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <table>
 <caption id="renamed_classes">Renamed classes</caption>
 <tr><th>API 2.x<th>API 3.X
+<tr><td>QgisGui<td>QgsGuiUtils
 <tr><td>QgsAttributeAction<td>QgsActionManager
 <tr><td>QgsAbstractGeometryV2<td>QgsAbstractGeometry
 <tr><td>QgsCategorizedSymbolRendererV2<td>QgsCategorizedSymbolRenderer

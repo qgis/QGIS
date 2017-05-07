@@ -54,7 +54,7 @@
 #include <qgsrasterlayer.h>
 #include <qgisinterface.h>
 #include <qgsmaplayer.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 
 //the gui subclass
 #include "evisdatabaseconnectiongui.h"
@@ -141,7 +141,7 @@ void eVis::help()
 
 void eVis::launchDatabaseConnection()
 {
-  eVisDatabaseConnectionGui *myPluginGui = new eVisDatabaseConnectionGui( &mTemporaryFileList, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  eVisDatabaseConnectionGui *myPluginGui = new eVisDatabaseConnectionGui( &mTemporaryFileList, mQGisIface->mainWindow(), QgsGuiUtils::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
   connect( myPluginGui, &eVisDatabaseConnectionGui::drawVectorLayer, this, &eVis::drawVectorLayer );
@@ -163,7 +163,7 @@ void eVis::launchEventIdTool()
 
 void eVis::launchEventBrowser()
 {
-  eVisGenericEventBrowserGui *myPluginGui = new eVisGenericEventBrowserGui( mQGisIface->mainWindow(), mQGisIface, QgisGui::ModalDialogFlags );
+  eVisGenericEventBrowserGui *myPluginGui = new eVisGenericEventBrowserGui( mQGisIface->mainWindow(), mQGisIface, QgsGuiUtils::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 }
 

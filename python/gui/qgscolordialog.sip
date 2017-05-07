@@ -23,7 +23,7 @@ class QgsColorDialog : QDialog
 %End
   public:
 
-    QgsColorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsColorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                     const QColor &color = QColor() );
 %Docstring
  Create a new color picker dialog

@@ -18,7 +18,7 @@
 #define QGSMESSAGELOGVIEWER_H
 
 #include <ui_qgsmessagelogviewer.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 #include "qgsmessagelog.h"
 
 #include <QString>
@@ -40,7 +40,7 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
      * Create a new message log viewer. The viewer will automatically connect to the system's
      * QgsApplication::messageLog() instance.
      */
-    QgsMessageLogViewer( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsMessageLogViewer( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
   public slots:
 

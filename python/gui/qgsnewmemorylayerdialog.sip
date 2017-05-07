@@ -26,7 +26,7 @@ class QgsNewMemoryLayerDialog: QDialog
  :rtype: QgsVectorLayer
 %End
 
-    QgsNewMemoryLayerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewMemoryLayerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsNewMemoryLayerDialog();
 
     QgsWkbTypes::Type selectedType() const;

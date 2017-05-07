@@ -18,7 +18,7 @@
 #ifndef QGSDIALOG_H
 #define QGSDIALOG_H
 
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -37,7 +37,7 @@ class GUI_EXPORT QgsDialog : public QDialog
     /**
      * Constructor for QgsDialog.
      */
-    QgsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
                Qt::Orientation orientation = Qt::Horizontal );
 

@@ -51,7 +51,7 @@ class QgsSvgSelectorDialog : QDialog
 #include <qgssvgselectorwidget.h>
 %End
   public:
-    QgsSvgSelectorDialog( QWidget* parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
+    QgsSvgSelectorDialog( QWidget* parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgsGuiUtils::ModalDialogFlags,
                           QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();

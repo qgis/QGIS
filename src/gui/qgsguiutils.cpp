@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgisgui.cpp - Constants used throughout the QGIS GUI.
+    qgsguiutils.cpp - Constants used throughout the QGIS GUI.
      --------------------------------------
     Date                 : 11-Jan-2006
     Copyright            : (C) 2006 by Tom Elwertowski
@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 
 #include "qgssettings.h"
 #include "qgsencodingfiledialog.h"
@@ -23,7 +23,7 @@
 #include <QFontDialog>
 
 
-namespace QgisGui
+namespace QgsGuiUtils
 {
 
   bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,

@@ -17,7 +17,7 @@
 #define QGSLOADFILEFROMDBDIALOG_H
 
 #include "ui_qgsloadstylefromdbdialog.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgis_app.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"

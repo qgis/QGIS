@@ -20,7 +20,7 @@ class QgsCredentialDialog : QDialog, QgsCredentials
 #include "qgscredentialdialog.h"
 %End
   public:
-    QgsCredentialDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsCredentialDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 QgsCredentialDialog constructor
 %End
