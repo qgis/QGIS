@@ -942,7 +942,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
-  connect( QgsMapLayerActionRegistry::instance(), &QgsMapLayerActionRegistry::changed, this, &QgisApp::refreshActionFeatureAction );
+  connect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgisApp::refreshActionFeatureAction );
 
   // set application's caption
   QString caption = tr( "QGIS - %1 ('%2')" ).arg( Qgis::QGIS_VERSION, Qgis::QGIS_RELEASE_NAME );
@@ -6288,7 +6288,7 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
   if ( qgsAction.isValid() )
   {
     vlayer->actions()->setDefaultAction( QStringLiteral( "Canvas" ), qgsAction.id() );
-    QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, nullptr );
+    QgsGui::mapLayerActionRegistry()->setDefaultActionForLayer( vlayer, nullptr );
 
     mActionFeatureAction->setToolTip( tr( "Run feature action<br><b>%1</b>" ).arg( qgsAction.name() ) );
 
@@ -6303,7 +6303,7 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
     QgsMapLayerAction *mapLayerAction = qobject_cast<QgsMapLayerAction *>( action );
     if ( mapLayerAction )
     {
-      QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, mapLayerAction );
+      QgsGui::mapLayerActionRegistry()->setDefaultActionForLayer( vlayer, mapLayerAction );
 
       if ( !mapLayerAction->text().isEmpty() )
         mActionFeatureAction->setToolTip( tr( "Run feature action<br><b>%1</b>" ).arg( mapLayerAction->text() ) );
@@ -6313,7 +6313,7 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
     }
     else
     {
-      QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, nullptr );
+      QgsGui::mapLayerActionRegistry()->setDefaultActionForLayer( vlayer, nullptr );
     }
   }
 }
@@ -6340,7 +6340,7 @@ void QgisApp::refreshFeatureActions()
   }
 
   //add actions registered in QgsMapLayerActionRegistry
-  QList<QgsMapLayerAction *> registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
+  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer );
   if ( !actions.isEmpty() && registeredActions.size() > 0 )
   {
     //add a separator between user defined and standard actions
@@ -6350,7 +6350,7 @@ void QgisApp::refreshFeatureActions()
   for ( int i = 0; i < registeredActions.size(); i++ )
   {
     mFeatureActionMenu->addAction( registeredActions.at( i ) );
-    if ( registeredActions.at( i ) == QgsMapLayerActionRegistry::instance()->defaultActionForLayer( vlayer ) )
+    if ( registeredActions.at( i ) == QgsGui::mapLayerActionRegistry()->defaultActionForLayer( vlayer ) )
     {
       mFeatureActionMenu->setActiveAction( registeredActions.at( i ) );
     }
@@ -7296,7 +7296,7 @@ void QgisApp::setupLayoutManagerConnections()
       QgsMapLayerAction *action = mAtlasFeatureActions.value( c );
       if ( action )
       {
-        QgsMapLayerActionRegistry::instance()->removeMapLayerAction( action );
+        QgsGui::mapLayerActionRegistry()->removeMapLayerAction( action );
         delete action;
         mAtlasFeatureActions.remove( c );
       }
@@ -7309,7 +7309,7 @@ void QgisApp::setupAtlasMapLayerAction( QgsComposition *composition, bool enable
   QgsMapLayerAction *action = mAtlasFeatureActions.value( composition );
   if ( action )
   {
-    QgsMapLayerActionRegistry::instance()->removeMapLayerAction( action );
+    QgsGui::mapLayerActionRegistry()->removeMapLayerAction( action );
     delete action;
     action = nullptr;
     mAtlasFeatureActions.remove( composition );
@@ -7321,7 +7321,7 @@ void QgisApp::setupAtlasMapLayerAction( QgsComposition *composition, bool enable
                                     this, composition->atlasComposition().coverageLayer(), QgsMapLayerAction::SingleFeature,
                                     QgsApplication::getThemeIcon( QStringLiteral( "/mIconAtlas.svg" ) ) );
     mAtlasFeatureActions.insert( composition, action );
-    QgsMapLayerActionRegistry::instance()->addMapLayerAction( action );
+    QgsGui::mapLayerActionRegistry()->addMapLayerAction( action );
     connect( action, &QgsMapLayerAction::triggeredForFeature, this, [this, composition]( QgsMapLayer * layer, const QgsFeature & feat )
     {
       setCompositionAtlasFeature( composition, layer, feat );
@@ -11160,7 +11160,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
     bool isEditable = vlayer->isEditable();
     bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
-    bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
+    bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer ).isEmpty();
     bool isSpatial = vlayer->isSpatial();
 
     mActionLocalHistogramStretch->setEnabled( false );
@@ -11458,7 +11458,7 @@ void QgisApp::refreshActionFeatureAction()
   if ( !vlayer )
     return;
 
-  bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
+  bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer ).isEmpty();
   mActionFeatureAction->setEnabled( layerHasActions );
 }
 

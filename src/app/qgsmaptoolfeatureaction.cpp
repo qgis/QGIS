@@ -31,6 +31,7 @@
 #include "qgsproject.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgisapp.h"
+#include "qgsgui.h"
 
 #include <QSettings>
 #include <QMouseEvent>
@@ -72,7 +73,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() && QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty() )
+  if ( vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() && QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer ).isEmpty() )
   {
     emit messageEmitted( tr( "The active vector layer has no defined actions" ), QgsMessageBar::INFO );
     return;
@@ -146,7 +147,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     }
     else
     {
-      QgsMapLayerAction *mapLayerAction = QgsMapLayerActionRegistry::instance()->defaultActionForLayer( layer );
+      QgsMapLayerAction *mapLayerAction = QgsGui::mapLayerActionRegistry()->defaultActionForLayer( layer );
       if ( mapLayerAction )
       {
         mapLayerAction->triggerForFeature( layer, &feat );

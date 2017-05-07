@@ -18,6 +18,7 @@
 #include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
+#include "qgsmaplayeractionregistry.h"
 #include "qgsshortcutsmanager.h"
 
 QgsGui *QgsGui::instance()
@@ -41,11 +42,17 @@ QgsLayerTreeEmbeddedWidgetRegistry *QgsGui::layerTreeEmbeddedWidgetRegistry()
   return instance()->mLayerTreeEmbeddedWidgetRegistry;
 }
 
+QgsMapLayerActionRegistry *QgsGui::mapLayerActionRegistry()
+{
+  return instance()->mMapLayerActionRegistry;
+}
+
 QgsGui::~QgsGui()
 {
-  delete mEditorWidgetRegistry;
-  delete mShortcutsManager;
   delete mLayerTreeEmbeddedWidgetRegistry;
+  delete mEditorWidgetRegistry;
+  delete mMapLayerActionRegistry;
+  delete mShortcutsManager;
 }
 
 QgsGui::QgsGui()
@@ -53,4 +60,5 @@ QgsGui::QgsGui()
   mEditorWidgetRegistry = new QgsEditorWidgetRegistry();
   mShortcutsManager = new QgsShortcutsManager();
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();
+  mMapLayerActionRegistry = new QgsMapLayerActionRegistry();
 }

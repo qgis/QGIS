@@ -24,11 +24,11 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-
+#include "qgsgui.h"
 
 /// @cond PRIVATE
-CustomActionRegistry::CustomActionRegistry( QObject *parent )
-  : QgsMapLayerActionRegistry( parent )
+CustomActionRegistry::CustomActionRegistry()
+  : QgsMapLayerActionRegistry()
 {
 }
 ///@endcond
@@ -43,7 +43,6 @@ QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
   , mMaxLayerDisplay( 10 )
   , mMaxFeatureDisplay( 10 )
   , mDefaultActionName( tr( "Identify" ) )
-  , mCustomActionRegistry( CustomActionRegistry::instance() )
 {
 }
 
@@ -178,7 +177,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer *layer )
   }
   if ( mShowFeatureActions )
   {
-    layerActions.append( QgsMapLayerActionRegistry::instance()->mapLayerActions( layer, QgsMapLayerAction::Layer ) );
+    layerActions.append( QgsGui::mapLayerActionRegistry()->mapLayerActions( layer, QgsMapLayerAction::Layer ) );
     if ( layerActions.count() > nCustomActions )
     {
       separators.append( layerActions[nCustomActions] );
@@ -245,7 +244,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   }
   if ( mShowFeatureActions )
   {
-    layerActions << QgsMapLayerActionRegistry::instance()->mapLayerActions( layer, targets );
+    layerActions << QgsGui::mapLayerActionRegistry()->mapLayerActions( layer, targets );
 
     if ( layerActions.count() > nCustomActions )
     {

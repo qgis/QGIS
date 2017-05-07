@@ -34,6 +34,7 @@
 #include "qgsfeatureselectionmodel.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsfeatureiterator.h"
+#include "qgsgui.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QTableView( parent )
@@ -67,7 +68,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   connect( verticalHeader(), &QHeaderView::sectionEntered, this, &QgsAttributeTableView::_q_selectRow );
   connect( horizontalHeader(), &QHeaderView::sectionResized, this, &QgsAttributeTableView::columnSizeChanged );
   connect( horizontalHeader(), &QHeaderView::sortIndicatorChanged, this, &QgsAttributeTableView::showHorizontalSortIndicator );
-  connect( QgsMapLayerActionRegistry::instance(), &QgsMapLayerActionRegistry::changed, this, &QgsAttributeTableView::recreateActionWidgets );
+  connect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgsAttributeTableView::recreateActionWidgets );
 }
 
 bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
@@ -196,7 +197,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 
   // next add any registered actions for this layer
   Q_FOREACH ( QgsMapLayerAction *mapLayerAction,
-              QgsMapLayerActionRegistry::instance()->mapLayerActions( mFilterModel->layer(),
+              QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(),
                   QgsMapLayerAction::SingleFeature ) )
   {
     QAction *action = new QAction( mapLayerAction->icon(), mapLayerAction->text(), container );
@@ -208,7 +209,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
     actionList << action;
 
     if ( !defaultAction &&
-         QgsMapLayerActionRegistry::instance()->defaultActionForLayer( mFilterModel->layer() ) == mapLayerAction )
+         QgsGui::mapLayerActionRegistry()->defaultActionForLayer( mFilterModel->layer() ) == mapLayerAction )
       defaultAction = action;
   }
 

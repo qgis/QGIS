@@ -49,6 +49,12 @@ class QgsGui
  :rtype: QgsLayerTreeEmbeddedWidgetRegistry
 %End
 
+    static QgsMapLayerActionRegistry *mapLayerActionRegistry();
+%Docstring
+ Returns the global map layer action registry, used for registering map layer actions.
+ :rtype: QgsMapLayerActionRegistry
+%End
+
     ~QgsGui();
 
   private:
