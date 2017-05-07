@@ -139,8 +139,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     virtual void clearCache() const override;
 
-    virtual int childCount() const;
-    virtual QgsPointV2 childPoint( int index ) const;
+    virtual int childCount() const override;
+    virtual QgsPointV2 childPoint( int index ) const override;
 
   private:
 

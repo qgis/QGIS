@@ -136,8 +136,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     virtual bool dropMValue() override;
 
   protected:
-    virtual int childCount() const;
-    virtual QgsAbstractGeometry *childGeometry( int index ) const;
+    virtual int childCount() const override;
+    virtual QgsAbstractGeometry *childGeometry( int index ) const override;
 
   protected:
     QVector< QgsAbstractGeometry * > mGeometries;

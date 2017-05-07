@@ -2202,7 +2202,7 @@ void TestQgsGeometry::lineString()
   QgsAbstractGeometry::vertex_iterator it1 = l32.vertices_begin();
   QCOMPARE( it1, l32.vertices_end() );
 
-  // Java-style iterator on emtpy linetring
+  // Java-style iterator on empty linetring
   QgsVertexIterator it1x( &l32 );
   QVERIFY( !it1x.hasNext() );
 

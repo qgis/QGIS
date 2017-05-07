@@ -143,13 +143,7 @@ Adds a geometry and takes ownership. Returns true in case of success.
 
   protected:
     virtual int childCount() const;
-%Docstring
- :rtype: int
-%End
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
-%Docstring
- :rtype: QgsAbstractGeometry
-%End
 
   protected:
 
