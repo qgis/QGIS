@@ -18,3 +18,4 @@ qgis_openstreetmaptest
 qgis_wcsprovidertest
 PyQgsWFSProviderGUI
 qgis_ziplayertest
+PyQgsAuthManagerPasswordOWSTest 
