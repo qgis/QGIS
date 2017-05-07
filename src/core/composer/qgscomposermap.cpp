@@ -115,16 +115,9 @@ QgsComposerMap::~QgsComposerMap()
 {
   delete mOverviewStack;
   delete mGridStack;
-
-  if ( mPainterJob )
-  {
-    disconnect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsComposerMap::painterJobFinished );
-    mPainterJob->cancel();
-    mPainter->end();
-  }
 }
 
-/* This function is called by paint() to render the map.  It does not override any functions
+/* This function is called by paint() and cache() to render the map.  It does not override any functions
 from QGraphicsItem. */
 void QgsComposerMap::draw( QPainter *painter, const QgsRectangle &extent, QSizeF size, double dpi, double *forceWidthScale )
 {
@@ -213,28 +206,12 @@ void QgsComposerMap::cache()
     return;
   }
 
-  if ( mPainterJob )
+  if ( mDrawing )
   {
-    disconnect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsComposerMap::painterJobFinished );
-    QgsMapRendererCustomPainterJob *oldJob = mPainterJob.release();
-    QPainter *oldPainter = mPainter.release();
-    QImage *oldImage = mCacheRenderingImage.release();
-    connect( oldJob, &QgsMapRendererCustomPainterJob::finished, this, [oldPainter, oldJob, oldImage]
-    {
-      oldJob->deleteLater();
-      delete oldPainter;
-      delete oldImage;
-    } );
-    oldJob->cancelWithoutBlocking();
-  }
-  else
-  {
-    mCacheRenderingImage.reset( nullptr );
+    return;
   }
 
-  Q_ASSERT( !mPainterJob );
-  Q_ASSERT( !mPainter );
-  Q_ASSERT( !mCacheRenderingImage );
+  mDrawing = true;
 
   double horizontalVScaleFactor = horizontalViewScaleFactor();
   if ( horizontalVScaleFactor < 0 )
@@ -265,51 +242,38 @@ void QgsComposerMap::cache()
     }
   }
 
-  if ( w <= 0 || h <= 0 )
-    return;
-
-  mCacheRenderingImage.reset( new QImage( w, h, QImage::Format_ARGB32 ) );
+  mCacheImage = QImage( w, h, QImage::Format_ARGB32 );
 
   // set DPI of the image
-  mCacheRenderingImage->setDotsPerMeterX( 1000 * w / widthMM );
-  mCacheRenderingImage->setDotsPerMeterY( 1000 * h / heightMM );
+  mCacheImage.setDotsPerMeterX( 1000 * w / widthMM );
+  mCacheImage.setDotsPerMeterY( 1000 * h / heightMM );
 
   if ( hasBackground() )
   {
     //Initially fill image with specified background color. This ensures that layers with blend modes will
     //preview correctly
-    mCacheRenderingImage->fill( backgroundColor().rgba() );
+    mCacheImage.fill( backgroundColor().rgba() );
   }
   else
   {
     //no background, but start with empty fill to avoid artifacts
-    mCacheRenderingImage->fill( QColor( 255, 255, 255, 0 ).rgba() );
+    mCacheImage.fill( QColor( 255, 255, 255, 0 ).rgba() );
   }
 
-  mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
-  QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheRenderingImage->logicalDpiX() ) );
-  mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
-  connect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsComposerMap::painterJobFinished );
-  mPainterJob->start();
-}
+  QPainter p( &mCacheImage );
 
-void QgsComposerMap::painterJobFinished()
-{
-  mPainter->end();
-  mPainterJob.reset( nullptr );
-  mPainter.reset( nullptr );
+  draw( &p, ext, QSizeF( w, h ), mCacheImage.logicalDpiX() );
+  p.end();
   mCacheUpdated = true;
-  mCacheFinalImage = std::move( mCacheRenderingImage );
-  mLastRenderedImageOffsetX = 0;
-  mLastRenderedImageOffsetY = 0;
-  updateItem();
+
+  mDrawing = false;
 }
 
 void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *pWidget )
 {
   Q_UNUSED( pWidget );
 
-  if ( !mComposition || !painter || !painter->device() )
+  if ( !mComposition || !painter )
   {
     return;
   }
@@ -319,9 +283,6 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   }
 
   QRectF thisPaintRect = QRectF( 0, 0, QGraphicsRectItem::rect().width(), QGraphicsRectItem::rect().height() );
-  if ( thisPaintRect.width() == 0 || thisPaintRect.height() == 0 )
-    return;
-
   painter->save();
   painter->setClipRect( thisPaintRect );
 
@@ -336,40 +297,22 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   }
   else if ( mComposition->plotStyle() == QgsComposition::Preview )
   {
-    if ( !mCacheFinalImage || mCacheFinalImage->isNull() )
-    {
-      // No initial render available - so draw some preview text alerting user
-      drawBackground( painter );
-      painter->setBrush( QBrush( QColor( 125, 125, 125, 125 ) ) );
-      painter->drawRect( thisPaintRect );
-      painter->setBrush( Qt::NoBrush );
-      QFont messageFont;
-      messageFont.setPointSize( 12 );
-      painter->setFont( messageFont );
-      painter->setPen( QColor( 255, 255, 255, 255 ) );
-      painter->drawText( thisPaintRect, Qt::AlignCenter | Qt::AlignHCenter, tr( "Rendering map" ) );
-      if ( !mPainterJob )
-      {
-        // this is the map's very first paint - trigger a cache update
-        cache();
-      }
-    }
-    else
-    {
-      //Background color is already included in cached image, so no need to draw
+    if ( mCacheImage.isNull() )
+      cache();
 
-      double imagePixelWidth = mCacheFinalImage->width(); //how many pixels of the image are for the map extent?
-      double scale = rect().width() / imagePixelWidth;
+    //Background color is already included in cached image, so no need to draw
 
-      painter->save();
+    double imagePixelWidth = mCacheImage.width(); //how many pixels of the image are for the map extent?
+    double scale = rect().width() / imagePixelWidth;
 
-      painter->translate( mLastRenderedImageOffsetX + mXOffset, mLastRenderedImageOffsetY + mYOffset );
-      painter->scale( scale, scale );
-      painter->drawImage( 0, 0, *mCacheFinalImage );
+    painter->save();
 
-      //restore rotation
-      painter->restore();
-    }
+    painter->translate( mXOffset, mYOffset );
+    painter->scale( scale, scale );
+    painter->drawImage( 0, 0, mCacheImage );
+
+    //restore rotation
+    painter->restore();
   }
   else if ( mComposition->plotStyle() == QgsComposition::Print ||
             mComposition->plotStyle() == QgsComposition::Postscript )
@@ -622,8 +565,6 @@ void QgsComposerMap::resize( double dx, double dy )
 
 void QgsComposerMap::moveContent( double dx, double dy )
 {
-  mLastRenderedImageOffsetX -= dx;
-  mLastRenderedImageOffsetY -= dy;
   if ( !mDrawing )
   {
     transformShift( dx, dy );
@@ -732,7 +673,7 @@ void QgsComposerMap::setSceneRect( const QRectF &rectangle )
   mCacheUpdated = false;
 
   updateBoundingRect();
-  updateItem();
+  update();
   emit itemChanged();
   emit extentChanged();
 }
