@@ -29,6 +29,7 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgssettings.h"
 #include "qgsscrollarea.h"
+#include "qgsgui.h"
 
 #include <QClipboard>
 #include <QDialog>
@@ -148,7 +149,7 @@ void QgsDualView::columnBoxInit()
     if ( fieldIndex == -1 )
       continue;
 
-    if ( QgsEditorWidgetRegistry::instance()->findBest( mLayer, field.name() ).type() != QLatin1String( "Hidden" ) )
+    if ( QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() ).type() != QLatin1String( "Hidden" ) )
     {
       QIcon icon = mLayer->fields().iconForField( fieldIndex );
       QString text = field.name();

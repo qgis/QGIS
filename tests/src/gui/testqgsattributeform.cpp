@@ -24,6 +24,7 @@
 #include <qgsvectorlayer.h>
 #include "qgsvectordataprovider.h"
 #include <qgsfeature.h>
+#include "qgsgui.h"
 
 class TestQgsAttributeForm : public QObject
 {
@@ -46,7 +47,7 @@ void TestQgsAttributeForm::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  QgsEditorWidgetRegistry::initEditors();
+  QgsGui::editorWidgetRegistry()->initEditors();
 }
 
 void TestQgsAttributeForm::cleanupTestCase()

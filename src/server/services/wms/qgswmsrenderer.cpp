@@ -57,6 +57,7 @@
 #include "qgsmaprendererjobproxy.h"
 #include "qgswmsserviceexception.h"
 #include "qgsserverprojectutils.h"
+#include "qgsgui.h"
 
 #include <QImage>
 #include <QPainter>
@@ -2532,7 +2533,7 @@ namespace QgsWms
   QString QgsRenderer::replaceValueMapAndRelation( QgsVectorLayer *vl, int idx, const QString &attributeVal )
   {
     // TODO Could we get rid of QgsEditorWidgetRegistry dependency ?
-    const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( vl, vl->fields().field( idx ).name() );
+    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vl, vl->fields().field( idx ).name() );
     QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
     QString value( fieldFormatter->representValue( vl, idx, setup.config(), QVariant(), attributeVal ) );
 

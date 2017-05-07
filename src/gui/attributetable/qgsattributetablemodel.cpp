@@ -33,7 +33,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgssymbollayerutils.h"
 #include "qgsfieldformatterregistry.h"
-
+#include "qgsgui.h"
 #include <QVariant>
 
 #include <limits>
@@ -351,8 +351,8 @@ void QgsAttributeTableModel::loadAttributes()
 
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( layer(), fields[idx].name() );
-    QgsEditorWidgetFactory *widgetFactory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
+    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( layer(), fields[idx].name() );
+    QgsEditorWidgetFactory *widgetFactory = QgsGui::editorWidgetRegistry()->factory( setup.type() );
     QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
     if ( widgetFactory )

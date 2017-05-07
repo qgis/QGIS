@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
+#include "qgsgui.h"
 #include <QDomElement>
 #include <QDir>
 #include <QFile>
@@ -94,7 +95,7 @@ QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
         QWidget *attWidget = widget->findChild<QWidget *>( fields.at( i ).name() );
         if ( attWidget )
         {
-          QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( vectorLayer, i, attWidget, widget, context );
+          QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( vectorLayer, i, attWidget, widget, context );
           if ( eww )
           {
             eww->setValue( attrs.at( i ) );

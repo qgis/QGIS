@@ -32,6 +32,7 @@
 #include "qgstabwidget.h"
 #include "qgssettings.h"
 #include "qgsscrollarea.h"
+#include "qgsgui.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -1233,7 +1234,7 @@ void QgsAttributeForm::init()
       //show attribute alias if available
       QString fieldName = mLayer->attributeDisplayName( idx );
 
-      const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, field.name() );
+      const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() );
 
       if ( widgetSetup.type() == QLatin1String( "Hidden" ) )
         continue;
@@ -1242,7 +1243,7 @@ void QgsAttributeForm::init()
 
       // This will also create the widget
       QLabel *l = new QLabel( fieldName );
-      QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( widgetSetup.type(), mLayer, idx, widgetSetup.config(), nullptr, this, mContext );
+      QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, idx, widgetSetup.config(), nullptr, this, mContext );
 
       QWidget *w = nullptr;
       if ( eww )
@@ -1281,7 +1282,7 @@ void QgsAttributeForm::init()
     Q_FOREACH ( const QgsRelation &rel, QgsProject::instance()->relationManager()->referencedRelations( mLayer ) )
     {
       QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
-      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, rel.id() );
+      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, rel.id() );
       rww->setConfig( setup.config() );
       rww->setContext( mContext );
       gridLayout->addWidget( rww->widget(), row++, 0, 1, 2 );
@@ -1534,9 +1535,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       int fldIdx = vl->fields().lookupField( fieldDef->name() );
       if ( fldIdx < vl->fields().count() && fldIdx >= 0 )
       {
-        const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, fieldDef->name() );
+        const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, fieldDef->name() );
 
-        QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( widgetSetup.type(), mLayer, fldIdx, widgetSetup.config(), nullptr, this, mContext );
+        QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, fldIdx, widgetSetup.config(), nullptr, this, mContext );
         QgsAttributeFormEditorWidget *w = new QgsAttributeFormEditorWidget( eww, this );
         mFormEditorWidgets.insert( fldIdx, w );
 
@@ -1560,7 +1561,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       const QgsAttributeEditorRelation *relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
 
       QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), nullptr, this );
-      const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, relDef->relation().id() );
+      const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relDef->relation().id() );
       rww->setConfig( widgetSetup.config() );
       rww->setContext( context );
       newWidgetInfo.widget = rww->widget();
@@ -1723,7 +1724,7 @@ void QgsAttributeForm::createWrappers()
       if ( relation.isValid() )
       {
         QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, relation, myWidget, this );
-        const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, relation.id() );
+        const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relation.id() );
         rww->setConfig( widgetSetup.config() );
         rww->setContext( mContext );
         rww->widget(); // Will initialize the widget
@@ -1738,7 +1739,7 @@ void QgsAttributeForm::createWrappers()
         {
           int idx = mLayer->fields().lookupField( field.name() );
 
-          QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( mLayer, idx, myWidget, this, mContext );
+          QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( mLayer, idx, myWidget, this, mContext );
           addWidgetWrapper( eww );
         }
       }

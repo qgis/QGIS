@@ -21,15 +21,6 @@ class QgsEditorWidgetRegistry : QObject
 %End
   public:
 
-    static QgsEditorWidgetRegistry *instance();
-%Docstring
- This class is a singleton and has therefore to be accessed with this method instead
- of a constructor.
-
- :return: The one and only instance of the editor widget registry
- :rtype: QgsEditorWidgetRegistry
-%End
-
     static void initEditors( QgsMapCanvas *mapCanvas = 0, QgsMessageBar *messageBar = 0 );
 %Docstring
  Registers all the default widgets.

@@ -81,6 +81,7 @@
 %Include qgsfloatingwidget.sip
 %Include qgsfocuswatcher.sip
 %Include qgsformannotation.sip
+%Include qgsgui.sip
 %Include qgsgeometryrubberband.sip
 %Include qgsgradientcolorrampdialog.sip
 %Include qgsgradientstopeditor.sip

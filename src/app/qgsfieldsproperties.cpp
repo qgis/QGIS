@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QTreeWidgetItem>
 #include <QWidget>
@@ -339,7 +340,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
 
   FieldConfig cfg( mLayer, idx );
   QPushButton *pb = nullptr;
-  pb = new QPushButton( QgsEditorWidgetRegistry::instance()->name( cfg.mEditorWidgetType ) );
+  pb = new QPushButton( QgsGui::editorWidgetRegistry()->name( cfg.mEditorWidgetType ) );
   cfg.mButton = pb;
   mFieldsList->setCellWidget( row, AttrEditTypeCol, pb );
 
@@ -398,7 +399,7 @@ void QgsFieldsProperties::loadRelations()
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
         nmCombo->addItem( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
 
-      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, relation.id() );
+      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relation.id() );
 
       const QVariant nmrelcfg = setup.config().value( QStringLiteral( "nm-rel" ) );
 
@@ -1102,7 +1103,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
   mConstraintStrength.insert( QgsFieldConstraints::ConstraintUnique, constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
   mConstraintStrength.insert( QgsFieldConstraints::ConstraintExpression, constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
   mConstraintDescription = constraints.constraintDescription();
-  const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( layer, layer->fields().field( idx ).name() );
+  const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( layer, layer->fields().field( idx ).name() );
   mEditorWidgetType = setup.type();
   mEditorWidgetConfig = setup.config();
 }
