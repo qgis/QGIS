@@ -37,6 +37,9 @@ class GUI_EXPORT QgsLocatorResult
 {
   public:
 
+    /**
+     * Constructor for QgsLocatorResult.
+     */
     QgsLocatorResult() = default;
 
     /**

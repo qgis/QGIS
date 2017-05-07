@@ -93,6 +93,8 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
 
 };
 
+#ifndef SIP_RUN
+
 ///@cond PRIVATE
 
 /**
@@ -174,6 +176,9 @@ class QgsLocatorResultsView : public QTreeView
 };
 
 ///@endcond
+
+#endif
+
 
 #endif // QGSLOCATORWIDGET_H
 
