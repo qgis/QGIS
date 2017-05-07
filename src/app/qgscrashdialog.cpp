@@ -60,7 +60,7 @@ void QgsCrashDialog::createBugReport()
   clipboard->setText( markdown );
 }
 
-QString QgsCrashDialog::htmlToMarkdown( const QString &html ) const
+QString QgsCrashDialog::htmlToMarkdown( const QString &html )
 {
   QString markdown = html;
   markdown.replace( "<br>", "\n" );
