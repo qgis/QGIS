@@ -20,7 +20,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
 #include "qgsexpressionbuilderdialog.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -85,7 +85,7 @@ void QgsComposerLabelWidget::on_mFontButton_clicked()
   if ( mComposerLabel )
   {
     bool ok;
-    QFont newFont = QgisGui::getFont( ok, mComposerLabel->font() );
+    QFont newFont = QgsGuiUtils::getFont( ok, mComposerLabel->font() );
     if ( ok )
     {
       mComposerLabel->beginCommand( tr( "Label font changed" ) );

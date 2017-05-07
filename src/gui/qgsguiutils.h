@@ -1,6 +1,6 @@
 /***************************************************************************
-    qgisgui.h - Constants used throughout the QGIS GUI.
-     --------------------------------------
+    qgsguiutils.h - Constants used throughout the QGIS GUI.
+     ------------
     Date                 : 11-Jan-2006
     Copyright            : (C) 2006 by Tom Elwertowski
     Email                : telwertowski at users dot sourceforge dot net
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGISGUI_H
-#define QGISGUI_H
+#ifndef QGSGUIUTILS_H
+#define QGSGUIUTILS_H
 
 #include <Qt>
 #include <QPair>
@@ -24,11 +24,11 @@
 class QFont;
 
 /** \ingroup gui
- * /namespace QgisGui
- * The QgisGui namespace contains constants and helper functions used throughout the QGIS GUI.
+ * \namespace QgsGuiUtils
+ * The QgsGuiUtils namespace contains constants and helper functions used throughout the QGIS GUI.
  * \note not available in Python bindings
  */
-namespace QgisGui
+namespace QgsGuiUtils
 {
 
   /**
@@ -130,4 +130,4 @@ namespace QgisGui
   QFont GUI_EXPORT getFont( bool &ok, const QFont &initial, const QString &title = QString() );
 }
 
-#endif
+#endif // QGSGUIUTILS_H

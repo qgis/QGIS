@@ -21,7 +21,7 @@
 #include "offline_editing_progress_dialog.h"
 
 #include <qgisinterface.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 #include <qgsproject.h>
 #include <qgsmessagebar.h>
 #include <qgsmapcanvas.h>
@@ -75,7 +75,7 @@ void QgsOfflineEditingPlugin::initGui()
   mActionSynchronize->setEnabled( false );
 
   mOfflineEditing = new QgsOfflineEditing();
-  mProgressDialog = new QgsOfflineEditingProgressDialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  mProgressDialog = new QgsOfflineEditingProgressDialog( mQGisIface->mainWindow(), QgsGuiUtils::ModalDialogFlags );
 
   connect( mOfflineEditing, &QgsOfflineEditing::progressStarted, this, &QgsOfflineEditingPlugin::showProgress );
   connect( mOfflineEditing, &QgsOfflineEditing::layerProgressUpdated, this, &QgsOfflineEditingPlugin::setLayerProgress );
@@ -94,7 +94,7 @@ void QgsOfflineEditingPlugin::initGui()
 
 void QgsOfflineEditingPlugin::convertProject()
 {
-  QgsOfflineEditingPluginGui *myPluginGui = new QgsOfflineEditingPluginGui( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  QgsOfflineEditingPluginGui *myPluginGui = new QgsOfflineEditingPluginGui( mQGisIface->mainWindow(), QgsGuiUtils::ModalDialogFlags );
   myPluginGui->show();
 
   if ( myPluginGui->exec() == 1 )

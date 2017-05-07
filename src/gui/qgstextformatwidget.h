@@ -21,7 +21,7 @@
 #include "qgis.h"
 #include "qgstextrenderer.h"
 #include "qgsstringutils.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include <QFontDatabase>
 #include "qgis_gui.h"
 
@@ -222,7 +222,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      * \param parent parent widget
      * \param fl window flags for dialog
      */
-    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     virtual ~QgsTextFormatDialog();
 

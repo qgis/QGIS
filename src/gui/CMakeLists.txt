@@ -157,7 +157,6 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeview.cpp
   layertree/qgslayertreeviewdefaultactions.cpp
 
-  qgisgui.cpp
   qgisinterface.cpp
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
@@ -227,6 +226,7 @@ SET(QGIS_GUI_SRCS
   qgsgradientstopeditor.cpp
   qgsgroupwmsdatadialog.cpp
   qgsgui.cpp
+  qgsguiutils.cpp
   qgshighlight.cpp
   qgshistogramwidget.cpp
   qgshelp.cpp
@@ -613,7 +613,6 @@ ENDIF(MSVC)
 # for installing headers
 
 SET(QGIS_GUI_HDRS
-  qgisgui.h
   qgsattributeeditorcontext.h
   qgsattributeforminterface.h
   qgsattributeformlegacyinterface.h
@@ -623,6 +622,7 @@ SET(QGIS_GUI_HDRS
   qgsexpressionbuilderdialog.h
   qgsfiledropedit.h
   qgsgui.h
+  qgsguiutils.h
   qgshelp.h
   qgshighlight.h
   qgsmapcanvasitem.h

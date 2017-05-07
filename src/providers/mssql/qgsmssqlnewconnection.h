@@ -17,7 +17,7 @@
 #ifndef QGSMSSQLNEWCONNECTION_H
 #define QGSMSSQLNEWCONNECTION_H
 #include "ui_qgsmssqlnewconnectionbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 
 
@@ -30,7 +30,7 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     Q_OBJECT
   public:
     //! Constructor
-    QgsMssqlNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsMssqlNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
 
     ~QgsMssqlNewConnection();

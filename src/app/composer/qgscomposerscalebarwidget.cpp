@@ -19,7 +19,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposition.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QWidget>
@@ -250,7 +250,7 @@ void QgsComposerScaleBarWidget::on_mFontButton_clicked()
   }
 
   bool dialogAccepted;
-  QFont newFont = QgisGui::getFont( dialogAccepted, mComposerScaleBar->font() );
+  QFont newFont = QgsGuiUtils::getFont( dialogAccepted, mComposerScaleBar->font() );
   if ( dialogAccepted )
   {
     mComposerScaleBar->beginCommand( tr( "Scalebar font changed" ) );

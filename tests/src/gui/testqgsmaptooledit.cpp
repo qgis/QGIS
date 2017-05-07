@@ -15,7 +15,7 @@
 #include <QCoreApplication>
 
 #include "qgstest.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgsmaptooledit.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"

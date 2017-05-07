@@ -20,7 +20,7 @@
 #include "ui_widget_svgselector.h"
 #include "qgis.h"
 
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include <QAbstractListModel>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -272,7 +272,7 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
     /**
      * Constructor for QgsSvgSelectorDialog.
      */
-    QgsSvgSelectorDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsSvgSelectorDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                           QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();

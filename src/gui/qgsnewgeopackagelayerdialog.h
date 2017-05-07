@@ -18,7 +18,7 @@
 #define QGSNEWGEOPACKAGELAYERDIALOG_H
 
 #include "ui_qgsnewgeopackagelayerdialogbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgscontexthelp.h"
 
 #include "qgis.h"
@@ -32,7 +32,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
 
   public:
     //! Constructor
-    QgsNewGeoPackageLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewGeoPackageLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsNewGeoPackageLayerDialog();
 
     /**

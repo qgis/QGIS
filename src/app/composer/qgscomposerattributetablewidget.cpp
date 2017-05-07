@@ -29,7 +29,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgscomposertablebackgroundcolorsdialog.h"
 
 QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame )
@@ -244,7 +244,7 @@ void QgsComposerAttributeTableWidget::on_mHeaderFontPushButton_clicked()
     return;
 
   bool ok;
-  QFont newFont = QgisGui::getFont( ok, mComposerTable->headerFont(), tr( "Select Font" ) );
+  QFont newFont = QgsGuiUtils::getFont( ok, mComposerTable->headerFont(), tr( "Select Font" ) );
   if ( ok )
   {
     QgsComposition *composition = mComposerTable->composition();
@@ -285,7 +285,7 @@ void QgsComposerAttributeTableWidget::on_mContentFontPushButton_clicked()
   }
 
   bool ok;
-  QFont newFont = QgisGui::getFont( ok, mComposerTable->contentFont(), tr( "Select Font" ) );
+  QFont newFont = QgsGuiUtils::getFont( ok, mComposerTable->contentFont(), tr( "Select Font" ) );
   if ( ok )
   {
     QgsComposition *composition = mComposerTable->composition();

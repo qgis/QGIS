@@ -29,7 +29,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsfeatureiterator.h"
 #include "qgscolordialog.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsstyle.h"
 #include "qgsmapcanvas.h"
@@ -616,7 +616,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
 void QgsDiagramProperties::on_mDiagramFontButton_clicked()
 {
   bool ok;
-  mDiagramFont = QgisGui::getFont( ok, mDiagramFont );
+  mDiagramFont = QgsGuiUtils::getFont( ok, mDiagramFont );
 }
 
 

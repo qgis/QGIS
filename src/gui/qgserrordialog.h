@@ -20,7 +20,7 @@
 #include <QDialog>
 
 #include "ui_qgserrordialogbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgserror.h"
 #include "qgis_gui.h"
 #include "qgis.h"
@@ -36,7 +36,7 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
     /**
      * @brief QgsErrorDialog constructor for QgsErrorDialog
      */
-    QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     /** Show dialog with error
      * \param error error
@@ -44,7 +44,7 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
      * \param parent parent object
      * \param fl widget flags
      */
-    static void show( const QgsError &error, const QString &title, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    static void show( const QgsError &error, const QString &title, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
   public slots:
     void on_mDetailPushButton_clicked();

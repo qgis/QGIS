@@ -1987,7 +1987,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     mQgis->activateWindow();
     this->raise();
 #endif
-    QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Save composition as" ), outputFileName );
+    QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save composition as" ), outputFileName );
     this->activateWindow();
 
     if ( fileNExt.first.isEmpty() )
@@ -3469,7 +3469,7 @@ void QgsComposer::showAdvancedEffectsWarning()
 {
   if ( ! mComposition->printAsRaster() )
   {
-    QgsMessageViewer *m = new QgsMessageViewer( this, QgisGui::ModalDialogFlags, false );
+    QgsMessageViewer *m = new QgsMessageViewer( this, QgsGuiUtils::ModalDialogFlags, false );
     m->setWindowTitle( tr( "Project contains composition effects" ) );
     m->setMessage( tr( "Advanced composition effects such as blend modes or vector layer transparency are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
     m->setCheckBoxText( tr( "Print as raster" ) );

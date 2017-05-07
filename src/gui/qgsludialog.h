@@ -19,7 +19,7 @@
 #define QGSLUDIALOG_H
 
 #include "ui_qgsludialogbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
@@ -29,7 +29,7 @@ class GUI_EXPORT QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
 {
     Q_OBJECT
   public:
-    QgsLUDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsLUDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     QString lowerValue() const;
     void setLowerValue( const QString &val );
     QString upperValue() const;
