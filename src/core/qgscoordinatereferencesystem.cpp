@@ -1851,6 +1851,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   if ( sqlite3_exec( database, "BEGIN TRANSACTION", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
     qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
+    sqlite3_close( database );
     return -1;
   }
 
@@ -1860,7 +1861,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   ( void )sqlite3_exec( database, "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", nullptr, nullptr, nullptr );
 
-  OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
+  OGRSpatialReferenceH crs = nullptr;
   const char *tail = nullptr;
   sqlite3_stmt *select = nullptr;
   char *errMsg = nullptr;
@@ -1877,12 +1878,21 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   {
     QByteArray ba( it.value().toUtf8() );
     char *psz = ba.data();
+
+    if ( crs )
+      OSRDestroySpatialReference( crs );
+    crs = nullptr;
+    crs = OSRNewSpatialReference( nullptr );
+
     OGRErr ogrErr = OSRImportFromWkt( crs, &psz );
     if ( ogrErr != OGRERR_NONE )
       continue;
 
     if ( OSRExportToProj4( crs, &psz ) != OGRERR_NONE )
+    {
+      CPLFree( psz );
       continue;
+    }
 
     proj4 = psz;
     proj4 = proj4.trimmed();
@@ -1896,6 +1906,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     if ( sqlite3_prepare( database, sql.toLatin1(), sql.size(), &select, &tail ) != SQLITE_OK )
     {
       qCritical( "Could not prepare: %s [%s]\n", sql.toLatin1().constData(), sqlite3_errmsg( database ) );
+      sqlite3_finalize( select );
       continue;
     }
 
@@ -1905,7 +1916,10 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       srsProj4 = reinterpret_cast< const char * >( sqlite3_column_text( select, 0 ) );
 
       if ( QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( select, 1 ) ) ).toInt() != 0 )
+      {
+        sqlite3_finalize( select );
         continue;
+      }
     }
 
     sqlite3_finalize( select );
@@ -1923,6 +1937,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
                      sql.toLocal8Bit().constData(),
                      sqlite3_errmsg( database ),
                      errMsg ? errMsg : "(unknown error)" );
+          if ( errMsg )
+            sqlite3_free( errMsg );
           errors++;
         }
         else
@@ -1977,6 +1993,10 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       }
     }
   }
+
+  if ( crs )
+    OSRDestroySpatialReference( crs );
+  crs = nullptr;
 
   sql = QStringLiteral( "DELETE FROM tbl_srs WHERE auth_name='EPSG' AND NOT auth_id IN (" );
   QString delim;
@@ -2050,6 +2070,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
                          sql.toLocal8Bit().constData(),
                          sqlite3_errmsg( database ),
                          errMsg ? errMsg : "(unknown error)" );
+              if ( errMsg )
+                sqlite3_free( errMsg );
               errors++;
             }
           }
@@ -2074,13 +2096,14 @@ int QgsCoordinateReferenceSystem::syncDatabase()
                sql.toLocal8Bit().constData(),
                sqlite3_errmsg( database ) );
   }
+  sqlite3_finalize( select );
 #endif
 
-  OSRDestroySpatialReference( crs );
 
   if ( sqlite3_exec( database, "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
     qCritical( "Could not commit transaction: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
+    sqlite3_close( database );
     return -1;
   }
 
@@ -2224,11 +2247,15 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
     v.clear();
 
     if ( CSLCount( values ) == 0 )
+    {
+      CSLDestroy( values );
       break;
+    }
 
     if ( CSLCount( values ) < n )
     {
       qWarning( "Only %d columns", CSLCount( values ) );
+      CSLDestroy( values );
       continue;
     }
 
@@ -2239,6 +2266,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
       Q_ASSERT( idx < n );
       v.insert( i, *values[ idx ] ? quotedValue( values[idx] ) : QStringLiteral( "NULL" ) );
     }
+    CSLDestroy( values );
 
     //switch sign of rotation parameters. See http://trac.osgeo.org/proj/wiki/GenParms#towgs84-DatumtransformationtoWGS84
     if ( v.at( idxmcode ).compare( QLatin1String( "'9607'" ) ) == 0 )
