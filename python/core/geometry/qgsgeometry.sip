@@ -241,6 +241,14 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
+
+    QgsVertexIterator vertices() const;
+%Docstring
+ Returns Java-style iterator for traversal of vertices of the geometry
+.. versionadded:: 3.0
+ :rtype: QgsVertexIterator
+%End
+
     double hausdorffDistance( const QgsGeometry &geom ) const;
 %Docstring
  Returns the Hausdorff distance between this geometry and ``geom``. This is basically a measure of how similar or dissimilar 2 geometries are.

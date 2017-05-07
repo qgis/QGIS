@@ -158,6 +158,10 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 #endif
 
   protected:
+    virtual int childCount() const override;
+    virtual QgsAbstractGeometry *childGeometry( int index ) const override;
+
+  protected:
     QVector< QgsAbstractGeometry * > mGeometries;
 
     /**

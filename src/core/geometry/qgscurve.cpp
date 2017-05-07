@@ -156,3 +156,16 @@ void QgsCurve::clearCache() const
   QgsAbstractGeometry::clearCache();
 }
 
+int QgsCurve::childCount() const
+{
+  return numPoints();
+}
+
+QgsPoint QgsCurve::childPoint( int index ) const
+{
+  QgsPoint point;
+  QgsVertexId::VertexType type;
+  bool res = pointAt( index, point, type );
+  Q_ASSERT( res );
+  return point;
+}

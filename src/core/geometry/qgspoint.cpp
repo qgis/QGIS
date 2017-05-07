@@ -644,3 +644,14 @@ int QgsPoint::dimension() const
 {
   return 0;
 }
+
+int QgsPoint::childCount() const
+{
+  return 1;
+}
+
+QgsPoint QgsPoint::childPoint( int index ) const
+{
+  Q_ASSERT( index == 0 );
+  return *this;
+}

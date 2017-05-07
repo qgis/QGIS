@@ -177,6 +177,9 @@ class QgsCurve: QgsAbstractGeometry
     virtual void clearCache() const;
 
 
+    virtual int childCount() const;
+    virtual QgsPoint childPoint( int index ) const;
+
 };
 
 /************************************************************************

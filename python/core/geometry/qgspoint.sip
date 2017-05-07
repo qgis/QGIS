@@ -410,6 +410,11 @@ class QgsPoint: QgsAbstractGeometry
     virtual bool convertTo( QgsWkbTypes::Type type );
 
 
+
+  protected:
+    virtual int childCount() const;
+    virtual QgsPoint childPoint( int index ) const;
+
 };
 
 
