@@ -25,7 +25,7 @@ class NATIVE_EXPORT QgsMacNative : public QgsNative
   public:
     virtual ~QgsMacNative();
 
-    virtual const char* currentAppLocalizedName();
+    virtual const char *currentAppLocalizedName();
     virtual void currentAppActivateIgnoringOtherApps() override;
 };
 

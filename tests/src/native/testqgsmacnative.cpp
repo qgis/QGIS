@@ -30,7 +30,7 @@ class TestQgsMacNative: public QObject
 
 void TestQgsMacNative::testGetRunningAppName()
 {
-  QgsMacNative* macNative = new QgsMacNative();
+  QgsMacNative *macNative = new QgsMacNative();
   QCOMPARE( QStringLiteral( "qgis_macnativetest" ), QString( macNative->currentAppLocalizedName() ) );
   delete macNative;
 }
