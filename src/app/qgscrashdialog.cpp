@@ -42,7 +42,8 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
 
 void QgsCrashDialog::setBugReport( const QString &reportData )
 {
-  mReportDetailsText->setPlainText( reportData );
+  mReportData = reportData;
+  mReportDetailsText->setHtml( reportData );
 }
 
 void QgsCrashDialog::showReportWidget()
@@ -52,8 +53,19 @@ void QgsCrashDialog::showReportWidget()
 void QgsCrashDialog::createBugReport()
 {
   QClipboard *clipboard = QApplication::clipboard();
-  QString userText = "User Feedback\n=============\n" + mUserFeedbackText->toPlainText();
-  QString details = "Report Details\n==============\n" + mReportDetailsText->toPlainText();
+  QString userText = "h2. User Feedback\n\n" + mUserFeedbackText->toPlainText();
+  QString details = "h2. Report Details\n\n" + mReportData;
   QString finalText = userText + "\n\n" + details;
-  clipboard->setText( finalText );
+  QString markdown = htmlToMarkdown( finalText );
+  clipboard->setText( markdown );
 }
+
+QString QgsCrashDialog::htmlToMarkdown( const QString &html ) const
+{
+  QString markdown = html;
+  markdown.replace( "<br>", "\n" );
+  markdown.replace( "<b>", "*" );
+  markdown.replace( "</b>", "*" );
+  return markdown;
+}
+

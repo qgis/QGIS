@@ -75,7 +75,7 @@ class APP_EXPORT QgsCrashReport
      * Generate a string version of the report.
      * \return A formatted string including all the information from the report.
      */
-    const QString toString() const;
+    const QString toHtml() const;
 
     /**
      * Generates a crash ID for the crash report.

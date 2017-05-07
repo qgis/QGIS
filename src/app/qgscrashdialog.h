@@ -41,9 +41,14 @@ class APP_EXPORT QgsCrashDialog : public QDialog, private Ui::QgsCrashDialog
 
     void setBugReport( const QString &reportData );
 
+    static QString htmlToMarkdown( const QString &html );
+
   private slots:
     void showReportWidget();
     void createBugReport();
+
+  private:
+    QString mReportData;
 };
 
 #endif // QGSCRASHDIALOG_H

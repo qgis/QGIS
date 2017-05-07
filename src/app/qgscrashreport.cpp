@@ -33,16 +33,15 @@ void QgsCrashReport::setFlags( QgsCrashReport::Flags flags )
   mFlags = flags;
 }
 
-const QString QgsCrashReport::toString() const
+const QString QgsCrashReport::toHtml() const
 {
   QStringList reportData;
-  reportData.append( "Crash ID: " + crashID() );
+  reportData.append( "<b>Crash ID</b>: " + crashID() );
 
   if ( flags().testFlag( QgsCrashReport::Stack ) )
   {
-    reportData.append( "\n" );
-    reportData.append( "Stack Trace" );
-    reportData.append( "===========" );
+    reportData.append( "<br>" );
+    reportData.append( "<b>Stack Trace</b>" );
     if ( mStackTrace.isEmpty() )
     {
       reportData.append( "Stack trace unable to be generated." );
@@ -60,25 +59,22 @@ const QString QgsCrashReport::toString() const
 
   if ( flags().testFlag( QgsCrashReport::Plugins ) )
   {
-    reportData.append( "\n" );
-    reportData.append( "Plugins" );
-    reportData.append( "=======" );
+    reportData.append( "<br>" );
+    reportData.append( "<b>Plugins</b>" );
     // TODO Get plugin info
   }
 
   if ( flags().testFlag( QgsCrashReport::ProjectDetails ) )
   {
-    reportData.append( "\n" );
-    reportData.append( "Project Info" );
-    reportData.append( "============" );
+    reportData.append( "<br>" );
+    reportData.append( "<b>Project Info</b>" );
     // TODO Get project details
   }
 
   if ( flags().testFlag( QgsCrashReport::QgisInfo ) )
   {
-    reportData.append( "\n" );
-    reportData.append( "QGIS Info" );
-    reportData.append( "=========" );
+    reportData.append( "<br>" );
+    reportData.append( "<b>QGIS Info</b>" );
     reportData.append( QString( "QGIS Version: %1" ).arg( Qgis::QGIS_VERSION ) );
 
     if ( QString( Qgis::QGIS_DEV_VERSION ) == QLatin1String( "exported" ) )
@@ -100,9 +96,8 @@ const QString QgsCrashReport::toString() const
 
   if ( flags().testFlag( QgsCrashReport::SystemInfo ) )
   {
-    reportData.append( "\n" );
-    reportData.append( "System Info" );
-    reportData.append( "===========" );
+    reportData.append( "<br>" );
+    reportData.append( "<b>System Info</b>" );
     reportData.append( QString( "CPU Type: %1" ).arg( QSysInfo::currentCpuArchitecture() ) );
     reportData.append( QString( "Kernel Type: %1" ).arg( QSysInfo::kernelType() ) );
     reportData.append( QString( "Kernel Version: %1" ).arg( QSysInfo::kernelVersion() ) );
@@ -111,7 +106,7 @@ const QString QgsCrashReport::toString() const
   QString report;
   Q_FOREACH ( QString line, reportData )
   {
-    report += line + "\n";
+    report += line + "<br>";
   }
   return report;
 }
