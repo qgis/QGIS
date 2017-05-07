@@ -34,8 +34,13 @@ class QgsGui
     static QgsEditorWidgetRegistry *editorWidgetRegistry();
 %Docstring
  Returns the global editor widget registry, used for managing all known edit widget factories.
-.. versionadded:: 3.0
  :rtype: QgsEditorWidgetRegistry
+%End
+
+    static QgsShortcutsManager *shortcutsManager();
+%Docstring
+ Returns the global shortcuts manager, used for managing a QAction and QShortcut sequences.
+ :rtype: QgsShortcutsManager
 %End
 
     ~QgsGui();

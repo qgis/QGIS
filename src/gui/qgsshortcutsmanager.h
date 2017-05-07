@@ -26,7 +26,10 @@ class QShortcut;
 /** \ingroup gui
  * \class QgsShortcutsManager
  * Shortcuts manager is a class that contains a list of QActions and QShortcuts
-  that have been registered and their shortcuts can be changed.
+ * that have been registered and their shortcuts can be changed.
+ *
+ * QgsShortcutsManager is not usually directly created, but rather accessed through
+ * QgsGui::shortcutsManager().
  * \since QGIS 2.16
  */
 class GUI_EXPORT QgsShortcutsManager : public QObject
@@ -34,9 +37,6 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     Q_OBJECT
 
   public:
-
-    //! Return the singleton instance of the manager.
-    static QgsShortcutsManager *instance();
 
     /** Constructor for QgsShortcutsManager.
      * \param parent parent object
@@ -230,7 +230,6 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     ActionsHash mActions;
     ShortcutsHash mShortcuts;
     QString mSettingsPath;
-    static QgsShortcutsManager *sInstance;
 
     /**
      * Updates the action to include the shortcut keys. Shortcut keys are
