@@ -614,7 +614,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     void atlasFeatureChanged( QgsFeature *feature );
 
-    void compositionItemAdded( QgsComposerItem *item );
+    void invalidateCachedRenders();
 
 
 

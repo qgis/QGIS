@@ -2054,16 +2054,6 @@ void QgsComposerView::wheelZoom( QWheelEvent *event )
   emit zoomLevelChanged();
   updateRulers();
   update();
-  //redraw cached map items
-  QList<QGraphicsItem *> itemList = composition()->items();
-  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
-  for ( ; itemIt != itemList.end(); ++itemIt )
-  {
-    if ( QgsComposerMap *mypItem = dynamic_cast<QgsComposerMap *>( *itemIt ) )
-    {
-      mypItem->renderModeUpdateCachedImage();
-    }
-  }
 }
 
 void QgsComposerView::setZoomLevel( double zoomLevel )
