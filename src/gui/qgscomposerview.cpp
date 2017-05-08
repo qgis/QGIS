@@ -2059,9 +2059,9 @@ void QgsComposerView::wheelZoom( QWheelEvent *event )
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
-    if ( QgsComposerMap *mypItem = qobject_cast<QgsComposerMap *>( *itemIt ) )
+    if ( QgsComposerMap *mypItem = dynamic_cast<QgsComposerMap *>( *itemIt ) )
     {
-      mypItem->invalidateCache();
+      mypItem->renderModeUpdateCachedImage();
     }
   }
 }

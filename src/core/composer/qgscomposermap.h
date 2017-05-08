@@ -77,14 +77,20 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     enum AtlasScalingMode
     {
       Fixed,      //!< The current scale of the map is used for each feature of the atlas
-      Predefined, /*!< A scale is chosen from the predefined scales. The smallest scale from
-                    the list of scales where the atlas feature is fully visible is chosen.
-                    \see QgsAtlasComposition::setPredefinedScales.
-                    \note This mode is only valid for polygon or line atlas coverage layers
-                */
-      Auto        /*!< The extent is adjusted so that each feature is fully visible.
-                    A margin is applied around the center \see setAtlasMargin
-                    \note This mode is only valid for polygon or line atlas coverage layers*/
+
+      /**
+       * A scale is chosen from the predefined scales. The smallest scale from
+       * the list of scales where the atlas feature is fully visible is chosen.
+       * \see QgsAtlasComposition::setPredefinedScales.
+       * \note This mode is only valid for polygon or line atlas coverage layers
+       */
+      Predefined,
+
+      /** The extent is adjusted so that each feature is fully visible.
+       * A margin is applied around the center \see setAtlasMargin
+       * \note This mode is only valid for polygon or line atlas coverage layers
+      */
+      Auto
     };
 
     /** \brief Draw to paint device
@@ -96,7 +102,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void draw( QPainter *painter, const QgsRectangle &extent, QSizeF size, double dpi, double *forceWidthScale = nullptr );
 
-    //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     /** Return map settings that would be used for drawing of the map
@@ -568,7 +573,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QString mFollowVisibilityPresetName;
 
     //! \brief Create cache image
-    void recreateCachedImage();
+    void recreateCachedImageInBackground();
 
     //! Establishes signal/slot connection for update in case of layer change
     void connectUpdateSlot();
