@@ -1142,6 +1142,16 @@ void QgsComposerMap::connectUpdateSlot()
     // redraws the map AFTER layers are removed
     connect( project, &QgsProject::layersRemoved, this, &QgsComposerMap::renderModeUpdateCachedImage );
     connect( project, &QgsProject::legendLayersAdded, this, &QgsComposerMap::renderModeUpdateCachedImage );
+
+    connect( project, &QgsProject::crsChanged, this, [ = ]
+    {
+      if ( !mCrs.isValid() )
+      {
+        //using project CRS, which just changed....
+        invalidateCache();
+      }
+    } );
+
   }
   connect( mComposition, &QgsComposition::refreshItemsTriggered, this, &QgsComposerMap::invalidateCache );
 }
