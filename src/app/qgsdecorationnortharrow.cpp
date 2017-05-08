@@ -27,16 +27,18 @@ email                : tim@linfiniti.com
 #include "qgisapp.h"
 #include "qgsbearingutils.h"
 #include "qgscoordinatetransform.h"
+#include "qgscsexception.h"
+#include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
-#include "qgslogger.h"
-#include "qgscsexception.h"
+#include "qgssvgcache.h"
 
 // qt includes
 #include <QPainter>
 #include <QMenu>
 #include <QDir>
 #include <QFile>
+#include <QSvgRenderer>
 
 //non qt includes
 #include <cmath>
@@ -101,14 +103,17 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
   //Large IF statement controlled by enable check box
   if ( enabled() )
   {
-    QPixmap myQPixmap; //to store the north arrow image in
+    QSize size( 64, 64 );
+    QSvgRenderer svg;
 
-    QString myFileNameQString = QStringLiteral( ":/images/north_arrows/default.png" );
+    const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( QStringLiteral( ":/images/north_arrows/default.svg" ), size.width(), QColor( "#000000" ), QColor( "#FFFFFF" ), 0.2, 1.0 );
+    svg.load( svgContent );
 
-    if ( myQPixmap.load( myFileNameQString ) )
+    if ( svg.isValid() )
     {
-      double centerXDouble = myQPixmap.width() / 2.0;
-      double centerYDouble = myQPixmap.height() / 2.0;
+      double centerXDouble = size.width() / 2.0;
+      double centerYDouble = size.width() / 2.0;
+
       //save the current canvas rotation
       context.painter()->save();
       //
@@ -161,8 +166,8 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
           break;
 
         case QgsUnitTypes::RenderPercentage:
-          myXOffset = ( ( myWidth - myQPixmap.width() ) / 100. ) * mMarginHorizontal;
-          myYOffset = ( ( myHeight - myQPixmap.height() ) / 100. ) * mMarginVertical;
+          myXOffset = ( ( myWidth - size.width() ) / 100. ) * mMarginHorizontal;
+          myYOffset = ( ( myHeight - size.width() ) / 100. ) * mMarginVertical;
           break;
 
         default:  // Use default of top left
@@ -172,17 +177,17 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
       switch ( mPlacement )
       {
         case BottomLeft:
-          context.painter()->translate( myXOffset, myHeight - myYOffset - myQPixmap.height() );
+          context.painter()->translate( myXOffset, myHeight - myYOffset - size.width() );
           break;
         case TopLeft:
           context.painter()->translate( myXOffset, myYOffset );
           break;
         case TopRight:
-          context.painter()->translate( myWidth - myXOffset - myQPixmap.width(), myYOffset );
+          context.painter()->translate( myWidth - myXOffset - size.width(), myYOffset );
           break;
         case BottomRight:
-          context.painter()->translate( myWidth - myXOffset - myQPixmap.width(),
-                                        myHeight - myYOffset - myQPixmap.height() );
+          context.painter()->translate( myWidth - myXOffset - size.width(),
+                                        myHeight - myYOffset - size.width() );
           break;
         default:
         {
@@ -193,8 +198,9 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
       //rotate the canvas by the north arrow rotation amount
       context.painter()->rotate( mRotationInt );
       //Now we can actually do the drawing, and draw a smooth north arrow even when rotated
-      context.painter()->setRenderHint( QPainter::SmoothPixmapTransform );
-      context.painter()->drawPixmap( xShift, yShift, myQPixmap );
+
+      context.painter()->translate( xShift, yShift );
+      svg.render( context.painter(), QRectF( 0, 0, size.width(), size.height() ) );
 
       //unrotate the canvas again
       context.painter()->restore();
