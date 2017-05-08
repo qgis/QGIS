@@ -49,8 +49,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     Q_PROPERTY( bool openFormButtonVisible READ openFormButtonVisible WRITE setOpenFormButtonVisible )
 
   public:
-    typedef QPair < QVariant, QgsFeatureId > ValueRelationItem;
-    typedef QVector < ValueRelationItem > ValueRelationCache;
 
     enum CanvasExtent
     {

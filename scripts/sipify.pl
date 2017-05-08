@@ -156,6 +156,7 @@ sub fix_annotations(){
   $line =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
   # remove argument
   if ($line =~ m/SIP_PYARGREMOVE/){
+      dbg_info("remove arg");
       if ( $MULTILINE_DEFINITION == 1 ){
           my $prev_line = pop(@output) =~ s/\n$//r;
           # update multi line status
@@ -170,7 +171,7 @@ sub fix_annotations(){
           $line = "$prev_line $line\n";
       }
       # see https://regex101.com/r/5iNptO/4
-      $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)? [\w&*]+ SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+      $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
   }
   $line =~ s/SIP_FORCE//;
 }
@@ -613,7 +614,7 @@ while ($line_idx < $line_count){
     fix_annotations();
 
     # fix astyle placing space after % character
-    $line =~ s/\s*% (MappedType|TypeCode|TypeHeaderCode|ModuleHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;
+    $line =~ s/\s*% (MappedType|Type(Header)?Code|Module(Header)?Code|Convert(From|To)TypeCode|MethodCode|End)/%$1/;
     $line =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
     push @output, dbg("NOR")."$line\n";

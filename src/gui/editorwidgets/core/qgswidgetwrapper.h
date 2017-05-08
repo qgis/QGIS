@@ -24,7 +24,16 @@ class QgsVectorLayer;
 
 #include "qgsattributeeditorcontext.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgspropertycollection.h"
+
+#ifdef SIP_RUN
+// This is required for the ConvertToSubClassCode to work properly
+// so RTTI for casting is available in the whole module.
+% ModuleCode
+#include "qgsrelationwidgetwrapper.h"
+% End
+#endif
 
 /** \ingroup gui
  * Manages an editor widget
@@ -39,6 +48,18 @@ class QgsVectorLayer;
  */
 class GUI_EXPORT QgsWidgetWrapper : public QObject
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsEditorWidgetWrapper *>( sipCpp ) )
+      sipType = sipType_QgsEditorWidgetWrapper;
+    else if ( qobject_cast<QgsRelationWidgetWrapper *>( sipCpp ) )
+      sipType = sipType_QgsRelationWidgetWrapper;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
 
@@ -77,8 +98,10 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * Example: QPushButton* pb = wrapper->widget<QPushButton*>();
      *
      * \returns The widget as template type or NULL, if it cannot be cast to this type.
+     *
+     * \note not available in Python bindings
      */
-    template <class T>
+    template <class T> SIP_SKIP
     T *widget() { return dynamic_cast<T>( mWidget ); }
 
     /**
@@ -152,8 +175,10 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     /** Returns a reference to the editor widget's property collection, used for data defined overrides.
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
+     *
+     * \note not available in Python bindings
      */
-    QgsPropertyCollection &dataDefinedProperties() { return mPropertyCollection; }
+    QgsPropertyCollection &dataDefinedProperties() { return mPropertyCollection; } SIP_SKIP
 
     /** Returns a reference to the editor widget's property collection, used for data defined overrides.
      * \since QGIS 3.0

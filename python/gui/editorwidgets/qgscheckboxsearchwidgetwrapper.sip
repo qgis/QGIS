@@ -1,38 +1,58 @@
-/** \ingroup gui
- * \class QgsCheckboxSearchWidgetWrapper
- * Wraps a checkbox edit widget for searching.
- * \note Added in version 2.16
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgscheckboxsearchwidgetwrapper.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsCheckboxSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
+%Docstring
+ Wraps a checkbox edit widget for searching.
+.. versionadded:: 2.16
+%End
+
 %TypeHeaderCode
-#include <qgscheckboxsearchwidgetwrapper.h>
+#include "qgscheckboxsearchwidgetwrapper.h"
 %End
   public:
 
-    /** Constructor for QgsCheckboxSearchWidgetWrapper.
-     * @param vl associated vector layer
-     * @param fieldIdx index of associated field
-     * @param parent parent widget
-     */
     explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsCheckboxSearchWidgetWrapper.
+ \param vl associated vector layer
+ \param fieldIdx index of associated field
+ \param parent parent widget
+%End
 
-    /** Returns a variant representing the current state of the widget.
-     * @note this will not be a boolean true or false value, it will instead
-     * be the values configured to represent checked and unchecked states in
-     * the editor widget configuration.
-     */
     QVariant value() const;
+%Docstring
+ Returns a variant representing the current state of the widget.
+.. note::
 
-    // QgsSearchWidgetWrapper interface
-  public:
-    bool applyDirectly();
-    QString expression();
-    bool valid() const;
-    FilterFlags supportedFlags() const;
-    FilterFlags defaultFlags() const;
-    virtual QString createExpression( FilterFlags flags ) const;
+   this will not be a boolean true or false value, it will instead
+ be the values configured to represent checked and unchecked states in
+ the editor widget configuration.
+ :rtype: QVariant
+%End
+
+    virtual bool applyDirectly();
+
+    virtual QString expression();
+
+    virtual bool valid() const;
+
+    virtual QgsSearchWidgetWrapper::FilterFlags supportedFlags() const;
+
+    virtual QgsSearchWidgetWrapper::FilterFlags defaultFlags() const;
+
+    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const;
 
   public slots:
 
@@ -40,9 +60,21 @@ class QgsCheckboxSearchWidgetWrapper : QgsSearchWidgetWrapper
     virtual void setEnabled( bool enabled );
 
   protected:
-    QWidget *createWidget( QWidget *parent );
-    void initWidget( QWidget *editor );
+    virtual QWidget *createWidget( QWidget *parent );
+
+    virtual void initWidget( QWidget *editor );
+
 
   protected slots:
-    void setExpression( QString exp );
+    virtual void setExpression( QString exp );
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgscheckboxsearchwidgetwrapper.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
