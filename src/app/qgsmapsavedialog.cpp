@@ -22,6 +22,7 @@
 #include "qgsdecorationitem.h"
 #include "qgsextentgroupbox.h"
 #include "qgsmapsettings.h"
+#include "qgsmapsettingsutils.h"
 
 #include <QCheckBox>
 #include <QSpinBox>
@@ -29,7 +30,7 @@
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QString &activeDecorations )
+QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QString &activeDecorations, DialogType type )
   : QDialog( parent )
 {
   setupUi( this );
@@ -60,6 +61,16 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   connect( mScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsMapSaveDialog::updateScale );
 
   updateOutputSize();
+
+  if ( type == QgsMapSaveDialog::Pdf )
+  {
+    mSaveWorldFile->setVisible( false );
+
+    mSaveAsRaster->setChecked( QgsMapSettingsUtils::containsAdvancedEffects( mapCanvas->mapSettings() ) );
+    mSaveAsRaster->setVisible( true );
+
+    this->setWindowTitle( tr( "Save map as PDF" ) );
+  }
 }
 
 void QgsMapSaveDialog::updateDpi( int dpi )
@@ -151,4 +162,9 @@ bool QgsMapSaveDialog::drawDecorations() const
 bool QgsMapSaveDialog::saveWorldFile() const
 {
   return mSaveWorldFile->isChecked();
+}
+
+bool QgsMapSaveDialog::saveAsRaster() const
+{
+  return mSaveAsRaster->isChecked();
 }

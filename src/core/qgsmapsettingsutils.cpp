@@ -17,8 +17,48 @@
 
 #include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
+#include "qgspallabeling.h"
+#include "qgstextrenderer.h"
+#include "qgsvectorlayer.h"
 
 #include <QString>
+
+bool QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &mapSettings )
+{
+  QgsTextFormat layerFormat;
+  Q_FOREACH ( QgsMapLayer *layer, mapSettings.layers() )
+  {
+    if ( layer )
+    {
+      if ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
+      {
+        return true;
+      }
+      // if vector layer, check labels and feature blend mode
+      QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( currentVectorLayer )
+      {
+        if ( currentVectorLayer->layerTransparency() != 0 )
+        {
+          return true;
+        }
+        if ( currentVectorLayer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
+        {
+          return true;
+        }
+        // check label blend modes
+        if ( QgsPalLabeling::staticWillUseLayer( currentVectorLayer ) )
+        {
+          // Check all label blending properties
+          layerFormat.readFromLayer( currentVectorLayer );
+          if ( layerFormat.containsAdvancedEffects() )
+            return true;
+        }
+      }
+    }
+  }
+  return false;
+}
 
 QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings )
 {

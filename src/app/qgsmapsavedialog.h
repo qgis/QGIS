@@ -37,9 +37,15 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 
   public:
 
+    enum DialogType
+    {
+      Image = 1, // Image-specific dialog
+      Pdf        // PDF-specific dialog
+    };
+
     /** Constructor for QgsMapSaveDialog
      */
-    QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QString &activeDecorations = QString() );
+    QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QString &activeDecorations = QString(), DialogType type = Image );
 
     //! returns extent rectangle
     QgsRectangle extent() const;
@@ -58,6 +64,9 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 
     //! returns whether a world file will be created
     bool saveWorldFile() const;
+
+    //! returns whether the map will be rasterized
+    bool saveAsRaster() const;
 
   private:
 
