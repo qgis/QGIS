@@ -17,6 +17,7 @@ from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QT_VERSION_STR
 import sip
 from qgis.PyQt.QtTest import QSignalSpy
+from time import sleep
 
 start_app()
 
@@ -201,7 +202,11 @@ class TestQgsMapLayerStore(unittest.TestCase):
         self.assertEqual(store.mapLayersByName('test2'), [l2])
 
         #duplicate name
+
+        # little bit of a hack - we don't want a duplicate ID and since IDs are currently based on time we wait a bit here
+        sleep(0.1)
         l3 = createLayer('test')
+
         store.addMapLayer(l3)
         self.assertEqual(set(store.mapLayersByName('test')), {l1, l3})
 
