@@ -30,7 +30,7 @@ QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
 {}
 
-void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, QgsFeedback *feedback )
+void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
 {
   QgsLayerTree *tree = QgsProject::instance()->layerTreeRoot();
   QList<QgsLayerTreeLayer *> layers = tree->findLayers();
@@ -66,7 +66,7 @@ QgsLayoutLocatorFilter::QgsLayoutLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
 {}
 
-void QgsLayoutLocatorFilter::fetchResults( const QString &string, QgsFeedback *feedback )
+void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
 {
   Q_FOREACH ( QgsComposition *composition, QgsProject::instance()->layoutManager()->compositions() )
   {

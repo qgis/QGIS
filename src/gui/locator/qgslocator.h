@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
+#include "qgslocatorcontext.h"
 #include <QObject>
 #include <QFuture>
 #include <QFutureWatcher>
@@ -93,12 +94,15 @@ class GUI_EXPORT QgsLocator : public QObject
 
     /**
      * Triggers the background fetching of filter results for a specified search \a string.
+     * The \a context argument encapsulates the context relating to the search (such as a map
+     * extent to prioritize).
+     *
      * If specified, the \a feedback object must exist for the lifetime of this query.
      *
      * The foundResult() signal will be emitted for each individual result encountered
      * by the registered filters.
      */
-    void fetchResults( const QString &string, QgsFeedback *feedback = nullptr );
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback = nullptr );
 
     /**
      * Cancels any current running query, and blocks until query is completely canceled by

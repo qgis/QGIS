@@ -17,6 +17,7 @@ import os
 
 from qgis.gui import (QgsLocator,
                       QgsLocatorFilter,
+                      QgsLocatorContext,
                       QgsLocatorResult)
 from qgis.PyQt.QtCore import QVariant, pyqtSignal, QCoreApplication
 from time import sleep
@@ -31,7 +32,7 @@ class test_filter(QgsLocatorFilter):
         super().__init__(parent)
         self.prefix = prefix
 
-    def fetchResults(self, string, feedback):
+    def fetchResults(self, string, context, feedback):
         for i in range(3):
             #if feedback.isCanceled():
             #    return
@@ -83,13 +84,15 @@ class TestQgsLocator(unittest.TestCase):
 
         got_hit._results_ = []
 
+        context = QgsLocatorContext()
+
         # one filter
         l = QgsLocator()
         filter_a = test_filter('a')
         l.registerFilter(filter_a)
 
         l.foundResult.connect(got_hit)
-        l.fetchResults('a')
+        l.fetchResults('a', context)
 
         for i in range(100):
             sleep(0.002)
@@ -101,7 +104,7 @@ class TestQgsLocator(unittest.TestCase):
         filter_b = test_filter('b')
         l.registerFilter(filter_b)
         got_hit._results_ = []
-        l.fetchResults('a')
+        l.fetchResults('a', context)
 
         for i in range(100):
             sleep(0.002)
@@ -119,12 +122,14 @@ class TestQgsLocator(unittest.TestCase):
 
         got_hit._results_ = []
 
+        context = QgsLocatorContext()
+
         l = QgsLocator()
         filter_a = test_filter('a')
         l.registerFilter(filter_a)
 
         l.foundResult.connect(got_hit)
-        l.fetchResults('a')
+        l.fetchResults('a', context)
         del l
 
     def testCancelWhileFetchingResults(self):
@@ -137,12 +142,14 @@ class TestQgsLocator(unittest.TestCase):
 
         got_hit._results_ = []
 
+        context = QgsLocatorContext()
+
         l = QgsLocator()
         filter_a = test_filter('a')
         l.registerFilter(filter_a)
 
         l.foundResult.connect(got_hit)
-        l.fetchResults('a')
+        l.fetchResults('a', context)
         l.cancel()
 
 

@@ -27,7 +27,7 @@ class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsLayerTreeLocatorFilter( QObject *parent = nullptr );
-    void fetchResults( const QString &string, QgsFeedback *feedback ) override;
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
 
 };
@@ -39,7 +39,7 @@ class QgsLayoutLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsLayoutLocatorFilter( QObject *parent = nullptr );
-    void fetchResults( const QString &string, QgsFeedback *feedback ) override;
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
 
 };

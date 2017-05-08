@@ -71,9 +71,11 @@ class QgsLocatorFilter : QObject
  Constructor for QgsLocatorFilter.
 %End
 
-    virtual void fetchResults( const QString &string, QgsFeedback *feedback ) = 0;
+    virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;
 %Docstring
- Retrieves the filter results for a specified search ``string``.
+ Retrieves the filter results for a specified search ``string``. The ``context``
+ argument encapsulates the context relating to the search (such as a map
+ extent to prioritize).
 
  Implementations of fetchResults() should emit the resultFetched()
  signal whenever they encounter a matching result.

@@ -74,9 +74,12 @@ class QgsLocator : QObject
  :rtype: list of QgsLocatorFilter
 %End
 
-    void fetchResults( const QString &string, QgsFeedback *feedback = 0 );
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback = 0 );
 %Docstring
  Triggers the background fetching of filter results for a specified search ``string``.
+ The ``context`` argument encapsulates the context relating to the search (such as a map
+ extent to prioritize).
+
  If specified, the ``feedback`` object must exist for the lifetime of this query.
 
  The foundResult() signal will be emitted for each individual result encountered

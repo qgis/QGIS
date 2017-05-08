@@ -693,6 +693,8 @@ SET(QGIS_GUI_HDRS
   layertree/qgslayertreeembeddedconfigwidget.h
   layertree/qgslayertreeembeddedwidgetregistry.h
 
+  locator/qgslocatorcontext.h
+
   raster/qgsrasterrendererwidget.h
 
   symbology-ng/qgssymbolwidgetcontext.h
