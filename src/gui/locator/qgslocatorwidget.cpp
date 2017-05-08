@@ -19,6 +19,7 @@
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
 #include "qgsfilterlineedit.h"
+#include "qgsmapcanvas.h"
 #include <QLayout>
 #include <QCompleter>
 #include "qgsapplication.h"
@@ -85,6 +86,11 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 QgsLocator *QgsLocatorWidget::locator()
 {
   return mLocator;
+}
+
+void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
 }
 
 void QgsLocatorWidget::search( const QString &string )
@@ -207,7 +213,9 @@ void QgsLocatorWidget::updateResults( const QString &text )
   {
     mLocatorModel->clear();
     if ( !text.isEmpty() )
-      mLocator->fetchResults( text );
+    {
+      mLocator->fetchResults( text, createContext() );
+    }
   }
 }
 
@@ -231,6 +239,17 @@ void QgsLocatorWidget::acceptCurrentEntry()
     mLineEdit->clearFocus();
     result.filter->triggerResult( result );
   }
+}
+
+QgsLocatorContext QgsLocatorWidget::createContext()
+{
+  QgsLocatorContext context;
+  if ( mMapCanvas )
+  {
+    context.targetExtent = mMapCanvas->mapSettings().visibleExtent();
+    context.targetExtentCrs = mMapCanvas->mapSettings().destinationCrs();
+  }
+  return context;
 }
 
 ///@cond PRIVATE

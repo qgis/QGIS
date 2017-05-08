@@ -72,7 +72,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   }
   mFeedback = feedback;
 
-  auto gatherFilterResults = [string, feedback]( QgsLocatorFilter * filter )
+  auto gatherFilterResults = [string, context, feedback]( QgsLocatorFilter * filter )
   {
     if ( !feedback->isCanceled() )
       filter->fetchResults( string, context, feedback );
