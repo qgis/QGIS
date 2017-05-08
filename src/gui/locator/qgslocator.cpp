@@ -52,7 +52,7 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
   connect( filter, &QgsLocatorFilter::resultFetched, this, &QgsLocator::filterSentResult, Qt::QueuedConnection );
 }
 
-void QgsLocator::fetchResults( const QString &string, QgsFeedback *feedback )
+void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
 {
   // ideally this should not be required, as well behaved callers
   // will NOT fire up a new fetchResults call while an existing one is
@@ -75,7 +75,7 @@ void QgsLocator::fetchResults( const QString &string, QgsFeedback *feedback )
   auto gatherFilterResults = [string, feedback]( QgsLocatorFilter * filter )
   {
     if ( !feedback->isCanceled() )
-      filter->fetchResults( string, feedback );
+      filter->fetchResults( string, context, feedback );
   };
 
   mFuture = QtConcurrent::map( mFilters, gatherFilterResults );

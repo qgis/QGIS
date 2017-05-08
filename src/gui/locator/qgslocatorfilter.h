@@ -19,6 +19,7 @@
 #define QGSLOCATORFILTER_H
 
 #include "qgis_gui.h"
+#include "qgslocatorcontext.h"
 #include "qgslogger.h"
 #include <QString>
 #include <QVariant>
@@ -91,7 +92,9 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
     QgsLocatorFilter( QObject *parent = nullptr );
 
     /**
-     * Retrieves the filter results for a specified search \a string.
+     * Retrieves the filter results for a specified search \a string. The \a context
+     * argument encapsulates the context relating to the search (such as a map
+     * extent to prioritize).
      *
      * Implementations of fetchResults() should emit the resultFetched()
      * signal whenever they encounter a matching result.
@@ -100,7 +103,7 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
      * whether the query has been canceled. If so, the subclass should return
      * from this method as soon as possible.
      */
-    virtual void fetchResults( const QString &string, QgsFeedback *feedback ) = 0;
+    virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;
 
     /**
      * Triggers a filter \a result from this filter. This is called when

@@ -212,6 +212,7 @@
 %Include layertree/qgslayertreeviewdefaultactions.sip
 
 %Include locator/qgslocator.sip
+%Include locator/qgslocatorcontext.sip
 %Include locator/qgslocatorfilter.sip
 %Include locator/qgslocatorwidget.sip
 
