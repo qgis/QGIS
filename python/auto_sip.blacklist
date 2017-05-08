@@ -121,7 +121,6 @@ core/composer/qgscomposeritemcommand.sip
 core/composer/qgscomposeritemgroup.sip
 core/composer/qgscomposerlabel.sip
 core/composer/qgscomposerlegend.sip
-core/composer/qgscomposermap.sip
 core/composer/qgscomposermapgrid.sip
 core/composer/qgscomposermapitem.sip
 core/composer/qgscomposermapoverview.sip
