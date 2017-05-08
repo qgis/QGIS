@@ -206,7 +206,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle &extent, QSizeF s
   return jobMapSettings;
 }
 
-void QgsComposerMap::cache()
+void QgsComposerMap::recreateCachedImageInBackground()
 {
   if ( mPreviewMode == Rectangle )
   {
@@ -286,6 +286,7 @@ void QgsComposerMap::cache()
     mCacheRenderingImage->fill( QColor( 255, 255, 255, 0 ).rgba() );
   }
 
+  mCacheInvalidated = false;
   mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
   QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheRenderingImage->logicalDpiX() ) );
   mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
@@ -298,7 +299,6 @@ void QgsComposerMap::painterJobFinished()
   mPainter->end();
   mPainterJob.reset( nullptr );
   mPainter.reset( nullptr );
-  mCacheUpdated = true;
   mCacheFinalImage = std::move( mCacheRenderingImage );
   mLastRenderedImageOffsetX = 0;
   mLastRenderedImageOffsetY = 0;
@@ -351,11 +351,17 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
       if ( !mPainterJob )
       {
         // this is the map's very first paint - trigger a cache update
-        cache();
+        recreateCachedImageInBackground();
       }
     }
     else
     {
+      if ( mCacheInvalidated )
+      {
+        // cache was invalidated - trigger a background update
+        recreateCachedImageInBackground();
+      }
+
       //Background color is already included in cached image, so no need to draw
 
       double imagePixelWidth = mCacheFinalImage->width(); //how many pixels of the image are for the map extent?
@@ -436,6 +442,12 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   painter->restore();
 }
 
+void QgsComposerMap::invalidateCache()
+{
+  mCacheInvalidated = true;
+  updateItem();
+}
+
 int QgsComposerMap::numberExportLayers() const
 {
   return
@@ -495,24 +507,12 @@ bool QgsComposerMap::shouldDrawPart( PartType part ) const
   return true; // for Layer
 }
 
-void QgsComposerMap::updateCachedImage()
-{
-  mCacheUpdated = false;
-  cache();
-  update();
-}
-
 void QgsComposerMap::renderModeUpdateCachedImage()
 {
   if ( mPreviewMode == Render )
   {
-    updateCachedImage();
+    invalidateCache();
   }
-}
-
-void QgsComposerMap::setCacheUpdated( bool u )
-{
-  mCacheUpdated = u;
 }
 
 QList<QgsMapLayer *> QgsComposerMap::layersToRender( const QgsExpressionContext *context ) const
@@ -635,8 +635,7 @@ void QgsComposerMap::moveContent( double dx, double dy )
     //in case data defined extents are set, these override the calculated values
     refreshMapExtents();
 
-    cache();
-    update();
+    invalidateCache();
     emit itemChanged();
     emit extentChanged();
   }
@@ -709,8 +708,7 @@ void QgsComposerMap::zoomContent( const double factor, const QPointF point, cons
   //recalculate data defined scale and extents, since that may override zoom
   refreshMapExtents();
 
-  cache();
-  update();
+  invalidateCache();
   emit itemChanged();
   emit extentChanged();
 }
@@ -729,10 +727,8 @@ void QgsComposerMap::setSceneRect( const QRectF &rectangle )
 
   //recalculate data defined scale and extents
   refreshMapExtents();
-  mCacheUpdated = false;
-
   updateBoundingRect();
-  updateItem();
+  invalidateCache();
   emit itemChanged();
   emit extentChanged();
 }
@@ -796,8 +792,7 @@ void QgsComposerMap::zoomToExtent( const QgsRectangle &extent )
   //recalculate data defined scale and extents, since that may override extent
   refreshMapExtents();
 
-  mCacheUpdated = false;
-  updateItem();
+  invalidateCache();
   emit itemChanged();
   emit extentChanged();
 }
@@ -836,9 +831,8 @@ void QgsComposerMap::setNewAtlasFeatureExtent( const QgsRectangle &extent )
   //recalculate data defined scale and extents, since that may override extents
   refreshMapExtents();
 
-  mCacheUpdated = false;
   emit preparedForAtlas();
-  updateItem();
+  invalidateCache();
   emit itemChanged();
   emit extentChanged();
 }
@@ -913,11 +907,9 @@ void QgsComposerMap::setNewScale( double scaleDenominator, bool forceUpdate )
     mExtent.scale( scaleRatio );
   }
 
-  mCacheUpdated = false;
+  invalidateCache();
   if ( forceUpdate )
   {
-    cache();
-    update();
     emit itemChanged();
   }
   emit extentChanged();
@@ -939,9 +931,9 @@ void QgsComposerMap::setMapRotation( double r )
 {
   mMapRotation = r;
   mEvaluatedMapRotation = mMapRotation;
+  invalidateCache();
   emit mapRotationChanged( r );
   emit itemChanged();
-  update();
 }
 
 double QgsComposerMap::mapRotation( QgsComposerObject::PropertyValueType valueType ) const
@@ -1078,21 +1070,6 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext *context )
     mEvaluatedMapRotation = mapRotation;
     emit mapRotationChanged( mapRotation );
   }
-
-}
-
-void QgsComposerMap::updateItem()
-{
-  if ( !updatesEnabled() )
-  {
-    return;
-  }
-
-  if ( mPreviewMode != QgsComposerMap::Rectangle && !mCacheUpdated )
-  {
-    cache();
-  }
-  QgsComposerItem::updateItem();
 }
 
 bool QgsComposerMap::containsWmsLayer() const
@@ -1182,7 +1159,7 @@ void QgsComposerMap::connectUpdateSlot()
     connect( project, &QgsProject::layersRemoved, this, &QgsComposerMap::renderModeUpdateCachedImage );
     connect( project, &QgsProject::legendLayersAdded, this, &QgsComposerMap::renderModeUpdateCachedImage );
   }
-  connect( mComposition, &QgsComposition::refreshItemsTriggered, this, &QgsComposerMap::updateCachedImage );
+  connect( mComposition, &QgsComposition::refreshItemsTriggered, this, &QgsComposerMap::invalidateCache );
 }
 
 bool QgsComposerMap::writeXml( QDomElement &elem, QDomDocument &doc ) const
@@ -1448,7 +1425,7 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
 
   mDrawing = false;
   mNumCachedLayers = 0;
-  mCacheUpdated = false;
+  mCacheInvalidated = true;
 
   //overviews
   mOverviewStack->readXml( itemElem, doc );
@@ -1870,7 +1847,7 @@ void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDe
   }
 
   //force redraw
-  mCacheUpdated = false;
+  mCacheInvalidated = true;
 
   QgsComposerItem::refreshDataDefinedProperty( property, evalContext );
 }

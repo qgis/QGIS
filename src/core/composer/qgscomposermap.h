@@ -99,9 +99,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
-    //! \brief Create cache image
-    void cache();
-
     /** Return map settings that would be used for drawing of the map
      *  \since QGIS 2.6 */
     QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
@@ -279,9 +276,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * \since QGIS 2.16 */
     void setFollowVisibilityPresetName( const QString &name ) { mFollowVisibilityPresetName = name; }
 
-    // Set cache outdated
-    void setCacheUpdated( bool u = false );
-
     QgsRectangle extent() const {return mExtent;}
 
     //! Sets offset values to shift image (useful for live updates when moving item content)
@@ -354,8 +348,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * settings).
      */
     double mapRotation( QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
-
-    void updateItem() override;
 
     /**
      * Sets whether annotations are drawn within the composer map.
@@ -476,8 +468,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
   public slots:
 
-    //! Forces an update of the cached map image
-    void updateCachedImage();
+    /**
+     * Forces a deferred update of the cached map image on next paint.
+     * \since QGIS 3.0
+     */
+    void invalidateCache();
 
     /** Updates the cached map image if the map is set to Render mode
      * \see updateCachedImage
@@ -526,8 +521,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     std::unique_ptr< QImage > mCacheFinalImage;
     std::unique_ptr< QImage > mCacheRenderingImage;
 
-    // Is cache up to date
-    bool mCacheUpdated = false;
+    //! True if cached map image must be recreated
+    bool mCacheInvalidated = true;
 
     //! \brief Preview style
     PreviewMode mPreviewMode = QgsComposerMap::Cache;
@@ -571,6 +566,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
      *  is true. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
+
+    //! \brief Create cache image
+    void recreateCachedImage();
 
     //! Establishes signal/slot connection for update in case of layer change
     void connectUpdateSlot();

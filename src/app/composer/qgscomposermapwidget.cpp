@@ -195,8 +195,7 @@ void QgsComposerMapWidget::followVisibilityPresetSelected( int currentIndex )
   mFollowVisibilityPresetCheckBox->setChecked( true );
   mComposerMap->setFollowVisibilityPresetName( presetName );
 
-  mComposerMap->cache();
-  mComposerMap->update();
+  mComposerMap->invalidateCache();
 }
 
 void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
@@ -216,8 +215,7 @@ void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
 
     mComposerMap->setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( presetName ) );
 
-    mComposerMap->cache();
-    mComposerMap->update();
+    mComposerMap->invalidateCache();
   }
 }
 
@@ -301,8 +299,7 @@ void QgsComposerMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &cr
   if ( updateExtent )
     mComposerMap->zoomToExtent( newExtent );
   mComposerMap->endCommand();
-  mComposerMap->cache();
-  mComposerMap->update();
+  mComposerMap->invalidateCache();
 }
 
 void QgsComposerMapWidget::on_mAtlasCheckBox_toggled( bool checked )
@@ -369,8 +366,7 @@ void QgsComposerMapWidget::updateMapForAtlas()
   else
   {
     //redraw map
-    mComposerMap->cache();
-    mComposerMap->update();
+    mComposerMap->invalidateCache();
   }
 }
 
@@ -466,8 +462,7 @@ void QgsComposerMapWidget::on_mPreviewModeComboBox_activated( int i )
     mUpdatePreviewButton->setEnabled( false );
   }
 
-  mComposerMap->cache();
-  mComposerMap->update();
+  mComposerMap->invalidateCache();
 }
 
 void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
@@ -503,8 +498,7 @@ void QgsComposerMapWidget::rotationChanged()
   mComposerMap->beginCommand( tr( "Map rotation changed" ), QgsComposerMergeCommand::ComposerMapRotation );
   mComposerMap->setMapRotation( mMapRotationSpinBox->value() );
   mComposerMap->endCommand();
-  mComposerMap->cache();
-  mComposerMap->update();
+  mComposerMap->invalidateCache();
 }
 
 void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
@@ -869,9 +863,7 @@ void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
 
   mUpdatePreviewButton->setEnabled( false ); //prevent crashes because of many button clicks
 
-  mComposerMap->setCacheUpdated( false );
-  mComposerMap->cache();
-  mComposerMap->update();
+  mComposerMap->invalidateCache();
 
   mUpdatePreviewButton->setEnabled( true );
 }
@@ -891,8 +883,7 @@ void QgsComposerMapWidget::on_mFollowVisibilityPresetCheckBox_stateChanged( int 
     mKeepLayerListCheckBox->setCheckState( Qt::Unchecked );
     mKeepLayerStylesCheckBox->setCheckState( Qt::Unchecked );
 
-    mComposerMap->cache();
-    mComposerMap->update();
+    mComposerMap->invalidateCache();
   }
   else
   {
@@ -924,7 +915,7 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
   else
   {
     mKeepLayerStylesCheckBox->setChecked( Qt::Unchecked );
-    mComposerMap->updateCachedImage();
+    mComposerMap->invalidateCache();
   }
 
   mKeepLayerStylesCheckBox->setEnabled( state == Qt::Checked );
@@ -959,9 +950,7 @@ void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
   mComposerMap->beginCommand( tr( "Canvas items toggled" ) );
   mComposerMap->setDrawAnnotations( state == Qt::Checked );
   mUpdatePreviewButton->setEnabled( false ); //prevent crashes because of many button clicks
-  mComposerMap->setCacheUpdated( false );
-  mComposerMap->cache();
-  mComposerMap->update();
+  mComposerMap->invalidateCache();
   mUpdatePreviewButton->setEnabled( true );
   mComposerMap->endCommand();
 }
