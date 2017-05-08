@@ -127,6 +127,54 @@ sub remove_constructor_or_body {
     };
 }
 
+sub fix_annotations(){
+  # printed annotations
+  $line =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
+  $line =~ s/\bSIP_ARRAY\b/\/Array\//;
+  $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//;
+  $line =~ s/\bSIP_FACTORY\b/\/Factory\//;
+  $line =~ s/\bSIP_IN\b/\/In\//g;
+  $line =~ s/\bSIP_INOUT\b/\/In,Out\//g;
+  $line =~ s/\bSIP_KEEPREFERENCE\b/\/KeepReference\//;
+  $line =~ s/\bSIP_OUT\b/\/Out\//g;
+  $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
+  $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
+  $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
+  $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
+
+  $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
+
+  # combine multiple annotations
+  # https://regex101.com/r/uvCt4M/3
+  do {no warnings 'uninitialized';
+      $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
+      (! $3) or dbg_info("combine multiple annotations -- works only for 2");
+  };
+
+  # unprinted annotations
+  $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
+  $line =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
+  # remove argument
+  if ($line =~ m/SIP_PYARGREMOVE/){
+      if ( $MULTILINE_DEFINITION == 1 ){
+          my $prev_line = pop(@output) =~ s/\n$//r;
+          # update multi line status
+          my $parenthesis_balance = 0;
+          $parenthesis_balance += $prev_line =~ tr/\(//;
+          $parenthesis_balance -= $prev_line =~ tr/\)//;
+          if ($parenthesis_balance == 1){
+             $MULTILINE_DEFINITION = 0;
+          }
+          # concat with above line to bring previous commas
+          $line =~ s/^\s+//;
+          $line = "$prev_line $line\n";
+      }
+      # see https://regex101.com/r/5iNptO/4
+      $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)? [\w&*]+ SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+  }
+  $line =~ s/SIP_FORCE//;
+}
+
 
 # main loop
 while ($line_idx < $line_count){
@@ -388,7 +436,8 @@ while ($line_idx < $line_count){
     }
 
     # class declaration started
-    if ( $line =~ m/^(\s*class)\s*([A-Z]+_EXPORT)?\s+(\w+)(\s*\:.*)?(\s*SIP_ABSTRACT)?$/ ){
+    # https://regex101.com/r/6FWntP/2
+    if ( $line =~ m/^(\s*class)\s+([A-Z]+_EXPORT)?\s+(\w+)(\s*\:\s*(public|private)\s+\w+(<\w+>)?(::\w+(<\w+>)?)*(,\s*(public|private)\s+\w+(<\w+>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_.*)?$/ ){
         dbg_info("class definition started => private");
         push @ACCESS, PRIVATE;
         push @global_bracket_nesting_index, 0;
@@ -401,12 +450,14 @@ while ($line_idx < $line_count){
         if ($4){
             my $m = $4;
             $m =~ s/public //g;
-            $m =~ s/,?\s*private \w+(::\w+)?//;
+            $m =~ s/[,:]?\s*private \w+(::\w+)?//;
             $m =~ s/(\s*:)?\s*$//;
             $line .= $m;
         }
-        if ($5) {
-            $line .= ' /Abstract/';
+        if (defined $+{annot})
+        {
+            $line .= "$+{annot}";
+            fix_annotations();
         }
 
         $line .= "\n{\n";
@@ -559,49 +610,7 @@ while ($line_idx < $line_count){
     # remove export macro from struct definition
     $line =~ s/^(\s*struct )\w+_EXPORT (.+)$/$1$2/;
 
-    # printed annotations
-    $line =~ s/\bSIP_FACTORY\b/\/Factory\//;
-    $line =~ s/\bSIP_OUT\b/\/Out\//g;
-    $line =~ s/\bSIP_IN\b/\/In\//g;
-    $line =~ s/\bSIP_INOUT\b/\/In,Out\//g;
-    $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
-    $line =~ s/\bSIP_KEEPREFERENCE\b/\/KeepReference\//;
-    $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
-    $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
-    $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
-    $line =~ s/\bSIP_ARRAY\b/\/Array\//;
-    $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//;
-    $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
-
-    # combine multiple annotations
-    # https://regex101.com/r/uvCt4M/3
-    do {no warnings 'uninitialized';
-        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
-        (! $3) or dbg_info("combine multiple annotations -- works only for 2");
-    };
-
-    # unprinted annotations
-    $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
-    $line =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
-    # remove argument
-    if ($line =~ m/SIP_PYARGREMOVE/){
-        if ( $MULTILINE_DEFINITION == 1 ){
-            my $prev_line = pop(@output) =~ s/\n$//r;
-            # update multi line status
-            my $parenthesis_balance = 0;
-            $parenthesis_balance += $prev_line =~ tr/\(//;
-            $parenthesis_balance -= $prev_line =~ tr/\)//;
-            if ($parenthesis_balance == 1){
-               $MULTILINE_DEFINITION = 0;
-            }
-            # concat with above line to bring previous commas
-            $line =~ s/^\s+//;
-            $line = "$prev_line $line\n";
-        }
-        # see https://regex101.com/r/5iNptO/4
-        $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)? [\w&*]+ SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
-    }
-    $line =~ s/SIP_FORCE//;
+    fix_annotations();
 
     # fix astyle placing space after % character
     $line =~ s/\s*% (MappedType|TypeCode|TypeHeaderCode|ModuleHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;

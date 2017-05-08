@@ -422,7 +422,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
  * \ingroup core
  * Documentation goes here
  */
-class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass
+class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass SIP_ABSTRACT
 {
   public:
     //! A constructor with definition in header on several lines
