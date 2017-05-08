@@ -62,7 +62,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
   blockAllSignals( true );
   mPreviewModeComboBox->insertItem( 0, tr( "Cache" ) );
   mPreviewModeComboBox->insertItem( 1, tr( "Render" ) );
-  mPreviewModeComboBox->insertItem( 2, tr( "Rectangle" ) );
 
   mCrsSelector->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   mCrsSelector->setNotSetText( tr( "Use project CRS" ) );
@@ -446,20 +445,15 @@ void QgsComposerMapWidget::on_mPreviewModeComboBox_activated( int i )
   }
 
   QString comboText = mPreviewModeComboBox->currentText();
-  if ( comboText == tr( "Cache" ) )
-  {
-    mComposerMap->setPreviewMode( QgsComposerMap::Cache );
-    mUpdatePreviewButton->setEnabled( true );
-  }
-  else if ( comboText == tr( "Render" ) )
+  if ( comboText == tr( "Render" ) )
   {
     mComposerMap->setPreviewMode( QgsComposerMap::Render );
     mUpdatePreviewButton->setEnabled( true );
   }
-  else if ( comboText == tr( "Rectangle" ) )
+  else
   {
-    mComposerMap->setPreviewMode( QgsComposerMap::Rectangle );
-    mUpdatePreviewButton->setEnabled( false );
+    mComposerMap->setPreviewMode( QgsComposerMap::Cache );
+    mUpdatePreviewButton->setEnabled( true );
   }
 
   mComposerMap->invalidateCache();
@@ -630,20 +624,15 @@ void QgsComposerMapWidget::updateGuiElements()
   //preview mode
   QgsComposerMap::PreviewMode previewMode = mComposerMap->previewMode();
   int index = -1;
-  if ( previewMode == QgsComposerMap::Cache )
-  {
-    index = mPreviewModeComboBox->findText( tr( "Cache" ) );
-    mUpdatePreviewButton->setEnabled( true );
-  }
-  else if ( previewMode == QgsComposerMap::Render )
+  if ( previewMode == QgsComposerMap::Render )
   {
     index = mPreviewModeComboBox->findText( tr( "Render" ) );
     mUpdatePreviewButton->setEnabled( true );
   }
-  else if ( previewMode == QgsComposerMap::Rectangle )
+  else
   {
-    index = mPreviewModeComboBox->findText( tr( "Rectangle" ) );
-    mUpdatePreviewButton->setEnabled( false );
+    index = mPreviewModeComboBox->findText( tr( "Cache" ) );
+    mUpdatePreviewButton->setEnabled( true );
   }
   if ( index != -1 )
   {

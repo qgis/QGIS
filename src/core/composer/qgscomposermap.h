@@ -69,7 +69,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     {
       Cache = 0,   // Use raster cache
       Render,      // Render the map
-      Rectangle    // Display only rectangle
     };
 
     /** Scaling modes used for the serial rendering (atlas)

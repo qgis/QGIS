@@ -208,11 +208,6 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle &extent, QSizeF s
 
 void QgsComposerMap::recreateCachedImageInBackground()
 {
-  if ( mPreviewMode == Rectangle )
-  {
-    return;
-  }
-
   if ( mPainterJob )
   {
     disconnect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsComposerMap::painterJobFinished );
@@ -325,16 +320,7 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   painter->save();
   painter->setClipRect( thisPaintRect );
 
-  if ( mComposition->plotStyle() == QgsComposition::Preview && mPreviewMode == Rectangle )
-  {
-    // Fill with background color
-    drawBackground( painter );
-    QFont messageFont( QLatin1String( "" ), 12 );
-    painter->setFont( messageFont );
-    painter->setPen( QColor( 0, 0, 0, 125 ) );
-    painter->drawText( thisPaintRect, tr( "Map will be printed here" ) );
-  }
-  else if ( mComposition->plotStyle() == QgsComposition::Preview )
+  if ( mComposition->plotStyle() == QgsComposition::Preview )
   {
     if ( !mCacheFinalImage || mCacheFinalImage->isNull() )
     {
@@ -416,13 +402,11 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   }
 
   painter->setClipRect( thisPaintRect, Qt::NoClip );
-  if ( shouldDrawPart( OverviewMapExtent ) &&
-       ( mComposition->plotStyle() != QgsComposition::Preview || mPreviewMode != Rectangle ) )
+  if ( shouldDrawPart( OverviewMapExtent ) )
   {
     mOverviewStack->drawItems( painter );
   }
-  if ( shouldDrawPart( Grid ) &&
-       ( mComposition->plotStyle() != QgsComposition::Preview || mPreviewMode != Rectangle ) )
+  if ( shouldDrawPart( Grid ) )
   {
     mGridStack->drawItems( painter );
   }
@@ -1304,21 +1288,16 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     mId = idRead.toInt();
     updateToolTip();
   }
-  mPreviewMode = Rectangle;
 
   //previewMode
   QString previewMode = itemElem.attribute( QStringLiteral( "previewMode" ) );
-  if ( previewMode == QLatin1String( "Cache" ) )
-  {
-    mPreviewMode = Cache;
-  }
-  else if ( previewMode == QLatin1String( "Render" ) )
+  if ( previewMode == QLatin1String( "Render" ) )
   {
     mPreviewMode = Render;
   }
   else
   {
-    mPreviewMode = Rectangle;
+    mPreviewMode = Cache;
   }
 
   //extent

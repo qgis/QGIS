@@ -641,6 +641,7 @@ and setAtlasScalingMode() instead.
 associated project's annotationManager()
 - setDrawCanvasItems() and drawCanvasItems() were renamed to setDrawAnnotations() and drawAnnotations()
 - setCacheUpdated(), updateCachedImage() and cache() were removed. Use invalidateCache() instead.
+- The Rectangle mode enum was removed. Use the reworked Cache mode instead.
 
 
 QgsComposerMapGrid        {#qgis_api_break_3_0_QgsComposerMapGrid}

@@ -40,7 +40,6 @@ Return correct graphics item type.
     {
       Cache,
       Render,
-      Rectangle
     };
 
     enum AtlasScalingMode
