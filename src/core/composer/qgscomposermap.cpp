@@ -25,6 +25,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaptopixel.h"
+#include "qgsmapsettingsutils.h"
 #include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
@@ -1071,43 +1072,10 @@ bool QgsComposerMap::containsAdvancedEffects() const
     return true;
   }
 
-  // check if map contains advanced effects like blend modes, or flattened layers for transparency
 
-  QgsTextFormat layerFormat;
-  Q_FOREACH ( QgsMapLayer *layer, layersToRender() )
-  {
-    if ( layer )
-    {
-      if ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
-      {
-        return true;
-      }
-      // if vector layer, check labels and feature blend mode
-      QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( currentVectorLayer )
-      {
-        if ( currentVectorLayer->layerTransparency() != 0 )
-        {
-          return true;
-        }
-        if ( currentVectorLayer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-        {
-          return true;
-        }
-        // check label blend modes
-        if ( QgsPalLabeling::staticWillUseLayer( currentVectorLayer ) )
-        {
-          // Check all label blending properties
-
-          layerFormat.readFromLayer( currentVectorLayer );
-          if ( layerFormat.containsAdvancedEffects() )
-            return true;
-        }
-      }
-    }
-  }
-
-  return false;
+  QgsMapSettings ms;
+  ms.setLayers( layersToRender() );
+  return QgsMapSettingsUtils::containsAdvancedEffects( ms );
 }
 
 void QgsComposerMap::connectUpdateSlot()
