@@ -15,11 +15,13 @@
 #include "qgslogger.h"
 #include "qgshelp.h"
 #include "qgssettings.h"
+#include "qgssvgcache.h"
 
 #include <QPainter>
 #include <cmath>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QSvgRenderer>
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent )
   : QDialog( parent )
@@ -104,20 +106,24 @@ void QgsDecorationNorthArrowDialog::apply()
 
 void QgsDecorationNorthArrowDialog::rotatePixmap( int rotationInt )
 {
-  QPixmap myQPixmap;
-  QString myFileNameQString = QStringLiteral( ":/images/north_arrows/default.png" );
-// QgsDebugMsg(QString("Trying to load %1").arg(myFileNameQString));
-  if ( myQPixmap.load( myFileNameQString ) )
+  QSize size( 64, 64 );
+  QSvgRenderer svg;
+
+  const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( QStringLiteral( ":/images/north_arrows/default.svg" ), size.width(), QColor( "#000000" ), QColor( "#FFFFFF" ), 0.2, 1.0 );
+  svg.load( svgContent );
+
+  if ( svg.isValid() )
   {
-    QPixmap  myPainterPixmap( myQPixmap.height(), myQPixmap.width() );
+    QPixmap  myPainterPixmap( size.height(), size.width() );
     myPainterPixmap.fill();
+
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
 
     myQPainter.setRenderHint( QPainter::SmoothPixmapTransform );
 
-    double centerXDouble = myQPixmap.width() / 2.0;
-    double centerYDouble = myQPixmap.height() / 2.0;
+    double centerXDouble = size.width() / 2.0;
+    double centerYDouble = size.height() / 2.0;
     //save the current canvas rotation
     myQPainter.save();
     //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
@@ -138,7 +144,8 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int rotationInt )
                                    ) - centerYDouble );
 
     //draw the pixmap in the proper position
-    myQPainter.drawPixmap( xShift, yShift, myQPixmap );
+    myQPainter.translate( xShift, yShift );
+    svg.render( &myQPainter, QRectF( 0, 0, size.width(), size.height() ) );
 
     //unrotate the canvas again
     myQPainter.restore();
