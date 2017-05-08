@@ -37,7 +37,6 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     virtual ~QgsComposerMapWidget();
 
   public slots:
-    void on_mPreviewModeComboBox_activated( int i );
     void on_mScaleLineEdit_editingFinished();
     void on_mSetToMapCanvasExtentButton_clicked();
     void on_mViewExtentInCanvasButton_clicked();

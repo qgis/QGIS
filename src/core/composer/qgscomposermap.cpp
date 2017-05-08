@@ -20,6 +20,7 @@
 #include "qgscomposermapoverview.h"
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
+#include "qgslayertree.h"
 #include "qgslogger.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaplayerlistutils.h"
@@ -491,14 +492,6 @@ bool QgsComposerMap::shouldDrawPart( PartType part ) const
   return true; // for Layer
 }
 
-void QgsComposerMap::renderModeUpdateCachedImage()
-{
-  if ( mPreviewMode == Render )
-  {
-    invalidateCache();
-  }
-}
-
 QList<QgsMapLayer *> QgsComposerMap::layersToRender( const QgsExpressionContext *context ) const
 {
   QgsExpressionContext scopedContext = createExpressionContext();
@@ -899,12 +892,6 @@ void QgsComposerMap::setNewScale( double scaleDenominator, bool forceUpdate )
   emit extentChanged();
 }
 
-void QgsComposerMap::setPreviewMode( PreviewMode m )
-{
-  mPreviewMode = m;
-  emit itemChanged();
-}
-
 void QgsComposerMap::setOffset( double xOffset, double yOffset )
 {
   mXOffset = xOffset;
@@ -1140,8 +1127,14 @@ void QgsComposerMap::connectUpdateSlot()
     connect( project, static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *>& layers ) > ( &QgsProject::layersWillBeRemoved ),
              this, &QgsComposerMap::layersAboutToBeRemoved );
     // redraws the map AFTER layers are removed
-    connect( project, &QgsProject::layersRemoved, this, &QgsComposerMap::renderModeUpdateCachedImage );
-    connect( project, &QgsProject::legendLayersAdded, this, &QgsComposerMap::renderModeUpdateCachedImage );
+    connect( project->layerTreeRoot(), &QgsLayerTree::layerOrderChanged, this, [ = ]
+    {
+      if ( layers().isEmpty() )
+      {
+        //using project layers, and layer order has changed
+        invalidateCache();
+      }
+    } );
 
     connect( project, &QgsProject::crsChanged, this, [ = ]
     {
@@ -1165,20 +1158,6 @@ bool QgsComposerMap::writeXml( QDomElement &elem, QDomDocument &doc ) const
 
   QDomElement composerMapElem = doc.createElement( QStringLiteral( "ComposerMap" ) );
   composerMapElem.setAttribute( QStringLiteral( "id" ), mId );
-
-  //previewMode
-  if ( mPreviewMode == Cache )
-  {
-    composerMapElem.setAttribute( QStringLiteral( "previewMode" ), QStringLiteral( "Cache" ) );
-  }
-  else if ( mPreviewMode == Render )
-  {
-    composerMapElem.setAttribute( QStringLiteral( "previewMode" ), QStringLiteral( "Render" ) );
-  }
-  else //rectangle
-  {
-    composerMapElem.setAttribute( QStringLiteral( "previewMode" ), QStringLiteral( "Rectangle" ) );
-  }
 
   if ( mKeepLayerSet )
   {
@@ -1297,17 +1276,6 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
   {
     mId = idRead.toInt();
     updateToolTip();
-  }
-
-  //previewMode
-  QString previewMode = itemElem.attribute( QStringLiteral( "previewMode" ) );
-  if ( previewMode == QLatin1String( "Render" ) )
-  {
-    mPreviewMode = Render;
-  }
-  else
-  {
-    mPreviewMode = Cache;
   }
 
   //extent

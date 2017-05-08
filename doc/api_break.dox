@@ -640,8 +640,9 @@ and setAtlasScalingMode() instead.
 - setMapCanvas() was removed. This is no longer required to draw map annotations, which are instead retrieved from the composition's
 associated project's annotationManager()
 - setDrawCanvasItems() and drawCanvasItems() were renamed to setDrawAnnotations() and drawAnnotations()
-- setCacheUpdated(), updateCachedImage() and cache() were removed. Use invalidateCache() instead.
-- The Rectangle mode enum was removed. Use the reworked Cache mode instead.
+- setCacheUpdated(), updateCachedImage(), renderModeUpdateCachedImage() and cache() were removed. Use invalidateCache() instead.
+- The PreviewMode mode enums were removed. These are no longer used.
+- previewMode() and setPreviewMode() were removed. These are no longer required.
 
 
 QgsComposerMapGrid        {#qgis_api_break_3_0_QgsComposerMapGrid}

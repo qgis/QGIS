@@ -60,8 +60,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
   mYMaxLineEdit->setValidator( new QDoubleValidator( mYMaxLineEdit ) );
 
   blockAllSignals( true );
-  mPreviewModeComboBox->insertItem( 0, tr( "Cache" ) );
-  mPreviewModeComboBox->insertItem( 1, tr( "Render" ) );
 
   mCrsSelector->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   mCrsSelector->setNotSetText( tr( "Use project CRS" ) );
@@ -430,35 +428,6 @@ void QgsComposerMapWidget::on_mAtlasPredefinedScaleRadio_toggled( bool checked )
   }
 }
 
-void QgsComposerMapWidget::on_mPreviewModeComboBox_activated( int i )
-{
-  Q_UNUSED( i );
-
-  if ( !mComposerMap )
-  {
-    return;
-  }
-
-  if ( mComposerMap->isDrawing() )
-  {
-    return;
-  }
-
-  QString comboText = mPreviewModeComboBox->currentText();
-  if ( comboText == tr( "Render" ) )
-  {
-    mComposerMap->setPreviewMode( QgsComposerMap::Render );
-    mUpdatePreviewButton->setEnabled( true );
-  }
-  else
-  {
-    mComposerMap->setPreviewMode( QgsComposerMap::Cache );
-    mUpdatePreviewButton->setEnabled( true );
-  }
-
-  mComposerMap->invalidateCache();
-}
-
 void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
 {
   if ( !mComposerMap )
@@ -582,12 +551,8 @@ void QgsComposerMapWidget::on_mYMaxLineEdit_editingFinished()
 void QgsComposerMapWidget::setGuiElementValues()
 {
   mScaleLineEdit->blockSignals( true );
-  mPreviewModeComboBox->blockSignals( true );
-
   updateGuiElements();
-
   mScaleLineEdit->blockSignals( false );
-  mPreviewModeComboBox->blockSignals( false );
 }
 
 void QgsComposerMapWidget::updateGuiElements()
@@ -619,24 +584,6 @@ void QgsComposerMapWidget::updateGuiElements()
   {
     //if scale < 1 then use 10 decimal places
     mScaleLineEdit->setText( QString::number( mComposerMap->scale(), 'f', 10 ) );
-  }
-
-  //preview mode
-  QgsComposerMap::PreviewMode previewMode = mComposerMap->previewMode();
-  int index = -1;
-  if ( previewMode == QgsComposerMap::Render )
-  {
-    index = mPreviewModeComboBox->findText( tr( "Render" ) );
-    mUpdatePreviewButton->setEnabled( true );
-  }
-  else
-  {
-    index = mPreviewModeComboBox->findText( tr( "Cache" ) );
-    mUpdatePreviewButton->setEnabled( true );
-  }
-  if ( index != -1 )
-  {
-    mPreviewModeComboBox->setCurrentIndex( index );
   }
 
   //composer map extent

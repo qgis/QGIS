@@ -36,12 +36,6 @@ Return correct graphics item type.
  :rtype: int
 %End
 
-    enum PreviewMode
-    {
-      Cache,
-      Render,
-    };
-
     enum AtlasScalingMode
     {
       Fixed,
@@ -202,12 +196,6 @@ Atlas preview extents are only temporary, and are regenerated whenever the atlas
 .. seealso:: presetCrs()
 .. versionadded:: 3.0
 %End
-
-    PreviewMode previewMode() const;
-%Docstring
- :rtype: PreviewMode
-%End
-    void setPreviewMode( PreviewMode m );
 
     bool keepLayerSet() const;
 %Docstring
@@ -575,12 +563,6 @@ Is emitted when the map has been prepared for atlas rendering, just before actua
 %Docstring
  Forces a deferred update of the cached map image on next paint.
 .. versionadded:: 3.0
-%End
-
-    void renderModeUpdateCachedImage();
-%Docstring
- Updates the cached map image if the map is set to Render mode
-.. seealso:: updateCachedImage
 %End
 
     void updateBoundingRect();

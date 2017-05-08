@@ -64,13 +64,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerMap; }
 
-    //! \brief Preview style
-    enum PreviewMode
-    {
-      Cache = 0,   // Use raster cache
-      Render,      // Render the map
-    };
-
     /** Scaling modes used for the serial rendering (atlas)
      */
     enum AtlasScalingMode
@@ -204,9 +197,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
-
-    PreviewMode previewMode() const {return mPreviewMode;}
-    void setPreviewMode( PreviewMode m );
 
     /**
      * Getter for flag that determines if a stored layer set should be used
@@ -478,11 +468,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void invalidateCache();
 
-    /** Updates the cached map image if the map is set to Render mode
-     * \see updateCachedImage
-     */
-    void renderModeUpdateCachedImage();
-
     //! Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
     void updateBoundingRect();
 
@@ -527,9 +512,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     //! True if cached map image must be recreated
     bool mCacheInvalidated = true;
-
-    //! \brief Preview style
-    PreviewMode mPreviewMode = QgsComposerMap::Cache;
 
     //! \brief Number of layers when cache was created
     int mNumCachedLayers;

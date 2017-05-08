@@ -119,7 +119,6 @@ class TestComposerBase(TestQgsPalLabeling):
         # add map as small graphics item first, then set its scene QRectF later
         self._cmap = QgsComposerMap(self._c, 10, 10, 10, 10)
         """:type: QgsComposerMap"""
-        self._cmap.setPreviewMode(QgsComposerMap.Render)
         self._cmap.setFrameEnabled(False)
         self._cmap.setLayers(self._TestMapSettings.layers())
         self._c.addComposerMap(self._cmap)
