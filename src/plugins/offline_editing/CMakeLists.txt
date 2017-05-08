@@ -53,6 +53,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ../../core
   ../../core/geometry
+  ../../core/metadata
   ../../core/layertree
   ../../core/raster
   ../../gui

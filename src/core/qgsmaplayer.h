@@ -34,7 +34,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayerdependency.h"
-#include "metadata/qgslayermetadata.h"
+#include "qgslayermetadata.h"
 
 class QgsDataProvider;
 class QgsMapLayerLegend;

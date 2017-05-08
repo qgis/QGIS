@@ -153,6 +153,7 @@ INCLUDE_DIRECTORIES(
   ../../app
   ../../core
   ../../core/geometry
+  ../../core/metadata
   ../../core/layertree
   ../../core/raster
   ../../core/symbology-ng

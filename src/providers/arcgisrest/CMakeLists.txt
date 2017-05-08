@@ -3,6 +3,7 @@ INCLUDE_DIRECTORIES(
   ../../core/auth
   ../../core/geometry
   ../../core/raster
+  ../../core/metadata
   ../../gui
   ../../gui/auth
   ${GEOS_INCLUDE_DIR}

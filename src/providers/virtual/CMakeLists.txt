@@ -32,6 +32,7 @@ INCLUDE_DIRECTORIES(
   ../../core
   ../../core/auth
   ../../core/geometry
+  ../../core/metadata
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
 )

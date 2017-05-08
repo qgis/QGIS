@@ -753,6 +753,7 @@ INCLUDE_DIRECTORIES(
   ../core/scalebar
   ../core/symbology-ng
   ../core/effects
+  ../core/metadata
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )
