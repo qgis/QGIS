@@ -13,7 +13,6 @@ core/qgsfeaturerequest.sip
 core/qgsgeometrysimplifier.sip
 core/qgsgeometryvalidator.sip
 core/qgsmaptopixelgeometrysimplifier.sip
-core/qgstransaction.sip
 core/qgstransactiongroup.sip
 core/qgsdartmeasurement.sip
 core/qgsexpressionfieldbuffer.sip

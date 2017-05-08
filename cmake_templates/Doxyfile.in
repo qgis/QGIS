@@ -2049,26 +2049,25 @@ PREDEFINED             =
 # definition found in the source code.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-EXPAND_AS_DEFINED      = "SIP_TRANSFER" \
-                         "SIP_PYNAME" \
-                         "SIP_OUT" \
-                         "SIP_INOUT" \
-                         "SIP_TRANSFERTHIS" \
-                         "SIP_TRANSFERBACK" \
-                         "SIP_FACTORY" \
-                         "SIP_KEEPREFERENCE" \
+EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_ARRAY" \
                          "SIP_ARRAYSIZE" \
-                         "SIP_PYNAME" \
-                         "SIP_SKIP" \
-                         "SIP_PYARGDEFAULT" \
-                         "SIP_PYTYPE" \
-                         "SIP_PYARGREMOVE" \
                          "SIP_CONVERT_TO_SUBCLASS_CODE" \
+                         "SIP_END" \
+                         "SIP_FACTORY" \
                          "SIP_FEATURE" \
                          "SIP_IF_FEATURE" \
-                         "SIP_END" \
-                         "SIP_ABSTRACT"
+                         "SIP_INOUT" \
+                         "SIP_KEEPREFERENCE" \
+                         "SIP_OUT" \
+                         "SIP_PYARGDEFAULT" \
+                         "SIP_PYARGREMOVE" \
+                         "SIP_PYNAME" \
+                         "SIP_PYTYPE" \
+                         "SIP_SKIP" \
+                         "SIP_TRANSFER" \
+                         "SIP_TRANSFERBACK" \
+                         "SIP_TRANSFERTHIS"
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES then doxygen's preprocessor will
 # remove all references to function-like macros that are alone on a line, have

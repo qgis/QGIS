@@ -354,7 +354,7 @@ remove argument
     void ShowThisPrivateOne() ;
 };
 
-class ClassWithPrivateInheritanceOnly
+class ClassWithPrivateInheritanceOnly /Abstract/
 {
 %Docstring
  Documentation goes here
