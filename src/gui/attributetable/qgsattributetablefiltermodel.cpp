@@ -226,11 +226,18 @@ void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
   if ( mSelectedOnTop != selectedOnTop )
   {
     mSelectedOnTop = selectedOnTop;
+    int column = sortColumn();
+    Qt::SortOrder order = sortOrder();
 
-    if ( sortColumn() == -1 )
-    {
-      sort( 0 );
-    }
+    // set default sort values if they are not correctly set
+    if ( column < 0 )
+      column = 0;
+
+    if ( ( order != Qt::AscendingOrder ) &&
+         ( order != Qt::DescendingOrder ) )
+      order = Qt::AscendingOrder;
+
+    sort( column, order );
     invalidate();
   }
 }
