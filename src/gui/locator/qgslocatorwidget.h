@@ -32,6 +32,7 @@ class QgsLocator;
 class QgsFilterLineEdit;
 class QgsLocatorModel;
 class QgsLocatorResultsView;
+class QgsMapCanvas;
 
 /**
  * \class QgsLocatorWidget
@@ -56,6 +57,13 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
      * Returns a pointer to the locator utilized by this widget.
      */
     QgsLocator *locator();
+
+    /**
+     * Sets a map \a canvas to associate with the widget. This allows the
+     * widget to customise the searches performed by its locator(), such
+     * as prioritizing results which are near the current canvas extent.
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
 
   public slots:
 
@@ -83,6 +91,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     QgsLocatorModel *mLocatorModel = nullptr;
     QgsFloatingWidget *mResultsContainer = nullptr;
     QgsLocatorResultsView *mResultsView = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     QString mNextRequestedString;
     bool mHasQueuedRequest = false;
@@ -90,6 +99,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
 
     void updateResults( const QString &text );
     void acceptCurrentEntry();
+    QgsLocatorContext createContext();
 
 };
 

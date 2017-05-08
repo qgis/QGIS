@@ -35,6 +35,13 @@ class QgsLocatorWidget : QWidget
  :rtype: QgsLocator
 %End
 
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+ Sets a map ``canvas`` to associate with the widget. This allows the
+ widget to customise the searches performed by its locator(), such
+ as prioritizing results which are near the current canvas extent.
+%End
+
   public slots:
 
     void search( const QString &string );

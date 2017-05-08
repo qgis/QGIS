@@ -965,6 +965,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // set graphical credential requester
   new QgsCredentialDialog( this );
 
+  mLocatorWidget->setMapCanvas( mMapCanvas );
+
   qApp->processEvents();
 
   // load providers
