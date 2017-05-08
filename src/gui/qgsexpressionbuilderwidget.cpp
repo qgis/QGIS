@@ -548,7 +548,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     {
       // no feature passed yet, try to get from layer
       QgsFeature f;
-      mLayer->getFeatures().nextFeature( f );
+      mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( f );
       mExpressionContext.setFeature( f );
     }
   }
