@@ -1,11 +1,23 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgsrelationreferencewidget.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 
 class QgsRelationReferenceWidget : QWidget
 {
-%TypeHeaderCode
-#include <qgsrelationreferencewidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgsrelationreferencewidget.h"
+%End
   public:
+
     enum CanvasExtent
     {
       Fixed,
@@ -21,84 +33,119 @@ class QgsRelationReferenceWidget : QWidget
 
     void setRelationEditable( bool editable );
 
-    //! this sets the related feature using from the foreign key
     void setForeignKey( const QVariant &value );
+%Docstring
+this sets the related feature using from the foreign key
+%End
 
-    //! returns the related feature foreign key
-    QVariant foreignKey();
+    QVariant foreignKey() const;
+%Docstring
+returns the related feature foreign key
+ :rtype: QVariant
+%End
 
     void setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
 
-    //! determines if the form of the related feature will be shown
     bool embedForm();
+%Docstring
+determines if the form of the related feature will be shown
+ :rtype: bool
+%End
     void setEmbedForm( bool display );
 
-    //! determines if the foreign key is shown in a combox box or a read-only line edit
     bool readOnlySelector();
+%Docstring
+determines if the foreign key is shown in a combox box or a read-only line edit
+ :rtype: bool
+%End
     void setReadOnlySelector( bool readOnly );
 
-    //! determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
     bool allowMapIdentification();
+%Docstring
+determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
+ :rtype: bool
+%End
     void setAllowMapIdentification( bool allowMapIdentification );
 
-    //! If the widget will order the combobox entries by value
     bool orderByValue();
-    //! Set if the widget will order the combobox entries by value
+%Docstring
+If the widget will order the combobox entries by value
+ :rtype: bool
+%End
     void setOrderByValue( bool orderByValue );
-    //! Set the fields for which filter comboboxes will be created
+%Docstring
+Set if the widget will order the combobox entries by value
+%End
     void setFilterFields( const QStringList &filterFields );
+%Docstring
+Set the fields for which filter comboboxes will be created
+%End
 
-    //! determines the open form button is visible in the widget
     bool openFormButtonVisible();
+%Docstring
+determines the open form button is visible in the widget
+ :rtype: bool
+%End
     void setOpenFormButtonVisible( bool openFormButtonVisible );
 
-    /**
-     * Determines if the filters are chained
-     *
-     * @return True if filters are chained
-     */
     bool chainFilters() const;
+%Docstring
+ Determines if the filters are chained
 
-    /**
-     * Set if filters are chained.
-     * Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
-     *
-     * @param chainFilters If chaining should be enabled
-     */
+ :return: True if filters are chained
+ :rtype: bool
+%End
+
     void setChainFilters( bool chainFilters );
+%Docstring
+ Set if filters are chained.
+ Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
 
-    //! return the related feature (from the referenced layer)
-    //! if no feature is related, it returns an invalid feature
+ \param chainFilters If chaining should be enabled
+%End
+
     QgsFeature referencedFeature() const;
+%Docstring
+if no feature is related, it returns an invalid feature
+ :rtype: QgsFeature
+%End
 
-    /** Sets the widget to display in an indeterminate "mixed value" state.
-     * @note added in QGIS 2.16
-     */
     void showIndeterminateState();
+%Docstring
+ Sets the widget to display in an indeterminate "mixed value" state.
+.. versionadded:: 2.16
+%End
 
-    /**
-     * Determines if a button for adding new features should be shown.
-     *
-     * @note added in QGIS 2.16
-     */
     bool allowAddFeatures() const;
+%Docstring
+ Determines if a button for adding new features should be shown.
 
-    /**
-     * Determines if a button for adding new features should be shown.
-     *
-     * @note added in QGIS 2.16
-     */
+.. versionadded:: 2.16
+ :rtype: bool
+%End
+
     void setAllowAddFeatures( bool allowAddFeatures );
+%Docstring
+ Determines if a button for adding new features should be shown.
+
+.. versionadded:: 2.16
+%End
 
   public slots:
-    //! open the form of the related feature in a new dialog
     void openForm();
+%Docstring
+open the form of the related feature in a new dialog
+%End
 
-    //! activate the map tool to select a new related feature on the map
     void mapIdentification();
+%Docstring
+activate the map tool to select a new related feature on the map
+%End
 
-    //! unset the currently related feature
     void deleteForeignKey();
+%Docstring
+unset the currently related feature
+%End
 
   protected:
     virtual void showEvent( QShowEvent *e );
@@ -106,5 +153,14 @@ class QgsRelationReferenceWidget : QWidget
     void init();
 
   signals:
-    void foreignKeyChanged( const QVariant& );
+    void foreignKeyChanged( const QVariant & );
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgsrelationreferencewidget.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -59,7 +59,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
  * \since QGIS 3.0
  * \note not available in Python bindings
  */
-class GUI_EXPORT QgsEditorWidgetAutoConf
+class GUI_EXPORT QgsEditorWidgetAutoConf SIP_SKIP
 {
   public:
 

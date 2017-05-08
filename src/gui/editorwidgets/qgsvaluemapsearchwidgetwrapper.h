@@ -35,9 +35,9 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
-    FilterFlags supportedFlags() const override;
-    FilterFlags defaultFlags() const override;
-    virtual QString createExpression( FilterFlags flags ) const override;
+    QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
+    QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
+    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
 
