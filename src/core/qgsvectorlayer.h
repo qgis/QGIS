@@ -1858,7 +1858,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
-    void onSymbolsCounted( const QHash<QString, long> &symbolFeatureCountMap );
+    void onSymbolsCounted();
 
   protected:
     //! Set the extent
@@ -2008,7 +2008,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     mutable QMutex mFeatureSourceConstructorMutex;
 
-    std::unique_ptr<QgsVectorLayerFeatureCounter> mFeatureCounter;
+    QgsVectorLayerFeatureCounter *mFeatureCounter = nullptr;
 
     friend class QgsVectorLayerFeatureSource;
 };

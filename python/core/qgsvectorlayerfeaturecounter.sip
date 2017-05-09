@@ -31,8 +31,13 @@ class QgsVectorLayerFeatureCounter : QgsTask
 
     virtual bool run();
 
+
   signals:
-    void symbolsCounted( const QHash<QString, long> &symbolFeatureCountMap );
+
+    void symbolsCounted();
+%Docstring
+ Emitted when the symbols have been counted.
+%End
 
 };
 

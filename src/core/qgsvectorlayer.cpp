@@ -702,12 +702,12 @@ bool QgsVectorLayer::countSymbolFeatures()
 
   if ( !mFeatureCounter )
   {
-    mFeatureCounter.reset( new QgsVectorLayerFeatureCounter( this ) );
-    connect( mFeatureCounter.get(), &QgsVectorLayerFeatureCounter::symbolsCounted, this, &QgsVectorLayer::onSymbolsCounted );
-    connect( mFeatureCounter.get(), &QgsTask::taskCompleted, [ = ]() { mFeatureCounter.reset(); } );
-    connect( mFeatureCounter.get(), &QgsTask::taskTerminated, [ = ]() { mFeatureCounter.reset(); } );
+    mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
+    connect( mFeatureCounter, &QgsVectorLayerFeatureCounter::symbolsCounted, this, &QgsVectorLayer::onSymbolsCounted );
+    connect( mFeatureCounter, &QgsTask::taskCompleted, [ = ]() { mFeatureCounter = nullptr; } );
+    connect( mFeatureCounter, &QgsTask::taskTerminated, [ = ]() { mFeatureCounter = nullptr; } );
 
-    QgsApplication::taskManager()->addTask( mFeatureCounter.get() );
+    QgsApplication::taskManager()->addTask( mFeatureCounter );
   }
 
   return true;
@@ -3899,11 +3899,14 @@ void QgsVectorLayer::onRelationsLoaded()
   mEditFormConfig.onRelationsLoaded();
 }
 
-void QgsVectorLayer::onSymbolsCounted( const QHash<QString, long> &symbolFeatureCountMap )
+void QgsVectorLayer::onSymbolsCounted()
 {
-  mSymbolFeatureCountMap = symbolFeatureCountMap;
-  mSymbolFeatureCounted = true;
-  emit symbolFeatureCountMapChanged();
+  if ( mFeatureCounter )
+  {
+    mSymbolFeatureCountMap = mFeatureCounter->symbolFeatureCountMap();
+    mSymbolFeatureCounted = true;
+    emit symbolFeatureCountMapChanged();
+  }
 }
 
 QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const

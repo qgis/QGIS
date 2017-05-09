@@ -64,6 +64,11 @@ bool QgsVectorLayerFeatureCounter::run()
   mRenderer->stopRender( renderContext );
   setProgress( 100 );
 
-  emit symbolsCounted( mSymbolFeatureCountMap );
+  emit symbolsCounted();
   return true;
+}
+
+QHash<QString, long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
+{
+    return mSymbolFeatureCountMap;
 }

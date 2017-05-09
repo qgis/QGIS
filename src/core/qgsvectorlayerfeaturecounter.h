@@ -28,8 +28,20 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
 
     virtual bool run() override;
 
+    /**
+     * Get the count for each symbol. Only valid after the symbolsCounted()
+     * signal has been emitted.
+     *
+     * \note Not available in Python bindings.
+     */
+    QHash<QString, long> symbolFeatureCountMap() const SIP_SKIP;
+
   signals:
-    void symbolsCounted( const QHash<QString, long> &symbolFeatureCountMap );
+
+    /**
+     * Emitted when the symbols have been counted.
+     */
+    void symbolsCounted();
 
   private:
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
