@@ -57,14 +57,12 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     connect( mBlueBandComboBox, &QgsRasterBandComboBox::bandChanged,
              this, &QgsMultiBandColorRendererWidget::onBandChanged );
 
+    mRedBandComboBox->setShowNotSetOption( true );
+    mGreenBandComboBox->setShowNotSetOption( true );
+    mBlueBandComboBox->setShowNotSetOption( true );
     mRedBandComboBox->setLayer( mRasterLayer );
     mGreenBandComboBox->setLayer( mRasterLayer );
     mBlueBandComboBox->setLayer( mRasterLayer );
-
-    //fill available bands into combo boxes
-    mRedBandComboBox->insertItem( 0, tr( "Not set" ), -1 );
-    mGreenBandComboBox->insertItem( 0, tr( "Not set" ), -1 );
-    mBlueBandComboBox->insertItem( 0, tr( "Not set" ), -1 );
 
     //contrast enhancement algorithms
     mContrastEnhancementAlgorithmComboBox->addItem( tr( "No enhancement" ), QgsContrastEnhancement::NoEnhancement );

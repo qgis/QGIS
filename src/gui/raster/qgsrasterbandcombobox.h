@@ -55,6 +55,20 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
      */
     int currentBand() const;
 
+    /**
+     * Returns true if the combo box is showing the "not set" option.
+     * \see setShowNotSetOption()
+     */
+    bool isShowingNotSetOption() const;
+
+    /**
+     * Sets whether the combo box should show the "not set" option.
+     * Optionally the built in "not set" text can be overridden by specifying
+     * a \a string.
+     * \see setShowNotSetOption()
+     */
+    void setShowNotSetOption( bool show, const QString &string = QString() );
+
   public slots:
 
     /**
@@ -80,6 +94,9 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
   private:
 
     QPointer< QgsRasterLayer > mLayer;
+
+    bool mShowNotSet = false;
+    QString mNotSetString;
 
     QString displayBandName( QgsRasterDataProvider *provider, int band ) const;
 

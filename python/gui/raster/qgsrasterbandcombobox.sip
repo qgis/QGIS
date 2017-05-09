@@ -41,6 +41,21 @@ class QgsRasterBandComboBox : QComboBox
  :rtype: int
 %End
 
+    bool isShowingNotSetOption() const;
+%Docstring
+ Returns true if the combo box is showing the "not set" option.
+.. seealso:: setShowNotSetOption()
+ :rtype: bool
+%End
+
+    void setShowNotSetOption( bool show, const QString &string = QString() );
+%Docstring
+ Sets whether the combo box should show the "not set" option.
+ Optionally the built in "not set" text can be overridden by specifying
+ a ``string``.
+.. seealso:: setShowNotSetOption()
+%End
+
   public slots:
 
     void setLayer( QgsMapLayer *layer );

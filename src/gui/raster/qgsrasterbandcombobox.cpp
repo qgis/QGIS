@@ -19,6 +19,7 @@
 
 QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
   : QComboBox( parent )
+  , mNotSetString( tr( "Not set" ) )
 {
   connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
@@ -42,6 +43,9 @@ void QgsRasterBandComboBox::setLayer( QgsMapLayer *layer )
   mLayer = rl;
   blockSignals( true );
   clear();
+
+  if ( mShowNotSet )
+    addItem( mNotSetString, -1 );
 
   if ( mLayer )
   {
@@ -68,6 +72,18 @@ void QgsRasterBandComboBox::setLayer( QgsMapLayer *layer )
 void QgsRasterBandComboBox::setBand( int band )
 {
   setCurrentIndex( findData( band ) );
+}
+
+bool QgsRasterBandComboBox::isShowingNotSetOption() const
+{
+  return mShowNotSet;
+}
+
+void QgsRasterBandComboBox::setShowNotSetOption( bool show, const QString &string )
+{
+  mShowNotSet = show;
+  mNotSetString = string.isEmpty() ? tr( "Not set" ) : string;
+  setLayer( mLayer );
 }
 
 QString QgsRasterBandComboBox::displayBandName( QgsRasterDataProvider *provider, int band ) const
