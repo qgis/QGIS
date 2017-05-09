@@ -126,9 +126,7 @@ bool QgsRegularPolygon::operator ==( const QgsRegularPolygon &rp ) const
 {
   return ( ( mCenter == rp.mCenter ) &&
            ( mFirstVertex == rp.mFirstVertex ) &&
-           ( mNumberSides == rp.mNumberSides ) &&
-           /* useless but... */
-           ( mRadius == rp.mRadius )
+           ( mNumberSides == rp.mNumberSides )
          );
 }
 
@@ -140,9 +138,7 @@ bool QgsRegularPolygon::operator !=( const QgsRegularPolygon &rp ) const
 bool QgsRegularPolygon::isEmpty() const
 {
   return ( ( mNumberSides < 3 ) ||
-           ( mCenter == mFirstVertex ) ||
-           /* useless but... */
-           ( qgsDoubleNear( mRadius, 0.0 ) )
+           ( mCenter == mFirstVertex )
          );
 }
 
