@@ -25,6 +25,7 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QTextDocument>
+#include <QDir>
 
 QgsWelcomePageItemDelegate::QgsWelcomePageItemDelegate( QObject * parent )
     : QStyledItemDelegate( parent )
@@ -146,7 +147,7 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
     case TitleRole:
       return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).baseName();
     case PathRole:
-      return mRecentProjects.at( index.row() ).path;
+      return QDir::toNativeSeparators( mRecentProjects.at( index.row() ).path );
     case CrsRole:
       if ( mRecentProjects.at( index.row() ).crs != "" )
       {
