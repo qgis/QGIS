@@ -8,7 +8,7 @@ from qgis.core import QgsWkbTypes, QgsProcessingUtils
 layer = QgsProcessingUtils.mapLayerFromString(INPUT_LAYER, context)
 fields = layer.fields()
 
-writer, writer_dest, writer_layer = QgsProcessingUtils.createFeatureSink(OUTPUT_LAYER, 'utf-8', fields, QgsWkbTypes.Point, layer.crs(),
+writer, writer_dest = QgsProcessingUtils.createFeatureSink(OUTPUT_LAYER, 'utf-8', fields, QgsWkbTypes.Point, layer.crs(),
                                                                          context)
 
 features = QgsProcessingUtils.getFeatures(layer, context)

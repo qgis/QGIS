@@ -385,8 +385,7 @@ class OutputVector(Output):
             settings = QgsSettings()
             self.encoding = settings.value('/Processing/encoding', 'System', str)
 
-        w, w_dest, w_layer = QgsProcessingUtils.createFeatureSink(self.value, self.encoding, fields, geomType, crs, context)
-        self.layer = w_layer
+        w, w_dest = QgsProcessingUtils.createFeatureSink(self.value, self.encoding, fields, geomType, crs, context)
         self.value = w_dest
         return w
 

@@ -141,7 +141,7 @@ class CORE_EXPORT QgsProcessingUtils
      * If the \a encoding is not specified, the default encoding from the \a context will be used.
      *
      * If a layer is created for the feature sink, the layer will automatically be added to the \a context's
-     * temporary layer store, and the \a outputLayer argument updated to point at this newly created layer.
+     * temporary layer store.
      *
      * The caller takes responsibility for deleting the returned sink.
      */
@@ -152,8 +152,7 @@ class CORE_EXPORT QgsProcessingUtils
       const QgsFields &fields,
       QgsWkbTypes::Type geometryType,
       const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context,
-      QgsVectorLayer *&outputLayer ) SIP_FACTORY;
+      QgsProcessingContext &context ) SIP_FACTORY;
 #endif
 
     /**
@@ -166,7 +165,7 @@ class CORE_EXPORT QgsProcessingUtils
      * If the \a encoding is not specified, the default encoding from the \a context will be used.
      *
      * If a layer is created for the feature sink, the layer will automatically be added to the \a context's
-     * temporary layer store, and the \a outputLayer argument updated to point at this newly created layer.
+     * temporary layer store.
      *
      * \note this version of the createFeatureSink() function has an API designed around use from the
      * SIP bindings. c++ code should call the other createFeatureSink() version.
@@ -179,8 +178,7 @@ class CORE_EXPORT QgsProcessingUtils
       const QgsFields &fields,
       QgsWkbTypes::Type geometryType,
       const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context,
-      QgsVectorLayer **outputLayer SIP_OUT ) SIP_PYNAME( createFeatureSink );
+      QgsProcessingContext &context ) SIP_PYNAME( createFeatureSink );
 
 
   private:

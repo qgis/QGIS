@@ -328,12 +328,10 @@ void parseDestinationString( QString &destination, QString &providerKey, QString
   }
 }
 
-QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context, QgsVectorLayer *&outputLayer )
+QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context )
 {
-  outputLayer = nullptr;
-  QgsVectorLayer *layer = nullptr;
-
   QString destEncoding = encoding;
+  QgsVectorLayer *layer = nullptr;
   if ( destEncoding.isEmpty() )
   {
     // no destination encoding specified, use default
@@ -344,8 +342,6 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, con
   {
     // memory provider cannot be used with QgsVectorLayerImport - so create layer manually
     layer = QgsMemoryProviderUtils::createMemoryLayer( destination, fields, geometryType, crs );
-    if ( layer && layer->isValid() )
-      destination = layer->id();
   }
   else
   {
@@ -376,6 +372,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, con
           return nullptr;
       }
 
+      // use destination string as layer name (eg "postgis:..." )
       layer = new QgsVectorLayer( uri, destination, providerKey );
     }
   }
@@ -389,19 +386,18 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, con
     return nullptr;
   }
 
+  // update destination to layer ID
+  destination = layer->id();
+
   context.temporaryLayerStore()->addMapLayer( layer );
 
-  outputLayer = layer;
   // this is a factory, so we need to return a proxy
   return new QgsProxyFeatureSink( layer->dataProvider() );
 }
 
-void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString &destination, const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context, QgsVectorLayer **outputLayer )
+void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString &destination, const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context )
 {
-  QgsVectorLayer *layer = nullptr;
-  *sink = createFeatureSink( destination, encoding, fields, geometryType, crs, context, layer );
-  if ( outputLayer )
-    *outputLayer = layer;
+  *sink = createFeatureSink( destination, encoding, fields, geometryType, crs, context );
 }
 
 

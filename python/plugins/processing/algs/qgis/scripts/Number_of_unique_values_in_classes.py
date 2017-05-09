@@ -10,8 +10,8 @@ from qgis.core import QgsFeature, QgsField, QgsProcessingUtils
 layer = QgsProcessingUtils.mapLayerFromString(input, context)
 fields = layer.fields()
 fields.append(QgsField('UNIQ_COUNT', QVariant.Int))
-writer, writer_dest, writer_layer = QgsProcessingUtils.createFeatureSink(N_unique_values, None, fields, layer.wkbType(), layer.crs(),
-                                                                         context)
+writer, writer_dest = QgsProcessingUtils.createFeatureSink(N_unique_values, None, fields, layer.wkbType(), layer.crs(),
+                                                           context)
 
 class_field_index = layer.fields().lookupField(class_field)
 value_field_index = layer.fields().lookupField(value_field)
