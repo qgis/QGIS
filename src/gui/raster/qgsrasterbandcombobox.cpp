@@ -56,6 +56,7 @@ void QgsRasterBandComboBox::setLayer( QgsMapLayer *layer )
       }
     }
   }
+  setEnabled( count() > 1 );
 
   if ( count() > 0 )
     setCurrentIndex( 0 );
