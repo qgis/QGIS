@@ -318,14 +318,22 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   {
     if ( QgsLayerTree::isLayer( node ) )
     {
-      if ( QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer() )
+      if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
       {
-        QString tooltip = "<b>" +
-                          ( layer->title().isEmpty() ? layer->shortName() : layer->title() ) + "</b>";
+        QStringList parts;
+        QString title = layer->title().isEmpty() ? layer->shortName() : layer->title();
+        if ( title.isEmpty() )
+          title = layer->name();
+        title = "<b>" + title + "</b>";
+        if ( layer->crs().isValid() )
+          title = tr( "%1 (%2)" ).arg( title, layer->crs().authid() );
+
+        parts << title;
+
         if ( !layer->abstract().isEmpty() )
-          tooltip += "<br/>" + layer->abstract().replace( "\n", "<br/>" );
-        tooltip += "<br/><i>" + layer->publicSource() + "</i>";
-        return tooltip;
+          parts << "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
+        parts << "<i>" + layer->publicSource() + "</i>";
+        return parts.join( "<br/>" );
       }
     }
   }
