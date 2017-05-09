@@ -841,7 +841,7 @@ Return the provider type for this layer
 .. versionadded:: 2.10
 %End
 
-    bool countSymbolFeatures( bool showProgress = true );
+    bool countSymbolFeatures();
 %Docstring
  Count features for symbols. Feature counts may be get by featureCount().
  \param showProgress show progress dialog
@@ -2000,6 +2000,12 @@ Signal emitted when setLayerTransparency() is called
 .. versionadded:: 3.0
 %End
 
+    void symbolFeatureCountMapChanged();
+%Docstring
+ Emitted when the feature count for symbols on this layer has been recalculated.
+
+.. versionadded:: 3.0
+%End
 
   protected:
     virtual void setExtent( const QgsRectangle &rect );

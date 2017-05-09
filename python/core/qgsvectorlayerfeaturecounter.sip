@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvectorlayerfeaturecounter.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsVectorLayerFeatureCounter : QgsTask
+{
+%Docstring
+
+ Counts the features in a QgsVectorLayer in task.
+ You should most likely not use this directly and instead call
+ QgsVectorLayer.countSymbolFeatures() and connect to the signal
+ QgsVectorLayer.symbolFeatureCountMapChanged().
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerfeaturecounter.h"
+%End
+  public:
+
+    QgsVectorLayerFeatureCounter( QgsVectorLayer *layer );
+%Docstring
+ Create a new feature counter for ``layer``.
+%End
+
+    virtual bool run();
+
+  signals:
+    void symbolsCounted( const QHash<QString, long> &symbolFeatureCountMap );
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvectorlayerfeaturecounter.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

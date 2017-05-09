@@ -65,6 +65,7 @@ class QgsSymbol;
 class QgsVectorLayerJoinInfo;
 class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
+class QgsVectorLayerFeatureCounter;
 class QgsAbstractVectorLayerLabeling;
 class QgsPointV2;
 class QgsFeedback;
@@ -810,7 +811,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param showProgress show progress dialog
      * \returns true if calculated, false if failed or was canceled by user
      */
-    bool countSymbolFeatures( bool showProgress = true );
+    bool countSymbolFeatures();
 
     /**
      * Set the string (typically sql) used to define a subset of the layer
@@ -1846,11 +1847,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void readOnlyChanged();
 
+    /**
+     * Emitted when the feature count for symbols on this layer has been recalculated.
+     *
+     * \since QGIS 3.0
+     */
+    void symbolFeatureCountMapChanged();
 
   private slots:
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
+    void onSymbolsCounted( const QHash<QString, long> &symbolFeatureCountMap );
 
   protected:
     //! Set the extent
@@ -1883,7 +1891,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 #endif
 
   private:                       // Private attributes
-
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
 
     //! Pointer to data provider derived from the abastract base class QgsDataProvider
@@ -2000,6 +2007,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsAttributeTableConfig mAttributeTableConfig;
 
     mutable QMutex mFeatureSourceConstructorMutex;
+
+    std::unique_ptr<QgsVectorLayerFeatureCounter> mFeatureCounter;
 
     friend class QgsVectorLayerFeatureSource;
 };

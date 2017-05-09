@@ -1,0 +1,69 @@
+#include "qgsvectorlayerfeaturecounter.h"
+
+QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer )
+  : mSource( new QgsVectorLayerFeatureSource( layer ) )
+  , mRenderer( layer->renderer()->clone() )
+  , mExpressionContextScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) )
+  , mFeatureCount( layer->featureCount() )
+{
+}
+
+bool QgsVectorLayerFeatureCounter::run()
+{
+  QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
+  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
+
+  for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
+  {
+    mSymbolFeatureCountMap.insert( symbolIt->first, 0 );
+  }
+
+  int featuresCounted = 0;
+
+  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
+  QgsRenderContext renderContext;
+  renderContext.setRendererScale( 0 );
+  renderContext.expressionContext().appendScopes( mExpressionContextScopes );
+
+  QgsFeatureRequest request;
+  if ( !mRenderer->filterNeedsGeometry() )
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mSource->fields() );
+  QgsFeatureIterator fit = mSource->getFeatures( request );
+
+  // TODO: replace QgsInterruptionChecker with QgsFeedback
+  // fit.setInterruptionChecker( mFeedback );
+
+  mRenderer->startRender( renderContext, mSource->fields() );
+
+  double progress = 0;
+  QgsFeature f;
+  while ( fit.nextFeature( f ) )
+  {
+    renderContext.expressionContext().setFeature( f );
+    QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
+    Q_FOREACH ( const QString &key, featureKeyList )
+    {
+      mSymbolFeatureCountMap[key] += 1;
+    }
+    ++featuresCounted;
+
+    double p = ( featuresCounted / mFeatureCount ) * 100;
+    if ( p - progress > 1 )
+    {
+      progress = p;
+      setProgress( progress );
+    }
+
+    if ( isCanceled() )
+    {
+      mRenderer->stopRender( renderContext );
+      return false;
+    }
+  }
+  mRenderer->stopRender( renderContext );
+  setProgress( 100 );
+
+  emit symbolsCounted( mSymbolFeatureCountMap );
+  return true;
+}
