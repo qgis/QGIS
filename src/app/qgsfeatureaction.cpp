@@ -22,6 +22,7 @@
 #include "qgsguivectorlayertools.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgslogger.h"
+#include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
@@ -104,7 +105,9 @@ bool QgsFeatureAction::viewFeatureForm( QgsHighlight *h )
   QgsAttributeDialog *dialog = QgisApp::instance()->findChild<QgsAttributeDialog *>( name );
   if ( dialog )
   {
+    delete h;
     dialog->raise();
+    dialog->activateWindow();
     return true;
   }
 
