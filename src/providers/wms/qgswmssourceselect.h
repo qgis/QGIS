@@ -27,8 +27,6 @@
 #include <QStringList>
 #include <QPushButton>
 
-class QgisApp;
-class QgsWmsProvider;
 class QButtonGroup;
 class QgsTreeWidgetItem;
 class QDomDocument;
