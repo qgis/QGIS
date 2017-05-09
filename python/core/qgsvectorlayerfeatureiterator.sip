@@ -17,6 +17,7 @@ class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
     ~QgsVectorLayerFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() );
+    QgsFields fields();
 };
 
 class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIterator
