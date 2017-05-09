@@ -24,6 +24,7 @@
 #include <QtTest/QSignalSpy>
 #include "qgis.h"
 #include "qgstest.h"
+#include "qgstestutils.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
 #include "qgspointv2.h"
@@ -38,9 +39,31 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
     QString name() const override { return mName; }
     QString displayName() const override { return mName; }
-    virtual bool run( const QVariantMap &,
-                      QgsProcessingContext &, QgsProcessingFeedback *, QVariantMap & ) const override { return true; }
+    virtual QVariantMap run( const QVariantMap &,
+                             QgsProcessingContext &, QgsProcessingFeedback * ) const override { return QVariantMap(); }
     QString mName;
+
+    void runParameterChecks()
+    {
+      QVERIFY( parameterDefinitions().isEmpty() );
+      QVERIFY( addParameter( new QgsProcessingParameterBoolean( "p1" ) ) );
+      QCOMPARE( parameterDefinitions().count(), 1 );
+      QCOMPARE( parameterDefinitions().at( 0 )->name(), QString( "p1" ) );
+
+      QVERIFY( !addParameter( nullptr ) );
+      QCOMPARE( parameterDefinitions().count(), 1 );
+      // duplicate name!
+      QgsProcessingParameterBoolean *p2 = new QgsProcessingParameterBoolean( "p1" );
+      QVERIFY( !addParameter( p2 ) );
+      delete p2;
+      QCOMPARE( parameterDefinitions().count(), 1 );
+
+      QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
+      // parameterDefinition should be case insensitive
+      QCOMPARE( parameterDefinition( "P1" ), parameterDefinitions().at( 0 ) );
+      QVERIFY( !parameterDefinition( "invalid" ) );
+    }
+
 };
 
 //dummy provider for testing
@@ -116,6 +139,24 @@ class TestQgsProcessing: public QObject
     void createIndex();
     void createFeatureSink();
     void parameters();
+    void algorithmParameters();
+    void parameterGeneral();
+    void parameterBoolean();
+    void parameterCrs();
+    void parameterLayer();
+    void parameterExtent();
+    void parameterPoint();
+    void parameterFile();
+    void parameterMatrix();
+    void parameterLayerList();
+    void parameterNumber();
+    void parameterRange();
+    void parameterRasterLayer();
+    void parameterEnum();
+    void parameterString();
+    void parameterExpression();
+    void parameterField();
+    void parameterVectorLayer();
 
   private:
 
@@ -854,6 +895,8 @@ void TestQgsProcessing::createFeatureSink()
 void TestQgsProcessing::parameters()
 {
   // test parameter utilities
+
+  QgsProcessingParameterDefinition *def = nullptr;;
   QVariantMap params;
   params.insert( QStringLiteral( "prop" ), QgsProperty::fromField( "a_field" ) );
   params.insert( QStringLiteral( "string" ), QStringLiteral( "a string" ) );
@@ -869,14 +912,14 @@ void TestQgsProcessing::parameters()
   QVERIFY( !QgsProcessingParameters::isDynamic( params, QStringLiteral( "bad" ) ) );
 
   // parameterAsString
-  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "string" ), context ), QStringLiteral( "a string" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "double" ), context ), QStringLiteral( "5.2" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "int" ), context ), QStringLiteral( "15" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "bool" ), context ), QStringLiteral( "true" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "bad" ), context ), QString() );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, QStringLiteral( "string" ), context ), QStringLiteral( "a string" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, QStringLiteral( "double" ), context ).left( 3 ), QStringLiteral( "5.2" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, QStringLiteral( "int" ), context ), QStringLiteral( "15" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, QStringLiteral( "bool" ), context ), QStringLiteral( "true" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, QStringLiteral( "bad" ), context ), QString() );
 
   // string with dynamic property (feature not set)
-  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "prop" ), context ), QString() );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, QStringLiteral( "prop" ), context ), QString() );
 
   // correctly setup feature
   QgsFields fields;
@@ -885,42 +928,767 @@ void TestQgsProcessing::parameters()
   f.setAttribute( 0, QStringLiteral( "field value" ) );
   context.expressionContext().setFeature( f );
   context.expressionContext().setFields( fields );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( params, QStringLiteral( "prop" ), context ), QStringLiteral( "field value" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, QStringLiteral( "prop" ), context ), QStringLiteral( "field value" ) );
 
   // as double
-  QCOMPARE( QgsProcessingParameters::parameterAsDouble( params, QStringLiteral( "double" ), context ), 5.2 );
-  QCOMPARE( QgsProcessingParameters::parameterAsDouble( params, QStringLiteral( "int" ), context ), 15.0 );
+  QCOMPARE( QgsProcessingParameters::parameterAsDouble( def, params, QStringLiteral( "double" ), context ), 5.2 );
+  QCOMPARE( QgsProcessingParameters::parameterAsDouble( def, params, QStringLiteral( "int" ), context ), 15.0 );
   f.setAttribute( 0, QStringLiteral( "6.2" ) );
   context.expressionContext().setFeature( f );
-  QCOMPARE( QgsProcessingParameters::parameterAsDouble( params, QStringLiteral( "prop" ), context ), 6.2 );
+  QCOMPARE( QgsProcessingParameters::parameterAsDouble( def, params, QStringLiteral( "prop" ), context ), 6.2 );
 
   // as int
-  QCOMPARE( QgsProcessingParameters::parameterAsInt( params, QStringLiteral( "double" ), context ), 5 );
-  QCOMPARE( QgsProcessingParameters::parameterAsInt( params, QStringLiteral( "int" ), context ), 15 );
-  QCOMPARE( QgsProcessingParameters::parameterAsInt( params, QStringLiteral( "prop" ), context ), 6 );
+  QCOMPARE( QgsProcessingParameters::parameterAsInt( def, params, QStringLiteral( "double" ), context ), 5 );
+  QCOMPARE( QgsProcessingParameters::parameterAsInt( def, params, QStringLiteral( "int" ), context ), 15 );
+  QCOMPARE( QgsProcessingParameters::parameterAsInt( def, params, QStringLiteral( "prop" ), context ), 6 );
 
   // as bool
-  QCOMPARE( QgsProcessingParameters::parameterAsBool( params, QStringLiteral( "double" ), context ), true );
-  QCOMPARE( QgsProcessingParameters::parameterAsBool( params, QStringLiteral( "int" ), context ), true );
-  QCOMPARE( QgsProcessingParameters::parameterAsBool( params, QStringLiteral( "bool" ), context ), true );
-  QCOMPARE( QgsProcessingParameters::parameterAsBool( params, QStringLiteral( "prop" ), context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "double" ), context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "int" ), context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "bool" ), context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "prop" ), context ), true );
   f.setAttribute( 0, false );
   context.expressionContext().setFeature( f );
-  QCOMPARE( QgsProcessingParameters::parameterAsBool( params, QStringLiteral( "prop" ), context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "prop" ), context ), false );
 
   // as layer
-  QVERIFY( !QgsProcessingParameters::parameterAsLayer( params, QStringLiteral( "double" ), context ) );
-  QVERIFY( !QgsProcessingParameters::parameterAsLayer( params, QStringLiteral( "int" ), context ) );
-  QVERIFY( !QgsProcessingParameters::parameterAsLayer( params, QStringLiteral( "bool" ), context ) );
-  QVERIFY( !QgsProcessingParameters::parameterAsLayer( params, QStringLiteral( "prop" ), context ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def, params, QStringLiteral( "double" ), context ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def,  params, QStringLiteral( "int" ), context ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def, params, QStringLiteral( "bool" ), context ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def, params, QStringLiteral( "prop" ), context ) );
 
   QVERIFY( context.temporaryLayerStore()->mapLayers().isEmpty() );
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   f.setAttribute( 0, testDataDir + "/raster/band1_float32_noct_epsg4326.tif" );
   context.expressionContext().setFeature( f );
-  QVERIFY( QgsProcessingParameters::parameterAsLayer( params, QStringLiteral( "prop" ), context ) );
+  QVERIFY( QgsProcessingParameters::parameterAsLayer( def, params, QStringLiteral( "prop" ), context ) );
   // make sure layer was loaded
   QVERIFY( !context.temporaryLayerStore()->mapLayers().isEmpty() );
+}
+
+void TestQgsProcessing::algorithmParameters()
+{
+  DummyAlgorithm alg( "test" );
+  alg.runParameterChecks();
+}
+
+void TestQgsProcessing::parameterGeneral()
+{
+  // test constructor
+  QgsProcessingParameterBoolean param( "p1", "desc", true, true );
+  QCOMPARE( param.name(), QString( "p1" ) );
+  QCOMPARE( param.description(), QString( "desc" ) );
+  QCOMPARE( param.defaultValue(), QVariant( true ) );
+  QVERIFY( param.flags() & QgsProcessingParameterDefinition::FlagOptional );
+
+  // test getters and setters
+  param.setDescription( "p2" );
+  QCOMPARE( param.description(), QString( "p2" ) );
+  param.setDefaultValue( false );
+  QCOMPARE( param.defaultValue(), QVariant( false ) );
+  param.setFlags( QgsProcessingParameterDefinition::FlagHidden );
+  QCOMPARE( param.flags(), QgsProcessingParameterDefinition::FlagHidden );
+  param.setDefaultValue( true );
+  QCOMPARE( param.defaultValue(), QVariant( true ) );
+  param.setDefaultValue( QVariant() );
+  QCOMPARE( param.defaultValue(), QVariant() );
+}
+
+void TestQgsProcessing::parameterBoolean()
+{
+  QgsProcessingContext context;
+
+  // test no def
+  QVariantMap params;
+  params.insert( "no_def",  false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( nullptr, params, QStringLiteral( "no_def" ), context ), false );
+  params.insert( "no_def",  true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( nullptr, params, QStringLiteral( "no_def" ), context ), true );
+  params.insert( "no_def",  "true" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( nullptr, params, QStringLiteral( "no_def" ), context ), true );
+  params.insert( "no_def",  "false" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( nullptr, params, QStringLiteral( "no_def" ), context ), false );
+  params.insert( "no_def",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( nullptr, params, QStringLiteral( "no_def" ), context ), false );
+  params.remove( "no_def" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( nullptr, params, QStringLiteral( "no_def" ), context ), false );
+
+  // with defs
+
+  QgsProcessingParameterDefinition *def = new QgsProcessingParameterBoolean( "non_optional_default_false" );
+  params.insert( "non_optional_default_false",  false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_false" ), context ), false );
+  params.insert( "non_optional_default_false",  true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_false" ), context ), true );
+  params.insert( "non_optional_default_false",  "true" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_false" ), context ), true );
+  params.insert( "non_optional_default_false",  "false" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_false" ), context ), false );
+
+  //non-optional - behavior is undefined, but internally default to false
+  params.insert( "non_optional_default_false",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_false" ), context ), false );
+  params.remove( "non_optional_default_false" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_false" ), context ), false );
+
+  delete def;
+  def = new QgsProcessingParameterBoolean( "optional_default_true", QString(), true, true );
+  params.insert( "optional_default_true",  false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_true" ), context ), false );
+  params.insert( "optional_default_true",  true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_true" ), context ), true );
+  params.insert( "optional_default_true",  "true" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_true" ), context ), true );
+  params.insert( "optional_default_true",  "false" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_true" ), context ), false );
+  //optional - should be default
+  params.insert( "optional_default_true",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_true" ), context ), true );
+  params.remove( "optional_default_true" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_true" ), context ), true );
+
+  delete def;
+  def = new QgsProcessingParameterBoolean( "optional_default_false", QString(), false, true );
+  params.insert( "optional_default_false",  false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_false" ), context ), false );
+  params.insert( "optional_default_false",  true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_false" ), context ), true );
+  params.insert( "optional_default_false",  "true" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_false" ), context ), true );
+  params.insert( "optional_default_false",  "false" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_false" ), context ), false );
+  //optional - should be default
+  params.insert( "optional_default_false",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_false" ), context ), false );
+  params.remove( "optional_default_false" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "optional_default_false" ), context ), false );
+
+  delete def;
+  def = new QgsProcessingParameterBoolean( "non_optional_default_true", QString(), true, false );
+  params.insert( "non_optional_default_true",  false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_true" ), context ), false );
+  params.insert( "non_optional_default_true",  true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_true" ), context ), true );
+  params.insert( "non_optional_default_true",  "true" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_true" ), context ), true );
+  params.insert( "non_optional_default_true",  "false" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_true" ), context ), false );
+  //non-optional - behavior is undefined, but internally fallback to default
+  params.insert( "non_optional_default_true",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_true" ), context ), true );
+  params.remove( "non_optional_default_true" );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, QStringLiteral( "non_optional_default_true" ), context ), true );
+  delete def;
+}
+
+void TestQgsProcessing::parameterCrs()
+{
+  // setup a context
+  QgsProject p;
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 28353 ) );
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString raster1 = testDataDir + "tenbytenraster.asc";
+  QString raster2 = testDataDir + "landsat.tif";
+  QFileInfo fi1( raster1 );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon?crs=EPSG:3111", "V4", "memory" );
+  p.addMapLayers( QList<QgsMapLayer *>() << v1 << r1 );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // not optional!
+  QgsProcessingParameterCrs *def = new QgsProcessingParameterCrs( "non_optional", QString(), QString( "EPSG:3113" ), false );
+
+  // using map layer
+  QVariantMap params;
+  params.insert( "non_optional",  v1->id() );
+  QCOMPARE( QgsProcessingParameters::parameterAsCrs( def, params, QStringLiteral( "non_optional" ), context ).authid(), QString( "EPSG:3111" ) );
+
+  // special ProjectCrs string
+  params.insert( "non_optional",  QStringLiteral( "ProjectCrs" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsCrs( def, params, QStringLiteral( "non_optional" ), context ).authid(), QString( "EPSG:28353" ) );
+
+  // string representing a project layer source
+  params.insert( "non_optional", raster1 );
+  QCOMPARE( QgsProcessingParameters::parameterAsCrs( def, params, QStringLiteral( "non_optional" ), context ).authid(), QString( "EPSG:4326" ) );
+  // string representing a non-project layer source
+  params.insert( "non_optional", raster2 );
+  QCOMPARE( QgsProcessingParameters::parameterAsCrs( def, params, QStringLiteral( "non_optional" ), context ).authid(), QString( "EPSG:32633" ) );
+
+  // string representation of a crs
+  params.insert( "non_optional", QString( "EPSG:28355" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsCrs( def, params, QStringLiteral( "non_optional" ), context ).authid(), QString( "EPSG:28355" ) );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a crs, and nothing you can do will make me one" ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsCrs( def, params, QStringLiteral( "non_optional" ), context ).isValid() );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterCrs( "optional", QString(), QString( "EPSG:3113" ), true );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsCrs( def, params, QStringLiteral( "optional" ), context ).authid(), QString( "EPSG:3113" ) );
+}
+
+void TestQgsProcessing::parameterLayer()
+{
+  // setup a context
+  QgsProject p;
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 28353 ) );
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString raster1 = testDataDir + "tenbytenraster.asc";
+  QString raster2 = testDataDir + "landsat.tif";
+  QFileInfo fi1( raster1 );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon?crs=EPSG:3111", "V4", "memory" );
+  p.addMapLayers( QList<QgsMapLayer *>() << v1 << r1 );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // not optional!
+  QgsProcessingParameterMapLayer *def = new QgsProcessingParameterMapLayer( "non_optional", QString(), QString( "EPSG:3113" ), false );
+
+  // using existing map layer ID
+  QVariantMap params;
+  params.insert( "non_optional",  v1->id() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayer( def, params, QStringLiteral( "non_optional" ), context )->id(), v1->id() );
+
+  // string representing a project layer source
+  params.insert( "non_optional", raster1 );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayer( def, params, QStringLiteral( "non_optional" ), context )->id(), r1->id() );
+  // string representing a non-project layer source
+  params.insert( "non_optional", raster2 );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayer( def, params, QStringLiteral( "non_optional" ), context )->publicSource(), raster2 );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a layer, and nothing you can do will make me one" ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def, params, QStringLiteral( "non_optional" ), context ) );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterMapLayer( "optional", QString(), v1->id(), true );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayer( def, params, QStringLiteral( "optional" ), context )->id(), v1->id() );
+}
+
+void TestQgsProcessing::parameterExtent()
+{
+  // setup a context
+  QgsProject p;
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString raster1 = testDataDir + "tenbytenraster.asc";
+  QString raster2 = testDataDir + "landsat.tif";
+  QFileInfo fi1( raster1 );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  p.addMapLayers( QList<QgsMapLayer *>() << r1 );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // not optional!
+  QgsProcessingParameterExtent *def = new QgsProcessingParameterExtent( "non_optional", QString(), QString( "1,2,3,4" ), false );
+
+  // using map layer
+  QVariantMap params;
+  params.insert( "non_optional",  r1->id() );
+  QgsRectangle ext = QgsProcessingParameters::parameterAsExtent( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( ext, r1->extent() );
+
+  // string representing a project layer source
+  params.insert( "non_optional", raster1 );
+  QCOMPARE( QgsProcessingParameters::parameterAsExtent( def, params, QStringLiteral( "non_optional" ), context ),  r1->extent() );
+
+  // string representing a non-project layer source
+  params.insert( "non_optional", raster2 );
+  ext = QgsProcessingParameters::parameterAsExtent( def, params, QStringLiteral( "non_optional" ), context );
+  QGSCOMPARENEAR( ext.xMinimum(), 781662.375000, 10 );
+  QGSCOMPARENEAR( ext.xMaximum(), 793062.375000, 10 );
+  QGSCOMPARENEAR( ext.yMinimum(),  3339523.125000, 10 );
+  QGSCOMPARENEAR( ext.yMaximum(), 3350923.125000, 10 );
+
+  // string representation of an extent
+  params.insert( "non_optional", QString( "1.1,2.2,3.3,4.4" ) );
+  ext = QgsProcessingParameters::parameterAsExtent( def, params, QStringLiteral( "non_optional" ), context );
+  QGSCOMPARENEAR( ext.xMinimum(), 1.1, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 2.2, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  3.3, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 4.4, 0.001 );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a crs, and nothing you can do will make me one" ) );
+  QVERIFY( QgsProcessingParameters::parameterAsExtent( def, params, QStringLiteral( "non_optional" ), context ).isNull() );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterExtent( "optional", QString(), QString( "5,6,7,8" ), true );
+  params.insert( "optional",  QVariant() );
+  ext = QgsProcessingParameters::parameterAsExtent( def, params, QStringLiteral( "optional" ), context );
+  QGSCOMPARENEAR( ext.xMinimum(), 5.0, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 6.0, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(), 7.0, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 8.0, 0.001 );
+}
+
+void TestQgsProcessing::parameterPoint()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  QgsProcessingParameterPoint *def = new QgsProcessingParameterPoint( "non_optional", QString(), QString( "1,2" ), false );
+
+  // string representing a point
+  QVariantMap params;
+  params.insert( "non_optional", QString( "1.1,2.2" ) );
+  QgsPoint point = QgsProcessingParameters::parameterAsPoint( def, params, QStringLiteral( "non_optional" ), context );
+  QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a crs, and nothing you can do will make me one" ) );
+  point = QgsProcessingParameters::parameterAsPoint( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( point.x(), 0.0 );
+  QCOMPARE( point.y(), 0.0 );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterPoint( "optional", QString(), QString( "5.1,6.2" ), true );
+  params.insert( "optional",  QVariant() );
+  point = QgsProcessingParameters::parameterAsPoint( def, params, QStringLiteral( "optional" ), context );
+  QGSCOMPARENEAR( point.x(), 5.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 6.2, 0.001 );
+}
+
+void TestQgsProcessing::parameterFile()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  QgsProcessingParameterFile *def = new QgsProcessingParameterFile( "non_optional", QString(), QgsProcessingParameterFile::File, QString(), QString( "abc.bmp" ), false );
+
+  // string representing a file
+  QVariantMap params;
+  params.insert( "non_optional", QString( "def.bmp" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsFile( def, params, QStringLiteral( "non_optional" ), context ), QString( "def.bmp" ) );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterFile( "optional", QString(), QgsProcessingParameterFile::File, QString(), QString( "gef.bmp" ),  true );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsFile( def, params, QStringLiteral( "optional" ), context ), QString( "gef.bmp" ) );
+}
+
+void TestQgsProcessing::parameterMatrix()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  QgsProcessingParameterMatrix *def = new QgsProcessingParameterMatrix( "non_optional", QString(), 3, false, QStringList(), QString( ), false );
+
+  // list
+  QVariantMap params;
+  params.insert( "non_optional", QVariantList() << 1 << 2 << 3 );
+  QCOMPARE( QgsProcessingParameters::parameterAsMatrix( def, params, QStringLiteral( "non_optional" ), context ), QVariantList() << 1 << 2 << 3 );
+
+  //string
+  params.insert( "non_optional", QString( "4,5,6" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsMatrix( def, params, QStringLiteral( "non_optional" ), context ), QVariantList() << 4 << 5 << 6 );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterMatrix( "optional", QString(), 3, false, QStringList(), QVariantList() << 4 << 5 << 6,  true );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsMatrix( def, params, QStringLiteral( "optional" ), context ), QVariantList() << 4 << 5 << 6 );
+  delete def;
+  def = new QgsProcessingParameterMatrix( "optional", QString(), 3, false, QStringList(), QString( "1,2,3" ),  true );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsMatrix( def, params, QStringLiteral( "optional" ), context ), QVariantList() << 1 << 2 << 3 );
+}
+
+void TestQgsProcessing::parameterLayerList()
+{
+  // setup a context
+  QgsProject p;
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 28353 ) );
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString raster1 = testDataDir + "tenbytenraster.asc";
+  QString raster2 = testDataDir + "landsat.tif";
+  QFileInfo fi1( raster1 );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon?crs=EPSG:3111", "V4", "memory" );
+  p.addMapLayers( QList<QgsMapLayer *>() << v1 << r1 );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // not optional!
+  QgsProcessingParameterMultipleLayers *def = new QgsProcessingParameterMultipleLayers( "non_optional", QString(), QgsProcessingParameterDefinition::TypeAny, QString(), false );
+
+  // using existing map layer ID
+  QVariantMap params;
+  params.insert( "non_optional",  v1->id() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def, params, QStringLiteral( "non_optional" ), context ), QList< QgsMapLayer *>() << v1 );
+
+  // using two existing map layer ID
+  params.insert( "non_optional",  QVariantList() << v1->id() << r1->id() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def, params, QStringLiteral( "non_optional" ), context ), QList< QgsMapLayer *>() << v1 << r1 );
+
+  // mix of existing layers and non project layer string
+  params.insert( "non_optional",  QVariantList() << v1->id() << raster2 );
+  QList< QgsMapLayer *> layers = QgsProcessingParameters::parameterAsLayerList( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( layers.at( 0 ), v1 );
+  QCOMPARE( layers.at( 1 )->publicSource(), raster2 );
+
+  // empty string
+  params.insert( "non_optional",  QString( "" ) );
+  QVERIFY( QgsProcessingParameters::parameterAsLayerList( def, params, QStringLiteral( "non_optional" ), context ).isEmpty() );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a layer, and nothing you can do will make me one" ) );
+  QVERIFY( QgsProcessingParameters::parameterAsLayerList( def, params, QStringLiteral( "non_optional" ), context ).isEmpty() );
+
+  // optional with one default layer
+  delete def;
+  def = new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessingParameterDefinition::TypeAny, v1->id(), true );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def, params, QStringLiteral( "optional" ), context ), QList< QgsMapLayer *>() << v1 );
+
+  // optional with two default layers
+  delete def;
+  def = new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessingParameterDefinition::TypeAny, QVariantList() << v1->id() << r1->publicSource(), true );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def, params, QStringLiteral( "optional" ), context ), QList< QgsMapLayer *>() << v1 << r1 );
+}
+
+void TestQgsProcessing::parameterNumber()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  QgsProcessingParameterNumber *def = new QgsProcessingParameterNumber( "non_optional", QString(), QgsProcessingParameterNumber::Double, 5, false );
+
+  // string representing a number
+  QVariantMap params;
+  params.insert( "non_optional", QString( "1.1" ) );
+  double number = QgsProcessingParameters::parameterAsDouble( def, params, QStringLiteral( "non_optional" ), context );
+  QGSCOMPARENEAR( number, 1.1, 0.001 );
+  int iNumber = QgsProcessingParameters::parameterAsInt( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( iNumber, 1 );
+
+  // double
+  params.insert( "non_optional", 1.1 );
+  number = QgsProcessingParameters::parameterAsDouble( def, params, QStringLiteral( "non_optional" ), context );
+  QGSCOMPARENEAR( number, 1.1, 0.001 );
+  iNumber = QgsProcessingParameters::parameterAsInt( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( iNumber, 1 );
+
+  // int
+  params.insert( "non_optional", 1 );
+  number = QgsProcessingParameters::parameterAsDouble( def, params, QStringLiteral( "non_optional" ), context );
+  QGSCOMPARENEAR( number, 1, 0.001 );
+  iNumber = QgsProcessingParameters::parameterAsInt( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( iNumber, 1 );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a number, and nothing you can do will make me one" ) );
+  number = QgsProcessingParameters::parameterAsDouble( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( number, 5.0 );
+  iNumber = QgsProcessingParameters::parameterAsInt( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( iNumber, 5 );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterNumber( "optional", QString(), QgsProcessingParameterNumber::Double, 5.4, true );
+  params.insert( "optional",  QVariant() );
+  number = QgsProcessingParameters::parameterAsDouble( def, params, QStringLiteral( "optional" ), context );
+  QGSCOMPARENEAR( number, 5.4, 0.001 );
+  iNumber = QgsProcessingParameters::parameterAsInt( def, params, QStringLiteral( "optional" ), context );
+  QCOMPARE( iNumber, 5 );
+  // unconvertible string
+  params.insert( "optional",  QVariant( "aaaa" ) );
+  number = QgsProcessingParameters::parameterAsDouble( def, params, QStringLiteral( "optional" ), context );
+  QGSCOMPARENEAR( number, 5.4, 0.001 );
+  iNumber = QgsProcessingParameters::parameterAsInt( def, params, QStringLiteral( "optional" ), context );
+  QCOMPARE( iNumber, 5 );
+}
+
+void TestQgsProcessing::parameterRange()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  QgsProcessingParameterRange *def = new QgsProcessingParameterRange( "non_optional", QString(), QgsProcessingParameterNumber::Double, QString( "5,6" ), false );
+
+  // string representing a range of numbers
+  QVariantMap params;
+  params.insert( "non_optional", QString( "1.1,1.2" ) );
+  QList< double > range = QgsProcessingParameters::parameterAsRange( def, params, QStringLiteral( "non_optional" ), context );
+  QGSCOMPARENEAR( range.at( 0 ), 1.1, 0.001 );
+  QGSCOMPARENEAR( range.at( 1 ), 1.2, 0.001 );
+
+  // list
+  params.insert( "non_optional", QVariantList() << 1.1 << 1.2 );
+  range = QgsProcessingParameters::parameterAsRange( def, params, QStringLiteral( "non_optional" ), context );
+  QGSCOMPARENEAR( range.at( 0 ), 1.1, 0.001 );
+  QGSCOMPARENEAR( range.at( 1 ), 1.2, 0.001 );
+
+  // too many elements:
+  params.insert( "non_optional", QString( "1.1,1.2,1.3" ) );
+  range = QgsProcessingParameters::parameterAsRange( def, params, QStringLiteral( "non_optional" ), context );
+  QGSCOMPARENEAR( range.at( 0 ), 1.1, 0.001 );
+  QGSCOMPARENEAR( range.at( 1 ), 1.2, 0.001 );
+  params.insert( "non_optional", QVariantList() << 1.1 << 1.2 << 1.3 );
+  range = QgsProcessingParameters::parameterAsRange( def, params, QStringLiteral( "non_optional" ), context );
+  QGSCOMPARENEAR( range.at( 0 ), 1.1, 0.001 );
+  QGSCOMPARENEAR( range.at( 1 ), 1.2, 0.001 );
+
+  // not enough elements - don't care about the result, just don't crash!
+  params.insert( "non_optional", QString( "1.1" ) );
+  range = QgsProcessingParameters::parameterAsRange( def, params, QStringLiteral( "non_optional" ), context );
+  params.insert( "non_optional", QVariantList() << 1.1 );
+  range = QgsProcessingParameters::parameterAsRange( def, params, QStringLiteral( "non_optional" ), context );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterRange( "optional", QString(), QgsProcessingParameterNumber::Double, QString( "5.4,7.4" ), true );
+  params.insert( "optional",  QVariant() );
+  range = QgsProcessingParameters::parameterAsRange( def, params, QStringLiteral( "optional" ), context );
+  QGSCOMPARENEAR( range.at( 0 ), 5.4, 0.001 );
+  QGSCOMPARENEAR( range.at( 1 ), 7.4, 0.001 );
+}
+
+void TestQgsProcessing::parameterRasterLayer()
+{
+  // setup a context
+  QgsProject p;
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 28353 ) );
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString raster1 = testDataDir + "tenbytenraster.asc";
+  QString raster2 = testDataDir + "landsat.tif";
+  QFileInfo fi1( raster1 );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon?crs=EPSG:3111", "V4", "memory" );
+  p.addMapLayers( QList<QgsMapLayer *>() << v1 << r1 );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // not optional!
+  QgsProcessingParameterRasterLayer *def = new QgsProcessingParameterRasterLayer( "non_optional", QString(), QString( "EPSG:3113" ), false );
+
+  // using existing map layer ID
+  QVariantMap params;
+  params.insert( "non_optional",  r1->id() );
+  QCOMPARE( QgsProcessingParameters::parameterAsRasterLayer( def, params, QStringLiteral( "non_optional" ), context )->id(), r1->id() );
+
+  // not raster layer
+  params.insert( "non_optional",  v1->id() );
+  QVERIFY( !QgsProcessingParameters::parameterAsRasterLayer( def, params, QStringLiteral( "non_optional" ), context ) );
+
+  // string representing a project layer source
+  params.insert( "non_optional", raster1 );
+  QCOMPARE( QgsProcessingParameters::parameterAsRasterLayer( def, params, QStringLiteral( "non_optional" ), context )->id(), r1->id() );
+  // string representing a non-project layer source
+  params.insert( "non_optional", raster2 );
+  QCOMPARE( QgsProcessingParameters::parameterAsRasterLayer( def, params, QStringLiteral( "non_optional" ), context )->publicSource(), raster2 );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a layer, and nothing you can do will make me one" ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsRasterLayer( def, params, QStringLiteral( "non_optional" ), context ) );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterRasterLayer( "optional", QString(), r1->id(), true );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsRasterLayer( def, params, QStringLiteral( "optional" ), context )->id(), r1->id() );
+}
+
+void TestQgsProcessing::parameterEnum()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  QgsProcessingParameterEnum *def = new QgsProcessingParameterEnum( "non_optional", QString(), QStringList() << "A" << "B" << "C", false, 2, false );
+
+  // string representing a number
+  QVariantMap params;
+  params.insert( "non_optional", QString( "1" ) );
+  int iNumber = QgsProcessingParameters::parameterAsEnum( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( iNumber, 1 );
+
+  // double
+  params.insert( "non_optional", 2.2 );
+  iNumber = QgsProcessingParameters::parameterAsEnum( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( iNumber, 2 );
+
+  // int
+  params.insert( "non_optional", 1 );
+  iNumber = QgsProcessingParameters::parameterAsEnum( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( iNumber, 1 );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a number, and nothing you can do will make me one" ) );
+  iNumber = QgsProcessingParameters::parameterAsEnum( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( iNumber, 2 );
+
+  // out of range
+  params.insert( "non_optional", 4 );
+  iNumber = QgsProcessingParameters::parameterAsEnum( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( iNumber, 2 );
+
+  // multiple
+  def = new QgsProcessingParameterEnum( "optional", QString(), QStringList() << "A" << "B" << "C", true, 5, false );
+  params.insert( "non_optional", QString( "1,2" ) );
+  QList< int > iNumbers = QgsProcessingParameters::parameterAsEnums( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( iNumbers, QList<int>() << 1 << 2 );
+  params.insert( "non_optional", QVariantList() << 0 << 2 );
+  iNumbers = QgsProcessingParameters::parameterAsEnums( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( iNumbers, QList<int>() << 0 << 2 );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterEnum( "optional", QString(), QStringList(), false, 5, true );
+  params.insert( "optional",  QVariant() );
+  iNumber = QgsProcessingParameters::parameterAsEnum( def, params, QStringLiteral( "optional" ), context );
+  QCOMPARE( iNumber, 5 );
+  // unconvertible string
+  params.insert( "optional",  QVariant( "aaaa" ) );
+  iNumber = QgsProcessingParameters::parameterAsEnum( def, params, QStringLiteral( "optional" ), context );
+  QCOMPARE( iNumber, 5 );
+  //optional with multiples
+  delete def;
+  def = new QgsProcessingParameterEnum( "optional", QString(), QStringList() << "A" << "B" << "C", true, QVariantList() << 1 << 2, true );
+  params.insert( "optional",  QVariant() );
+  iNumbers = QgsProcessingParameters::parameterAsEnums( def, params, QStringLiteral( "optional" ), context );
+  QCOMPARE( iNumbers, QList<int>() << 1 << 2 );
+  def = new QgsProcessingParameterEnum( "optional", QString(), QStringList() << "A" << "B" << "C", true, "1,2", true );
+  params.insert( "optional",  QVariant() );
+  iNumbers = QgsProcessingParameters::parameterAsEnums( def, params, QStringLiteral( "optional" ), context );
+  QCOMPARE( iNumbers, QList<int>() << 1 << 2 );
+}
+
+void TestQgsProcessing::parameterString()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  QgsProcessingParameterString *def = new QgsProcessingParameterString( "non_optional", QString(), QString(), false, false );
+
+  // string
+  QVariantMap params;
+  params.insert( "non_optional", QString( "abcdef" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, QStringLiteral( "non_optional" ), context ), QString( "abcdef" ) );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterString( "optional", QString(), QString( "default" ), false, true );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, QStringLiteral( "optional" ), context ), QString( "default" ) );
+}
+
+void TestQgsProcessing::parameterExpression()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  QgsProcessingParameterExpression *def = new QgsProcessingParameterExpression( "non_optional", QString(), QString(), QString(), false );
+
+  // string
+  QVariantMap params;
+  params.insert( "non_optional", QString( "abcdef" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsExpression( def, params, QStringLiteral( "non_optional" ), context ), QString( "abcdef" ) );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterExpression( "optional", QString(), QString( "default" ), QString(), true );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsExpression( def, params, QStringLiteral( "optional" ), context ), QString( "default" ) );
+  // valid expression, should not fallback
+  params.insert( "optional",  QVariant( "1+2" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsExpression( def, params, QStringLiteral( "optional" ), context ), QString( "1+2" ) );
+  // invalid expression, should fallback
+  params.insert( "optional",  QVariant( "1+" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsExpression( def, params, QStringLiteral( "optional" ), context ), QString( "default" ) );
+}
+
+void TestQgsProcessing::parameterField()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  QgsProcessingParameterTableField *def = new QgsProcessingParameterTableField( "non_optional", QString(), QString(), QString(), QgsProcessingParameterTableField::Any, false, false );
+
+  // string
+  QVariantMap params;
+  params.insert( "non_optional", QString( "a" ) );
+  QStringList fields = QgsProcessingParameters::parameterAsFields( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( fields, QStringList() << "a" );
+
+  // multiple
+  def = new QgsProcessingParameterTableField( "non_optional", QString(), QString(), QString(), QgsProcessingParameterTableField::Any, true, false );
+  params.insert( "non_optional", QString( "a;b" ) );
+  fields = QgsProcessingParameters::parameterAsFields( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( fields, QStringList() << "a" << "b" );
+  params.insert( "non_optional", QVariantList() << "a" << "b" );
+  fields = QgsProcessingParameters::parameterAsFields( def, params, QStringLiteral( "non_optional" ), context );
+  QCOMPARE( fields, QStringList() << "a" << "b" );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterTableField( "non_optional", QString(), QString( "def" ), QString(), QgsProcessingParameterTableField::Any, false, true );
+  params.insert( "optional",  QVariant() );
+  fields = QgsProcessingParameters::parameterAsFields( def, params, QStringLiteral( "optional" ), context );
+  QCOMPARE( fields, QStringList() << "def" );
+
+  //optional with multiples
+  delete def;
+  def = new QgsProcessingParameterTableField( "non_optional", QString(), QString( "abc;def" ), QString(), QgsProcessingParameterTableField::Any, true, true );
+  params.insert( "optional",  QVariant() );
+  fields = QgsProcessingParameters::parameterAsFields( def, params, QStringLiteral( "optional" ), context );
+  QCOMPARE( fields, QStringList() << "abc" << "def" );
+  delete def;
+  def = new QgsProcessingParameterTableField( "non_optional", QString(), QVariantList() << "abc" << "def", QString(), QgsProcessingParameterTableField::Any, true, true );
+  params.insert( "optional",  QVariant() );
+  fields = QgsProcessingParameters::parameterAsFields( def, params, QStringLiteral( "optional" ), context );
+  QCOMPARE( fields, QStringList() << "abc" << "def" );
+}
+
+void TestQgsProcessing::parameterVectorLayer()
+{
+  // setup a context
+  QgsProject p;
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 28353 ) );
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString vector1 = testDataDir + "multipoint.shp";
+  QString raster = testDataDir + "landsat.tif";
+  QFileInfo fi1( raster );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon?crs=EPSG:3111", "V4", "memory" );
+  p.addMapLayers( QList<QgsMapLayer *>() << v1 << r1 );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // not optional!
+  QgsProcessingParameterVector *def = new QgsProcessingParameterVector( "non_optional", QString(), QgsProcessingParameterDefinition::TypeVectorAny, QString( "EPSG:3113" ), false );
+
+  // using existing map layer ID
+  QVariantMap params;
+  params.insert( "non_optional",  v1->id() );
+  QCOMPARE( QgsProcessingParameters::parameterAsVectorLayer( def, params, QStringLiteral( "non_optional" ), context )->id(), v1->id() );
+
+  // not vector layer
+  params.insert( "non_optional",  r1->id() );
+  QVERIFY( !QgsProcessingParameters::parameterAsVectorLayer( def, params, QStringLiteral( "non_optional" ), context ) );
+
+  // string representing a layer source
+  params.insert( "non_optional", vector1 );
+  QCOMPARE( QgsProcessingParameters::parameterAsVectorLayer( def, params, QStringLiteral( "non_optional" ), context )->publicSource(), vector1 );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a layer, and nothing you can do will make me one" ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsVectorLayer( def, params, QStringLiteral( "non_optional" ), context ) );
+
+  // optional
+  delete def;
+  def = new QgsProcessingParameterVector( "optional", QString(), QgsProcessingParameterDefinition::TypeVectorAny, v1->id(), true );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsVectorLayer( def, params, QStringLiteral( "optional" ), context )->id(), v1->id() );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
