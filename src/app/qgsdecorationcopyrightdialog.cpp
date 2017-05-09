@@ -50,13 +50,14 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // color
-  pbnColorChooser->setColor( mDeco.mLabelQColor );
+  pbnColorChooser->setAllowAlpha( true );
+  pbnColorChooser->setColor( mDeco.mColor );
   pbnColorChooser->setContext( QStringLiteral( "gui" ) );
   pbnColorChooser->setColorDialogTitle( tr( "Select text color" ) );
 
   QTextCursor cursor = txtCopyrightText->textCursor();
   txtCopyrightText->selectAll();
-  txtCopyrightText->setTextColor( mDeco.mLabelQColor );
+  txtCopyrightText->setTextColor( mDeco.mColor );
   txtCopyrightText->setTextCursor( cursor );
 }
 
@@ -89,7 +90,7 @@ void QgsDecorationCopyrightDialog::apply()
 {
   mDeco.mQFont = txtCopyrightText->currentFont();
   mDeco.mLabelQString = txtCopyrightText->toPlainText();
-  mDeco.mLabelQColor = pbnColorChooser->color();
+  mDeco.mColor = pbnColorChooser->color();
   mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.mMarginHorizontal = spnHorizontal->value();
