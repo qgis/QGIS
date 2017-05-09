@@ -142,7 +142,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \returns true if algorithm run was successful, or false if run was unsuccessful.
      */
     virtual bool run( const QVariantMap &parameters,
-                      QgsProcessingContext &context, QgsProcessingFeedback *feedback, QVariantMap &outputs SIP_OUT ) const = 0;
+                      QgsProcessingContext &context, QgsProcessingFeedback *feedback, QVariantMap &outputs SIP_OUT ) const;
 
   private:
 
