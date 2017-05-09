@@ -127,7 +127,7 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
   if ( QgsOgrProviderUtils::OGRParseSubLayerStringWrapper( name, layerIndex, layerName, featuresCounted, ogrGeometryType, geometryName, geometryIndex, ogrType )
        != QString::null )
   {
-    ogrGeometryType = QgsOgrProviderUtils::getOgrGeomType( hLayer, geometryIndex );
+    ogrGeometryType = QgsOgrProviderUtils::getOgrGeomType( hLayer, geometryIndex, geometryName );
     switch ( ogrGeometryType )
     {
       case wkbUnknown:

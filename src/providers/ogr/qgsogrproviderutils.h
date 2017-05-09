@@ -71,7 +71,7 @@ class QgsOgrProviderUtils
      * \returns geomType OGRwkbGeometryType
      * \since QGIS 3.0
      */
-    static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer, int geomIndex );
+    static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer, int &geomIndex, QString geometryName );
     static QString wkbGeometryTypeName( OGRwkbGeometryType type );
     static OGRwkbGeometryType wkbGeometryTypeFromName( const QString &typeName ) ;
     //! Get single flatten geometry type

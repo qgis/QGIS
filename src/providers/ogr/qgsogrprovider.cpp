@@ -671,7 +671,7 @@ void QgsOgrProvider::loadFields()
   }
   else
   {
-    mOGRGeomType = QgsOgrProviderUtils::getOgrGeomType( ogrLayer,  mGeometryIndex );
+    mOGRGeomType = QgsOgrProviderUtils::getOgrGeomType( ogrLayer,  mGeometryIndex, mGeometryName );
   }
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   if ( fdef )
@@ -2926,12 +2926,31 @@ void QgsOgrProvider::forceReload()
 }
 
 // This is reused by dataItem and subLayers
-OGRwkbGeometryType QgsOgrProviderUtils::getOgrGeomType( OGRLayerH ogrLayer, int geomIndex )
+OGRwkbGeometryType QgsOgrProviderUtils::getOgrGeomType( OGRLayerH ogrLayer, int &geomIndex, QString geometryName )
 {
   OGRFeatureDefnH fdef_layer = OGR_L_GetLayerDefn( ogrLayer );
   OGRwkbGeometryType geomType = wkbUnknown;
   if ( fdef_layer )
   {
+    if ( geomIndex < 0 )
+    {
+      int i_count_geometries = OGR_FD_GetGeomFieldCount( fdef_layer );
+      if ( i_count_geometries > 0 )
+      {
+        if ( geometryName.isEmpty() )
+        {
+          geomIndex = 0;
+        }
+        else
+        {
+          geomIndex = OGR_FD_GetGeomFieldIndex( fdef_layer, geometryName.toUtf8().constData() );
+          if ( geomIndex < 0 )
+          {
+            return geomType;
+          }
+        }
+      }
+    }
     OGRGeomFieldDefnH fdef_geom = OGR_FD_GetGeomFieldDefn( fdef_layer, geomIndex );
     if ( fdef_geom )
     {
@@ -3094,6 +3113,20 @@ OGRLayerH QgsOgrProvider::OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QStr
           mOgrGetType = QgsOgrProviderUtils::LayerNameType; // read by layer-name
         }
       }
+      else
+      {
+        if ( ( mLayerName.contains( "(" ) ) && ( mLayerName.endsWith( QString( ")" ) ) ) )
+        {
+          mOgrGetType = QgsOgrProviderUtils::LayerNameType; // read by layer-name
+        }
+        else
+        {
+          if ( ( !mGeometryName.isNull() ) && ( !mGeometryName.isEmpty() ) && ( mGeometryIndex > 0 ) )
+          {
+            mOgrGetType = QgsOgrProviderUtils::LayerGeometryIndexType; // read by layer and geomety-name
+          }
+        }
+      }
       break;
   }
   mSubLayerString = QgsOgrProviderUtils::OGRParseSubLayerStringWrapper( QString::null, mLayerIndex, mLayerName, featuresCounted, ogrGeometryType, sGeometryName, mGeometryIndex, mOgrGetType );
@@ -3102,6 +3135,20 @@ OGRLayerH QgsOgrProvider::OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QStr
     ogrLayer = QgsOgrProviderUtils::OGRGetSubLayerStringWrapper( ogrDataSource, mSubLayerString );
     if ( ogrLayer )
     {
+      if ( ( mGeometryIndex < 0 ) || ( mOgrGeometryTypeFilter == wkbUnknown ) || ( mFeaturesCounted < 0 ) )
+      {
+        if ( mFeaturesCounted < 0 )
+        {
+          mFeaturesCounted = QgsOgrProviderUtils::OGRGetFeatureCountWrapper( ogrLayer, 1 ); // Fetch the feature count in this layer, GML force is needed.
+          featuresCounted = mFeaturesCounted;
+        }
+        if ( ( mGeometryIndex < 0 ) || ( mOgrGeometryTypeFilter == wkbUnknown ) )
+        {
+          mOgrGeometryTypeFilter = QgsOgrProviderUtils::getOgrGeomType( ogrLayer,  mGeometryIndex, sGeometryName );
+        }
+        // Everything, but the Layerid, should now be resolved.
+        mSubLayerString = QgsOgrProviderUtils::OGRParseSubLayerStringWrapper( QString::null, mLayerIndex, mLayerName, featuresCounted, mOgrGeometryTypeFilter, sGeometryName, mGeometryIndex, mOgrGetType );
+      }
       return ogrLayer;
     }
     mSubLayerString = QString::null;
@@ -3384,7 +3431,7 @@ QStringList QgsOgrProviderUtils::OGRGetSubLayersWrapper( OGRDataSourceH ogrDataS
               else
               {
                 QgsDebugMsg( "Unknown geometry type, count features for each geometry type" );
-                layerGeomType = QgsOgrProviderUtils::getOgrGeomType( layer, i_field );
+                layerGeomType = QgsOgrProviderUtils::getOgrGeomType( layer, i_field, layer_field_name );
                 if ( QgsOgrProviderUtils::wkbFlattenWrapper( layerGeomType ) != wkbUnknown )
                 {
                   geom = QgsOgrProviderUtils::wkbGeometryTypeName( layerGeomType );
