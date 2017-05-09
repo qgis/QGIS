@@ -75,6 +75,7 @@ GeometryCollection (PointZ (1 2 3)),GEOMETRYCOLLECTION Z (POINT Z (1 2 3)),1,0,0
 "MultiPoint(( 1 2 3 ),(4 5 6))","MultiPointZ(( 1 2 3 ),(4 5 6))",2,0,0,0,2,0,0,POINT(2.5 3.5),1,2,4,5,"z coordinate, but geometry not explicitly marked as such. Should be upgraded to have Z dimension"
 "MultiPoint(( 1 2 3 11),(4 5 6 12))","MultiPointZM(( 1 2 3 11),(4 5 6 12))",2,0,0,0,2,0,0,POINT(2.5 3.5),1,2,4,5,"4d coordinates, but geometry not explicitly marked as such. Should be upgraded to have ZM dimension"
 "MultiPoint (1 2, 3 4, 5 6)","MULTIPOINT((1 2),(3 4),(5 6))",3,0,0,0,3,0,0,POINT(3 4),1,2,5,6,
+"MultiPoint (-20 -90, -20 -88 )","MULTIPOINT((-20 -90),(-20 -88))",2,0,0,0,2,0,0,Point (-20 -89),-20,-90,-20,-88,
 MultiPoint (1 2),MULTIPOINT((1 2)),1,0,0,0,1,0,0,POINT(1 2),1,2,1,2,
 MultiPoint Z (1 2 3),MULTIPOINT Z ((1 2 3)),1,0,0,0,1,0,0,POINT(1 2),1,2,1,2,
 "MultiPointM (1 2 3,4 5 0)","MULTIPOINT M ((1 2 3),(4 5 0))",2,0,0,0,2,0,0,POINT(2.5 3.5),1,2,4,5,

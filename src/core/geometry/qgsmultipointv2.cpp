@@ -34,7 +34,7 @@ bool QgsMultiPointV2::fromWkt( const QString& wkt )
 {
   QString collectionWkt( wkt );
   //test for non-standard MultiPoint(x1 y1, x2 y2) format
-  QRegExp regex( "^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*\\d" );
+  QRegExp regex( "^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*[-\\d]" );
   regex.setCaseSensitivity( Qt::CaseInsensitive );
   if ( regex.indexIn( collectionWkt ) >= 0 )
   {
