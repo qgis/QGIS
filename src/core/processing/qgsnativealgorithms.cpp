@@ -24,21 +24,28 @@
 #include "qgsgeometry.h"
 #include "qgswkbtypes.h"
 
-bool QgsCentroidAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QVariantMap &outputs ) const
+QgsCentroidAlgorithm::QgsCentroidAlgorithm()
 {
-  Q_UNUSED( outputs );
-  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProcessingParameters::parameterAsLayer( parameters, QStringLiteral( "INPUT_LAYER" ), context ) );
-  if ( !layer )
-    return false;
+  addParameter( new QgsProcessingParameterVector( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+}
 
-  QString dest;
-  QgsVectorLayer *outputLayer = nullptr;
-  std::unique_ptr< QgsFeatureSink > writer( QgsProcessingUtils::createFeatureSink( dest, QString(), layer->fields(), QgsWkbTypes::Point, layer->crs(), context, outputLayer ) );
+QVariantMap QgsCentroidAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+{
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !layer )
+    return QVariantMap();
+
+  QString dest = parameterAsString( parameters, QStringLiteral( "OUTPUT_LAYER" ), context );
+  std::unique_ptr< QgsFeatureSink > writer( QgsProcessingUtils::createFeatureSink( dest, QString(), layer->fields(), QgsWkbTypes::Point, layer->crs(), context ) );
+
+  long count = QgsProcessingUtils::featureCount( layer, context );
+  if ( count <= 0 )
+    return QVariantMap();
 
   QgsFeature f;
   QgsFeatureIterator it = QgsProcessingUtils::getFeatures( layer, context );
 
-  double step = 100.0 / QgsProcessingUtils::featureCount( layer, context );
+  double step = 100.0 / count;
   int current = 0;
   while ( it.nextFeature( f ) )
   {
@@ -62,34 +69,50 @@ bool QgsCentroidAlgorithm::run( const QVariantMap &parameters, QgsProcessingCont
     current++;
   }
 
-  return true;
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), dest );
+  return outputs;
 }
 
-bool QgsBufferAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QVariantMap &outputs ) const
+//
+// QgsBufferAlgorithm
+//
+
+QgsBufferAlgorithm::QgsBufferAlgorithm()
 {
-  Q_UNUSED( outputs );
+  addParameter( new QgsProcessingParameterVector( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsProcessingParameterNumber::Double, 10 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), QgsProcessingParameterNumber::Integer, 5, false, 1 ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISSOLVE" ), QObject::tr( "Dissolve result" ), false ) );
+}
 
-  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProcessingParameters::parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
+QVariantMap QgsBufferAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+{
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !layer )
-    return false;
+    return QVariantMap();
 
-  QString dest;
-  QgsVectorLayer *outputLayer = nullptr;
-  std::unique_ptr< QgsFeatureSink > writer( QgsProcessingUtils::createFeatureSink( dest, QString(), layer->fields(), QgsWkbTypes::Point, layer->crs(), context, outputLayer ) );
+  QString dest = parameterAsString( parameters, QStringLiteral( "OUTPUT_LAYER" ), context );
+  std::unique_ptr< QgsFeatureSink > writer( QgsProcessingUtils::createFeatureSink( dest, QString(), layer->fields(), QgsWkbTypes::Point, layer->crs(), context ) );
 
   // fixed parameters
   //bool dissolve = QgsProcessingParameters::parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
-  int segments = QgsProcessingParameters::parameterAsInt( parameters, QStringLiteral( "DISSOLVE" ), context );
-  QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( QgsProcessingParameters::parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
-  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( QgsProcessingParameters::parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
-  double miterLimit = QgsProcessingParameters::parameterAsDouble( parameters, QStringLiteral( "MITRE_LIMIT" ), context );
-  double bufferDistance = QgsProcessingParameters::parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
+  int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
+  QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
+  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  double miterLimit = parameterAsDouble( parameters, QStringLiteral( "MITRE_LIMIT" ), context );
+  double bufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
   bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  const QgsProcessingParameterDefinition *distanceParamDef = parameterDefinition( QStringLiteral( "DISTANCE" ) );
+
+  long count = QgsProcessingUtils::featureCount( layer, context );
+  if ( count <= 0 )
+    return QVariantMap();
 
   QgsFeature f;
   QgsFeatureIterator it = QgsProcessingUtils::getFeatures( layer, context );
 
-  double step = 100.0 / QgsProcessingUtils::featureCount( layer, context );
+  double step = 100.0 / count;
   int current = 0;
   while ( it.nextFeature( f ) )
   {
@@ -104,7 +127,7 @@ bool QgsBufferAlgorithm::run( const QVariantMap &parameters, QgsProcessingContex
       if ( dynamicBuffer )
       {
         context.expressionContext().setFeature( f );
-        bufferDistance = QgsProcessingParameters::parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
+        bufferDistance = QgsProcessingParameters::parameterAsDouble( distanceParamDef, parameters, QStringLiteral( "DISTANCE" ), context );
       }
 
       out.setGeometry( f.geometry().buffer( bufferDistance, segments, endCapStyle, joinStyle, miterLimit ) );
@@ -119,5 +142,7 @@ bool QgsBufferAlgorithm::run( const QVariantMap &parameters, QgsProcessingContex
     current++;
   }
 
-  return true;
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), dest );
+  return outputs;
 }

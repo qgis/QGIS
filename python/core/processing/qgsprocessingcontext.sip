@@ -70,6 +70,7 @@ class QgsProcessingContext
  :rtype: QgsExpressionContext
 %End
 
+
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
  Sets the expression ``context``.
@@ -81,6 +82,7 @@ class QgsProcessingContext
  algorithm execution.
  :rtype: QgsMapLayerStore
 %End
+
 
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring

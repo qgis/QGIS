@@ -32,15 +32,15 @@ class QgsCentroidAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsCentroidAlgorithm() = default;
+    QgsCentroidAlgorithm();
 
     QString name() const override { return QStringLiteral( "centroids" ); }
     QString displayName() const override { return QObject::tr( "Centroids" ); }
     virtual QStringList tags() const override { return QObject::tr( "centroid,center,average,point,middle" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
 
-    virtual bool run( const QVariantMap &parameters,
-                      QgsProcessingContext &context, QgsProcessingFeedback *feedback, QVariantMap &outputs ) const override;
+    virtual QVariantMap run( const QVariantMap &parameters,
+                             QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
 
 };
 
@@ -52,15 +52,15 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsBufferAlgorithm() = default;
+    QgsBufferAlgorithm();
 
     QString name() const override { return QStringLiteral( "fixeddistancebuffer" ); }
     QString displayName() const override { return QObject::tr( "Buffer" ); }
     virtual QStringList tags() const override { return QObject::tr( "buffer,grow" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
 
-    virtual bool run( const QVariantMap &parameters,
-                      QgsProcessingContext &context, QgsProcessingFeedback *feedback, QVariantMap &outputs ) const override;
+    virtual QVariantMap run( const QVariantMap &parameters,
+                             QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
 
 };
 
