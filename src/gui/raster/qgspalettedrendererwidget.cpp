@@ -406,7 +406,7 @@ void QgsPalettedRendererWidget::classify()
       return;
     }
 
-    mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer,  mBandComboBox->currentData().toInt(), btnColorRamp->colorRamp() );
+    mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer,  mBandComboBox->currentData().toInt(), mModel->classData(), btnColorRamp->colorRamp() );
 
     connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, &QProgressBar::setValue );
     mCalculatingProgressBar->show();
@@ -450,7 +450,7 @@ void QgsPalettedRendererWidget::gathererThreadFinished()
 {
   mGatherer->deleteLater();
   mGatherer = nullptr;
-  mClassifyButton->setText( tr( "Add Unique Values" ) );
+  mClassifyButton->setText( tr( "Populate Values" ) );
   mClassifyButton->setEnabled( true );
   mCalculatingProgressBar->hide();
   mCancelButton->hide();

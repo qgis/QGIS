@@ -43,8 +43,11 @@
      </property>
      <item>
       <widget class="QPushButton" name="mClassifyButton">
+       <property name="toolTip">
+        <string>Adds all missing unique values from the raster</string>
+       </property>
        <property name="text">
-        <string>Add Unique Values</string>
+        <string>Populate Values</string>
        </property>
       </widget>
      </item>
