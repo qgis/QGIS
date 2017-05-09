@@ -33,6 +33,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include "qgsproject.h"
 #include "qgsunittypes.h"
 #include "qgssettings.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 #include <QAction>
@@ -75,10 +76,8 @@ void QgsDecorationScaleBar::projectRead()
   mPreferredSize = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/PreferredSize" ), 30 );
   mStyleIndex = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/Style" ), 0 );
   mSnapping = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Snapping" ), true );
-  int myRedInt = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/ColorRedPart" ), 0 );
-  int myGreenInt = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/ColorGreenPart" ), 0 );
-  int myBlueInt = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/ColorBluePart" ), 0 );
-  mColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
+  mOutlineColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
   mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
   mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
 }
@@ -89,9 +88,8 @@ void QgsDecorationScaleBar::saveToProject()
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/PreferredSize" ), mPreferredSize );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Snapping" ), mSnapping );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Style" ), mStyleIndex );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/ColorRedPart" ), mColor.red() );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/ColorGreenPart" ), mColor.green() );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/ColorBluePart" ), mColor.blue() );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
 }
@@ -311,7 +309,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
 
     //Set pen to draw with
     QPen myForegroundPen( mColor, 2 );
-    QPen myBackgroundPen( Qt::white, 4 );
+    QPen myBackgroundPen( mOutlineColor, 4 );
 
     //Cast myScaleBarWidth to int for drawing
     int myScaleBarWidthInt = static_cast< int >( myScaleBarWidth );
@@ -434,8 +432,8 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
     //Do drawing of scale bar text
     //
 
-    QColor myBackColor = Qt::white;
-    QColor myForeColor = Qt::black;
+    QColor myBackColor = mOutlineColor;
+    QColor myForeColor = mColor;
 
     //Draw the minimum label buffer
     context.painter()->setPen( myBackColor );

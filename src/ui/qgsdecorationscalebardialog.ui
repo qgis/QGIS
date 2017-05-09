@@ -53,7 +53,14 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="3" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="colorLayout">
+        <item>
+         <widget class="QLabel" name="fillLabel">
+          <property name="text">
+           <string>Fill</string>
+          </property>
+         </widget>
+        </item>
         <item>
          <widget class="QgsColorButton" name="pbnChangeColor">
           <property name="minimumSize">
@@ -74,17 +81,30 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QLabel" name="outlineLabel">
+          <property name="text">
+           <string>Outline</string>
           </property>
-          <property name="sizeHint" stdset="0">
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsColorButton" name="pbnChangeOutlineColor">
+          <property name="minimumSize">
            <size>
-            <width>40</width>
-            <height>20</height>
+            <width>150</width>
+            <height>0</height>
            </size>
           </property>
-         </spacer>
+          <property name="maximumSize">
+           <size>
+            <width>120</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
