@@ -100,7 +100,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QComboBox" name="mBandComboBox"/>
+      <widget class="QgsRasterBandComboBox" name="mBandComboBox"/>
      </item>
      <item row="1" column="1">
       <widget class="QgsColorRampButton" name="btnColorRamp">
@@ -203,6 +203,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>raster/qgsrasterbandcombobox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsColorRampButton</class>
    <extends>QToolButton</extends>

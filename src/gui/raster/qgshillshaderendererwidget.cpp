@@ -41,23 +41,7 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
   mZFactor->setClearValue( 1 );
 
   mMultiDirection->setChecked( false );
-
-  if ( mRasterLayer )
-  {
-    QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
-    if ( !provider )
-    {
-      return;
-    }
-
-    //fill available bands into combo box
-    int nBands = provider->bandCount();
-    for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
-    {
-      mBandsCombo->addItem( displayBandName( i ), i );
-    }
-
-  }
+  mBandsCombo->setLayer( mRasterLayer );
 
   setFromRenderer( layer->renderer() );
 
@@ -66,6 +50,7 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
   connect( mLightAzimuthDial, &QAbstractSlider::valueChanged, this, &QgsHillshadeRendererWidget::on_mLightAzimuthDail_updated );
   connect( mZFactor, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterRendererWidget::widgetChanged );
   connect( mMultiDirection, &QAbstractButton::toggled, this, &QgsRasterRendererWidget::widgetChanged );
+  connect( mBandsCombo, &QgsRasterBandComboBox::bandChanged, this, &QgsHillshadeRendererWidget::widgetChanged );
 }
 
 QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
@@ -81,7 +66,7 @@ QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
     return nullptr;
   }
 
-  int band = mBandsCombo->currentData().toInt();
+  int band = mBandsCombo->currentBand();
   QgsHillshadeRenderer *renderer = new QgsHillshadeRenderer( provider, band, mLightAzimuth->value(), mLightAngle->value() );
   double value = mZFactor->value();
   renderer->setZFactor( value );
@@ -94,7 +79,7 @@ void QgsHillshadeRendererWidget::setFromRenderer( const QgsRasterRenderer *rende
   const QgsHillshadeRenderer *r = dynamic_cast<const QgsHillshadeRenderer *>( renderer );
   if ( r )
   {
-    mBandsCombo->setCurrentIndex( mBandsCombo->findData( r->band() ) );
+    mBandsCombo->setBand( r->band() );
     mLightAngle->setValue( r->altitude() );
     mLightAzimuth->setValue( r->azimuth() );
     mZFactor->setValue( r->zFactor() );

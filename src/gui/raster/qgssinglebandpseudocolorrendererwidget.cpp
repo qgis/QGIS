@@ -89,12 +89,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   connect( mMinMaxWidget, &QgsRasterMinMaxWidget::widgetChanged, this, &QgsSingleBandPseudoColorRendererWidget::widgetChanged );
   connect( mMinMaxWidget, &QgsRasterMinMaxWidget::load, this, &QgsSingleBandPseudoColorRendererWidget::loadMinMax );
 
-  //fill available bands into combo box
-  int nBands = provider->bandCount();
-  for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
-  {
-    mBandComboBox->addItem( displayBandName( i ), i );
-  }
+  mBandComboBox->setLayer( mRasterLayer );
 
   mColorInterpolationComboBox->addItem( tr( "Discrete" ), QgsColorRampShader::Discrete );
   mColorInterpolationComboBox->addItem( tr( "Linear" ), QgsColorRampShader::Interpolated );
@@ -130,7 +125,8 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   connect( mClassifyButton, &QPushButton::clicked, this, &QgsSingleBandPseudoColorRendererWidget::applyColorRamp );
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsSingleBandPseudoColorRendererWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsSingleBandPseudoColorRendererWidget::classify );
-  connect( mBandComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSingleBandPseudoColorRendererWidget::classify );
+  connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsSingleBandPseudoColorRendererWidget::classify );
+  connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsSingleBandPseudoColorRendererWidget::bandChanged );
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsRasterRendererWidget::widgetChanged );
 }
 
@@ -170,7 +166,7 @@ QgsRasterRenderer *QgsSingleBandPseudoColorRendererWidget::renderer()
 
   rasterShader->setRasterShaderFunction( colorRampShader );
 
-  int bandNumber = mBandComboBox->currentData().toInt();
+  int bandNumber = mBandComboBox->currentBand();
   QgsSingleBandPseudoColorRenderer *renderer = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), bandNumber, rasterShader );
   renderer->setClassificationMin( lineEditValue( mMinLineEdit ) );
   renderer->setClassificationMax( lineEditValue( mMaxLineEdit ) );
@@ -333,12 +329,12 @@ void QgsSingleBandPseudoColorRendererWidget::on_mDeleteEntryButton_clicked()
 void QgsSingleBandPseudoColorRendererWidget::classify()
 {
   std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
-  if ( !ramp )
+  if ( !ramp || qIsNaN( lineEditValue( mMinLineEdit ) ) || qIsNaN( lineEditValue( mMaxLineEdit ) ) )
   {
     return;
   }
 
-  QgsSingleBandPseudoColorRenderer *pr = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), mBandComboBox->currentData().toInt(), nullptr );
+  QgsSingleBandPseudoColorRenderer *pr = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), mBandComboBox->currentBand(), nullptr );
   pr->setClassificationMin( lineEditValue( mMinLineEdit ) );
   pr->setClassificationMax( lineEditValue( mMaxLineEdit ) );
   pr->createShader( ramp.get(), static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() ), static_cast< QgsColorRampShader::ClassificationMode >( mClassificationModeComboBox->currentData().toInt() ), mNumberOfEntriesSpinBox->value(), mClipCheckBox->isChecked(), minMaxWidget()->extent() );
@@ -428,7 +424,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromBandButton_clicked()
     return;
   }
 
-  int bandIndex = mBandComboBox->currentData().toInt();
+  int bandIndex = mBandComboBox->currentBand();
 
 
   QList<QgsColorRampShader::ColorRampItem> colorRampList = mRasterLayer->dataProvider()->colorTable( bandIndex );
@@ -652,7 +648,8 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
   const QgsSingleBandPseudoColorRenderer *pr = dynamic_cast<const QgsSingleBandPseudoColorRenderer *>( r );
   if ( pr )
   {
-    mBandComboBox->setCurrentIndex( mBandComboBox->findData( pr->band() ) );
+    mBandComboBox->setBand( pr->band() );
+    mMinMaxWidget->setBands( QList< int >() << pr->band() );
 
     const QgsRasterShader *rasterShader = pr->shader();
     if ( rasterShader )
@@ -697,12 +694,16 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
 
     mMinMaxWidget->setFromMinMaxOrigin( pr->minMaxOrigin() );
   }
+  else
+  {
+    mMinMaxWidget->setBands( QList< int >() << mBandComboBox->currentBand() );
+  }
 }
 
-void QgsSingleBandPseudoColorRendererWidget::on_mBandComboBox_currentIndexChanged( int index )
+void QgsSingleBandPseudoColorRendererWidget::bandChanged()
 {
   QList<int> bands;
-  bands.append( mBandComboBox->itemData( index ).toInt() );
+  bands.append( mBandComboBox->currentBand() );
   mMinMaxWidget->setBands( bands );
 }
 
