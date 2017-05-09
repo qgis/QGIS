@@ -78,7 +78,7 @@ bool QgsBufferAlgorithm::run( const QVariantMap &parameters, QgsProcessingContex
   std::unique_ptr< QgsFeatureSink > writer( QgsProcessingUtils::createFeatureSink( dest, QString(), layer->fields(), QgsWkbTypes::Point, layer->crs(), context, outputLayer ) );
 
   // fixed parameters
-  bool dissolve = QgsProcessingParameters::parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
+  //bool dissolve = QgsProcessingParameters::parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
   int segments = QgsProcessingParameters::parameterAsInt( parameters, QStringLiteral( "DISSOLVE" ), context );
   QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( QgsProcessingParameters::parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
   QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( QgsProcessingParameters::parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );

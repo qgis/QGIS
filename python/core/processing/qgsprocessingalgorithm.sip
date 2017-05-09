@@ -113,7 +113,7 @@ class QgsProcessingAlgorithm
     void setProvider( QgsProcessingProvider *provider );
 
     virtual bool run( const QVariantMap &parameters,
-                      QgsProcessingContext &context, QgsProcessingFeedback *feedback, QVariantMap &outputs /Out/ ) const = 0;
+                      QgsProcessingContext &context, QgsProcessingFeedback *feedback, QVariantMap &outputs /Out/ ) const;
 %Docstring
  Runs the algorithm using the specified ``parameters``. Algorithms should implement
  their custom processing logic here.

@@ -51,3 +51,8 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
 {
   mProvider = provider;
 }
+
+bool QgsProcessingAlgorithm::run( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback *, QVariantMap & ) const
+{
+  return true;
+}
