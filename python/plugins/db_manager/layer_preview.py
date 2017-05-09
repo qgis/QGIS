@@ -25,7 +25,7 @@ from qgis.PyQt.QtGui import QColor, QCursor
 from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.gui import QgsMapCanvas, QgsMapCanvasLayer, QgsMessageBar
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsProject
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsProject, QgsMessageLog
 
 from .db_plugins.plugin import Table
 
@@ -78,11 +78,13 @@ class LayerPreview(QgsMapCanvas):
     def _clear(self):
         """ remove any layers from preview canvas """
         if self.item is not None:
-            ## skip exception on RuntimeError fixes #6892
             try:
                 self.item.aboutToChange.disconnect(self.setDirty)
-            except RuntimeError:
-                pass
+            ## skip exception on RuntimeError fixes #6892
+            ## skip TypeError and generic Exceptions fixes #15868
+            ## generally due the remove of self.item object or C++ referenced object
+            except Exception as ex:
+                QgsMessageLog.logMessage(unicode(ex))
 
         self.item = None
         self.dirty = False
