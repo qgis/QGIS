@@ -120,7 +120,7 @@
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QComboBox" name="mBandsCombo"/>
+    <widget class="QgsRasterBandComboBox" name="mBandsCombo"/>
    </item>
    <item row="3" column="2">
     <widget class="QgsDoubleSpinBox" name="mZFactor">
@@ -159,6 +159,11 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>raster/qgsrasterbandcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

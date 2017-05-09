@@ -29,6 +29,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgspasswordlineeditplugin.cpp
   qgsprojectionselectionwidgetplugin.cpp
   qgspropertyoverridebuttonplugin.cpp
+  qgsrasterbandcomboboxplugin.cpp
   qgsrelationeditorwidgetplugin.cpp
   qgsrelationreferencewidgetplugin.cpp
   qgsscalerangewidgetplugin.cpp
@@ -56,6 +57,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgspasswordlineeditplugin.h
   qgsprojectionselectionwidgetplugin.h
   qgspropertyoverridebuttonplugin.h
+  qgsrasterbandcomboboxplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
@@ -87,6 +89,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsmaplayercomboboxplugin.h
   qgsprojectionselectionwidgetplugin.h
   qgspropertyoverridebuttonplugin.h
+  qgsrasterbandcomboboxplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
@@ -109,7 +112,9 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/attributetable/
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets/
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets/core
+  ${CMAKE_CURRENT_SOURCE_DIR}/../gui/raster/
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/core/raster/
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/customwidgets
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/

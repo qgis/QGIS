@@ -212,6 +212,7 @@
 
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip
+%Include raster/qgsrasterbandcombobox.sip
 %Include raster/qgsrasterhistogramwidget.sip
 %Include raster/qgsrasterminmaxwidget.sip
 %Include raster/qgsrasterrendererwidget.sip
