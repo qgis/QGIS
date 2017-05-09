@@ -748,8 +748,9 @@ void TestQgsProcessing::createFeatureSink()
   QgsVectorLayer *layer = nullptr;
 
   // should create a memory layer
-  QgsFeatureSink *sink = QgsProcessingUtils::createFeatureSink( destination, QString(), QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem(), context, layer );
+  QgsFeatureSink *sink = QgsProcessingUtils::createFeatureSink( destination, QString(), QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem(), context );
   QVERIFY( sink );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, false ) );
   QVERIFY( layer );
   QCOMPARE( static_cast< QgsProxyFeatureSink *>( sink )->destinationSink(), layer->dataProvider() );
   QCOMPARE( layer->dataProvider()->name(), QStringLiteral( "memory" ) );
@@ -765,8 +766,9 @@ void TestQgsProcessing::createFeatureSink()
 
   // specific memory layer output
   destination = QStringLiteral( "memory:mylayer" );
-  sink = QgsProcessingUtils::createFeatureSink( destination, QString(), QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem(), context, layer );
+  sink = QgsProcessingUtils::createFeatureSink( destination, QString(), QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem(), context );
   QVERIFY( sink );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, false ) );
   QVERIFY( layer );
   QCOMPARE( static_cast< QgsProxyFeatureSink *>( sink )->destinationSink(), layer->dataProvider() );
   QCOMPARE( layer->dataProvider()->name(), QStringLiteral( "memory" ) );
@@ -784,8 +786,9 @@ void TestQgsProcessing::createFeatureSink()
   destination = QStringLiteral( "memory:mylayer" );
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "my_field" ), QVariant::String, QString(), 100 ) );
-  sink = QgsProcessingUtils::createFeatureSink( destination, QString(), fields, QgsWkbTypes::PointZM, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ), context, layer );
+  sink = QgsProcessingUtils::createFeatureSink( destination, QString(), fields, QgsWkbTypes::PointZM, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ), context );
   QVERIFY( sink );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, false ) );
   QVERIFY( layer );
   QCOMPARE( static_cast< QgsProxyFeatureSink *>( sink )->destinationSink(), layer->dataProvider() );
   QCOMPARE( layer->dataProvider()->name(), QStringLiteral( "memory" ) );
@@ -807,16 +810,15 @@ void TestQgsProcessing::createFeatureSink()
   // non memory layer output
   destination = QDir::tempPath() + "/create_feature_sink.tab";
   QString prevDest = destination;
-  sink = QgsProcessingUtils::createFeatureSink( destination, QString(), fields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ), context, layer );
+  sink = QgsProcessingUtils::createFeatureSink( destination, QString(), fields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ), context );
   QVERIFY( sink );
   f = QgsFeature( fields );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 0 1, 1 1, 1 0, 0 0 ))" ) ) );
   f.setAttributes( QgsAttributes() << "val" );
   QVERIFY( sink->addFeature( f ) );
-  QVERIFY( !layer );
   QCOMPARE( destination, prevDest );
   delete sink;
-  layer = new QgsVectorLayer( destination, "test_layer", "ogr" );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( layer->fields().size(), 1 );
@@ -829,14 +831,14 @@ void TestQgsProcessing::createFeatureSink()
   // no extension, should default to shp
   destination = QDir::tempPath() + "/create_feature_sink2";
   prevDest = QDir::tempPath() + "/create_feature_sink2.shp";
-  sink = QgsProcessingUtils::createFeatureSink( destination, QString(), fields, QgsWkbTypes::Point25D, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ), context, layer );
+  sink = QgsProcessingUtils::createFeatureSink( destination, QString(), fields, QgsWkbTypes::Point25D, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ), context );
   QVERIFY( sink );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(1 2 3)" ) ) );
   QVERIFY( sink->addFeature( f ) );
   QVERIFY( !layer );
   QCOMPARE( destination, prevDest );
   delete sink;
-  layer = new QgsVectorLayer( destination, "test_layer", "ogr" );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
   QCOMPARE( layer->wkbType(), QgsWkbTypes::Point25D );
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( layer->fields().size(), 1 );

@@ -130,8 +130,7 @@ class QgsProcessingUtils
       const QgsFields &fields,
       QgsWkbTypes::Type geometryType,
       const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context,
-      QgsVectorLayer **outputLayer /Out/ ) /PyName=createFeatureSink/;
+      QgsProcessingContext &context ) /PyName=createFeatureSink/;
 %Docstring
  Creates a feature sink ready for adding features. The ``destination`` specifies a destination
  URI for the resultant layer. It may be updated in place to reflect the actual destination
@@ -142,7 +141,7 @@ class QgsProcessingUtils
  If the ``encoding`` is not specified, the default encoding from the ``context`` will be used.
 
  If a layer is created for the feature sink, the layer will automatically be added to the ``context``'s
- temporary layer store, and the ``outputLayer`` argument updated to point at this newly created layer.
+ temporary layer store.
 
 .. note::
 
