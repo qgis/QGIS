@@ -154,7 +154,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
-  mProjectFileLineEdit->setText( QgsProject::instance()->fileName() );
+  mProjectFileLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) );
 
   // get the manner in which the number of decimal places in the mouse
   // position display is set (manual or automatic)
