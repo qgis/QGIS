@@ -31,6 +31,7 @@ email                : tim@linfiniti.com
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
 
 // qt includes
@@ -75,6 +76,8 @@ QgsDecorationNorthArrow::~QgsDecorationNorthArrow()
 void QgsDecorationNorthArrow::projectRead()
 {
   QgsDecorationItem::projectRead();
+  mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
+  mOutlineColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
   mRotationInt = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/Rotation" ), 0 );
   mAutomatic = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Automatic" ), true );
   mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
@@ -84,6 +87,8 @@ void QgsDecorationNorthArrow::projectRead()
 void QgsDecorationNorthArrow::saveToProject()
 {
   QgsDecorationItem::saveToProject();
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Rotation" ), mRotationInt );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Automatic" ), mAutomatic );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
@@ -106,7 +111,7 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
     QSize size( 64, 64 );
     QSvgRenderer svg;
 
-    const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( QStringLiteral( ":/images/north_arrows/default.svg" ), size.width(), QColor( "#000000" ), QColor( "#FFFFFF" ), 0.2, 1.0 );
+    const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( QStringLiteral( ":/images/north_arrows/default.svg" ), size.width(), mColor, mOutlineColor, 1.0, 1.0 );
     svg.load( svgContent );
 
     if ( svg.isValid() )
