@@ -400,7 +400,7 @@ void QgsPalettedRendererWidget::classify()
       return;
     }
 
-    mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer, mBandComboBox->currentBand(), btnColorRamp->colorRamp() );
+    mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer, mBandComboBox->currentBand(), mModel->classData(), btnColorRamp->colorRamp() );
 
     connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, &QProgressBar::setValue );
     mCalculatingProgressBar->show();
