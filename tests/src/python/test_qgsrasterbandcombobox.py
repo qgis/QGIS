@@ -35,11 +35,9 @@ class TestQgsRasterBandComboBox(unittest.TestCase):
         combo = QgsRasterBandComboBox()
         self.assertFalse(combo.layer())
         self.assertEqual(combo.currentBand(), -1)
-        self.assertFalse(combo.isEnabled())
 
         combo.setShowNotSetOption(True)
         self.assertEqual(combo.currentBand(), -1)
-        self.assertFalse(combo.isEnabled())
 
         combo.setBand(11111)
         self.assertEqual(combo.currentBand(), -1)
@@ -58,14 +56,11 @@ class TestQgsRasterBandComboBox(unittest.TestCase):
         combo.setLayer(layer)
         self.assertEqual(combo.layer(), layer)
         self.assertEqual(combo.currentBand(), 1)
-        # only one choice, should be disabled
         self.assertEqual(combo.count(), 1)
-        self.assertFalse(combo.isEnabled())
 
         combo.setShowNotSetOption(True)
         self.assertEqual(combo.currentBand(), 1)
         self.assertEqual(combo.count(), 2)
-        self.assertTrue(combo.isEnabled())
         combo.setBand(-1)
         self.assertEqual(combo.currentBand(), -1)
         combo.setBand(1)
@@ -74,7 +69,6 @@ class TestQgsRasterBandComboBox(unittest.TestCase):
         combo.setShowNotSetOption(False)
         self.assertEqual(combo.currentBand(), 1)
         self.assertEqual(combo.count(), 1)
-        self.assertFalse(combo.isEnabled())
 
     def testMultiBandRaster(self):
         path = os.path.join(unitTestDataPath('raster'),
@@ -89,19 +83,16 @@ class TestQgsRasterBandComboBox(unittest.TestCase):
         self.assertEqual(combo.layer(), layer)
         self.assertEqual(combo.currentBand(), 1)
         self.assertEqual(combo.count(), 3)
-        self.assertTrue(combo.isEnabled())
         combo.setBand(2)
         self.assertEqual(combo.currentBand(), 2)
 
         combo.setShowNotSetOption(True)
         self.assertEqual(combo.currentBand(), 2)
         self.assertEqual(combo.count(), 4)
-        self.assertTrue(combo.isEnabled())
 
         combo.setShowNotSetOption(False)
         self.assertEqual(combo.currentBand(), 2)
         self.assertEqual(combo.count(), 3)
-        self.assertTrue(combo.isEnabled())
 
     def testSignals(self):
         path = os.path.join(unitTestDataPath('raster'),

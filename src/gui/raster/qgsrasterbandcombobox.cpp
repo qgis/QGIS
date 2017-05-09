@@ -25,7 +25,6 @@ QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
   {
     emit bandChanged( currentIndex() >= 0 ? currentData().toInt() : -1 );
   } );
-  setEnabled( false );
 }
 
 QgsRasterLayer *QgsRasterBandComboBox::layer() const
@@ -63,7 +62,6 @@ void QgsRasterBandComboBox::setLayer( QgsMapLayer *layer )
       }
     }
   }
-  setEnabled( count() > 1 );
 
   if ( count() > 0 )
     setCurrentIndex( findData( oldBand ) >= 0 ? findData( oldBand ) : 0 );
