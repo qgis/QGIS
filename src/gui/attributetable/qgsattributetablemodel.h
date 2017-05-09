@@ -377,6 +377,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QgsAttributeEditorContext mEditorContext;
 
     int mExtraColumns;
+
+    friend class TestQgsAttributeTable;
+
 };
 
 
