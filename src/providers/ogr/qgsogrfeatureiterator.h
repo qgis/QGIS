@@ -32,7 +32,6 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
   protected:
-    const QgsOgrProvider* mProvider;
     QString mDataSource;
     QString mLayerName;
     int mLayerIndex;

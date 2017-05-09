@@ -88,7 +88,7 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
 
 QString QgsOgrExpressionCompiler::quotedIdentifier( const QString& identifier )
 {
-  return mSource->mProvider->quotedIdentifier( identifier.toUtf8() );
+  return QgsOgrProviderUtils::quotedIdentifier( identifier.toUtf8(), mSource->mDriverName );
 }
 
 QString QgsOgrExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
