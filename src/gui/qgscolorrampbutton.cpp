@@ -268,6 +268,13 @@ void QgsColorRampButton::prepareMenu()
     randomColorRampAction->setChecked( isRandomColorRamp() );
     mMenu->addAction( randomColorRampAction );
     connect( randomColorRampAction, &QAction::triggered, this, &QgsColorRampButton::setRandomColorRamp );
+
+    if ( isRandomColorRamp() || dynamic_cast<QgsLimitedRandomColorRamp *>( mColorRamp ) )
+    {
+      QAction *shuffleRandomColorRampAction = new QAction( tr( "Shuffle random colors" ), this );
+      mMenu->addAction( shuffleRandomColorRampAction );
+      connect( shuffleRandomColorRampAction, &QAction::triggered, this, &QgsColorRampButton::colorRampChanged );
+    }
   }
 
   mMenu->addSeparator();
