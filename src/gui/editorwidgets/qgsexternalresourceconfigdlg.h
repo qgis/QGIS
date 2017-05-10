@@ -42,15 +42,8 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
     //! Choose a base directory for rootPath
     void chooseDefaultPath();
 
-    void rootPathPropertyChanged();
-
     //! Modify RelativeDefault according to mRootPath content
     void enableRelativeDefault();
-
-  private:
-
-    void setRootPathExpression( const QgsProperty &property );
-
 };
 
 #endif // QGSEXTERNALRESOURCECONFIGDLG_H

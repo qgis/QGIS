@@ -177,6 +177,26 @@ sub fix_annotations(){
   $line =~ s/SIP_FORCE//;
 }
 
+# detect a comment block, return 1 if found
+sub detect_comment_block(){
+    if ($line =~ m/^\s*\/\*/){
+        do {no warnings 'uninitialized';
+            $comment = processDoxygenLine( $line =~ s/^\s*\/\*(\*)?(.*?)\n?$/$2/r );
+        };
+        $comment =~ s/^\s*$//;
+        #$comment =~ s/^(\s*\n)*(.+)/$2/;
+        while ($line !~ m/\*\/\s*(\/\/.*?)?$/){
+            $line = $lines[$line_idx];
+            $line_idx++;
+            $comment .= processDoxygenLine( $line =~ s/\s*\*?(.*?)(\/)?\n?$/$1/r );
+        }
+        $comment =~ s/\n+$//;
+        #push @output, dbg("XXX").$comment;
+        return 1;
+    }
+    return 0;
+}
+
 
 # main loop
 while ($line_idx < $line_count){
@@ -342,19 +362,7 @@ while ($line_idx < $line_count){
     }
 
     # Detect comment block
-    if ($line =~ m/^\s*\/\*/){
-        do {no warnings 'uninitialized';
-            $comment = processDoxygenLine( $line =~ s/^\s*\/\*(\*)?(.*?)\n?$/$2/r );
-        };
-        $comment =~ s/^\s*$//;
-        #$comment =~ s/^(\s*\n)*(.+)/$2/;
-        while ($line !~ m/\*\/\s*(\/\/.*?)?$/){
-            $line = $lines[$line_idx];
-            $line_idx++;
-            $comment .= processDoxygenLine( $line =~ s/\s*\*?(.*?)(\/)?\n?$/$1/r );
-        }
-        $comment =~ s/\n+$//;
-        #push @output, dbg("XXX").$comment;
+    if (detect_comment_block()){
         next;
     }
 
@@ -499,6 +507,9 @@ while ($line_idx < $line_count){
             while ($line_idx < $line_count){
                 $line = $lines[$line_idx];
                 $line_idx++;
+                if (detect_comment_block()){
+                    next;
+                }
                 if ($line =~ m/\};/){
                     last;
                 }

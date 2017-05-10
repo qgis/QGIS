@@ -43,7 +43,16 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   connect( mRootPathButton, &QToolButton::clicked, this, &QgsExternalResourceConfigDlg::chooseDefaultPath );
 
   initializeDataDefinedButton( mRootPathPropertyOverrideButton, QgsEditorWidgetWrapper::RootPath );
-  connect( mRootPathPropertyOverrideButton, &QgsPropertyOverrideButton::changed, this, &QgsExternalResourceConfigDlg::rootPathPropertyChanged );
+  mRootPathPropertyOverrideButton->registerVisibleWidget( mRootPathExpression );
+  mRootPathPropertyOverrideButton->registerExpressionWidget( mRootPathExpression );
+  mRootPathPropertyOverrideButton->registerVisibleWidget( mRootPath, false );
+  mRootPathPropertyOverrideButton->registerEnabledWidget( mRootPathButton, false );
+
+
+  initializeDataDefinedButton( mDocumentViewerContentPropertyOverrideButton, QgsEditorWidgetWrapper::DocumentViewerContent );
+  mDocumentViewerContentPropertyOverrideButton->registerVisibleWidget( mDocumentViewerContentExpression );
+  mDocumentViewerContentPropertyOverrideButton->registerExpressionWidget( mDocumentViewerContentExpression );
+  mDocumentViewerContentPropertyOverrideButton->registerEnabledWidget( mDocumentViewerContentComboBox, false );
 
   // Activate Relative Default Path option only if Default Path is set
   connect( mRootPath, &QLineEdit::textChanged, this, &QgsExternalResourceConfigDlg::enableRelativeDefault );
@@ -95,16 +104,6 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
 
   if ( !rootName.isNull() )
     mRootPath->setText( rootName );
-}
-
-void QgsExternalResourceConfigDlg::rootPathPropertyChanged()
-{
-  QgsProperty prop = mRootPathPropertyOverrideButton->toProperty();
-  setRootPathExpression( prop );
-
-  mRootPathExpression->setVisible( prop.isActive() );
-  mRootPath->setVisible( !prop.isActive() );
-  mRootPathButton->setEnabled( !prop.isActive() );
 }
 
 void QgsExternalResourceConfigDlg::enableRelativeDefault()
@@ -197,10 +196,7 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
   mPropertyCollection.loadVariant( config.value( QStringLiteral( "PropertyCollection" ) ), QgsWidgetWrapper::propertyDefinitions() );
   updateDataDefinedButtons();
 
-  setRootPathExpression( mPropertyCollection.property( QgsWidgetWrapper::RootPath ) );
   mRootPath->setText( config.value( QStringLiteral( "DefaultRoot" ) ).toString() );
-
-  rootPathPropertyChanged();
 
   // relative storage
   if ( config.contains( QStringLiteral( "RelativeStorage" ) ) )
@@ -242,14 +238,4 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
       mDocumentViewerWidth->setValue( config.value( QStringLiteral( "DocumentViewerWidth" ) ).toInt() );
     }
   }
-}
-
-void QgsExternalResourceConfigDlg::setRootPathExpression( const QgsProperty &property )
-{
-  mRootPathExpression->setToolTip( property.asExpression() );
-
-  QgsExpressionContext ctx = layer()->createExpressionContext();
-
-  mRootPathExpression->setText( property.valueAsString( ctx ) );
-  enableRelativeDefault();
 }

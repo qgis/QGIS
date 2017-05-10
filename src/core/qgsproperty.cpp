@@ -175,10 +175,10 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
   }
 }
 
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataTypes, const QString &description, const QString &helpText )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText )
   : mName( name )
   , mDescription( description )
-  , mTypes( dataTypes )
+  , mTypes( dataType )
   , mHelpText( helpText )
 {}
 

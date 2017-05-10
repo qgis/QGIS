@@ -40,18 +40,8 @@ Return correct graphics item type.
     {
       Fixed,
 
-      /**
-       * A
-       * the
-       * \see
-       * \note
-       */
       Predefined,
 
-      /** The
-       * A
-       * \note
-      */
       Auto
     };
 

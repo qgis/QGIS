@@ -58,8 +58,9 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * \param parent parent widget
      * \param layer associated vector layer
      */
-    QgsPropertyOverrideButton( QWidget *parent = nullptr,
+    QgsPropertyOverrideButton( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                const QgsVectorLayer *layer = nullptr );
+
 
     /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
@@ -105,7 +106,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     /**
      * Returns true if the button has an active property.
      */
-    bool isActive() const { return mProperty.isActive(); }
+    bool isActive() const { return mProperty && mProperty.isActive(); }
 
     /**
      * Returns the data type which the widget will accept. This is used to filter
@@ -147,9 +148,31 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 
     /**
-     * Register a sibling widget that get checked when the property is active.
+     * Register a sibling \a widget that gets checked when the property is active.
+     * if \a natural is false, widget gets unchecked when the property is active.
+     * \note this should be called after calling init() to be correctly initialized.
      */
-    void registerCheckedWidget( QWidget *widget );
+    void registerCheckedWidget( QWidget *widget, bool natural = true );
+
+    /**
+     * Register a sibling \a widget that gets enabled when the property is active, and disabled when the property is inactive.
+     * if \a natural is false, widget gets disabled when the property is active, and enabled when the property is inactive.
+     * \note this should be called after calling init() to be correctly initialized.
+     */
+    void registerEnabledWidget( QWidget *widget, bool natural = true );
+
+    /**
+     * Register a sibling \a widget that gets visible when the property is active, and hidden when the property is inactive.
+     * if \a natural is false, widget gets hidden when the property is active, and visible when the property is inactive.
+     * \note this should be called after calling init() to be correctly initialized.
+     */
+    void registerVisibleWidget( QWidget *widget, bool natural = true );
+
+    /**
+     * Register a sibling \a widget (line edit, text edit) that will receive the property as an expression
+     * \note this should be called after calling init() to be correctly initialized.
+     */
+    void registerExpressionWidget( QWidget *widget );
 
     /**
      * Register an expression context generator class that will be used to retrieve
@@ -233,7 +256,25 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
-    QList< QPointer<QWidget> > mCheckedWidgets;
+    enum SiblingType
+    {
+      SiblingCheckState,
+      SiblingEnableState,
+      SiblingVisibility,
+      SiblingExpressionText,
+    };
+    struct SiblingWidget
+    {
+      SiblingWidget( QPointer<QWidget> widgetPointer, SiblingType siblingType, bool natural = true )
+        : mWidgetPointer( widgetPointer )
+        , mSiblingType( siblingType )
+        , mNatural( natural )
+      {}
+      QPointer<QWidget> mWidgetPointer;
+      SiblingType mSiblingType;
+      bool mNatural;
+    };
+    QList< SiblingWidget > mSiblingWidgets;
 
     //! Internal property used for storing state of widget
     QgsProperty mProperty;
@@ -244,7 +285,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     void aboutToShowMenu();
     void menuActionTriggered( QAction *action );
 
-    void checkCheckedWidgets( bool checked );
+    void updateSiblingWidgets( bool state );
 };
 
 
