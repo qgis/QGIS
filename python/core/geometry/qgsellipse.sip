@@ -189,11 +189,11 @@ The circumference of the ellipse using first approximation of Ramanujan.
  :rtype: list of QgsPointV2
 %End
 
-    virtual void points( QgsPointSequence &pts, unsigned int segments = 36 ) const;
+    virtual QgsPointSequence points( unsigned int segments = 36 ) const;
 %Docstring
- Returns a list of points into ``pts``, with segmentation from ``segments``.
- \param pts List of points returned.
+ Returns a list of points with segmentation from ``segments``.
  \param segments Number of segments used to segment geometry.
+ :rtype: QgsPointSequence
 %End
 
     virtual QgsPolygonV2 *toPolygon( unsigned int segments = 36 ) const /Factory/;
