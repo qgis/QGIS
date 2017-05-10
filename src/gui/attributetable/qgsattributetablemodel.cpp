@@ -221,15 +221,16 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
       mSortCache.insert( mFeat.id(), sortValue );
     }
 
-    int n = mRowIdMap.size();
-    beginInsertRows( QModelIndex(), n, n );
-
-    mIdRowMap.insert( fid, n );
-    mRowIdMap.insert( n, fid );
-
-    endInsertRows();
-
-    reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
+    // Skip if the fid is already in the map (do not add twice)!
+    if ( ! mIdRowMap.contains( fid ) )
+    {
+      int n = mRowIdMap.size();
+      beginInsertRows( QModelIndex(), n, n );
+      mIdRowMap.insert( fid, n );
+      mRowIdMap.insert( n, fid );
+      endInsertRows();
+      reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
+    }
   }
 }
 
