@@ -46,6 +46,7 @@ class QgsWidgetWrapper : QObject
     enum Property
     {
       RootPath,
+      DocumentViewerContent
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
