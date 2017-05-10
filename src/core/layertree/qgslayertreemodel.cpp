@@ -1150,21 +1150,24 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const 
   }
   else if ( mLegendFilterMapSettings )
   {
-    Q_FOREACH ( QgsLayerTreeModelLegendNode* node, nodes )
+    if ( !nodes.isEmpty() && mLegendFilterMapSettings->layers().contains( nodes.at( 0 )->layerNode()->layerId() ) )
     {
-      QgsSymbolV2* ruleKey = reinterpret_cast< QgsSymbolV2* >( node->data( QgsSymbolV2LegendNode::SymbolV2LegacyRuleKeyRole ).value<void*>() );
-      bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
-      if ( ruleKey && checked )
+      Q_FOREACH ( QgsLayerTreeModelLegendNode* node, nodes )
       {
-        QString ruleKey = node->data( QgsSymbolV2LegendNode::RuleKeyRole ).toString();
-        if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() ) )
+        QgsSymbolV2* ruleKey = reinterpret_cast< QgsSymbolV2* >( node->data( QgsSymbolV2LegendNode::SymbolV2LegacyRuleKeyRole ).value<void*>() );
+        bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
+        if ( ruleKey && checked )
         {
-          if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
-            filtered << node;
+          QString ruleKey = node->data( QgsSymbolV2LegendNode::RuleKeyRole ).toString();
+          if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() ) )
+          {
+            if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
+              filtered << node;
+          }
         }
+        else  // unknown node type or unchecked
+          filtered << node;
       }
-      else  // unknown node type or unchecked
-        filtered << node;
     }
   }
   else
