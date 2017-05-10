@@ -1,17 +1,23 @@
-/** \class QgsFilterLineEdit
- * \ingroup gui
- * QLineEdit subclass with built in support for clearing the widget's value and
- * handling custom null value representations.
- *
- * When using QgsFilterLineEdit the value(), setValue() and clearValue() methods should be used
- * instead of QLineEdit's text(), setText() and clear() methods, and the valueChanged()
- * signal should be used instead of textChanged().
- **/
+%ModuleHeaderCode
+// fix to allow compilation with sip 4.7 that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include "qgsfilterlineedit.h"
+%End
+
 class QgsFilterLineEdit : QLineEdit
 {
 %TypeHeaderCode
 #include <qgsfilterlineedit.h>
 %End
+
+%ConvertToSubClassCode
+  if (dynamic_cast<QgsFilterLineEdit*>(sipCpp) != NULL)
+    sipType = sipType_QgsFilterLineEdit;
+  else
+    sipType = NULL;
+%End
+
   public:
 
     //! Behaviour when clearing value of widget

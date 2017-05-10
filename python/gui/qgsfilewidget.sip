@@ -1,8 +1,22 @@
 
+%ModuleHeaderCode
+// fix to allow compilation with sip 4.7 that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include "qgsfilewidget.h"
+%End
+
 class QgsFileWidget : QWidget
 {
 %TypeHeaderCode
 #include <qgsfilewidget.h>
+%End
+
+%ConvertToSubClassCode
+  if (dynamic_cast<QgsFileWidget*>(sipCpp) != NULL)
+    sipType = sipType_QgsFileWidget;
+  else
+    sipType = NULL;
 %End
 
   public:
