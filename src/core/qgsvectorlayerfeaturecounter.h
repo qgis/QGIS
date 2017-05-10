@@ -36,6 +36,12 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      */
     QHash<QString, long> symbolFeatureCountMap() const SIP_SKIP;
 
+    /**
+     * Get the feature count for a particular \a legendKey.
+     * If the key has not been found, -1 will be returned.
+     */
+    long featureCount( const QString &legendKey ) const;
+
   signals:
 
     /**

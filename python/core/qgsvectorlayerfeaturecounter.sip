@@ -32,6 +32,13 @@ class QgsVectorLayerFeatureCounter : QgsTask
     virtual bool run();
 
 
+    long featureCount( const QString &legendKey ) const;
+%Docstring
+ Get the feature count for a particular ``legendKey``.
+ If the key has not been found, -1 will be returned.
+ :rtype: long
+%End
+
   signals:
 
     void symbolsCounted();

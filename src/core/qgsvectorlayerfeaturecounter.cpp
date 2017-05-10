@@ -77,3 +77,8 @@ QHash<QString, long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
 {
   return mSymbolFeatureCountMap;
 }
+
+long QgsVectorLayerFeatureCounter::featureCount( const QString &legendKey ) const
+{
+  return mSymbolFeatureCountMap.value( legendKey, -1 );
+}

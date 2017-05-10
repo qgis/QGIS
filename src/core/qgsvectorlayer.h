@@ -807,9 +807,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
 
     /**
-     * Count features for symbols. Feature counts may be get by featureCount().
-     * \param showProgress show progress dialog
-     * \returns true if calculated, false if failed or was canceled by user
+     * Count features for symbols.
+     * The method will return immediately. You will need to connect to the
+     * symbolFeatureCountMapChanged() signal to be notified when the freshly updated
+     * feature counts are ready.
+     *
+     * \note If you need to wait for the results, create and start your own QgsVectorLayerFeatureCounter
+     *       task and call waitForFinished().
+     *
+     * \since This is asynchroneous since QGIS 3.0
      */
     bool countSymbolFeatures();
 
