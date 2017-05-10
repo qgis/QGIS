@@ -257,11 +257,14 @@ void TestQgsAttributeTable::testRegression15974()
   QgsVectorFileWriter::writeAsVectorFormat( tempLayer.get( ), path, "system", QgsCoordinateReferenceSystem( 4326 ), "ESRI Shapefile" );
   std::unique_ptr< QgsVectorLayer> shpLayer( new QgsVectorLayer( path, QStringLiteral( "test" ),  QStringLiteral( "ogr" ) ) );
   QgsFeature f1( shpLayer->dataProvider()->fields(), 1 );
-  f1.setGeometry( QgsGeometry().fromWkt( QStringLiteral( "polygon(0 0, 1 1, 1 2, 1 0, 0 0))" ) ) );
+  QgsGeometry geom;
+  geom = QgsGeometry().fromWkt( QStringLiteral( "polygon((0 0, 0 1, 1 1, 1 0, 0 0))" ) );
+  Q_ASSERT( geom.isGeosValid( ) );
+  f1.setGeometry( geom );
   QgsFeature f2( shpLayer->dataProvider()->fields(), 2 );
-  f2.setGeometry( QgsGeometry().fromWkt( QStringLiteral( "polygon(0 0, 1 1, 1 2, 1 0, 0 0))" ) ) );
+  f2.setGeometry( geom );
   QgsFeature f3( shpLayer->dataProvider()->fields(), 3 );
-  f3.setGeometry( QgsGeometry().fromWkt( QStringLiteral( "polygon(0 0, 1 1, 1 2, 1 0, 0 0))" ) ) );
+  f3.setGeometry( geom );
   QVERIFY( shpLayer->startEditing( ) );
   QVERIFY( shpLayer->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( shpLayer.get() ) );
