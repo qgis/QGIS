@@ -345,7 +345,7 @@ void QgsBookmarks::exportToXml()
   doc.appendChild( root );
 
   int rowCount = mModel->rowCount();
-  int colCount = mModel->columnCount();
+  int colCount = mModel->columnCount() - 1;  // exclude virtual "In project" column
 
   QList<QString> headerList;
   headerList
