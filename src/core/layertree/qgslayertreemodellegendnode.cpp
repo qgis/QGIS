@@ -135,7 +135,7 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
   , mIconSize( 16, 16 )
 {
   updateLabel();
-  connect( qobject_cast<QgsVectorLayer*>( nodeLayer->layer() ), &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsSymbolLegendNode::updateLabel );
+  connect( qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ), &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsSymbolLegendNode::updateLabel );
 
   if ( mItem.symbol() )
     mSymbolUsesMapUnits = ( mItem.symbol()->outputUnit() != QgsUnitTypes::RenderMillimeters );
@@ -459,8 +459,13 @@ void QgsSymbolLegendNode::updateLabel()
   {
     mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
     if ( showFeatureCount && vl )
-      mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount( mItem.ruleKey() ) );
+    {
+      long count = vl->featureCount( mItem.ruleKey() );
+      mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QString::number( count ) : tr( "N/A" ) );
+    }
   }
+
+  emit dataChanged();
 }
 
 
