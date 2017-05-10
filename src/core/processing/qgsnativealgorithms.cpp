@@ -24,6 +24,8 @@
 #include "qgsgeometry.h"
 #include "qgswkbtypes.h"
 
+///@cond PRIVATE
+
 QgsCentroidAlgorithm::QgsCentroidAlgorithm()
 {
   addParameter( new QgsProcessingParameterVector( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
@@ -146,3 +148,5 @@ QVariantMap QgsBufferAlgorithm::run( const QVariantMap &parameters, QgsProcessin
   outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), dest );
   return outputs;
 }
+
+///@endcond
