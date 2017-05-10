@@ -72,7 +72,6 @@ core/qgssnappingutils.sip
 core/qgsspatialindex.sip
 core/qgssqlstatement.sip
 core/qgsstringutils.sip
-core/qgstaskmanager.sip
 core/qgstolerance.sip
 core/qgstracer.sip
 core/qgstrackedvectorlayertools.sip

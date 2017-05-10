@@ -169,7 +169,7 @@ class CORE_EXPORT QgsTask : public QObject
      * Subtasks can be nested, ie a subtask can legally be a parent task itself with
      * its own set of subtasks.
      */
-    void addSubTask( QgsTask *subTask, const QgsTaskList &dependencies = QgsTaskList(),
+    void addSubTask( QgsTask *subTask SIP_TRANSFER, const QgsTaskList &dependencies = QgsTaskList(),
                      SubTaskDependency subTaskDependency = SubTaskIndependent );
 
     /**
