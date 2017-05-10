@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
+#include "qgsvectorfilewriter.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the attribute table dialog
@@ -38,6 +39,7 @@ class TestQgsAttributeTable : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
+    void testRegression15974();
     void testFieldCalculation();
     void testFieldCalculationArea();
     void testNoGeom();
@@ -206,6 +208,42 @@ void TestQgsAttributeTable::testNoGeom()
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
 
 }
+
+
+void TestQgsAttributeTable::testRegression15974()
+{
+  QString path = QDir::tempPath() + "/testshp15974.shp";
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( "polygon?crs=epsg:4326&field=id:integer" ,  "vl" ,  "memory" ) );
+  QVERIFY( tempLayer->isValid() );
+  QgsCoordinateReferenceSystem crs( 4326 );
+  QgsVectorFileWriter::writeAsVectorFormat( tempLayer.get( ), path, "system", &crs );
+  std::unique_ptr< QgsVectorLayer> shpLayer( new QgsVectorLayer( path,  "test" ,   "ogr" ) );
+  QgsFeature f1( shpLayer->dataProvider()->fields(), 1 );
+  QgsGeometry* geom1;
+  geom1 = QgsGeometry().fromWkt( "polygon((0 0, 0 1, 1 1, 1 0, 0 0))" );
+  QVERIFY( geom1->isGeosValid( ) );
+  f1.setGeometry( geom1 );
+  QgsFeature f2( shpLayer->dataProvider()->fields(), 2 );
+  QgsGeometry* geom2;
+  geom2 = QgsGeometry().fromWkt( "polygon((0 0, 0 1, 1 1, 1 0, 0 0))" );
+  f2.setGeometry( geom2 );
+  QgsFeature f3( shpLayer->dataProvider()->fields(), 3 );
+  QgsGeometry* geom3;
+  geom3 = QgsGeometry().fromWkt( "polygon((0 0, 0 1, 1 1, 1 0, 0 0))" );
+  f3.setGeometry( geom3 );
+  QVERIFY( shpLayer->startEditing( ) );
+  QVERIFY( shpLayer->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( shpLayer.get() ) );
+  QCOMPARE( shpLayer->featureCount( ), 3L );
+  mQgisApp->saveEdits( shpLayer.get( ) );
+  QCOMPARE( shpLayer->featureCount( ), 3L );
+  QCOMPARE( dlg->mMainView->masterModel()->rowCount(), 3 );
+  QCOMPARE( dlg->mMainView->mLayerCache->cachedFeatureIds( ).count(), 3 );
+  QCOMPARE( dlg->mMainView->featureCount( ), 3 );
+  // The following passes locally but fails on Travis
+  // QCOMPARE( dlg->mMainView->mFilterModel->mFilteredFeatures.count(), 3 );
+}
+
 
 QTEST_MAIN( TestQgsAttributeTable )
 #include "testqgsattributetable.moc"

@@ -253,18 +253,22 @@ void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode* node )
 
 QgsMapLayer* QgsLayerTreeView::layerForIndex( const QModelIndex& index ) const
 {
-  QgsLayerTreeNode* node = layerTreeModel()->index2node( index );
-  if ( node )
+  // Check if model has been set and index is valid
+  if ( layerTreeModel() && index.isValid( ) )
   {
-    if ( QgsLayerTree::isLayer( node ) )
-      return QgsLayerTree::toLayer( node )->layer();
-  }
-  else
-  {
-    // possibly a legend node
-    QgsLayerTreeModelLegendNode* legendNode = layerTreeModel()->index2legendNode( index );
-    if ( legendNode )
-      return legendNode->layerNode()->layer();
+    QgsLayerTreeNode* node = layerTreeModel()->index2node( index );
+    if ( node )
+    {
+      if ( QgsLayerTree::isLayer( node ) )
+        return QgsLayerTree::toLayer( node )->layer();
+    }
+    else
+    {
+      // possibly a legend node
+      QgsLayerTreeModelLegendNode* legendNode = layerTreeModel()->index2legendNode( index );
+      if ( legendNode )
+        return legendNode->layerNode()->layer();
+    }
   }
 
   return nullptr;
