@@ -9,6 +9,15 @@
 
 
 
+
+%ModuleHeaderCode
+// fix to allow compilation with sip 4.7 that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsspinbox.h>
+%End
+
+
 class QgsSpinBox : QSpinBox
 {
 %Docstring
@@ -19,6 +28,13 @@ class QgsSpinBox : QSpinBox
 
 %TypeHeaderCode
 #include "qgsspinbox.h"
+%End
+
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsSpinBox *>( sipCpp ) )
+      sipType = sipType_QgsSpinBox;
+    else
+      sipType = NULL;
 %End
   public:
 

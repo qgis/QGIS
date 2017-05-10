@@ -10,11 +10,25 @@
 
 
 
+%ModuleHeaderCode
+// fix to allow compilation with sip that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsrelationreferencewidget.h>
+%End
+
 class QgsRelationReferenceWidget : QWidget
 {
 
 %TypeHeaderCode
 #include "qgsrelationreferencewidget.h"
+%End
+
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsRelationReferenceWidget *>( sipCpp ) )
+      sipType = sipType_QgsRelationReferenceWidget;
+    else
+      sipType = NULL;
 %End
   public:
 
