@@ -65,8 +65,9 @@ class warp(GdalAlgorithm):
     BIGTIFFTYPE = ['', 'YES', 'NO', 'IF_NEEDED', 'IF_SAFER']
     COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
     TFW = 'TFW'
-    RAST_EXT = 'RAST_EXT'
-    EXT_CRS = 'EXT_CRS'
+    USE_RASTER_EXTENT = 'USE_RASTER_EXTENT'
+    RASTER_EXTENT = 'RASTER_EXTENT'
+    EXTENT_CRS = 'EXTENT_CRS'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
@@ -87,11 +88,12 @@ class warp(GdalAlgorithm):
                                           0.0, None, 0.0))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Resampling method'), self.METHOD_OPTIONS))
-        self.addParameter(ParameterExtent(self.RAST_EXT, self.tr('Raster extent'), optional=True))
-
-        if GdalUtils.version() >= 2000000:
-            self.addParameter(ParameterCrs(self.EXT_CRS,
-                                           self.tr('CRS of the raster extent'), '', optional=True))
+        self.addParameter(ParameterBoolean(self.USE_RASTER_EXTENT,
+                                           self.tr('Set georeferenced extents of output file'),
+                                           False))
+        self.addParameter(ParameterExtent(self.RASTER_EXTENT, self.tr('Raster extent'), optional=True))
+        self.addParameter(ParameterCrs(self.EXTENT_CRS,
+                                       self.tr('CRS of the raster extent'), '', optional=True))
 
         params = []
         params.append(ParameterSelection(self.RTYPE,
@@ -135,8 +137,9 @@ class warp(GdalAlgorithm):
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = unicode(self.getParameterValue(self.TFW))
-        rastext = unicode(self.getParameterValue(self.RAST_EXT))
-        rastext_crs = self.getParameterValue(self.EXT_CRS)
+        useRasterExtent = self.getParameterValue(self.USE_RASTER_EXTENT)
+        rasterExtent = unicode(self.getParameterValue(self.RASTER_EXTENT))
+        extentCrs = self.getParameterValue(self.EXTENT_CRS)
 
         arguments = []
         arguments.append('-ot')
@@ -163,23 +166,22 @@ class warp(GdalAlgorithm):
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
             extra = unicode(extra)
-        regionCoords = rastext.split(',')
-        try:
-            rastext = []
-            rastext.append('-te')
-            rastext.append(regionCoords[0])
-            rastext.append(regionCoords[2])
-            rastext.append(regionCoords[1])
-            rastext.append(regionCoords[3])
-        except IndexError:
-            rastext = []
-        if rastext:
-            arguments.extend(rastext)
 
-        if GdalUtils.version() >= 2000000:
-            if rastext and rastext_crs:
-                arguments.append('-te_srs')
-                arguments.append(rastext_crs)
+        if useRasterExtent:
+            regionCoords = rasterExtent.split(',')
+            if len(regionCoords) >= 4:
+                rastext = []
+                rastext.append('-te')
+                rastext.append(regionCoords[0])
+                rastext.append(regionCoords[2])
+                rastext.append(regionCoords[1])
+                rastext.append(regionCoords[3])
+                arguments.extend(rastext)
+
+            if GdalUtils.version() >= 2000000:
+                if extentCrs:
+                    arguments.append('-te_srs')
+                    arguments.append(extentCrs)
 
         if extra and len(extra) > 0:
             arguments.append(extra)
