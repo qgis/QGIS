@@ -703,8 +703,7 @@ bool QgsVectorLayer::countSymbolFeatures()
   if ( !mFeatureCounter )
   {
     mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
-    connect( mFeatureCounter, &QgsVectorLayerFeatureCounter::symbolsCounted, this, &QgsVectorLayer::onSymbolsCounted );
-    connect( mFeatureCounter, &QgsTask::taskCompleted, [ = ]() { mFeatureCounter = nullptr; } );
+    connect( mFeatureCounter, &QgsTask::taskCompleted, [ = ]() { onSymbolsCounted(); mFeatureCounter = nullptr; } );
     connect( mFeatureCounter, &QgsTask::taskTerminated, [ = ]() { mFeatureCounter = nullptr; } );
 
     QgsApplication::taskManager()->addTask( mFeatureCounter );
