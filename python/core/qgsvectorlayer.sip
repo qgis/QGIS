@@ -841,10 +841,10 @@ Return the provider type for this layer
 .. versionadded:: 2.10
 %End
 
-    bool countSymbolFeatures( bool showProgress = true );
+    bool countSymbolFeatures( QgsFeedback *feedback = 0 );
 %Docstring
  Count features for symbols. Feature counts may be get by featureCount().
- \param showProgress show progress dialog
+ \param feedback optional feedback pointer
  :return: true if calculated, false if failed or was canceled by user
  :rtype: bool
 %End
