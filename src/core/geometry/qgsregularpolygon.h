@@ -47,8 +47,8 @@ class CORE_EXPORT QgsRegularPolygon
      */
     enum ConstructionOption
     {
-      InscribedCircle, //! Inscribed in a circle (the radius is the distance between the center and vertices)
-      CircumscribedCircle //! Circumscribed about a circle (the radius is the distance from the center to the midpoints of the sides)
+      InscribedCircle, //<! Inscribed in a circle (the radius is the distance between the center and vertices)
+      CircumscribedCircle //<! Circumscribed about a circle (the radius is the distance from the center to the midpoints of the sides)
     };
 
     QgsRegularPolygon();
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsRegularPolygon
     double radius() const { return mRadius; }
 
     /** Returns the first vertex (corner) of the regular polygon.
-     * \see setVertice()
+     * \see setFirstVertex()
      */
     QgsPointV2 firstVertex() const { return mFirstVertex; }
 

@@ -90,7 +90,7 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
     QgsPointV2 firstVertex() const;
 %Docstring
  Returns the first vertex (corner) of the regular polygon.
-.. seealso:: setVertice()
+.. seealso:: setFirstVertex()
  :rtype: QgsPointV2
 %End
 
