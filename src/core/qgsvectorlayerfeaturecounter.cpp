@@ -18,50 +18,55 @@ bool QgsVectorLayerFeatureCounter::run()
     mSymbolFeatureCountMap.insert( symbolIt->first, 0 );
   }
 
-  int featuresCounted = 0;
-
-  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
-  QgsRenderContext renderContext;
-  renderContext.setRendererScale( 0 );
-  renderContext.expressionContext().appendScopes( mExpressionContextScopes );
-
-  QgsFeatureRequest request;
-  if ( !mRenderer->filterNeedsGeometry() )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mSource->fields() );
-  QgsFeatureIterator fit = mSource->getFeatures( request );
-
-  // TODO: replace QgsInterruptionChecker with QgsFeedback
-  // fit.setInterruptionChecker( mFeedback );
-
-  mRenderer->startRender( renderContext, mSource->fields() );
-
-  double progress = 0;
-  QgsFeature f;
-  while ( fit.nextFeature( f ) )
+  // If there are no features to be counted, we can spare us the trouble
+  if ( mFeatureCount > 0 )
   {
-    renderContext.expressionContext().setFeature( f );
-    QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
-    Q_FOREACH ( const QString &key, featureKeyList )
-    {
-      mSymbolFeatureCountMap[key] += 1;
-    }
-    ++featuresCounted;
+    int featuresCounted = 0;
 
-    double p = ( featuresCounted / mFeatureCount ) * 100;
-    if ( p - progress > 1 )
-    {
-      progress = p;
-      setProgress( progress );
-    }
+    // Renderer (rule based) may depend on context scale, with scale is ignored if 0
+    QgsRenderContext renderContext;
+    renderContext.setRendererScale( 0 );
+    renderContext.expressionContext().appendScopes( mExpressionContextScopes );
 
-    if ( isCanceled() )
+    QgsFeatureRequest request;
+    if ( !mRenderer->filterNeedsGeometry() )
+      request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mSource->fields() );
+    QgsFeatureIterator fit = mSource->getFeatures( request );
+
+    // TODO: replace QgsInterruptionChecker with QgsFeedback
+    // fit.setInterruptionChecker( mFeedback );
+
+    mRenderer->startRender( renderContext, mSource->fields() );
+
+    double progress = 0;
+    QgsFeature f;
+    while ( fit.nextFeature( f ) )
     {
-      mRenderer->stopRender( renderContext );
-      return false;
+      renderContext.expressionContext().setFeature( f );
+      QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
+      Q_FOREACH ( const QString &key, featureKeyList )
+      {
+        mSymbolFeatureCountMap[key] += 1;
+      }
+      ++featuresCounted;
+
+      double p = ( featuresCounted / mFeatureCount ) * 100;
+      if ( p - progress > 1 )
+      {
+        progress = p;
+        setProgress( progress );
+      }
+
+      if ( isCanceled() )
+      {
+        mRenderer->stopRender( renderContext );
+        return false;
+      }
     }
+    mRenderer->stopRender( renderContext );
   }
-  mRenderer->stopRender( renderContext );
+
   setProgress( 100 );
 
   emit symbolsCounted();
@@ -70,5 +75,5 @@ bool QgsVectorLayerFeatureCounter::run()
 
 QHash<QString, long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
 {
-    return mSymbolFeatureCountMap;
+  return mSymbolFeatureCountMap;
 }
