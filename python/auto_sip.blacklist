@@ -282,7 +282,6 @@ gui/qgsfeatureselectiondlg.sip
 gui/qgsfieldvalidator.sip
 gui/qgsfieldvalueslineedit.sip
 gui/qgsfiledropedit.sip
-gui/qgsfilterlineedit.sip
 gui/qgsfloatingwidget.sip
 gui/qgsfocuswatcher.sip
 gui/qgsformannotation.sip
@@ -346,7 +345,6 @@ gui/qgsquerybuilder.sip
 gui/qgsrasterformatsaveoptionswidget.sip
 gui/qgsrasterlayersaveasdialog.sip
 gui/qgsrasterpyramidsoptionswidget.sip
-gui/qgsrelationeditorwidget.sip
 gui/qgsrubberband.sip
 gui/qgsscalerangewidget.sip
 gui/qgsscalevisibilitydialog.sip

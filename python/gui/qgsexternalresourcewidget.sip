@@ -11,6 +11,14 @@
 
 
 
+%ModuleHeaderCode
+// fix to allow compilation with sip that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsexternalresourcewidget.h>
+%End
+
+
 class QgsExternalResourceWidget : QWidget
 {
 %Docstring
@@ -21,6 +29,13 @@ class QgsExternalResourceWidget : QWidget
 
 %TypeHeaderCode
 #include "qgsexternalresourcewidget.h"
+%End
+
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsExternalResourceWidget *>( sipCpp ) )
+      sipType = sipType_QgsExternalResourceWidget;
+    else
+      sipType = NULL;
 %End
   public:
     enum DocumentViewerContent

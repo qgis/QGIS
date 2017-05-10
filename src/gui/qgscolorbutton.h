@@ -34,6 +34,17 @@ class QgsPanelWidget;
  */
 class GUI_EXPORT QgsColorButton : public QToolButton
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsColorButton *>( sipCpp ) )
+      sipType = sipType_QgsColorButton;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
+
     Q_OBJECT
     Q_ENUMS( Behavior )
     Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )

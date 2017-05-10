@@ -40,11 +40,30 @@ class QgsFeatureListModel;
 class QgsCollapsibleGroupBox;
 class QLabel;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// fix to allow compilation with sip that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsrelationreferencewidget.h>
+% End
+#endif
+
 /** \ingroup gui
  * \class QgsRelationReferenceWidget
  */
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsRelationReferenceWidget *>( sipCpp ) )
+      sipType = sipType_QgsRelationReferenceWidget;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
     Q_PROPERTY( bool openFormButtonVisible READ openFormButtonVisible WRITE setOpenFormButtonVisible )
 

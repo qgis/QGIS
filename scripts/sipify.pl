@@ -96,7 +96,8 @@ sub remove_constructor_or_body {
     # https://regex101.com/r/ZaP3tC/3
     do {no warnings 'uninitialized';
         if ( $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(~?\w+|operator.{1,2})\(([\w=()\/ ,&*<>."-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
-             || $line =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/ ){
+             || $line =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/
+             || $line =~ m/^\s*class.*SIP_SKIP/ ){
             dbg_info("remove constructor definition, function bodies, member initializing list");
             my $newline = "$1$2$3$4$5;";
             if ($line !~ m/{.*}(\s*SIP_\w+)*\s*(\/\/.*)?$/){

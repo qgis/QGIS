@@ -22,6 +22,17 @@
 
 class QgsSpinBoxLineEdit;
 
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// fix to allow compilation with sip 4.7 that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsspinbox.h>
+% End
+#endif
+
+
 /** \ingroup gui
  * \brief The QgsSpinBox is a spin box with a clear button that will set the value to the defined clear value.
  * The clear value can be either the minimum or the maiximum value of the spin box or a custom value.
@@ -29,6 +40,16 @@ class QgsSpinBoxLineEdit;
  */
 class GUI_EXPORT QgsSpinBox : public QSpinBox
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsSpinBox *>( sipCpp ) )
+      sipType = sipType_QgsSpinBox;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
     Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
     Q_PROPERTY( bool clearValue READ clearValue WRITE setClearValue )
