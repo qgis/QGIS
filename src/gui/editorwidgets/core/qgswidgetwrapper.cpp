@@ -27,7 +27,8 @@ const QgsPropertiesDefinition &QgsWidgetWrapper::propertyDefinitions()
   {
     properties =
     {
-      { RootPath, QgsPropertyDefinition( "propertyRootPath", QgsPropertyDefinition::DataTypeString, QObject::tr( "Root path" ), QObject::tr( "string of variable length representing root path to attachment" ) ) }
+      { RootPath, QgsPropertyDefinition( "propertyRootPath", QgsPropertyDefinition::DataTypeString, QObject::tr( "Root path" ), QObject::tr( "string of variable length representing root path to attachment" ) ) },
+      { DocumentViewerContent, QgsPropertyDefinition( "documentViewerContent", QgsPropertyDefinition::DataTypeString, QObject::tr( "Document viewer content" ), QObject::tr( "string" ) + "<b>NoContent</b>|<b>Image</b>|<b>Web</b>" ) }
     };
   }
   return properties;

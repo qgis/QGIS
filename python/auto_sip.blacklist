@@ -56,7 +56,6 @@ core/qgsprojectbadlayerhandler.sip
 core/qgsprojectproperty.sip
 core/qgssnappingconfig.sip
 core/qgsprojectversion.sip
-core/qgsproperty.sip
 core/qgspropertycollection.sip
 core/qgspythonrunner.sip
 core/qgsrange.sip
@@ -339,7 +338,6 @@ gui/qgsprojectionselectiondialog.sip
 gui/qgsprojectionselectiontreewidget.sip
 gui/qgsprojectionselectionwidget.sip
 gui/qgspropertyassistantwidget.sip
-gui/qgspropertyoverridebutton.sip
 gui/qgsquerybuilder.sip
 gui/qgsrasterformatsaveoptionswidget.sip
 gui/qgsrasterlayersaveasdialog.sip
