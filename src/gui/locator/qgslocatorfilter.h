@@ -154,6 +154,20 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
      */
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
 
+    /**
+     * Returns true if the filter should be used when no prefix
+     * is entered.
+     * \see setUseWithoutPrefix()
+     */
+    bool useWithoutPrefix() const;
+
+    /**
+     * Sets whether the filter should be used when no prefix
+     * is entered.
+     * \see useWithoutPrefix()
+     */
+    void setUseWithoutPrefix( bool useWithoutPrefix );
+
   signals:
 
     /**
@@ -161,6 +175,10 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
      * during within their fetchResults() implementation.
      */
     void resultFetched( const QgsLocatorResult &result );
+
+  private:
+
+    bool mUseWithoutPrefix = true;
 
 };
 

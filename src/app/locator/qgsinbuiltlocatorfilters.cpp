@@ -103,7 +103,7 @@ QgsActionLocatorFilter::QgsActionLocatorFilter( const QList<QWidget *> &parentOb
   : QgsLocatorFilter( parent )
   , mActionParents( parentObjectsForActions )
 {
-
+  setUseWithoutPrefix( false );
 }
 
 void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )

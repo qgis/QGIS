@@ -139,6 +139,21 @@ class QgsLocatorFilter : QObject
  result.
 %End
 
+    bool useWithoutPrefix() const;
+%Docstring
+ Returns true if the filter should be used when no prefix
+ is entered.
+.. seealso:: setUseWithoutPrefix()
+ :rtype: bool
+%End
+
+    void setUseWithoutPrefix( bool useWithoutPrefix );
+%Docstring
+ Sets whether the filter should be used when no prefix
+ is entered.
+.. seealso:: useWithoutPrefix()
+%End
+
   signals:
 
     void resultFetched( const QgsLocatorResult &result );
