@@ -96,6 +96,10 @@ class VLayerRegistry:
         lid = self.layers.get(l)
         if lid is None:
             return lid
+        # the instance can refer to a layer in map previe and not in qgis general canvas
+        if lid not in QgsMapLayerRegistry.instance().mapLayers().keys():
+            self.layers.pop(l)
+            return None
         return QgsMapLayerRegistry.instance().mapLayer(lid)
 
 
@@ -246,12 +250,16 @@ class VLayerConnector(DBConnector):
     def getTableRowCount(self, table):
         t = table[1]
         l = VLayerRegistry.instance().getLayer(t)
+        if not l or not l.isValid():
+            return None
         return l.featureCount()
 
     def getTableFields(self, table):
         """ return list of columns in table """
         t = table[1]
         l = VLayerRegistry.instance().getLayer(t)
+        if not l or not l.isValid():
+            return []
         # id, name, type, nonnull, default, pk
         n = l.dataProvider().fields().size()
         f = [(i, f.name(), f.typeName(), False, None, False)
@@ -277,6 +285,8 @@ class VLayerConnector(DBConnector):
             l = QgsMapLayerRegistry.instance().mapLayer(t)
         else:
             l = VLayerRegistry.instance().getLayer(t)
+        if not l or not l.isValid():
+            return None
         e = l.extent()
         r = (e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum())
         return r
