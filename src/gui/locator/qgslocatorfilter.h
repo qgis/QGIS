@@ -92,6 +92,18 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
     QgsLocatorFilter( QObject *parent = nullptr );
 
     /**
+     * Returns the unique name for the filter. This should be an untranslated string identifying the filter.
+     * \see displayName()
+     */
+    virtual QString name() const = 0;
+
+    /**
+     * Returns a translated, user-friendly name for the filter.
+     * \see name()
+     */
+    virtual QString displayName() const = 0;
+
+    /**
      * Retrieves the filter results for a specified search \a string. The \a context
      * argument encapsulates the context relating to the search (such as a map
      * extent to prioritize).

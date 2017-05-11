@@ -71,6 +71,20 @@ class QgsLocatorFilter : QObject
  Constructor for QgsLocatorFilter.
 %End
 
+    virtual QString name() const = 0;
+%Docstring
+ Returns the unique name for the filter. This should be an untranslated string identifying the filter.
+.. seealso:: displayName()
+ :rtype: str
+%End
+
+    virtual QString displayName() const = 0;
+%Docstring
+ Returns a translated, user-friendly name for the filter.
+.. seealso:: name()
+ :rtype: str
+%End
+
     virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;
 %Docstring
  Retrieves the filter results for a specified search ``string``. The ``context``

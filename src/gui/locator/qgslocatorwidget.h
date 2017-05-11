@@ -27,12 +27,14 @@
 #include <QFocusEvent>
 #include <QHeaderView>
 #include <QTimer>
+#include <QSortFilterProxyModel>
 
 class QgsLocator;
 class QgsFilterLineEdit;
 class QgsLocatorModel;
 class QgsLocatorResultsView;
 class QgsMapCanvas;
+class QgsLocatorProxyModel;
 
 /**
  * \class QgsLocatorWidget
@@ -89,6 +91,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     QgsLocator *mLocator = nullptr;
     QgsFilterLineEdit *mLineEdit = nullptr;
     QgsLocatorModel *mLocatorModel = nullptr;
+    QgsLocatorProxyModel *mProxyModel = nullptr;
     QgsFloatingWidget *mResultsContainer = nullptr;
     QgsLocatorResultsView *mResultsView = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
@@ -123,6 +126,8 @@ class QgsLocatorModel : public QAbstractListModel
     enum Role
     {
       ResultDataRole = Qt::UserRole + 1, //!< QgsLocatorResult data
+      ResultTypeRole,
+      ResultFilterNameRole,
     };
 
     /**
@@ -138,6 +143,7 @@ class QgsLocatorModel : public QAbstractListModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   public slots:
 
@@ -148,7 +154,22 @@ class QgsLocatorModel : public QAbstractListModel
 
   private:
 
-    QList<QgsLocatorResult> mResults;
+    struct Entry
+    {
+      QgsLocatorResult result;
+      QString filterTitle;
+    };
+
+    QList<Entry> mResults;
+    QSet<QString> mFoundResultsFromFilterNames;
+};
+
+class QgsLocatorProxyModel : public QSortFilterProxyModel
+{
+  public:
+
+    explicit QgsLocatorProxyModel( QObject *parent = nullptr );
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 };
 
 /**

@@ -63,7 +63,9 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mResultsContainer->setLayout( containerLayout );
   mResultsContainer->hide();
 
-  mResultsView->setModel( mLocatorModel );
+  mProxyModel = new QgsLocatorProxyModel( mLocatorModel );
+  mProxyModel->setSourceModel( mLocatorModel );
+  mResultsView->setModel( mProxyModel );
   mResultsView->recalculateSize();
 
   connect( mLocator, &QgsLocator::foundResult, this, &QgsLocatorWidget::addResult );
@@ -191,10 +193,10 @@ bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
 
 void QgsLocatorWidget::addResult( const QgsLocatorResult &result )
 {
-  bool selectFirst = mLocatorModel->rowCount() == 0;
+  bool selectFirst = mProxyModel->rowCount() == 0;
   mLocatorModel->addResult( result );
   if ( selectFirst )
-    mResultsView->setCurrentIndex( mLocatorModel->index( 0, 0 ) );
+    mResultsView->setCurrentIndex( mProxyModel->index( 1, 0 ) );
 }
 
 void QgsLocatorWidget::updateResults( const QString &text )
@@ -234,7 +236,7 @@ void QgsLocatorWidget::acceptCurrentEntry()
     if ( !index.isValid() )
       return;
 
-    QgsLocatorResult result = mLocatorModel->data( index, QgsLocatorModel::ResultDataRole ).value< QgsLocatorResult >();
+    QgsLocatorResult result = mProxyModel->data( index, QgsLocatorModel::ResultDataRole ).value< QgsLocatorResult >();
     mResultsContainer->hide();
     mLineEdit->clearFocus();
     result.filter->triggerResult( result );
@@ -266,6 +268,7 @@ void QgsLocatorModel::clear()
 {
   beginResetModel();
   mResults.clear();
+  mFoundResultsFromFilterNames.clear();
   endResetModel();
 }
 
@@ -289,22 +292,73 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
   {
     case Qt::DisplayRole:
     case Qt::EditRole:
-      return mResults.at( index.row() ).displayString;
+    {
+      if ( mResults.at( index.row() ).filterTitle.isEmpty() )
+        return mResults.at( index.row() ).result.displayString;
+      else
+        return mResults.at( index.row() ).filterTitle;
+    }
 
     case Qt::DecorationRole:
-      return mResults.at( index.row() ).icon;
+      if ( mResults.at( index.row() ).filterTitle.isEmpty() )
+        return mResults.at( index.row() ).result.icon;
+      else
+        return QVariant();
 
     case ResultDataRole:
-      return QVariant::fromValue( mResults.at( index.row() ) );
+      if ( mResults.at( index.row() ).filterTitle.isEmpty() )
+        return QVariant::fromValue( mResults.at( index.row() ).result );
+      else
+        return QVariant();
+
+    case ResultTypeRole:
+      if ( mResults.at( index.row() ).filterTitle.isEmpty() )
+        return 1;
+      else
+        return 0;
+
+    case ResultFilterNameRole:
+      if ( mResults.at( index.row() ).filterTitle.isEmpty() )
+        return mResults.at( index.row() ).result.filter->displayName();
+      else
+        return mResults.at( index.row() ).filterTitle;
   }
 
   return QVariant();
 }
 
+Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
+{
+  if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
+       index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
+    return QAbstractListModel::flags( index );
+
+  Qt::ItemFlags flags = QAbstractListModel::flags( index );
+  if ( !mResults.at( index.row() ).filterTitle.isEmpty() )
+  {
+    flags = flags & ~( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+  }
+  return flags;
+
+}
+
 void QgsLocatorModel::addResult( const QgsLocatorResult &result )
 {
-  beginInsertRows( QModelIndex(), mResults.size(), mResults.size() );
-  mResults << result;
+  int pos = mResults.size();
+  bool addingFilter = !mFoundResultsFromFilterNames.contains( result.filter->name() );
+  if ( addingFilter )
+    mFoundResultsFromFilterNames << result.filter->name();
+
+  beginInsertRows( QModelIndex(), pos, pos + ( addingFilter ? 1 : 0 ) );
+  if ( addingFilter )
+  {
+    Entry entry;
+    entry.filterTitle = result.filter->displayName();
+    mResults << entry;
+  }
+  Entry entry;
+  entry.result = result;
+  mResults << entry;
   endInsertRows();
 }
 
@@ -352,3 +406,29 @@ void QgsLocatorResultsView::selectPreviousResult()
 
 ///@endcond
 
+
+QgsLocatorProxyModel::QgsLocatorProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  setDynamicSortFilter( true );
+  setSortLocaleAware( true );
+  setFilterCaseSensitivity( Qt::CaseInsensitive );
+  sort( 0 );
+}
+
+bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+  QString leftFilter = sourceModel()->data( left, QgsLocatorModel::ResultFilterNameRole ).toString();
+  QString rightFilter = sourceModel()->data( right, QgsLocatorModel::ResultFilterNameRole ).toString();
+  if ( leftFilter != rightFilter )
+    return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
+
+  int leftTypeRole = sourceModel()->data( left, QgsLocatorModel::ResultTypeRole ).toInt();
+  int rightTypeRole = sourceModel()->data( right, QgsLocatorModel::ResultTypeRole ).toInt();
+  if ( leftTypeRole != rightTypeRole )
+    return leftTypeRole < rightTypeRole;
+
+  leftFilter = sourceModel()->data( left, Qt::DisplayRole ).toString();
+  rightFilter = sourceModel()->data( right, Qt::DisplayRole ).toString();
+  return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
+}
