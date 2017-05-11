@@ -13,7 +13,6 @@ core/qgsfeaturerequest.sip
 core/qgsgeometrysimplifier.sip
 core/qgsgeometryvalidator.sip
 core/qgsmaptopixelgeometrysimplifier.sip
-core/qgstransaction.sip
 core/qgstransactiongroup.sip
 core/qgsdartmeasurement.sip
 core/qgsexpressionfieldbuffer.sip
@@ -73,7 +72,6 @@ core/qgssnappingutils.sip
 core/qgsspatialindex.sip
 core/qgssqlstatement.sip
 core/qgsstringutils.sip
-core/qgstaskmanager.sip
 core/qgstolerance.sip
 core/qgstracer.sip
 core/qgstrackedvectorlayertools.sip
@@ -122,7 +120,6 @@ core/composer/qgscomposeritemcommand.sip
 core/composer/qgscomposeritemgroup.sip
 core/composer/qgscomposerlabel.sip
 core/composer/qgscomposerlegend.sip
-core/composer/qgscomposermap.sip
 core/composer/qgscomposermapgrid.sip
 core/composer/qgscomposermapitem.sip
 core/composer/qgscomposermapoverview.sip
@@ -284,7 +281,6 @@ gui/qgsfeatureselectiondlg.sip
 gui/qgsfieldvalidator.sip
 gui/qgsfieldvalueslineedit.sip
 gui/qgsfiledropedit.sip
-gui/qgsfilterlineedit.sip
 gui/qgsfloatingwidget.sip
 gui/qgsfocuswatcher.sip
 gui/qgsformannotation.sip
@@ -348,7 +344,6 @@ gui/qgsquerybuilder.sip
 gui/qgsrasterformatsaveoptionswidget.sip
 gui/qgsrasterlayersaveasdialog.sip
 gui/qgsrasterpyramidsoptionswidget.sip
-gui/qgsrelationeditorwidget.sip
 gui/qgsrubberband.sip
 gui/qgsscalerangewidget.sip
 gui/qgsscalevisibilitydialog.sip
@@ -450,27 +445,6 @@ gui/effects/qgseffectdrawmodecombobox.sip
 gui/effects/qgseffectstackpropertieswidget.sip
 gui/effects/qgspainteffectpropertieswidget.sip
 gui/effects/qgspainteffectwidget.sip
-gui/editorwidgets/core/qgseditorconfigwidget.sip
-gui/editorwidgets/core/qgseditorwidgetautoconf.sip
-gui/editorwidgets/core/qgseditorwidgetfactory.sip
-gui/editorwidgets/core/qgseditorwidgetregistry.sip
-gui/editorwidgets/core/qgseditorwidgetwrapper.sip
-gui/editorwidgets/core/qgssearchwidgetwrapper.sip
-gui/editorwidgets/core/qgswidgetwrapper.sip
-gui/editorwidgets/qgscheckboxsearchwidgetwrapper.sip
-gui/editorwidgets/qgsdatetimeedit.sip
-gui/editorwidgets/qgsdatetimesearchwidgetwrapper.sip
-gui/editorwidgets/qgsdefaultsearchwidgetwrapper.sip
-gui/editorwidgets/qgsdoublespinbox.sip
-gui/editorwidgets/qgsmultiedittoolbutton.sip
-gui/editorwidgets/qgsrelationreferencesearchwidgetwrapper.sip
-gui/editorwidgets/qgsrelationreferencewidget.sip
-gui/editorwidgets/qgsrelationreferencewidgetwrapper.sip
-gui/editorwidgets/qgsrelationwidgetwrapper.sip
-gui/editorwidgets/qgssearchwidgettoolbutton.sip
-gui/editorwidgets/qgsspinbox.sip
-gui/editorwidgets/qgsvaluemapsearchwidgetwrapper.sip
-gui/editorwidgets/qgsvaluerelationsearchwidgetwrapper.sip
 gui/layertree/qgslayertreeview.sip
 analysis/vector/qgsgeometryanalyzer.sip
 analysis/vector/qgsgeometrysnapper.sip

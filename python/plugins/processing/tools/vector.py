@@ -55,39 +55,7 @@ from qgis.core import (QgsFields,
                        QgsProcessingContext,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects, spatialite, postgis
-
-
-TYPE_MAP = {
-    str: QVariant.String,
-    float: QVariant.Double,
-    int: QVariant.Int,
-    bool: QVariant.Bool
-}
-
-TYPE_MAP_MEMORY_LAYER = {
-    QVariant.String: "string",
-    QVariant.Double: "double",
-    QVariant.Int: "integer",
-    QVariant.Date: "date",
-    QVariant.DateTime: "datetime",
-    QVariant.Time: "time"
-}
-
-TYPE_MAP_POSTGIS_LAYER = {
-    QVariant.String: "VARCHAR",
-    QVariant.Double: "REAL",
-    QVariant.Int: "INTEGER",
-    QVariant.Bool: "BOOLEAN"
-}
-
-TYPE_MAP_SPATIALITE_LAYER = {
-    QVariant.String: "VARCHAR",
-    QVariant.Double: "REAL",
-    QVariant.Int: "INTEGER",
-    QVariant.Bool: "INTEGER"
-}
+from processing.tools import dataobjects
 
 
 def resolveFieldIndex(layer, attr):
@@ -305,12 +273,6 @@ def checkMinDistance(point, index, distance, points):
     return True
 
 
-def _toQgsField(f):
-    if isinstance(f, QgsField):
-        return f
-    return QgsField(f[0], TYPE_MAP.get(f[1], QVariant.String))
-
-
 def snapToPrecision(geom, precision):
     snapped = QgsGeometry(geom)
     if precision == 0.0:
@@ -447,144 +409,12 @@ def ogrLayerName(uri):
     return name
 
 
-MEMORY_LAYER_PREFIX = 'memory:'
-POSTGIS_LAYER_PREFIX = 'postgis:'
-SPATIALITE_LAYER_PREFIX = 'spatialite:'
-
 NOGEOMETRY_EXTENSIONS = [
     u'csv',
     u'dbf',
     u'ods',
     u'xlsx',
 ]
-
-
-def createVectorWriter(destination, encoding, fields, geometryType, crs, context):
-    layer = None
-    sink = None
-
-    if encoding is None:
-        settings = QgsSettings()
-        encoding = settings.value('/Processing/encoding', 'System', str)
-
-    if destination.startswith(MEMORY_LAYER_PREFIX):
-        uri = QgsWkbTypes.displayString(geometryType) + "?uuid=" + str(uuid.uuid4())
-        if crs.isValid():
-            uri += '&crs=' + crs.authid()
-        fieldsdesc = []
-        for f in fields:
-            qgsfield = _toQgsField(f)
-            fieldsdesc.append('field=%s:%s' % (qgsfield.name(),
-                                               TYPE_MAP_MEMORY_LAYER.get(qgsfield.type(), "string")))
-        if fieldsdesc:
-            uri += '&' + '&'.join(fieldsdesc)
-
-        layer = QgsVectorLayer(uri, destination, 'memory')
-        sink = layer.dataProvider()
-        context.temporaryLayerStore().addMapLayer(layer)
-        destination = layer.id()
-    elif destination.startswith(POSTGIS_LAYER_PREFIX):
-        uri = QgsDataSourceUri(destination[len(POSTGIS_LAYER_PREFIX):])
-        connInfo = uri.connectionInfo()
-        (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
-        if success:
-            QgsCredentials.instance().put(connInfo, user, passwd)
-        else:
-            raise GeoAlgorithmExecutionException("Couldn't connect to database")
-        try:
-            db = postgis.GeoDB(host=uri.host(), port=int(uri.port()),
-                               dbname=uri.database(), user=user, passwd=passwd)
-        except postgis.DbError as e:
-            raise GeoAlgorithmExecutionException(
-                "Couldn't connect to database:\n%s" % e.message)
-
-        def _runSQL(sql):
-            try:
-                db._exec_sql_and_commit(str(sql))
-            except postgis.DbError as e:
-                raise GeoAlgorithmExecutionException(
-                    'Error creating output PostGIS table:\n%s' % e.message)
-
-        fields = [_toQgsField(f) for f in fields]
-        fieldsdesc = ",".join('%s %s' % (f.name(),
-                                         TYPE_MAP_POSTGIS_LAYER.get(f.type(), "VARCHAR"))
-                              for f in fields)
-
-        _runSQL("CREATE TABLE %s.%s (%s)" % (uri.schema(), uri.table().lower(), fieldsdesc))
-        if geometryType != QgsWkbTypes.NullGeometry:
-            _runSQL("SELECT AddGeometryColumn('{schema}', '{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
-                table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
-                typmod=QgsWkbTypes.displayString(geometryType).upper()))
-
-        layer = QgsVectorLayer(uri.uri(), uri.table(), "postgres")
-        sink = layer.dataProvider()
-        context.temporaryLayerStore().addMapLayer(layer)
-    elif destination.startswith(SPATIALITE_LAYER_PREFIX):
-        uri = QgsDataSourceUri(destination[len(SPATIALITE_LAYER_PREFIX):])
-        try:
-            db = spatialite.GeoDB(uri=uri)
-        except spatialite.DbError as e:
-            raise GeoAlgorithmExecutionException(
-                "Couldn't connect to database:\n%s" % e.message)
-
-        def _runSQL(sql):
-            try:
-                db._exec_sql_and_commit(str(sql))
-            except spatialite.DbError as e:
-                raise GeoAlgorithmExecutionException(
-                    'Error creating output Spatialite table:\n%s' % str(e))
-
-        fields = [_toQgsField(f) for f in fields]
-        fieldsdesc = ",".join('%s %s' % (f.name(),
-                                         TYPE_MAP_SPATIALITE_LAYER.get(f.type(), "VARCHAR"))
-                              for f in fields)
-
-        _runSQL("DROP TABLE IF EXISTS %s" % uri.table().lower())
-        _runSQL("CREATE TABLE %s (%s)" % (uri.table().lower(), fieldsdesc))
-        if geometryType != QgsWkbTypes.NullGeometry:
-            _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
-                table=uri.table().lower(), srid=crs.authid().split(":")[-1],
-                typmod=QgsWkbTypes.displayString(geometryType).upper()))
-
-        layer = QgsVectorLayer(uri.uri(), uri.table(), "spatialite")
-        sink = layer.dataProvider()
-        context.temporaryLayerStore().addMapLayer(layer)
-    else:
-        formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-        OGRCodes = {}
-        for (key, value) in list(formats.items()):
-            extension = str(key)
-            extension = extension[extension.find('*.') + 2:]
-            extension = extension[:extension.find(' ')]
-            OGRCodes[extension] = value
-        OGRCodes['dbf'] = "DBF file"
-
-        extension = destination[destination.rfind('.') + 1:]
-
-        if extension not in OGRCodes:
-            extension = 'shp'
-            destination = destination + '.shp'
-
-        if geometryType == QgsWkbTypes.NoGeometry:
-            if extension == 'shp':
-                extension = 'dbf'
-                destination = destination[:destination.rfind('.')] + '.dbf'
-            if extension not in NOGEOMETRY_EXTENSIONS:
-                raise GeoAlgorithmExecutionException(
-                    "Unsupported format for tables with no geometry")
-
-        qgsfields = QgsFields()
-        for field in fields:
-            qgsfields.append(_toQgsField(field))
-
-        # use default dataset/layer options
-        dataset_options = QgsVectorFileWriter.defaultDatasetOptions(OGRCodes[extension])
-        layer_options = QgsVectorFileWriter.defaultLayerOptions(OGRCodes[extension])
-
-        sink = QgsVectorFileWriter(destination, encoding,
-                                   qgsfields, geometryType, crs, OGRCodes[extension],
-                                   dataset_options, layer_options)
-    return sink, destination, layer
 
 
 class TableWriter(object):

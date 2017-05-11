@@ -184,12 +184,13 @@ QVector<QgsPointV2> QgsEllipse::quadrant() const
   return quad;
 }
 
-void QgsEllipse::points( QgsPointSequence &pts, unsigned int segments ) const
+QgsPointSequence QgsEllipse::points( unsigned int segments ) const
 {
-  pts.clear();
+  QgsPointSequence pts;
+
   if ( segments < 3 )
   {
-    return;
+    return pts;
   }
 
 
@@ -214,6 +215,8 @@ void QgsEllipse::points( QgsPointSequence &pts, unsigned int segments ) const
                mSemiMinorAxis * sin( *it ) * cos( azimuth );
     pts.push_back( QgsPointV2( pType, x, y, z, m ) );
   }
+
+  return pts;
 }
 
 QgsPolygonV2 *QgsEllipse::toPolygon( unsigned int segments ) const
@@ -238,7 +241,7 @@ QgsLineString *QgsEllipse::toLineString( unsigned int segments ) const
   }
 
   QgsPointSequence pts;
-  points( pts, segments );
+  pts = points( segments );
 
   ext->setPoints( pts );
 

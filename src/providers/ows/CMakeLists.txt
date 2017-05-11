@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES (
   ../../core
   ../../core/geometry
   ../../core/auth
+  ../../core/metadata
   ../../gui
   ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui

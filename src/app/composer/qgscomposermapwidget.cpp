@@ -60,9 +60,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
   mYMaxLineEdit->setValidator( new QDoubleValidator( mYMaxLineEdit ) );
 
   blockAllSignals( true );
-  mPreviewModeComboBox->insertItem( 0, tr( "Cache" ) );
-  mPreviewModeComboBox->insertItem( 1, tr( "Render" ) );
-  mPreviewModeComboBox->insertItem( 2, tr( "Rectangle" ) );
 
   mCrsSelector->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   mCrsSelector->setNotSetText( tr( "Use project CRS" ) );
@@ -195,8 +192,7 @@ void QgsComposerMapWidget::followVisibilityPresetSelected( int currentIndex )
   mFollowVisibilityPresetCheckBox->setChecked( true );
   mComposerMap->setFollowVisibilityPresetName( presetName );
 
-  mComposerMap->cache();
-  mComposerMap->update();
+  mComposerMap->invalidateCache();
 }
 
 void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
@@ -216,8 +212,7 @@ void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
 
     mComposerMap->setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( presetName ) );
 
-    mComposerMap->cache();
-    mComposerMap->update();
+    mComposerMap->invalidateCache();
   }
 }
 
@@ -301,8 +296,7 @@ void QgsComposerMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &cr
   if ( updateExtent )
     mComposerMap->zoomToExtent( newExtent );
   mComposerMap->endCommand();
-  mComposerMap->cache();
-  mComposerMap->update();
+  mComposerMap->invalidateCache();
 }
 
 void QgsComposerMapWidget::on_mAtlasCheckBox_toggled( bool checked )
@@ -369,8 +363,7 @@ void QgsComposerMapWidget::updateMapForAtlas()
   else
   {
     //redraw map
-    mComposerMap->cache();
-    mComposerMap->update();
+    mComposerMap->invalidateCache();
   }
 }
 
@@ -435,41 +428,6 @@ void QgsComposerMapWidget::on_mAtlasPredefinedScaleRadio_toggled( bool checked )
   }
 }
 
-void QgsComposerMapWidget::on_mPreviewModeComboBox_activated( int i )
-{
-  Q_UNUSED( i );
-
-  if ( !mComposerMap )
-  {
-    return;
-  }
-
-  if ( mComposerMap->isDrawing() )
-  {
-    return;
-  }
-
-  QString comboText = mPreviewModeComboBox->currentText();
-  if ( comboText == tr( "Cache" ) )
-  {
-    mComposerMap->setPreviewMode( QgsComposerMap::Cache );
-    mUpdatePreviewButton->setEnabled( true );
-  }
-  else if ( comboText == tr( "Render" ) )
-  {
-    mComposerMap->setPreviewMode( QgsComposerMap::Render );
-    mUpdatePreviewButton->setEnabled( true );
-  }
-  else if ( comboText == tr( "Rectangle" ) )
-  {
-    mComposerMap->setPreviewMode( QgsComposerMap::Rectangle );
-    mUpdatePreviewButton->setEnabled( false );
-  }
-
-  mComposerMap->cache();
-  mComposerMap->update();
-}
-
 void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
 {
   if ( !mComposerMap )
@@ -503,8 +461,7 @@ void QgsComposerMapWidget::rotationChanged()
   mComposerMap->beginCommand( tr( "Map rotation changed" ), QgsComposerMergeCommand::ComposerMapRotation );
   mComposerMap->setMapRotation( mMapRotationSpinBox->value() );
   mComposerMap->endCommand();
-  mComposerMap->cache();
-  mComposerMap->update();
+  mComposerMap->invalidateCache();
 }
 
 void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
@@ -594,12 +551,8 @@ void QgsComposerMapWidget::on_mYMaxLineEdit_editingFinished()
 void QgsComposerMapWidget::setGuiElementValues()
 {
   mScaleLineEdit->blockSignals( true );
-  mPreviewModeComboBox->blockSignals( true );
-
   updateGuiElements();
-
   mScaleLineEdit->blockSignals( false );
-  mPreviewModeComboBox->blockSignals( false );
 }
 
 void QgsComposerMapWidget::updateGuiElements()
@@ -631,29 +584,6 @@ void QgsComposerMapWidget::updateGuiElements()
   {
     //if scale < 1 then use 10 decimal places
     mScaleLineEdit->setText( QString::number( mComposerMap->scale(), 'f', 10 ) );
-  }
-
-  //preview mode
-  QgsComposerMap::PreviewMode previewMode = mComposerMap->previewMode();
-  int index = -1;
-  if ( previewMode == QgsComposerMap::Cache )
-  {
-    index = mPreviewModeComboBox->findText( tr( "Cache" ) );
-    mUpdatePreviewButton->setEnabled( true );
-  }
-  else if ( previewMode == QgsComposerMap::Render )
-  {
-    index = mPreviewModeComboBox->findText( tr( "Render" ) );
-    mUpdatePreviewButton->setEnabled( true );
-  }
-  else if ( previewMode == QgsComposerMap::Rectangle )
-  {
-    index = mPreviewModeComboBox->findText( tr( "Rectangle" ) );
-    mUpdatePreviewButton->setEnabled( false );
-  }
-  if ( index != -1 )
-  {
-    mPreviewModeComboBox->setCurrentIndex( index );
   }
 
   //composer map extent
@@ -869,9 +799,7 @@ void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
 
   mUpdatePreviewButton->setEnabled( false ); //prevent crashes because of many button clicks
 
-  mComposerMap->setCacheUpdated( false );
-  mComposerMap->cache();
-  mComposerMap->update();
+  mComposerMap->invalidateCache();
 
   mUpdatePreviewButton->setEnabled( true );
 }
@@ -891,8 +819,7 @@ void QgsComposerMapWidget::on_mFollowVisibilityPresetCheckBox_stateChanged( int 
     mKeepLayerListCheckBox->setCheckState( Qt::Unchecked );
     mKeepLayerStylesCheckBox->setCheckState( Qt::Unchecked );
 
-    mComposerMap->cache();
-    mComposerMap->update();
+    mComposerMap->invalidateCache();
   }
   else
   {
@@ -924,7 +851,7 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
   else
   {
     mKeepLayerStylesCheckBox->setChecked( Qt::Unchecked );
-    mComposerMap->updateCachedImage();
+    mComposerMap->invalidateCache();
   }
 
   mKeepLayerStylesCheckBox->setEnabled( state == Qt::Checked );
@@ -959,9 +886,7 @@ void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
   mComposerMap->beginCommand( tr( "Canvas items toggled" ) );
   mComposerMap->setDrawAnnotations( state == Qt::Checked );
   mUpdatePreviewButton->setEnabled( false ); //prevent crashes because of many button clicks
-  mComposerMap->setCacheUpdated( false );
-  mComposerMap->cache();
-  mComposerMap->update();
+  mComposerMap->invalidateCache();
   mUpdatePreviewButton->setEnabled( true );
   mComposerMap->endCommand();
 }

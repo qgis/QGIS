@@ -17,6 +17,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/auth
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/geometry
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/metadata
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/symbology-ng
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/test

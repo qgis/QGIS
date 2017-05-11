@@ -677,9 +677,7 @@ The help text for the function.
  This can be used as callback for custom implementations of subclasses. It is the default for implementation
  for StaticFunction.isStatic.
 
-.. note::
-
-   Added in QGIS 3.0
+.. versionadded:: 3.0
  :rtype: bool
 %End
 

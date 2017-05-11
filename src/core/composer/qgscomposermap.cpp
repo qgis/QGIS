@@ -20,11 +20,13 @@
 #include "qgscomposermapoverview.h"
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
+#include "qgslayertree.h"
 #include "qgslogger.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaptopixel.h"
+#include "qgsmapsettingsutils.h"
 #include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
@@ -115,9 +117,16 @@ QgsComposerMap::~QgsComposerMap()
 {
   delete mOverviewStack;
   delete mGridStack;
+
+  if ( mPainterJob )
+  {
+    disconnect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsComposerMap::painterJobFinished );
+    mPainterJob->cancel();
+    mPainter->end();
+  }
 }
 
-/* This function is called by paint() and cache() to render the map.  It does not override any functions
+/* This function is called by paint() to render the map.  It does not override any functions
 from QGraphicsItem. */
 void QgsComposerMap::draw( QPainter *painter, const QgsRectangle &extent, QSizeF size, double dpi, double *forceWidthScale )
 {
@@ -199,19 +208,30 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle &extent, QSizeF s
   return jobMapSettings;
 }
 
-void QgsComposerMap::cache()
+void QgsComposerMap::recreateCachedImageInBackground()
 {
-  if ( mPreviewMode == Rectangle )
+  if ( mPainterJob )
   {
-    return;
+    disconnect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsComposerMap::painterJobFinished );
+    QgsMapRendererCustomPainterJob *oldJob = mPainterJob.release();
+    QPainter *oldPainter = mPainter.release();
+    QImage *oldImage = mCacheRenderingImage.release();
+    connect( oldJob, &QgsMapRendererCustomPainterJob::finished, this, [oldPainter, oldJob, oldImage]
+    {
+      oldJob->deleteLater();
+      delete oldPainter;
+      delete oldImage;
+    } );
+    oldJob->cancelWithoutBlocking();
+  }
+  else
+  {
+    mCacheRenderingImage.reset( nullptr );
   }
 
-  if ( mDrawing )
-  {
-    return;
-  }
-
-  mDrawing = true;
+  Q_ASSERT( !mPainterJob );
+  Q_ASSERT( !mPainter );
+  Q_ASSERT( !mCacheRenderingImage );
 
   double horizontalVScaleFactor = horizontalViewScaleFactor();
   if ( horizontalVScaleFactor < 0 )
@@ -242,38 +262,51 @@ void QgsComposerMap::cache()
     }
   }
 
-  mCacheImage = QImage( w, h, QImage::Format_ARGB32 );
+  if ( w <= 0 || h <= 0 )
+    return;
+
+  mCacheRenderingImage.reset( new QImage( w, h, QImage::Format_ARGB32 ) );
 
   // set DPI of the image
-  mCacheImage.setDotsPerMeterX( 1000 * w / widthMM );
-  mCacheImage.setDotsPerMeterY( 1000 * h / heightMM );
+  mCacheRenderingImage->setDotsPerMeterX( 1000 * w / widthMM );
+  mCacheRenderingImage->setDotsPerMeterY( 1000 * h / heightMM );
 
   if ( hasBackground() )
   {
     //Initially fill image with specified background color. This ensures that layers with blend modes will
     //preview correctly
-    mCacheImage.fill( backgroundColor().rgba() );
+    mCacheRenderingImage->fill( backgroundColor().rgba() );
   }
   else
   {
     //no background, but start with empty fill to avoid artifacts
-    mCacheImage.fill( QColor( 255, 255, 255, 0 ).rgba() );
+    mCacheRenderingImage->fill( QColor( 255, 255, 255, 0 ).rgba() );
   }
 
-  QPainter p( &mCacheImage );
+  mCacheInvalidated = false;
+  mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
+  QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheRenderingImage->logicalDpiX() ) );
+  mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
+  connect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsComposerMap::painterJobFinished );
+  mPainterJob->start();
+}
 
-  draw( &p, ext, QSizeF( w, h ), mCacheImage.logicalDpiX() );
-  p.end();
-  mCacheUpdated = true;
-
-  mDrawing = false;
+void QgsComposerMap::painterJobFinished()
+{
+  mPainter->end();
+  mPainterJob.reset( nullptr );
+  mPainter.reset( nullptr );
+  mCacheFinalImage = std::move( mCacheRenderingImage );
+  mLastRenderedImageOffsetX = 0;
+  mLastRenderedImageOffsetY = 0;
+  updateItem();
 }
 
 void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *pWidget )
 {
   Q_UNUSED( pWidget );
 
-  if ( !mComposition || !painter )
+  if ( !mComposition || !painter || !painter->device() )
   {
     return;
   }
@@ -283,36 +316,54 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   }
 
   QRectF thisPaintRect = QRectF( 0, 0, QGraphicsRectItem::rect().width(), QGraphicsRectItem::rect().height() );
+  if ( thisPaintRect.width() == 0 || thisPaintRect.height() == 0 )
+    return;
+
   painter->save();
   painter->setClipRect( thisPaintRect );
 
-  if ( mComposition->plotStyle() == QgsComposition::Preview && mPreviewMode == Rectangle )
+  if ( mComposition->plotStyle() == QgsComposition::Preview )
   {
-    // Fill with background color
-    drawBackground( painter );
-    QFont messageFont( QLatin1String( "" ), 12 );
-    painter->setFont( messageFont );
-    painter->setPen( QColor( 0, 0, 0, 125 ) );
-    painter->drawText( thisPaintRect, tr( "Map will be printed here" ) );
-  }
-  else if ( mComposition->plotStyle() == QgsComposition::Preview )
-  {
-    if ( mCacheImage.isNull() )
-      cache();
+    if ( !mCacheFinalImage || mCacheFinalImage->isNull() )
+    {
+      // No initial render available - so draw some preview text alerting user
+      drawBackground( painter );
+      painter->setBrush( QBrush( QColor( 125, 125, 125, 125 ) ) );
+      painter->drawRect( thisPaintRect );
+      painter->setBrush( Qt::NoBrush );
+      QFont messageFont;
+      messageFont.setPointSize( 12 );
+      painter->setFont( messageFont );
+      painter->setPen( QColor( 255, 255, 255, 255 ) );
+      painter->drawText( thisPaintRect, Qt::AlignCenter | Qt::AlignHCenter, tr( "Rendering map" ) );
+      if ( !mPainterJob )
+      {
+        // this is the map's very first paint - trigger a cache update
+        recreateCachedImageInBackground();
+      }
+    }
+    else
+    {
+      if ( mCacheInvalidated )
+      {
+        // cache was invalidated - trigger a background update
+        recreateCachedImageInBackground();
+      }
 
-    //Background color is already included in cached image, so no need to draw
+      //Background color is already included in cached image, so no need to draw
 
-    double imagePixelWidth = mCacheImage.width(); //how many pixels of the image are for the map extent?
-    double scale = rect().width() / imagePixelWidth;
+      double imagePixelWidth = mCacheFinalImage->width(); //how many pixels of the image are for the map extent?
+      double scale = rect().width() / imagePixelWidth;
 
-    painter->save();
+      painter->save();
 
-    painter->translate( mXOffset, mYOffset );
-    painter->scale( scale, scale );
-    painter->drawImage( 0, 0, mCacheImage );
+      painter->translate( mLastRenderedImageOffsetX + mXOffset, mLastRenderedImageOffsetY + mYOffset );
+      painter->scale( scale, scale );
+      painter->drawImage( 0, 0, *mCacheFinalImage );
 
-    //restore rotation
-    painter->restore();
+      //restore rotation
+      painter->restore();
+    }
   }
   else if ( mComposition->plotStyle() == QgsComposition::Print ||
             mComposition->plotStyle() == QgsComposition::Postscript )
@@ -353,13 +404,11 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   }
 
   painter->setClipRect( thisPaintRect, Qt::NoClip );
-  if ( shouldDrawPart( OverviewMapExtent ) &&
-       ( mComposition->plotStyle() != QgsComposition::Preview || mPreviewMode != Rectangle ) )
+  if ( shouldDrawPart( OverviewMapExtent ) )
   {
     mOverviewStack->drawItems( painter );
   }
-  if ( shouldDrawPart( Grid ) &&
-       ( mComposition->plotStyle() != QgsComposition::Preview || mPreviewMode != Rectangle ) )
+  if ( shouldDrawPart( Grid ) )
   {
     mGridStack->drawItems( painter );
   }
@@ -377,6 +426,12 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   }
 
   painter->restore();
+}
+
+void QgsComposerMap::invalidateCache()
+{
+  mCacheInvalidated = true;
+  updateItem();
 }
 
 int QgsComposerMap::numberExportLayers() const
@@ -436,26 +491,6 @@ bool QgsComposerMap::shouldDrawPart( PartType part ) const
   }
 
   return true; // for Layer
-}
-
-void QgsComposerMap::updateCachedImage()
-{
-  mCacheUpdated = false;
-  cache();
-  update();
-}
-
-void QgsComposerMap::renderModeUpdateCachedImage()
-{
-  if ( mPreviewMode == Render )
-  {
-    updateCachedImage();
-  }
-}
-
-void QgsComposerMap::setCacheUpdated( bool u )
-{
-  mCacheUpdated = u;
 }
 
 QList<QgsMapLayer *> QgsComposerMap::layersToRender( const QgsExpressionContext *context ) const
@@ -565,6 +600,8 @@ void QgsComposerMap::resize( double dx, double dy )
 
 void QgsComposerMap::moveContent( double dx, double dy )
 {
+  mLastRenderedImageOffsetX -= dx;
+  mLastRenderedImageOffsetY -= dy;
   if ( !mDrawing )
   {
     transformShift( dx, dy );
@@ -576,8 +613,7 @@ void QgsComposerMap::moveContent( double dx, double dy )
     //in case data defined extents are set, these override the calculated values
     refreshMapExtents();
 
-    cache();
-    update();
+    invalidateCache();
     emit itemChanged();
     emit extentChanged();
   }
@@ -650,8 +686,7 @@ void QgsComposerMap::zoomContent( const double factor, const QPointF point, cons
   //recalculate data defined scale and extents, since that may override zoom
   refreshMapExtents();
 
-  cache();
-  update();
+  invalidateCache();
   emit itemChanged();
   emit extentChanged();
 }
@@ -670,10 +705,8 @@ void QgsComposerMap::setSceneRect( const QRectF &rectangle )
 
   //recalculate data defined scale and extents
   refreshMapExtents();
-  mCacheUpdated = false;
-
   updateBoundingRect();
-  update();
+  invalidateCache();
   emit itemChanged();
   emit extentChanged();
 }
@@ -737,8 +770,7 @@ void QgsComposerMap::zoomToExtent( const QgsRectangle &extent )
   //recalculate data defined scale and extents, since that may override extent
   refreshMapExtents();
 
-  mCacheUpdated = false;
-  updateItem();
+  invalidateCache();
   emit itemChanged();
   emit extentChanged();
 }
@@ -777,9 +809,8 @@ void QgsComposerMap::setNewAtlasFeatureExtent( const QgsRectangle &extent )
   //recalculate data defined scale and extents, since that may override extents
   refreshMapExtents();
 
-  mCacheUpdated = false;
   emit preparedForAtlas();
-  updateItem();
+  invalidateCache();
   emit itemChanged();
   emit extentChanged();
 }
@@ -854,20 +885,12 @@ void QgsComposerMap::setNewScale( double scaleDenominator, bool forceUpdate )
     mExtent.scale( scaleRatio );
   }
 
-  mCacheUpdated = false;
+  invalidateCache();
   if ( forceUpdate )
   {
-    cache();
-    update();
     emit itemChanged();
   }
   emit extentChanged();
-}
-
-void QgsComposerMap::setPreviewMode( PreviewMode m )
-{
-  mPreviewMode = m;
-  emit itemChanged();
 }
 
 void QgsComposerMap::setOffset( double xOffset, double yOffset )
@@ -880,9 +903,9 @@ void QgsComposerMap::setMapRotation( double r )
 {
   mMapRotation = r;
   mEvaluatedMapRotation = mMapRotation;
+  invalidateCache();
   emit mapRotationChanged( r );
   emit itemChanged();
-  update();
 }
 
 double QgsComposerMap::mapRotation( QgsComposerObject::PropertyValueType valueType ) const
@@ -1019,21 +1042,6 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext *context )
     mEvaluatedMapRotation = mapRotation;
     emit mapRotationChanged( mapRotation );
   }
-
-}
-
-void QgsComposerMap::updateItem()
-{
-  if ( !updatesEnabled() )
-  {
-    return;
-  }
-
-  if ( mPreviewMode != QgsComposerMap::Rectangle && !mCacheUpdated )
-  {
-    cache();
-  }
-  QgsComposerItem::updateItem();
 }
 
 bool QgsComposerMap::containsWmsLayer() const
@@ -1071,43 +1079,10 @@ bool QgsComposerMap::containsAdvancedEffects() const
     return true;
   }
 
-  // check if map contains advanced effects like blend modes, or flattened layers for transparency
 
-  QgsTextFormat layerFormat;
-  Q_FOREACH ( QgsMapLayer *layer, layersToRender() )
-  {
-    if ( layer )
-    {
-      if ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
-      {
-        return true;
-      }
-      // if vector layer, check labels and feature blend mode
-      QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( currentVectorLayer )
-      {
-        if ( currentVectorLayer->layerTransparency() != 0 )
-        {
-          return true;
-        }
-        if ( currentVectorLayer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-        {
-          return true;
-        }
-        // check label blend modes
-        if ( QgsPalLabeling::staticWillUseLayer( currentVectorLayer ) )
-        {
-          // Check all label blending properties
-
-          layerFormat.readFromLayer( currentVectorLayer );
-          if ( layerFormat.containsAdvancedEffects() )
-            return true;
-        }
-      }
-    }
-  }
-
-  return false;
+  QgsMapSettings ms;
+  ms.setLayers( layersToRender() );
+  return QgsMapSettingsUtils::containsAdvancedEffects( ms );
 }
 
 void QgsComposerMap::connectUpdateSlot()
@@ -1120,10 +1095,26 @@ void QgsComposerMap::connectUpdateSlot()
     connect( project, static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *>& layers ) > ( &QgsProject::layersWillBeRemoved ),
              this, &QgsComposerMap::layersAboutToBeRemoved );
     // redraws the map AFTER layers are removed
-    connect( project, &QgsProject::layersRemoved, this, &QgsComposerMap::renderModeUpdateCachedImage );
-    connect( project, &QgsProject::legendLayersAdded, this, &QgsComposerMap::renderModeUpdateCachedImage );
+    connect( project->layerTreeRoot(), &QgsLayerTree::layerOrderChanged, this, [ = ]
+    {
+      if ( layers().isEmpty() )
+      {
+        //using project layers, and layer order has changed
+        invalidateCache();
+      }
+    } );
+
+    connect( project, &QgsProject::crsChanged, this, [ = ]
+    {
+      if ( !mCrs.isValid() )
+      {
+        //using project CRS, which just changed....
+        invalidateCache();
+      }
+    } );
+
   }
-  connect( mComposition, &QgsComposition::refreshItemsTriggered, this, &QgsComposerMap::updateCachedImage );
+  connect( mComposition, &QgsComposition::refreshItemsTriggered, this, &QgsComposerMap::invalidateCache );
 }
 
 bool QgsComposerMap::writeXml( QDomElement &elem, QDomDocument &doc ) const
@@ -1135,20 +1126,6 @@ bool QgsComposerMap::writeXml( QDomElement &elem, QDomDocument &doc ) const
 
   QDomElement composerMapElem = doc.createElement( QStringLiteral( "ComposerMap" ) );
   composerMapElem.setAttribute( QStringLiteral( "id" ), mId );
-
-  //previewMode
-  if ( mPreviewMode == Cache )
-  {
-    composerMapElem.setAttribute( QStringLiteral( "previewMode" ), QStringLiteral( "Cache" ) );
-  }
-  else if ( mPreviewMode == Render )
-  {
-    composerMapElem.setAttribute( QStringLiteral( "previewMode" ), QStringLiteral( "Render" ) );
-  }
-  else //rectangle
-  {
-    composerMapElem.setAttribute( QStringLiteral( "previewMode" ), QStringLiteral( "Rectangle" ) );
-  }
 
   if ( mKeepLayerSet )
   {
@@ -1268,22 +1245,6 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     mId = idRead.toInt();
     updateToolTip();
   }
-  mPreviewMode = Rectangle;
-
-  //previewMode
-  QString previewMode = itemElem.attribute( QStringLiteral( "previewMode" ) );
-  if ( previewMode == QLatin1String( "Cache" ) )
-  {
-    mPreviewMode = Cache;
-  }
-  else if ( previewMode == QLatin1String( "Render" ) )
-  {
-    mPreviewMode = Render;
-  }
-  else
-  {
-    mPreviewMode = Rectangle;
-  }
 
   //extent
   QDomNodeList extentNodeList = itemElem.elementsByTagName( QStringLiteral( "Extent" ) );
@@ -1389,7 +1350,7 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
 
   mDrawing = false;
   mNumCachedLayers = 0;
-  mCacheUpdated = false;
+  mCacheInvalidated = true;
 
   //overviews
   mOverviewStack->readXml( itemElem, doc );
@@ -1811,7 +1772,7 @@ void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDe
   }
 
   //force redraw
-  mCacheUpdated = false;
+  mCacheInvalidated = true;
 
   QgsComposerItem::refreshDataDefinedProperty( property, evalContext );
 }

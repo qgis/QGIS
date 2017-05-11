@@ -22,6 +22,13 @@ class QgsMapSettingsUtils
 %End
   public:
 
+    static bool containsAdvancedEffects( const QgsMapSettings &mapSettings );
+%Docstring
+ Checks whether any of the layers attached to a map settings object contain advanced effects
+ \param mapSettings map settings
+ :rtype: bool
+%End
+
     static QString worldFileContent( const QgsMapSettings &mapSettings );
 %Docstring
  Creates the content of a world file.

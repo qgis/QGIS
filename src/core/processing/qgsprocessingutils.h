@@ -131,6 +131,56 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );
 
+    /**
+     * Creates a feature sink ready for adding features. The \a destination specifies a destination
+     * URI for the resultant layer. It may be updated in place to reflect the actual destination
+     * for the layer.
+     *
+     * Sink parameters such as desired \a encoding, \a fields, \a geometryType and \a crs must be specified.
+     *
+     * If the \a encoding is not specified, the default encoding from the \a context will be used.
+     *
+     * If a layer is created for the feature sink, the layer will automatically be added to the \a context's
+     * temporary layer store.
+     *
+     * The caller takes responsibility for deleting the returned sink.
+     */
+#ifndef SIP_RUN
+    static QgsFeatureSink *createFeatureSink(
+      QString &destination,
+      const QString &encoding,
+      const QgsFields &fields,
+      QgsWkbTypes::Type geometryType,
+      const QgsCoordinateReferenceSystem &crs,
+      QgsProcessingContext &context ) SIP_FACTORY;
+#endif
+
+    /**
+     * Creates a feature sink ready for adding features. The \a destination specifies a destination
+     * URI for the resultant layer. It may be updated in place to reflect the actual destination
+     * for the layer.
+     *
+     * Sink parameters such as desired \a encoding, \a fields, \a geometryType and \a crs must be specified.
+     *
+     * If the \a encoding is not specified, the default encoding from the \a context will be used.
+     *
+     * If a layer is created for the feature sink, the layer will automatically be added to the \a context's
+     * temporary layer store.
+     *
+     * \note this version of the createFeatureSink() function has an API designed around use from the
+     * SIP bindings. c++ code should call the other createFeatureSink() version.
+     * \note available in Python bindings as createFeatureSink()
+     */
+    static void createFeatureSinkPython(
+      QgsFeatureSink **sink SIP_OUT SIP_TRANSFERBACK,
+      QString &destination SIP_INOUT,
+      const QString &encoding,
+      const QgsFields &fields,
+      QgsWkbTypes::Type geometryType,
+      const QgsCoordinateReferenceSystem &crs,
+      QgsProcessingContext &context ) SIP_PYNAME( createFeatureSink );
+
+
   private:
 
     static bool canUseLayer( const QgsRasterLayer *layer );

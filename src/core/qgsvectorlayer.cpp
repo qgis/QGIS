@@ -71,6 +71,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayerundocommand.h"
+#include "qgsvectorlayerfeaturecounter.h"
 #include "qgspointv2.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayer.h"
@@ -83,6 +84,7 @@
 #include "qgsfeedback.h"
 #include "qgsxmlutils.h"
 #include "qgsunittypes.h"
+#include "qgstaskmanager.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -125,6 +127,7 @@ typedef bool deleteStyleById_t(
   QString styleID,
   QString &errCause
 );
+
 
 QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &baseName,
@@ -674,7 +677,7 @@ class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInte
     QProgressDialog *mDialog = nullptr;
 };
 
-bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
+bool QgsVectorLayer::countSymbolFeatures()
 {
   if ( mSymbolFeatureCounted )
     return true;
@@ -697,103 +700,15 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
     return false;
   }
 
-  QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
-  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
-
-  for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
+  if ( !mFeatureCounter )
   {
-    mSymbolFeatureCountMap.insert( symbolIt->first, 0 );
+    mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
+    connect( mFeatureCounter, &QgsTask::taskCompleted, [ = ]() { onSymbolsCounted(); mFeatureCounter = nullptr; } );
+    connect( mFeatureCounter, &QgsTask::taskTerminated, [ = ]() { mFeatureCounter = nullptr; } );
+
+    QgsApplication::taskManager()->addTask( mFeatureCounter );
   }
 
-  long nFeatures = featureCount();
-
-  QWidget *mainWindow = nullptr;
-  Q_FOREACH ( QWidget *widget, qApp->topLevelWidgets() )
-  {
-    if ( widget->objectName() == QLatin1String( "QgisApp" ) )
-    {
-      mainWindow = widget;
-      break;
-    }
-  }
-
-  QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures, mainWindow );
-  progressDialog.setWindowTitle( tr( "QGIS" ) );
-  progressDialog.setWindowModality( Qt::WindowModal );
-  if ( showProgress )
-  {
-    // Properly initialize to 0 as recommended in doc so that the evaluation
-    // of the total time properly works
-    progressDialog.setValue( 0 );
-  }
-  int featuresCounted = 0;
-
-  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
-  QgsRenderContext renderContext;
-  renderContext.setRendererScale( 0 );
-  renderContext.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
-
-  QgsFeatureRequest request;
-  if ( !mRenderer->filterNeedsGeometry() )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mFields );
-  QgsFeatureIterator fit = getFeatures( request );
-  QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures interruptionCheck( &progressDialog );
-  if ( showProgress )
-  {
-    fit.setInterruptionChecker( &interruptionCheck );
-  }
-
-  mRenderer->startRender( renderContext, fields() );
-
-  QgsFeature f;
-  QTime time;
-  time.start();
-  while ( fit.nextFeature( f ) )
-  {
-    renderContext.expressionContext().setFeature( f );
-    QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
-    Q_FOREACH ( const QString &key, featureKeyList )
-    {
-      mSymbolFeatureCountMap[key] += 1;
-    }
-    ++featuresCounted;
-
-    if ( showProgress )
-    {
-      // Refresh progress every 50 features or second
-      if ( ( featuresCounted % 50 == 0 ) || time.elapsed() > 1000 )
-      {
-        time.restart();
-        if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
-        {
-          progressDialog.setMaximum( 0 );
-        }
-        progressDialog.setValue( featuresCounted );
-      }
-      // So that we get a chance of hitting the Abort button
-#ifdef Q_OS_LINUX
-      // For some reason on Windows hasPendingEvents() always return true,
-      // but one iteration is actually enough on Windows to get good interactivity
-      // whereas on Linux we must allow for far more iterations.
-      // For safety limit the number of iterations
-      int nIters = 0;
-      while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
-#endif
-      {
-        QCoreApplication::processEvents();
-      }
-      if ( progressDialog.wasCanceled() )
-      {
-        mSymbolFeatureCountMap.clear();
-        mRenderer->stopRender( renderContext );
-        return false;
-      }
-    }
-  }
-  mRenderer->stopRender( renderContext );
-  progressDialog.setValue( nFeatures );
-  mSymbolFeatureCounted = true;
   return true;
 }
 
@@ -3981,6 +3896,16 @@ void QgsVectorLayer::onFeatureDeleted( QgsFeatureId fid )
 void QgsVectorLayer::onRelationsLoaded()
 {
   mEditFormConfig.onRelationsLoaded();
+}
+
+void QgsVectorLayer::onSymbolsCounted()
+{
+  if ( mFeatureCounter )
+  {
+    mSymbolFeatureCountMap = mFeatureCounter->symbolFeatureCountMap();
+    mSymbolFeatureCounted = true;
+    emit symbolFeatureCountMapChanged();
+  }
 }
 
 QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const

@@ -169,7 +169,7 @@ class CORE_EXPORT QgsTask : public QObject
      * Subtasks can be nested, ie a subtask can legally be a parent task itself with
      * its own set of subtasks.
      */
-    void addSubTask( QgsTask *subTask, const QgsTaskList &dependencies = QgsTaskList(),
+    void addSubTask( QgsTask *subTask SIP_TRANSFER, const QgsTaskList &dependencies = QgsTaskList(),
                      SubTaskDependency subTaskDependency = SubTaskIndependent );
 
     /**
@@ -185,6 +185,15 @@ class CORE_EXPORT QgsTask : public QObject
      * \see setDependentLayers()
      */
     QList< QgsMapLayer * > dependentLayers() const;
+
+    /**
+     * Blocks the current thread until the task finishes or a maximum of \a timeout milliseconds.
+     * If the \a timeout is ``-1`` the thread will be blocked forever.
+     * In case of a timeout, the task will still be running.
+     *
+     * The result will be false if the wait timed out and true in any other case.
+     */
+    bool waitForFinished( int timeout = 30000 );
 
   signals:
 

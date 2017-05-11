@@ -1706,6 +1706,7 @@ void QgisApp::createActions()
   connect( mActionSaveProject, &QAction::triggered, this, &QgisApp::fileSave );
   connect( mActionSaveProjectAs, &QAction::triggered, this, &QgisApp::fileSaveAs );
   connect( mActionSaveMapAsImage, &QAction::triggered, this, [ = ] { saveMapAsImage(); } );
+  connect( mActionSaveMapAsPdf, &QAction::triggered, this, [ = ] { saveMapAsPdf(); } );
   connect( mActionNewMapCanvas, &QAction::triggered, this, &QgisApp::newMapCanvas );
   connect( mActionNewPrintComposer, &QAction::triggered, this, &QgisApp::newPrintComposer );
   connect( mActionShowComposerManager, &QAction::triggered, this, &QgisApp::showComposerManager );
@@ -2703,6 +2704,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionNewPrintComposer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewComposer.svg" ) ) );
   mActionShowComposerManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionComposerManager.svg" ) ) );
   mActionSaveMapAsImage->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveMapAsImage.svg" ) ) );
+  mActionSaveMapAsPdf->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveAsPDF.svg" ) ) );
   mActionExit->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileExit.png" ) ) );
   mActionAddOgrLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ) );
   mActionAddRasterLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
@@ -5801,8 +5803,8 @@ void QgisApp::saveMapAsImage()
   if ( !dlg.exec() )
     return;
 
-  QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
-  if ( myFileNameAndFilter.first != QLatin1String( "" ) )
+  QPair< QString, QString> fileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
+  if ( fileNameAndFilter.first != QLatin1String( "" ) )
   {
     QgsMapSettings ms = QgsMapSettings();
     ms.setDestinationCrs( QgsProject::instance()->crs() );
@@ -5813,7 +5815,7 @@ void QgisApp::saveMapAsImage()
     ms.setRotation( mMapCanvas->rotation() );
     ms.setLayers( mMapCanvas->layers() );
 
-    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, myFileNameAndFilter.first, myFileNameAndFilter.second );
+    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileNameAndFilter.first, fileNameAndFilter.second );
 
     if ( dlg.drawAnnotations() )
     {
@@ -5852,6 +5854,117 @@ void QgisApp::saveMapAsImage()
   }
 
 } // saveMapAsImage
+
+void QgisApp::saveMapAsPdf()
+{
+  QList< QgsMapDecoration * > decorations;
+  QString activeDecorations;
+  Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
+  {
+    if ( decoration->enabled() )
+    {
+      decorations << decoration;
+      if ( activeDecorations.isEmpty() )
+        activeDecorations = decoration->name().toLower();
+      else
+        activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
+    }
+  }
+
+  QgsMapSaveDialog dlg( this, mMapCanvas, activeDecorations, QgsMapSaveDialog::Pdf );
+  if ( !dlg.exec() )
+    return;
+
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save map as" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+  if ( !fileName.isEmpty() )
+  {
+    QgsMapSettings ms = QgsMapSettings();
+    ms.setDestinationCrs( QgsProject::instance()->crs() );
+    ms.setExtent( dlg.extent() );
+    ms.setOutputSize( dlg.size() );
+    ms.setOutputDpi( dlg.dpi() );
+    ms.setBackgroundColor( mMapCanvas->canvasColor() );
+    ms.setRotation( mMapCanvas->rotation() );
+    ms.setLayers( mMapCanvas->layers() );
+
+    QPrinter *printer = new QPrinter();
+    printer->setOutputFileName( fileName );
+    printer->setOutputFormat( QPrinter::PdfFormat );
+    printer->setOrientation( QPrinter::Portrait );
+    printer->setPaperSize( dlg.size(), QPrinter::DevicePixel );
+    printer->setPageMargins( 0, 0, 0, 0, QPrinter::DevicePixel );
+
+    QPainter *p = new QPainter();
+    QImage *image = nullptr;
+    if ( dlg.saveAsRaster() )
+    {
+      image = new QImage( dlg.size(), QImage::Format_ARGB32 );
+      p->begin( image );
+    }
+    else
+    {
+      p->begin( printer );
+    }
+
+    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, p );
+
+    if ( dlg.drawAnnotations() )
+    {
+      mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
+    }
+
+    if ( dlg.drawDecorations() )
+    {
+      mapRendererTask->addDecorations( decorations );
+    }
+
+    mapRendererTask->setSaveWorldFile( dlg.saveWorldFile() );
+
+    connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ this, p, image, printer ]
+    {
+      messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to image" ) );
+      p->end();
+
+      if ( image )
+      {
+        QPainter pp;
+        pp.begin( printer );
+        QRectF rect( 0, 0, image->width(), image->height() );
+        pp.drawImage( rect, *image, rect );
+        pp.end();
+      }
+
+      delete p;
+      delete image;
+      delete printer;
+    } );
+    connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ this, p, image, printer ]( int error )
+    {
+      switch ( error )
+      {
+        case QgsMapRendererTask::ImageAllocationFail:
+        {
+          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
+          break;
+        }
+        case QgsMapRendererTask::ImageSaveFail:
+        {
+          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not save the image to file" ) );
+          break;
+        }
+      }
+
+      delete p;
+      delete image;
+      delete printer;
+    } );
+
+    QgsApplication::taskManager()->addTask( mapRendererTask );
+  }
+
+} // saveMapAsPdf
 
 //overloaded version of the above function
 void QgisApp::saveMapAsImage( const QString &imageFileNameQString, QPixmap *theQPixmap )

@@ -64,6 +64,7 @@ INCLUDE_DIRECTORIES(
   ${SIP_INCLUDE_DIR}
   ../../core
   ../../core/geometry
+  ../../core/metadata
   ../../core/raster
   ../../core/symbology-ng
   ../../gui

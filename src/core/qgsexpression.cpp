@@ -48,6 +48,7 @@
 #include "qgstriangle.h"
 #include "qgscircle.h"
 #include "qgsellipse.h"
+#include "qgsregularpolygon.h"
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
 #include "qgscurvepolygon.h"
@@ -2270,6 +2271,45 @@ static QVariant fcnMakeEllipse( const QVariantList &values, const QgsExpressionC
   return QVariant::fromValue( QgsGeometry( elp.toPolygon( segment ) ) );
 }
 
+static QVariant fcnMakeRegularPolygon( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+
+  QgsGeometry pt1 = getGeometry( values.at( 0 ), parent );
+  if ( pt1.isNull() )
+    return QVariant();
+
+  if ( pt1.type() != QgsWkbTypes::PointGeometry || pt1.isMultipart() )
+    return QVariant();
+
+  QgsGeometry pt2 = getGeometry( values.at( 1 ), parent );
+  if ( pt2.isNull() )
+    return QVariant();
+
+  if ( pt2.type() != QgsWkbTypes::PointGeometry || pt2.isMultipart() )
+    return QVariant();
+
+  unsigned int nbEdges = static_cast<unsigned int>( getIntValue( values.at( 2 ), parent ) );
+  if ( nbEdges < 3 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Number of edges/sides must be greater than 2" ) );
+    return QVariant();
+  }
+
+  QgsRegularPolygon::ConstructionOption option = static_cast< QgsRegularPolygon::ConstructionOption >( getIntValue( values.at( 3 ), parent ) );
+  if ( ( option < QgsRegularPolygon::InscribedCircle ) || ( option > QgsRegularPolygon::CircumscribedCircle ) )
+  {
+    parent->setEvalErrorString( QObject::tr( "Option can be 0 (inscribed) or 1 (circumscribed)" ) );
+    return QVariant();
+  }
+  QgsPointV2 *center = static_cast< QgsPointV2 * >( pt1.geometry() );
+  QgsPointV2 *corner = static_cast< QgsPointV2 * >( pt2.geometry() );
+
+  QgsRegularPolygon rp = QgsRegularPolygon( *center, *corner, nbEdges, option );
+
+  return QVariant::fromValue( QgsGeometry( rp.toPolygon( ) ) );
+
+}
+
 static QVariant pointAt( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) // helper function
 {
   FEAT_FROM_CONTEXT( context, f );
@@ -4132,11 +4172,17 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
                                fcnMakeCircle, QStringLiteral( "GeometryGroup" ) )
         << new StaticFunction( QStringLiteral( "make_ellipse" ), ParameterList()
                                << Parameter( QStringLiteral( "geometry" ) )
-                               << Parameter( QStringLiteral( "semi-major axis" ) )
-                               << Parameter( QStringLiteral( "semi-minor axis" ) )
+                               << Parameter( QStringLiteral( "semi_major_axis" ) )
+                               << Parameter( QStringLiteral( "semi_minor_axis" ) )
                                << Parameter( QStringLiteral( "azimuth" ) )
                                << Parameter( QStringLiteral( "segments" ), true, 36 ),
-                               fcnMakeEllipse, QStringLiteral( "GeometryGroup" ) );
+                               fcnMakeEllipse, QStringLiteral( "GeometryGroup" ) )
+        << new StaticFunction( QStringLiteral( "make_regular_polygon" ), ParameterList()
+                               << Parameter( QStringLiteral( "geometry" ) )
+                               << Parameter( QStringLiteral( "geometry" ) )
+                               << Parameter( QStringLiteral( "number_sides" ) )
+                               << Parameter( QStringLiteral( "circle" ), true, 0 ),
+                               fcnMakeRegularPolygon, QStringLiteral( "GeometryGroup" ) );
 
     StaticFunction *xAtFunc = new StaticFunction( QStringLiteral( "$x_at" ), 1, fcnXat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "xat" ) << QStringLiteral( "x_at" ) );
     xAtFunc->setIsStatic( false );

@@ -40,6 +40,7 @@ INCLUDE_DIRECTORIES(
   ${QEXTSERIALPORT_INCLUDE_DIR}
   ../../core
   ../../core/geometry
+  ../../core/metadata
   ../../core/gps
   ../../gui
   ..

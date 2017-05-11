@@ -26,7 +26,7 @@ class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::Qgs
     ~QgsDecorationNorthArrowDialog();
 
   private:
-    void rotatePixmap( int rotationInt );
+    void drawNorthArrow();
     void resizeEvent( QResizeEvent * ) override; //overloads qwidget
 
   private slots:

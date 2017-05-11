@@ -263,6 +263,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorfilewriter.cpp
   qgsvectorfilewritertask.cpp
   qgsvectorlayer.cpp
+  qgsvectorlayerfeaturecounter.cpp
   qgsvectorlayercache.cpp
   qgsvectorlayerdiagramprovider.cpp
   qgsvectorlayereditbuffer.cpp
@@ -338,7 +339,6 @@ SET(QGIS_CORE_SRCS
   pal/pointset.cpp
   pal/priorityqueue.cpp
   pal/problem.cpp
-  pal/rtree.hpp
   pal/util.cpp
 
   raster/qgscliptominmaxenhancement.cpp
@@ -407,6 +407,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgspointv2.cpp
   geometry/qgspolygon.cpp
   geometry/qgsrectangle.cpp
+  geometry/qgsregularpolygon.cpp
   geometry/qgstriangle.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
@@ -569,6 +570,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayereditbuffer.h
   qgsvectorlayereditpassthrough.h
   qgsvectorlayer.h
+  qgsvectorlayerfeaturecounter.h
   qgsvectorlayerjoinbuffer.h
   qgsvectorlayertools.h
   qgsmapthemecollection.h
@@ -975,6 +977,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgspointv2.h
   geometry/qgspolygon.h
   geometry/qgsrectangle.h
+  geometry/qgsregularpolygon.h
   geometry/qgstriangle.h
   geometry/qgssurface.h
   geometry/qgswkbptr.h
@@ -987,6 +990,9 @@ SET(QGIS_CORE_HDRS
   fieldformatter/qgsrelationreferencefieldformatter.h
   fieldformatter/qgsvaluemapfieldformatter.h
   fieldformatter/qgsvaluerelationfieldformatter.h
+
+  metadata/qgslayermetadata.h
+  metadata/qgslayermetadatavalidator.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
@@ -1017,6 +1023,7 @@ INCLUDE_DIRECTORIES(
   scalebar
   symbology-ng
   gps/qextserialport
+  metadata
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALINDEX_INCLUDE_DIR}

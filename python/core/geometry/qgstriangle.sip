@@ -49,6 +49,14 @@ class QgsTriangle : QgsPolygonV2
  \param p3 third point
 %End
 
+    bool operator==( const QgsTriangle &other ) const;
+%Docstring
+ :rtype: bool
+%End
+    bool operator!=( const QgsTriangle &other ) const;
+%Docstring
+ :rtype: bool
+%End
 
     virtual QString geometryType() const;
     virtual QgsTriangle *clone() const /Factory/;

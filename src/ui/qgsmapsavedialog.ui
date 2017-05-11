@@ -16,6 +16,23 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="8" column="0" colspan="2">
+      <widget class="QCheckBox" name="mSaveAsRaster">
+       <property name="text">
+        <string>Rasterize map</string>
+       </property>
+       <property name="toolTip">
+        <string>Advanced effects such as blend modes or vector layer transparency cannot be exported as vectors.
+Rasterizing the map is recommended when such effects are used.</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <property name="visible">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
      <item row="7" column="0" colspan="2">
       <widget class="QCheckBox" name="mSaveWorldFile">
        <property name="text">

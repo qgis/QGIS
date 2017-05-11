@@ -640,6 +640,9 @@ and setAtlasScalingMode() instead.
 - setMapCanvas() was removed. This is no longer required to draw map annotations, which are instead retrieved from the composition's
 associated project's annotationManager()
 - setDrawCanvasItems() and drawCanvasItems() were renamed to setDrawAnnotations() and drawAnnotations()
+- setCacheUpdated(), updateCachedImage(), renderModeUpdateCachedImage() and cache() were removed. Use invalidateCache() instead.
+- The PreviewMode mode enums were removed. These are no longer used.
+- previewMode() and setPreviewMode() were removed. These are no longer required.
 
 
 QgsComposerMapGrid        {#qgis_api_break_3_0_QgsComposerMapGrid}
@@ -1763,10 +1766,17 @@ QgsRasterProjector        {#qgis_api_break_3_0_QgsRasterProjector}
 
 - extentSize() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.
 
-QgsRasterRenderer
+QgsRasterRenderer       {#qgis_api_break_3_0_QgsRasterRenderer}
 -----------------
 
 - MinMaxOrigin enum, minMaxOriginName(), minMaxOriginLabel(), minMaxOriginFromName() removed. Use minMaxOrigin() instead
+
+
+QgsRasterRendererWidget       {#qgis_api_break_3_0_QgsRasterRendererWidget}
+-----------------
+
+- displayBandName() was removed.
+
 
 QgsRectangle        {#qgis_api_break_3_0_QgsRectangle}
 ------------
@@ -1835,6 +1845,8 @@ QgsRequestHandler       {#qgis_api_break_3_0_QgsRequestHandler}
 
 - setHeader() was renamed to setResponseHeader()
 - removeHeader() was renamed to removeResponseHeader()
+- Removed infoFormat and setInfoFormat methods: the format of the response is given and set with the "Content-Type" header.
+- Removed setCoverageResponse
 
 
 QgsRubberBand        {#qgis_api_break_3_0_QgsRubberBand}
@@ -2231,13 +2243,6 @@ optional property map passing down layer level properties to the SLD encoders. I
 - setScaleMethodToSymbol was removed. This is now handled using data defined scaling at a symbol layer level
 - setScaleMethodToSymbol was removed. This is now handled using data defined scaling at a symbol layer level
 - usedAttributes is now a const method and returns QSet<QString> instead of QStringList
-
-
-QgsRequestHandler    {#qgis_api_break_3_0_QgsRequestHandler}
------------------
-
-- Removed infoFormat and setInfoFormat methods: the format of the response is given and set with the "Content-Type" header.
-- Removed setCoverageResponse
 
 
 Processing        {#qgis_api_break_3_0_Processing}

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>583</width>
-    <height>644</height>
+    <width>522</width>
+    <height>636</height>
    </rect>
   </property>
   <property name="palette">
@@ -450,6 +450,16 @@
       <property name="topMargin">
        <number>1</number>
       </property>
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Report Details</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item row="5" column="0" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <property name="topMargin">
@@ -490,16 +500,20 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="0" colspan="3">
-       <widget class="QPlainTextEdit" name="mReportDetailsText">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="mCopyReportButton">
+        <property name="text">
+         <string>Copy Report</string>
         </property>
-        <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOn</enum>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Tell us something about when you got the crash</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -522,29 +536,31 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="mCopyReportButton">
-        <property name="text">
-         <string>Copy Report</string>
+      <item row="6" column="0" colspan="3">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
-       </widget>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
       </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Tell us something about when you got the crash</string>
+      <item row="3" column="0" colspan="3">
+       <widget class="QTextEdit" name="mReportDetailsText">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="wordWrap">
-         <bool>true</bool>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOn</enum>
         </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Report Details</string>
-        </property>
-        <property name="wordWrap">
+        <property name="readOnly">
          <bool>true</bool>
         </property>
        </widget>

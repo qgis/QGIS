@@ -19,6 +19,9 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsprocessingcontext.h"
+#include "qgsvectorlayerimport.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsmemoryproviderutils.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -287,6 +290,114 @@ QList<QVariant> QgsProcessingUtils::uniqueValues( QgsVectorLayer *layer, int fie
     }
     return values.toList();
   }
+}
+
+void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &format, QMap<QString, QVariant> &options )
+{
+  QRegularExpression splitRx( "^(.*?):(.*)$" );
+  QRegularExpressionMatch match = splitRx.match( destination );
+  if ( match.hasMatch() )
+  {
+    providerKey = match.captured( 1 );
+    if ( providerKey == QStringLiteral( "postgis" ) ) // older processing used "postgis" instead of "postgres"
+    {
+      providerKey = QStringLiteral( "postgres" );
+    }
+    uri = match.captured( 2 );
+  }
+  else
+  {
+    providerKey = QStringLiteral( "ogr" );
+    QRegularExpression splitRx( "^(.*)\\.(.*?)$" );
+    QRegularExpressionMatch match = splitRx.match( destination );
+    QString extension;
+    if ( match.hasMatch() )
+    {
+      extension = match.captured( 2 );
+      format = QgsVectorFileWriter::driverForExtension( extension );
+    }
+
+    if ( format.isEmpty() )
+    {
+      format = QStringLiteral( "ESRI Shapefile" );
+      destination = destination + QStringLiteral( ".shp" );
+    }
+
+    options.insert( QStringLiteral( "driverName" ), format );
+    uri = destination;
+  }
+}
+
+QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context )
+{
+  QString destEncoding = encoding;
+  QgsVectorLayer *layer = nullptr;
+  if ( destEncoding.isEmpty() )
+  {
+    // no destination encoding specified, use default
+    destEncoding = context.defaultEncoding().isEmpty() ? QStringLiteral( "system" ) : context.defaultEncoding();
+  }
+
+  if ( destination.isEmpty() || destination.startsWith( QStringLiteral( "memory:" ) ) )
+  {
+    // memory provider cannot be used with QgsVectorLayerImport - so create layer manually
+    layer = QgsMemoryProviderUtils::createMemoryLayer( destination, fields, geometryType, crs );
+  }
+  else
+  {
+    QMap<QString, QVariant> options;
+    options.insert( QStringLiteral( "fileEncoding" ), destEncoding );
+
+    QString providerKey;
+    QString uri;
+    QString format;
+    parseDestinationString( destination, providerKey, uri, format, options );
+
+    if ( providerKey == "ogr" )
+    {
+      // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
+      // us to use any OGR format which supports feature addition
+      QString finalFileName;
+      QgsVectorFileWriter *writer = new QgsVectorFileWriter( destination, destEncoding, fields, geometryType, crs, format, QgsVectorFileWriter::defaultDatasetOptions( format ),
+          QgsVectorFileWriter::defaultLayerOptions( format ), &finalFileName );
+      destination = finalFileName;
+      return writer;
+    }
+    else
+    {
+      //create empty layer
+      {
+        QgsVectorLayerImport import( uri, providerKey, fields, geometryType, crs, false, &options );
+        if ( import.hasError() )
+          return nullptr;
+      }
+
+      // use destination string as layer name (eg "postgis:..." )
+      layer = new QgsVectorLayer( uri, destination, providerKey );
+    }
+  }
+
+  if ( !layer )
+    return nullptr;
+
+  if ( !layer->isValid() )
+  {
+    delete layer;
+    return nullptr;
+  }
+
+  // update destination to layer ID
+  destination = layer->id();
+
+  context.temporaryLayerStore()->addMapLayer( layer );
+
+  // this is a factory, so we need to return a proxy
+  return new QgsProxyFeatureSink( layer->dataProvider() );
+}
+
+void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString &destination, const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context )
+{
+  *sink = createFeatureSink( destination, encoding, fields, geometryType, crs, context );
 }
 
 

@@ -150,10 +150,12 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds &fids )
 
 bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &parent )
 {
+
   if ( row < 0 || count < 1 )
     return false;
 
   beginRemoveRows( parent, row, row + count - 1 );
+
 #ifdef QGISDEBUG
   if ( 3 <= QgsLogger::debugLevel() )
     QgsDebugMsgLevel( QString( "remove %2 rows at %1 (rows %3, ids %4)" ).arg( row ).arg( count ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 3 );
@@ -222,15 +224,16 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
       mSortCache.insert( mFeat.id(), sortValue );
     }
 
-    int n = mRowIdMap.size();
-    beginInsertRows( QModelIndex(), n, n );
-
-    mIdRowMap.insert( fid, n );
-    mRowIdMap.insert( n, fid );
-
-    endInsertRows();
-
-    reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
+    // Skip if the fid is already in the map (do not add twice)!
+    if ( ! mIdRowMap.contains( fid ) )
+    {
+      int n = mRowIdMap.size();
+      beginInsertRows( QModelIndex(), n, n );
+      mIdRowMap.insert( fid, n );
+      mRowIdMap.insert( n, fid );
+      endInsertRows();
+      reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
+    }
   }
 }
 
@@ -431,9 +434,9 @@ void QgsAttributeTableModel::loadLayer()
   emit finished();
 
   connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsAttributeTableModel::loadLayer, Qt::UniqueConnection );
-
   endResetModel();
 }
+
 
 void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldName )
 {
@@ -472,6 +475,8 @@ void QgsAttributeTableModel::swapRows( QgsFeatureId a, QgsFeatureId b )
   mIdRowMap.remove( b );
   mIdRowMap.insert( a, rowB );
   mIdRowMap.insert( b, rowA );
+  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
+
 
   //emit layoutChanged();
 }

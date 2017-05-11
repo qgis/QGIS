@@ -267,7 +267,7 @@ void QgsAtlasComposition::updateAtlasMaps()
       continue;
     }
 
-    currentMap->cache();
+    currentMap->invalidateCache();
   }
 }
 
@@ -426,7 +426,7 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
     {
       // map is not atlas driven, so manually force a redraw (to reflect possibly atlas
       // dependent symbology)
-      ( *mit )->cache();
+      ( *mit )->invalidateCache();
     }
   }
 
