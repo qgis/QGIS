@@ -120,6 +120,17 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
     virtual Priority priority() const { return Medium; }
 
     /**
+     * Returns the search prefix character(s) for this filter. Prefix a search
+     * with these characters will restrict the locator search to only include
+     * results from this filter.
+     * \note Plugins are not permitted to utilise prefixes with < 3 characters,
+     * as these are reserved for core QGIS functions. If a plugin registers
+     * a filter with a prefix shorter than 3 characters then the prefix will
+     * be ignored.
+     */
+    virtual QString prefix() const { return QString(); }
+
+    /**
      * Retrieves the filter results for a specified search \a string. The \a context
      * argument encapsulates the context relating to the search (such as a map
      * extent to prioritize).

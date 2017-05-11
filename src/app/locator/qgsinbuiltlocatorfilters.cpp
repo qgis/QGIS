@@ -141,7 +141,7 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
       continue;
     }
 
-    if ( !action->isEnabled() || !action->isVisible() )
+    if ( !action->isEnabled() || !action->isVisible() || action->text().isEmpty() )
       continue;
     if ( found.contains( action ) )
       continue;
