@@ -86,6 +86,16 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
 
   public:
 
+    //! Filter priority. Controls the order of results in the locator.
+    enum Priority
+    {
+      Highest, //!< Highest priority
+      High, //!< High priority
+      Medium, //!< Medium priority
+      Low, //!< Low priority
+      Lowest //!< Lowest priority
+    };
+
     /**
      * Constructor for QgsLocatorFilter.
      */
@@ -102,6 +112,12 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
      * \see name()
      */
     virtual QString displayName() const = 0;
+
+    /**
+     * Returns the priority for the filter, which controls how results are
+     * ordered in the locator.
+     */
+    virtual Priority priority() const { return Medium; }
 
     /**
      * Retrieves the filter results for a specified search \a string. The \a context

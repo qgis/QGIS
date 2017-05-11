@@ -66,6 +66,15 @@ class QgsLocatorFilter : QObject
 %End
   public:
 
+    enum Priority
+    {
+      Highest,
+      High,
+      Medium,
+      Low,
+      Lowest
+    };
+
     QgsLocatorFilter( QObject *parent = 0 );
 %Docstring
  Constructor for QgsLocatorFilter.
@@ -83,6 +92,13 @@ class QgsLocatorFilter : QObject
  Returns a translated, user-friendly name for the filter.
 .. seealso:: name()
  :rtype: str
+%End
+
+    virtual Priority priority() const;
+%Docstring
+ Returns the priority for the filter, which controls how results are
+ ordered in the locator.
+ :rtype: Priority
 %End
 
     virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;

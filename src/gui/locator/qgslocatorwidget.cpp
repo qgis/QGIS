@@ -42,7 +42,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   setSizePolicy( sizePolicy );
   setMinimumSize( QSize( 200, 0 ) );
 
-  QHBoxLayout *layout = new QHBoxLayout( this );
+  QHBoxLayout *layout = new QHBoxLayout();
   layout->setMargin( 0 );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mLineEdit );
@@ -293,32 +293,38 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
     case Qt::DisplayRole:
     case Qt::EditRole:
     {
-      if ( mResults.at( index.row() ).filterTitle.isEmpty() )
+      if ( !mResults.at( index.row() ).filter )
         return mResults.at( index.row() ).result.displayString;
       else
         return mResults.at( index.row() ).filterTitle;
     }
 
     case Qt::DecorationRole:
-      if ( mResults.at( index.row() ).filterTitle.isEmpty() )
+      if ( !mResults.at( index.row() ).filter )
         return mResults.at( index.row() ).result.icon;
       else
         return QVariant();
 
     case ResultDataRole:
-      if ( mResults.at( index.row() ).filterTitle.isEmpty() )
+      if ( !mResults.at( index.row() ).filter )
         return QVariant::fromValue( mResults.at( index.row() ).result );
       else
         return QVariant();
 
     case ResultTypeRole:
-      if ( mResults.at( index.row() ).filterTitle.isEmpty() )
-        return 1;
-      else
+      if ( mResults.at( index.row() ).filter )
         return 0;
+      else
+        return 1;
+
+    case ResultFilterPriorityRole:
+      if ( !mResults.at( index.row() ).filter )
+        return mResults.at( index.row() ).result.filter->priority();
+      else
+        return mResults.at( index.row() ).filter->priority();
 
     case ResultFilterNameRole:
-      if ( mResults.at( index.row() ).filterTitle.isEmpty() )
+      if ( !mResults.at( index.row() ).filter )
         return mResults.at( index.row() ).result.filter->displayName();
       else
         return mResults.at( index.row() ).filterTitle;
@@ -354,6 +360,7 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
   {
     Entry entry;
     entry.filterTitle = result.filter->displayName();
+    entry.filter = result.filter;
     mResults << entry;
   }
   Entry entry;
@@ -418,16 +425,25 @@ QgsLocatorProxyModel::QgsLocatorProxyModel( QObject *parent )
 
 bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
+  // first go by filter priority
+  int leftFilterPriority = sourceModel()->data( left, QgsLocatorModel::ResultFilterPriorityRole ).toInt();
+  int rightFilterPriority  = sourceModel()->data( right, QgsLocatorModel::ResultFilterPriorityRole ).toInt();
+  if ( leftFilterPriority != rightFilterPriority )
+    return leftFilterPriority < rightFilterPriority;
+
+  // then filter name
   QString leftFilter = sourceModel()->data( left, QgsLocatorModel::ResultFilterNameRole ).toString();
   QString rightFilter = sourceModel()->data( right, QgsLocatorModel::ResultFilterNameRole ).toString();
   if ( leftFilter != rightFilter )
     return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
 
+  // then make sure filter title appears before filter's results
   int leftTypeRole = sourceModel()->data( left, QgsLocatorModel::ResultTypeRole ).toInt();
   int rightTypeRole = sourceModel()->data( right, QgsLocatorModel::ResultTypeRole ).toInt();
   if ( leftTypeRole != rightTypeRole )
     return leftTypeRole < rightTypeRole;
 
+  // lastly sort filter's results by string
   leftFilter = sourceModel()->data( left, Qt::DisplayRole ).toString();
   rightFilter = sourceModel()->data( right, Qt::DisplayRole ).toString();
   return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;

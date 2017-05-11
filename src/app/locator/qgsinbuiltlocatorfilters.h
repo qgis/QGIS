@@ -30,6 +30,7 @@ class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
     QgsLayerTreeLocatorFilter( QObject *parent = nullptr );
     virtual QString name() const override { return QStringLiteral( "layertree" ); }
     virtual QString displayName() const override { return tr( "Project layers" ); }
+    virtual Priority priority() const override { return Highest; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
@@ -45,6 +46,7 @@ class QgsLayoutLocatorFilter : public QgsLocatorFilter
     QgsLayoutLocatorFilter( QObject *parent = nullptr );
     virtual QString name() const override { return QStringLiteral( "layouts" ); }
     virtual QString displayName() const override { return tr( "Project layouts" ); }
+    virtual Priority priority() const override { return Highest; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
@@ -60,6 +62,7 @@ class QgsActionLocatorFilter : public QgsLocatorFilter
     QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent = nullptr );
     virtual QString name() const override { return QStringLiteral( "actions" ); }
     virtual QString displayName() const override { return tr( "Actions" ); }
+    virtual Priority priority() const override { return Lowest; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;

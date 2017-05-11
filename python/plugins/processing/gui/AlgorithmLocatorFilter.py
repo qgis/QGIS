@@ -45,6 +45,9 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
     def displayName(self):
         return self.tr('Processing Algorithms')
 
+    def priority(self):
+        return QgsLocatorFilter.Low
+
     def fetchResults(self,string,context,feedback):
         for a in QgsApplication.processingRegistry().algorithms():
             if feedback.isCanceled():
