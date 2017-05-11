@@ -306,10 +306,22 @@ void QgsRelationEditorWidget::addFeature()
     QgsFeature f;
     if ( vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), QgsGeometry(), &f ) )
     {
-      QgsFeature flink( mRelation.referencingLayer()->fields() ); // Linking feature
+      QgsFields fields = mRelation.referencingLayer()->fields();
+      QgsFeature flink( fields ); // Linking feature
+      int attrCount = fields.size();
 
-      flink.setAttribute( mRelation.fieldPairs().at( 0 ).first, mFeature.attribute( mRelation.fieldPairs().at( 0 ).second ) );
-      flink.setAttribute( mNmRelation.referencingFields().at( 0 ), f.attribute( mNmRelation.referencedFields().at( 0 ) ) );
+      int firstIdx = fields.indexFromName( mRelation.fieldPairs().at( 0 ).first );
+      int secondIdx = mNmRelation.referencingFields().at( 0 );
+
+      for ( int i = 0; i < attrCount; ++i )
+      {
+        if ( i == firstIdx )
+          flink.setAttribute( i, mFeature.attribute( mRelation.fieldPairs().at( 0 ).second ) );
+        else if ( i == secondIdx )
+          flink.setAttribute( i, f.attribute( mNmRelation.referencedFields().at( 0 ) ) );
+        else
+          flink.setAttribute( i, mRelation.referencingLayer()->defaultValue( i ) );
+      }
 
       mRelation.referencingLayer()->addFeature( flink );
 
