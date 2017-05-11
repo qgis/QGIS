@@ -560,9 +560,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Custom logging signal to inform the user about master password <-> password manager interactions
      * @see QgsMessageLog
-     * @param message Message to send
-     * @param tag Associated tag (title)
-     * @param level Message log level
+     * \param message Message to send
+     * \param tag Associated tag (title)
+     * \param level Message log level
      */
     void passwordHelperMessageOut( const QString &message, const QString &tag = AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
 

@@ -125,7 +125,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     /**
      * Is a full width symbol, Is used when the text is above the legend graphics.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual bool fullWidth() const { return false; }
 
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     /**
      * Is an editable symbol.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual bool editable() const { return true; }
 

@@ -32,9 +32,9 @@ class CORE_EXPORT QgsFullWidthLabelLegendNode : public QgsSimpleLegendNode
   public:
 
     /**
-     * @brief QgsFullWidthLabelLegendNode constructor
-     * @param nodeLayer The node layer
-     * @param label The label
+     * The QgsFullWidthLabelLegendNode constructor
+     * \param nodeLayer The node layer
+     * \param label The label
      */
     QgsFullWidthLabelLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label );
 

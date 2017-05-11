@@ -364,7 +364,7 @@ class CORE_EXPORT QgsDiagramSettings
 
     /**
      * Diagram size legend type
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     enum SizeLegendType
     {
@@ -589,46 +589,43 @@ class CORE_EXPORT QgsDiagramRenderer
     virtual void setSizeLegendSymbol( QgsMarkerSymbol *symbol ) { mSizeLegendSymbol.reset( symbol ); }
 
     /**
-     * Set the label used as title or the size attribute
-     * @brief setSizeLabel
-     * @note added in QGIS 3.0
-     * @param label
+     * Sets the label used as title or the size attribute
+     * \since QGIS 3.0
+     * \param label
      */
     void setSizeLabel( QString label ) { mSizeLabel = label; }
 
     /**
-     * @brief sizeLabel
-     * @note added in QGIS 3.0
-     * @return
+     * Returns the sizeLabel
+     * \since QGIS 3.0
+     * \return sizeLabel
      */
     QString sizeLabel( ) const { return mSizeLabel; }
 
     /**
      * The size class used for the legend (label, value)
-     * @brief setSizeRules
-     * @note added in QGIS 3.0
-     * @param rules
+     * \since QGIS 3.0
+     * \param rules
      */
     void setSizeRules( QList< double > rules ) { mSizeRules = rules; }
 
     /**
-     * @brief sizeRules
-     * @note added in QGIS 3.0
-     * @return
+     * Returns the sizeRules
+     * \since QGIS 3.0
+     * \return sizeRules
      */
     QList< double > sizeRules() const { return mSizeRules; }
 
     /**
-     * @brief setSizeLegendType
-     * @note added in QGIS 3.0
-     * @param type
+     * Sets the size legend type
+     * \since QGIS 3.0
      */
     void setSizeLegendType( QgsDiagramSettings::SizeLegendType type ) { mSizeLegendType = type; }
 
     /**
-     * @brief sizeLegendType
-     * @note added in QGIS 3.0
-     * @return
+     * Returns the sizeLegendType
+     * \since QGIS 3.0
+     * \return sizeLegendType
      */
     QgsDiagramSettings::SizeLegendType sizeLegendType() const { return mSizeLegendType; }
 
@@ -649,8 +646,8 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /**
      * Create the symbol
-     * @param sizeLegendSymbolElem
-     * @return
+     * \param sizeLegendSymbolElem
+     * \return markerSymbol
      */
     virtual QgsMarkerSymbol *createSymbol( QDomElement sizeLegendSymbolElem ) const;
 
@@ -688,19 +685,16 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /**
      * The label used as title or the size attribute
-     * @brief mSizeLabel
      */
     QString mSizeLabel;
 
     /**
      * The size class used for the legend
-     * @brief mSizeRules
      */
     QList< double > mSizeRules;
 
     /**
       The size legend type
-     * @brief mLegendType
      */
     QgsDiagramSettings::SizeLegendType mSizeLegendType;
 };
@@ -798,7 +792,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const override;
 
     /**
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * Set the symbol, in case of concentric symbol,
      * the provided symbol is the base one and the concentric symbol will be build.
      */

@@ -70,7 +70,7 @@ class CORE_EXPORT QgsStackTrace
 
     /**
      * Set the paths to load the PDB symbols from on Windows.
-     * @param paths The path, or series of paths separated by a semicolon (;), that is used to search for symbol files.
+     * \param paths The path, or series of paths separated by a semicolon (;), that is used to search for symbol files.
      */
     static void setSymbolPath( QString searchPath );
 #endif

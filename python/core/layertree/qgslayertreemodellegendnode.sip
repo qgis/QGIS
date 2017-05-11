@@ -142,9 +142,7 @@ offset from the left side where label should start
     virtual bool fullWidth() const;
 %Docstring
  Is a full width symbol, Is used when the text is above the legend graphics.
-.. note::
-
-   added in QGIS 3.0
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -259,9 +257,7 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
     virtual bool editable() const;
 %Docstring
  Is an editable symbol.
-.. note::
-
-   added in QGIS 3.0
+.. versionadded:: 3.0
  :rtype: bool
 %End
 

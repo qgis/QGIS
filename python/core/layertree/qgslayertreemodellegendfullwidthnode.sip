@@ -23,9 +23,9 @@ class QgsFullWidthLabelLegendNode : QgsSimpleLegendNode
 
     QgsFullWidthLabelLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label );
 %Docstring
- QgsFullWidthLabelLegendNode constructor
- @param nodeLayer The node layer
- @param label The label
+ The QgsFullWidthLabelLegendNode constructor
+ \param nodeLayer The node layer
+ \param label The label
 %End
 
     virtual bool fullWidth() const;
