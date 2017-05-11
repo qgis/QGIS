@@ -89,16 +89,23 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   }
   mFeedback = feedback;
 
-  mActiveFilters = mFilters;
+  mActiveFilters.clear();
   QString searchString = string;
   if ( searchString.indexOf( ' ' ) > 0 )
   {
     QString prefix = searchString.left( searchString.indexOf( ' ' ) );
     if ( mPrefixedFilters.contains( prefix ) )
     {
-      mActiveFilters.clear();
       mActiveFilters << mPrefixedFilters.value( prefix );
       searchString = searchString.mid( prefix.length() + 1 );
+    }
+  }
+  if ( mActiveFilters.isEmpty() )
+  {
+    Q_FOREACH ( QgsLocatorFilter *filter, mFilters )
+    {
+      if ( filter->useWithoutPrefix() )
+        mActiveFilters << filter;
     }
   }
 

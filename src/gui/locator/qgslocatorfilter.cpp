@@ -23,3 +23,18 @@ QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
 {
 
 }
+
+bool QgsLocatorFilter::stringMatches( const QString &test, const QString &match )
+{
+  return QgsStringUtils::containsFuzzy( match, test );
+}
+
+bool QgsLocatorFilter::useWithoutPrefix() const
+{
+  return mUseWithoutPrefix;
+}
+
+void QgsLocatorFilter::setUseWithoutPrefix( bool useWithoutPrefix )
+{
+  mUseWithoutPrefix = useWithoutPrefix;
+}
