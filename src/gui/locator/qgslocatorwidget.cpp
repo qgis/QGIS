@@ -317,6 +317,12 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
       else
         return 1;
 
+    case ResultScoreRole:
+      if ( mResults.at( index.row() ).filter )
+        return 0;
+      else
+        return ( mResults.at( index.row() ).result.score );
+
     case ResultFilterPriorityRole:
       if ( !mResults.at( index.row() ).filter )
         return mResults.at( index.row() ).result.filter->priority();
@@ -442,6 +448,12 @@ bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex 
   int rightTypeRole = sourceModel()->data( right, QgsLocatorModel::ResultTypeRole ).toInt();
   if ( leftTypeRole != rightTypeRole )
     return leftTypeRole < rightTypeRole;
+
+  // sort filter's results by score
+  double leftScore = sourceModel()->data( left, QgsLocatorModel::ResultScoreRole ).toDouble();
+  double rightScore = sourceModel()->data( right, QgsLocatorModel::ResultScoreRole ).toDouble();
+  if ( !qgsDoubleNear( leftScore, rightScore ) )
+    return leftScore > rightScore;
 
   // lastly sort filter's results by string
   leftFilter = sourceModel()->data( left, Qt::DisplayRole ).toString();

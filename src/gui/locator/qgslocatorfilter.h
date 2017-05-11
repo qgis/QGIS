@@ -72,6 +72,11 @@ class GUI_EXPORT QgsLocatorResult
      */
     QIcon icon;
 
+    /**
+     * Match score, from 0 - 1, where 1 represents a perfect match.
+     */
+    double score = 0.5;
+
 };
 
 /**
