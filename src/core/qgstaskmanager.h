@@ -189,6 +189,7 @@ class CORE_EXPORT QgsTask : public QObject
     /**
      * Blocks the current thread until the task finishes or a maximum of \a timeout milliseconds.
      * If the \a timeout is ``-1`` the thread will be blocked forever.
+     * In case of a timeout, the task will still be running.
      *
      * The result will be false if the wait timed out and true in any other case.
      */
