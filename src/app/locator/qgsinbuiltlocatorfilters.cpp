@@ -40,7 +40,7 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
     if ( feedback->isCanceled() )
       return;
 
-    if ( layer->layer() && layer->layer()->name().contains( string, Qt::CaseInsensitive ) )
+    if ( layer->layer() && stringMatches( layer->layer()->name(), string ) )
     {
       QgsLocatorResult result;
       result.filter = this;
@@ -75,7 +75,7 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
     if ( feedback->isCanceled() )
       return;
 
-    if ( composition && composition->name().contains( string, Qt::CaseInsensitive ) )
+    if ( composition && stringMatches( composition->name(), string ) )
     {
       QgsLocatorResult result;
       result.filter = this;
@@ -150,7 +150,7 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
 
     QString searchText = action->text();
     searchText.replace( '&', QString() );
-    if ( searchText.contains( string, Qt::CaseInsensitive ) )
+    if ( stringMatches( searchText, string ) )
     {
       QgsLocatorResult result;
       result.filter = this;

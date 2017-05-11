@@ -41,7 +41,10 @@ class GUI_EXPORT QgsLocatorResult
     /**
      * Constructor for QgsLocatorResult.
      */
-    QgsLocatorResult() = default;
+    QgsLocatorResult()
+      : filter( nullptr )
+      , score( 0.5 )
+    {}
 
     /**
      * Constructor for QgsLocatorResult.
@@ -50,6 +53,7 @@ class GUI_EXPORT QgsLocatorResult
       : filter( filter )
       , displayString( displayString )
       , userData( userData )
+      , score( 0.5 )
     {}
 
     /**
@@ -75,7 +79,7 @@ class GUI_EXPORT QgsLocatorResult
     /**
      * Match score, from 0 - 1, where 1 represents a perfect match.
      */
-    double score = 0.5;
+    double score;
 
 };
 
@@ -172,6 +176,14 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
      * \see useWithoutPrefix()
      */
     void setUseWithoutPrefix( bool useWithoutPrefix );
+
+    /**
+     * Tests a \a candidate string to see if it should be considered a match for
+     * a specified \a search string.
+     * Filter subclasses should use this method when comparing strings instead
+     * of directly using QString::contains() or Python 'in' checks.
+     */
+    static bool stringMatches( const QString &candidate, const QString &search );
 
   signals:
 

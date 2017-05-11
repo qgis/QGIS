@@ -58,13 +58,13 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
             if a.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
                 continue
 
-            if string.lower() in a.displayName().lower() or [t for t in a.tags() if string.lower() in t.lower()]:
+            if QgsLocatorFilter.stringMatches(a.displayName(),string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t,string)]:
                 result = QgsLocatorResult()
                 result.filter = self
                 result.displayString = a.displayName()
                 result.icon = a.icon()
                 result.userData = a.id()
-                if string.lower() in a.displayName().lower():
+                if QgsLocatorFilter.stringMatches(a.displayName(),string):
                     result.score = float(len(string)) / len(a.displayName())
                 else:
                     result.score = 0
