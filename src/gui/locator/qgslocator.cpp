@@ -37,6 +37,9 @@ void QgsLocator::deregisterFilter( QgsLocatorFilter *filter )
 {
   cancelRunningQuery();
   mFilters.removeAll( filter );
+  QString key = mPrefixedFilters.key( filter );
+  if ( !key.isEmpty() )
+    mPrefixedFilters.remove( key );
   delete filter;
 }
 
@@ -50,6 +53,20 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
   mFilters.append( filter );
   filter->setParent( this );
   connect( filter, &QgsLocatorFilter::resultFetched, this, &QgsLocator::filterSentResult, Qt::QueuedConnection );
+
+  if ( !filter->prefix().isEmpty() )
+  {
+    if ( filter->name() == QStringLiteral( "actions" ) || filter->name() == QStringLiteral( "processing_alg" )
+         || filter->name() == QStringLiteral( "layertree" ) || filter->name() == QStringLiteral( "layouts" ) )
+    {
+      //inbuilt filter, no prefix check
+      mPrefixedFilters.insert( filter->prefix(), filter );
+    }
+    else if ( filter->prefix().length() >= 3 )
+    {
+      mPrefixedFilters.insert( filter->prefix(), filter );
+    }
+  }
 }
 
 void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
@@ -72,13 +89,26 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   }
   mFeedback = feedback;
 
-  auto gatherFilterResults = [string, context, feedback]( QgsLocatorFilter * filter )
+  mActiveFilters = mFilters;
+  QString searchString = string;
+  if ( searchString.indexOf( ' ' ) > 0 )
+  {
+    QString prefix = searchString.left( searchString.indexOf( ' ' ) );
+    if ( mPrefixedFilters.contains( prefix ) )
+    {
+      mActiveFilters.clear();
+      mActiveFilters << mPrefixedFilters.value( prefix );
+      searchString = searchString.mid( prefix.length() + 1 );
+    }
+  }
+
+  auto gatherFilterResults = [searchString, context, feedback]( QgsLocatorFilter * filter )
   {
     if ( !feedback->isCanceled() )
-      filter->fetchResults( string, context, feedback );
+      filter->fetchResults( searchString, context, feedback );
   };
 
-  mFuture = QtConcurrent::map( mFilters, gatherFilterResults );
+  mFuture = QtConcurrent::map( mActiveFilters, gatherFilterResults );
   mFutureWatcher.setFuture( mFuture );
 }
 
