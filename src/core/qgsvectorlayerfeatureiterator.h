@@ -59,7 +59,7 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
      *
      * \since QGIS 3.0
      */
-    QgsFields fields();
+    QgsFields fields() const;
 
   protected:
 

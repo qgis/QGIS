@@ -93,7 +93,7 @@ QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureReq
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, false, request ) );
 }
 
-QgsFields QgsVectorLayerFeatureSource::fields()
+QgsFields QgsVectorLayerFeatureSource::fields() const
 {
   return mFields;
 }
