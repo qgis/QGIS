@@ -871,6 +871,10 @@ void QgsComposerMap::setNewScale( double scaleDenominator, bool forceUpdate )
   }
 
   double scaleRatio = scaleDenominator / currentScaleDenominator;
+  if ( mAtlasFixedScale )
+  {
+    mExtent.scale( scaleRatio );
+  }
   currentMapExtent()->scale( scaleRatio );
 
   if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
