@@ -17,6 +17,7 @@
 
 
 #include "qgslocatorfilter.h"
+#include "qgsstringutils.h"
 
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
   : QObject( parent )
@@ -24,9 +25,9 @@ QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
 
 }
 
-bool QgsLocatorFilter::stringMatches( const QString &test, const QString &match )
+bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search )
 {
-  return QgsStringUtils::containsFuzzy( match, test );
+  return candidate.contains( search, Qt::CaseInsensitive );
 }
 
 bool QgsLocatorFilter::useWithoutPrefix() const

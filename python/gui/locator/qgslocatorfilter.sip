@@ -52,7 +52,7 @@ class QgsLocatorResult
  Icon for result.
 %End
 
-    double score = 0.5;
+    double score;
 %Docstring
  Match score, from 0 - 1, where 1 represents a perfect match.
 %End
@@ -157,6 +157,15 @@ class QgsLocatorFilter : QObject
  Sets whether the filter should be used when no prefix
  is entered.
 .. seealso:: useWithoutPrefix()
+%End
+
+    static bool stringMatches( const QString &candidate, const QString &search );
+%Docstring
+ Tests a ``candidate`` string to see if it should be considered a match for
+ a specified ``search`` string.
+ Filter subclasses should use this method when comparing strings instead
+ of directly using QString.contains() or Python 'in' checks.
+ :rtype: bool
 %End
 
   signals:
