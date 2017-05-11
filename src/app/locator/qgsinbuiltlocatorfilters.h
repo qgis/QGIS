@@ -19,6 +19,7 @@
 #define QGSINBUILTLOCATORFILTERS_H
 
 #include "qgslocatorfilter.h"
+class QAction;
 
 class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
 {
@@ -41,6 +42,23 @@ class QgsLayoutLocatorFilter : public QgsLocatorFilter
     QgsLayoutLocatorFilter( QObject *parent = nullptr );
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
+
+};
+
+class QgsActionLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent = nullptr );
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+  private:
+
+    QList< QWidget * > mActionParents;
+
+    void searchActions( const QString &string, QWidget *parent, QList< QAction *> &found );
 
 };
 

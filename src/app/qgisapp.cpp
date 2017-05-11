@@ -2649,6 +2649,23 @@ void QgisApp::createStatusBar()
 
   mLocatorWidget->locator()->registerFilter( new QgsLayerTreeLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsLayoutLocatorFilter() );
+  QList< QWidget *> actionObjects;
+  actionObjects << menuBar()
+                << mAdvancedDigitizeToolBar
+                << mFileToolBar
+                << mLayerToolBar
+                << mDigitizeToolBar
+                << mMapNavToolBar
+                << mAttributesToolBar
+                << mPluginToolBar
+                << mRasterToolBar
+                << mLabelToolBar
+                << mVectorToolBar
+                << mDatabaseToolBar
+                << mWebToolBar
+                << mSnappingToolBar;
+
+  mLocatorWidget->locator()->registerFilter( new QgsActionLocatorFilter( actionObjects ) );
 
 }
 

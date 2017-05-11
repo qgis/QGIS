@@ -25,6 +25,7 @@
 #include "qgsmaplayermodel.h"
 #include "qgscomposition.h"
 #include "qgslayoutmanager.h"
+#include <QToolButton>
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -97,3 +98,65 @@ void QgsLayoutLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
 
 
+
+QgsActionLocatorFilter::QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent )
+  : QgsLocatorFilter( parent )
+  , mActionParents( parentObjectsForActions )
+{
+
+}
+
+void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
+{
+  QList<QAction *> found;
+
+  Q_FOREACH ( QWidget *object, mActionParents )
+  {
+    if ( feedback->isCanceled() )
+      return;
+
+    searchActions( string,  object, found );
+  }
+}
+
+void QgsActionLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+  QAction *action = qobject_cast< QAction * >( qvariant_cast<QObject *>( result.userData ) );
+  if ( action )
+    action->trigger();
+}
+
+void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *parent, QList<QAction *> &found )
+{
+  QList< QWidget *> children = parent->findChildren<QWidget *>();
+  Q_FOREACH ( QWidget *widget, children )
+  {
+    searchActions( string, widget, found );
+  }
+  Q_FOREACH ( QAction *action, parent->actions() )
+  {
+    if ( action->menu() )
+    {
+      searchActions( string, action->menu(), found );
+      continue;
+    }
+
+    if ( !action->isEnabled() || !action->isVisible() )
+      continue;
+    if ( found.contains( action ) )
+      continue;
+
+    QString searchText = action->text();
+    searchText.replace( '&', QString() );
+    if ( searchText.contains( string, Qt::CaseInsensitive ) )
+    {
+      QgsLocatorResult result;
+      result.filter = this;
+      result.displayString = searchText;
+      result.userData = QVariant::fromValue( action );
+      result.icon = action->icon();
+      emit resultFetched( result );
+      found << action;
+    }
+  }
+}
