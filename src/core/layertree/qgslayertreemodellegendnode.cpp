@@ -460,8 +460,8 @@ void QgsSymbolLegendNode::updateLabel()
     mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
     if ( showFeatureCount && vl )
     {
-      long count = vl->featureCount( mItem.ruleKey() );
-      mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QString::number( count ) : tr( "N/A" ) );
+      qlonglong count = vl->featureCount( mItem.ruleKey() );
+      mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
     }
   }
 
