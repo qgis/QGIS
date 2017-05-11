@@ -24,7 +24,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
     /**
      * Create a new feature counter for \a layer.
      */
-    QgsVectorLayerFeatureCounter( QgsVectorLayer *layer );
+    QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext() );
 
     virtual bool run() override;
 
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
   private:
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     std::unique_ptr<QgsFeatureRenderer> mRenderer;
-    QList<QgsExpressionContextScope *> mExpressionContextScopes;
+    QgsExpressionContext mExpressionContext;
     QHash<QString, long> mSymbolFeatureCountMap;
     int mFeatureCount;
 

@@ -24,7 +24,7 @@ class QgsVectorLayerFeatureCounter : QgsTask
 %End
   public:
 
-    QgsVectorLayerFeatureCounter( QgsVectorLayer *layer );
+    QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext() );
 %Docstring
  Create a new feature counter for ``layer``.
 %End

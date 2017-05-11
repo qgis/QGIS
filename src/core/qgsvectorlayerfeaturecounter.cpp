@@ -1,11 +1,15 @@
 #include "qgsvectorlayerfeaturecounter.h"
 
-QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer )
+QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context )
   : mSource( new QgsVectorLayerFeatureSource( layer ) )
   , mRenderer( layer->renderer()->clone() )
-  , mExpressionContextScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) )
+  , mExpressionContext( context )
   , mFeatureCount( layer->featureCount() )
 {
+  if ( !mExpressionContext.scopeCount() )
+  {
+    mExpressionContext = layer->createExpressionContext();
+  }
 }
 
 bool QgsVectorLayerFeatureCounter::run()
@@ -26,7 +30,7 @@ bool QgsVectorLayerFeatureCounter::run()
     // Renderer (rule based) may depend on context scale, with scale is ignored if 0
     QgsRenderContext renderContext;
     renderContext.setRendererScale( 0 );
-    renderContext.expressionContext().appendScopes( mExpressionContextScopes );
+    renderContext.setExpressionContext( mExpressionContext );
 
     QgsFeatureRequest request;
     if ( !mRenderer->filterNeedsGeometry() )
