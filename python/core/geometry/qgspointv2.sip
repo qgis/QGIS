@@ -236,8 +236,8 @@ class QgsPointV2: QgsAbstractGeometry
 
     double inclination( const QgsPointV2 &other ) const;
 %Docstring
- Calculates inclination between this point and other one (starting from zenith (0°). Horizon = 90°, Nadir = 180°)
- Returns 90.0 if the distance between this point other one is equal to 0 (same point).
+ Calculates inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
+ Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
 .. versionadded:: 3.0
  :rtype: float
 %End

@@ -2921,6 +2921,25 @@ static QVariant fcnProject( const QVariantList &values, const QgsExpressionConte
   return QVariant::fromValue( QgsGeometry( new QgsPointV2( newPoint ) ) );
 }
 
+static QVariant fcnInclination( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  QgsGeometry fGeom1 = getGeometry( values.at( 0 ), parent );
+  QgsGeometry fGeom2 = getGeometry( values.at( 1 ), parent );
+
+  const QgsPointV2 *pt1 = static_cast<const QgsPointV2 *>( fGeom1.geometry() );
+  const QgsPointV2 *pt2 = static_cast<const QgsPointV2 *>( fGeom2.geometry() );
+
+  if ( ( fGeom1.type() != QgsWkbTypes::PointGeometry ) || ( fGeom2.type() != QgsWkbTypes::PointGeometry ) ||
+       !pt1 || !pt2 )
+  {
+    parent->setEvalErrorString( QStringLiteral( "Function 'inclination' requires two points as arguments." ) );
+    return QVariant();
+  }
+
+  return pt1->inclination( *pt2 );
+
+}
+
 static QVariant fcnExtrude( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   if ( values.length() != 3 )
@@ -3933,6 +3952,7 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
         << new StaticFunction( QStringLiteral( "radians" ), ParameterList() << Parameter( QStringLiteral( "degrees" ) ), fcnRadians, QStringLiteral( "Math" ) )
         << new StaticFunction( QStringLiteral( "degrees" ), ParameterList() << Parameter( QStringLiteral( "radians" ) ), fcnDegrees, QStringLiteral( "Math" ) )
         << new StaticFunction( QStringLiteral( "azimuth" ), ParameterList() << Parameter( QStringLiteral( "point_a" ) ) << Parameter( QStringLiteral( "point_b" ) ), fcnAzimuth, QStringList() << QStringLiteral( "Math" ) << QStringLiteral( "GeometryGroup" ) )
+        << new StaticFunction( QStringLiteral( "inclination" ), ParameterList() << Parameter( QStringLiteral( "point_a" ) ) << Parameter( QStringLiteral( "point_b" ) ), fcnInclination, QStringList() << QStringLiteral( "Math" ) << QStringLiteral( "GeometryGroup" ) )
         << new StaticFunction( QStringLiteral( "project" ), ParameterList() << Parameter( QStringLiteral( "point" ) ) << Parameter( QStringLiteral( "distance" ) ) << Parameter( QStringLiteral( "azimuth" ) ) << Parameter( QStringLiteral( "elevation" ), true, M_PI / 2 ), fcnProject, QStringLiteral( "GeometryGroup" ) )
         << new StaticFunction( QStringLiteral( "abs" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnAbs, QStringLiteral( "Math" ) )
         << new StaticFunction( QStringLiteral( "cos" ), ParameterList() << Parameter( QStringLiteral( "angle" ) ), fcnCos, QStringLiteral( "Math" ) )
