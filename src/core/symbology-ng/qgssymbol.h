@@ -363,7 +363,7 @@ class CORE_EXPORT QgsSymbol
 
   private:
     //! Initialized in startRender, destroyed in stopRender
-    QgsSymbolRenderContext *mSymbolRenderContext = nullptr;
+    std::unique_ptr< QgsSymbolRenderContext > mSymbolRenderContext;
 
     Q_DISABLE_COPY( QgsSymbol )
 
@@ -391,7 +391,6 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \param mapUnitScale
      */
     QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
-    ~QgsSymbolRenderContext();
 
     QgsRenderContext &renderContext() { return mRenderContext; }
     const QgsRenderContext &renderContext() const { return mRenderContext; }
@@ -497,11 +496,11 @@ class CORE_EXPORT QgsSymbolRenderContext
      *
      * \param contextScope An expression scope for details about this symbol
      */
-    void setExpressionContextScope( QgsExpressionContextScope *contextScope );
+    void setExpressionContextScope( QgsExpressionContextScope *contextScope SIP_TRANSFER );
 
   private:
     QgsRenderContext &mRenderContext;
-    QgsExpressionContextScope *mExpressionContextScope = nullptr;
+    std::unique_ptr< QgsExpressionContextScope > mExpressionContextScope;
     QgsUnitTypes::RenderUnit mOutputUnit;
     QgsMapUnitScale mMapUnitScale;
     qreal mAlpha;
