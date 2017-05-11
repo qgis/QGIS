@@ -272,7 +272,7 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList& loadstyles )
           loaded = ( fontID != -1 );
           fontsLoaded = ( fontsLoaded || loaded );
         }
-        QgsDebugMsg( QString( "Test font '%1' %3 from testdata.qrc" )
+        QgsDebugMsg( QString( "Test font '%1' (%2) %3 from testdata.qrc" )
                      .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load" ) );
       }
     }
