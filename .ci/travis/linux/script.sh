@@ -18,7 +18,8 @@ export PATH=${HOME}/osgeo4travis/bin:${HOME}/osgeo4travis/sbin:${HOME}/OTB-5.6.0
 export LD_LIBRARY_PATH=${HOME}/osgeo4travis/lib
 export CTEST_PARALLEL_LEVEL=1
 export CCACHE_TEMPDIR=/tmp
-ccache -M 2G
+ccache -M 500M
+ccache -z
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
