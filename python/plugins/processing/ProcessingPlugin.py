@@ -42,6 +42,7 @@ from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.ResultsDock import ResultsDock
+from processing.gui.AlgorithmLocatorFilter import AlgorithmLocatorFilter
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
@@ -71,6 +72,8 @@ class ProcessingPlugin(object):
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr('Processing'))
         iface.registerOptionsWidgetFactory(self.options_factory)
+        self.locator_filter = AlgorithmLocatorFilter()
+        iface.registerLocatorFilter(self.locator_filter)
         Processing.initialize()
 
     def initGui(self):
@@ -149,6 +152,7 @@ class ProcessingPlugin(object):
         self.iface.unregisterMainWindowAction(self.resultsAction)
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
+        self.iface.deregisterLocatorFilter(self.locator_filter)
 
         removeMenus()
         Processing.deinitialize()
