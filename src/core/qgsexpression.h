@@ -659,7 +659,7 @@ class CORE_EXPORT QgsExpression
          * This can be used as callback for custom implementations of subclasses. It is the default for implementation
          * for StaticFunction::isStatic.
          *
-         * \note Added in QGIS 3.0
+         * \since QGIS 3.0
          */
         static bool allParamsStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
 

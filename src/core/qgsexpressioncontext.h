@@ -230,7 +230,7 @@ class CORE_EXPORT QgsExpressionContextScope
      * Tests whether the variable with the specified \a name is static and can
      * be cached.
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool isStatic( const QString &name ) const;
 
