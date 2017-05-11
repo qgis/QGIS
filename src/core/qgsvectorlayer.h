@@ -65,6 +65,7 @@ class QgsSymbol;
 class QgsVectorLayerJoinInfo;
 class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
+class QgsVectorLayerFeatureCounter;
 class QgsAbstractVectorLayerLabeling;
 class QgsPointV2;
 class QgsFeedback;
@@ -806,11 +807,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
 
     /**
-     * Count features for symbols. Feature counts may be get by featureCount().
-     * \param showProgress show progress dialog
-     * \returns true if calculated, false if failed or was canceled by user
+     * Count features for symbols.
+     * The method will return immediately. You will need to connect to the
+     * symbolFeatureCountMapChanged() signal to be notified when the freshly updated
+     * feature counts are ready.
+     *
+     * \note If you need to wait for the results, create and start your own QgsVectorLayerFeatureCounter
+     *       task and call waitForFinished().
+     *
+     * \since This is asynchroneous since QGIS 3.0
      */
-    bool countSymbolFeatures( bool showProgress = true );
+    bool countSymbolFeatures();
 
     /**
      * Set the string (typically sql) used to define a subset of the layer
@@ -1846,11 +1853,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void readOnlyChanged();
 
+    /**
+     * Emitted when the feature count for symbols on this layer has been recalculated.
+     *
+     * \since QGIS 3.0
+     */
+    void symbolFeatureCountMapChanged();
 
   private slots:
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
+    void onSymbolsCounted();
 
   protected:
     //! Set the extent
@@ -1883,7 +1897,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 #endif
 
   private:                       // Private attributes
-
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
 
     //! Pointer to data provider derived from the abastract base class QgsDataProvider
@@ -2000,6 +2013,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsAttributeTableConfig mAttributeTableConfig;
 
     mutable QMutex mFeatureSourceConstructorMutex;
+
+    QgsVectorLayerFeatureCounter *mFeatureCounter = nullptr;
 
     friend class QgsVectorLayerFeatureSource;
 };

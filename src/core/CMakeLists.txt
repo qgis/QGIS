@@ -263,6 +263,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorfilewriter.cpp
   qgsvectorfilewritertask.cpp
   qgsvectorlayer.cpp
+  qgsvectorlayerfeaturecounter.cpp
   qgsvectorlayercache.cpp
   qgsvectorlayerdiagramprovider.cpp
   qgsvectorlayereditbuffer.cpp
@@ -569,6 +570,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayereditbuffer.h
   qgsvectorlayereditpassthrough.h
   qgsvectorlayer.h
+  qgsvectorlayerfeaturecounter.h
   qgsvectorlayerjoinbuffer.h
   qgsvectorlayertools.h
   qgsmapthemecollection.h

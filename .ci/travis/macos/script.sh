@@ -18,8 +18,8 @@ echo $PATH
 
 export PATH=/usr/bin:${PATH}
 
-ccache -s
-ccache -M 1G
+ccache -M 500M
+ccache -z
 
 # Calculate the timeout for the tests.
 # The tests should be aborted before travis times out, in order to allow uploading

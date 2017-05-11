@@ -53,6 +53,14 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 
     friend class QgsVectorLayerFeatureIterator;
 
+    /**
+     * Returns the fields that will be available for features that are retrieved from
+     * this source.
+     *
+     * \since QGIS 3.0
+     */
+    QgsFields fields() const;
+
   protected:
 
     QgsAbstractFeatureSource *mProviderFeatureSource = nullptr;
