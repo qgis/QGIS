@@ -47,6 +47,7 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
       result.displayString = layer->layer()->name();
       result.userData = layer->layerId();
       result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
+      result.score = static_cast< double >( string.length() ) / layer->layer()->name().length();
       emit resultFetched( result );
     }
   }
@@ -81,6 +82,7 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
       result.displayString = composition->name();
       result.userData = composition->name();
       //result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
+      result.score = static_cast< double >( string.length() ) / composition->name().length();
       emit resultFetched( result );
     }
   }
@@ -155,6 +157,7 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
       result.displayString = searchText;
       result.userData = QVariant::fromValue( action );
       result.icon = action->icon();
+      result.score = static_cast< double >( string.length() ) / searchText.length();
       emit resultFetched( result );
       found << action;
     }

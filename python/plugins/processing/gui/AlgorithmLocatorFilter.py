@@ -64,6 +64,10 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                 result.displayString = a.displayName()
                 result.icon = a.icon()
                 result.userData = a.id()
+                if string.lower() in a.displayName().lower():
+                    result.score = float(len(string)) / len(a.displayName())
+                else:
+                    result.score = 0
                 self.resultFetched.emit(result)
 
     def triggerResult(self, result):

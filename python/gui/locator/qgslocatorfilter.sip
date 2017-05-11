@@ -52,6 +52,11 @@ class QgsLocatorResult
  Icon for result.
 %End
 
+    double score = 0.5;
+%Docstring
+ Match score, from 0 - 1, where 1 represents a perfect match.
+%End
+
 };
 
 class QgsLocatorFilter : QObject
