@@ -699,6 +699,27 @@ bool QgsSymbolV2::hasDataDefinedProperties() const
   return false;
 }
 
+///@cond PRIVATE
+
+/**
+ * RAII class to pop scope from an expression context on destruction
+ */
+class ExpressionContextScopePopper
+{
+  public:
+
+    ExpressionContextScopePopper() = default;
+
+    ~ExpressionContextScopePopper()
+    {
+      if ( context )
+        context->popScope();
+    }
+
+    QgsExpressionContext *context = nullptr;
+};
+///@endcond PRIVATE
+
 void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker, int currentVertexMarkerType, int currentVertexMarkerSize )
 {
   const QgsGeometry* geom = feature.constGeometry();
@@ -728,9 +749,17 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
   mSymbolRenderContext->setGeometryPartCount( segmentizedGeometry->geometry()->partCount() );
   mSymbolRenderContext->setGeometryPartNum( 1 );
 
+  ExpressionContextScopePopper scopePopper;
   if ( mSymbolRenderContext->expressionContextScope() )
   {
+    // this is somewhat nasty - by appending this scope here it's now owned
+    // by both mSymbolRenderContext AND context.expressionContext()
+    // the RAII scopePopper is required to make sure it always has ownership transferred back
+    // from context.expressionContext(), even if exceptions of other early exits occur in this
+    // function
     context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
+    scopePopper.context = &context.expressionContext();
+
     QgsExpressionContextUtils::updateSymbolScope( this, mSymbolRenderContext->expressionContextScope() );
     mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, mSymbolRenderContext->geometryPartCount(), true ) );
     mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
@@ -1011,9 +1040,6 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
   {
     delete segmentizedGeometry;
   }
-
-  if ( mSymbolRenderContext->expressionContextScope() )
-    context.expressionContext().popScope();
 }
 
 QgsSymbolV2RenderContext* QgsSymbolV2::symbolRenderContext()
