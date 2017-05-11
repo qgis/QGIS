@@ -93,6 +93,13 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   if ( !eww )
     return;
 
+  // This fixes https://issues.qgis.org/issues/16492
+  if ( ! vl->getFeature( fid ).isValid( ) )
+  {
+    // Model is out of sync (again!).
+    return;
+  }
+
   newValue = eww->value();
 
   if ( ( oldValue != newValue && newValue.isValid() ) || oldValue.isNull() != newValue.isNull() )
