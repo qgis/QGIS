@@ -127,6 +127,7 @@ class QgsLocatorModel : public QAbstractListModel
     {
       ResultDataRole = Qt::UserRole + 1, //!< QgsLocatorResult data
       ResultTypeRole,
+      ResultFilterPriorityRole,
       ResultFilterNameRole,
     };
 
@@ -158,6 +159,7 @@ class QgsLocatorModel : public QAbstractListModel
     {
       QgsLocatorResult result;
       QString filterTitle;
+      QgsLocatorFilter *filter = nullptr;
     };
 
     QList<Entry> mResults;
