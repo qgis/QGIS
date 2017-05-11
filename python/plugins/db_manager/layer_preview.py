@@ -25,7 +25,7 @@ from qgis.PyQt.QtGui import QColor, QCursor
 from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.gui import QgsMapCanvas, QgsMapCanvasLayer, QgsMessageBar
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsProject
 
 from .db_plugins.plugin import Table
 
@@ -113,15 +113,18 @@ class LayerPreview(QgsMapCanvas):
             else:
                 vl = table.toMapLayer()
 
-            if not vl.isValid():
+            if vl and not vl.isValid():
                 vl.deleteLater()
                 vl = None
 
         # remove old layer (if any) and set new
         if self.currentLayer:
-            QgsMapLayerRegistry.instance().removeMapLayers([self.currentLayer.id()])
+            # but not remove it if in layer list panel
+            # fix https://issues.qgis.org/issues/16476
+            if not QgsProject.instance().layerTreeRoot().findLayer(self.currentLayer.id()):
+                QgsMapLayerRegistry.instance().removeMapLayers([self.currentLayer.id()])
 
-        if vl:
+        if vl and vl.isValid():
             self.setLayerSet([QgsMapCanvasLayer(vl)])
             QgsMapLayerRegistry.instance().addMapLayers([vl], False)
             self.zoomToFullExtent()
