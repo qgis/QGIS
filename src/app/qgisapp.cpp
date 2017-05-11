@@ -1565,8 +1565,11 @@ void QgisApp::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
 
 void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 {
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  // insert items in reverse order as each one is inserted on top of previous one
+  for ( int i = lst.size() - 1 ; i >= 0 ; i-- )
   {
+    const QgsMimeDataUtils::Uri &u = lst.at( i );
+
     QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
 
     if ( u.layerType == QLatin1String( "vector" ) )
