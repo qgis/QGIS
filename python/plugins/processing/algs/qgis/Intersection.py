@@ -121,7 +121,10 @@ class Intersection(GeoAlgorithm):
                         int_geom = QgsGeometry()
                         if int_com is not None:
                             int_sym = geom.symDifference(tmpGeom)
-                            int_geom = QgsGeometry(int_com.difference(int_sym))
+                            if int_sym:
+                                diff_geom = int_com.difference(int_sym)
+                                int_geom = QgsGeometry(diff_geom)
+
                     if int_geom.isGeosEmpty() or not int_geom.isGeosValid():
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                self.tr('GEOS geoprocessing error: One or '
