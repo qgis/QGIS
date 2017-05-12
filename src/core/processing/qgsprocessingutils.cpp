@@ -19,7 +19,7 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsprocessingcontext.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsmemoryproviderutils.h"
 
@@ -367,8 +367,8 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, con
     {
       //create empty layer
       {
-        QgsVectorLayerImport import( uri, providerKey, fields, geometryType, crs, false, &options );
-        if ( import.hasError() )
+        QgsVectorLayerExporter import( uri, providerKey, fields, geometryType, crs, false, &options );
+        if ( import.errorCode() )
           return nullptr;
       }
 

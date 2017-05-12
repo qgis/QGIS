@@ -27,7 +27,11 @@ from qgis.PyQt.QtCore import Qt, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from qgis.PyQt.QtGui import QCursor
 
-from qgis.core import QgsVectorFileWriter, QgsVectorDataProvider, QgsCoordinateReferenceSystem, QgsVectorLayerImport, QgsSettings
+from qgis.core import (QgsVectorFileWriter,
+                       QgsVectorDataProvider,
+                       QgsCoordinateReferenceSystem,
+                       QgsVectorLayerExporter,
+                       QgsSettings)
 
 from .ui.ui_DlgExportVector import Ui_DbManagerDlgExportVector as Ui_Dialog
 
@@ -175,8 +179,8 @@ class DlgExportVector(QDialog, Ui_Dialog):
                 self.inLayer.setCrs(inCrs)
 
             # do the export!
-            ret, errMsg = QgsVectorLayerImport.importLayer(self.inLayer, uri, providerName, outCrs, False,
-                                                           False, options)
+            ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs,
+                                                             False, options)
         except Exception as e:
             ret = -1
             errMsg = str(e)

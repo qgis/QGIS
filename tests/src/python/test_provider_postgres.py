@@ -20,7 +20,7 @@ import os
 
 from qgis.core import (
     QgsVectorLayer,
-    QgsVectorLayerImport,
+    QgsVectorLayerExporter,
     QgsFeatureRequest,
     QgsFeature,
     QgsFieldConstraints,
@@ -600,8 +600,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         lyr.dataProvider().addFeatures([f])
         uri = '%s table="qgis_test"."b18155" (g) key=\'f1\'' % (self.dbconn)
         self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.b18155')
-        err = QgsVectorLayerImport.importLayer(lyr, uri, "postgres", lyr.crs())
-        self.assertEqual(err[0], QgsVectorLayerImport.NoError,
+        err = QgsVectorLayerExporter.exportLayer(lyr, uri, "postgres", lyr.crs())
+        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
                          'unexpected import error {0}'.format(err))
         lyr = QgsVectorLayer(uri, "y", "postgres")
         self.assertTrue(lyr.isValid())
@@ -623,8 +623,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             uri = '%s table="qgis_test"."import_test" (g)' % self.dbconn
             if key is not None:
                 uri += ' key=\'%s\'' % key
-            err = QgsVectorLayerImport.importLayer(lyr, uri, "postgres", lyr.crs())
-            self.assertEqual(err[0], QgsVectorLayerImport.NoError,
+            err = QgsVectorLayerExporter.exportLayer(lyr, uri, "postgres", lyr.crs())
+            self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
                              'unexpected import error {0}'.format(err))
             olyr = QgsVectorLayer(uri, "y", "postgres")
             self.assertTrue(olyr.isValid())

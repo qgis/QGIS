@@ -165,8 +165,8 @@
 %Include qgsvectorlayercache.sip
 %Include qgsvectorlayereditbuffer.sip
 %Include qgsvectorlayereditpassthrough.sip
+%Include qgsvectorlayerexporter.sip
 %Include qgsvectorlayerfeaturecounter.sip
-%Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerjoininfo.sip
 %Include qgsvectorlayertools.sip
