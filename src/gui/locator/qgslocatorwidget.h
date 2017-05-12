@@ -111,6 +111,23 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
 
 ///@cond PRIVATE
 
+class QgsLocatorFilterFilter : public QgsLocatorFilter
+{
+  public:
+
+    QgsLocatorFilterFilter( QgsLocatorWidget *widget, QObject *parent = nullptr );
+
+    virtual QString name() const override { return QStringLiteral( "filters" );}
+    virtual QString displayName() const override { return QString(); }
+    virtual Priority priority() const { return static_cast< QgsLocatorFilter::Priority>( -1 ); /** shh, we cheat!**/ }
+    virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    virtual void triggerResult( const QgsLocatorResult &result ) override;
+
+  private:
+
+    QgsLocatorWidget *mLocator = nullptr;
+};
+
 /**
  * \class QgsLocatorModel
  * \ingroup gui

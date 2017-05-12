@@ -83,6 +83,8 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mResultsView->installEventFilter( this );
   installEventFilter( this );
   window()->installEventFilter( this );
+
+  mLocator->registerFilter( new QgsLocatorFilterFilter( this, this ) );
 }
 
 QgsLocator *QgsLocatorWidget::locator()
@@ -204,7 +206,10 @@ void QgsLocatorWidget::addResult( const QgsLocatorResult &result )
   bool selectFirst = !mHasSelectedResult || mProxyModel->rowCount() == 0;
   mLocatorModel->addResult( result );
   if ( selectFirst )
-    mResultsView->setCurrentIndex( mProxyModel->index( 1, 0 ) );
+  {
+    int row = mProxyModel->flags( mProxyModel->index( 0, 0 ) ) & Qt::ItemIsSelectable ? 0 : 1;
+    mResultsView->setCurrentIndex( mProxyModel->index( row, 0 ) );
+  }
 }
 
 void QgsLocatorWidget::updateResults( const QString &text )
@@ -223,10 +228,7 @@ void QgsLocatorWidget::updateResults( const QString &text )
   {
     mHasSelectedResult = false;
     mLocatorModel->clear();
-    if ( !text.isEmpty() )
-    {
-      mLocator->fetchResults( text, createContext() );
-    }
+    mLocator->fetchResults( text, createContext() );
   }
 }
 
@@ -366,7 +368,7 @@ Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
 void QgsLocatorModel::addResult( const QgsLocatorResult &result )
 {
   int pos = mResults.size();
-  bool addingFilter = !mFoundResultsFromFilterNames.contains( result.filter->name() );
+  bool addingFilter = !result.filter->displayName().isEmpty() && !mFoundResultsFromFilterNames.contains( result.filter->name() );
   if ( addingFilter )
     mFoundResultsFromFilterNames << result.filter->name();
 
@@ -468,4 +470,41 @@ bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex 
   leftFilter = sourceModel()->data( left, Qt::DisplayRole ).toString();
   rightFilter = sourceModel()->data( right, Qt::DisplayRole ).toString();
   return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
+}
+
+QgsLocatorFilterFilter::QgsLocatorFilterFilter( QgsLocatorWidget *locator, QObject *parent )
+  : QgsLocatorFilter( parent )
+  , mLocator( locator )
+{}
+
+void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
+{
+  if ( !string.isEmpty() )
+  {
+    //only shows results when nothing typed
+    return;
+  }
+
+  QMap< QString, QgsLocatorFilter *> filters = mLocator->locator()->prefixedFilters();
+  QMap< QString, QgsLocatorFilter *>::const_iterator fIt = filters.constBegin();
+  for ( ; fIt != filters.constEnd(); ++fIt )
+  {
+    if ( feedback->isCanceled() )
+      return;
+
+    if ( fIt.value() == this || !fIt.value() )
+      continue;
+
+    QgsLocatorResult result;
+    result.filter = this;
+    result.displayString = QString( "%1 (%2)" ).arg( fIt.key(), fIt.value()->displayName() );
+    result.userData = fIt.key() + ' ';
+    //result.icon = action->icon();
+    emit resultFetched( result );
+  }
+}
+
+void QgsLocatorFilterFilter::triggerResult( const QgsLocatorResult &result )
+{
+  mLocator->search( result.userData.toString() );
 }
