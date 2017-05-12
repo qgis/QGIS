@@ -48,6 +48,11 @@ QList<QgsLocatorFilter *> QgsLocator::filters()
   return mFilters;
 }
 
+QMap<QString, QgsLocatorFilter *> QgsLocator::prefixedFilters() const
+{
+  return mPrefixedFilters;
+}
+
 void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 {
   mFilters.append( filter );

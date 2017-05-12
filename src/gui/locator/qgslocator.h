@@ -89,8 +89,16 @@ class GUI_EXPORT QgsLocator : public QObject
 
     /**
      * Returns the list of filters registered in the locator.
+     * \see prefixedFilters()
      */
     QList< QgsLocatorFilter *> filters();
+
+    /**
+     * Returns a map of prefix to filter, for all registered filters
+     * with valid prefixes.
+     * \see filters()
+     */
+    QMap< QString, QgsLocatorFilter *> prefixedFilters() const;
 
     /**
      * Triggers the background fetching of filter results for a specified search \a string.

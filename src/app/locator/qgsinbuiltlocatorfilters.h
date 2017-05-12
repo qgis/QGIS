@@ -29,7 +29,7 @@ class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
 
     QgsLayerTreeLocatorFilter( QObject *parent = nullptr );
     virtual QString name() const override { return QStringLiteral( "layertree" ); }
-    virtual QString displayName() const override { return tr( "Project layers" ); }
+    virtual QString displayName() const override { return tr( "Project Layers" ); }
     virtual Priority priority() const override { return Highest; }
     QString prefix() const override { return QStringLiteral( "l" ); }
 
@@ -46,7 +46,7 @@ class QgsLayoutLocatorFilter : public QgsLocatorFilter
 
     QgsLayoutLocatorFilter( QObject *parent = nullptr );
     virtual QString name() const override { return QStringLiteral( "layouts" ); }
-    virtual QString displayName() const override { return tr( "Project layouts" ); }
+    virtual QString displayName() const override { return tr( "Project Layouts" ); }
     virtual Priority priority() const override { return Highest; }
     QString prefix() const override { return QStringLiteral( "pl" ); }
 

@@ -71,7 +71,16 @@ class QgsLocator : QObject
     QList< QgsLocatorFilter *> filters();
 %Docstring
  Returns the list of filters registered in the locator.
+.. seealso:: prefixedFilters()
  :rtype: list of QgsLocatorFilter
+%End
+
+    QMap< QString, QgsLocatorFilter *> prefixedFilters() const;
+%Docstring
+ Returns a map of prefix to filter, for all registered filters
+ with valid prefixes.
+.. seealso:: filters()
+ :rtype: QMap< str, QgsLocatorFilter *>
 %End
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback = 0 );
