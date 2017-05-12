@@ -115,20 +115,9 @@ def load(fileName, name=None, crs=None, style=None):
         settings.setValue('/Projections/defaultBehavior', '')
     if name is None:
         name = os.path.split(fileName)[1]
-    qgslayer = QgsVectorLayer(fileName, name, 'ogr')
-    if qgslayer.isValid():
-        if crs is not None and qgslayer.crs() is None:
-            qgslayer.setCrs(crs, False)
-        if style is None:
-            if qgslayer.geometryType() == QgsWkbTypes.PointGeometry:
-                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
-            elif qgslayer.geometryType() == QgsWkbTypes.LineGeometry:
-                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
-            else:
-                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
-        qgslayer.loadNamedStyle(style)
-        QgsProject.instance().addMapLayers([qgslayer])
-    else:
+
+    suffix = os.path.splitext(fileName)[1][1:]
+    if suffix in getSupportedOutputRasterLayerExtensions():
         qgslayer = QgsRasterLayer(fileName, name)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
@@ -142,6 +131,21 @@ def load(fileName, name=None, crs=None, style=None):
                 settings.setValue('/Projections/defaultBehavior', prjSetting)
             raise RuntimeError('Could not load layer: ' + str(fileName) +
                                '\nCheck the processing framework log to look for errors')
+    else:
+        qgslayer = QgsVectorLayer(fileName, name, 'ogr')
+        if qgslayer.isValid():
+            if crs is not None and qgslayer.crs() is None:
+                qgslayer.setCrs(crs, False)
+            if style is None:
+                if qgslayer.geometryType() == QgsWkbTypes.PointGeometry:
+                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
+                elif qgslayer.geometryType() == QgsWkbTypes.LineGeometry:
+                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
+                else:
+                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
+            qgslayer.loadNamedStyle(style)
+            QgsProject.instance().addMapLayers([qgslayer])
+
     if prjSetting:
         settings.setValue('/Projections/defaultBehavior', prjSetting)
 
