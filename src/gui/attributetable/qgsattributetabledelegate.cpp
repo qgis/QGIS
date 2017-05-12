@@ -94,7 +94,12 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
     return;
 
   // This fixes https://issues.qgis.org/issues/16492
-  if ( ! vl->getFeature( fid ).isValid( ) )
+  QgsFeatureRequest request( fid );
+  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setSubsetOfAttributes( QgsAttributeList( ) );
+  QgsFeature feature;
+  vl->getFeatures( request ).nextFeature( feature );
+  if ( ! feature.isValid( ) )
   {
     // Model is out of sync (again!).
     return;
