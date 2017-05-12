@@ -10,7 +10,7 @@ use constant PUBLIC => 2;
 
 # read arguments
 my $debug = 0;
-GetOptions ("debug" => \$debug) or die("Error in command line arguments\n");
+die("usage: $0 [-debug] headerfile\n") unless GetOptions ("debug" => \$debug) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
 sub processDoxygenLine
