@@ -1082,7 +1082,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
 
   QgsMapSettings ms;
   ms.setLayers( layersToRender() );
-  return QgsMapSettingsUtils::containsAdvancedEffects( ms );
+  return ( !QgsMapSettingsUtils::containsAdvancedEffects( ms ).isEmpty() );
 }
 
 void QgsComposerMap::connectUpdateSlot()

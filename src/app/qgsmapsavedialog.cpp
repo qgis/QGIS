@@ -66,7 +66,23 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   {
     mSaveWorldFile->setVisible( false );
 
-    mSaveAsRaster->setChecked( QgsMapSettingsUtils::containsAdvancedEffects( mapCanvas->mapSettings() ) );
+    QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mapCanvas->mapSettings() );
+    if ( !layers.isEmpty() )
+    {
+      // Limit number of items to avoid extreme dialog height
+      if ( layers.count() >= 10 )
+      {
+        layers = layers.mid( 0, 9 );
+        layers << QChar( 0x2026 );
+      }
+      mInfo->setText( tr( "The following layer(s) use advanced effects:\n%1\nRasterizing map is recommended for proper rendering." ).arg(
+                        QChar( 0x2022 ) + QString( " " ) + layers.join( QString( "\n" ) + QChar( 0x2022 ) + QString( " " ) ) ) );
+      mSaveAsRaster->setChecked( true );
+    }
+    else
+    {
+      mSaveAsRaster->setChecked( false );
+    }
     mSaveAsRaster->setVisible( true );
 
     this->setWindowTitle( tr( "Save map as PDF" ) );

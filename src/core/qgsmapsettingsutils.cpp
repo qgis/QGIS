@@ -23,8 +23,10 @@
 
 #include <QString>
 
-bool QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &mapSettings )
+const QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &mapSettings )
 {
+  QSet< QString > layers;
+
   QgsTextFormat layerFormat;
   Q_FOREACH ( QgsMapLayer *layer, mapSettings.layers() )
   {
@@ -32,7 +34,7 @@ bool QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &mapSett
     {
       if ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
       {
-        return true;
+        layers << layer->name();
       }
       // if vector layer, check labels and feature blend mode
       QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -40,11 +42,11 @@ bool QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &mapSett
       {
         if ( currentVectorLayer->layerTransparency() != 0 )
         {
-          return true;
+          layers << layer->name();
         }
         if ( currentVectorLayer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
         {
-          return true;
+          layers << layer->name();
         }
         // check label blend modes
         if ( QgsPalLabeling::staticWillUseLayer( currentVectorLayer ) )
@@ -52,12 +54,15 @@ bool QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &mapSett
           // Check all label blending properties
           layerFormat.readFromLayer( currentVectorLayer );
           if ( layerFormat.containsAdvancedEffects() )
-            return true;
+          {
+            layers << layer->name();
+          }
         }
       }
     }
   }
-  return false;
+
+  return layers.toList();
 }
 
 QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings )
