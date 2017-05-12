@@ -145,6 +145,7 @@ bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
       case Qt::Key_PageUp:
       case Qt::Key_PageDown:
         showList();
+        mHasSelectedResult = true;
         QgsApplication::sendEvent( mResultsView, event );
         return true;
       case Qt::Key_Home:
@@ -152,6 +153,7 @@ bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
         if ( keyEvent->modifiers() & Qt::ControlModifier )
         {
           showList();
+          mHasSelectedResult = true;
           QgsApplication::sendEvent( mResultsView, event );
           return true;
         }
@@ -164,14 +166,20 @@ bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
         mResultsContainer->hide();
         return true;
       case Qt::Key_Tab:
+        mHasSelectedResult = true;
         mResultsView->selectNextResult();
         return true;
       case Qt::Key_Backtab:
+        mHasSelectedResult = true;
         mResultsView->selectPreviousResult();
         return true;
       default:
         break;
     }
+  }
+  else if ( obj == mResultsView && event->type() == QEvent::MouseButtonPress )
+  {
+    mHasSelectedResult = true;
   }
   else if ( event->type() == QEvent::FocusOut && ( obj == mLineEdit || obj == mResultsContainer || obj == mResultsView ) )
   {
@@ -193,7 +201,7 @@ bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
 
 void QgsLocatorWidget::addResult( const QgsLocatorResult &result )
 {
-  bool selectFirst = mProxyModel->rowCount() == 0;
+  bool selectFirst = !mHasSelectedResult || mProxyModel->rowCount() == 0;
   mLocatorModel->addResult( result );
   if ( selectFirst )
     mResultsView->setCurrentIndex( mProxyModel->index( 1, 0 ) );
@@ -213,6 +221,7 @@ void QgsLocatorWidget::updateResults( const QString &text )
   }
   else
   {
+    mHasSelectedResult = false;
     mLocatorModel->clear();
     if ( !text.isEmpty() )
     {
