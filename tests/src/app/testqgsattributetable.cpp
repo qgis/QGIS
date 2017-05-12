@@ -251,6 +251,7 @@ void TestQgsAttributeTable::testSelected()
 
 void TestQgsAttributeTable::testRegression15974()
 {
+  // Test duplicated rows in attribute table + two crashes.
   QString path = QDir::tempPath() + "/testshp15974.shp";
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
@@ -280,6 +281,7 @@ void TestQgsAttributeTable::testRegression15974()
   // dlg->mMainView->mFilterModel->invalidate();
   QCOMPARE( dlg->mMainView->filteredFeatureCount( ), 3 );
 }
+
 
 QGSTEST_MAIN( TestQgsAttributeTable )
 #include "testqgsattributetable.moc"

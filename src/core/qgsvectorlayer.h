@@ -1710,7 +1710,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Emitted when a feature has been deleted.
      *
-     * If you do expensive operations in a slot connected to this, you should prever to use
+     * If you do expensive operations in a slot connected to this, you should prefer to use
      * featuresDeleted( const QgsFeatureIds& ).
      *
      * \param fid The id of the feature which has been deleted
