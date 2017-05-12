@@ -693,7 +693,7 @@ void QgsGraduatedSymbolRendererV2Widget::cleanUpSymbolSelector( QgsPanelWidget *
   if ( !dlg )
     return;
 
-  delete dlg->symbol();
+  dlg->releaseSymbol();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::updateSymbolsFromWidget()

@@ -300,6 +300,12 @@ void QgsSymbolV2SelectorWidget::setMapCanvas( QgsMapCanvas *canvas )
     listWidget->setMapCanvas( canvas );
 }
 
+void QgsSymbolV2SelectorWidget::releaseSymbol()
+{
+  delete mSymbol;
+  mSymbol = nullptr;
+}
+
 void QgsSymbolV2SelectorWidget::loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent )
 {
   SymbolLayerItem* symbolItem = new SymbolLayerItem( symbol );
