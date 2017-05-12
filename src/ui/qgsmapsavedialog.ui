@@ -16,6 +16,13 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="9" column="0" colspan="2">
+      <widget class="QLabel" name="mInfo">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
      <item row="8" column="0" colspan="2">
       <widget class="QCheckBox" name="mSaveAsRaster">
        <property name="text">
