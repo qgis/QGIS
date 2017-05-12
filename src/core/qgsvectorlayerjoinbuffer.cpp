@@ -89,6 +89,8 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )
     connectJoinedLayer( vl );
   }
 
+  locker.unlock();
+
   emit joinedFieldsChanged();
   return true;
 }
