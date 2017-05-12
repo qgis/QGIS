@@ -23,7 +23,7 @@ import sys
 import os
 import subprocess
 
-from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug
+from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug, QThreadPool
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
@@ -88,6 +88,8 @@ class TestComposerBase(TestQgsPalLabeling):
         TestQgsPalLabeling.tearDownClass()
         cls.removeMapLayer(cls.layer)
         cls.layer = None
+        # avoid crash on finish, probably related to https://bugreports.qt.io/browse/QTBUG-35760
+        QThreadPool.globalInstance().waitForDone()
 
     def setUp(self):
         """Run before each test."""
@@ -100,7 +102,7 @@ class TestComposerBase(TestQgsPalLabeling):
         self._Mismatches.clear()
         self._ColorTols.clear()
 
-    def _set_up_composition(self, width, height, dpi):
+    def _set_up_composition(self, width, height, dpi, engine_settings):
         # set up composition and add map
         self._c = QgsComposition(QgsProject.instance())
         """:type: QgsComposition"""
@@ -117,7 +119,6 @@ class TestComposerBase(TestQgsPalLabeling):
         # add map as small graphics item first, then set its scene QRectF later
         self._cmap = QgsComposerMap(self._c, 10, 10, 10, 10)
         """:type: QgsComposerMap"""
-        self._cmap.setPreviewMode(QgsComposerMap.Render)
         self._cmap.setFrameEnabled(False)
         self._cmap.setLayers(self._TestMapSettings.layers())
         self._c.addComposerMap(self._cmap)
@@ -126,6 +127,8 @@ class TestComposerBase(TestQgsPalLabeling):
         self._cmap.setNewExtent(self.aoiExtent())
         # self._cmap.updateCachedImage()
         self._c.setPlotStyle(QgsComposition.Print)
+        # composition takes labeling engine settings from project
+        QgsProject.instance().setLabelingEngineSettings(engine_settings)
 
     # noinspection PyUnusedLocal
     def _get_composer_image(self, width, height, dpi):
@@ -271,7 +274,7 @@ class TestComposerBase(TestQgsPalLabeling):
         ms = self._TestMapSettings
         osize = ms.outputSize()
         width, height, dpi = osize.width(), osize.height(), ms.outputDpi()
-        self._set_up_composition(width, height, dpi)
+        self._set_up_composition(width, height, dpi, ms.labelingEngineSettings())
         if kind == OutputKind.Svg:
             return self._get_composer_svg_image(width, height, dpi)
         elif kind == OutputKind.Pdf:

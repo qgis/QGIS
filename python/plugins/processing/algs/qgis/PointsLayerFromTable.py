@@ -25,13 +25,18 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsWkbTypes, QgsPointV2, QgsCoordinateReferenceSystem, QgsGeometry
+from qgis.core import (QgsApplication,
+                       QgsWkbTypes,
+                       QgsPointV2,
+                       QgsCoordinateReferenceSystem,
+                       QgsGeometry,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class PointsLayerFromTable(GeoAlgorithm):
@@ -44,10 +49,25 @@ class PointsLayerFromTable(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     TARGET_CRS = 'TARGET_CRS'
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('points,create,values,attributes').split(',')
+
+    def group(self):
+        return self.tr('Vector creation tools')
+
+    def name(self):
+        return 'createpointslayerfromtable'
+
+    def displayName(self):
+        return self.tr('Create points layer from table')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create points layer from table')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
-        self.tags = self.tr('points,create,values,attributes')
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
@@ -62,9 +82,9 @@ class PointsLayerFromTable(GeoAlgorithm):
                                        self.tr('Target CRS'), 'EPSG:4326'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         source = self.getParameterValue(self.INPUT)
-        vlayer = dataobjects.getObjectFromUri(source)
+        vlayer = QgsProcessingUtils.mapLayerFromString(source, context)
         output = self.getOutputFromName(self.OUTPUT)
 
         fields = vlayer.fields()
@@ -87,10 +107,10 @@ class PointsLayerFromTable(GeoAlgorithm):
         target_crs = QgsCoordinateReferenceSystem()
         target_crs.createFromUserInput(crsId)
 
-        writer = output.getVectorWriter(fields, wkb_type, target_crs)
+        writer = output.getVectorWriter(fields, wkb_type, target_crs, context)
 
-        features = vector.features(vlayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(vlayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
 
         for current, feature in enumerate(features):
             feedback.setProgress(int(current * total))

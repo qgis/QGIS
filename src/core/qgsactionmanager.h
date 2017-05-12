@@ -78,21 +78,21 @@ class CORE_EXPORT QgsActionManager
     /**
      * Remove an action by its id.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void removeAction( const QUuid &actionId );
 
-    /** Does the given values. defaultValueIndex is the index of the
+    /** Does the given action. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
-     *  @note available in python bindings as doActionFeature
+     *  \note available in Python bindings as doActionFeature
      */
-    void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0 );
+    void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0 ) SIP_PYNAME( doActionFeature );
 
     /** Does the action using the expression engine to replace any embedded expressions
      * in the action definition.
-     * @param actionId action id
-     * @param feature feature to run action for
-     * @param context expression context to evaluate expressions under
+     * \param actionId action id
+     * \param feature feature to run action for
+     * \param context expression context to evaluate expressions under
      */
     void doAction( const QUuid &actionId, const QgsFeature &feature, const QgsExpressionContext &context );
 
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsActionManager
      * Return a list of actions that are available in the given action scope.
      * If no action scope is provided, all actions will be returned.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QList<QgsAction> actions( const QString &actionScope = QString() ) const;
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsActionManager
     /**
      * Get an action by its id.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsAction action( const QUuid &id );
 
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsActionManager
      * Each scope can have a default action. This will be saved in the project
      * file.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setDefaultAction( const QString &actionScope, const QUuid &actionId );
 
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsActionManager
      * Each scope can have a default action. This will be saved in the project
      * file.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsAction defaultAction( const QString &actionScope );
 

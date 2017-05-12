@@ -27,12 +27,21 @@ QVariant QgsCheckboxWidgetWrapper::value() const
 {
   QVariant v;
 
-  if ( mGroupBox )
-    v = mGroupBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
+  if ( field().type() == QVariant::Bool )
+  {
+    if ( mGroupBox )
+      v = mGroupBox->isChecked();
+    else if ( mCheckBox )
+      v = mCheckBox->isChecked();
+  }
+  else
+  {
+    if ( mGroupBox )
+      v = mGroupBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
 
-  if ( mCheckBox )
-    v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
-
+    else if ( mCheckBox )
+      v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
+  }
 
   return v;
 }
@@ -56,9 +65,9 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
   mGroupBox = qobject_cast<QGroupBox *>( editor );
 
   if ( mCheckBox )
-    connect( mCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( valueChanged( bool ) ) );
+    connect( mCheckBox, &QAbstractButton::toggled, this, static_cast<void ( QgsEditorWidgetWrapper::* )( bool )>( &QgsEditorWidgetWrapper::valueChanged ) );
   if ( mGroupBox )
-    connect( mGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( valueChanged( bool ) ) );
+    connect( mGroupBox, &QGroupBox::toggled, this, static_cast<void ( QgsEditorWidgetWrapper::* )( bool )>( &QgsEditorWidgetWrapper::valueChanged ) );
 }
 
 bool QgsCheckboxWidgetWrapper::valid() const
@@ -68,7 +77,16 @@ bool QgsCheckboxWidgetWrapper::valid() const
 
 void QgsCheckboxWidgetWrapper::setValue( const QVariant &value )
 {
-  bool state = ( value == config( QStringLiteral( "CheckedState" ) ) );
+  bool state = false;
+
+  if ( field().type() == QVariant::Bool )
+  {
+    state = value.toBool();
+  }
+  else
+  {
+    state = ( value == config( QStringLiteral( "CheckedState" ) ) );
+  }
   if ( mGroupBox )
   {
     mGroupBox->setChecked( state );

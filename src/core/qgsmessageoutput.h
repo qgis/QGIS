@@ -18,6 +18,7 @@
 #define QGSMESSAGEOUTPUT_H
 
 #include <QString>
+#include "qgis_sip.h"
 #include <QObject>
 
 #include "qgis_core.h"
@@ -59,14 +60,14 @@ class CORE_EXPORT QgsMessageOutput
     virtual void showMessage( bool blocking = true ) = 0;
 
     /** Display the blocking message to the user.
-     *  @note added in 2.10
+     *  \since QGIS 2.10
      */
     static void showMessage( const QString &title, const QString &message, MessageType msgType );
 
     //! sets function that will be used to create message output
-    //! @note not available in python bindings
-    // TODO: implementation where python class could be passed
-    static void setMessageOutputCreator( MESSAGE_OUTPUT_CREATOR f );
+    //! \note not available in Python bindings
+    // TODO: implementation where Python class could be passed
+    static void setMessageOutputCreator( MESSAGE_OUTPUT_CREATOR f ) SIP_SKIP;
 
     //! function that returns new class derived from QgsMessageOutput
     //! (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)

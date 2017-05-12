@@ -39,8 +39,8 @@ QgsServerLogger::QgsServerLogger()
   : mLogFile( nullptr )
   , mLogLevel( QgsMessageLog::NONE )
 {
-  connect( QgsApplication::messageLog(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ), this,
-           SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
+  connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, QgsMessageLog::MessageLevel )>( &QgsMessageLog::messageReceived ), this,
+           &QgsServerLogger::logMessage );
 }
 
 void QgsServerLogger::setLogLevel( QgsMessageLog::MessageLevel level )

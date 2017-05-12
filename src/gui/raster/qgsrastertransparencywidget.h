@@ -30,7 +30,7 @@ class QgsPoint;
 
 
 /** \ingroup gui
- * @brief Widget to control a layers transparency and related options
+ * \brief Widget to control a layers transparency and related options
  */
 class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterTransparencyWidget
 {
@@ -38,7 +38,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
   public:
 
     /**
-     * @brief Widget to control a layers transparency and related options
+     * \brief Widget to control a layers transparency and related options
      */
     QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 

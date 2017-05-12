@@ -69,18 +69,18 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 
 
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addLayer() ) );
+  connect( mAddButton, &QAbstractButton::clicked, this, &QgsWFSSourceSelect::addLayer );
 
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQueryButtonClicked() ) );
+  connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsWFSSourceSelect::buildQueryButtonClicked );
 
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-  connect( btnNew, SIGNAL( clicked() ), this, SLOT( addEntryToServerList() ) );
-  connect( btnEdit, SIGNAL( clicked() ), this, SLOT( modifyEntryOfServerList() ) );
-  connect( btnDelete, SIGNAL( clicked() ), this, SLOT( deleteEntryOfServerList() ) );
-  connect( btnConnect, SIGNAL( clicked() ), this, SLOT( connectToServer() ) );
-  connect( btnChangeSpatialRefSys, SIGNAL( clicked() ), this, SLOT( changeCRS() ) );
-  connect( lineFilter, SIGNAL( textChanged( QString ) ), this, SLOT( filterChanged( QString ) ) );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( btnNew, &QAbstractButton::clicked, this, &QgsWFSSourceSelect::addEntryToServerList );
+  connect( btnEdit, &QAbstractButton::clicked, this, &QgsWFSSourceSelect::modifyEntryOfServerList );
+  connect( btnDelete, &QAbstractButton::clicked, this, &QgsWFSSourceSelect::deleteEntryOfServerList );
+  connect( btnConnect, &QAbstractButton::clicked, this, &QgsWFSSourceSelect::connectToServer );
+  connect( btnChangeSpatialRefSys, &QAbstractButton::clicked, this, &QgsWFSSourceSelect::changeCRS );
+  connect( lineFilter, &QLineEdit::textChanged, this, &QgsWFSSourceSelect::filterChanged );
   populateConnectionList();
   mProjectionSelector = new QgsProjectionSelectionDialog( this );
   mProjectionSelector->setMessage( QString() );
@@ -106,8 +106,8 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
   mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   treeView->setModel( mModelProxy );
 
-  connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( treeWidgetItemDoubleClicked( const QModelIndex & ) ) );
-  connect( treeView->selectionModel(), SIGNAL( currentRowChanged( QModelIndex, QModelIndex ) ), this, SLOT( treeWidgetCurrentRowChanged( const QModelIndex &, const QModelIndex & ) ) );
+  connect( treeView, &QAbstractItemView::doubleClicked, this, &QgsWFSSourceSelect::treeWidgetItemDoubleClicked );
+  connect( treeView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsWFSSourceSelect::treeWidgetCurrentRowChanged );
 }
 
 QgsWFSSourceSelect::~QgsWFSSourceSelect()
@@ -168,7 +168,7 @@ void QgsWFSSourceSelect::populateConnectionList()
   QgsWfsConnection connection( cmbConnections->currentText() );
   delete mCapabilities;
   mCapabilities = new QgsWfsCapabilities( connection.uri().uri() );
-  connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
+  connect( mCapabilities, &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
 }
 
 QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
@@ -297,8 +297,8 @@ void QgsWFSSourceSelect::addEntryToServerList()
   // For testability, do not use exec()
   if ( !property( "hideDialogs" ).toBool() )
     nc->open();
-  connect( nc, SIGNAL( accepted() ), this, SLOT( populateConnectionList() ) );
-  connect( nc, SIGNAL( accepted() ), this, SIGNAL( connectionsChanged() ) );
+  connect( nc, &QDialog::accepted, this, &QgsWFSSourceSelect::populateConnectionList );
+  connect( nc, &QDialog::accepted, this, &QgsWFSSourceSelect::connectionsChanged );
 }
 
 void QgsWFSSourceSelect::modifyEntryOfServerList()
@@ -310,8 +310,8 @@ void QgsWFSSourceSelect::modifyEntryOfServerList()
   // For testability, do not use exec()
   if ( !property( "hideDialogs" ).toBool() )
     nc->open();
-  connect( nc, SIGNAL( accepted() ), this, SLOT( populateConnectionList() ) );
-  connect( nc, SIGNAL( accepted() ), this, SIGNAL( connectionsChanged() ) );
+  connect( nc, &QDialog::accepted, this, &QgsWFSSourceSelect::populateConnectionList );
+  connect( nc, &QDialog::accepted, this, &QgsWFSSourceSelect::connectionsChanged );
 }
 
 void QgsWFSSourceSelect::deleteEntryOfServerList()
@@ -640,7 +640,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
     d->setAttribute( Qt::WA_DeleteOnClose );
     d->setModal( true );
     d->open();
-    connect( d, SIGNAL( accepted() ), this, SLOT( updateSql() ) );
+    connect( d, &QDialog::accepted, this, &QgsWFSSourceSelect::updateSql );
   }
   else
   {
@@ -724,7 +724,7 @@ void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
 
   delete mCapabilities;
   mCapabilities = new QgsWfsCapabilities( connection.uri().uri() );
-  connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
+  connect( mCapabilities, &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
 }
 
 void QgsWFSSourceSelect::on_btnSave_clicked()

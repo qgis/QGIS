@@ -17,6 +17,8 @@
 #define QGSEDITORWIDGETFACTORY_H
 
 #include <QDomNode>
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <QMap>
 #include <QString>
 #include <QVariant>
@@ -44,7 +46,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
     /**
      * Constructor
      *
-     * @param name A human readable name for this widget type
+     * \param name A human readable name for this widget type
      */
     QgsEditorWidgetFactory( const QString &name );
 
@@ -52,24 +54,24 @@ class GUI_EXPORT QgsEditorWidgetFactory
 
     /**
      * Override this in your implementation.
-     * Create a new editor widget wrapper. Call {@link QgsEditorWidgetRegistry::create()}
+     * Create a new editor widget wrapper. Call QgsEditorWidgetRegistry::create()
      * instead of calling this method directly.
      *
-     * @param vl       The vector layer on which this widget will act
-     * @param fieldIdx The field index on which this widget will act
-     * @param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
-     * @param parent   The parent for the wrapper class and any created widget.
+     * \param vl       The vector layer on which this widget will act
+     * \param fieldIdx The field index on which this widget will act
+     * \param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
+     * \param parent   The parent for the wrapper class and any created widget.
      *
-     * @return         A new widget wrapper
+     * \returns         A new widget wrapper
      */
-    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const = 0;
+    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const = 0 SIP_FACTORY;
 
-    virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const;
+    virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const SIP_FACTORY;
 
     /**
      * Return The human readable identifier name of this widget type
      *
-     * @return a name
+     * \returns a name
      */
     QString name();
 
@@ -77,22 +79,22 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * Override this in your implementation.
      * Create a new configuration widget for this widget type.
      *
-     * @param vl       The layer for which the widget will be created
-     * @param fieldIdx The field index for which the widget will be created
-     * @param parent   The parent widget of the created config widget
+     * \param vl       The layer for which the widget will be created
+     * \param fieldIdx The field index for which the widget will be created
+     * \param parent   The parent widget of the created config widget
      *
-     * @return         A configuration widget
+     * \returns         A configuration widget
      */
-    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0;
+    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0 SIP_FACTORY;
 
     /**
      * Check if this editor widget type supports a certain field.
      *
-     * @param vl        The layer
-     * @param fieldIdx  The field index
-     * @return          True if the type is supported for this field
+     * \param vl        The layer
+     * \param fieldIdx  The field index
+     * \returns          True if the type is supported for this field
      *
-     * @see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
+     * \see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
      */
     inline bool supportsField( const QgsVectorLayer *vl, int fieldIdx ) { return fieldScore( vl, fieldIdx ) > 0; }
 
@@ -101,10 +103,10 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * Each widget type can have a priority value attached, the factory with the highest one
      * will be used.
      *
-     * @return A map of widget type names and weight values
-     * @note not available in Python bindings
+     * \returns A map of widget type names and weight values
+     * \note not available in Python bindings
      */
-    virtual QHash<const char *, int> supportedWidgetTypes() { return QHash<const char *, int>(); }
+    virtual QHash<const char *, int> supportedWidgetTypes() { return QHash<const char *, int>(); } SIP_SKIP
 
     /**
      * This method allows disabling this editor widget type for a certain field.
@@ -117,12 +119,12 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *   * 10: basic support (this is what returns TextEdit for example, since it supports everything in a crude way)
      *   * 20: specialized support
      *
-     * @param vl
-     * @param fieldIdx
-     * @return 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
+     * \param vl
+     * \param fieldIdx
+     * \returns 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
      *      taken by default). The default implementation returns 5..
      *
-     * @see supportsField( QgsVectorLayer* vl, fieldIdx )
+     * \see supportsField( QgsVectorLayer* vl, fieldIdx )
      */
     virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const;
 

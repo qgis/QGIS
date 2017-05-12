@@ -39,11 +39,11 @@ class CORE_EXPORT QgsCoordinateTransformCache
     QgsCoordinateTransformCache &operator=( const QgsCoordinateTransformCache &rh ) = delete;
 
     /** Returns coordinate transformation. Cache keeps ownership
-        @param srcAuthId auth id string of source crs
-        @param destAuthId auth id string of dest crs
-        @param srcDatumTransform id of source's datum transform
-        @param destDatumTransform id of destinations's datum transform
-        @returns matching transform, or an invalid transform if none could be created
+        \param srcAuthId auth id string of source crs
+        \param destAuthId auth id string of dest crs
+        \param srcDatumTransform id of source's datum transform
+        \param destDatumTransform id of destinations's datum transform
+        \returns matching transform, or an invalid transform if none could be created
      */
     QgsCoordinateTransform transform( const QString &srcAuthId, const QString &destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
 
@@ -54,6 +54,10 @@ class CORE_EXPORT QgsCoordinateTransformCache
     QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > mTransforms; //same auth_id pairs might have different datum transformations
 
     QgsCoordinateTransformCache();
+
+#ifdef SIP_RUN
+    QgsCoordinateTransformCache( const QgsCoordinateTransformCache &rh );
+#endif
 
 };
 

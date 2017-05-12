@@ -3,6 +3,7 @@
                               -------------------------
   begin                : December 20 , 2016
   copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswmshandler)
+                         (C) 2012 by René-Luc D'Hont    ( parts fron qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswmshandler)
                          (C) 2016 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -78,11 +79,11 @@ namespace QgsWfs
         }
         else if ( QSTR_COMPARE( req, "DescribeFeatureType" ) )
         {
-          writeDescribeFeatureType( mServerIface, versionString, request, response );
+          writeDescribeFeatureType( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "Transaction" ) )
         {
-          writeTransaction( mServerIface, versionString, request, response );
+          writeTransaction( mServerIface, project, versionString, request, response );
         }
         else
         {

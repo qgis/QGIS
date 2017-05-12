@@ -18,6 +18,7 @@
 #define DEFAULT_ELLIPSE_JOINSTYLE    Qt::MiterJoin
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsmarkersymbollayer.h"
 #include <QPainterPath>
 
@@ -30,8 +31,8 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
   public:
     QgsEllipseSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QString layerType() const override;
@@ -58,11 +59,11 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void setStrokeStyle( Qt::PenStyle strokeStyle ) { mStrokeStyle = strokeStyle; }
 
     /** Get stroke join style.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
     /** Set stroke join style.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
     void setStrokeWidth( double w ) { mStrokeWidth = w; }
@@ -75,15 +76,15 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     QColor strokeColor() const override { return mStrokeColor; }
 
     /** Sets the units for the symbol's width.
-     * @param unit symbol units
-     * @see symbolWidthUnit()
-     * @see setSymbolHeightUnit()
+     * \param unit symbol units
+     * \see symbolWidthUnit()
+     * \see setSymbolHeightUnit()
     */
     void setSymbolWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolWidthUnit = unit; }
 
     /** Returns the units for the symbol's width.
-     * @see setSymbolWidthUnit()
-     * @see symbolHeightUnit()
+     * \see setSymbolWidthUnit()
+     * \see symbolHeightUnit()
     */
     QgsUnitTypes::RenderUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
 
@@ -91,15 +92,15 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     const QgsMapUnitScale &symbolWidthMapUnitScale() const { return mSymbolWidthMapUnitScale; }
 
     /** Sets the units for the symbol's height.
-     * @param unit symbol units
-     * @see symbolHeightUnit()
-     * @see setSymbolWidthUnit()
+     * \param unit symbol units
+     * \see symbolHeightUnit()
+     * \see setSymbolWidthUnit()
     */
     void setSymbolHeightUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolHeightUnit = unit; }
 
     /** Returns the units for the symbol's height.
-     * @see setSymbolHeightUnit()
-     * @see symbolWidthUnit()
+     * \see setSymbolHeightUnit()
+     * \see symbolWidthUnit()
     */
     QgsUnitTypes::RenderUnit symbolHeightUnit() const { return mSymbolHeightUnit; }
 
@@ -107,13 +108,13 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     const QgsMapUnitScale &symbolHeightMapUnitScale() const { return mSymbolHeightMapUnitScale; }
 
     /** Sets the units for the symbol's stroke width.
-     * @param unit symbol units
-     * @see strokeWidthUnit()
+     * \param unit symbol units
+     * \see strokeWidthUnit()
     */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /** Returns the units for the symbol's stroke width.
-     * @see setStrokeWidthUnit()
+     * \see setStrokeWidthUnit()
     */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
@@ -149,11 +150,11 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     QBrush mBrush;
 
     /** Setup mPainterPath
-      @param symbolName name of symbol
-      @param context render context
-      @param scaledWidth optional width
-      @param scaledHeight optional height
-      @param f optional feature to render (0 if no data defined rendering)
+      \param symbolName name of symbol
+      \param context render context
+      \param scaledWidth optional width
+      \param scaledHeight optional height
+      \param f optional feature to render (0 if no data defined rendering)
      */
     void preparePath( const QString &symbolName, QgsSymbolRenderContext &context, double *scaledWidth = nullptr, double *scaledHeight = nullptr, const QgsFeature *f = nullptr );
     QSizeF calculateSize( QgsSymbolRenderContext &context, double *scaledWidth = nullptr, double *scaledHeight = nullptr );

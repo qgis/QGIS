@@ -63,6 +63,7 @@
 #include <QFileDialog>
 #include <QHeaderView>  // Qt 4.4
 #include <QMessageBox>
+#include <QDesktopServices>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -108,17 +109,17 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   projectionSelector->setShowNoProjection( true );
 
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
-  connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsProjectProperties::apply );
+  connect( this, &QDialog::accepted, this, &QgsProjectProperties::apply );
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, &QgsProjectProperties::srIdUpdated );
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::initialized, this, &QgsProjectProperties::projectionSelectorInitialized );
 
-  connect( cmbEllipsoid, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateEllipsoidUI( int ) ) );
+  connect( cmbEllipsoid, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsProjectProperties::updateEllipsoidUI );
 
-  connect( radAutomatic, SIGNAL( toggled( bool ) ), spinBoxDP, SLOT( setDisabled( bool ) ) );
-  connect( radAutomatic, SIGNAL( toggled( bool ) ), labelDP, SLOT( setDisabled( bool ) ) );
-  connect( radManual, SIGNAL( toggled( bool ) ), spinBoxDP, SLOT( setEnabled( bool ) ) );
-  connect( radManual, SIGNAL( toggled( bool ) ), labelDP, SLOT( setEnabled( bool ) ) );
+  connect( radAutomatic, &QAbstractButton::toggled, spinBoxDP, &QWidget::setDisabled );
+  connect( radAutomatic, &QAbstractButton::toggled, labelDP, &QWidget::setDisabled );
+  connect( radManual, &QAbstractButton::toggled, spinBoxDP, &QWidget::setEnabled );
+  connect( radManual, &QAbstractButton::toggled, labelDP, &QWidget::setEnabled );
 
   QgsSettings settings;
 
@@ -147,7 +148,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
-  mProjectFileLineEdit->setText( QgsProject::instance()->fileName() );
+  mProjectFileLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) );
+
+  connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [=] {
+    QFileInfo fi( QgsProject::instance()->fileName() );
+    QString folder = fi.path();
+    QDesktopServices::openUrl(QUrl::fromLocalFile( folder ));
+   });
 
   // get the manner in which the number of decimal places in the mouse
   // position display is set (manual or automatic)
@@ -233,7 +240,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       addScaleToScaleList( scale );
     }
   }
-  connect( lstScales, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( scaleItemChanged( QListWidgetItem * ) ) );
+  connect( lstScales, &QListWidget::itemChanged, this, &QgsProjectProperties::scaleItemChanged );
 
   grpProjectScales->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
 
@@ -455,7 +462,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     mWMSPrecisionSpinBox->setValue( WMSprecision );
   }
 
-  bool ok;
+  bool ok = false;
   QStringList values;
 
   mWMSExtMinX->setValidator( new QDoubleValidator( mWMSExtMinX ) );
@@ -657,11 +664,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   populateStyles();
 
   // Color palette
-  connect( mButtonCopyColors, SIGNAL( clicked() ), mTreeProjectColors, SLOT( copyColors() ) );
-  connect( mButtonRemoveColor, SIGNAL( clicked() ), mTreeProjectColors, SLOT( removeSelection() ) );
-  connect( mButtonPasteColors, SIGNAL( clicked() ), mTreeProjectColors, SLOT( pasteColors() ) );
-  connect( mButtonImportColors, SIGNAL( clicked( bool ) ), mTreeProjectColors, SLOT( showImportColorsDialog() ) );
-  connect( mButtonExportColors, SIGNAL( clicked( bool ) ), mTreeProjectColors, SLOT( showExportColorsDialog() ) );
+  connect( mButtonCopyColors, &QAbstractButton::clicked, mTreeProjectColors, &QgsColorSchemeList::copyColors );
+  connect( mButtonRemoveColor, &QAbstractButton::clicked, mTreeProjectColors, &QgsColorSchemeList::removeSelection );
+  connect( mButtonPasteColors, &QAbstractButton::clicked, mTreeProjectColors, &QgsColorSchemeList::pasteColors );
+  connect( mButtonImportColors, &QAbstractButton::clicked, mTreeProjectColors, &QgsColorSchemeList::showImportColorsDialog );
+  connect( mButtonExportColors, &QAbstractButton::clicked, mTreeProjectColors, &QgsColorSchemeList::showExportColorsDialog );
 
   QList<QgsProjectColorScheme *> projectSchemes;
   QgsApplication::colorSchemeRegistry()->schemes( projectSchemes );
@@ -738,13 +745,13 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->setCrs( srs );
     if ( srs.isValid() )
     {
-      QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );
+      QgsDebugMsgLevel( QString( "Selected CRS " ) + srs.description(), 4 );
       // write the currently selected projections _proj string_ to project settings
-      QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( srs.toProj4() ) );
+      QgsDebugMsgLevel( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( srs.toProj4() ), 4 );
     }
     else
     {
-      QgsDebugMsg( QString( "CRS set to no projection!" ) );
+      QgsDebugMsgLevel( QString( "CRS set to no projection!" ), 4 );
     }
 
     // mark selected projection for push to front
@@ -799,7 +806,7 @@ void QgsProjectProperties::apply()
     // If the user fields have changed, use them instead.
     if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
     {
-      QgsDebugMsg( "Using parameteric major/minor" );
+      QgsDebugMsgLevel( "Using parameteric major/minor", 4 );
       major = QLocale::system().toDouble( leSemiMajor->text() );
       minor = QLocale::system().toDouble( leSemiMinor->text() );
     }
@@ -1281,23 +1288,14 @@ void QgsProjectProperties::srIdUpdated()
   }
 }
 
-/*!
- * Function to save non-base dialog states
- */
 void QgsProjectProperties::saveState()
 {
 }
 
-/*!
- * Function to restore non-base dialog states
- */
 void QgsProjectProperties::restoreState()
 {
 }
 
-/*!
- * Set WMS default extent to current canvas extent
- */
 void QgsProjectProperties::on_pbnWMSExtCanvas_clicked()
 {
   QgsRectangle ext = mMapCanvas->extent();
@@ -1814,10 +1812,6 @@ void QgsProjectProperties::populateEllipsoidList()
   //
   // Populate the ellipsoid list
   //
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
-  int           myResult;
   EllipsoidDefs myItem;
 
   myItem.acronym = GEO_NONE;
@@ -1832,58 +1826,17 @@ void QgsProjectProperties::populateEllipsoidList()
   myItem.semiMinor = 6370997.0;
   mEllipsoidList.append( myItem );
 
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
-  if ( myResult )
+  Q_FOREACH ( const QgsEllipsoidUtils::EllipsoidDefinition &def, QgsEllipsoidUtils::definitions() )
   {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == 0 );
+    myItem.acronym = def.acronym;
+    myItem.description = def.description;
+    // Fall-back values
+    myItem.semiMajor = 0.0;
+    myItem.semiMinor = 0.0;
+    myItem.semiMajor = def.parameters.semiMajor;
+    myItem.semiMinor = def.parameters.semiMinor;
+    mEllipsoidList.append( myItem );
   }
-
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = QStringLiteral( "select acronym, name, radius, parameter2 from tbl_ellipsoid order by name" );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-    {
-      QString para1, para2;
-      myItem.acronym = ( const char * )sqlite3_column_text( myPreparedStatement, 0 );
-      myItem.description = ( const char * )sqlite3_column_text( myPreparedStatement, 1 );
-
-      // Copied from QgsDistanecArea. Should perhaps be moved there somehow?
-      // No error checking, this values are for show only, never used in calculations.
-
-      // Fall-back values
-      myItem.semiMajor = 0.0;
-      myItem.semiMinor = 0.0;
-      // Crash if no column?
-      para1 = ( const char * )sqlite3_column_text( myPreparedStatement, 2 );
-      para2 = ( const char * )sqlite3_column_text( myPreparedStatement, 3 );
-      myItem.semiMajor = para1.midRef( 2 ).toDouble();
-      if ( para2.left( 2 ) == QLatin1String( "b=" ) )
-      {
-        myItem.semiMinor = para2.midRef( 2 ).toDouble();
-      }
-      else if ( para2.left( 3 ) == QLatin1String( "rf=" ) )
-      {
-        double invFlattening = para2.midRef( 3 ).toDouble();
-        if ( invFlattening != 0.0 )
-        {
-          myItem.semiMinor = myItem.semiMajor - ( myItem.semiMajor / invFlattening );
-        }
-      }
-      mEllipsoidList.append( myItem );
-    }
-  }
-
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-
   // Add all items to selector
 
   Q_FOREACH ( const EllipsoidDefs &i, mEllipsoidList )
@@ -1910,7 +1863,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   // changing ellipsoid, save the modified coordinates
   if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
   {
-    QgsDebugMsg( "Saving major/minor" );
+    QgsDebugMsgLevel( "Saving major/minor", 4 );
     mEllipsoidList[ mEllipsoidIndex ].semiMajor = QLocale::system().toDouble( leSemiMajor->text() );
     mEllipsoidList[ mEllipsoidIndex ].semiMinor = QLocale::system().toDouble( leSemiMinor->text() );
   }
@@ -1945,7 +1898,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
 
 void QgsProjectProperties::projectionSelectorInitialized()
 {
-  QgsDebugMsg( "Setting up ellipsoid" );
+  QgsDebugMsgLevel( "Setting up ellipsoid", 4 );
 
   // Reading ellipsoid from settings
   QStringList mySplitEllipsoid = QgsProject::instance()->ellipsoid().split( ':' );

@@ -819,7 +819,7 @@ void TestQgsPaintEffect::vectorLayerEffect()
 
 void TestQgsPaintEffect::mapUnits()
 {
-  //test rendering an effect which utilises map units
+  //test rendering an effect which utilizes map units
   QString linesFileName = mTestDataDir + "lines.shp";
   QFileInfo lineFileInfo( linesFileName );
   QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(),

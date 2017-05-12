@@ -65,7 +65,14 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     };
 
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
+
+    /** Generate labels from the values in the color map.
+     *  Skip labels which were manually edited (black text).
+     *  Text of generated labels is made gray
+     */
     void autoLabel();
+
+    //! Extract the unit out of the current labels and set the unit field.
     void setUnitFromLabels();
 
     QMenu *contextMenu = nullptr;
@@ -81,7 +88,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mUnitLineEdit_textEdited( const QString &text ) { Q_UNUSED( text ); autoLabel(); }
     void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void mColormapTreeWidget_itemEdited( QTreeWidgetItem *item, int column );
-    void on_mBandComboBox_currentIndexChanged( int index );
+    void bandChanged();
     void on_mColorInterpolationComboBox_currentIndexChanged( int index );
     void on_mMinLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
     void on_mMaxLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
@@ -89,7 +96,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mMaxLineEdit_textEdited( const QString &text ) ;
     void on_mClassificationModeComboBox_currentIndexChanged( int index );
     void changeColor();
-    void changeTransparency();
+    void changeOpacity();
 
   private:
 

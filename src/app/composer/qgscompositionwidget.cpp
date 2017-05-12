@@ -24,6 +24,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"
+#include "qgsvectorlayer.h"
 #include <QColorDialog>
 #include <QWidget>
 #include <QPrinter> //for screen resolution
@@ -50,7 +51,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget *parent, QgsComposition *c )
   displayCompositionWidthHeight();
 
   updateVariables();
-  connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
+  connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, &QgsCompositionWidget::variablesChanged );
   // listen out for variable edits
   connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsCompositionWidget::updateVariables );
   connect( QgsProject::instance(), &QgsProject::customVariablesChanged, this, &QgsCompositionWidget::updateVariables );
@@ -58,7 +59,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget *parent, QgsComposition *c )
   if ( mComposition )
   {
     mNumPagesSpinBox->setValue( mComposition->numPages() );
-    connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( setNumberPages() ) );
+    connect( mComposition, &QgsComposition::nPagesChanged, this, &QgsCompositionWidget::setNumberPages );
 
     updatePageStyle();
 
@@ -97,16 +98,16 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget *parent, QgsComposition *c )
     if ( atlas )
     {
       // repopulate data defined buttons if atlas layer changes
-      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer * ) ),
-               this, SLOT( populateDataDefinedButtons() ) );
-      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
+      connect( atlas, &QgsAtlasComposition::coverageLayerChanged,
+               this, [ = ] { populateDataDefinedButtons(); } );
+      connect( atlas, &QgsAtlasComposition::toggled, this, &QgsCompositionWidget::populateDataDefinedButtons );
     }
   }
 
-  connect( mTopMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
-  connect( mRightMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
-  connect( mBottomMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
-  connect( mLeftMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+  connect( mTopMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCompositionWidget::resizeMarginsChanged );
+  connect( mRightMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCompositionWidget::resizeMarginsChanged );
+  connect( mBottomMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCompositionWidget::resizeMarginsChanged );
+  connect( mLeftMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCompositionWidget::resizeMarginsChanged );
 
   connect( mPaperSizeDDBtn, &QgsPropertyOverrideButton::activated, mPaperSizeComboBox, &QComboBox::setDisabled );
   connect( mPaperWidthDDBtn, &QgsPropertyOverrideButton::activated, mPaperWidthDoubleSpinBox, &QgsDoubleSpinBox::setDisabled );
@@ -547,7 +548,7 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
-  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
+  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsCompositionWidget::updateStyleFromWidget );
   connect( d, &QgsPanelWidget::panelAccepted, this, &QgsCompositionWidget::cleanUpStyleSelector );
   openPanel( d );
 }

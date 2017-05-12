@@ -27,6 +27,14 @@ QgsSvgAnnotation::QgsSvgAnnotation( QObject *parent )
 
 }
 
+QgsSvgAnnotation *QgsSvgAnnotation::clone() const
+{
+  std::unique_ptr< QgsSvgAnnotation > c( new QgsSvgAnnotation() );
+  copyCommonProperties( c.get() );
+  c->setFilePath( mFilePath );
+  return c.release();
+}
+
 void QgsSvgAnnotation::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   QDomElement svgAnnotationElem = doc.createElement( QStringLiteral( "SVGAnnotationItem" ) );

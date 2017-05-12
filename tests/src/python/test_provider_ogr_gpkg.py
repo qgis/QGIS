@@ -19,7 +19,7 @@ import tempfile
 import shutil
 from osgeo import gdal, ogr
 
-from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsRectangle, QgsSettings
+from qgis.core import QgsVectorLayer, QgsVectorLayerExporter, QgsFeature, QgsGeometry, QgsRectangle, QgsSettings
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app, unittest
 
@@ -160,7 +160,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
     @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2))
     def testGeopackageExtentUpdate(self):
-        ''' test http://hub.qgis.org/issues/15273 '''
+        ''' test https://issues.qgis.org/issues/15273 '''
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageExtentUpdate.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
         lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
@@ -394,6 +394,62 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl = None
 
         QgsSettings().setValue("/qgis/walForSqlite3", None)
+
+    def testSimulatedDBManagerImport(self):
+        uri = 'point?field=f1:int'
+        uri += '&field=f2:double(6,4)'
+        uri += '&field=f3:string(20)'
+        lyr = QgsVectorLayer(uri, "x", "memory")
+        self.assertTrue(lyr.isValid())
+        f = QgsFeature(lyr.fields())
+        f['f1'] = 1
+        f['f2'] = 123.456
+        f['f3'] = '12345678.90123456789'
+        f2 = QgsFeature(lyr.fields())
+        f2['f1'] = 2
+        lyr.dataProvider().addFeatures([f, f2])
+
+        tmpfile = os.path.join(self.basetestpath, 'testSimulatedDBManagerImport.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        ds = None
+        options = {}
+        options['update'] = True
+        options['driverName'] = 'GPKG'
+        options['layerName'] = 'my_out_table'
+        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, options)
+        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
+                         'unexpected import error {0}'.format(err))
+        lyr = QgsVectorLayer(tmpfile + "|layername=my_out_table", "y", "ogr")
+        self.assertTrue(lyr.isValid())
+        features = lyr.getFeatures()
+        f = next(features)
+        self.assertEqual(f['f1'], 1)
+        self.assertEqual(f['f2'], 123.456)
+        self.assertEqual(f['f3'], '12345678.90123456789')
+        f = next(features)
+        self.assertEqual(f['f1'], 2)
+        features = None
+
+        # Test overwriting without overwrite option
+        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, options)
+        self.assertEqual(err[0], QgsVectorLayerExporter.ErrCreateDataSource)
+
+        # Test overwriting
+        lyr = QgsVectorLayer(uri, "x", "memory")
+        self.assertTrue(lyr.isValid())
+        f = QgsFeature(lyr.fields())
+        f['f1'] = 3
+        lyr.dataProvider().addFeatures([f])
+        options['overwrite'] = True
+        err = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, options)
+        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
+                         'unexpected import error {0}'.format(err))
+        lyr = QgsVectorLayer(tmpfile + "|layername=my_out_table", "y", "ogr")
+        self.assertTrue(lyr.isValid())
+        features = lyr.getFeatures()
+        f = next(features)
+        self.assertEqual(f['f1'], 3)
+        features = None
 
 
 if __name__ == '__main__':

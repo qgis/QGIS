@@ -20,11 +20,13 @@
 
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrectangle.h"
+#include "qgssettings.h"
 
 
 QString QgsOSMDownload::defaultServiceUrl()
 {
-  return QStringLiteral( "http://overpass-api.de/api/interpreter" );
+  QgsSettings settings;
+  return settings.value( "overpass_url", "http://overpass-api.de/api/interpreter" ).toString();
 }
 
 
@@ -37,6 +39,13 @@ QString QgsOSMDownload::queryFromRect( const QgsRectangle &rect )
 
 QgsOSMDownload::QgsOSMDownload()
   : mServiceUrl( defaultServiceUrl() )
+  , mReply( nullptr )
+{
+}
+
+QgsOSMDownload::QgsOSMDownload( const QString &query )
+  : mServiceUrl( defaultServiceUrl() )
+  , mQuery( query )
   , mReply( nullptr )
 {
 }
@@ -84,10 +93,10 @@ bool QgsOSMDownload::start()
 
   mReply = nwam->get( request );
 
-  connect( mReply, SIGNAL( readyRead() ), this, SLOT( onReadyRead() ) );
-  connect( mReply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( onError( QNetworkReply::NetworkError ) ) );
-  connect( mReply, SIGNAL( finished() ), this, SLOT( onFinished() ) );
-  connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SIGNAL( downloadProgress( qint64, qint64 ) ) );
+  connect( mReply, &QIODevice::readyRead, this, &QgsOSMDownload::onReadyRead );
+  connect( mReply, static_cast < void ( QNetworkReply::* )( QNetworkReply::NetworkError ) >( &QNetworkReply::error ), this, &QgsOSMDownload::onError );
+  connect( mReply, &QNetworkReply::finished, this, &QgsOSMDownload::onFinished );
+  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsOSMDownload::downloadProgress );
 
   return true;
 }

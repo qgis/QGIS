@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes
+from qgis.core import (QgsWkbTypes,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -56,12 +57,19 @@ class FixedDistanceBuffer(GeoAlgorithm):
     JOIN_STYLE = 'JOIN_STYLE'
     MITRE_LIMIT = 'MITRE_LIMIT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'fixeddistancebuffer'
+
+    def displayName(self):
+        return self.tr('Fixed distance buffer')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Fixed distance buffer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -86,11 +94,10 @@ class FixedDistanceBuffer(GeoAlgorithm):
             self.join_styles, default=0))
         self.addParameter(ParameterNumber(self.MITRE_LIMIT,
                                           self.tr('Mitre limit'), 1, default=2))
-
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         distance = self.getParameterValue(self.DISTANCE)
         dissolve = self.getParameterValue(self.DISSOLVE)
         segments = int(self.getParameterValue(self.SEGMENTS))
@@ -99,8 +106,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
         miter_limit = self.getParameterValue(self.MITRE_LIMIT)
 
         writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields().toList(),
-                                         QgsWkbTypes.Polygon, layer.crs())
+            self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon, layer.crs(), context)
 
-        buff.buffering(feedback, writer, distance, None, False, layer,
-                       dissolve, segments, end_cap_style, join_style, miter_limit)
+        buff.buffering(feedback, context, writer, distance, None, False, layer, dissolve, segments, end_cap_style,
+                       join_style, miter_limit)

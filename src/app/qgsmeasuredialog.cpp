@@ -39,12 +39,12 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
 
   QPushButton *nb = new QPushButton( tr( "&New" ) );
   buttonBox->addButton( nb, QDialogButtonBox::ActionRole );
-  connect( nb, SIGNAL( clicked() ), this, SLOT( restart() ) );
+  connect( nb, &QAbstractButton::clicked, this, &QgsMeasureDialog::restart );
 
   // Add a configuration button
   QPushButton *cb = new QPushButton( tr( "&Configuration" ) );
   buttonBox->addButton( cb, QDialogButtonBox::ActionRole );
-  connect( cb, SIGNAL( clicked() ), this, SLOT( openConfigTab() ) );
+  connect( cb, &QAbstractButton::clicked, this, &QgsMeasureDialog::openConfigTab );
 
   mMeasureArea = tool->measureArea();
   mTotal = 0.;
@@ -66,8 +66,8 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
 
   updateSettings();
 
-  connect( mUnitsCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( unitsChanged( int ) ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMeasureDialog::unitsChanged );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsMeasureDialog::reject );
   connect( mTool->canvas(), &QgsMapCanvas::destinationCrsChanged, this, &QgsMeasureDialog::crsChanged );
 
   groupBox->setCollapsed( true );
@@ -106,7 +106,6 @@ void QgsMeasureDialog::updateSettings()
   mAreaUnits = QgsProject::instance()->areaUnits();
   mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs() );
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  mDa.setEllipsoidalMode( true );
 
   mTable->clear();
   mTotal = 0;
@@ -274,7 +273,16 @@ QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits ) c
 
   if ( convertUnits )
     distance = convertLength( distance, mDistanceUnits );
-  return QgsDistanceArea::formatDistance( distance, mDecimalPlaces, mDistanceUnits, baseUnit );
+
+  int decimals = mDecimalPlaces;
+  if ( mDistanceUnits == QgsUnitTypes::DistanceDegrees  && distance < 1 )
+  {
+    // special handling for degrees - because we can't use smaller units (eg m->mm), we need to make sure there's
+    // enough decimal places to show a usable measurement value
+    int minPlaces = qRound( log10( 1.0 / distance ) ) + 1;
+    decimals = qMax( decimals, minPlaces );
+  }
+  return QgsDistanceArea::formatDistance( distance, decimals, mDistanceUnits, baseUnit );
 }
 
 QString QgsMeasureDialog::formatArea( double area, bool convertUnits ) const
@@ -518,6 +526,8 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareMiles ), QgsUnitTypes::AreaSquareMiles );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaHectares ), QgsUnitTypes::AreaHectares );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaAcres ), QgsUnitTypes::AreaAcres );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareCentimeters ), QgsUnitTypes::AreaSquareCentimeters );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareMillimeters ), QgsUnitTypes::AreaSquareMillimeters );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareNauticalMiles ), QgsUnitTypes::AreaSquareNauticalMiles );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::AreaSquareDegrees ), QgsUnitTypes::AreaSquareDegrees );
     mUnitsCombo->addItem( tr( "map units" ), QgsUnitTypes::AreaUnknownUnit );
@@ -529,8 +539,10 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceFeet ), QgsUnitTypes::DistanceFeet );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceYards ), QgsUnitTypes::DistanceYards );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMiles ), QgsUnitTypes::DistanceMiles );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceDegrees ), QgsUnitTypes::DistanceDegrees );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceNauticalMiles ), QgsUnitTypes::DistanceNauticalMiles );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceCentimeters ), QgsUnitTypes::DistanceCentimeters );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMillimeters ), QgsUnitTypes::DistanceMillimeters );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceDegrees ), QgsUnitTypes::DistanceDegrees );
     mUnitsCombo->addItem( tr( "map units" ), QgsUnitTypes::DistanceUnknownUnit );
   }
 }

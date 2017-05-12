@@ -39,6 +39,10 @@ class QgsPoint;
 class QgsRasterLayer;
 class QgsRectangle;
 class QgsMessageBar;
+class QgsGeorefToolAddPoint;
+class QgsGeorefToolDeletePoint;
+class QgsGeorefToolMovePoint;
+class QgsGeorefToolMovePoint;
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {
@@ -192,8 +196,8 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
      * ground control points and transform method.
      * Note that the RMSE measure is adjusted for the degrees of freedom of the
      * used polynomial transform.
-     * @param error out: the mean error
-     * @return true in case of success
+     * \param error out: the mean error
+     * \returns true in case of success
      */
     bool calculateMeanError( double &error ) const;
 
@@ -242,10 +246,10 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
     QgsMapTool *mToolPan = nullptr;
-    QgsMapTool *mToolAddPoint = nullptr;
-    QgsMapTool *mToolDeletePoint = nullptr;
-    QgsMapTool *mToolMovePoint = nullptr;
-    QgsMapTool *mToolMovePointQgis = nullptr;
+    QgsGeorefToolAddPoint *mToolAddPoint = nullptr;
+    QgsGeorefToolDeletePoint *mToolDeletePoint = nullptr;
+    QgsGeorefToolMovePoint *mToolMovePoint = nullptr;
+    QgsGeorefToolMovePoint *mToolMovePointQgis = nullptr;
 
     QgsGeorefDataPoint *mMovingPoint = nullptr;
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;

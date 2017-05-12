@@ -14,7 +14,7 @@
  * Defines left outer join from our vector layer to some other vector layer.
  * The join is done based on [our layer].targetField = [join layer].joinField
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorLayerJoinInfo
 {
@@ -27,7 +27,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     //! Sets weak reference to the joined layer
     void setJoinLayer( QgsVectorLayer *layer ) { mJoinLayerRef = QgsVectorLayerRef( layer ); }
     //! Returns joined layer (may be null if the reference was set by layer ID and not resolved yet)
-    QgsVectorLayer *joinLayer() const { return mJoinLayerRef.layer.data(); }
+    QgsVectorLayer *joinLayer() const { return mJoinLayerRef.get(); }
 
     //! Sets ID of the joined layer. It will need to be overwritten by setJoinLayer() to a reference to real layer
     void setJoinLayerId( const QString &layerId ) { mJoinLayerRef = QgsVectorLayerRef( layerId ); }
@@ -65,11 +65,11 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     }
 
     /** Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
-      @note added in 2.6 */
+      \since QGIS 2.6 */
     void setJoinFieldNamesSubset( QStringList *fieldNamesSubset ) { mJoinFieldsSubset = std::shared_ptr<QStringList>( fieldNamesSubset ); }
 
     /** Get subset of fields to be used from joined layer. All fields will be used if null is returned.
-      @note added in 2.6 */
+      \since QGIS 2.6 */
     QStringList *joinFieldNamesSubset() const { return mJoinFieldsSubset.get(); }
 
   protected:
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     QString mJoinFieldName;
 
     /** An optional prefix. If it is a Null string "{layername}_" will be used
-     * @note Added in 2.8
+     * \since QGIS 2.8
      */
     QString mPrefix;
 

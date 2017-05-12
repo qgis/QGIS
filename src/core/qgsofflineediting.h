@@ -51,10 +51,10 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     QgsOfflineEditing();
 
     /** Convert current project for offline editing
-     * @param offlineDataPath Path to offline db file
-     * @param offlineDbFile Offline db file name
-     * @param layerIds List of layer names to convert
-     * @param onlySelected Only copy selected features from layers where a selection is present
+     * \param offlineDataPath Path to offline db file
+     * \param offlineDbFile Offline db file name
+     * \param layerIds List of layer names to convert
+     * \param onlySelected Only copy selected features from layers where a selection is present
      */
     bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false );
 
@@ -65,33 +65,40 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void synchronize();
 
   signals:
-    //! Emit a signal that processing has started
+
+    /**
+     * The signal is emitted when the process has started.
+     */
     void progressStarted();
 
-    /** Emit a signal that the next layer of numLayers has started processing
-     * @param layer current layer index
-     * @param numLayers total number of layers
+    /**
+     * Is emitted whenever a new layer is being processed.
+     * It is possible to estimate the progress of the complete operation by
+     * comparing the index of the current \a layer to the total amount
+     * \a numLayers.
      */
     void layerProgressUpdated( int layer, int numLayers );
 
-    /** Emit a signal that sets the mode for the progress of the current operation
-     * @param mode progress mode
-     * @param maximum total number of entities to process in the current operation
+    /**
+     * Is emitted when the mode for the progress of the current operation is
+     * set.
+     * \param mode progress mode
+     * \param maximum total number of entities to process in the current operation
      */
     void progressModeSet( QgsOfflineEditing::ProgressMode mode, int maximum );
 
-    /** Emit a signal with the progress of the current mode
-     * @param progress current index of processed entities
+    /** Emitted with the progress of the current mode
+     * \param progress current index of processed entities
      */
     void progressUpdated( int progress );
 
-    //! Emit a signal that processing of all layers has finished
+    //! Emitted when the processing of all layers has finished
     void progressStopped();
 
     /**
      * Emitted when a warning needs to be displayed.
-     * @param title title string for message
-     * @param message A descriptive message for the warning
+     * \param title title string for message
+     * \param message A descriptive message for the warning
      */
     void warning( const QString &title, const QString &message );
 

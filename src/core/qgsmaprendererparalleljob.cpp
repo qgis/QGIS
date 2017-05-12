@@ -19,7 +19,6 @@
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlistutils.h"
@@ -54,7 +53,6 @@ void QgsMapRendererParallelJob::start()
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
     mLabelingEngineV2.reset( new QgsLabelingEngine() );
-    mLabelingEngineV2->readSettingsFromProject( QgsProject::instance() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -244,7 +242,10 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
     return;
 
   if ( job.img )
+  {
     job.img->fill( 0 );
+    job.imageInitialized = true;
+  }
 
   QTime t;
   t.start();

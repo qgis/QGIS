@@ -124,7 +124,8 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     if ( config( QStringLiteral( "Suffix" ) ).isValid() )
       mDoubleSpinBox->setSuffix( config( QStringLiteral( "Suffix" ) ).toString() );
 
-    connect( mDoubleSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( valueChanged( double ) ) );
+    connect( mDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ),
+             this, static_cast < void ( QgsEditorWidgetWrapper::* )( double ) > ( &QgsEditorWidgetWrapper::valueChanged ) );
   }
   else if ( mIntSpinBox )
   {

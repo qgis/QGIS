@@ -19,6 +19,8 @@
 #define QGSTASKMANAGER_H
 
 #include <QObject>
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <QMap>
 #include <QFuture>
 #include <QReadWriteLock>
@@ -46,7 +48,7 @@ typedef QList< QgsTask * > QgsTaskList;
  * has been canceled via some external event. If this flag is true then the task should
  * clean up and terminate at the earliest possible convenience.
  *
- * \note Added in version 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsTask : public QObject
 {
@@ -74,8 +76,8 @@ class CORE_EXPORT QgsTask : public QObject
 
     /**
      * Constructor for QgsTask.
-     * @param description text description of task
-     * @param flags task flags
+     * \param description text description of task
+     * \param flags task flags
      */
     QgsTask( const QString &description = QString(), const Flags &flags = AllFlags );
 
@@ -119,7 +121,7 @@ class CORE_EXPORT QgsTask : public QObject
      * time. Any subtasks owned by this task will also be canceled.
      * Derived classes must ensure that the base class implementation is called
      * from any overridden version.
-     * @see isCanceled()
+     * \see isCanceled()
      */
     virtual void cancel();
 
@@ -128,7 +130,7 @@ class CORE_EXPORT QgsTask : public QObject
      * (ie it is already running or has finished) then calling this has no effect.
      * Calling this method only has an effect for tasks which are managed
      * by a QgsTaskManager.
-     * @see unhold()
+     * \see unhold()
      */
     void hold();
 
@@ -136,7 +138,7 @@ class CORE_EXPORT QgsTask : public QObject
      * Releases the task from being held. For tasks managed by a QgsTaskManager
      * calling this will re-add them to the queue. If the
      * task in not currently being held then calling this has no effect.
-     * @see hold()
+     * \see hold()
      */
     void unhold();
 
@@ -160,58 +162,67 @@ class CORE_EXPORT QgsTask : public QObject
      * argument. Note that subtasks should NEVER be dependent on their parent task, and violating
      * this constraint will prevent the task from completing successfully.
      *
-     * The parent task must be added to a QgsTaskManager for subtasks to be utilised.
+     * The parent task must be added to a QgsTaskManager for subtasks to be utilized.
      * Subtasks should not be added manually to a QgsTaskManager, rather, only the parent
      * task should be added to the manager.
      *
      * Subtasks can be nested, ie a subtask can legally be a parent task itself with
      * its own set of subtasks.
      */
-    void addSubTask( QgsTask *subTask, const QgsTaskList &dependencies = QgsTaskList(),
+    void addSubTask( QgsTask *subTask SIP_TRANSFER, const QgsTaskList &dependencies = QgsTaskList(),
                      SubTaskDependency subTaskDependency = SubTaskIndependent );
 
     /**
      * Sets a list of layers on which the task depends. The task will automatically
      * be canceled if any of these layers are about to be removed.
-     * @see dependentLayerIds()
+     * \see dependentLayerIds()
      */
     void setDependentLayers( const QList<QgsMapLayer *> &dependentLayers );
 
     /**
      * Returns the list of layers on which the task depends. The task will automatically
      * be canceled if any of these layers are about to be removed.
-     * @see setDependentLayers()
+     * \see setDependentLayers()
      */
     QList< QgsMapLayer * > dependentLayers() const;
+
+    /**
+     * Blocks the current thread until the task finishes or a maximum of \a timeout milliseconds.
+     * If the \a timeout is ``-1`` the thread will be blocked forever.
+     * In case of a timeout, the task will still be running.
+     *
+     * The result will be false if the wait timed out and true in any other case.
+     */
+    bool waitForFinished( int timeout = 30000 );
 
   signals:
 
     /**
      * Will be emitted by task when its progress changes.
-     * @param progress percent of progress, from 0.0 - 100.0
-     * @note derived classes should not emit this signal directly, instead they should call
+     * \param progress percent of progress, from 0.0 - 100.0
+     * \note derived classes should not emit this signal directly, instead they should call
      * setProgress()
      */
     void progressChanged( double progress );
 
     /**
      * Will be emitted by task when its status changes.
-     * @param status new task status
-     * @note derived classes should not emit this signal directly, it will automatically
+     * \param status new task status
+     * \note derived classes should not emit this signal directly, it will automatically
      * be emitted
      */
     void statusChanged( int status );
 
     /**
      * Will be emitted by task to indicate its commencement.
-     * @note derived classes should not emit this signal directly, it will automatically
+     * \note derived classes should not emit this signal directly, it will automatically
      * be emitted when the task begins
      */
     void begun();
 
     /**
      * Will be emitted by task to indicate its successful completion.
-     * @note derived classes should not emit this signal directly, it will automatically
+     * \note derived classes should not emit this signal directly, it will automatically
      * be emitted
      */
     void taskCompleted();
@@ -220,7 +231,7 @@ class CORE_EXPORT QgsTask : public QObject
      * Will be emitted by task if it has terminated for any reason
      * other then completion (e.g., when a task has been canceled or encountered
      * an internal error).
-     * @note derived classes should not emit this signal directly, it will automatically
+     * \note derived classes should not emit this signal directly, it will automatically
      * be emitted
      */
     void taskTerminated();
@@ -261,7 +272,7 @@ class CORE_EXPORT QgsTask : public QObject
     /**
      * Sets the task's current progress. The derived class should call this method whenever
      * the task wants to update its progress. Calling will automatically emit the progressChanged signal.
-     * @param progress percent of progress, from 0.0 - 100.0
+     * \param progress percent of progress, from 0.0 - 100.0
      */
     void setProgress( double progress );
 
@@ -334,7 +345,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsTask::Flags )
  * \class QgsTaskManager
  * \brief Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
  * or accessed via QgsApplication::taskManager().
- * \note Added in version 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsTaskManager : public QObject
 {
@@ -343,9 +354,9 @@ class CORE_EXPORT QgsTaskManager : public QObject
   public:
 
     /** Constructor for QgsTaskManager.
-     * @param parent parent QObject
+     * \param parent parent QObject
      */
-    QgsTaskManager( QObject *parent = nullptr );
+    QgsTaskManager( QObject *parent SIP_TRANSFERTHIS = 0 );
 
     virtual ~QgsTaskManager();
 
@@ -381,9 +392,9 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * the task. The priority argument can be used to control the run queue's
      * order of execution, with larger numbers
      * taking precedence over lower priority numbers.
-     * @returns unique task ID
+     * \returns unique task ID
      */
-    long addTask( QgsTask *task, int priority = 0 );
+    long addTask( QgsTask *task SIP_TRANSFER, int priority = 0 );
 
     /**
      * Adds a task to the manager, using a full task definition (including dependency
@@ -391,13 +402,13 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * manager will be responsible for starting the task. The priority argument can
      * be used to control the run queue's order of execution, with larger numbers
      * taking precedence over lower priority numbers.
-     * @returns unique task ID
+     * \returns unique task ID
      */
-    long addTask( const TaskDefinition &task, int priority = 0 );
+    long addTask( const TaskDefinition &task SIP_TRANSFER, int priority = 0 );
 
     /** Returns the task with matching ID.
-     * @param id task ID
-     * @returns task if found, or nullptr
+     * \param id task ID
+     * \returns task if found, or nullptr
      */
     QgsTask *task( long id ) const;
 
@@ -409,8 +420,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
     int count() const;
 
     /** Returns the unique task ID corresponding to a task managed by the class.
-     * @param task task to find
-     * @returns task ID, or -1 if task not found
+     * \param task task to find
+     * \returns task ID, or -1 if task not found
      */
     long taskId( QgsTask *task ) const;
 
@@ -425,65 +436,65 @@ class CORE_EXPORT QgsTaskManager : public QObject
     bool dependenciesSatisfied( long taskId ) const;
 
     //! Returns the set of task IDs on which a task is dependent
-    //! @note not available in Python bindings
-    QSet< long > dependencies( long taskId ) const;
+    //! \note not available in Python bindings
+    QSet< long > dependencies( long taskId ) const SIP_SKIP;
 
     /** Returns a list of layers on which as task is dependent. The task will automatically
      * be canceled if any of these layers are above to be removed.
-     * @param taskId task ID
-     * @returns list of layers
-     * @see tasksDependentOnLayer()
+     * \param taskId task ID
+     * \returns list of layers
+     * \see tasksDependentOnLayer()
      */
     QList< QgsMapLayer * > dependentLayers( long taskId ) const;
 
     /**
      * Returns a list of tasks which depend on a layer.
-     * @see dependentLayers()
+     * \see dependentLayers()
      */
     QList< QgsTask * > tasksDependentOnLayer( QgsMapLayer *layer ) const;
 
     /** Returns a list of the active (queued or running) tasks.
-     * @see countActiveTasks()
+     * \see countActiveTasks()
      */
     QList< QgsTask * > activeTasks() const;
 
     /** Returns the number of active (queued or running) tasks.
-     * @see activeTasks()
-     * @see countActiveTasksChanged()
+     * \see activeTasks()
+     * \see countActiveTasksChanged()
      */
     int countActiveTasks() const;
 
   signals:
 
     //! Will be emitted when a task reports a progress change
-    //! @param taskId ID of task
-    //! @param progress percent of progress, from 0.0 - 100.0
+    //! \param taskId ID of task
+    //! \param progress percent of progress, from 0.0 - 100.0
     void progressChanged( long taskId, double progress );
 
     //! Will be emitted when only a single task remains to complete
     //! and that task has reported a progress change
-    //! @param progress percent of progress, from 0.0 - 100.0
+    //! \param progress percent of progress, from 0.0 - 100.0
     void finalTaskProgressChanged( double progress );
 
     //! Will be emitted when a task reports a status change
-    //! @param taskId ID of task
-    //! @param status new task status
+    //! \param taskId ID of task
+    //! \param status new task status
     void statusChanged( long taskId, int status );
 
     //! Emitted when a new task has been added to the manager
-    //! @param taskId ID of task
+    //! \param taskId ID of task
     void taskAdded( long taskId );
 
     //! Emitted when a task is about to be deleted
-    //! @param taskId ID of task
+    //! \param taskId ID of task
     void taskAboutToBeDeleted( long taskId );
 
     //! Emitted when all tasks are complete
-    //! @see countActiveTasksChanged()
+    //! \see countActiveTasksChanged()
     void allTasksFinished();
 
     //! Emitted when the number of active tasks changes
-    //! @see countActiveTasks()
+    //! \see countActiveTasks()
     void countActiveTasksChanged( int count );
 
   private slots:
@@ -533,7 +544,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     void processQueue();
 
     //! Recursively cancel dependent tasks
-    //! @param taskId id of terminated task to cancel any other tasks
+    //! \param taskId id of terminated task to cancel any other tasks
     //! which are dependent on
     void cancelDependentTasks( long taskId );
 

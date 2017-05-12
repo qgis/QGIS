@@ -26,7 +26,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
+from qgis.core import (QgsExpression,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsFeature,
+                       QgsField,
+                       QgsDistanceArea,
+                       QgsProject,
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -35,7 +43,6 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
@@ -53,10 +60,22 @@ class FieldsCalculator(GeoAlgorithm):
 
     TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Date]
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Field calculator')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'fieldcalculator'
+
+    def displayName(self):
+        return self.tr('Field calculator')
+
+    def defineCharacteristics(self):
         self.type_names = [self.tr('Float'),
                            self.tr('Integer'),
                            self.tr('String'),
@@ -77,8 +96,8 @@ class FieldsCalculator(GeoAlgorithm):
         self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.TYPES[self.getParameterValue(self.FIELD_TYPE)]
         width = self.getParameterValue(self.FIELD_LENGTH)
@@ -92,14 +111,12 @@ class FieldsCalculator(GeoAlgorithm):
         if newField:
             fields.append(QgsField(fieldName, fieldType, '', width, precision))
 
-        writer = output.getVectorWriter(fields, layer.wkbType(),
-                                        layer.crs())
+        writer = output.getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
 
         exp = QgsExpression(formula)
 
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs())
-        da.setEllipsoidalMode(True)
         da.setEllipsoid(QgsProject.instance().ellipsoid())
         exp.setGeomCalculator(da)
         exp.setDistanceUnits(QgsProject.instance().distanceUnits())
@@ -118,8 +135,8 @@ class FieldsCalculator(GeoAlgorithm):
         error = ''
         calculationSuccess = True
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         rownum = 1
         for current, f in enumerate(features):

@@ -33,7 +33,7 @@ class QResizeEvent;
  *
  * \see QgsProjectionSelectionDialog.
  * \see QgsProjectionSelectionWidget
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::QgsProjectionSelectorBase
@@ -45,30 +45,30 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Constructor for QgsProjectionSelectionTreeWidget.
      */
-    QgsProjectionSelectionTreeWidget( QWidget *parent = nullptr );
+    QgsProjectionSelectionTreeWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     ~QgsProjectionSelectionTreeWidget();
 
     /**
      * Returns the CRS currently selected in the widget.
-     * @note added in QGIS 3.0
-     * @see setCrs()
+     * \since QGIS 3.0
+     * \see setCrs()
      */
     QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets whether a "no/invalid" projection option should be shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
-     * @see showNoProjection()
-     * @note added in QGIS 3.0
+     * \see showNoProjection()
+     * \since QGIS 3.0
      */
     void setShowNoProjection( bool show );
 
     /**
      * Returns whether the "no/invalid" projection option is shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
-     * @note added in QGIS 3.0
-     * @see setShowNoProjection()
+     * \since QGIS 3.0
+     * \see setShowNoProjection()
      */
     bool showNoProjection() const;
 
@@ -84,8 +84,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Sets the initial \a crs to show within the dialog.
-     * @note added in QGIS 3.0
-     * @see crs()
+     * \since QGIS 3.0
+     * \see crs()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
@@ -117,13 +117,13 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Notifies others that the widget is now fully initialized, including deferred selection of projection.
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     void initialized();
 
     /**
      * Emitted when a projection is double clicked in the list.
-     * @note added in 2.14
+     * \since QGIS 2.14
      */
     void projectionDoubleClicked();
 
@@ -154,14 +154,14 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      */
     void loadCrsList( QSet<QString> *crsFilter = nullptr );
 
-    /*!
+    /**
      * \brief Make the string safe for use in SQL statements.
      *  This involves escaping single quotes, double quotes, backslashes,
      *  and optionally, percentage symbols.  Percentage symbols are used
      *  as wildcards sometimes and so when using the string as part of the
      *  LIKE phrase of a select statement, should be escaped.
      * \arg const QString in The input string to make safe.
-     * \return The string made safe for SQL statements.
+     * \returns The string made safe for SQL statements.
      */
     const QString sqlSafeString( const QString &theSQL );
 

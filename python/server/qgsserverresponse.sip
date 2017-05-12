@@ -40,33 +40,36 @@ class QgsServerResponse
      *  Add Header entry to the response
      *  Note that it is usually an error to set Header after writing data
      */
-    virtual void setHeader( const QString& key, const QString& value ) = 0;
+    virtual void setHeader( const QString &key, const QString &value ) = 0;
 
     /**
      * Clear header
-     * Undo a previous 'set_header' call
      */
-    virtual void clearHeader( const QString& key ) = 0;
+    virtual void removeHeader( const QString &key ) = 0;
 
     /**
      * Return the header value
      */
-    virtual QString getHeader( const QString& key ) const = 0;
+    virtual QString header( const QString &key ) const = 0;
 
     /**
-     * Return the list of all header keys
+     * Return the response headers
      */
-    virtual QList<QString> headerKeys() const = 0;
+    virtual QMap<QString, QString> headers() const = 0;
 
     /**
      * Return true if the headers have alredy been sent
      */
     virtual bool headersSent() const = 0;
 
-    /** Set the http return code
+    /** Return the http status code
+     */
+    virtual int statusCode( ) const = 0;
+
+    /** Set the http status code
      * @param code HTTP return code value
      */
-    virtual void setReturnCode( int code ) = 0;
+    virtual void setStatusCode( int code ) = 0;
 
     /**
      * Send error
@@ -75,14 +78,14 @@ class QgsServerResponse
      * @param code HTTP return code value
      * @param message An informative error message
      */
-    virtual void sendError( int code,  const QString& message ) = 0;
+    virtual void sendError( int code,  const QString &message ) = 0;
 
     /**
      * Write string
      * This is a convenient method that will write directly
      * to the underlying I/O device
      */
-    virtual void write( const QString& data );
+    virtual void write( const QString &data );
 
     /**
      * Write chunk of data
@@ -90,17 +93,17 @@ class QgsServerResponse
      * underlying I/O device
      * @return the number of bytes that were actually written
      */
-    virtual qint64 write( const QByteArray& byteArray );
+    virtual qint64 write( const QByteArray &byteArray );
 
     /**
      * Write server exception
      */
-    virtual void write( const QgsServerException& ex );
+    virtual void write( const QgsServerException &ex );
 
     /**
      * Return the underlying QIODevice
      */
-    virtual QIODevice* io() = 0;
+    virtual QIODevice *io() = 0;
 
     /**
      * End the transaction
@@ -120,5 +123,14 @@ class QgsServerResponse
      */
     virtual void clear() = 0;
 
+    /**
+     * Get the data written so far
+     */
+    virtual QByteArray data() const = 0;
+
+    /**
+     * Truncate internal buffer
+     */
+    virtual void truncate() = 0;
 };
 

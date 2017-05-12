@@ -42,11 +42,8 @@ from qgis.utils import iface
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
-from processing.algs.r.RAlgorithm import RAlgorithm
-from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -56,7 +53,6 @@ WIDGET, BASE = uic.loadUiType(
 class ScriptEditorDialog(BASE, WIDGET):
 
     SCRIPT_PYTHON = 0
-    SCRIPT_R = 1
 
     hasChanged = False
 
@@ -72,7 +68,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.restoreState(settings.value("/Processing/stateScriptEditor", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryScriptEditor", QByteArray()))
 
-        iconSize = settings.value("iconsize", 24)
+        iconSize = int(settings.value("iconsize", 24))
         self.toolBar.setIconSize(QSize(iconSize, iconSize))
 
         self.actionOpenScript.setIcon(
@@ -178,16 +174,12 @@ class ScriptEditorDialog(BASE, WIDGET):
     def updateProviders(self):
         if self.update:
             if self.algType == self.SCRIPT_PYTHON:
-                algList.reloadProvider('script')
-            elif self.algType == self.SCRIPT_R:
-                algList.reloadProvider('r')
+                QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
 
     def editHelp(self):
         if self.alg is None:
             if self.algType == self.SCRIPT_PYTHON:
                 alg = ScriptAlgorithm(None, self.editor.text())
-            elif self.algType == self.SCRIPT_R:
-                alg = RAlgorithm(None, self.editor.text())
         else:
             alg = self.alg
 
@@ -208,9 +200,6 @@ class ScriptEditorDialog(BASE, WIDGET):
         if self.algType == self.SCRIPT_PYTHON:
             scriptDir = ScriptUtils.scriptsFolders()[0]
             filterName = self.tr('Python scripts (*.py)')
-        elif self.algType == self.SCRIPT_R:
-            scriptDir = RUtils.RScriptsFolders()[0]
-            filterName = self.tr('Processing R script (*.rsx)')
 
         self.filename, fileFilter = QFileDialog.getOpenFileName(
             self, self.tr('Open script'), scriptDir, filterName)
@@ -239,9 +228,6 @@ class ScriptEditorDialog(BASE, WIDGET):
             if self.algType == self.SCRIPT_PYTHON:
                 scriptDir = ScriptUtils.scriptsFolders()[0]
                 filterName = self.tr('Python scripts (*.py)')
-            elif self.algType == self.SCRIPT_R:
-                scriptDir = RUtils.RScriptsFolders()[0]
-                filterName = self.tr('Processing R script (*.rsx)')
 
             self.filename, fileFilter = QFileDialog.getSaveFileName(
                 self, self.tr('Save script'), scriptDir, filterName)
@@ -250,9 +236,6 @@ class ScriptEditorDialog(BASE, WIDGET):
             if self.algType == self.SCRIPT_PYTHON and \
                     not self.filename.lower().endswith('.py'):
                 self.filename += '.py'
-            if self.algType == self.SCRIPT_R and \
-                    not self.filename.lower().endswith('.rsx'):
-                self.filename += '.rsx'
 
             text = self.editor.text()
             if self.alg is not None:
@@ -285,10 +268,6 @@ class ScriptEditorDialog(BASE, WIDGET):
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
             alg = ScriptAlgorithm(None, self.editor.text())
-            alg.provider = QgsApplication.processingRegistry().providerById('script')
-        if self.algType == self.SCRIPT_R:
-            alg = RAlgorithm(None, self.editor.text())
-            alg.provider = QgsApplication.processingRegistry().providerById('r')
 
         dlg = alg.getCustomParametersDialog()
         if not dlg:

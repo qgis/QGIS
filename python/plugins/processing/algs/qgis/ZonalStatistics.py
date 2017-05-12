@@ -35,7 +35,11 @@ except:
     hasSciPy = False
 
 from osgeo import gdal, ogr, osr
-from qgis.core import QgsRectangle, QgsGeometry, QgsFeature
+from qgis.core import (QgsApplication,
+                       QgsRectangle,
+                       QgsGeometry,
+                       QgsFeature,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -57,10 +61,22 @@ class ZonalStatistics(GeoAlgorithm):
     GLOBAL_EXTENT = 'GLOBAL_EXTENT'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Zonal Statistics')
-        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Raster tools')
+
+    def name(self):
+        return 'zonalstatistics'
+
+    def displayName(self):
+        return self.tr('Zonal Statistics')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterNumber(self.RASTER_BAND,
@@ -74,12 +90,13 @@ class ZonalStatistics(GeoAlgorithm):
                                            self.tr('Load whole raster in memory')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Zonal statistics'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         """ Based on code by Matthew Perry
             https://gist.github.com/perrygeo/5667173
+            :param context:
         """
 
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
         bandNumber = self.getParameterValue(self.RASTER_BAND)
@@ -159,16 +176,16 @@ class ZonalStatistics(GeoAlgorithm):
             (idxMode, fields) = vector.findOrCreateField(layer, fields,
                                                          columnPrefix + 'mode', 21, 6)
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            fields.toList(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(fields, layer.wkbType(),
+                                                                           layer.crs(), context)
 
         outFeat = QgsFeature()
 
         outFeat.initAttributes(len(fields))
         outFeat.setFields(fields)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             geom = f.geometry()
 

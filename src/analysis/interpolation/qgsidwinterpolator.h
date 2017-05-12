@@ -30,10 +30,10 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
     QgsIDWInterpolator( const QList<LayerData> &layerData );
 
     /** Calculates interpolation value for map coordinates x, y
-       @param x x-coordinate (in map units)
-       @param y y-coordinate (in map units)
-       @param result out: interpolation result
-       @return 0 in case of success*/
+       \param x x-coordinate (in map units)
+       \param y y-coordinate (in map units)
+       \param result out: interpolation result
+       \returns 0 in case of success*/
     int interpolatePoint( double x, double y, double &result ) override;
 
     void setDistanceCoefficient( double p ) {mDistanceCoefficient = p;}

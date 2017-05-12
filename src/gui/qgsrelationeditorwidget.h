@@ -32,11 +32,32 @@ class QgsGenericFeatureSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// fix to allow compilation with sip that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsrelationeditorwidget.h>
+% End
+#endif
+
 /** \ingroup gui
  * \class QgsRelationEditorWidget
  */
 class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsRelationEditorWidget *>( sipCpp ) )
+      sipType = sipType_QgsRelationEditorWidget;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
+
+
     Q_OBJECT
     Q_PROPERTY( QgsDualView::ViewMode viewMode READ viewMode WRITE setViewMode )
     Q_PROPERTY( bool showLabel READ showLabel WRITE setShowLabel )
@@ -44,9 +65,9 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
   public:
 
     /**
-     * @param parent parent widget
+     * \param parent parent widget
      */
-    QgsRelationEditorWidget( QWidget *parent = nullptr );
+    QgsRelationEditorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Define the view mode for the dual view
     void setViewMode( QgsDualView::ViewMode mode );
@@ -62,8 +83,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      * If both relations are set, it will act as an N:M relation widget
      * inserting and deleting entries on the intermediate table as required.
      *
-     * @param relation    Relation referencing the edited table
-     * @param nmrelation  Optional reference from the referencing table to a 3rd N:M table
+     * \param relation    Relation referencing the edited table
+     * \param nmrelation  Optional reference from the referencing table to a 3rd N:M table
      */
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 
@@ -80,42 +101,42 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     /**
      * Defines if a title label should be shown for this widget.
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     bool showLabel() const;
 
     /**
      * Defines if a title label should be shown for this widget.
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     void setShowLabel( bool showLabel );
 
     /**
      * Determines if the "link feature" button should be shown
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     bool showLinkButton() const;
 
     /**
      * Determines if the "link feature" button should be shown
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     void setShowLinkButton( bool showLinkButton );
 
     /**
      * Determines if the "unlink feature" button should be shown
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     bool showUnlinkButton() const;
 
     /**
      * Determines if the "unlink feature" button should be shown
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     void setShowUnlinkButton( bool showUnlinkButton );
 

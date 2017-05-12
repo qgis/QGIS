@@ -122,7 +122,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         for i in range(0, self.mAtlas.numFeatures()):
             self.mAtlas.prepareForFeature(i)
             expected = "output_%d" % (i + 1)
-            assert self.mAtlas.currentFilename() == expected
+            self.assertEqual(self.mAtlas.currentFilename(), expected)
         self.mAtlas.endRender()
 
     def autoscale_render_test(self):

@@ -19,6 +19,7 @@
 #define QGSRASTERRENDERERWIDGET_H
 
 #include "qgsrectangle.h"
+#include "qgis.h"
 
 #include <QWidget>
 #include "qgis_gui.h"
@@ -44,23 +45,23 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
       , mCanvas( nullptr )
     {}
 
-    virtual QgsRasterRenderer *renderer() = 0;
+    virtual QgsRasterRenderer *renderer() = 0 SIP_FACTORY;
 
     void setRasterLayer( QgsRasterLayer *layer ) { mRasterLayer = layer; }
     const QgsRasterLayer *rasterLayer() const { return mRasterLayer; }
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map extent and other properties from the canvas.
-     * @param canvas map canvas
-     * @see mapCanvas()
-     * @note added in QGIS 2.16
+     * \param canvas map canvas
+     * \see mapCanvas()
+     * \since QGIS 2.16
      */
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 
     /** Returns the map canvas associated with the widget.
-     * @see setMapCanvas()
-     * @see canvasExtent()
-     * @note added in QGIS 2.16
+     * \see setMapCanvas()
+     * \see canvasExtent()
+     * \since QGIS 2.16
      */
     QgsMapCanvas *mapCanvas();
 
@@ -88,8 +89,6 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
 
   protected:
     QgsRasterLayer *mRasterLayer = nullptr;
-    //! Returns a band name for display. First choice is color name, otherwise band number
-    QString displayBandName( int band ) const;
 
     //! Current extent
     QgsRectangle mExtent;

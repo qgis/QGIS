@@ -95,11 +95,7 @@ void TestRasterHistogram::initTestCase()
   // output test environment
   QgsApplication::showSettings();
   qDebug() << "QWT version:   " << QWT_VERSION_STR;
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mTestPrefix = "histogram_qwt6";
-#else
-  mTestPrefix = "histogram_qwt5";
-#endif
 
   // save data dir
   mDataDir = QString( TEST_DATA_DIR ) + "/";

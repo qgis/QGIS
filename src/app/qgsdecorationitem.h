@@ -19,6 +19,8 @@
 #define QGSDECORATIONITEM_H
 
 #include <QObject>
+
+#include "qgsmapdecoration.h"
 #include "qgsunittypes.h"
 #include "qgis_app.h"
 
@@ -26,9 +28,10 @@ class QPainter;
 
 #define INCHES_TO_MM 0.0393700787402
 
-class APP_EXPORT QgsDecorationItem: public QObject
+class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
 {
     Q_OBJECT
+
   public:
 
     //! Item placements
@@ -49,12 +52,12 @@ class APP_EXPORT QgsDecorationItem: public QObject
     bool enabled() const { return mEnabled; }
 
     /** Returns the current placement for the item.
-     * @see setPlacement()
+     * \see setPlacement()
      */
     Placement placement() const { return mPlacement; }
 
     /** Sets the placement of the item.
-     * @see placement()
+     * \see placement()
      */
     void setPlacement( Placement placement ) { mPlacement = placement; }
 
@@ -67,8 +70,6 @@ class APP_EXPORT QgsDecorationItem: public QObject
     //! save values to the project
     virtual void saveToProject();
 
-    //! this does the meaty bit of the work
-    virtual void render( QPainter * ) {}
     //! Show the dialog box
     virtual void run() {}
 

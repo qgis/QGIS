@@ -77,21 +77,21 @@ class ANALYSIS_EXPORT QgsTransectSample
     double mBaselineSimplificationTolerance;
 
     /** Finds the closest points between two line segments
-        @param g1 first input geometry. Must be a linestring with two vertices
-        @param g2 second input geometry. Must be a linestring with two vertices
-        @param dist out: distance between the segments
-        @param pt1 out: closest point on first geometry
-        @param pt2 out: closest point on secont geometry
-        @return true in case of success*/
+        \param g1 first input geometry. Must be a linestring with two vertices
+        \param g2 second input geometry. Must be a linestring with two vertices
+        \param dist out: distance between the segments
+        \param pt1 out: closest point on first geometry
+        \param pt2 out: closest point on secont geometry
+        \returns true in case of success*/
     static bool closestSegmentPoints( const QgsGeometry &g1, const QgsGeometry &g2, double &dist, QgsPoint &pt1, QgsPoint &pt2 );
     //! Returns a copy of the multiline element closest to a point (caller takes ownership)
     static QgsGeometry closestMultilineElement( const QgsPoint &pt, const QgsGeometry &multiLine );
 
     /** Returns clipped buffer line. Iteratively applies reduced tolerances if the result is not a single line
-        @param stratumGeom stratum polygon
-        @param clippedBaseline base line geometry clipped to the stratum
-        @param tolerance buffer distance (in layer units)
-        @return clipped buffer line or 0 in case of error*/
+        \param stratumGeom stratum polygon
+        \param clippedBaseline base line geometry clipped to the stratum
+        \param tolerance buffer distance (in layer units)
+        \returns clipped buffer line or 0 in case of error*/
     QgsGeometry *clipBufferLine( const QgsGeometry &stratumGeom, QgsGeometry *clippedBaseline, double tolerance );
 
     //! Returns distance to buffer the baseline (takes care of units and buffer settings

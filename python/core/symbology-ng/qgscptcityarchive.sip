@@ -5,32 +5,32 @@ class QgsCptCityArchive
 %End
   public:
     QgsCptCityArchive( const QString& archiveName = DEFAULT_CPTCITY_ARCHIVE,
-                       const QString& baseDir = QString() );
+                       const QString &baseDir = QString() );
     ~QgsCptCityArchive();
 
     // basic dir info
     QString baseDir() const;
     static QString baseDir( QString archiveName );
     static QString defaultBaseDir();
-    void setBaseDir( const QString& dirName );
+    void setBaseDir( const QString &dirName );
 
     // collection + selection info
-    QString copyingFileName( const QString& dirName ) const;
-    QString descFileName( const QString& dirName ) const;
-    static QString findFileName( const QString & target, const QString & startDir, const QString & baseDir );
-    static QMap< QString, QString > copyingInfo( const QString& fileName );
-    static QMap< QString, QString > description( const QString& fileName );
+    QString copyingFileName( const QString &dirName ) const;
+    QString descFileName( const QString &dirName ) const;
+    static QString findFileName( const QString &target, const QString &startDir, const QString &baseDir );
+    static QMap< QString, QString > copyingInfo( const QString &fileName );
+    static QMap< QString, QString > description( const QString &fileName );
     //! @note not available in python bindings
-    // static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString& fileName );
+    // static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString &fileName );
 
     // archive management
     bool isEmpty();
     QString archiveName() const;
     static void initArchives( bool loadAll = false );
-    static void initArchive( const QString& archiveName, const QString& archiveBaseDir );
+    static void initArchive( const QString &archiveName, const QString &archiveBaseDir );
     static void initDefaultArchive();
     static void clearArchives();
-    static QgsCptCityArchive* defaultArchive();
+    static QgsCptCityArchive *defaultArchive();
     static QMap< QString, QgsCptCityArchive* > archiveRegistry();
 
     // items
@@ -39,7 +39,7 @@ class QgsCptCityArchive
 
   private:
 
-    QgsCptCityArchive( const QgsCptCityArchive& rh );
+    QgsCptCityArchive( const QgsCptCityArchive &rh );
 };
 
 /** Base class for all items in the model */
@@ -60,7 +60,7 @@ class QgsCptCityDataItem : QObject
     };
 
     QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
-                        const QString& name, const QString& path );
+                        const QString &name, const QString &path );
     virtual ~QgsCptCityDataItem();
 
     bool hasChildren();
@@ -82,14 +82,14 @@ class QgsCptCityDataItem : QObject
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
-    virtual void addChildItem( QgsCptCityDataItem * child /Transfer/, bool refresh = false );
+    virtual void addChildItem( QgsCptCityDataItem *child /Transfer/, bool refresh = false );
 
     // remove and delete child item, signals to browser are emitted
-    virtual void deleteChildItem( QgsCptCityDataItem * child );
+    virtual void deleteChildItem( QgsCptCityDataItem *child );
 
     // remove child item but don't delete it, signals to browser are emitted
     // returns pointer to the removed item or null if no such item was found
-    virtual QgsCptCityDataItem * removeChildItem( QgsCptCityDataItem * child ) /TransferBack/;
+    virtual QgsCptCityDataItem *removeChildItem( QgsCptCityDataItem *child ) /TransferBack/;
 
     virtual bool equal( const QgsCptCityDataItem *other );
 
@@ -107,13 +107,13 @@ class QgsCptCityDataItem : QObject
     // static methods
 
     // Find child index in vector of items using '==' operator
-    static int findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem * item );
+    static int findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem *item );
 
     // members
 
     Type type() const;
-    QgsCptCityDataItem* parent() const;
-    void setParent( QgsCptCityDataItem* parent );
+    QgsCptCityDataItem *parent() const;
+    void setParent( QgsCptCityDataItem *parent );
     QVector<QgsCptCityDataItem*> children() const;
     virtual QIcon icon();
     virtual QIcon icon( QSize size );
@@ -122,17 +122,17 @@ class QgsCptCityDataItem : QObject
     QString info() const;
     QString shortInfo() const;
 
-    void setIcon( const QIcon& icon );
+    void setIcon( const QIcon &icon );
 
-    void setToolTip( const QString& msg );
+    void setToolTip( const QString &msg );
     QString toolTip() const;
 
     bool isValid();
 
   signals:
-    void beginInsertItems( QgsCptCityDataItem* parent, int first, int last );
+    void beginInsertItems( QgsCptCityDataItem *parent, int first, int last );
     void endInsertItems();
-    void beginRemoveItems( QgsCptCityDataItem* parent, int first, int last );
+    void beginRemoveItems( QgsCptCityDataItem *parent, int first, int last );
     void endRemoveItems();
 };
 
@@ -160,7 +160,7 @@ class QgsCptCityColorRampItem : QgsCptCityDataItem
     virtual int leafCount() const;
 
     // --- New virtual methods for layer item derived classes ---
-    const QgsCptCityColorRamp& ramp() const;
+    const QgsCptCityColorRamp &ramp() const;
     QIcon icon();
     QIcon icon( QSize size );
     void init();
@@ -176,7 +176,7 @@ class QgsCptCityCollectionItem : QgsCptCityDataItem
 
   public:
     QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
-                              const QString& name, const QString& path );
+                              const QString &name, const QString &path );
     ~QgsCptCityCollectionItem();
 
     void setPopulated();
@@ -192,7 +192,7 @@ class QgsCptCityDirectoryItem : QgsCptCityCollectionItem
 %End
   public:
     QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
-                             const QString& name, const QString& path );
+                             const QString &name, const QString &path );
     ~QgsCptCityDirectoryItem();
 
     QVector<QgsCptCityDataItem*> createChildren();
@@ -200,7 +200,7 @@ class QgsCptCityDirectoryItem : QgsCptCityCollectionItem
     virtual bool equal( const QgsCptCityDataItem *other );
 
     static QgsCptCityDataItem* dataItem( QgsCptCityDataItem* parent,
-                                         const QString& name, const QString& path );
+                                         const QString &name, const QString &path );
 
   protected:
     QMap< QString, QStringList > rampsMap();
@@ -215,7 +215,7 @@ class QgsCptCitySelectionItem : QgsCptCityCollectionItem
 %End
 
   public:
-    QgsCptCitySelectionItem( QgsCptCityDataItem* parent, const QString& name, const QString& path );
+    QgsCptCitySelectionItem( QgsCptCityDataItem *parent, const QString &name, const QString &path );
     ~QgsCptCitySelectionItem();
 
     QVector<QgsCptCityDataItem*> createChildren();
@@ -236,7 +236,7 @@ class QgsCptCityAllRampsItem : QgsCptCityCollectionItem
 %End
   public:
     QgsCptCityAllRampsItem( QgsCptCityDataItem* parent, const QString& name,
-                            const QVector<QgsCptCityDataItem*>& items );
+                            const QVector<QgsCptCityDataItem*> &items );
     ~QgsCptCityAllRampsItem();
 
     QVector<QgsCptCityDataItem*> createChildren();
@@ -287,7 +287,7 @@ class QgsCptCityBrowserModel : QAbstractItemModel
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
     /** Returns the index of the item in the model specified by the given row, column and parent index. */
-    virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 
     QModelIndex findItem( QgsCptCityDataItem *item, QgsCptCityDataItem *parent = 0 ) const;
 
@@ -313,25 +313,25 @@ class QgsCptCityBrowserModel : QAbstractItemModel
     void reload();
 
     // Refresh item specified by path
-    void refresh( const QString& path );
+    void refresh( const QString &path );
 
     // Refresh item children
     void refresh( const QModelIndex &index = QModelIndex() );
 
     //! return index of a path
-    QModelIndex findPath( const QString& path );
+    QModelIndex findPath( const QString &path );
 
     void connectItem( QgsCptCityDataItem *item );
 
-    bool canFetchMore( const QModelIndex & parent ) const;
-    void fetchMore( const QModelIndex & parent );
+    bool canFetchMore( const QModelIndex &parent ) const;
+    void fetchMore( const QModelIndex &parent );
 
   signals:
 
   public slots:
-    //void removeItems( QgsCptCityDataItem * parent, QVector<QgsCptCityDataItem *>items );
-    //void addItems( QgsCptCityDataItem * parent, QVector<QgsCptCityDataItem *>items );
-    //void refreshItems( QgsCptCityDataItem * parent, QVector<QgsCptCityDataItem *>items );
+    //void removeItems( QgsCptCityDataItem *parent, QVector<QgsCptCityDataItem *>items );
+    //void addItems( QgsCptCityDataItem *parent, QVector<QgsCptCityDataItem *>items );
+    //void refreshItems( QgsCptCityDataItem *parent, QVector<QgsCptCityDataItem *>items );
 
     void beginInsertItems( QgsCptCityDataItem *parent, int first, int last );
     void endInsertItems();

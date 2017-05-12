@@ -17,20 +17,20 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSMULTICURVEV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsgeometrycollection.h"
 
 /** \ingroup core
  * \class QgsMultiCurve
  * \brief Multi curve geometry collection.
- * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 {
   public:
     QgsMultiCurve();
     virtual QString geometryType() const override { return QStringLiteral( "MultiCurve" ); }
-    QgsMultiCurve *clone() const override;
+    QgsMultiCurve *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -42,14 +42,14 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     QString asJSON( int precision = 17 ) const override;
 
     //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g ) override;
+    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
 
     /** Returns a copy of the multi curve, where each component curve has had its line direction reversed.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
-    QgsMultiCurve *reversed() const;
+    QgsMultiCurve *reversed() const SIP_FACTORY;
 
-    virtual QgsAbstractGeometry *boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
 };
 

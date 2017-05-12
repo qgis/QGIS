@@ -29,10 +29,11 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest
+from qgis.core import (QgsFeatureRequest,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from qgis.analysis import QgsKernelDensityEstimation
 
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -40,7 +41,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputRaster
-from processing.tools import dataobjects, vector, raster
+from processing.tools import dataobjects, raster
 from processing.algs.qgis.ui.HeatmapWidgets import HeatmapPixelSizeWidgetWrapper
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -68,14 +69,22 @@ class Heatmap(GeoAlgorithm):
     OUTPUT_VALUE = 'OUTPUT_VALUE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'heatmap.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Heatmap (Kernel Density Estimation)')
-        self.group, self.i18n_group = self.trAlgorithm('Interpolation')
-        self.tags = self.tr('heatmap,kde,hotspot')
+    def tags(self):
+        return self.tr('heatmap,kde,hotspot').split(',')
 
+    def group(self):
+        return self.tr('Interpolation')
+
+    def name(self):
+        return 'heatmapkerneldensityestimation'
+
+    def displayName(self):
+        return self.tr('Heatmap (Kernel Density Estimation)')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.RADIUS,
@@ -122,9 +131,8 @@ class Heatmap(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Heatmap')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         radius = self.getParameterValue(self.RADIUS)
         kernel_shape = self.getParameterValue(self.KERNEL)
@@ -163,12 +171,11 @@ class Heatmap(GeoAlgorithm):
 
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes(attrs)
-        features = vector.features(layer, request)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context, request)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             if kde.addFeature(f) != QgsKernelDensityEstimation.Success:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       self.tr('Error adding feature with ID {} to heatmap').format(f.id()))
+                QgsMessageLog.logMessage(self.tr('Error adding feature with ID {} to heatmap').format(f.id()), self.tr('Processing'), QgsMessageLog.CRITICAL)
 
             feedback.setProgress(int(current * total))
 

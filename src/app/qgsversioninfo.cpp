@@ -29,7 +29,7 @@ QgsVersionInfo::QgsVersionInfo( QObject *parent )
 void QgsVersionInfo::checkVersion()
 {
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( QStringLiteral( "https://ubuntu.qgis.org/version.txt" ) ) ) );
-  connect( reply, SIGNAL( finished() ), this, SLOT( versionReplyFinished() ) );
+  connect( reply, &QNetworkReply::finished, this, &QgsVersionInfo::versionReplyFinished );
 }
 
 bool QgsVersionInfo::newVersionAvailable() const

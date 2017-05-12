@@ -16,16 +16,19 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOMETRYCOLLECTIONV2_H
 #define QGSGEOMETRYCOLLECTIONV2_H
 
+#include <QVector>
+
+
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsabstractgeometry.h"
 #include "qgspointv2.h"
-#include <QVector>
+
 
 /** \ingroup core
  * \class QgsGeometryCollection
  * \brief Geometry collection
- * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 {
@@ -35,19 +38,20 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsGeometryCollection &operator=( const QgsGeometryCollection &c );
     virtual ~QgsGeometryCollection();
 
-    virtual QgsGeometryCollection *clone() const override;
+    virtual QgsGeometryCollection *clone() const override SIP_FACTORY;
 
     /** Returns the number of geometries within the collection.
      */
     int numGeometries() const;
 
     /** Returns a const reference to a geometry from within the collection.
-     * @param n index of geometry to return
+     * \param n index of geometry to return
+     * \note not available in Python bindings
      */
-    const QgsAbstractGeometry *geometryN( int n ) const;
+    const QgsAbstractGeometry *geometryN( int n ) const SIP_SKIP;
 
     /** Returns a geometry from within the collection.
-     * @param n index of geometry to return
+     * \param n index of geometry to return
      */
     QgsAbstractGeometry *geometryN( int n );
 
@@ -56,20 +60,20 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     virtual int dimension() const override;
     virtual QString geometryType() const override { return QStringLiteral( "GeometryCollection" ); }
     virtual void clear() override;
-    virtual QgsAbstractGeometry *boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     //! Adds a geometry and takes ownership. Returns true in case of success.
-    virtual bool addGeometry( QgsAbstractGeometry *g );
+    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER );
 
     /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
-     * @param g geometry to insert. Ownership is transferred to the collection.
-     * @param index position to insert geometry before
+     * \param g geometry to insert. Ownership is transferred to the collection.
+     * \param index position to insert geometry before
      */
-    virtual bool insertGeometry( QgsAbstractGeometry *g, int index );
+    virtual bool insertGeometry( QgsAbstractGeometry *g, int index SIP_TRANSFER );
 
     /** Removes a geometry from the collection.
-     * @param nr index of geometry to remove
-     * @returns true if removal was successful.
+     * \param nr index of geometry to remove
+     * \returns true if removal was successful.
      */
     virtual bool removeGeometry( int nr );
 
@@ -94,8 +98,10 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     virtual QgsCoordinateSequence coordinateSequence() const override;
     virtual int nCoordinates() const override;
 
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const override;
-    bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const override;
+    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt SIP_OUT,
+                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
+                                   double epsilon ) const override;
+    bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex SIP_OUT ) const override;
 
     //low-level editing
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
@@ -109,13 +115,13 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool hasCurvedSegments() const override;
 
     /** Returns a geometry without curves. Caller takes ownership
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+    QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-     * @param vertex the vertex id
-     * @return rotation in radians, clockwise from north
+     * \param vertex the vertex id
+     * \returns rotation in radians, clockwise from north
      */
     double vertexAngle( QgsVertexId vertex ) const override;
 
@@ -133,7 +139,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QVector< QgsAbstractGeometry * > mGeometries;
 
     /** Returns whether child type names are omitted from Wkt representations of the collection
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual bool wktOmitChildType() const { return false; }
 

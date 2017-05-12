@@ -32,15 +32,15 @@ import codecs
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsStatisticalSummary,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
-from processing.tools import dataobjects, vector
-
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -68,19 +68,26 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     NULLVALUES = 'NULLVALUES'
     IQR = 'IQR'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
+    def flags(self):
         # this algorithm is deprecated - use BasicStatistics instead
-        self.showInToolbox = False
+        return QgsProcessingAlgorithm.FlagDeprecated
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Basic statistics for numeric fields')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
-        self.tags = self.tr('stats,statistics,number,table,layer')
+    def tags(self):
+        return self.tr('stats,statistics,number,table,layer').split(',')
 
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'basicstatisticsfornumericfields'
+
+    def displayName(self):
+        return self.tr('Basic statistics for numeric fields')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
@@ -107,17 +114,16 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.addOutput(OutputNumber(self.NULLVALUES, self.tr('NULL (missed) values')))
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
 
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([fieldName], layer.fields())
         stat = QgsStatisticalSummary()
-        features = vector.features(layer, request)
-        count = len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context, request)
+        count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / float(count)
         for current, ft in enumerate(features):
             stat.addVariant(ft[fieldName])

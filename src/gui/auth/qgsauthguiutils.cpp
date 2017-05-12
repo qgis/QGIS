@@ -260,3 +260,73 @@ QString QgsAuthGuiUtils::getOpenFileName( QWidget *parent, const QString &title,
   }
   return f;
 }
+
+void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, int timeout, QWidget *parent )
+{
+  if ( QMessageBox::warning( parent,
+                             QObject::tr( "Delete confirmation" ),
+                             QObject::tr( "Do you really want to delete the master password from your %1?" )
+                             .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ),
+                             QMessageBox::Ok | QMessageBox::Cancel,
+                             QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
+    return;
+  }
+  QString msg;
+  QgsMessageBar::MessageLevel level;
+  if ( ! QgsAuthManager::instance()->passwordHelperDelete() )
+  {
+    msg =  QgsAuthManager::instance()->passwordHelperErrorMessage();
+    level = QgsMessageBar::WARNING;
+  }
+  else
+  {
+    msg = QObject::tr( "Master password was successfully deleted from your %1" )
+          .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+
+    level = QgsMessageBar::INFO;
+  }
+  msgbar->pushMessage( QObject::tr( "Password helper delete" ), msg, level, timeout );
+}
+
+void QgsAuthGuiUtils::passwordHelperSync( QgsMessageBar *msgbar, int timeout )
+{
+  QString msg;
+  QgsMessageBar::MessageLevel level;
+  if ( ! QgsAuthManager::instance()->masterPasswordIsSet( ) )
+  {
+    msg = QObject::tr( "Master password is not set and cannot be stored in your %1" )
+          .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+    level = QgsMessageBar::WARNING;
+  }
+  else if ( ! QgsAuthManager::instance()->passwordHelperSync() )
+  {
+    msg =  QgsAuthManager::instance()->passwordHelperErrorMessage();
+    level = QgsMessageBar::WARNING;
+  }
+  else
+  {
+    msg = QObject::tr( "Master password has been successfully stored in your %1" )
+          .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+
+    level = QgsMessageBar::INFO;
+  }
+  msgbar->pushMessage( QObject::tr( "Password helper write" ), msg, level, timeout );
+}
+
+void QgsAuthGuiUtils::passwordHelperEnable( bool enabled, QgsMessageBar *msgbar, int timeout )
+{
+  QgsAuthManager::instance()->setPasswordHelperEnabled( enabled );
+  QString msg = enabled ? QObject::tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." )
+                .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ) :
+                QObject::tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
+                .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+  msgbar->pushMessage( QObject::tr( "Password helper write" ), msg, QgsMessageBar::INFO, timeout );
+}
+
+void QgsAuthGuiUtils::passwordHelperLoggingEnable( bool enabled, QgsMessageBar *msgbar, int timeout )
+{
+  Q_UNUSED( msgbar );
+  Q_UNUSED( timeout );
+  QgsAuthManager::instance()->setPasswordHelperLoggingEnabled( enabled );
+}

@@ -56,7 +56,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *paren
   mAngleSpinBox = new QgsDoubleSpinBox( this );
   mAngleSpinBox->setMinimum( -360 );
   mAngleSpinBox->setMaximum( 360 );
-  mAngleSpinBox->setSuffix( QStringLiteral( "°" ) );
+  mAngleSpinBox->setSuffix( trUtf8( "°" ) );
   mAngleSpinBox->setSingleStep( 1 );
   mAngleSpinBox->setValue( 0 );
   mAngleSpinBox->setShowClearButton( false );
@@ -66,7 +66,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *paren
   mMagnetSpinBox->setMinimum( 0 );
   mMagnetSpinBox->setMaximum( 180 );
   mMagnetSpinBox->setPrefix( tr( "Snap to " ) );
-  mMagnetSpinBox->setSuffix( QStringLiteral( "°" ) );
+  mMagnetSpinBox->setSuffix( trUtf8( "°" ) );
   mMagnetSpinBox->setSingleStep( 15 );
   mMagnetSpinBox->setValue( 0 );
   mMagnetSpinBox->setClearValue( 0, tr( "No snapping" ) );
@@ -74,7 +74,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *paren
 
   // connect signals
   mAngleSpinBox->installEventFilter( this );
-  connect( mAngleSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( angleSpinBoxValueChanged( double ) ) );
+  connect( mAngleSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsAngleMagnetWidget::angleSpinBoxValueChanged );
 
   // config focus
   setFocusProxy( mAngleSpinBox );
@@ -284,7 +284,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       mRubberBand = createRubberBand( vlayer->geometryType() ) ;
 
       QgsFeature feat;
-      QgsFeatureIterator it = vlayer->selectedFeaturesIterator();
+      QgsFeatureIterator it = vlayer->getSelectedFeatures();
       while ( it.nextFeature( feat ) )
       {
         mRubberBand->addGeometry( feat.geometry(), vlayer );
@@ -466,16 +466,16 @@ void QgsMapToolRotateFeature::createRotationWidget()
   QgisApp::instance()->addUserInputWidget( mRotationWidget );
   mRotationWidget->setFocus( Qt::TabFocusReason );
 
-  QObject::connect( mRotationWidget, SIGNAL( angleChanged( double ) ), this, SLOT( updateRubberband( double ) ) );
-  QObject::connect( mRotationWidget, SIGNAL( angleEditingFinished( double ) ), this, SLOT( applyRotation( double ) ) );
+  connect( mRotationWidget, &QgsAngleMagnetWidget::angleChanged, this, &QgsMapToolRotateFeature::updateRubberband );
+  connect( mRotationWidget, &QgsAngleMagnetWidget::angleEditingFinished, this, &QgsMapToolRotateFeature::applyRotation );
 }
 
 void QgsMapToolRotateFeature::deleteRotationWidget()
 {
   if ( mRotationWidget )
   {
-    QObject::disconnect( mRotationWidget, SIGNAL( angleChanged( double ) ), this, SLOT( updateRubberband( double ) ) );
-    QObject::disconnect( mRotationWidget, SIGNAL( angleEditingFinished( double ) ), this, SLOT( applyRotation( double ) ) );
+    disconnect( mRotationWidget, &QgsAngleMagnetWidget::angleChanged, this, &QgsMapToolRotateFeature::updateRubberband );
+    disconnect( mRotationWidget, &QgsAngleMagnetWidget::angleEditingFinished, this, &QgsMapToolRotateFeature::applyRotation );
     mRotationWidget->releaseKeyboard();
     mRotationWidget->deleteLater();
   }

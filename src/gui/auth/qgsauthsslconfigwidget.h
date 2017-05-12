@@ -18,6 +18,7 @@
 #define QGSAUTHSSLCONFIGWIDGET_H
 
 #include <QDialog>
+#include "qgis.h"
 #include <QWidget>
 #include "ui_qgsauthsslconfigwidget.h"
 
@@ -42,12 +43,12 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
 
     /**
      * Construct a widget for editing an SSL server certificate configuration
-     * @param parent Parent widget
-     * @param cert SSL server certificate object
-     * @param hostport Unique host:port to associate with the server certificate
-     * @param connectionCAs List of trusted Certificate Authorities objects
+     * \param parent Parent widget
+     * \param cert SSL server certificate object
+     * \param hostport Unique host:port to associate with the server certificate
+     * \param connectionCAs List of trusted Certificate Authorities objects
      */
-    explicit QgsAuthSslConfigWidget( QWidget *parent = nullptr,
+    explicit QgsAuthSslConfigWidget( QWidget *parent SIP_TRANSFERTHIS = 0,
                                      const QSslCertificate &cert = QSslCertificate(),
                                      const QString &hostport = QString(),
                                      const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
@@ -76,7 +77,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     QSslSocket::PeerVerifyMode sslPeerVerifyMode();
 
     /** Get the client's peer verify depth for connections
-     * @note Value of 0 = unlimited
+     * \note Value of 0 = unlimited
      */
     int sslPeerVerifyDepth();
 
@@ -192,9 +193,9 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
 
     /**
      * Construct wrapper dialog for the SSL config widget
-     * @param parent Parent widget
-     * @param cert SSL server certificate object
-     * @param hostport Unique host:port to associate with the server certificate
+     * \param parent Parent widget
+     * \param cert SSL server certificate object
+     * \param hostport Unique host:port to associate with the server certificate
      */
     explicit QgsAuthSslConfigDialog( QWidget *parent = nullptr,
                                      const QSslCertificate &cert = QSslCertificate(),

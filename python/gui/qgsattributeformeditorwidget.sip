@@ -27,7 +27,7 @@ class QgsAttributeFormEditorWidget : QWidget
      * @param form parent attribute form
      */
     explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper* editorWidget,
-                                           QgsAttributeForm* form /TransferThis/ );
+                                           QgsAttributeForm *form /TransferThis/ );
     ~QgsAttributeFormEditorWidget();
 
     /** Creates the search widget wrappers for the widget used when the form is in
@@ -57,7 +57,7 @@ class QgsAttributeFormEditorWidget : QWidget
      * @param initialValue initial value to show in widget
      * @param mixedValues set to true to initially show the mixed values state
      */
-    void initialize( const QVariant& initialValue, bool mixedValues = false );
+    void initialize( const QVariant &initialValue, bool mixedValues = false );
 
     /** Returns true if the widget's value has been changed since it was initialized.
      * @see initialize()
@@ -81,7 +81,7 @@ class QgsAttributeFormEditorWidget : QWidget
      */
     void setIsMixed( bool mixed );
 
-    /** Called when field values have been committed;
+    /* *Called when field values have been committed;
      */
     void changesCommitted();
 
@@ -93,7 +93,7 @@ class QgsAttributeFormEditorWidget : QWidget
 
     //! Emitted when the widget's value changes
     //! @param value new widget value
-    void valueChanged( const QVariant& value );
+    void valueChanged( const QVariant &value );
 
   protected:
 
@@ -101,7 +101,7 @@ class QgsAttributeFormEditorWidget : QWidget
      * @note this method is in place for unit testing only, and is not considered
      * stable API
      */
-    QgsSearchWidgetToolButton* searchWidgetToolButton();
+    QgsSearchWidgetToolButton *searchWidgetToolButton();
 
     /** Sets the search widget wrapper for the widget used when the form is in
      * search mode.
@@ -111,14 +111,14 @@ class QgsAttributeFormEditorWidget : QWidget
      * @note this method is in place for unit testing only, and is not considered
      * stable AP
      */
-    void setSearchWidgetWrapper( QgsSearchWidgetWrapper* wrapper );
+    void setSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
 
     /** Returns the widget which should be used as a parent during construction
      * of the search widget wrapper.
      * @note this method is in place for unit testing only, and is not considered
      * stable AP
      */
-    QWidget* searchWidgetFrame();
+    QWidget *searchWidgetFrame();
 
     /** Returns the search widget wrapper used in this widget. The wrapper must
      * first be created using createSearchWidgetWrapper()

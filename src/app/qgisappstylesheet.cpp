@@ -25,10 +25,6 @@
 #include <QFont>
 #include <QStyle>
 
-/** @class QgisAppStyleSheet
- * @brief Adjustable stylesheet for the Qgis application
- */
-
 QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
   : QObject( parent )
 {
@@ -151,8 +147,11 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 
   //sidebar style
   QString style = "QListWidget#mOptionsListWidget {"
-                  "    background-color: rgb(69, 69, 69, 220);"
+                  "    background-color: rgb(69, 69, 69, 0);"
                   "    outline: 0;"
+                  "}"
+                  "QFrame#mOptionsListFrame {"
+                  "    background-color: rgb(69, 69, 69, 220);"
                   "}"
                   "QListWidget#mOptionsListWidget::item {"
                   "    color: white;"

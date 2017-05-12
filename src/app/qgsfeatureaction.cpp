@@ -22,6 +22,7 @@
 #include "qgsguivectorlayertools.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgslogger.h"
+#include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
@@ -57,7 +58,6 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   QgsDistanceArea myDa;
 
   myDa.setSourceCrs( mLayer->crs() );
-  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   context.setDistanceArea( myDa );
@@ -66,6 +66,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
   dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
+  dialog->setObjectName( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id(), f->id() ) );
 
   QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Feature" ) );
   if ( !actions.isEmpty() )
@@ -84,11 +85,11 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
       QgsFeature &feat = const_cast<QgsFeature &>( *dialog->feature() );
       QgsFeatureAction *a = new QgsFeatureAction( action.name(), feat, mLayer, action.id(), -1, dialog );
       dialog->addAction( a );
-      connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
+      connect( a, &QAction::triggered, a, &QgsFeatureAction::execute );
 
       QAbstractButton *pb = dialog->findChild<QAbstractButton *>( action.name() );
       if ( pb )
-        connect( pb, SIGNAL( clicked() ), a, SLOT( execute() ) );
+        connect( pb, &QAbstractButton::clicked, a, &QgsFeatureAction::execute );
     }
   }
 
@@ -97,10 +98,21 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
 bool QgsFeatureAction::viewFeatureForm( QgsHighlight *h )
 {
-  if ( !mLayer )
+  if ( !mLayer || !mFeature )
     return false;
 
-  QgsAttributeDialog *dialog = newDialog( true );
+  QString name( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id(), mFeature->id() ) );
+
+  QgsAttributeDialog *dialog = QgisApp::instance()->findChild<QgsAttributeDialog *>( name );
+  if ( dialog )
+  {
+    delete h;
+    dialog->raise();
+    dialog->activateWindow();
+    return true;
+  }
+
+  dialog = newDialog( true );
   dialog->setHighlight( h );
   // delete the dialog when it is closed
   dialog->setAttribute( Qt::WA_DeleteOnClose );
@@ -127,7 +139,16 @@ bool QgsFeatureAction::editFeature( bool showModal )
   }
   else
   {
-    QgsAttributeDialog *dialog = newDialog( false );
+    QString name( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id(), mFeature->id() ) );
+
+    QgsAttributeDialog *dialog = QgisApp::instance()->findChild<QgsAttributeDialog *>( name );
+    if ( dialog )
+    {
+      dialog->raise();
+      return true;
+    }
+
+    dialog = newDialog( false );
 
     if ( !mFeature->isValid() )
       dialog->setMode( QgsAttributeForm::AddFeatureMode );
@@ -207,7 +228,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     dialog->setMode( QgsAttributeForm::AddFeatureMode );
     dialog->setEditCommandMessage( text() );
 
-    connect( dialog->attributeForm(), SIGNAL( featureSaved( const QgsFeature & ) ), this, SLOT( onFeatureSaved( const QgsFeature & ) ) );
+    connect( dialog->attributeForm(), &QgsAttributeForm::featureSaved, this, &QgsFeatureAction::onFeatureSaved );
 
     if ( !showModal )
     {

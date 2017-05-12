@@ -52,7 +52,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Get the capture curve
      *
-     * @return Capture curve
+     * \returns Capture curve
      */
     const QgsCompoundCurve *captureCurve() const { return &mCaptureCurve; }
 
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     /**
      * Intercept key events like Esc or Del to delete the last point
-     * @param e key event
+     * \param e key event
      */
     virtual void keyPressEvent( QKeyEvent *e ) override;
 
@@ -82,9 +82,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
   protected:
 
     /** Converts a map point to layer coordinates
-     *  @param mapPoint the point in map coordinates
-     *  @param[in,out] layerPoint the point in layer coordinates
-     *  @return
+     *  \param mapPoint the point in map coordinates
+     *  \param[in,out] layerPoint the point in layer coordinates
+     *  \returns
      *   0 in case of success
      *   1 if the current layer is null or not a vector layer
      *   2 if the transformation failed
@@ -93,10 +93,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     int nextPoint( const QgsPointV2 &mapPoint, QgsPointV2 &layerPoint );
 
     /** Converts a point to map coordinates and layer coordinates
-     * @param p the input point
-     * @param[in,out] layerPoint the point in layer coordinates
-     * @param[in,out] mapPoint the point in map coordinates
-     * @return
+     * \param p the input point
+     * \param[in,out] layerPoint the point in layer coordinates
+     * \param[in,out] mapPoint the point in map coordinates
+     * \returns
      *  0 in case of success
      *  1 if the current layer is null or not a vector layer
      *  2 if the transformation failed
@@ -106,22 +106,22 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     /** Fetches the original point from the source layer if it has the same
      * CRS as the current layer.
-     * @return 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
-     * @note added in 2.14
+     * \returns 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
+     * \since QGIS 2.14
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPointV2 &layerPoint );
 
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
-     * @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
+     * \returns 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addVertex( const QgsPoint &point );
 
     /** Variant to supply more information in the case of snapping
-     * @param mapPoint The vertex to add in map coordinates
-     * @param match Data about the snapping match. Can be an invalid match, if point not snapped.
-     * @note added in 2.14
+     * \param mapPoint The vertex to add in map coordinates
+     * \param match Data about the snapping match. Can be an invalid match, if point not snapped.
+     * \since QGIS 2.14
      */
     int addVertex( const QgsPoint &mapPoint, const QgsPointLocator::Match &match );
 
@@ -136,7 +136,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Are we currently capturing?
      *
-     * @return Is the tool in capture mode?
+     * \returns Is the tool in capture mode?
      */
     bool isCapturing() const;
 
@@ -148,20 +148,20 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Number of points digitized
      *
-     * @return Number of points
+     * \returns Number of points
      */
     int size();
 
     /**
      * List of digitized points
-     * @return List of points
+     * \returns List of points
      */
     QList<QgsPoint> points();
 
     /**
      * Set the points on which to work
      *
-     * @param pointList A list of points
+     * \param pointList A list of points
      */
     void setPoints( const QList<QgsPoint> &pointList );
 

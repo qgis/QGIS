@@ -22,7 +22,7 @@ from builtins import range
 
 from qgis.PyQt.QtCore import QCoreApplication, QSize, QFileInfo, Qt
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem
-from qgis.PyQt.QtGui import QIcon, QFont, QColor
+from qgis.PyQt.QtGui import QIcon, QFont, QColor, QFontDatabase
 from .console_compile_apis import PrepareAPIDialog
 
 from .ui_console_settings import Ui_SettingsDialogPythonConsole
@@ -220,12 +220,13 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
     def restoreSettings(self):
         settings = QgsSettings()
-        self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10, type=int))
-        self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", 10, type=int))
+        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
+        self.spinBox.setValue(settings.value("pythonConsole/fontsize", font.pointSize(), type=int))
+        self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", font.pointSize(), type=int))
         self.fontComboBox.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytext",
-                                                              "Monospace")))
+                                                              font.family())))
         self.fontComboBoxEditor.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytextEditor",
-                                                                    "Monospace")))
+                                                                    font.family())))
         self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
         self.lineEdit.setText(settings.value("pythonConsole/preparedAPIFile", "", type=str))
         itemTable = settings.value("pythonConsole/userAPI", [])

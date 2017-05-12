@@ -17,7 +17,7 @@ class QgsPanelWidget : public QWidget
      * Set the title of the panel when shown in the interface.
      * @param panelTitle The panel title.
      */
-    void setPanelTitle( const QString& panelTitle );
+    void setPanelTitle( const QString &panelTitle );
 
     /**
      * The title of the panel.
@@ -32,7 +32,7 @@ class QgsPanelWidget : public QWidget
     * Use this method if you have children widgets that need to show a panel to the user.
     * @param panels A list of panel widgets to connect.
     */
-    void connectChildPanels( const QList<QgsPanelWidget*>& panels );
+    void connectChildPanels( const QList<QgsPanelWidget*> &panels );
 
     /**
      * Connect the given sub panel widgets showPanel signals to this current panels
@@ -41,7 +41,7 @@ class QgsPanelWidget : public QWidget
      * Use this method if you have children widgets that need to show a panel to the user.
      * @param panel The panel to connect.
      */
-    void connectChildPanel( QgsPanelWidget* panel );
+    void connectChildPanel( QgsPanelWidget *panel );
 
     /**
      * Set the widget in dock mode which tells the widget to emit panel
@@ -80,7 +80,7 @@ class QgsPanelWidget : public QWidget
      * @returns parent panel widget if found, otherwise nullptr
      * @note added in QGIS 3.0
      */
-    static QgsPanelWidget* findParentPanel( QWidget* widget );
+    static QgsPanelWidget *findParentPanel( QWidget *widget );
 
   signals:
 
@@ -93,7 +93,7 @@ class QgsPanelWidget : public QWidget
      * child panels. For example, if this panel opens a second stacked panel, then this panel
      * will not emit panelAccepted when the second panel is accepted.
      */
-    void panelAccepted( QgsPanelWidget* panel );
+    void panelAccepted( QgsPanelWidget *panel );
 
     /**
      * Emit when you require a panel to be show in the interface.
@@ -101,7 +101,7 @@ class QgsPanelWidget : public QWidget
      * @note If you are connected to this signal you should also connect
      * given panels showPanel signal as they can be nested.
      */
-    void showPanel( QgsPanelWidget* panel );
+    void showPanel( QgsPanelWidget *panel );
 
     /**
      * Emitted when the widget state changes.
@@ -122,7 +122,7 @@ class QgsPanelWidget : public QWidget
      *
      * @param panel The panel widget to open.
      */
-    void openPanel( QgsPanelWidget* panel );
+    void openPanel( QgsPanelWidget *panel );
 
     /**
      * Accept the panel. Causes panelAccepted to be emitted.
@@ -136,7 +136,7 @@ class QgsPanelWidget : public QWidget
      * @brief Overridden key press event to handle the esc event on the widget.
      * @param event The key event
      */
-    void keyPressEvent( QKeyEvent* event );
+    void keyPressEvent( QKeyEvent *event );
 };
 
 
@@ -159,11 +159,11 @@ class QgsPanelWidgetWrapper: public QgsPanelWidget
      * @param widget The widget to wrap.
      * @param parent The parent widget.
      */
-    QgsPanelWidgetWrapper( QWidget* widget, QWidget* parent = nullptr );
+    QgsPanelWidgetWrapper( QWidget *widget, QWidget *parent = 0 );
 
     /**
      * Returns the internal widget that is wrapped in this panel.
      * @return The internal widget. Can be nullptr.
      */
-    QWidget* widget();
+    QWidget *widget();
 };

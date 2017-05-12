@@ -1,216 +1,268 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsconditionalstyle.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 
-/**
- * @brief The QgsConditionalLayerStyles class holds conditional style information
- * for a layer. This includes field styles and full row styles.
- */
 class QgsConditionalLayerStyles
 {
+%Docstring
+ The QgsConditionalLayerStyles class holds conditional style information
+ for a layer. This includes field styles and full row styles.
+%End
+
 %TypeHeaderCode
-#include <qgsconditionalstyle.h>
+#include "qgsconditionalstyle.h"
 %End
   public:
     QgsConditionalLayerStyles();
 
     QList<QgsConditionalStyle> rowStyles();
+%Docstring
+ :rtype: list of QgsConditionalStyle
+%End
 
-    /**
-     * @brief Set the conditional styles that apply to full rows of data in the attribute table.
-     * Each row will check be checked against each rule.
-     * @param styles The styles to assign to all the rows
-     * @note added in QGIS 2.12
-     */
-    void setRowStyles( const QList<QgsConditionalStyle>& styles );
+    void setRowStyles( const QList<QgsConditionalStyle> &styles );
+%Docstring
+ Set the conditional styles that apply to full rows of data in the attribute table.
+ Each row will check be checked against each rule.
+ \param styles The styles to assign to all the rows
+.. versionadded:: 2.12
+%End
 
-    /**
-     * @brief Set the conditional styles for the field UI properties.
-     * @param fieldName name of field
-     * @param styles
-     */
-    void setFieldStyles( const QString& fieldName, const QList<QgsConditionalStyle>& styles );
+    void setFieldStyles( const QString &fieldName, const QList<QgsConditionalStyle> &styles );
+%Docstring
+ Set the conditional styles for the field UI properties.
+ \param fieldName name of field
+ \param styles
+%End
 
-    /**
-     * @brief Returns the conditional styles set for the field UI properties
-     * @return A list of conditional styles that have been set.
-     */
-    QList<QgsConditionalStyle> fieldStyles( const QString& fieldName );
+    QList<QgsConditionalStyle> fieldStyles( const QString &fieldName );
+%Docstring
+ Returns the conditional styles set for the field UI properties
+ :return: A list of conditional styles that have been set.
+ :rtype: list of QgsConditionalStyle
+%End
 
-    /** Reads field ui properties specific state from Dom node.
-     */
-    bool readXml( const QDomNode& node );
+    bool readXml( const QDomNode &node );
+%Docstring
+ Reads field ui properties specific state from Dom node.
+ :rtype: bool
+%End
 
-    /** Write field ui properties specific state from Dom node.
-     */
-    bool writeXml( QDomNode & node, QDomDocument & doc ) const;
+    bool writeXml( QDomNode &node, QDomDocument &doc ) const;
+%Docstring
+ Write field ui properties specific state from Dom node.
+ :rtype: bool
+%End
+
 };
 
-/** \class QgsConditionalStyle
- *  \ingroup core
- * Conditional styling for a rule.
- */
 class QgsConditionalStyle
 {
+%Docstring
+ Conditional styling for a rule.
+%End
+
 %TypeHeaderCode
-#include <qgsconditionalstyle.h>
+#include "qgsconditionalstyle.h"
 %End
   public:
     QgsConditionalStyle();
-    QgsConditionalStyle( const QgsConditionalStyle& other );
-    QgsConditionalStyle( const QString& rule );
-    ~QgsConditionalStyle();
+    QgsConditionalStyle( const QgsConditionalStyle &other );
+    QgsConditionalStyle( const QString &rule );
 
-    /**
-     * @brief Check if the rule matches using the given value and feature
-     * @param value The current value being checked. The "value" variable from the context is replaced with this value.
-     * @param context Expression context for evaluating rule expression
-     * @return True of the rule matches against the given feature
-     */
-    bool matches( const QVariant& value, QgsExpressionContext& context ) const;
 
-    /**
-     * @brief Render a preview icon of the rule.
-     * @return QPixmap preview of the style
-     */
+    bool matches( const QVariant &value, QgsExpressionContext &context ) const;
+%Docstring
+ Check if the rule matches using the given value and feature
+ \param value The current value being checked. The "value" variable from the context is replaced with this value.
+ \param context Expression context for evaluating rule expression
+ :return: True of the rule matches against the given feature
+ :rtype: bool
+%End
+
     QPixmap renderPreview() const;
+%Docstring
+ Render a preview icon of the rule.
+ :return: QPixmap preview of the style
+ :rtype: QPixmap
+%End
 
-    /**
-     * @brief Set the name of the style.  Names are optional but handy for display
-     * @param value The name given to the style
-     */
-    void setName( const QString& value );
+    void setName( const QString &value );
+%Docstring
+ Set the name of the style.  Names are optional but handy for display
+ \param value The name given to the style
+%End
 
-    /**
-     * @brief Set the rule for the style.  Rules should be of QgsExpression syntax.
-     * Special value of \@value is replaced at run time with the check value
-     * @param value The QgsExpression style rule to use for this style
-     */
-    void setRule( const QString& value );
+    void setRule( const QString &value );
+%Docstring
+ Set the rule for the style.  Rules should be of QgsExpression syntax.
+ Special value of \@value is replaced at run time with the check value
+ \param value The QgsExpression style rule to use for this style
+%End
 
-    /**
-     * @brief Set the background color for the style
-     * @param value QColor for background color
-     */
-    void setBackgroundColor( const QColor& value );
+    void setBackgroundColor( const QColor &value );
+%Docstring
+ Set the background color for the style
+ \param value QColor for background color
+%End
 
-    /**
-     * @brief Set the text color for the style
-     * @param value QColor for text color
-     */
-    void setTextColor( const QColor& value );
+    void setTextColor( const QColor &value );
+%Docstring
+ Set the text color for the style
+ \param value QColor for text color
+%End
 
-    /**
-     * @brief Set the font for the the style
-     * @param value QFont to be used for text
-     */
-    void setFont( const QFont& value );
+    void setFont( const QFont &value );
+%Docstring
+ Set the font for the the style
+ \param value QFont to be used for text
+%End
 
-    /**
-     * @brief Set the icon for the style. Icons are generated from symbols
-     * @param value QgsSymbol to be used when generating the icon
-     */
-    void setSymbol( QgsSymbol* value );
+    void setSymbol( QgsSymbol *value );
+%Docstring
+ Set the icon for the style. Icons are generated from symbols
+ \param value QgsSymbol to be used when generating the icon
+%End
 
-    /**
-     * @brief The name of the style.
-     * @return The name of the style. Names are optional so might be empty.
-     */
     QString displayText() const;
+%Docstring
+ The name of the style.
+ :return: The name of the style. Names are optional so might be empty.
+ :rtype: str
+%End
 
-    /**
-     * @brief The name of the style.
-     * @return The name of the style. Names are optional so might be empty.
-     */
     QString name() const;
+%Docstring
+ The name of the style.
+ :return: The name of the style. Names are optional so might be empty.
+ :rtype: str
+%End
 
-    /**
-     * @brief The icon set for style generated from the set symbol
-     * @return A QPixmap that was set for the icon using the symbol
-     */
     QPixmap icon() const;
+%Docstring
+ The icon set for style generated from the set symbol
+ :return: A QPixmap that was set for the icon using the symbol
+ :rtype: QPixmap
+%End
 
-    /**
-     * @brief The symbol used to generate the icon for the style
-     * @return The QgsSymbol used for the icon
-     */
-    QgsSymbol* symbol() const;
+    QgsSymbol *symbol() const;
+%Docstring
+ The symbol used to generate the icon for the style
+ :return: The QgsSymbol used for the icon
+ :rtype: QgsSymbol
+%End
 
-    /**
-     * @brief The text color set for style
-     * @return QColor for text color
-     */
     QColor textColor() const;
+%Docstring
+ The text color set for style
+ :return: QColor for text color
+ :rtype: QColor
+%End
 
-    /**
-     * @brief Check if the text color is valid for render.
-     * Valid colors are non invalid QColors and a color with a > 0 alpha
-     * @return True of the color set for text is valid.
-     */
     bool validTextColor() const;
+%Docstring
+ Check if the text color is valid for render.
+ Valid colors are non invalid QColors and a color with a > 0 alpha
+ :return: True of the color set for text is valid.
+ :rtype: bool
+%End
 
-    /**
-     * @brief The background color for style
-     * @return QColor for background color
-     */
     QColor backgroundColor() const;
+%Docstring
+ The background color for style
+ :return: QColor for background color
+ :rtype: QColor
+%End
 
-    /**
-     * @brief Check if the background color is valid for render.
-     * Valid colors are non invalid QColors and a color with a > 0 alpha
-     * @return True of the color set for background is valid.
-     */
     bool validBackgroundColor() const;
-    /**
-     * @brief The font for the style
-     * @return QFont for the style
-     */
+%Docstring
+ Check if the background color is valid for render.
+ Valid colors are non invalid QColors and a color with a > 0 alpha
+ :return: True of the color set for background is valid.
+ :rtype: bool
+%End
+
     QFont font() const;
+%Docstring
+ The font for the style
+ :return: QFont for the style
+ :rtype: QFont
+%End
 
-    /**
-     * @brief The condition rule set for the style. Rule may contain variable \@value
-     * to represent the current value
-     * @return QString of the current set rule
-     */
     QString rule() const;
+%Docstring
+ The condition rule set for the style. Rule may contain variable \@value
+ to represent the current value
+ :return: QString of the current set rule
+ :rtype: str
+%End
 
-    /**
-     * @brief isValid Check if this rule is valid.  A valid rule has one or more properties
-     * set.
-     * @return True if the rule is valid.
-     */
     bool isValid() const;
+%Docstring
+ isValid Check if this rule is valid.  A valid rule has one or more properties
+ set.
+ :return: True if the rule is valid.
+ :rtype: bool
+%End
 
-    /**
-     * @brief Find and return the matching styles for the value and feature.
-     * If no match is found a invalid QgsConditionalStyle is return.
-     *
-     * @return A condtional style that matches the value and feature.
-     * Check with QgsConditionalStyle::isValid()
-     */
-    static QList<QgsConditionalStyle> matchingConditionalStyles( const QList<QgsConditionalStyle>& styles, const QVariant& value, QgsExpressionContext& context );
+    static QList<QgsConditionalStyle> matchingConditionalStyles( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
+%Docstring
+ Find and return the matching styles for the value and feature.
+ If no match is found a invalid QgsConditionalStyle is return.
 
-    /**
-     * @brief Find and return the matching style for the value and feature.
-     * If no match is found a invalid QgsConditionalStyle is return.
-     *
-     * @return A condtional style that matches the value and feature.
-     * Check with QgsConditionalStyle::isValid()
-     */
-    static QgsConditionalStyle matchingConditionalStyle( const QList<QgsConditionalStyle>& styles, const QVariant& value, QgsExpressionContext& context );
+ :return: A conditional style that matches the value and feature.
+ Check with QgsConditionalStyle.isValid()
+ :rtype: list of QgsConditionalStyle
+%End
 
-    /**
-     * @brief Compress a list of styles into a single style.  This can be used to stack the elements of the
-     * styles. The font of the last style is used in the output.
-     * @param styles The list of styles to compress down
-     * @return A single style generated from joining each style property.
-     */
-    static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle>& styles );
+    static QgsConditionalStyle matchingConditionalStyle( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
+%Docstring
+ Find and return the matching style for the value and feature.
+ If no match is found a invalid QgsConditionalStyle is return.
 
-    /** Reads vector conditional style specific state from layer Dom node.
-     */
-    bool readXml( const QDomNode& node );
+ :return: A conditional style that matches the value and feature.
+ Check with QgsConditionalStyle.isValid()
+ :rtype: QgsConditionalStyle
+%End
 
-    /** Write vector conditional style specific state from layer Dom node.
-     */
-    bool writeXml( QDomNode & node, QDomDocument & doc ) const;
+    static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle> &styles );
+%Docstring
+ Compress a list of styles into a single style.  This can be used to stack the elements of the
+ styles. The font of the last style is used in the output.
+ \param styles The list of styles to compress down
+ :return: A single style generated from joining each style property.
+ :rtype: QgsConditionalStyle
+%End
+
+    bool readXml( const QDomNode &node );
+%Docstring
+ Reads vector conditional style specific state from layer Dom node.
+ :rtype: bool
+%End
+
+    bool writeXml( QDomNode &node, QDomDocument &doc ) const;
+%Docstring
+ Write vector conditional style specific state from layer Dom node.
+ :rtype: bool
+%End
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsconditionalstyle.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

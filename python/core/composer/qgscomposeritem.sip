@@ -150,7 +150,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     /** Constructor
      @param composition parent composition
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
-    QgsComposerItem( QgsComposition* composition /TransferThis/, bool manageZValue = true );
+    QgsComposerItem( QgsComposition *composition /TransferThis/, bool manageZValue = true );
     /** Constructor with box position and composer object
      @param x x coordinate of item
      @param y y coordinate of item
@@ -158,7 +158,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      @param height height of item
      @param composition parent composition
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
-    QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition /TransferThis/, bool manageZValue = true );
+    QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition /TransferThis/, bool manageZValue = true );
     virtual ~QgsComposerItem();
 
     /** Return correct graphics item type. */
@@ -257,13 +257,13 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 
     /** Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit*/
-    virtual void setSceneRect( const QRectF& rectangle );
+    virtual void setSceneRect( const QRectF &rectangle );
 
     /** Writes parameter that are not subclass specific in document. Usually called from writeXML methods of subclasses*/
-    bool _writeXml( QDomElement& itemElem, QDomDocument& doc ) const;
+    bool _writeXml( QDomElement &itemElem, QDomDocument &doc ) const;
 
     /** Reads parameter that are not subclass specific in document. Usually called from readXML methods of subclasses*/
-    bool _readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    bool _readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     /** Whether this item has a frame or not.
      * @returns true if there is a frame around this item, otherwise false.
@@ -291,7 +291,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @see setFrameJoinStyle
      * @see setFrameStrokeWidth
      */
-    virtual void setFrameStrokeColor( const QColor& color );
+    virtual void setFrameStrokeColor( const QColor &color );
 
     /** Returns the frame's stroke color. Only used if hasFrame is true.
      * @returns frame stroke color
@@ -390,7 +390,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @see backgroundColor
      * @see setBackgroundEnabled
      */
-    void setBackgroundColor( const QColor& backgroundColor );
+    void setBackgroundColor( const QColor &backgroundColor );
 
     /** Returns the item's composition blending mode.
      * @returns item blending mode
@@ -433,15 +433,15 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     void setEffectsEnabled( const bool effectsEnabled );
 
     /** Composite operations for item groups do nothing per default*/
-    virtual void addItem( QgsComposerItem* item );
+    virtual void addItem( QgsComposerItem *item );
     virtual void removeItems();
 
-    virtual void beginItemCommand( const QString& text );
+    virtual void beginItemCommand( const QString &text );
 
     /** Starts new composer undo command
       @param commandText command title
       @param c context for mergeable commands (unknown for non-mergeable commands*/
-    void beginCommand( const QString& commandText, QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
+    void beginCommand( const QString &commandText, QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
 
     virtual void endItemCommand();
     /** Finish current command and push it onto the undo stack */
@@ -486,7 +486,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @param id new id for item
      * @see id
      */
-    void setId( const QString& id );
+    void setId( const QString &id );
 
     /** Get item identification name
      * @returns unique item identification string
@@ -588,27 +588,27 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @param context expression context for evaluating data defined expressions
      * @note this method was added in version 2.5
      */
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
 
   protected:
 
     //event handlers
-    virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
-    virtual void mousePressEvent( QGraphicsSceneMouseEvent * event );
-    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent * event );
+    virtual void mouseMoveEvent( QGraphicsSceneMouseEvent *event );
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
 
-    virtual void hoverMoveEvent( QGraphicsSceneHoverEvent * event );
+    virtual void hoverMoveEvent( QGraphicsSceneHoverEvent *event );
 
     /** Draws additional graphics on selected items. The base implementation has
      * no effect.
      */
-    virtual void drawSelectionBoxes( QPainter* p );
+    virtual void drawSelectionBoxes( QPainter *p );
 
     /** Draw black frame around item*/
-    virtual void drawFrame( QPainter* p );
+    virtual void drawFrame( QPainter *p );
 
     /** Draw background*/
-    virtual void drawBackground( QPainter* p );
+    virtual void drawBackground( QPainter *p );
 
     /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/
@@ -622,10 +622,10 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     //some utility functions
 
     /** Return horizontal align snap item. Creates a new graphics line if 0*/
-    QGraphicsLineItem* hAlignSnapItem();
+    QGraphicsLineItem *hAlignSnapItem();
     void deleteHAlignSnapItem();
     /** Return vertical align snap item. Creates a new graphics line if 0*/
-    QGraphicsLineItem* vAlignSnapItem();
+    QGraphicsLineItem *vAlignSnapItem();
     void deleteVAlignSnapItem();
     void deleteAlignItems();
 
@@ -640,7 +640,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * set and position mode has been accounted for
      * @note added in QGIS 2.5
      */
-    QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false, const QgsExpressionContext* context = 0 );
+    QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false, const QgsExpressionContext *context = 0 );
 
     /** Returns whether the item should be drawn in the current context
      * @returns true if item should be drawn

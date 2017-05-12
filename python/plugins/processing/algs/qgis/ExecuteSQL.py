@@ -26,8 +26,12 @@ __copyright__ = '(C) 2016, Hugo Mercier'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
-                       QgsVirtualLayerDefinition, QgsVectorLayer,
-                       QgsCoordinateReferenceSystem, QgsWkbTypes)
+                       QgsVirtualLayerDefinition,
+                       QgsVectorLayer,
+                       QgsCoordinateReferenceSystem,
+                       QgsWkbTypes,
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -36,7 +40,6 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class ExecuteSQL(GeoAlgorithm):
@@ -53,10 +56,22 @@ class ExecuteSQL(GeoAlgorithm):
     INPUT_GEOMETRY_CRS = 'INPUT_GEOMETRY_CRS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Execute SQL')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'executesql'
+
+    def displayName(self):
+        return self.tr('Execute SQL')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterMultipleInput(name=self.INPUT_DATASOURCES,
                                                  description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
                                                  optional=True))
@@ -88,7 +103,7 @@ class ExecuteSQL(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('SQL Output')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layers = self.getParameterValue(self.INPUT_DATASOURCES)
         query = self.getParameterValue(self.INPUT_QUERY)
         uid_field = self.getParameterValue(self.INPUT_UID_FIELD)
@@ -100,7 +115,7 @@ class ExecuteSQL(GeoAlgorithm):
         layerIdx = 1
         if layers:
             for layerSource in layers.split(';'):
-                layer = dataobjects.getObjectFromUri(layerSource)
+                layer = QgsProcessingUtils.mapLayerFromString(layerSource, context)
                 if layer:
                     df.addSource('input{}'.format(layerIdx), layer.id())
                 layerIdx += 1
@@ -130,14 +145,12 @@ class ExecuteSQL(GeoAlgorithm):
         if not vLayer.isValid():
             raise GeoAlgorithmExecutionException(vLayer.dataProvider().error().message())
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            vLayer.fields().toList(),
-            # Create a point layer (without any points) if 'no geometry' is chosen
-            vLayer.wkbType() if geometry_type != 1 else 1,
-            vLayer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(vLayer.fields(),
+                                                                           vLayer.wkbType() if geometry_type != 1 else 1,
+                                                                           vLayer.crs(), context)
 
-        features = vector.features(vLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(vLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vLayer, context)
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             outFeat.setAttributes(inFeat.attributes())

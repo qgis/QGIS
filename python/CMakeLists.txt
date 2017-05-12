@@ -89,6 +89,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QEXTSERIALPORT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
@@ -104,10 +105,16 @@ INCLUDE_DIRECTORIES(
   ../src/core/geometry
   ../src/core/gps
   ../src/core/layertree
+  ../src/core/metadata
   ../src/core/processing
+  ../src/core/providers
+  ../src/core/providers/memory
   ../src/core/raster
+  ../src/core/scalebar
   ../src/core/symbology-ng
 
+  ../src/gui
+  ../src/gui/symbology-ng
   ../src/gui/raster
   ../src/gui/attributetable
   ../src/gui/auth
@@ -116,8 +123,12 @@ INCLUDE_DIRECTORIES(
   ../src/gui/effects
   ../src/gui/layertree
 
+  ../src/plugins
+
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/analysis
 )
 
@@ -141,16 +152,6 @@ SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.co
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip cpp_files)
 BUILD_SIP_PYTHON_MODULE(qgis._core core/core.sip ${cpp_files} "" qgis_core)
 SET(SIP_CORE_CPP_FILES ${cpp_files})
-
-# additional gui includes
-INCLUDE_DIRECTORIES(
-  ../src/gui
-  ../src/gui/symbology-ng
-  ../src/gui/effects
-  ../src/plugins
-  ${CMAKE_BINARY_DIR}/src/gui
-  ${CMAKE_BINARY_DIR}/src/ui
-)
 
 # gui module
 FILE(GLOB_RECURSE sip_files_gui gui/*.sip)

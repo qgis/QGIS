@@ -24,6 +24,7 @@
 #define DEFAULT_SCALE_METHOD              QgsSymbol::ScaleDiameter
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QColor>
 #include <QMap>
 #include <QPointF>
@@ -54,7 +55,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Data definable properties.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     enum Property
     {
@@ -111,7 +112,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Returns the symbol layer property definitions.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
@@ -119,8 +120,8 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Returns true if symbol layer is enabled and will be drawn.
-     * @note added in QGIS 3.0
-     * @see setEnabled()
+     * \since QGIS 3.0
+     * \see setEnabled()
      */
     bool enabled() const { return mEnabled; }
 
@@ -128,8 +129,8 @@ class CORE_EXPORT QgsSymbolLayer
      * Sets whether symbol layer is enabled and should be drawn. Disabled
      * layers are not drawn, but remain part of the symbol and can be re-enabled
      * when desired.
-     * @note added in QGIS 3.0
-     * @see enabled()
+     * \since QGIS 3.0
+     * \see enabled()
      */
     void setEnabled( bool enabled ) { mEnabled = enabled; }
 
@@ -144,19 +145,19 @@ class CORE_EXPORT QgsSymbolLayer
     virtual void setColor( const QColor &color ) { mColor = color; }
 
     /** Set stroke color. Supported by marker and fill layers.
-     * @note added in 2.1 */
+     * \since QGIS 2.1 */
     virtual void setStrokeColor( const QColor &color ) { Q_UNUSED( color ); }
 
     /** Get stroke color. Supported by marker and fill layers.
-     * @note added in 2.1 */
+     * \since QGIS 2.1 */
     virtual QColor strokeColor() const { return QColor(); }
 
     /** Set fill color. Supported by marker and fill layers.
-     * @note added in 2.1 */
+     * \since QGIS 2.1 */
     virtual void setFillColor( const QColor &color ) { Q_UNUSED( color ); }
 
     /** Get fill color. Supported by marker and fill layers.
-     * @note added in 2.1 */
+     * \since QGIS 2.1 */
     virtual QColor fillColor() const { return QColor(); }
 
     /**
@@ -171,7 +172,7 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Shall be reimplemented by subclasses to create a deep copy of the instance.
      */
-    virtual QgsSymbolLayer *clone() const = 0;
+    virtual QgsSymbolLayer *clone() const = 0 SIP_FACTORY;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QStringLiteral( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
@@ -210,8 +211,8 @@ class CORE_EXPORT QgsSymbolLayer
      * symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
      * layer may use it to specify the units for the marker size, while a line symbol
      * layer may use it to specify the units for the line width.
-     * @param unit output units
-     * @see outputUnit()
+     * \param unit output units
+     * \see outputUnit()
      */
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit ) { Q_UNUSED( unit ); }
 
@@ -219,8 +220,8 @@ class CORE_EXPORT QgsSymbolLayer
      * symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
      * layer may use it to specify the units for the marker size, while a line symbol
      * layer may use it to specify the units for the line width.
-     * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol layer contains mixed units
-     * @see setOutputUnit()
+     * \returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol layer contains mixed units
+     * \see setOutputUnit()
      */
     virtual QgsUnitTypes::RenderUnit outputUnit() const { return QgsUnitTypes::RenderUnknownUnit; }
 
@@ -238,9 +239,9 @@ class CORE_EXPORT QgsSymbolLayer
 
     /** Sets a data defined property for the layer. Any existing property with the same key
      * will be overwritten.
-     * @note added in QGIS 3.0
-     * @see getDataDefinedProperty
-     * @see removeDataDefinedProperty
+     * \since QGIS 3.0
+     * \see getDataDefinedProperty
+     * \see removeDataDefinedProperty
      */
     virtual void setDataDefinedProperty( Property key, const QgsProperty &property );
 
@@ -272,42 +273,42 @@ class CORE_EXPORT QgsSymbolLayer
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
     /** Returns the current paint effect for the layer.
-     * @returns paint effect
-     * @note added in QGIS 2.9
-     * @see setPaintEffect
+     * \returns paint effect
+     * \since QGIS 2.9
+     * \see setPaintEffect
      */
     QgsPaintEffect *paintEffect() const;
 
     /** Sets the current paint effect for the layer.
-     * @param effect paint effect. Ownership is transferred to the layer.
-     * @note added in QGIS 2.9
-     * @see paintEffect
+     * \param effect paint effect. Ownership is transferred to the layer.
+     * \since QGIS 2.9
+     * \see paintEffect
      */
     void setPaintEffect( QgsPaintEffect *effect );
 
     /** Prepares all data defined property expressions for evaluation. This should
      * be called prior to evaluating data defined properties.
-     * @param context symbol render context
-     * @note added in QGIS 2.12
+     * \param context symbol render context
+     * \since QGIS 2.12
      */
     virtual void prepareExpressions( const QgsSymbolRenderContext &context );
 
     /** Returns a reference to the symbol layer's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
-     * @see setProperties()
+     * \since QGIS 3.0
+     * \see setProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the symbol layer's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
-     * @see setProperties()
+     * \since QGIS 3.0
+     * \see setProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the symbol layer's property collection, used for data defined overrides.
-     * @param collection property collection. Existing properties will be replaced.
-     * @note added in QGIS 3.0
-     * @see properties()
+     * \param collection property collection. Existing properties will be replaced.
+     * \since QGIS 3.0
+     * \see properties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
@@ -338,18 +339,18 @@ class CORE_EXPORT QgsSymbolLayer
     static const bool SELECT_FILL_STYLE = false;
 
     /** Restores older data defined properties from string map.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void restoreOldDataDefinedProperties( const QgsStringMap &stringMap );
 
     /** Copies all data defined properties of this layer to another symbol layer.
-     * @param destLayer destination layer
+     * \param destLayer destination layer
      */
     void copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const;
 
     /** Copies paint effect of this layer to another symbol layer
-     * @param destLayer destination layer
-     * @note added in QGIS 2.9
+     * \param destLayer destination layer
+     * \since QGIS 2.9
      */
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
 
@@ -391,174 +392,174 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 
     /** Renders a marker at the specified point. Derived classes must implement this to
      * handle drawing the point.
-     * @param point position at which to render point, in painter units
-     * @param context symbol render context
+     * \param point position at which to render point, in painter units
+     * \param context symbol render context
      */
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context ) = 0;
 
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
     /** Sets the rotation angle for the marker.
-     * @param angle angle in degrees clockwise from north.
-     * @see angle()
-     * @see setLineAngle()
+     * \param angle angle in degrees clockwise from north.
+     * \see angle()
+     * \see setLineAngle()
      */
     void setAngle( double angle ) { mAngle = angle; }
 
     /** Returns the rotation angle for the marker, in degrees clockwise from north.
-     * @see setAngle()
+     * \see setAngle()
      */
     double angle() const { return mAngle; }
 
     /** Sets the line angle modification for the symbol's angle. This angle is added to
      * the marker's rotation and data defined rotation before rendering the symbol, and
      * is usually used for orienting symbols to match a line's angle.
-     * @param lineAngle Angle in degrees clockwise from north, valid values are between 0 and 360
-     * @note added in QGIS 2.9
-     * @see setAngle()
-     * @see angle()
+     * \param lineAngle Angle in degrees clockwise from north, valid values are between 0 and 360
+     * \since QGIS 2.9
+     * \see setAngle()
+     * \see angle()
      */
     void setLineAngle( double lineAngle ) { mLineAngle = lineAngle; }
 
     /** Sets the symbol size.
-     * @param size symbol size. Units are specified by sizeUnit().
-     * @see size()
-     * @see setSizeUnit()
-     * @see setSizeMapUnitScale()
+     * \param size symbol size. Units are specified by sizeUnit().
+     * \see size()
+     * \see setSizeUnit()
+     * \see setSizeMapUnitScale()
      */
     void setSize( double size ) { mSize = size; }
 
     /** Returns the symbol size. Units are specified by sizeUnit().
-     * @see setSize()
-     * @see sizeUnit()
-     * @see sizeUnitMapScale()
+     * \see setSize()
+     * \see sizeUnit()
+     * \see sizeUnitMapScale()
      */
     double size() const { return mSize; }
 
     /** Sets the units for the symbol's size.
-     * @param unit size units
-     * @see sizeUnit()
-     * @see setSize()
-     * @see setSizeMapUnitScale()
+     * \param unit size units
+     * \see sizeUnit()
+     * \see setSize()
+     * \see setSizeMapUnitScale()
      */
     void setSizeUnit( QgsUnitTypes::RenderUnit unit ) { mSizeUnit = unit; }
 
     /** Returns the units for the symbol's size.
-     * @see setSizeUnit()
-     * @see size()
-     * @see sizeMapUnitScale()
+     * \see setSizeUnit()
+     * \see size()
+     * \see sizeMapUnitScale()
      */
     QgsUnitTypes::RenderUnit sizeUnit() const { return mSizeUnit; }
 
     /** Sets the map unit scale for the symbol's size.
-     * @param scale size map unit scale
-     * @see sizeMapUnitScale()
-     * @see setSize()
-     * @see setSizeUnit()
+     * \param scale size map unit scale
+     * \see sizeMapUnitScale()
+     * \see setSize()
+     * \see setSizeUnit()
      */
     void setSizeMapUnitScale( const QgsMapUnitScale &scale ) { mSizeMapUnitScale = scale; }
 
     /** Returns the map unit scale for the symbol's size.
-     * @see setSizeMapUnitScale()
-     * @see size()
-     * @see sizeUnit()
+     * \see setSizeMapUnitScale()
+     * \see size()
+     * \see sizeUnit()
      */
     const QgsMapUnitScale &sizeMapUnitScale() const { return mSizeMapUnitScale; }
 
     /** Sets the method to use for scaling the marker's size.
-     * @param scaleMethod scale method
-     * @see scaleMethod()
+     * \param scaleMethod scale method
+     * \see scaleMethod()
      */
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod ) { mScaleMethod = scaleMethod; }
 
     /** Returns the method to use for scaling the marker's size.
-     * @see setScaleMethod()
+     * \see setScaleMethod()
      */
     QgsSymbol::ScaleMethod scaleMethod() const { return mScaleMethod; }
 
     /** Sets the marker's offset, which is the horizontal and vertical displacement which the rendered marker
      * should have from the original feature's geometry.
-     * @param offset marker offset. Units are specified by offsetUnit()
-     * @see offset()
-     * @see setOffsetUnit()
-     * @see setOffsetMapUnitScale()
+     * \param offset marker offset. Units are specified by offsetUnit()
+     * \see offset()
+     * \see setOffsetUnit()
+     * \see setOffsetMapUnitScale()
      */
     void setOffset( QPointF offset ) { mOffset = offset; }
 
     /** Returns the marker's offset, which is the horizontal and vertical displacement which the rendered marker
      * will have from the original feature's geometry. Units are specified by offsetUnit().
-     * @see setOffset()
-     * @see offsetUnit()
-     * @see offsetMapUnitScale()
+     * \see setOffset()
+     * \see offsetUnit()
+     * \see offsetMapUnitScale()
      */
     QPointF offset() const { return mOffset; }
 
     /** Sets the units for the symbol's offset.
-     * @param unit offset units
-     * @see offsetUnit()
-     * @see setOffset()
-     * @see setOffsetMapUnitScale()
+     * \param unit offset units
+     * \see offsetUnit()
+     * \see setOffset()
+     * \see setOffsetMapUnitScale()
      */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /** Returns the units for the symbol's offset.
-     * @see setOffsetUnit()
-     * @see offset()
-     * @see offsetMapUnitScale()
+     * \see setOffsetUnit()
+     * \see offset()
+     * \see offsetMapUnitScale()
      */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /** Sets the map unit scale for the symbol's offset.
-     * @param scale offset map unit scale
-     * @see offsetMapUnitScale()
-     * @see setOffset()
-     * @see setOffsetUnit()
+     * \param scale offset map unit scale
+     * \see offsetMapUnitScale()
+     * \see setOffset()
+     * \see setOffsetUnit()
      */
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
 
     /** Returns the map unit scale for the symbol's offset.
-     * @see setOffsetMapUnitScale()
-     * @see offset()
-     * @see offsetUnit()
+     * \see setOffsetMapUnitScale()
+     * \see offset()
+     * \see offsetUnit()
      */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     /** Sets the horizontal anchor point for positioning the symbol.
-     * @param h anchor point. Symbol will be drawn so that the horizontal anchor point is aligned with
+     * \param h anchor point. Symbol will be drawn so that the horizontal anchor point is aligned with
      * the marker's desired location.
-     * @see horizontalAnchorPoint()
-     * @see setVerticalAnchorPoint()
+     * \see horizontalAnchorPoint()
+     * \see setVerticalAnchorPoint()
      */
     void setHorizontalAnchorPoint( HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
 
     /** Returns the horizontal anchor point for positioning the symbol. The symbol will be drawn so that
      * the horizontal anchor point is aligned with the marker's desired location.
-     * @see setHorizontalAnchorPoint()
-     * @see verticalAnchorPoint()
+     * \see setHorizontalAnchorPoint()
+     * \see verticalAnchorPoint()
      */
     HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
 
     /** Sets the vertical anchor point for positioning the symbol.
-     * @param v anchor point. Symbol will be drawn so that the vertical anchor point is aligned with
+     * \param v anchor point. Symbol will be drawn so that the vertical anchor point is aligned with
      * the marker's desired location.
-     * @see verticalAnchorPoint()
-     * @see setHorizontalAnchorPoint()
+     * \see verticalAnchorPoint()
+     * \see setHorizontalAnchorPoint()
      */
     void setVerticalAnchorPoint( VerticalAnchorPoint v ) { mVerticalAnchorPoint = v; }
 
     /** Returns the vertical anchor point for positioning the symbol. The symbol will be drawn so that
      * the vertical anchor point is aligned with the marker's desired location.
-     * @see setVerticalAnchorPoint()
-     * @see horizontalAnchorPoint()
+     * \see setVerticalAnchorPoint()
+     * \see horizontalAnchorPoint()
      */
     VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
     /** Writes the symbol layer definition as a SLD XML element.
-     * @param doc XML document
-     * @param element parent XML element
-     * @param props symbol layer definition (see properties())
+     * \param doc XML document
+     * \param element parent XML element
+     * \param props symbol layer definition (see properties())
      */
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
@@ -570,47 +571,47 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 
     /** Returns the approximate bounding box of the marker symbol layer, taking into account
      * any data defined overrides and offsets which are set for the marker layer.
-     * @returns approximate symbol bounds, in painter units
-     * @note added in QGIS 2.14
+     * \returns approximate symbol bounds, in painter units
+     * \since QGIS 2.14
      */
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) = 0;
 
   protected:
 
     /** Constructor for QgsMarkerSymbolLayer.
-     * @param locked set to true to lock symbol color
+     * \param locked set to true to lock symbol color
      */
     QgsMarkerSymbolLayer( bool locked = false );
 
     /** Calculates the required marker offset, including both the symbol offset
      * and any displacement required to align with the marker's anchor point.
-     * @param context symbol render context
-     * @param offsetX will be set to required horizontal offset (in painter units)
-     * @param offsetY will be set to required vertical offset (in painter units)
+     * \param context symbol render context
+     * \param offsetX will be set to required horizontal offset (in painter units)
+     * \param offsetY will be set to required vertical offset (in painter units)
      */
     void markerOffset( QgsSymbolRenderContext &context, double &offsetX, double &offsetY ) const;
 
     /** Calculates the required marker offset, including both the symbol offset
      * and any displacement required to align with the marker's anchor point.
-     * @param context symbol render context
-     * @param width marker width
-     * @param height marker height
-     * @param offsetX will be set to required horizontal offset (in painter units)
-     * @param offsetY will be set to required vertical offset (in painter units)
-     * @note available in python as markerOffsetWithWidthAndHeight
+     * \param context symbol render context
+     * \param width marker width
+     * \param height marker height
+     * \param offsetX will be set to required horizontal offset (in painter units)
+     * \param offsetY will be set to required vertical offset (in painter units)
+     * \note available in Python as markerOffsetWithWidthAndHeight
      */
-    void markerOffset( QgsSymbolRenderContext &context, double width, double height, double &offsetX, double &offsetY ) const;
+    void markerOffset( QgsSymbolRenderContext &context, double width, double height, double &offsetX, double &offsetY ) const SIP_PYNAME( markerOffsetWithWidthAndHeight );
 
-    //! @note available in python bindings as markerOffset2
+    //! \note available in Python bindings as markerOffset2
     void markerOffset( QgsSymbolRenderContext &context, double width, double height,
                        QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
                        double &offsetX, double &offsetY,
-                       const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const;
+                       const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const SIP_PYNAME( markerOffset2 );
 
     /** Adjusts a marker offset to account for rotation.
-     * @param offset offset prior to rotation
-     * @param angle rotation angle in degrees clockwise from north
-     * @return adjusted offset
+     * \param offset offset prior to rotation
+     * \param angle rotation angle in degrees clockwise from north
+     * \returns adjusted offset
      */
     static QPointF _rotatedOffset( QPointF offset, double angle );
 
@@ -659,13 +660,13 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     void setOffset( double offset ) { mOffset = offset; }
 
     /** Sets the units for the line's width.
-     * @param unit width units
-     * @see widthUnit()
+     * \param unit width units
+     * \see widthUnit()
     */
     void setWidthUnit( QgsUnitTypes::RenderUnit unit ) { mWidthUnit = unit; }
 
     /** Returns the units for the line's width.
-     * @see setWidthUnit()
+     * \see setWidthUnit()
     */
     QgsUnitTypes::RenderUnit widthUnit() const { return mWidthUnit; }
 
@@ -673,13 +674,13 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     const QgsMapUnitScale &widthMapUnitScale() const { return mWidthMapUnitScale; }
 
     /** Sets the units for the line's offset.
-     * @param unit offset units
-     * @see offsetUnit()
+     * \param unit offset units
+     * \see offsetUnit()
     */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /** Returns the units for the line's offset.
-     * @see setOffsetUnit()
+     * \see setOffsetUnit()
     */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 

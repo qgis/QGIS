@@ -18,6 +18,8 @@
 #define NORMVECDECORATOR_H
 
 #include "TriDecorator.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <TriangleInterpolator.h>
 #include <MathUtils.h>
 #include "qgslogger.h"
@@ -52,12 +54,12 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     //! Returns a pointer to the normal vector for the point with the number n
     Vector3D *getNormal( int n ) const;
     //! Finds out, in which triangle a point with coordinates x and y is and assigns the triangle points to p1, p2, p3 and the estimated normals to v1, v2, v3. The vectors are normally taken from 'mNormVec', except if p1, p2 or p3 is a point on a breakline. In this case, the normal is calculated on-the-fly. Returns false, if something went wrong and true otherwise
-    bool getTriangle( double x, double y, Point3D *p1, Vector3D *v1, Point3D *p2, Vector3D *v2, Point3D *p3, Vector3D *v3 );
+    bool getTriangle( double x, double y, Point3D *p1 SIP_OUT, Vector3D *v1 SIP_OUT, Point3D *p2 SIP_OUT, Vector3D *v2 SIP_OUT, Point3D *p3 SIP_OUT, Vector3D *v3 SIP_OUT );
 
     /** This function behaves similar to the one above. Additionally, the numbers of the points are returned (ptn1, ptn2, ptn3) as well as the PointStates of the triangle points (state1, state2, state3)
-      * @note not available in Python bindings
+      * \note not available in Python bindings
      */
-    bool getTriangle( double x, double y, Point3D *p1, int *ptn1, Vector3D *v1, PointState *state1, Point3D *p2, int *ptn2, Vector3D *v2, PointState *state2, Point3D *p3, int *ptn3, Vector3D *v3, PointState *state3 );
+    bool getTriangle( double x, double y, Point3D *p1, int *ptn1, Vector3D *v1, PointState *state1, Point3D *p2, int *ptn2, Vector3D *v2, PointState *state2, Point3D *p3, int *ptn3, Vector3D *v3, PointState *state3 ) SIP_SKIP;
     //! Returns the state of the point with the number 'pointno'
     PointState getState( int pointno ) const;
     //! Sets an interpolator
@@ -66,7 +68,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     virtual bool swapEdge( double x, double y ) override;
 
     /** Saves the triangulation as a (line) shapefile
-      @return true in case of success*/
+      \returns true in case of success*/
     virtual bool saveAsShapefile( const QString &fileName ) const override;
 
   protected:

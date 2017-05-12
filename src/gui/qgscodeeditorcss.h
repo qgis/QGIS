@@ -17,20 +17,21 @@
 #define QGSCODEEDITORCSS_H
 
 #include "qgscodeeditor.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 
 /** \ingroup gui
  * A CSS editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
- * \note added in 2.6
+ * \since QGIS 2.6
  */
 class GUI_EXPORT QgsCodeEditorCSS : public QgsCodeEditor
 {
     Q_OBJECT
 
   public:
-    QgsCodeEditorCSS( QWidget *parent = nullptr );
+    QgsCodeEditorCSS( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private:
     void setSciLexerCSS();

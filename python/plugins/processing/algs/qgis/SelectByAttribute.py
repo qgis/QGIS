@@ -25,8 +25,10 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (QgsApplication)
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsExpression, QgsFeatureRequest
+from qgis.core import (QgsExpression,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -34,7 +36,6 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 
 class SelectByAttribute(GeoAlgorithm):
@@ -60,11 +61,25 @@ class SelectByAttribute(GeoAlgorithm):
                         'contains',
                         'does not contain']
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Select by attribute')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
-        self.tags = self.tr('select,attribute,value,contains,null,field')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('select,attribute,value,contains,null,field').split(',')
+
+    def group(self):
+        return self.tr('Vector selection tools')
+
+    def name(self):
+        return 'selectbyattribute'
+
+    def displayName(self):
+        return self.tr('Select by attribute')
+
+    def defineCharacteristics(self):
         self.i18n_operators = ['=',
                                '!=',
                                '>',
@@ -88,9 +103,9 @@ class SelectByAttribute(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute)'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(fileName)
+        layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
         fieldName = self.getParameterValue(self.FIELD)
         operator = self.OPERATORS[self.getParameterValue(self.OPERATOR)]
         value = self.getParameterValue(self.VALUE)

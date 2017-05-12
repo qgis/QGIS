@@ -17,6 +17,7 @@
 #define OSMDATABASE_H
 
 #include <QString>
+#include "qgis_sip.h"
 #include <QStringList>
 
 #include "qgsosmbase.h"
@@ -69,11 +70,11 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     int countNodes() const;
     int countWays() const;
 
-    //! @note not available in Python bindings
-    QgsOSMNodeIterator listNodes() const;
+    //! \note not available in Python bindings
+    QgsOSMNodeIterator listNodes() const SIP_SKIP;
 
-    //! @note not available in Python bindings
-    QgsOSMWayIterator listWays() const;
+    //! \note not available in Python bindings
+    QgsOSMWayIterator listWays() const SIP_SKIP;
 
     QgsOSMNode node( QgsOSMId id ) const;
     QgsOSMWay way( QgsOSMId id ) const;
@@ -81,7 +82,7 @@ class ANALYSIS_EXPORT QgsOSMDatabase
 
     QgsOSMTags tags( bool way, QgsOSMId id ) const;
 
-    //! @note available in Python bindings
+    //! \note available in Python bindings
     QList<QgsOSMTagCountPair> usedTags( bool ways ) const;
 
     QgsPolyline wayPoints( QgsOSMId id ) const;
@@ -98,9 +99,9 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     int runCountStatement( const char *sql ) const;
 
     /**
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
-    void deleteStatement( sqlite3_stmt *&stmt );
+    void deleteStatement( sqlite3_stmt *&stmt ) SIP_SKIP;
 
     void exportSpatiaLiteNodes( const QString &tableName, const QStringList &tagKeys, const QStringList &notNullTagKeys = QStringList() );
     void exportSpatiaLiteWays( bool closed, const QString &tableName, const QStringList &tagKeys, const QStringList &notNullTagKeys = QStringList() );
@@ -131,7 +132,7 @@ class ANALYSIS_EXPORT QgsOSMDatabase
 
 /** \ingroup analysis
  * Encapsulate iteration over table of nodes/
- * @note not available in Python bindings
+ * \note not available in Python bindings
 */
 class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
 {
@@ -143,9 +144,9 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
 
   protected:
 
-    /** @note not available in Python bindings
+    /** \note not available in Python bindings
      */
-    QgsOSMNodeIterator( sqlite3 *handle );
+    QgsOSMNodeIterator( sqlite3 *handle ) SIP_SKIP;
 
     sqlite3_stmt *mStmt = nullptr;
 
@@ -157,7 +158,7 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
 
 /** \ingroup analysis
  * Encapsulate iteration over table of ways
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class ANALYSIS_EXPORT QgsOSMWayIterator // clazy:exclude=rule-of-three
 {
@@ -169,9 +170,9 @@ class ANALYSIS_EXPORT QgsOSMWayIterator // clazy:exclude=rule-of-three
 
   protected:
 
-    /** @note not available in Python bindings
+    /** \note not available in Python bindings
      */
-    QgsOSMWayIterator( sqlite3 *handle );
+    QgsOSMWayIterator( sqlite3 *handle ) SIP_SKIP;
 
     sqlite3_stmt *mStmt = nullptr;
 

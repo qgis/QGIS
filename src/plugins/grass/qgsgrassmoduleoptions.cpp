@@ -120,7 +120,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
   QFrame *mypAdvancedPushButtonFrame = new QFrame();
   QHBoxLayout *mypAdvancedPushButtonFrameLayout = new QHBoxLayout( mypAdvancedPushButtonFrame );
-  connect( &mAdvancedPushButton, SIGNAL( clicked() ), this, SLOT( switchAdvanced() ) );
+  connect( &mAdvancedPushButton, &QAbstractButton::clicked, this, &QgsGrassModuleStandardOptions::switchAdvanced );
   mypAdvancedPushButtonFrameLayout->addWidget( &mAdvancedPushButton );
   mypAdvancedPushButtonFrameLayout->addStretch( 1 );
 
@@ -936,7 +936,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
 
   // GRASS commands usually output text in system default encoding.
   // Let's use the System codec whether Qt doesn't recognize the encoding
-  // of the interface description (see http://hub.qgis.org/issues/4547)
+  // of the interface description (see https://issues.qgis.org/issues/4547)
   QTextCodec *codec = 0;
 
   QgsDebugMsg( "trying to get encoding name from XML interface description..." );

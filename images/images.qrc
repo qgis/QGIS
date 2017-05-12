@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/images">
-        <file alias="last-hackfest.jpg">developers/essen-2014.jpg</file>
+        <file alias="last-hackfest.png">splash/dev-splash.png</file>
         <file>flags/af.png</file>
         <file>flags/ar.png</file>
         <file>flags/bg.png</file>
@@ -45,6 +45,7 @@
         <file>icons/qgis-icon-60x60.png</file>
         <file>icons/qbrowser_icon.svg</file>
         <file>north_arrows/default.png</file>
+        <file>north_arrows/default.svg</file>
         <file>north_arrows/gpsarrow.svg</file>
         <file>north_arrows/gpsarrow2.svg</file>
         <file>splash/splash.png</file>
@@ -280,6 +281,7 @@
         <file>themes/default/mActionSelectAllTree.svg</file>
         <file>themes/default/mActionSetProjection.svg</file>
         <file>themes/default/mActionSharing.svg</file>
+        <file>themes/default/mActionSharingExport.svg</file>
         <file>themes/default/mActionSharingImport.svg</file>
         <file>themes/default/mActionShowAllLayers.svg</file>
         <file>themes/default/mActionShowBookmarks.svg</file>
@@ -506,8 +508,6 @@
         <file>themes/default/mActionCircularStringCurvePoint.svg</file>
         <file>themes/default/mActionCircularStringRadius.svg</file>
         <file>flags/zh.png</file>
-        <file>icons/qgis-icon-16x16_xmas.png</file>
-        <file>icons/qgis-icon-60x60_xmas.png</file>
         <file>themes/default/vector_grid.png</file>
         <file>themes/default/legend.svg</file>
         <file>themes/default/multieditChangedValues.svg</file>
@@ -559,6 +559,7 @@
         <file>themes/default/mActionNewMap.svg</file>
         <file>themes/default/mActionMapSettings.svg</file>
         <file>themes/default/mActionLockExtent.svg</file>
+        <file>icons/qgis_icon.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

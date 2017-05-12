@@ -104,16 +104,16 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   m->addAction( tr( "Save as Default" ), this, SLOT( saveDefaultStyle_clicked() ) );
   m->addAction( tr( "Restore Default" ), this, SLOT( loadDefaultStyle_clicked() ) );
   b->setMenu( m );
-  connect( m, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowStyleMenu() ) );
+  connect( m, &QMenu::aboutToShow, this, &QgsVectorLayerProperties::aboutToShowStyleMenu );
   buttonBox->addButton( b, QDialogButtonBox::ResetRole );
 
-  connect( lyr->styleManager(), SIGNAL( currentStyleChanged( QString ) ), this, SLOT( syncToLayer() ) );
+  connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsVectorLayerProperties::syncToLayer );
 
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
-  connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
-  connect( this, SIGNAL( rejected() ), this, SLOT( onCancel() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsVectorLayerProperties::apply );
+  connect( this, &QDialog::accepted, this, &QgsVectorLayerProperties::apply );
+  connect( this, &QDialog::rejected, this, &QgsVectorLayerProperties::onCancel );
 
-  connect( mOptionsStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( mOptionsStackedWidget_CurrentChanged( int ) ) );
+  connect( mOptionsStackedWidget, &QStackedWidget::currentChanged, this, &QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged );
 
   mContext << QgsExpressionContextUtils::globalScope()
            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
@@ -126,7 +126,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mDisplayExpressionWidget->setLayer( lyr );
   mDisplayExpressionWidget->registerExpressionContextGenerator( this );
 
-  connect( mInsertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertFieldOrExpression() ) );
+  connect( mInsertExpressionButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertFieldOrExpression );
 
   if ( !mLayer )
     return;
@@ -171,8 +171,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
     mActionLoadStyle->setMenu( mLoadStyleMenu );
 
-    QObject::connect( mLoadStyleMenu, SIGNAL( triggered( QAction * ) ),
-                      this, SLOT( loadStyleMenuTriggered( QAction * ) ) );
+    connect( mLoadStyleMenu, &QMenu::triggered,
+             this, &QgsVectorLayerProperties::loadStyleMenuTriggered );
 
     //for saving
     QString providerName = mLayer->providerType();
@@ -185,8 +185,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mSaveAsMenu->addAction( tr( "Save in database (%1)" ).arg( providerName ) );
   }
 
-  QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ),
-                    this, SLOT( saveStyleAsMenuTriggered( QAction * ) ) );
+  connect( mSaveAsMenu, &QMenu::triggered,
+           this, &QgsVectorLayerProperties::saveStyleAsMenuTriggered );
 
   mFieldsPropertiesDialog = new QgsFieldsProperties( mLayer, mFieldsFrame );
   mFieldsPropertiesDialog->layout()->setMargin( 0 );
@@ -194,8 +194,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mFieldsFrame->layout()->setMargin( 0 );
   mFieldsFrame->layout()->addWidget( mFieldsPropertiesDialog );
 
-  connect( mFieldsPropertiesDialog, SIGNAL( toggleEditing() ), this, SLOT( toggleEditing() ) );
-  connect( this, SIGNAL( toggleEditing( QgsMapLayer * ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer * ) ) );
+  connect( mFieldsPropertiesDialog, &QgsFieldsProperties::toggleEditing, this, static_cast<void ( QgsVectorLayerProperties::* )()>( &QgsVectorLayerProperties::toggleEditing ) );
+  connect( this, static_cast<void ( QgsVectorLayerProperties::* )( QgsMapLayer * )>( &QgsVectorLayerProperties::toggleEditing ),
+  QgisApp::instance(), [ = ]( QgsMapLayer * layer ) { QgisApp::instance()->toggleEditing( layer ); } );
 
   syncToLayer();
 
@@ -291,6 +292,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     )
   );
 
+  QString myStyle = QgsApplication::reportStyleSheet();
+  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  teMetadataViewer->clear();
+  teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
+  teMetadataViewer->setHtml( htmlMetadata() );
+  mMetadataFilled = true;
+
   QgsSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
@@ -376,13 +384,12 @@ void QgsVectorLayerProperties::insertFieldOrExpression()
   mMapTipWidget->insertText( expression );
 }
 
-//! @note in raster props, this method is called sync()
+// in raster props, this method is called sync()
 void QgsVectorLayerProperties::syncToLayer()
 {
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->originalName() );
   txtDisplayName->setText( mLayer->name() );
-  txtLayerSource->setText( mLayer->publicSource() );
   pbnQueryBuilder->setWhatsThis( tr( "This button opens the query "
                                      "builder and allows you to create a subset of features to display on "
                                      "the map canvas rather than displaying all features in the layer" ) );
@@ -561,19 +568,58 @@ void QgsVectorLayerProperties::apply()
   }
 
   //layer title and abstract
+  if ( mLayer->shortName() != mLayerShortNameLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setShortName( mLayerShortNameLineEdit->text() );
+
+  if ( mLayer->title() != mLayerTitleLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setTitle( mLayerTitleLineEdit->text() );
+
+  if ( mLayer->abstract() != mLayerAbstractTextEdit->toPlainText() )
+    mMetadataFilled = false;
   mLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
+
+  if ( mLayer->keywordList() != mLayerKeywordListLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setKeywordList( mLayerKeywordListLineEdit->text() );
+
+  if ( mLayer->dataUrl() != mLayerDataUrlLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setDataUrl( mLayerDataUrlLineEdit->text() );
+
+  if ( mLayer->dataUrlFormat() != mLayerDataUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
+
   //layer attribution and metadataUrl
+  if ( mLayer->attribution() != mLayerAttributionLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setAttribution( mLayerAttributionLineEdit->text() );
+
+  if ( mLayer->attributionUrl() != mLayerAttributionUrlLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
+
+  if ( mLayer->metadataUrl() != mLayerMetadataUrlLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
+
+  if ( mLayer->metadataUrlType() != mLayerMetadataUrlTypeComboBox->currentText() )
+    mMetadataFilled = false;
   mLayer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
+
+  if ( mLayer->metadataUrlFormat() != mLayerMetadataUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mLayer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+
+  // LegendURL
+  if ( mLayer->legendUrl() != mLayerLegendUrlLineEdit->text() )
+    mMetadataFilled = false;
   mLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+
+  if ( mLayer->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   //layer simplify drawing configuration
@@ -700,9 +746,9 @@ void QgsVectorLayerProperties::on_pbnIndex_clicked()
   }
 }
 
-QString QgsVectorLayerProperties::metadata()
+QString QgsVectorLayerProperties::htmlMetadata()
 {
-  return mLayer->metadata();
+  return mLayer->htmlMetadata();
 }
 
 void QgsVectorLayerProperties::on_mLayerOrigNameLineEdit_textEdited( const QString &text )
@@ -713,6 +759,7 @@ void QgsVectorLayerProperties::on_mLayerOrigNameLineEdit_textEdited( const QStri
 void QgsVectorLayerProperties::on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mLayer->setCrs( crs );
+  mMetadataFilled = false;
 }
 
 void QgsVectorLayerProperties::loadDefaultStyle_clicked()
@@ -1231,7 +1278,7 @@ void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )
   dlg->setLayout( new QVBoxLayout() );
   dlg->layout()->addWidget( panel );
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
-  connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, dlg, &QDialog::accept );
   dlg->layout()->addWidget( buttonBox );
   dlg->exec();
   settings.setValue( key, dlg->saveGeometry() );
@@ -1266,12 +1313,12 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     mRendererDialog->setDockMode( false );
     mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::showPanel, this, &QgsVectorLayerProperties::openPanel );
-    connect( mRendererDialog, SIGNAL( layerVariablesChanged() ), this, SLOT( updateVariableEditor() ) );
+    connect( mRendererDialog, &QgsRendererPropertiesDialog::layerVariablesChanged, this, &QgsVectorLayerProperties::updateVariableEditor );
 
     // display the menu to choose the output format (fix #5136)
     mActionSaveStyleAs->setText( tr( "Save Style" ) );
     mActionSaveStyleAs->setMenu( mSaveAsMenu );
-    disconnect( mActionSaveStyleAs, SIGNAL( triggered() ), this, SLOT( saveStyleAs_clicked() ) );
+    disconnect( mActionSaveStyleAs, &QAction::triggered, this, &QgsVectorLayerProperties::saveStyleAs_clicked );
   }
   else
   {
@@ -1309,14 +1356,12 @@ void QgsVectorLayerProperties::on_pbnUpdateExtents_clicked()
 
 void QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
 {
-  if ( indx != mOptStackedWidget->indexOf( mOptsPage_Metadata ) || mMetadataFilled )
+  if ( indx != mOptStackedWidget->indexOf( mOptsPage_Information ) || mMetadataFilled )
     return;
 
   //set the metadata contents (which can be expensive)
-  QString myStyle = QgsApplication::reportStyleSheet();
-  teMetadata->clear();
-  teMetadata->document()->setDefaultStyleSheet( myStyle );
-  teMetadata->setHtml( metadata() );
+  teMetadataViewer->clear();
+  teMetadataViewer->setHtml( htmlMetadata() );
   mMetadataFilled = true;
 }
 

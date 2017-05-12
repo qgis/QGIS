@@ -49,7 +49,7 @@ class QgsServiceRegistry
      * @param version the required version (optional)
      * @return QgsService
      */
-    QgsService* getService( const QString& name, const QString& version = QString() );
+    QgsService *getService( const QString &name, const QString &version = QString() );
 
     /**
      * Register a service by its name
@@ -60,7 +60,7 @@ class QgsServiceRegistry
      *
      * @param service a QgsServerResponse to be registered
      */
-    void registerService( QgsService* service /Transfer/ );
+    void registerService( QgsService *service /Transfer/ );
 
     /**
      * Unregister service from its name and version
@@ -72,14 +72,14 @@ class QgsServiceRegistry
      * If the version is not specified then all versions from the specified service
      * are unloaded
      */
-    int unregisterService( const QString& name, const QString& version = QString() );
+    int unregisterService( const QString &name, const QString &version = QString() );
 
     /**
      * Initialize registry, load modules and auto register services
      * @param nativeModulepath the native module path
      */
     // XXX Do we want this exposed to python ?
-    void init( const QString& nativeModulepath, QgsServerInterface* serverIface = nullptr );
+    void init( const QString &nativeModulepath, QgsServerInterface *serverIface = 0 );
 
     /**
      * Clean up registered service and unregister modules

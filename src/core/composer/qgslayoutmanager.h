@@ -17,6 +17,7 @@
 #define QGSLAYOUTMANAGER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposition.h"
 #include <QObject>
 
@@ -24,7 +25,7 @@ class QgsProject;
 
 /** \ingroup core
  * \class QgsLayoutManager
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  *
  * \brief Manages storage of a set of compositions.
  *
@@ -46,7 +47,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * Constructor for QgsLayoutManager. The project will become the parent object for this
      * manager.
      */
-    explicit QgsLayoutManager( QgsProject *project = nullptr );
+    explicit QgsLayoutManager( QgsProject *project SIP_TRANSFERTHIS = 0 );
 
     ~QgsLayoutManager();
 
@@ -54,25 +55,25 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * Adds a composition to the manager. Ownership of the composition is transferred to the manager.
      * Returns true if the addition was successful, or false if the composition could not be added (eg
      * as a result of a duplicate composition name).
-     * @see removeComposition()
-     * @see compositionAdded()
+     * \see removeComposition()
+     * \see compositionAdded()
      */
-    bool addComposition( QgsComposition *composition );
+    bool addComposition( QgsComposition *composition SIP_TRANSFER );
 
     /**
      * Removes a composition from the manager. The composition is deleted.
      * Returns true if the removal was successful, or false if the removal failed (eg as a result
      * of removing a composition which is not contained in the manager).
-     * @see addComposition()
-     * @see compositionRemoved()
-     * @see compositionAboutToBeRemoved()
-     * @see clear()
+     * \see addComposition()
+     * \see compositionRemoved()
+     * \see compositionAboutToBeRemoved()
+     * \see clear()
      */
     bool removeComposition( QgsComposition *composition );
 
     /**
      * Removes and deletes all compositions from the manager.
-     * @see removeComposition()
+     * \see removeComposition()
      */
     void clear();
 
@@ -90,13 +91,13 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     /**
      * Reads the manager's state from a DOM element, restoring all compositions
      * present in the XML document.
-     * @see writeXml()
+     * \see writeXml()
      */
     bool readXml( const QDomElement &element, const QDomDocument &doc );
 
     /**
      * Returns a DOM element representing the state of the manager.
-     * @see readXml()
+     * \see readXml()
      */
     QDomElement writeXml( QDomDocument &doc ) const;
 

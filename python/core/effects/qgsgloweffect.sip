@@ -22,11 +22,11 @@ class QgsGlowEffect : QgsPaintEffect
     };
 
     QgsGlowEffect();
-    QgsGlowEffect( const QgsGlowEffect& other );
+    QgsGlowEffect( const QgsGlowEffect &other );
     virtual ~QgsGlowEffect();
 
     virtual QgsStringMap properties() const;
-    virtual void readProperties( const QgsStringMap& props );
+    virtual void readProperties( const QgsStringMap &props );
 
     /** Sets the spread distance for drawing the glow effect.
      * @param spread spread distance. Units are specified via @link setSpreadUnit @endlink
@@ -66,7 +66,7 @@ class QgsGlowEffect : QgsPaintEffect
      * @see setSpread
      * @see setSpreadUnit
      */
-    void setSpreadMapUnitScale( const QgsMapUnitScale& scale );
+    void setSpreadMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the map unit scale used for the spread distance.
      * @returns map unit scale for spread distance
@@ -74,7 +74,7 @@ class QgsGlowEffect : QgsPaintEffect
      * @see spread
      * @see spreadUnit
      */
-    const QgsMapUnitScale& spreadMapUnitScale() const;
+    const QgsMapUnitScale &spreadMapUnitScale() const;
 
     /** Sets blur level (strength) for the glow. This can be used to smooth the
      * output from the glow effect.
@@ -112,7 +112,7 @@ class QgsGlowEffect : QgsPaintEffect
      * @see color
      * @see setColorType
      */
-    void setColor( const QColor& color );
+    void setColor( const QColor &color );
 
     /** Returns the color for the glow. This only applies if the @link colorType @endlink
      * is set to SingleColor. The glow will fade between the specified color and
@@ -124,20 +124,20 @@ class QgsGlowEffect : QgsPaintEffect
     QColor color() const;
 
     /** Sets the color ramp for the glow. This only applies if the @link colorType @endlink
-     * is set to ColorRamp. The glow will utilise colors from the ramp.
+     * is set to ColorRamp. The glow will utilize colors from the ramp.
      * @param ramp color ramp for glow. Ownership of the ramp is transferred to the effect.
      * @see ramp
      * @see setColorType
      */
-    void setRamp( QgsColorRamp* ramp /Transfer/ );
+    void setRamp( QgsColorRamp *ramp /Transfer/ );
 
     /** Returns the color ramp used for the glow. This only applies if the @link colorType @endlink
-     * is set to ColorRamp. The glow will utilise colors from the ramp.
+     * is set to ColorRamp. The glow will utilize colors from the ramp.
      * @returns color ramp for glow
      * @see setRamp
      * @see colorType
      */
-    QgsColorRamp* ramp() const;
+    QgsColorRamp *ramp() const;
 
     /** Sets the blend mode for the effect
      * @param mode blend mode used for drawing the effect on to a destination
@@ -174,8 +174,8 @@ class QgsGlowEffect : QgsPaintEffect
 
   protected:
 
-    virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const;
-    virtual void draw( QgsRenderContext& context );
+    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
+    virtual void draw( QgsRenderContext &context );
 
     /** Specifies whether the glow is drawn outside the picture or within
      * the picture.
@@ -205,13 +205,13 @@ class QgsOuterGlowEffect : QgsGlowEffect
      * @param map encoded properties string map
      * @returns new QgsOuterGlowEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
+    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 
     QgsOuterGlowEffect();
     virtual ~QgsOuterGlowEffect();
 
     virtual QString type() const;
-    virtual QgsOuterGlowEffect* clone() const /Factory/;
+    virtual QgsOuterGlowEffect *clone() const /Factory/;
 
   protected:
 
@@ -238,13 +238,13 @@ class QgsInnerGlowEffect : QgsGlowEffect
      * @param map encoded properties string map
      * @returns new QgsInnerGlowEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
+    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 
     QgsInnerGlowEffect();
     virtual ~QgsInnerGlowEffect();
 
     virtual QString type() const;
-    virtual QgsInnerGlowEffect* clone() const /Factory/;
+    virtual QgsInnerGlowEffect *clone() const /Factory/;
 
   protected:
 

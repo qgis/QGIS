@@ -108,23 +108,21 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils
   else if ( QgsLayerTree::isLayer( node ) )
   {
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-    if ( !nodeLayer->layer() )
+    QgsMapLayer *layer = nodeLayer->layer();
+    if ( !layer )
       return;
 
     QgsMimeDataUtils::Uri uri;
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+    uri.name = layer->name();
+    uri.uri = layer->dataProvider()->dataSourceUri();
+    uri.providerKey = layer->dataProvider()->name();
+    if ( layer->type() == QgsMapLayer::VectorLayer )
     {
       uri.layerType = QStringLiteral( "vector" );
-      uri.name = vlayer->name();
-      uri.providerKey = vlayer->dataProvider()->name();
-      uri.uri = vlayer->dataProvider()->dataSourceUri();
     }
-    else if ( QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( nodeLayer->layer() ) )
+    else if ( layer->type() == QgsMapLayer::RasterLayer )
     {
       uri.layerType = QStringLiteral( "raster" );
-      uri.name = rlayer->name();
-      uri.providerKey = rlayer->dataProvider()->name();
-      uri.uri = rlayer->dataProvider()->dataSourceUri();
     }
     else
     {

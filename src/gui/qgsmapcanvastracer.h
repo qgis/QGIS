@@ -34,7 +34,7 @@ class QgsMessageBarItem;
  * tracer instances and map canvas API is not "polluted" by this optional
  * functionality).
  *
- * @note added in QGIS 2.14
+ * \since QGIS 2.14
  */
 class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 {

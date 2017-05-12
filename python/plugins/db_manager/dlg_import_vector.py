@@ -28,7 +28,14 @@ from qgis.PyQt.QtCore import Qt, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from qgis.PyQt.QtGui import QCursor
 
-from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsMapLayer, QgsProviderRegistry, QgsCoordinateReferenceSystem, QgsVectorLayerImport, QgsProject, QgsSettings
+from qgis.core import (QgsDataSourceUri,
+                       QgsVectorLayer,
+                       QgsMapLayer,
+                       QgsProviderRegistry,
+                       QgsCoordinateReferenceSystem,
+                       QgsVectorLayerExporter,
+                       QgsProject,
+                       QgsSettings)
 from qgis.gui import QgsMessageViewer
 
 from .ui.ui_DlgImportVector import Ui_DbManagerDlgImportVector as Ui_Dialog
@@ -319,9 +326,16 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             # get output params, update output URI
             self.outUri.setDataSource(schema, table, geom, "", pk)
-            uri = self.outUri.uri(False)
-
+            typeName = self.db.dbplugin().typeName()
             providerName = self.db.dbplugin().providerName()
+            if typeName == 'gpkg':
+                uri = self.outUri.database()
+                options['update'] = True
+                options['driverName'] = 'GPKG'
+                options['layerName'] = table
+            else:
+                uri = self.outUri.uri(False)
+
             if self.chkDropTable.isChecked():
                 options['overwrite'] = True
 
@@ -346,7 +360,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
             onlySelected = self.chkSelectedFeatures.isChecked()
 
             # do the import!
-            ret, errMsg = QgsVectorLayerImport.importLayer(self.inLayer, uri, providerName, outCrs, onlySelected, False, options)
+            ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs, onlySelected, options)
         except Exception as e:
             ret = -1
             errMsg = str(e)
@@ -369,6 +383,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
         if self.chkSpatialIndex.isEnabled() and self.chkSpatialIndex.isChecked():
             self.db.connector.createSpatialIndex((schema, table), geom)
 
+        self.db.connection().reconnect()
+        self.db.refresh()
         QMessageBox.information(self, self.tr("Import to database"), self.tr("Import was successful."))
         return QDialog.accept(self)
 

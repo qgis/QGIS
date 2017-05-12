@@ -22,7 +22,9 @@
 
 #include <ui_qgsadvanceddigitizingdockwidgetbase.h>
 #include "qgis_gui.h"
+#include "qgis.h"
 #include <memory>
+
 
 class QgsAdvancedDigitizingCanvasItem;
 class QgsMapCanvas;
@@ -32,11 +34,11 @@ class QgsPoint;
 
 // tolerances for soft constraints (last values, and common angles)
 // for angles, both tolerance in pixels and degrees are used for better performance
-static const double SOFT_CONSTRAINT_TOLERANCE_PIXEL = 15;
-static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10;
+static const double SOFT_CONSTRAINT_TOLERANCE_PIXEL = 15 SIP_SKIP;
+static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10 SIP_SKIP;
 
 /** \ingroup gui
- * @brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
+ * \brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
  * It handles both the UI and the constraints. Constraints are applied
  * by implementing filters called from QgsMapToolAdvancedDigitizing.
@@ -82,9 +84,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     };
 
     /** \ingroup gui
-     * @brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
+     * \brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
-     * @note Relative is not mandatory since it is not used for distance.
+     * \note Relative is not mandatory since it is not used for distance.
      */
     class GUI_EXPORT CadConstraint
     {
@@ -101,10 +103,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         };
 
         /** Constructor for CadConstraint.
-         * @param lineEdit associated line edit for constraint value
-         * @param lockerButton associated button for locking constraint
-         * @param relativeButton optional button for toggling relative constraint mode
-         * @param repeatingLockButton optional button for toggling repeating lock mode
+         * \param lineEdit associated line edit for constraint value
+         * \param lockerButton associated button for locking constraint
+         * \param relativeButton optional button for toggling relative constraint mode
+         * \param repeatingLockButton optional button for toggling repeating lock mode
          */
         CadConstraint( QLineEdit *lineEdit, QToolButton *lockerButton, QToolButton *relativeButton = nullptr, QToolButton *repeatingLockButton = nullptr )
           : mLineEdit( lineEdit )
@@ -119,7 +121,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
         /**
          * The current lock mode of this constraint
-         * @return Lock mode
+         * \returns Lock mode
          */
         LockMode lockMode() const { return mLockMode; }
 
@@ -130,8 +132,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
         /** Returns true if a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
-         * @note added in QGIS 2.16
-         * @see setRepeatingLock()
+         * \since QGIS 2.16
+         * \see setRepeatingLock()
          */
         bool isRepeatingLock() const { return mRepeatingLock; }
 
@@ -157,9 +159,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
         /** Sets whether a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
-         * @param repeating set to true to set the lock to repeat automatically
-         * @note added in QGIS 2.16
-         * @see isRepeatingLock()
+         * \param repeating set to true to set the lock to repeat automatically
+         * \since QGIS 2.16
+         * \see isRepeatingLock()
          */
         void setRepeatingLock( bool repeating );
 
@@ -170,8 +172,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
         /**
          * Set the value of the constraint
-         * @param value new value for constraint
-         * @param updateWidget set to false to prevent automatically updating the associated widget's value
+         * \param value new value for constraint
+         * \param updateWidget set to false to prevent automatically updating the associated widget's value
          */
         void setValue( double value, bool updateWidget = true );
 
@@ -197,13 +199,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     };
 
     //! performs the intersection of a circle and a line
-    //! @note from the two solutions, the intersection will be set to the closest point
+    //! \note from the two solutions, the intersection will be set to the closest point
     static bool lineCircleIntersection( const QgsPoint &center, const double radius, const QList<QgsPoint> &segment, QgsPoint &intersection );
 
     /**
      * Create an advanced digitizing dock widget
-     * @param canvas The map canvas on which the widget operates
-     * @param parent The parent
+     * \param canvas The map canvas on which the widget operates
+     * \param parent The parent
      */
     explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
@@ -215,38 +217,38 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Will react on a canvas press event
      *
-     * @param e A mouse event (may be modified)
-     * @return  If the event is hidden (construction mode hides events from the maptool)
+     * \param e A mouse event (may be modified)
+     * \returns  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasPressEvent( QgsMapMouseEvent *e );
 
     /**
      * Will react on a canvas release event
      *
-     * @param e A mouse event (may be modified)
-     * @param mode determines if the dock has to record one, two or many points.
-     * @return  If the event is hidden (construction mode hides events from the maptool)
+     * \param e A mouse event (may be modified)
+     * \param mode determines if the dock has to record one, two or many points.
+     * \returns  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode );
 
     /**
      * Will react on a canvas move event
      *
-     * @param e A mouse event (may be modified)
-     * @return  If the event is hidden (construction mode hides events from the maptool)
+     * \param e A mouse event (may be modified)
+     * \returns  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasMoveEvent( QgsMapMouseEvent *e );
 
     /**
      * Filter key events to e.g. toggle construction mode or adapt constraints
      *
-     * @param e A mouse event (may be modified)
-     * @return  If the event is hidden (construction mode hides events from the maptool)
+     * \param e A mouse event (may be modified)
+     * \returns  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasKeyPressEventFilter( QKeyEvent *e );
 
     //! apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
-    //! @return false if no solution was found (invalid constraints)
+    //! \returns false if no solution was found (invalid constraints)
     virtual bool applyConstraints( QgsMapMouseEvent *e );
 
     /**
@@ -256,7 +258,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * The snapping mode
-     * @return Snapping mode
+     * \returns Snapping mode
      */
     QgsMapMouseEvent::SnappingMode snappingMode() { return mSnappingMode; }
 
@@ -338,7 +340,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Push a warning
      *
-     * @param message An informative message
+     * \param message An informative message
      */
     void pushWarning( const QString &message );
 
@@ -351,7 +353,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Sometimes a constraint may change the current point out of a mouse event. This happens normally
      * when a constraint is toggled.
      *
-     * @param point The last known digitizing point. Can be used to emulate a mouse event.
+     * \param point The last known digitizing point. Can be used to emulate a mouse event.
      */
     void pointChanged( const QgsPoint &point );
 
@@ -371,7 +373,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void constraintFocusOut();
 
     //! unlock all constraints
-    //! @param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
+    //! \param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
     void releaseLocks( bool releaseRepeatingLocks = true );
 
     //! set the relative properties of constraints
@@ -395,8 +397,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void setCadEnabled( bool enabled );
 
     /**
-     * @brief updateCapacity updates the cad capacities depending on the point list and update the UI according to the capabilities.
-     * @param updateUIwithoutChange if true, it will update the UI even if new capacities are not different from previous ones.
+     * \brief updateCapacity updates the cad capacities depending on the point list and update the UI according to the capabilities.
+     * \param updateUIwithoutChange if true, it will update the UI even if new capacities are not different from previous ones.
      */
     void updateCapacity( bool updateUIwithoutChange = false );
 
@@ -419,11 +421,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void clearPoints();
 
     //! filters key press
-    //! @note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
+    //! \note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
     bool filterKeyPress( QKeyEvent *e );
 
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
-    bool eventFilter( QObject *obj, QEvent *event ) override;
+    //! \note defined as private in Python bindings
+    bool eventFilter( QObject *obj, QEvent *event ) override SIP_SKIP;
 
     //! trigger fake mouse move event to update map tool rubber band and/or show new constraints
     void triggerMouseMoveEvent();
@@ -435,9 +438,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     double parseUserInput( const QString &inputValue, bool &ok ) const;
 
     /** Updates a constraint value based on a text input.
-     * @param constraint constraint to update
-     * @param textValue user entered text value, may be an expression
-     * @param convertExpression set to true to update widget contents to calculated expression value
+     * \param constraint constraint to update
+     * \param textValue user entered text value, may be an expression
+     * \param convertExpression set to true to update widget contents to calculated expression value
      */
     void updateConstraintValue( CadConstraint *constraint, const QString &textValue, bool convertExpression = false );
 
@@ -477,6 +480,11 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QMap< QAction *, int > mCommonAngleActions; // map the common angle actions with their angle values
     QMap< QAction *, QgsMapMouseEvent::SnappingMode > mSnappingActions; // map the snapping mode actions with their values
 
+  private:
+#ifdef SIP_RUN
+    //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
+    bool eventFilter( QObject *obj, QEvent *event );
+#endif
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAdvancedDigitizingDockWidget::CadCapacities )

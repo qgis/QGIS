@@ -54,9 +54,9 @@ public:
      * Converts a line of terminal characters with associated properties into a text string
      * and writes the string into an output QTextStream.
      *
-     * @param characters An array of characters of length @p count.
-     * @param count The number of characters
-     * @param properties Additional properties which affect all characters in the line
+     * \param characters An array of characters of length @p count.
+     * \param count The number of characters
+     * \param properties Additional properties which affect all characters in the line
      */
     virtual void decodeLine(const Character* const characters,
                             int count,

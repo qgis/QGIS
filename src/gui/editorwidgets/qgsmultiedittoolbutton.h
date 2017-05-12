@@ -17,6 +17,7 @@
 #define QGSMULTIEDITTOOLBUTTON_H
 
 #include "qgsfields.h"
+#include "qgis.h"
 #include <QToolButton>
 #include "qgis_gui.h"
 
@@ -25,7 +26,7 @@
  * A tool button widget which is displayed next to editor widgets in attribute forms, and
  * allows for controlling how the widget behaves and interacts with the form while in multi
  * edit mode.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
 {
@@ -42,9 +43,9 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     };
 
     /** Constructor for QgsMultiEditToolButton.
-     * @param parent parent object
+     * \param parent parent object
      */
-    explicit QgsMultiEditToolButton( QWidget *parent = nullptr );
+    explicit QgsMultiEditToolButton( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns the current displayed state of the button.
      */
@@ -52,37 +53,37 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
 
     /** Sets the field associated with this button. This is used to customise the widget menu
      * and tooltips to match the field properties.
-     * @param field associated field
+     * \param field associated field
      */
     void setField( const QgsField &field ) { mField = field; }
 
   public slots:
 
     /** Sets whether the associated field contains mixed values.
-     * @param mixed whether field values are mixed
-     * @see isMixed()
-     * @see setIsChanged()
-     * @see resetChanges()
+     * \param mixed whether field values are mixed
+     * \see isMixed()
+     * \see setIsChanged()
+     * \see resetChanges()
      */
     void setIsMixed( bool mixed ) { mIsMixedValues = mixed; updateState(); }
 
     /** Sets whether the associated field has changed.
-     * @param changed whether field has changed
-     * @see isChanged()
-     * @see setIsMixed()
-     * @see resetChanges()
+     * \param changed whether field has changed
+     * \see isChanged()
+     * \see setIsMixed()
+     * \see resetChanges()
      */
     void setIsChanged( bool changed ) { mIsChanged = changed; updateState(); }
 
     /** Resets the changed state for the field.
-     * @see setIsMixed()
-     * @see setIsChanged()
-     * @see changesCommitted()
+     * \see setIsMixed()
+     * \see setIsChanged()
+     * \see changesCommitted()
      */
     void resetChanges() { mIsChanged = false; updateState(); }
 
     /** Called when field values have been changed and field now contains all the same values.
-     * @see resetChanges()
+     * \see resetChanges()
      */
     void changesCommitted() { mIsMixedValues = false; mIsChanged = false; updateState(); }
 

@@ -66,6 +66,7 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   mRecentProjections = QgsCoordinateReferenceSystem::recentProjections();
 
   mCheckBoxNoProjection->setHidden( true );
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, &QgsProjectionSelectionTreeWidget::crsSelected );
   connect( mCheckBoxNoProjection, &QCheckBox::toggled, mFrameProjections, &QFrame::setDisabled );
 }
 
@@ -201,7 +202,7 @@ QString QgsProjectionSelectionTreeWidget::ogcWmsCrsFilterAsSqlExpression( QSet<Q
     sqlExpression += ')';
   }
 
-  QgsDebugMsg( "exiting with '" + sqlExpression + "'." );
+  QgsDebugMsgLevel( "exiting with '" + sqlExpression + "'.", 4 );
 
   return sqlExpression;
 }
@@ -232,12 +233,12 @@ void QgsProjectionSelectionTreeWidget::applySelection( int column, QString value
   QList<QTreeWidgetItem *> nodes = lstCoordinateSystems->findItems( value, Qt::MatchExactly | Qt::MatchRecursive, column );
   if ( !nodes.isEmpty() )
   {
-    QgsDebugMsg( QString( "found %1,%2" ).arg( column ).arg( value ) );
+    QgsDebugMsgLevel( QString( "found %1,%2" ).arg( column ).arg( value ), 4 );
     lstCoordinateSystems->setCurrentItem( nodes.first() );
   }
   else
   {
-    QgsDebugMsg( QString( "nothing found for %1,%2" ).arg( column ).arg( value ) );
+    QgsDebugMsgLevel( QString( "nothing found for %1,%2" ).arg( column ).arg( value ), 4 );
     // deselect the selected item to avoid confusing the user
     lstCoordinateSystems->clearSelection();
     lstRecent->clearSelection();
@@ -297,8 +298,8 @@ QString QgsProjectionSelectionTreeWidget::selectedProj4String()
 
   QString srsId = item->text( QgisCrsIdColumn );
 
-  QgsDebugMsg( "srsId = " + srsId );
-  QgsDebugMsg( "USER_CRS_START_ID = " + QString::number( USER_CRS_START_ID ) );
+  QgsDebugMsgLevel( "srsId = " + srsId, 4 );
+  QgsDebugMsgLevel( "USER_CRS_START_ID = " + QString::number( USER_CRS_START_ID ), 4 );
 
   //
   // Determine if this is a user projection or a system on
@@ -316,7 +317,7 @@ QString QgsProjectionSelectionTreeWidget::selectedProj4String()
     databaseFileName = mSrsDatabaseFileName;
   }
 
-  QgsDebugMsg( "db = " + databaseFileName );
+  QgsDebugMsgLevel( "db = " + databaseFileName, 4 );
 
   sqlite3 *database = nullptr;
   int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
@@ -331,7 +332,7 @@ QString QgsProjectionSelectionTreeWidget::selectedProj4String()
   sqlite3_stmt *stmt = nullptr;
   QString sql = QStringLiteral( "select parameters from tbl_srs where srs_id=%1" ).arg( srsId );
 
-  QgsDebugMsg( "Selection sql: " + sql );
+  QgsDebugMsgLevel( "Selection sql: " + sql, 4 );
 
   rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
   // XXX Need to free memory from the error msg if one is set
@@ -404,7 +405,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
                 .arg( expression,
                       lvi->text( QgisCrsIdColumn ) );
 
-  QgsDebugMsg( QString( "Finding selected attribute using : %1" ).arg( sql ) );
+  QgsDebugMsgLevel( QString( "Finding selected attribute using : %1" ).arg( sql ), 4 );
   rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
   // XXX Need to free memory from the error msg if one is set
   QString attributeValue;
@@ -478,7 +479,7 @@ void QgsProjectionSelectionTreeWidget::loadUserCrsList( QSet<QString> *crsFilter
   if ( mUserProjListDone )
     return;
 
-  QgsDebugMsg( "Fetching user projection list..." );
+  QgsDebugMsgLevel( "Fetching user projection list...", 4 );
 
   // convert our Coordinate Reference System filter into the SQL expression
   QString sqlFilter = ogcWmsCrsFilterAsSqlExpression( crsFilter );
@@ -694,11 +695,11 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
 // New coordinate system selected from the list
 void QgsProjectionSelectionTreeWidget::on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsgLevel( "Entered.", 4 );
 
   if ( !current )
   {
-    QgsDebugMsg( "no current item" );
+    QgsDebugMsgLevel( "no current item", 4 );
     return;
   }
 
@@ -717,12 +718,12 @@ void QgsProjectionSelectionTreeWidget::on_lstCoordinateSystems_currentItemChange
     QList<QTreeWidgetItem *> nodes = lstRecent->findItems( current->text( QgisCrsIdColumn ), Qt::MatchExactly, QgisCrsIdColumn );
     if ( !nodes.isEmpty() )
     {
-      QgsDebugMsg( QString( "found srs %1 in recent" ).arg( current->text( QgisCrsIdColumn ) ) );
+      QgsDebugMsgLevel( QString( "found srs %1 in recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
       lstRecent->setCurrentItem( nodes.first() );
     }
     else
     {
-      QgsDebugMsg( QString( "srs %1 not recent" ).arg( current->text( QgisCrsIdColumn ) ) );
+      QgsDebugMsgLevel( QString( "srs %1 not recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
       lstRecent->clearSelection();
       lstCoordinateSystems->setFocus( Qt::OtherFocusReason );
     }
@@ -741,11 +742,11 @@ void QgsProjectionSelectionTreeWidget::on_lstCoordinateSystems_itemDoubleClicked
 {
   Q_UNUSED( column );
 
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsgLevel( "Entered.", 4 );
 
   if ( !current )
   {
-    QgsDebugMsg( "no current item" );
+    QgsDebugMsgLevel( "no current item", 4 );
     return;
   }
 
@@ -757,11 +758,11 @@ void QgsProjectionSelectionTreeWidget::on_lstCoordinateSystems_itemDoubleClicked
 
 void QgsProjectionSelectionTreeWidget::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsgLevel( "Entered.", 4 );
 
   if ( !current )
   {
-    QgsDebugMsg( "no current item" );
+    QgsDebugMsgLevel( "no current item", 4 );
     return;
   }
 
@@ -776,11 +777,11 @@ void QgsProjectionSelectionTreeWidget::on_lstRecent_itemDoubleClicked( QTreeWidg
 {
   Q_UNUSED( column );
 
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsgLevel( "Entered.", 4 );
 
   if ( !current )
   {
-    QgsDebugMsg( "no current item" );
+    QgsDebugMsgLevel( "no current item", 4 );
     return;
   }
 
@@ -992,15 +993,6 @@ QStringList QgsProjectionSelectionTreeWidget::authorities()
   return authorities;
 }
 
-/** Linfinity qtcreator qgis
-* \brief Make the string safe for use in SQL statements.
-*  This involves escaping single quotes, double quotes, backslashes,
-*  and optionally, percentage symbols.  Percentage symbols are used
-*  as wildcards sometimes and so when using the string as part of the
-*  LIKE phrase of a select statement, should be escaped.
-* \arg const QString in The input string to make safe.
-* \return The string made safe for SQL statements.
-*/
 const QString QgsProjectionSelectionTreeWidget::sqlSafeString( const QString &theSQL )
 {
   QString retval = theSQL;

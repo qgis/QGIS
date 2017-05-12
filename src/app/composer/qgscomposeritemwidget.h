@@ -56,8 +56,8 @@ class QgsComposerConfigObject: public QObject
     ~QgsComposerConfigObject();
 
     /** Registers a data defined button, setting up its initial value, connections and description.
-     * @param button button to register
-     * @param key corresponding data defined property key
+     * \param button button to register
+     * \param key corresponding data defined property key
      */
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsComposerObject::DataDefinedProperty key );
 
@@ -98,8 +98,8 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
   protected:
 
     /** Registers a data defined button, setting up its initial value, connections and description.
-     * @param button button to register
-     * @param property corresponding data defined property key
+     * \param button button to register
+     * \param property corresponding data defined property key
      */
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsComposerObject::DataDefinedProperty property );
 

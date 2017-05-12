@@ -16,6 +16,7 @@
 #define QGSFIELDVALUESLINEEDIT_H
 
 #include "qgsfilterlineedit.h"
+#include "qgis.h"
 #include "qgsfeedback.h"
 #include "qgsvectorlayer.h"
 #include <QStringListModel>
@@ -91,7 +92,7 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
   signals:
 
     /** Emitted when values have been collected
-     * @param values list of unique matching string values
+     * \param values list of unique matching string values
      */
     void collectedValues( const QStringList &values );
 
@@ -113,7 +114,7 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
  * A line edit with an autocompleter which takes unique values from a vector layer's fields.
  * The autocompleter is populated from the vector layer in the background to ensure responsive
  * interaction with the widget.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
 {
@@ -125,47 +126,47 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
   public:
 
     /** Constructor for QgsFieldValuesLineEdit
-     * @param parent parent widget
+     * \param parent parent widget
      */
-    QgsFieldValuesLineEdit( QWidget *parent = nullptr );
+    QgsFieldValuesLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     virtual ~QgsFieldValuesLineEdit();
 
     /** Sets the layer containing the field that values will be shown from.
-     * @param layer vector layer
-     * @see layer()
-     * @see setAttributeIndex()
+     * \param layer vector layer
+     * \see layer()
+     * \see setAttributeIndex()
      */
     void setLayer( QgsVectorLayer *layer );
 
     /** Returns the layer containing the field that values will be shown from.
-     * @see setLayer()
-     * @see attributeIndex()
+     * \see setLayer()
+     * \see attributeIndex()
      */
     QgsVectorLayer *layer() const { return mLayer; }
 
     /** Sets the attribute index for the field containing values to show in the widget.
-     * @param index index of attribute
-     * @see attributeIndex()
-     * @see setLayer()
+     * \param index index of attribute
+     * \see attributeIndex()
+     * \see setLayer()
      */
     void setAttributeIndex( int index );
 
     /** Returns the attribute index for the field containing values shown in the widget.
-     * @see setAttributeIndex()
-     * @see layer()
+     * \see setAttributeIndex()
+     * \see layer()
      */
     int attributeIndex() const { return mAttributeIndex; }
 
   signals:
 
     /** Emitted when the layer associated with the widget changes.
-     * @param layer vector layer
+     * \param layer vector layer
      */
     void layerChanged( QgsVectorLayer *layer );
 
     /** Emitted when the field associated with the widget changes.
-     * @param index new attribute index for field
+     * \param index new attribute index for field
      */
     void attributeIndexChanged( int index );
 
@@ -182,7 +183,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     void triggerCompleterUpdate();
 
     /** Updates the values shown in the completer list.
-     * @param values list of string values to show
+     * \param values list of string values to show
      */
     void updateCompleter( const QStringList &values );
 

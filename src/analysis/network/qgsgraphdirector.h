@@ -20,11 +20,18 @@
 #include <QVector>
 #include <QList>
 
+#include <qgis.h>
 #include <qgspoint.h>
 #include "qgsnetworkstrategy.h"
 #include "qgis_analysis.h"
 
 class QgsGraphBuilderInterface;
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsvectorlayerdirector.h>
+% End
+#endif
 
 /**
  * \ingroup analysis
@@ -34,10 +41,22 @@ class QgsGraphBuilderInterface;
  */
 class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsVectorLayerDirector * >( sipCpp ) != NULL )
+      sipType = sipType_QgsVectorLayerDirector;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   signals:
+    //! Emitted to report graph building progress
     void buildProgress( int, int ) const;
+    //! Emitted to report information about graph building
     void buildMessage( const QString & ) const;
 
   public:
@@ -47,14 +66,14 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     /**
      * Make a graph using QgsGraphBuilder
      *
-     * @param builder the graph builder
-     * @param additionalPoints list of points that should be snapped to the graph
-     * @param snappedPoints list of snapped points
-     * @note if snappedPoints[i] == QgsPoint(0.0,0.0) then snapping failed.
+     * \param builder the graph builder
+     * \param additionalPoints list of points that should be snapped to the graph
+     * \param snappedPoints list of snapped points
+     * \note if snappedPoints[i] == QgsPoint(0.0,0.0) then snapping failed.
      */
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPoint > &additionalPoints,
-                            QVector< QgsPoint > &snappedPoints ) const
+                            QVector< QgsPoint > &snappedPoints SIP_OUT ) const
     {
       Q_UNUSED( builder );
       Q_UNUSED( additionalPoints );
@@ -62,7 +81,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     }
 
     //! Add optimization strategy
-    void addStrategy( QgsNetworkStrategy *prop )
+    void addStrategy( QgsNetworkStrategy *prop SIP_TRANSFER )
     {
       mStrategies.push_back( prop );
     }

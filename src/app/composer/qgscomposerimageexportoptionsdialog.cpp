@@ -27,7 +27,7 @@ QgsComposerImageExportOptionsDialog::QgsComposerImageExportOptionsDialog( QWidge
 {
   setupUi( this );
 
-  connect( mClipToContentGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( clipToContentsToggled( bool ) ) );
+  connect( mClipToContentGroupBox, &QGroupBox::toggled, this, &QgsComposerImageExportOptionsDialog::clipToContentsToggled );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerImageExportOptionsDialog/geometry" ) ).toByteArray() );

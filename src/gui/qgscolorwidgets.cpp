@@ -1297,9 +1297,9 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
   hLayout->addWidget( mSpinBox );
   setLayout( hLayout );
 
-  connect( mRampWidget, SIGNAL( valueChanged( int ) ), this, SLOT( rampChanged( int ) ) );
-  connect( mRampWidget, SIGNAL( colorChanged( const QColor ) ), this, SLOT( rampColorChanged( const QColor ) ) );
-  connect( mSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( spinChanged( int ) ) );
+  connect( mRampWidget, &QgsColorRampWidget::valueChanged, this, &QgsColorSliderWidget::rampChanged );
+  connect( mRampWidget, &QgsColorWidget::colorChanged, this, &QgsColorSliderWidget::rampColorChanged );
+  connect( mSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsColorSliderWidget::spinChanged );
 }
 
 void QgsColorSliderWidget::setComponent( const QgsColorWidget::ColorComponent component )
@@ -1419,8 +1419,8 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   mLineEdit->setStyleSheet( QStringLiteral( "QLineEdit { padding-right: %1px; } " )
                             .arg( mMenuButton->sizeHint().width() + frameWidth + 1 ) );
 
-  connect( mLineEdit, SIGNAL( editingFinished() ), this, SLOT( textChanged() ) );
-  connect( mMenuButton, SIGNAL( clicked() ), this, SLOT( showMenu() ) );
+  connect( mLineEdit, &QLineEdit::editingFinished, this, &QgsColorTextWidget::textChanged );
+  connect( mMenuButton, &QAbstractButton::clicked, this, &QgsColorTextWidget::showMenu );
 
   //restore format setting
   QgsSettings settings;
@@ -1691,10 +1691,10 @@ QgsColorWidgetAction::QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *
   , mDismissOnColorSelection( true )
 {
   setDefaultWidget( mColorWidget );
-  connect( mColorWidget, SIGNAL( colorChanged( QColor ) ), this, SLOT( setColor( QColor ) ) );
+  connect( mColorWidget, &QgsColorWidget::colorChanged, this, &QgsColorWidgetAction::setColor );
 
-  connect( this, SIGNAL( hovered() ), this, SLOT( onHover() ) );
-  connect( mColorWidget, SIGNAL( hovered() ), this, SLOT( onHover() ) );
+  connect( this, &QAction::hovered, this, &QgsColorWidgetAction::onHover );
+  connect( mColorWidget, &QgsColorWidget::hovered, this, &QgsColorWidgetAction::onHover );
 }
 
 void QgsColorWidgetAction::onHover()

@@ -32,6 +32,7 @@
 #include "qgslocalec.h"
 #include "qgscsexception.h"
 #include "qgssettings.h"
+#include "qgsgeometryengine.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -48,6 +49,7 @@
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
 #include <cpl_conv.h>
+#include <cpl_string.h>
 #include <gdal.h>
 
 QgsVectorFileWriter::FieldValueConverter::FieldValueConverter()
@@ -1221,7 +1223,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          MetaData(
                            QStringLiteral( "INTERLIS 2" ),
                            QObject::tr( "INTERLIS 2" ),
-                           QStringLiteral( "*.itf *.xml *.ili" ),
+                           QStringLiteral( "*.xtf *.xml *.ili" ),
                            QStringLiteral( "ili" ),
                            datasetOptions,
                            layerOptions
@@ -1817,6 +1819,22 @@ QString QgsVectorFileWriter::errorMessage()
   return mErrorMessage;
 }
 
+bool QgsVectorFileWriter::addFeature( QgsFeature &feature )
+{
+  return addFeature( feature, nullptr, QgsUnitTypes::DistanceMeters );
+}
+
+bool QgsVectorFileWriter::addFeatures( QgsFeatureList &features )
+{
+  QgsFeatureList::iterator fIt = features.begin();
+  bool result = true;
+  for ( ; fIt != features.end(); ++fIt )
+  {
+    result = result && addFeature( *fIt, nullptr, QgsUnitTypes::DistanceMeters );
+  }
+  return result;
+}
+
 bool QgsVectorFileWriter::addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit )
 {
   // create the feature
@@ -2398,6 +2416,34 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   req.setSubsetOfAttributes( attributes );
   if ( options.onlySelectedFeatures )
     req.setFilterFids( layer->selectedFeatureIds() );
+
+  QgsGeometry filterRectGeometry;
+  std::unique_ptr< QgsGeometryEngine  > filterRectEngine;
+  if ( !options.filterExtent.isNull() )
+  {
+    QgsRectangle filterRect = options.filterExtent;
+    bool useFilterRect = true;
+    if ( shallTransform )
+    {
+      try
+      {
+        // map filter rect back from destination CRS to layer CRS
+        filterRect = options.ct.transformBoundingBox( filterRect, QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException & )
+      {
+        useFilterRect = false;
+      }
+    }
+    if ( useFilterRect )
+    {
+      req.setFilterRect( filterRect );
+    }
+    filterRectGeometry = QgsGeometry::fromRect( options.filterExtent );
+    filterRectEngine.reset( QgsGeometry::createGeometryEngine( filterRectGeometry.geometry() ) );
+    filterRectEngine->prepareGeometry();
+  }
+
   QgsFeatureIterator fit = layer->getFeatures( req );
 
   //create symbol table if needed
@@ -2490,7 +2536,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
 
-    if ( fet.hasGeometry() && !options.filterExtent.isNull() && !fet.geometry().intersects( options.filterExtent ) )
+    if ( fet.hasGeometry() && filterRectEngine && !filterRectEngine->intersects( *fet.geometry().geometry() ) )
       continue;
 
     if ( attributes.size() < 1 && options.skipAttributeCreation )
@@ -2604,6 +2650,35 @@ QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
   return resultMap;
 }
 
+QStringList QgsVectorFileWriter::supportedFormatExtensions()
+{
+  QgsStringMap formats = supportedFiltersAndFormats();
+  QStringList extensions;
+
+  QRegularExpression rx( "\\*\\.([a-zA-Z0-9]*)" );
+
+  QgsStringMap::const_iterator formatIt = formats.constBegin();
+  for ( ; formatIt != formats.constEnd(); ++formatIt )
+  {
+    QString ext = formatIt.key();
+    QRegularExpressionMatch match = rx.match( ext );
+    if ( !match.hasMatch() )
+      continue;
+
+    QString matched = match.captured( 1 );
+    if ( matched.compare( QStringLiteral( "shp" ), Qt::CaseInsensitive ) == 0 )
+      continue;
+
+    extensions << matched;
+  }
+
+  std::sort( extensions.begin(), extensions.end() );
+
+  // Make https://twitter.com/shapefiIe a happy little fellow
+  extensions.insert( 0, QStringLiteral( "shp" ) );
+  return extensions;
+}
+
 QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
 {
   QMap<QString, QString> resultMap;
@@ -2668,6 +2743,40 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
   }
 
   return resultMap;
+}
+
+QString QgsVectorFileWriter::driverForExtension( const QString &extension )
+{
+  QString ext = extension.trimmed();
+  if ( ext.isEmpty() )
+    return QString();
+
+  if ( ext.startsWith( '.' ) )
+    ext.remove( 0, 1 );
+
+  GDALAllRegister();
+  int const drvCount = GDALGetDriverCount();
+
+  for ( int i = 0; i < drvCount; ++i )
+  {
+    GDALDriverH drv = GDALGetDriver( i );
+    if ( drv )
+    {
+      char **driverMetadata = GDALGetMetadata( drv, nullptr );
+      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_VECTOR, false ) )
+      {
+        QString drvName = GDALGetDriverShortName( drv );
+        QStringList driverExtensions = QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
+
+        Q_FOREACH ( const QString &driver, driverExtensions )
+        {
+          if ( driver.compare( ext, Qt::CaseInsensitive ) == 0 )
+            return drvName;
+        }
+      }
+    }
+  }
+  return QString();
 }
 
 QString QgsVectorFileWriter::fileFilterString()

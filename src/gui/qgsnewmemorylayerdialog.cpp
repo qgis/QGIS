@@ -23,6 +23,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsmemoryproviderutils.h"
 
 #include <QPushButton>
 #include <QComboBox>
@@ -40,18 +41,8 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, con
   }
 
   QgsWkbTypes::Type geometrytype = dialog.selectedType();
-
-  QString geomType = QgsWkbTypes::displayString( geometrytype );
-  if ( geomType.isNull() )
-    geomType = "none";
-
-  QString layerProperties = QStringLiteral( "%1?" ).arg( geomType );
-  if ( QgsWkbTypes::NoGeometry != geometrytype )
-    layerProperties.append( QStringLiteral( "crs=%1&" ).arg( dialog.crs().authid() ) );
-  layerProperties.append( QStringLiteral( "memoryid=%1" ).arg( QUuid::createUuid().toString() ) );
-
   QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
-  QgsVectorLayer *newLayer = new QgsVectorLayer( layerProperties, name, QStringLiteral( "memory" ) );
+  QgsVectorLayer *newLayer = QgsMemoryProviderUtils::createMemoryLayer( name, QgsFields(), geometrytype, dialog.crs() );
   return newLayer;
 }
 

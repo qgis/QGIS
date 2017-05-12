@@ -31,6 +31,7 @@
 #include <QString>
 #include <QDomNode>
 #include <QVector>
+#include <QStringBuilder>
 
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
@@ -48,7 +49,6 @@
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
-#include "qgsgeometrycache.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
@@ -71,6 +71,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayerundocommand.h"
+#include "qgsvectorlayerfeaturecounter.h"
 #include "qgspointv2.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayer.h"
@@ -82,6 +83,8 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfeedback.h"
 #include "qgsxmlutils.h"
+#include "qgsunittypes.h"
+#include "qgstaskmanager.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -125,6 +128,7 @@ typedef bool deleteStyleById_t(
   QString &errCause
 );
 
+
 QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &baseName,
                                 const QString &providerKey,
@@ -140,7 +144,6 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
   , mLayerTransparency( 0 )
   , mVertexMarkerOnlyForSelection( false )
-  , mCache( new QgsGeometryCache() )
   , mEditBuffer( nullptr )
   , mJoinBuffer( nullptr )
   , mExpressionFieldBuffer( nullptr )
@@ -188,7 +191,6 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mEditBuffer;
   delete mJoinBuffer;
   delete mExpressionFieldBuffer;
-  delete mCache;
   delete mLabeling;
   delete mDiagramLayerSettings;
   delete mDiagramRenderer;
@@ -675,7 +677,7 @@ class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInte
     QProgressDialog *mDialog = nullptr;
 };
 
-bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
+bool QgsVectorLayer::countSymbolFeatures()
 {
   if ( mSymbolFeatureCounted )
     return true;
@@ -698,103 +700,15 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
     return false;
   }
 
-  QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
-  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
-
-  for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
+  if ( !mFeatureCounter )
   {
-    mSymbolFeatureCountMap.insert( symbolIt->first, 0 );
+    mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
+    connect( mFeatureCounter, &QgsTask::taskCompleted, [ = ]() { onSymbolsCounted(); mFeatureCounter = nullptr; } );
+    connect( mFeatureCounter, &QgsTask::taskTerminated, [ = ]() { mFeatureCounter = nullptr; } );
+
+    QgsApplication::taskManager()->addTask( mFeatureCounter );
   }
 
-  long nFeatures = featureCount();
-
-  QWidget *mainWindow = nullptr;
-  Q_FOREACH ( QWidget *widget, qApp->topLevelWidgets() )
-  {
-    if ( widget->objectName() == QLatin1String( "QgisApp" ) )
-    {
-      mainWindow = widget;
-      break;
-    }
-  }
-
-  QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures, mainWindow );
-  progressDialog.setWindowTitle( tr( "QGIS" ) );
-  progressDialog.setWindowModality( Qt::WindowModal );
-  if ( showProgress )
-  {
-    // Properly initialize to 0 as recommended in doc so that the evaluation
-    // of the total time properly works
-    progressDialog.setValue( 0 );
-  }
-  int featuresCounted = 0;
-
-  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
-  QgsRenderContext renderContext;
-  renderContext.setRendererScale( 0 );
-  renderContext.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
-
-  QgsFeatureRequest request;
-  if ( !mRenderer->filterNeedsGeometry() )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mFields );
-  QgsFeatureIterator fit = getFeatures( request );
-  QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures interruptionCheck( &progressDialog );
-  if ( showProgress )
-  {
-    fit.setInterruptionChecker( &interruptionCheck );
-  }
-
-  mRenderer->startRender( renderContext, fields() );
-
-  QgsFeature f;
-  QTime time;
-  time.start();
-  while ( fit.nextFeature( f ) )
-  {
-    renderContext.expressionContext().setFeature( f );
-    QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
-    Q_FOREACH ( const QString &key, featureKeyList )
-    {
-      mSymbolFeatureCountMap[key] += 1;
-    }
-    ++featuresCounted;
-
-    if ( showProgress )
-    {
-      // Refresh progress every 50 features or second
-      if ( ( featuresCounted % 50 == 0 ) || time.elapsed() > 1000 )
-      {
-        time.restart();
-        if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
-        {
-          progressDialog.setMaximum( 0 );
-        }
-        progressDialog.setValue( featuresCounted );
-      }
-      // So that we get a chance of hitting the Abort button
-#ifdef Q_OS_LINUX
-      // For some reason on Windows hasPendingEvents() always return true,
-      // but one iteration is actually enough on Windows to get good interactivity
-      // whereas on Linux we must allow for far more iterations.
-      // For safety limit the number of iterations
-      int nIters = 0;
-      while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
-#endif
-      {
-        QCoreApplication::processEvents();
-      }
-      if ( progressDialog.wasCanceled() )
-      {
-        mSymbolFeatureCountMap.clear();
-        mRenderer->stopRender( renderContext );
-        return false;
-      }
-    }
-  }
-  mRenderer->stopRender( renderContext );
-  progressDialog.setValue( nFeatures );
-  mSymbolFeatureCounted = true;
   return true;
 }
 
@@ -953,9 +867,8 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest &request
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( new QgsVectorLayerFeatureSource( this ), true, request ) );
 }
 
-bool QgsVectorLayer::addFeature( QgsFeature &feature, bool alsoUpdateExtent )
+bool QgsVectorLayer::addFeature( QgsFeature &feature )
 {
-  Q_UNUSED( alsoUpdateExtent ); // TODO[MD]
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return false;
 
@@ -1491,7 +1404,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
   //XXX - This was a dynamic cast but that kills the Windows
   //      version big-time with an abnormal termination error
   delete mDataProvider;
-  mDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->provider( provider, mDataSource ) );
+  mDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->createProvider( provider, mDataSource ) );
   if ( !mDataProvider )
   {
     QgsDebugMsg( " unable to get data provider" );
@@ -2437,11 +2350,6 @@ bool QgsVectorLayer::commitChanges()
     QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( QStringLiteral( "\n  " ) ) ) );
   }
 
-  if ( mCache )
-  {
-    mCache->deleteCachedGeometries();
-  }
-
   updateFields();
   mDataProvider->updateExtents();
 
@@ -2489,11 +2397,6 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
   }
   emit editingStopped();
 
-  if ( mCache )
-  {
-    mCache->deleteCachedGeometries();
-  }
-
   if ( rollbackExtent )
     updateExtents();
 
@@ -2530,7 +2433,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures() const
   }
   else
   {
-    QgsFeatureIterator it = selectedFeaturesIterator();
+    QgsFeatureIterator it = getSelectedFeatures();
 
     while ( it.nextFeature( f ) )
     {
@@ -2541,7 +2444,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures() const
   return features;
 }
 
-QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest request ) const
+QgsFeatureIterator QgsVectorLayer::getSelectedFeatures( QgsFeatureRequest request ) const
 {
   if ( mSelectedFeatureIds.isEmpty() )
     return QgsFeatureIterator();
@@ -2557,172 +2460,15 @@ QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest r
   return getFeatures( request );
 }
 
-bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
+bool QgsVectorLayer::addFeatures( QgsFeatureList &features )
 {
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
   bool res = mEditBuffer->addFeatures( features );
-
-  if ( makeSelected )
-  {
-    QgsFeatureIds ids;
-
-    for ( QgsFeatureList::iterator iter = features.begin(); iter != features.end(); ++iter )
-      ids << iter->id();
-
-    selectByIds( ids );
-  }
-
   updateExtents();
 
   return res;
-}
-
-
-bool QgsVectorLayer::snapPoint( QgsPoint &point, double tolerance )
-{
-  if ( !hasGeometryType() )
-    return false;
-
-  QMultiMap<double, QgsSnappingResult> snapResults;
-  int result = snapWithContext( point, tolerance, snapResults, QgsSnapper::SnapToVertex );
-
-  if ( result != 0 )
-  {
-    return false;
-  }
-
-  if ( snapResults.size() < 1 )
-  {
-    return false;
-  }
-
-  QMultiMap<double, QgsSnappingResult>::const_iterator snap_it = snapResults.constBegin();
-  point.setX( snap_it.value().snappedVertex.x() );
-  point.setY( snap_it.value().snappedVertex.y() );
-  return true;
-}
-
-
-int QgsVectorLayer::snapWithContext( const QgsPoint &startPoint, double snappingTolerance,
-                                     QMultiMap<double, QgsSnappingResult> &snappingResults,
-                                     QgsSnapper::SnappingType snap_to )
-{
-  if ( !hasGeometryType() )
-    return 1;
-
-  if ( snappingTolerance <= 0 || !mDataProvider )
-  {
-    return 1;
-  }
-
-  QgsRectangle searchRect( startPoint.x() - snappingTolerance, startPoint.y() - snappingTolerance,
-                           startPoint.x() + snappingTolerance, startPoint.y() + snappingTolerance );
-  double sqrSnappingTolerance = snappingTolerance * snappingTolerance;
-
-  int n = 0;
-  QgsFeature f;
-
-  if ( mCache->cachedGeometriesRect().contains( searchRect ) )
-  {
-    QgsGeometryMap &cachedGeometries = mCache->cachedGeometries();
-    for ( QgsGeometryMap::iterator it = cachedGeometries.begin(); it != cachedGeometries.end() ; ++it )
-    {
-      QgsGeometry g = it.value();
-      if ( g.boundingBox().intersects( searchRect ) )
-      {
-        snapToGeometry( startPoint, it.key(), g, sqrSnappingTolerance, snappingResults, snap_to );
-        ++n;
-      }
-    }
-  }
-  else
-  {
-    // snapping outside cached area
-
-    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                          .setFilterRect( searchRect )
-                                          .setFlags( QgsFeatureRequest::ExactIntersect )
-                                          .setSubsetOfAttributes( QgsAttributeList() ) );
-
-    while ( fit.nextFeature( f ) )
-    {
-      snapToGeometry( startPoint, f.id(), f.geometry(), sqrSnappingTolerance, snappingResults, snap_to );
-      ++n;
-    }
-  }
-
-  return n == 0 ? 2 : 0;
-}
-
-void QgsVectorLayer::snapToGeometry( const QgsPoint &startPoint,
-                                     QgsFeatureId featureId,
-                                     const QgsGeometry &geom,
-                                     double sqrSnappingTolerance,
-                                     QMultiMap<double, QgsSnappingResult> &snappingResults,
-                                     QgsSnapper::SnappingType snap_to ) const
-{
-  if ( geom.isNull() )
-  {
-    return;
-  }
-
-  int atVertex, beforeVertex, afterVertex;
-  double sqrDistVertexSnap, sqrDistSegmentSnap;
-  QgsPoint snappedPoint;
-  QgsSnappingResult snappingResultVertex;
-  QgsSnappingResult snappingResultSegment;
-
-  if ( snap_to == QgsSnapper::SnapToVertex || snap_to == QgsSnapper::SnapToVertexAndSegment )
-  {
-    snappedPoint = geom.closestVertex( startPoint, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
-    if ( sqrDistVertexSnap < sqrSnappingTolerance )
-    {
-      snappingResultVertex.snappedVertex = snappedPoint;
-      snappingResultVertex.snappedVertexNr = atVertex;
-      snappingResultVertex.beforeVertexNr = beforeVertex;
-      if ( beforeVertex != -1 ) // make sure the vertex is valid
-      {
-        snappingResultVertex.beforeVertex = geom.vertexAt( beforeVertex );
-      }
-      snappingResultVertex.afterVertexNr = afterVertex;
-      if ( afterVertex != -1 ) // make sure the vertex is valid
-      {
-        snappingResultVertex.afterVertex = geom.vertexAt( afterVertex );
-      }
-      snappingResultVertex.snappedAtGeometry = featureId;
-      snappingResultVertex.layer = this;
-      snappingResults.insert( sqrt( sqrDistVertexSnap ), snappingResultVertex );
-      return;
-    }
-  }
-  if ( snap_to == QgsSnapper::SnapToSegment || snap_to == QgsSnapper::SnapToVertexAndSegment ) // snap to segment
-  {
-    if ( geometryType() != QgsWkbTypes::PointGeometry ) // cannot snap to segment for points/multipoints
-    {
-      sqrDistSegmentSnap = geom.closestSegmentWithContext( startPoint, snappedPoint, afterVertex, nullptr, crs().isGeographic() ? 1e-12 : 1e-8 );
-
-      if ( sqrDistSegmentSnap < sqrSnappingTolerance )
-      {
-        snappingResultSegment.snappedVertex = snappedPoint;
-        snappingResultSegment.snappedVertexNr = -1;
-        snappingResultSegment.beforeVertexNr = afterVertex - 1;
-        snappingResultSegment.afterVertexNr = afterVertex;
-        snappingResultSegment.snappedAtGeometry = featureId;
-        snappingResultSegment.beforeVertex = geom.vertexAt( afterVertex - 1 );
-        snappingResultSegment.afterVertex = geom.vertexAt( afterVertex );
-        snappingResultSegment.layer = this;
-        snappingResults.insert( sqrt( sqrDistSegmentSnap ), snappingResultSegment );
-      }
-    }
-  }
-}
-
-int QgsVectorLayer::insertSegmentVerticesForSnap( const QList<QgsSnappingResult> &snapResults )
-{
-  QgsVectorLayerEditUtils utils( this );
-  return utils.insertSegmentVerticesForSnap( snapResults );
 }
 
 
@@ -3607,7 +3353,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   }
   else
   {
-    fit = selectedFeaturesIterator( request );
+    fit = getSelectedFeatures( request );
   }
 
   // create list of non-null attribute values
@@ -3665,8 +3411,6 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
   return values;
 }
 
-
-//! Write blend mode for features
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
 {
   mFeatureBlendMode = featureBlendMode;
@@ -3674,13 +3418,11 @@ void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlend
   emit styleChanged();
 }
 
-//! Read blend mode for layer
 QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const
 {
   return mFeatureBlendMode;
 }
 
-//! Write transparency for layer
 void QgsVectorLayer::setLayerTransparency( int layerTransparency )
 {
   mLayerTransparency = layerTransparency;
@@ -3688,7 +3430,6 @@ void QgsVectorLayer::setLayerTransparency( int layerTransparency )
   emit styleChanged();
 }
 
-//! Read transparency for layer
 int QgsVectorLayer::layerTransparency() const
 {
   return mLayerTransparency;
@@ -3990,67 +3731,57 @@ void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings &s )
   *mDiagramLayerSettings = s;
 }
 
-QString QgsVectorLayer::metadata() const
+QString QgsVectorLayer::htmlMetadata() const
 {
-  QString myMetadata = QStringLiteral( "<html><body>" );
+  QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
 
-  //-------------
+  // Identification section
+  myMetadata += QLatin1String( "<h1>" ) % tr( "Identification" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
 
-  myMetadata += QLatin1String( R"(<p class="subheaderglossy">)" );
-  myMetadata += tr( "General" );
-  myMetadata += QLatin1String( "</p>\n" );
+  // ID
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "ID" ) % QLatin1String( "</td><td>" ) % id() % QLatin1String( "</td></tr>\n" );
 
-  // data comment
-  if ( !( dataComment().isEmpty() ) )
-  {
-    myMetadata += R"(<p class="glossy">)" + tr( "Layer comment" ) + "</p>\n";
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += dataComment();
-    myMetadata += QLatin1String( "</p>\n" );
-  }
+  // original name
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Original" ) % QLatin1String( "</td><td>" ) % originalName() % QLatin1String( "</td></tr>\n" );
 
-  //storage type
-  myMetadata += R"(<p class="glossy">)" + tr( "Storage type of this layer" ) + "</p>\n";
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += storageType();
-  myMetadata += QLatin1String( "</p>\n" );
+  // name
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QLatin1String( "</td><td>" ) % name() % QLatin1String( "</td></tr>\n" );
 
-  if ( dataProvider() )
-  {
-    //provider description
-    myMetadata += R"(<p class="glossy">)" + tr( "Description of this provider" ) + "</p>\n";
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += dataProvider()->description().replace( '\n', QLatin1String( "<br>" ) );
-    myMetadata += QLatin1String( "</p>\n" );
+  // short
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Short" ) % QLatin1String( "</td><td>" ) % shortName() % QLatin1String( "</td></tr>\n" );
 
-    QVariantMap dataProviderMetadata = mDataProvider->metadata();
-    if ( !dataProviderMetadata.isEmpty() )
-    {
-      myMetadata += R"(<p class="glossy">)" + tr( "Provider Metadata" ) + "</p>\n";
-      myMetadata +=  "<p><table><tr><th>" + tr( "Metadata name" ) + "</th><th>" + tr( "Metadata value" ) + "</th></tr>\n";
-      QMapIterator<QString, QVariant> i( dataProviderMetadata );
-      while ( i.hasNext() )
-      {
-        i.next();
-        myMetadata += "<tr>";
-        myMetadata += "<td>" + mDataProvider->translateMetadataKey( i.key() ) + ":</td>";
-        myMetadata += "<td>" + mDataProvider->translateMetadataValue( i.key(), i.value() ) + "</td>";
-        myMetadata += "</tr>\n";
-      }
-      myMetadata += QLatin1String( "</table></p>\n" );
-    }
-  }
+  // title
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Title" ) % QLatin1String( "</td><td>" ) % title() % QLatin1String( "</td></tr>\n" );
+
+  // abstract
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Abstract" ) % QLatin1String( "</td><td>" ) % abstract() % QLatin1String( "</td></tr>\n" );
+
+  // keywords
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Keywords" ) % QLatin1String( "</td><td>" ) % keywordList() % QLatin1String( "</td></tr>\n" );
+
+  // lang, waiting for the proper metadata implementation QEP #91 Work package 2
+  // myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Language" ) % QLatin1String( "</td><td>en-CA</td></tr>\n" );
+
+  // comment
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Comment" ) % QLatin1String( "</td><td>" ) % dataComment() % QLatin1String( "</td></tr>\n" );
+
+  // date, waiting for the proper metadata implementation QEP #91 Work package 2
+  // myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Date" ) % QLatin1String( "</td><td>28/03/17</td></tr>\n" );
+
+  // storage type
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Storage" ) % QLatin1String( "</td><td>" ) % storageType() % QLatin1String( "</td></tr>\n" );
 
   // data source
-  myMetadata += R"(<p class="glossy">)" + tr( "Source for this layer" ) + "</p>\n";
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += publicSource();
-  myMetadata += QLatin1String( "</p>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Source" ) % QLatin1String( "</td><td>" ) % publicSource() % QLatin1String( "</td></tr>\n" );
 
-  //geom type
+  // encoding
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Encoding" ) % QLatin1String( "</td><td>" ) % dataProvider()->encoding() % QLatin1String( "</td></tr>\n" );
 
+  // Section spatial
+  myMetadata += QLatin1String( "</table>\n<br><br><h1>" ) % tr( "Spatial" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+
+  // geom type
   QgsWkbTypes::GeometryType type =  geometryType();
-
   if ( type < 0 || type > QgsWkbTypes::NullGeometry )
   {
     QgsDebugMsg( "Invalid vector type" );
@@ -4058,204 +3789,86 @@ QString QgsVectorLayer::metadata() const
   else
   {
     QString typeString( QgsWkbTypes::geometryDisplayString( geometryType() ) );
-
-    myMetadata += R"(<p class="glossy">)" + tr( "Geometry type of the features in this layer" ) + "</p>\n";
-    myMetadata += QStringLiteral( "<p>%1</p>\n" ).arg( typeString );
+    myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Geometry" ) % QLatin1String( "</td><td>" ) % typeString % QLatin1String( "</td></tr>\n" );
   }
 
+  // EPSG
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "CRS" ) % QLatin1String( "</td><td>" ) % crs().authid() % QLatin1String( " - " );
+  myMetadata += crs().description() % QLatin1String( " - " );
+  if ( crs().isGeographic() )
+    myMetadata += tr( "Geographic" );
+  else
+    myMetadata += tr( "Projected" );
+  myMetadata += QLatin1String( "</td></tr>\n" );
+
+  // Extent
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Extent" ) % QLatin1String( "</td><td>" ) % extent().toString() % QLatin1String( "</td></tr>\n" );
+
+  // unit
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Unit" ) % QLatin1String( "</td><td>" ) % QgsUnitTypes::toString( crs().mapUnits() ) % QLatin1String( "</td></tr>\n" );
+
+  // max scale
+  // myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Max scale" ) % QLatin1String( "</td><td>" ) % QString::number( maximumScale() ) % QLatin1String( "</td></tr>\n" );
+
+  // min scale
+  // myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Min scale" ) % QLatin1String( "</td><td>" ) % QString::number( minimumScale() ) % QLatin1String( "</td></tr>\n" );
+
+  // feature count
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Feature count" ) % QLatin1String( "</td><td>" ) % QString::number( featureCount() ) % QLatin1String( "</td></tr>\n" );
+
+  // Fields section
+  myMetadata += QLatin1String( "</table>\n<br><br><h1>" ) % tr( "Fields" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+
+  // primary key
   QgsAttributeList pkAttrList = pkAttributeList();
   if ( !pkAttrList.isEmpty() )
   {
-    myMetadata += R"(<p class="glossy">)" + tr( "Primary key attributes" ) + "</p>\n";
-    myMetadata += QLatin1String( "<p>" );
+    myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Primary key attributes" ) % QLatin1String( "</td><td>" );
     Q_FOREACH ( int idx, pkAttrList )
     {
-      myMetadata += fields().at( idx ).name() + ' ';
+      myMetadata += fields().at( idx ).name() % ' ';
     }
-    myMetadata += QLatin1String( "</p>\n" );
+    myMetadata += QLatin1String( "</td></tr>\n" );
   }
 
-
-  //feature count
-  myMetadata += R"(<p class="glossy">)" + tr( "The number of features in this layer" ) + "</p>\n";
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += QString::number( featureCount() );
-  myMetadata += QLatin1String( "</p>\n" );
-  //capabilities
-  myMetadata += R"(<p class="glossy">)" + tr( "Capabilities of this layer" ) + "</p>\n";
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += capabilitiesString();
-  myMetadata += QLatin1String( "</p>\n" );
-
-  //-------------
-
-  QgsRectangle myExtent = extent();
-  myMetadata += QLatin1String( R"(<p class="subheaderglossy">)" );
-  myMetadata += tr( "Extents" );
-  myMetadata += QLatin1String( "</p>\n" );
-
-  //extents in layer cs  TODO...maybe make a little nested table to improve layout...
-  myMetadata += R"(<p class="glossy">)" + tr( "In layer spatial reference system units" ) + "</p>\n";
-  myMetadata += QLatin1String( "<p>" );
-  // Try to be a bit clever over what number format we use for the
-  // extents. Some people don't like it using scientific notation when the
-  // numbers get large, but for small numbers this is the more practical
-  // option (so we can't force the format to 'f' for all values).
-  // The scheme:
-  // - for all numbers with more than 5 digits, force non-scientific notation
-  // and 2 digits after the decimal point.
-  // - for all smaller numbers let the OS decide which format to use (it will
-  // generally use non-scientific unless the number gets much less than 1).
-
-  if ( !myExtent.isEmpty() )
-  {
-    QString xMin, yMin, xMax, yMax;
-    double changeoverValue = 99999; // The 'largest' 5 digit number
-    if ( qAbs( myExtent.xMinimum() ) > changeoverValue )
-    {
-      xMin = QStringLiteral( "%1" ).arg( myExtent.xMinimum(), 0, 'f', 2 );
-    }
-    else
-    {
-      xMin = QStringLiteral( "%1" ).arg( myExtent.xMinimum() );
-    }
-    if ( qAbs( myExtent.yMinimum() ) > changeoverValue )
-    {
-      yMin = QStringLiteral( "%1" ).arg( myExtent.yMinimum(), 0, 'f', 2 );
-    }
-    else
-    {
-      yMin = QStringLiteral( "%1" ).arg( myExtent.yMinimum() );
-    }
-    if ( qAbs( myExtent.xMaximum() ) > changeoverValue )
-    {
-      xMax = QStringLiteral( "%1" ).arg( myExtent.xMaximum(), 0, 'f', 2 );
-    }
-    else
-    {
-      xMax = QStringLiteral( "%1" ).arg( myExtent.xMaximum() );
-    }
-    if ( qAbs( myExtent.yMaximum() ) > changeoverValue )
-    {
-      yMax = QStringLiteral( "%1" ).arg( myExtent.yMaximum(), 0, 'f', 2 );
-    }
-    else
-    {
-      yMax = QStringLiteral( "%1" ).arg( myExtent.yMaximum() );
-    }
-
-    myMetadata += tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
-                  .arg( xMin, yMin, xMax, yMax );
-  }
-  else
-  {
-    myMetadata += tr( "unknown extent" );
-  }
-
-  myMetadata += QLatin1String( "</p>\n" );
-
-  //extents in project cs
-
-  try
-  {
-#if 0
-    // TODO: currently disabled, will revisit later [MD]
-    QgsRectangle myProjectedExtent = coordinateTransform->transformBoundingBox( extent() );
-    myMetadata += "<p class=\"glossy\">" + tr( "In project spatial reference system units" ) + "</p>\n";
-    myMetadata += "<p>";
-    myMetadata += tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
-                  .arg( myProjectedExtent.xMinimum() )
-                  .arg( myProjectedExtent.yMinimum() )
-                  .arg( myProjectedExtent.xMaximum() )
-                  .arg( myProjectedExtent.yMaximum() );
-    myMetadata += "</p>\n";
-#endif
-
-    //
-    // Display layer spatial ref system
-    //
-    myMetadata += R"(<p class="glossy">)" + tr( "Layer Spatial Reference System" ) + "</p>\n";
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += crs().toProj4().replace( '"', QLatin1String( " \"" ) );
-    myMetadata += QLatin1String( "</p>\n" );
-
-    //
-    // Display project (output) spatial ref system
-    //
-#if 0
-    // TODO: disabled for now, will revisit later [MD]
-    //myMetadata += "<tr> < td bgcolor = \"gray\">";
-    myMetadata += "<p class=\"glossy\">" + tr( "Project (Output) Spatial Reference System" ) + "</p>\n";
-    myMetadata += "<p>";
-    myMetadata += coordinateTransform->destCRS().toProj4().replace( '"', " \"" );
-    myMetadata += "</p>\n";
-#endif
-  }
-  catch ( QgsCsException &cse )
-  {
-    Q_UNUSED( cse );
-    QgsDebugMsg( cse.what() );
-
-    myMetadata += R"(<p class="glossy">)" + tr( "In project spatial reference system units" ) + "</p>\n";
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += tr( "(Invalid transformation of layer extents)" );
-    myMetadata += QLatin1String( "</p>\n" );
-
-  }
-
-#if 0
-  //
-  // Add the info about each field in the attribute table
-  //
-  myMetadata += "<p class=\"glossy\">" + tr( "Attribute field info" ) + "</p>\n";
-  myMetadata += "<p>";
-
-  // Start a nested table in this trow
-  myMetadata += "<table width=\"100%\">";
-  myMetadata += "<tr><th>";
-  myMetadata += tr( "Field" );
-  myMetadata += "</th>";
-  myMetadata += "<th>";
-  myMetadata += tr( "Type" );
-  myMetadata += "</th>";
-  myMetadata += "<th>";
-  myMetadata += tr( "Length" );
-  myMetadata += "</th>";
-  myMetadata += "<th>";
-  myMetadata += tr( "Precision" );
-  myMetadata += "</th>";
-  myMetadata += "<th>";
-  myMetadata += tr( "Comment" );
-  myMetadata += "</th>";
-
-  //get info for each field by looping through them
   const QgsFields &myFields = pendingFields();
-  for ( int i = 0, n = myFields.size(); i < n; ++i )
-  {
-    QgsField myField = fields.at( i );
 
-    myMetadata += "<tr><td>";
-    myMetadata += myField.name();
-    myMetadata += "</td>";
-    myMetadata += "<td>";
-    myMetadata += myField.typeName();
-    myMetadata += "</td>";
-    myMetadata += "<td>";
-    myMetadata += QString( "%1" ).arg( myField.length() );
-    myMetadata += "</td>";
-    myMetadata += "<td>";
-    myMetadata += QString( "%1" ).arg( myField.precision() );
-    myMetadata += "</td>";
-    myMetadata += "<td>";
-    myMetadata += QString( "%1" ).arg( myField.comment() );
-    myMetadata += "</td></tr>";
+  // count fields
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Count" ) % QLatin1String( "</td><td>" ) % QString::number( myFields.size() ) % QLatin1String( "</td></tr>\n" );
+
+  myMetadata += "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n";
+  myMetadata += "<tr><th>" % tr( "Field" ) % "</th><th>" % tr( "Type" ) % "</th><th>" % tr( "Length" ) % "</th><th>" % tr( "Precision" ) % "</th><th>" % tr( "Comment" ) % "</th></tr>\n";
+
+  for ( int i = 0; i < myFields.size(); ++i )
+  {
+    QgsField myField = myFields.at( i );
+    QString rowClass = QString( "" );
+    if ( i % 2 )
+      rowClass = QString( "class=\"odd-row\"" );
+    myMetadata += "<tr " % rowClass % "><td>" % myField.name() % "</td><td>" % myField.typeName() % "</td><td>" % QString::number( myField.length() ) % "</td><td>" % QString::number( myField.precision() ) % "</td><td>" % myField.comment() % "</td></tr>\n";
   }
 
-  //close field list
-  myMetadata += "</table>"; //end of nested table
-#endif
+  //close field list and start references
+  myMetadata += QLatin1String( "</table>\n<br><br><h1>" ) % tr( "References" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
 
-  myMetadata += QLatin1String( "</body></html>" );
+  // data URL
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Data URL" ) % QLatin1String( "</td><td>" ) % dataUrl() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Data Format" ) % QLatin1String( "</td><td>" ) % dataUrlFormat() % QLatin1String( "</td></tr>\n" );
+
+  // attribution
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Attribution" ) % QLatin1String( "</td><td>" ) % attribution() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Attribution URL" ) % QLatin1String( "</td><td>" ) % attributionUrl() % QLatin1String( "</td></tr>\n" );
+
+  // metadata URL
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Metadata URL" ) % QLatin1String( "</td><td>" ) % metadataUrl() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Metadata Type" ) % QLatin1String( "</td><td>" ) % metadataUrlType() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Metadata Format" ) % QLatin1String( "</td><td>" ) % metadataUrlFormat() % QLatin1String( "</td></tr>\n" );
+
+  // legend URL
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Legend URL" ) % QLatin1String( "</td><td>" ) % legendUrl() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Legend Format" ) % QLatin1String( "</td><td>" ) % legendUrlFormat() % QLatin1String( "</td></tr>\n" );
+
+  myMetadata += QStringLiteral( "</table>\n</body>\n</html>\n" );
   return myMetadata;
 }
 
@@ -4285,6 +3898,16 @@ void QgsVectorLayer::onRelationsLoaded()
   mEditFormConfig.onRelationsLoaded();
 }
 
+void QgsVectorLayer::onSymbolsCounted()
+{
+  if ( mFeatureCounter )
+  {
+    mSymbolFeatureCountMap = mFeatureCounter->symbolFeatureCountMap();
+    mSymbolFeatureCounted = true;
+    emit symbolFeatureCountMapChanged();
+  }
+}
+
 QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 {
   return QgsProject::instance()->relationManager()->referencingRelations( this, idx );
@@ -4292,7 +3915,7 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
 {
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4311,7 +3934,7 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
 
 QString QgsVectorLayer::getStyleFromDatabase( const QString &styleId, QString &msgError )
 {
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4330,7 +3953,7 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString &styleId, QString &m
 
 bool QgsVectorLayer::deleteStyleFromDatabase( const QString &styleId, QString &msgError )
 {
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4351,7 +3974,7 @@ void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &de
 {
 
   QString sldStyle, qmlStyle;
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4396,7 +4019,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag,
   QgsDataSourceUri dsUri( theURI );
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
   {
-    std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+    std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
     if ( myLib )
     {
       loadStyle_t *loadStyleExternalMethod = reinterpret_cast< loadStyle_t * >( cast_to_fptr( myLib->resolve( "loadStyle" ) ) );

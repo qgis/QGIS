@@ -105,6 +105,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   settingsMenu->addAction( mActionShowAnnotations );
   settingsMenu->addAction( mActionShowCursor );
   settingsMenu->addAction( mActionShowExtent );
+  settingsMenu->addAction( mActionShowLabels );
   settingsMenu->addSeparator();
   settingsMenu->addAction( mActionSetCrs );
   settingsMenu->addAction( mActionRename );
@@ -118,6 +119,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( mActionShowCursor, &QAction::toggled, this, [ = ]( bool checked ) { mXyMarker->setVisible( checked ); } );
   mActionShowExtent->setChecked( false );
   connect( mActionShowExtent, &QAction::toggled, this, [ = ]( bool checked ) { mExtentRubberBand->setVisible( checked ); updateExtentRect(); } );
+  mActionShowLabels->setChecked( true );
+  connect( mActionShowLabels, &QAction::toggled, this, &QgsMapCanvasDockWidget::showLabels );
 
   mScaleCombo = settingsAction->scaleCombo();
   mRotationEdit = settingsAction->rotationSpinBox();
@@ -198,7 +201,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( &mResizeTimer, &QTimer::timeout, this, [ = ]
   {
     mBlockExtentSync = false;
-    syncViewCenter( mMainCanvas );
+    if ( mActionSyncView->isChecked() )
+      syncViewCenter( mMainCanvas );
   } );
 }
 
@@ -273,6 +277,16 @@ bool QgsMapCanvasDockWidget::isViewScaleSynchronized() const
   return mSyncScaleCheckBox->isChecked();
 }
 
+void QgsMapCanvasDockWidget::setLabelsVisible( bool enabled )
+{
+  mActionShowLabels->setChecked( enabled );
+}
+
+bool QgsMapCanvasDockWidget::labelsVisible() const
+{
+  return mActionShowLabels->isChecked();
+}
+
 double QgsMapCanvasDockWidget::scaleFactor() const
 {
   return mScaleFactorWidget->value();
@@ -340,7 +354,7 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
 
 void QgsMapCanvasDockWidget::mapCrsChanged()
 {
-  mActionSetCrs->setText( tr( "Change Map CRS (%1)…" ).arg( mMapCanvas->mapSettings().destinationCrs().isValid() ?
+  mActionSetCrs->setText( trUtf8( "Change Map CRS (%1)…" ).arg( mMapCanvas->mapSettings().destinationCrs().isValid() ?
                           mMapCanvas->mapSettings().destinationCrs().authid() :
                           tr( "No projection" ) ) );
 }
@@ -428,17 +442,32 @@ void QgsMapCanvasDockWidget::updateExtentRect()
   // close polygon
   mainCanvasPoly << mainCanvasPoly.at( 0 );
   QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
-  // reproject extent
-  QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
-                             mMapCanvas->mapSettings().destinationCrs() );
-  try
+  if ( mMainCanvas->mapSettings().destinationCrs() !=
+       mMapCanvas->mapSettings().destinationCrs() )
   {
-    g.transform( ct );
-  }
-  catch ( QgsCsException & )
-  {
+    // reproject extent
+    QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
+                               mMapCanvas->mapSettings().destinationCrs() );
+    g = g.densifyByCount( 5 );
+    try
+    {
+      g.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+    }
   }
   mExtentRubberBand->setToGeometry( g, nullptr );
+}
+
+void QgsMapCanvasDockWidget::showLabels( bool show )
+{
+  QgsMapSettings::Flags flags = mMapCanvas->mapSettings().flags();
+  if ( show )
+    flags = flags | QgsMapSettings::DrawLabeling;
+  else
+    flags = flags & ~QgsMapSettings::DrawLabeling;
+  mMapCanvas->setMapSettingsFlags( flags );
 }
 
 QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )

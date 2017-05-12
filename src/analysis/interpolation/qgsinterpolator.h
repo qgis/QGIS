@@ -19,6 +19,7 @@
 #define QGSINTERPOLATOR_H
 
 #include <QVector>
+#include "qgis_sip.h"
 #include "qgis_analysis.h"
 
 class QgsVectorLayer;
@@ -60,20 +61,20 @@ class ANALYSIS_EXPORT QgsInterpolator
     virtual ~QgsInterpolator() = default;
 
     /** Calculates interpolation value for map coordinates x, y
-       @param x x-coordinate (in map units)
-       @param y y-coordinate (in map units)
-       @param result out: interpolation result
-       @return 0 in case of success*/
+       \param x x-coordinate (in map units)
+       \param y y-coordinate (in map units)
+       \param result out: interpolation result
+       \returns 0 in case of success*/
     virtual int interpolatePoint( double x, double y, double &result ) = 0;
 
-    //! @note not available in Python bindings
-    QList<LayerData> layerData() const { return mLayerData; }
+    //! \note not available in Python bindings
+    QList<LayerData> layerData() const { return mLayerData; } SIP_SKIP
 
   protected:
 
     /** Caches the vertex and value data from the provider. All the vertex data
      will be held in virtual memory
-    @return 0 in case of success*/
+    \returns 0 in case of success*/
     int cacheBaseData();
 
     QVector<vertexData> mCachedBaseData;
@@ -88,10 +89,10 @@ class ANALYSIS_EXPORT QgsInterpolator
     QgsInterpolator(); //forbidden
 
     /** Helper method that adds the vertices of a geometry to the mCachedBaseData
-       @param geom the geometry
-       @param zCoord true if the z-coordinate of the geometry is to be interpolated
-       @param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
-     @return 0 in case of success*/
+       \param geom the geometry
+       \param zCoord true if the z-coordinate of the geometry is to be interpolated
+       \param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
+     \returns 0 in case of success*/
     int addVerticesToCache( const QgsGeometry &geom, bool zCoord, double attributeValue );
 };
 

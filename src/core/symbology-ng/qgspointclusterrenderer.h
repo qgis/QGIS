@@ -19,12 +19,13 @@
 #define QGSPOINTCLUSTERRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgspointdistancerenderer.h"
 
 /** \class QgsPointClusterRenderer
  * \ingroup core
  * A renderer that automatically clusters points with the same geographic position.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
 {
@@ -39,23 +40,23 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Creates a renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem );
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem ) SIP_FACTORY;
 
     /** Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
-     * @see setClusterSymbol()
+     * \see setClusterSymbol()
     */
     QgsMarkerSymbol *clusterSymbol();
 
     /** Sets the symbol for rendering clustered groups.
-     * @param symbol new cluster symbol. Ownership is transferred to the renderer.
-     * @see clusterSymbol()
+     * \param symbol new cluster symbol. Ownership is transferred to the renderer.
+     * \see clusterSymbol()
     */
-    void setClusterSymbol( QgsMarkerSymbol *symbol );
+    void setClusterSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /** Creates a QgsPointClusterRenderer from an existing renderer.
-     * @returns a new renderer if the conversion was possible, otherwise nullptr.
+     * \returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
 

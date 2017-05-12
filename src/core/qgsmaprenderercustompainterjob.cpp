@@ -20,7 +20,6 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgspallabeling.h"
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
 #include "qgsmaplayerlistutils.h"
@@ -74,7 +73,6 @@ void QgsMapRendererCustomPainterJob::start()
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
     mLabelingEngineV2.reset( new QgsLabelingEngine() );
-    mLabelingEngineV2->readSettingsFromProject( QgsProject::instance() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -257,7 +255,10 @@ void QgsMapRendererCustomPainterJob::doRender()
       layerTime.start();
 
       if ( job.img )
+      {
         job.img->fill( 0 );
+        job.imageInitialized = true;
+      }
 
       job.renderer->render();
 
@@ -337,19 +338,6 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderC
   }
 
   QgsDebugMsg( QString( "Draw labeling took (seconds): %1" ).arg( t.elapsed() / 1000. ) );
-}
-
-
-void QgsMapRendererJob::updateLayerGeometryCaches()
-{
-  QMap<QString, QgsGeometryCache>::const_iterator it = mGeometryCaches.constBegin();
-  for ( ; it != mGeometryCaches.constEnd(); ++it )
-  {
-    const QgsGeometryCache &cache = it.value();
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( it.key() ) ) )
-      * vl->cache() = cache;
-  }
-  mGeometryCaches.clear();
 }
 
 

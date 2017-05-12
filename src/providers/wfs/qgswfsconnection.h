@@ -24,7 +24,7 @@ class QgsWfsConnection : public QgsOwsConnection
 
     /**
      * Constructor
-     * @param connName connection name
+     * \param connName connection name
      */
     explicit QgsWfsConnection( const QString &connName );
 

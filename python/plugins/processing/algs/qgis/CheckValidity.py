@@ -30,12 +30,17 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsSettings, QgsGeometry, QgsFeature, QgsField, QgsWkbTypes
+from qgis.core import (QgsSettings,
+                       QgsGeometry,
+                       QgsFeature,
+                       QgsField,
+                       QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsFields)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 settings_method_key = "/qgis/digitizing/validate_geometries"
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -49,13 +54,19 @@ class CheckValidity(GeoAlgorithm):
     INVALID_OUTPUT = 'INVALID_OUTPUT'
     ERROR_OUTPUT = 'ERROR_OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'check_geometry.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Check validity')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry tools')
 
+    def name(self):
+        return 'checkvalidity'
+
+    def displayName(self):
+        return self.tr('Check validity')
+
+    def defineCharacteristics(self):
         self.methods = [self.tr('The one selected in digitizing settings'),
                         'QGIS',
                         'GEOS']
@@ -81,7 +92,7 @@ class CheckValidity(GeoAlgorithm):
             self.ERROR_OUTPUT,
             self.tr('Error output')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         settings = QgsSettings()
         initial_method_setting = settings.value(settings_method_key, 1)
 
@@ -89,49 +100,37 @@ class CheckValidity(GeoAlgorithm):
         if method != 0:
             settings.setValue(settings_method_key, method)
         try:
-            self.doCheck(feedback)
+            self.doCheck(context, feedback)
         finally:
             settings.setValue(settings_method_key, initial_method_setting)
 
-    def doCheck(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def doCheck(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         settings = QgsSettings()
         method = int(settings.value(settings_method_key, 1))
 
         valid_output = self.getOutputFromName(self.VALID_OUTPUT)
         valid_fields = layer.fields()
-        valid_writer = valid_output.getVectorWriter(
-            valid_fields,
-            layer.wkbType(),
-            layer.crs())
+        valid_writer = valid_output.getVectorWriter(valid_fields, layer.wkbType(), layer.crs(), context)
         valid_count = 0
 
         invalid_output = self.getOutputFromName(self.INVALID_OUTPUT)
-        invalid_fields = layer.fields().toList() + [
-            QgsField(name='_errors',
-                     type=QVariant.String,
-                     len=255)]
-        invalid_writer = invalid_output.getVectorWriter(
-            invalid_fields,
-            layer.wkbType(),
-            layer.crs())
+        invalid_fields = layer.fields()
+        invalid_fields.append(QgsField('_errors',
+                                       QVariant.String,
+                                       255))
+        invalid_writer = invalid_output.getVectorWriter(invalid_fields, layer.wkbType(), layer.crs(), context)
         invalid_count = 0
 
         error_output = self.getOutputFromName(self.ERROR_OUTPUT)
-        error_fields = [
-            QgsField(name='message',
-                     type=QVariant.String,
-                     len=255)]
-        error_writer = error_output.getVectorWriter(
-            error_fields,
-            QgsWkbTypes.Point,
-            layer.crs())
+        error_fields = QgsFields()
+        error_fields.append(QgsField('message', QVariant.String, 255))
+        error_writer = error_output.getVectorWriter(error_fields, QgsWkbTypes.Point, layer.crs(), context)
         error_count = 0
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, inFeat in enumerate(features):
             geom = inFeat.geometry()
             attrs = inFeat.attributes()

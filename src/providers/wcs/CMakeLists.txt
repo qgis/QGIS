@@ -22,6 +22,7 @@ INCLUDE_DIRECTORIES(
   ../../core/auth
   ../../core/raster
   ../../core/geometry
+  ../../core/metadata
   ../../gui
   ../../gui/auth
   ../gdal
@@ -32,6 +33,7 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
 ADD_LIBRARY(wcsprovider MODULE ${WCS_SRCS} ${WCS_MOC_SRCS})

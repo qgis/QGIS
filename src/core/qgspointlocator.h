@@ -37,14 +37,14 @@ namespace SpatialIndex
 }
 
 /** \ingroup core
- * @brief The class defines interface for querying point location:
+ * \brief The class defines interface for querying point location:
  *  - query nearest vertices / edges to a point
  *  - query vertices / edges in rectangle
  *  - query areas covering a point
  *
  * Works with one layer.
  *
- * @note added in 2.8
+ * \since QGIS 2.8
  */
 class CORE_EXPORT QgsPointLocator : public QObject
 {
@@ -62,16 +62,16 @@ class CORE_EXPORT QgsPointLocator : public QObject
     ~QgsPointLocator();
 
     //! Get associated layer
-    //! @note added in QGIS 2.14
+    //! \since QGIS 2.14
     QgsVectorLayer *layer() const { return mLayer; }
     //! Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
-    //! @note added in QGIS 2.14
+    //! \since QGIS 2.14
     QgsCoordinateReferenceSystem destinationCrs() const;
     //! Get extent of the area point locator covers - if null then it caches the whole layer
-    //! @note added in QGIS 2.14
+    //! \since QGIS 2.14
     const QgsRectangle *extent() const { return mExtent; }
     //! Configure extent - if not null, it will index only that area
-    //! @note added in QGIS 2.14
+    //! \since QGIS 2.14
     void setExtent( const QgsRectangle *extent );
 
     /**
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //
 
     //! Return how many geometries are cached in the index
-    //! @note added in QGIS 2.14
+    //! \since QGIS 2.14
     int cachedGeometryCount() const { return mGeoms.count(); }
 
   protected:

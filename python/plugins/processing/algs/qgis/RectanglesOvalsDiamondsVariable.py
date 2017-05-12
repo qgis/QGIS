@@ -28,16 +28,21 @@ __revision__ = '$Format:%H$'
 
 import math
 
-from qgis.core import QgsWkbTypes, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import (QgsApplication,
+                       QgsWkbTypes,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
@@ -50,10 +55,22 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
     SEGMENTS = 'SEGMENTS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Rectangles, ovals, diamonds (variable)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'rectanglesovalsdiamondsvariable'
+
+    def displayName(self):
+        return self.tr('Rectangles, ovals, diamonds (variable)')
+
+    def defineCharacteristics(self):
         self.shapes = [self.tr('Rectangles'), self.tr('Diamonds'), self.tr('Ovals')]
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
@@ -84,9 +101,8 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                                     self.tr('Output'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         shape = self.getParameterValue(self.SHAPE)
         width = self.getParameterValue(self.WIDTH)
         height = self.getParameterValue(self.HEIGHT)
@@ -94,12 +110,9 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
         segments = self.getParameterValue(self.SEGMENTS)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields().toList(),
-                QgsWkbTypes.Polygon,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon, layer.crs(), context)
 
-        features = vector.features(layer)
+        features = QgsProcessingUtils.getFeatures(layer, context)
 
         if shape == 0:
             self.rectangles(writer, features, width, height, rotation)
@@ -119,10 +132,10 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 h = feat[height]
                 angle = feat[rotation]
                 if not w or not h or not angle:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature {} has empty '
-                                                   'width, height or angle. '
-                                                   'Skipping...'.format(feat.id())))
+                    QgsMessageLog.logMessage(self.tr('Feature {} has empty '
+                                                     'width, height or angle. '
+                                                     'Skipping...'.format(feat.id())),
+                                             self.tr('Processing'), QgsMessageLog.WARNING)
                     continue
 
                 xOffset = w / 2.0
@@ -144,10 +157,10 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 w = feat[width]
                 h = feat[height]
                 if not w or not h:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature {} has empty '
-                                                   'width or height. '
-                                                   'Skipping...'.format(feat.id())))
+                    QgsMessageLog.logMessage(self.tr('Feature {} has empty '
+                                                     'width or height. '
+                                                     'Skipping...'.format(feat.id())),
+                                             self.tr('Processing'), QgsMessageLog.WARNING)
                     continue
 
                 xOffset = w / 2.0
@@ -172,10 +185,10 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 h = feat[height]
                 angle = feat[rotation]
                 if not w or not h or not angle:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature {} has empty '
-                                                   'width, height or angle. '
-                                                   'Skipping...'.format(feat.id())))
+                    QgsMessageLog.logMessage(self.tr('Feature {} has empty '
+                                                     'width, height or angle. '
+                                                     'Skipping...'.format(feat.id())),
+                                             self.tr('Processing'), QgsMessageLog.WARNING)
                     continue
 
                 xOffset = w / 2.0
@@ -197,10 +210,10 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 w = feat[width]
                 h = feat[height]
                 if not w or not h:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature {} has empty '
-                                                   'width or height. '
-                                                   'Skipping...'.format(feat.id())))
+                    QgsMessageLog.logMessage(self.tr('Feature {} has empty '
+                                                     'width or height. '
+                                                     'Skipping...'.format(feat.id())),
+                                             self.tr('Processing'), QgsMessageLog.WARNING)
                     continue
 
                 xOffset = w / 2.0
@@ -225,10 +238,10 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 h = feat[height]
                 angle = feat[rotation]
                 if not w or not h or not angle:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature {} has empty '
-                                                   'width, height or angle. '
-                                                   'Skipping...'.format(feat.id())))
+                    QgsMessageLog.logMessage(self.tr('Feature {} has empty '
+                                                     'width, height or angle. '
+                                                     'Skipping...'.format(feat.id())),
+                                             self.tr('Processing'), QgsMessageLog.WARNING)
                     continue
 
                 xOffset = w / 2.0
@@ -252,10 +265,10 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 w = feat[width]
                 h = feat[height]
                 if not w or not h:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature {} has empty '
-                                                   'width or height. '
-                                                   'Skipping...'.format(feat.id())))
+                    QgsMessageLog.logMessage(self.tr('Feature {} has empty '
+                                                     'width or height. '
+                                                     'Skipping...'.format(feat.id())),
+                                             self.tr('Processing'), QgsMessageLog.WARNING)
                     continue
 
                 xOffset = w / 2.0

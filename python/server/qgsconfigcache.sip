@@ -28,12 +28,11 @@ class QgsConfigCache: QObject
 #include "qgsaccesscontrolfilter.h"
 %End
   public:
-    static QgsConfigCache* instance();
+    static QgsConfigCache *instance();
     ~QgsConfigCache();
 
-    QgsServerProjectParser* serverConfiguration( const QString& filePath );
-    QgsWfsProjectParser* wfsConfiguration( const QString& filePath, const QgsAccessControl* accessControl );
-    QgsWmsConfigParser* wmsConfiguration( const QString& filePath, const QgsAccessControl* accessControl, const QMap<QString, QString>& parameterMap = QMap< QString, QString >() );
+    QgsServerProjectParser *serverConfiguration( const QString &filePath );
+    QgsWmsConfigParser *wmsConfiguration( const QString &filePath, const QgsAccessControl *accessControl, const QMap<QString, QString> &parameterMap = QMap< QString, QString >() );
 
   private:
     QgsConfigCache();

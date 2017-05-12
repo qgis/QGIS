@@ -20,6 +20,8 @@
 #define QGSRASTERCALCNODE_H
 
 #include <QMap>
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <QString>
 #include "qgis_analysis.h"
 
@@ -89,16 +91,16 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     void setRight( QgsRasterCalcNode *right ) { delete mRight; mRight = right; }
 
     /** Calculates result of raster calculation (might be real matrix or single number).
-     * @param rasterData input raster data references, map of raster name to raster data block
-     * @param result destination raster matrix for calculation results
-     * @param row optional row number to calculate for calculating result by rows, or -1 to
+     * \param rasterData input raster data references, map of raster name to raster data block
+     * \param result destination raster matrix for calculation results
+     * \param row optional row number to calculate for calculating result by rows, or -1 to
      * calculate entire result
-     * @note added in QGIS 2.10
-     * @note not available in Python bindings
+     * \since QGIS 2.10
+     * \note not available in Python bindings
      */
-    bool calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row = -1 ) const;
+    bool calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row = -1 ) const SIP_SKIP;
 
-    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg );
+    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
   private:
     Type mType;

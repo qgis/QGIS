@@ -37,7 +37,7 @@ void QgsReaderFeatures::initReader( bool useSelection )
 {
   if ( useSelection )
   {
-    mFit = mLayer->selectedFeaturesIterator( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+    mFit = mLayer->getSelectedFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
   }
   else
   {

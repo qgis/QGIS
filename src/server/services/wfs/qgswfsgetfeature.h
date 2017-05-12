@@ -3,6 +3,7 @@
                               -------------------------
   begin                : December 20 , 2016
   copyright            : (C) 2007 by Marco Hugentobler  (original code)
+                         (C) 2012 by René-Luc D'Hont    (original code)
                          (C) 2014 by Alessandro Pasotti (original code)
                          (C) 2017 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -24,6 +25,39 @@
 
 namespace QgsWfs
 {
+  struct getFeatureQuery
+  {
+    QString typeName;
+
+    QgsFeatureRequest featureRequest;
+
+    QStringList propertyList;
+  };
+
+  struct getFeatureRequest
+  {
+    long maxFeatures;
+
+    long startIndex;
+
+    QString outputFormat;
+
+    QList< getFeatureQuery > queries;
+
+    QString geometryName;
+  };
+
+  /** Transform Query element to getFeatureQuery
+   */
+  getFeatureQuery parseQueryElement( QDomElement &queryElem );
+
+  /** Transform RequestBody root element to getFeatureRequest
+   */
+  getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem );
+
+  /** Transform parameters to getFeatureRequest
+   */
+  getFeatureRequest parseGetFeatureParameters( QgsServerRequest::Parameters parameters );
 
   /** Output WFS  GetFeature response
    */

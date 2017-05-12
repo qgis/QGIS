@@ -30,13 +30,19 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes
+from qgis.core import (QgsField,
+                       QgsPoint,
+                       QgsGeometry,
+                       QgsFeature,
+                       QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsFields)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -48,14 +54,22 @@ class ExtentFromLayer(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'layer_extent.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polygon from layer extent')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
-        self.tags = self.tr('extent,envelope,bounds,bounding,boundary,layer')
+    def tags(self):
+        return self.tr('extent,envelope,bounds,bounding,boundary,layer').split(',')
 
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'polygonfromlayerextent'
+
+    def displayName(self):
+        return self.tr('Polygon from layer extent')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
@@ -63,29 +77,26 @@ class ExtentFromLayer(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extent'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
-        fields = [
-            QgsField('MINX', QVariant.Double),
-            QgsField('MINY', QVariant.Double),
-            QgsField('MAXX', QVariant.Double),
-            QgsField('MAXY', QVariant.Double),
-            QgsField('CNTX', QVariant.Double),
-            QgsField('CNTY', QVariant.Double),
-            QgsField('AREA', QVariant.Double),
-            QgsField('PERIM', QVariant.Double),
-            QgsField('HEIGHT', QVariant.Double),
-            QgsField('WIDTH', QVariant.Double),
-        ]
+        fields = QgsFields()
+        fields.append(QgsField('MINX', QVariant.Double))
+        fields.append(QgsField('MINY', QVariant.Double))
+        fields.append(QgsField('MAXX', QVariant.Double))
+        fields.append(QgsField('MAXY', QVariant.Double))
+        fields.append(QgsField('CNTX', QVariant.Double))
+        fields.append(QgsField('CNTY', QVariant.Double))
+        fields.append(QgsField('AREA', QVariant.Double))
+        fields.append(QgsField('PERIM', QVariant.Double))
+        fields.append(QgsField('HEIGHT', QVariant.Double))
+        fields.append(QgsField('WIDTH', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QgsWkbTypes.Polygon, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 
         if byFeature:
-            self.featureExtent(layer, writer, feedback)
+            self.featureExtent(layer, context, writer, feedback)
         else:
             self.layerExtent(layer, writer, feedback)
 
@@ -124,9 +135,9 @@ class ExtentFromLayer(GeoAlgorithm):
         feat.setAttributes(attrs)
         writer.addFeature(feat)
 
-    def featureExtent(self, layer, writer, feedback):
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+    def featureExtent(self, layer, context, writer, feedback):
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         feat = QgsFeature()
         for current, f in enumerate(features):
             rect = f.geometry().boundingBox()

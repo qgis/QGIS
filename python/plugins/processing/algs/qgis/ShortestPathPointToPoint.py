@@ -31,7 +31,14 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsFields, QgsField
+from qgis.core import (QgsWkbTypes,
+                       QgsUnitTypes,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsFields,
+                       QgsField,
+                       QgsProcessingUtils)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -74,8 +81,17 @@ class ShortestPathPointToPoint(GeoAlgorithm):
     TRAVEL_COST = 'TRAVEL_COST'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
+
+    def group(self):
+        return self.tr('Network analysis')
+
+    def name(self):
+        return 'shortestpathpointtopoint'
+
+    def displayName(self):
+        return self.tr('Shortest path (point to point)')
 
     def defineCharacteristics(self):
         self.DIRECTIONS = OrderedDict([
@@ -86,9 +102,6 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
                            ]
-
-        self.name, self.i18n_name = self.trAlgorithm('Shortest path (point to point)')
-        self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer representing network'),
@@ -144,9 +157,8 @@ class ShortestPathPointToPoint(GeoAlgorithm):
                                     self.tr('Shortest path'),
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_VECTOR))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
         startPoint = self.getParameterValue(self.START_POINT)
         endPoint = self.getParameterValue(self.END_POINT)
         strategy = self.getParameterValue(self.STRATEGY)
@@ -168,10 +180,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         fields.append(QgsField('cost', QVariant.Double, '', 20, 7))
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                fields.toList(),
-                QgsWkbTypes.LineString,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.LineString, layer.crs(), context)
 
         tmp = startPoint.split(',')
         startPoint = QgsPoint(float(tmp[0]), float(tmp[1]))

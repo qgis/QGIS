@@ -40,17 +40,74 @@ class QgsMessageLog;
 class QgsProcessingRegistry;
 class QgsAnnotationRegistry;
 
+
+SIP_FEATURE( ANDROID )
+
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
- */
+ *
+ * This is a subclass of QApplication and should be instantiated in place of
+  QApplication. Most methods are static in keeping with the design of QApplication.
 
-#ifdef ANDROID
-typedef void XEvent;
-#endif
+  This class hides platform-specific path information and provides
+  a portable way of referencing specific files and directories.
+  Ideally, hard-coded paths should appear only here and not in other modules
+  so that platform-conditional code is minimized and paths are easier
+  to change due to centralization.
+ */
 
 class CORE_EXPORT QgsApplication : public QApplication
 {
+
+#ifdef SIP_RUN
+    % TypeCode
+    // Convert a Python argv list to a conventional C argc count and argv array.
+    static char **qtgui_ArgvToC( PyObject *argvlist, int &argc )
+    {
+      char **argv;
+
+      argc = PyList_GET_SIZE( argvlist );
+
+      // Allocate space for two copies of the argument pointers, plus the
+      // terminating NULL.
+      if ( ( argv = ( char ** )sipMalloc( 2 * ( argc + 1 ) * sizeof( char * ) ) ) == NULL )
+        return NULL;
+
+      // Convert the list.
+      for ( int a = 0; a < argc; ++a )
+      {
+        char *arg;
+        // Get the argument and allocate memory for it.
+        if ( ( arg = PyBytes_AsString( PyList_GET_ITEM( argvlist, a ) ) ) == NULL ||
+             ( argv[a] = ( char * )sipMalloc( strlen( arg ) + 1 ) ) == NULL )
+          return NULL;
+        // Copy the argument and save a pointer to it.
+        strcpy( argv[a], arg );
+        argv[a + argc + 1] = argv[a];
+      }
+
+      argv[argc + argc + 1] = argv[argc] = NULL;
+
+      return argv;
+    }
+
+    // Remove arguments from the Python argv list that have been removed from the
+    // C argv array.
+    static void qtgui_UpdatePyArgv( PyObject *argvlist, int argc, char **argv )
+    {
+      for ( int a = 0, na = 0; a < argc; ++a )
+      {
+        // See if it was removed.
+        if ( argv[na] == argv[a + argc + 1] )
+          ++na;
+        else
+          PyList_SetSlice( argvlist, na, na + 1, NULL );
+      }
+    }
+    % End
+#endif
+
     Q_OBJECT
 
   public:
@@ -58,23 +115,48 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char *QGIS_ORGANIZATION_NAME;
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
+#ifndef SIP_RUN
     QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath = QString(), const QString &platformName = "desktop" );
+#else
+    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString customConfigPath = QString() ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath = QString() )];
+    % MethodCode
+    // The Python interface is a list of argument strings that is modified.
+
+    int argc;
+    char **argv;
+
+    // Convert the list.
+    if ( ( argv = qtgui_ArgvToC( a0, argc ) ) == NULL )
+      sipIsErr = 1;
+    else
+    {
+      // Create it now the arguments are right.
+      static int nargc = argc;
+
+      sipCpp = new sipQgsApplication( nargc, argv, a1, *a2 );
+
+      // Now modify the original list.
+      qtgui_UpdatePyArgv( a0, argc, argv );
+    }
+    % End
+#endif
+
     virtual ~QgsApplication();
 
     /**
      * Returns the singleton instance of the QgsApplication.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsApplication *instance();
 
     /** This method initializes paths etc for QGIS. Called by the ctor or call it manually
         when your app does not extend the QApplication class.
-        @note you will probably want to call initQgis too to load the providers in
+        \note you will probably want to call initQgis too to load the providers in
         the above case.
-        @note not available in Python bindings
+        \note not available in Python bindings
       */
-    static void init( QString customConfigPath = QString() );
+    static void init( QString customConfigPath = QString() ) SIP_SKIP;
 
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent *event ) override;
@@ -90,7 +172,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
      * but plugin writers etc can use themeName() as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
-     * @note A basic test will be carried out to ensure the theme search path
+     * \note A basic test will be carried out to ensure the theme search path
      * based on the supplied theme name exists. If it does not the theme name will
      * be reverted to 'default'.
      */
@@ -105,19 +187,19 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString themeName();
 
     /**
-     * @brief Set the current UI theme used to style the interface.  Use uiThemes() to
+     * \brief Set the current UI theme used to style the interface.  Use uiThemes() to
      * find valid themes to use. Variables found in variables.qss will be added to the stylesheet
      * on load.
-     * @param themeName The name of the theme.
-     * @note using an invalid theme name will reset to default
+     * \param themeName The name of the theme.
+     * \note using an invalid theme name will reset to default
      */
     static void setUITheme( const QString &themeName );
 
     /**
-     * @brief All themes found in ~/.qgis3/themes folder.
+     * \brief All themes found in ~/.qgis3/themes folder.
      * The path is to the root folder for the theme
-     * @note Valid theme folders must contain a style.qss file.
-     * @return A hash of theme name and theme path. Valid theme folders contain style.qss
+     * \note Valid theme folders must contain a style.qss file.
+     * \returns A hash of theme name and theme path. Valid theme folders contain style.qss
      */
     static QHash<QString, QString> uiThemes();
 
@@ -132,7 +214,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /** Returns the path to the developers map file.
      * The developers map was created by using leaflet framework,
      * it shows the doc/contributors.json file.
-     * @note this function was added in version 2.7 */
+     * \since QGIS 2.7 */
     static QString developersMapFilePath();
 
     //! Returns the path to the sponsors file.
@@ -146,7 +228,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString translatorsFilePath();
 
-    /*!
+    /**
       Returns the path to the licence file.
      */
     static QString licenceFilePath();
@@ -221,31 +303,31 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QRegExp shortNameRegExp();
 
     /** Returns the user's operating system login account name.
-     * @note added in QGIS 2.14
-     * @see userFullName()
+     * \since QGIS 2.14
+     * \see userFullName()
      */
     static QString userLoginName();
 
     /** Returns the user's operating system login account full display name.
-     * @note added in QGIS 2.14
-     * @see userLoginName()
+     * \since QGIS 2.14
+     * \see userLoginName()
      */
     static QString userFullName();
 
     /** Returns a string name of the operating system QGIS is running on.
-     * @note added in QGIS 2.14
-     * @see platform()
+     * \since QGIS 2.14
+     * \see platform()
      */
     static QString osName();
 
     /** Returns the QGIS platform name, e.g., "desktop" or "server".
-     * @note added in QGIS 2.14
-     * @see osName()
+     * \since QGIS 2.14
+     * \see osName()
      */
     static QString platform();
 
     /** Returns the QGIS locale.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QString locale();
 
@@ -305,8 +387,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static endian_t endian();
 
     /** Swap the endianness of the specified value.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
+#ifndef SIP_RUN
     template<typename T>
     static void endian_swap( T &value )
     {
@@ -317,13 +400,14 @@ class CORE_EXPORT QgsApplication : public QApplication
         std::swap( data[i], data[n - 1 - i] );
       }
     }
+#endif
 
     /** \brief get a standard css style sheet for reports.
      * Typically you will use this method by doing:
      * QString myStyle = QgsApplication::reportStyleSheet();
      * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
-     * @return QString containing the CSS 2.1 compliant stylesheet.
-     * @note you can use the special Qt extensions too, for example
+     * \returns QString containing the CSS 2.1 compliant stylesheet.
+     * \note you can use the special Qt extensions too, for example
      * the gradient fills for backgrounds.
      */
     static QString reportStyleSheet();
@@ -348,7 +432,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Indicates whether running from build directory (not installed)
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
 #ifdef _MSC_VER
-    static QString cfgIntDir() { return ABISYM( mCfgIntDir ); }
+    static QString cfgIntDir() { return ABISYM( mCfgIntDir ); } SIP_SKIP
 #endif
     //! Returns path to the source directory. Valid only when running from build directory
     static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
@@ -373,123 +457,114 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QStringList skippedGdalDrivers() { return ABISYM( mGdalSkipList ); }
 
     /** Apply the skipped drivers list to gdal
-     * @see skipGdalDriver
-     * @see restoreGdalDriver
-     * @see skippedGdalDrivers */
+     * \see skipGdalDriver
+     * \see restoreGdalDriver
+     * \see skippedGdalDrivers */
     static void applyGdalSkippedDrivers();
 
     /** Get maximum concurrent thread count
-     * @note added in 2.4 */
+     * \since QGIS 2.4 */
     static int maxThreads() { return ABISYM( mMaxThreads ); }
 
     /** Set maximum concurrent thread count
-     * @note must be between 1 and \#cores, -1 means use all available cores
-     * @note added in 2.4 */
+     * \note must be between 1 and \#cores, -1 means use all available cores
+     * \since QGIS 2.4 */
     static void setMaxThreads( int maxThreads );
 
     /**
      * Returns the application's task manager, used for managing application
      * wide background task handling.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsTaskManager *taskManager();
 
     /**
      * Returns the application's color scheme registry, used for managing color schemes.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsColorSchemeRegistry *colorSchemeRegistry();
 
     /**
      * Returns the application's paint effect registry, used for managing paint effects.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsPaintEffectRegistry *paintEffectRegistry();
 
     /**
      * Returns the application's renderer registry, used for managing vector layer renderers.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsRendererRegistry *rendererRegistry();
 
     /**
      * Returns the application's raster renderer registry, used for managing raster layer renderers.
-     * @note added in QGIS 3.0
-     * @note not available in Python bindings
+     * \since QGIS 3.0
+     * \note not available in Python bindings
      */
-    static QgsRasterRendererRegistry *rasterRendererRegistry();
+    static QgsRasterRendererRegistry *rasterRendererRegistry() SIP_SKIP;
 
     /**
      * Returns the application's data item provider registry, which keeps a list of data item
      * providers that may add items to the browser tree.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsDataItemProviderRegistry *dataItemProviderRegistry();
 
     /**
      * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
      * within SVG files.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsSvgCache *svgCache();
 
     /**
      * Returns the application's symbol layer registry, used for managing symbol layers.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsSymbolLayerRegistry *symbolLayerRegistry();
 
     /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsGPSConnectionRegistry *gpsConnectionRegistry();
 
     /**
      * Returns the application's plugin layer registry, used for managing plugin layer types.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsPluginLayerRegistry *pluginLayerRegistry();
 
     /**
      * Returns the application's message log.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsMessageLog *messageLog();
 
     /**
      * Returns the application's processing registry, used for managing processing providers,
      * algorithms, and various parameters and outputs.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsProcessingRegistry *processingRegistry();
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.
-     * @note added in QGIS 3.0
-     * @note not available in Python bindings
+     * \since QGIS 3.0
+     * \note not available in Python bindings
      */
-    static QgsAnnotationRegistry *annotationRegistry();
-
-#ifdef ANDROID
-    //dummy method to workaround sip generation issue issue
-    bool x11EventFilter( XEvent *event )
-    {
-      Q_UNUSED( event );
-      return 0;
-    }
-#endif
+    static QgsAnnotationRegistry *annotationRegistry() SIP_SKIP;
 
     /**
      * Returns the action scope registry.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsActionScopeRegistry *actionScopeRegistry();
 
     /**
      * Returns the application runtime profiler.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsRuntimeProfiler *profiler();
 
@@ -518,7 +593,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * This does not include generated variables (like system name, user name etc.)
      *
      * \see QgsExpressionContextUtils::globalVariables().
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QVariantMap customVariables();
 
@@ -527,7 +602,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Do not include generated variables (like system name, user name etc.)
      *
      * \see QgsExpressionContextUtils::globalVariables().
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static void setCustomVariables( const QVariantMap &customVariables );
 
@@ -535,17 +610,24 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Set a single custom expression variable.
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static void setCustomVariable( const QString &name, const QVariant &value );
 
+#ifdef SIP_RUN
+    SIP_IF_FEATURE( ANDROID )
+    //dummy method to workaround sip generation issue
+    bool x11EventFilter( XEvent *event );
+    SIP_END
+#endif
+
   signals:
-    //! @note not available in python bindings
-    void preNotify( QObject *receiver, QEvent *event, bool *done );
+    //! \note not available in Python bindings
+    void preNotify( QObject *receiver, QEvent *event, bool *done ) SIP_SKIP;
 
     /**
      * Emitted whenever a custom global variable changes.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void customVariablesChanged();
 
@@ -585,15 +667,15 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString ABISYM( mBuildOutputPath );
 
     /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
-     * @see skipGdalDriver, restoreGdalDriver */
+     * \see skipGdalDriver, restoreGdalDriver */
     static QStringList ABISYM( mGdalSkipList );
 
     /**
-     * @note added in 2.4 */
+     * \since QGIS 2.4 */
     static int ABISYM( mMaxThreads );
 
     /**
-     * @note added in 2.12 */
+     * \since QGIS 2.12 */
     static QString ABISYM( mAuthDbDirPath );
 
     static QString sUserName;

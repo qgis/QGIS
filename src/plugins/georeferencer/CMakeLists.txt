@@ -76,7 +76,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
-  ../../core ../../core/geometry ../../core/raster ../../core/composer
+  ../../core ../../core/geometry ../../core/metadata ../../core/raster ../../core/composer
   ../../gui  ../../gui/editorwidgets ../../gui/layertree
   ..
   ${CMAKE_BINARY_DIR}/src/core

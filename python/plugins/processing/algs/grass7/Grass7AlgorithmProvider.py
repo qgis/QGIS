@@ -27,10 +27,12 @@ __copyright__ = '(C) 2014, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.core import QgsApplication
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.core.AlgorithmProvider import AlgorithmProvider
-from processing.core.ProcessingLog import ProcessingLog
 from .Grass7Utils import Grass7Utils
 from .Grass7Algorithm import Grass7Algorithm
 from processing.tools.system import isWindows, isMac
@@ -40,14 +42,16 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class Grass7AlgorithmProvider(AlgorithmProvider):
+class Grass7AlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
-        self.createAlgsList()
+        self.algs = []
 
-    def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
+    def load(self):
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GRASS7',
+                                            self.tr('Activate'), True))
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting(
                 self.name(),
@@ -66,36 +70,45 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
             Grass7Utils.GRASS_HELP_PATH,
             self.tr('Location of GRASS docs'),
             Grass7Utils.grassHelpPath()))
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
+        return True
 
     def unload(self):
-        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting('ACTIVATE_GRASS7')
         if isWindows() or isMac():
             ProcessingConfig.removeSetting(Grass7Utils.GRASS_FOLDER)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
 
+    def isActive(self):
+        return ProcessingConfig.getSetting('ACTIVATE_GRASS7')
+
+    def setActive(self, active):
+        ProcessingConfig.setSettingValue('ACTIVATE_GRASS7', active)
+
     def createAlgsList(self):
-        self.preloadedAlgs = []
+        algs = []
         folder = Grass7Utils.grassDescriptionPath()
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
                 try:
                     alg = Grass7Algorithm(os.path.join(folder, descriptionFile))
-                    if alg.name.strip() != '':
-                        self.preloadedAlgs.append(alg)
+                    if alg.name().strip() != '':
+                        algs.append(alg)
                     else:
-                        ProcessingLog.addToLog(
-                            ProcessingLog.LOG_ERROR,
-                            self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile))
+                        QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), QgsMessageLog.CRITICAL)
                 except Exception as e:
-                    ProcessingLog.addToLog(
-                        ProcessingLog.LOG_ERROR,
-                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)))
-        self.preloadedAlgs.append(nviz7())
+                    QgsMessageLog.logMessage(
+                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)), self.tr('Processing'), QgsMessageLog.CRITICAL)
+        algs.append(nviz7())
+        return algs
 
-    def _loadAlgorithms(self):
-        self.algs = self.preloadedAlgs
+    def loadAlgorithms(self):
+        self.algs = self.createAlgsList()
+        for a in self.algs:
+            self.addAlgorithm(a)
 
     def name(self):
         version = Grass7Utils.installedVersion()
@@ -110,11 +123,13 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGrass.svg")
 
-    def getSupportedOutputVectorLayerExtensions(self):
+    def supportedOutputVectorLayerExtensions(self):
         return ['shp']
-
-    def getSupportedOutputRasterLayerExtensions(self):
-        return ['tif']
 
     def canBeActivated(self):
         return not bool(Grass7Utils.checkGrass7IsInstalled())
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'Grass7AlgorithmProvider'
+        return QCoreApplication.translate(context, string)

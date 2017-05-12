@@ -46,9 +46,9 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     /**
      * Constructor
-     * @param layer layer pointer
-     * @param parent parent object
-     * @param flags window flags
+     * \param layer layer pointer
+     * \param parent parent object
+     * \param flags window flags
      */
     QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
     ~QgsAttributeTableDialog();
@@ -64,7 +64,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     /**
      * Sets the filter expression to filter visible features
-     * @param filterString filter query string. QgsExpression compatible.
+     * \param filterString filter query string. QgsExpression compatible.
      */
     void setFilterExpression( const QString &filterString,
                               QgsAttributeForm::FilterType type = QgsAttributeForm::ReplaceFilter,
@@ -187,7 +187,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     /**
      * Informs that edits should be saved
-     * @param layer layer whose edits are to be saved
+     * \param layer layer whose edits are to be saved
      */
     void saveEdits( QgsMapLayer *layer );
 
@@ -195,13 +195,13 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     /**
      * Handle closing of the window
-     * @param event unused
+     * \param event unused
      */
     void closeEvent( QCloseEvent *event ) override;
 
     /*
      * Handle KeyPress event of the window
-     * @param event
+     * \param event
      */
     void keyPressEvent( QKeyEvent *event ) override;
 

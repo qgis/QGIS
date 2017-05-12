@@ -34,13 +34,13 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QgsFields mFields;
     QString mFidColName;
     long mSRId;
 
     /* sql geo type */
-    bool mIsGeography;
+    bool mIsGeography = false;
 
     QString mGeometryColName;
     QString mGeometryColType;
@@ -79,10 +79,13 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     virtual bool close() override;
 
   protected:
-    void BuildStatement( const QgsFeatureRequest &request );
 
     virtual bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
+
+  private:
+    void BuildStatement( const QgsFeatureRequest &request );
+
 
   private:
 
@@ -92,7 +95,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     QSqlDatabase mDatabase;
 
     // The current sql query
-    QSqlQuery *mQuery = nullptr;
+    std::unique_ptr< QSqlQuery > mQuery;
 
     // The current sql statement
     QString mStatement;
@@ -101,7 +104,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     QString mFallbackStatement;
 
     // Field index of FID column
-    long mFidCol;
+    long mFidCol = -1;
 
     // List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;
@@ -109,8 +112,8 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     // for parsing sql geometries
     QgsMssqlGeometryParser mParser;
 
-    bool mExpressionCompiled;
-    bool mOrderByCompiled;
+    bool mExpressionCompiled = false;
+    bool mOrderByCompiled = false;
 };
 
 #endif // QGSMSSQLFEATUREITERATOR_H

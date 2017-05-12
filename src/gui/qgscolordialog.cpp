@@ -55,8 +55,8 @@ QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColo
 
   mColorWidget->setAllowAlpha( true );
 
-  connect( mColorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SIGNAL( currentColorChanged( QColor ) ) );
-  connect( this, SIGNAL( rejected() ), this, SLOT( discardColor() ) );
+  connect( mColorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsColorDialog::currentColorChanged );
+  connect( this, &QDialog::rejected, this, &QgsColorDialog::discardColor );
 }
 
 QColor QgsColorDialog::color() const

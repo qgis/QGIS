@@ -87,7 +87,7 @@ void QgsServerResponse::write( const QgsServerException &ex )
   }
 
   clear();
-  setReturnCode( ex.responseCode() );
+  setStatusCode( ex.responseCode() );
   setHeader( "Content-Type", responseFormat );
   write( ba );
 }

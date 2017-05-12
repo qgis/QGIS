@@ -31,7 +31,16 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsFields, QgsField, QgsFeatureRequest
+from qgis.core import (QgsWkbTypes,
+                       QgsUnitTypes,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsFields,
+                       QgsField,
+                       QgsFeatureRequest,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -41,7 +50,6 @@ from qgis.analysis import (QgsVectorLayerDirector,
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import (ParameterVector,
                                         ParameterPoint,
                                         ParameterNumber,
@@ -50,7 +58,7 @@ from processing.core.parameters import (ParameterVector,
                                         ParameterSelection
                                         )
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -71,8 +79,17 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
     TOLERANCE = 'TOLERANCE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
+
+    def group(self):
+        return self.tr('Network analysis')
+
+    def name(self):
+        return 'shortestpathlayertopoint'
+
+    def displayName(self):
+        return self.tr('Shortest path (layer to point)')
 
     def defineCharacteristics(self):
         self.DIRECTIONS = OrderedDict([
@@ -83,9 +100,6 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
                            ]
-
-        self.name, self.i18n_name = self.trAlgorithm('Shortest path (layer to point)')
-        self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer representing network'),
@@ -140,11 +154,9 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
                                     self.tr('Shortest path'),
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_VECTOR))
-        startPoints = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.START_POINTS))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
+        startPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.START_POINTS), context)
         endPoint = self.getParameterValue(self.END_POINT)
         strategy = self.getParameterValue(self.STRATEGY)
 
@@ -168,10 +180,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
         feat.setFields(fields)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                fields.toList(),
-                QgsWkbTypes.LineString,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.LineString, layer.crs(), context)
 
         tmp = endPoint.split(',')
         endPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
@@ -208,8 +217,8 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
-        features = vector.features(startPoints, request)
-        count = len(features)
+        features = QgsProcessingUtils.getFeatures(startPoints, context, request)
+        count = QgsProcessingUtils.featureCount(startPoints, context)
 
         points = [endPoint]
         for f in features:
@@ -232,7 +241,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
             if tree[idxEnd] == -1:
                 msg = self.tr('There is no route from start point ({}) to end point ({}).'.format(points[i].toString(), endPoint.toString()))
                 feedback.setProgressText(msg)
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, msg)
+                QgsMessageLog.logMessage(msg, self.tr('Processing'), QgsMessageLog.WARNING)
                 continue
 
             cost = 0.0

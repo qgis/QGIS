@@ -30,7 +30,8 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout, QSizePolicy
 from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
-from qgis.core import QgsProject
+from qgis.core import (QgsProject,
+                       QgsProcessingUtils)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 
@@ -39,7 +40,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.AlgorithmExecutor import runalg, runalgIterating
+from processing.gui.AlgorithmExecutor import execute, executeIterating
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 from processing.core.parameters import ParameterRaster
@@ -112,8 +113,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
     def checkExtentCRS(self):
         unmatchingCRS = False
         hasExtent = False
+        context = dataobjects.createContext()
         projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
-        layers = dataobjects.getAllLayers()
+        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for param in self.alg.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:
@@ -127,7 +129,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                 if layer.crs() != projectCRS:
                                     unmatchingCRS = True
 
-                        p = dataobjects.getObjectFromUri(inputlayer)
+                        p = QgsProcessingUtils.mapLayerFromString(inputlayer, context)
                         if p is not None:
                             if p.crs() != projectCRS:
                                 unmatchingCRS = True
@@ -143,6 +145,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
     def accept(self):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
+
+        context = dataobjects.createContext()
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
@@ -167,7 +171,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                              QMessageBox.No)
                 if reply == QMessageBox.No:
                     return
-            msg = self.alg._checkParameterValuesBeforeExecuting()
+            msg = self.alg._checkParameterValuesBeforeExecuting(context)
             if msg:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
@@ -195,21 +199,20 @@ class AlgorithmDialog(AlgorithmDialogBase):
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
             self.setInfo(
-                self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.name))
+                self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
 
             if self.iterateParam:
-                if runalgIterating(self.alg, self.iterateParam, self.feedback):
-                    self.finish()
+                if executeIterating(self.alg, self.iterateParam, context, self.feedback):
+                    self.finish(context)
                 else:
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
             else:
                 command = self.alg.getAsCommand()
                 if command:
-                    ProcessingLog.addToLog(
-                        ProcessingLog.LOG_ALGORITHM, command)
-                if runalg(self.alg, self.feedback):
-                    self.finish()
+                    ProcessingLog.addToLog(command)
+                if execute(self.alg, context, self.feedback):
+                    self.finish(context)
                 else:
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
@@ -226,16 +229,16 @@ class AlgorithmDialog(AlgorithmDialogBase):
             self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description),
                                  level=QgsMessageBar.WARNING, duration=5)
 
-    def finish(self):
+    def finish(self, context):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
-            if not handleAlgorithmResults(self.alg, self.feedback, not keepOpen):
+            if not handleAlgorithmResults(self.alg, context, self.feedback, not keepOpen):
                 self.resetGUI()
                 return
 
         self.executed = True
-        self.setInfo(self.tr('Algorithm {0} finished').format(self.alg.name))
+        self.setInfo(self.tr('Algorithm {0} finished').format(self.alg.displayName()))
         QApplication.restoreOverrideCursor()
 
         if not keepOpen:

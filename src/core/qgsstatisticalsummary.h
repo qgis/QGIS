@@ -31,12 +31,12 @@
  * \class QgsStatisticalSummary
  * \brief Calculator for summary statistics for a list of doubles.
  *
- * Statistics are calculated by calling @link calculate @endlink and passing a list of doubles. The
+ * Statistics are calculated by calling calculate() and passing a list of doubles. The
  * individual statistics can then be retrieved using the associated methods. Note that not all statistics
  * are calculated by default. Statistics which require slower computations are only calculated by
- * specifying the statistic in the constructor or via @link setStatistics @endlink.
+ * specifying the statistic in the constructor or via setStatistics().
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsStatisticalSummary
@@ -67,31 +67,31 @@ class CORE_EXPORT QgsStatisticalSummary
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
     /** Constructor for QgsStatisticalSummary
-     * @param stats flags for statistics to calculate
+     * \param stats flags for statistics to calculate
      */
-    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = All );
+    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::All );
 
     virtual ~QgsStatisticalSummary() = default;
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., sum, min and max).
-     * @see setStatistics
+     * \see setStatistics
      */
     Statistics statistics() const { return mStatistics; }
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., sum, min and max).
-     * @param stats flags for statistics to calculate
-     * @see statistics
+     * \param stats flags for statistics to calculate
+     * \see statistics
      */
-    void setStatistics( Statistics stats ) { mStatistics = stats; }
+    void setStatistics( QgsStatisticalSummary::Statistics stats ) { mStatistics = stats; }
 
     /** Resets the calculated values
      */
     void reset();
 
     /** Calculates summary statistics for a list of values
-     * @param values list of doubles
+     * \param values list of doubles
      */
     void calculate( const QList<double> &values );
 
@@ -99,15 +99,15 @@ class CORE_EXPORT QgsStatisticalSummary
      * allows values to be added to the calculation one at a time. For large
      * quantities of values this may be more efficient then first adding all the
      * values to a list and calling calculate().
-     * @param value value to add
-     * @note call reset() before adding the first value using this method
+     * \param value value to add
+     * \note call reset() before adding the first value using this method
      * to clear the results from any previous calculations
-     * @note finalize() must be called after adding the final value and before
+     * \note finalize() must be called after adding the final value and before
      * retrieving calculated statistics.
-     * @see calculate()
-     * @see addVariant()
-     * @see finalize()
-     * @note added in QGIS 2.16
+     * \see calculate()
+     * \see addVariant()
+     * \see finalize()
+     * \since QGIS 2.16
      */
     void addValue( double value );
 
@@ -115,39 +115,39 @@ class CORE_EXPORT QgsStatisticalSummary
      * allows values to be added to the calculation one at a time. For large
      * quantities of values this may be more efficient then first adding all the
      * values to a list and calling calculate().
-     * @param value variant containing to add. Non-numeric values are treated as null.
-     * @note call reset() before adding the first value using this method
+     * \param value variant containing to add. Non-numeric values are treated as null.
+     * \note call reset() before adding the first value using this method
      * to clear the results from any previous calculations
-     * @note finalize() must be called after adding the final value and before
+     * \note finalize() must be called after adding the final value and before
      * retrieving calculated statistics.
-     * @see addValue()
-     * @see calculate()
-     * @see finalize()
-     * @note added in QGIS 2.16
+     * \see addValue()
+     * \see calculate()
+     * \see finalize()
+     * \since QGIS 2.16
      */
     void addVariant( const QVariant &value );
 
     /** Must be called after adding all values with addValues() and before retrieving
      * any calculated statistics.
-     * @see addValue()
-     * @see addVariant()
-     * @note added in QGIS 2.16
+     * \see addValue()
+     * \see addVariant()
+     * \since QGIS 2.16
      */
     void finalize();
 
     /** Returns the value of a specified statistic
-     * @param stat statistic to return
-     * @returns calculated value of statistic. A NaN value may be returned for invalid
+     * \param stat statistic to return
+     * \returns calculated value of statistic. A NaN value may be returned for invalid
      * statistics.
      */
-    double statistic( Statistic stat ) const;
+    double statistic( QgsStatisticalSummary::Statistic stat ) const;
 
     /** Returns calculated count of values
      */
     int count() const { return mCount; }
 
     /** Returns the number of missing (null) values
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     int countMissing() const { return mMissing; }
 
@@ -184,14 +184,14 @@ class CORE_EXPORT QgsStatisticalSummary
     /** Returns population standard deviation. This is only calculated if Statistic::StDev has
      * been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
      * be calculated.
-     * @see sampleStDev
+     * \see sampleStDev
      */
     double stDev() const { return mStdev; }
 
     /** Returns sample standard deviation. This is only calculated if Statistic::StDev has
      * been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
      * be calculated.
-     * @see stDev
+     * \see stDev
      */
     double sampleStDev() const { return mSampleStdev; }
 
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * This is only calculated if Statistic::Minority has been specified in the constructor
      * or via setStatistics. A NaN value may be returned if the minority cannot
      * be calculated.
-     * @see majority
+     * \see majority
      */
     double minority() const { return mMinority; }
 
@@ -213,38 +213,38 @@ class CORE_EXPORT QgsStatisticalSummary
      * This is only calculated if Statistic::Majority has been specified in the constructor
      * or via setStatistics. A NaN value may be returned if the majority cannot
      * be calculated.
-     * @see minority
+     * \see minority
      */
     double majority() const { return mMajority; }
 
     /** Returns the first quartile of the values. The quartile is calculated using the
      * "Tukey's hinges" method. A NaN value may be returned if the first quartile cannot
      * be calculated.
-     * @see thirdQuartile
-     * @see interQuartileRange
+     * \see thirdQuartile
+     * \see interQuartileRange
      */
     double firstQuartile() const { return mFirstQuartile; }
 
     /** Returns the third quartile of the values. The quartile is calculated using the
      * "Tukey's hinges" method. A NaN value may be returned if the third quartile cannot
      * be calculated.
-     * @see firstQuartile
-     * @see interQuartileRange
+     * \see firstQuartile
+     * \see interQuartileRange
      */
     double thirdQuartile() const { return mThirdQuartile; }
 
     /** Returns the inter quartile range of the values. The quartiles are calculated using the
      * "Tukey's hinges" method. A NaN value may be returned if the IQR cannot
      * be calculated.
-     * @see firstQuartile
-     * @see thirdQuartile
+     * \see firstQuartile
+     * \see thirdQuartile
      */
     double interQuartileRange() const { return qIsNaN( mThirdQuartile ) || qIsNaN( mFirstQuartile ) ? std::numeric_limits<double>::quiet_NaN() : mThirdQuartile - mFirstQuartile; }
 
     /** Returns the friendly display name for a statistic
-     * @param statistic statistic to return name for
+     * \param statistic statistic to return name for
      */
-    static QString displayName( Statistic statistic );
+    static QString displayName( QgsStatisticalSummary::Statistic statistic );
 
   private:
 

@@ -43,15 +43,16 @@ QgsLayerTreeTransparencyWidget::QgsLayerTreeTransparencyWidget( QgsMapLayer *lay
   mTimer = new QTimer( this );
   mTimer->setSingleShot( true );
   mTimer->setInterval( 100 );
-  connect( mTimer, SIGNAL( timeout() ), this, SLOT( updateTransparencyFromSlider() ) );
+  connect( mTimer, &QTimer::timeout, this, &QgsLayerTreeTransparencyWidget::updateTransparencyFromSlider );
 
-  connect( mSlider, SIGNAL( valueChanged( int ) ), this, SLOT( sliderValueChanged( int ) ) );
+  connect( mSlider, &QAbstractSlider::valueChanged, this, &QgsLayerTreeTransparencyWidget::sliderValueChanged );
 
   // init from layer
   if ( mLayer->type() == QgsMapLayer::VectorLayer )
   {
-    mSlider->setValue( qobject_cast<QgsVectorLayer *>( mLayer )->layerTransparency() );
-    connect( mLayer, SIGNAL( layerTransparencyChanged( int ) ), this, SLOT( layerTrChanged() ) );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer );
+    mSlider->setValue( vl->layerTransparency() );
+    connect( vl, &QgsVectorLayer::layerTransparencyChanged, this, &QgsLayerTreeTransparencyWidget::layerTrChanged );
   }
   else if ( mLayer->type() == QgsMapLayer::RasterLayer )
   {

@@ -134,14 +134,14 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   if ( mOptButtonBox )
   {
     // enforce only one connection per signal, in case added in Qt Designer
-    disconnect( mOptButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-    connect( mOptButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-    disconnect( mOptButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-    connect( mOptButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+    disconnect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+    connect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+    disconnect( mOptButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+    connect( mOptButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   }
-  connect( mOptSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( updateOptionsListVerticalTabs() ) );
-  connect( mOptStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( optionsStackedWidget_CurrentChanged( int ) ) );
-  connect( mOptStackedWidget, SIGNAL( widgetRemoved( int ) ), this, SLOT( optionsStackedWidget_WidgetRemoved( int ) ) );
+  connect( mOptSplitter, &QSplitter::splitterMoved, this, &QgsOptionsDialogBase::updateOptionsListVerticalTabs );
+  connect( mOptStackedWidget, &QStackedWidget::currentChanged, this, &QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged );
+  connect( mOptStackedWidget, &QStackedWidget::widgetRemoved, this, &QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved );
 
   if ( mSearchLineEdit )
   {
@@ -237,10 +237,10 @@ void QgsOptionsDialogBase::searchText( const QString &text )
     rsw.first->reset();
     if ( !text.isEmpty() && rsw.first->searchHighlight( text ) )
     {
-      QgsDebugMsg( QString( "Found %1 in %2 (tab: %3)" )
-                   .arg( text )
-                   .arg( rsw.first->isValid() ? rsw.first->widget()->objectName() : "no widget" )
-                   .arg( mOptListWidget->item( rsw.second )->text() ) );
+      QgsDebugMsgLevel( QString( "Found %1 in %2 (tab: %3)" )
+                        .arg( text )
+                        .arg( rsw.first->isValid() ? rsw.first->widget()->objectName() : "no widget" )
+                        .arg( mOptListWidget->item( rsw.second )->text() ), 4 );
       mOptListWidget->setRowHidden( rsw.second, false );
     }
   }
@@ -274,7 +274,7 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
       QgsSearchHighlightOptionWidget *shw = new QgsSearchHighlightOptionWidget( w );
       if ( shw->isValid() )
       {
-        QgsDebugMsg( QString( "Registering: %1" ).arg( w->objectName() ) );
+        QgsDebugMsgLevel( QString( "Registering: %1" ).arg( w->objectName() ), 4 );
         mRegisteredSearchWidgets.append( qMakePair( shw, i ) );
       }
       else
@@ -398,7 +398,8 @@ void QgsOptionsDialogBase::warnAboutMissingObjects()
 
 
 QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget )
-  : mWidget( widget )
+  : QObject( widget )
+  , mWidget( widget )
   , mStyleSheet( QString() )
   , mValid( true )
   , mChangedStyle( false )
@@ -435,7 +436,7 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
   if ( mValid )
   {
     mStyleSheet.prepend( "/*!search!*/" ).append( "/*!search!*/" );
-    QgsDebugMsg( mStyleSheet );
+    QgsDebugMsgLevel( mStyleSheet, 4 );
     connect( mWidget, &QWidget::destroyed, this, &QgsSearchHighlightOptionWidget::widgetDestroyed );
   }
 }

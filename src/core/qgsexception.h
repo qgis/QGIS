@@ -18,6 +18,7 @@
 #define QGSEXCEPTION_H
 
 #include <QString>
+#include "qgis_sip.h"
 
 #include "qgis_core.h"
 
@@ -34,8 +35,8 @@ class CORE_EXPORT QgsException
     virtual ~QgsException() throw()
     {}
 
-    //! @note not available in Python bindings
-    QString what() const throw()
+    //! \note not available in Python bindings
+    QString what() const throw() SIP_SKIP
     {
       return what_;
     }

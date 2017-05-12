@@ -9,16 +9,16 @@ class QgsRasterPyramidsOptionsWidget: QWidget
 
   public:
 
-    QgsRasterPyramidsOptionsWidget( QWidget* parent /TransferThis/ = 0, const QString& provider = "gdal" );
+    QgsRasterPyramidsOptionsWidget( QWidget *parent /TransferThis/ = 0, const QString &provider = "gdal" );
     ~QgsRasterPyramidsOptionsWidget();
 
     QStringList configOptions() const;
-    QgsRasterFormatSaveOptionsWidget* createOptionsWidget() /Factory/;
+    QgsRasterFormatSaveOptionsWidget *createOptionsWidget() /Factory/;
     const QList<int> overviewList() const;
     QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
     QString resamplingMethod() const;
-    void setRasterLayer( QgsRasterLayer* rasterLayer );
-    void setRasterFileName( const QString& file );
+    void setRasterLayer( QgsRasterLayer *rasterLayer );
+    void setRasterFileName( const QString &file );
 
   public slots:
 

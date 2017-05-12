@@ -68,7 +68,7 @@ QgsNodeEditorModel::QgsNodeEditorModel( QgsVectorLayer *layer, QgsSelectedFeatur
     mWidgetFont = parentWidget->font();
   }
 
-  connect( mSelectedFeature, SIGNAL( vertexMapChanged() ), this, SLOT( featureChanged() ) );
+  connect( mSelectedFeature, &QgsSelectedFeature::vertexMapChanged, this, &QgsNodeEditorModel::featureChanged );
 }
 
 int QgsNodeEditorModel::rowCount( const QModelIndex &parent ) const
@@ -306,8 +306,8 @@ QgsNodeEditor::QgsNodeEditor(
 
   setWidget( mTableView );
 
-  connect( mSelectedFeature, SIGNAL( selectionChanged() ), this, SLOT( updateTableSelection() ) );
-  connect( mTableView->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( updateNodeSelection( QItemSelection, QItemSelection ) ) );
+  connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsNodeEditor::updateTableSelection );
+  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsNodeEditor::updateNodeSelection );
 }
 
 void QgsNodeEditor::updateTableSelection()

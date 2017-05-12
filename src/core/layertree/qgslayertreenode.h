@@ -20,6 +20,7 @@
 #include <QObject>
 
 #include "qgsobjectcustomproperties.h"
+#include "qgis.h"
 
 class QDomElement;
 
@@ -63,12 +64,31 @@ class QgsMapLayer;
  * - "legend/..." - properties for legend appearance customization
  * - "expandedLegendNodes" - list of layer's legend nodes' rules in expanded state
  *
- * @see also QgsLayerTree, QgsLayerTreeLayer, QgsLayerTreeGroup
- * @note added in 2.4
+ * \see also QgsLayerTree, QgsLayerTreeLayer, QgsLayerTreeGroup
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeNode : public QObject
 {
     Q_OBJECT
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->inherits( "QgsLayerTreeNode" ) )
+    {
+      sipType = sipType_QgsLayerTreeNode;
+      QgsLayerTreeNode *node = qobject_cast<QgsLayerTreeNode *>( sipCpp );
+      if ( QgsLayerTree::isLayer( node ) )
+        sipType = sipType_QgsLayerTreeLayer;
+      else if ( qobject_cast<QgsLayerTree *>( sipCpp ) )
+        sipType = sipType_QgsLayerTree;
+      else if ( QgsLayerTree::isGroup( node ) )
+        sipType = sipType_QgsLayerTreeGroup;
+    }
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
 
     //! Enumeration of possible tree node types
@@ -87,22 +107,22 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Get list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode *> children() { return mChildren; }
     //! Get list of children of the node. Children are owned by the parent
-    QList<QgsLayerTreeNode *> children() const { return mChildren; }
+    QList<QgsLayerTreeNode *> children() const { return mChildren; } SIP_SKIP
 
     //! Return name of the node
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     virtual QString name() const = 0;
     //! Set name of the node. Emits nameChanged signal.
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     virtual void setName( const QString &name ) = 0;
 
     //! Read layer tree from XML. Returns new instance.
     //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
-    static QgsLayerTreeNode *readXml( QDomElement &element );
+    static QgsLayerTreeNode *readXml( QDomElement &element ) SIP_FACTORY;
     //! Read layer tree from XML. Returns new instance.
     //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
-    //! @note added in 3.0
-    static QgsLayerTreeNode *readXml( QDomElement &element, const QgsProject *project );
+    //! \since QGIS 3.0
+    static QgsLayerTreeNode *readXml( QDomElement &element, const QgsProject *project ) SIP_FACTORY;
 
     //! Write layer tree to XML
     virtual void writeXml( QDomElement &parentElement ) = 0;
@@ -111,45 +131,51 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     virtual QString dump() const = 0;
 
     //! Create a copy of the node. Returns new instance
-    virtual QgsLayerTreeNode *clone() const = 0;
+    virtual QgsLayerTreeNode *clone() const = 0 SIP_FACTORY;
 
-    //! Turn textual references to layers into map layer object from project.
-    //! This method should be called after readXml()
-    //! @note added in 3.0
-    virtual void resolveReferences( const QgsProject *project ) = 0;
+    /**
+     * Turn textual references to layers into map layer object from project.
+     * This method should be called after readXml()
+     * If \a looseMatching is true then a looser match will be used, where a layer
+     * will match if the name, public source, and data provider match. This can be
+     * used to match legend customisation from different projects where layers
+     * will have different layer IDs.
+     * \since QGIS 3.0
+     */
+    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false ) = 0;
 
     //! Returns whether a node is really visible (ie checked and all its ancestors checked as well)
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     bool isVisible() const;
 
     //! Returns whether a node is checked (independently of its ancestors or children)
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     bool itemVisibilityChecked() const { return mChecked; }
 
     //! Check or uncheck a node (independently of its ancestors or children)
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     void setItemVisibilityChecked( bool checked );
 
     //! Check or uncheck a node and all its children (taking into account exclusion rules)
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     virtual void setItemVisibilityCheckedRecursive( bool checked );
 
     //! Check or uncheck a node and all its parents
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     void setItemVisibilityCheckedParentRecursive( bool checked );
 
     //! Return whether this node is checked and all its children.
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     bool isItemVisibilityCheckedRecursive() const;
 
     //! Return whether this node is unchecked and all its children.
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     bool isItemVisibilityUncheckedRecursive() const;
 
     /**
      * Returns a list of any checked layers which belong to this node or its
      * children.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > checkedLayers() const;
 
@@ -186,7 +212,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Emitted when the collapsed/expanded state of a node within the tree has been changed
     void expandedChanged( QgsLayerTreeNode *node, bool expanded );
     //! Emitted when the name of the node is changed
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     void nameChanged( QgsLayerTreeNode *node, QString name );
 
   protected:

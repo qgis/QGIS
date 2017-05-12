@@ -25,14 +25,17 @@ __copyright__ = '(C) 2017, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsWkbTypes, QgsGeometry
+from qgis.core import (QgsWkbTypes,
+                       QgsGeometry,
+                       QgsApplication,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.ProcessingLog import ProcessingLog
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class FixGeometry(GeoAlgorithm):
@@ -40,39 +43,48 @@ class FixGeometry(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Fix geometries')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('repair,invalid,geometry')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('repair,invalid,geometry').split(',')
+
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'fixgeometries'
+
+    def displayName(self):
+        return self.tr('Fix geometries')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Layer with fixed geometries')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
         writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(
-                layer.fields(),
-                QgsWkbTypes.multiType(layer.wkbType()),
-                layer.crs())
+            self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.multiType(layer.wkbType()), layer.crs(), context)
 
-        features = vector.features(layer)
-        if len(features) == 0:
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        if QgsProcessingUtils.featureCount(layer, context) == 0:
             raise GeoAlgorithmExecutionException(self.tr('There are no features in the input layer'))
 
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, inputFeature in enumerate(features):
             outputFeature = inputFeature
             if inputFeature.geometry():
                 outputGeometry = inputFeature.geometry().makeValid()
                 if not outputGeometry:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           'makeValid failed for feature {}'.format(inputFeature.id()))
+                    QgsMessageLog.logMessage('makeValid failed for feature {}'.format(inputFeature.id()), self.tr('Processing'), QgsMessageLog.WARNING)
 
                 if outputGeometry.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(outputGeometry.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                     tmpGeometries = outputGeometry.asGeometryCollection()

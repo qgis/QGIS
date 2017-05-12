@@ -19,6 +19,7 @@
 #define QGSCOMPOSERITEMCOMMAND_H
 
 #include <QUndoCommand>
+#include "qgis.h"
 #include <QDomDocument>
 
 #include "qgis_core.h"
@@ -32,7 +33,7 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {
   public:
-    QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent = nullptr );
+    QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = 0 );
 
     //! Reverses the command
     void undo() override;
@@ -51,7 +52,7 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     bool containsChange() const;
 
     /** Returns the target item the command applies to.
-     * @returns target composer item
+     * \returns target composer item
      */
     QgsComposerItem *item() const;
 

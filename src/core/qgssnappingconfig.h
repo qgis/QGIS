@@ -26,7 +26,7 @@ class QgsVectorLayer;
 
 /** \ingroup core
  * This is a container for configuration of the snapping of the project
- * @note added in 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsSnappingConfig
 {
@@ -58,18 +58,18 @@ class CORE_EXPORT QgsSnappingConfig
 
     /** \ingroup core
      * This is a container of advanced configuration (per layer) of the snapping of the project
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     class CORE_EXPORT IndividualLayerSettings
     {
       public:
 
         /**
-         * @brief IndividualLayerSettings
-         * @param enabled
-         * @param type
-         * @param tolerance
-         * @param units
+         * \brief IndividualLayerSettings
+         * \param enabled
+         * \param type
+         * \param tolerance
+         * \param units
          */
         IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingType type, double tolerance, QgsTolerance::UnitType units );
 
@@ -183,14 +183,14 @@ class CORE_EXPORT QgsSnappingConfig
     /**
      * Reads the configuration from the specified QGIS project document.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void readProject( const QDomDocument &doc );
 
     /**
      * Writes the configuration to the specified QGIS project document.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void writeProject( QDomDocument &doc );
 
@@ -200,9 +200,9 @@ class CORE_EXPORT QgsSnappingConfig
      * When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
      * it is best to directly feed this with information from the layer registry.
      *
-     * @return True if changes have been done.
+     * \returns True if changes have been done.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool addLayers( const QList<QgsMapLayer *> &layers );
 
@@ -212,23 +212,23 @@ class CORE_EXPORT QgsSnappingConfig
      * When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
      * it is best to directly feed this with information from the layer registry.
      *
-     * @return True if changes have been done.
+     * \returns True if changes have been done.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool removeLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * The project from which the snapped layers should be retrieved
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsProject *project() const;
 
     /**
      * The project from which the snapped layers should be retrieved
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setProject( QgsProject *project );
 

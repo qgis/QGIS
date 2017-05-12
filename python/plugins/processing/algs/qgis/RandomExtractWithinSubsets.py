@@ -28,6 +28,9 @@ __revision__ = '$Format:%H$'
 
 import random
 
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
+from collections import defaultdict
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
@@ -35,7 +38,6 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class RandomExtractWithinSubsets(GeoAlgorithm):
@@ -46,10 +48,22 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random extract within subsets')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector selection tools')
+
+    def name(self):
+        return 'randomextractwithinsubsets'
+
+    def displayName(self):
+        return self.tr('Random extract within subsets')
+
+    def defineCharacteristics(self):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
@@ -64,18 +78,18 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (random stratified)')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
-        layer = dataobjects.getObjectFromUri(filename)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
 
         index = layer.fields().lookupField(field)
 
-        features = vector.features(layer)
-        featureCount = len(features)
-        unique = vector.getUniqueValues(layer, index)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        featureCount = QgsProcessingUtils.featureCount(layer, context)
+        unique = QgsProcessingUtils.uniqueValues(layer, index, context)
         value = int(self.getParameterValue(self.NUMBER))
         if method == 0:
             if value > featureCount:
@@ -89,42 +103,26 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
                             "correct value and try again."))
             value = value / 100.0
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(),
+                                                                     layer.crs(), context)
 
         selran = []
-        current = 0
         total = 100.0 / (featureCount * len(unique))
-        features = vector.features(layer)
+        features = QgsProcessingUtils.getFeatures(layer, context)
 
-        if not len(unique) == featureCount:
-            for classValue in unique:
-                classFeatures = []
-                for i, feature in enumerate(features):
-                    attrs = feature.attributes()
-                    if attrs[index] == classValue:
-                        classFeatures.append(i)
-                    current += 1
-                    feedback.setProgress(int(current * total))
+        classes = defaultdict(list)
+        for i, feature in enumerate(features):
+            attrs = feature.attributes()
+            classes[attrs[index]].append(feature)
+            feedback.setProgress(int(i * total))
 
-                if method == 1:
-                    selValue = int(round(value * len(classFeatures), 0))
-                else:
-                    selValue = value
+        for subset in classes.values():
+            selValue = value if method != 1 else int(round(value * len(subset), 0))
+            selran.extend(random.sample(subset, selValue))
 
-                if selValue >= len(classFeatures):
-                    selFeat = classFeatures
-                else:
-                    selFeat = random.sample(classFeatures, selValue)
-
-                selran.extend(selFeat)
-        else:
-            selran = list(range(featureCount))
-
-        features = vector.features(layer)
-        total = 100.0 / len(features)
-        for (i, feat) in enumerate(features):
-            if i in selran:
-                writer.addFeature(feat)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        for (i, feat) in enumerate(selran):
+            writer.addFeature(feat)
             feedback.setProgress(int(i * total))
         del writer

@@ -17,7 +17,6 @@
 #include "qgslabelingengine.h"
 
 #include "qgslogger.h"
-#include "qgsproject.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -72,12 +71,7 @@ class QgsLabelSorter
 
 
 QgsLabelingEngine::QgsLabelingEngine()
-  : mFlags( RenderOutlineLabels | UsePartialCandidates )
-  , mSearchMethod( QgsPalLabeling::Chain )
-  , mCandPoint( 16 )
-  , mCandLine( 50 )
-  , mCandPolygon( 30 )
-  , mResults( new QgsLabelingResults )
+  : mResults( new QgsLabelingResults )
 {}
 
 QgsLabelingEngine::~QgsLabelingEngine()
@@ -192,36 +186,39 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
 
 void QgsLabelingEngine::run( QgsRenderContext &context )
 {
-  pal::Pal p;
+  const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
 
+  pal::Pal p;
   pal::SearchMethod s;
-  switch ( mSearchMethod )
+  switch ( settings.searchMethod() )
   {
     default:
-    case QgsPalLabeling::Chain:
+    case QgsLabelingEngineSettings::Chain:
       s = pal::CHAIN;
       break;
-    case QgsPalLabeling::Popmusic_Tabu:
+    case QgsLabelingEngineSettings::Popmusic_Tabu:
       s = pal::POPMUSIC_TABU;
       break;
-    case QgsPalLabeling::Popmusic_Chain:
+    case QgsLabelingEngineSettings::Popmusic_Chain:
       s = pal::POPMUSIC_CHAIN;
       break;
-    case QgsPalLabeling::Popmusic_Tabu_Chain:
+    case QgsLabelingEngineSettings::Popmusic_Tabu_Chain:
       s = pal::POPMUSIC_TABU_CHAIN;
       break;
-    case QgsPalLabeling::Falp:
+    case QgsLabelingEngineSettings::Falp:
       s = pal::FALP;
       break;
   }
   p.setSearch( s );
 
   // set number of candidates generated per feature
-  p.setPointP( mCandPoint );
-  p.setLineP( mCandLine );
-  p.setPolyP( mCandPolygon );
+  int candPoint, candLine, candPolygon;
+  settings.numCandidatePositions( candPoint, candLine, candPolygon );
+  p.setPointP( candPoint );
+  p.setLineP( candLine );
+  p.setPolyP( candPolygon );
 
-  p.setShowPartial( mFlags.testFlag( UsePartialCandidates ) );
+  p.setShowPartial( settings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
 
 
   // for each provider: get labels and register them in PAL
@@ -284,7 +281,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   // features are pre-rotated but not scaled/translated,
   // so we only disable rotation here. Ideally, they'd be
   // also pre-scaled/translated, as suggested here:
-  // http://hub.qgis.org/issues/11856
+  // https://issues.qgis.org/issues/11856
   QgsMapToPixel xform = mMapSettings.mapToPixel();
   xform.setMapRotation( 0, 0, 0 );
 #else
@@ -295,7 +292,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   // this is done before actual solution of the problem
   // before number of candidates gets reduced
   // TODO mCandidates.clear();
-  if ( mFlags.testFlag( DrawCandidates ) && problem )
+  if ( settings.testFlag( QgsLabelingEngineSettings::DrawCandidates ) && problem )
   {
     painter->setBrush( Qt::NoBrush );
     for ( int i = 0; i < problem->getNumFeatures(); i++ )
@@ -310,7 +307,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   }
 
   // find the solution
-  labels = p.solveProblem( problem, mFlags.testFlag( UseAllLabels ) );
+  labels = p.solveProblem( problem, settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ) );
 
   QgsDebugMsgLevel( QString( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels->size() ), 4 );
   t.restart();
@@ -357,50 +354,6 @@ QgsLabelingResults *QgsLabelingEngine::takeResults()
 {
   return mResults.release();
 }
-
-
-void QgsLabelingEngine::readSettingsFromProject( QgsProject *prj )
-{
-  bool saved = false;
-  mSearchMethod = static_cast< QgsPalLabeling::Search >( prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( QgsPalLabeling::Chain ), &saved ) );
-  mCandPoint = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), 16, &saved );
-  mCandLine = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), 50, &saved );
-  mCandPolygon = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ), 30, &saved );
-
-  mFlags = 0;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), false, &saved ) ) mFlags |= DrawCandidates;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), false, &saved ) ) mFlags |= DrawLabelRectOnly;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), false, &saved ) ) mFlags |= UseAllLabels;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), true, &saved ) ) mFlags |= UsePartialCandidates;
-  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true, &saved ) ) mFlags |= RenderOutlineLabels;
-}
-
-void QgsLabelingEngine::writeSettingsToProject( QgsProject *project )
-{
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( mSearchMethod ) );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), mCandPoint );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), mCandLine );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ), mCandPolygon );
-
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), mFlags.testFlag( DrawCandidates ) );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), mFlags.testFlag( DrawLabelRectOnly ) );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), mFlags.testFlag( UseAllLabels ) );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), mFlags.testFlag( UsePartialCandidates ) );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), mFlags.testFlag( RenderOutlineLabels ) );
-}
-
-void QgsLabelingEngine::clearSettingsInProject( QgsProject *project )
-{
-  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ) );
-  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ) );
-  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ) );
-  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ) );
-  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ) );
-  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ) );
-  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ) );
-  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ) );
-}
-
 
 
 ////

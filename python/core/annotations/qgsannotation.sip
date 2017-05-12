@@ -23,7 +23,9 @@ class QgsAnnotation : QObject
 
   public:
 
-    QgsAnnotation( QObject* parent /TransferThis/ = nullptr );
+    QgsAnnotation( QObject *parent /TransferThis/ = 0 );
+
+    virtual QgsAnnotation *clone() const = 0 /Factory/;
 
     bool isVisible() const;
     void setVisible( bool visible );
@@ -32,10 +34,10 @@ class QgsAnnotation : QObject
     void setHasFixedMapPosition( bool fixed );
 
     QgsPoint mapPosition() const;
-    void setMapPosition( const QgsPoint& position );
+    void setMapPosition( const QgsPoint &position );
 
     QgsCoordinateReferenceSystem mapPositionCrs() const;
-    void setMapPositionCrs( const QgsCoordinateReferenceSystem& crs );
+    void setMapPositionCrs( const QgsCoordinateReferenceSystem &crs );
 
     QPointF relativePosition() const;
     void setRelativePosition( QPointF position );
@@ -46,25 +48,25 @@ class QgsAnnotation : QObject
     void setFrameSize( QSizeF size );
     QSizeF frameSize() const;
 
-    void setContentsMargin( const QgsMargins& margins );
+    void setContentsMargin( const QgsMargins &margins );
     QgsMargins contentsMargin() const;
 
-    void setFillSymbol( QgsFillSymbol* symbol /Transfer/ );
-    QgsFillSymbol* fillSymbol() const;
+    void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+    QgsFillSymbol *fillSymbol() const;
 
-    void render( QgsRenderContext& context ) const;
+    void render( QgsRenderContext &context ) const;
 
-    virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const = 0;
-    virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const = 0;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) = 0;
 
-    void setMarkerSymbol( QgsMarkerSymbol* symbol /Transfer/ );
-    QgsMarkerSymbol* markerSymbol() const;
+    void setMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );
+    QgsMarkerSymbol *markerSymbol() const;
 
-    QgsMapLayer* mapLayer() const;
-    void setMapLayer( QgsMapLayer* layer );
+    QgsMapLayer *mapLayer() const;
+    void setMapLayer( QgsMapLayer *layer );
 
     QgsFeature associatedFeature() const;
-    virtual void setAssociatedFeature( const QgsFeature& feature );
+    virtual void setAssociatedFeature( const QgsFeature &feature );
 
   signals:
 
@@ -74,11 +76,13 @@ class QgsAnnotation : QObject
 
   protected:
 
-    virtual void renderAnnotation( QgsRenderContext& context, QSizeF size ) const = 0;
+    virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const = 0;
 
     virtual QSizeF minimumFrameSize() const;
 
-    void _writeXml( QDomElement& itemElem, QDomDocument& doc ) const;
-    void _readXml( const QDomElement& annotationElem, const QDomDocument& doc );
+    void _writeXml( QDomElement &itemElem, QDomDocument &doc ) const;
+    void _readXml( const QDomElement &annotationElem, const QDomDocument &doc );
+
+    void copyCommonProperties( QgsAnnotation *target ) const;
 
 };

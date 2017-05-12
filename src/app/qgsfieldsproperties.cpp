@@ -63,11 +63,11 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget *parent
   mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
   mCalculateFieldButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) ) );
 
-  connect( mToggleEditingButton, SIGNAL( clicked() ), this, SIGNAL( toggleEditing() ) );
-  connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
-  connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
-  connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
-  connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
+  connect( mToggleEditingButton, &QAbstractButton::clicked, this, &QgsFieldsProperties::toggleEditing );
+  connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsFieldsProperties::editingToggled );
+  connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsFieldsProperties::editingToggled );
+  connect( mLayer, &QgsVectorLayer::attributeAdded, this, &QgsFieldsProperties::attributeAdded );
+  connect( mLayer, &QgsVectorLayer::attributeDeleted, this, &QgsFieldsProperties::attributeDeleted );
 
   // tab and group display
   mAddItemButton->setEnabled( false );
@@ -100,8 +100,8 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget *parent
   mFieldsList->setSelectionMode( QAbstractItemView::ExtendedSelection );
   mFieldsList->verticalHeader()->hide();
 
-  connect( mDesignerTree, SIGNAL( itemSelectionChanged() ), this, SLOT( onAttributeSelectionChanged() ) );
-  connect( mFieldsList, SIGNAL( itemSelectionChanged() ), this, SLOT( onAttributeSelectionChanged() ) );
+  connect( mDesignerTree, &QTreeWidget::itemSelectionChanged, this, &QgsFieldsProperties::onAttributeSelectionChanged );
+  connect( mFieldsList, &QTableWidget::itemSelectionChanged, this, &QgsFieldsProperties::onAttributeSelectionChanged );
 
   mRelationsList = new DragList( mRelationsFrame );
   mRelationsFrameLayout->addWidget( mRelationsList );
@@ -262,7 +262,7 @@ void QgsFieldsProperties::loadAttributeEditorTree()
 
 void QgsFieldsProperties::loadRows()
 {
-  disconnect( mFieldsList, SIGNAL( cellChanged( int, int ) ), this, SLOT( attributesListCellChanged( int, int ) ) );
+  disconnect( mFieldsList, &QTableWidget::cellChanged, this, &QgsFieldsProperties::attributesListCellChanged );
   const QgsFields &fields = mLayer->fields();
 
   mIndexedWidgets.clear();
@@ -272,7 +272,7 @@ void QgsFieldsProperties::loadRows()
     attributeAdded( i );
 
   mFieldsList->resizeColumnsToContents();
-  connect( mFieldsList, SIGNAL( cellChanged( int, int ) ), this, SLOT( attributesListCellChanged( int, int ) ) );
+  connect( mFieldsList, &QTableWidget::cellChanged, this, &QgsFieldsProperties::attributesListCellChanged );
   updateFieldRenamingStatus();
 }
 
@@ -310,7 +310,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
     QToolButton *editExpressionButton = new QToolButton;
     editExpressionButton->setProperty( "Index", idx );
     editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
-    connect( editExpressionButton, SIGNAL( clicked() ), this, SLOT( updateExpression() ) );
+    connect( editExpressionButton, &QAbstractButton::clicked, this, &QgsFieldsProperties::updateExpression );
     expressionWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
     expressionWidget->layout()->addWidget( editExpressionButton );
     expressionWidget->layout()->addWidget( new QLabel( mLayer->expressionField( idx ) ) );
@@ -343,7 +343,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
   cfg.mButton = pb;
   mFieldsList->setCellWidget( row, AttrEditTypeCol, pb );
 
-  connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog() ) );
+  connect( pb, &QAbstractButton::pressed, this, &QgsFieldsProperties::attributeTypeDialog );
 
   setConfigForRow( row, cfg );
 
@@ -1167,7 +1167,7 @@ DesignerTree::DesignerTree( QgsVectorLayer *layer, QWidget *parent )
   : QTreeWidget( parent )
   , mLayer( layer )
 {
-  connect( this, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ), this, SLOT( onItemDoubleClicked( QTreeWidgetItem *, int ) ) );
+  connect( this, &QTreeWidget::itemDoubleClicked, this, &DesignerTree::onItemDoubleClicked );
 }
 
 QTreeWidgetItem *DesignerTree::addItem( QTreeWidgetItem *parent, QgsFieldsProperties::DesignerTreeItemData data )
@@ -1370,8 +1370,8 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
         | QDialogButtonBox::Cancel );
 
-    connect( buttonBox, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
-    connect( buttonBox, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
+    connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+    connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
 
     layout->addWidget( buttonBox );
 
@@ -1408,8 +1408,8 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
 
-    connect( buttonBox, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
-    connect( buttonBox, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
+    connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+    connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
 
     dlg.layout()->addWidget( buttonBox );
 
@@ -1434,8 +1434,8 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
         | QDialogButtonBox::Cancel );
 
-    connect( buttonBox, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
-    connect( buttonBox, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
+    connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+    connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
 
     dlg.layout()->addWidget( buttonBox );
 

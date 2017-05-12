@@ -24,6 +24,7 @@ from qgis.core import (
     QgsExpressionContextScope,
     QgsExpressionContext,
     QgsVectorDataProvider,
+    QgsVectorLayerFeatureSource,
     NULL
 )
 
@@ -476,6 +477,30 @@ class ProviderTestCase(object):
         request = QgsFeatureRequest().addOrderBy('num_char', False).setSubsetOfAttributes(['pk'], self.vl.fields())
         values = [f['pk'] for f in self.vl.getFeatures(request)]
         self.assertEqual(values, [5, 4, 3, 2, 1])
+
+    def testOpenIteratorAfterLayerRemoval(self):
+        """
+        Test that removing layer after opening an iterator does not crash. All required
+        information should be captured in the iterator's source and there MUST be no
+        links between the iterators and the layer's data provider
+        """
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        # store the source
+        source = QgsVectorLayerFeatureSource(l)
+
+        # delete the layer
+        del l
+
+        # get the features
+        pks = []
+        for f in source.getFeatures():
+            pks.append(f['pk'])
+        self.assertEqual(set(pks), {1, 2, 3, 4, 5})
 
     def testGetFeaturesFidTests(self):
         fids = [f.id() for f in self.provider.getFeatures()]

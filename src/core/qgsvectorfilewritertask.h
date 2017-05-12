@@ -29,7 +29,9 @@
  * QgsTask task which performs a QgsVectorFileWriter layer saving operation as a background
  * task. This can be used to save a vector layer out to a file without blocking the
  * QGIS interface.
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
+ * \see QgsVectorLayerExporterTask
+ * \see QgsRasterFileWriterTask
  */
 class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
 {

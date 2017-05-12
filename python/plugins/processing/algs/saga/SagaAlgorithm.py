@@ -34,9 +34,10 @@ import os
 import importlib
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
+from qgis.core import (QgsProcessingUtils,
+                       QgsMessageLog)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import (getParameterFromString,
                                         ParameterExtent,
@@ -73,40 +74,51 @@ class SagaAlgorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self._icon = None
+        self._name = ''
+        self._display_name = ''
+        self._group = ''
 
     def getCopy(self):
-        newone = SagaAlgorithm(self.descriptionFile)
-        newone.provider = self.provider
-        return newone
+        return self
 
-    def getIcon(self):
+    def icon(self):
         if self._icon is None:
             self._icon = QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
         return self._icon
 
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._display_name
+
+    def group(self):
+        return self._group
+
     def defineCharacteristicsFromFile(self):
         with open(self.descriptionFile) as lines:
             line = lines.readline().strip('\n').strip()
-            self.name = line
-            if '|' in self.name:
-                tokens = self.name.split('|')
-                self.name = tokens[0]
+            self._name = line
+            if '|' in self._name:
+                tokens = self._name.split('|')
+                self._name = tokens[0]
                 # cmdname is the name of the algorithm in SAGA, that is, the name to use to call it in the console
                 self.cmdname = tokens[1]
 
             else:
-                self.cmdname = self.name
-                self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", str(self.name))
-            # _commandLineName is the name used in processing to call the algorithm
-            # Most of the time will be equal to the cmdname, but in same cases, several processing algorithms
-            # call the same SAGA one
-            self._commandLineName = self.createCommandLineName(self.name)
-            self.name = decoratedAlgorithmName(self.name)
-            self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", str(self.name))
+                self.cmdname = self._name
+                self._display_name = QCoreApplication.translate("SAGAAlgorithm", str(self._name))
+            self._name = decoratedAlgorithmName(self._name)
+            self._display_name = QCoreApplication.translate("SAGAAlgorithm", str(self._name))
+
+            self._name = self._name.lower()
+            validChars = \
+                'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+            self._name = ''.join(c for c in self._name if c in validChars)
+
             line = lines.readline().strip('\n').strip()
             self.undecoratedGroup = line
-            self.group = decoratedGroupName(self.undecoratedGroup)
-            self.i18n_group = QCoreApplication.translate("SAGAAlgorithm", self.group)
+            self._group = QCoreApplication.translate("SAGAAlgorithm", decoratedGroupName(self.undecoratedGroup))
             line = lines.readline().strip('\n').strip()
             while line != '':
                 if line.startswith('Hardcoded'):
@@ -124,7 +136,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     self.addOutput(getOutputFromString(line))
                 line = lines.readline().strip('\n').strip()
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         commands = list()
         self.exportedLayers = {}
 
@@ -145,7 +157,7 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterVector):
                 if param.value is None:
                     continue
-                layer = dataobjects.getObjectFromUri(param.value, False)
+                layer = QgsProcessingUtils.mapLayerFromString(param.value, context, False)
                 if layer:
                     filename = dataobjects.exportVectorLayer(layer)
                     self.exportedLayers[param.value] = filename
@@ -155,7 +167,7 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterTable):
                 if param.value is None:
                     continue
-                table = dataobjects.getObjectFromUri(param.value, False)
+                table = QgsProcessingUtils.mapLayerFromString(param.value, context, False)
                 if table:
                     filename = dataobjects.exportTable(table)
                     self.exportedLayers[param.value] = filename
@@ -183,7 +195,7 @@ class SagaAlgorithm(GeoAlgorithm):
                                         dataobjects.TYPE_VECTOR_POLYGON,
                                         dataobjects.TYPE_VECTOR_POINT]:
                     for layerfile in layers:
-                        layer = dataobjects.getObjectFromUri(layerfile, False)
+                        layer = QgsProcessingUtils.mapLayerFromString(layerfile, context, False)
                         if layer:
                             filename = dataobjects.exportVectorLayer(layer)
                             self.exportedLayers[layerfile] = filename
@@ -212,7 +224,9 @@ class SagaAlgorithm(GeoAlgorithm):
                 command += ' -' + param.name + ' "' + s + '"'
             elif isinstance(param, ParameterBoolean):
                 if param.value:
-                    command += ' -' + param.name
+                    command += ' -' + param.name.strip() + " true"
+                else:
+                    command += ' -' + param.name.strip() + " false"
             elif isinstance(param, ParameterFixedTable):
                 tempTableFile = getTempFilename('txt')
                 with open(tempTableFile, 'w') as f:
@@ -260,7 +274,7 @@ class SagaAlgorithm(GeoAlgorithm):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+            QgsMessageLog.logMessage('\n'.join(loglines), self.tr('Processing'), QgsMessageLog.INFO)
         SagaUtils.executeSaga(feedback)
 
         if self.crs is not None:
@@ -271,7 +285,7 @@ class SagaAlgorithm(GeoAlgorithm):
                         f.write(self.crs.toWkt())
 
     def preProcessInputs(self):
-        name = self.commandLineName().replace('.', '_')[len('saga:'):]
+        name = self.name().replace('.', '_')
         try:
             module = importlib.import_module('processing.algs.saga.ext.' + name)
         except ImportError:
@@ -281,9 +295,8 @@ class SagaAlgorithm(GeoAlgorithm):
             func(self)
 
     def editCommands(self, commands):
-        name = self.commandLineName()[len('saga:'):]
         try:
-            module = importlib.import_module('processing.algs.saga.ext.' + name)
+            module = importlib.import_module('processing.algs.saga.ext.' + self.name())
         except ImportError:
             return commands
         if hasattr(module, 'editCommands'):
@@ -306,6 +319,7 @@ class SagaAlgorithm(GeoAlgorithm):
 
     def exportRasterLayer(self, source):
         global sessionExportedLayers
+        context = dataobjects.createContext()
         if source in sessionExportedLayers:
             exportedLayer = sessionExportedLayers[source]
             if os.path.exists(exportedLayer):
@@ -313,7 +327,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 return None
             else:
                 del sessionExportedLayers[source]
-        layer = dataobjects.getObjectFromUri(source, False)
+        layer = QgsProcessingUtils.mapLayerFromString(source, context, False)
         if layer:
             filename = str(layer.name())
         else:
@@ -325,7 +339,7 @@ class SagaAlgorithm(GeoAlgorithm):
         destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        return 'io_gdal 0 -TRANSFORM -RESAMPLING 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
+        return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
 
     def checkParameterValuesBeforeExecuting(self):
         """
@@ -333,6 +347,7 @@ class SagaAlgorithm(GeoAlgorithm):
         supported by SAGA, and that raster layers have the same grid extent
         """
         extent = None
+        context = dataobjects.createContext()
         for param in self.parameters:
             files = []
             if isinstance(param, ParameterRaster):
@@ -342,7 +357,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if param.value is not None:
                     files = param.value.split(";")
             for f in files:
-                layer = dataobjects.getObjectFromUri(f)
+                layer = QgsProcessingUtils.mapLayerFromString(f, context)
                 if layer is None:
                     continue
                 if layer.bandCount() > 1:
@@ -355,11 +370,3 @@ class SagaAlgorithm(GeoAlgorithm):
                         extent2 = (layer.extent(), layer.height(), layer.width())
                         if extent != extent2:
                             return self.tr("Input layers do not have the same grid extent.")
-
-    def createCommandLineName(self, name):
-        validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
-        return 'saga:' + ''.join(c for c in name if c in validChars).lower()
-
-    def commandLineName(self):
-        return self._commandLineName

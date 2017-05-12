@@ -1,31 +1,60 @@
-class QgsMultiCurve: public QgsGeometryCollection
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsmulticurve.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMultiCurve: QgsGeometryCollection
 {
-%TypeHeaderCode
-#include <qgsmulticurve.h>
+%Docstring
+ Multi curve geometry collection.
+.. versionadded:: 2.10
 %End
 
+%TypeHeaderCode
+#include "qgsmulticurve.h"
+%End
   public:
+    QgsMultiCurve();
     virtual QString geometryType() const;
-    virtual QgsMultiCurve* clone() const /Factory/;
+    virtual QgsMultiCurve *clone() const /Factory/;
 
-    bool fromWkt( const QString& wkt );
 
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QString asJSON( int precision = 17 ) const;
+    virtual bool fromWkt( const QString &wkt );
 
-    /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometry* g /Transfer/ );
-    /** Returns a geometry without curves. Caller takes ownership*/
-    QgsAbstractGeometry* segmentize() const /Factory/;
 
-    /** Returns a copy of the multi curve, where each component curve has had its line direction reversed.
-     * @note added in QGIS 2.14
-     */
-    QgsMultiCurve* reversed() const /Factory/;
+    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QgsAbstractGeometry* boundary() const /Factory/;
+    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+
+    virtual QString asJSON( int precision = 17 ) const;
+
+
+    virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
+%Docstring
+Adds a geometry and takes ownership. Returns true in case of success
+ :rtype: bool
+%End
+
+    QgsMultiCurve *reversed() const /Factory/;
+%Docstring
+ Returns a copy of the multi curve, where each component curve has had its line direction reversed.
+.. versionadded:: 2.14
+ :rtype: QgsMultiCurve
+%End
+
+    virtual QgsAbstractGeometry *boundary() const /Factory/;
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsmulticurve.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

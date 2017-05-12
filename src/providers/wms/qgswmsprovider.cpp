@@ -2687,7 +2687,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint &point, QgsRast
     QNetworkRequest request( requestUrl );
     mSettings.authorization().setAuthorization( request );
     mIdentifyReply = QgsNetworkAccessManager::instance()->get( request );
-    connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
+    connect( mIdentifyReply, &QNetworkReply::finished, this, &QgsWmsProvider::identifyReplyFinished );
 
     QEventLoop loop;
     mIdentifyReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( &loop ) ) );
@@ -2938,7 +2938,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint &point, QgsRast
               g.transform( coordinateTransform );
               feature->setGeometry( g );
             }
-            featureStore.features().append( QgsFeature( *feature ) );
+            featureStore.addFeature( *feature );
           }
           featureStoreList.append( featureStore );
         }
@@ -3073,7 +3073,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint &point, QgsRast
             featureStore.setParams( params );
 
             feature.setValid( true );
-            featureStore.features().append( feature );
+            featureStore.addFeature( feature );
 
             featureStoreList.append( featureStore );
           }
@@ -3114,7 +3114,7 @@ void QgsWmsProvider::identifyReplyFinished()
       mIdentifyReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
       mSettings.authorization().setAuthorizationReply( mIdentifyReply );
       mIdentifyReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( loop ) ) );
-      connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
+      connect( mIdentifyReply, &QNetworkReply::finished, this, &QgsWmsProvider::identifyReplyFinished );
       return;
     }
 
@@ -3382,9 +3382,9 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
   if ( !mLegendGraphicFetcher )
     return QImage();
 
-  connect( mLegendGraphicFetcher.get(), SIGNAL( finish( const QImage & ) ), this, SLOT( getLegendGraphicReplyFinished( const QImage & ) ) );
-  connect( mLegendGraphicFetcher.get(), SIGNAL( error( const QString & ) ), this, SLOT( getLegendGraphicReplyErrored( const QString & ) ) );
-  connect( mLegendGraphicFetcher.get(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+  connect( mLegendGraphicFetcher.get(), &QgsWmsLegendDownloadHandler::finish, this, &QgsWmsProvider::getLegendGraphicReplyFinished );
+  connect( mLegendGraphicFetcher.get(), &QgsWmsLegendDownloadHandler::error, this, &QgsWmsProvider::getLegendGraphicReplyErrored );
+  connect( mLegendGraphicFetcher.get(), &QgsWmsLegendDownloadHandler::progress, this, &QgsWmsProvider::getLegendGraphicReplyProgress );
   mLegendGraphicFetcher->start();
 
   QEventLoop loop;
@@ -3430,7 +3430,7 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
     QgsImageFetcher *fetcher =  new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url );
     fetcher->setProperty( "legendScale", QVariant::fromValue( scale ) );
     fetcher->setProperty( "legendExtent", QVariant::fromValue( mapExtent.toRectF() ) );
-    connect( fetcher, SIGNAL( finish( const QImage & ) ), this, SLOT( getLegendGraphicReplyFinished( const QImage & ) ) );
+    connect( fetcher, &QgsImageFetcher::finish, this, &QgsWmsProvider::getLegendGraphicReplyFinished );
     return fetcher;
   }
 }
@@ -3532,7 +3532,7 @@ QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString &providerU
 {
   if ( feedback )
   {
-    connect( feedback, SIGNAL( canceled() ), this, SLOT( canceled() ), Qt::QueuedConnection );
+    connect( feedback, &QgsFeedback::canceled, this, &QgsWmsImageDownloadHandler::canceled, Qt::QueuedConnection );
 
     // rendering could have been canceled before we started to listen to canceled() signal
     // so let's check before doing the download and maybe quit prematurely
@@ -3544,8 +3544,8 @@ QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString &providerU
   auth.setAuthorization( request );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   mCacheReply = QgsNetworkAccessManager::instance()->get( request );
-  connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
-  connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
+  connect( mCacheReply, &QNetworkReply::finished, this, &QgsWmsImageDownloadHandler::cacheReplyFinished );
+  connect( mCacheReply, &QNetworkReply::downloadProgress, this, &QgsWmsImageDownloadHandler::cacheReplyProgress );
 
   Q_ASSERT( mCacheReply->thread() == QThread::currentThread() );
 }
@@ -3576,7 +3576,7 @@ void QgsWmsImageDownloadHandler::cacheReplyFinished()
 
       QgsDebugMsg( QString( "redirected getmap: %1" ).arg( redirect.toString() ) );
       mCacheReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
-      connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
+      connect( mCacheReply, &QNetworkReply::finished, this, &QgsWmsImageDownloadHandler::cacheReplyFinished );
       return;
     }
 
@@ -3701,7 +3701,7 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString 
 {
   if ( feedback )
   {
-    connect( feedback, SIGNAL( canceled() ), this, SLOT( canceled() ), Qt::QueuedConnection );
+    connect( feedback, &QgsFeedback::canceled, this, &QgsWmsTiledImageDownloadHandler::canceled, Qt::QueuedConnection );
 
     // rendering could have been canceled before we started to listen to canceled() signal
     // so let's check before doing the download and maybe quit prematurely
@@ -3721,7 +3721,7 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString 
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
     QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
-    connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
+    connect( reply, &QNetworkReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
 
     mReplies << reply;
   }
@@ -3823,7 +3823,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       reply = QgsNetworkAccessManager::instance()->get( request );
       mReplies << reply;
 
-      connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
+      connect( reply, &QNetworkReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
 
       return;
     }
@@ -4020,7 +4020,7 @@ void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
 
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
   mReplies << reply;
-  connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
+  connect( reply, &QNetworkReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
 }
 
 // Some servers like http://glogow.geoportal2.pl/map/wms/wms.php? do not BBOX
@@ -4107,9 +4107,9 @@ QgsWmsLegendDownloadHandler::startUrl( const QUrl &url )
 
   mReply = mNetworkAccessManager.get( request );
   mSettings.authorization().setAuthorizationReply( mReply );
-  connect( mReply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( errored( QNetworkReply::NetworkError ) ) );
-  connect( mReply, SIGNAL( finished() ), this, SLOT( finished() ) );
-  connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( progressed( qint64, qint64 ) ) );
+  connect( mReply, static_cast < void ( QNetworkReply::* )( QNetworkReply::NetworkError ) >( &QNetworkReply::error ), this, &QgsWmsLegendDownloadHandler::errored );
+  connect( mReply, &QNetworkReply::finished, this, &QgsWmsLegendDownloadHandler::finished );
+  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWmsLegendDownloadHandler::progressed );
 }
 
 void

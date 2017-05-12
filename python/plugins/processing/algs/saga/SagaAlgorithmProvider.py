@@ -28,9 +28,11 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtGui import QIcon
-from processing.core.AlgorithmProvider import AlgorithmProvider
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import (QgsProcessingProvider,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isWindows, isMac
 
 from .SagaAlgorithm import SagaAlgorithm
@@ -41,13 +43,16 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class SagaAlgorithmProvider(AlgorithmProvider):
+class SagaAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
-        self.activate = True
+        self.algs = []
 
-    def initializeSettings(self):
+    def load(self):
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        ProcessingConfig.addSetting(Setting("SAGA", 'ACTIVATE_SAGA',
+                                            self.tr('Activate'), True))
         if (isWindows() or isMac()):
             ProcessingConfig.addSetting(Setting("SAGA",
                                                 SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'),
@@ -62,46 +67,55 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(Setting("SAGA",
                                             SagaUtils.SAGA_LOG_CONSOLE,
                                             self.tr('Log console output'), True))
-        ProcessingConfig.settingIcons["SAGA"] = self.icon()
-        ProcessingConfig.addSetting(Setting("SAGA", "ACTIVATE_SAGA",
-                                            self.tr('Activate'), self.activate))
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
+        return True
 
     def unload(self):
-        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting('ACTIVATE_SAGA')
         if (isWindows() or isMac()):
             ProcessingConfig.removeSetting(SagaUtils.SAGA_FOLDER)
 
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
 
-    def _loadAlgorithms(self):
-        self.algs = []
+    def isActive(self):
+        return ProcessingConfig.getSetting('ACTIVATE_SAGA')
+
+    def setActive(self, active):
+        ProcessingConfig.setSettingValue('ACTIVATE_SAGA', active)
+
+    def loadAlgorithms(self):
         version = SagaUtils.getInstalledVersion(True)
         if version is None:
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
+            QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'),
+                                     self.tr('Processing'), QgsMessageLog.CRITICAL)
             return
 
         if not version.startswith('2.3.'):
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   self.tr('Problem with SAGA installation: unsupported SAGA version found.'))
+            QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: unsupported SAGA version found.'),
+                                     self.tr('Processing'),
+                                     QgsMessageLog.CRITICAL)
             return
 
+        self.algs = []
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
                 try:
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
-                    if alg.name.strip() != '':
+                    if alg.name().strip() != '':
                         self.algs.append(alg)
                     else:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('Could not open SAGA algorithm: {}'.format(descriptionFile)))
+                        QgsMessageLog.logMessage(self.tr('Could not open SAGA algorithm: {}'.format(descriptionFile)),
+                                                 self.tr('Processing'), QgsMessageLog.CRITICAL)
                 except Exception as e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                           self.tr('Could not open SAGA algorithm: {}\n{}'.format(descriptionFile, str(e))))
+                    QgsMessageLog.logMessage(self.tr('Could not open SAGA algorithm: {}\n{}'.format(descriptionFile, str(e))),
+                                             self.tr('Processing'), QgsMessageLog.CRITICAL)
 
         self.algs.append(SplitRGBBands())
+        for a in self.algs:
+            self.addAlgorithm(a)
 
     def name(self):
         version = SagaUtils.getInstalledVersion()
@@ -110,10 +124,10 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def id(self):
         return 'saga'
 
-    def getSupportedOutputVectorLayerExtensions(self):
+    def supportedOutputVectorLayerExtensions(self):
         return ['shp']
 
-    def getSupportedOutputRasterLayerExtensions(self):
+    def supportedOutputRasterLayerExtensions(self):
         return ['sdat']
 
     def getSupportedOutputTableLayerExtensions(self):
@@ -121,3 +135,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'SagaAlgorithmProvider'
+        return QCoreApplication.translate(context, string)

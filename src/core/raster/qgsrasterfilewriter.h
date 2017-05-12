@@ -24,7 +24,7 @@
 
 #include "qgsraster.h"
 
-class QProgressDialog;
+class QgsRasterBlockFeedback;
 class QgsRasterIterator;
 class QgsRasterPipe;
 class QgsRectangle;
@@ -39,8 +39,8 @@ class CORE_EXPORT QgsRasterFileWriter
   public:
     enum Mode
     {
-      Raw = 0, // Raw data
-      Image = 1 // Rendered image
+      Raw = 0, //!< Raw data
+      Image = 1 //!< Rendered image
     };
     enum WriterError
     {
@@ -49,8 +49,8 @@ class CORE_EXPORT QgsRasterFileWriter
       DestProviderError = 2,
       CreateDatasourceError = 3,
       WriteError = 4,
-      // Internal error if a value used for 'no data' was found in input
-      NoDataConflict = 5
+      NoDataConflict = 5, //!< Internal error if a value used for 'no data' was found in input
+      WriteCanceled = 6, //!< Writing was manually canceled
     };
 
     QgsRasterFileWriter( const QString &outputUrl );
@@ -58,24 +58,31 @@ class CORE_EXPORT QgsRasterFileWriter
     /** Create a raster file with one band without initializing the pixel data.
      * Returned provider may be used to initialize the raster using writeBlock() calls.
      * Ownership of the returned provider is passed to the caller.
-     * @note Does not work with tiled mode enabled.
-     * @returns Instance of data provider in editing mode (on success) or null on error.
-     * @note added in QGIS 3.0
+     * \note Does not work with tiled mode enabled.
+     * \returns Instance of data provider in editing mode (on success) or nullptr on error.
+     * \since QGIS 3.0
      */
     QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
         int width, int height,
         const QgsRectangle &extent,
-        const QgsCoordinateReferenceSystem &crs );
+        const QgsCoordinateReferenceSystem &crs ) SIP_FACTORY;
 
     /** Write raster file
-        @param pipe raster pipe
-        @param nCols number of output columns
-        @param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
-        @param outputExtent extent to output
-        @param crs crs to reproject to
-        @param p dialog to show progress in */
+        \param pipe raster pipe
+        \param nCols number of output columns
+        \param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
+        \param outputExtent extent to output
+        \param crs crs to reproject to
+        \param feedback optional feedback object for progress reports
+    */
     WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-                             const QgsCoordinateReferenceSystem &crs, QProgressDialog *p = nullptr );
+                             const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = nullptr );
+
+    /**
+     * Returns the output URL for the raster.
+     * \since QGIS 3.0
+     */
+    QString outputUrl() const { return mOutputUrl; }
 
     void setOutputFormat( const QString &format ) { mOutputFormat = format; }
     QString outputFormat() const { return mOutputFormat; }
@@ -113,7 +120,7 @@ class CORE_EXPORT QgsRasterFileWriter
   private:
     QgsRasterFileWriter(); //forbidden
     WriterError writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-                                 const QgsCoordinateReferenceSystem &crs, QProgressDialog *progressDialog = nullptr );
+                                 const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = nullptr );
 
     // Helper method used by previous one
     WriterError writeDataRaster( const QgsRasterPipe *pipe,
@@ -125,19 +132,20 @@ class CORE_EXPORT QgsRasterFileWriter
                                  const QList<bool> &destHasNoDataValueList,
                                  const QList<double> &destNoDataValueList,
                                  QgsRasterDataProvider *destProvider,
-                                 QProgressDialog *progressDialog );
+                                 QgsRasterBlockFeedback *feedback = nullptr );
 
     WriterError writeImageRaster( QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-                                  const QgsCoordinateReferenceSystem &crs, QProgressDialog *progressDialog = nullptr );
+                                  const QgsCoordinateReferenceSystem &crs,
+                                  QgsRasterBlockFeedback *feedback = nullptr );
 
     /** \brief Initialize vrt member variables
-     *  @param xSize width of vrt
-     *  @param ySize height of vrt
-     *  @param crs coordinate system of vrt
-     *  @param geoTransform optional array of transformation matrix values
-     *  @param type datatype of vrt
-     *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
-     *  @param destNoDataValueList no data value, indexed from 0
+     *  \param xSize width of vrt
+     *  \param ySize height of vrt
+     *  \param crs coordinate system of vrt
+     *  \param geoTransform optional array of transformation matrix values
+     *  \param type datatype of vrt
+     *  \param destHasNoDataValueList true if destination has no data value, indexed from 0
+     *  \param destNoDataValueList no data value, indexed from 0
      */
     void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem &crs, double *geoTransform, Qgis::DataType type, const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList );
     //write vrt document to disk
@@ -153,14 +161,14 @@ class CORE_EXPORT QgsRasterFileWriter
         const QgsCoordinateReferenceSystem &crs );
 
     /** \brief Init VRT (for tiled mode) or create global output provider (single-file mode)
-     *  @param nCols number of tile columns
-     *  @param nRows number of tile rows
-     *  @param crs coordinate system of vrt
-     *  @param geoTransform optional array of transformation matrix values
-     *  @param nBands number of bands
-     *  @param type datatype of vrt
-     *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
-     *  @param destNoDataValueList no data value, indexed from 0
+     *  \param nCols number of tile columns
+     *  \param nRows number of tile rows
+     *  \param crs coordinate system of vrt
+     *  \param geoTransform optional array of transformation matrix values
+     *  \param nBands number of bands
+     *  \param type datatype of vrt
+     *  \param destHasNoDataValueList true if destination has no data value, indexed from 0
+     *  \param destNoDataValueList no data value, indexed from 0
      */
     QgsRasterDataProvider *initOutput( int nCols, int nRows,
                                        const QgsCoordinateReferenceSystem &crs, double *geoTransform, int nBands,
@@ -194,7 +202,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QDomDocument mVRTDocument;
     QList<QDomElement> mVRTBands;
 
-    QProgressDialog *mProgressDialog = nullptr;
+    QgsRasterBlockFeedback *mFeedback = nullptr;
 
     const QgsRasterPipe *mPipe = nullptr;
     const QgsRasterInterface *mInput = nullptr;

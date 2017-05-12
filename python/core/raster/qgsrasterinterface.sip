@@ -12,7 +12,7 @@ class QgsRasterBlockFeedback : QgsFeedback
 
   public:
     //! Construct a new raster block feedback object
-    QgsRasterBlockFeedback( QObject* parent = nullptr );
+    QgsRasterBlockFeedback( QObject *parent = 0 );
 
     //! May be emitted by raster data provider to indicate that some partial data are available
     //! and a new preview image may be produced
@@ -55,6 +55,7 @@ class QgsRasterInterface
 #include <qgsrasterresamplefilter.h>
 
 // QgsRasterRenderer subclasses
+#include <qgshillshaderenderer.h>
 #include <qgsmultibandcolorrenderer.h>
 #include <qgspalettedrasterrenderer.h>
 #include <qgssinglebandcolordatarenderer.h>
@@ -80,7 +81,9 @@ class QgsRasterInterface
     sipType = sipType_QgsRasterProjector;
   else if (dynamic_cast<QgsRasterRenderer*>(sipCpp))
   {
-    if (     dynamic_cast<QgsMultiBandColorRenderer*>(sipCpp))
+    if ( dynamic_cast<QgsHillshadeRenderer*>(sipCpp))
+      sipType = sipType_QgsHillshadeRenderer;
+    else if ( dynamic_cast<QgsMultiBandColorRenderer*>(sipCpp))
       sipType = sipType_QgsMultiBandColorRenderer;
     else if (dynamic_cast<QgsPalettedRasterRenderer*>(sipCpp))
       sipType = sipType_QgsPalettedRasterRenderer;
@@ -115,7 +118,7 @@ class QgsRasterInterface
       IdentifyFeature,
     };
 
-    QgsRasterInterface( QgsRasterInterface * input = 0 );
+    QgsRasterInterface( QgsRasterInterface *input = 0 );
 
     virtual ~QgsRasterInterface();
 
@@ -168,14 +171,14 @@ class QgsRasterInterface
      * @param height pixel height of block
      * @param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0 /Factory/;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
-    virtual bool setInput( QgsRasterInterface* input );
+    virtual bool setInput( QgsRasterInterface *input );
 
     /** Current input */
-    virtual QgsRasterInterface * input() const;
+    virtual QgsRasterInterface *input() const;
 
     /** Is on/off */
     virtual bool on() const;
@@ -198,39 +201,20 @@ class QgsRasterInterface
      */
     virtual QgsRasterBandStats bandStatistics( int bandNo,
         int stats = QgsRasterBandStats::All,
-        const QgsRectangle & extent = QgsRectangle(),
-        int sampleSize = 0 );
-
-    /** \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
-     * @return true if statistics are available (ready to use)
-     */
+        const QgsRectangle &extent = QgsRectangle(),
+        int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 );
     virtual bool hasStatistics( int bandNo,
                                 int stats = QgsRasterBandStats::All,
-                                const QgsRectangle & extent = QgsRectangle(),
+                                const QgsRectangle &extent = QgsRectangle(),
                                 int sampleSize = 0 );
-
-    /** \brief Get histogram. Histograms are cached in providers.
-     * @param bandNo The band (number).
-     * @param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
-     * @param minimum Minimum value, if NaN, raster minimum value will be used.
-     * @param maximum Maximum value, if NaN, raster minimum value will be used.
-     * @param extent Extent used to calc histogram, if empty, whole raster extent is used.
-     * @param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
-     * @param includeOutOfRange include out of range values
-     * @return Vector of non NULL cell counts for each bin.
-     * @note binCount, minimum and maximum not optional in python bindings
-     */
     virtual QgsRasterHistogram histogram( int bandNo,
                                           int binCount,
                                           double minimum,
                                           double maximum,
-                                          const QgsRectangle & extent,
-                                          int sampleSize,
-                                          bool includeOutOfRange );
+                                          const QgsRectangle &extent = QgsRectangle(),
+                                          int sampleSize = 0,
+                                          bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = 0 );
 
-    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()
-     * @note binCount, minimum and maximum not optional in python bindings
-     */
     virtual bool hasHistogram( int bandNo,
                                int binCount,
                                double minimum,
@@ -257,9 +241,9 @@ class QgsRasterInterface
                                 int sampleSize = 0 );
 
     /** Write base class members to xml. */
-    virtual void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
     /** Sets base class members from xml. Usually called from create() methods of subclasses */
-    virtual void readXml( const QDomElement& filterElem );
+    virtual void readXml( const QDomElement &filterElem );
 
   protected:
 

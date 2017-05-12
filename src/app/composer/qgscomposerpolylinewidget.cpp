@@ -39,7 +39,7 @@ QgsComposerPolylineWidget::QgsComposerPolylineWidget( QgsComposerPolyline *compo
   updatePolylineStyle();
 
   if ( mComposerPolyline )
-    connect( mComposerPolyline, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+    connect( mComposerPolyline, &QgsComposerObject::itemChanged, this, &QgsComposerPolylineWidget::setGuiElementValues );
 }
 
 QgsComposerPolylineWidget::~QgsComposerPolylineWidget()
@@ -62,7 +62,7 @@ void QgsComposerPolylineWidget::on_mLineStyleButton_clicked()
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
-  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
+  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsComposerPolylineWidget::updateStyleFromWidget );
   connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerPolylineWidget::cleanUpStyleSelector );
   openPanel( d );
   mComposerPolyline->beginCommand( tr( "Polyline style changed" ) );

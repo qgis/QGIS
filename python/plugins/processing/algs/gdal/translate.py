@@ -60,16 +60,19 @@ class translate(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'translate.png'))
 
-    def commandLineName(self):
-        return "gdal:translate"
+    def name(self):
+        return 'translate'
+
+    def displayName(self):
+        return self.tr('Translate (convert format)')
+
+    def group(self):
+        return self.tr('Raster conversion')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Translate (convert format)')
-        self.group, self.i18n_group = self.trAlgorithm('Raster conversion')
-
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.OUTSIZE,
                                           self.tr('Set the size of the output file (In pixels or %)'),
@@ -104,8 +107,7 @@ class translate(GdalAlgorithm):
         outsize = str(self.getParameterValue(self.OUTSIZE))
         outsizePerc = str(self.getParameterValue(self.OUTSIZE_PERC))
         noData = self.getParameterValue(self.NO_DATA)
-        expand = str(self.getParameterFromName(
-            self.EXPAND).options[self.getParameterValue(self.EXPAND)])
+        expand = self.getParameterFromName(self.EXPAND).options[self.getParameterValue(self.EXPAND)][1]
         projwin = str(self.getParameterValue(self.PROJWIN))
         crsId = self.getParameterValue(self.SRS)
         sds = self.getParameterValue(self.SDS)

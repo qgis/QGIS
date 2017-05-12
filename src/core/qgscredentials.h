@@ -17,13 +17,14 @@
 #ifndef QGSCREDENTIALS_H
 #define QGSCREDENTIALS_H
 
-#include <QString>
-#include <QObject>
-#include <QPair>
 #include <QMap>
 #include <QMutex>
+#include <QObject>
+#include <QPair>
+#include <QString>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 /** \ingroup core
  * Interface for requesting credentials in QGIS in GUI independent way.
@@ -42,10 +43,10 @@ class CORE_EXPORT QgsCredentials
 
     virtual ~QgsCredentials() = default;
 
-    bool get( const QString &realm, QString &username, QString &password, const QString &message = QString::null );
+    bool get( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString::null );
     void put( const QString &realm, const QString &username, const QString &password );
 
-    bool getMasterPassword( QString &password, bool stored = false );
+    bool getMasterPassword( QString &password SIP_INOUT, bool stored = false );
 
     //! retrieves instance
     static QgsCredentials *instance();
@@ -54,19 +55,19 @@ class CORE_EXPORT QgsCredentials
      * Lock the instance against access from multiple threads. This does not really lock access to get/put methds,
      * it will just prevent other threads to lock the instance and continue the execution. When the class is used
      * from non-GUI threads, they should call lock() before the get/put calls to avoid race conditions.
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     void lock();
 
     /**
      * Unlock the instance after being locked.
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     void unlock();
 
     /**
      * Return pointer to mutex
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     QMutex *mutex() { return &mMutex; }
 
@@ -74,16 +75,20 @@ class CORE_EXPORT QgsCredentials
     QgsCredentials();
 
     //! request a password
-    virtual bool request( const QString &realm, QString &username, QString &password, const QString &message = QString::null ) = 0;
+    virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString::null ) = 0;
 
     //! request a master password
-    virtual bool requestMasterPassword( QString &password, bool stored = false ) = 0;
+    virtual bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) = 0;
 
     //! register instance
     void setInstance( QgsCredentials *instance );
 
   private:
     Q_DISABLE_COPY( QgsCredentials )
+
+#ifdef SIP_RUN
+    QgsCredentials( const QgsCredentials & );
+#endif
 
     //! cache for already requested credentials in this session
     QMap< QString, QPair<QString, QString> > mCredentialCache;
@@ -112,8 +117,8 @@ class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( const QString &realm, QString &username, QString &password, const QString &message = QString::null ) override;
-    virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
+    virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString::null ) override;
+    virtual bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
 };
 
 
@@ -136,8 +141,8 @@ class CORE_EXPORT QgsCredentialsConsole : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( const QString &realm, QString &username, QString &password, const QString &message = QString::null ) override;
-    virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
+    virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString::null ) override;
+    virtual bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
 };
 
 #endif

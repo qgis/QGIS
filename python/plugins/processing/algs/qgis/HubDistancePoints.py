@@ -27,7 +27,15 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField, QgsGeometry, QgsDistanceArea, QgsFeature, QgsFeatureRequest, QgsWkbTypes
+from qgis.core import (QgsField,
+                       QgsGeometry,
+                       QgsDistanceArea,
+                       QgsFeature,
+                       QgsFeatureRequest,
+                       QgsWkbTypes,
+                       QgsApplication,
+                       QgsProject,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -35,7 +43,7 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 from math import sqrt
 
@@ -54,10 +62,22 @@ class HubDistancePoints(GeoAlgorithm):
              'Layer units'
              ]
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Distance to nearest hub (points)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector analysis tools')
+
+    def name(self):
+        return 'distancetonearesthubpoints'
+
+    def displayName(self):
+        return self.tr('Distance to nearest hub (points)')
+
+    def defineCharacteristics(self):
         self.units = [self.tr('Meters'),
                       self.tr('Feet'),
                       self.tr('Miles'),
@@ -75,11 +95,9 @@ class HubDistancePoints(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
-        layerPoints = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.POINTS))
-        layerHubs = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.HUBS))
+    def processAlgorithm(self, context, feedback):
+        layerPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
+        layerHubs = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
         fieldName = self.getParameterValue(self.FIELD)
 
         units = self.UNITS[self.getParameterValue(self.UNIT)]
@@ -92,18 +110,18 @@ class HubDistancePoints(GeoAlgorithm):
         fields.append(QgsField('HubName', QVariant.String))
         fields.append(QgsField('HubDist', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Point, layerPoints.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, layerPoints.crs(),
+                                                                     context)
 
-        index = vector.spatialindex(layerHubs)
+        index = QgsProcessingUtils.createSpatialIndex(layerHubs, context)
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(layerPoints.crs())
-        distance.setEllipsoidalMode(True)
+        distance.setEllipsoid(QgsProject.instance().ellipsoid())
 
         # Scan source points, find nearest hub, and write to output file
-        features = vector.features(layerPoints)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layerPoints, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerPoints, context)
         for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 

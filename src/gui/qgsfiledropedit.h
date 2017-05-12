@@ -16,26 +16,42 @@
 #define QGSFILEDROPEDIT_H
 
 #include <QLineEdit>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
  * A line edit for capturing file names that can have files dropped onto
  * it via drag & drop.
+ *
+ * Dropping can be limited to files only, files with a specific extension
+  or directories only. By default, dropping is limited to files only.
  */
 class GUI_EXPORT QgsFileDropEdit: public QLineEdit
 {
     Q_OBJECT
 
   public:
-    QgsFileDropEdit( QWidget *parent = nullptr );
+    QgsFileDropEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     bool isDirOnly() const { return mDirOnly; }
+
+    /**
+      Limit drops to directories.
+    */
     void setDirOnly( bool isDirOnly );
 
     bool isFileOnly() const { return mFileOnly; }
+
+    /**
+      Limit drops to files.
+    */
     void setFileOnly( bool isFileOnly );
 
     QString suffixFilter() const { return mSuffix; }
+
+    /**
+      Limit drops to files with specified extension.
+    */
     void setSuffixFilter( const QString &suffix );
 
   protected:
@@ -46,6 +62,10 @@ class GUI_EXPORT QgsFileDropEdit: public QLineEdit
     virtual void paintEvent( QPaintEvent *e ) override;
 
   private:
+
+    /**
+      Return file name if object meets drop criteria.
+    */
     QString acceptableFilePath( QDropEvent *event ) const;
 
     QString mSuffix;

@@ -213,7 +213,7 @@ class QgsRasterBlock
      * overwrite data somewhere in the middle of the internal buffer.
      * @note added in QGIS 3.0
      */
-    void setData( const QByteArray& data, int offset = 0 );
+    void setData( const QByteArray &data, int offset = 0 );
 
     /** \brief Get pointer to data
      *  @param row row index
@@ -252,7 +252,7 @@ class QgsRasterBlock
     /** \brief set image.
      *  @param image image
      *  @return true on success */
-    bool setImage( const QImage * image );
+    bool setImage( const QImage *image );
 
     // @note not available in python bindings
     // inline static double readValue( void *data, Qgis::DataType type, qgssize index );
@@ -260,7 +260,7 @@ class QgsRasterBlock
     // @note not available in python bindings
     // inline static void writeValue( void *data, Qgis::DataType type, qgssize index, double value );
 
-    void applyNoDataValues( const QgsRasterRangeList & rangeList );
+    void applyNoDataValues( const QgsRasterRangeList &rangeList );
 
     /** Apply band scale and offset to raster block values
      * @@note added in 2.3 */
@@ -270,7 +270,7 @@ class QgsRasterBlock
     QgsError error() const;
 
     /** \brief Set error */
-    void setError( const QgsError & error );
+    void setError( const QgsError &error );
 
     QString toString() const;
 

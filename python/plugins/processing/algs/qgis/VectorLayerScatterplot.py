@@ -28,13 +28,14 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 
 from processing.tools import vector
-from processing.tools import dataobjects
 
 
 class VectorLayerScatterplot(GeoAlgorithm):
@@ -44,10 +45,22 @@ class VectorLayerScatterplot(GeoAlgorithm):
     XFIELD = 'XFIELD'
     YFIELD = 'YFIELD'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Vector layer scatterplot')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Graphics')
+
+    def name(self):
+        return 'vectorlayerscatterplot'
+
+    def displayName(self):
+        return self.tr('Vector layer scatterplot')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
@@ -61,15 +74,14 @@ class VectorLayerScatterplot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         xfieldname = self.getParameterValue(self.XFIELD)
         yfieldname = self.getParameterValue(self.YFIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, xfieldname, yfieldname)
+        values = vector.values(layer, context, xfieldname, yfieldname)
         data = [go.Scatter(x=values[xfieldname],
                            y=values[yfieldname],
                            mode='markers')]

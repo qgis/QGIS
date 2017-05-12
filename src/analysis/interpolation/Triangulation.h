@@ -18,6 +18,7 @@
 #define TRIANGULATION_H
 
 #include <QList>
+#include "qgis.h"
 #include <qpainter.h>
 #include <TriangleInterpolator.h>
 #include "qgis_analysis.h"
@@ -42,7 +43,7 @@ class ANALYSIS_EXPORT Triangulation
      * Adds a line (e.g. a break-, structure- or an isoline) to the triangulation.
      * The class takes ownership of the line object and its points
      */
-    virtual void addLine( Line3D *line, bool breakline ) = 0;
+    virtual void addLine( Line3D *line SIP_TRANSFER, bool breakline ) = 0;
 
     /**
      * Adds a point to the triangulation
@@ -52,7 +53,7 @@ class ANALYSIS_EXPORT Triangulation
 
     /**
      * Calculates the normal at a point on the surface and assigns it to 'result'.
-     * @return true in case of success and false in case of failure
+     * \returns true in case of success and false in case of failure
      */
     virtual bool calcNormal( double x, double y, Vector3D *result ) = 0;
 
@@ -71,10 +72,10 @@ class ANALYSIS_EXPORT Triangulation
     /** Finds out in which triangle the point with coordinates x and y is and
      * assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
      */
-    virtual bool getTriangle( double x, double y, Point3D *p1, int *n1, Point3D *p2, int *n2, Point3D *p3, int *n3 ) = 0;
+    virtual bool getTriangle( double x, double y, Point3D *p1, int *n1 SIP_OUT, Point3D *p2 SIP_OUT, int *n2 SIP_OUT, Point3D *p3 SIP_OUT, int *n3 SIP_OUT ) = 0;
 
     //! Finds out, in which triangle the point with coordinates x and y is and assigns the  points at the vertices to 'p1', 'p2' and 'p3
-    virtual bool getTriangle( double x, double y, Point3D *p1, Point3D *p2, Point3D *p3 ) = 0;
+    virtual bool getTriangle( double x, double y, Point3D *p1 SIP_OUT, Point3D *p2 SIP_OUT, Point3D *p3 SIP_OUT ) = 0;
 
     //! Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)
     virtual int getOppositePoint( int p1, int p2 ) = 0;
@@ -148,7 +149,7 @@ class ANALYSIS_EXPORT Triangulation
 
     /**
      * Saves the triangulation as a (line) shapefile
-     * @return true in case of success
+     * \returns true in case of success
      */
     virtual bool saveAsShapefile( const QString &fileName ) const = 0;
 };

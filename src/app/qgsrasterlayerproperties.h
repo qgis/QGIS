@@ -36,9 +36,7 @@ class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
 
 /** Property sheet for a raster map layer
-  *@author Tim Sutton
   */
-
 class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase
 {
     Q_OBJECT
@@ -46,7 +44,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
   public:
 
     /** \brief Constructor
-     * @param ml Map layer for which properties will be displayed
+     * \param ml Map layer for which properties will be displayed
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgisGui::ModalDialogFlags );
 
@@ -194,5 +192,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** Previous layer style. Used to reset style to previous state if new style
      * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
+
+    bool mDisableRenderTypeComboBoxCurrentIndexChanged = false;
 };
 #endif

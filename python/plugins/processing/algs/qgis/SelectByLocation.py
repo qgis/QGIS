@@ -29,14 +29,14 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsGeometry, QgsFeatureRequest
+from qgis.core import QgsGeometry, QgsFeatureRequest, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -50,13 +50,19 @@ class SelectByLocation(GeoAlgorithm):
     METHOD = 'METHOD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'select_location.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Select by location')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+    def group(self):
+        return self.tr('Vector selection tools')
 
+    def name(self):
+        return 'selectbylocation'
+
+    def displayName(self):
+        return self.tr('Select by location')
+
+    def defineCharacteristics(self):
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -87,31 +93,32 @@ class SelectByLocation(GeoAlgorithm):
                                              self.methods, 0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (location)'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
-        inputLayer = dataobjects.getObjectFromUri(filename)
+        inputLayer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)
         filename2 = self.getParameterValue(self.INTERSECT)
-        selectLayer = dataobjects.getObjectFromUri(filename2)
+        selectLayer = QgsProcessingUtils.mapLayerFromString(filename2, context)
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)
 
         oldSelection = set(inputLayer.selectedFeatureIds())
         inputLayer.removeSelection()
-        index = vector.spatialindex(inputLayer)
+        index = QgsProcessingUtils.createSpatialIndex(inputLayer, context)
 
         if 'disjoint' in predicates:
             disjoinSet = []
-            for feat in vector.features(inputLayer):
+            for feat in QgsProcessingUtils.getFeatures(inputLayer, context):
                 disjoinSet.append(feat.id())
 
         geom = QgsGeometry()
         selectedSet = []
-        features = vector.features(selectLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(selectLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(selectLayer, context)
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
-            bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
+            bbox = geom.boundingBox()
+            bbox.grow(0.51 * precision)
             intersects = index.intersects(bbox)
 
             request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])

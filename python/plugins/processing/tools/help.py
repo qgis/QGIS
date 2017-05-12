@@ -26,19 +26,20 @@ __revision__ = '$Format:%H$'
 import os
 import codecs
 
+from qgis.core import QgsApplication
 from processing.core.Processing import Processing
 from processing.core.parameters import ParameterMultipleInput, ParameterTableField, ParameterVector, ParameterSelection
 from processing.tools.system import mkdir
 
 
 def baseHelpForAlgorithm(alg, folder):
-    baseDir = os.path.join(folder, alg.provider.id().lower())
+    baseDir = os.path.join(folder, alg.provider().id().lower())
     mkdir(baseDir)
 
-    groupName = alg.group.lower()
+    groupName = alg.group().lower()
     groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')
     groupName = groupName.replace(' ', '_')
-    cmdLineName = alg.commandLineName()
+    cmdLineName = alg.id()
     algName = cmdLineName[cmdLineName.find(':') + 1:].lower()
     validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
     safeGroupName = ''.join(c for c in groupName if c in validChars)
@@ -49,8 +50,8 @@ def baseHelpForAlgorithm(alg, folder):
     filePath = os.path.join(dirName, safeAlgName + '.rst')
 
     with codecs.open(filePath, 'w', encoding='utf-8') as f:
-        f.write('{}\n'.format(alg.name))
-        f.write('{}\n\n'.format('=' * len(alg.name)))
+        f.write('{}\n'.format(alg.name()))
+        f.write('{}\n\n'.format('=' * len(alg.name())))
         f.write('Description\n')
         f.write('-----------\n\n<put algorithm description here>\n\n')
 
@@ -89,7 +90,7 @@ def baseHelpForAlgorithm(alg, folder):
         f.write('Console usage\n')
         f.write('-------------\n')
         f.write('\n::\n\n')
-        cmd = "  processing.runalg('{}', ".format(alg.commandLineName())
+        cmd = "  processing.run('{}', ".format(alg.id())
         for p in alg.parameters:
             cmd += '{}, '.format(p.name.lower().strip())
 
@@ -108,10 +109,10 @@ def createBaseHelpFiles(folder):
         if 'grass' in provider.id():
             continue
 
-        for alg in provider.algs:
+        for alg in provider.algorithms():
             baseHelpForAlgorithm(alg, folder)
 
 
 def createAlgorithmHelp(algName, folder):
-    alg = Processing.getAlgorithm(algName)
+    alg = QgsApplication.processingRegistry().algorithmById(algName)
     baseHelpForAlgorithm(alg, folder)

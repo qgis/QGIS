@@ -29,13 +29,17 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, QgsWkbTypes
+from qgis.core import (QgsFeature,
+                       QgsGeometry,
+                       QgsFeatureRequest,
+                       QgsWkbTypes,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -46,32 +50,36 @@ class Clip(GeoAlgorithm):
     OVERLAY = 'OVERLAY'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'clip.png'))
 
+    def group(self):
+        return self.tr('Vector overlay tools')
+
+    def name(self):
+        return 'clip'
+
+    def displayName(self):
+        return self.tr('Clip')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Clip')
-        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Clip.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(Clip.OVERLAY,
                                           self.tr('Clip layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
 
-    def processAlgorithm(self, feedback):
-        source_layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(Clip.INPUT))
-        mask_layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(Clip.OVERLAY))
+    def processAlgorithm(self, context, feedback):
+        source_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Clip.INPUT), context)
+        mask_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Clip.OVERLAY), context)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            source_layer.fields(),
-            QgsWkbTypes.multiType(source_layer.wkbType()),
-            source_layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(source_layer.fields(),
+                                                                     QgsWkbTypes.multiType(source_layer.wkbType()),
+                                                                     source_layer.crs(), context)
 
         # first build up a list of clip geometries
         clip_geoms = []
-        for maskFeat in vector.features(mask_layer, QgsFeatureRequest().setSubsetOfAttributes([])):
+        for maskFeat in QgsProcessingUtils.getFeatures(mask_layer, context, QgsFeatureRequest().setSubsetOfAttributes([])):
             clip_geoms.append(maskFeat.geometry())
 
         # are we clipping against a single feature? if so, we can show finer progress reports
@@ -89,7 +97,8 @@ class Clip(GeoAlgorithm):
         tested_feature_ids = set()
 
         for i, clip_geom in enumerate(clip_geoms):
-            input_features = [f for f in vector.features(source_layer, QgsFeatureRequest().setFilterRect(clip_geom.boundingBox()))]
+            input_features = [f for f in QgsProcessingUtils.getFeatures(source_layer, context,
+                                                                        QgsFeatureRequest().setFilterRect(clip_geom.boundingBox()))]
 
             if not input_features:
                 continue
@@ -129,10 +138,9 @@ class Clip(GeoAlgorithm):
                     out_feat.setAttributes(in_feat.attributes())
                     writer.addFeature(out_feat)
                 except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                           self.tr('Feature geometry error: One or more '
-                                                   'output features ignored due to '
-                                                   'invalid geometry.'))
+                    QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more '
+                                                     'output features ignored due to '
+                                                     'invalid geometry.'), self.tr('Processing'), QgsMessageLog.CRITICAL)
                     continue
 
                 if single_clip_feature:

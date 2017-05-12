@@ -45,15 +45,15 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
 
   syncToLayer();
 
-  connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
-  connect( cboxTransparencyBand, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
-  connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
+  connect( sliderTransparency, &QAbstractSlider::valueChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( cboxTransparencyBand, &QgsRasterBandComboBox::bandChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( sliderTransparency, &QAbstractSlider::valueChanged, this, &QgsRasterTransparencyWidget::sliderTransparency_valueChanged );
 
   mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
   {
     mPixelSelectorTool = new QgsMapToolEmitPoint( mMapCanvas );
-    connect( mPixelSelectorTool, SIGNAL( canvasClicked( const QgsPoint &, Qt::MouseButton ) ), this, SLOT( pixelSelected( const QgsPoint & ) ) );
+    connect( mPixelSelectorTool, &QgsMapToolEmitPoint::canvasClicked, this, &QgsRasterTransparencyWidget::pixelSelected );
   }
   else
   {
@@ -74,34 +74,14 @@ void QgsRasterTransparencyWidget::syncToLayer()
       gboxCustomTransparency->setEnabled( false );
     }
 
-    cboxTransparencyBand->addItem( tr( "None" ), -1 );
-    int nBands = provider->bandCount();
-    QString bandName;
-    for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
-    {
-      bandName = provider->generateBandName( i );
-
-      QString colorInterp = provider->colorInterpretationName( i );
-      if ( colorInterp != QLatin1String( "Undefined" ) )
-      {
-        bandName.append( QStringLiteral( " (%1)" ).arg( colorInterp ) );
-      }
-      cboxTransparencyBand->addItem( bandName, i );
-    }
+    cboxTransparencyBand->setShowNotSetOption( true, tr( "None" ) );
+    cboxTransparencyBand->setLayer( mRasterLayer );
 
     sliderTransparency->setValue( ( 1.0 - renderer->opacity() ) * 255 );
     //update the transparency percentage label
     sliderTransparency_valueChanged( ( 1.0 - renderer->opacity() ) * 255 );
 
-    int myIndex = renderer->alphaBand();
-    if ( -1 != myIndex )
-    {
-      cboxTransparencyBand->setCurrentIndex( myIndex );
-    }
-    else
-    {
-      cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findText( TRSTRING_NOT_SET ) );
-    }
+    cboxTransparencyBand->setBand( renderer->alphaBand() );
   }
 
   if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
@@ -393,7 +373,7 @@ void QgsRasterTransparencyWidget::apply()
   QgsRasterRenderer *rasterRenderer = mRasterLayer->renderer();
   if ( rasterRenderer )
   {
-    rasterRenderer->setAlphaBand( cboxTransparencyBand->currentData().toInt() );
+    rasterRenderer->setAlphaBand( cboxTransparencyBand->currentBand() );
 
     //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
     QgsRasterTransparency *rasterTransparency = new QgsRasterTransparency();
@@ -630,14 +610,14 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
         break;
     }
     lineEdit->setText( valueString );
-    connect( lineEdit, SIGNAL( textEdited( QString ) ), this, SIGNAL( widgetChanged() ) );
+    connect( lineEdit, &QLineEdit::textEdited, this, &QgsPanelWidget::widgetChanged );
   }
   tableTransparency->setCellWidget( row, column, lineEdit );
   adjustTransparencyCellWidth( row, column );
 
   if ( nBands == 1 && ( column == 0 || column == 1 ) )
   {
-    connect( lineEdit, SIGNAL( textEdited( const QString & ) ), this, SLOT( transparencyCellTextEdited( const QString & ) ) );
+    connect( lineEdit, &QLineEdit::textEdited, this, &QgsRasterTransparencyWidget::transparencyCellTextEdited );
   }
   tableTransparency->resizeColumnsToContents();
   emit widgetChanged();

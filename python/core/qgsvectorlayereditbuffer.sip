@@ -8,7 +8,7 @@ class QgsVectorLayerEditBuffer : QObject
 %End
 
   public:
-    QgsVectorLayerEditBuffer( QgsVectorLayer* layer );
+    QgsVectorLayerEditBuffer( QgsVectorLayer *layer );
     ~QgsVectorLayerEditBuffer();
 
     /** Returns true if the provider has been modified since the last commit */
@@ -19,19 +19,19 @@ class QgsVectorLayerEditBuffer : QObject
         @param f feature to add
         @return True in case of success and False in case of error
      */
-    virtual bool addFeature( QgsFeature& f );
+    virtual bool addFeature( QgsFeature &f );
 
     /** Insert a copy of the given features into the layer  (but does not commit it) */
-    virtual bool addFeatures( QgsFeatureList& features );
+    virtual bool addFeatures( QgsFeatureList &features );
 
     /** Delete a feature from the layer (but does not commit it) */
     virtual bool deleteFeature( QgsFeatureId fid );
 
     /** Deletes a set of features from the layer (but does not commit it) */
-    virtual bool deleteFeatures( const QgsFeatureIds& fid );
+    virtual bool deleteFeatures( const QgsFeatureIds &fid );
 
     /** Change feature's geometry */
-    virtual bool changeGeometry( QgsFeatureId fid, const QgsGeometry& geom );
+    virtual bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom );
 
     /** Changed an attribute value (but does not commit it) */
     virtual bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
@@ -48,7 +48,7 @@ class QgsVectorLayerEditBuffer : QObject
      * @param newName new name of field
      * @note added in QGIS 2.16
     */
-    virtual bool renameAttribute( int attr, const QString& newName );
+    virtual bool renameAttribute( int attr, const QString &newName );
 
     /**
       Attempts to commit any changes to disk.  Returns the result of the attempt.
@@ -65,7 +65,7 @@ class QgsVectorLayerEditBuffer : QObject
       Therefore any error message also includes which stage failed so
       that the user has some chance of repairing the damage cleanly.
      */
-    virtual bool commitChanges( QStringList& commitErrors );
+    virtual bool commitChanges( QStringList &commitErrors );
 
     /** Stop editing and discard the edits */
     virtual void rollBack();
@@ -159,29 +159,29 @@ class QgsVectorLayerEditBuffer : QObject
     /** Emitted when an attribute has been renamed
      * @param idx attribute index
      * @param newName new attribute name
-     * @note added in QGSI 2.16
+     * @note added in QGIS 2.16
      */
-    void attributeRenamed( int idx, const QString& newName );
+    void attributeRenamed( int idx, const QString &newName );
 
     /** Signals emitted after committing changes */
-    void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributes );
-    void committedAttributesAdded( const QString& layerId, const QList<QgsField>& addedAttributes );
-    void committedFeaturesAdded( const QString& layerId, const QgsFeatureList& addedFeatures );
+    void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
+    void committedAttributesAdded( const QString &layerId, const QList<QgsField> &addedAttributes );
+    void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );
 
     /** Emitted after committing an attribute rename
      * @param layerId ID of layer
      * @param renamedAttributes map of field index to new name
      * @note added in QGIS 2.16
      */
-    void committedAttributesRenamed( const QString& layerId, const QgsFieldNameMap& renamedAttributes );
+    void committedAttributesRenamed( const QString &layerId, const QgsFieldNameMap &renamedAttributes );
 
-    void committedFeaturesRemoved( const QString& layerId, const QgsFeatureIds& deletedFeatureIds );
-    void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
-    void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
+    void committedFeaturesRemoved( const QString &layerId, const QgsFeatureIds &deletedFeatureIds );
+    void committedAttributeValuesChanges( const QString &layerId, const QgsChangedAttributesMap &changedAttributesValues );
+    void committedGeometriesChanges( const QString &layerId, const QgsGeometryMap &changedGeometries );
 
   protected:
 
-    void updateFields( QgsFields& fields );
+    void updateFields( QgsFields &fields );
 
     /** Update feature with uncommitted geometry updates */
     void updateFeatureGeometry( QgsFeature &f );
@@ -197,7 +197,7 @@ class QgsVectorLayerEditBuffer : QObject
 
 
     /** Updates an index in an attribute map to a new value (for updates of changed attributes) */
-    void updateAttributeMapIndex( QgsAttributeMap& attrs, int index, int offset ) const;
+    void updateAttributeMapIndex( QgsAttributeMap &attrs, int index, int offset ) const;
 
     void updateLayerFields();
 };

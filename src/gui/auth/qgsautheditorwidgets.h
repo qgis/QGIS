@@ -18,6 +18,7 @@
 #define QGSAUTHEDITORWIDGETS_H
 
 #include <QWidget>
+#include "qgis.h"
 #include "ui_qgsautheditorwidgets.h"
 #include "ui_qgsauthmethodplugins.h"
 #include "qgis_gui.h"
@@ -33,9 +34,9 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
 
     /**
      * Construct a dialog for viewing available authentication method plugins
-     * @param parent Parent widget
+     * \param parent Parent widget
      */
-    explicit QgsAuthMethodPlugins( QWidget *parent = nullptr );
+    explicit QgsAuthMethodPlugins( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private slots:
     void populateTable();
@@ -59,9 +60,9 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
 
     /**
      * Construct a widget to contain various authentication editors
-     * @param parent Parent widget
+     * \param parent Parent widget
      */
-    explicit QgsAuthEditorWidgets( QWidget *parent = nullptr );
+    explicit QgsAuthEditorWidgets( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private slots:
     void on_btnCertManager_clicked();
@@ -88,6 +89,18 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     //! Relay messages to widget's messagebar
     void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
 
+    //! Remove master password from wallet
+    void  passwordHelperDelete( );
+
+    //! Store master password into the wallet
+    void  passwordHelperSync( );
+
+    //! Toggle password helper (enable/disable)
+    void passwordHelperEnableTriggered( );
+
+    //! Toggle password helper logging (enable/disable)
+    void passwordHelperLoggingEnableTriggered( );
+
   private:
     void setupUtilitiesMenu();
 
@@ -101,6 +114,10 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     QAction *mActionClearCachedAuthConfigs = nullptr;
     QAction *mActionRemoveAuthConfigs = nullptr;
     QAction *mActionEraseAuthDatabase = nullptr;
+    QAction *mActionPasswordHelperDelete = nullptr;
+    QAction *mActionPasswordHelperSync = nullptr;
+    QAction *mActionPasswordHelperEnable = nullptr;
+    QAction *mActionPasswordHelperLoggingEnable = nullptr;
 };
 
 #endif // QGSAUTHEDITORWIDGETS_H

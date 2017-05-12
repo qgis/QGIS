@@ -36,12 +36,12 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposer
 
   //setup html editor
   mHtmlEditor = new QgsCodeEditorHTML( this );
-  connect( mHtmlEditor, SIGNAL( textChanged() ), this, SLOT( htmlEditorChanged() ) );
+  connect( mHtmlEditor, &QsciScintilla::textChanged, this, &QgsComposerHtmlWidget::htmlEditorChanged );
   htmlEditorLayout->addWidget( mHtmlEditor );
 
   //setup stylesheet editor
   mStylesheetEditor = new QgsCodeEditorCSS( this );
-  connect( mStylesheetEditor, SIGNAL( textChanged() ), this, SLOT( stylesheetEditorChanged() ) );
+  connect( mStylesheetEditor, &QsciScintilla::textChanged, this, &QgsComposerHtmlWidget::stylesheetEditorChanged );
   stylesheetEditorLayout->addWidget( mStylesheetEditor );
 
   blockSignals( true );
@@ -54,7 +54,7 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposer
 
   if ( mHtml )
   {
-    QObject::connect( mHtml, SIGNAL( changed() ), this, SLOT( setGuiElementValues() ) );
+    connect( mHtml, &QgsComposerMultiFrame::changed, this, &QgsComposerHtmlWidget::setGuiElementValues );
   }
 
   //embed widget for general options

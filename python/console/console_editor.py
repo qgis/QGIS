@@ -22,7 +22,7 @@ from __future__ import print_function
 from builtins import str
 from builtins import range
 from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize
-from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor
+from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor, QFontDatabase
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs, QsciStyle
 from qgis.core import QgsApplication, QgsSettings
@@ -97,10 +97,7 @@ class Editor(QsciScintilla):
         self.setUtf8(True)
 
         # Set the default font
-        font = QFont()
-        font.setFamily('Courier')
-        font.setFixedPitch(True)
-        font.setPointSize(10)
+        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
         self.setFont(font)
         self.setMarginsFont(font)
         # Margin 0 is used for line numbers
@@ -226,16 +223,14 @@ class Editor(QsciScintilla):
         self.lexer.setFoldComments(True)
         self.lexer.setFoldQuotes(True)
 
-        loadFont = self.settings.value("pythonConsole/fontfamilytextEditor", "Monospace")
-        fontSize = self.settings.value("pythonConsole/fontsizeEditor", 10, type=int)
+        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
 
-        font = QFont(loadFont)
-        font.setFixedPitch(True)
-        font.setPointSize(fontSize)
-        font.setStyleHint(QFont.TypeWriter)
-        font.setStretch(QFont.SemiCondensed)
-        font.setLetterSpacing(QFont.PercentageSpacing, 87.0)
-        font.setBold(False)
+        loadFont = self.settings.value("pythonConsole/fontfamilytextEditor")
+        if loadFont:
+            font.setFamily(loadFont)
+        fontSize = self.settings.value("pythonConsole/fontsizeEditor", type=int)
+        if fontSize:
+            font.setPointSize(fontSize)
 
         self.lexer.setDefaultFont(font)
         self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))

@@ -45,7 +45,7 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     void saveToProject() override;
 
     //! this does the meaty bit of the work
-    void render( QPainter * ) override;
+    void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
     //! Show the dialog box
     void run() override;
 
@@ -58,8 +58,12 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     //! Style of scale bar. An index and the translated text
     int mStyleIndex;
     QStringList mStyleLabels;
+
     //! The scale bar color
     QColor mColor;
+    //! The scale bar otuline color
+    QColor mOutlineColor;
+
     //! Margin percentage values
     int mMarginHorizontal;
     int mMarginVertical;

@@ -17,7 +17,7 @@ class QgsComposerUtils
      * clockwise from pointing vertical upward
      * @param arrowHeadWidth size of arrow head
      */
-    static void drawArrowHead( QPainter* p, const double x, const double y, const double angle, const double arrowHeadWidth );
+    static void drawArrowHead( QPainter *p, const double x, const double y, const double angle, const double arrowHeadWidth );
 
     /** Calculates the angle of the line from p1 to p2 (counter clockwise,
      * starting from a line from north to south)
@@ -32,7 +32,7 @@ class QgsComposerUtils
      * @param x in/out: x coordinate before / after the rotation
      * @param y in/out: y cooreinate before / after the rotation
      */
-    static void rotate( const double angle, double& x, double& y );
+    static void rotate( const double angle, double &x, double &y );
 
     /** Ensures that an angle is in the range 0 <= angle < 360
      * @param angle angle in degrees
@@ -92,7 +92,7 @@ class QgsComposerUtils
      * @param ok will be true if string could be decoded
      * @returns decoded paper orientation
      */
-    static QgsComposition::PaperOrientation decodePaperOrientation( const QString& orientationString, bool &ok );
+    static QgsComposition::PaperOrientation decodePaperOrientation( const QString &orientationString, bool &ok );
 
     /** Decodes a string representing a preset page size
      * @param presetString string to decode
@@ -100,7 +100,7 @@ class QgsComposerUtils
      * @param height double for decoded paper height
      * @returns true if string could be decoded successfully
      */
-    static bool decodePresetPaperSize( const QString& presetString, double &width, double &height );
+    static bool decodePresetPaperSize( const QString &presetString, double &width, double &height );
 
     /** Reads all pre 3.0 data defined properties from an XML element.
      * @note this method was added in version 3.0
@@ -108,7 +108,7 @@ class QgsComposerUtils
      * @see writeDataDefinedPropertyMap
      */
     static void readOldDataDefinedPropertyMap( const QDomElement &itemElem,
-        QgsPropertyCollection& dataDefinedProperties );
+        QgsPropertyCollection &dataDefinedProperties );
 
     /** Reads a pre 3.0 data defined property from an XML DOM element.
      * @note this method was added in version 3.0
@@ -122,7 +122,7 @@ class QgsComposerUtils
      * @returns font with size set in pixels
      * @note added in version 2.5
      */
-    static QFont scaledFontPixelSize( const QFont& font );
+    static QFont scaledFontPixelSize( const QFont &font );
 
     /** Calculate font ascent in millimeters, including workarounds for QT font rendering issues
      * @param font input font
@@ -133,7 +133,7 @@ class QgsComposerUtils
      * @see fontHeightCharacterMM
      * @see textWidthMM
      */
-    static double fontAscentMM( const QFont& font );
+    static double fontAscentMM( const QFont &font );
 
     /** Calculate font descent in millimeters, including workarounds for QT font rendering issues
      * @param font input font
@@ -144,7 +144,7 @@ class QgsComposerUtils
      * @see fontHeightCharacterMM
      * @see textWidthMM
      */
-    static double fontDescentMM( const QFont& font );
+    static double fontDescentMM( const QFont &font );
 
     /** Calculate font height in millimeters, including workarounds for QT font rendering issues
      * The font height is the font ascent + descent + 1 (for the baseline).
@@ -156,7 +156,7 @@ class QgsComposerUtils
      * @see fontHeightCharacterMM
      * @see textWidthMM
      */
-    static double fontHeightMM( const QFont& font );
+    static double fontHeightMM( const QFont &font );
 
     /** Calculate font height in millimeters of a single character, including workarounds for QT font
      * rendering issues
@@ -169,7 +169,7 @@ class QgsComposerUtils
      * @see fontHeightMM
      * @see textWidthMM
      */
-    static double fontHeightCharacterMM( const QFont& font, QChar character );
+    static double fontHeightCharacterMM( const QFont &font, QChar character );
 
     /** Calculate font width in millimeters for a string, including workarounds for QT font
      * rendering issues
@@ -183,7 +183,7 @@ class QgsComposerUtils
      * @see fontHeightCharacterMM
      * @see textHeightMM
      */
-    static double textWidthMM( const QFont& font, const QString& text );
+    static double textWidthMM( const QFont &font, const QString &text );
 
     /** Calculate font height in millimeters for a string, including workarounds for QT font
      * rendering issues. Note that this method uses a non-standard measure of text height,
@@ -195,7 +195,7 @@ class QgsComposerUtils
      * @note added in version 2.12
      * @see textWidthMM
      */
-    static double textHeightMM( const QFont& font, const QString& text, double multiLineHeight = 1.0 );
+    static double textHeightMM( const QFont &font, const QString &text, double multiLineHeight = 1.0 );
 
     /** Draws text on a painter at a specific position, taking care of composer specific issues (calculation to pixel,
      * scaling of font and painter to work around Qt font bugs)
@@ -206,7 +206,7 @@ class QgsComposerUtils
      * @param color color to draw text
      * @note added in version 2.5
      */
-    static void drawText( QPainter* painter, QPointF pos, const QString& text, const QFont& font, const QColor& color = QColor() );
+    static void drawText( QPainter *painter, QPointF pos, const QString &text, const QFont &font, const QColor &color = QColor() );
 
     /** Draws text on a painter within a rectangle, taking care of composer specific issues (calculation to pixel,
      * scaling of font and painter to work around Qt font bugs)
@@ -220,8 +220,8 @@ class QgsComposerUtils
      * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
      * @note added in version 2.5
      */
-    static void drawText( QPainter* painter, const QRectF& rect, const QString& text, const QFont& font, const QColor& color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
+    static void drawText( QPainter *painter, const QRectF &rect, const QString &text, const QFont &font, const QColor &color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
 
-    static QgsRenderContext createRenderContextForMap( QgsComposerMap* map, QPainter* painter, double dpi = -1 );
-    static QgsRenderContext createRenderContextForComposition( QgsComposition* composition, QPainter* painter );
+    static QgsRenderContext createRenderContextForMap( QgsComposerMap *map, QPainter *painter, double dpi = -1 );
+    static QgsRenderContext createRenderContextForComposition( QgsComposition *composition, QPainter *painter );
 };

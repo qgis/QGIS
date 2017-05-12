@@ -31,15 +31,16 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsStringStatisticalSummary,
-                       QgsFeatureRequest)
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsStringStatisticalSummary,
+                       QgsFeatureRequest,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
-from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -60,19 +61,26 @@ class BasicStatisticsStrings(GeoAlgorithm):
     MIN_VALUE = 'MIN_VALUE'
     MAX_VALUE = 'MAX_VALUE'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
+    def flags(self):
         # this algorithm is deprecated - use BasicStatistics instead
-        self.showInToolbox = False
+        return QgsProcessingAlgorithm.FlagDeprecated
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Basic statistics for text fields')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
-        self.tags = self.tr('stats,statistics,string,table,layer')
+    def tags(self):
+        return self.tr('stats,statistics,string,table,layer').split(',')
 
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'basicstatisticsfortextfields'
+
+    def displayName(self):
+        return self.tr('Basic statistics for text fields')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
@@ -92,9 +100,8 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.addOutput(OutputNumber(self.MIN_VALUE, self.tr('Minimum string value')))
         self.addOutput(OutputNumber(self.MAX_VALUE, self.tr('Maximum string value')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
 
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
@@ -102,8 +109,8 @@ class BasicStatisticsStrings(GeoAlgorithm):
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([fieldName],
                                                                                                    layer.fields())
         stat = QgsStringStatisticalSummary()
-        features = vector.features(layer, request)
-        count = len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context, request)
+        count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / float(count)
         for current, ft in enumerate(features):
             stat.addValue(ft[fieldName])

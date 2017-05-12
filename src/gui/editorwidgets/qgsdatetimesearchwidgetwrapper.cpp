@@ -168,7 +168,7 @@ void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget *editor )
 
     mDateTimeEdit->setEmpty();
 
-    connect( mDateTimeEdit, SIGNAL( dateTimeChanged( QDateTime ) ), this, SLOT( dateTimeChanged( QDateTime ) ) );
+    connect( mDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeSearchWidgetWrapper::dateTimeChanged );
   }
 }
 

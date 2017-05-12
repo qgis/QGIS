@@ -43,20 +43,14 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 
   // Setup authentication
   mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
-  QgsDebugMsg( "set username to " + mAuth.mUserName );
-
   mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
-  QgsDebugMsg( "set password to " + mAuth.mPassword );
 
   if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
   {
     mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
   }
-  QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
 
   mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
-  QgsDebugMsg( "set referer to " + mAuth.mReferer );
-
   mXyz = false;  // assume WMS / WMTS
 
   if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) )
@@ -1969,11 +1963,11 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
     QgsMessageLog::logMessage( mError, tr( "WMS" ) );
     return false;
   }
-  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
-  connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+  connect( mCapabilitiesReply, &QNetworkReply::finished, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyFinished, Qt::DirectConnection );
+  connect( mCapabilitiesReply, &QNetworkReply::downloadProgress, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyProgress, Qt::DirectConnection );
 
   QEventLoop loop;
-  connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
+  connect( this, &QgsWmsCapabilitiesDownload::downloadFinished, &loop, &QEventLoop::quit );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   return mError.isEmpty();
@@ -2047,8 +2041,8 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
             return;
           }
 
-          connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
-          connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+          connect( mCapabilitiesReply, &QNetworkReply::finished, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyFinished, Qt::DirectConnection );
+          connect( mCapabilitiesReply, &QNetworkReply::downloadProgress, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyProgress, Qt::DirectConnection );
           return;
         }
       }

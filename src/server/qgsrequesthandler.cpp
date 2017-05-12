@@ -54,7 +54,7 @@ bool QgsRequestHandler::exceptionRaised() const
   return mExceptionRaised;
 }
 
-void QgsRequestHandler::setHeader( const QString &name, const QString &value )
+void QgsRequestHandler::setResponseHeader( const QString &name, const QString &value )
 {
   mResponse.setHeader( name, value );
 }
@@ -64,20 +64,42 @@ void QgsRequestHandler::clear()
   mResponse.clear();
 }
 
-void QgsRequestHandler::removeHeader( const QString &name )
+void QgsRequestHandler::removeResponseHeader( const QString &name )
 {
-  mResponse.clearHeader( name );
+  mResponse.removeHeader( name );
 }
 
-QString QgsRequestHandler::getHeader( const QString &name ) const
+QString QgsRequestHandler::responseHeader( const QString &name ) const
 {
-  return mResponse.getHeader( name );
+  return mResponse.header( name );
 }
 
-QList<QString> QgsRequestHandler::headerKeys() const
+QMap<QString, QString> QgsRequestHandler::responseHeaders() const
 {
-  return mResponse.headerKeys();
+  return mResponse.headers( );
 }
+
+void QgsRequestHandler::setRequestHeader( const QString &name, const QString &value )
+{
+  mRequest.setHeader( name, value );
+}
+
+void QgsRequestHandler::removeRequestHeader( const QString &name )
+{
+  mRequest.removeHeader( name );
+}
+
+QString QgsRequestHandler::requestHeader( const QString &name ) const
+{
+  return mRequest.header( name );
+}
+
+
+QMap<QString, QString> QgsRequestHandler::requestHeaders() const
+{
+  return mRequest.headers( );
+}
+
 
 bool QgsRequestHandler::headersSent() const
 {
@@ -87,6 +109,26 @@ bool QgsRequestHandler::headersSent() const
 void QgsRequestHandler::appendBody( const QByteArray &body )
 {
   mResponse.write( body );
+}
+
+void QgsRequestHandler::clearBody()
+{
+  mResponse.truncate();
+}
+
+QByteArray QgsRequestHandler::body() const
+{
+  return mResponse.data();
+}
+
+void QgsRequestHandler::setStatusCode( int code )
+{
+  mResponse.setStatusCode( code );
+}
+
+int QgsRequestHandler::statusCode() const
+{
+  return mResponse.statusCode();
 }
 
 void QgsRequestHandler::sendResponse()
@@ -223,7 +265,7 @@ void QgsRequestHandler::setParameter( const QString &key, const QString &value )
 
 QString QgsRequestHandler::parameter( const QString &key ) const
 {
-  return mRequest.getParameter( key );
+  return mRequest.parameter( key );
 }
 
 void QgsRequestHandler::removeParameter( const QString &key )

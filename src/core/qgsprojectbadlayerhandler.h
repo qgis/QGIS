@@ -36,7 +36,7 @@ class CORE_EXPORT QgsProjectBadLayerHandler
      * The default implementation will dismiss all bad layers and write information to the
      * log.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual void handleBadLayers( const QList<QDomNode> &layers );
     virtual ~QgsProjectBadLayerHandler() = default;
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsProjectBadLayerHandler
      *
      * The Dom node should represent the state associated with a specific layer.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     DataType dataType( const QDomNode &layerNode );
 
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsProjectBadLayerHandler
      *
      * Essentially dumps datasource tag.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QString dataSource( const QDomNode &layerNode );
 
@@ -96,14 +96,14 @@ class CORE_EXPORT QgsProjectBadLayerHandler
      * it's either a database or URL.  If the datasource tag has "url=", then it's
      * URL based and if it has "dbname=">, then the layer data is in a database.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     ProviderType providerType( const QDomNode &layerNode );
 
     /**
      * Set the datasource element to the new value
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setDataSource( QDomNode &layerNode, const QString &dataSource );
 };

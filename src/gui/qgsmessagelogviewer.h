@@ -23,6 +23,7 @@
 
 #include <QString>
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QStatusBar;
 class QCloseEvent;
@@ -34,10 +35,19 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
 {
     Q_OBJECT
   public:
-    QgsMessageLogViewer( QStatusBar *statusBar = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+
+    /**
+     * Create a new message log viewer. The viewer will automatically connect to the system's
+     * QgsApplication::messageLog() instance.
+     */
+    QgsMessageLogViewer( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
   public slots:
-    void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
+
+    /**
+     * Logs a \a message to the viewer.
+     */
+    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
 
   protected:
     void closeEvent( QCloseEvent *e ) override;

@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsRectangle
+from qgis.core import (QgsRectangle,
+                       QgsProcessingUtils)
 from qgis.analysis import (QgsInterpolator,
                            QgsIDWInterpolator,
                            QgsGridFileWriter
@@ -43,7 +44,6 @@ from processing.core.parameters import (Parameter,
                                         _splitParameterOptions,
                                         _createDescriptiveName)
 from processing.core.outputs import OutputRaster
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -59,13 +59,19 @@ class IdwInterpolation(GeoAlgorithm):
     EXTENT = 'EXTENT'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('IDW interpolation')
-        self.group, self.i18n_group = self.trAlgorithm('Interpolation')
+    def group(self):
+        return self.tr('Interpolation')
 
+    def name(self):
+        return 'idwinterpolation'
+
+    def displayName(self):
+        return self.tr('IDW interpolation')
+
+    def defineCharacteristics(self):
         class ParameterInterpolationData(Parameter):
             default_metadata = {
                 'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
@@ -139,7 +145,7 @@ class IdwInterpolation(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Interpolated')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
         coefficient = self.getParameterValue(self.DISTANCE_COEFFICIENT)
         columns = self.getParameterValue(self.COLUMNS)
@@ -160,10 +166,16 @@ class IdwInterpolation(GeoAlgorithm):
         bbox = QgsRectangle(xMin, yMin, xMax, yMax)
 
         layerData = []
+        layers = []
         for row in interpolationData.split(';'):
             v = row.split(',')
             data = QgsInterpolator.LayerData()
-            data.vectorLayer = dataobjects.getObjectFromUri(v[0])
+
+            # need to keep a reference until interpolation is complete
+            layer = QgsProcessingUtils.mapLayerFromString(v[0], context)
+            data.vectorLayer = layer
+            layers.append(layer)
+
             data.zCoordInterpolation = bool(v[1])
             data.interpolationAttribute = int(v[2])
             if v[3] == '0':

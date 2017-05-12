@@ -336,10 +336,10 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::clone() const
   return new QgsLayerTreeGroup( *this );
 }
 
-void QgsLayerTreeGroup::resolveReferences( const QgsProject *project )
+void QgsLayerTreeGroup::resolveReferences( const QgsProject *project, bool looseMatching )
 {
   Q_FOREACH ( QgsLayerTreeNode *node, mChildren )
-    node->resolveReferences( project );
+    node->resolveReferences( project, looseMatching );
 }
 
 static bool _nodeIsChecked( QgsLayerTreeNode *node )

@@ -24,8 +24,8 @@ QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl,
 {
   // create buttonbox
   mButtonBox = new QDialogButtonBox( buttons, orientation, this );
-  connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   // layout
   QLayout *layout = nullptr;

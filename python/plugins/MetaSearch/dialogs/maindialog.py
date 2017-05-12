@@ -37,7 +37,9 @@ import os.path
 from urllib.request import build_opener, install_opener, ProxyHandler
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMessageBox, QTreeWidgetItem, QWidget
+from qgis.PyQt.QtWidgets import (QApplication, QDialog, QComboBox,
+                                 QDialogButtonBox, QMessageBox,
+                                 QTreeWidgetItem, QWidget)
 from qgis.PyQt.QtGui import QColor, QCursor
 
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
@@ -131,6 +133,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.mActionAddWms.triggered.connect(self.add_to_ows)
         self.mActionAddWfs.triggered.connect(self.add_to_ows)
         self.mActionAddWcs.triggered.connect(self.add_to_ows)
+        self.mActionAddAms.triggered.connect(self.add_to_ows)
+        self.mActionAddAfs.triggered.connect(self.add_to_ows)
         self.btnShowXml.clicked.connect(self.show_xml)
 
         # settings
@@ -392,7 +396,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """set bounding box from map extent"""
 
         crs = self.map.mapSettings().destinationCrs()
-        crsid = int(crs.authid().split(':')[1])
+        try:
+            crsid = int(crs.authid().split(':')[1])
+        except IndexError:  # no projection
+            crsid = 4326
 
         extent = self.map.extent()
 
@@ -570,7 +577,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             if points is not None:
                 src = QgsCoordinateReferenceSystem(4326)
                 dst = self.map.mapSettings().destinationCrs()
-                geom = QgsGeometry.fromPolygon(points)
+                geom = QgsGeometry.fromWkt(points)
                 if src.postgisSrid() != dst.postgisSrid():
                     ctr = QgsCoordinateTransform(src, dst)
                     try:
@@ -606,12 +613,14 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             wmswmst_link_types = list(map(str.upper, link_types.WMSWMST_LINK_TYPES))
             wfs_link_types = list(map(str.upper, link_types.WFS_LINK_TYPES))
             wcs_link_types = list(map(str.upper, link_types.WCS_LINK_TYPES))
+            ams_link_types = list(map(str.upper, link_types.AMS_LINK_TYPES))
+            afs_link_types = list(map(str.upper, link_types.AFS_LINK_TYPES))
 
             # if the link type exists, and it is one of the acceptable
             # interactive link types, then set
             if all([link_type is not None,
                     link_type in wmswmst_link_types + wfs_link_types +
-                    wcs_link_types]):
+                    wcs_link_types + ams_link_types + afs_link_types]):
                 if link_type in wmswmst_link_types:
                     services['wms'] = link['url']
                     self.mActionAddWms.setEnabled(True)
@@ -621,6 +630,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 if link_type in wcs_link_types:
                     services['wcs'] = link['url']
                     self.mActionAddWcs.setEnabled(True)
+                if link_type in ams_link_types:
+                    services['ams'] = link['url']
+                    self.mActionAddAms.setEnabled(True)
+                if link_type in afs_link_types:
+                    services['afs'] = link['url']
+                    self.mActionAddAfs.setEnabled(True)
                 self.tbAddData.setEnabled(True)
 
             set_item_data(item, 'link', json.dumps(services))
@@ -705,6 +720,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         elif caller == 'mActionAddWcs':
             stype = ['OGC:WCS', 'wcs', 'wcs']
             data_url = item_data['wcs']
+        elif caller == 'mActionAddAms':
+            stype = ['ESRI:ArcGIS:MapServer', 'ams', 'arcgismapserver']
+            data_url = item_data['ams'].split('MapServer')[0] + 'MapServer'
+        elif caller == 'mActionAddAfs':
+            stype = ['ESRI:ArcGIS:FeatureServer', 'afs', 'arcgisfeatureserver']
+            data_url = item_data['afs'].split('FeatureServer')[0] + 'FeatureServer'
 
         QApplication.restoreOverrideCursor()
 
@@ -712,7 +733,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         # store connection
         # check if there is a connection with same name
-        self.settings.beginGroup('/Qgis/connections-%s' % stype[1])
+        if caller in ['mActionAddAms', 'mActionAddAfs']:
+            self.settings.beginGroup('/Qgis/connections-%s' % stype[2])
+        else:
+            self.settings.beginGroup('/Qgis/connections-%s' % stype[1])
         keys = self.settings.childGroups()
         self.settings.endGroup()
 
@@ -736,14 +760,16 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 sname = serialize_string(sname)
 
         # no dups detected or overwrite is allowed
-        self.settings.beginGroup('/Qgis/connections-%s' % stype[1])
+        if caller in ['mActionAddAms', 'mActionAddAfs']:
+            self.settings.beginGroup('/Qgis/connections-%s' % stype[2])
+        else:
+            self.settings.beginGroup('/Qgis/connections-%s' % stype[1])
         self.settings.setValue('/%s/url' % sname, clean_ows_url(data_url))
         self.settings.endGroup()
 
         # open provider window
-        ows_provider = QgsProviderRegistry.instance().selectWidget(stype[2],
-                                                                   self)
-
+        ows_provider = QgsProviderRegistry.instance().createSelectionWidget(stype[2],
+                                                                            self)
         service_type = stype[0]
 
         # connect dialog signals to iface slots
@@ -759,6 +785,14 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'mConnectionsComboBox')
             connect = 'on_mConnectButton_clicked'
+        elif service_type == 'ESRI:ArcGIS:MapServer':
+            ows_provider.addAction(self.iface.actionAddAmsLayer())
+            conn_cmb = ows_provider.findChild(QComboBox)
+            connect = 'connectToServer'
+        elif service_type == 'ESRI:ArcGIS:FeatureServer':
+            ows_provider.addAction(self.iface.actionAddAfsLayer())
+            conn_cmb = ows_provider.findChild(QComboBox)
+            connect = 'connectToServer'
         ows_provider.setModal(False)
         ows_provider.show()
 
@@ -768,6 +802,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             conn_cmb.setCurrentIndex(index)
             # only for wfs
             if service_type == 'OGC:WFS':
+                ows_provider.on_cmbConnections_activated(index)
+            elif service_type in ['ESRI:ArcGIS:MapServer', 'ESRI:ArcGIS:FeatureServer']:
                 ows_provider.on_cmbConnections_activated(index)
         getattr(ows_provider, connect)()
 
@@ -839,6 +875,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.mActionAddWms.setEnabled(False)
             self.mActionAddWfs.setEnabled(False)
             self.mActionAddWcs.setEnabled(False)
+            self.mActionAddAms.setEnabled(False)
+            self.mActionAddAfs.setEnabled(False)
 
         if xml:
             self.btnShowXml.setEnabled(False)
@@ -953,11 +991,6 @@ def bbox_to_polygon(bbox):
         maxx = float(bbox.maxx)
         maxy = float(bbox.maxy)
 
-        return [[
-            QgsPoint(minx, miny),
-            QgsPoint(minx, maxy),
-            QgsPoint(maxx, maxy),
-            QgsPoint(maxx, miny)
-        ]]
+        return 'POLYGON((%.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f))' % (minx, miny, minx, maxy, maxx, maxy, maxx, miny, minx, miny)  # noqa
     else:
         return None

@@ -94,31 +94,31 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
   btnRemoveRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
-  connect( viewRules, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( editRule( const QModelIndex & ) ) );
+  connect( viewRules, &QAbstractItemView::doubleClicked, this, static_cast < void ( QgsRuleBasedRendererWidget::* )( const QModelIndex &index ) > ( &QgsRuleBasedRendererWidget::editRule ) );
 
   // support for context menu (now handled generically)
-  connect( viewRules, SIGNAL( customContextMenuRequested( const QPoint & ) ),  this, SLOT( contextMenuViewCategories( const QPoint & ) ) );
+  connect( viewRules, &QWidget::customContextMenuRequested,  this, &QgsRuleBasedRendererWidget::contextMenuViewCategories );
 
-  connect( viewRules->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( currentRuleChanged( QModelIndex, QModelIndex ) ) );
-  connect( viewRules->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( selectedRulesChanged() ) );
+  connect( viewRules->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsRuleBasedRendererWidget::currentRuleChanged );
+  connect( viewRules->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsRuleBasedRendererWidget::selectedRulesChanged );
 
-  connect( btnAddRule, SIGNAL( clicked() ), this, SLOT( addRule() ) );
-  connect( btnEditRule, SIGNAL( clicked() ), this, SLOT( editRule() ) );
-  connect( btnRemoveRule, SIGNAL( clicked() ), this, SLOT( removeRule() ) );
-  connect( mDeleteAction, SIGNAL( triggered() ), this, SLOT( removeRule() ) );
-  connect( btnCountFeatures, SIGNAL( clicked() ), this, SLOT( countFeatures() ) );
+  connect( btnAddRule, &QAbstractButton::clicked, this, &QgsRuleBasedRendererWidget::addRule );
+  connect( btnEditRule, &QAbstractButton::clicked, this, static_cast < void ( QgsRuleBasedRendererWidget::* )() > ( &QgsRuleBasedRendererWidget::editRule ) );
+  connect( btnRemoveRule, &QAbstractButton::clicked, this, &QgsRuleBasedRendererWidget::removeRule );
+  connect( mDeleteAction, &QAction::triggered, this, &QgsRuleBasedRendererWidget::removeRule );
+  connect( btnCountFeatures, &QAbstractButton::clicked, this, &QgsRuleBasedRendererWidget::countFeatures );
 
-  connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
+  connect( btnRenderingOrder, &QAbstractButton::clicked, this, &QgsRuleBasedRendererWidget::setRenderingOrder );
 
-  connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SIGNAL( widgetChanged() ) );
-  connect( mModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SIGNAL( widgetChanged() ) );
-  connect( mModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::widgetChanged );
 
   currentRuleChanged();
   selectedRulesChanged();
 
   // store/restore header section widths
-  connect( viewRules->header(), SIGNAL( sectionResized( int, int, int ) ), this, SLOT( saveSectionWidth( int, int, int ) ) );
+  connect( viewRules->header(), &QHeaderView::sectionResized, this, &QgsRuleBasedRendererWidget::saveSectionWidth );
 
   restoreSectionWidths();
 
@@ -184,7 +184,7 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
   QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext );
   widget->setPanelTitle( tr( "Edit rule" ) );
   connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
-  connect( widget, SIGNAL( widgetChanged() ), this, SLOT( liveUpdateRuleFromPanel() ) );
+  connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
   openPanel( widget );
 }
 
@@ -641,21 +641,21 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
 
   mSymbolSelector = new QgsSymbolSelectorWidget( mSymbol, style, mLayer, this );
   mSymbolSelector->setContext( mContext );
-  connect( mSymbolSelector, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+  connect( mSymbolSelector, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mSymbolSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
   QVBoxLayout *l = new QVBoxLayout;
   l->addWidget( mSymbolSelector );
   groupSymbol->setLayout( l );
 
-  connect( btnExpressionBuilder, SIGNAL( clicked() ), this, SLOT( buildExpression() ) );
-  connect( btnTestFilter, SIGNAL( clicked() ), this, SLOT( testFilter() ) );
-  connect( editFilter, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
-  connect( editLabel, SIGNAL( editingFinished() ), this, SIGNAL( widgetChanged() ) );
-  connect( editDescription, SIGNAL( editingFinished() ), this, SIGNAL( widgetChanged() ) );
-  connect( groupSymbol, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
-  connect( groupScale, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
-  connect( mScaleRangeWidget, SIGNAL( rangeChanged( double, double ) ), this, SIGNAL( widgetChanged() ) );
+  connect( btnExpressionBuilder, &QAbstractButton::clicked, this, &QgsRendererRulePropsWidget::buildExpression );
+  connect( btnTestFilter, &QAbstractButton::clicked, this, &QgsRendererRulePropsWidget::testFilter );
+  connect( editFilter, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( editLabel, &QLineEdit::editingFinished, this, &QgsPanelWidget::widgetChanged );
+  connect( editDescription, &QLineEdit::editingFinished, this, &QgsPanelWidget::widgetChanged );
+  connect( groupSymbol, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
+  connect( groupScale, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
+  connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
 QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent, const QgsSymbolWidgetContext &context )
@@ -673,8 +673,8 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
   this->layout()->addWidget( mPropsWidget );
   this->layout()->addWidget( buttonBox );
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererRulePropsDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/QgsRendererRulePropsDialog/geometry" ) ).toByteArray() );

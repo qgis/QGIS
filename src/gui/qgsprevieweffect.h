@@ -19,6 +19,7 @@
 #define QGSPREVIEWEFFECT_H
 
 #include <QGraphicsEffect>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
@@ -39,19 +40,19 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
       PreviewDeuteranope
     };
 
-    QgsPreviewEffect( QObject *parent );
+    QgsPreviewEffect( QObject *parent SIP_TRANSFERTHIS );
 
     /** Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
-     * @param mode PreviewMode to use to draw the widget
-     * @note added in 2.3
-     * @see mode
+     * \param mode PreviewMode to use to draw the widget
+     * \since QGIS 2.3
+     * \see mode
      */
     void setMode( PreviewMode mode );
 
     /** Returns the mode used for the preview effect.
-     * @returns PreviewMode currently used by the effect
-     * @note added in 2.3
-     * @see setMode
+     * \returns PreviewMode currently used by the effect
+     * \since QGIS 2.3
+     * \see setMode
      */
     PreviewMode mode() const { return mMode; }
 

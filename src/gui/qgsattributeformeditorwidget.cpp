@@ -55,8 +55,8 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   mSearchPage->setLayout( l );
   l->addWidget( mSearchFrame, 1 );
   mSearchWidgetToolButton = new QgsSearchWidgetToolButton();
-  connect( mSearchWidgetToolButton, SIGNAL( activeFlagsChanged( QgsSearchWidgetWrapper::FilterFlags ) ),
-           this, SLOT( searchWidgetFlagsChanged( QgsSearchWidgetWrapper::FilterFlags ) ) );
+  connect( mSearchWidgetToolButton, &QgsSearchWidgetToolButton::activeFlagsChanged,
+           this, &QgsAttributeFormEditorWidget::searchWidgetFlagsChanged );
   l->addWidget( mSearchWidgetToolButton, 0 );
 
 
@@ -79,9 +79,9 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   {
     mWidget->widget()->setObjectName( mWidget->field().name() );
   }
-  connect( mWidget, SIGNAL( valueChanged( const QVariant & ) ), this, SLOT( editorWidgetChanged( const QVariant & ) ) );
-  connect( mMultiEditButton, SIGNAL( resetFieldValueTriggered() ), this, SLOT( resetValue() ) );
-  connect( mMultiEditButton, SIGNAL( setFieldValueTriggered() ), this, SLOT( setFieldTriggered() ) );
+  connect( mWidget, static_cast<void ( QgsEditorWidgetWrapper::* )( const QVariant &value )>( &QgsEditorWidgetWrapper::valueChanged ), this, &QgsAttributeFormEditorWidget::editorWidgetChanged );
+  connect( mMultiEditButton, &QgsMultiEditToolButton::resetFieldValueTriggered, this, &QgsAttributeFormEditorWidget::resetValue );
+  connect( mMultiEditButton, &QgsMultiEditToolButton::setFieldValueTriggered, this, &QgsAttributeFormEditorWidget::setFieldTriggered );
 
   mMultiEditButton->setField( mWidget->field() );
 
@@ -119,8 +119,8 @@ void QgsAttributeFormEditorWidget::setSearchWidgetWrapper( QgsSearchWidgetWrappe
   mSearchWidgetToolButton->setAvailableFlags( wrapper->supportedFlags() );
   mSearchWidgetToolButton->setActiveFlags( QgsSearchWidgetWrapper::FilterFlags() );
   mSearchWidgetToolButton->setDefaultFlags( wrapper->defaultFlags() );
-  connect( wrapper, SIGNAL( valueChanged() ), mSearchWidgetToolButton, SLOT( searchWidgetValueChanged() ) );
-  connect( wrapper, SIGNAL( valueCleared() ), mSearchWidgetToolButton, SLOT( setInactive() ) );
+  connect( wrapper, &QgsSearchWidgetWrapper::valueChanged, mSearchWidgetToolButton, &QgsSearchWidgetToolButton::setActive );
+  connect( wrapper, &QgsSearchWidgetWrapper::valueCleared, mSearchWidgetToolButton, &QgsSearchWidgetToolButton::setInactive );
 }
 
 QWidget *QgsAttributeFormEditorWidget::searchWidgetFrame()

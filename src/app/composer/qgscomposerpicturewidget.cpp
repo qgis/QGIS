@@ -61,7 +61,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture 
   {
     mComposerMapComboBox->setComposition( mPicture->composition() );
     mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-    connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem * ) ), this, SLOT( composerMapChanged( QgsComposerItem * ) ) );
+    connect( mComposerMapComboBox, &QgsComposerItemComboBox::itemChanged, this, &QgsComposerPictureWidget::composerMapChanged );
   }
 
   setGuiElementValues();
@@ -72,10 +72,10 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture 
   // mSearchDirectoriesGroupBox is a QgsCollapsibleGroupBoxBasic, so its collapsed state should not be saved/restored
   mSearchDirectoriesGroupBox->setCollapsed( true );
   // setup connection for loading previews on first expansion of group box
-  connect( mSearchDirectoriesGroupBox, SIGNAL( collapsedStateChanged( bool ) ), this, SLOT( loadPicturePreviews( bool ) ) );
+  connect( mSearchDirectoriesGroupBox, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsComposerPictureWidget::loadPicturePreviews );
 
-  connect( mPicture, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
-  connect( mPicture, SIGNAL( pictureRotationChanged( double ) ), this, SLOT( setPicRotationSpinValue( double ) ) );
+  connect( mPicture, &QgsComposerObject::itemChanged, this, &QgsComposerPictureWidget::setGuiElementValues );
+  connect( mPicture, &QgsComposerPicture::pictureRotationChanged, this, &QgsComposerPictureWidget::setPicRotationSpinValue );
 
   //connections for data defined buttons
   connect( mSourceDDBtn, &QgsPropertyOverrideButton::activated, mPictureLineEdit, &QLineEdit::setDisabled );

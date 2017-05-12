@@ -1,4 +1,3 @@
-
 /***************************************************************************
     qgsgraduatedsymbolrenderer.cpp
     ---------------------
@@ -13,28 +12,32 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+
 #include "qgsgraduatedsymbolrenderer.h"
 
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
+#include "qgsattributes.h"
 #include "qgscolorramp.h"
-#include "qgspointdisplacementrenderer.h"
+#include "qgsexpression.h"
+#include "qgsfeature.h"
 #include "qgsinvertedpolygonrenderer.h"
+#include "qgslogger.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgssymbollayer.h"
+#include "qgspointdisplacementrenderer.h"
 #include "qgsproperty.h"
-
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgslogger.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectordataprovider.h"
-#include "qgsexpression.h"
+#include "qgsvectorlayer.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QSettings> // for legend
 #include <limits> // for jenks classification
 #include <ctime>
+
 
 QgsRendererRange::QgsRendererRange()
   : mLowerValue( 0 )

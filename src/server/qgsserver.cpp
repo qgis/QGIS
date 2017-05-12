@@ -31,12 +31,12 @@
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
-#include "qgspallabeling.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsserverlogger.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsserverrequest.h"
 #include "qgsbufferserverresponse.h"
+#include "qgsbufferserverrequest.h"
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
 #include "qgsserverprojectutils.h"
@@ -389,7 +389,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QString outputFileName = parameterMap.value( QStringLiteral( "FILE_NAME" ) );
       if ( !outputFileName.isEmpty() )
       {
-        requestHandler.setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
+        requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
       }
 
       // Lookup for service
@@ -427,60 +427,6 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
 }
 
-QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &queryString )
-{
-  /*
-   * This is mainly for python bindings, passing QUERY_STRING
-   * to handleRequest without using os.environment
-   *
-   * XXX To be removed because query string is now handled in QgsServerRequest
-   *
-   */
-  if ( ! queryString.isEmpty() )
-    putenv( QStringLiteral( "QUERY_STRING" ), queryString );
-
-  QgsServerRequest::Method method = QgsServerRequest::GetMethod;
-  QByteArray ba;
-
-  // XXX This is mainly used in tests
-  char *requestMethod = getenv( "REQUEST_METHOD" );
-  if ( requestMethod && strcmp( requestMethod, "POST" ) == 0 )
-  {
-    method = QgsServerRequest::PostMethod;
-    const char *data = getenv( "REQUEST_BODY" );
-    if ( data )
-    {
-      ba.append( data );
-    }
-  }
-
-  QUrl url;
-  url.setQuery( queryString );
-
-  QgsBufferServerRequest request( url, method, &ba );
-  QgsBufferServerResponse response;
-
-  handleRequest( request, response );
-
-  /*
-   * XXX For compatibility only:
-   * We should return a (moved) QgsBufferServerResponse instead
-   */
-  QByteArray headerBuffer;
-  QMap<QString, QString>::const_iterator it;
-  for ( it = response.headers().constBegin(); it != response.headers().constEnd(); ++it )
-  {
-    headerBuffer.append( it.key().toUtf8() );
-    headerBuffer.append( ": " );
-    headerBuffer.append( it.value().toUtf8() );
-    headerBuffer.append( "\n" );
-  }
-  headerBuffer.append( "\n" );
-
-  // TODO: check that this is not an evil bug!
-  return QPair<QByteArray, QByteArray>( headerBuffer, response.body() );
-
-}
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsServer::initPython()

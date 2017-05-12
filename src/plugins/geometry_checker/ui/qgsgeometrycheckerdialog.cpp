@@ -17,7 +17,8 @@
 #include "qgsgeometrycheckerdialog.h"
 #include "qgsgeometrycheckersetuptab.h"
 #include "qgsgeometrycheckerresulttab.h"
-
+#include "../qgsgeometrychecker.h"
+#include "../utils/qgsfeaturepool.h"
 #include "qgssettings.h"
 
 #include <QCloseEvent>
@@ -44,9 +45,9 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   mTabWidget->addTab( new QWidget(), tr( "Result" ) );
   mTabWidget->setTabEnabled( 1, false );
 
-  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-  connect( mTabWidget->widget( 0 ), SIGNAL( checkerStarted( QgsGeometryChecker *, QgsFeaturePool * ) ), this, SLOT( onCheckerStarted( QgsGeometryChecker *, QgsFeaturePool * ) ) );
-  connect( mTabWidget->widget( 0 ), SIGNAL( checkerFinished( bool ) ), this, SLOT( onCheckerFinished( bool ) ) );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( dynamic_cast< QgsGeometryCheckerSetupTab * >( mTabWidget->widget( 0 ) ), &QgsGeometryCheckerSetupTab::checkerStarted, this, &QgsGeometryCheckerDialog::onCheckerStarted );
+  connect( dynamic_cast< QgsGeometryCheckerSetupTab * >( mTabWidget->widget( 0 ) ), &QgsGeometryCheckerSetupTab::checkerFinished, this, &QgsGeometryCheckerDialog::onCheckerFinished );
 }
 
 QgsGeometryCheckerDialog::~QgsGeometryCheckerDialog()

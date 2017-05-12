@@ -62,26 +62,26 @@ class CORE_EXPORT QgsAuthMethodRegistry
     void setLibraryDirectory( const QDir &path );
 
     /** Create an instance of the auth method
-        @param authMethodKey identificator of the auth method
-        @return instance of auth method or nullptr on error
+        \param authMethodKey identificator of the auth method
+        \returns instance of auth method or nullptr on error
      */
     QgsAuthMethod *authMethod( const QString &authMethodKey );
 
     /** Return the auth method capabilities
-        @param authMethodKey identificator of the auth method
+        \param authMethodKey identificator of the auth method
      */
     // int authMethodCapabilities( const QString& authMethodKey ) const;
 
     /** Return the GUI edit widget associated with the auth method
-     * @param parent Parent widget
-     * @param authMethodKey identificator of the auth method
+     * \param parent Parent widget
+     * \param authMethodKey identificator of the auth method
      */
     QWidget *editWidget( const QString &authMethodKey, QWidget *parent = nullptr );
 
     /** Get pointer to auth method function
-        @param authMethodKey identificator of the auth method
-        @param functionName name of function
-        @return pointer to function or nullptr on error
+        \param authMethodKey identificator of the auth method
+        \param functionName name of function
+        \returns pointer to function or nullptr on error
      */
     QFunctionPointer function( const QString &authMethodKey,
                                const QString &functionName );

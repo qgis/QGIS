@@ -17,6 +17,7 @@
 #define QGSSCROLLAREA_H
 
 #include <QScrollArea>
+#include "qgis.h"
 #include "qgis_gui.h"
 #include <QTimer>
 class ScrollAreaFilter;
@@ -35,7 +36,7 @@ class ScrollAreaFilter;
  * All QGIS code and plugins should use QgsScrollArea in place
  * of QScrollArea.
  *
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsScrollArea : public QScrollArea
 {
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     /**
      * Constructor for QgsScrollArea.
      */
-    explicit QgsScrollArea( QWidget *parent = nullptr );
+    explicit QgsScrollArea( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Should be called when a scroll occurs on with the

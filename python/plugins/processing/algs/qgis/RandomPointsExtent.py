@@ -33,11 +33,11 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbTypes,
                        QgsField, QgsSpatialIndex, QgsPoint,
-                       QgsCoordinateReferenceSystem)
-from qgis.utils import iface
+                       QgsCoordinateReferenceSystem,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterCrs
@@ -55,12 +55,19 @@ class RandomPointsExtent(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     CRS = 'CRS'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
+    def name(self):
+        return 'randompointsinextent'
+
+    def displayName(self):
+        return self.tr('Random points in extent')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random points in extent')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Input extent'), optional=False))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
@@ -71,7 +78,7 @@ class RandomPointsExtent(GeoAlgorithm):
                                        self.tr('Output layer CRS'), 'ProjectCrs'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
         extent = str(self.getParameterValue(self.EXTENT)).split(',')
@@ -89,8 +96,7 @@ class RandomPointsExtent(GeoAlgorithm):
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Point, crs)
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, crs, context)
 
         nPoints = 0
         nIterations = 0
@@ -123,8 +129,7 @@ class RandomPointsExtent(GeoAlgorithm):
             nIterations += 1
 
         if nPoints < pointCount:
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                   self.tr('Can not generate requested number of random points. '
-                                           'Maximum number of attempts exceeded.'))
+            QgsMessageLog.logMessage(self.tr('Can not generate requested number of random points. '
+                                             'Maximum number of attempts exceeded.'), self.tr('Processing'), QgsMessageLog.INFO)
 
         del writer

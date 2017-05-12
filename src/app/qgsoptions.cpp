@@ -91,22 +91,37 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mStyleSheetNewOpts = mStyleSheetBuilder->defaultOptions();
   mStyleSheetOldOpts = QMap<QString, QVariant>( mStyleSheetNewOpts );
 
-  connect( mFontFamilyRadioCustom, SIGNAL( toggled( bool ) ), mFontFamilyComboBox, SLOT( setEnabled( bool ) ) );
+  connect( mFontFamilyRadioCustom, &QAbstractButton::toggled, mFontFamilyComboBox, &QWidget::setEnabled );
 
-  connect( cmbIconSize, SIGNAL( activated( const QString & ) ), this, SLOT( iconSizeChanged( const QString & ) ) );
-  connect( cmbIconSize, SIGNAL( highlighted( const QString & ) ), this, SLOT( iconSizeChanged( const QString & ) ) );
-  connect( cmbIconSize, SIGNAL( editTextChanged( const QString & ) ), this, SLOT( iconSizeChanged( const QString & ) ) );
+  connect( cmbIconSize, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::activated ), this, &QgsOptions::iconSizeChanged );
+  connect( cmbIconSize, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::highlighted ), this, &QgsOptions::iconSizeChanged );
+  connect( cmbIconSize, &QComboBox::editTextChanged, this, &QgsOptions::iconSizeChanged );
 
-  connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
-  connect( this, SIGNAL( rejected() ), this, SLOT( rejectOptions() ) );
+  connect( this, &QDialog::accepted, this, &QgsOptions::saveOptions );
+  connect( this, &QDialog::rejected, this, &QgsOptions::rejectOptions );
 
   QStringList styles = QStyleFactory::keys();
-  cmbStyle->addItems( styles );
+  QStringList filteredStyles = styles;
+  for ( int i = filteredStyles.count() - 1; i >= 0; --i )
+  {
+    // filter out the broken adwaita styles - see note in main.cpp
+    if ( filteredStyles.at( i ).contains( QStringLiteral( "adwaita" ), Qt::CaseInsensitive ) )
+    {
+      filteredStyles.removeAt( i );
+    }
+  }
+  if ( filteredStyles.isEmpty() )
+  {
+    //oops - none left!.. have to let user use a broken style
+    filteredStyles = styles;
+  }
+
+  cmbStyle->addItems( filteredStyles );
 
   QStringList themes = QgsApplication::uiThemes().keys();
   cmbUITheme->addItems( themes );
 
-  connect( cmbUITheme, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( uiThemeChanged( const QString & ) ) );
+  connect( cmbUITheme, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::uiThemeChanged );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
   mIdentifyHighlightColorButton->setAllowAlpha( true );
@@ -267,7 +282,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   //locations of the QGIS help
-  QStringList helpPathList = mSettings->value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
+  QStringList helpPathList = mSettings->value( QStringLiteral( "help/helpSearchPath" ), "http://docs.qgis.org/$qgis_short_version/$qgis_locale/docs/user_manual/" ).toStringList();
   Q_FOREACH ( const QString &path, helpPathList )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
@@ -726,16 +741,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
       addScaleToScaleList( scale );
     }
   }
-  connect( mListGlobalScales, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( scaleItemChanged( QListWidgetItem * ) ) );
+  connect( mListGlobalScales, &QListWidget::itemChanged, this, &QgsOptions::scaleItemChanged );
 
   //
   // Color palette
   //
-  connect( mButtonCopyColors, SIGNAL( clicked() ), mTreeCustomColors, SLOT( copyColors() ) );
-  connect( mButtonRemoveColor, SIGNAL( clicked() ), mTreeCustomColors, SLOT( removeSelection() ) );
-  connect( mButtonPasteColors, SIGNAL( clicked() ), mTreeCustomColors, SLOT( pasteColors() ) );
-  connect( mButtonImportColors, SIGNAL( clicked( bool ) ), mTreeCustomColors, SLOT( showImportColorsDialog() ) );
-  connect( mButtonExportColors, SIGNAL( clicked( bool ) ), mTreeCustomColors, SLOT( showExportColorsDialog() ) );
+  connect( mButtonCopyColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::copyColors );
+  connect( mButtonRemoveColor, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::removeSelection );
+  connect( mButtonPasteColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::pasteColors );
+  connect( mButtonImportColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::showImportColorsDialog );
+  connect( mButtonExportColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::showExportColorsDialog );
 
   //find custom color scheme from registry
   QList<QgsCustomColorScheme *> customSchemes;
@@ -1748,9 +1763,10 @@ void QgsOptions::on_mBtnRemovePluginPath_clicked()
 void QgsOptions::on_mBtnAddHelpPath_clicked()
 {
   QTreeWidgetItem *item = new QTreeWidgetItem();
-  item->setText( 0, QString() );
+  item->setText( 0, QStringLiteral( "HELP_LOCATION" ) );
   item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
   mHelpPathTreeWidget->addTopLevelItem( item );
+  mHelpPathTreeWidget->setCurrentItem( item );
 }
 
 void QgsOptions::on_mBtnRemoveHelpPath_clicked()

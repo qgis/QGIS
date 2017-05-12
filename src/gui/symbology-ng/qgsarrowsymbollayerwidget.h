@@ -16,6 +16,7 @@
 #define QGSARROWSYMBOLLAYERWIDGET_H
 
 #include "ui_qgsarrowsymbollayerwidgetbase.h"
+#include "qgis.h"
 #include "qgssymbollayerwidget.h"
 #include "qgis_gui.h"
 
@@ -31,13 +32,13 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
   public:
 
     /** Constructor
-     * @param layer the layer where this symbol layer is applied
-     * @param parent the parent widget
+     * \param layer the layer where this symbol layer is applied
+     * \param parent the parent widget
      */
-    QgsArrowSymbolLayerWidget( const QgsVectorLayer *layer, QWidget *parent = nullptr );
+    QgsArrowSymbolLayerWidget( const QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Static creation method
-     * @param layer the layer where this symbol layer is applied
+     * \param layer the layer where this symbol layer is applied
      */
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
 

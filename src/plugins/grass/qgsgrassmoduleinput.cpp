@@ -61,12 +61,12 @@ QgsGrassModuleInputModel::QgsGrassModuleInputModel( QObject *parent )
   setColumnCount( 1 );
 
   mWatcher = new QFileSystemWatcher( this );
-  connect( mWatcher, SIGNAL( directoryChanged( const QString & ) ), SLOT( onDirectoryChanged( const QString & ) ) );
-  connect( mWatcher, SIGNAL( fileChanged( const QString & ) ), SLOT( onFileChanged( const QString & ) ) );
+  connect( mWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsGrassModuleInputModel::onDirectoryChanged );
+  connect( mWatcher, &QFileSystemWatcher::fileChanged, this, &QgsGrassModuleInputModel::onFileChanged );
 
-  connect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), SLOT( onMapsetChanged() ) );
+  connect( QgsGrass::instance(), &QgsGrass::mapsetChanged, this, &QgsGrassModuleInputModel::onMapsetChanged );
 
-  connect( QgsGrass::instance(), SIGNAL( mapsetSearchPathChanged() ), SLOT( onMapsetSearchPathChanged() ) );
+  connect( QgsGrass::instance(), &QgsGrass::mapsetSearchPathChanged, this, &QgsGrassModuleInputModel::onMapsetSearchPathChanged );
 
   reload();
 }
@@ -755,8 +755,8 @@ QgsGrassModuleInputSelectedView::QgsGrassModuleInputSelectedView( QWidget *paren
   installEventFilter( this );
   viewport()->installEventFilter( this );
 
-  connect( this, SIGNAL( pressed( const QModelIndex & ) ),
-           mDelegate, SLOT( handlePressed( const QModelIndex & ) ) );
+  connect( this, &QAbstractItemView::pressed,
+           mDelegate, &QgsGrassModuleInputSelectedDelegate::handlePressed );
 }
 
 void QgsGrassModuleInputSelectedView::setModel( QAbstractItemModel *model )
@@ -956,9 +956,9 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   mComboBox = new QgsGrassModuleInputComboBox( mType, this );
   mComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
   // QComboBox does not emit activated() when item is selected in completer popup
-  connect( mComboBox, SIGNAL( activated( const QString & ) ), this, SLOT( onActivated( const QString & ) ) );
-  connect( mComboBox->completer(), SIGNAL( activated( const QString & ) ), this, SLOT( onActivated( const QString & ) ) );
-  connect( mComboBox, SIGNAL( editTextChanged( const QString & ) ), this, SLOT( onChanged( const QString & ) ) );
+  connect( mComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::activated ), this, &QgsGrassModuleInput::onActivated );
+  connect( mComboBox->completer(), static_cast<void ( QCompleter::* )( const QString & )>( &QCompleter::activated ), this, &QgsGrassModuleInput::onActivated );
+  connect( mComboBox, &QComboBox::editTextChanged, this, &QgsGrassModuleInput::onChanged );
   mapLayout->addWidget( mComboBox );
 
   // Region button
@@ -979,7 +979,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     mSelectedModel = new QStandardItemModel( 0, 2 );
     mSelectedTreeView = new QgsGrassModuleInputSelectedView( this );
     mSelectedTreeView->setModel( mSelectedModel );
-    connect( mSelectedTreeView, SIGNAL( deleteItem( const QModelIndex & ) ), this, SLOT( deleteSelectedItem( const QModelIndex & ) ) );
+    connect( mSelectedTreeView, &QgsGrassModuleInputSelectedView::deleteItem, this, &QgsGrassModuleInput::deleteSelectedItem );
     layout->addWidget( mSelectedTreeView );
   }
 
@@ -993,7 +993,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     layerLayout->addWidget( mLayerLabel );
 
     mLayerComboBox = new QComboBox();
-    connect( mLayerComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( onLayerChanged() ) );
+    connect( mLayerComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGrassModuleInput::onLayerChanged );
     layerLayout->addWidget( mLayerComboBox );
 
     QHBoxLayout *typeLayout = new QHBoxLayout();

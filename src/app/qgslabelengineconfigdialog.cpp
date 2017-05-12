@@ -14,8 +14,7 @@
  ***************************************************************************/
 #include "qgslabelengineconfigdialog.h"
 
-#include "qgspallabeling.h"
-#include "qgslabelingengine.h"
+#include "qgslabelingenginesettings.h"
 #include "qgsproject.h"
 #include <pal/pal.h>
 
@@ -26,48 +25,45 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
 {
   setupUi( this );
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
-  connect( buttonBox->button( QDialogButtonBox::RestoreDefaults ), SIGNAL( clicked() ),
-           this, SLOT( setDefaults() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsLabelEngineConfigDialog::onOK );
+  connect( buttonBox->button( QDialogButtonBox::RestoreDefaults ), &QAbstractButton::clicked,
+           this, &QgsLabelEngineConfigDialog::setDefaults );
 
-  QgsLabelingEngine engine;
-  engine.readSettingsFromProject( QgsProject::instance() );
+  QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
 
   // search method
-  cboSearchMethod->setCurrentIndex( engine.searchMethod() );
+  cboSearchMethod->setCurrentIndex( engineSettings.searchMethod() );
 
   // candidate numbers
   int candPoint, candLine, candPolygon;
-  engine.numCandidatePositions( candPoint, candLine, candPolygon );
+  engineSettings.numCandidatePositions( candPoint, candLine, candPolygon );
   spinCandPoint->setValue( candPoint );
   spinCandLine->setValue( candLine );
   spinCandPolygon->setValue( candPolygon );
 
-  chkShowCandidates->setChecked( engine.testFlag( QgsLabelingEngine::DrawCandidates ) );
-  chkShowAllLabels->setChecked( engine.testFlag( QgsLabelingEngine::UseAllLabels ) );
+  chkShowCandidates->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::DrawCandidates ) );
+  chkShowAllLabels->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::UseAllLabels ) );
 
-  chkShowPartialsLabels->setChecked( engine.testFlag( QgsLabelingEngine::UsePartialCandidates ) );
-  mDrawOutlinesChkBox->setChecked( engine.testFlag( QgsLabelingEngine::RenderOutlineLabels ) );
+  chkShowPartialsLabels->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
+  mDrawOutlinesChkBox->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::RenderOutlineLabels ) );
 }
 
 
 void QgsLabelEngineConfigDialog::onOK()
 {
-  QgsLabelingEngine engine;
+  QgsLabelingEngineSettings engineSettings;
 
   // save
-  engine.setSearchMethod( ( QgsPalLabeling::Search ) cboSearchMethod->currentIndex() );
+  engineSettings.setSearchMethod( ( QgsLabelingEngineSettings::Search ) cboSearchMethod->currentIndex() );
 
-  engine.setNumCandidatePositions( spinCandPoint->value(),
-                                   spinCandLine->value(),
-                                   spinCandPolygon->value() );
+  engineSettings.setNumCandidatePositions( spinCandPoint->value(), spinCandLine->value(), spinCandPolygon->value() );
 
-  engine.setFlag( QgsLabelingEngine::DrawCandidates, chkShowCandidates->isChecked() );
-  engine.setFlag( QgsLabelingEngine::UseAllLabels, chkShowAllLabels->isChecked() );
-  engine.setFlag( QgsLabelingEngine::UsePartialCandidates, chkShowPartialsLabels->isChecked() );
-  engine.setFlag( QgsLabelingEngine::RenderOutlineLabels, mDrawOutlinesChkBox->isChecked() );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, chkShowCandidates->isChecked() );
+  engineSettings.setFlag( QgsLabelingEngineSettings::UseAllLabels, chkShowAllLabels->isChecked() );
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, chkShowPartialsLabels->isChecked() );
+  engineSettings.setFlag( QgsLabelingEngineSettings::RenderOutlineLabels, mDrawOutlinesChkBox->isChecked() );
 
-  engine.writeSettingsToProject( QgsProject::instance() );
+  QgsProject::instance()->setLabelingEngineSettings( engineSettings );
 
   accept();
 }

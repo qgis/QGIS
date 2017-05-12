@@ -35,12 +35,12 @@ class QgsMSLayerBuilder
     virtual ~QgsMSLayerBuilder() = default;
 
     /** Creates a maplayer from xml tag
-       @param elem xml element containing description of datasource
-       @param layerName sld name of the maplayer
-       @param filesToRemove list to append files that should be removed after the request
-       @param layersToRemove list to append layers that should be removed after the request
-       @param allowCaching flag if layers are allowed to be fetched from layer cache or not
-     @return the created layer or 0 in case of error*/
+       \param elem xml element containing description of datasource
+       \param layerName sld name of the maplayer
+       \param filesToRemove list to append files that should be removed after the request
+       \param layersToRemove list to append layers that should be removed after the request
+       \param allowCaching flag if layers are allowed to be fetched from layer cache or not
+     \returns the created layer or 0 in case of error*/
     virtual QgsMapLayer *createMapLayer( const QDomElement &elem, const QString &layerName, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove, bool allowCaching = true ) const = 0;
   protected:
     //! Tries to create a suitable layer name from a URL.

@@ -58,14 +58,14 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   toggleAtlasSpecificControls( atlasEnabled );
 
   //update relations combo when relations modified in project
-  connect( QgsProject::instance()->relationManager(), SIGNAL( changed() ), this, SLOT( updateRelationsCombo() ) );
+  connect( QgsProject::instance()->relationManager(), &QgsRelationManager::changed, this, &QgsComposerAttributeTableWidget::updateRelationsCombo );
 
   mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
-  connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer * ) ), this, SLOT( changeLayer( QgsMapLayer * ) ) );
+  connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsComposerAttributeTableWidget::changeLayer );
 
   mComposerMapComboBox->setComposition( mComposerTable->composition() );
   mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-  connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem * ) ), this, SLOT( composerMapChanged( QgsComposerItem * ) ) );
+  connect( mComposerMapComboBox, &QgsComposerItemComboBox::itemChanged, this, &QgsComposerAttributeTableWidget::composerMapChanged );
 
   mHeaderFontColorButton->setColorDialogTitle( tr( "Select header font color" ) );
   mHeaderFontColorButton->setAllowAlpha( true );
@@ -87,15 +87,15 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
 
   if ( mComposerTable )
   {
-    QObject::connect( mComposerTable, SIGNAL( changed() ), this, SLOT( updateGuiElements() ) );
+    connect( mComposerTable, &QgsComposerMultiFrame::changed, this, &QgsComposerAttributeTableWidget::updateGuiElements );
 
     QgsAtlasComposition *atlas = atlasComposition();
     if ( atlas )
     {
       // repopulate relations combo box if atlas layer changes
-      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer * ) ),
-               this, SLOT( updateRelationsCombo() ) );
-      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( atlasToggled() ) );
+      connect( atlas, &QgsAtlasComposition::coverageLayerChanged,
+               this, &QgsComposerAttributeTableWidget::updateRelationsCombo );
+      connect( atlas, &QgsAtlasComposition::toggled, this, &QgsComposerAttributeTableWidget::atlasToggled );
     }
   }
 

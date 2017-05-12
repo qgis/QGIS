@@ -630,10 +630,7 @@ int QgsGeometry::addRing( const QList<QgsPoint> &ring )
 {
   detach( true );
 
-  QgsLineString *ringLine = new QgsLineString();
-  QgsPointSequence ringPoints;
-  convertPointList( ring, ringPoints );
-  ringLine->setPoints( ringPoints );
+  QgsLineString *ringLine = new QgsLineString( ring );
   return addRing( ringLine );
 }
 
@@ -797,10 +794,7 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint> &splitLine, QList<QgsGeome
   }
 
   QList<QgsAbstractGeometry *> newGeoms;
-  QgsLineString splitLineString;
-  QgsPointSequence splitLinePointsV2;
-  convertPointList( splitLine, splitLinePointsV2 );
-  splitLineString.setPoints( splitLinePointsV2 );
+  QgsLineString splitLineString( splitLine );
   QgsPointSequence tp;
 
   QgsGeos geos( d->geometry );
@@ -822,7 +816,6 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint> &splitLine, QList<QgsGeome
   return result;
 }
 
-//! Replaces a part of this geometry with another line
 int QgsGeometry::reshapeGeometry( const QList<QgsPoint> &reshapeWithLine )
 {
   if ( !d->geometry )
@@ -830,10 +823,7 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint> &reshapeWithLine )
     return 0;
   }
 
-  QgsPointSequence reshapeLine;
-  convertPointList( reshapeWithLine, reshapeLine );
-  QgsLineString reshapeLineString;
-  reshapeLineString.setPoints( reshapeLine );
+  QgsLineString reshapeLineString( reshapeWithLine );
 
   QgsGeos geos( d->geometry );
   int errorCode = 0;
@@ -1201,9 +1191,8 @@ QgsPolyline QgsGeometry::asPolyline() const
   polyLine.resize( nVertices );
   for ( int i = 0; i < nVertices; ++i )
   {
-    QgsPointV2 pt = line->pointN( i );
-    polyLine[i].setX( pt.x() );
-    polyLine[i].setY( pt.y() );
+    polyLine[i].setX( line->xAt( i ) );
+    polyLine[i].setY( line->yAt( i ) );
   }
 
   if ( doSegmentation )
@@ -1574,6 +1563,20 @@ QgsGeometry QgsGeometry::simplify( double tolerance ) const
     return QgsGeometry();
   }
   return QgsGeometry( simplifiedGeom );
+}
+
+QgsGeometry QgsGeometry::densifyByCount( int extraNodesPerSegment ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.densifyByCount( extraNodesPerSegment );
+}
+
+QgsGeometry QgsGeometry::densifyByDistance( double distance ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.densifyByDistance( distance );
 }
 
 QgsGeometry QgsGeometry::centroid() const
@@ -1961,7 +1964,7 @@ QgsGeometry QgsGeometry::makeValid()
 }
 
 
-void QgsGeometry::validateGeometry( QList<Error> &errors )
+void QgsGeometry::validateGeometry( QList<QgsGeometry::Error> &errors )
 {
   QgsGeometryValidator::validateGeometry( this, errors );
 }
@@ -2099,6 +2102,83 @@ void QgsGeometry::draw( QPainter &p ) const
   }
 }
 
+static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int &partIndex, int &ringIndex, int &vertex )
+{
+  if ( vertexIndex < 0 )
+    return false;  // clearly something wrong
+
+  if ( const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( g ) )
+  {
+    partIndex = 0;
+    int offset = 0;
+    for ( int i = 0; i < geomCollection->numGeometries(); ++i )
+    {
+      const QgsAbstractGeometry *part = geomCollection->geometryN( i );
+
+      // count total number of vertices in the part
+      int numPoints = 0;
+      for ( int k = 0; k < part->ringCount(); ++k )
+        numPoints += part->vertexCount( 0, k );
+
+      if ( vertexIndex < numPoints )
+      {
+        int nothing;
+        return vertexIndexInfo( part, vertexIndex, nothing, ringIndex, vertex ); // set ring_index + index
+      }
+      vertexIndex -= numPoints;
+      offset += numPoints;
+      partIndex++;
+    }
+  }
+  else if ( const QgsCurvePolygon *curvePolygon = dynamic_cast<const QgsCurvePolygon *>( g ) )
+  {
+    const QgsCurve *ring = curvePolygon->exteriorRing();
+    if ( vertexIndex < ring->numPoints() )
+    {
+      partIndex = 0;
+      ringIndex = 0;
+      vertex = vertexIndex;
+      return true;
+    }
+    vertexIndex -= ring->numPoints();
+    ringIndex = 1;
+    for ( int i = 0; i < curvePolygon->numInteriorRings(); ++i )
+    {
+      const QgsCurve *ring = curvePolygon->interiorRing( i );
+      if ( vertexIndex < ring->numPoints() )
+      {
+        partIndex = 0;
+        vertex = vertexIndex;
+        return true;
+      }
+      vertexIndex -= ring->numPoints();
+      ringIndex += 1;
+    }
+  }
+  else if ( const QgsCurve *curve = dynamic_cast<const QgsCurve *>( g ) )
+  {
+    if ( vertexIndex < curve->numPoints() )
+    {
+      partIndex = 0;
+      ringIndex = 0;
+      vertex = vertexIndex;
+      return true;
+    }
+  }
+  else if ( dynamic_cast<const QgsPointV2 *>( g ) )
+  {
+    if ( vertexIndex == 0 )
+    {
+      partIndex = 0;
+      ringIndex = 0;
+      vertex = 0;
+      return true;
+    }
+  }
+
+  return false;
+}
+
 bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId &id ) const
 {
   if ( !d->geometry )
@@ -2106,29 +2186,33 @@ bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId &id ) const
     return false;
   }
 
-  QgsCoordinateSequence coords = d->geometry->coordinateSequence();
+  id.type = QgsVertexId::SegmentVertex;
 
-  int vertexCount = 0;
-  for ( int part = 0; part < coords.size(); ++part )
+  bool res = vertexIndexInfo( d->geometry, nr, id.part, id.ring, id.vertex );
+  if ( !res )
+    return false;
+
+  // now let's find out if it is a straight or circular segment
+  const QgsAbstractGeometry *g = d->geometry;
+  if ( const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( g ) )
   {
-    const QgsRingSequence &featureCoords = coords.at( part );
-    for ( int ring = 0; ring < featureCoords.size(); ++ring )
-    {
-      const QgsPointSequence &ringCoords = featureCoords.at( ring );
-      for ( int vertex = 0; vertex < ringCoords.size(); ++vertex )
-      {
-        if ( vertexCount == nr )
-        {
-          id.part = part;
-          id.ring = ring;
-          id.vertex = vertex;
-          return true;
-        }
-        ++vertexCount;
-      }
-    }
+    g = geomCollection->geometryN( id.part );
   }
-  return false;
+
+  if ( const QgsCurvePolygon *curvePolygon = dynamic_cast<const QgsCurvePolygon *>( g ) )
+  {
+    g = id.ring == 0 ? curvePolygon->exteriorRing() : curvePolygon->interiorRing( id.ring - 1 );
+  }
+
+  if ( const QgsCurve *curve = dynamic_cast<const QgsCurve *>( g ) )
+  {
+    QgsPointV2 p;
+    res = curve->pointAt( id.vertex, p, id.type );
+    if ( !res )
+      return false;
+  }
+
+  return true;
 }
 
 int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const

@@ -25,14 +25,16 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import (QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-
-from processing.tools import dataobjects, vector
 
 
 class GeometryConvert(GeoAlgorithm):
@@ -40,10 +42,22 @@ class GeometryConvert(GeoAlgorithm):
     TYPE = 'TYPE'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Convert geometry type')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'convertgeometrytype'
+
+    def displayName(self):
+        return self.tr('Convert geometry type')
+
+    def defineCharacteristics(self):
         self.types = [self.tr('Centroids'),
                       self.tr('Nodes'),
                       self.tr('Linestrings'),
@@ -57,9 +71,8 @@ class GeometryConvert(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         index = self.getParameterValue(self.TYPE)
 
         splitNodes = False
@@ -77,11 +90,10 @@ class GeometryConvert(GeoAlgorithm):
         else:
             newType = QgsWkbTypes.Point
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields(), newType, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), newType, layer.crs(), context)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
             geom = f.geometry()

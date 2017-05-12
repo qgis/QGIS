@@ -146,7 +146,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     void saveToProject() override;
 
     //! this does the meaty bit of the work
-    void render( QPainter * ) override;
+    void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
     //! Show the dialog box
     void run() override;
 
@@ -197,26 +197,27 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     QgsUnitTypes::DistanceUnit mMapUnits;
 
     /** Draw coordinates for mGridAnnotationType Coordinate
-        @param p drawing painter
-    @param hLines horizontal coordinate lines in item coordinates
-        @param vLines vertical coordinate lines in item coordinates*/
+        \param p drawing painter
+    \param hLines horizontal coordinate lines in item coordinates
+        \param vLines vertical coordinate lines in item coordinates*/
     void drawCoordinateAnnotations( QPainter *p, const QList< QPair< qreal, QLineF > > &hLines, const QList< QPair< qreal, QLineF > > &vLines );
     void drawCoordinateAnnotation( QPainter *p, QPointF pos, const QString &annotationString );
 
     /** Draws a single annotation
-        @param p drawing painter
-        @param pos item coordinates where to draw
-        @param rotation text rotation
-        @param annotationText the text to draw*/
+        \param p drawing painter
+        \param pos item coordinates where to draw
+        \param rotation text rotation
+        \param annotationText the text to draw*/
     void drawAnnotation( QPainter *p, QPointF pos, int rotation, const QString &annotationText );
 
     /** Returns the grid lines with associated coordinate value
-        @return 0 in case of success*/
-    int xGridLines( QList< QPair< qreal, QLineF > > &lines ) const;
+        \returns 0 in case of success*/
+    int xGridLines( const QgsMapSettings &mapSettings, QList< QPair< qreal, QLineF > > &lines ) const;
 
     /** Returns the grid lines for the y-coordinates. Not vertical in case of rotation
-        @return 0 in case of success*/
-    int yGridLines( QList< QPair< qreal, QLineF > > &lines ) const;
+        \returns 0 in case of success*/
+    int yGridLines( const QgsMapSettings &mapSettings, QList< QPair< qreal, QLineF > > &lines ) const;
+
     //! Returns the item border of a point (in item coordinates)
     Border borderForLineCoord( QPointF point, QPainter *p ) const;
 

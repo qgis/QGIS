@@ -23,14 +23,14 @@ QgsDockWidget::QgsDockWidget( QWidget *parent, Qt::WindowFlags flags )
   : QDockWidget( parent, flags )
   , mVisibleAndActive( false )
 {
-  connect( this, SIGNAL( visibilityChanged( bool ) ), this, SLOT( handleVisibilityChanged( bool ) ) );
+  connect( this, &QDockWidget::visibilityChanged, this, &QgsDockWidget::handleVisibilityChanged );
 }
 
 QgsDockWidget::QgsDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QDockWidget( title, parent, flags )
   , mVisibleAndActive( false )
 {
-  connect( this, SIGNAL( visibilityChanged( bool ) ), this, SLOT( handleVisibilityChanged( bool ) ) );
+  connect( this, &QDockWidget::visibilityChanged, this, &QgsDockWidget::handleVisibilityChanged );
 }
 
 void QgsDockWidget::setUserVisible( bool visible )

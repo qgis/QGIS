@@ -17,6 +17,7 @@
 #define QGSVECTORLAYERUNDOCOMMAND_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QUndoCommand>
 
 #include <QVariant>
@@ -27,7 +28,6 @@
 #include "qgsfeature.h"
 
 class QgsGeometry;
-class QgsGeometryCache;
 
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
@@ -42,7 +42,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
   public:
 
     /** Constructor for QgsVectorLayerUndoCommand
-     * @param buffer associated edit buffer
+     * \param buffer associated edit buffer
      */
     QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer *buffer )
       : QUndoCommand()
@@ -51,7 +51,6 @@ class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
 
     //! Returns the layer associated with the undo command
     inline QgsVectorLayer *layer() { return mBuffer->L; }
-    inline QgsGeometryCache *cache() { return mBuffer->L->cache(); }
 
     virtual int id() const override { return -1; }
     virtual bool mergeWith( const QUndoCommand * ) override { return false; }
@@ -72,10 +71,10 @@ class CORE_EXPORT QgsVectorLayerUndoCommandAddFeature : public QgsVectorLayerUnd
   public:
 
     /** Constructor for QgsVectorLayerUndoCommandAddFeature
-     * @param buffer associated edit buffer
-     * @param f feature to add to layer
+     * \param buffer associated edit buffer
+     * \param f feature to add to layer
      */
-    QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer *buffer, QgsFeature &f );
+    QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeature &f );
 
     virtual void undo() override;
     virtual void redo() override;
@@ -95,10 +94,10 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteFeature : public QgsVectorLayer
   public:
 
     /** Constructor for QgsVectorLayerUndoCommandDeleteFeature
-     * @param buffer associated edit buffer
-     * @param fid feature ID of feature to delete from layer
+     * \param buffer associated edit buffer
+     * \param fid feature ID of feature to delete from layer
      */
-    QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid );
+    QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid );
 
     virtual void undo() override;
     virtual void redo() override;
@@ -118,11 +117,11 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLaye
   public:
 
     /** Constructor for QgsVectorLayerUndoCommandChangeGeometry
-     * @param buffer associated edit buffer
-     * @param fid feature ID of feature to modify geometry of
-     * @param newGeom new geometry for feature
+     * \param buffer associated edit buffer
+     * \param fid feature ID of feature to modify geometry of
+     * \param newGeom new geometry for feature
      */
-    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid, const QgsGeometry &newGeom );
+    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid, const QgsGeometry &newGeom );
 
     virtual void undo() override;
     virtual void redo() override;
@@ -146,13 +145,13 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeAttribute : public QgsVectorLay
   public:
 
     /** Constructor for QgsVectorLayerUndoCommandChangeAttribute
-     * @param buffer associated edit buffer
-     * @param fid feature ID of feature to modify
-     * @param fieldIndex index of field to modify
-     * @param newValue new value of attribute
-     * @param oldValue previous value of attribute
+     * \param buffer associated edit buffer
+     * \param fid feature ID of feature to modify
+     * \param fieldIndex index of field to modify
+     * \param newValue new value of attribute
+     * \param oldValue previous value of attribute
      */
-    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
+    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
     virtual void undo() override;
     virtual void redo() override;
 
@@ -174,10 +173,10 @@ class CORE_EXPORT QgsVectorLayerUndoCommandAddAttribute : public QgsVectorLayerU
   public:
 
     /** Constructor for QgsVectorLayerUndoCommandAddAttribute
-     * @param buffer associated edit buffer
-     * @param field definition of new field to add
+     * \param buffer associated edit buffer
+     * \param field definition of new field to add
      */
-    QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer *buffer, const QgsField &field );
+    QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, const QgsField &field );
 
     virtual void undo() override;
     virtual void redo() override;
@@ -197,10 +196,10 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLay
   public:
 
     /** Constructor for QgsVectorLayerUndoCommandDeleteAttribute
-     * @param buffer associated edit buffer
-     * @param fieldIndex index of field to delete
+     * \param buffer associated edit buffer
+     * \param fieldIndex index of field to delete
      */
-    QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer *buffer, int fieldIndex );
+    QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, int fieldIndex );
 
     virtual void undo() override;
     virtual void redo() override;
@@ -221,7 +220,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLay
 /** \ingroup core
  * \class QgsVectorLayerUndoCommandRenameAttribute
  * \brief Undo command for renaming an existing attribute of a vector layer.
- * \note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsVectorLayerUndoCommandRenameAttribute : public QgsVectorLayerUndoCommand
@@ -229,11 +228,11 @@ class CORE_EXPORT QgsVectorLayerUndoCommandRenameAttribute : public QgsVectorLay
   public:
 
     /** Constructor for QgsVectorLayerUndoCommandRenameAttribute
-     * @param buffer associated edit buffer
-     * @param fieldIndex index of field to rename
-     * @param newName new name for field
+     * \param buffer associated edit buffer
+     * \param fieldIndex index of field to rename
+     * \param newName new name for field
      */
-    QgsVectorLayerUndoCommandRenameAttribute( QgsVectorLayerEditBuffer *buffer, int fieldIndex, const QString &newName );
+    QgsVectorLayerUndoCommandRenameAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, int fieldIndex, const QString &newName );
 
     virtual void undo() override;
     virtual void redo() override;

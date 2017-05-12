@@ -165,9 +165,9 @@ void QTermWidget::search(bool forwards, bool next)
 
     HistorySearch *historySearch =
             new HistorySearch(m_impl->m_session->emulation(), regExp, forwards, startColumn, startLine, this);
-    connect(historySearch, SIGNAL(matchFound(int, int, int, int)), this, SLOT(matchFound(int, int, int, int)));
-    connect(historySearch, SIGNAL(noMatchFound()), this, SLOT(noMatchFound()));
-    connect(historySearch, SIGNAL(noMatchFound()), m_searchBar, SLOT(noMatchFound()));
+    connect(historySearch, &HistorySearch::matchFound, this, &QTermWidget::matchFound);
+    connect(historySearch, &HistorySearch::noMatchFound, this, &QTermWidget::noMatchFound);
+    connect(historySearch, &HistorySearch::noMatchFound, m_searchBar, &SearchBar::noMatchFound);
     historySearch->search();
 }
 
@@ -236,8 +236,8 @@ void QTermWidget::startTerminalTeletype()
 
     m_impl->m_session->runEmptyPTY();
     // redirect data from TTY to external recipient
-    connect( m_impl->m_session->emulation(), SIGNAL(sendData(const char *,int)),
-             this, SIGNAL(sendData(const char *,int)) );
+    connect( m_impl->m_session->emulation(), &Emulation::sendData,
+             this, &QTermWidget::sendData );
 }
 
 void QTermWidget::init(int startnow)
@@ -250,22 +250,22 @@ void QTermWidget::init(int startnow)
     m_impl->m_terminalDisplay->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     m_layout->addWidget(m_impl->m_terminalDisplay);
 
-    connect(m_impl->m_session, SIGNAL(bellRequest(QString)), m_impl->m_terminalDisplay, SLOT(bell(QString)));
-    connect(m_impl->m_terminalDisplay, SIGNAL(notifyBell(QString)), this, SIGNAL(bell(QString)));
+    connect(m_impl->m_session, &Session::bellRequest, m_impl->m_terminalDisplay, &TerminalDisplay::bell);
+    connect(m_impl->m_terminalDisplay, &TerminalDisplay::notifyBell, this, &QTermWidget::bell);
 
-    connect(m_impl->m_session, SIGNAL(activity()), this, SIGNAL(activity()));
-    connect(m_impl->m_session, SIGNAL(silence()), this, SIGNAL(silence()));
+    connect(m_impl->m_session, &Session::activity, this, &QTermWidget::activity);
+    connect(m_impl->m_session, &Session::silence, this, &QTermWidget::silence);
 
     // That's OK, FilterChain's dtor takes care of UrlFilter.
     UrlFilter *urlFilter = new UrlFilter();
-    connect(urlFilter, SIGNAL(activated(QUrl)), this, SIGNAL(urlActivated(QUrl)));
+    connect(urlFilter, &UrlFilter::activated, this, &QTermWidget::urlActivated);
     m_impl->m_terminalDisplay->filterChain()->addFilter(urlFilter);
 
     m_searchBar = new SearchBar(this);
     m_searchBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
-    connect(m_searchBar, SIGNAL(searchCriteriaChanged()), this, SLOT(find()));
-    connect(m_searchBar, SIGNAL(findNext()), this, SLOT(findNext()));
-    connect(m_searchBar, SIGNAL(findPrevious()), this, SLOT(findPrevious()));
+    connect(m_searchBar, &SearchBar::searchCriteriaChanged, this, &QTermWidget::find);
+    connect(m_searchBar, &SearchBar::findNext, this, &QTermWidget::findNext);
+    connect(m_searchBar, &SearchBar::findPrevious, this, &QTermWidget::findPrevious);
     m_layout->addWidget(m_searchBar);
     m_searchBar->hide();
 
@@ -278,14 +278,14 @@ void QTermWidget::init(int startnow)
     m_impl->m_terminalDisplay->resize(this->size());
 
     this->setFocusProxy(m_impl->m_terminalDisplay);
-    connect(m_impl->m_terminalDisplay, SIGNAL(copyAvailable(bool)),
-            this, SLOT(selectionChanged(bool)));
-    connect(m_impl->m_terminalDisplay, SIGNAL(termGetFocus()),
-            this, SIGNAL(termGetFocus()));
-    connect(m_impl->m_terminalDisplay, SIGNAL(termLostFocus()),
-            this, SIGNAL(termLostFocus()));
-    connect(m_impl->m_terminalDisplay, SIGNAL(keyPressedSignal(QKeyEvent *)),
-            this, SIGNAL(termKeyPressed(QKeyEvent *)));
+    connect(m_impl->m_terminalDisplay, &TerminalDisplay::copyAvailable,
+            this, &QTermWidget::selectionChanged);
+    connect(m_impl->m_terminalDisplay, &TerminalDisplay::termGetFocus,
+            this, &QTermWidget::termGetFocus);
+    connect(m_impl->m_terminalDisplay, &TerminalDisplay::termLostFocus,
+            this, &QTermWidget::termLostFocus);
+    connect(m_impl->m_terminalDisplay, &TerminalDisplay::keyPressedSignal,
+            this, &QTermWidget::termKeyPressed);
 //    m_impl->m_terminalDisplay->setSize(80, 40);
 
     QFont font = QApplication::font();
@@ -299,7 +299,7 @@ void QTermWidget::init(int startnow)
 
     m_impl->m_session->addView(m_impl->m_terminalDisplay);
 
-    connect(m_impl->m_session, SIGNAL(finished()), this, SLOT(sessionFinished()));
+    connect(m_impl->m_session, &Session::finished, this, &QTermWidget::sessionFinished);
 }
 
 

@@ -16,6 +16,7 @@
 #define QGSINVERTEDPOLYGONRENDERERWIDGET_H
 
 #include "ui_qgsinvertedpolygonrendererwidgetbase.h"
+#include "qgis.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererwidget.h"
 #include "qgis_gui.h"
@@ -25,7 +26,7 @@ class QMenu;
 /** \ingroup gui
  * A widget used represent options of a QgsInvertedPolygonRenderer
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, private Ui::QgsInvertedPolygonRendererWidgetBase
 {
@@ -34,16 +35,16 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
   public:
 
     /** Static creation method
-     * @param layer the layer where this renderer is applied
-     * @param style
-     * @param renderer the mask renderer (will not take ownership)
+     * \param layer the layer where this renderer is applied
+     * \param style
+     * \param renderer the mask renderer (will not take ownership)
      */
-    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     /** Constructor
-     * @param layer the layer where this renderer is applied
-     * @param style
-     * @param renderer the mask renderer (will not take ownership)
+     * \param layer the layer where this renderer is applied
+     * \param style
+     * \param renderer the mask renderer (will not take ownership)
      */
     QgsInvertedPolygonRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 

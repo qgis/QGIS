@@ -17,6 +17,7 @@
 #define QGSMAPRENDERERPARALLELJOB_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsmaprendererjob.h"
 
 /** \ingroup core
@@ -25,7 +26,7 @@
  * The resulting map image can be retrieved with renderedImage() function.
  * It is safe to call that function while rendering is active to see preview of the map.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 {
@@ -54,15 +55,15 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 
   private:
 
-    //! @note not available in Python bindings
-    static void renderLayerStatic( LayerRenderJob &job );
-    //! @note not available in Python bindings
-    static void renderLabelsStatic( QgsMapRendererParallelJob *self );
+    //! \note not available in Python bindings
+    static void renderLayerStatic( LayerRenderJob &job ) SIP_SKIP;
+    //! \note not available in Python bindings
+    static void renderLabelsStatic( QgsMapRendererParallelJob *self ) SIP_SKIP;
 
     QImage mFinalImage;
 
-    //! @note not available in Python bindings
-    enum { Idle, RenderingLayers, RenderingLabels } mStatus;
+    //! \note not available in Python bindings
+    enum { Idle, RenderingLayers, RenderingLabels } mStatus SIP_SKIP;
 
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;

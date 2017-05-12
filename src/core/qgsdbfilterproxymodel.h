@@ -19,6 +19,7 @@
 #define QGSDBFILTERPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
+#include "qgis.h"
 
 #include "qgis_core.h"
 
@@ -27,7 +28,7 @@
  * \ingroup core
  * A class that implements a custom filter and can be used
  * as a proxy for QgsDbTableModel
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsDatabaseFilterProxyModel: public QSortFilterProxyModel
 {
@@ -38,7 +39,7 @@ class CORE_EXPORT QgsDatabaseFilterProxyModel: public QSortFilterProxyModel
     /**
      * Constructor for QgsDatabaseFilterProxyModel.
      */
-    QgsDatabaseFilterProxyModel( QObject *parent = nullptr );
+    QgsDatabaseFilterProxyModel( QObject *parent SIP_TRANSFERTHIS = 0 );
 
     //! Calls QSortFilterProxyModel::setFilterWildcard and triggers update
     void _setFilterWildcard( const QString &pattern );

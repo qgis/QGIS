@@ -46,15 +46,19 @@ class information(GdalAlgorithm):
     NOGCP = 'NOGCP'
     NOMETADATA = 'NOMETADATA'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
 
-    def commandLineName(self):
-        return "gdal:gdalinfo"
+    def name(self):
+        return 'gdalinfo'
+
+    def displayName(self):
+        return self.tr('Information')
+
+    def group(self):
+        return self.tr('Raster miscellaneous')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Information')
-        self.group, self.i18n_group = self.trAlgorithm('Raster miscellaneous')
         self.addParameter(ParameterRaster(information.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterBoolean(information.NOGCP,
@@ -73,7 +77,7 @@ class information(GdalAlgorithm):
         arguments.append(self.getParameterValue(information.INPUT))
         return ['gdalinfo', GdalUtils.escapeAndJoin(arguments)]
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         GdalUtils.runGdal(self.getConsoleCommands(), feedback)
         output = self.getOutputValue(information.OUTPUT)
         with open(output, 'w') as f:

@@ -35,7 +35,7 @@ class QgsZonalStatistics
 
     /** Starts the calculation
       @return 0 in case of success*/
-    int calculateStatistics( QProgressDialog* p );
+    int calculateStatistics( QProgressDialog *p );
 };
 
 QFlags<QgsZonalStatistics::Statistic> operator|(QgsZonalStatistics::Statistic f1, QFlags<QgsZonalStatistics::Statistic> f2);

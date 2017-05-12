@@ -5,16 +5,16 @@ class QgsAttributeTableView : QTableView
 %End
 
   public:
-    QgsAttributeTableView( QWidget* parent /TransferThis/ = 0 );
+    QgsAttributeTableView( QWidget *parent /TransferThis/ = 0 );
     virtual ~QgsAttributeTableView();
 
-    virtual void setModel( QgsAttributeTableFilterModel* filterModel );
+    virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 
     /**
      * @brief setFeatureSelectionManager
      * @param featureSelectionManager We will take ownership
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager /Transfer/ );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
 
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
@@ -26,14 +26,14 @@ class QgsAttributeTableView : QTableView
      *
      * @return Returns always false, so the event gets processed
      */
-    virtual bool eventFilter( QObject* object, QEvent* event );
+    virtual bool eventFilter( QObject *object, QEvent *event );
 
     /**
      * Set the attribute table config which should be used to control
      * the appearance of the attribute table.
      * @note added in QGIS 2.16
      */
-    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
+    void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
   protected:
     /**
@@ -75,7 +75,7 @@ class QgsAttributeTableView : QTableView
      *
      * @param event The associated event object.
      */
-    void contextMenuEvent( QContextMenuEvent* event );
+    void contextMenuEvent( QContextMenuEvent *event );
 
     /**
      * Saves geometry to the settings on close
@@ -92,7 +92,7 @@ class QgsAttributeTableView : QTableView
      * @param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
      *                 In most cases, this will be a @link QgsAttributeTableFilterModel @endlink
      */
-    void willShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
+    void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
 
     void finished();
 
@@ -104,7 +104,7 @@ class QgsAttributeTableView : QTableView
     void columnResized( int column, int width );
 
   public slots:
-    void repaintRequested( const QModelIndexList& indexes );
+    void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
     virtual void selectAll();
     virtual void selectRow( int row );

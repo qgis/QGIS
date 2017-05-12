@@ -27,6 +27,6 @@ class QgsRasterChecker
      * @param expectedUri URI of the expected (control) raster
      */
     bool runTest( const QString& verifiedKey, QString verifiedUri,
-                  const QString& expectedKey, QString expectedUri );
+                  const QString &expectedKey, QString expectedUri );
 };
 

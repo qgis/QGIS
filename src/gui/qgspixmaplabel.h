@@ -17,10 +17,11 @@
 #define QGSPIXMAPLABEL_H
 
 #include <QLabel>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
- * @brief The QgsPixmapLabel class shows a pixmap and adjusts its size to the space given
+ * \brief The QgsPixmapLabel class shows a pixmap and adjusts its size to the space given
  * to the widget by the layout and keeping its aspect ratio.
  */
 class GUI_EXPORT QgsPixmapLabel : public QLabel
@@ -28,20 +29,20 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
     Q_OBJECT
 
   public:
-    explicit QgsPixmapLabel( QWidget *parent = nullptr );
+    explicit QgsPixmapLabel( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Calculates the height for the given width.
      *
-     * @param width The width for the widget
-     * @return An appropriate height
+     * \param width The width for the widget
+     * \returns An appropriate height
      */
     virtual int heightForWidth( int width ) const override;
 
     /**
      * An optimal size for the widget. Effectively using the height
      * determined from the width with the given aspect ratio.
-     * @return A size hint
+     * \returns A size hint
      */
     virtual QSize sizeHint() const override;
 

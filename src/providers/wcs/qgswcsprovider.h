@@ -194,9 +194,6 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
   signals:
 
-    //! \brief emit a signal to notify of a progress event
-    void progressChanged( int progress, int totalSteps );
-
     void dataChanged();
 
   private:

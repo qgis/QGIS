@@ -44,16 +44,16 @@ QgsOSMDownloadDialog::QgsOSMDownloadDialog( QWidget *parent )
   populateLayers();
   onExtentCanvas();
 
-  connect( radExtentCanvas, SIGNAL( clicked() ), this, SLOT( onExtentCanvas() ) );
-  connect( radExtentLayer, SIGNAL( clicked() ), this, SLOT( onExtentLayer() ) );
-  connect( radExtentManual, SIGNAL( clicked() ), this, SLOT( onExtentManual() ) );
-  connect( cboLayers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( onCurrentLayerChanged( int ) ) );
-  connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( onBrowseClicked() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( onClose() ) );
+  connect( radExtentCanvas, &QAbstractButton::clicked, this, &QgsOSMDownloadDialog::onExtentCanvas );
+  connect( radExtentLayer, &QAbstractButton::clicked, this, &QgsOSMDownloadDialog::onExtentLayer );
+  connect( radExtentManual, &QAbstractButton::clicked, this, &QgsOSMDownloadDialog::onExtentManual );
+  connect( cboLayers, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOSMDownloadDialog::onCurrentLayerChanged );
+  connect( btnBrowse, &QAbstractButton::clicked, this, &QgsOSMDownloadDialog::onBrowseClicked );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsOSMDownloadDialog::onOK );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsOSMDownloadDialog::onClose );
 
-  connect( mDownload, SIGNAL( finished() ), this, SLOT( onFinished() ) );
-  connect( mDownload, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( onDownloadProgress( qint64, qint64 ) ) );
+  connect( mDownload, &QgsOSMDownload::finished, this, &QgsOSMDownloadDialog::onFinished );
+  connect( mDownload, &QgsOSMDownload::downloadProgress, this, &QgsOSMDownloadDialog::onDownloadProgress );
 }
 
 QgsOSMDownloadDialog::~QgsOSMDownloadDialog()

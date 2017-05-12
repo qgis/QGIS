@@ -26,7 +26,7 @@ class QgsCompoundColorWidget : QgsPanelWidget
      * @param color initial color for dialog
      * @param layout widget layout to use
      */
-    QgsCompoundColorWidget( QWidget *parent /TransferThis/ = nullptr, const QColor& color = QColor(), Layout layout = LayoutDefault );
+    QgsCompoundColorWidget( QWidget *parent /TransferThis/ = 0, const QColor &color = QColor(), Layout layout = LayoutDefault );
 
     ~QgsCompoundColorWidget();
 
@@ -65,11 +65,11 @@ class QgsCompoundColorWidget : QgsPanelWidget
     /** Sets the color to show in an optional "previous color" section
      * @param color previous color
      */
-    void setPreviousColor( const QColor& color );
+    void setPreviousColor( const QColor &color );
 
   protected:
 
-    void mousePressEvent( QMouseEvent* e );
+    void mousePressEvent( QMouseEvent *e );
 
     void mouseMoveEvent( QMouseEvent *e );
 

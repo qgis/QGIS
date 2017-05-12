@@ -94,27 +94,27 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
   mGeometry = nullptr;
 
   // signal changing of current layer
-  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ), this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
+  connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsSelectedFeature::currentLayerChanged );
 
   // feature was deleted
-  connect( mVlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
+  connect( mVlayer, &QgsVectorLayer::featureDeleted, this, &QgsSelectedFeature::featureDeleted );
 
   // rolling back
-  connect( mVlayer, SIGNAL( beforeRollBack() ), this, SLOT( beforeRollBack() ) );
+  connect( mVlayer, &QgsVectorLayer::beforeRollBack, this, &QgsSelectedFeature::beforeRollBack );
 
   // projection or extents changed
-  connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
-  connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
+  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsSelectedFeature::updateVertexMarkersPosition );
+  connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsSelectedFeature::updateVertexMarkersPosition );
 
   // geometry was changed
-  connect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
+  connect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
 
   replaceVertexMap();
 }
 
 void QgsSelectedFeature::beforeRollBack()
 {
-  disconnect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
+  disconnect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
   deleteVertexMap();
 }
 
@@ -123,7 +123,7 @@ void QgsSelectedFeature::beginGeometryChange()
   Q_ASSERT( !mChangingGeometry );
   mChangingGeometry = true;
 
-  disconnect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
+  disconnect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
 }
 
 void QgsSelectedFeature::endGeometryChange()
@@ -131,7 +131,7 @@ void QgsSelectedFeature::endGeometryChange()
   Q_ASSERT( mChangingGeometry );
   mChangingGeometry = false;
 
-  connect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
+  connect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
 }
 
 void QgsSelectedFeature::canvasLayersChanged()
@@ -185,8 +185,8 @@ void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
   }
 
   mValidator = new QgsGeometryValidator( g );
-  connect( mValidator, SIGNAL( errorFound( QgsGeometry::Error ) ), this, SLOT( addError( QgsGeometry::Error ) ) );
-  connect( mValidator, SIGNAL( finished() ), this, SLOT( validationFinished() ) );
+  connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsSelectedFeature::addError );
+  connect( mValidator, &QThread::finished, this, &QgsSelectedFeature::validationFinished );
   mValidator->start();
 
   QStatusBar *sb = QgisApp::instance()->statusBar();
@@ -221,151 +221,6 @@ void QgsSelectedFeature::validationFinished()
 {
   QStatusBar *sb = QgisApp::instance()->statusBar();
   sb->showMessage( tr( "Validation finished (%n error(s) found).", "number of geometry errors", mGeomErrorMarkers.size() ) );
-}
-
-void QgsSelectedFeature::deleteSelectedVertexes()
-{
-  int nSelected = 0;
-  Q_FOREACH ( QgsVertexEntry *entry, mVertexMap )
-  {
-    if ( entry->isSelected() )
-      nSelected++;
-  }
-
-  if ( nSelected == 0 )
-    return;
-
-  bool topologicalEditing = QgsProject::instance()->topologicalEditing();
-  QMultiMap<double, QgsSnappingResult> currentResultList;
-
-  mVlayer->beginEditCommand( QObject::tr( "Deleted vertices" ) );
-
-  beginGeometryChange();
-
-  bool success = false;
-  QgsVectorLayer::EditResult res = QgsVectorLayer::Success;
-  for ( int i = mVertexMap.size() - 1; i > -1 && nSelected > 0; i-- )
-  {
-    if ( mVertexMap.at( i )->isSelected() )
-    {
-      if ( topologicalEditing )
-      {
-        // snap from current vertex
-        currentResultList.clear();
-        mVlayer->snapWithContext( mVertexMap.at( i )->pointV1(), ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToVertex );
-      }
-
-      // only last update should trigger the geometry update
-      // as vertex selection gets lost on the update
-      if ( --nSelected == 0 )
-        endGeometryChange();
-
-      if ( res != QgsVectorLayer::EmptyGeometry )
-        res = mVlayer->deleteVertex( mFeatureId, i );
-
-      if ( res != QgsVectorLayer::Success && res != QgsVectorLayer::EmptyGeometry )
-      {
-        success = false;
-        QgsDebugMsg( QString( "Deleting vertex %1 failed - resetting" ).arg( i ) );
-        break;
-      }
-
-      success = true;
-
-      if ( topologicalEditing )
-      {
-        QMultiMap<double, QgsSnappingResult>::iterator resultIt =  currentResultList.begin();
-
-        for ( ; resultIt != currentResultList.end(); ++resultIt )
-        {
-          // move all other
-          if ( mFeatureId !=  resultIt.value().snappedAtGeometry )
-            mVlayer->deleteVertex( resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
-        }
-      }
-
-      if ( res == QgsVectorLayer::EmptyGeometry )
-      {
-        //geometry has been cleared as a result of deleting vertices (e.g., not enough vertices left to leave a valid geometry),
-        //so nothing more to do
-        QgsGeometry empty;
-        geometryChanged( mFeatureId, empty );
-        break;
-      }
-    }
-  }
-
-  if ( nSelected > 0 )
-    endGeometryChange();
-
-  if ( success )
-  {
-    mVlayer->endEditCommand();
-  }
-  else
-  {
-    mVlayer->destroyEditCommand();
-  }
-}
-
-void QgsSelectedFeature::moveSelectedVertexes( QgsVector v )
-{
-  int nUpdates = 0;
-  Q_FOREACH ( QgsVertexEntry *entry, mVertexMap )
-  {
-    if ( entry->isSelected() )
-      nUpdates++;
-  }
-
-  if ( nUpdates == 0 )
-    return;
-
-  mVlayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
-  bool topologicalEditing = QgsProject::instance()->topologicalEditing();
-
-  beginGeometryChange();
-
-  QMultiMap<double, QgsSnappingResult> currentResultList;
-  for ( int i = mVertexMap.size() - 1; i > -1 && nUpdates > 0; i-- )
-  {
-    QgsVertexEntry *entry = mVertexMap.value( i, nullptr );
-    if ( !entry || !entry->isSelected() )
-      continue;
-
-    if ( topologicalEditing )
-    {
-      // snap from current vertex
-      currentResultList.clear();
-      mVlayer->snapWithContext( entry->pointV1(), ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToVertex );
-    }
-
-    // only last update should trigger the geometry update
-    // as vertex selection gets lost on the update
-    if ( --nUpdates == 0 )
-      endGeometryChange();
-
-    QgsPointV2 p = entry->point();
-    p.setX( p.x() + v.x() );
-    p.setY( p.y() + v.y() );
-    mVlayer->moveVertex( p, mFeatureId, i );
-
-    if ( topologicalEditing )
-    {
-      QMultiMap<double, QgsSnappingResult>::iterator resultIt =  currentResultList.begin();
-
-      for ( ; resultIt != currentResultList.end(); ++resultIt )
-      {
-        // move all other
-        if ( mFeatureId !=  resultIt.value().snappedAtGeometry )
-          mVlayer->moveVertex( p, resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
-      }
-    }
-  }
-
-  if ( nUpdates > 0 )
-    endGeometryChange();
-
-  mVlayer->endEditCommand();
 }
 
 void QgsSelectedFeature::replaceVertexMap()

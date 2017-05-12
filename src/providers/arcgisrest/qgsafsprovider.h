@@ -25,7 +25,7 @@
 #include "qgsfields.h"
 
 /**
- * @brief A provider reading features from a ArcGIS Feature Service
+ * \brief A provider reading features from a ArcGIS Feature Service
  */
 class QgsAfsProvider : public QgsVectorDataProvider
 {

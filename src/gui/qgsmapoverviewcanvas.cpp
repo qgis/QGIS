@@ -182,7 +182,7 @@ void QgsMapOverviewCanvas::refresh()
 
   // TODO: setup overview mode
   mJob = new QgsMapRendererSequentialJob( mSettings );
-  connect( mJob, SIGNAL( finished() ), this, SLOT( mapRenderingFinished() ) );
+  connect( mJob, &QgsMapRendererJob::finished, this, &QgsMapOverviewCanvas::mapRenderingFinished );
   mJob->start();
 
   setBackgroundColor( mMapCanvas->mapSettings().backgroundColor() );

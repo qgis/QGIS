@@ -36,8 +36,8 @@ class FeatureLayer
 
     /**
      * Constructor
-     * @param layer layer pointer
-     * @param feature QgsFeature
+     * \param layer layer pointer
+     * \param feature QgsFeature
      */
     FeatureLayer( QgsVectorLayer *layer, const QgsFeature &feature )
       : layer( layer )
@@ -101,15 +101,15 @@ class TopolError
 
     /**
      * Makes geometry difference
-     * @param fl1 first FeatureLayer pair
-     * @param fl2 second FeatureLayer pair
+     * \param fl1 first FeatureLayer pair
+     * \param fl2 second FeatureLayer pair
      */
     bool fixMove( const FeatureLayer &fl1, const FeatureLayer &fl2 );
 
     /**
      * Unions features to the first one
-     * @param fl1 first FeatureLayer pair
-     * @param fl2 second FeatureLayer pair
+     * \param fl1 first FeatureLayer pair
+     * \param fl2 second FeatureLayer pair
      */
     bool fixUnion( const FeatureLayer &fl1, const FeatureLayer &fl2 );
 
@@ -117,9 +117,9 @@ class TopolError
 
     /**
      * Constructor
-     * @param boundingBox bounding box of the two features
-     * @param conflict geometry representation of the conflict
-     * @param featurePairs FeatureLayer pairs of the two features
+     * \param boundingBox bounding box of the two features
+     * \param conflict geometry representation of the conflict
+     * \param featurePairs FeatureLayer pairs of the two features
      */
     TopolError( const QgsRectangle &boundingBox, const QgsGeometry &conflict, const QList<FeatureLayer> &featurePairs );
 
@@ -127,7 +127,7 @@ class TopolError
 
     /**
      * Runs fixing function
-     * @param fixName name of the fix
+     * \param fixName name of the fix
      */
     virtual bool fix( const QString &fixName );
 

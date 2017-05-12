@@ -25,7 +25,7 @@
 class QgsPythonUtils;
 
 /**
- * @brief Init Python server plugins and store a list of server plugin names
+ * \brief Init Python server plugins and store a list of server plugin names
  */
 class SERVER_EXPORT QgsServerPlugins
 {
@@ -33,9 +33,9 @@ class SERVER_EXPORT QgsServerPlugins
     explicit QgsServerPlugins();
 
     /**
-     * Initialize the python plugins
-     * @param interface QgsServerInterface
-     * @return bool true on success
+     * Initialize the Python plugins
+     * \param interface QgsServerInterface
+     * \returns bool true on success
      */
     static bool initPlugins( QgsServerInterface *interface );
     //! List of available server plugin names

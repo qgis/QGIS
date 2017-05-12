@@ -95,13 +95,13 @@ namespace QgsWms
       QImage *getMap( HitTest *hitTest = nullptr );
 
       /** Identical to getMap( HitTest* hitTest ) and updates the map settings actually used.
-        @note added in QGIS 3.0 */
+        \since QGIS 3.0 */
       QImage *getMap( QgsMapSettings &mapSettings, HitTest *hitTest = nullptr );
 
 
       /** Returns printed page as binary
-        @param formatString out: format of the print output (e.g. pdf, svg, png, ...)
-        @return printed page as binary or 0 in case of error*/
+        \param formatString out: format of the print output (e.g. pdf, svg, png, ...)
+        \returns printed page as binary or 0 in case of error*/
       QByteArray *getPrint( const QString &formatString );
 
       /** Creates an xml document that describes the result of the getFeatureInfo request.
@@ -112,26 +112,26 @@ namespace QgsWms
     private:
 
       /** Initializes WMS layers and configures rendering.
-       * @param layersList out: list with WMS layer names
-       * @param stylesList out: list with WMS style names
-       * @param layerIdList out: list with QGIS layer ids
-       * @return image configured. The calling function takes ownership of the image
+       * \param layersList out: list with WMS layer names
+       * \param stylesList out: list with WMS style names
+       * \param layerIdList out: list with QGIS layer ids
+       * \returns image configured. The calling function takes ownership of the image
        * may throw an exception
        */
       QImage *initializeRendering( QStringList &layersList, QStringList &stylesList, QStringList &layerIdList, QgsMapSettings &mapSettings );
 
       /** Creates a QImage from the HEIGHT and WIDTH parameters
-       * @param width image width (or -1 if width should be taken from WIDTH wms parameter)
-       * @param height image height (or -1 if height should be taken from HEIGHT wms parameter)
-       * @param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
-       * @return a non null pointer
+       * \param width image width (or -1 if width should be taken from WIDTH wms parameter)
+       * \param height image height (or -1 if height should be taken from HEIGHT wms parameter)
+       * \param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
+       * \returns a non null pointer
        * may throw an exception
        */
       QImage *createImage( int width = -1, int height = -1, bool useBbox = true ) const;
 
       /** Configures mapSettings to the parameters
        * HEIGHT, WIDTH, BBOX, CRS.
-       * @param paintDevice the device that is used for painting (for dpi)
+       * \param paintDevice the device that is used for painting (for dpi)
        * may throw an exception
        */
       void configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings ) const;
@@ -144,8 +144,8 @@ namespace QgsWms
       void initializeSLDParser( QStringList &layersList, QStringList &stylesList );
 
       /** Appends feature info xml for the layer to the layer element of the feature info dom document
-      @param featureBBox the bounding box of the selected features in output CRS
-      @return true in case of success*/
+      \param featureBBox the bounding box of the selected features in output CRS
+      \returns true in case of success*/
       bool featureInfoFromVectorLayer( QgsVectorLayer *layer,
                                        const QgsPoint *infoPoint,
                                        int nFeatures,
@@ -166,7 +166,7 @@ namespace QgsWms
                                        const QString &infoFormat ) const;
 
       /** Creates a layer set and returns a stringlist with layer ids that can be passed to a renderer. Usually used in conjunction with readLayersAndStyles
-         @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
+         \param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
       QStringList layerSet( const QStringList &layersList, const QStringList &stylesList, const QgsCoordinateReferenceSystem &destCRS, double scaleDenominator = -1 ) const;
 
       //! Record which symbols would be used if the map was in the current configuration of renderer. This is useful for content-based legend
@@ -179,9 +179,9 @@ namespace QgsWms
                              double &symbolSpace, double &iconLabelSpace, double &symbolWidth, double &symbolHeight, QFont &layerFont, QFont &itemFont, QColor &layerFontColor, QColor &itemFontColor );
 
       /** Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
-       * @param layerList list of layer IDs to filter
-       * @param originalFilters hash of layer ID to original filter string
-       * @note It is strongly recommended that this method be called alongside use of QgsOWSServerFilterRestorer
+       * \param layerList list of layer IDs to filter
+       * \param originalFilters hash of layer ID to original filter string
+       * \note It is strongly recommended that this method be called alongside use of QgsOWSServerFilterRestorer
        * to ensure that the original filters are always correctly restored, regardless of whether exceptions
        * are thrown or functions are terminated early.
        */
@@ -190,20 +190,20 @@ namespace QgsWms
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
       /** Apply filter strings from the access control to the layers.
-       * @param layerList layers to filter
-       * @param originalLayerFilters the original layers filter dictionary
+       * \param layerList layers to filter
+       * \param originalLayerFilters the original layers filter dictionary
        */
       void applyAccessControlLayersFilters( const QStringList &layerList, QHash<QgsMapLayer *, QString> &originalLayerFilters ) const;
 #endif
 
       /** Tests if a filter sql string is allowed (safe)
-        @return true in case of success, false if string seems unsafe*/
+        \returns true in case of success, false if string seems unsafe*/
       bool testFilterStringSafety( const QString &filter ) const;
       //! Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes
       static void groupStringList( QStringList &list, const QString &groupString );
 
       /** Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
-        @return list with layer ids where selections have been created*/
+        \returns list with layer ids where selections have been created*/
       QStringList applyFeatureSelections( const QStringList &layerList ) const;
       //! Clear all feature selections in the given layers
       void clearFeatureSelections( const QStringList &layerIds ) const;
@@ -222,7 +222,7 @@ namespace QgsWms
                              QList< QPair< QgsVectorLayer *, double > > &labelBufferTransparencies );
 
       /** Checks WIDTH/HEIGHT values against MaxWidth and MaxHeight
-        @return true if width/height values are okay*/
+        \returns true if width/height values are okay*/
       bool checkMaximumWidthHeight() const;
 
       //! Converts a feature info xml document to SIA2045 norm

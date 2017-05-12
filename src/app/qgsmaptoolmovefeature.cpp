@@ -134,7 +134,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       mRubberBand = createRubberBand( vlayer->geometryType() );
       QgsFeature feat;
-      QgsFeatureIterator it = vlayer->selectedFeaturesIterator( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeatureIterator it = vlayer->getSelectedFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
 
       while ( it.nextFeature( feat ) )
       {
@@ -198,7 +198,6 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-//! called when map tool is being deactivated
 void QgsMapToolMoveFeature::deactivate()
 {
   //delete rubber band

@@ -6,7 +6,7 @@ class QgsSymbolLevelsDialog : QDialog
 
   public:
     //! @note not available in python bindings
-    // QgsSymbolLevelsDialog( const QList< QPair<QString, QgsSymbol*> >& list, bool usingSymbolLevels, QWidget* parent = NULL );
+    // QgsSymbolLevelsDialog( const QList< QPair<QString, QgsSymbol*> > &list, bool usingSymbolLevels, QWidget *parent = NULL );
 
     bool usingLevels() const;
 

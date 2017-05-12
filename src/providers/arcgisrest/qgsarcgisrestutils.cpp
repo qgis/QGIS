@@ -427,7 +427,7 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl &url, QString &errorTitl
   while ( true )
   {
     reply = nam->get( request );
-    QObject::connect( reply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
+    QObject::connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
 
     loop.exec( QEventLoop::ExcludeUserInputEvents );
 
@@ -502,7 +502,7 @@ void QgsArcGisAsyncQuery::start( const QUrl &url, QByteArray *result, bool allow
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   }
   mReply = QgsNetworkAccessManager::instance()->get( request );
-  connect( mReply, SIGNAL( finished() ), this, SLOT( handleReply() ) );
+  connect( mReply, &QNetworkReply::finished, this, &QgsArcGisAsyncQuery::handleReply );
 }
 
 void QgsArcGisAsyncQuery::handleReply()
@@ -524,7 +524,7 @@ void QgsArcGisAsyncQuery::handleReply()
     QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
     request.setUrl( redirect.toUrl() );
     mReply = QgsNetworkAccessManager::instance()->get( request );
-    connect( mReply, SIGNAL( finished() ), this, SLOT( handleReply() ) );
+    connect( mReply, &QNetworkReply::finished, this, &QgsArcGisAsyncQuery::handleReply );
     return;
   }
 
@@ -559,7 +559,7 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
     }
     QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
     reply->setProperty( "idx", i );
-    connect( reply, SIGNAL( finished() ), this, SLOT( handleReply() ) );
+    connect( reply, &QNetworkReply::finished, this, &QgsArcGisAsyncParallelQuery::handleReply );
   }
 }
 
@@ -583,7 +583,7 @@ void QgsArcGisAsyncParallelQuery::handleReply()
     request.setUrl( redirect.toUrl() );
     reply = QgsNetworkAccessManager::instance()->get( request );
     reply->setProperty( "idx", idx );
-    connect( reply, SIGNAL( finished() ), this, SLOT( handleReply() ) );
+    connect( reply, &QNetworkReply::finished, this, &QgsArcGisAsyncParallelQuery::handleReply );
   }
   else
   {

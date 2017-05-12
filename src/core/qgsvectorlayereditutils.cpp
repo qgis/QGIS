@@ -16,7 +16,6 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsfeatureiterator.h"
-#include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
@@ -39,16 +38,11 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
   if ( !L->hasGeometryType() )
     return false;
 
-  QgsGeometry geometry;
-  if ( !cache()->geometry( atFeatureId, geometry ) )
-  {
-    // it's not in cache: let's fetch it from layer
-    QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
-      return false; // geometry not found
+  QgsFeature f;
+  if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+    return false; // geometry not found
 
-    geometry = f.geometry();
-  }
+  QgsGeometry geometry = f.geometry();
 
   geometry.insertVertex( x, y, beforeVertex );
 
@@ -61,16 +55,11 @@ bool QgsVectorLayerEditUtils::insertVertex( const QgsPointV2 &point, QgsFeatureI
   if ( !L->hasGeometryType() )
     return false;
 
-  QgsGeometry geometry;
-  if ( !cache()->geometry( atFeatureId, geometry ) )
-  {
-    // it's not in cache: let's fetch it from layer
-    QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
-      return false; // geometry not found
+  QgsFeature f;
+  if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+    return false; // geometry not found
 
-    geometry = f.geometry();
-  }
+  QgsGeometry geometry = f.geometry();
 
   geometry.insertVertex( point, beforeVertex );
 
@@ -89,16 +78,11 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPointV2 &p, QgsFeatureId atFe
   if ( !L->hasGeometryType() )
     return false;
 
-  QgsGeometry geometry;
-  if ( !cache()->geometry( atFeatureId, geometry ) )
-  {
-    // it's not in cache: let's fetch it from layer
-    QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
-      return false; // geometry not found
+  QgsFeature f;
+  if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+    return false; // geometry not found
 
-    geometry = f.geometry();
-  }
+  QgsGeometry geometry = f.geometry();
 
   geometry.moveVertex( p, atVertex );
 
@@ -112,16 +96,11 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
   if ( !L->hasGeometryType() )
     return QgsVectorLayer::InvalidLayer;
 
-  QgsGeometry geometry;
-  if ( !cache()->geometry( featureId, geometry ) )
-  {
-    // it's not in cache: let's fetch it from layer
-    QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
-      return QgsVectorLayer::FetchFeatureFailed; // geometry not found
+  QgsFeature f;
+  if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+    return QgsVectorLayer::FetchFeatureFailed; // geometry not found
 
-    geometry = f.geometry();
-  }
+  QgsGeometry geometry = f.geometry();
 
   if ( !geometry.deleteVertex( vertex ) )
     return QgsVectorLayer::EditFailed;
@@ -138,14 +117,7 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
 
 int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint> &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
 {
-  QgsLineString *ringLine = new QgsLineString();
-  QgsPointSequence ringPoints;
-  QList<QgsPoint>::const_iterator ringIt = ring.constBegin();
-  for ( ; ringIt != ring.constEnd(); ++ringIt )
-  {
-    ringPoints.append( QgsPointV2( ringIt->x(), ringIt->y() ) );
-  }
-  ringLine->setPoints( ringPoints );
+  QgsLineString *ringLine = new QgsLineString( ring );
   return addRing( ringLine, targetFeatureIds,  modifiedFeatureId );
 }
 
@@ -215,22 +187,18 @@ int QgsVectorLayerEditUtils::addPart( const QgsPointSequence &points, QgsFeature
 
   QgsGeometry geometry;
   bool firstPart = false;
-  if ( !cache()->geometry( featureId, geometry ) ) // maybe it's in cache
-  {
-    // it's not in cache: let's fetch it from layer
-    QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
-      return 6; //not found
+  QgsFeature f;
+  if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
+    return 6; //not found
 
-    if ( !f.hasGeometry() )
-    {
-      //no existing geometry, so adding first part to null geometry
-      firstPart = true;
-    }
-    else
-    {
-      geometry = f.geometry();
-    }
+  if ( !f.hasGeometry() )
+  {
+    //no existing geometry, so adding first part to null geometry
+    firstPart = true;
+  }
+  else
+  {
+    geometry = f.geometry();
   }
 
   int errorCode = geometry.addPart( points,  L->geometryType() ) ;
@@ -254,22 +222,18 @@ int QgsVectorLayerEditUtils::addPart( QgsCurve *ring, QgsFeatureId featureId )
 
   QgsGeometry geometry;
   bool firstPart = false;
-  if ( !cache()->geometry( featureId, geometry ) ) // maybe it's in cache
-  {
-    // it's not in cache: let's fetch it from layer
-    QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
-      return 6; //not found
+  QgsFeature f;
+  if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
+    return 6; //not found
 
-    if ( !f.hasGeometry() )
-    {
-      //no existing geometry, so adding first part to null geometry
-      firstPart = true;
-    }
-    else
-    {
-      geometry = f.geometry();
-    }
+  if ( !f.hasGeometry() )
+  {
+    //no existing geometry, so adding first part to null geometry
+    firstPart = true;
+  }
+  else
+  {
+    geometry = f.geometry();
   }
 
   int errorCode = geometry.addPart( ring, L->geometryType() ) ;
@@ -292,16 +256,11 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
   if ( !L->hasGeometryType() )
     return 1;
 
-  QgsGeometry geometry;
-  if ( !cache()->geometry( featureId, geometry ) ) // maybe it's in cache
-  {
-    // it's not in cache: let's fetch it from layer
-    QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
-      return 1; //geometry not found
+  QgsFeature f;
+  if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+    return 1; //geometry not found
 
-    geometry = f.geometry();
-  }
+  QgsGeometry geometry = f.geometry();
 
   int errorCode = geometry.translate( dx, dy );
   if ( errorCode == 0 )
@@ -329,7 +288,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint> &splitLine, bo
 
   if ( !selectedIds.isEmpty() ) //consider only the selected features if there is a selection
   {
-    features = L->selectedFeaturesIterator();
+    features = L->getSelectedFeatures();
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
@@ -438,7 +397,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint> &splitLine, bool 
 
   if ( L->selectedFeatureCount() > 0 ) //consider only the selected features if there is a selection
   {
-    fit = L->selectedFeaturesIterator();
+    fit = L->getSelectedFeatures();
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
@@ -672,11 +631,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
   if ( !L->hasGeometryType() )
     return 1;
 
-  QMultiMap<double, QgsSnappingResult> snapResults; //results from the snapper object
-  //we also need to snap to vertex to make sure the vertex does not already exist in this geometry
-  QMultiMap<double, QgsSnappingResult> vertexSnapResults;
-
-  QList<QgsSnappingResult> filteredSnapResults; //we filter out the results that are on existing vertices
+  double segmentSearchEpsilon = L->crs().isGeographic() ? 1e-12 : 1e-8;
 
   //work with a tolerance because coordinate projection may introduce some rounding
   double threshold =  0.0000001;
@@ -689,66 +644,55 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
     threshold = 0.0001;
   }
 
+  QgsRectangle searchRect( p.x() - threshold, p.y() - threshold,
+                           p.x() + threshold, p.y() + threshold );
+  double sqrSnappingTolerance = threshold * threshold;
 
-  if ( L->snapWithContext( p, threshold, snapResults, QgsSnapper::SnapToSegment ) != 0 )
+  QgsFeature f;
+  QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest()
+                           .setFilterRect( searchRect )
+                           .setFlags( QgsFeatureRequest::ExactIntersect )
+                           .setSubsetOfAttributes( QgsAttributeList() ) );
+
+  QMap<QgsFeatureId, QgsGeometry> features;
+  QMap<QgsFeatureId, int> segments;
+
+  while ( fit.nextFeature( f ) )
   {
+    int afterVertex;
+    QgsPoint snappedPoint;
+    double sqrDistSegmentSnap = f.geometry().closestSegmentWithContext( p, snappedPoint, afterVertex, nullptr, segmentSearchEpsilon );
+    if ( sqrDistSegmentSnap < sqrSnappingTolerance )
+    {
+      segments[f.id()] = afterVertex;
+      features[f.id()] = f.geometry();
+    }
+  }
+
+  if ( segments.isEmpty() )
     return 2;
-  }
 
-  QMultiMap<double, QgsSnappingResult>::const_iterator snap_it = snapResults.constBegin();
-  QMultiMap<double, QgsSnappingResult>::const_iterator vertex_snap_it;
-  for ( ; snap_it != snapResults.constEnd(); ++snap_it )
+  for ( QMap<QgsFeatureId, int>::const_iterator it = segments.constBegin(); it != segments.constEnd(); ++it )
   {
-    //test if p is already a vertex of this geometry. If yes, don't insert it
-    bool vertexAlreadyExists = false;
-    if ( L->snapWithContext( p, threshold, vertexSnapResults, QgsSnapper::SnapToVertex ) != 0 )
-    {
-      continue;
-    }
+    QgsFeatureId fid = it.key();
+    int segmentAfterVertex = it.value();
+    QgsGeometry geom = features[fid];
 
-    vertex_snap_it = vertexSnapResults.constBegin();
-    for ( ; vertex_snap_it != vertexSnapResults.constEnd(); ++vertex_snap_it )
-    {
-      if ( snap_it.value().snappedAtGeometry == vertex_snap_it.value().snappedAtGeometry )
-      {
-        vertexAlreadyExists = true;
-      }
-    }
+    int atVertex, beforeVertex, afterVertex;
+    double sqrDistVertexSnap;
+    geom.closestVertex( p, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
 
-    if ( !vertexAlreadyExists )
+    if ( sqrDistVertexSnap < sqrSnappingTolerance )
+      continue;  // the vertex already exists - do not insert it
+
+    if ( !L->insertVertex( p.x(), p.y(), fid, segmentAfterVertex ) )
     {
-      filteredSnapResults.push_back( *snap_it );
+      QgsDebugMsg( "failed to insert topo point" );
     }
   }
-  insertSegmentVerticesForSnap( filteredSnapResults );
+
   return 0;
 }
-
-
-int QgsVectorLayerEditUtils::insertSegmentVerticesForSnap( const QList<QgsSnappingResult> &snapResults )
-{
-  if ( !L->hasGeometryType() )
-    return 1;
-
-  int returnval = 0;
-  QgsPoint layerPoint;
-
-  QList<QgsSnappingResult>::const_iterator it = snapResults.constBegin();
-  for ( ; it != snapResults.constEnd(); ++it )
-  {
-    if ( it->snappedVertexNr == -1 ) // segment snap
-    {
-      layerPoint = it->snappedVertex;
-      if ( !insertVertex( layerPoint.x(), layerPoint.y(), it->snappedAtGeometry, it->afterVertexNr ) )
-      {
-        returnval = 3;
-      }
-    }
-  }
-  return returnval;
-}
-
-
 
 
 int QgsVectorLayerEditUtils::boundingBoxFromPointList( const QList<QgsPoint> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const

@@ -24,9 +24,9 @@
 #include "qgsexpressioncontext.h"
 #include "qgsdistancearea.h"
 #include "qgsproject.h"
+#include "qgsmessagelog.h"
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
-  : mCrsId( 0 )
 {
   QMutexLocker locker( &layer->mFeatureSourceConstructorMutex );
   mProviderFeatureSource = layer->dataProvider()->featureSource();
@@ -39,7 +39,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
   mJoinBuffer = layer->mJoinBuffer->clone();
 
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
-  mCrsId = layer->crs().srsid();
+  mCrs = layer->crs();
 
   mHasEditBuffer = layer->editBuffer();
   if ( mHasEditBuffer )
@@ -91,6 +91,11 @@ QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureReq
 {
   // return feature iterator that does not own this source
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, false, request ) );
+}
+
+QgsFields QgsVectorLayerFeatureSource::fields() const
+{
+  return mFields;
 }
 
 
@@ -242,8 +247,15 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mFetchedFid )
       return false;
     bool res = nextFeatureFid( f );
-    mFetchedFid = true;
-    return res;
+    if ( res && testFeature( f ) )
+    {
+      mFetchedFid = true;
+      return res;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   if ( !mRequest.filterRect().isNull() )
@@ -306,6 +318,9 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
       updateFeatureGeometry( f );
 
+    if ( !testFeature( f ) )
+      continue;
+
     return true;
   }
   // no more provider features
@@ -367,6 +382,9 @@ bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )
       // skip features which are not accepted by the filter
       continue;
 
+    if ( !testFeature( *mFetchAddedFeaturesIt ) )
+      continue;
+
     useAddedFeature( *mFetchAddedFeaturesIt, f );
 
     return true;
@@ -417,9 +435,12 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedGeomFeature( QgsFeature &f )
 
     useChangedAttributeFeature( fid, *mFetchChangedGeomIt, f );
 
-    // return complete feature
-    mFetchChangedGeomIt++;
-    return true;
+    if ( testFeature( f ) )
+    {
+      // return complete feature
+      mFetchChangedGeomIt++;
+      return true;
+    }
   }
 
   return false; // no more changed geometries
@@ -441,7 +462,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
       addVirtualAttributes( f );
 
     mRequest.expressionContext()->setFeature( f );
-    if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
+    if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() && testFeature( f ) )
     {
       return true;
     }
@@ -543,8 +564,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   QgsExpression *exp = new QgsExpression( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
-  da.setSourceCrs( mSource->mCrsId );
-  da.setEllipsoidalMode( true );
+  da.setSourceCrs( mSource->mCrs );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   exp->setGeomCalculator( &da );
   exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
@@ -658,6 +678,49 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
       break;
     }
   }
+}
+
+bool QgsVectorLayerFeatureIterator::testFeature( const QgsFeature &feature )
+{
+  bool result = checkGeometryValidity( feature );
+  return result;
+}
+
+bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &feature )
+{
+  if ( !feature.hasGeometry() )
+    return true;
+
+  switch ( mRequest.invalidGeometryCheck() )
+  {
+    case QgsFeatureRequest::GeometryNoCheck:
+      return true;
+
+    case QgsFeatureRequest::GeometrySkipInvalid:
+    {
+      if ( !feature.geometry().isGeosValid() )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), QgsMessageLog::CRITICAL );
+        return false;
+      }
+      break;
+    }
+
+    case QgsFeatureRequest::GeometryAbortOnInvalid:
+      if ( !feature.geometry().isGeosValid() )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), QgsMessageLog::CRITICAL );
+        close();
+        if ( mRequest.invalidGeometryCallback() )
+        {
+          mRequest.invalidGeometryCallback()( feature );
+        }
+        return false;
+      }
+      break;
+  }
+
+  return true;
 }
 
 void QgsVectorLayerFeatureIterator::prepareField( int fieldIdx )

@@ -29,7 +29,7 @@ class QgsDualView : QStackedWidget
      * @brief Constructor
      * @param parent  The parent widget
      */
-    explicit QgsDualView( QWidget* parent /TransferThis/ = 0 );
+    explicit QgsDualView( QWidget *parent /TransferThis/ = 0 );
     virtual ~QgsDualView();
 
     void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(),
@@ -93,7 +93,7 @@ class QgsDualView : QStackedWidget
      * @param filteredFeatures  A list of feature ids
      *
      */
-    void setFilteredFeatures( const QgsFeatureIds& filteredFeatures );
+    void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
 
     /**
      * Get a list of currently visible feature ids.
@@ -105,39 +105,39 @@ class QgsDualView : QStackedWidget
      *
      * @return The master model
      */
-    QgsAttributeTableModel* masterModel() const;
+    QgsAttributeTableModel *masterModel() const;
 
     /**
      * Set the request
      *
      * @param request The request
      */
-    void setRequest( const QgsFeatureRequest& request );
+    void setRequest( const QgsFeatureRequest &request );
 
     /**
      * Set the feature selection model
      *
      * @param featureSelectionManager the feature selection model
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 
     /**
      * Returns the table view
      *
      * @return The table view
      */
-    QgsAttributeTableView* tableView();
+    QgsAttributeTableView *tableView();
 
     /**
      * Set the attribute table config which should be used to control
      * the appearance of the attribute table.
      */
-    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
+    void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
     /**
      * Set the expression used for sorting the table and feature list.
      */
-    void setSortExpression( const QString& sortExpression , Qt::SortOrder sortOrder = Qt::AscendingOrder );
+    void setSortExpression( const QString &sortExpression , Qt::SortOrder sortOrder = Qt::AscendingOrder );
 
     /**
      * Get the expression used for sorting the table and feature list.
@@ -159,7 +159,7 @@ class QgsDualView : QStackedWidget
      *
      * @param fids   A list of edited features (Currently only one at a time is supported)
      */
-    void setCurrentEditSelection( const QgsFeatureIds& fids );
+    void setCurrentEditSelection( const QgsFeatureIds &fids );
 
     /**
      * @brief saveEditChanges
@@ -193,7 +193,7 @@ class QgsDualView : QStackedWidget
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString& expression );
+    void displayExpressionChanged( const QString &expression );
 
     /**
      * Is emitted, whenever the filter changes
@@ -205,7 +205,7 @@ class QgsDualView : QStackedWidget
      * @param type filter type
      * @note added in QGIS 2.16
      */
-    void filterExpressionSet( const QString& expression, QgsAttributeForm::FilterType type );
+    void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 
     /** Emitted when the form changes mode.
      * @param mode new mode
@@ -221,7 +221,7 @@ class QgsAttributeTableAction : QAction
 %End
 
   public:
-    QgsAttributeTableAction( const QString& name, QgsDualView* dualView, const QUuid& action, const QModelIndex& fieldIdx );
+    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, const QUuid &action, const QModelIndex &fieldIdx );
 
   public slots:
     void execute();
@@ -235,7 +235,7 @@ class QgsAttributeTableMapLayerAction : QAction
 %End
 
   public:
-    QgsAttributeTableMapLayerAction( const QString &name, QgsDualView *dualView, QgsMapLayerAction* action, const QModelIndex &fieldIdx );
+    QgsAttributeTableMapLayerAction( const QString &name, QgsDualView *dualView, QgsMapLayerAction *action, const QModelIndex &fieldIdx );
 
   public slots:
     void execute();

@@ -35,7 +35,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
 
     /**
      * Runs the dialog and creates a layer matching the dialog parameters.
-     * @returns fileName on success, empty string use aborted, QString::null if creation failed
+     * \returns fileName on success, empty string use aborted, QString::null if creation failed
      */
     static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
@@ -52,14 +52,14 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
 
     /**
      * Returns the selected CRS for the new layer.
-     * @see setCrs()
+     * \see setCrs()
      */
     QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets the \a crs value for the new layer in the dialog.
-     * @note added in QGIS 3.0
-     * @see crs()
+     * \since QGIS 3.0
+     * \see crs()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 

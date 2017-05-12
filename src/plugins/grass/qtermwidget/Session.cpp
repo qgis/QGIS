@@ -84,16 +84,16 @@ Session::Session(QObject* parent) :
     //create emulation backend
     _emulation = new Vt102Emulation();
 
-    connect( _emulation, SIGNAL( titleChanged( int, const QString & ) ),
-             this, SLOT( setUserTitle( int, const QString & ) ) );
-    connect( _emulation, SIGNAL( stateSet(int) ),
-             this, SLOT( activityStateSet(int) ) );
+    connect( _emulation, &Emulation::titleChanged,
+             this, &Session::setUserTitle );
+    connect( _emulation, &Emulation::stateSet,
+             this, &Session::activityStateSet );
 //    connect( _emulation, SIGNAL( zmodemDetected() ), this ,
 //            SLOT( fireZModemDetected() ) );
-    connect( _emulation, SIGNAL( changeTabTextColorRequest( int ) ),
-             this, SIGNAL( changeTabTextColorRequest( int ) ) );
-    connect( _emulation, SIGNAL(profileChangeCommandReceived(const QString &)),
-             this, SIGNAL( profileChangeCommandReceived(const QString &)) );
+    connect( _emulation, &Emulation::changeTabTextColorRequest,
+             this, &Session::changeTabTextColorRequest );
+    connect( _emulation, &Emulation::profileChangeCommandReceived,
+             this, &Session::profileChangeCommandReceived );
     // TODO
     // connect( _emulation,SIGNAL(imageSizeChanged(int,int)) , this ,
     //        SLOT(onEmulationSizeChange(int,int)) );
@@ -101,20 +101,20 @@ Session::Session(QObject* parent) :
     //connect teletype to emulation backend
     _shellProcess->setUtf8Mode(_emulation->utf8());
 
-    connect( _shellProcess,SIGNAL(receivedData(const char *,int)),this,
-             SLOT(onReceiveBlock(const char *,int)) );
-    connect( _emulation,SIGNAL(sendData(const char *,int)),_shellProcess,
-             SLOT(sendData(const char *,int)) );
-    connect( _emulation,SIGNAL(lockPtyRequest(bool)),_shellProcess,SLOT(lockPty(bool)) );
-    connect( _emulation,SIGNAL(useUtf8Request(bool)),_shellProcess,SLOT(setUtf8Mode(bool)) );
+    connect( _shellProcess,&Pty::receivedData,this,
+             &Session::onReceiveBlock );
+    connect( _emulation,&Emulation::sendData,_shellProcess,
+             &Pty::sendData );
+    connect( _emulation,&Emulation::lockPtyRequest,_shellProcess,&Pty::lockPty );
+    connect( _emulation,&Emulation::useUtf8Request,_shellProcess,&Pty::setUtf8Mode );
 
-    connect( _shellProcess,SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(done(int)) );
+    connect( _shellProcess,static_cast<void ( QProcess::* )( int )>( &QProcess::finished ), this, &Session::done );
     // not in kprocess anymore connect( _shellProcess,SIGNAL(done(int)), this, SLOT(done(int)) );
 
     //setup timer for monitoring session activity
     _monitorTimer = new QTimer(this);
     _monitorTimer->setSingleShot(true);
-    connect(_monitorTimer, SIGNAL(timeout()), this, SLOT(monitorTimerDone()));
+    connect(_monitorTimer, &QTimer::timeout, this, &Session::monitorTimerDone);
 }
 
 WId Session::windowId() const
@@ -201,17 +201,17 @@ void Session::addView(TerminalDisplay * widget)
 
     if ( _emulation != 0 ) {
         // connect emulation - view signals and slots
-        connect( widget , SIGNAL(keyPressedSignal(QKeyEvent *)) , _emulation ,
-                 SLOT(sendKeyEvent(QKeyEvent *)) );
-        connect( widget , SIGNAL(mouseSignal(int,int,int,int)) , _emulation ,
-                 SLOT(sendMouseEvent(int,int,int,int)) );
-        connect( widget , SIGNAL(sendStringToEmu(const char *)) , _emulation ,
-                 SLOT(sendString(const char *)) );
+        connect( widget , &TerminalDisplay::keyPressedSignal , _emulation ,
+                 &Emulation::sendKeyEvent );
+        connect( widget , &TerminalDisplay::mouseSignal , _emulation ,
+                 &Emulation::sendMouseEvent );
+        connect( widget , &TerminalDisplay::sendStringToEmu , _emulation ,
+                 [=]( const char* c ){ _emulation->sendString( c ); } );
 
         // allow emulation to notify view when the foreground process
         // indicates whether or not it is interested in mouse signals
-        connect( _emulation , SIGNAL(programUsesMouseChanged(bool)) , widget ,
-                 SLOT(setUsesMouse(bool)) );
+        connect( _emulation , &Emulation::programUsesMouseChanged , widget ,
+                 &TerminalDisplay::setUsesMouse );
 
         widget->setUsesMouse( _emulation->programUsesMouse() );
 
@@ -219,13 +219,13 @@ void Session::addView(TerminalDisplay * widget)
     }
 
     //connect view signals and slots
-    QObject::connect( widget ,SIGNAL(changedContentSizeSignal(int,int)),this,
-                      SLOT(onViewSizeChange(int,int)));
+    QObject::connect( widget ,&TerminalDisplay::changedContentSizeSignal,this,
+                      &Session::onViewSizeChange);
 
-    QObject::connect( widget ,SIGNAL(destroyed(QObject *)) , this ,
-                      SLOT(viewDestroyed(QObject *)) );
+    QObject::connect( widget ,&QObject::destroyed , this ,
+                      &Session::viewDestroyed );
 //slot for close
-    QObject::connect(this, SIGNAL(finished()), widget, SLOT(close()));
+    QObject::connect(this, &Session::finished, widget, &QWidget::close);
 
 }
 
@@ -360,8 +360,8 @@ void Session::runEmptyPTY()
     _shellProcess->setWriteable(false);
 
     // disconnet send data from emulator to internal terminal process
-    disconnect( _emulation,SIGNAL(sendData(const char *,int)),
-                _shellProcess, SLOT(sendData(const char *,int)) );
+    disconnect( _emulation,&Emulation::sendData,
+                _shellProcess, &Pty::sendData );
 
     _shellProcess->setEmptyPTYProperties();
 
@@ -1068,8 +1068,8 @@ void SessionGroup::connectPair(Session * master , Session * other)
     if ( _masterMode & CopyInputToAll ) {
         qDebug() << "Connection session " << master->nameTitle() << "to" << other->nameTitle();
 
-        connect( master->emulation() , SIGNAL(sendData(const char *,int)) , other->emulation() ,
-                 SLOT(sendString(const char *,int)) );
+        connect( master->emulation() , &Emulation::sendData , other->emulation() ,
+                 &Emulation::sendString );
     }
 }
 void SessionGroup::disconnectPair(Session * master , Session * other)
@@ -1079,8 +1079,8 @@ void SessionGroup::disconnectPair(Session * master , Session * other)
     if ( _masterMode & CopyInputToAll ) {
         qDebug() << "Disconnecting session " << master->nameTitle() << "from" << other->nameTitle();
 
-        disconnect( master->emulation() , SIGNAL(sendData(const char *,int)) , other->emulation() ,
-                    SLOT(sendString(const char *,int)) );
+        disconnect( master->emulation() , &Emulation::sendData , other->emulation() ,
+                    &Emulation::sendString );
     }
 }
 

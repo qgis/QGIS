@@ -53,6 +53,8 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
      */
     QIcon icon() const;
 
+#ifndef SIP_RUN
+
     /**
      * Connect a slot that will be notified repeatedly whenever a frame changes and which should
      * request the current icon and trigger UI updates.
@@ -60,8 +62,8 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
      * Connect to the frame changed signal with this method and not directly. This method
      * makes sure the annimation is started.
      *
-     * @note Added in QGIS 3.0
-     * @note Available in python bindings as
+     * \since QGIS 3.0
+     * \note Available in Python bindings as
      *       bool connectFrameChanged( const QObject *receiver, const char *method );.
      */
     template <typename Func1>
@@ -77,21 +79,10 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
     }
 
     /**
-     * Connect a slot that will be notified repeatedly whenever a frame changes and which should
-     * request the current icon and trigger UI updates.
-     *
-     * Connect to the frame changed signal with this method and not directly. This method
-     * makes sure the annimation is started.
-     *
-     * @note Added in QGIS 3.0
-     */
-    bool connectFrameChanged( const QObject *receiver, const char *method );
-
-    /**
      * Convenience function to disconnect the same style that the frame change connection was established.
      *
-     * @note Added in QGIS 3.0
-     * @note Available in python bindings as
+     * \since QGIS 3.0
+     * \note Available in Python bindings as
      *       bool disconnectFrameChanged( const QObject *receiver, const char *method );.
      */
     template <typename Func1>
@@ -100,10 +91,23 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
       return disconnect( this, &QgsAnimatedIcon::frameChanged, receiver, slot );
     }
 
+#endif
+
+    /**
+     * Connect a slot that will be notified repeatedly whenever a frame changes and which should
+     * request the current icon and trigger UI updates.
+     *
+     * Connect to the frame changed signal with this method and not directly. This method
+     * makes sure the annimation is started.
+     *
+     * \since QGIS 3.0
+     */
+    bool connectFrameChanged( const QObject *receiver, const char *method );
+
     /**
      * Convenience function to disconnect the same style that the frame change connection was established.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool disconnectFrameChanged( const QObject *receiver, const char *method );
 
@@ -111,14 +115,14 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
     /**
      * The native width of the icon.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     int width() const;
 
     /**
      * The native height of the icon.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     int height() const;
 
@@ -129,7 +133,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
      * to this signal directly.
      * Connecting to this signal directly will cause the animation not to be started.
      *
-     * @see connectFrameChanged
+     * \see connectFrameChanged
      */
     void frameChanged();
 

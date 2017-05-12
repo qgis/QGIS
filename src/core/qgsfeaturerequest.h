@@ -16,6 +16,7 @@
 #define QGSFEATUREREQUEST_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QFlags>
 #include <QList>
 #include <memory>
@@ -85,6 +86,14 @@ class CORE_EXPORT QgsFeatureRequest
       FilterFids        //!< Filter using feature IDs
     };
 
+    //! Handling of features with invalid geometries
+    enum InvalidGeometryCheck
+    {
+      GeometryNoCheck = 0, //!< No invalid geometry checking
+      GeometrySkipInvalid = 1, //!< Skip any features with invalid geometry. This requires a slow geometry validity check for every feature.
+      GeometryAbortOnInvalid = 2, //!< Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
+    };
+
     /** \ingroup core
      * The OrderByClause class represents an order by clause for a QgsFeatureRequest.
      *
@@ -105,7 +114,7 @@ class CORE_EXPORT QgsFeatureRequest
      * for the features returned by the iterator but internally all features will be requested
      * from the provider.
      *
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     class CORE_EXPORT OrderByClause
     {
@@ -114,8 +123,8 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
-         * @param expression The expression to use for ordering
-         * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
          *                   If the order is ascending, by default nulls are last
          *                   If the order is descending, by default nulls are first
          */
@@ -124,21 +133,49 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
-         * @param expression The expression to use for ordering
-         * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-         * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
          */
         OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
 
         /**
+         * Creates a new OrderByClause for a QgsFeatureRequest
+         *
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         *                   If the order is ascending, by default nulls are last
+         *                   If the order is descending, by default nulls are first
+         */
+        OrderByClause( const QgsExpression &expression, bool ascending = true );
+
+        /**
+         * Creates a new OrderByClause for a QgsFeatureRequest
+         *
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         */
+        OrderByClause( const QgsExpression &expression, bool ascending, bool nullsfirst );
+
+        /**
          * The expression
-         * @return the expression
+         * \returns the expression
          */
         QgsExpression expression() const;
 
         /**
+         * Prepare the expression with the given context.
+         *
+         * \see QgsExpression::prepare
+         *
+         * \since QGIS 3.0
+         */
+        bool prepare( QgsExpressionContext *context );
+
+        /**
          * Order ascending
-         * @return If ascending order is requested
+         * \returns If ascending order is requested
          */
         bool ascending() const;
 
@@ -149,7 +186,7 @@ class CORE_EXPORT QgsFeatureRequest
 
         /**
          * Set if NULLS should be returned first
-         * @return if NULLS should be returned first
+         * \returns if NULLS should be returned first
          */
         bool nullsFirst() const;
 
@@ -175,7 +212,7 @@ class CORE_EXPORT QgsFeatureRequest
      * Represents a list of OrderByClauses, with the most important first and the least
      * important last.
      *
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     class OrderBy : public QList<OrderByClause>
     {
@@ -196,7 +233,7 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Get a copy as a list of OrderByClauses
          *
-         * This is only required in python where the inheritance
+         * This is only required in Python where the inheritance
          * is not properly propagated and this makes it usable.
          */
         QList<OrderByClause> CORE_EXPORT list() const;
@@ -245,7 +282,7 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Return the filter type which is currently set on this request
      *
-     * @return Filter type
+     * \returns Filter type
      */
     FilterType filterType() const { return mFilter; }
 
@@ -270,37 +307,71 @@ class CORE_EXPORT QgsFeatureRequest
     //! Get feature IDs that should be fetched.
     const QgsFeatureIds &filterFids() const { return mFilterFids; }
 
-    /** Set the filter expression. {@see QgsExpression}
-     * @param expression expression string
-     * @see filterExpression
-     * @see setExpressionContext
+    /**
+     * Sets invalid geometry checking behavior.
+     * \note Invalid geometry checking is not performed when retrieving features
+     * directly from a QgsVectorDataProvider.
+     * \see invalidGeometryCheck()
+     * \since QGIS 3.0
+     */
+    QgsFeatureRequest &setInvalidGeometryCheck( InvalidGeometryCheck check );
+
+    /**
+     * Returns the invalid geometry checking behavior.
+     * \see setInvalidGeometryCheck()
+     * \since QGIS 3.0
+     */
+    InvalidGeometryCheck invalidGeometryCheck() const { return mInvalidGeometryFilter; }
+
+    /**
+     * Sets a callback function to use when encountering an invalid geometry and
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
+     * called using the feature with invalid geometry as a parameter.
+     * \since QGIS 3.0
+     * \see invalidGeometryCallback()
+     */
+    QgsFeatureRequest &setInvalidGeometryCallback( std::function< void( const QgsFeature & ) > callback );
+
+    /**
+     * Returns the callback function to use when encountering an invalid geometry and
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid.
+     * \since QGIS 3.0
+     * \note not available in Python bindings
+     * \see setInvalidGeometryCallback()
+     */
+    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
+
+    /** Set the filter expression. {\see QgsExpression}
+     * \param expression expression string
+     * \see filterExpression
+     * \see setExpressionContext
      */
     QgsFeatureRequest &setFilterExpression( const QString &expression );
 
     /** Returns the filter expression if set.
-     * @see setFilterExpression
-     * @see expressionContext
+     * \see setFilterExpression
+     * \see expressionContext
      */
     QgsExpression *filterExpression() const { return mFilterExpression.get(); }
 
     /** Modifies the existing filter expression to add an additional expression filter. The
      * filter expressions are combined using AND, so only features matching both
      * the existing expression and the additional expression will be returned.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QgsFeatureRequest &combineFilterExpression( const QString &expression );
 
     /** Returns the expression context used to evaluate filter expressions.
-     * @note added in QGIS 2.12
-     * @see setExpressionContext
-     * @see filterExpression
+     * \since QGIS 2.12
+     * \see setExpressionContext
+     * \see filterExpression
      */
     QgsExpressionContext *expressionContext() { return &mExpressionContext; }
 
     /** Sets the expression context used to evaluate filter expressions.
-     * @note added in QGIS 2.12
-     * @see expressionContext
-     * @see setFilterExpression
+     * \since QGIS 2.12
+     * \see expressionContext
+     * \see setFilterExpression
      */
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 
@@ -308,21 +379,21 @@ class CORE_EXPORT QgsFeatureRequest
      * Disables filter conditions.
      * The spatial filter (filterRect) will be kept in place.
      *
-     * @return The object the method is called on for chaining
+     * \returns The object the method is called on for chaining
      *
-     * @note Added in 2.12
+     * \since QGIS 2.12
      */
     QgsFeatureRequest &disableFilter() { mFilter = FilterNone; return *this; }
 
     /**
      * Adds a new OrderByClause, appending it as the least important one.
      *
-     * @param expression The expression to use for ordering
-     * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+     * \param expression The expression to use for ordering
+     * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
      *                   If the order is ascending, by default nulls are last
      *                   If the order is descending, by default nulls are first
      *
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
 
     QgsFeatureRequest &addOrderBy( const QString &expression, bool ascending = true );
@@ -330,38 +401,38 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Adds a new OrderByClause, appending it as the least important one.
      *
-     * @param expression The expression to use for ordering
-     * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-     * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+     * \param expression The expression to use for ordering
+     * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+     * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
      *
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QgsFeatureRequest &addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
 
     /**
      * Return a list of order by clauses specified for this feature request.
      *
-     * @note added in 2.14
+     * \since QGIS 2.14
      */
     OrderBy orderBy() const;
 
     /**
      * Set a list of order by clauses.
      *
-     * @note added in 2.14
+     * \since QGIS 2.14
      */
     QgsFeatureRequest &setOrderBy( const OrderBy &orderBy );
 
     /** Set the maximum number of features to request.
-     * @param limit maximum number of features, or -1 to request all features.
-     * @see limit()
-     * @note added in QGIS 2.14
+     * \param limit maximum number of features, or -1 to request all features.
+     * \see limit()
+     * \since QGIS 2.14
      */
     QgsFeatureRequest &setLimit( long limit );
 
     /** Returns the maximum number of features to request, or -1 if no limit set.
-     * @see setLimit
-     * @note added in QGIS 2.14
+     * \see setLimit
+     * \since QGIS 2.14
      */
     long limit() const { return mLimit; }
 
@@ -375,7 +446,7 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * Return the subset of attributes which at least need to be fetched
-     * @return A list of attributes to be fetched
+     * \returns A list of attributes to be fetched
      */
     QgsAttributeList subsetOfAttributes() const { return mAttrs; }
 
@@ -386,20 +457,20 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 
     //! Set a simplification method for geometries that will be fetched
-    //! @note added in 2.2
+    //! \since QGIS 2.2
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
     //! Get simplification method for geometries that will be fetched
-    //! @note added in 2.2
+    //! \since QGIS 2.2
     const QgsSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**
      * Check if a feature is accepted by this requests filter
      *
-     * @param feature  The feature which will be tested
+     * \param feature  The feature which will be tested
      *
-     * @return true, if the filter accepts the feature
+     * \returns true, if the filter accepts the feature
      *
-     * @note added in 2.1
+     * \since QGIS 2.1
      */
     bool acceptFeature( const QgsFeature &feature );
 
@@ -415,6 +486,8 @@ class CORE_EXPORT QgsFeatureRequest
     QgsSimplifyMethod mSimplifyMethod;
     long mLimit = -1;
     OrderBy mOrderBy;
+    InvalidGeometryCheck mInvalidGeometryFilter = GeometryNoCheck;
+    std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
@@ -425,7 +498,7 @@ class QgsAbstractFeatureIterator;
 
 /** \ingroup core
  * Base class that can be used for any class that is capable of returning features
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsAbstractFeatureSource
 {
@@ -434,10 +507,10 @@ class CORE_EXPORT QgsAbstractFeatureSource
 
     /**
      * Get an iterator for features matching the specified request
-     * @param request The request
-     * @return A feature iterator
+     * \param request The request
+     * \returns A feature iterator
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0;
 
   protected:
     void iteratorOpened( QgsAbstractFeatureIterator *it );

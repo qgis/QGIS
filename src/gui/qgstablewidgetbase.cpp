@@ -24,8 +24,8 @@ QgsTableWidgetBase::QgsTableWidgetBase( QWidget *parent )
 void QgsTableWidgetBase::init( QAbstractTableModel *model )
 {
   tableView->setModel( model );
-  connect( tableView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( onSelectionChanged() ) );
-  connect( model, SIGNAL( dataChanged( const QModelIndex &, const QModelIndex & ) ), this, SIGNAL( valueChanged() ) );
+  connect( tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsTableWidgetBase::onSelectionChanged );
+  connect( model, &QAbstractItemModel::dataChanged, this, &QgsTableWidgetBase::valueChanged );
 }
 
 void QgsTableWidgetBase::on_addButton_clicked()

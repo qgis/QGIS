@@ -27,12 +27,11 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsFeature
+from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsFeature, QgsProcessingUtils
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 from qgis.PyQt.QtGui import QIcon
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -44,14 +43,22 @@ class ReprojectLayer(GeoAlgorithm):
     TARGET_CRS = 'TARGET_CRS'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Reproject layer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
-        self.tags = self.tr('transform,reproject,crs,srs,warp')
+    def tags(self):
+        return self.tr('transform,reproject,crs,srs,warp').split(',')
 
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'reprojectlayer'
+
+    def displayName(self):
+        return self.tr('Reproject layer')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterCrs(self.TARGET_CRS,
@@ -59,21 +66,21 @@ class ReprojectLayer(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem()
         targetCrs.createFromUserInput(crsId)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), layer.wkbType(), targetCrs)
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(),
+                                                                     targetCrs, context)
 
         layerCrs = layer.crs()
         crsTransform = QgsCoordinateTransform(layerCrs, targetCrs)
 
         outFeat = QgsFeature()
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             geom = f.geometry()
             geom.transform(crsTransform)

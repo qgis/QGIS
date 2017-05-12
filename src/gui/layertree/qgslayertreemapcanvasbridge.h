@@ -17,6 +17,7 @@
 #define QGSLAYERTREEMAPCANVASBRIDGE_H
 
 #include <QObject>
+#include "qgis.h"
 #include <QStringList>
 
 #include "qgscoordinatereferencesystem.h"
@@ -43,23 +44,23 @@ class QgsLayerTree;
  * in advanced cases where the grouping in layer tree should be independent from the actual
  * order in the canvas.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 {
     Q_OBJECT
   public:
     //! Constructor: does not take ownership of the layer tree nor canvas
-    QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent = nullptr );
+    QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent SIP_TRANSFERTHIS = 0 );
 
     QgsLayerTree *rootGroup() const { return mRoot; }
     QgsMapCanvas *mapCanvas() const { return mCanvas; }
 
     //! Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) { mOverviewCanvas = overviewCanvas; }
     //! Returns associated overview canvas (may be null)
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     QgsMapOverviewCanvas *overviewCanvas() const { return mOverviewCanvas; }
 
     //! if enabled, will automatically set full canvas extent and destination CRS + map units
@@ -75,7 +76,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     /**
      * Emitted when the set of layers (or order of layers) visible in the
      * canvas changes.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void canvasLayersChanged( const QList< QgsMapLayer * > &layers );
 

@@ -32,13 +32,13 @@ class QgsSymbol;
 #include "qgslegendsettings.h"
 
 /** \ingroup core
- * @brief The QgsLegendRenderer class handles automatic layout and rendering of legend.
+ * \brief The QgsLegendRenderer class handles automatic layout and rendering of legend.
  * The content is given by QgsLayerTreeModel instance. Various layout properties can be configured
  * within QgsLegendRenderer.
  *
  * All spacing and sizes are in millimeters.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendRenderer
 {

@@ -1,74 +1,102 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscolorschemeregistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \ingroup core
- * \class QgsColorSchemeRegistry
- * \brief Registry of color schemes
- *
- * A registry of QgsColorScheme color schemes. This class can be created directly, or
- * accessed via a global instance.
- * \note Added in version 2.5
- */
+
+
+
 class QgsColorSchemeRegistry
 {
+%Docstring
+ Registry of color schemes
+
+ A registry of QgsColorScheme color schemes. This class can be created directly, or
+ accessed via a QgsApplication.colorSchemeRegistry().
+.. versionadded:: 2.5
+%End
+
 %TypeHeaderCode
-#include <qgscolorschemeregistry.h>
+#include "qgscolorschemeregistry.h"
 %End
   public:
 
-    /** Constructor for an empty color scheme registry
-     */
     QgsColorSchemeRegistry();
+%Docstring
+ Constructor for an empty color scheme registry
+%End
 
     virtual ~QgsColorSchemeRegistry();
 
-    /** Adds all color schemes from the global instance to this color scheme.
-     * @see addDefaultSchemes
-     * @see addColorScheme
-     */
     void populateFromInstance();
+%Docstring
+ Adds all color schemes from the global instance to this color scheme.
+.. seealso:: addDefaultSchemes
+.. seealso:: addColorScheme
+%End
 
-    /** Adds all default color schemes to this color scheme.
-     * @see populateFromInstance
-     * @see addColorScheme
-     * @see addUserSchemes
-     */
     void addDefaultSchemes();
+%Docstring
+ Adds all default color schemes to this color scheme.
+.. seealso:: populateFromInstance
+.. seealso:: addColorScheme
+.. seealso:: addUserSchemes
+%End
 
-    /** Creates schemes for all gpl palettes in the user's palettes folder.
-     * @see populateFromInstance
-     * @see addDefaultSchemes
-     * @see addColorScheme
-     */
     void addUserSchemes();
+%Docstring
+ Creates schemes for all gpl palettes in the user's palettes folder.
+.. seealso:: populateFromInstance
+.. seealso:: addDefaultSchemes
+.. seealso:: addColorScheme
+%End
 
-    /** Adds a color scheme to the registry. Ownership of the scheme is transferred
-     * to the registry.
-     * @param scheme color scheme to add
-     * @see populateFromInstance
-     * @see removeColorScheme
-     */
-    void addColorScheme( QgsColorScheme* scheme /Transfer/ );
+    void addColorScheme( QgsColorScheme *scheme /Transfer/ );
+%Docstring
+ Adds a color scheme to the registry. Ownership of the scheme is transferred
+ to the registry.
+ \param scheme color scheme to add
+.. seealso:: populateFromInstance
+.. seealso:: removeColorScheme
+%End
 
-    /** Removes all matching color schemes from the registry
-     * @param scheme color scheme to remove
-     * @returns true if scheme was found and removed
-     * @see addColorScheme
-     */
-    bool removeColorScheme( QgsColorScheme* scheme );
+    bool removeColorScheme( QgsColorScheme *scheme );
+%Docstring
+ Removes all matching color schemes from the registry
+ \param scheme color scheme to remove
+ :return: true if scheme was found and removed
+.. seealso:: addColorScheme
+ :rtype: bool
+%End
 
-    /** Returns all color schemes in the registry
-     * @returns list of color schemes
-     */
     QList<QgsColorScheme *> schemes() const;
+%Docstring
+ Returns all color schemes in the registry
+ :return: list of color schemes
+ :rtype: list of QgsColorScheme
+%End
 
-    /** Returns all color schemes in the registry which have a specified flag set
-     * @param flag flag to match
-     * @returns list of color schemes with flag set
-     */
     QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
+%Docstring
+ Returns all color schemes in the registry which have a specified flag set
+ \param flag flag to match
+ :return: list of color schemes with flag set
+ :rtype: list of QgsColorScheme
+%End
 
-    /** Return color schemes of a specific type
-     * @param schemeList destination list for matching schemes
-     * @note not available in python bindings
-     */
-    // template<class T> void schemes( QList<T*>& schemeList );
+
+
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscolorschemeregistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

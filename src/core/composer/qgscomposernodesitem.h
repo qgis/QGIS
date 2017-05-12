@@ -25,7 +25,7 @@
 /** \ingroup core
  * An abstract composer item that provides generic methods for nodes based
  * shapes such as polygon or polylines.
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
 {
@@ -34,35 +34,35 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
   public:
 
     /** Constructor
-     * @param mTagName tag used in XML file
-     * @param c parent composition
+     * \param mTagName tag used in XML file
+     * \param c parent composition
      */
     QgsComposerNodesItem( const QString &mTagName, QgsComposition *c );
 
     /** Constructor
-     * @param mTagName tag used in XML file
-     * @param polygon nodes of the shape
-     * @param c parent composition
+     * \param mTagName tag used in XML file
+     * \param polygon nodes of the shape
+     * \param c parent composition
      */
     QgsComposerNodesItem( const QString &mTagName, const QPolygonF &polygon, QgsComposition *c );
 
     /** Add a node in current shape.
-     * @param pt is the location of the new node
-     * @param checkArea is a flag to indicate if there's a space constraint.
-     * @param radius is the space contraint and is used only if checkArea is
+     * \param pt is the location of the new node
+     * \param checkArea is a flag to indicate if there's a space constraint.
+     * \param radius is the space contraint and is used only if checkArea is
      * true. Typically, if this flag is true, the new node has to be nearest
      * than radius to the shape to be added.
      */
     bool addNode( QPointF pt, const bool checkArea = true, const double radius = 10 );
 
     /** Set a tag to indicate if we want to draw or not the shape's nodes.
-     * @param display
+     * \param display
      */
     void setDisplayNodes( const bool display = true ) { mDrawNodes = display; }
 
     /** Move a node to a new position.
-     * @param index the index of the node to move
-     * @param node is the new position in scene coordinate
+     * \param index the index of the node to move
+     * \param node is the new position in scene coordinate
      */
     bool moveNode( const int index, QPointF node );
 
@@ -71,28 +71,28 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
 
     /** Search the nearest node in shape within a maximal area. Returns the
      * index of the nearest node or -1.
-     * @param node is where a shape's node is searched
-     * @param searchInRadius is a flag to indicate if the area of research is
+     * \param node is where a shape's node is searched
+     * \param searchInRadius is a flag to indicate if the area of research is
      * limited in space.
-     * @param radius is only used if searchInRadius is true
+     * \param radius is only used if searchInRadius is true
      */
     int nodeAtPosition( QPointF node, const bool searchInRadius = true, const double radius = 10 );
 
     /** Gets the position of a node in scene coordinate.
-      * @param index of the node
-      * @param position the position of the node
-      * @return true if the index is valid and the position is set, false otherwise
+      * \param index of the node
+      * \param position the position of the node
+      * \returns true if the index is valid and the position is set, false otherwise
       */
     bool nodePosition( const int index, QPointF &position );
 
     /** Sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is Dom document
+     * \param itemElem is Dom node corresponding to item tag
+     * \param doc is Dom document
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /** Remove a node from the shape.
-     * @param index of the node to delete
+     * \param index of the node to delete
      */
     bool removeNode( const int index );
 
@@ -100,12 +100,12 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     int nodesSize() { return mPolygon.size(); }
 
     /** Select a node.
-     * @param index the node to select
+     * \param index the node to select
      */
     bool setSelectedNode( const int index );
 
     /** Returns the currently selected node.
-      * @return the index of the selected node, -1 otherwise
+      * \returns the index of the selected node, -1 otherwise
       */
     int selectedNode() { return mSelectedNode; }
 
@@ -114,8 +114,8 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     void deselectNode() { mSelectedNode = -1; }
 
     /** Stores state in Dom element
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc write template file
+     * \param elem is Dom element corresponding to 'Composer' tag
+     * \param doc write template file
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 

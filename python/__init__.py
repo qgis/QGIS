@@ -16,13 +16,57 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import zip
 
 __author__ = 'Martin Dobias'
 __date__ = 'January 2007'
 __copyright__ = '(C) 2007, Martin Dobias'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
+
+from builtins import zip
+import os
+
+
+def setupenv():
+    """
+    Set the environment for Windows based on the .vars files from the
+    OSGeo4W package format.
+    """
+    # If the prefix path is already set the we don't do any more path setup.
+    if os.getenv('QGIS_PREFIX_PATH'):
+        return
+
+    # Setup the paths based on the .vars file.
+    from pathlib import PurePath
+
+    path_split = PurePath(os.path.dirname(os.path.realpath(__file__))).parts
+
+    try:
+        appname = os.environ['QGIS_ENVNAME']
+    except KeyError:
+        appname = path_split[-3]
+
+    envfile = list(path_split[:-4])
+    envfile.append("bin")
+    envfile.append("{0}-bin.env".format(appname))
+    envfile = os.path.join(*envfile)
+
+    if not os.path.exists(envfile):
+        return
+
+    with open(envfile) as f:
+        for line in f:
+            linedata = line.split("=")
+            name = linedata[0]
+            data = linedata[1]
+            os.environ[name] = data
+
+
+if os.name == 'nt':
+    # On windows we need to setup the paths before we can import
+    # any of the QGIS modules or else it will error.
+    setupenv()
+
 
 from qgis.PyQt import QtCore
 from qgis.core import QgsFeature, QgsGeometry

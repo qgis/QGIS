@@ -71,39 +71,39 @@ class SERVER_EXPORT QgsAccessControlFilter
     const QgsServerInterface *serverInterface() const { return mServerInterface; }
 
     /** Return an additional expression filter
-     * @param layer the layer to control
-     * @return the filter expression
+     * \param layer the layer to control
+     * \returns the filter expression
      */
     virtual QString layerFilterExpression( const QgsVectorLayer *layer ) const;
 
     /** Return an additional subset string (typically SQL) filter
-     * @param layer the layer to control
-     * @return the subset string
+     * \param layer the layer to control
+     * \returns the subset string
      */
     virtual QString layerFilterSubsetString( const QgsVectorLayer *layer ) const;
 
     /** Return the layer permissions
-     * @param layer the layer to control
-     * @return the permission to use on the layer
+     * \param layer the layer to control
+     * \returns the permission to use on the layer
      */
     virtual LayerPermissions layerPermissions( const QgsMapLayer *layer ) const;
 
     /** Return the authorized layer attributes
-     * @param layer the layer to control
-     * @param attributes the current list of visible attribute
-     * @return the new list of visible attributes
+     * \param layer the layer to control
+     * \param attributes the current list of visible attribute
+     * \returns the new list of visible attributes
      */
     virtual QStringList authorizedLayerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
 
     /** Are we authorized to modify the following geometry
-     * @param layer the layer to control
-     * @param feature the concerned feature
-     * @return true if we are allowed to edit
+     * \param layer the layer to control
+     * \param feature the concerned feature
+     * \returns true if we are allowed to edit
      */
     virtual bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;
 
     /** Cache key to used to create the capabilities cache
-     * @return the cache key, "" for no cache
+     * \returns the cache key, "" for no cache
      */
     virtual QString cacheKey() const;
 

@@ -312,7 +312,7 @@ QPair<int, int> QgsComposerTableV2::rowRange( const int frameIndex ) const
   }
 
   //loop through all previous frames to calculate how many rows are visible in each
-  //as the entire height of a frame may not be utilised for content rows
+  //as the entire height of a frame may not be utilized for content rows
   int rowsAlreadyShown = 0;
   for ( int idx = 0; idx < frameIndex; ++idx )
   {
@@ -1064,7 +1064,7 @@ double QgsComposerTableV2::totalHeight()
   double height = 0;
 
   //loop through all existing frames to calculate how many rows are visible in each
-  //as the entire height of a frame may not be utilised for content rows
+  //as the entire height of a frame may not be utilized for content rows
   int rowsAlreadyShown = 0;
   int numberExistingFrames = frameCount();
   int rowsVisibleInLastFrame = 0;

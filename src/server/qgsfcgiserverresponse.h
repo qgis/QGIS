@@ -36,27 +36,33 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
     QgsFcgiServerResponse( QgsServerRequest::Method method = QgsServerRequest::GetMethod );
     ~QgsFcgiServerResponse();
 
-    virtual void setHeader( const QString &key, const QString &value ) override;
+    void setHeader( const QString &key, const QString &value ) override;
 
-    virtual void clearHeader( const QString &key ) override;
+    void removeHeader( const QString &key ) override;
 
-    virtual QString getHeader( const QString &key ) const override;
+    QString header( const QString &key ) const override;
 
-    virtual QList<QString> headerKeys() const override;
+    QMap<QString, QString> headers() const override { return mHeaders; }
 
-    virtual bool headersSent() const override;
+    bool headersSent() const override;
 
-    virtual void setReturnCode( int code ) override;
+    void setStatusCode( int code ) override;
 
-    virtual void sendError( int code,  const QString &message ) override;
+    int statusCode( ) const override { return mStatusCode; }
 
-    virtual QIODevice *io() override;
+    void sendError( int code,  const QString &message ) override;
 
-    virtual void finish() override;
+    QIODevice *io() override;
 
-    virtual void flush() override;
+    void finish() override;
 
-    virtual void clear() override;
+    void flush() override;
+
+    void clear() override;
+
+    QByteArray data() const override;
+
+    void truncate() override;
 
     /**
      * Set the default headers
@@ -69,41 +75,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
     bool mFinished    = false;
     bool mHeadersSent = false;
     QgsServerRequest::Method mMethod;
-};
-
-/**
- * \ingroup server
- * QgsFcgiServerResquest
- * Class defining fcgi request
- */
-class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
-{
-  public:
-    QgsFcgiServerRequest();
-    ~QgsFcgiServerRequest();
-
-    virtual QByteArray data() const override;
-
-    /**
-     * Return true if an error occurred during initialization
-     */
-    bool hasError() const { return mHasError; }
-
-  private:
-    void readData();
-
-    // Log request info: print debug infos
-    // about the request
-    void printRequestInfos();
-
-
-    QByteArray mData;
-    bool       mHasError;
+    int mStatusCode = 0;
 };
 
 #endif
-
-
-
-
-

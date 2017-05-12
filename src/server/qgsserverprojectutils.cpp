@@ -87,6 +87,58 @@ int QgsServerProjectUtils::wmsMaxHeight( const QgsProject &project )
   return project.readNumEntry( QStringLiteral( "WMSMaxHeight" ), QStringLiteral( "/" ), -1 );
 }
 
+bool QgsServerProjectUtils::wmsUseLayerIds( const QgsProject &project )
+{
+  return project.readBoolEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ) );
+}
+
+bool QgsServerProjectUtils::wmsInfoFormatSIA2045( const QgsProject &project )
+{
+  QString sia2045 = project.readEntry( QStringLiteral( "WMSInfoFormatSIA2045" ), QStringLiteral( "/" ), "" );
+
+  if ( sia2045.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
+       || sia2045.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return true;
+  }
+  return false;
+}
+
+bool QgsServerProjectUtils::wmsInspireActivated( const QgsProject &project )
+{
+  return project.readBoolEntry( QStringLiteral( "WMSInspire" ), QStringLiteral( "/activated" ) );
+}
+
+QString QgsServerProjectUtils::wmsInspireLanguage( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSInspire" ), QStringLiteral( "/language" ) );
+}
+
+QString QgsServerProjectUtils::wmsInspireMetadataUrl( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSInspire" ), QStringLiteral( "/metadataUrl" ) );
+}
+
+QString QgsServerProjectUtils::wmsInspireMetadataUrlType( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSInspire" ), QStringLiteral( "/metadataUrlType" ) );
+}
+
+QString QgsServerProjectUtils::wmsInspireTemporalReference( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSInspire" ), QStringLiteral( "/temporalReference" ) );
+}
+
+QString QgsServerProjectUtils::wmsInspireMetadataDate( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSInspire" ), QStringLiteral( "/metadataDate" ) );
+}
+
+QStringList QgsServerProjectUtils::wmsRestrictedComposers( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WMSRestrictedComposers" ), QStringLiteral( "/" ), QStringList() );
+}
+
 QString QgsServerProjectUtils::wmsServiceUrl( const QgsProject &project )
 {
   return project.readEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), "" );
@@ -95,6 +147,31 @@ QString QgsServerProjectUtils::wmsServiceUrl( const QgsProject &project )
 QString QgsServerProjectUtils::wfsServiceUrl( const QgsProject &project )
 {
   return project.readEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), "" );
+}
+
+QStringList QgsServerProjectUtils::wfsLayerIds( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WFSLayers" ), QStringLiteral( "/" ) );
+}
+
+int QgsServerProjectUtils::wfsLayerPrecision( const QgsProject &project, const QString &layerId )
+{
+  return project.readNumEntry( QStringLiteral( "WFSLayersPrecision" ), "/" + layerId, 6 );
+}
+
+QStringList QgsServerProjectUtils::wfstUpdateLayerIds( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Update" ) );
+}
+
+QStringList QgsServerProjectUtils::wfstInsertLayerIds( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Insert" ) );
+}
+
+QStringList QgsServerProjectUtils::wfstDeleteLayerIds( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Delete" ) );
 }
 
 QString QgsServerProjectUtils::wcsServiceUrl( const QgsProject &project )

@@ -30,14 +30,14 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsProject, QgsCoordinateTransform, QgsFeature, QgsField, QgsWkbTypes
+from qgis.core import QgsProject, QgsCoordinateTransform, QgsFeature, QgsField, QgsWkbTypes, QgsProcessingUtils
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -48,14 +48,22 @@ class ExportGeometryInfo(GeoAlgorithm):
     METHOD = 'CALC_METHOD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'export_geometry.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Export/Add geometry columns')
-        self.tags = self.tr('export,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+    def tags(self):
+        return self.tr('export,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons').split(',')
 
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'exportaddgeometrycolumns'
+
+    def displayName(self):
+        return self.tr('Export/Add geometry columns')
+
+    def defineCharacteristics(self):
         self.calc_methods = [self.tr('Layer CRS'),
                              self.tr('Project CRS'),
                              self.tr('Ellipsoidal')]
@@ -67,9 +75,8 @@ class ExportGeometryInfo(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         method = self.getParameterValue(self.METHOD)
 
         geometryType = layer.geometryType()
@@ -99,8 +106,8 @@ class ExportGeometryInfo(GeoAlgorithm):
                 zName = vector.createUniqueFieldName('mvalue', fields)
                 fields.append(QgsField(zName, QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(),
+                                                                     context)
 
         ellips = None
         crs = None
@@ -124,8 +131,8 @@ class ExportGeometryInfo(GeoAlgorithm):
         outFeat.initAttributes(len(fields))
         outFeat.setFields(fields)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             inGeom = f.geometry()
 

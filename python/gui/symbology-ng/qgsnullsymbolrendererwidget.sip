@@ -13,12 +13,12 @@ class QgsNullSymbolRendererWidget : QgsRendererWidget
   public:
 
     //! Creates a new QgsNullSymbolRendererWidget object
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 
     //! Constructor for QgsNullSymbolRendererWidget
-    QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsNullSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsNullSymbolRendererWidget();
 
     //! Returns a pointer to the configured renderer
-    virtual QgsFeatureRenderer* renderer();
+    virtual QgsFeatureRenderer *renderer();
 };

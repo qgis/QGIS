@@ -18,6 +18,7 @@
 #define QGSRENDERERV2PROPERTIESDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 
 #include "ui_qgsrendererv2propsdialogbase.h"
 
@@ -43,26 +44,26 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
   public:
 
     /** Constructor for QgsRendererPropertiesDialog.
-     * @param layer associated layer
-     * @param style style collection
-     * @param embedded set to true to indicate that the dialog will be embedded in another widget, rather
+     * \param layer associated layer
+     * \param style style collection
+     * \param embedded set to true to indicate that the dialog will be embedded in another widget, rather
      * than shown as a dialog by itself
-     * @param parent parent widget
+     * \param parent parent widget
      */
-    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent = nullptr );
+    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsRendererPropertiesDialog();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
-     * @param canvas map canvas
-     * @note added in QGIS 2.12
+     * \param canvas map canvas
+     * \since QGIS 2.12
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
      * Set the widget in dock mode which tells the widget to emit panel
      * widgets and not open dialogs
-     * @param dockMode True to enable dock mode.
+     * \param dockMode True to enable dock mode.
      */
     void setDockMode( bool dockMode );
 
@@ -83,8 +84,8 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
 
     /**
      * Emit when you require a panel to be show in the interface.
-     * @param panel The panel widget to show.
-     * @note If you are connected to this signal you should also connect
+     * \param panel The panel widget to show.
+     * \note If you are connected to this signal you should also connect
      * given panels showPanel signal as they can be nested.
      */
     void showPanel( QgsPanelWidget *panel );
@@ -107,7 +108,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * If dock mode is false this method will open a dialog
      * and block the user.
      *
-     * @param panel The panel widget to open.
+     * \param panel The panel widget to open.
      */
     void openPanel( QgsPanelWidget *panel );
 
@@ -128,8 +129,8 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * Each widget is checked for type and the common type of signal is connected
      * to the slot.
      *
-     * @param widgets The list of widgets to check.
-     * @param slot The slot to connect to the signals.
+     * \param widgets The list of widgets to check.
+     * \param slot The slot to connect to the signals.
      */
     void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
 

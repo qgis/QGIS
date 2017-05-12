@@ -27,14 +27,15 @@ __revision__ = '$Format:%H$'
 
 import plotly as plt
 import plotly.graph_objs as go
-import numpy as np
 
+
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.outputs import OutputHTML
 from processing.tools import vector
-from processing.tools import dataobjects
 
 
 class BarPlot(GeoAlgorithm):
@@ -44,15 +45,27 @@ class BarPlot(GeoAlgorithm):
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Bar plot')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Graphics')
+
+    def name(self):
+        return 'barplot'
+
+    def displayName(self):
+        return self.tr('Bar plot')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
                                               self.tr('Category name field'),
                                               self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
+                                              ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterTableField(self.VALUE_FIELD,
                                               self.tr('Value field'),
                                               self.INPUT,
@@ -60,17 +73,17 @@ class BarPlot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         namefieldname = self.getParameterValue(self.NAME_FIELD)
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, namefieldname, valuefieldname)
+        values = vector.values(layer, context, valuefieldname)
 
-        ind = np.arange(len(values[namefieldname]))
-        data = [go.Bar(x=ind,
+        x_var = [i[namefieldname] for i in layer.getFeatures()]
+
+        data = [go.Bar(x=x_var,
                        y=values[valuefieldname])]
         plt.offline.plot(data, filename=output, auto_open=False)

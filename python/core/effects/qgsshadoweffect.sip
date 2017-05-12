@@ -17,7 +17,7 @@ class QgsShadowEffect : QgsPaintEffect
     virtual ~QgsShadowEffect();
 
     virtual QgsStringMap properties() const;
-    virtual void readProperties( const QgsStringMap& props );
+    virtual void readProperties( const QgsStringMap &props );
 
     /** Sets blur level (strength) for the shadow.
      * @param level blur level. Values between 0 and 16 are valid, with larger
@@ -85,7 +85,7 @@ class QgsShadowEffect : QgsPaintEffect
      * @see setOffsetDistance
      * @see setOffsetUnit
      */
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale );
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the map unit scale used for the shadow offset distance.
      * @returns map unit scale for offset distance
@@ -93,13 +93,13 @@ class QgsShadowEffect : QgsPaintEffect
      * @see offsetDistance
      * @see offsetUnit
      */
-    const QgsMapUnitScale& offsetMapUnitScale() const;
+    const QgsMapUnitScale &offsetMapUnitScale() const;
 
     /** Sets the color for the shadow.
      * @param color shadow color
      * @see color
      */
-    void setColor( const QColor& color );
+    void setColor( const QColor &color );
 
     /** Returns the color used for the shadow.
      * @returns shadow color
@@ -137,8 +137,8 @@ class QgsShadowEffect : QgsPaintEffect
 
   protected:
 
-    virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const;
-    virtual void draw( QgsRenderContext& context );
+    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
+    virtual void draw( QgsRenderContext &context );
 
     /** Specifies whether the shadow is drawn outside the picture or within
      * the picture.
@@ -168,13 +168,13 @@ class QgsDropShadowEffect : QgsShadowEffect
      * @param map encoded properties string map
      * @returns new QgsDropShadowEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
+    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 
     QgsDropShadowEffect();
     virtual ~QgsDropShadowEffect();
 
     virtual QString type() const;
-    virtual QgsDropShadowEffect* clone() const /Factory/;
+    virtual QgsDropShadowEffect *clone() const /Factory/;
 
   protected:
 
@@ -201,13 +201,13 @@ class QgsInnerShadowEffect : QgsShadowEffect
      * @param map encoded properties string map
      * @returns new QgsInnerShadowEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
+    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 
     QgsInnerShadowEffect();
     virtual ~QgsInnerShadowEffect();
 
     virtual QString type() const;
-    virtual QgsInnerShadowEffect* clone() const /Factory/;
+    virtual QgsInnerShadowEffect *clone() const /Factory/;
 
   protected:
 

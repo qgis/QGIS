@@ -183,6 +183,7 @@ class TestWFST(unittest.TestCase):
         layer = self._getLayer(layer.name())
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.featureCount(), len(features))
+        self.assertEqual(wfs_layer.dataProvider().featureCount(), len(features))
 
     def _checkUpdateFeatures(self, wfs_layer, old_features, new_features):
         """

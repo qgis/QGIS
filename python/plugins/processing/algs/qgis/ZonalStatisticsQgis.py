@@ -30,6 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsZonalStatistics
+from qgis.core import QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -52,8 +53,17 @@ class ZonalStatisticsQgis(GeoAlgorithm):
     STATISTICS = 'STATS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'zonalstats.png'))
+
+    def group(self):
+        return self.tr('Raster tools')
+
+    def name(self):
+        return 'zonalstatisticsqgis'
+
+    def displayName(self):
+        return self.tr('Zonal Statistics (QGIS)')
 
     def defineCharacteristics(self):
         self.STATS = {self.tr('Count'): QgsZonalStatistics.Count,
@@ -69,9 +79,6 @@ class ZonalStatisticsQgis(GeoAlgorithm):
                       self.tr('Variety'): QgsZonalStatistics.Variety,
                       self.tr('All'): QgsZonalStatistics.All
                       }
-
-        self.name, self.i18n_name = self.trAlgorithm('Zonal Statistics (QGIS)')
-        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
 
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Raster layer')))
@@ -92,15 +99,15 @@ class ZonalStatisticsQgis(GeoAlgorithm):
                                     True,
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT_RASTER)
         vectorPath = self.getParameterValue(self.INPUT_VECTOR)
         bandNumber = self.getParameterValue(self.RASTER_BAND)
         columnPrefix = self.getParameterValue(self.COLUMN_PREFIX)
         st = self.getParameterValue(self.STATISTICS)
 
-        vectorLayer = dataobjects.getObjectFromUri(vectorPath)
-        rasterLayer = dataobjects.getObjectFromUri(rasterPath)
+        vectorLayer = QgsProcessingUtils.mapLayerFromString(vectorPath, context)
+        rasterLayer = QgsProcessingUtils.mapLayerFromString(rasterPath, context)
 
         keys = list(self.STATS.keys())
         selectedStats = 0

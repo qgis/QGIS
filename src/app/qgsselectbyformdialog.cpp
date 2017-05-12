@@ -39,7 +39,7 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAt
 
   vLayout->addWidget( mForm );
 
-  connect( mForm, SIGNAL( closed() ), this, SLOT( close() ) );
+  connect( mForm, &QgsAttributeForm::closed, this, &QWidget::close );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/SelectByForm/geometry" ) ).toByteArray() );

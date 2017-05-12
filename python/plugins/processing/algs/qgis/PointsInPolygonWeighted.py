@@ -27,7 +27,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import (QgsApplication,
+                       QgsField,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -49,10 +54,22 @@ class PointsInPolygonWeighted(GeoAlgorithm):
     #    return QIcon(os.path.dirname(__file__) + "/icons/sum_points.png")
     # =========================================================================
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Count points in polygon(weighted)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector analysis tools')
+
+    def name(self):
+        return 'countpointsinpolygonweighted'
+
+    def displayName(self):
+        return self.tr('Count points in polygon(weighted)')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.POLYGONS,
                                           self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,
@@ -64,9 +81,9 @@ class PointsInPolygonWeighted(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Weighted count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
+    def processAlgorithm(self, context, feedback):
+        polyLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)
+        pointLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         fieldName = self.getParameterValue(self.FIELD)
         fieldIdx = pointLayer.fields().lookupField(self.getParameterValue(self.WEIGHT))
 
@@ -76,17 +93,17 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
                                                          polyLayer.fields(), fieldName)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), polyLayer.wkbType(), polyLayer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, polyLayer.wkbType(),
+                                                                     polyLayer.crs(), context)
 
-        spatialIndex = vector.spatialindex(pointLayer)
+        spatialIndex = QgsProcessingUtils.createSpatialIndex(pointLayer, context)
 
         ftPoint = QgsFeature()
         outFeat = QgsFeature()
         geom = QgsGeometry()
 
-        features = vector.features(polyLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(polyLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
         for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()
             engine = QgsGeometry.createGeometryEngine(geom.geometry())

@@ -26,7 +26,7 @@
  * \class QgsSvgAnnotation
  * \ingroup core
  * An annotation which renders the contents of an SVG file.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsSvgAnnotation: public QgsAnnotation
 {
@@ -37,27 +37,29 @@ class CORE_EXPORT QgsSvgAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsSvgAnnotation.
      */
-    QgsSvgAnnotation( QObject *parent = nullptr );
+    QgsSvgAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    QgsSvgAnnotation *clone() const override SIP_FACTORY;
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const override;
     virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /**
      * Sets the file path for the source SVG file.
-     * @see filePath()
+     * \see filePath()
      */
     void setFilePath( const QString &file );
 
     /**
      * Returns the file path for the source SVG file.
-     * @see setFilePath()
+     * \see setFilePath()
      */
     QString filePath() const { return mFilePath; }
 
     /**
      * Returns a new QgsSvgAnnotation object.
      */
-    static QgsSvgAnnotation *create() { return new QgsSvgAnnotation(); }
+    static QgsSvgAnnotation *create() SIP_FACTORY { return new QgsSvgAnnotation(); }
 
   protected:
 

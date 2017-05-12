@@ -20,6 +20,12 @@ PATH=$TOPLEVEL/scripts:$PATH
 
 cd $TOPLEVEL
 
+# GNU prefix command for mac os support (gsed, gsplit)
+GP=
+if [[ "$OSTYPE" =~ darwin* ]]; then
+  GP=g
+fi
+
 if ! type -p astyle.sh >/dev/null; then
   echo astyle.sh not found
   exit 1
@@ -40,7 +46,7 @@ fi
 set -e
 
 # determine changed files
-MODIFIED=$(git status --porcelain| sed -ne "s/^ *[MA]  *//p" | sort -u)
+MODIFIED=$(git status --porcelain| ${GP}sed -ne "s/^ *[MA]  *//p" | sort -u)
 
 if [ -z "$MODIFIED" ]; then
   echo nothing was modified
@@ -93,10 +99,56 @@ if [ -s "$ASTYLEDIFF" ]; then
   else
     echo "Files changed (see $ASTYLEDIFF)"
   fi
-  exit 1
 else
   rm $ASTYLEDIFF
 fi
+
+
+# verify SIP files
+SIPIFYDIFF=sipify.$REV.diff
+>$SIPIFYDIFF
+for f in $MODIFIED; do
+  # if cpp header
+  if [[ $f =~ ^src\/(core|gui|analysis|server)\/.*\.h$ ]]; then
+    # look if corresponding SIP file
+    #echo $f
+    sip_include=$(${GP}sed -r 's/^src\/(\w+)\/.*$/python\/\1\/\1.sip/' <<< $f )
+    sip_file=$(${GP}sed -r 's/^src\/(core|gui|analysis|server)\///; s/\.h$/.sip/' <<<$f )
+    if grep -Exq "^\s*%Include $sip_file" ${TOPLEVEL}/$sip_include ; then
+      #echo "in SIP"
+      sip_file=$(${GP}sed -r 's/^src\///; s/\.h$/.sip/' <<<$f )
+      # check it is not blacklisted (i.e. manualy SIP)
+      if ! grep -Fxq "$sip_file" python/auto_sip.blacklist; then
+        #echo "automatic file"
+        m=python/$sip_file.$REV.prepare
+        touch python/$sip_file
+        cp python/$sip_file $m
+        ${TOPLEVEL}/scripts/sipify.pl $f > python/$sip_file
+        if ! diff -u $m python/$sip_file >>$SIPIFYDIFF; then
+          echo "python/$sip_file is not up to date"
+        fi
+        rm $m
+      fi
+    fi
+  fi
+done
+if [[ -s "$SIPIFYDIFF" ]]; then
+  if tty -s; then
+    # review astyle changes
+    colordiff <$SIPIFYDIFF | less -r
+  else
+    echo "Files changed (see $ASTYLEDIFF)"
+  fi
+  exit 1
+else
+  rm $SIPIFYDIFF
+fi
+if [ -s "$ASTYLEDIFF" ]; then
+    exit 1
+fi
+
+# If there are whitespace errors, print the offending file names and fail.
+exec git diff-index --check --cached HEAD --
 
 exit 0
 

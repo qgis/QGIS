@@ -17,6 +17,7 @@
 #define QGSMAPTOOL_H
 
 #include "qgsconfig.h"
+#include "qgis.h"
 #include "qgsmessagebar.h"
 #include "qgspointv2.h"
 #include "qgsmapmouseevent.h"
@@ -54,7 +55,7 @@ class GUI_EXPORT QgsMapTool : public QObject
   public:
 
     //! Enumeration of flags that adjust the way the map tool operates
-    //! @note added in QGIS 2.16
+    //! \since QGIS 2.16
     enum Flag
     {
       Transient = 1 << 1, /*!< Indicates that this map tool performs a transient (one-off) operation.
@@ -66,7 +67,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /** Returns the flags for the map tool.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual Flags flags() const { return Flags(); }
 
@@ -125,23 +126,23 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsMapCanvas *canvas();
 
     //! Emit map tool changed with the old tool
-    //! @note added in 2.3
+    //! \since QGIS 2.3
     QString toolName() { return mToolName; }
 
     /** Get search radius in mm. Used by identify, tip etc.
      *  The values is currently set in identify tool options (move somewhere else?)
      *  and defaults to Qgis::DEFAULT_SEARCH_RADIUS_MM.
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static double searchRadiusMM();
 
     /** Get search radius in map units for given context. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static double searchRadiusMU( const QgsRenderContext &context );
 
     /** Get search radius in map units for given canvas. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static double searchRadiusMU( QgsMapCanvas *canvas );
 
   signals:
@@ -164,7 +165,7 @@ class GUI_EXPORT QgsMapTool : public QObject
   protected:
 
     //! constructor takes map canvas as a parameter
-    QgsMapTool( QgsMapCanvas *canvas );
+    QgsMapTool( QgsMapCanvas *canvas SIP_TRANSFERTHIS );
 
     //! transformation from screen coordinates to map coordinates
     QgsPoint toMapCoordinates( QPoint point );
@@ -179,8 +180,8 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point );
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
-    //! @note available in python bindings as toMapCoordinatesV2
-    QgsPointV2 toMapCoordinates( const QgsMapLayer *layer, const QgsPointV2 &point );
+    //! \note available in Python bindings as toMapCoordinatesV2
+    QgsPointV2 toMapCoordinates( const QgsMapLayer *layer, const QgsPointV2 &point ) SIP_PYNAME( toMapCoordinatesV2 );
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );

@@ -29,6 +29,7 @@
 #include <QString>
 #include <QStringList>
 #include <QStyle>
+#include <QStyleFactory>
 #include <QDesktopWidget>
 #include <QTranslator>
 #include <QImageReader>
@@ -96,6 +97,7 @@ typedef SInt32 SRefCon;
 #include "qgsmapthemes.h"
 #include "qgsvectorlayer.h"
 #include "qgis_app.h"
+#include "qgscrashhandler.h"
 
 /** Print usage text
  */
@@ -267,35 +269,7 @@ static void dumpBacktrace( unsigned int depth )
     wait( &status );
   }
 #elif defined(Q_OS_WIN)
-  void **buffer = new void *[ depth ];
-
-  SymSetOptions( SYMOPT_DEFERRED_LOADS | SYMOPT_INCLUDE_32BIT_MODULES | SYMOPT_UNDNAME );
-  SymInitialize( GetCurrentProcess(), "http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore", TRUE );
-
-  unsigned short nFrames = CaptureStackBackTrace( 1, depth, buffer, nullptr );
-  SYMBOL_INFO *symbol = ( SYMBOL_INFO * ) qgsMalloc( sizeof( SYMBOL_INFO ) + 256 );
-  symbol->MaxNameLen = 255;
-  symbol->SizeOfStruct = sizeof( SYMBOL_INFO );
-  IMAGEHLP_LINE *line = ( IMAGEHLP_LINE * ) qgsMalloc( sizeof( IMAGEHLP_LINE ) );
-  line->SizeOfStruct = sizeof( IMAGEHLP_LINE );
-
-  for ( int i = 0; i < nFrames; i++ )
-  {
-    DWORD dwDisplacement;
-    SymFromAddr( GetCurrentProcess(), ( DWORD64 )( buffer[ i ] ), 0, symbol );
-    symbol->Name[ 255 ] = 0;
-    if ( SymGetLineFromAddr( GetCurrentProcess(), ( DWORD64 )( buffer[i] ), &dwDisplacement, line ) )
-    {
-      myPrint( "%s(%d) : (%s) frame %d, address %x\n", line->FileName, line->LineNumber, symbol->Name, i, symbol->Address );
-    }
-    else
-    {
-      myPrint( "%s(%d) : (%s) unknown source location, frame %d, address %x [GetLastError()=%d]\n", __FILE__, __LINE__, symbol->Name, i, symbol->Address, GetLastError() );
-    }
-  }
-
-  qgsFree( symbol );
-  qgsFree( line );
+  // TODO Replace with incoming QgsStackTrace
 #else
   Q_UNUSED( depth );
 #endif
@@ -496,7 +470,13 @@ int main( int argc, char *argv[] )
 #endif
 
 #ifdef Q_OS_WIN
-  SetUnhandledExceptionFilter( QgisApp::qgisCrashDump );
+  if ( !QgsApplication::isRunningFromBuildDir() )
+  {
+    QString symbolPath( getenv( "QGIS_PREFIX_PATH" ) );
+    symbolPath = symbolPath + "\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore";
+    QgsStackTrace::setSymbolPath( symbolPath );
+  }
+  SetUnhandledExceptionFilter( QgsCrashHandler::handle );
 #endif
 
   // initialize random number seed
@@ -761,7 +741,7 @@ int main( int argc, char *argv[] )
     for ( int i = 0; i < args.size(); i++ )
     {
       QString arg = QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() );
-      if ( arg.contains( QLatin1String( ".qgs" ) ) )
+      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
       {
         sProjectFileName = arg;
         break;
@@ -810,6 +790,9 @@ int main( int argc, char *argv[] )
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
 #ifdef Q_OS_MAC
+  // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
+  QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
+
   // Set 1024x1024 icon for dock, app switcher, etc., rendering
   myApp.setWindowIcon( QIcon( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) ) );
 #else
@@ -981,13 +964,31 @@ int main( int argc, char *argv[] )
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
-  QString style = mySettings.value( QStringLiteral( "qgis/style" ) ).toString();
-  if ( !style.isNull() )
+  QString presetStyle = mySettings.value( QStringLiteral( "qgis/style" ) ).toString();
+  QString activeStyleName = presetStyle;
+  if ( activeStyleName.isEmpty() ) // not set, using default style
   {
-    QApplication::setStyle( style );
+    //not set, check default
+    activeStyleName = QApplication::style()->metaObject()->className() ;
+  }
+  if ( activeStyleName.contains( QStringLiteral( "adwaita" ), Qt::CaseInsensitive ) )
+  {
+    //never allow Adwaita themes - the Qt variants of these are VERY broken
+    //for apps like QGIS. E.g. oversized controls like spinbox widgets prevent actually showing
+    //any content in these widgets, leaving a very bad impression of QGIS
+
+    //note... we only do this if there's a known good style available (fusion), as SOME
+    //style choices can cause Qt apps to crash...
+    if ( QStyleFactory::keys().contains( QStringLiteral( "fusion" ), Qt::CaseInsensitive ) )
+    {
+      presetStyle = QStringLiteral( "fusion" );
+    }
+  }
+  if ( !presetStyle.isEmpty() )
+  {
+    QApplication::setStyle( presetStyle );
     mySettings.setValue( QStringLiteral( "qgis/style" ), QApplication::style()->objectName() );
   }
-
   /* Translation file for QGIS.
    */
   QString i18nPath = QgsApplication::i18nPath();
@@ -1140,7 +1141,7 @@ int main( int argc, char *argv[] )
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.contains( QLatin1String( ".qgs" ) ) )
+    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
     {
       qgis->openLayer( myLayerName );
     }

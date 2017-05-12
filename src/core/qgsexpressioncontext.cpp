@@ -90,17 +90,18 @@ QgsExpressionContextScope::~QgsExpressionContextScope()
   qDeleteAll( mFunctions );
 }
 
-void QgsExpressionContextScope::setVariable( const QString &name, const QVariant &value )
+void QgsExpressionContextScope::setVariable( const QString &name, const QVariant &value, bool isStatic )
 {
   if ( mVariables.contains( name ) )
   {
     StaticVariable existing = mVariables.value( name );
     existing.value = value;
+    existing.isStatic = isStatic;
     addVariable( existing );
   }
   else
   {
-    addVariable( QgsExpressionContextScope::StaticVariable( name, value ) );
+    addVariable( QgsExpressionContextScope::StaticVariable( name, value, false, isStatic ) );
   }
 }
 
@@ -177,6 +178,11 @@ QStringList QgsExpressionContextScope::filteredVariableNames() const
 bool QgsExpressionContextScope::isReadOnly( const QString &name ) const
 {
   return hasVariable( name ) ? mVariables.value( name ).readOnly : false;
+}
+
+bool QgsExpressionContextScope::isStatic( const QString &name ) const
+{
+  return hasVariable( name ) ? mVariables.value( name ).isStatic : false;
 }
 
 bool QgsExpressionContextScope::hasFunction( const QString &name ) const
@@ -545,19 +551,19 @@ QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 
   for ( QVariantMap::const_iterator it = customVariables.constBegin(); it != customVariables.constEnd(); ++it )
   {
-    scope->setVariable( it.key(), it.value() );
+    scope->setVariable( it.key(), it.value(), true );
   }
 
   //add some extra global variables
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_version" ), Qgis::QGIS_VERSION, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_version_no" ), Qgis::QGIS_VERSION_INT, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_short_version" ), QStringLiteral( "%1.%2" ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_release_name" ), Qgis::QGIS_RELEASE_NAME, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_platform" ), QgsApplication::platform(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_os_name" ), QgsApplication::osName(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_locale" ), QgsApplication::locale(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "user_account_name" ), QgsApplication::userLoginName(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "user_full_name" ), QgsApplication::userFullName(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_version" ), Qgis::QGIS_VERSION, true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_version_no" ), Qgis::QGIS_VERSION_INT, true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_short_version" ), QStringLiteral( "%1.%2" ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_release_name" ), Qgis::QGIS_RELEASE_NAME, true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_platform" ), QgsApplication::platform(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_os_name" ), QgsApplication::osName(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "qgis_locale" ), QgsApplication::locale(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "user_account_name" ), QgsApplication::userLoginName(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "user_full_name" ), QgsApplication::userFullName(), true, true ) );
 
   return scope;
 }
@@ -715,17 +721,17 @@ QgsExpressionContextScope *QgsExpressionContextUtils::projectScope( const QgsPro
 
   for ( ; it != vars.constEnd(); ++it )
   {
-    scope->setVariable( it.key(), it.value() );
+    scope->setVariable( it.key(), it.value(), true );
   }
 
   //add other known project variables
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_title" ), project->title(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_path" ), project->fileInfo().filePath(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_folder" ), project->fileInfo().dir().path(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_filename" ), project->fileInfo().fileName(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_title" ), project->title(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_path" ), project->fileInfo().filePath(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_folder" ), project->fileInfo().dir().path(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_filename" ), project->fileInfo().fileName(), true, true ) );
   QgsCoordinateReferenceSystem projectCrs = project->crs();
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj4(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj4(), true, true ) );
 
   scope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( project ) );
   return scope;
@@ -772,14 +778,14 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLa
 
     QVariant varValue = variableValues.at( varIndex );
     varIndex++;
-    scope->setVariable( variableName, varValue );
+    scope->setVariable( variableName, varValue, true );
   }
 
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_name" ), layer->name(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_id" ), layer->id(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer" ), QVariant::fromValue<QgsWeakMapLayerPointer >( QgsWeakMapLayerPointer( const_cast<QgsMapLayer *>( layer ) ) ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_name" ), layer->name(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_id" ), layer->id(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer" ), QVariant::fromValue<QgsWeakMapLayerPointer >( QgsWeakMapLayerPointer( const_cast<QgsMapLayer *>( layer ) ) ), true, true ) );
 
-  const QgsVectorLayer *vLayer = dynamic_cast< const QgsVectorLayer * >( layer );
+  const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer * >( layer );
   if ( vLayer )
   {
     scope->setFields( vLayer->fields() );
@@ -1085,4 +1091,9 @@ QSet<QString> QgsScopedExpressionFunction::referencedColumns( const QgsExpressio
 {
   Q_UNUSED( node )
   return mReferencedColumns;
+}
+
+bool QgsScopedExpressionFunction::isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  return allParamsStatic( node, parent, context );
 }

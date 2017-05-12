@@ -44,6 +44,8 @@ class TestScriptAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest)
 
     @classmethod
     def tearDownClass(cls):
+        from processing.core.Processing import Processing
+        Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 

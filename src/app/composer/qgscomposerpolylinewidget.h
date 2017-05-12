@@ -24,7 +24,7 @@ class QgsComposerPolyline;
 
 /**
  * Input widget for QgsComposerPolyline
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class QgsComposerPolylineWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerPolylineWidgetBase
 {

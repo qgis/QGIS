@@ -69,14 +69,14 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
 void QgsMapToolAdvancedDigitizing::activate()
 {
   QgsMapToolEdit::activate();
-  connect( mCadDockWidget, SIGNAL( pointChanged( QgsPoint ) ), this, SLOT( cadPointChanged( QgsPoint ) ) );
+  connect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChanged, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
   mCadDockWidget->enable();
 }
 
 void QgsMapToolAdvancedDigitizing::deactivate()
 {
   QgsMapToolEdit::deactivate();
-  disconnect( mCadDockWidget, SIGNAL( pointChanged( QgsPoint ) ), this, SLOT( cadPointChanged( QgsPoint ) ) );
+  disconnect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChanged, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
   mCadDockWidget->disable();
 }
 

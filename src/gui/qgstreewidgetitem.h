@@ -20,6 +20,7 @@
 #define QGSTREEWIDGETITEM_H
 
 #include <QTreeWidgetItem>
+#include "qgis.h"
 #include <QObject>
 #include "qgis_gui.h"
 
@@ -29,91 +30,91 @@
  *
  * QgsTreeWidgetItem allows for items to be sorted using a specified user role, and
  * also correctly handles sorting numeric or mixed text and numeric values.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 {
   public:
 
     /** Constructor for QgsTreeWidgetItem
-     * @param view parent QTreeWidget view
-     * @param type item type
+     * \param view parent QTreeWidget view
+     * \param type item type
      */
-    explicit QgsTreeWidgetItem( QTreeWidget *view, int type = Type );
+    explicit QgsTreeWidgetItem( QTreeWidget *view SIP_TRANSFERTHIS, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
-     * @param type item type
+     * \param type item type
      */
     explicit QgsTreeWidgetItem( int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
-     * @param strings list of strings containing text for each column in the item
-     * @param type item type
+     * \param strings list of strings containing text for each column in the item
+     * \param type item type
      */
     QgsTreeWidgetItem( const QStringList &strings, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
-     * @param view parent QTreeWidget view
-     * @param strings list of strings containing text for each column in the item
-     * @param type item type
+     * \param view parent QTreeWidget view
+     * \param strings list of strings containing text for each column in the item
+     * \param type item type
      */
-    QgsTreeWidgetItem( QTreeWidget *view, const QStringList &strings, int type = Type );
+    QgsTreeWidgetItem( QTreeWidget *view SIP_TRANSFERTHIS, const QStringList &strings, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
-     * @param view parent QTreeWidget view
-     * @param after QTreeWidgetItem to place insert item after in the view
-     * @param type item type
+     * \param view parent QTreeWidget view
+     * \param after QTreeWidgetItem to place insert item after in the view
+     * \param type item type
      */
-    QgsTreeWidgetItem( QTreeWidget *view, QTreeWidgetItem *after, int type = Type );
+    QgsTreeWidgetItem( QTreeWidget *view SIP_TRANSFERTHIS, QTreeWidgetItem *after, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
-     * @param parent QTreeWidgetItem item
-     * @param type item type
+     * \param parent QTreeWidgetItem item
+     * \param type item type
      */
-    explicit QgsTreeWidgetItem( QTreeWidgetItem *parent, int type = Type );
+    explicit QgsTreeWidgetItem( QTreeWidgetItem *parent SIP_TRANSFERTHIS, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
-     * @param parent QTreeWidgetItem item
-     * @param strings list of strings containing text for each column in the item
-     * @param type item type
+     * \param parent QTreeWidgetItem item
+     * \param strings list of strings containing text for each column in the item
+     * \param type item type
      */
-    QgsTreeWidgetItem( QTreeWidgetItem *parent, const QStringList &strings, int type = Type );
+    QgsTreeWidgetItem( QTreeWidgetItem *parent SIP_TRANSFERTHIS, const QStringList &strings, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
-     * @param parent QTreeWidgetItem item
-     * @param after QTreeWidgetItem to place insert item after in the view
-     * @param type item type
+     * \param parent QTreeWidgetItem item
+     * \param after QTreeWidgetItem to place insert item after in the view
+     * \param type item type
      */
-    QgsTreeWidgetItem( QTreeWidgetItem *parent, QTreeWidgetItem *after, int type = Type );
+    QgsTreeWidgetItem( QTreeWidgetItem *parent SIP_TRANSFERTHIS, QTreeWidgetItem *after, int type = Type );
 
     /** Sets the custom sort data for a specified column. If set, this value will be used when
      * sorting the item instead of the item's display text. If not set, the item's display
      * text will be used when sorting.
-     * @param column column index
-     * @param value sort value
-     * @see sortData()
+     * \param column column index
+     * \param value sort value
+     * \see sortData()
      */
     void setSortData( int column, const QVariant &value );
 
     /** Returns the custom sort data for a specified column. If set, this value will be used when
      * sorting the item instead of the item's display text. If not set, the item's display
      * text will be used when sorting.
-     * @see setSortData()
+     * \see setSortData()
      */
     QVariant sortData( int column ) const;
 
     /** Sets a the item to display always on top of other items in the widget, regardless of the
      * sort column and sort or display value for the item.
-     * @param priority priority for sorting always on top items. Items with a lower priority will
+     * \param priority priority for sorting always on top items. Items with a lower priority will
      * be placed above items with a higher priority.
-     * @see alwaysOnTopPriority()
+     * \see alwaysOnTopPriority()
      */
     void setAlwaysOnTopPriority( int priority );
 
     /** Returns the item's priority when it is set to show always on top. Items with a lower priority will
      * be placed above items with a higher priority.
-     * @returns priority, or -1 if item is not set to show always on top
-     * @see setAlwaysOnTopPriority()
+     * \returns priority, or -1 if item is not set to show always on top
+     * \see setAlwaysOnTopPriority()
      */
     int alwaysOnTopPriority() const;
 
@@ -142,7 +143,7 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 /** \ingroup gui
  * \class QgsTreeWidgetItemObject
  * Custom QgsTreeWidgetItem with extra signals when item is edited.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsTreeWidgetItemObject: public QObject, public QgsTreeWidgetItem
 {
@@ -151,12 +152,12 @@ class GUI_EXPORT QgsTreeWidgetItemObject: public QObject, public QgsTreeWidgetIt
   public:
 
     /** Constructor for QgsTreeWidgetItemObject
-     * @param type item type
+     * \param type item type
      */
     explicit QgsTreeWidgetItemObject( int type = Type );
 
     //! Constructs a tree widget item of the specified type and appends it to the items in the given parent.
-    explicit QgsTreeWidgetItemObject( QTreeWidget *parent, int type = Type );
+    explicit QgsTreeWidgetItemObject( QTreeWidget *parent SIP_TRANSFERTHIS, int type = Type );
 
     //! Sets the value for the item's column and role to the given value.
     virtual void setData( int column, int role, const QVariant &value );

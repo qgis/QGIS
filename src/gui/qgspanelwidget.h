@@ -21,7 +21,7 @@
 #include "qgis_gui.h"
 
 /** \ingroup gui
- * @brief Base class for any widget that can be shown as a inline panel
+ * \brief Base class for any widget that can be shown as a inline panel
  */
 class GUI_EXPORT QgsPanelWidget : public QWidget
 {
@@ -29,20 +29,20 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
   public:
 
     /**
-     * @brief Base class for any widget that can be shown as a inline panel
-     * @param parent Parent widget.
+     * \brief Base class for any widget that can be shown as a inline panel
+     * \param parent Parent widget.
      */
     QgsPanelWidget( QWidget *parent = 0 );
 
     /**
      * Set the title of the panel when shown in the interface.
-     * @param panelTitle The panel title.
+     * \param panelTitle The panel title.
      */
     void setPanelTitle( const QString &panelTitle ) { mPanelTitle = panelTitle; }
 
     /**
      * The title of the panel.
-     * @return The title pf the panel.
+     * \returns The title pf the panel.
      */
     QString panelTitle() { return mPanelTitle; }
 
@@ -51,7 +51,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     * main showPanel event to bubble up to the user.
     *
     * Use this method if you have children widgets that need to show a panel to the user.
-    * @param panels A list of panel widgets to connect.
+    * \param panels A list of panel widgets to connect.
     */
     void connectChildPanels( const QList<QgsPanelWidget *> &panels );
 
@@ -60,20 +60,20 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * main showPanel event to bubble up to the user.
      *
      * Use this method if you have children widgets that need to show a panel to the user.
-     * @param panel The panel to connect.
+     * \param panel The panel to connect.
      */
     void connectChildPanel( QgsPanelWidget *panel );
 
     /**
      * Set the widget in dock mode which tells the widget to emit panel
      * widgets and not open dialogs
-     * @param dockMode True to enable dock mode.
+     * \param dockMode True to enable dock mode.
      */
     virtual void setDockMode( bool dockMode );
 
     /**
      * Return the dock mode state.
-     * @return True if in dock mode.  If in dock mode the widget
+     * \returns True if in dock mode.  If in dock mode the widget
      * will emit the showPanel signal to handle panel opening
      * If false it will open dialogs when openPanel is called.
      */
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * The the auto delete property on the widget. True by default.
      * When auto delete is enabled when a panel is removed from the stack
      * it will be deleted.
-     * @param autoDelete Enable or disable auto delete on the panel.
+     * \param autoDelete Enable or disable auto delete on the panel.
      */
     void setAutoDelete( bool autoDelete ) { mAutoDelete = autoDelete; }
 
@@ -91,15 +91,15 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * The the auto delete property on the widget. True by default.
      * When auto delete is enabled when a panel is removed from the stack
      * it will be deleted.
-     * @returns The auto delete value for the widget.
+     * \returns The auto delete value for the widget.
      */
     bool autoDelete() { return mAutoDelete; }
 
     /** Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
      * widget.
-     * @param widget widget which may be contained within a panel widget
-     * @returns parent panel widget if found, otherwise nullptr
-     * @note added in QGIS 3.0
+     * \param widget widget which may be contained within a panel widget
+     * \returns parent panel widget if found, otherwise nullptr
+     * \since QGIS 3.0
      */
     static QgsPanelWidget *findParentPanel( QWidget *widget );
 
@@ -107,10 +107,10 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 
     /**
      * Emitted when the panel is accepted by the user.
-     * @param panel The panel widget that was accepted.
-     * @note This argument is normally raised with emit panelAccepted(this)
+     * \param panel The panel widget that was accepted.
+     * \note This argument is normally raised with emit panelAccepted(this)
      * so that callers can retrieve the widget easier in calling code.
-     * @note this is emitted only when this panel is accepted, and is not emitted for
+     * \note this is emitted only when this panel is accepted, and is not emitted for
      * child panels. For example, if this panel opens a second stacked panel, then this panel
      * will not emit panelAccepted when the second panel is accepted.
      */
@@ -118,8 +118,8 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 
     /**
      * Emit when you require a panel to be show in the interface.
-     * @param panel The panel widget to show.
-     * @note If you are connected to this signal you should also connect
+     * \param panel The panel widget to show.
+     * \note If you are connected to this signal you should also connect
      * given panels showPanel signal as they can be nested.
      */
     void showPanel( QgsPanelWidget *panel );
@@ -142,7 +142,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * If dock mode is false this method will open a dialog
      * and block the user.
      *
-     * @param panel The panel widget to open.
+     * \param panel The panel widget to open.
      */
     void openPanel( QgsPanelWidget *panel );
 
@@ -155,8 +155,8 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
   protected:
 
     /**
-     * @brief Overridden key press event to handle the esc event on the widget.
-     * @param event The key event
+     * \brief Overridden key press event to handle the esc event on the widget.
+     * \param event The key event
      */
     void keyPressEvent( QKeyEvent *event );
 
@@ -169,10 +169,10 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 
 
 /** \ingroup gui
- * @brief Wrapper widget for existing widgets which can't have
+ * \brief Wrapper widget for existing widgets which can't have
  * the inheritance tree changed, e.g dialogs.
  *
- * @note Generally you should use the QgsPanelWidget class if you can
+ * \note Generally you should use the QgsPanelWidget class if you can
  * and only use this wrapper if you can't update your code.
  */
 class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
@@ -181,16 +181,16 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
   public:
 
     /**
-     * @brief Wrapper widget for existing widgets which can't have
+     * \brief Wrapper widget for existing widgets which can't have
      * the inheritance tree changed, e.g dialogs.
-     * @param widget The widget to wrap.
-     * @param parent The parent widget.
+     * \param widget The widget to wrap.
+     * \param parent The parent widget.
      */
     QgsPanelWidgetWrapper( QWidget *widget, QWidget *parent = nullptr );
 
     /**
      * Returns the internal widget that is wrapped in this panel.
-     * @return The internal widget. Can be nullptr.
+     * \returns The internal widget. Can be nullptr.
      */
     QWidget *widget() { return mWidget; }
 

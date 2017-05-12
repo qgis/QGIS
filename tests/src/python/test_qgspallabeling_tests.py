@@ -23,7 +23,7 @@ import os
 from qgis.PyQt.QtCore import Qt, QPointF, QSizeF
 from qgis.PyQt.QtGui import QFont
 
-from qgis.core import QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings
+from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings
 
 from utilities import svgSymbolsPath
 
@@ -37,8 +37,6 @@ class TestPointBase(object):
         """:type: QgsPalLayerSettings"""
         # noinspection PyArgumentList
         self._TestFont = QFont()  # will become a standard test font
-        self._Pal = None
-        """:type: QgsPalLabeling"""
         self._Canvas = None
         """:type: QgsMapCanvas"""
         # custom mismatches per group/test (should not mask any needed anomaly)
@@ -99,7 +97,7 @@ class TestPointBase(object):
         self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
         self._Mismatches['TestComposerImagePoint'] = 800
         # verify fix for issues
-        #   http://hub.qgis.org/issues/9057
+        #   https://issues.qgis.org/issues/9057
         #   http://gis.stackexchange.com/questions/86900
 
         format = self.lyr.format()
@@ -175,8 +173,9 @@ class TestPointBase(object):
         format.setSize(84)
         self.lyr.setFormat(format)
         # Enable partials labels
-        self._Pal.setShowingPartialsLabels(True)
-        self._Pal.saveEngineSettings()
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, True)
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
         self._Mismatches['TestCanvasPoint'] = 779
         self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
@@ -189,8 +188,9 @@ class TestPointBase(object):
         format.setSize(84)
         self.lyr.setFormat(format)
         # Disable partials labels
-        self._Pal.setShowingPartialsLabels(False)
-        self._Pal.saveEngineSettings()
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
         self.checkTest()
 
     def test_buffer(self):

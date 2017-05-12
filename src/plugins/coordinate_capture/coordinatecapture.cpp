@@ -92,8 +92,8 @@ void CoordinateCapture::initGui()
 {
   mCrs.createFromSrsId( GEOCRS_ID ); // initialize the CRS object
 
-  connect( mQGisIface->mapCanvas(), SIGNAL( destinationCrsChanged() ), this, SLOT( setSourceCrs() ) );
-  connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisIface->mapCanvas(), &QgsMapCanvas::destinationCrsChanged, this, &CoordinateCapture::setSourceCrs );
+  connect( mQGisIface, &QgisInterface::currentThemeChanged, this, &CoordinateCapture::setCurrentTheme );
 
   setSourceCrs(); //set up the source CRS
   mTransform.setDestinationCrs( mCrs ); // set the CRS in the transform
@@ -113,14 +113,14 @@ void CoordinateCapture::initGui()
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
   // Connect the action to the run
-  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( showOrHide() ) );
+  connect( mQActionPointer, &QAction::triggered, this, &CoordinateCapture::showOrHide );
   mQGisIface->addPluginToVectorMenu( tr( "&Coordinate Capture" ), mQActionPointer );
   mQGisIface->addVectorToolBarIcon( mQActionPointer );
 
   // create our map tool
   mpMapTool = new CoordinateCaptureMapTool( mQGisIface->mapCanvas() );
-  connect( mpMapTool, SIGNAL( mouseMoved( QgsPoint ) ), this, SLOT( mouseMoved( QgsPoint ) ) );
-  connect( mpMapTool, SIGNAL( mouseClicked( QgsPoint ) ), this, SLOT( mouseClicked( QgsPoint ) ) );
+  connect( mpMapTool, &CoordinateCaptureMapTool::mouseMoved, this, &CoordinateCapture::mouseMoved );
+  connect( mpMapTool, &CoordinateCaptureMapTool::mouseClicked, this, &CoordinateCapture::mouseClicked );
 
   // create a little widget with x and y display to put into our dock widget
   QWidget *mypWidget = new QWidget();
@@ -130,7 +130,7 @@ void CoordinateCapture::initGui()
 
   mypUserCrsToolButton = new QToolButton( mypWidget );
   mypUserCrsToolButton->setToolTip( tr( "Click to select the CRS to use for coordinate display" ) );
-  connect( mypUserCrsToolButton, SIGNAL( clicked() ), this, SLOT( setCRS() ) );
+  connect( mypUserCrsToolButton, &QAbstractButton::clicked, this, &CoordinateCapture::setCRS );
 
   mypCRSLabel = new QLabel( mypWidget );
   mypCRSLabel->setGeometry( mypUserCrsToolButton->geometry() );
@@ -145,7 +145,7 @@ void CoordinateCapture::initGui()
 
   QPushButton *mypCopyButton = new QPushButton( mypWidget );
   mypCopyButton->setText( tr( "Copy to clipboard" ) );
-  connect( mypCopyButton, SIGNAL( clicked() ), this, SLOT( copy() ) );
+  connect( mypCopyButton, &QAbstractButton::clicked, this, &CoordinateCapture::copy );
 
   mpTrackMouseButton = new QToolButton( mypWidget );
   mpTrackMouseButton->setCheckable( true );
@@ -158,7 +158,7 @@ void CoordinateCapture::initGui()
   mpCaptureButton->setToolTip( tr( "Click to enable coordinate capture" ) );
   mpCaptureButton->setIcon( QIcon( ":/coordinate_capture/coordinate_capture.png" ) );
   mpCaptureButton->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
-  connect( mpCaptureButton, SIGNAL( clicked() ), this, SLOT( run() ) );
+  connect( mpCaptureButton, &QAbstractButton::clicked, this, &CoordinateCapture::run );
 
   // Set the icons
   setCurrentTheme( QLatin1String( "" ) );
@@ -173,7 +173,7 @@ void CoordinateCapture::initGui()
 
   // now add our custom widget to the dock - ownership of the widget is passed to the dock
   mpDockWidget->setWidget( mypWidget );
-  connect( mpDockWidget, SIGNAL( visibilityChanged( bool ) ), mQActionPointer, SLOT( setChecked( bool ) ) );
+  connect( mpDockWidget.data(), &QDockWidget::visibilityChanged, mQActionPointer, &QAction::setChecked );
 }
 
 //method defined in interface

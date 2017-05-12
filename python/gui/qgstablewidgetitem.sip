@@ -22,7 +22,7 @@ class QgsTableWidgetItem : QTableWidgetItem
 
   public:
     QgsTableWidgetItem();
-    QgsTableWidgetItem( const QString& text );
+    QgsTableWidgetItem( const QString &text );
 
     /**
      * Set the role by which the items should be sorted.

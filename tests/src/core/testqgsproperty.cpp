@@ -92,6 +92,7 @@ class TestQgsProperty : public QObject
     void propertyCollection(); //test for QgsPropertyCollection
     void collectionStack(); //test for QgsPropertyCollectionStack
     void curveTransform();
+    void asVariant();
 
   private:
 
@@ -1762,6 +1763,20 @@ void TestQgsProperty::curveTransform()
   QVERIFY( r1.readXml( element, doc ) );
   QCOMPARE( r1.controlPoints(), src.controlPoints() );
   QGSCOMPARENEAR( dest2.y( 0.5 ), 0.1, 0.638672 );
+}
+
+void TestQgsProperty::asVariant()
+{
+  QgsProperty original = QgsProperty::fromField( QStringLiteral( "field1" ), true );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( original );
+  QVERIFY( var.isValid() );
+
+  QgsProperty fromVar = qvariant_cast<QgsProperty>( var );
+  QCOMPARE( fromVar.propertyType(), QgsProperty::FieldBasedProperty );
+  QVERIFY( fromVar.isActive() );
+  QCOMPARE( fromVar.field(), QStringLiteral( "field1" ) );
 }
 
 void TestQgsProperty::checkCurveResult( const QList<QgsPoint> &controlPoints, const QVector<double> &x, const QVector<double> &y )

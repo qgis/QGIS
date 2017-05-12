@@ -25,10 +25,10 @@ QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObj
   , mCanvas( canvas )
   , mProgress( nullptr )
 {
-  connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
-  connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
-  connect( canvas, SIGNAL( layersChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
-  connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer * ) ), this, SLOT( canvasCurrentLayerChanged() ) );
+  connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasSnappingUtils::canvasMapSettingsChanged );
+  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasSnappingUtils::canvasMapSettingsChanged );
+  connect( canvas, &QgsMapCanvas::layersChanged, this, &QgsMapCanvasSnappingUtils::canvasMapSettingsChanged );
+  connect( canvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapCanvasSnappingUtils::canvasCurrentLayerChanged );
   canvasMapSettingsChanged();
   canvasCurrentLayerChanged();
 }

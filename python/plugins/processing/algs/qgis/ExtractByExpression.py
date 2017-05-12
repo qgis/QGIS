@@ -24,14 +24,16 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsExpression, QgsFeatureRequest
+from qgis.core import (QgsExpression,
+                       QgsFeatureRequest,
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterExpression
-from processing.tools import dataobjects
 
 
 class ExtractByExpression(GeoAlgorithm):
@@ -40,21 +42,36 @@ class ExtractByExpression(GeoAlgorithm):
     EXPRESSION = 'EXPRESSION'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extract by expression')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
-        self.tags = self.tr('extract,filter,expression,field')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def tags(self):
+        return self.tr('extract,filter,expression,field').split(',')
+
+    def group(self):
+        return self.tr('Vector selection tools')
+
+    def name(self):
+        return 'extractbyexpression'
+
+    def displayName(self):
+        return self.tr('Extract by expression')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterExpression(self.EXPRESSION,
                                               self.tr("Expression"), parent_layer=self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (expression)')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         expression_string = self.getParameterValue(self.EXPRESSION)
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),
+                                                                     context)
 
         expression = QgsExpression(expression_string)
         if not expression.hasParserError():

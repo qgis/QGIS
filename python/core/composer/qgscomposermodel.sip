@@ -35,7 +35,7 @@ class QgsComposerModel : QAbstractItemModel
      * @param composition composition to attach to
      * @param parent parent object
      */
-    explicit QgsComposerModel( QgsComposition* composition, QObject* parent /TransferThis/ = 0 );
+    explicit QgsComposerModel( QgsComposition *composition, QObject *parent /TransferThis/ = 0 );
 
     ~QgsComposerModel();
 
@@ -45,14 +45,14 @@ class QgsComposerModel : QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const;
     QVariant data( const QModelIndex &index, int role ) const;
-    Qt::ItemFlags flags( const QModelIndex & index ) const;
-    bool setData( const QModelIndex & index, const QVariant & value, int role );
+    Qt::ItemFlags flags( const QModelIndex &index ) const;
+    bool setData( const QModelIndex &index, const QVariant &value, int role );
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
     Qt::DropActions supportedDropActions() const;
     virtual QStringList mimeTypes() const;
-    virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
+    virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
     /** Clears all items from z-order list and resets the model
      * @note added in QGIS 2.5
@@ -138,7 +138,7 @@ class QgsComposerModel : QAbstractItemModel
      * @see getComposerItemBelow
      * @note added in QGIS 2.5
      */
-    QgsComposerItem* getComposerItemAbove( QgsComposerItem *item ) const;
+    QgsComposerItem *getComposerItemAbove( QgsComposerItem *item ) const;
 
     /** Finds the next composer item below an item. This method only considers
      * items which are currently in the composition, and ignores items which have been
@@ -149,14 +149,14 @@ class QgsComposerModel : QAbstractItemModel
      * @see getComposerItemAbove
      * @note added in QGIS 2.5
      */
-    QgsComposerItem* getComposerItemBelow( QgsComposerItem *item ) const;
+    QgsComposerItem *getComposerItemBelow( QgsComposerItem *item ) const;
 
     /** Returns the item z-order list. This list includes both items currently in the
      * composition and items which have been removed from the composition.
      * @returns item z-order list
      * @note added in QGIS 2.5
      */
-    QList<QgsComposerItem *>* zOrderList();
+    QList<QgsComposerItem *> *zOrderList();
 
     /** Marks an item as removed from the composition. This must be called whenever an item
      * has been removed from the composition.
@@ -244,7 +244,7 @@ class QgsComposerProxyModel: QSortFilterProxyModel
      * @param composition composition to attach model to
      * @param parent optional parent
      */
-    QgsComposerProxyModel( QgsComposition* composition, QObject *parent /TransferThis/ = nullptr );
+    QgsComposerProxyModel( QgsComposition *composition, QObject *parent /TransferThis/ = 0 );
 
     /** Returns the current item type filter, or QgsComposerItem::ComposerItem if no
      * item type filter is set.
@@ -263,7 +263,7 @@ class QgsComposerProxyModel: QSortFilterProxyModel
      * @param exceptList list of items to exclude
      * @see exceptedItemList()
      */
-    void setExceptedItemList( const QList< QgsComposerItem* >& exceptList );
+    void setExceptedItemList( const QList< QgsComposerItem* > &exceptList );
 
     /** Returns the list of specific items excluded from the model.
      * @see setExceptedItemList()
@@ -272,17 +272,17 @@ class QgsComposerProxyModel: QSortFilterProxyModel
 
     /** Returns the QgsComposerModel used in this proxy model.
      */
-    QgsComposerModel* sourceLayerModel() const;
+    QgsComposerModel *sourceLayerModel() const;
 
     /** Returns the QgsComposerItem corresponding to an index from the source
      * QgsComposerModel model.
      * @param sourceIndex a QModelIndex
      * @returns QgsComposerItem for specified index from QgsComposerModel
      */
-    QgsComposerItem* itemFromSourceIndex( const QModelIndex& sourceIndex ) const;
+    QgsComposerItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const;
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
 };

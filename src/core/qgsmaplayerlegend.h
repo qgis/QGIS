@@ -17,6 +17,7 @@
 #define QGSMAPLAYERLEGEND_H
 
 #include <QObject>
+#include "qgis.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
@@ -31,13 +32,13 @@ class QgsVectorLayer;
  * The QgsMapLayerLegend class is abstract interface for implementations
  * of legends for one map layer.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsMapLayerLegend : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsMapLayerLegend( QObject *parent = nullptr );
+    explicit QgsMapLayerLegend( QObject *parent SIP_TRANSFERTHIS = 0 );
 
     // TODO: type, load/save settings
 
@@ -50,13 +51,13 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
     // TODO: support for layer tree view delegates
 
     //! Create new legend implementation for vector layer
-    static QgsMapLayerLegend *defaultVectorLegend( QgsVectorLayer *vl );
+    static QgsMapLayerLegend *defaultVectorLegend( QgsVectorLayer *vl ) SIP_FACTORY;
 
     //! Create new legend implementation for raster layer
-    static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl );
+    static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl ) SIP_FACTORY;
 
     //! Create new legend implementation for raster layer
-    static QgsMapLayerLegend *defaultPluginLegend( QgsPluginLayer *pl );
+    static QgsMapLayerLegend *defaultPluginLegend( QgsPluginLayer *pl ) SIP_FACTORY;
 
   signals:
     //! Emitted when existing items/nodes got invalid and should be replaced by new ones
@@ -67,7 +68,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 /** \ingroup core
  * Miscellaneous utility functions for handling of map layer legend
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsMapLayerLegendUtils
 {
@@ -89,7 +90,7 @@ class CORE_EXPORT QgsMapLayerLegendUtils
 
 /** \ingroup core
  * Default legend implementation for vector layers
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 {
@@ -107,7 +108,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 
 /** \ingroup core
  * Default legend implementation for raster layers
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 {
@@ -125,7 +126,7 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 
 /** \ingroup core
  * Default legend implementation for plugin layers
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsDefaultPluginLayerLegend : public QgsMapLayerLegend
 {

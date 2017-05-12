@@ -107,8 +107,8 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
     mPyramidsUseExistingCheckBox->setVisible( false );
 
     populatePyramidsLevels();
-    connect( mPyramidsOptionsWidget, SIGNAL( overviewListChanged() ),
-             this, SLOT( populatePyramidsLevels() ) );
+    connect( mPyramidsOptionsWidget, &QgsRasterPyramidsOptionsWidget::overviewListChanged,
+             this, &QgsRasterLayerSaveAsDialog::populatePyramidsLevels );
   }
   else
   {
@@ -125,11 +125,11 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mTilesGroupBox->hide();
 
   mCrsSelector->setLayerCrs( mLayerCrs );
-  //default to layer CRS - see http://hub.qgis.org/issues/14209 for discussion
+  //default to layer CRS - see https://issues.qgis.org/issues/14209 for discussion
   mCrsSelector->setCrs( mLayerCrs );
 
-  connect( mCrsSelector, SIGNAL( crsChanged( QgsCoordinateReferenceSystem ) ),
-           this, SLOT( crsChanged() ) );
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged,
+           this, &QgsRasterLayerSaveAsDialog::crsChanged );
 
   QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
@@ -141,7 +141,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mExtentGroupBox->setOriginalExtent( mDataProvider->extent(), mLayerCrs );
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   mExtentGroupBox->setOutputExtentFromOriginal();
-  connect( mExtentGroupBox, SIGNAL( extentChanged( QgsRectangle ) ), this, SLOT( extentChanged() ) );
+  connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
 
   recalcResolutionSize();
 }
@@ -562,7 +562,7 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
 
     adjustNoDataCellWidth( mNoDataTableWidget->rowCount() - 1, i );
 
-    connect( lineEdit, SIGNAL( textEdited( const QString & ) ), this, SLOT( noDataCellTextEdited( const QString & ) ) );
+    connect( lineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerSaveAsDialog::noDataCellTextEdited );
   }
   mNoDataTableWidget->resizeColumnsToContents();
   mNoDataTableWidget->resizeRowsToContents();

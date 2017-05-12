@@ -43,16 +43,16 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   QPushButton *pb = nullptr;
   pb = new QPushButton( tr( "Select all" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
+  connect( pb, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::selectAll );
 
   pb = new QPushButton( tr( "Clear selection" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( clearSelection() ) );
+  connect( pb, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::clearSelection );
 
   QStandardItemModel *model = new QStandardItemModel( listItems );
   listItems->setModel( model );
-  connect( listItems->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ),
-           this, SLOT( selectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+  connect( listItems->selectionModel(), &QItemSelectionModel::selectionChanged,
+           this, &QgsStyleExportImportDialog::selectionChanged );
 
   mTempStyle = new QgsStyle();
   mTempStyle->createMemoryDatabase();
@@ -72,12 +72,12 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     importTypeCombo->addItem( tr( "file specified below" ), QVariant( "file" ) );
     // importTypeCombo->addItem( "official QGIS repo online", QVariant( "official" ) );
     importTypeCombo->addItem( tr( "URL specified below" ), QVariant( "url" ) );
-    connect( importTypeCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( importTypeChanged( int ) ) );
+    connect( importTypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStyleExportImportDialog::importTypeChanged );
 
     mSymbolTags->setText( "imported" );
 
     btnBrowse->setText( QStringLiteral( "Browse" ) );
-    connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( browse() ) );
+    connect( btnBrowse, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::browse );
 
     label->setText( tr( "Select symbols to import" ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Import" ) );
@@ -97,7 +97,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 
     pb = new QPushButton( tr( "Select by group" ) );
     buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-    connect( pb, SIGNAL( clicked() ), this, SLOT( selectByGroup() ) );
+    connect( pb, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::selectByGroup );
     tagLabel->setHidden( true );
     mSymbolTags->setHidden( true );
     tagHintLabel->setHidden( true );
@@ -110,8 +110,8 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 
   }
   // use Ok button for starting import and export operations
-  disconnect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( doExportImport() ) );
+  disconnect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsStyleExportImportDialog::doExportImport );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
@@ -440,12 +440,12 @@ void QgsStyleExportImportDialog::selectByGroup()
   {
     mGroupSelectionDlg = new QgsStyleGroupSelectionDialog( mStyle, this );
     mGroupSelectionDlg->setWindowTitle( tr( "Select symbols by group" ) );
-    connect( mGroupSelectionDlg, SIGNAL( tagSelected( const QString ) ), this, SLOT( selectTag( const QString ) ) );
-    connect( mGroupSelectionDlg, SIGNAL( tagDeselected( const QString ) ), this, SLOT( deselectTag( const QString ) ) );
-    connect( mGroupSelectionDlg, SIGNAL( allSelected() ), this, SLOT( selectAll() ) );
-    connect( mGroupSelectionDlg, SIGNAL( allDeselected() ), this, SLOT( clearSelection() ) );
-    connect( mGroupSelectionDlg, SIGNAL( smartgroupSelected( const QString ) ), this, SLOT( selectSmartgroup( const QString ) ) );
-    connect( mGroupSelectionDlg, SIGNAL( smartgroupDeselected( const QString ) ), this, SLOT( deselectSmartgroup( const QString ) ) );
+    connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::tagSelected, this, &QgsStyleExportImportDialog::selectTag );
+    connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::tagDeselected, this, &QgsStyleExportImportDialog::deselectTag );
+    connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::allSelected, this, &QgsStyleExportImportDialog::selectAll );
+    connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::allDeselected, this, &QgsStyleExportImportDialog::clearSelection );
+    connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::smartgroupSelected, this, &QgsStyleExportImportDialog::selectSmartgroup );
+    connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::smartgroupDeselected, this, &QgsStyleExportImportDialog::deselectSmartgroup );
   }
   mGroupSelectionDlg->show();
   mGroupSelectionDlg->raise();
@@ -524,7 +524,7 @@ void QgsStyleExportImportDialog::downloadStyleXml( const QUrl &url )
     mProgressDlg->setLabelText( tr( "Downloading style ... " ) );
     mProgressDlg->setAutoClose( true );
 
-    connect( mProgressDlg, SIGNAL( canceled() ), this, SLOT( downloadCanceled() ) );
+    connect( mProgressDlg, &QProgressDialog::canceled, this, &QgsStyleExportImportDialog::downloadCanceled );
 
     // open the network connection and connect the respective slots
     if ( mNetReply )
@@ -535,9 +535,9 @@ void QgsStyleExportImportDialog::downloadStyleXml( const QUrl &url )
     }
     mNetReply = mNetManager->get( QNetworkRequest( url ) );
 
-    connect( mNetReply, SIGNAL( finished() ), this, SLOT( httpFinished() ) );
-    connect( mNetReply, SIGNAL( readyRead() ), this, SLOT( fileReadyRead() ) );
-    connect( mNetReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( updateProgress( qint64, qint64 ) ) );
+    connect( mNetReply, &QNetworkReply::finished, this, &QgsStyleExportImportDialog::httpFinished );
+    connect( mNetReply, &QIODevice::readyRead, this, &QgsStyleExportImportDialog::fileReadyRead );
+    connect( mNetReply, &QNetworkReply::downloadProgress, this, &QgsStyleExportImportDialog::updateProgress );
   }
 }
 

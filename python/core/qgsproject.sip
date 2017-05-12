@@ -21,14 +21,14 @@ class QgsProject : QObject, QgsExpressionContextGenerator
 
   public:
     //! Returns the QgsProject singleton instance
-    static QgsProject* instance();
+    static QgsProject *instance();
 
     /**
      * Create a new QgsProject.
      *
      * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
      */
-    explicit QgsProject( QObject* parent /TransferThis/ = nullptr );
+    explicit QgsProject( QObject *parent /TransferThis/ = 0 );
 
     ~QgsProject();
 
@@ -37,7 +37,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @note added in 2.4
      * @see title()
      */
-    void setTitle( const QString& title );
+    void setTitle( const QString &title );
 
     /** Returns the project's title.
      * @see setTitle()
@@ -54,7 +54,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @param name project file name
      * @see fileName()
      */
-    void setFileName( const QString& name );
+    void setFileName( const QString &name );
 
     /** Returns the project's file name. This is the file which contains the project's XML
      * representation.
@@ -83,7 +83,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @see crs()
      * @see setEllipsoid()
      */
-    void setCrs( const QgsCoordinateReferenceSystem& crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
@@ -99,7 +99,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @see setCrs()
      * @note added in QGIS 3.0
      */
-    void setEllipsoid( const QString& ellipsoid );
+    void setEllipsoid( const QString &ellipsoid );
 
     /** Clear the project - removes all settings and resets it back to an empty, default state.
      * @note added in 2.4
@@ -110,7 +110,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @param filename name of project file to read
      * @returns true if project file has been read successfully
      */
-    bool read( const QString& filename );
+    bool read( const QString &filename );
 
     /** Reads the project from its currently associated file (see fileName() ).
      * @returns true if project file has been read successfully
@@ -125,7 +125,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      *
      * @param layerNode represents a QgsProject DOM node that encodes a specific layer.
      */
-    bool readLayer( const QDomNode& layerNode );
+    bool readLayer( const QDomNode &layerNode );
 
     /**
      * Writes the project to a file.
@@ -136,7 +136,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      *
      * \note Added in QGIS 3.0
      */
-    bool write( const QString& filename );
+    bool write( const QString &filename );
 
     /** Writes the project to its current associated file (see fileName() ).
      * @note isDirty() will be set to false if project is successfully written
@@ -153,7 +153,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @note The key string must be valid xml tag names in order to be saved to the file.
      * @note available in python bindings as writeEntryBool
      */
-    bool writeEntry( const QString& scope, const QString& key, bool value ) /PyName=writeEntryBool/;
+    bool writeEntry( const QString &scope, const QString &key, bool value ) /PyName=writeEntryBool/;
 
     /**
      * Write a double entry to the project file.
@@ -164,7 +164,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @note The key string must be valid xml tag names in order to be saved to the file.
      * @note available in python bindings as writeEntryDouble
      */
-    bool writeEntry( const QString& scope, const QString& key, double value ) /PyName=writeEntryDouble/;
+    bool writeEntry( const QString &scope, const QString &key, double value ) /PyName=writeEntryDouble/;
 
     /**
      * Write an integer entry to the project file.
@@ -174,7 +174,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      *
      * @note The key string must be valid xml tag names in order to be saved to the file.
      */
-    bool writeEntry( const QString& scope, const QString& key, int value );
+    bool writeEntry( const QString &scope, const QString &key, int value );
 
     /**
      * Write a string entry to the project file.
@@ -184,7 +184,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      *
      * @note The key string must be valid xml tag names in order to be saved to the file.
      */
-    bool writeEntry( const QString& scope, const QString& key, const QString& value );
+    bool writeEntry( const QString &scope, const QString &key, const QString &value );
 
     /**
      * Write a string list entry to the project file.
@@ -194,7 +194,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      *
      * @note The key string must be valid xml tag names in order to be saved to the file.
      */
-    bool writeEntry( const QString& scope, const QString& key, const QStringList& value );
+    bool writeEntry( const QString &scope, const QString &key, const QStringList &value );
 
     /**
      * Key value accessors
@@ -202,28 +202,28 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * keys would be the familiar QgsSettings-like '/' delimited entries,
      * implying a hierarchy of keys and corresponding values
      */
-    QStringList readListEntry( const QString& scope, const QString& key, const QStringList& def = QStringList(), bool *ok = 0 ) const;
+    QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok = 0 ) const;
 
-    QString readEntry( const QString& scope, const QString& key, const QString& def = QString::null, bool* ok = 0 ) const;
-    int readNumEntry( const QString& scope, const QString& key, int def = 0, bool* ok = 0 ) const;
-    double readDoubleEntry( const QString& scope, const QString& key, double def = 0, bool* ok = 0 ) const;
-    bool readBoolEntry( const QString& scope, const QString& key, bool def = false, bool* ok = 0 ) const;
+    QString readEntry( const QString &scope, const QString &key, const QString &def = QString::null, bool *ok = 0 ) const;
+    int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = 0 ) const;
+    double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = 0 ) const;
+    bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = 0 ) const;
 
     /** Remove the given key */
-    bool removeEntry( const QString& scope, const QString& key );
+    bool removeEntry( const QString &scope, const QString &key );
 
 
     /** Return keys with values -- do not return keys that contain other keys
      *
      * @note equivalent to QgsSettings entryList()
      */
-    QStringList entryList( const QString& scope, const QString& key ) const;
+    QStringList entryList( const QString &scope, const QString &key ) const;
 
     /** Return keys with keys -- do not return keys that contain only values
      *
      * @note equivalent to QgsSettings subkeyList()
      */
-    QStringList subkeyList( const QString& scope, const QString& key ) const;
+    QStringList subkeyList( const QString &scope, const QString &key ) const;
 
 
     /** Dump out current project properties to stderr
@@ -240,7 +240,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * Creates an absolute or relative path according to the project settings.
      * Paths written to the project file should be prepared with this method.
     */
-    QString writePath( const QString& filename ) const;
+    QString writePath( const QString &filename ) const;
 
     /** Turn filename read from the project file to an absolute path */
     QString readPath( QString filename ) const;
@@ -251,10 +251,10 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     /** Change handler for missing layers.
      * Deletes old handler and takes ownership of the new one.
      */
-    void setBadLayerHandler( QgsProjectBadLayerHandler* handler /Transfer/ );
+    void setBadLayerHandler( QgsProjectBadLayerHandler *handler /Transfer/ );
 
     /** Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded*/
-    QString layerIsEmbedded( const QString& id ) const;
+    QString layerIsEmbedded( const QString &id ) const;
 
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
      * @return the layer or 0 in case of error
@@ -262,13 +262,13 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     /*
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
-                              QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
+                              QList< QPair< QgsVectorLayer*, QDomElement > > &vectorLayerList, bool saveFlag = true );
     */
 
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
      */
-    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList &invisibleLayers );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers );
 
     /** Convenience function to set topological editing */
     void setTopologicalEditing( bool enabled );
@@ -318,25 +318,25 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     /** Return pointer to the helper class that synchronizes map layer registry with layer tree
      * @note added in 2.4
      */
-    QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const;
+    QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const;
 
     /** Returns pointer to the project's map theme collection.
      * @note added in QGIS 2.12
      * @note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
-    QgsMapThemeCollection* mapThemeCollection();
+    QgsMapThemeCollection *mapThemeCollection();
 
-    QgsAnnotationManager* annotationManager();
-
-    /**
-     * Set a list of layers which should not be taken into account on map identification
-     */
-    void setNonIdentifiableLayers( const QList<QgsMapLayer*>& layers );
+    QgsAnnotationManager *annotationManager();
 
     /**
      * Set a list of layers which should not be taken into account on map identification
      */
-    void setNonIdentifiableLayers( const QStringList& layerIds );
+    void setNonIdentifiableLayers( const QList<QgsMapLayer*> &layers );
+
+    /**
+     * Set a list of layers which should not be taken into account on map identification
+     */
+    void setNonIdentifiableLayers( const QStringList &layerIds );
 
     /**
      * Get the list of layers which currently should not be taken into account on map identification
@@ -392,7 +392,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      *
      * @note Added in QGIS 3.0
      */
-    void setSnappingConfig( const QgsSnappingConfig& snappingConfig );
+    void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
 
     /**
      * A list of layers with which intersections should be avoided.
@@ -406,12 +406,27 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      *
      * @note Added in QGIS 3.0
      */
-    void setAvoidIntersectionsLayers( const QList<QgsVectorLayer*>& layers );
+    void setAvoidIntersectionsLayers( const QList<QgsVectorLayer*> &layers );
     QVariantMap customVariables() const;
-    void setCustomVariables( const QVariantMap& customVariables );
+    void setCustomVariables( const QVariantMap &customVariables );
+
+    /**
+     * Sets project's global labeling engine settings
+     * \since QGIS 3.0
+     */
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
+
+    /**
+     * Returns project's global labeling engine settings
+     * \since QGIS 3.0
+     */
+    const QgsLabelingEngineSettings &labelingEngineSettings() const;
+
+    QgsMapLayerStore *layerStore();
+
     int count() const;
 
-    QgsMapLayer* mapLayer( const QString& layerId ) const;
+    QgsMapLayer *mapLayer( const QString &layerId ) const;
 
     /** Retrieve a list of matching registered layers by layer name.
      * @param layerName name of layers to match
@@ -419,7 +434,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @see mapLayer()
      * @see mapLayers()
      */
-    QList<QgsMapLayer *> mapLayersByName( const QString& layerName ) const;
+    QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
 
     /** Returns a map of all registered layers by layer ID.
      * @see mapLayer()
@@ -431,9 +446,9 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *>& layers /Transfer/,
                                        bool addToLegend = true );
 
-    QgsMapLayer* addMapLayer( QgsMapLayer * layer /Transfer/, bool addToLegend = true );
+    QgsMapLayer *addMapLayer( QgsMapLayer *layer /Transfer/, bool addToLegend = true );
 
-    void removeMapLayers( const QStringList& layerIds );
+    void removeMapLayers( const QStringList &layerIds );
 
     /**
      * @brief
@@ -448,9 +463,9 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @see removeMapLayer()
      * @see removeAllMapLayers()
      */
-    void removeMapLayers( const QList<QgsMapLayer*>& layers );
+    void removeMapLayers( const QList<QgsMapLayer*> &layers );
 
-    void removeMapLayer( const QString& layerId );
+    void removeMapLayer( const QString &layerId );
 
     /**
      * @brief
@@ -465,7 +480,9 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @see removeMapLayers()
      * @see removeAllMapLayers()
      */
-    void removeMapLayer( QgsMapLayer* layer );
+    void removeMapLayer( QgsMapLayer *layer );
+
+    QgsMapLayer *takeMapLayer( QgsMapLayer *layer ) /TransferBack/;
 
     /**
      * Removes all registered layers. If the registry has ownership
@@ -501,7 +518,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @param mapLayer  The map layer which is being initialized
      * @param layerNode The layer node from the project file
      */
-    void readMapLayer( QgsMapLayer* mapLayer, const QDomElement& layerNode );
+    void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
 
     /**
      * Emitted, when a layer is being saved. You can use this method to save
@@ -538,7 +555,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     void homePathChanged();
 
     //! emitted whenever the configuration for snapping has changed
-    void snappingConfigChanged( const QgsSnappingConfig& config );
+    void snappingConfigChanged( const QgsSnappingConfig &config );
 
     /** Emitted whenever the expression variables stored in the project have been changed.
      * @note added in QGIS 3.0
@@ -546,6 +563,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     void customVariablesChanged();
 
     void crsChanged();
+    void ellipsoidChanged( const QString &ellipsoid );
 
     /**
      * Emitted whenever a new transaction group has been created or a
@@ -582,11 +600,17 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void mapThemeCollectionChanged();
 
+    /**
+     * Emitted when global configuration of the labeling engine changes.
+     * \since QGIS 3.0
+     */
+    void labelingEngineSettingsChanged();
+
     //
     // signals from QgsMapLayerRegistry
     //
 
-    void layersWillBeRemoved( const QStringList& layerIds );
+    void layersWillBeRemoved( const QStringList &layerIds );
 
     /**
      * Emitted when one or more layers are about to be removed from the registry.
@@ -595,9 +619,9 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @see layerWillBeRemoved()
      * @see layersRemoved()
      */
-    void layersWillBeRemoved( const QList<QgsMapLayer*>& layers );
+    void layersWillBeRemoved( const QList<QgsMapLayer*> &layers );
 
-    void layerWillBeRemoved( const QString& layerId );
+    void layerWillBeRemoved( const QString &layerId );
 
     /**
      * Emitted when a layer is about to be removed from the registry.
@@ -608,11 +632,11 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @see layersWillBeRemoved()
      * @see layerRemoved()
      */
-    void layerWillBeRemoved( QgsMapLayer* layer );
+    void layerWillBeRemoved( QgsMapLayer *layer );
 
-    void layersRemoved( const QStringList& layerIds );
+    void layersRemoved( const QStringList &layerIds );
 
-    void layerRemoved( const QString& layerId );
+    void layerRemoved( const QString &layerId );
 
     /**
      * Emitted when all layers are removed, before {@link layersWillBeRemoved()} and

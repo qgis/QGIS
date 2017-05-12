@@ -23,7 +23,8 @@ import sys
 
 from qgis.PyQt.QtCore import QThreadPool, qDebug
 
-from qgis.core import (QgsPalLayerSettings,
+from qgis.core import (QgsLabelingEngineSettings,
+                       QgsPalLayerSettings,
                        QgsSingleSymbolRenderer,
                        QgsMarkerSymbol,
                        QgsProperty)
@@ -39,8 +40,6 @@ class TestPlacementBase(TestQgsPalLabeling):
     def setUpClass(cls):
         if not cls._BaseSetup:
             TestQgsPalLabeling.setUpClass()
-        cls._Pal.setDrawLabelRectOnly(True)
-        cls._Pal.saveEngineSettings()
 
     @classmethod
     def tearDownClass(cls):
@@ -54,12 +53,16 @@ class TestPlacementBase(TestQgsPalLabeling):
         self.removeAllLayers()
         self.configTest('pal_placement', 'sp')
         self._TestImage = ''
-        # ensure per test map settings stay encapsulated
-        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+
         self._Mismatch = 0
         self._ColorTol = 0
         self._Mismatches.clear()
         self._ColorTols.clear()
+
+        # render only rectangles of the placed labels
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly)
+        self._MapSettings.setLabelingEngineSettings(engine_settings)
 
     def checkTest(self, **kwargs):
         self.lyr.writeToLayer(self.layer)

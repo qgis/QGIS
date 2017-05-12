@@ -300,11 +300,11 @@ QgsGeometry *QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &
     }
 
     //convert bounds to a geometry
-    QgsLineString *boundLineString = new QgsLineString();
-    boundLineString->addVertex( QgsPointV2( bounds.topLeft() ) );
-    boundLineString->addVertex( QgsPointV2( bounds.topRight() ) );
-    boundLineString->addVertex( QgsPointV2( bounds.bottomRight() ) );
-    boundLineString->addVertex( QgsPointV2( bounds.bottomLeft() ) );
+    QVector< double > bX;
+    bX << bounds.left() << bounds.right() << bounds.right() << bounds.left();
+    QVector< double > bY;
+    bY << bounds.top() << bounds.top() << bounds.bottom() << bounds.bottom();
+    QgsLineString *boundLineString = new QgsLineString( bX, bY );
 
     //then transform back to map units
     //TODO - remove when labeling is refactored to use screen units
@@ -452,13 +452,13 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   // features are pre-rotated but not scaled/translated,
   // so we only disable rotation here. Ideally, they'd be
   // also pre-scaled/translated, as suggested here:
-  // http://hub.qgis.org/issues/11856
+  // https://issues.qgis.org/issues/11856
   QgsMapToPixel xform = context.mapToPixel();
   xform.setMapRotation( 0, 0, 0 );
 
   QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
 
-  if ( mEngine->testFlag( QgsLabelingEngine::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
+  if ( mEngine->engineSettings().testFlag( QgsLabelingEngineSettings::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
   {
     //debugging rect
     if ( drawType != QgsTextRenderer::Text )
@@ -596,7 +596,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     component.origin = outPt;
     component.rotation = label->getAlpha();
     QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, multiLineList, labelfm,
-                                       hAlign, mEngine->testFlag( QgsLabelingEngine::RenderOutlineLabels ), QgsTextRenderer::Label );
+                                       hAlign, mEngine->engineSettings().testFlag( QgsLabelingEngineSettings::RenderOutlineLabels ), QgsTextRenderer::Label );
 
   }
 

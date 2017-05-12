@@ -23,7 +23,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   setupUi( this );
 
   QPushButton *okButton = buttonBox->button( QDialogButtonBox::Ok );
-  connect( builder, SIGNAL( expressionParsed( bool ) ), okButton, SLOT( setEnabled( bool ) ) );
+  connect( builder, &QgsExpressionBuilderWidget::expressionParsed, okButton, &QWidget::setEnabled );
 
   builder->setExpressionContext( context );
   builder->setLayer( layer );

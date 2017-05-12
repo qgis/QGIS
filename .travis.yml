@@ -64,11 +64,15 @@ matrix:
             - expect-dev  # unbuffer
             - coreutils
     # OSX based build with QT4 and Python 2
-    # - os: osx
-    #  env:
-    #    - BUILD=osx
-    #    - IGNORE_BUILD_FAILURES=YES
-
+    - os: osx
+      osx_image: xcode8.3 # MacOS 10.12: Sierra
+      cache:
+        pip: true
+        directories:
+          - $HOME/.ccache
+      env:
+        - TRAVIS_CONFIG=macos
+        - IGNORE_BUILD_FAILURES=YES
 
 git:
   depth: 30
@@ -88,16 +92,16 @@ notifications:
     on_start: never # default: never
 
 before_install:
-  - ./ci/travis/${TRAVIS_CONFIG}/before_install.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/before_install.sh
 
 install:
-  - ./ci/travis/${TRAVIS_CONFIG}/install.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/install.sh
 
 before_script:
-  - ./ci/travis/${TRAVIS_CONFIG}/before_script.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/before_script.sh
 
 script:
-  - ./ci/travis/${TRAVIS_CONFIG}/script.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/script.sh
 
 after_script:
-  - ./ci/travis/${TRAVIS_CONFIG}/after_script.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/after_script.sh

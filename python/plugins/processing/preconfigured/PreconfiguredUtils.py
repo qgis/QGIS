@@ -35,4 +35,4 @@ def algAsDict(alg):
     outputs = {}
     for out in alg.outputs:
         outputs[out.name] = out.value
-    return {"parameters": params, "outputs": outputs, "algname": alg.commandLineName()}
+    return {"parameters": params, "outputs": outputs, "algname": alg.id()}

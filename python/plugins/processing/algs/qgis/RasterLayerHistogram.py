@@ -28,11 +28,13 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputHTML
-from processing.tools import dataobjects, raster
+from processing.tools import raster
 
 
 class RasterLayerHistogram(GeoAlgorithm):
@@ -41,10 +43,22 @@ class RasterLayerHistogram(GeoAlgorithm):
     BINS = 'BINS'
     PLOT = 'PLOT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Raster layer histogram')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Graphics')
+
+    def name(self):
+        return 'rasterlayerhistogram'
+
+    def displayName(self):
+        return self.tr('Raster layer histogram')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BINS,
@@ -52,9 +66,8 @@ class RasterLayerHistogram(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.PLOT, self.tr('Histogram')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         nbins = self.getParameterValue(self.BINS)
 
         output = self.getOutputValue(self.PLOT)

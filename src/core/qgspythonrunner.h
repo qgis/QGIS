@@ -16,13 +16,14 @@
 #define QGSPYTHONRUNNER_H
 
 #include <QString>
+#include "qgis.h"
 
 #include "qgis_core.h"
 
 /** \ingroup core
-  Utility class for running python commands from various parts of QGIS.
-  There is no direct python support in the core library, so it is expected
-  that application with python support creates a subclass that implements
+  Utility class for running Python commands from various parts of QGIS.
+  There is no direct Python support in the core library, so it is expected
+  that application with Python support creates a subclass that implements
   pure virtual function(s) during the initialization. The static methods
   will then work as expected.
 
@@ -36,16 +37,16 @@ class CORE_EXPORT QgsPythonRunner
         (and thus is able to run commands) */
     static bool isValid();
 
-    //! Execute a python statement
+    //! Execute a Python statement
     static bool run( const QString &command, const QString &messageOnError = QString() );
 
-    //! Eval a python statement
-    static bool eval( const QString &command, QString &result );
+    //! Eval a Python statement
+    static bool eval( const QString &command, QString &result SIP_OUT );
 
-    /** Assign an instance of python runner so that run() can be used.
+    /** Assign an instance of Python runner so that run() can be used.
       This method should be called during app initialization.
       Takes ownership of the object, deletes previous instance. */
-    static void setInstance( QgsPythonRunner *runner );
+    static void setInstance( QgsPythonRunner *runner SIP_TRANSFER );
 
   protected:
     //! Protected constructor: can be instantiated only from children

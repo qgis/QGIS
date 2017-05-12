@@ -3,6 +3,7 @@
                               -------------------------
   begin                : December 20 , 2016
   copyright            : (C) 2007 by Marco Hugentobler  (original code)
+                         (C) 2012 by René-Luc D'Hont    (original code)
                          (C) 2014 by Alessandro Pasotti (original code)
                          (C) 2017 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -25,6 +26,21 @@
 
 namespace QgsWfs
 {
+
+  /**
+   * Create FeatureTypeList element for get capabilities document
+   */
+  QDomElement getFeatureTypeListElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project );
+
+  /**
+   * Create Capability element for get capabilities document
+   */
+  QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request );
+
+  /**
+   * Create Service element for get capabilities document
+   */
+  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project );
 
   /**
    * Create get capabilities document

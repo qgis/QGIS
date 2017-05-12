@@ -19,12 +19,13 @@
 #include "qgsfeaturerequest.h"
 #include "qgsindexedfeature.h"
 
+#ifndef SIP_RUN
 
 /** \ingroup core
  * Interface that can be optionally attached to an iterator so its
  * nextFeature() implementaton can check if it must stop as soon as possible.
- * @note Added in QGIS 2.16
- * @note not available in Python bindings
+ * \since QGIS 2.16
+ * \note not available in Python bindings
  */
 class CORE_EXPORT QgsInterruptionChecker
 {
@@ -32,6 +33,8 @@ class CORE_EXPORT QgsInterruptionChecker
     //! return true if the iterator must stop as soon as possible
     virtual bool mustStop() const = 0;
 };
+
+#endif
 
 /** \ingroup core
  * Internal feature iterator to be implemented within data providers
@@ -62,18 +65,21 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! end of iterating: free the resources / lock
     virtual bool close() = 0;
 
+#ifndef SIP_RUN
+
     /** Attach an object that can be queried regularly by the iterator to check
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider. When nextFeature()/fetchFeature() is reasonably fast, it is not necessary
      * to implement this method. The default implementation does nothing.
-     * @note added in QGIS 2.16
-     * @note not available in Python bindings
+     * \since QGIS 2.16
+     * \note not available in Python bindings
      */
     virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
+#endif
 
     /** Returns the status of expression compilation for filter expression requests.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     CompileStatus compileStatus() const { return mCompileStatus; }
 
@@ -83,8 +89,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * If you write a feature iterator for your provider, this is the method you
      * need to implement!!
      *
-     * @param f The feature to write to
-     * @return  true if a feature was written to f
+     * \param f The feature to write to
+     * \returns  true if a feature was written to f
      */
     virtual bool fetchFeature( QgsFeature &f ) = 0;
 
@@ -95,8 +101,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * and you check for the expression in your fetchFeature method, you can just
      * redirect this call to fetchFeature so the default check will be omitted.
      *
-     * @param f The feature to write to
-     * @return  true if a feature was written to f
+     * \param f The feature to write to
+     * \returns  true if a feature was written to f
      */
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
 
@@ -108,8 +114,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * if the request was FilterFids you can just redirect this call to fetchFeature
      * so the default check will be omitted.
      *
-     * @param f The feature to write to
-     * @return  true if a feature was written to f
+     * \param f The feature to write to
+     * \returns  true if a feature was written to f
      */
     virtual bool nextFeatureFilterFids( QgsFeature &f );
 
@@ -131,8 +137,10 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! reference counting (to allow seamless copying of QgsFeatureIterator instances)
     //! TODO QGIS3: make this private
     int refs;
-    void ref(); //!< Add reference
-    void deref(); //!< Remove reference, delete if refs == 0
+    //! Add reference
+    void ref();
+    //! Remove reference, delete if refs == 0
+    void deref();
     friend class QgsFeatureIterator;
 
     //! Number of features already fetched by iterator
@@ -158,7 +166,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * and a local order by will be triggered instead.
      * By default returns false
      *
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys );
 
@@ -166,12 +174,12 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * Setup the orderby. Internally calls prepareOrderBy and if false is returned will
      * cache all features and order them with local expression evaluation.
      *
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     void setupOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys );
 };
 
-
+#ifndef SIP_RUN
 
 /** \ingroup core
  * Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
@@ -203,6 +211,8 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
     bool mOwnSource;
 };
 
+#endif
+
 /**
  * \ingroup core
  * Wrapper for iterator of features from vector data provider or vector layer
@@ -210,10 +220,32 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 class CORE_EXPORT QgsFeatureIterator
 {
   public:
+
+#ifdef SIP_RUN
+    QgsFeatureIterator *__iter__();
+    % MethodCode
+    sipRes = sipCpp;
+    % End
+
+    SIP_PYOBJECT __next__();
+    % MethodCode
+    QgsFeature *f = new QgsFeature;
+    if ( sipCpp->nextFeature( *f ) )
+      sipRes = sipConvertFromType( f, sipType_QgsFeature, Py_None );
+    else
+    {
+      delete f;
+      PyErr_SetString( PyExc_StopIteration, "" );
+    }
+    % End
+#endif
+
     //! construct invalid iterator
     QgsFeatureIterator();
+#ifndef SIP_RUN
     //! construct a valid iterator
     QgsFeatureIterator( QgsAbstractFeatureIterator *iter );
+#endif
     //! copy constructor copies the iterator, increases ref.count
     QgsFeatureIterator( const QgsFeatureIterator &fi );
     //! destructor deletes the iterator if it has no more references
@@ -228,28 +260,37 @@ class CORE_EXPORT QgsFeatureIterator
     //! find out whether the iterator is still valid or closed already
     bool isClosed() const;
 
+#ifndef SIP_RUN
+
     /** Attach an object that can be queried regularly by the iterator to check
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider.
-     * @note added in QGIS 2.16
-     * @note not available in Python bindings
+     * \since QGIS 2.16
+     * \note not available in Python bindings
      */
     void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
 
+#endif
+
     /** Returns the status of expression compilation for filter expression requests.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }
+
+#ifndef SIP_RUN
 
     friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
     friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
 
   protected:
     QgsAbstractFeatureIterator *mIter = nullptr;
+
+#endif
+
 };
 
-////////
+#ifndef SIP_RUN
 
 inline QgsFeatureIterator::QgsFeatureIterator()
   : mIter( nullptr )
@@ -317,5 +358,7 @@ inline void QgsFeatureIterator::setInterruptionChecker( QgsInterruptionChecker *
   if ( mIter )
     mIter->setInterruptionChecker( interruptionChecker );
 }
+
+#endif
 
 #endif // QGSFEATUREITERATOR_H

@@ -36,12 +36,8 @@
 #include <qwt_plot_picker.h>
 #include <qwt_picker_machine.h>
 #include <qwt_plot_layout.h>
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_histogram.h>
-#else
-#include "../raster/qwt5_histogram_item.h"
-#endif
 
 
 QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
@@ -55,17 +51,13 @@ QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
 
   mFilter = new QgsGraduatedHistogramEventFilter( mPlot );
 
-  connect( mFilter, SIGNAL( mousePress( double ) ), this, SLOT( mousePress( double ) ) );
-  connect( mFilter, SIGNAL( mouseRelease( double ) ), this, SLOT( mouseRelease( double ) ) );
+  connect( mFilter, &QgsGraduatedHistogramEventFilter::mousePress, this, &QgsGraduatedHistogramWidget::mousePress );
+  connect( mFilter, &QgsGraduatedHistogramEventFilter::mouseRelease, this, &QgsGraduatedHistogramWidget::mouseRelease );
 
   mHistoPicker = new QwtPlotPicker( mPlot->canvas() );
   mHistoPicker->setTrackerMode( QwtPicker::ActiveOnly );
   mHistoPicker->setRubberBand( QwtPicker::VLineRubberBand );
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mHistoPicker->setStateMachine( new QwtPickerDragPointMachine );
-#else
-  mHistoPicker->setSelectionFlags( QwtPicker::PointSelection | QwtPicker::DragSelection );
-#endif
 }
 
 void QgsGraduatedHistogramWidget::setRenderer( QgsGraduatedSymbolRenderer *renderer )

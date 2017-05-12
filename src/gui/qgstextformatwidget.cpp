@@ -24,6 +24,8 @@
 #include "qgssubstitutionlistwidget.h"
 #include "qgspallabeling.h" // for enum values
 #include "qgssettings.h"
+#include "qgseffectstack.h"
+#include "qgspainteffectregistry.h"
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
   : QWidget( parent )
@@ -68,7 +70,7 @@ void QgsTextFormatWidget::initWidget()
 
   mPreviewScaleComboBox->setMapCanvas( mMapCanvas );
   mPreviewScaleComboBox->setShowCurrentScaleButton( true );
-  connect( mPreviewScaleComboBox, SIGNAL( scaleChanged( double ) ), this, SLOT( previewScaleChanged( double ) ) );
+  connect( mPreviewScaleComboBox, &QgsScaleWidget::scaleChanged, this, &QgsTextFormatWidget::previewScaleChanged );
 
   Q_FOREACH ( QgsUnitSelectionWidget *unitWidget, findChildren<QgsUnitSelectionWidget *>() )
   {
@@ -120,23 +122,23 @@ void QgsTextFormatWidget::initWidget()
   mRefFont = lblFontPreview->font();
 
   // internal connections
-  connect( mFontTranspSlider, SIGNAL( valueChanged( int ) ), mFontTranspSpinBox, SLOT( setValue( int ) ) );
-  connect( mFontTranspSpinBox, SIGNAL( valueChanged( int ) ), mFontTranspSlider, SLOT( setValue( int ) ) );
-  connect( mBufferTranspSlider, SIGNAL( valueChanged( int ) ), mBufferTranspSpinBox, SLOT( setValue( int ) ) );
-  connect( mBufferTranspSpinBox, SIGNAL( valueChanged( int ) ), mBufferTranspSlider, SLOT( setValue( int ) ) );
-  connect( mShapeTranspSlider, SIGNAL( valueChanged( int ) ), mShapeTranspSpinBox, SLOT( setValue( int ) ) );
-  connect( mShapeTranspSpinBox, SIGNAL( valueChanged( int ) ), mShapeTranspSlider, SLOT( setValue( int ) ) );
-  connect( mShadowOffsetAngleDial, SIGNAL( valueChanged( int ) ), mShadowOffsetAngleSpnBx, SLOT( setValue( int ) ) );
-  connect( mShadowOffsetAngleSpnBx, SIGNAL( valueChanged( int ) ), mShadowOffsetAngleDial, SLOT( setValue( int ) ) );
-  connect( mShadowTranspSlider, SIGNAL( valueChanged( int ) ), mShadowTranspSpnBx, SLOT( setValue( int ) ) );
-  connect( mShadowTranspSpnBx, SIGNAL( valueChanged( int ) ), mShadowTranspSlider, SLOT( setValue( int ) ) );
-  connect( mLimitLabelChkBox, SIGNAL( toggled( bool ) ), mLimitLabelSpinBox, SLOT( setEnabled( bool ) ) );
-  connect( mCheckBoxSubstituteText, SIGNAL( toggled( bool ) ), mToolButtonConfigureSubstitutes, SLOT( setEnabled( bool ) ) );
+  connect( mFontTranspSlider, &QAbstractSlider::valueChanged, mFontTranspSpinBox, &QSpinBox::setValue );
+  connect( mFontTranspSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mFontTranspSlider, &QAbstractSlider::setValue );
+  connect( mBufferTranspSlider, &QAbstractSlider::valueChanged, mBufferTranspSpinBox, &QSpinBox::setValue );
+  connect( mBufferTranspSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mBufferTranspSlider, &QAbstractSlider::setValue );
+  connect( mShapeTranspSlider, &QAbstractSlider::valueChanged, mShapeTranspSpinBox, &QSpinBox::setValue );
+  connect( mShapeTranspSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mShapeTranspSlider, &QAbstractSlider::setValue );
+  connect( mShadowOffsetAngleDial, &QAbstractSlider::valueChanged, mShadowOffsetAngleSpnBx, &QSpinBox::setValue );
+  connect( mShadowOffsetAngleSpnBx, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mShadowOffsetAngleDial, &QAbstractSlider::setValue );
+  connect( mShadowTranspSlider, &QAbstractSlider::valueChanged, mShadowTranspSpnBx, &QSpinBox::setValue );
+  connect( mShadowTranspSpnBx, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mShadowTranspSlider, &QAbstractSlider::setValue );
+  connect( mLimitLabelChkBox, &QAbstractButton::toggled, mLimitLabelSpinBox, &QWidget::setEnabled );
+  connect( mCheckBoxSubstituteText, &QAbstractButton::toggled, mToolButtonConfigureSubstitutes, &QWidget::setEnabled );
 
   //connections to prevent users removing all line placement positions
-  connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updateLinePlacementOptions() ) );
-  connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updateLinePlacementOptions() ) );
-  connect( chkLineOn, SIGNAL( toggled( bool ) ), this, SLOT( updateLinePlacementOptions() ) );
+  connect( chkLineAbove, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updateLinePlacementOptions );
+  connect( chkLineBelow, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updateLinePlacementOptions );
+  connect( chkLineOn, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updateLinePlacementOptions );
 
   populateFontCapitalsComboBox();
 
@@ -188,8 +190,8 @@ void QgsTextFormatWidget::initWidget()
   //mShapeCollisionsChkBx->setVisible( false ); // until implemented
 
   // post updatePlacementWidgets() connections
-  connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
-  connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
+  connect( chkLineAbove, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
+  connect( chkLineBelow, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
 
   // setup point placement button group
   mPlacePointBtnGrp = new QButtonGroup( this );
@@ -197,7 +199,7 @@ void QgsTextFormatWidget::initWidget()
   mPlacePointBtnGrp->addButton( radAroundPoint, ( int )QgsPalLayerSettings::AroundPoint );
   mPlacePointBtnGrp->addButton( radOverPoint, ( int )QgsPalLayerSettings::OverPoint );
   mPlacePointBtnGrp->setExclusive( true );
-  connect( mPlacePointBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePlacementWidgets() ) );
+  connect( mPlacePointBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
 
   // setup line placement button group (assigned enum id currently unused)
   mPlaceLineBtnGrp = new QButtonGroup( this );
@@ -205,7 +207,7 @@ void QgsTextFormatWidget::initWidget()
   mPlaceLineBtnGrp->addButton( radLineCurved, ( int )QgsPalLayerSettings::Curved );
   mPlaceLineBtnGrp->addButton( radLineHorizontal, ( int )QgsPalLayerSettings::Horizontal );
   mPlaceLineBtnGrp->setExclusive( true );
-  connect( mPlaceLineBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePlacementWidgets() ) );
+  connect( mPlaceLineBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
 
   // setup polygon placement button group (assigned enum id currently unused)
   mPlacePolygonBtnGrp = new QButtonGroup( this );
@@ -216,7 +218,7 @@ void QgsTextFormatWidget::initWidget()
   mPlacePolygonBtnGrp->addButton( radPolygonPerimeter, ( int )QgsPalLayerSettings::Line );
   mPlacePolygonBtnGrp->addButton( radPolygonPerimeterCurved, ( int )QgsPalLayerSettings::PerimeterCurved );
   mPlacePolygonBtnGrp->setExclusive( true );
-  connect( mPlacePolygonBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePlacementWidgets() ) );
+  connect( mPlacePolygonBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
 
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   mPointAngleDDBtn->setVisible( false );
@@ -229,9 +231,9 @@ void QgsTextFormatWidget::initWidget()
   }
 
   connect( groupBox_mPreview,
-           SIGNAL( collapsedStateChanged( bool ) ),
+           &QgsCollapsibleGroupBoxBasic::collapsedStateChanged,
            this,
-           SLOT( collapseSample( bool ) ) );
+           &QgsTextFormatWidget::collapseSample );
 
   // get rid of annoying outer focus rect on Mac
   mLabelingOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
@@ -251,13 +253,20 @@ void QgsTextFormatWidget::initWidget()
   }
 
   // set up reverse connection from stack to list
-  connect( mLabelStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( optionsStackedWidget_CurrentChanged( int ) ) );
+  connect( mLabelStackedWidget, &QStackedWidget::currentChanged, this, &QgsTextFormatWidget::optionsStackedWidget_CurrentChanged );
 
   // restore dialog, splitters and current tab
   mFontPreviewSplitter->restoreState( settings.value( QStringLiteral( "Windows/Labeling/FontPreviewSplitState" ) ).toByteArray() );
   mLabelingOptionsSplitter->restoreState( settings.value( QStringLiteral( "Windows/Labeling/OptionsSplitState" ) ).toByteArray() );
 
   mLabelingOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/Labeling/Tab" ), 0 ).toInt() );
+
+  mBufferEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  connect( mBufferEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
+  mBufferEffectWidget->setPaintEffect( mBufferEffect.get() );
+  mBackgroundEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  connect( mBackgroundEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
+  mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
 
   setDockMode( false );
 
@@ -475,7 +484,7 @@ void QgsTextFormatWidget::initWidget()
           << mCheckBoxSubstituteText;
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
-  connect( mQuadrantBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePreview() ) );
+  connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
 
   // set correct initial tab to match displayed setting page
   whileBlocking( mOptionsTab )->setCurrentIndex( mLabelStackedWidget->currentIndex() );
@@ -611,7 +620,14 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mBufferJoinStyleComboBox->setPenJoinStyle( buffer.joinStyle() );
   mBufferTranspFillChbx->setChecked( buffer.fillBufferInterior() );
   comboBufferBlendMode->setBlendMode( buffer.blendMode() );
-
+  if ( buffer.paintEffect() )
+    mBufferEffect.reset( buffer.paintEffect()->clone() );
+  else
+  {
+    mBufferEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+    mBufferEffect->setEnabled( false );
+  }
+  mBufferEffectWidget->setPaintEffect( mBufferEffect.get() );
 
   mFontSizeUnitWidget->setUnit( format.sizeUnit() );
   mFontSizeUnitWidget->setMapUnitScale( format.sizeMapUnitScale() );
@@ -682,6 +698,15 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mLoadSvgParams = false;
   on_mShapeTypeCmbBx_currentIndexChanged( background.type() ); // force update of shape background gui
 
+  if ( background.paintEffect() )
+    mBackgroundEffect.reset( background.paintEffect()->clone() );
+  else
+  {
+    mBackgroundEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+    mBackgroundEffect->setEnabled( false );
+  }
+  mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
+
   // drop shadow
   mShadowDrawChkBx->setChecked( shadow.enabled() );
   mShadowUnderCmbBx->setCurrentIndex( shadow.shadowPlacement() );
@@ -735,6 +760,10 @@ QgsTextFormat QgsTextFormatWidget::format() const
   buffer.setJoinStyle( mBufferJoinStyleComboBox->penJoinStyle() );
   buffer.setFillBufferInterior( mBufferTranspFillChbx->isChecked() );
   buffer.setBlendMode( comboBufferBlendMode->blendMode() );
+  if ( mBufferEffect && !QgsPaintEffectRegistry::isDefaultStack( mBufferEffect.get() ) )
+    buffer.setPaintEffect( mBufferEffect->clone() );
+  else
+    buffer.setPaintEffect( nullptr );
   format.setBuffer( buffer );
 
   // shape background
@@ -763,6 +792,10 @@ QgsTextFormat QgsTextFormatWidget::format() const
   background.setJoinStyle( mShapePenStyleCmbBx->penJoinStyle() );
   background.setOpacity( 1.0 - mShapeTranspSpinBox->value() / 100.0 );
   background.setBlendMode( mShapeBlendCmbBx->blendMode() );
+  if ( mBackgroundEffect && !QgsPaintEffectRegistry::isDefaultStack( mBackgroundEffect.get() ) )
+    background.setPaintEffect( mBackgroundEffect->clone() );
+  else
+    background.setPaintEffect( nullptr );
   format.setBackground( background );
 
   // drop shadow
@@ -1352,7 +1385,7 @@ void QgsTextFormatWidget::on_mToolButtonConfigureSubstitutes_clicked()
     QgsSubstitutionListWidget *widget = new QgsSubstitutionListWidget( panel );
     widget->setPanelTitle( tr( "Substitutions" ) );
     widget->setSubstitutions( mSubstitutions );
-    connect( widget, SIGNAL( substitutionsChanged( QgsStringReplacementCollection ) ), this, SLOT( onSubstitutionsChanged( QgsStringReplacementCollection ) ) );
+    connect( widget, &QgsSubstitutionListWidget::substitutionsChanged, this, &QgsTextFormatWidget::onSubstitutionsChanged );
     panel->openPanel( widget );
     return;
   }
@@ -1416,8 +1449,8 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCan
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/TextFormatDialog/geometry" ) ).toByteArray() );
 
-  connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), this, SLOT( accept() ) );
-  connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ), this, SLOT( reject() ) );
+  connect( buttonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
+  connect( buttonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
 }
 
 QgsTextFormatDialog::~QgsTextFormatDialog()
@@ -1435,7 +1468,7 @@ QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat &format,
   : QgsPanelWidgetWrapper( new QgsTextFormatWidget( format, mapCanvas ), parent )
 {
   mFormatWidget = qobject_cast< QgsTextFormatWidget * >( widget() );
-  connect( mFormatWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+  connect( mFormatWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
 QgsTextFormat QgsTextFormatPanelWidget::format() const

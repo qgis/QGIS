@@ -28,7 +28,7 @@
 
 #include <QMessageBox>
 
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgspostgresprovider.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
@@ -68,7 +68,7 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
       // unless we can guarantee all values are unsigned
       // (in which case we could use pktUint64)
       // we'll have to use a Map type.
-      // See http://hub.qgis.org/issues/14262
+      // See https://issues.qgis.org/issues/14262
       return PktFidMap; // pktUint64
 
     case QVariant::Int:
@@ -168,7 +168,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   }
 
   // NOTE: mValid would be true after true return from
-  // getGeometryDetails, see http://hub.qgis.org/issues/13781
+  // getGeometryDetails, see https://issues.qgis.org/issues/13781
 
   if ( mSpatialColType == SctTopoGeometry )
   {
@@ -227,6 +227,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
                   << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 64bit)" ), QStringLiteral( "int8[]" ), QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
                   << QgsVectorDataProvider::NativeType( tr( "Array of number (double)" ), QStringLiteral( "double precision[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Double )
                   << QgsVectorDataProvider::NativeType( tr( "Array of text" ), QStringLiteral( "text[]" ), QVariant::StringList, -1, -1, -1, -1, QVariant::String )
+
+                  // boolean
+                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
                 );
 
   QString key;
@@ -898,7 +901,6 @@ bool QgsPostgresProvider::loadFields()
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "text" ) ||
-                fieldTypeName == QLatin1String( "bool" ) ||
                 fieldTypeName == QLatin1String( "geometry" ) ||
                 fieldTypeName == QLatin1String( "inet" ) ||
                 fieldTypeName == QLatin1String( "money" ) ||
@@ -954,6 +956,12 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::Map;
         fieldSubType = QVariant::String;
+        fieldSize = -1;
+      }
+      else if ( fieldTypeName == QLatin1String( "bool" ) )
+      {
+        // enum
+        fieldType = QVariant::Bool;
         fieldSize = -1;
       }
       else
@@ -3615,6 +3623,12 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       fieldPrec = -1;
       break;
 
+    case QVariant::Bool:
+      fieldType = QStringLiteral( "bool" );
+      fieldPrec = -1;
+      fieldSize = -1;
+      break;
+
     default:
       return false;
   }
@@ -3625,7 +3639,7 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
   return true;
 }
 
-QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const QString &uri,
+QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -3666,7 +3680,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "Connection to database failed" );
-    return QgsVectorLayerImport::ErrConnectionFailed;
+    return QgsVectorLayerExporter::ErrConnectionFailed;
   }
 
   // get the pk's name and type
@@ -3827,7 +3841,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
 
     conn->PQexecNR( QStringLiteral( "ROLLBACK" ) );
     conn->unref();
-    return QgsVectorLayerImport::ErrCreateLayer;
+    return QgsVectorLayerExporter::ErrCreateLayer;
   }
   conn->unref();
 
@@ -3842,7 +3856,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
       *errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( schemaTableName );
 
     delete provider;
-    return QgsVectorLayerImport::ErrInvalidLayer;
+    return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
   QgsDebugMsg( "layer loaded" );
@@ -3903,7 +3917,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 
         delete provider;
-        return QgsVectorLayerImport::ErrAttributeTypeUnsupported;
+        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
       QgsDebugMsg( QString( "creating field #%1 -> #%2 name %3 type %4 typename %5 width %6 precision %7" )
@@ -3923,12 +3937,12 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
       delete provider;
-      return QgsVectorLayerImport::ErrAttributeCreationFailed;
+      return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
 
     QgsDebugMsg( "Done creating fields" );
   }
-  return QgsVectorLayerImport::NoError;
+  return QgsVectorLayerExporter::NoError;
 }
 
 QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
@@ -4106,20 +4120,32 @@ static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::T
 
 QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type subType, const QString &value )
 {
+  QVariant result;
   switch ( type )
   {
     case QVariant::Map:
-      return parseHstore( value );
+      result = parseHstore( value );
+      break;
     case QVariant::StringList:
     case QVariant::List:
-      return parseArray( value, type, subType );
+      result = parseArray( value, type, subType );
+      break;
+    case QVariant::Bool:
+      if ( value == QChar( 't' ) )
+        result = true;
+      else if ( value == QChar( 'f' ) )
+        result = false;
+      else
+        result = QVariant( type );
+      break;
     default:
-    {
-      QVariant v( value );
-      if ( !v.convert( type ) || value.isNull() ) return QVariant( type );
-      return v;
-    }
+      result = value;
+      if ( !result.convert( type ) || value.isNull() )
+        result = QVariant( type );
+      break;
   }
+
+  return result;
 }
 
 QList<QgsVectorLayer *> QgsPostgresProvider::searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &schema, const QString &tableName )
@@ -4259,7 +4285,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
+QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,

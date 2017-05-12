@@ -35,12 +35,15 @@ from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QApplication, QMessageBox
 from qgis.PyQt.QtGui import QCursor
 from qgis.core import (QgsExpressionContextUtils,
                        QgsProcessingFeedback,
-                       QgsSettings)
+                       QgsSettings,
+                       QgsProcessingUtils,
+                       QgsMapLayerProxyModel,
+                       QgsMessageLog)
 from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.gui.AlgorithmExecutor import runalg
+from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 from processing.gui.Postprocessing import handleAlgorithmResults
 
@@ -61,9 +64,6 @@ class FieldCalculatorFeedback(QgsProcessingFeedback):
     def reportError(self, msg):
         self.dialog.error(msg)
 
-    def setProgress(self, i):
-        self.dialog.setPercentage(i)
-
 
 class FieldsCalculatorDialog(BASE, WIDGET):
 
@@ -72,12 +72,14 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         self.setupUi(self)
 
         self.feedback = FieldCalculatorFeedback(self)
+        self.feedback.progressChanged.connect(self.setPercentage)
 
         self.executed = False
         self.alg = alg
         self.layer = None
 
-        self.cmbInputLayer.currentIndexChanged.connect(self.updateLayer)
+        self.cmbInputLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.cmbInputLayer.layerChanged.connect(self.updateLayer)
         self.btnBrowse.clicked.connect(self.selectFile)
         self.mNewFieldGroupBox.toggled.connect(self.toggleExistingGroup)
         self.mUpdateExistingGroupBox.toggled.connect(self.toggleNewGroup)
@@ -101,17 +103,9 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         for t in self.alg.type_names:
             self.mOutputFieldTypeComboBox.addItem(t)
         self.mOutputFieldTypeComboBox.blockSignals(False)
-
-        self.cmbInputLayer.blockSignals(True)
-        layers = dataobjects.getVectorLayers()
-        for layer in layers:
-            self.cmbInputLayer.addItem(layer.name())
-        self.cmbInputLayer.blockSignals(False)
-
         self.builder.loadRecent('fieldcalc')
 
-        self.initContext()
-        self.updateLayer()
+        self.updateLayer(self.cmbInputLayer.currentLayer())
 
     def initContext(self):
         exp_context = self.builder.expressionContext()
@@ -120,8 +114,10 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         exp_context.setHighlightedVariables(["row_number"])
         self.builder.setExpressionContext(exp_context)
 
-    def updateLayer(self):
-        self.layer = dataobjects.getObject(self.cmbInputLayer.currentText())
+    def updateLayer(self, layer):
+        self.layer = layer
+
+        self.initContext()
         self.builder.setLayer(self.layer)
         self.builder.loadFieldNames()
         self.populateFields()
@@ -202,7 +198,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         else:
             fieldName = self.mOutputFieldNameLineEdit.text()
 
-        layer = dataobjects.getObjectFromName(self.cmbInputLayer.currentText())
+        layer = self.cmbInputLayer.currentLayer()
 
         self.alg.setParameterValue('INPUT_LAYER', layer)
         self.alg.setParameterValue('FIELD_NAME', fieldName)
@@ -229,12 +225,13 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         try:
             if self.setParamValues():
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
-                                       self.alg.getAsCommand())
+                ProcessingLog.addToLog(self.alg.getAsCommand())
 
-                self.executed = runalg(self.alg, self.feedback)
+                context = dataobjects.createContext()
+                self.executed = execute(self.alg, context, self.feedback)
                 if self.executed:
                     handleAlgorithmResults(self.alg,
+                                           context,
                                            self.feedback,
                                            not keepOpen)
                 if not keepOpen:
@@ -251,4 +248,4 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def error(self, text):
         QMessageBox.critical(self, "Error", text)
-        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, text)
+        QgsMessageLog.logMessage(text, self.tr('Processing'), QgsMessageLog.CRITICAL)

@@ -37,6 +37,7 @@
 %Include qgscodeeditorcss.sip
 %End
 %Include qgscharacterselectdialog.sip
+%Include qgscheckablecombobox.sip
 %Include qgscolorbrewercolorrampdialog.sip
 %Include qgscolorbutton.sip
 %Include qgscolorrampbutton.sip
@@ -71,8 +72,6 @@
 %Include qgsfeatureselectiondlg.sip
 %Include qgsfieldcombobox.sip
 %Include qgsfieldexpressionwidget.sip
-%Include qgsfieldmodel.sip
-%Include qgsfieldproxymodel.sip
 %Include qgsfieldvalidator.sip
 %Include qgsfieldvalueslineedit.sip
 %Include qgsfiledropedit.sip
@@ -100,7 +99,6 @@
 %Include qgsmapcanvas.sip
 %Include qgsmapcanvasannotationitem.sip
 %Include qgsmapcanvasitem.sip
-%Include qgsmapcanvassnapper.sip
 %Include qgsmapcanvassnappingutils.sip
 %Include qgsmapcanvastracer.sip
 %Include qgsmaplayeractionregistry.sip
@@ -214,6 +212,7 @@
 
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip
+%Include raster/qgsrasterbandcombobox.sip
 %Include raster/qgsrasterhistogramwidget.sip
 %Include raster/qgsrasterminmaxwidget.sip
 %Include raster/qgsrasterrendererwidget.sip

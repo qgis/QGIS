@@ -30,6 +30,7 @@
 #include "qgslinestring.h"
 #include "qgsfocuswatcher.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
@@ -163,10 +164,10 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   QActionGroup *angleButtonGroup = new QActionGroup( menu ); // actions are exclusive for common angles
   mCommonAngleActions = QMap<QAction *, int>();
   QList< QPair< int, QString > > commonAngles;
-  commonAngles << QPair<int, QString>( 0, tr( "Do not snap to common angles" ) );
-  commonAngles << QPair<int, QString>( 30, tr( "Snap to 30%1 angles" ).arg( QStringLiteral( "°" ) ) );
-  commonAngles << QPair<int, QString>( 45, tr( "Snap to 45%1 angles" ).arg( QStringLiteral( "°" ) ) );
-  commonAngles << QPair<int, QString>( 90, tr( "Snap to 90%1 angles" ).arg( QStringLiteral( "°" ) ) );
+  commonAngles << QPair<int, QString>( 0, trUtf8( "Do not snap to common angles" ) );
+  commonAngles << QPair<int, QString>( 30, trUtf8( "Snap to 30° angles" ) );
+  commonAngles << QPair<int, QString>( 45, trUtf8( "Snap to 45° angles" ) );
+  commonAngles << QPair<int, QString>( 90, trUtf8( "Snap to 90° angles" ) );
   for ( QList< QPair< int, QString > >::const_iterator it = commonAngles.begin(); it != commonAngles.end(); ++it )
   {
     QAction *action = new QAction( it->second, menu );
@@ -199,9 +200,6 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
   // set tooltips
   mConstructionModeButton->setToolTip( "<b>" + tr( "Construction mode" ) + "</b><br>(" + tr( "press c to toggle on/off" ) + ")" );
-  mPerpendicularButton->setToolTip( "<b>" + tr( "Perpendicular" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
-  mParallelButton->setToolTip( "<b>" + tr( "Parallel" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
-
   mDistanceLineEdit->setToolTip( "<b>" + tr( "Distance" ) + "</b><br>(" + tr( "press d for quick access" ) + ")" );
   mLockDistanceButton->setToolTip( "<b>" + tr( "Lock distance" ) + "</b><br>(" + tr( "press Ctrl + d for quick access" ) + ")" );
   mRepeatingLockDistanceButton->setToolTip( "<b>" + tr( "Continuously lock distance" ) + "</b>" );
@@ -223,6 +221,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
 
   updateCapacity( true );
+  connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [ = ] { updateCapacity( true ); } );
+
   disable();
 }
 
@@ -525,6 +525,8 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
     return;
   }
 
+  bool snappingEnabled = QgsProject::instance()->snappingConfig().enabled();
+
   // update the UI according to new capacities
   // still keep the old to compare
 
@@ -532,8 +534,22 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
   bool absoluteAngle = mCadEnabled && newCapacities.testFlag( AbsoluteAngle );
   bool relativeCoordinates = mCadEnabled && newCapacities.testFlag( RelativeCoordinates );
 
-  mPerpendicularButton->setEnabled( absoluteAngle );
-  mParallelButton->setEnabled( absoluteAngle );
+  mPerpendicularButton->setEnabled( absoluteAngle && snappingEnabled );
+  mParallelButton->setEnabled( absoluteAngle && snappingEnabled );
+
+  //update tooltips on buttons
+  if ( !snappingEnabled )
+  {
+    mPerpendicularButton->setToolTip( tr( "Snapping must be enabled to utilize perpendicular mode" ) );
+    mParallelButton->setToolTip( tr( "Snapping must be enabled to utilize parallel mode" ) );
+  }
+  else
+  {
+    mPerpendicularButton->setToolTip( "<b>" + tr( "Perpendicular" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
+    mParallelButton->setToolTip( "<b>" + tr( "Parallel" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
+  }
+
+
   if ( !absoluteAngle )
   {
     lockAdditionalConstraint( NoConstraint );
@@ -577,11 +593,11 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 {
   bool res = true;
 
-  QgsDebugMsg( "Constraints (locked / relative / value" );
-  QgsDebugMsg( QString( "Angle:    %1 %2 %3" ).arg( mAngleConstraint->isLocked() ).arg( mAngleConstraint->relative() ).arg( mAngleConstraint->value() ) );
-  QgsDebugMsg( QString( "Distance: %1 %2 %3" ).arg( mDistanceConstraint->isLocked() ).arg( mDistanceConstraint->relative() ).arg( mDistanceConstraint->value() ) );
-  QgsDebugMsg( QString( "X:        %1 %2 %3" ).arg( mXConstraint->isLocked() ).arg( mXConstraint->relative() ).arg( mXConstraint->value() ) );
-  QgsDebugMsg( QString( "Y:        %1 %2 %3" ).arg( mYConstraint->isLocked() ).arg( mYConstraint->relative() ).arg( mYConstraint->value() ) );
+  QgsDebugMsgLevel( "Constraints (locked / relative / value", 4 );
+  QgsDebugMsgLevel( QString( "Angle:    %1 %2 %3" ).arg( mAngleConstraint->isLocked() ).arg( mAngleConstraint->relative() ).arg( mAngleConstraint->value() ), 4 );
+  QgsDebugMsgLevel( QString( "Distance: %1 %2 %3" ).arg( mDistanceConstraint->isLocked() ).arg( mDistanceConstraint->relative() ).arg( mDistanceConstraint->value() ), 4 );
+  QgsDebugMsgLevel( QString( "X:        %1 %2 %3" ).arg( mXConstraint->isLocked() ).arg( mXConstraint->relative() ).arg( mXConstraint->value() ), 4 );
+  QgsDebugMsgLevel( QString( "Y:        %1 %2 %3" ).arg( mYConstraint->isLocked() ).arg( mYConstraint->relative() ).arg( mYConstraint->value() ), 4 );
 
   QgsPoint point = e->snapPoint( mSnappingMode );
 
@@ -813,9 +829,9 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 
   // *****************************
   // ---- calculate CAD values
-  QgsDebugMsg( QString( "point:             %1 %2" ).arg( point.x() ).arg( point.y() ) );
-  QgsDebugMsg( QString( "previous point:    %1 %2" ).arg( previousPt.x() ).arg( previousPt.y() ) );
-  QgsDebugMsg( QString( "penultimate point: %1 %2" ).arg( penultimatePt.x() ).arg( penultimatePt.y() ) );
+  QgsDebugMsgLevel( QString( "point:             %1 %2" ).arg( point.x() ).arg( point.y() ), 4 );
+  QgsDebugMsgLevel( QString( "previous point:    %1 %2" ).arg( previousPt.x() ).arg( previousPt.y() ), 4 );
+  QgsDebugMsgLevel( QString( "penultimate point: %1 %2" ).arg( penultimatePt.x() ).arg( penultimatePt.y() ), 4 );
   //QgsDebugMsg( QString( "dx: %1 dy: %2" ).arg( point.x() - previousPt.x() ).arg( point.y() - previousPt.y() ) );
   //QgsDebugMsg( QString( "ddx: %1 ddy: %2" ).arg( previousPt.x() - penultimatePt.x() ).arg( previousPt.y() - penultimatePt.y() ) );
 
@@ -1194,6 +1210,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 
 void QgsAdvancedDigitizingDockWidget::enable()
 {
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsAdvancedDigitizingDockWidget::enable, Qt::UniqueConnection );
   if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
   {
     mErrorLabel->setText( tr( "CAD tools can not be used on geographic coordinates. Change the coordinates system in the project properties." ) );
@@ -1220,6 +1237,8 @@ void QgsAdvancedDigitizingDockWidget::enable()
 
 void QgsAdvancedDigitizingDockWidget::disable()
 {
+  disconnect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsAdvancedDigitizingDockWidget::enable );
+
   mEnableAction->setEnabled( false );
   mErrorLabel->setText( tr( "CAD tools are not enabled for the current map tool" ) );
   mErrorLabel->show();

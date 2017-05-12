@@ -47,9 +47,9 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
   mainLayout->addWidget( mTerminal );
   setLayout( mainLayout );
 
-  connect( mTerminal, SIGNAL( finished() ), this, SLOT( closeShell() ) );
-  connect( pasteShortcut, SIGNAL( activated() ), mTerminal, SLOT( pasteClipboard() ) );
-  connect( copyShortcut, SIGNAL( activated() ), mTerminal, SLOT( copyClipboard() ) );
+  connect( mTerminal, &QTermWidget::finished, this, &QgsGrassShell::closeShell );
+  connect( pasteShortcut, &QShortcut::activated, mTerminal, &QTermWidget::pasteClipboard );
+  connect( copyShortcut, &QShortcut::activated, mTerminal, &QTermWidget::copyClipboard );
 
 #if 0
   // TODO: find a better way to manage the lockfile.

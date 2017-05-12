@@ -121,7 +121,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
 
   // FINISH
   mOpenNewMapsetCheckBox->setChecked( settings.value( QStringLiteral( "GRASS/newMapsetWizard/openMapset" ), true ).toBool() );
-  connect( this, SIGNAL( currentIdChanged( int ) ), SLOT( pageSelected( int ) ) );
+  connect( this, &QWizard::currentIdChanged, this, &QgsGrassNewMapset::pageSelected );
 
   restoreGeometry( settings.value( QStringLiteral( "Windows/QgsGrassNewMapset/geometry" ) ).toByteArray() );
 }

@@ -27,8 +27,9 @@ __revision__ = '$Format:%H$'
 
 
 import os
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.alglist import algList
 import json
 
 
@@ -39,26 +40,34 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
         with open(self.descriptionFile) as f:
             self.description = json.load(f)
         GeoAlgorithm.__init__(self)
+        self._group = ''
+        self._name = ''
+
+    def group(self):
+        return self._group
+
+    def displayName(self):
+        return self._name
+
+    def name(self):
+        return os.path.splitext(os.path.basename(self.descriptionFile))[0].lower()
+
+    def flags(self):
+        return QgsProcessingAlgorithm.FlagHideFromModeler
 
     def getCopy(self):
-        newone = PreconfiguredAlgorithm(self.descriptionFile)
+        newone = self
         newone.outputs = []
-        newone.provider = self.provider
-        newone.name = self.name
-        newone.group = self.group
+        newone._name = self._name
+        newone._group = self._group
         return newone
 
-    def commandLineName(self):
-        return 'preconfigured:' + os.path.splitext(os.path.basename(self.descriptionFile))[0].lower()
-
     def defineCharacteristics(self):
-        self.name = self.description["name"]
-        self.group = self.description["group"]
-        self.canRunInBatchMode = False
-        self.showInModeler = False
+        self._name = self.description["name"]
+        self._group = self.description["group"]
 
-    def execute(self, feedback):
-        self.alg = algList.getAlgorithm(self.description["algname"]).getCopy()
+    def execute(self, context=None, feedback=None, model=None):
+        self.alg = QgsApplication.processingRegistry().algorithmById(self.description["algname"]).getCopy()
         for name, value in list(self.description["parameters"].items()):
             self.alg.setParameterValue(name, value)
         for name, value in list(self.description["outputs"].items()):

@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsWkbTypes, QgsField, NULL
+from qgis.core import QgsWkbTypes, QgsField, NULL, QgsProcessingUtils
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
@@ -36,7 +36,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -47,14 +47,22 @@ class PoleOfInaccessibility(GeoAlgorithm):
     TOLERANCE = 'TOLERANCE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Pole of Inaccessibility')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('furthest,point,distant,extreme,maximum,centroid,center,centre')
+    def tags(self):
+        return self.tr('furthest,point,distant,extreme,maximum,centroid,center,centre').split(',')
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'poleofinaccessibility'
+
+    def displayName(self):
+        return self.tr('Pole of Inaccessibility')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON]))
@@ -62,22 +70,18 @@ class PoleOfInaccessibility(GeoAlgorithm):
                                           self.tr('Tolerance (layer units)'), default=1.0, minValue=0.0))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Point'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         tolerance = self.getParameterValue(self.TOLERANCE)
 
         fields = layer.fields()
         fields.append(QgsField('dist_pole', QVariant.Double))
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                fields,
-                QgsWkbTypes.Point,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature

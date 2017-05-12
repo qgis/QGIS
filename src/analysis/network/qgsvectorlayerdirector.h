@@ -16,6 +16,8 @@
 #ifndef QGSVECTORLAYERDIRECTOR_H
 #define QGSVECTORLAYERDIRECTOR_H
 
+#include "qgis.h"
+
 #include "qgsgraphdirector.h"
 #include "qgis_analysis.h"
 
@@ -25,7 +27,7 @@ class QgsVectorLayer;
 /**
 * \ingroup analysis
 * \class QgsVectorLayerDirector
-* \note added in QGIS 3.0
+* \since QGIS 3.0
 * \brief Determine making the graph from vector line layer
 */
 class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
@@ -49,12 +51,12 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
 
     /**
      * Default constructor
-     * @param myLayer source vector layer
-     * @param directionFieldId field containing direction value
-     * @param directDirectionValue value for direct one-way road
-     * @param reverseDirectionValue value for reversed one-way road
-     * @param bothDirectionValue value for two-way (bidirectional) road
-     * @param defaultDirection default direction. Will be used if corresponding
+     * \param myLayer source vector layer
+     * \param directionFieldId field containing direction value
+     * \param directDirectionValue value for direct one-way road
+     * \param reverseDirectionValue value for reversed one-way road
+     * \param bothDirectionValue value for two-way (bidirectional) road
+     * \param defaultDirection default direction. Will be used if corresponding
      * attribute value is not set or does not equal to the given values
      */
     QgsVectorLayerDirector( QgsVectorLayer *myLayer,
@@ -72,7 +74,7 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
      */
     void makeGraph( QgsGraphBuilderInterface *builder,
                     const QVector< QgsPoint > &additionalPoints,
-                    QVector< QgsPoint> &snappedPoints ) const override;
+                    QVector< QgsPoint> &snappedPoints SIP_OUT ) const override;
 
     QString name() const override;
 

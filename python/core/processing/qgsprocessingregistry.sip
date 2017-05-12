@@ -1,72 +1,115 @@
-/**
- * \class QgsProcessingRegistry
- * \ingroup core
- * Registry for various processing components, including providers, algorithms
- * and various parameters and outputs.
- *
- * QgsProcessingRegistry is not usually directly created, but rather accessed through
- * QgsApplication::processingRegistry().
- * \note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsProcessingRegistry : QObject
 {
-%TypeHeaderCode
-#include <qgsprocessingregistry.h>
+%Docstring
+ Registry for various processing components, including providers, algorithms
+ and various parameters and outputs.
+
+ QgsProcessingRegistry is not usually directly created, but rather accessed through
+ QgsApplication.processingRegistry().
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgsprocessingregistry.h"
+%End
   public:
 
-    /**
-     * Constructor for QgsProcessingRegistry.
-     */
-    QgsProcessingRegistry( QObject* parent /TransferThis/ = nullptr );
+    QgsProcessingRegistry( QObject *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsProcessingRegistry.
+%End
 
     ~QgsProcessingRegistry();
 
-    /**
-     * Get list of available providers.
-     */
-    QList<QgsProcessingProvider*> providers() const;
 
-    /**
-     * Add a processing provider to the registry. Ownership of the provider is transferred to the registry.
-     * Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
-     * in the registry).
-     * @see removeProvider()
-     */
-    bool addProvider( QgsProcessingProvider* provider /Transfer/ );
+    QList<QgsProcessingProvider *> providers() const;
+%Docstring
+ Get list of available providers.
+ :rtype: list of QgsProcessingProvider
+%End
 
-    /**
-     * Removes a provider implementation from the registry (the provider object is deleted).
-     * Returns false if the provider could not be removed (eg provider does not exist in the registry).
-     * @see addProvider()
-     */
-    bool removeProvider( QgsProcessingProvider* provider );
+    bool addProvider( QgsProcessingProvider *provider /Transfer/ );
+%Docstring
+ Add a processing provider to the registry. Ownership of the provider is transferred to the registry,
+ and the provider's parent will be set to the registry.
+ Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
+ in the registry).
+ Adding a provider to the registry automatically triggers the providers QgsProcessingProvider.load()
+ method to populate the provider with algorithms.
+.. seealso:: removeProvider()
+ :rtype: bool
+%End
 
-    /**
-     * Removes a provider implementation from the registry (the provider object is deleted).
-     * Returns false if the provider could not be removed (eg provider does not exist in the registry).
-     * @see addProvider()
-     */
-    bool removeProvider( const QString& providerId );
+    bool removeProvider( QgsProcessingProvider *provider );
+%Docstring
+ Removes a provider implementation from the registry (the provider object is deleted).
+ Returns false if the provider could not be removed (eg provider does not exist in the registry).
+.. seealso:: addProvider()
+ :rtype: bool
+%End
 
-    /**
-     * Returns a matching provider by provider ID.
-     */
-    QgsProcessingProvider* providerById( const QString& id );
+    bool removeProvider( const QString &providerId );
+%Docstring
+ Removes a provider implementation from the registry (the provider object is deleted).
+ Returns false if the provider could not be removed (eg provider does not exist in the registry).
+.. seealso:: addProvider()
+ :rtype: bool
+%End
+
+    QgsProcessingProvider *providerById( const QString &id );
+%Docstring
+ Returns a matching provider by provider ID.
+ :rtype: QgsProcessingProvider
+%End
+
+    QList< const QgsProcessingAlgorithm *> algorithms() const;
+%Docstring
+ Returns a list of all available algorithms from registered providers.
+.. seealso:: algorithmById()
+ :rtype: list of const QgsProcessingAlgorithm
+%End
+
+    const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
+%Docstring
+ Finds an algorithm by its ID. If no matching algorithm is found, a None
+ is returned.
+.. seealso:: algorithms()
+ :rtype: QgsProcessingAlgorithm
+%End
 
   signals:
 
-    //! Emitted when a provider has been added to the registry.
-    void providerAdded( const QString& id );
+    void providerAdded( const QString &id );
+%Docstring
+Emitted when a provider has been added to the registry.
+%End
 
-    //! Emitted when a provider is removed from the registry
-    void providerRemoved( const QString& id );
+    void providerRemoved( const QString &id );
+%Docstring
+Emitted when a provider is removed from the registry
+%End
 
   private:
-
-    //! Registry cannot be copied
-    QgsProcessingRegistry( const QgsProcessingRegistry& other );
-    //! Registry cannot be copied
-    //QgsProcessingRegistry& operator=( const QgsProcessingRegistry& other );
+    QgsProcessingRegistry( const QgsProcessingRegistry &other );
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

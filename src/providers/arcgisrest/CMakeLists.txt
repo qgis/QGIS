@@ -3,6 +3,7 @@ INCLUDE_DIRECTORIES(
   ../../core/auth
   ../../core/geometry
   ../../core/raster
+  ../../core/metadata
   ../../gui
   ../../gui/auth
   ${GEOS_INCLUDE_DIR}
@@ -25,7 +26,6 @@ SET (AFS_SRCS
 SET (AFS_MOC_HDRS
   qgsarcgisrestutils.h
   qgsafsdataitems.h
-  qgsafsfeatureiterator.h
   qgsafsprovider.h
   qgsafssourceselect.h
 )

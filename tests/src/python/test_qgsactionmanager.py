@@ -141,8 +141,8 @@ class TestQgsActionManager(unittest.TestCase):
         # set good default action
         self.manager.setDefaultAction('Feature', action1.id())
         self.assertTrue(self.manager.defaultAction('Feature').isValid())
-        self.assertEquals(self.manager.defaultAction('Feature').id(), action1.id())
-        self.assertNotEquals(self.manager.defaultAction('Feature').id(), action2.id())
+        self.assertEqual(self.manager.defaultAction('Feature').id(), action1.id())
+        self.assertNotEqual(self.manager.defaultAction('Feature').id(), action2.id())
 
         # if default action is removed, should be reset to -1
         self.manager.clearActions()
@@ -174,7 +174,7 @@ class TestQgsActionManager(unittest.TestCase):
         self.manager.doAction(id1, f, c)
         time.sleep(0.5)
 
-        self.assertEquals(self.check_action_result(temp_file), 'test output')
+        self.assertEqual(self.check_action_result(temp_file), 'test output')
 
         # action with substitutions
         temp_file = self.get_temp_filename()
@@ -182,7 +182,7 @@ class TestQgsActionManager(unittest.TestCase):
         self.manager.doAction(id2, f, c)
         time.sleep(0.5)
 
-        self.assertEquals(self.check_action_result(temp_file), 'test 1 output test_layer')
+        self.assertEqual(self.check_action_result(temp_file), 'test 1 output test_layer')
 
         # test doAction using field variant
         temp_file = self.get_temp_filename()
@@ -190,10 +190,10 @@ class TestQgsActionManager(unittest.TestCase):
                                      self.create_action(temp_file, 'test : [% @field_index %] : [% @field_name %] : [% @field_value%]'))
         self.manager.doActionFeature(id3, f, 0)
         time.sleep(0.5)
-        self.assertEquals(self.check_action_result(temp_file), 'test : 0 : my_field : 5')
+        self.assertEqual(self.check_action_result(temp_file), 'test : 0 : my_field : 5')
         self.manager.doActionFeature(id3, f, 1)
         time.sleep(0.5)
-        self.assertEquals(self.check_action_result(temp_file), 'test : 1 : my_other_field : val')
+        self.assertEqual(self.check_action_result(temp_file), 'test : 1 : my_other_field : val')
 
 
 if __name__ == '__main__':

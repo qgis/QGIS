@@ -17,6 +17,7 @@
 #define QGSLEGENDSETTINGS_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <QSizeF>
 
@@ -26,11 +27,11 @@ class QRectF;
 
 
 /** \ingroup core
- * @brief The QgsLegendSettings class stores the appearance and layout settings
+ * \brief The QgsLegendSettings class stores the appearance and layout settings
  * for legend drawing with QgsLegendRenderer. The content of the legend is given
  * in QgsLegendModel class.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendSettings
 {
@@ -41,19 +42,23 @@ class CORE_EXPORT QgsLegendSettings
     QString title() const { return mTitle; }
 
     /** Returns the alignment of the legend title
-     * @returns Qt::AlignmentFlag for the legend title
-     * @see setTitleAlignment
+     * \returns Qt::AlignmentFlag for the legend title
+     * \see setTitleAlignment
      */
     Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
 
     /** Sets the alignment of the legend title
-     * @param alignment Text alignment for drawing the legend title
-     * @see titleAlignment
+     * \param alignment Text alignment for drawing the legend title
+     * \see titleAlignment
      */
     void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
 
-    //! Returns reference to modifiable style
-    QgsLegendStyle &rstyle( QgsLegendStyle::Style s ) { return mStyleMap[s]; }
+    /**
+     * Returns reference to modifiable style
+     *
+     * \note Not available in Python bindings.
+     */
+    SIP_SKIP QgsLegendStyle &rstyle( QgsLegendStyle::Style s ) { return mStyleMap[s]; } SIP_SKIP
     //! Returns style
     QgsLegendStyle style( QgsLegendStyle::Style s ) const { return mStyleMap.value( s ); }
     void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style ) { mStyleMap[s] = style; }
@@ -83,57 +88,57 @@ class CORE_EXPORT QgsLegendSettings
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
     /** Returns whether a stroke will be drawn around raster symbol items.
-     * @see setDrawRasterStroke()
-     * @see rasterStrokeColor()
-     * @see rasterStrokeWidth()
-     * @note added in QGIS 2.12
+     * \see setDrawRasterStroke()
+     * \see rasterStrokeColor()
+     * \see rasterStrokeWidth()
+     * \since QGIS 2.12
      */
     bool drawRasterStroke() const { return mRasterSymbolStroke; }
 
     /** Sets whether a stroke will be drawn around raster symbol items.
-     * @param enabled set to true to draw borders
-     * @see drawRasterStroke()
-     * @see setRasterStrokeColor()
-     * @see setRasterStrokeWidth()
-     * @note added in QGIS 2.12
+     * \param enabled set to true to draw borders
+     * \see drawRasterStroke()
+     * \see setRasterStrokeColor()
+     * \see setRasterStrokeWidth()
+     * \since QGIS 2.12
      */
     void setDrawRasterStroke( bool enabled ) { mRasterSymbolStroke = enabled; }
 
     /** Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @see setRasterStrokeColor()
-     * @see drawRasterStroke()
-     * @see rasterStrokeWidth()
-     * @note added in QGIS 2.12
+     * \see setRasterStrokeColor()
+     * \see drawRasterStroke()
+     * \see rasterStrokeWidth()
+     * \since QGIS 2.12
      */
     QColor rasterStrokeColor() const { return mRasterStrokeColor; }
 
     /** Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @param color stroke color
-     * @see rasterStrokeColor()
-     * @see setDrawRasterStroke()
-     * @see setRasterStrokeWidth()
-     * @note added in QGIS 2.12
+     * \param color stroke color
+     * \see rasterStrokeColor()
+     * \see setDrawRasterStroke()
+     * \see setRasterStrokeWidth()
+     * \since QGIS 2.12
      */
     void setRasterStrokeColor( const QColor &color ) { mRasterStrokeColor = color; }
 
     /** Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @see setRasterStrokeWidth()
-     * @see drawRasterStroke()
-     * @see rasterStrokeColor()
-     * @note added in QGIS 2.12
+     * \see setRasterStrokeWidth()
+     * \see drawRasterStroke()
+     * \see rasterStrokeColor()
+     * \since QGIS 2.12
      */
     double rasterStrokeWidth() const { return mRasterStrokeWidth; }
 
     /** Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
-     * @param width stroke width in millimeters
-     * @see rasterStrokeWidth()
-     * @see setDrawRasterStroke()
-     * @see setRasterStrokeColor()
-     * @note added in QGIS 2.12
+     * \param width stroke width in millimeters
+     * \see rasterStrokeWidth()
+     * \see setDrawRasterStroke()
+     * \see setRasterStrokeColor()
+     * \since QGIS 2.12
      */
     void setRasterStrokeWidth( double width ) { mRasterStrokeWidth = width; }
 
@@ -168,13 +173,13 @@ class CORE_EXPORT QgsLegendSettings
     void drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const;
 
     /** Like the above, but with a rectangle for multiline text
-     * @param p painter to use
-     * @param rect rectangle to draw into
-     * @param text text to draw
-     * @param font font to use
-     * @param halignment optional horizontal alignment
-     * @param valignment optional vertical alignment
-     * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
+     * \param p painter to use
+     * \param rect rectangle to draw into
+     * \param text text to draw
+     * \param font font to use
+     * \param halignment optional horizontal alignment
+     * \param valignment optional vertical alignment
+     * \param flags allows for passing Qt::TextFlags to control appearance of rendered text
      */
     void drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 

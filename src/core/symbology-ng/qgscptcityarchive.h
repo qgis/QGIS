@@ -18,6 +18,8 @@
 #define QGSCPTCITYARCHIVE_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgscolorramp.h"
 
 #include <QAbstractItemModel>
@@ -59,8 +61,8 @@ class CORE_EXPORT QgsCptCityArchive
     static QString findFileName( const QString &target, const QString &startDir, const QString &baseDir );
     static QMap< QString, QString > copyingInfo( const QString &fileName );
     static QMap< QString, QString > description( const QString &fileName );
-    //! @note not available in python bindings
-    static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString &fileName );
+    //! \note not available in Python bindings
+    static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString &fileName ) SIP_SKIP;
 
     // archive management
     bool isEmpty();
@@ -128,14 +130,14 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
-    virtual void addChildItem( QgsCptCityDataItem *child, bool refresh = false );
+    virtual void addChildItem( QgsCptCityDataItem *child SIP_TRANSFER, bool refresh = false );
 
     // remove and delete child item, signals to browser are emitted
     virtual void deleteChildItem( QgsCptCityDataItem *child );
 
     // remove child item but don't delete it, signals to browser are emitted
     // returns pointer to the removed item or null if no such item was found
-    virtual QgsCptCityDataItem *removeChildItem( QgsCptCityDataItem *child );
+    virtual QgsCptCityDataItem *removeChildItem( QgsCptCityDataItem *child ) SIP_TRANSFERBACK;
 
     virtual bool equal( const QgsCptCityDataItem *other );
 

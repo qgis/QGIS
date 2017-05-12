@@ -61,7 +61,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   setFocusProxy( mButton );
 
   connect( mButton, &QToolButton::clicked, this, &QgsProjectionSelectionWidget::selectCrs );
-  connect( mCrsComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboIndexChanged( int ) ) );
+  connect( mCrsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsProjectionSelectionWidget::comboIndexChanged );
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const

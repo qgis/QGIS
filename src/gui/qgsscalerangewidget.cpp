@@ -43,7 +43,7 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
 
   mMinimumScaleWidget = new QgsScaleWidget( this );
   mMaximumScaleWidget = new QgsScaleWidget( this );
-  connect( mMinimumScaleWidget, SIGNAL( scaleChanged( double ) ), mMaximumScaleWidget, SLOT( setMinScale( double ) ) );
+  connect( mMinimumScaleWidget, &QgsScaleWidget::scaleChanged, mMaximumScaleWidget, &QgsScaleWidget::setMinScale );
   mMinimumScaleWidget->setShowCurrentScaleButton( true );
   mMaximumScaleWidget->setShowCurrentScaleButton( true );
   reloadProjectScales();
@@ -63,8 +63,8 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   mLayout->setColumnStretch( 2, 0 );
   mLayout->setColumnStretch( 3, 3 );
 
-  connect( mMinimumScaleWidget, SIGNAL( scaleChanged( double ) ), this, SLOT( emitRangeChanged() ) );
-  connect( mMaximumScaleWidget, SIGNAL( scaleChanged( double ) ), this, SLOT( emitRangeChanged() ) );
+  connect( mMinimumScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsScaleRangeWidget::emitRangeChanged );
+  connect( mMaximumScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsScaleRangeWidget::emitRangeChanged );
 }
 
 void QgsScaleRangeWidget::reloadProjectScales()

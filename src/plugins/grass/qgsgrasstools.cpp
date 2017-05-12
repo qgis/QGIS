@@ -160,7 +160,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
   setupUi( this );
   QPushButton *closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileExit.png" ) ), tr( "Close mapset" ), this );
   mTabWidget->setCornerWidget( closeMapsetButton );
-  connect( closeMapsetButton, SIGNAL( clicked() ), SLOT( closeMapset() ) );
+  connect( closeMapsetButton, &QAbstractButton::clicked, this, &QgsGrassTools::closeMapset );
 
   qRegisterMetaType<QgsDetailedItemData>();
 
@@ -186,8 +186,8 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
 
   mTreeView->setModel( mTreeModelProxy );
 
-  connect( mTreeView, SIGNAL( clicked( const QModelIndex ) ),
-           this, SLOT( itemClicked( const QModelIndex ) ) );
+  connect( mTreeView, &QAbstractItemView::clicked,
+           this, &QgsGrassTools::itemClicked );
 
   // List view with filter
   mModulesListModel = new QStandardItemModel( 0, 1 );
@@ -196,15 +196,15 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
   mModelProxy->setFilterRole( Qt::UserRole + 2 );
 
   mListView->setModel( mModelProxy );
-  connect( mListView, SIGNAL( clicked( const QModelIndex ) ),
-           this, SLOT( itemClicked( const QModelIndex ) ) );
+  connect( mListView, &QAbstractItemView::clicked,
+           this, &QgsGrassTools::itemClicked );
 
   mListView->hide();
 
-  connect( QgsGrass::instance(), SIGNAL( modulesConfigChanged() ), SLOT( loadConfig() ) );
-  connect( QgsGrass::instance(), SIGNAL( modulesDebugChanged() ), SLOT( debugChanged() ) );
+  connect( QgsGrass::instance(), &QgsGrass::modulesConfigChanged, this, static_cast<bool ( QgsGrassTools::* )()>( &QgsGrassTools::loadConfig ) );
+  connect( QgsGrass::instance(), &QgsGrass::modulesDebugChanged, this, &QgsGrassTools::debugChanged );
 
-  connect( mDebugReloadButton, SIGNAL( clicked() ), SLOT( loadConfig() ) );
+  connect( mDebugReloadButton, &QAbstractButton::clicked, this, static_cast<bool ( QgsGrassTools::* )()>( &QgsGrassTools::loadConfig ) );
 
   // Region widget tab
   mRegion = new QgsGrassRegion( mIface, this );

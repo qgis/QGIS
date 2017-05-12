@@ -74,6 +74,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void hasAxisInverted();
     void createFromProj4Invalid();
     void validSrsIds();
+    void asVariant();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -741,6 +742,19 @@ void TestQgsCoordinateReferenceSystem::validSrsIds()
     QgsCoordinateReferenceSystem c = QgsCoordinateReferenceSystem::fromSrsId( id );
     QVERIFY( c.isValid() );
   }
+}
+
+void TestQgsCoordinateReferenceSystem::asVariant()
+{
+  QgsCoordinateReferenceSystem original;
+  original.createFromSrid( 3112 );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( original );
+  QVERIFY( var.isValid() );
+
+  QgsCoordinateReferenceSystem fromVar = qvariant_cast<QgsCoordinateReferenceSystem>( var );
+  QCOMPARE( fromVar.authid(), original.authid() );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )

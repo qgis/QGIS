@@ -17,6 +17,7 @@
 #define QGSSEARCHWIDGETWRAPPER_H
 
 #include <QObject>
+#include "qgis.h"
 #include <QMap>
 #include <QVariant>
 
@@ -26,6 +27,55 @@ class QgsField;
 #include "qgsattributeeditorcontext.h"
 #include "qgswidgetwrapper.h"
 #include "qgis_gui.h"
+
+#ifdef SIP_RUN
+% MappedType QList<QgsSearchWidgetWrapper::FilterFlag>
+{
+  % TypeHeaderCode
+#include <QList>
+  % End
+
+  % ConvertFromTypeCode
+  // Create the list.
+  PyObject *l;
+
+  if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
+    return NULL;
+
+  // Set the list elements.
+  QList<QgsSearchWidgetWrapper::FilterFlag>::iterator it = sipCpp->begin();
+  for ( int i = 0; it != sipCpp->end(); ++it, ++i )
+  {
+    PyObject *tobj;
+
+    if ( ( tobj = sipConvertFromEnum( *it, sipType_QgsSearchWidgetWrapper_FilterFlag ) ) == NULL )
+    {
+      Py_DECREF( l );
+      return NULL;
+    }
+    PyList_SET_ITEM( l, i, tobj );
+  }
+
+  return l;
+  % End
+
+  % ConvertToTypeCode
+  // Check the type if that is all that is required.
+  if ( sipIsErr == NULL )
+    return PyList_Check( sipPy );
+
+  QList<QgsSearchWidgetWrapper::FilterFlag> *qlist = new QList<QgsSearchWidgetWrapper::FilterFlag>;
+
+  for ( int i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
+  {
+    *qlist << ( QgsSearchWidgetWrapper::FilterFlag )SIPLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
+  }
+
+  *sipCppPtr = qlist;
+  return sipGetState( sipTransferObj );
+  % End
+};
+#endif
 
 /** \ingroup gui
  * Manages an editor widget
@@ -43,7 +93,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
   public:
 
     //! Flags which indicate what types of filtering and searching is possible using the widget
-    //! @note added in QGIS 2.16
+    //! \since QGIS 2.16
     enum FilterFlag
     {
       EqualTo = 1 << 1, //!< Supports equal to
@@ -63,41 +113,41 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     Q_DECLARE_FLAGS( FilterFlags, FilterFlag )
 
     /** Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
-     * @note added in QGIS 2.16
-     * @see nonExclusiveFilterFlags()
+     * \since QGIS 2.16
+     * \see nonExclusiveFilterFlags()
      */
-    static QList< FilterFlag > exclusiveFilterFlags();
+    static QList< QgsSearchWidgetWrapper::FilterFlag > exclusiveFilterFlags();
 
     /** Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
-     * @note added in QGIS 2.16
-     * @see exclusiveFilterFlags()
+     * \since QGIS 2.16
+     * \see exclusiveFilterFlags()
      */
-    static QList< FilterFlag > nonExclusiveFilterFlags();
+    static QList< QgsSearchWidgetWrapper::FilterFlag > nonExclusiveFilterFlags();
 
     /** Returns a translated string representing a filter flag.
-     * @param flag flag to convert to string
-     * @note added in QGIS 2.16
+     * \param flag flag to convert to string
+     * \since QGIS 2.16
      */
-    static QString toString( FilterFlag flag );
+    static QString toString( QgsSearchWidgetWrapper::FilterFlag flag );
 
     /**
      * Create a new widget wrapper
      *
-     * @param vl        The layer on which the field is
-     * @param fieldIdx  The field which will be controlled
-     * @param parent    A parent widget for this widget wrapper and the created widget.
+     * \param vl        The layer on which the field is
+     * \param fieldIdx  The field which will be controlled
+     * \param parent    A parent widget for this widget wrapper and the created widget.
      */
-    explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns filter flags supported by the search widget.
-     * @note added in QGIS 2.16
-     * @see defaultFlags()
+     * \since QGIS 2.16
+     * \see defaultFlags()
      */
     virtual FilterFlags supportedFlags() const;
 
     /** Returns the filter flags which should be set by default for the search widget.
-     * @note added in QGIS 2.16
-     * @see supportedFlags()
+     * \since QGIS 2.16
+     * \see supportedFlags()
      */
     virtual FilterFlags defaultFlags() const;
 
@@ -108,7 +158,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * If an invalid variant is returned this will be interpreted as no change.
      * Be sure to return a NULL QVariant if it should be set to NULL.
      *
-     * @return The current value the widget represents
+     * \returns The current value the widget represents
      */
     virtual QString expression() = 0;
 
@@ -120,9 +170,9 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
     /** Creates a filter expression based on the current state of the search widget
      * and the specified filter flags.
-     * @param flags filter flags
-     * @returns filter expression
-     * @note added in QGIS 2.16
+     * \param flags filter flags
+     * \returns filter expression
+     * \since QGIS 2.16
      */
     // TODO QGIS 3.0 - make pure virtual
     virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ); return QStringLiteral( "TRUE" ); }
@@ -130,12 +180,12 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
   public slots:
 
     /** Clears the widget's current value and resets it back to the default state
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual void clearWidget() {}
 
     /** Toggles whether the search widget is enabled or disabled.
-     * @param enabled set to true to enable widget
+     * \param enabled set to true to enable widget
      */
     virtual void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
 
@@ -143,18 +193,18 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Emitted whenever the expression changes
-     * @param exp The new search expression
+     * \param exp The new search expression
      */
     void expressionChanged( const QString &exp );
 
     /** Emitted when a user changes the value of the search widget.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void valueChanged();
 
     /** Emitted when a user changes the value of the search widget back
      * to an empty, default state.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void valueCleared();
 

@@ -30,7 +30,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
   restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
-  connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationScaleBarDialog::apply );
 
   // set the map units in the spin box
   spnSize->setShowClearButton( false );
@@ -71,9 +71,15 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 
   cboStyle->setCurrentIndex( mDeco.mStyleIndex );
 
+  pbnChangeColor->setAllowAlpha( true );
   pbnChangeColor->setColor( mDeco.mColor );
   pbnChangeColor->setContext( QStringLiteral( "gui" ) );
-  pbnChangeColor->setColorDialogTitle( tr( "Select scalebar color" ) );
+  pbnChangeColor->setColorDialogTitle( tr( "Select scale bar fill color" ) );
+
+  pbnChangeOutlineColor->setAllowAlpha( true );
+  pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
+  pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeOutlineColor->setColorDialogTitle( tr( "Select scale bar outline color" ) );
 }
 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
@@ -98,6 +104,7 @@ void QgsDecorationScaleBarDialog::apply()
   mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mStyleIndex = cboStyle->currentIndex();
   mDeco.mColor = pbnChangeColor->color();
+  mDeco.mOutlineColor = pbnChangeOutlineColor->color();
   mDeco.update();
 }
 

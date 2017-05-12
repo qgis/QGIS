@@ -52,16 +52,6 @@ bool QgsAbstractGeometry::isMeasure() const
   return QgsWkbTypes::hasM( mWkbType );
 }
 
-#if 0
-void QgsAbstractGeometry::clip( const QgsRectangle &rect )
-{
-  // TODO
-  // - Implementation
-  // - API doc in header
-
-  // Don't insert Q_UNUSED, so we have a warning that reminds us of this TODO
-}
-#endif
 
 void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *subgeom, QgsWkbTypes::Type baseGeomType )
 {

@@ -34,12 +34,13 @@ import importlib
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 
 from qgis.core import (QgsRasterLayer,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 from processing.core.parameters import (getParameterFromString,
@@ -80,29 +81,39 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
+        self._name = ''
+        self._display_name = ''
+        self._group = ''
         self.hardcodedStrings = []
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
-        self._icon = None
         self.uniqueSuffix = str(uuid.uuid4()).replace('-', '')
 
         # Use the ext mechanism
-        name = self.commandLineName().replace('.', '_')[len('grass7:'):]
+        name = self.name().replace('.', '_')
         try:
             self.module = importlib.import_module('processing.algs.grass7.ext.' + name)
         except ImportError:
             self.module = None
 
     def getCopy(self):
-        newone = Grass7Algorithm(self.descriptionFile)
-        newone.provider = self.provider
-        return newone
+        return self
 
-    def getIcon(self):
-        if self._icon is None:
-            self._icon = QgsApplication.getThemeIcon("/providerGrass.svg")
-        return self._icon
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._display_name
+
+    def group(self):
+        return self._group
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerGrass.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerGrass.svg")
 
     def help(self):
         helpPath = Grass7Utils.grassHelpPath()
@@ -138,14 +149,16 @@ class Grass7Algorithm(GeoAlgorithm):
             line = lines.readline().strip('\n').strip()
             self.grass7Name = line
             line = lines.readline().strip('\n').strip()
-            self.name = line
-            self.i18n_name = QCoreApplication.translate("GrassAlgorithm", line)
-            if " - " not in self.name:
-                self.name = self.grass7Name + " - " + self.name
-                self.i18n_name = self.grass7Name + " - " + self.i18n_name
+            self._name = line
+            self._display_name = QCoreApplication.translate("GrassAlgorithm", line)
+            if " - " not in self._name:
+                self._name = self.grass7Name + " - " + self._name
+                self._display_name = self.grass7Name + " - " + self._display_name
+
+            self._name = self._name[:self._name.find(' ')].lower()
+
             line = lines.readline().strip('\n').strip()
-            self.group = line
-            self.i18n_group = QCoreApplication.translate("GrassAlgorithm", line)
+            self._group = QCoreApplication.translate("GrassAlgorithm", line)
             hasRasterOutput = False
             hasVectorInput = False
             vectorOutputs = 0
@@ -176,9 +189,7 @@ class Grass7Algorithm(GeoAlgorithm):
                                                       "txt"))
                     line = lines.readline().strip('\n').strip()
                 except Exception as e:
-                    ProcessingLog.addToLog(
-                        ProcessingLog.LOG_ERROR,
-                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line))
+                    QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line), self.tr('Processing'), QgsMessageLog.CRITICAL)
                     raise e
 
         self.addParameter(ParameterExtent(
@@ -208,6 +219,7 @@ class Grass7Algorithm(GeoAlgorithm):
             self.addParameter(param)
 
     def getDefaultCellsize(self):
+        context = dataobjects.createContext()
         cellsize = 0
         for param in self.parameters:
             if param.value:
@@ -215,7 +227,7 @@ class Grass7Algorithm(GeoAlgorithm):
                     if isinstance(param.value, QgsRasterLayer):
                         layer = param.value
                     else:
-                        layer = dataobjects.getObjectFromUri(param.value)
+                        layer = QgsProcessingUtils.mapLayerFromString(param.value, context)
                     cellsize = max(cellsize, (layer.extent().xMaximum() -
                                               layer.extent().xMinimum()) /
                                    layer.width())
@@ -223,7 +235,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getObjectFromUri(layername)
+                        layer = QgsProcessingUtils.mapLayerFromString(layername, context)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (
                                 layer.extent().xMaximum() -
@@ -235,7 +247,7 @@ class Grass7Algorithm(GeoAlgorithm):
             cellsize = 100
         return cellsize
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         if system.isWindows():
             path = Grass7Utils.grassPath()
             if path == '':
@@ -288,7 +300,7 @@ class Grass7Algorithm(GeoAlgorithm):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+            QgsMessageLog.logMessage("\n".join(loglines), self.tr('Processing'), QgsMessageLog.INFO)
 
         Grass7Utils.executeGrass7(self.commands, feedback, self.outputCommands)
 
@@ -496,16 +508,17 @@ class Grass7Algorithm(GeoAlgorithm):
                 self.outputCommands.append(command)
 
     def exportVectorLayer(self, orgFilename):
+        context = dataobjects.createContext()
 
         # TODO: improve this. We are now exporting if it is not a shapefile,
         # but the functionality of v.in.ogr could be used for this.
         # We also export if there is a selection
         if not os.path.exists(orgFilename) or not orgFilename.endswith('shp'):
-            layer = dataobjects.getObjectFromUri(orgFilename, False)
+            layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
             if layer:
                 filename = dataobjects.exportVectorLayer(layer)
         else:
-            layer = dataobjects.getObjectFromUri(orgFilename, False)
+            layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
             if layer:
                 useSelection = \
                     ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
@@ -538,8 +551,9 @@ class Grass7Algorithm(GeoAlgorithm):
             Grass7Utils.projectionSet = True
 
     def setSessionProjectionFromLayer(self, layer, commands):
+        context = dataobjects.createContext()
         if not Grass7Utils.projectionSet:
-            qGisLayer = dataobjects.getObjectFromUri(layer)
+            qGisLayer = QgsProcessingUtils.mapLayerFromString(layer, context)
             if qGisLayer:
                 proj4 = str(qGisLayer.crs().toProj4())
                 command = 'g.proj'
@@ -560,9 +574,6 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def getTempFilename(self):
         return system.getTempFilename()
-
-    def commandLineName(self):
-        return 'grass7:' + self.name[:self.name.find(' ')]
 
     def checkBeforeOpeningParametersDialog(self):
         return Grass7Utils.checkGrass7IsInstalled()

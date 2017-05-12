@@ -23,7 +23,7 @@
  * The QgsTabWidget class is the same as the QTabWidget but with additional methods to
  * temporarily hide/show tabs.
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsTabWidget : public QTabWidget
 {
@@ -34,28 +34,28 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
     /**
      * Create a new QgsTabWidget with the optionally provided parent.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsTabWidget( QWidget *parent = nullptr );
 
     /**
      * Hides the tab with the given widget
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void hideTab( QWidget *tab );
 
     /**
      * Shows the tab with the given widget
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void showTab( QWidget *tab );
 
     /**
      * Control the visibility for the tab with the given widget.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setTabVisible( QWidget *tab, bool visible );
 
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      * This index is not the same as the one provided to insertTab and removeTab
      * since these methods are not aware of hidden tabs.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     int realTabIndex( QWidget *widget );
 
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      *
      * Is used to keep track of currently available and visible tabs.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual void tabInserted( int index ) override;
 
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      *
      * Is used to keep track of currently available and visible tabs.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual void tabRemoved( int index ) override;
 

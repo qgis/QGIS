@@ -29,7 +29,10 @@ __revision__ = '$Format:%H$'
 import sys
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsFeature, QgsField
+from qgis.core import (QgsFeature,
+                       QgsField,
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -37,7 +40,6 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class FieldsPyculator(GeoAlgorithm):
@@ -54,10 +56,22 @@ class FieldsPyculator(GeoAlgorithm):
 
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Advanced Python field calculator')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'advancedpythonfieldcalculator'
+
+    def displayName(self):
+        return self.tr('Advanced Python field calculator')
+
+    def defineCharacteristics(self):
         self.type_names = [self.tr('Integer'),
                            self.tr('Float'),
                            self.tr('String')]
@@ -78,7 +92,7 @@ class FieldsPyculator(GeoAlgorithm):
                                           self.tr('Formula'), 'value = ', multiline=True))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.getParameterValue(self.FIELD_TYPE)
         fieldLength = self.getParameterValue(self.FIELD_LENGTH)
@@ -87,13 +101,11 @@ class FieldsPyculator(GeoAlgorithm):
         globalExpression = self.getParameterValue(self.GLOBAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fields = layer.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
                                fieldLength, fieldPrecision))
-        writer = output.getVectorWriter(fields, layer.wkbType(),
-                                        layer.crs())
+        writer = output.getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
         outFeat = QgsFeature()
         new_ns = {}
 
@@ -130,8 +142,8 @@ class FieldsPyculator(GeoAlgorithm):
                 self.tr("FieldPyculator code execute error. Field code block can't be executed!\n{0}\n{1}").format(str(sys.exc_info()[0].__name__), str(sys.exc_info()[1])))
 
         # Run
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))
             attrs = feat.attributes()

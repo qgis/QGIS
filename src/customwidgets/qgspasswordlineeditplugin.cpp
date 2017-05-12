@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsfilterlineeditplugin.cpp
+   qgspasswordlineeditplugin.cpp
     --------------------------------------
    Date                 : March 13, 2017
    Copyright            : (C) 2017 Alexander Bruy

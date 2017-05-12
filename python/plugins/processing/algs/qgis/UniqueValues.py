@@ -31,13 +31,14 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsProcessingUtils
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputString
-from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -50,12 +51,19 @@ class UniqueValues(GeoAlgorithm):
     UNIQUE_VALUES = 'UNIQUE_VALUES'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'unique.png'))
 
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'listuniquevalues'
+
+    def displayName(self):
+        return self.tr('List unique values')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('List unique values')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
@@ -65,11 +73,11 @@ class UniqueValues(GeoAlgorithm):
         self.addOutput(OutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))
         self.addOutput(OutputString(self.UNIQUE_VALUES, self.tr('Unique values')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         outputFile = self.getOutputValue(self.OUTPUT)
-        values = vector.getUniqueValues(layer, layer.fields().lookupField(fieldName))
+        values = QgsProcessingUtils.uniqueValues(layer, layer.fields().lookupField(fieldName), context)
         self.createHTML(outputFile, values)
         self.setOutputValue(self.TOTAL_VALUES, len(values))
         self.setOutputValue(self.UNIQUE_VALUES, ';'.join([str(v) for v in

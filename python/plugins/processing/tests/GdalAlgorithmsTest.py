@@ -60,13 +60,14 @@ class TestGdalOgr2OgrToPostgis(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # start_app()
-        pass
+        from processing.core.Processing import Processing
+        Processing.initialize()
 
     @classmethod
     def tearDownClass(cls):
         pass
 
-    # See http://hub.qgis.org/issues/15706
+    # See https://issues.qgis.org/issues/15706
     def test_getConnectionString(self):
 
         obj = Ogr2OgrToPostGis()

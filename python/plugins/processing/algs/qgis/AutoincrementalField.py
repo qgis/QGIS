@@ -26,11 +26,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField, QgsFeature
+from qgis.core import (QgsField,
+                       QgsFeature,
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class AutoincrementalField(GeoAlgorithm):
@@ -38,24 +40,36 @@ class AutoincrementalField(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'addautoincrementalfield'
+
+    def displayName(self):
+        return self.tr('Add autoincremental field')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Add autoincremental field')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = \
-            dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+            QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fields = vlayer.fields()
         fields.append(QgsField('AUTO', QVariant.Int))
-        writer = output.getVectorWriter(fields, vlayer.wkbType(),
-                                        vlayer.crs())
+        writer = output.getVectorWriter(fields, vlayer.wkbType(), vlayer.crs(), context)
         outFeat = QgsFeature()
-        features = vector.features(vlayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(vlayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))
             geom = feat.geometry()

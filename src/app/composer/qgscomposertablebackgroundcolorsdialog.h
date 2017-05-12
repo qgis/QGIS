@@ -26,7 +26,7 @@ class QCheckBox;
 class QgsColorButton;
 
 /** A dialog for customisation of the cell background colors for a QgsComposerTableV2
- * /note added in QGIS 2.12
+ * \since QGIS 2.12
 */
 class QgsComposerTableBackgroundColorsDialog: public QDialog, private Ui::QgsComposerTableBackgroundDialog
 {
@@ -34,9 +34,9 @@ class QgsComposerTableBackgroundColorsDialog: public QDialog, private Ui::QgsCom
   public:
 
     /** Constructor for QgsComposerTableBackgroundColorsDialog
-     * @param table associated composer table
-     * @param parent parent widget
-     * @param flags window flags
+     * \param table associated composer table
+     * \param parent parent widget
+     * \param flags window flags
      */
     QgsComposerTableBackgroundColorsDialog( QgsComposerTableV2 *table, QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
 

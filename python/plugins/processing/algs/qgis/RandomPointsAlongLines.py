@@ -29,12 +29,20 @@ __revision__ = '$Format:%H$'
 import random
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFields, QgsField, QgsGeometry, QgsSpatialIndex, QgsWkbTypes,
-                       QgsDistanceArea, QgsFeatureRequest, QgsFeature,
-                       QgsPoint)
+from qgis.core import (QgsApplication,
+                       QgsFields,
+                       QgsField,
+                       QgsGeometry,
+                       QgsSpatialIndex,
+                       QgsWkbTypes,
+                       QgsDistanceArea,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsPoint,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
@@ -48,28 +56,38 @@ class RandomPointsAlongLines(GeoAlgorithm):
     MIN_DISTANCE = 'MIN_DISTANCE'
     OUTPUT = 'OUTPUT'
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector creation tools')
+
+    def name(self):
+        return 'randompointsalongline'
+
+    def displayName(self):
+        return self.tr('Random points along line')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random points along line')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
                                           self.tr('Number of points'), 1, None, 1))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
-
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.VECTOR))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         pointCount = float(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Point, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
 
         nPoints = 0
         nIterations = 0
@@ -131,8 +149,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
             nIterations += 1
 
         if nPoints < pointCount:
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                   self.tr('Can not generate requested number of random points. '
-                                           'Maximum number of attempts exceeded.'))
+            QgsMessageLog.logMessage(self.tr('Can not generate requested number of random points. '
+                                             'Maximum number of attempts exceeded.'), self.tr('Processing'), QgsMessageLog.INFO)
 
         del writer

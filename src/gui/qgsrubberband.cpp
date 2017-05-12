@@ -21,11 +21,6 @@
 #include "qgsvectorlayer.h"
 #include <QPainter>
 
-/*!
-  \class QgsRubberBand
-  \brief The QgsRubberBand class provides a transparent overlay widget
-  for tracking the mouse while drawing polylines or polygons.
-*/
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType )
   : QgsMapCanvasItem( mapCanvas )
   , mIconSize( 5 )
@@ -54,26 +49,17 @@ QgsRubberBand::QgsRubberBand()
 {
 }
 
-/*!
-  Set the stroke and fill color.
-  */
 void QgsRubberBand::setColor( const QColor &color )
 {
   setStrokeColor( color );
   setFillColor( color );
 }
 
-/*!
-  Set the fill color.
-  */
 void QgsRubberBand::setFillColor( const QColor &color )
 {
   mBrush.setColor( color );
 }
 
-/*!
-  Set the stroke
-  */
 void QgsRubberBand::setStrokeColor( const QColor &color )
 {
   mPen.setColor( color );
@@ -84,9 +70,6 @@ void QgsRubberBand::setSecondaryStrokeColor( const QColor &color )
   mSecondaryPen.setColor( color );
 }
 
-/*!
-  Set the stroke width.
-  */
 void QgsRubberBand::setWidth( int width )
 {
   mPen.setWidth( width );
@@ -112,9 +95,6 @@ void QgsRubberBand::setBrushStyle( Qt::BrushStyle brushStyle )
   mBrush.setStyle( brushStyle );
 }
 
-/*!
-  Remove all points from the shape being created.
-  */
 void QgsRubberBand::reset( QgsWkbTypes::GeometryType geometryType )
 {
   mPoints.clear();
@@ -123,9 +103,6 @@ void QgsRubberBand::reset( QgsWkbTypes::GeometryType geometryType )
   update();
 }
 
-/*!
-  Add a point to the shape being created.
-  */
 void QgsRubberBand::addPoint( const QgsPoint &p, bool doUpdate /* = true */, int geometryIndex )
 {
   if ( geometryIndex < 0 )
@@ -214,9 +191,6 @@ void QgsRubberBand::removeLastPoint( int geometryIndex, bool doUpdate/* = true*/
   removePoint( -1, doUpdate, geometryIndex );
 }
 
-/*!
-  Update the line between the last added point and the mouse position.
-  */
 void QgsRubberBand::movePoint( const QgsPoint &p, int geometryIndex )
 {
   if ( mPoints.size() < geometryIndex + 1 )
@@ -438,9 +412,6 @@ void QgsRubberBand::setToCanvasRectangle( QRect rect )
   addPoint( ul, true );
 }
 
-/*!
-  Paint the rubber band in response to an update event.
-  */
 void QgsRubberBand::paint( QPainter *p )
 {
   if ( !mPoints.isEmpty() )
@@ -519,6 +490,22 @@ void QgsRubberBand::drawShape( QPainter *p, QVector<QPointF> &pts )
           case ICON_CIRCLE:
             p->drawEllipse( x - s, y - s, mIconSize, mIconSize );
             break;
+
+          case ICON_DIAMOND:
+          case ICON_FULL_DIAMOND:
+          {
+            QPointF pts[] =
+            {
+              QPointF( x, y - s ),
+              QPointF( x + s, y ),
+              QPointF( x, y + s ),
+              QPointF( x - s, y )
+            };
+            if ( mIconType == ICON_FULL_DIAMOND )
+              p->drawPolygon( pts, 4 );
+            else
+              p->drawPolyline( pts, 4 );
+          }
         }
       }
     }
@@ -544,10 +531,9 @@ void QgsRubberBand::updateRect()
 
   const QgsMapToPixel &m2p = *( mMapCanvas->getCoordinateTransform() );
 
-  qreal res = m2p.mapUnitsPerPixel();
-  qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ) / res;
+  qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units
 
-  QgsRectangle r;
+  QgsRectangle r;  // in canvas units
   for ( int i = 0; i < mPoints.size(); ++i )
   {
     QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin(),
@@ -572,6 +558,7 @@ void QgsRubberBand::updateRect()
 
   // This is an hack to pass QgsMapCanvasItem::setRect what it
   // expects (encoding of position and size of the item)
+  qreal res = m2p.mapUnitsPerPixel();
   QgsPoint topLeft = m2p.toMapPoint( r.xMinimum(), r.yMinimum() );
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + r.width()*res, topLeft.y() - r.height()*res );
 
@@ -581,7 +568,7 @@ void QgsRubberBand::updateRect()
 void QgsRubberBand::updatePosition()
 {
   // re-compute rectangle
-  // See http://hub.qgis.org/issues/12392
+  // See https://issues.qgis.org/issues/12392
   // NOTE: could be optimized by saving map-extent
   //       of rubberband and simply re-projecting
   //       that to device-rectangle on "updatePosition"

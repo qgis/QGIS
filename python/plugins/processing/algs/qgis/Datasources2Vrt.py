@@ -30,7 +30,8 @@ import codecs
 import xml.sax.saxutils
 
 from osgeo import ogr
-from qgis.core import QgsProcessingFeedback
+from qgis.core import (QgsProcessingFeedback,
+                       QgsApplication)
 from processing.tools import dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -47,10 +48,22 @@ class Datasources2Vrt(GeoAlgorithm):
     VRT_FILE = 'VRT_FILE'
     VRT_STRING = 'VRT_STRING'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Build virtual vector')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'buildvirtualvector'
+
+    def displayName(self):
+        return self.tr('Build virtual vector')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterMultipleInput(self.DATASOURCES,
                                                  self.tr('Input datasources'),
                                                  dataobjects.TYPE_TABLE))
@@ -63,7 +76,7 @@ class Datasources2Vrt(GeoAlgorithm):
         self.addOutput(OutputString(self.VRT_STRING,
                                     self.tr('Virtual string')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         input_layers = self.getParameterValue(self.DATASOURCES)
         unioned = self.getParameterValue(self.UNIONED)
         vrtPath = self.getOutputValue(self.VRT_FILE)

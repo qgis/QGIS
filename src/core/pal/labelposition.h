@@ -121,7 +121,7 @@ namespace pal
        * \brief Check whether or not this overlap with another labelPosition
        *
        * \param ls other labelposition
-       * \return true or false
+       * \returns true or false
        */
       bool isInConflict( LabelPosition *ls );
 
@@ -150,13 +150,13 @@ namespace pal
       void offsetPosition( double xOffset, double yOffset );
 
       /** \brief return id
-       * \return id
+       * \returns id
        */
       int getId() const;
 
 
       /** \brief return the feature corresponding to this labelposition
-       * \return the feature
+       * \returns the feature
        */
       FeaturePart *getFeaturePart();
 
@@ -175,25 +175,25 @@ namespace pal
       }
 
       /** Returns the candidate label position's geographical cost.
-       * @see setCost
+       * \see setCost
        */
       double cost() const { return mCost; }
 
       /** Sets the candidate label position's geographical cost.
-       * @param newCost new cost for position
-       * @see cost
+       * \param newCost new cost for position
+       * \see cost
       */
       void setCost( double newCost ) { mCost = newCost; }
 
       /** Sets whether the position is marked as conflicting with an obstacle feature.
-       * @param conflicts set to true to mark candidate as being in conflict
-       * @note This method applies to all label parts for the candidate position.
-       * @see conflictsWithObstacle
+       * \param conflicts set to true to mark candidate as being in conflict
+       * \note This method applies to all label parts for the candidate position.
+       * \see conflictsWithObstacle
        */
       void setConflictsWithObstacle( bool conflicts );
 
       /** Returns whether the position is marked as conflicting with an obstacle feature.
-       * @see setConflictsWithObstacle
+       * \see setConflictsWithObstacle
        */
       bool conflictsWithObstacle() const { return mHasObstacleConflict; }
 
@@ -202,13 +202,13 @@ namespace pal
 
       /**
        * \brief get the down-left x coordinate
-       * \return x coordinate
+       * \returns x coordinate
        */
       double getX( int i = 0 ) const;
 
       /**
        * \brief get the down-left y coordinate
-       * \return y coordinate
+       * \returns y coordinate
        */
       double getY( int i = 0 ) const;
 
@@ -217,7 +217,7 @@ namespace pal
 
       /**
        * \brief get alpha
-       * \return alpha to rotate text (in rad)
+       * \returns alpha to rotate text (in rad)
        */
       double getAlpha() const;
       bool getReversed() const { return reversed; }
@@ -311,7 +311,7 @@ namespace pal
       int partCount() const;
 
       /** Calculates the polygon intersection cost for a single label position part
-       * @returns double between 0 - 12
+       * \returns double between 0 - 12
        */
       double polygonIntersectionCostForParts( PointSet *polygon ) const;
 

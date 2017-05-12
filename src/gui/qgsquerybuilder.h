@@ -15,6 +15,7 @@
 #ifndef QGSQUERYBUILDER_H
 #define QGSQUERYBUILDER_H
 #include <map>
+#include "qgis.h"
 #include <vector>
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -44,11 +45,11 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     /** This constructor is used when the query builder is called from the
      * vector layer properties dialog
-     * @param layer existing vector layer
-     * @param parent Parent widget
-     * @param fl dialog flags
+     * \param layer existing vector layer
+     * \param parent Parent widget
+     * \param fl dialog flags
      */
-    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent = nullptr,
+    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0,
                      Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     ~QgsQueryBuilder();
@@ -87,12 +88,14 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * statement.
      */
     void test();
-    /*!
+
+    /**
      * Get all distinct values for the field. Values are inserted
      * into the value list box
      */
     void on_btnGetAllValues_clicked();
-    /*!
+
+    /**
      * Get sample distinct values for the selected field. The sample size is
      * limited to an arbitrary value (currently set to 25). The values
      * are inserted into the values list box.
@@ -102,12 +105,13 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     void setDatasourceDescription( const QString &uri );
 
   private:
-    /*!
+
+    /**
      * Populate the field list for the selected table
      */
     void populateFields();
 
-    /*!
+    /**
      * Setup models for listviews
      */
     void setupGuiViews();

@@ -18,6 +18,8 @@
 
 #include <QFileDialog>
 #include "qgis_gui.h"
+#include "qgis.h"
+
 class QComboBox;
 class QPushButton;
 
@@ -28,7 +30,11 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
 {
     Q_OBJECT
   public:
-    QgsEncodingFileDialog( QWidget *parent = nullptr,
+
+    /**
+     * @brief QgsEncodingFileDialog constructor for QgsEncodingFileDialog
+     */
+    QgsEncodingFileDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                            const QString &caption = QString(), const QString &directory = QString(),
                            const QString &filter = QString(), const QString &encoding = QString() );
     //! Returns a string describing the chosen encoding

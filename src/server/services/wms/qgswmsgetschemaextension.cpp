@@ -21,6 +21,8 @@
 #include "qgswmsutils.h"
 #include "qgswmsgetschemaextension.h"
 
+#include <QFileInfo>
+
 namespace QgsWms
 {
 

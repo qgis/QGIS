@@ -665,8 +665,8 @@ void QgsComposerMapGridWidget::on_mGridMarkerStyleButton_clicked()
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
-  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateGridMarkerStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpGridMarkerStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsComposerMapGridWidget::updateGridMarkerStyleFromWidget );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerMapGridWidget::cleanUpGridMarkerStyleSelector );
   openPanel( d );
   mComposerMap->beginCommand( tr( "Grid markers style changed" ) );
 }

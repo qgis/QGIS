@@ -25,7 +25,7 @@
 class QgsRectangle;
 
 /** \ingroup analysis
- * @brief OSMDownload is a utility class for downloading OpenStreetMap via Overpass API.
+ * \brief OSMDownload is a utility class for downloading OpenStreetMap via Overpass API.
  *
  * To use this class, it is necessary to set query, output file name and start the request.
  * The interface is asynchronous, the caller has to wait for finished() signal that is
@@ -49,6 +49,14 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     static QString queryFromRect( const QgsRectangle &rect );
 
     QgsOSMDownload();
+
+    /** Constructor for QgsOSMDownload
+     * \param query The query to execute in the Overpass API.
+     *
+     * \since QGIS 3.0
+     */
+    QgsOSMDownload( const QString &query );
+
     ~QgsOSMDownload();
 
     void setServiceUrl( const QString &serviceUrl ) { mServiceUrl = serviceUrl; }
@@ -64,18 +72,18 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     QString errorString() const { return mError; }
 
     /**
-     * @brief Starts network request for data. The prerequisite is that the query string and output
+     * \brief Starts network request for data. The prerequisite is that the query string and output
      * file name have been set.
      *
      * Only one request may be pending at one point - if you need more requests at once, use several instances.
      *
-     * @return true if the network request has been issued, false otherwise (and sets error string)
+     * \returns true if the network request has been issued, false otherwise (and sets error string)
      */
     bool start();
 
     /**
-     * @brief Aborts current pending request
-     * @return true if there is a pending request and has been aborted, false otherwise
+     * \brief Aborts current pending request
+     * \returns true if there is a pending request and has been aborted, false otherwise
      */
     bool abort();
 
@@ -83,8 +91,11 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     bool isFinished() const;
 
   signals:
-    void finished(); //!< Emitted when the network reply has finished (with success or with an error)
-    void downloadProgress( qint64, qint64 ); //!< Normally the total length is not known (until we reach end)
+    //! Emitted when the network reply has finished (with success or with an error)
+    void finished();
+
+    //! Normally the total length is not known (until we reach end)
+    void downloadProgress( qint64, qint64 );
 
   private slots:
     void onReadyRead();

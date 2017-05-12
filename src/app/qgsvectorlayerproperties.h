@@ -61,13 +61,13 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void setRendererDirty( bool ) {}
 
     /** Adds an attribute to the table (but does not commit it yet)
-    @param field the field to add
-    @return false in case of a name conflict, true in case of success */
+    \param field the field to add
+    \returns false in case of a name conflict, true in case of success */
     bool addAttribute( const QgsField &field );
 
     /** Deletes an attribute (but does not commit it)
-      @param name attribute name
-      @return false in case of a non-existing attribute.*/
+      \param name attribute name
+      \returns false in case of a non-existing attribute.*/
     bool deleteAttribute( int attr );
 
     //! Adds a properties page factory to the vector layer properties dialog.
@@ -81,7 +81,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void syncToLayer();
 
     //! Get metadata about the layer in nice formatted html
-    QString metadata();
+    QString htmlMetadata();
 
     //! Slot to update layer display name as original is edited
     void on_mLayerOrigNameLineEdit_textEdited( const QString &text );
@@ -139,7 +139,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void updateVariableEditor();
 
     /**
-     * @brief updates the FieldsPropertiesDialog when syncing the layer properties
+     * \brief updates the FieldsPropertiesDialog when syncing the layer properties
      */
     void updateFieldsPropertiesDialog();
 

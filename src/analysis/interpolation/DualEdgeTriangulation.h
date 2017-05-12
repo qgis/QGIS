@@ -18,6 +18,7 @@
 #define DUALEDGETRIANGULATION_H
 
 #include "Triangulation.h"
+#include "qgis_sip.h"
 #include "HalfEdge.h"
 #include <QVector>
 #include <QList>
@@ -59,8 +60,8 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)
     int getOppositePoint( int p1, int p2 ) override;
     //! Finds out, in which triangle the point with coordinates x and y is and assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
-    //! @note not available in python bindings
-    virtual bool getTriangle( double x, double y, Point3D *p1, int *n1, Point3D *p2, int *n2, Point3D *p3, int *n3 ) override;
+    //! \note not available in Python bindings
+    virtual bool getTriangle( double x, double y, Point3D *p1, int *n1, Point3D *p2, int *n2, Point3D *p3, int *n3 ) override SIP_SKIP;
     //! Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3
     virtual bool getTriangle( double x, double y, Point3D *p1, Point3D *p2, Point3D *p3 ) override;
     //! Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method
@@ -101,7 +102,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     virtual QList<int> *getPointsAroundEdge( double x, double y ) override;
 
     /** Saves the triangulation as a (line) shapefile
-    @return true in case of success*/
+    \returns true in case of success*/
     virtual bool saveAsShapefile( const QString &fileName ) const override;
 
   protected:

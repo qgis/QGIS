@@ -8,7 +8,7 @@ class QgsComposerAttributeTableCompareV2
 
   public:
     QgsComposerAttributeTableCompareV2();
-    bool operator()( const QgsComposerTableRow& m1, const QgsComposerTableRow& m2 );
+    bool operator()( const QgsComposerTableRow &m1, const QgsComposerTableRow &m2 );
 
     /** Sets column number to sort by
      * @param col column number for sorting
@@ -41,7 +41,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
       RelationChildren /*!< table shows attributes from related child features */
     };
 
-    QgsComposerAttributeTableV2( QgsComposition* composition /TransferThis/, bool createUndoCommands );
+    QgsComposerAttributeTableV2( QgsComposition *composition /TransferThis/, bool createUndoCommands );
     ~QgsComposerAttributeTableV2();
 
     virtual QString displayName() const;
@@ -52,7 +52,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @param ignoreFrames ignore frames
      * @see readXML
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const;
 
     /** Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.
@@ -60,9 +60,9 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @param ignoreFrames ignore frames
      * @see writeXML
      */
-    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false );
 
-    virtual void addFrame( QgsComposerFrame* frame /Transfer/, bool recalcFrameSizes = true );
+    virtual void addFrame( QgsComposerFrame *frame /Transfer/, bool recalcFrameSizes = true );
 
     /** Sets the source for attributes to show in table body.
      * @param source content source
@@ -82,19 +82,19 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * the source layer will be the user specified vector layer.
      * @returns actual source layer
      */
-    QgsVectorLayer* sourceLayer();
+    QgsVectorLayer *sourceLayer();
 
     /** Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table
      * @see vectorLayer
      */
-    void setVectorLayer( QgsVectorLayer* layer );
+    void setVectorLayer( QgsVectorLayer *layer );
 
     /** Returns the vector layer the attribute table is currently using
      * @returns attribute table's current vector layer
      * @see setVectorLayer
      */
-    QgsVectorLayer* vectorLayer() const;
+    QgsVectorLayer *vectorLayer() const;
 
     /** Sets the relation id from which to display child features
      * @param relationId id for relation to display child features from
@@ -102,7 +102,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setSource
      * @note only used if table source is set to RelationChildren
      */
-    void setRelationId( const QString& relationId );
+    void setRelationId( const QString &relationId );
 
     /** Returns the relation id which the table displays child features from
      * @returns relation id
@@ -126,7 +126,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see composerMap
      * @see setDisplayOnlyVisibleFeatures
      */
-    void setComposerMap( const QgsComposerMap* map );
+    void setComposerMap( const QgsComposerMap *map );
 
     /** Returns the composer map whose extents are controlling the features shown in the
      * table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
@@ -134,7 +134,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setComposerMap
      * @see displayOnlyVisibleFeatures
      */
-    const QgsComposerMap* composerMap() const;
+    const QgsComposerMap *composerMap() const;
 
     /** Sets the maximum number of features shown by the table. Changing this setting may result
      * in the attribute table changing its size to accommodate the new number of rows, and requires
@@ -228,7 +228,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see featureFilter
      * @see setFilterFeatures
      */
-    void setFeatureFilter( const QString& expression );
+    void setFeatureFilter( const QString &expression );
 
     /** Sets the attributes to display in the table.
      * @param fields list of fields names from the vector layer to show.
@@ -238,7 +238,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * to accommodate the new displayed feature attributes.
      * @note added in QGIS 2.16
      */
-    void setDisplayedFields( const QStringList& fields, bool refresh = true );
+    void setDisplayedFields( const QStringList &fields, bool refresh = true );
 
     /** Returns the attributes used to sort the table's features.
      * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and
@@ -254,7 +254,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @note added in QGIS 2.12
      * @see wrapString
      */
-    void setWrapString( const QString& wrapString );
+    void setWrapString( const QString &wrapString );
 
     /** Returns the string used to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.

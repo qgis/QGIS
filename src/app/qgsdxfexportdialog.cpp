@@ -440,10 +440,10 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mTreeView->resizeColumnToContents( 0 );
   mTreeView->header()->show();
 
-  connect( mFileLineEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( setOkEnabled() ) );
-  connect( this, SIGNAL( accepted() ), this, SLOT( saveSettings() ) );
-  connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
-  connect( mDeselectAllButton, SIGNAL( clicked() ), this, SLOT( deSelectAll() ) );
+  connect( mFileLineEdit, &QLineEdit::textChanged, this, &QgsDxfExportDialog::setOkEnabled );
+  connect( this, &QDialog::accepted, this, &QgsDxfExportDialog::saveSettings );
+  connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::selectAll );
+  connect( mDeselectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::deSelectAll );
 
   mFileLineEdit->setFocus();
 

@@ -26,14 +26,19 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import (QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsWkbTypes,
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class HubLines(GeoAlgorithm):
@@ -43,10 +48,22 @@ class HubLines(GeoAlgorithm):
     SPOKE_FIELD = 'SPOKE_FIELD'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Hub lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector analysis tools')
+
+    def name(self):
+        return 'hublines'
+
+    def displayName(self):
+        return self.tr('Hub lines')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.HUBS,
                                           self.tr('Hub layer')))
         self.addParameter(ParameterTableField(self.HUB_FIELD,
@@ -58,11 +75,9 @@ class HubLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, feedback):
-        layerHub = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.HUBS))
-        layerSpoke = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.SPOKES))
+    def processAlgorithm(self, context, feedback):
+        layerHub = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
+        layerSpoke = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.SPOKES), context)
 
         fieldHub = self.getParameterValue(self.HUB_FIELD)
         fieldSpoke = self.getParameterValue(self.SPOKE_FIELD)
@@ -71,12 +86,12 @@ class HubLines(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Same layer given for both hubs and spokes'))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layerSpoke.fields(), QgsWkbTypes.LineString, layerSpoke.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layerSpoke.fields(), QgsWkbTypes.LineString,
+                                                                     layerSpoke.crs(), context)
 
-        spokes = vector.features(layerSpoke)
-        hubs = vector.features(layerHub)
-        total = 100.0 / len(spokes)
+        spokes = QgsProcessingUtils.getFeatures(layerSpoke, context)
+        hubs = QgsProcessingUtils.getFeatures(layerHub, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerSpoke, context)
 
         for current, spokepoint in enumerate(spokes):
             p = spokepoint.geometry().boundingBox().center()

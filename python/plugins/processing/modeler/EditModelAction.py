@@ -25,10 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import QgsApplication
 from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerDialog import ModelerDialog
-from processing.core.alglist import algList
 
 
 class EditModelAction(ContextAction):
@@ -40,9 +40,12 @@ class EditModelAction(ContextAction):
         return isinstance(self.itemData, ModelerAlgorithm)
 
     def execute(self):
-        dlg = ModelerDialog(self.itemData.getCopy())
+        alg = self.itemData.getCopy()
+        #hack - remove when getCopy is removed
+        alg.setProvider(self.itemData.provider())
+        dlg = ModelerDialog(alg)
         dlg.update_model.connect(self.updateModel)
         dlg.show()
 
     def updateModel(self):
-        algList.reloadProvider('model')
+        QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()

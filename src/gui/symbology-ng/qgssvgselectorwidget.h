@@ -18,6 +18,7 @@
 #define QGSSVGSELECTORWIDGET_H
 
 #include "ui_widget_svgselector.h"
+#include "qgis.h"
 
 #include "qgisgui.h"
 #include <QAbstractListModel>
@@ -42,7 +43,7 @@ class QTreeView;
 /** \ingroup gui
  * \class QgsSvgSelectorLoader
  * Recursively loads SVG images from a path in a background thread.
- * \note added in QGIS 2.18
+ * \since QGIS 2.18
  */
 class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 {
@@ -51,7 +52,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
   public:
 
     /** Constructor for QgsSvgSelectorLoader
-     * @param parent parent object
+     * \param parent parent object
      */
     QgsSvgSelectorLoader( QObject *parent = nullptr );
 
@@ -59,7 +60,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 
     /** Starts the loader finding and generating previews for SVG images. foundSvgs() will be
      * emitted as the loader encounters SVG images.
-     * @brief run
+     * \brief run
      */
     virtual void run() override;
 
@@ -80,7 +81,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 
     /** Emitted when the loader has found a block of SVG images. This signal is emitted with blocks
      * of SVG images to prevent spamming any connected model.
-     * @param svgs list of SVGs and preview images found.
+     * \param svgs list of SVGs and preview images found.
      */
     void foundSvgs( QStringList svgs );
 
@@ -102,7 +103,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 /** \ingroup gui
  * \class QgsSvgGroupLoader
  * Recursively loads SVG paths in a background thread.
- * \note added in QGIS 2.18
+ * \since QGIS 2.18
  */
 class GUI_EXPORT QgsSvgGroupLoader : public QThread
 {
@@ -111,14 +112,14 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
   public:
 
     /** Constructor for QgsSvgGroupLoader
-     * @param parent parent object
+     * \param parent parent object
      */
     QgsSvgGroupLoader( QObject *parent = nullptr );
 
     ~QgsSvgGroupLoader();
 
     /** Starts the loader finding folders for SVG images.
-     * @brief run
+     * \brief run
      */
     virtual void run() override;
 
@@ -139,7 +140,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 
     /** Emitted when the loader has found a block of SVG images. This signal is emitted with blocks
      * of SVG images to prevent spamming any connected model.
-     * @param svgs list of SVGs and preview images found.
+     * \param svgs list of SVGs and preview images found.
      */
     void foundPath( const QString &parentPath, const QString &path );
 
@@ -170,15 +171,15 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 
     /** Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
      * search paths will be shown.
-     * @param parent parent object
+     * \param parent parent object
      */
-    QgsSvgSelectorListModel( QObject *parent );
+    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS );
 
     /** Constructor for creating a model for SVG files in a specific path.
-     * @param parent parent object
-     * @param path initial path, which is recursively searched
+     * \param parent parent object
+     * \param path initial path, which is recursively searched
      */
-    QgsSvgSelectorListModel( QObject *parent, const QString &path );
+    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS, const QString &path );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -193,7 +194,7 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
   private slots:
 
     /** Called to add SVG files to the model.
-     * @param svgs list of SVG files to add to model.
+     * \param svgs list of SVG files to add to model.
      */
     void addSvgs( const QStringList &svgs );
 
@@ -211,7 +212,7 @@ class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
     Q_OBJECT
 
   public:
-    QgsSvgSelectorGroupsModel( QObject *parent );
+    QgsSvgSelectorGroupsModel( QObject *parent SIP_TRANSFERTHIS );
     ~QgsSvgSelectorGroupsModel();
 
   private:
@@ -231,7 +232,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     Q_OBJECT
 
   public:
-    QgsSvgSelectorWidget( QWidget *parent = nullptr );
+    QgsSvgSelectorWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsSvgSelectorWidget();
 
     static QgsSvgSelectorWidget *create( QWidget *parent = nullptr ) { return new QgsSvgSelectorWidget( parent ); }

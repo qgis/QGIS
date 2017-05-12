@@ -105,15 +105,15 @@ namespace pal
       /**
        * \brief add a new layer
        *
-       * @param provider Provider associated with the layer
-       * @param layerName layer's name
-       * @param arrangement Howto place candidates
-       * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * @param active is the layer is active (currently displayed)
-       * @param toLabel the layer will be labeled only if toLablel is true
-       * @param displayAll if true, all features will be labelled even though overlaps occur
+       * \param provider Provider associated with the layer
+       * \param layerName layer's name
+       * \param arrangement Howto place candidates
+       * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
+       * \param active is the layer is active (currently displayed)
+       * \param toLabel the layer will be labeled only if toLablel is true
+       * \param displayAll if true, all features will be labelled even though overlaps occur
        *
-       * @throws PalException::LayerExists
+       * \throws PalException::LayerExists
        *
        * @todo add symbolUnit
        */
@@ -122,7 +122,7 @@ namespace pal
       /**
        * \brief remove a layer
        *
-       * @param layer layer to remove
+       * \param layer layer to remove
        */
       void removeLayer( Layer *layer );
 
@@ -130,11 +130,11 @@ namespace pal
        * \brief the labeling machine
        * Will extract all active layers
        *
-       * @param bbox map extent
-       * @param stats A PalStat object (can be NULL)
-       * @param displayAll if true, all feature will be labelled even though overlaps occur
+       * \param bbox map extent
+       * \param stats A PalStat object (can be NULL)
+       * \param displayAll if true, all feature will be labelled even though overlaps occur
        *
-       * @return A list of label to display on map
+       * \returns A list of label to display on map
        */
       QList<LabelPosition *> *labeller( double bbox[4], PalStat **stats, bool displayAll );
 
@@ -153,14 +153,14 @@ namespace pal
       /**
        *\brief Set flag show partial label
        *
-       * @param show flag value
+       * \param show flag value
        */
       void setShowPartial( bool show );
 
       /**
        * \brief Get flag show partial label
        *
-       * @return value of flag
+       * \returns value of flag
        */
       bool getShowPartial();
 
@@ -168,7 +168,7 @@ namespace pal
        * \brief set # candidates to generate for points features
        * Higher the value is, longer Pal::labeller will spend time
        *
-       * @param point_p # candidates for a point
+       * \param point_p # candidates for a point
        */
       void setPointP( int point_p );
 
@@ -176,7 +176,7 @@ namespace pal
        * \brief set maximum # candidates to generate for lines features
        * Higher the value is, longer Pal::labeller will spend time
        *
-       * @param line_p maximum # candidates for a line
+       * \param line_p maximum # candidates for a line
        */
       void setLineP( int line_p );
 
@@ -184,7 +184,7 @@ namespace pal
        * \brief set maximum # candidates to generate for polygon features
        * Higher the value is, longer Pal::labeller will spend time
        *
-       * @param poly_p maximum # candidate for a polygon
+       * \param poly_p maximum # candidate for a polygon
        */
       void setPolyP( int poly_p );
 
@@ -209,14 +209,14 @@ namespace pal
        * For interactive mapping using CHAIN is a good
        * idea because it is the fastest. Other methods, ordered by speedness, are POPMUSIC_TABU,
        * POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN, defined in pal::_searchMethod enumeration
-       * @param method the method to use
+       * \param method the method to use
        */
       void setSearch( SearchMethod method );
 
       /**
        * \brief get the search method in use
        *
-       * @return the search method
+       * \returns the search method
        */
       SearchMethod getSearch();
 
@@ -269,10 +269,10 @@ namespace pal
        * \brief Problem factory
        * Extract features to label and generates candidates for them,
        * respects to a bounding box
-       * @param lambda_min xMin bounding-box
-       * @param phi_min yMin bounding-box
-       * @param lambda_max xMax bounding-box
-       * @param phi_max yMax bounding-box
+       * \param lambda_min xMin bounding-box
+       * \param phi_min yMin bounding-box
+       * \param lambda_max xMax bounding-box
+       * \param phi_max yMax bounding-box
        */
       Problem *extract( double lambda_min, double phi_min,
                         double lambda_max, double phi_max );
@@ -280,50 +280,50 @@ namespace pal
 
       /**
        * \brief Choose the size of popmusic subpart's
-       * @param r subpart size
+       * \param r subpart size
        */
       void setPopmusicR( int r );
 
       /**
        * \brief minimum # of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @param min_it Sub part optimization min # of iteration
+       * \param min_it Sub part optimization min # of iteration
        */
       void setMinIt( int min_it );
 
       /**
        * \brief maximum \# of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @param max_it Sub part optimization max # of iteration
+       * \param max_it Sub part optimization max # of iteration
        */
       void setMaxIt( int max_it );
 
       /**
        * \brief For tabu search : how many iteration a feature will be tabu
-       * @param tenure consiser a feature as tabu for tenure iteration after updating feature in solution
+       * \param tenure consiser a feature as tabu for tenure iteration after updating feature in solution
        */
       void setTenure( int tenure );
 
       /**
        * \brief For *CHAIN, select the max size of a transformation chain
-       * @param degree maximum soze of a transformation chain
+       * \param degree maximum soze of a transformation chain
        */
       void setEjChainDeg( int degree );
 
       /**
        * \brief How many candidates will be tested by a tabu iteration
-       * @param fact the ration (0..1) of candidates to test
+       * \param fact the ration (0..1) of candidates to test
        */
       void setCandListSize( double fact );
 
 
       /**
        * \brief Get the minimum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @return minimum # of iteration
+       * \returns minimum # of iteration
        */
       int getMinIt();
 
       /**
        * \brief Get the maximum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @return maximum # of iteration
+       * \returns maximum # of iteration
        */
       int getMaxIt();
 

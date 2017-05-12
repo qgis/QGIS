@@ -26,7 +26,7 @@
  * \class QgsTextAnnotation
  * \ingroup core
  * An annotation item that displays formatted text from a QTextDocument document.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
 {
@@ -37,19 +37,21 @@ class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsTextAnnotation.
      */
-    QgsTextAnnotation( QObject *parent = nullptr );
+    QgsTextAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    QgsTextAnnotation *clone() const override SIP_FACTORY;
 
     /**
      * Returns the text document which will be rendered
      * within the annotation.
-     * @see setDocument()
+     * \see setDocument()
      */
     const QTextDocument *document() const;
 
     /**
      * Sets the text document which will be rendered
      * within the annotation. Ownership is not transferred.
-     * @see document()
+     * \see document()
      */
     void setDocument( const QTextDocument *doc );
 
@@ -59,7 +61,7 @@ class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
     /**
      * Returns a new QgsTextAnnotation object.
      */
-    static QgsTextAnnotation *create() { return new QgsTextAnnotation(); }
+    static QgsTextAnnotation *create() SIP_FACTORY { return new QgsTextAnnotation(); }
 
   protected:
 

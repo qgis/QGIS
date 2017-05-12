@@ -35,7 +35,7 @@ class VariableEditorDelegate;
  * A tree based widget for editing expression context scope variables. The widget allows editing
  * variables from a QgsExpressionContextScope, and can optionally also show inherited
  * variables from a QgsExpressionContext.
- * \note added in QGIS 2.12
+ * \since QGIS 2.12
  */
 
 class GUI_EXPORT QgsVariableEditorWidget : public QWidget
@@ -47,53 +47,53 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
   public:
 
     /** Constructor for QgsVariableEditorWidget.
-     * @param parent parent widget
+     * \param parent parent widget
      */
-    QgsVariableEditorWidget( QWidget *parent = nullptr );
+    QgsVariableEditorWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     ~QgsVariableEditorWidget();
 
     /** Overwrites the QgsExpressionContext for the widget. Setting a context
      * allows the widget to show all inherited variables for the context,
      * and highlight any overridden variables within scopes.
-     * @param context expression context
-     * @see context()
+     * \param context expression context
+     * \see context()
      */
     void setContext( QgsExpressionContext *context );
 
     /** Returns the current expression context for the widget. QgsVariableEditorWidget widgets
      * are created with an empty context by default.
-     * @see setContext()
+     * \see setContext()
      */
     QgsExpressionContext *context() const { return mContext.get(); }
 
     /** Sets the editable scope for the widget. Only variables from the editable scope can
      * be modified by users.
-     * @param scopeIndex index of current editable scope. Set to -1 to disable
+     * \param scopeIndex index of current editable scope. Set to -1 to disable
      * editing and make the widget read-only.
-     * @see editableScope()
+     * \see editableScope()
      */
     void setEditableScopeIndex( int scopeIndex );
 
     /** Returns the current editable scope for the widget.
-     * @returns editable scope, or 0 if no editable scope is set
-     * @see setEditableScopeIndex()
+     * \returns editable scope, or 0 if no editable scope is set
+     * \see setEditableScopeIndex()
      */
     QgsExpressionContextScope *editableScope() const;
 
     /** Sets the setting group for the widget. QgsVariableEditorWidget widgets with
      * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
-     * @param group setting group
-     * @see settingGroup()
+     * \param group setting group
+     * \see settingGroup()
      */
     void setSettingGroup( const QString &group ) { mSettingGroup = group; }
 
     /** Returns the setting group for the widget. QgsVariableEditorWidget widgets with
      * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
-     * @returns setting group name
-     * @see setSettingGroup()
+     * \returns setting group name
+     * \see setSettingGroup()
      */
     QString settingGroup() const { return mSettingGroup; }
 
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
     /** Reloads all scopes from the editor's current context. This method should be called
      * after adding or removing scopes from the attached context.
-     * @see context()
+     * \see context()
      */
     void reloadContext();
 

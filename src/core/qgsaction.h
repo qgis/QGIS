@@ -54,10 +54,10 @@ class CORE_EXPORT QgsAction
     /**
      * Create a new QgsAction
      *
-     * @param type          The type of this action
-     * @param description   A human readable description string
-     * @param command       The action text. Its interpretation depends on the type
-     * @param capture       If this is set to true, the output will be captured when an action is run
+     * \param type          The type of this action
+     * \param description   A human readable description string
+     * \param command       The action text. Its interpretation depends on the type
+     * \param capture       If this is set to true, the output will be captured when an action is run
      */
     QgsAction( ActionType type, const QString &description, const QString &command, bool capture = false )
       : mType( type )
@@ -70,13 +70,13 @@ class CORE_EXPORT QgsAction
     /**
      * Create a new QgsAction
      *
-     * @param type                 The type of this action
-     * @param description          A human readable description string
-     * @param action               The action text. Its interpretation depends on the type
-     * @param icon                 Path to an icon for this action
-     * @param capture              If this is set to true, the output will be captured when an action is run
-     * @param shortTitle           A short string used to label user interface elements like buttons
-     * @param actionScopes         A set of scopes in which this action will be available
+     * \param type                 The type of this action
+     * \param description          A human readable description string
+     * \param action               The action text. Its interpretation depends on the type
+     * \param icon                 Path to an icon for this action
+     * \param capture              If this is set to true, the output will be captured when an action is run
+     * \param shortTitle           A short string used to label user interface elements like buttons
+     * \param actionScopes         A set of scopes in which this action will be available
      */
     QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>() )
       : mType( type )
@@ -98,14 +98,14 @@ class CORE_EXPORT QgsAction
     /**
      * Returns a unique id for this action.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QUuid id() const { return mId; }
 
     /**
      * Returns true if this action was a default constructed one.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool isValid() const { return !mId.isNull(); }
 
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsAction
      * How the content is interpreted depends on the type() and
      * the actionScope().
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QString command() const { return mCommand; }
 
@@ -136,14 +136,14 @@ class CORE_EXPORT QgsAction
     /**
      * Run this action.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void run( QgsVectorLayer *layer, const QgsFeature &feature, const QgsExpressionContext &expressionContext ) const;
 
     /**
      * Run this action.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void run( const QgsExpressionContext &expressionContext ) const;
 
@@ -152,8 +152,8 @@ class CORE_EXPORT QgsAction
      * Action scopes may offer additional variables like the clicked
      * coordinate.
      *
-     * @see QgsActionScope
-     * @note Added in QGIS 3.0
+     * \see QgsActionScope
+     * \since QGIS 3.0
      */
     QSet<QString> actionScopes() const;
 
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsAction
      * Action scopes may offer additional variables like the clicked
      * coordinate.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setActionScopes( const QSet<QString> &actionScopes );
 
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsAction
      * Reads an XML definition from actionNode
      * into this object.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void readXml( const QDomNode &actionNode );
 
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsAction
      * Appends an XML definition for this action as a new
      * child node to actionsNode.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void writeXml( QDomNode &actionsNode ) const;
 

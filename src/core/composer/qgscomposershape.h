@@ -19,6 +19,7 @@
 #define QGSCOMPOSERSHAPE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
 #include <QBrush>
 #include <QPen>
@@ -39,7 +40,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
       Triangle
     };
 
-    QgsComposerShape( QgsComposition *composition );
+    QgsComposerShape( QgsComposition *composition SIP_TRANSFERTHIS );
     QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition );
     ~QgsComposerShape();
 
@@ -50,14 +51,14 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     /** Stores state in Dom element
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc write template file
+     * \param elem is Dom element corresponding to 'Composer' tag
+     * \param doc write template file
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is Dom document
+     * \param itemElem is Dom node corresponding to item tag
+     * \param doc is Dom document
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
@@ -84,7 +85,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     void setUseSymbol( bool useSymbol );
 
     /** Depending on the symbol style, the bounding rectangle can be larger than the shape
-    @note this function was added in version 2.3*/
+    \since QGIS 2.3*/
     QRectF boundingRect() const override;
 
     /** Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from

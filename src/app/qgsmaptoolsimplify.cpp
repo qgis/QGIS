@@ -39,9 +39,9 @@ QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify *tool, QWidget *parent 
   cboToleranceUnits->setCurrentIndex( ( int ) mTool->toleranceUnits() );
 
   // communication with map tool
-  connect( spinTolerance, SIGNAL( valueChanged( double ) ), mTool, SLOT( setTolerance( double ) ) );
-  connect( cboToleranceUnits, SIGNAL( currentIndexChanged( int ) ), mTool, SLOT( setToleranceUnits( int ) ) );
-  connect( okButton, SIGNAL( clicked() ), mTool, SLOT( storeSimplified() ) );
+  connect( spinTolerance, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), mTool, &QgsMapToolSimplify::setTolerance );
+  connect( cboToleranceUnits, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), mTool, &QgsMapToolSimplify::setToleranceUnits );
+  connect( okButton, &QAbstractButton::clicked, mTool, &QgsMapToolSimplify::storeSimplified );
 }
 
 void QgsSimplifyDialog::updateStatusText()

@@ -162,7 +162,7 @@ void QgsCheckboxSearchWidgetWrapper::initWidget( QWidget *editor )
   if ( mCheckBox )
   {
     mCheckBox->setChecked( Qt::PartiallyChecked );
-    connect( mCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( stateChanged( int ) ) );
+    connect( mCheckBox, &QCheckBox::stateChanged, this, &QgsCheckboxSearchWidgetWrapper::stateChanged );
   }
 }
 

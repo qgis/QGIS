@@ -1,139 +1,203 @@
-/** \ingroup core
- * \class QgsInterval
- * \brief A representation of the interval between two datetime values.
- * \note Added in version 2.16
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsinterval.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 
 class QgsInterval
 {
-%TypeHeaderCode
-#include <qgsinterval.h>
+%Docstring
+ A representation of the interval between two datetime values.
+.. versionadded:: 2.16
 %End
 
+%TypeHeaderCode
+#include "qgsinterval.h"
+%End
   public:
 
-    // YEAR const value taken from postgres query
-    // SELECT EXTRACT(EPOCH FROM interval '1 year')
-    //! Seconds per year (average)
     static const int YEARS;
-    //! Seconds per month, based on 30 day month
+%Docstring
+Seconds per year (average)
+%End
     static const int MONTHS;
-    //! Seconds per week
+%Docstring
+Seconds per month, based on 30 day month
+%End
     static const int WEEKS;
-    //! Seconds per day
+%Docstring
+Seconds per week
+%End
     static const int DAY;
-    //! Seconds per hour
+%Docstring
+Seconds per day
+%End
     static const int HOUR;
-    //! Seconds per minute
+%Docstring
+Seconds per hour
+%End
     static const int MINUTE;
+%Docstring
+Seconds per minute
+%End
 
-    /** Default constructor for QgsInterval. Creates an invalid interval.
-     */
     QgsInterval();
+%Docstring
+ Default constructor for QgsInterval. Creates an invalid interval.
+%End
 
-    /** Constructor for QgsInterval.
-     * @param seconds duration of interval in seconds
-     */
     QgsInterval( double seconds );
+%Docstring
+ Constructor for QgsInterval.
+ \param seconds duration of interval in seconds
+%End
 
-    /** Returns the interval duration in years (based on an average year length)
-     * @see setYears()
-     */
     double years() const;
+%Docstring
+ Returns the interval duration in years (based on an average year length)
+.. seealso:: setYears()
+ :rtype: float
+%End
 
-    /** Sets the interval duration in years.
-     * @param years duration in years (based on average year length)
-     * @see years()
-     */
     void setYears( double years );
+%Docstring
+ Sets the interval duration in years.
+ \param years duration in years (based on average year length)
+.. seealso:: years()
+%End
 
-    /** Returns the interval duration in months (based on a 30 day month).
-     * @see setMonths()
-     */
     double months() const;
+%Docstring
+ Returns the interval duration in months (based on a 30 day month).
+.. seealso:: setMonths()
+ :rtype: float
+%End
 
-    /** Sets the interval duration in months.
-     * @param months duration in months (based on a 30 day month)
-     * @see months()
-     */
     void setMonths( double months );
+%Docstring
+ Sets the interval duration in months.
+ \param months duration in months (based on a 30 day month)
+.. seealso:: months()
+%End
 
-    /** Returns the interval duration in weeks.
-     * @see setWeeks()
-     */
     double weeks() const;
+%Docstring
+ Returns the interval duration in weeks.
+.. seealso:: setWeeks()
+ :rtype: float
+%End
 
-    /** Sets the interval duration in weeks.
-     * @param weeks duration in weeks
-     * @see weeks()
-     */
     void setWeeks( double weeks );
+%Docstring
+ Sets the interval duration in weeks.
+ \param weeks duration in weeks
+.. seealso:: weeks()
+%End
 
-    /** Returns the interval duration in days.
-     * @see setDays()
-     */
     double days() const;
+%Docstring
+ Returns the interval duration in days.
+.. seealso:: setDays()
+ :rtype: float
+%End
 
-    /** Sets the interval duration in days.
-     * @param days duration in days
-     * @see days()
-     */
     void setDays( double days );
+%Docstring
+ Sets the interval duration in days.
+ \param days duration in days
+.. seealso:: days()
+%End
 
-    /** Returns the interval duration in hours.
-     * @see setHours()
-     */
     double hours() const;
+%Docstring
+ Returns the interval duration in hours.
+.. seealso:: setHours()
+ :rtype: float
+%End
 
-    /** Sets the interval duration in hours.
-     * @param hours duration in hours
-     * @see hours()
-     */
     void setHours( double hours );
+%Docstring
+ Sets the interval duration in hours.
+ \param hours duration in hours
+.. seealso:: hours()
+%End
 
-    /** Returns the interval duration in minutes.
-     * @see setMinutes()
-     */
     double minutes() const;
+%Docstring
+ Returns the interval duration in minutes.
+.. seealso:: setMinutes()
+ :rtype: float
+%End
 
-    /** Sets the interval duration in minutes.
-     * @param minutes duration in minutes
-     * @see minutes()
-     */
     void setMinutes( double minutes );
+%Docstring
+ Sets the interval duration in minutes.
+ \param minutes duration in minutes
+.. seealso:: minutes()
+%End
 
-    /** Returns the interval duration in seconds.
-     * @see setSeconds()
-     */
     double seconds() const;
+%Docstring
+ Returns the interval duration in seconds.
+.. seealso:: setSeconds()
+ :rtype: float
+%End
 
-    /** Sets the interval duration in seconds.
-     * @param seconds duration in seconds
-     * @see seconds()
-     */
     void setSeconds( double seconds );
+%Docstring
+ Sets the interval duration in seconds.
+ \param seconds duration in seconds
+.. seealso:: seconds()
+%End
 
-    /** Returns true if the interval is valid.
-     * @see setValid()
-     */
     bool isValid() const;
+%Docstring
+ Returns true if the interval is valid.
+.. seealso:: setValid()
+ :rtype: bool
+%End
 
-    /** Sets whether the interval is valid.
-     * @param valid set to true to set the interval as valid.
-     * @see isValid()
-     */
     void setValid( bool valid );
+%Docstring
+ Sets whether the interval is valid.
+ \param valid set to true to set the interval as valid.
+.. seealso:: isValid()
+%End
 
     bool operator==( QgsInterval other ) const;
+%Docstring
+ :rtype: bool
+%End
 
-    /** Converts a string to an interval
-     * @param string string to parse
-     * @returns interval, or invalid interval if string could not be parsed
-     */
-    static QgsInterval fromString( const QString& string );
+    static QgsInterval fromString( const QString &string );
+%Docstring
+ Converts a string to an interval
+ \param string string to parse
+ :return: interval, or invalid interval if string could not be parsed
+ :rtype: QgsInterval
+%End
 
-    //! Allows direct construction of QVariants from intervals.
     operator QVariant() const;
+%Docstring
+Allows direct construction of QVariants from intervals.
+%End
 
 };
 
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsinterval.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

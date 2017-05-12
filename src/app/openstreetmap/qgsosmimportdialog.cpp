@@ -28,14 +28,14 @@ QgsOSMImportDialog::QgsOSMImportDialog( QWidget *parent )
 {
   setupUi( this );
 
-  connect( btnBrowseXml, SIGNAL( clicked() ), this, SLOT( onBrowseXml() ) );
-  connect( btnBrowseDb, SIGNAL( clicked() ), this, SLOT( onBrowseDb() ) );
-  connect( editXmlFileName, SIGNAL( textChanged( const QString & ) ), this, SLOT( xmlFileNameChanged( const QString & ) ) );
-  connect( editDbFileName, SIGNAL( textChanged( const QString & ) ), this, SLOT( dbFileNameChanged( const QString & ) ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( onClose() ) );
+  connect( btnBrowseXml, &QAbstractButton::clicked, this, &QgsOSMImportDialog::onBrowseXml );
+  connect( btnBrowseDb, &QAbstractButton::clicked, this, &QgsOSMImportDialog::onBrowseDb );
+  connect( editXmlFileName, &QLineEdit::textChanged, this, &QgsOSMImportDialog::xmlFileNameChanged );
+  connect( editDbFileName, &QLineEdit::textChanged, this, &QgsOSMImportDialog::dbFileNameChanged );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsOSMImportDialog::onOK );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsOSMImportDialog::onClose );
 
-  connect( mImport, SIGNAL( progress( int ) ), this, SLOT( onProgress( int ) ) );
+  connect( mImport, &QgsOSMXmlImport::progress, this, &QgsOSMImportDialog::onProgress );
 }
 
 QgsOSMImportDialog::~QgsOSMImportDialog()

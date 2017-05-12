@@ -278,6 +278,8 @@ ENDIF (WITH_QTMOBILITY)
 # search for QScintilla2 (C++ lib)
 FIND_PACKAGE(QScintilla REQUIRED)
 
+# Password helper
+FIND_PACKAGE(QtKeychain REQUIRED)
 # Master password hash and authentication encryption
 FIND_PACKAGE(QCA REQUIRED)
 # Check for runtime dependency of qca-ossl plugin

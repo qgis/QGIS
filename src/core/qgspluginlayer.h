@@ -43,13 +43,13 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     void setExtent( const QgsRectangle &extent ) override;
 
     /** Set source string. This is used for example in layer tree to show tooltip.
-     * @note added in 2.16
+     * \since QGIS 2.16
      */
     void setSource( const QString &source );
 
     //! return a list of symbology items for the legend
     //! (default implementation returns nothing)
-    //! @note Added in v2.1
+    //! \since QGIS v2.1
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
   protected:

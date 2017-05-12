@@ -26,7 +26,7 @@ class QgsAbstractGeometry;
  * The methods are available via QgsGeometry::[geometryfunction]
  * and therefore this does not need to be accessed directly.
  *
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 
 class QgsInternalGeometryEngine
@@ -36,7 +36,7 @@ class QgsInternalGeometryEngine
     /**
      * The caller is responsible that the geometry is available and unchanged
      * for the whole lifetime of this object.
-     * @param geometry
+     * \param geometry
      */
     explicit QgsInternalGeometryEngine( const QgsGeometry &geometry );
 
@@ -44,9 +44,9 @@ class QgsInternalGeometryEngine
      * Will extrude a line or (segmentized) curve by a given offset and return a polygon
      * representation of it.
      *
-     * @param x offset in x direction
-     * @param y offset in y direction
-     * @return an extruded polygon
+     * \param x offset in x direction
+     * \param y offset in y direction
+     * \returns an extruded polygon
      */
     QgsGeometry extrude( double x, double y ) const;
 
@@ -67,9 +67,34 @@ class QgsInternalGeometryEngine
      * either the vertices are within a specified tolerance of right angles or a set number of maximum
      * iterations is reached. The angle threshold parameter specifies how close to a right angle or
      * straight line an angle must be before it is attempted to be straightened.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
+
+    /**
+     * Densifies the geometry by adding the specified number of extra nodes within each
+     * segment of the geometry.
+     * If the geometry has z or m values present then these will be linearly interpolated
+     * at the added nodes.
+     * Curved geometry types are automatically segmentized by this routine.
+     * \since QGIS 3.0
+     */
+    QgsGeometry densifyByCount( int extraNodesPerSegment ) const;
+
+    /**
+     * Densifies the geometry by adding regularly placed extra nodes inside each segment
+     * so that the maximum distance between any two nodes does not exceed the
+     * specified \a distance.
+     * E.g. specifying a distance 3 would cause the segment [0 0] -> [10 0]
+     * to be converted to [0 0] -> [2.5 0] -> [5 0] -> [7.5 0] -> [10 0], since
+     * 3 extra nodes are required on the segment and spacing these at 2.5 increments
+     * allows them to be evenly spaced over the segment.
+     * If the geometry has z or m values present then these will be linearly interpolated
+     * at the added nodes.
+     * Curved geometry types are automatically segmentized by this routine.
+     * \since QGIS 3.0
+     */
+    QgsGeometry densifyByDistance( double distance ) const;
 
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;

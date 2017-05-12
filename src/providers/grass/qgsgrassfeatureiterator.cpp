@@ -69,9 +69,6 @@ void copy_boxlist_and_destroy( struct boxlist *blist, struct ilist *list )
 
 QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>( source, ownSource, request )
-  , mCanceled( false )
-  , mNextCidx( 0 )
-  , mNextLid( 1 )
 {
 
   // WARNING: the iterater cannot use mutex lock for its whole life, because QgsVectorLayerFeatureIterator is opening
@@ -92,7 +89,7 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource *source,
     mSelection.fill( true );
   }
 
-  connect( mSource->mLayer->map(), SIGNAL( cancelIterators() ), this, SLOT( cancel() ), Qt::DirectConnection );
+  connect( mSource->mLayer->map(), &QgsGrassVectorMap::cancelIterators, this, &QgsGrassFeatureIterator::cancel, Qt::DirectConnection );
 
   Qt::ConnectionType connectionType = Qt::DirectConnection;
   if ( mSource->mLayer->map()->thread() != thread() )
@@ -101,7 +98,7 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource *source,
     QgsDebugMsg( "map and iterator are on different threads -> connect closeIterators() with BlockingQueuedConnection" );
     connectionType = Qt::BlockingQueuedConnection;
   }
-  connect( mSource->mLayer->map(), SIGNAL( closeIterators() ), this, SLOT( doClose() ), connectionType );
+  connect( mSource->mLayer->map(), &QgsGrassVectorMap::closeIterators, this, &QgsGrassFeatureIterator::doClose, connectionType );
 }
 
 QgsGrassFeatureIterator::~QgsGrassFeatureIterator()

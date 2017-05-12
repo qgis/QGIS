@@ -34,7 +34,6 @@ SET(qgis_mapserv_SRCS
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
   qgsserverlogger.cpp
-  qgswfsprojectparser.cpp
   qgswmsconfigparser.cpp
   qgswmsprojectparser.cpp
   qgsserverprojectparser.cpp
@@ -49,7 +48,9 @@ SET(qgis_mapserv_SRCS
   qgsserverrequest.cpp
   qgsserverresponse.cpp
   qgsfcgiserverresponse.cpp
+  qgsfcgiserverrequest.cpp
   qgsbufferserverresponse.cpp
+  qgsbufferserverrequest.cpp
   qgsfilterresponsedecorator.cpp
   qgsserverinterface.cpp
   qgsserverinterfaceimpl.cpp
@@ -105,6 +106,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${QGIS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core
@@ -116,6 +118,7 @@ INCLUDE_DIRECTORIES(
   ../core/auth
   ../core/dxf
   ../core/geometry
+  ../core/metadata
   ../core/raster
   ../core/symbology-ng
   ../core/composer

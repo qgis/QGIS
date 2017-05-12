@@ -180,7 +180,7 @@ acqures:acquires
 acquring:acquiring
 actaul:actual
 actaully:actually
-actived:activated
+actived:activated:*
 activete:activate
 activites:activities
 activly:actively
@@ -759,6 +759,7 @@ atorney:attorney
 atribute:attribute
 atributed:attributed
 atributes:attributes
+atrributes:attributes
 attachement:attachment
 attaindre:attainder
 attatch:attach
@@ -1292,6 +1293,7 @@ cleints:clients
 clera:clear
 clincial:clinical
 clinicaly:clinically
+clipoing:clipping
 closeing:closing
 cmoputer:computer
 co-incided:coincided
@@ -1543,6 +1545,7 @@ condidtions:conditions
 conditionaly:conditionally
 conditionnaly:conditionally
 conditionsof:conditions of
+condtion:condition
 conect:connect
 conected:connected
 conecting:connecting
@@ -2115,6 +2118,7 @@ determinining:determining
 determins:determines
 determinstic:deterministic
 determinstically:deterministically
+detination:destination
 detremental:detrimental
 detroy:destroy
 detroyed:destroyed
@@ -3112,6 +3116,7 @@ gausian:Gaussian
 geneological:genealogical
 geneologies:genealogies
 geneology:genealogy
+generaates:generates
 generaly:generally
 generater:generator
 generaters:generators
@@ -3131,6 +3136,7 @@ genreated:generated
 genreates:generates
 genreating:generating
 genric:generic
+geographich:geographic
 geographicial:geographical
 geometrician:geometer
 geometricians:geometers
@@ -3147,6 +3153,7 @@ glyphes:glyphs
 gnawwed:gnawed
 godess:goddess
 godesses:goddesses
+goemetries:geometries
 Godounov:Godunov
 gogin:going
 goign:going
@@ -4315,6 +4322,7 @@ mentionned:mentioned
 mercentile:mercantile
 mesage:message
 mesages:messages
+mesaureed:measured
 messagin:messaging
 messags:messages
 messanger:messenger
@@ -4566,6 +4574,7 @@ neigbour:neighbor
 neigbourhood:neighbourhood
 neigbouring:neighboring
 neigbours:neighbors
+neighbout:neighbor
 neolitic:neolithic
 nescessarily:necessarily
 nescessary:necessary
@@ -4720,6 +4729,7 @@ officals:officials
 officaly:officially
 officialy:officially
 offred:offered
+offseting:offsetting
 oftenly:often
 ofthe:of the
 oging:going
@@ -5191,6 +5201,7 @@ poulations:populations
 poverful:powerful
 poweful:powerful
 powerfull:powerful
+ppolygons:polygons
 ppublisher:publisher
 practial:practical
 practially:practically
@@ -5492,6 +5503,7 @@ pususading:persuading
 puting:putting:*
 pwoer:power
 pyscic:psychic
+qgsi:qgis
 qoute:quote
 qouted:quoted
 qoutes:quotes
@@ -5819,7 +5831,7 @@ repetions:repetitions
 repid:rapid
 replacable:replaceable
 replacments:replacements
-replys:replies
+replys:replies:*
 reponse:response
 reponses:responses
 reponsibilities:responsibilities
@@ -7279,6 +7291,7 @@ usetnet:Usenet
 usuable:usable
 usualy:usually
 ususally:usually
+utilise:utilize
 utilites:utilities
 utillities:utilities
 utilties:utilities
@@ -7297,6 +7310,7 @@ vailidty:validity
 valetta:valletta
 validing:validating
 valied:valid
+valu:value
 valuble:valuable
 valueable:valuable
 varable:variable
@@ -7322,6 +7336,7 @@ vauled:valued
 vaules:values
 vauling:valuing
 vebrose:verbose
+vecotr:vector
 vegatarian:vegetarian
 vegitable:vegetable
 vegitables:vegetables

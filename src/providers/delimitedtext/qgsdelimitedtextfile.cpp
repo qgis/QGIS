@@ -114,7 +114,7 @@ bool QgsDelimitedTextFile::open()
       {
         mWatcher = new QFileSystemWatcher();
         mWatcher->addPath( mFileName );
-        connect( mWatcher, SIGNAL( fileChanged( QString ) ), this, SLOT( updateFile() ) );
+        connect( mWatcher, &QFileSystemWatcher::fileChanged, this, &QgsDelimitedTextFile::updateFile );
       }
     }
   }

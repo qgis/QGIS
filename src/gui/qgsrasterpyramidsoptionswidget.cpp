@@ -70,8 +70,8 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   // validate string, only space-separated positive integers are allowed
   lePyramidsLevels->setEnabled( cbxPyramidsLevelsCustom->isChecked() );
   lePyramidsLevels->setValidator( new QRegExpValidator( QRegExp( "(\\d*)(\\s\\d*)*" ), lePyramidsLevels ) );
-  connect( lePyramidsLevels, SIGNAL( textEdited( const QString & ) ),
-           this, SLOT( setOverviewList() ) );
+  connect( lePyramidsLevels, &QLineEdit::textEdited,
+           this, &QgsRasterPyramidsOptionsWidget::setOverviewList );
 
   // overview list
   if ( mOverviewCheckBoxes.isEmpty() )
@@ -82,8 +82,8 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
     Q_FOREACH ( int i, overviewList )
     {
       mOverviewCheckBoxes[ i ] = new QCheckBox( QString::number( i ), this );
-      connect( mOverviewCheckBoxes[ i ], SIGNAL( toggled( bool ) ),
-               this, SLOT( setOverviewList() ) );
+      connect( mOverviewCheckBoxes[ i ], &QCheckBox::toggled,
+               this, &QgsRasterPyramidsOptionsWidget::setOverviewList );
       layoutPyramidsLevels->addWidget( mOverviewCheckBoxes[ i ] );
     }
   }
@@ -102,12 +102,12 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
 
   mSaveOptionsWidget->updateProfiles();
 
-  connect( cbxPyramidsFormat, SIGNAL( currentIndexChanged( int ) ),
-           this, SIGNAL( someValueChanged() ) );
-  connect( cboResamplingMethod, SIGNAL( currentIndexChanged( int ) ),
-           this, SIGNAL( someValueChanged() ) );
-  connect( mSaveOptionsWidget, SIGNAL( optionsChanged() ),
-           this, SIGNAL( someValueChanged() ) );
+  connect( cbxPyramidsFormat, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsRasterPyramidsOptionsWidget::someValueChanged );
+  connect( cboResamplingMethod, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsRasterPyramidsOptionsWidget::someValueChanged );
+  connect( mSaveOptionsWidget, &QgsRasterFormatSaveOptionsWidget::optionsChanged,
+           this, &QgsRasterPyramidsOptionsWidget::someValueChanged );
 }
 
 QString QgsRasterPyramidsOptionsWidget::resamplingMethod() const

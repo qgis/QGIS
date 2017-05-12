@@ -23,7 +23,7 @@ from builtins import range
 
 from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
-from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
+from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard, QFontDatabase
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 import sys
@@ -116,9 +116,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.newShortcutCSS.activated.connect(self.showHistory)
 
     def _setMinimumHeight(self):
-        fnt = self.settings.value("pythonConsole/fontfamilytext", "Monospace")
-        fntSize = self.settings.value("pythonConsole/fontsize", 10, type=int)
-        fm = QFontMetrics(QFont(fnt, fntSize))
+        font = self.lexer.defaultFont(0)
+        fm = QFontMetrics(font)
 
         self.setMinimumHeight(fm.height() + 10)
 
@@ -178,16 +177,14 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def setLexers(self):
         self.lexer = QsciLexerPython()
 
-        loadFont = self.settings.value("pythonConsole/fontfamilytext", "Monospace")
-        fontSize = self.settings.value("pythonConsole/fontsize", 10, type=int)
+        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
 
-        font = QFont(loadFont)
-        font.setFixedPitch(True)
-        font.setPointSize(fontSize)
-        font.setStyleHint(QFont.TypeWriter)
-        font.setStretch(QFont.SemiCondensed)
-        font.setLetterSpacing(QFont.PercentageSpacing, 87.0)
-        font.setBold(False)
+        loadFont = self.settings.value("pythonConsole/fontfamilytext")
+        if loadFont:
+            font.setFamily(loadFont)
+        fontSize = self.settings.value("pythonConsole/fontsize", type=int)
+        if fontSize:
+            font.setPointSize(fontSize)
 
         self.lexer.setDefaultFont(font)
         self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))

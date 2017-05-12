@@ -16,6 +16,7 @@
 #define QGSSINGLESYMBOLRENDERERV2WIDGET_H
 
 #include "qgsrendererwidget.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsSingleSymbolRenderer;
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     Q_OBJECT
 
   public:
-    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     QgsSingleSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsSingleSymbolRendererWidget();
@@ -43,7 +44,7 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     /**
      * Set the widget in dock mode which tells the widget to emit panel
      * widgets and not open dialogs
-     * @param dockMode True to enable dock mode.
+     * \param dockMode True to enable dock mode.
      */
     virtual void setDockMode( bool dockMode ) override;
 

@@ -41,6 +41,7 @@ INCLUDE_DIRECTORIES (
   ../../core/auth
   ../../core/geometry
   ../../core/symbology-ng  # needed by qgsvectorfilewriter.h
+  ../../core/metadata
   ../../gui
   ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
@@ -53,6 +54,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${EXPAT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR} # needed by qgsvectorfilewriter.h
   ${SQLITE3_INCLUDE_DIR}
 )

@@ -178,8 +178,8 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
   showMore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   showMore->addAction( act );
   showMore->setDefaultAction( act );
-  connect( showMore, SIGNAL( triggered( QAction * ) ), mv, SLOT( exec() ) );
-  connect( showMore, SIGNAL( triggered( QAction * ) ), showMore, SLOT( deleteLater() ) );
+  connect( showMore, &QToolButton::triggered, mv, &QDialog::exec );
+  connect( showMore, &QToolButton::triggered, showMore, &QObject::deleteLater );
 
   // no timeout set, since notice needs attention and is only shown first time layer is labeled
   QgsMessageBarItem *errorMsg = new QgsMessageBarItem(

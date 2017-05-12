@@ -16,6 +16,7 @@
 #define QGSRENDERERV2REGISTRY_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QIcon>
 #include <QMap>
 #include <QStringList>
@@ -31,7 +32,7 @@ class QgsRendererWidget;
 /** \ingroup core
  Stores metadata about one renderer class.
 
- @note It's necessary to implement createRenderer() function.
+ \note It's necessary to implement createRenderer() function.
    In C++ you can use QgsRendererMetadata convenience class.
  */
 class CORE_EXPORT QgsRendererAbstractMetadata
@@ -39,7 +40,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
   public:
 
     //! Layer types the renderer is compatible with
-    //! @note added in QGIS 2.16
+    //! \since QGIS 2.16
     enum LayerType
     {
       PointLayer = 1, //!< Compatible with point layers
@@ -63,13 +64,13 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     /** Returns flags indicating the types of layer the renderer is compatible with.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual LayerTypes compatibleLayerTypes() const { return All; }
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
-    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) = 0;
+    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) = 0 SIP_FACTORY;
 
     /** Return new instance of settings widget for the renderer. Returns NULL on error.
      *
@@ -109,33 +110,33 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
   public:
 
     //! Construct metadata
-    //! @note not available in python bindings
+    //! \note not available in Python bindings
     QgsRendererMetadata( const QString &name,
                          const QString &visibleName,
                          QgsRendererCreateFunc pfCreate,
                          const QIcon &icon = QIcon(),
                          QgsRendererWidgetFunc pfWidget = nullptr,
-                         QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All )
-      : QgsRendererAbstractMetadata( name, visibleName, icon )
-      , mCreateFunc( pfCreate )
-      , mWidgetFunc( pfWidget )
-      , mCreateFromSldFunc( nullptr )
-      , mLayerTypes( layerTypes )
+                         QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) SIP_SKIP
+  : QgsRendererAbstractMetadata( name, visibleName, icon )
+    , mCreateFunc( pfCreate )
+    , mWidgetFunc( pfWidget )
+    , mCreateFromSldFunc( nullptr )
+    , mLayerTypes( layerTypes )
     {}
 
-    //! @note not available in python bindings
+    //! \note not available in Python bindings
     QgsRendererMetadata( const QString &name,
                          const QString &visibleName,
                          QgsRendererCreateFunc pfCreate,
                          QgsRendererCreateFromSldFunc pfCreateFromSld,
                          const QIcon &icon = QIcon(),
                          QgsRendererWidgetFunc pfWidget = nullptr,
-                         QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All )
-      : QgsRendererAbstractMetadata( name, visibleName, icon )
-      , mCreateFunc( pfCreate )
-      , mWidgetFunc( pfWidget )
-      , mCreateFromSldFunc( pfCreateFromSld )
-      , mLayerTypes( layerTypes )
+                         QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) SIP_SKIP
+  : QgsRendererAbstractMetadata( name, visibleName, icon )
+    , mCreateFunc( pfCreate )
+    , mWidgetFunc( pfWidget )
+    , mCreateFromSldFunc( pfCreateFromSld )
+    , mLayerTypes( layerTypes )
     {}
 
     virtual ~QgsRendererMetadata() = default;
@@ -146,15 +147,15 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) override
     { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
 
-    //! @note not available in python bindings
-    QgsRendererCreateFunc createFunction() const { return mCreateFunc; }
-    //! @note not available in python bindings
-    QgsRendererWidgetFunc widgetFunction() const { return mWidgetFunc; }
-    //! @note not available in python bindings
-    QgsRendererCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
+    //! \note not available in Python bindings
+    QgsRendererCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
+    //! \note not available in Python bindings
+    QgsRendererWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
+    //! \note not available in Python bindings
+    QgsRendererCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; } SIP_SKIP
 
-    //! @note not available in python bindings
-    void setWidgetFunction( QgsRendererWidgetFunc f ) { mWidgetFunc = f; }
+    //! \note not available in Python bindings
+    void setWidgetFunction( QgsRendererWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const override { return mLayerTypes; }
 
@@ -194,14 +195,14 @@ class CORE_EXPORT QgsRendererRegistry
     QgsRendererRegistry &operator=( const QgsRendererRegistry &rh ) = delete;
 
     //! Adds a renderer to the registry. Takes ownership of the metadata object.
-    //! @param metadata renderer metadata
-    //! @returns true if renderer was added successfully, or false if renderer could not
+    //! \param metadata renderer metadata
+    //! \returns true if renderer was added successfully, or false if renderer could not
     //! be added (e.g., a renderer with a duplicate name already exists)
-    bool addRenderer( QgsRendererAbstractMetadata *metadata );
+    bool addRenderer( QgsRendererAbstractMetadata *metadata SIP_TRANSFER );
 
     //! Removes a renderer from registry.
-    //! @param rendererName name of renderer to remove from registry
-    //! @returns true if renderer was successfully removed, or false if matching
+    //! \param rendererName name of renderer to remove from registry
+    //! \returns true if renderer was successfully removed, or false if matching
     //! renderer could not be found
     bool removeRenderer( const QString &rendererName );
 
@@ -210,12 +211,12 @@ class CORE_EXPORT QgsRendererRegistry
     QgsRendererAbstractMetadata *rendererMetadata( const QString &rendererName );
 
     //! Returns a list of available renderers.
-    //! @param layerTypes flags to filter the renderers by compatible layer types
+    //! \param layerTypes flags to filter the renderers by compatible layer types
     QStringList renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) const;
 
     //! Returns a list of available renderers which are compatible with a specified layer.
-    //! @param layer vector layer
-    //! @note added in QGIS 2.16
+    //! \param layer vector layer
+    //! \since QGIS 2.16
     QStringList renderersList( const QgsVectorLayer *layer ) const;
 
   private:

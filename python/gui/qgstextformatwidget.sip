@@ -27,7 +27,7 @@ class QgsTextFormatWidget : QWidget
      * @param mapCanvas associated map canvas
      * @param parent parent widget
      */
-    QgsTextFormatWidget( const QgsTextFormat& format = QgsTextFormat(), QgsMapCanvas* mapCanvas = nullptr, QWidget* parent /TransferThis/ = nullptr );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
 
     ~QgsTextFormatWidget();
 
@@ -61,17 +61,17 @@ class QgsTextFormatWidget : QWidget
      * @param parent parent widget
      * @param mode widget mode
      */
-    QgsTextFormatWidget( QgsMapCanvas* mapCanvas, QWidget* parent /TransferThis/, Mode mode );
+    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent /TransferThis/, Mode mode );
 
     /** Updates the widget's state to reflect the settings in a QgsTextFormat.
      * @param format source format
      */
-    void updateWidgetForFormat( const QgsTextFormat& format );
+    void updateWidgetForFormat( const QgsTextFormat &format );
 
     /** Sets the background color for the text preview widget.
      * @param color background color
      */
-    void setPreviewBackground( const QColor& color );
+    void setPreviewBackground( const QColor &color );
 
     /** Controls whether data defined alignment buttons are enabled.
      * @param enable set to true to enable alignment controls
@@ -111,7 +111,7 @@ class QgsTextFormatDialog : QDialog
      * @param parent parent widget
      * @param fl window flags for dialog
      */
-    QgsTextFormatDialog( const QgsTextFormat& format, QgsMapCanvas* mapCanvas = nullptr, QWidget* parent /TransferThis/ = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     virtual ~QgsTextFormatDialog();
 
@@ -143,7 +143,7 @@ class QgsTextFormatPanelWidget : QgsPanelWidgetWrapper
      * @param mapCanvas optional associated map canvas
      * @param parent parent widget
      */
-    QgsTextFormatPanelWidget( const QgsTextFormat& format, QgsMapCanvas* mapCanvas = nullptr, QWidget* parent /TransferThis/ = nullptr );
+    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
 
     /** Returns the current formatting settings defined by the widget.
      */

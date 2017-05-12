@@ -18,6 +18,7 @@
 #define QGSAUTHMANAGER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QObject>
 #include <QMutex>
 #include <QNetworkReply>
@@ -36,6 +37,9 @@
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
+
+// Qt5KeyChain library
+#include "keychain.h"
 
 namespace QCA
 {
@@ -67,7 +71,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     };
 
     /** Enforce singleton pattern
-     * @note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
+     * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
      */
     static QgsAuthManager *instance();
 
@@ -92,26 +96,26 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QString disabledMessage() const;
 
     /** The standard authentication database file in ~/.qgis3/ or defined location
-     * @see QgsApplication::qgisAuthDatabaseFilePath
+     * \see QgsApplication::qgisAuthDatabaseFilePath
      */
     const QString authenticationDatabasePath() const { return mAuthDbPath; }
 
     /** Main call to initially set or continually check master password is set
-     * @note If it is not set, the user is asked for its input
-     * @param verify Whether password's hash was saved in authentication database
+     * \note If it is not set, the user is asked for its input
+     * \param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( bool verify = false );
 
     /** Overloaded call to reset master password or set it initially without user interaction
-     * @note Only use this in trusted reset functions, unit tests or user/app setup scripts!
-     * @param pass Password to use
-     * @param verify Whether password's hash was saved in authentication database
+     * \note Only use this in trusted reset functions, unit tests or user/app setup scripts!
+     * \param pass Password to use
+     * \param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( const QString &pass, bool verify = false );
 
     /** Verify the supplied master password against any existing hash in authentication database
-     * @note Do not emit verification signals when only comparing
-     * @param compare Password to compare against
+     * \note Do not emit verification signals when only comparing
+     * \param compare Password to compare against
      */
     bool verifyMasterPassword( const QString &compare = QString::null );
 
@@ -122,31 +126,31 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool masterPasswordHashInDatabase() const;
 
     /** Clear supplied master password
-     * @note This will not necessarily clear authenticated connections cached in network connection managers
+     * \note This will not necessarily clear authenticated connections cached in network connection managers
      */
     void clearMasterPassword() { mMasterPass = QString(); }
 
     /** Check whether supplied password is the same as the one already set
-     * @param pass Password to verify
+     * \param pass Password to verify
      */
     bool masterPasswordSame( const QString &pass ) const;
 
     /** Reset the master password to a new one, then re-encrypt all previous
      * configs in a new database file, optionally backup curren database
-     * @param newpass New master password to replace existing
-     * @param oldpass Current master password to replace existing
-     * @param keepbackup Whether to keep the generated backup of current database
-     * @param backuppath Where the backup is located, if kept
+     * \param newpass New master password to replace existing
+     * \param oldpass Current master password to replace existing
+     * \param keepbackup Whether to keep the generated backup of current database
+     * \param backuppath Where the backup is located, if kept
      */
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath = nullptr );
 
     /** Whether there is a scheduled opitonal erase of authentication database.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
-    bool scheduledAuthDatabaseErase() { return mScheduledDbErase; }
+    bool scheduledAuthDatabaseErase() { return mScheduledDbErase; } SIP_SKIP
 
     /** Schedule an optional erase of authentication database, starting when mutex is lockable.
-     * @note When an erase is scheduled, any attempt to set the master password,
+     * \note When an erase is scheduled, any attempt to set the master password,
      * e.g. password input dialog, is effectively canceled.
      * For example: In a GUI app, this keeps excess password input dialogs from popping
      * up when a user has initiated an erase, from a password input dialog, because
@@ -154,15 +158,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * The created schedule timer will emit a request to gain access to the user,
      * through the given application, to prompt the erase operation (e.g. via a dialog);
      * if no access to user interaction occurs wihtin 90 seconds, it cancels the schedule.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
-    void setScheduledAuthDatabaseErase( bool scheduleErase );
+    void setScheduledAuthDatabaseErase( bool scheduleErase ) SIP_SKIP;
 
     /** Re-emit a signal to schedule an optional erase of authentication database.
-     * @note This can be called from the slot connected to a previously emitted scheduling signal,
+     * \note This can be called from the slot connected to a previously emitted scheduling signal,
      * so that the slot can ask for another emit later, if the slot noticies the current GUI
      * processing state is not ready for interacting with the user, e.g. project is still loading
-     * @param emitted Setting to false will cause signal to be emitted by the schedule timer.
+     * \param emitted Setting to false will cause signal to be emitted by the schedule timer.
      * Setting to true will stop any emitting, but will not stop the schedule timer.
      */
     void setScheduledAuthDatabaseEraseRequestEmitted( bool emitted ) { mScheduledDbEraseRequestEmitted = emitted; }
@@ -181,13 +185,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Get authentication method from the config/provider cache
-     * @param authcfg Authentication config id
+     * \param authcfg Authentication config id
      */
     QgsAuthMethod *configAuthMethod( const QString &authcfg );
 
     /**
      * Get key of authentication method associated with config ID
-     * @param authcfg
+     * \param authcfg
      */
     QString configAuthMethodKey( const QString &authcfg ) const;
 
@@ -198,27 +202,27 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Get authentication method from the config/provider cache via its key
-     * @param authMethodKey Authentication method key
+     * \param authMethodKey Authentication method key
      */
     QgsAuthMethod *authMethod( const QString &authMethodKey );
 
     /**
      * Get available authentication methods mapped to their key
-     * @param dataprovider Provider key filter, returning only methods that support a particular provider
-     * @note not available in Python bindings
+     * \param dataprovider Provider key filter, returning only methods that support a particular provider
+     * \note not available in Python bindings
      */
-    QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() );
+    QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() ) SIP_SKIP;
 
     /**
      * Get authentication method edit widget via its key
-     * @param authMethodKey Authentication method key
-     * @param parent Parent widget
+     * \param authMethodKey Authentication method key
+     * \param parent Parent widget
      */
     QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
 
     /**
      * Get supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
-     * @param authcfg
+     * \param authcfg
      */
     QgsAuthMethod::Expansions supportedAuthMethodExpansions( const QString &authcfg );
 
@@ -227,13 +231,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Verify if provided authentication id is unique
-     * @param id Id to check
+     * \param id Id to check
      */
     bool configIdUnique( const QString &id ) const;
 
     /**
      * Return whether a string includes an authcfg ID token
-     * @param txt String to check
+     * \param txt String to check
      */
     bool hasConfigId( const QString &txt ) const;
 
@@ -245,51 +249,51 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Store an authentication config in the database
-     * @param mconfig Associated authentication config id
-     * @return Whether operation succeeded
+     * \param mconfig Associated authentication config id
+     * \returns Whether operation succeeded
      */
     bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig );
 
     /**
      * Update an authentication config in the database
-     * @param config Associated authentication config id
-     * @return Whether operation succeeded
+     * \param config Associated authentication config id
+     * \returns Whether operation succeeded
      */
     bool updateAuthenticationConfig( const QgsAuthMethodConfig &config );
 
     /**
      * Load an authentication config from the database into subclass
-     * @param authcfg Associated authentication config id
-     * @param mconfig Subclassed config to load into
-     * @param full Whether to decrypt and populate all sensitive data in subclass
-     * @return Whether operation succeeded
+     * \param authcfg Associated authentication config id
+     * \param mconfig Subclassed config to load into
+     * \param full Whether to decrypt and populate all sensitive data in subclass
+     * \returns Whether operation succeeded
      */
     bool loadAuthenticationConfig( const QString &authcfg, QgsAuthMethodConfig &mconfig, bool full = false );
 
     /**
      * Remove an authentication config in the database
-     * @param authcfg Associated authentication config id
-     * @return Whether operation succeeded
+     * \param authcfg Associated authentication config id
+     * \returns Whether operation succeeded
      */
     bool removeAuthenticationConfig( const QString &authcfg );
 
     /**
      * Clear all authentication configs from table in database and from provider caches
-     * @return Whether operation succeeded
+     * \returns Whether operation succeeded
      */
     bool removeAllAuthenticationConfigs();
 
     /**
      * Close connection to current authentication database and back it up
-     * @return Path to backup
+     * \returns Path to backup
      */
     bool backupAuthenticationDatabase( QString *backuppath = nullptr );
 
     /**
      * Erase all rows from all tables in authentication database
-     * @param backup Whether to backup of current database
-     * @param backuppath Where the backup is locate
-     * @return Whether operation succeeded
+     * \param backup Whether to backup of current database
+     * \param backuppath Where the backup is locate
+     * \returns Whether operation succeeded
      */
     bool eraseAuthenticationDatabase( bool backup, QString *backuppath = nullptr );
 
@@ -298,30 +302,30 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Provider call to update a QNetworkRequest with an authentication config
-     * @param request The QNetworkRequest
-     * @param authcfg Associated authentication config id
-     * @param dataprovider Provider key filter, offering logic branching in authentication method
-     * @return Whether operation succeeded
+     * \param request The QNetworkRequest
+     * \param authcfg Associated authentication config id
+     * \param dataprovider Provider key filter, offering logic branching in authentication method
+     * \returns Whether operation succeeded
      */
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
                                const QString &dataprovider = QString() );
 
     /**
      * Provider call to update a QNetworkReply with an authentication config (used to skip known SSL errors, etc.)
-     * @param reply The QNetworkReply
-     * @param authcfg Associated authentication config id
-     * @param dataprovider Provider key filter, offering logic branching in authentication method
-     * @return Whether operation succeeded
+     * \param reply The QNetworkReply
+     * \param authcfg Associated authentication config id
+     * \param dataprovider Provider key filter, offering logic branching in authentication method
+     * \returns Whether operation succeeded
      */
     bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
                              const QString &dataprovider = QString() );
 
     /**
      * Provider call to update a QgsDataSourceUri with an authentication config
-     * @param connectionItems The connection items, e.g. username=myname, of QgsDataSourceUri
-     * @param authcfg Associated authentication config id
-     * @param dataprovider Provider key filter, offering logic branching in authentication method
-     * @return Whether operation succeeded
+     * \param connectionItems The connection items, e.g. username=myname, of QgsDataSourceUri
+     * \param authcfg Associated authentication config id
+     * \param dataprovider Provider key filter, offering logic branching in authentication method
+     * \returns Whether operation succeeded
      */
     bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
                                    const QString &dataprovider = QString() );
@@ -353,9 +357,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QSslCertificate getCertIdentity( const QString &id );
 
     /** Get a certificate identity bundle by id (sha hash).
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
-    const QPair<QSslCertificate, QSslKey> getCertIdentityBundle( const QString &id );
+    const QPair<QSslCertificate, QSslKey> getCertIdentityBundle( const QString &id ) SIP_SKIP;
 
     //! Get a certificate identity bundle by id (sha hash) returned as PEM text
     const QStringList getCertIdentityBundleToPem( const QString &id );
@@ -392,9 +396,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool removeSslCertCustomConfig( const QString &id, const QString &hostport );
 
     /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
-    QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; }
+    QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; } SIP_SKIP
 
     //! Utility function to dump the cache for debug purposes
     void dumpIgnoredSslErrorsCache_();
@@ -437,9 +441,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QMap<QString, QSslCertificate> getMappedDatabaseCAs();
 
     /** Get all CA certs mapped to their sha1 from cache.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
-    const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > getCaCertsCache()
+    const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > getCaCertsCache() SIP_SKIP
     {
       return mCaCertsCache;
     }
@@ -451,7 +455,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy );
 
     /** Get a whether certificate is trusted by user
-        @return DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+        \returns DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
      */
     QgsAuthCertUtils::CertTrustPolicy getCertTrustPolicy( const QSslCertificate &cert );
 
@@ -496,20 +500,76 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Return pointer to mutex
     QMutex *mutex() { return mMutex; }
 
+    //! Error message getter
+    //! @note not available in Python bindings
+    const QString passwordHelperErrorMessage() { return mPasswordHelperErrorMessage; } SIP_SKIP
+
+    //! Delete master password from wallet
+    //! @note not available in Python bindings
+    bool passwordHelperDelete() SIP_SKIP;
+
+    //! Password helper enabled getter
+    //! @note not available in Python bindings
+    bool passwordHelperEnabled() const SIP_SKIP;
+
+    //! Password helper enabled setter
+    //! @note not available in Python bindings
+    void setPasswordHelperEnabled( const bool enabled ) SIP_SKIP;
+
+    //! Password helper logging enabled getter
+    //! @note not available in Python bindings
+    bool passwordHelperLoggingEnabled() const SIP_SKIP;
+
+    //! Password helper logging enabled setter
+    //! @note not available in Python bindings
+    void setPasswordHelperLoggingEnabled( const bool enabled ) SIP_SKIP;
+
+    //! Store the password manager into the wallet
+    //! @note not available in Python bindings
+    bool passwordHelperSync( ) SIP_SKIP;
+
+    //! The display name of the password helper (platform dependent)
+    static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
+
+    //! The display name of the Authentication Manager
+    static const QString AUTH_MAN_TAG;
+
   signals:
 
     /**
+     * Signals emitted on password helper failure,
+     * mainly used in the tests to exit main application loop
+     */
+    void passwordHelperFailure();
+
+    /**
+     * Signals emitted on password helper success,
+     * mainly used in the tests to exit main application loop
+     */
+    void passwordHelperSuccess();
+
+    /**
      * Custom logging signal to relay to console output and QgsMessageLog
+     * \see QgsMessageLog
+     * \param message Message to send
+     * \param tag Associated tag (title)
+     * \param level Message log level
+     */
+    void messageOut( const QString &message, const QString &tag = AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
+
+    /**
+     * Custom logging signal to inform the user about master password <-> password manager interactions
      * @see QgsMessageLog
      * @param message Message to send
      * @param tag Associated tag (title)
      * @param level Message log level
      */
-    void messageOut( const QString &message, const QString &tag = AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
+    void passwordHelperMessageOut( const QString &message, const QString &tag = AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
+
 
     /**
      * Emitted when a password has been verify (or not)
-     * @param verified The state of password's verification
+     * \param verified The state of password's verification
      */
     void masterPasswordVerified( bool verified ) const;
 
@@ -543,6 +603,31 @@ class CORE_EXPORT QgsAuthManager : public QObject
     explicit QgsAuthManager();
 
   private:
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Password Helper methods
+
+    //! Return name for logging
+    QString passwordHelperName() const;
+
+    //! Print a debug message in QGIS
+    void passwordHelperLog( const QString &msg ) const;
+
+    //! Read Master password from the wallet
+    QString passwordHelperRead();
+
+    //! Store Master password in the wallet
+    bool passwordHelperWrite( const QString &password );
+
+    //! Error message setter
+    void passwordHelperSetErrorMessage( const QString errorMessage ) { mPasswordHelperErrorMessage = errorMessage; }
+
+    //! Clear error code and message
+    void passwordHelperClearErrors();
+
+    //! Process the error: show it and/or disable the password helper system in case of
+    //! access denied or no backend, reset error flags at the end
+    void passwordHelperProcessError();
 
     bool createConfigTables();
 
@@ -604,7 +689,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
     static const QString AUTH_SERVERS_TABLE;
     static const QString AUTH_AUTHORITIES_TABLE;
     static const QString AUTH_TRUST_TABLE;
-    static const QString AUTH_MAN_TAG;
     static const QString AUTH_CFG_REGEX;
 
     bool mAuthInit;
@@ -637,6 +721,31 @@ class CORE_EXPORT QgsAuthManager : public QObject
     // cache of SSL errors to be ignored in network connections, per sha-hostport
     QHash<QString, QSet<QSslError::SslError> > mIgnoredSslErrorsCache;
 #endif
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Password Helper Variables
+
+    //! Master password verification has failed
+    bool mPasswordHelperVerificationError;
+
+    //! Store last error message
+    QString mPasswordHelperErrorMessage;
+
+    //! Store last error code (enum)
+    QKeychain::Error mPasswordHelperErrorCode;
+
+    //! Enable logging
+    bool mPasswordHelperLoggingEnabled;
+
+    //! Whether the keychain bridge failed to initialize
+    bool mPasswordHelperFailedInit;
+
+    //! Master password name in the wallets
+    static const QLatin1String AUTH_PASSWORD_HELPER_KEY_NAME;
+
+    //! password helper folder in the wallets
+    static const QLatin1String AUTH_PASSWORD_HELPER_FOLDER_NAME;
+
 };
 
 #endif // QGSAUTHMANAGER_H

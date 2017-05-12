@@ -15,6 +15,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (
     QgsField,
+    QgsFields,
     QgsLayerDefinition,
     QgsPoint,
     QgsPathResolver,
@@ -23,7 +24,9 @@ from qgis.core import (
     QgsFeature,
     QgsGeometry,
     QgsWkbTypes,
-    NULL
+    NULL,
+    QgsMemoryProviderUtils,
+    QgsCoordinateReferenceSystem
 )
 
 from qgis.testing import (
@@ -334,6 +337,58 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         fet = next(layer.getFeatures())
         self.assertEqual(fet.fields()[1].name(), 'mapinfo_is_the_stone_age')
         self.assertEqual(fet.fields()[2].name(), 'super_size')
+
+    def testCreateMemoryLayer(self):
+        """
+        Test QgsMemoryProviderUtils.createMemoryLayer()
+        """
+
+        # no fields
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields())
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.name(), 'my name')
+        self.assertTrue(layer.fields().isEmpty())
+
+        # geometry type
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.Point)
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Point)
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM)
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.PolygonZM)
+
+        # crs
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM, QgsCoordinateReferenceSystem.fromEpsgId(3111))
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.PolygonZM)
+        self.assertTrue(layer.crs().isValid())
+        self.assertEqual(layer.crs().authid(), 'EPSG:3111')
+
+        # fields
+        fields = QgsFields()
+        fields.append(QgsField("string", QVariant.String))
+        fields.append(QgsField("long", QVariant.LongLong))
+        fields.append(QgsField("double", QVariant.Double))
+        fields.append(QgsField("integer", QVariant.Int))
+        fields.append(QgsField("date", QVariant.Date))
+        fields.append(QgsField("datetime", QVariant.DateTime))
+        fields.append(QgsField("time", QVariant.Time))
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
+        self.assertTrue(layer.isValid())
+        self.assertFalse(layer.fields().isEmpty())
+        self.assertEqual(len(layer.fields()), len(fields))
+        for i in range(len(fields)):
+            self.assertEqual(layer.fields()[i].name(), fields[i].name())
+            self.assertEqual(layer.fields()[i].type(), fields[i].type())
+
+        # unsupported field type
+        fields = QgsFields()
+        fields.append(QgsField("rect", QVariant.RectF))
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
+        self.assertTrue(layer.isValid())
+        self.assertFalse(layer.fields().isEmpty())
+        self.assertEqual(layer.fields()[0].name(), 'rect')
+        self.assertEqual(layer.fields()[0].type(), QVariant.String) # should be mapped to string
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):

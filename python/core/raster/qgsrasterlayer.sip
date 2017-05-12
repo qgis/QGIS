@@ -65,50 +65,50 @@ class QgsRasterLayer : QgsMapLayer
      *  but some sort of error occurs in processing the file, the error is
      *  returned in retError.
      */
-    static bool isValidRasterFileName( const QString & fileNameQString, QString &retError );
-    static bool isValidRasterFileName( const QString & fileNameQString );
+    static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
+    static bool isValidRasterFileName( const QString &fileNameQString );
 
     /** Return time stamp for given file name */
     static QDateTime lastModified( const QString &  name );
 
     /** [ data provider interface ] Set the data provider */
-    void setDataProvider( const QString & provider );
+    void setDataProvider( const QString &provider );
 
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType();
 
     /** Set raster renderer. Takes ownership of the renderer object*/
-    void setRenderer( QgsRasterRenderer* renderer /Transfer/ );
-    QgsRasterRenderer* renderer() const;
+    void setRenderer( QgsRasterRenderer *renderer /Transfer/ );
+    QgsRasterRenderer *renderer() const;
 
     /** Set raster resample filter. Takes ownership of the resample filter object*/
-    QgsRasterResampleFilter * resampleFilter() const;
+    QgsRasterResampleFilter *resampleFilter() const;
 
-    QgsBrightnessContrastFilter * brightnessFilter() const;
-    QgsHueSaturationFilter * hueSaturationFilter() const;
+    QgsBrightnessContrastFilter *brightnessFilter() const;
+    QgsHueSaturationFilter *hueSaturationFilter() const;
 
     /** Get raster pipe */
-    QgsRasterPipe * pipe();
+    QgsRasterPipe *pipe();
 
-    /** \brief Accessor that returns the width of the (unclipped) raster  */
+    /** \brief Accessor that returns the width of the (unclipped) raster */
     int width() const;
 
     /** \brief Accessor that returns the height of the (unclipped) raster */
     int height() const;
 
-    /** \brief Get the number of bands in this layer  */
+    /** \brief Get the number of bands in this layer */
     int bandCount() const;
 
-    /** \brief Get the name of a band given its number  */
+    /** \brief Get the name of a band given its number */
     QString bandName( int bandNoInt ) const;
 
     /** Returns the data provider */
-    QgsRasterDataProvider* dataProvider();
+    virtual QgsRasterDataProvider *dataProvider();
 
     /** Returns the data provider in a const-correct manner
       @note available in python bindings as constDataProvider()
      */
-    const QgsRasterDataProvider* dataProvider() const /PyName=constDataProvider/;
+    virtual const QgsRasterDataProvider *dataProvider() const /PyName=constDataProvider/;
 
     /** Synchronises with changes in the datasource */
     virtual void reload();
@@ -116,20 +116,19 @@ class QgsRasterLayer : QgsMapLayer
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * @note added in 2.4
      */
-    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) /Factory/;
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
     /** \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap */
     void draw( QPainter * theQPainter,
                QgsRasterViewPort * myRasterViewPort,
-               const QgsMapToPixel* qgsMapToPixel = 0 );
+               const QgsMapToPixel *qgsMapToPixel = 0 );
 
     /** Returns a list with classification items (Text and color) */
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
     virtual bool isSpatial() const;
 
-    /** \brief Obtain GDAL Metadata for this layer */
-    QString metadata() const;
+    QString htmlMetadata() const;
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int bandNumber = 1 );
@@ -158,9 +157,6 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Set default contrast enhancement */
     void setDefaultContrastEnhancement();
 
-    /** \brief [ data provider interface ] A wrapper function to emit a progress update signal */
-    void showProgress( int value );
-
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     virtual QStringList subLayers() const;
 
@@ -180,20 +176,16 @@ class QgsRasterLayer : QgsMapLayer
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( const QString& name, bool vis );
+    virtual void setSubLayerVisibility( const QString &name, bool vis );
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const;
 
   public slots:
-    void showStatusMessage( const QString & message );
+    void showStatusMessage( const QString &message );
 
-    /** \brief receive progress signal from provider */
-    void onProgress( int, double, const QString& );
 
   signals:
-    /** \brief Signal for notifying listeners of long running processes */
-    void progressUpdate( int value );
 
     /**
      *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
@@ -202,21 +194,21 @@ class QgsRasterLayer : QgsMapLayer
 
   protected:
     /** \brief Read the symbology for the current layer from the Dom node supplied */
-    bool readSymbology( const QDomNode& node, QString& errorMessage );
+    bool readSymbology( const QDomNode &node, QString &errorMessage );
 
     /** \brief Read the style information for the current layer from the Dom node supplied */
     bool readStyle(const QDomNode &node, QString &errorMessage);
 
     /** \brief Reads layer specific state from project file Dom node */
-    bool readXml( const QDomNode& layer_node );
+    bool readXml( const QDomNode &layer_node );
 
     /** \brief Write the symbology for the layer into the docment provided */
-    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const;
+    bool writeSymbology( QDomNode&, QDomDocument &doc, QString &errorMessage ) const;
 
     /** \brief Write the style for the layer into the docment provided */
     bool writeStyle(QDomNode &node, QDomDocument &doc, QString &errorMessage) const;
 
     /** \brief Write layer specific state to project file Dom node */
-    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const;
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const;
 };
 

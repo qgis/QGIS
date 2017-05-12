@@ -49,7 +49,7 @@ class QgsSymbol
     virtual ~QgsSymbol();
 
     //! return new default symbol for specified geometry type
-    static QgsSymbol* defaultSymbol( QgsWkbTypes::GeometryType geomType ) /Factory/;
+    static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) /Factory/;
 
     SymbolType type() const;
 
@@ -70,7 +70,7 @@ class QgsSymbol
      * @see symbolLayers
      * @see symbolLayerCount
      */
-    QgsSymbolLayer* symbolLayer( int layer );
+    QgsSymbolLayer *symbolLayer( int layer );
 
     /** Returns total number of symbol layers contained in the symbol.
      * @returns count of symbol layers
@@ -87,7 +87,7 @@ class QgsSymbol
      * @param layer The symbol layer to add
      * @return True if the layer is added, False if the index or the layer is bad
      */
-    bool insertSymbolLayer( int index, QgsSymbolLayer* layer /Transfer/ );
+    bool insertSymbolLayer( int index, QgsSymbolLayer *layer /Transfer/ );
 
     /**
      * Append symbol layer at the end of the list
@@ -95,7 +95,7 @@ class QgsSymbol
      * @param layer The layer to add
      * @return True if the layer is added, False if the layer is bad
      */
-    bool appendSymbolLayer( QgsSymbolLayer* layer /Transfer/ );
+    bool appendSymbolLayer( QgsSymbolLayer *layer /Transfer/ );
 
     //! delete symbol layer at specified index
     bool deleteSymbolLayer( int index );
@@ -106,7 +106,7 @@ class QgsSymbol
      * @param index The index of the layer to remove
      * @return A pointer to the removed layer
      */
-    QgsSymbolLayer* takeSymbolLayer( int index ) /TransferBack/;
+    QgsSymbolLayer *takeSymbolLayer( int index ) /TransferBack/;
 
     //! delete layer at specified index and set a new one
     bool changeSymbolLayer( int index, QgsSymbolLayer *layer /Transfer/ );
@@ -119,38 +119,38 @@ class QgsSymbol
      * overrides.
      * @see stopRender()
      */
-    void startRender( QgsRenderContext& context, const QgsFields& fields = QgsFields() );
+    void startRender( QgsRenderContext &context, const QgsFields &fields = QgsFields() );
 
     /** Ends the rendering process. This should be called after rendering all desired features.
      * @param context render context, must match the context specified when startRender()
      * was called.
      * @see startRender()
      */
-    void stopRender( QgsRenderContext& context );
+    void stopRender( QgsRenderContext &context );
 
-    void setColor( const QColor& color );
+    void setColor( const QColor &color );
     QColor color() const;
 
     //! Draw icon of the symbol that occupyies area given by size using the painter.
     //! Optionally custom context may be given in order to get rendering of symbols that use map units right.
     //! @note customContext parameter added in 2.6
-    void drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext = 0 );
+    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0 );
 
     //! export symbol as image format. PNG and SVG supported
-    void exportImage( const QString& path, const QString& format, QSize size );
+    void exportImage( const QString &path, const QString &format, QSize size );
 
     //! Generate symbol as image
-    QImage asImage( QSize size, QgsRenderContext* customContext = 0 );
+    QImage asImage( QSize size, QgsRenderContext *customContext = 0 );
 
     /** Returns a large (roughly 100x100 pixel) preview image for the symbol.
      * @param expressionContext optional expression context, for evaluation of
      * data defined symbol properties
      */
-    QImage bigSymbolPreviewImage( QgsExpressionContext* expressionContext = 0 );
+    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0 );
 
     QString dump() const;
 
-    virtual QgsSymbol* clone() const = 0 /Factory/;
+    virtual QgsSymbol *clone() const = 0 /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
@@ -173,7 +173,7 @@ class QgsSymbol
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     QgsMapUnitScale mapUnitScale() const;
-    void setMapUnitScale( const QgsMapUnitScale& scale );
+    void setMapUnitScale( const QgsMapUnitScale &scale );
 
     //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const;
@@ -215,55 +215,55 @@ class QgsSymbol
      * This should include any attributes required by the symbology including
      * the ones required by expressions.
      */
-    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
-    /** Returns whether the symbol utilises any data defined properties.
+    /** Returns whether the symbol utilizes any data defined properties.
      * @note added in QGIS 2.12
      */
     bool hasDataDefinedProperties() const;
 
     //! @note the layer will be NULL after stopRender
-    void setLayer( const QgsVectorLayer* layer );
-    const QgsVectorLayer* layer() const;
+    void setLayer( const QgsVectorLayer *layer );
+    const QgsVectorLayer *layer() const;
 
     /**
      * Render a feature. Before calling this the startRender() method should be called to initialize
      * the rendering process. After rendering all features stopRender() must be called.
      */
-    void renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
+    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
 
     /**
      * Returns the symbol render context. Only valid between startRender and stopRender calls.
      *
      * @return The symbol render context
      */
-    QgsSymbolRenderContext* symbolRenderContext();
+    QgsSymbolRenderContext *symbolRenderContext();
 
   protected:
-    QgsSymbol( SymbolType type, const QgsSymbolLayerList& layers /Transfer/ ); // can't be instantiated
+    QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers /Transfer/ );
 
     /**
      * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
      */
-    static QPointF _getPoint( QgsRenderContext& context, const QgsPointV2& point );
+    static QPointF _getPoint( QgsRenderContext &context, const QgsPointV2 &point );
 
     /**
      * Creates a line string in screen coordinates from a QgsCurve in map
      * coordinates
      */
-    static QPolygonF _getLineString( QgsRenderContext& context, const QgsCurve& curve, bool clipToExtent = true );
+    static QPolygonF _getLineString( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent = true );
 
     /**
      * Creates a polygon ring in screen coordinates from a QgsCurve in map
      * coordinates
      */
-    static QPolygonF _getPolygonRing( QgsRenderContext& context, const QgsCurve& curve, bool clipToExtent );
+    static QPolygonF _getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent );
 
     /**
      * Creates a polygon in screen coordinates from a QgsPolygonV2 in map
      * coordinates
      */
-    static void _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const QgsPolygonV2& polygon, bool clipToExtent = true );
+    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygonV2 &polygon, bool clipToExtent = true );
 
     /**
      * Retrieve a cloned list of all layers that make up this symbol.
@@ -280,11 +280,11 @@ class QgsSymbol
      * This is required for layers that generate their own geometry from other
      * information in the rendering context.
      */
-    void renderUsingLayer( QgsSymbolLayer* layer, QgsSymbolRenderContext& context );
+    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context );
 
     //! Render editing vertex marker at specified point
     //! @note added in QGIS 2.16
-    void renderVertexMarker( QPointF pt, QgsRenderContext& context, int currentVertexMarkerType, int currentVertexMarkerSize );
+    void renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, int currentVertexMarkerSize );
 
   private:
     QgsSymbol( const QgsSymbol& );
@@ -313,18 +313,18 @@ class QgsSymbolRenderContext
      * @param fields
      * @param mapUnitScale
      */
-    QgsSymbolRenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature* f = 0, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = 0, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolRenderContext();
 
-    QgsRenderContext& renderContext();
-    // const QgsRenderContext& renderContext() const;
+    QgsRenderContext &renderContext();
+    // const QgsRenderContext &renderContext() const;
 
     /** Sets the original value variable value for data defined symbology
      * @param value value for original value variable. This usually represents the symbol property value
      * before any data defined overrides have been applied.
      * @note added in QGIS 2.12
      */
-    void setOriginalValueVariable( const QVariant& value );
+    void setOriginalValueVariable( const QVariant &value );
 
     //! Returns the output unit for the context
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -333,7 +333,7 @@ class QgsSymbolRenderContext
     void setOutputUnit( QgsUnitTypes::RenderUnit u );
 
     QgsMapUnitScale mapUnitScale() const;
-    void setMapUnitScale( const QgsMapUnitScale& scale );
+    void setMapUnitScale( const QgsMapUnitScale &scale );
 
     //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const;
@@ -353,9 +353,9 @@ class QgsSymbolRenderContext
      */
     void setRenderHints( QgsSymbol::RenderHints hints );
 
-    void setFeature( const QgsFeature* f );
+    void setFeature( const QgsFeature *f );
     //! Current feature being rendered - may be null
-    const QgsFeature* feature() const;
+    const QgsFeature *feature() const;
 
     void setOriginalGeometryType( QgsWkbTypes::GeometryType type );
     QgsWkbTypes::GeometryType originalGeometryType() const;
@@ -388,14 +388,14 @@ class QgsSymbolRenderContext
     double outputPixelSize( double size ) const;
 
     // workaround for sip 4.7. Don't use assignment - will fail with assertion error
-    // QgsSymbolRenderContext& operator=( const QgsSymbolRenderContext& );
+    // QgsSymbolRenderContext &operator=( const QgsSymbolRenderContext& );
 
     /**
      * This scope is always available when a symbol of this type is being rendered.
      *
      * @return An expression scope for details about this symbol
      */
-    QgsExpressionContextScope* expressionContextScope();
+    QgsExpressionContextScope *expressionContextScope();
     /**
      * Set an expression scope for this symbol.
      *
@@ -403,11 +403,11 @@ class QgsSymbolRenderContext
      *
      * @param contextScope An expression scope for details about this symbol
      */
-    void setExpressionContextScope( QgsExpressionContextScope* contextScope /Transfer/);
+    void setExpressionContextScope( QgsExpressionContextScope *contextScope /Transfer/);
 
   private:
 
-    QgsSymbolRenderContext( const QgsSymbolRenderContext& rh );
+    QgsSymbolRenderContext( const QgsSymbolRenderContext &rh );
 };
 
 
@@ -426,9 +426,9 @@ class QgsMarkerSymbol : QgsSymbol
     /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
       This is a convenience method for easier creation of marker symbols.
      */
-    static QgsMarkerSymbol* createSimple( const QgsStringMap& properties ) /Factory/;
+    static QgsMarkerSymbol *createSimple( const QgsStringMap &properties ) /Factory/;
 
-    QgsMarkerSymbol( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
+    QgsMarkerSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
 
     /** Sets the angle for the whole symbol. Individual symbol layer sizes
      * will be rotated to maintain their current relative angle to the whole symbol angle.
@@ -450,7 +450,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedAngle
      */
-    void setDataDefinedAngle( const QgsProperty& property );
+    void setDataDefinedAngle( const QgsProperty &property );
 
     /** Returns data defined angle for whole symbol (including all symbol layers).
      * @returns data defined angle, or empty data defined if angle is not set
@@ -510,7 +510,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @see setSizeUnit()
      * @see setSize()
      */
-    void setSizeMapUnitScale( const QgsMapUnitScale& scale );
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the size map unit scale for the whole symbol. Note that for symbols with
      * multiple symbol layers, this will correspond just to the map unit scale
@@ -527,7 +527,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedSize
      */
-    void setDataDefinedSize( const QgsProperty& property );
+    void setDataDefinedSize( const QgsProperty &property );
 
     /** Returns data defined size for whole symbol (including all symbol layers).
      * @returns data defined size, or empty data defined if size is not set
@@ -540,7 +540,7 @@ class QgsMarkerSymbol : QgsSymbol
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
 
-    void renderPoint( QPointF point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
+    void renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
     /** Returns the approximate bounding box of the marker symbol, which includes the bounding box
      * of all symbol layers for the symbol. It is recommended to use this method only between startRender()
@@ -552,9 +552,9 @@ class QgsMarkerSymbol : QgsSymbol
      * @returns approximate symbol bounds, in painter units
      * @note added in QGIS 2.14
     */
-    QRectF bounds(QPointF point, QgsRenderContext& context, const QgsFeature &feature = QgsFeature() ) const;
+    QRectF bounds(QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
 
-    virtual QgsMarkerSymbol* clone() const /Factory/;
+    virtual QgsMarkerSymbol *clone() const /Factory/;
 };
 
 
@@ -569,9 +569,9 @@ class QgsLineSymbol : QgsSymbol
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
      * This is a convenience method for easier creation of line symbols.
      */
-    static QgsLineSymbol* createSimple( const QgsStringMap& properties ) /Factory/;
+    static QgsLineSymbol *createSimple( const QgsStringMap &properties ) /Factory/;
 
-    QgsLineSymbol( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
+    QgsLineSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
 
     void setWidth( double width );
     double width() const;
@@ -581,7 +581,7 @@ class QgsLineSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedWidth
      */
-    void setDataDefinedWidth( const QgsProperty& dd );
+    void setDataDefinedWidth( const QgsProperty &dd );
 
     /** Returns data defined size for whole symbol (including all symbol layers).
      * @returns data defined size, or empty data defined if size is not set
@@ -591,9 +591,9 @@ class QgsLineSymbol : QgsSymbol
      */
     QgsProperty dataDefinedWidth() const;
 
-    void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
+    void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
-    virtual QgsLineSymbol* clone() const /Factory/;
+    virtual QgsLineSymbol *clone() const /Factory/;
 };
 
 
@@ -608,11 +608,11 @@ class QgsFillSymbol : QgsSymbol
     /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
      * This is a convenience method for easier creation of fill symbols.
      */
-    static QgsFillSymbol* createSimple( const QgsStringMap& properties ) /Factory/;
+    static QgsFillSymbol *createSimple( const QgsStringMap &properties ) /Factory/;
 
-    QgsFillSymbol( const QgsSymbolLayerList& layers /Transfer/ = QgsSymbolLayerList() );
+    QgsFillSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
     void setAngle( double angle );
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
+    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
-    virtual QgsFillSymbol* clone() const /Factory/;
+    virtual QgsFillSymbol *clone() const /Factory/;
 };

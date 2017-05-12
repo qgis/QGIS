@@ -1,6 +1,7 @@
 SET(QGIS_GUI_SRCS
   raster/qgsmultibandcolorrendererwidget.cpp
   raster/qgspalettedrendererwidget.cpp
+  raster/qgsrasterbandcombobox.cpp
   raster/qgsrasterhistogramwidget.cpp
   raster/qgsrasterminmaxwidget.cpp
   raster/qgsrasterrendererwidget.cpp
@@ -9,7 +10,6 @@ SET(QGIS_GUI_SRCS
   raster/qgsrendererrasterpropertieswidget.cpp
   raster/qgsrastertransparencywidget.cpp
   raster/qgshillshaderendererwidget.cpp
-  raster/qwt5_histogram_item.cpp
 
   symbology-ng/qgs25drendererwidget.cpp
   symbology-ng/characterwidget.cpp
@@ -172,6 +172,7 @@ SET(QGIS_GUI_SRCS
   qgsbrowsertreeview.cpp
   qgsbusyindicatordialog.cpp
   qgscharacterselectdialog.cpp
+  qgscheckablecombobox.cpp
   qgscodeeditor.cpp
   qgscodeeditorcss.cpp
   qgscodeeditorhtml.cpp
@@ -213,8 +214,6 @@ SET(QGIS_GUI_SRCS
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
-  qgsfieldmodel.cpp
-  qgsfieldproxymodel.cpp
   qgsfieldvalidator.cpp
   qgsfieldvalueslineedit.cpp
   qgsfiledropedit.cpp
@@ -241,7 +240,6 @@ SET(QGIS_GUI_SRCS
   qgsmapcanvasannotationitem.cpp
   qgsmapcanvasitem.cpp
   qgsmapcanvasmap.cpp
-  qgsmapcanvassnapper.cpp
   qgsmapcanvassnappingutils.cpp
   qgsmapcanvastracer.cpp
   qgsmaplayeractionregistry.cpp
@@ -329,6 +327,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsbrowsertreeview.h
   qgsbusyindicatordialog.h
   qgscharacterselectdialog.h
+  qgscheckablecombobox.h
   qgscodeeditor.h
   qgscodeeditorcss.h
   qgscodeeditorhtml.h
@@ -368,8 +367,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
   qgsfieldexpressionwidget.h
-  qgsfieldmodel.h
-  qgsfieldproxymodel.h
   qgsfieldvalidator.h
   qgsfieldvalueslineedit.h
   qgsfiledropedit.h
@@ -464,6 +461,7 @@ SET(QGIS_GUI_MOC_HDRS
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
+  raster/qgsrasterbandcombobox.h
   raster/qgsrasterhistogramwidget.h
   raster/qgsrasterminmaxwidget.h
   raster/qgsrasterrendererwidget.h
@@ -627,7 +625,6 @@ SET(QGIS_GUI_HDRS
   qgshighlight.h
   qgsmapcanvasitem.h
   qgsmapcanvasmap.h
-  qgsmapcanvassnapper.h
   qgsmapcanvassnappingutils.h
   qgsmapcanvastracer.h
   qgsmaplayerconfigwidgetfactory.h
@@ -752,14 +749,19 @@ INCLUDE_DIRECTORIES(
   ../core/fieldformatter
   ../core/geometry
   ../core/layertree
+  ../core/metadata
+  ../core/providers/memory
   ../core/raster
+  ../core/scalebar
   ../core/symbology-ng
   ../core/effects
+  ../core/metadata
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}

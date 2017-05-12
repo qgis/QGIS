@@ -51,21 +51,21 @@ QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   , pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
-  connect( qgis->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
-           this, SIGNAL( currentLayerChanged( QgsMapLayer * ) ) );
-  connect( qgis, SIGNAL( currentThemeChanged( QString ) ),
-           this, SIGNAL( currentThemeChanged( QString ) ) );
+  connect( qgis->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
+           this, &QgisInterface::currentLayerChanged );
+  connect( qgis, &QgisApp::currentThemeChanged,
+           this, &QgisAppInterface::currentThemeChanged );
   connect( qgis, &QgisApp::composerOpened, this, &QgisAppInterface::composerOpened );
   connect( qgis, &QgisApp::composerWillBeClosed, this, &QgisAppInterface::composerWillBeClosed );
   connect( qgis, &QgisApp::composerClosed, this, &QgisAppInterface::composerClosed );
-  connect( qgis, SIGNAL( initializationCompleted() ),
-           this, SIGNAL( initializationCompleted() ) );
-  connect( qgis, SIGNAL( newProject() ),
-           this, SIGNAL( newProjectCreated() ) );
-  connect( qgis, SIGNAL( projectRead() ),
-           this, SIGNAL( projectRead() ) );
-  connect( qgis, SIGNAL( layerSavedAs( QgsMapLayer *, QString ) ),
-           this, SIGNAL( layerSavedAs( QgsMapLayer *, QString ) ) );
+  connect( qgis, &QgisApp::initializationCompleted,
+           this, &QgisInterface::initializationCompleted );
+  connect( qgis, &QgisApp::newProject,
+           this, &QgisInterface::newProjectCreated );
+  connect( qgis, &QgisApp::projectRead,
+           this, &QgisInterface::projectRead );
+  connect( qgis, &QgisApp::layerSavedAs,
+           this, &QgisInterface::layerSavedAs );
 }
 
 QgsPluginManagerInterface *QgisAppInterface::pluginManagerInterface()
@@ -529,7 +529,6 @@ void QgisAppInterface::unregisterCustomDropHandler( QgsCustomDropHandler *handle
   qgis->unregisterCustomDropHandler( handler );
 }
 
-//! Menus
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
@@ -546,7 +545,6 @@ QMenu *QgisAppInterface::firstRightStandardMenu() { return qgis->firstRightStand
 QMenu *QgisAppInterface::windowMenu() { return qgis->windowMenu(); }
 QMenu *QgisAppInterface::helpMenu() { return qgis->helpMenu(); }
 
-//! ToolBars
 QToolBar *QgisAppInterface::fileToolBar() { return qgis->fileToolBar(); }
 QToolBar *QgisAppInterface::layerToolBar() { return qgis->layerToolBar(); }
 QToolBar *QgisAppInterface::mapNavToolToolBar() { return qgis->mapNavToolToolBar(); }
@@ -560,7 +558,6 @@ QToolBar *QgisAppInterface::vectorToolBar() { return qgis->vectorToolBar(); }
 QToolBar *QgisAppInterface::databaseToolBar() { return qgis->databaseToolBar(); }
 QToolBar *QgisAppInterface::webToolBar() { return qgis->webToolBar(); }
 
-//! Project menu actions
 QAction *QgisAppInterface::actionNewProject() { return qgis->actionNewProject(); }
 QAction *QgisAppInterface::actionOpenProject() { return qgis->actionOpenProject(); }
 QAction *QgisAppInterface::actionSaveProject() { return qgis->actionSaveProject(); }
@@ -571,7 +568,6 @@ QAction *QgisAppInterface::actionPrintComposer() { return qgis->actionNewPrintCo
 QAction *QgisAppInterface::actionShowComposerManager() { return qgis->actionShowComposerManager(); }
 QAction *QgisAppInterface::actionExit() { return qgis->actionExit(); }
 
-//! Edit menu actions
 QAction *QgisAppInterface::actionCutFeatures() { return qgis->actionCutFeatures(); }
 QAction *QgisAppInterface::actionCopyFeatures() { return qgis->actionCopyFeatures(); }
 QAction *QgisAppInterface::actionPasteFeatures() { return qgis->actionPasteFeatures(); }
@@ -587,7 +583,6 @@ QAction *QgisAppInterface::actionDeleteRing() { return qgis->actionDeleteRing();
 QAction *QgisAppInterface::actionDeletePart() { return qgis->actionDeletePart(); }
 QAction *QgisAppInterface::actionNodeTool() { return qgis->actionNodeTool(); }
 
-//! View menu actions
 QAction *QgisAppInterface::actionPan() { return qgis->actionPan(); }
 QAction *QgisAppInterface::actionPanToSelected() { return qgis->actionPanToSelected(); }
 QAction *QgisAppInterface::actionZoomIn() { return qgis->actionZoomIn(); }
@@ -612,7 +607,6 @@ QAction *QgisAppInterface::actionNewBookmark() { return qgis->actionNewBookmark(
 QAction *QgisAppInterface::actionShowBookmarks() { return qgis->actionShowBookmarks(); }
 QAction *QgisAppInterface::actionDraw() { return qgis->actionDraw(); }
 
-//! Layer menu actions
 QAction *QgisAppInterface::actionNewVectorLayer() { return qgis->actionNewVectorLayer(); }
 QAction *QgisAppInterface::actionAddOgrLayer() { return qgis->actionAddOgrLayer(); }
 QAction *QgisAppInterface::actionAddRasterLayer() { return qgis->actionAddRasterLayer(); }
@@ -645,17 +639,14 @@ QAction *QgisAppInterface::actionHideSelectedLayers() { return qgis->actionHideS
 QAction *QgisAppInterface::actionHideDeselectedLayers() { return qgis->actionHideDeselectedLayers(); }
 QAction *QgisAppInterface::actionShowSelectedLayers() { return qgis->actionShowSelectedLayers(); }
 
-//! Plugin menu actions
 QAction *QgisAppInterface::actionManagePlugins() { return qgis->actionManagePlugins(); }
 QAction *QgisAppInterface::actionPluginListSeparator() { return qgis->actionPluginListSeparator(); }
 QAction *QgisAppInterface::actionShowPythonDialog() { return qgis->actionShowPythonDialog(); }
 
-//! Settings menu actions
 QAction *QgisAppInterface::actionToggleFullScreen() { return qgis->actionToggleFullScreen(); }
 QAction *QgisAppInterface::actionOptions() { return qgis->actionOptions(); }
 QAction *QgisAppInterface::actionCustomProjection() { return qgis->actionCustomProjection(); }
 
-//! Help menu actions
 QAction *QgisAppInterface::actionHelpContents() { return qgis->actionHelpContents(); }
 QAction *QgisAppInterface::actionQgisHomePage() { return qgis->actionQgisHomePage(); }
 QAction *QgisAppInterface::actionCheckQgisVersion() { return qgis->actionCheckQgisVersion(); }
@@ -714,7 +705,6 @@ QgsAttributeDialog *QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeat
   QgsDistanceArea myDa;
 
   myDa.setSourceCrs( l->crs() );
-  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   QgsAttributeEditorContext context;

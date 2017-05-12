@@ -29,12 +29,17 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, NULL, QgsWkbTypes
-from processing.core.ProcessingLog import ProcessingLog
+from qgis.core import (QgsFeature,
+                       QgsGeometry,
+                       QgsFeatureRequest,
+                       NULL,
+                       QgsWkbTypes,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -45,12 +50,19 @@ class SymmetricalDifference(GeoAlgorithm):
     OVERLAY = 'OVERLAY'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sym_difference.png'))
 
+    def group(self):
+        return self.tr('Vector overlay tools')
+
+    def name(self):
+        return 'symmetricaldifference'
+
+    def displayName(self):
+        return self.tr('Symmetrical difference')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Symmetrical difference')
-        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(self.OVERLAY,
@@ -58,27 +70,24 @@ class SymmetricalDifference(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Symmetrical difference')))
 
-    def processAlgorithm(self, feedback):
-        layerA = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
-        layerB = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.OVERLAY))
+    def processAlgorithm(self, context, feedback):
+        layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.OVERLAY), context)
 
         geomType = QgsWkbTypes.multiType(layerA.wkbType())
         fields = vector.combineVectorFields(layerA, layerB)
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, geomType, layerA.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, geomType, layerA.crs(), context)
 
         featB = QgsFeature()
         outFeat = QgsFeature()
 
-        indexA = vector.spatialindex(layerB)
-        indexB = vector.spatialindex(layerA)
+        indexA = QgsProcessingUtils.createSpatialIndex(layerB, context)
+        indexB = QgsProcessingUtils.createSpatialIndex(layerA, context)
 
-        featuresA = vector.features(layerA)
-        featuresB = vector.features(layerB)
+        featuresA = QgsProcessingUtils.getFeatures(layerA, context)
+        featuresB = QgsProcessingUtils.getFeatures(layerB, context)
 
-        total = 100.0 / (len(featuresA) * len(featuresB))
+        total = 100.0 / (QgsProcessingUtils.featureCount(layerA, context) * QgsProcessingUtils.featureCount(layerB, context))
         count = 0
 
         for featA in featuresA:
@@ -97,8 +106,8 @@ class SymmetricalDifference(GeoAlgorithm):
                 outFeat.setAttributes(attrs)
                 writer.addFeature(outFeat)
             except:
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                       self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
+                                         self.tr('Processing'), QgsMessageLog.WARNING)
                 continue
 
             count += 1
@@ -123,8 +132,8 @@ class SymmetricalDifference(GeoAlgorithm):
                 outFeat.setAttributes(attrs)
                 writer.addFeature(outFeat)
             except:
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                       self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
+                                         self.tr('Processing'), QgsMessageLog.WARNING)
                 continue
 
             count += 1

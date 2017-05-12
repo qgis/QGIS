@@ -22,7 +22,7 @@
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgslogger.h"
 
 #include "qgsoracleprovider.h"
@@ -2564,7 +2564,7 @@ bool QgsOracleProvider::convertField( QgsField &field )
   return true;
 }
 
-QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
+QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
@@ -2589,7 +2589,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "Connection to database failed" );
-    return QgsVectorLayerImport::ErrConnectionFailed;
+    return QgsVectorLayerExporter::ErrConnectionFailed;
   }
 
   if ( ownerName.isEmpty() )
@@ -2601,7 +2601,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "No owner name found" );
-    return QgsVectorLayerImport::ErrInvalidLayer;
+    return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
   QString tableName = dsUri.table();
@@ -2800,7 +2800,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
 
     conn->disconnect();
 
-    return QgsVectorLayerImport::ErrCreateLayer;
+    return QgsVectorLayerExporter::ErrCreateLayer;
   }
 
   conn->disconnect();
@@ -2816,7 +2816,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
       *errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( ownerTableName );
 
     delete provider;
-    return QgsVectorLayerImport::ErrInvalidLayer;
+    return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
   QgsDebugMsg( "layer loaded" );
@@ -2858,7 +2858,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
             *errorMessage = QObject::tr( "Field name clash found (%1 not remappable)" ).arg( fld.name() );
 
           delete provider;
-          return QgsVectorLayerImport::ErrAttributeTypeUnsupported;
+          return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
         }
       }
 
@@ -2894,7 +2894,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 
         delete provider;
-        return QgsVectorLayerImport::ErrAttributeTypeUnsupported;
+        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
       QgsDebugMsg( QString( "Field #%1 name %2 type %3 typename %4 width %5 precision %6" )
@@ -2913,7 +2913,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
       delete provider;
-      return QgsVectorLayerImport::ErrAttributeCreationFailed;
+      return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
 
     QgsDebugMsg( "Done creating fields" );
@@ -2925,7 +2925,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
 
   delete provider;
 
-  return QgsVectorLayerImport::NoError;
+  return QgsVectorLayerExporter::NoError;
 }
 
 QgsCoordinateReferenceSystem QgsOracleProvider::crs() const
@@ -3045,7 +3045,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
+QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,

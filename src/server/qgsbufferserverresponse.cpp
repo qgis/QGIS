@@ -1,7 +1,7 @@
 /***************************************************************************
-                          qgsfcgiserverresponse.cpp
+                          qgsbufferserverresponse.cpp
 
-  Define response wrapper for fcgi response
+  Define response wrapper for buffer response
   -------------------
   begin                : 2017-01-03
   copyright            : (C) 2017 by David Marteau
@@ -37,7 +37,7 @@ QgsBufferServerResponse::~QgsBufferServerResponse()
 
 }
 
-void QgsBufferServerResponse::clearHeader( const QString &key )
+void QgsBufferServerResponse::removeHeader( const QString &key )
 {
   if ( !mHeadersSent )
     mHeaders.remove( key );
@@ -49,19 +49,14 @@ void QgsBufferServerResponse::setHeader( const QString &key, const QString &valu
     mHeaders.insert( key, value );
 }
 
-void QgsBufferServerResponse::setReturnCode( int code )
+void QgsBufferServerResponse::setStatusCode( int code )
 {
-  mReturnCode = code;
+  mStatusCode = code;
 }
 
-QString QgsBufferServerResponse::getHeader( const QString &key ) const
+QString QgsBufferServerResponse::header( const QString &key ) const
 {
   return mHeaders.value( key );
-}
-
-QList<QString> QgsBufferServerResponse::headerKeys() const
-{
-  return mHeaders.keys();
 }
 
 bool QgsBufferServerResponse::headersSent() const
@@ -78,7 +73,7 @@ void QgsBufferServerResponse::sendError( int code,  const QString &message )
   }
 
   clear();
-  setReturnCode( code );
+  setStatusCode( code );
   setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/plain; charset=utf-8" ) );
   write( message );
   finish();
@@ -130,29 +125,14 @@ void QgsBufferServerResponse::clear()
 }
 
 
-//QgsBufferServerRequest
-//
-QgsBufferServerRequest::QgsBufferServerRequest( const QString &url, Method method, QByteArray *data )
-  : QgsServerRequest( url, method )
+QByteArray QgsBufferServerResponse::data() const
 {
-  if ( data )
-  {
-    mData = *data;
-  }
-}
-
-QgsBufferServerRequest::QgsBufferServerRequest( const QUrl &url, Method method, QByteArray *data )
-  : QgsServerRequest( url, method )
-{
-  if ( data )
-  {
-    mData = *data;
-  }
-}
-
-QgsBufferServerRequest::~QgsBufferServerRequest()
-{
+  return mBuffer.data();
 }
 
 
-
+void QgsBufferServerResponse::truncate()
+{
+  mBuffer.seek( 0 );
+  mBuffer.buffer().clear();
+}

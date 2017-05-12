@@ -17,20 +17,20 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSMULTISURFACEV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsgeometrycollection.h"
 
 /** \ingroup core
  * \class QgsMultiSurface
  * \brief Multi surface geometry collection.
- * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {
   public:
     QgsMultiSurface();
     virtual QString geometryType() const override { return QStringLiteral( "MultiSurface" ); }
-    QgsMultiSurface *clone() const override;
+    QgsMultiSurface *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -43,9 +43,9 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 
 
     //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g ) override;
+    virtual bool addGeometry( QgsAbstractGeometry *g ) override  SIP_TRANSFER;
 
-    virtual QgsAbstractGeometry *boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 };
 
 #endif // QGSMULTISURFACEV2_H

@@ -35,12 +35,8 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_histogram.h>
-#else
-#include "../raster/qwt5_histogram_item.h"
-#endif
 
 QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget *parent, const QgsCurveTransform &transform )
   : QWidget( parent )
@@ -60,13 +56,9 @@ QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget *parent, const QgsCurveTrans
 
   // hide the ugly canvas frame
   mPlot->setFrameStyle( QFrame::NoFrame );
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   QFrame *plotCanvasFrame = dynamic_cast<QFrame *>( mPlot->canvas() );
   if ( plotCanvasFrame )
     plotCanvasFrame->setFrameStyle( QFrame::NoFrame );
-#else
-  mPlot->canvas()->setFrameStyle( QFrame::NoFrame );
-#endif
 
   mPlot->enableAxis( QwtPlot::yLeft, false );
   mPlot->enableAxis( QwtPlot::xBottom, false );
@@ -259,11 +251,7 @@ void QgsCurveEditorWidget::addPlotMarker( double x, double y, bool isSelected )
   QColor brushColor = isSelected ? borderColor : QColor( 255, 255, 255, 0 );
 
   QwtPlotMarker *marker = new QwtPlotMarker();
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 8, 8 ) ) );
-#else
-  marker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 8, 8 ) ) );
-#endif
   marker->setValue( x, y );
   marker->attach( mPlot );
   marker->setRenderHint( QwtPlotItem::RenderAntialiased, true );
@@ -278,16 +266,9 @@ void QgsCurveEditorWidget::updateHistogram()
   //draw histogram
   QBrush histoBrush( QColor( 0, 0, 0, 70 ) );
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   delete mPlotHistogram;
   mPlotHistogram = createPlotHistogram( histoBrush );
   QVector<QwtIntervalSample> dataHisto;
-#else
-  delete mPlotHistogramItem;
-  mPlotHistogramItem = createHistoItem( histoBrush );
-  QwtArray<QwtDoubleInterval> intervalsHisto;
-  QwtArray<double> valuesHisto;
-#endif
 
   int bins = 40;
   QList<double> edges = mHistogram->binEdges( bins );
@@ -309,21 +290,11 @@ void QgsCurveEditorWidget::updateHistogram()
 
     double upperEdge = edges.at( bin + 1 );
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     dataHisto << QwtIntervalSample( binValue, edges.at( bin ), upperEdge );
-#else
-    intervalsHisto.append( QwtDoubleInterval( edges.at( bin ), upperEdge ) );
-    valuesHisto.append( double( binValue ) );
-#endif
   }
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mPlotHistogram->setSamples( dataHisto );
   mPlotHistogram->attach( mPlot );
-#else
-  mPlotHistogramItem->setData( QwtIntervalData( intervalsHisto, valuesHisto ) );
-  mPlotHistogramItem->attach( mPlot );
-#endif
   mPlot->replot();
 }
 
@@ -362,16 +333,10 @@ void QgsCurveEditorWidget::updatePlot()
     curvePoints << QPointF( x.at( j ), y.at( j ) );
   }
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mPlotCurve->setSamples( curvePoints );
-#else
-  mPlotCurve->setData( curvePoints );
-#endif
   mPlot->replot();
 }
 
-
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 QwtPlotHistogram *QgsCurveEditorWidget::createPlotHistogram( const QBrush &brush, const QPen &pen ) const
 {
   QwtPlotHistogram *histogram = new QwtPlotHistogram( QString() );
@@ -394,28 +359,6 @@ QwtPlotHistogram *QgsCurveEditorWidget::createPlotHistogram( const QBrush &brush
   }
   return histogram;
 }
-#else
-HistogramItem *QgsCurveEditorWidget::createHistoItem( const QBrush &brush, const QPen &pen ) const
-{
-  HistogramItem *item = new HistogramItem( QString() );
-  item->setColor( brush.color() );
-  item->setFlat( true );
-  item->setSpacing( 0 );
-  if ( pen != Qt::NoPen )
-  {
-    item->setPen( pen );
-  }
-  else if ( brush.color().lightness() > 200 )
-  {
-    QPen p;
-    p.setColor( brush.color().darker( 150 ) );
-    p.setWidth( 0 );
-    p.setCosmetic( true );
-    item->setPen( p );
-  }
-  return item;
-}
-#endif
 
 /// @cond PRIVATE
 

@@ -17,6 +17,7 @@
 #define QGSRULEBASEDRENDERERV2WIDGET_H
 
 #include "qgsrendererwidget.h"
+#include "qgis.h"
 
 #include "qgsrulebasedrenderer.h"
 class QMenu;
@@ -82,7 +83,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     void willAddRules( const QModelIndex &parent, int count ); // call beginInsertRows
     void finishedAddingRules(); // call endInsertRows
 
-    //! @note not available in python bindungs
+    //! \note not available in Python bindungs
     void setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> &countMap );
     void clearFeatureCounts();
 
@@ -105,7 +106,7 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
 
   public:
 
-    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     QgsRuleBasedRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsRuleBasedRendererWidget();
@@ -185,17 +186,17 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
 
     /**
        * Widget to edit the details of a rule based renderer rule.
-       * @param rule The rule to edit.
-       * @param layer The layer used to pull layer related information.
-       * @param style The active QGIS style.
-       * @param parent The parent widget.
-       * @param context the symbol widget context
+       * \param rule The rule to edit.
+       * \param layer The layer used to pull layer related information.
+       * \param style The active QGIS style.
+       * \param parent The parent widget.
+       * \param context the symbol widget context
        */
     QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 
     /**
      * Return the current set rule.
-     * @return The current rule.
+     * \returns The current rule.
      */
     QgsRuleBasedRenderer::Rule *rule() { return mRule; }
 
@@ -218,7 +219,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
 
     /**
      * Set the widget in dock mode.
-     * @param dockMode True for dock mode.
+     * \param dockMode True for dock mode.
      */
     virtual void setDockMode( bool dockMode );
 
@@ -242,13 +243,13 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
   public:
 
     /** Constructor for QgsRendererRulePropsDialog
-     * @param rule associated rule based renderer rule
-     * @param layer source vector layer
-     * @param style style collection
-     * @param parent parent widget
-     * @param context symbol widget context
+     * \param rule associated rule based renderer rule
+     * \param layer source vector layer
+     * \param style style collection
+     * \param parent parent widget
+     * \param context symbol widget context
      */
-    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
+    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = 0, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 
     ~QgsRendererRulePropsDialog();
 

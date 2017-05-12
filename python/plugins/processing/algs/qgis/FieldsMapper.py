@@ -28,14 +28,19 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 
 __revision__ = '$Format:%H$'
 
-
-from qgis.core import QgsField, QgsExpression, QgsDistanceArea, QgsProject, QgsFeature, GEO_NONE
+from qgis.core import (QgsField,
+                       QgsFields,
+                       QgsExpression,
+                       QgsDistanceArea,
+                       QgsProject,
+                       QgsFeature,
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import Parameter
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class FieldsMapper(GeoAlgorithm):
@@ -48,9 +53,22 @@ class FieldsMapper(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
         self.mapping = None
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector table tools')
+
+    def name(self):
+        return 'refactorfields'
+
+    def displayName(self):
+        return self.tr('Refactor fields')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Refactor fields')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input layer'),
                                          False))
@@ -92,27 +110,26 @@ class FieldsMapper(GeoAlgorithm):
                                     self.tr('Refactored'),
                                     base_input=self.INPUT_LAYER))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layer = self.getParameterValue(self.INPUT_LAYER)
         mapping = self.getParameterValue(self.FIELDS_MAPPING)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = dataobjects.getObjectFromUri(layer)
-        fields = []
+        layer = QgsProcessingUtils.mapLayerFromString(layer, context)
+        fields = QgsFields()
         expressions = []
 
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs())
-        da.setEllipsoidalMode(True)
         da.setEllipsoid(QgsProject.instance().ellipsoid())
 
         exp_context = layer.createExpressionContext()
 
         for field_def in mapping:
-            fields.append(QgsField(name=field_def['name'],
-                                   type=field_def['type'],
-                                   len=field_def['length'],
-                                   prec=field_def['precision']))
+            fields.append(QgsField(field_def['name'],
+                                   field_def['type'],
+                                   field_def['length'],
+                                   field_def['precision']))
 
             expression = QgsExpression(field_def['expression'])
             expression.setGeomCalculator(da)
@@ -126,39 +143,41 @@ class FieldsMapper(GeoAlgorithm):
                             str(expression.parserErrorString())))
             expressions.append(expression)
 
-        writer = output.getVectorWriter(fields,
-                                        layer.wkbType(),
-                                        layer.crs())
+        writer = output.getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
 
         # Create output vector layer with new attributes
         error_exp = None
         inFeat = QgsFeature()
         outFeat = QgsFeature()
-        features = vector.features(layer)
-        total = 100.0 / len(features)
-        for current, inFeat in enumerate(features):
-            rownum = current + 1
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        count = QgsProcessingUtils.featureCount(layer, context)
+        if count > 0:
+            total = 100.0 / count
+            for current, inFeat in enumerate(features):
+                rownum = current + 1
 
-            geometry = inFeat.geometry()
-            outFeat.setGeometry(geometry)
+                geometry = inFeat.geometry()
+                outFeat.setGeometry(geometry)
 
-            attrs = []
-            for i in range(0, len(mapping)):
-                field_def = mapping[i]
-                expression = expressions[i]
-                exp_context.setFeature(inFeat)
-                exp_context.lastScope().setVariable("row_number", rownum)
-                value = expression.evaluate(exp_context)
-                if expression.hasEvalError():
-                    error_exp = expression
-                    break
+                attrs = []
+                for i in range(0, len(mapping)):
+                    field_def = mapping[i]
+                    expression = expressions[i]
+                    exp_context.setFeature(inFeat)
+                    exp_context.lastScope().setVariable("row_number", rownum)
+                    value = expression.evaluate(exp_context)
+                    if expression.hasEvalError():
+                        error_exp = expression
+                        break
 
-                attrs.append(value)
-            outFeat.setAttributes(attrs)
+                    attrs.append(value)
+                outFeat.setAttributes(attrs)
 
-            writer.addFeature(outFeat)
+                writer.addFeature(outFeat)
 
-            feedback.setProgress(int(current * total))
+                feedback.setProgress(int(current * total))
+        else:
+            feedback.setProgress(100)
 
         del writer
 

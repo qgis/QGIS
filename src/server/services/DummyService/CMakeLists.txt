@@ -19,7 +19,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_CURRENT_BINARY_DIR}
-  ../../../core ../../../core/geometry ../../../core/raster
+  ../../../core ../../../core/geometry ../../../core/metadata ../../../core/raster
   ../..
   ..
   .

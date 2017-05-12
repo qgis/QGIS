@@ -33,7 +33,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsFields, QgsField, QgsFeature, QgsGeometry, NULL, QgsWkbTypes
+from qgis.core import QgsFields, QgsField, QgsFeature, QgsGeometry, NULL, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -41,7 +41,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -56,13 +56,19 @@ class SpatialJoin(GeoAlgorithm):
     KEEP = "KEEP"
     OUTPUT = "OUTPUT"
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'join_location.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Join attributes by location')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def group(self):
+        return self.tr('Vector general tools')
 
+    def name(self):
+        return 'joinattributesbylocation'
+
+    def displayName(self):
+        return self.tr('Join attributes by location')
+
+    def defineCharacteristics(self):
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -102,11 +108,9 @@ class SpatialJoin(GeoAlgorithm):
                                              self.tr('Joined table'), self.keeps))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
-    def processAlgorithm(self, feedback):
-        target = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.TARGET))
-        join = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.JOIN))
+    def processAlgorithm(self, context, feedback):
+        target = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.TARGET), context)
+        join = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.JOIN), context)
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)
 
@@ -144,22 +148,21 @@ class SpatialJoin(GeoAlgorithm):
         for f in list(targetFields.values()):
             fields.append(f)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, target.wkbType(), target.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, target.wkbType(), target.crs(), context)
 
         outFeat = QgsFeature()
         inFeatB = QgsFeature()
         inGeom = QgsGeometry()
 
-        index = vector.spatialindex(join)
+        index = QgsProcessingUtils.createSpatialIndex(join, context)
 
         mapP2 = dict()
-        features = vector.features(join)
+        features = QgsProcessingUtils.getFeatures(join, context)
         for f in features:
             mapP2[f.id()] = QgsFeature(f)
 
-        features = vector.features(target)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(target, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(target, context)
         for c, f in enumerate(features):
             atMap1 = f.attributes()
             outFeat.setGeometry(f.geometry())
@@ -170,8 +173,8 @@ class SpatialJoin(GeoAlgorithm):
                 bbox = inGeom.buffer(10, 2).boundingBox()
             else:
                 bbox = inGeom.boundingBox()
-            bufferedBox = vector.bufferedBoundingBox(bbox, 0.51 * precision)
-            joinList = index.intersects(bufferedBox)
+            bbox.grow(0.51 * precision)
+            joinList = index.intersects(bbox)
             if len(joinList) > 0:
                 count = 0
                 for i in joinList:

@@ -24,12 +24,12 @@ class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;
 
 /** \ingroup gui
- * @brief The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
+ * \brief The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
  * Events from QgsMapTool are caught and their QMouseEvent are transformed into QgsMapMouseEvent (with map coordinates).
  * Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
- * An event filter can be set on the map tool to filter and modify the events in map coordinates (@see QgsMapToolMapEventFilter).
- * @note at the moment, the event filter is used by the CAD tools (@see QgsCadDocWidget).
- * @note the event filter definition is not exposed in python API to avoid any unexpected behavior.
+ * An event filter can be set on the map tool to filter and modify the events in map coordinates (\see QgsMapToolMapEventFilter).
+ * \note at the moment, the event filter is used by the CAD tools (\see QgsCadDocWidget).
+ * \note the event filter definition is not exposed in Python API to avoid any unexpected behavior.
  */
 class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 {
@@ -47,8 +47,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 
     /**
      * Creates an advanced digitizing maptool
-     * @param canvas         The map canvas on which the tool works
-     * @param cadDockWidget  The cad dock widget which will be used to adjust mouse events
+     * \param canvas         The map canvas on which the tool works
+     * \param cadDockWidget  The cad dock widget which will be used to adjust mouse events
      */
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     /**
      * The capture mode
      *
-     * @return Capture mode
+     * \returns Capture mode
      */
     CaptureMode mode() const { return mCaptureMode; }
 
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * Set capture mode. This should correspond to the layer on which the digitizing
      * happens.
      *
-     * @param mode Capture Mode
+     * \param mode Capture Mode
      */
     void setMode( CaptureMode mode ) { mCaptureMode = mode; }
 
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * canvasPressEvent is triggered and it's not hidden by the cad's
      * construction mode.
      *
-     * @param e Mouse events prepared by the cad system
+     * \param e Mouse events prepared by the cad system
      */
     virtual void cadCanvasPressEvent( QgsMapMouseEvent *e ) { Q_UNUSED( e ) }
 
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * canvasReleaseEvent is triggered and it's not hidden by the cad's
      * construction mode.
      *
-     * @param e Mouse events prepared by the cad system
+     * \param e Mouse events prepared by the cad system
      */
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) { Q_UNUSED( e ) }
 
@@ -117,7 +117,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * canvasMoveEvent is triggered and it's not hidden by the cad's
      * construction mode.
      *
-     * @param e Mouse events prepared by the cad system
+     * \param e Mouse events prepared by the cad system
      */
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) { Q_UNUSED( e ) }
 
@@ -137,7 +137,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * The specified point will be used to generate a fake mouse event which will
      * be sent as move event to cadCanvasMoveEvent.
      *
-     * @param point The last point known to the cad system.
+     * \param point The last point known to the cad system.
      */
     void cadPointChanged( const QgsPoint &point );
 

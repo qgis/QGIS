@@ -18,6 +18,7 @@
 #define QGSAUTHIDENTITIESEDITOR_H
 
 #include <QWidget>
+#include "qgis.h"
 #include <QSslCertificate>
 
 #include "ui_qgsauthidentitieseditor.h"
@@ -37,9 +38,9 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
     /**
      * Widget for editing authentication configurations directly in database
-     * @param parent Parent widget
+     * \param parent Parent widget
      */
-    explicit QgsAuthIdentitiesEditor( QWidget *parent = nullptr );
+    explicit QgsAuthIdentitiesEditor( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private slots:
     void populateIdentitiesView();

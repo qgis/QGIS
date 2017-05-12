@@ -69,11 +69,11 @@ QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *ch
 
   mRadioGroup = new QButtonGroup( this );
 
-  connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-  connect( mNextBtn, SIGNAL( clicked() ), this, SLOT( setupNextError() ) );
-  connect( mFixBtn, SIGNAL( clicked() ), this, SLOT( fixError() ) );
-  connect( mSkipBtn, SIGNAL( clicked() ), this, SLOT( skipError() ) );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mNextBtn, &QAbstractButton::clicked, this, &QgsGeometryCheckerFixDialog::setupNextError );
+  connect( mFixBtn, &QAbstractButton::clicked, this, &QgsGeometryCheckerFixDialog::fixError );
+  connect( mSkipBtn, &QAbstractButton::clicked, this, &QgsGeometryCheckerFixDialog::skipError );
 
 }
 

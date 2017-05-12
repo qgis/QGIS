@@ -419,7 +419,7 @@ void QgsGrassMapsetItem::setState( State state )
       mMapsetFileSystemWatcher = new QFileSystemWatcher( this );
       mMapsetFileSystemWatcher->addPath( mDirPath + "/vector" );
       mMapsetFileSystemWatcher->addPath( mDirPath + "/cellhd" );
-      connect( mMapsetFileSystemWatcher, SIGNAL( directoryChanged( const QString & ) ), SLOT( onDirectoryChanged() ) );
+      connect( mMapsetFileSystemWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsGrassMapsetItem::onDirectoryChanged );
     }
   }
   else if ( state == NotPopulated )
@@ -714,7 +714,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
       }
       else
       {
-        rasterProvider = qobject_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
+        rasterProvider = qobject_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->createProvider( u.providerKey, u.uri ) );
         provider = rasterProvider;
       }
       existingNames = existingRasters;
@@ -729,7 +729,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
       }
       else
       {
-        vectorProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
+        vectorProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( u.providerKey, u.uri ) );
         provider = vectorProvider;
       }
       existingNames = existingVectors;
@@ -863,7 +863,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
       return false;
     }
 
-    connect( import, SIGNAL( finished( QgsGrassImport * ) ), SLOT( onImportFinished( QgsGrassImport * ) ) );
+    connect( import, &QgsGrassImport::finished, this, &QgsGrassMapsetItem::onImportFinished );
 
     // delete existing files (confirmed before in dialog)
     bool deleteOk = true;
@@ -1000,7 +1000,7 @@ QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject gras
   // The watcher does not seem to work without parent
   mWatcher = new QFileSystemWatcher( this );
   mWatcher->addPath( watchPath );
-  connect( mWatcher, SIGNAL( directoryChanged( const QString & ) ), SLOT( onDirectoryChanged() ) );
+  connect( mWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsGrassVectorItem::onDirectoryChanged );
 }
 
 QgsGrassVectorItem::~QgsGrassVectorItem()
@@ -1180,8 +1180,8 @@ QWidget *QgsGrassImportItem::paramWidget()
 
   if ( mImport && mImport->progress() )
   {
-    connect( mImport->progress(), SIGNAL( progressChanged( const QString &, const QString &, int, int, int ) ),
-             widget, SLOT( onProgressChanged( const QString &, const QString &, int, int, int ) ) );
+    connect( mImport->progress(), &QgsGrassImportProgress::progressChanged,
+             widget, &QgsGrassImportItemWidget::onProgressChanged );
 
     widget->setHtml( mImport->progress()->progressHtml() );
   }

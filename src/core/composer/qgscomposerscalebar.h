@@ -17,13 +17,15 @@
 #define QGSCOMPOSERSCALEBAR_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
+#include "scalebar/qgsscalebarsettings.h"
+#include "scalebar/qgsscalebarrenderer.h"
 #include <QFont>
 #include <QPen>
 #include <QColor>
 
 class QgsComposerMap;
-class QgsScaleBarStyle;
 
 /** \ingroup core
  * A scale bar item that can be added to a map composition.
@@ -35,30 +37,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
   public:
 
-    enum Alignment
-    {
-      Left = 0,
-      Middle,
-      Right
-    };
-
-    enum ScaleBarUnits
-    {
-      MapUnits = 0,
-      Meters,
-      Feet,
-      NauticalMiles
-    };
-
-    /** Modes for setting size for scale bar segments
-     */
-    enum SegmentSizeMode
-    {
-      SegmentSizeFixed = 0, //!< Scale bar segment size is fixed to a map unit
-      SegmentSizeFitWidth = 1 //!< Scale bar segment size is calculated to fit a size range
-    };
-
-    QgsComposerScaleBar( QgsComposition *composition );
+    QgsComposerScaleBar( QgsComposition *composition SIP_TRANSFERTHIS );
     ~QgsComposerScaleBar();
 
     //! Return correct graphics item type.
@@ -68,242 +47,252 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     //getters and setters
-    int numSegments() const {return mNumSegments;}
+    int numSegments() const {return mSettings.numberOfSegments();}
     void setNumSegments( int nSegments );
 
-    int numSegmentsLeft() const {return mNumSegmentsLeft;}
+    int numSegmentsLeft() const {return mSettings.numberOfSegmentsLeft();}
     void setNumSegmentsLeft( int nSegmentsLeft );
 
-    double numUnitsPerSegment() const {return mNumUnitsPerSegment;}
+    double numUnitsPerSegment() const {return mSettings.unitsPerSegment();}
     void setNumUnitsPerSegment( double units );
 
     /** Returns the size mode for scale bar segments.
-     * @see setSegmentSizeMode
-     * @see minBarWidth
-     * @see maxBarWidth
-     * @note added in QGIS 2.9
+     * \see setSegmentSizeMode
+     * \see minBarWidth
+     * \see maxBarWidth
+     * \since QGIS 2.9
      */
-    SegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
+    QgsScaleBarSettings::SegmentSizeMode segmentSizeMode() const { return mSettings.segmentSizeMode(); }
 
     /** Sets the size mode for scale bar segments.
-     * @param mode size mode
-     * @see segmentSizeMode
-     * @see setMinBarWidth
-     * @see setMaxBarWidth
-     * @note added in QGIS 2.9
+     * \param mode size mode
+     * \see segmentSizeMode
+     * \see setMinBarWidth
+     * \see setMaxBarWidth
+     * \since QGIS 2.9
      */
-    void setSegmentSizeMode( SegmentSizeMode mode );
+    void setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeMode mode );
 
     /** Returns the minimum size (in millimeters) for scale bar segments. This
-     * property is only effective if the @link segmentSizeMode @endlink is set
-     * to @link SegmentSizeFitWidth @endlink.
-     * @see segmentSizeMode
-     * @see setMinBarWidth
-     * @see maxBarWidth
-     * @note added in QGIS 2.9
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
+     * \see segmentSizeMode
+     * \see setMinBarWidth
+     * \see maxBarWidth
+     * \since QGIS 2.9
      */
-    double minBarWidth() const { return mMinBarWidth; }
+    double minBarWidth() const { return mSettings.minimumBarWidth(); }
 
     /** Sets the minimum size (in millimeters) for scale bar segments. This
-     * property is only effective if the @link segmentSizeMode @endlink is set
-     * to @link SegmentSizeFitWidth @endlink.
-     * @param minWidth minimum width in millimeters
-     * @see minBarWidth
-     * @see setMaxBarWidth
-     * @see setSegmentSizeMode
-     * @note added in QGIS 2.9
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
+     * \param minWidth minimum width in millimeters
+     * \see minBarWidth
+     * \see setMaxBarWidth
+     * \see setSegmentSizeMode
+     * \since QGIS 2.9
      */
     void setMinBarWidth( double minWidth );
 
     /** Returns the maximum size (in millimeters) for scale bar segments. This
-     * property is only effective if the @link segmentSizeMode @endlink is set
-     * to @link SegmentSizeFitWidth @endlink.
-     * @see segmentSizeMode
-     * @see setMaxBarWidth
-     * @see minBarWidth
-     * @note added in QGIS 2.9
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
+     * \see segmentSizeMode
+     * \see setMaxBarWidth
+     * \see minBarWidth
+     * \since QGIS 2.9
      */
-    double maxBarWidth() const { return mMaxBarWidth; }
+    double maxBarWidth() const { return mSettings.maximumBarWidth(); }
 
     /** Sets the maximum size (in millimeters) for scale bar segments. This
-     * property is only effective if the @link segmentSizeMode @endlink is set
-     * to @link SegmentSizeFitWidth @endlink.
-     * @param maxWidth maximum width in millimeters
-     * @see minBarWidth
-     * @see setMaxBarWidth
-     * @see setSegmentSizeMode
-     * @note added in QGIS 2.9
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
+     * \param maxWidth maximum width in millimeters
+     * \see minBarWidth
+     * \see setMaxBarWidth
+     * \see setSegmentSizeMode
+     * \since QGIS 2.9
      */
     void setMaxBarWidth( double maxWidth );
 
-    double numMapUnitsPerScaleBarUnit() const {return mNumMapUnitsPerScaleBarUnit;}
-    void setNumMapUnitsPerScaleBarUnit( double d ) {mNumMapUnitsPerScaleBarUnit = d;}
+    double numMapUnitsPerScaleBarUnit() const {return mSettings.mapUnitsPerScaleBarUnit();}
+    void setNumMapUnitsPerScaleBarUnit( double d ) { mSettings.setMapUnitsPerScaleBarUnit( d );}
 
-    QString unitLabeling() const {return mUnitLabeling;}
-    void setUnitLabeling( const QString &label ) {mUnitLabeling = label;}
+    QString unitLabeling() const {return mSettings.unitLabel();}
+    void setUnitLabeling( const QString &label ) { mSettings.setUnitLabel( label );}
 
     QFont font() const;
     void setFont( const QFont &font );
 
     /** Returns the color used for drawing text in the scalebar.
-     * @returns font color for scalebar.
-     * @see setFontColor
-     * @see font
+     * \returns font color for scalebar.
+     * \see setFontColor
+     * \see font
      */
-    QColor fontColor() const {return mFontColor;}
+    QColor fontColor() const {return mSettings.fontColor();}
 
     /** Sets the color used for drawing text in the scalebar.
-     * @param c font color for scalebar.
-     * @see fontColor
-     * @see setFont
+     * \param c font color for scalebar.
+     * \see fontColor
+     * \see setFont
      */
-    void setFontColor( const QColor &c ) {mFontColor = c;}
+    void setFontColor( const QColor &c ) {mSettings.setFontColor( c );}
 
     /** Returns the color used for fills in the scalebar.
-     * @see setFillColor()
-     * @see fillColor2()
-     * @note added in QGIS 3.0
+     * \see setFillColor()
+     * \see fillColor2()
+     * \since QGIS 3.0
      */
-    QColor fillColor() const {return mFillColor;}
+    QColor fillColor() const {return mSettings.fillColor();}
 
     /** Sets the color used for fills in the scalebar.
-     * @see fillColor()
-     * @see setFillColor2()
-     * @note added in QGIS 3.0
+     * \see fillColor()
+     * \see setFillColor2()
+     * \since QGIS 3.0
      */
-    void setFillColor( const QColor &color ) {mFillColor = color; mBrush.setColor( color ); }
+    void setFillColor( const QColor &color ) {mSettings.setFillColor( color ); }
 
     /** Returns the secondary color used for fills in the scalebar.
-     * @see setFillColor2()
-     * @see fillColor()
-     * @note added in QGIS 3.0
+     * \see setFillColor2()
+     * \see fillColor()
+     * \since QGIS 3.0
      */
-    QColor fillColor2() const {return mFillColor2;}
+    QColor fillColor2() const {return mSettings.fillColor2();}
 
     /** Sets the secondary color used for fills in the scalebar.
-     * @see fillColor2()
-     * @see setFillColor2()
-     * @note added in QGIS 3.0
+     * \see fillColor2()
+     * \see setFillColor2()
+     * \since QGIS 3.0
      */
-    void setFillColor2( const QColor &color ) {mFillColor2 = color; mBrush2.setColor( color ); }
+    void setFillColor2( const QColor &color ) {mSettings.setFillColor2( color ); }
 
     /** Returns the color used for lines in the scalebar.
-     * @see setLineColor()
-     * @note added in QGIS 3.0
+     * \see setLineColor()
+     * \since QGIS 3.0
      */
-    QColor lineColor() const {return mLineColor;}
+    QColor lineColor() const {return mSettings.lineColor();}
 
     /** Sets the color used for lines in the scalebar.
-     * @see lineColor()
-     * @note added in QGIS 3.0
+     * \see lineColor()
+     * \since QGIS 3.0
      */
-    void setLineColor( const QColor &color ) { mLineColor = color; mPen.setColor( mLineColor ); }
+    void setLineColor( const QColor &color ) { mSettings.setLineColor( color ); }
 
     /** Returns the line width in millimeters for lines in the scalebar.
-     * @see setLineWidth()
-     * @note added in QGIS 3.0
+     * \see setLineWidth()
+     * \since QGIS 3.0
      */
-    double lineWidth() const {return mLineWidth;}
+    double lineWidth() const {return mSettings.lineWidth();}
 
     /** Sets the line width in millimeters for lines in the scalebar.
-     * @see lineWidth()
-     * @note added in QGIS 3.0
+     * \see lineWidth()
+     * \since QGIS 3.0
      */
-    void setLineWidth( double width ) { mLineWidth = width; mPen.setWidthF( width ); }
+    void setLineWidth( double width ) { mSettings.setLineWidth( width ); }
 
     /** Returns the pen used for drawing the scalebar.
-     * @returns QPen used for drawing the scalebar outlines.
-     * @see setPen
-     * @see brush
+     * \returns QPen used for drawing the scalebar outlines.
+     * \see setPen
+     * \see brush
      */
-    QPen pen() const {return mPen;}
+    QPen pen() const {return mSettings.pen();}
 
     /** Returns the primary brush for the scalebar.
-     * @returns QBrush used for filling the scalebar
-     * @see setBrush
-     * @see brush2
-     * @see pen
+     * \returns QBrush used for filling the scalebar
+     * \see setBrush
+     * \see brush2
+     * \see pen
      */
-    QBrush brush() const {return mBrush;}
+    QBrush brush() const {return mSettings.brush();}
 
     /** Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
-     * @returns QBrush used for secondary color areas
-     * @see setBrush2
-     * @see brush
+     * \returns QBrush used for secondary color areas
+     * \see setBrush2
+     * \see brush
      */
-    QBrush brush2() const {return mBrush2;}
+    QBrush brush2() const {return mSettings.brush2(); }
 
-    double height() const {return mHeight;}
-    void setHeight( double h ) {mHeight = h;}
+    double height() const { return mSettings.height(); }
+    void setHeight( double h ) { mSettings.setHeight( h );}
 
-    void setComposerMap( const QgsComposerMap *map );
-    const QgsComposerMap *composerMap() const {return mComposerMap;}
+    /**
+     * Sets the \a map item linked to the scalebar.
+     */
+    void setComposerMap( QgsComposerMap *map );
 
-    double labelBarSpace() const {return mLabelBarSpace;}
-    void setLabelBarSpace( double space ) {mLabelBarSpace = space;}
+    /**
+     * Returns the map item linked to the scalebar.
+     */
+    QgsComposerMap *composerMap() const {return mComposerMap;}
 
-    double boxContentSpace() const {return mBoxContentSpace;}
+    double labelBarSpace() const {return mSettings.labelBarSpace();}
+    void setLabelBarSpace( double space ) {mSettings.setLabelBarSpace( space );}
+
+    double boxContentSpace() const {return mSettings.boxContentSpace();}
     void setBoxContentSpace( double space );
 
-    double segmentMillimeters() const {return mSegmentMillimeters;}
+    /**
+     * Returns the alignment of the scalebar.
+     */
+    QgsScaleBarSettings::Alignment alignment() const { return mSettings.alignment(); }
 
-    //! Left / Middle/ Right
-    Alignment alignment() const { return mAlignment; }
+    /**
+     * Sets the \a alignment of the scalebar.
+     */
+    void setAlignment( QgsScaleBarSettings::Alignment alignment );
 
-    void setAlignment( Alignment a );
+    /**
+     * Returns the scalebar distance units.
+     */
+    QgsUnitTypes::DistanceUnit units() const { return mSettings.units(); }
 
-    ScaleBarUnits units() const { return mUnits; }
-
-    void setUnits( ScaleBarUnits u );
+    /**
+     * Sets the scalebar distance units.
+     */
+    void setUnits( QgsUnitTypes::DistanceUnit u );
 
     /** Returns the join style used for drawing lines in the scalebar
-     * @returns Join style for lines
-     * @note introduced in 2.3
-     * @see setLineJoinStyle
+     * \returns Join style for lines
+     * \since QGIS 2.3
+     * \see setLineJoinStyle
      */
-    Qt::PenJoinStyle lineJoinStyle() const { return mLineJoinStyle; }
+    Qt::PenJoinStyle lineJoinStyle() const { return mSettings.lineJoinStyle(); }
 
     /** Sets join style used when drawing the lines in the scalebar
-     * @param style Join style for lines
-     * @returns nothing
-     * @note introduced in 2.3
-     * @see lineJoinStyle
+     * \param style Join style for lines
+     * \returns nothing
+     * \since QGIS 2.3
+     * \see lineJoinStyle
      */
     void setLineJoinStyle( Qt::PenJoinStyle style );
 
     /** Returns the cap style used for drawing lines in the scalebar
-     * @returns Cap style for lines
-     * @note introduced in 2.3
-     * @see setLineCapStyle
+     * \returns Cap style for lines
+     * \since QGIS 2.3
+     * \see setLineCapStyle
      */
-    Qt::PenCapStyle lineCapStyle() const { return mLineCapStyle; }
+    Qt::PenCapStyle lineCapStyle() const { return mSettings.lineCapStyle(); }
 
     /** Sets cap style used when drawing the lines in the scalebar
-     * @param style Cap style for lines
-     * @returns nothing
-     * @note introduced in 2.3
-     * @see lineCapStyle
+     * \param style Cap style for lines
+     * \returns nothing
+     * \since QGIS 2.3
+     * \see lineCapStyle
      */
     void setLineCapStyle( Qt::PenCapStyle style );
 
     //! Apply default settings
     void applyDefaultSettings();
     //! Apply default size (scale bar 1/5 of map item width)
-    void applyDefaultSize( ScaleBarUnits u = Meters );
+    void applyDefaultSize( QgsUnitTypes::DistanceUnit u = QgsUnitTypes::DistanceMeters );
 
     /** Sets style by name
-     @param styleName (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*/
+     \param styleName (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*/
     void setStyle( const QString &styleName );
 
     //! Returns style name
     QString style() const;
-
-    /** Returns the x - positions of the segment borders (in item coordinates) and the width
-     * of the segment
-     * @note not available in Python bindings
-     */
-    void segmentPositions( QList<QPair<double, double> > &posWidthList ) const;
 
     //! Sets box size suitable to content
     void adjustBoxSize();
@@ -311,18 +300,16 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     //! Adjusts box size and calls QgsComposerItem::update()
     void update();
 
-    //! Returns string of first label (important for drawing, labeling, size calculation
-    QString firstLabelString() const;
 
     /** Stores state in Dom element
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc Dom document
+     * \param elem is Dom element corresponding to 'Composer' tag
+     * \param doc Dom document
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is Dom document
+     * \param itemElem is Dom node corresponding to item tag
+     * \param doc is Dom document
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
@@ -338,70 +325,27 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void invalidateCurrentMap();
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
-  protected:
+  private:
 
     //! Reference to composer map object
-    const QgsComposerMap *mComposerMap = nullptr;
-    //! Number of segments on right side
-    int mNumSegments;
-    //! Number of segments on left side
-    int mNumSegmentsLeft;
-    //! Size of a segment (in map units)
-    double mNumUnitsPerSegment;
-    //! Number of map units per scale bar units (e.g. 1000 to have km for a map with m units)
-    double mNumMapUnitsPerScaleBarUnit;
-    //! Either fixed (i.e. mNumUnitsPerSegment) or try to best fit scale bar width (mMinBarWidth, mMaxBarWidth)
-    SegmentSizeMode mSegmentSizeMode;
-    //! Minimum allowed bar width, when mSegmentSizeMode is FitWidth
-    double mMinBarWidth;
-    //! Maximum allowed bar width, when mSegmentSizeMode is FitWidth
-    double mMaxBarWidth;
+    QgsComposerMap *mComposerMap = nullptr;
 
-    //! Labeling of map units
-    QString mUnitLabeling;
-    //! Font
-    QFont mFont;
-    QColor mFontColor;
-    //! Fill color
-    QColor mFillColor = QColor( 0, 0, 0 );
-    //! Secondary fill color
-    QColor mFillColor2 = QColor( 255, 255, 255 );
-    //! Line color
-    QColor mLineColor = QColor( 0, 0, 0 );
-    //! Line width
-    double mLineWidth = 0.3;
-    //! Stroke
-    QPen mPen;
-    //! Fill
-    QBrush mBrush;
-    //! Secondary fill
-    QBrush mBrush2;
-    //! Height of bars/lines
-    double mHeight;
+    QgsScaleBarSettings mSettings;
+
     //! Scalebar style
-    QgsScaleBarStyle *mStyle = nullptr;
-
-    //! Space between bar and Text labels
-    double mLabelBarSpace;
-
-    //! Space between content and item box
-    double mBoxContentSpace;
+    QgsScaleBarRenderer *mStyle = nullptr;
 
     //! Width of a segment (in mm)
     double mSegmentMillimeters;
-
-    Alignment mAlignment;
-
-    ScaleBarUnits mUnits;
-
-    Qt::PenJoinStyle mLineJoinStyle;
-    Qt::PenCapStyle mLineCapStyle;
 
     //! Calculates with of a segment in mm and stores it in mSegmentMillimeters
     void refreshSegmentMillimeters();
 
     //! Returns diagonal of composer map in selected units (map units / meters / feet / nautical miles)
     double mapWidth() const;
+
+    QgsScaleBarRenderer::ScaleBarContext createScaleContext() const;
+
 };
 
 #endif //QGSCOMPOSERSCALEBAR_H

@@ -1,7 +1,7 @@
 // astyle_main.h
-// Copyright (c) 2016 by Jim Pattee <jimp03@email.com>.
+// Copyright (c) 2017 by Jim Pattee <jimp03@email.com>.
 // This code is licensed under the MIT License.
-// License.txt describes the conditions under which this software may be distributed.
+// License.md describes the conditions under which this software may be distributed.
 
 #ifndef ASTYLE_MAIN_H
 #define ASTYLE_MAIN_H
@@ -22,7 +22,7 @@
 	using std::time_t;
 #endif
 
-#if defined(_MSC_VER) || defined(__DMC__)
+#if defined(_MSC_VER)
 	#include <sys/utime.h>
 	#include <sys/stat.h>
 #else
@@ -160,10 +160,11 @@ public:	// inline functions
 };
 
 //----------------------------------------------------------------------------
-// Utf8_16 class for utf8/16 conversions
+// ASEncoding class for utf8/16 conversions
+// used by both console and library builds
 //----------------------------------------------------------------------------
 
-class Utf8_16
+class ASEncoding
 {
 private:
 	typedef unsigned short utf16; // 16 bits
@@ -191,19 +192,27 @@ public:
 // ASOptions class for options processing
 // used by both console and library builds
 //----------------------------------------------------------------------------
+class ASConsole;
 
 class ASOptions
 {
 public:
-	explicit ASOptions(ASFormatter& formatterArg) : formatter(formatterArg) {}
+#ifdef ASTYLE_LIB
+	ASOptions(ASFormatter& formatterArg);
+#else
+	ASOptions(ASFormatter& formatterArg, ASConsole& consoleArg);
+#endif
 	string getOptionErrors() const;
 	void importOptions(istream& in, vector<string>& optionsVector);
 	bool parseOptions(vector<string>& optionsVector, const string& errorInfo);
 
 private:
 	// variables
-	ASFormatter& formatter;			// reference to the ASFormatter object
+	ASFormatter& formatter;
 	stringstream optionErrors;		// option error messages
+#ifndef ASTYLE_LIB
+	ASConsole&   console;			// DO NOT USE for ASTYLE_LIB
+#endif
 
 	// functions
 	ASOptions(const ASOptions&);           // copy constructor not to be implemented
@@ -229,6 +238,7 @@ class ASConsole
 private:    // variables
 	ASFormatter& formatter;             // reference to the ASFormatter object
 	ASLocalizer localizer;              // ASLocalizer object
+	ostream* errorStream;               // direct error messages to cerr or cout
 	// command line options
 	bool isRecursive;                   // recursive option
 	bool isDryRun;                      // dry-run option
@@ -251,12 +261,14 @@ private:    // variables
 	bool lineEndsMixed;                 // output has mixed line ends
 	int  linesOut;                      // number of output lines
 
-	Utf8_16 utf8_16;                    // utf8/16 conversion methods
+	ASEncoding utf8_16;                 // utf8/16 conversion methods
 
 	string outputEOL;                   // current line end
 	string prevEOL;                     // previous line end
 	string optionsFileName;             // file path and name of the options file to use
 	string origSuffix;                  // suffix= option
+	string stdPathIn;                   // path to input from stdin=
+	string stdPathOut;                  // path to output from stdout=
 	string targetDirectory;             // path to the directory being processed
 	string targetFilename;              // file name being processed
 
@@ -267,34 +279,9 @@ private:    // variables
 	vector<string> fileOptionsVector;   // options from the options file
 	vector<string> fileName;            // files to be processed including path
 
-public:     // variables
-	explicit ASConsole(ASFormatter& formatterArg) : formatter(formatterArg)
-	{
-		// command line options
-		isRecursive = false;
-		isDryRun = false;
-		noBackup = false;
-		preserveDate = false;
-		isVerbose = false;
-		isQuiet = false;
-		isFormattedOnly = false;
-		ignoreExcludeErrors = false;
-		ignoreExcludeErrorsDisplay = false;
-		optionsFileRequired = false;
-		useAscii = false;
-		// other variables
-		bypassBrowserOpen = false;
-		hasWildcard = false;
-		filesAreIdentical = true;
-		lineEndsMixed = false;
-		origSuffix = ".orig";
-		mainDirectoryLength = 0;
-		filesFormatted = 0;
-		filesUnchanged = 0;
-		linesOut = 0;
-	}
-
 public:     // functions
+	explicit ASConsole(ASFormatter& formatterArg);
+	~ASConsole();
 	void convertLineEnds(ostringstream& out, int lineEnd);
 	FileEncoding detectEncoding(const char* data, size_t dataSize) const;
 	void error() const;
@@ -302,6 +289,7 @@ public:     // functions
 	void formatCinToCout();
 	vector<string> getArgvOptions(int argc, char** argv) const;
 	bool fileNameVectorIsEmpty() const;
+	ostream* getErrorStream() const;
 	bool getFilesAreIdentical() const;
 	int  getFilesFormatted() const;
 	bool getIgnoreExcludeErrors() const;
@@ -315,13 +303,16 @@ public:     // functions
 	bool getNoBackup() const;
 	bool getPreserveDate() const;
 	string getLanguageID() const;
-	string getNumberFormat(int num, size_t = 0) const;
+	string getNumberFormat(int num, size_t lcid = 0) const;
 	string getNumberFormat(int num, const char* groupingArg, const char* separator) const;
 	string getOptionsFileName() const;
 	string getOrigSuffix() const;
+	string getStdPathIn() const;
+	string getStdPathOut() const;
 	void processFiles();
-	void processOptions(vector<string>& argvOptions);
+	void processOptions(const vector<string>& argvOptions);
 	void setBypassBrowserOpen(bool state);
+	void setErrorStream(ostream* errStreamPtr);
 	void setIgnoreExcludeErrors(bool state);
 	void setIgnoreExcludeErrorsAndDisplay(bool state);
 	void setIsDryRun(bool state);
@@ -333,6 +324,8 @@ public:     // functions
 	void setOptionsFileName(const string& name);
 	void setOrigSuffix(const string& suffix);
 	void setPreserveDate(bool state);
+	void setStdPathIn(const string& path);
+	void setStdPathOut(const string& path);
 	void standardizePath(string& path, bool removeBeginningSeparator = false) const;
 	bool stringEndsWith(const string& str, const string& suffix) const;
 	void updateExcludeVector(const string& suffixParam);
@@ -344,19 +337,20 @@ public:     // functions
 	vector<string> getFileName() const;
 
 private:	// functions
-	ASConsole& operator=(ASConsole&);          // not to be implemented
+	ASConsole(const ASConsole&);           // copy constructor not to be implemented
+	ASConsole& operator=(ASConsole&);      // assignment operator not to be implemented
 	void correctMixedLineEnds(ostringstream& out);
 	void formatFile(const string& fileName_);
 	string getCurrentDirectory(const string& fileName_) const;
 	void getFileNames(const string& directory, const string& wildcard);
-	void getFilePaths(string& filePath);
+	void getFilePaths(const string& filePath);
 	string getParam(const string& arg, const char* op);
 	void initializeOutputEOL(LineEndFormat lineEndFormat);
 	bool isOption(const string& arg, const char* op);
 	bool isOption(const string& arg, const char* a, const char* b);
 	bool isParamOption(const string& arg, const char* option);
 	bool isPathExclued(const string& subPath);
-	void launchDefaultBrowser(const char* filePathIn = NULL) const;
+	void launchDefaultBrowser(const char* filePathIn = nullptr) const;
 	void printHelp() const;
 	void printMsg(const char* msg, const string& data) const;
 	void printSeparatingLine() const;
@@ -388,13 +382,13 @@ public:
 	// virtual functions are mocked in testing
 	utf16_t* formatUtf16(const utf16_t*, const utf16_t*, fpError, fpAlloc) const;
 	virtual utf16_t* convertUtf8ToUtf16(const char* utf8In, fpAlloc fpMemoryAlloc) const;
-	virtual char* convertUtf16ToUtf8(const utf16_t* pSourceIn) const;
+	virtual char* convertUtf16ToUtf8(const utf16_t* utf16In) const;
 
 private:
 	static char* STDCALL tempMemoryAllocation(unsigned long memoryNeeded);
 
 private:
-	Utf8_16 utf8_16;            // utf8/16 conversion methods
+	ASEncoding utf8_16;         // utf8/16 conversion methods
 };
 
 #endif	// ASTYLE_LIB
@@ -437,10 +431,10 @@ utf16_t* STDCALL AStyleMainUtf16(const utf16_t* pSourceIn,
 // they are called externally and are NOT part of the namespace
 //-----------------------------------------------------------------------------
 #ifdef ASTYLE_LIB
-extern "C" EXPORT char* STDCALL AStyleMain(const char* sourceIn,
-                                           const char* optionsIn,
-                                           fpError errorHandler,
-                                           fpAlloc memoryAlloc);
+extern "C" EXPORT char* STDCALL AStyleMain(const char* pSourceIn,
+                                           const char* pOptions,
+                                           fpError fpErrorHandler,
+                                           fpAlloc fpMemoryAlloc);
 extern "C" EXPORT const char* STDCALL AStyleGetVersion(void);
 #endif	// ASTYLE_LIB
 

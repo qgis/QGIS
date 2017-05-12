@@ -265,7 +265,7 @@ class QgsWcsCapabilities : public QObject
     //! Retrieve the best WCS version supported by server and QGIS
     bool retrieveServerCapabilities();
 
-    //! \return false if the capabilities document could not be parsed - see lastError() for more info
+    //! \returns false if the capabilities document could not be parsed - see lastError() for more info
     bool parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapabilitiesProperty &capabilities );
 
     // ------------- 1.0 --------------------

@@ -63,6 +63,7 @@
 #define QGSAUTHSSLIMPORTDIALOG_H
 
 #include "ui_qgsauthsslimportdialog.h"
+#include "qgis.h"
 
 #include <QDialog>
 #include <QAbstractSocket>
@@ -84,9 +85,9 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
 
     /**
      * Construct dialog for importing certificates
-     * @param parent
+     * \param parent
      */
-    QgsAuthSslImportDialog( QWidget *parent = nullptr );
+    QgsAuthSslImportDialog( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   public slots:
     void accept() override;

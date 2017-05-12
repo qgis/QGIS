@@ -16,6 +16,7 @@
 #define QGSCATEGORIZEDSYMBOLRENDERERV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
@@ -34,7 +35,7 @@ class CORE_EXPORT QgsRendererCategory
     QgsRendererCategory();
 
     //! takes ownership of symbol
-    QgsRendererCategory( const QVariant &value, QgsSymbol *symbol, const QString &label, bool render = true );
+    QgsRendererCategory( const QVariant &value, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
 
     //! copy constructor
     QgsRendererCategory( const QgsRendererCategory &cat );
@@ -46,10 +47,10 @@ class CORE_EXPORT QgsRendererCategory
     QString label() const;
 
     void setValue( const QVariant &value );
-    void setSymbol( QgsSymbol *s );
+    void setSymbol( QgsSymbol *s SIP_TRANSFER );
     void setLabel( const QString &label );
 
-    // @note added in 2.5
+    // \since QGIS 2.5
     bool renderState() const;
     void setRenderState( bool render );
 
@@ -92,8 +93,8 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     /** Update all the symbols but leave categories and colors. This method also sets the source
      * symbol for the renderer.
-     * @param sym source symbol to use for categories. Ownership is not transferred.
-     * @see setSourceSymbol()
+     * \param sym source symbol to use for categories. Ownership is not transferred.
+     * \see setSourceSymbol()
      */
     void updateSymbols( QgsSymbol *sym );
 
@@ -103,14 +104,14 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     int categoryIndexForValue( const QVariant &val );
 
     //! return index of category with specified label (-1 if not found or not unique)
-    //! @note added in 2.5
+    //! \since QGIS 2.5
     int categoryIndexForLabel( const QString &val );
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
-    bool updateCategorySymbol( int catIndex, QgsSymbol *symbol );
+    bool updateCategorySymbol( int catIndex, QgsSymbol *symbol SIP_TRANSFER );
     bool updateCategoryLabel( int catIndex, const QString &label );
 
-    //! @note added in 2.5
+    //! \since QGIS 2.5
     bool updateCategoryRenderState( int catIndex, bool render );
 
     void addCategory( const QgsRendererCategory &category );
@@ -127,7 +128,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     void setClassAttribute( const QString &attr ) { mAttrName = attr; }
 
     //! create renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &element );
+    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
 
     virtual QDomElement save( QDomDocument &doc ) override;
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
@@ -137,37 +138,37 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     /** Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
      * the categories' color.
-     * @see setSourceSymbol()
-     * @see sourceColorRamp()
+     * \see setSourceSymbol()
+     * \see sourceColorRamp()
      */
     QgsSymbol *sourceSymbol();
 
     /** Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
      * the categories' color.
-     * @param sym source symbol, ownership is transferred to the renderer
-     * @see sourceSymbol()
-     * @see setSourceColorRamp()
+     * \param sym source symbol, ownership is transferred to the renderer
+     * \see sourceSymbol()
+     * \see setSourceColorRamp()
      */
-    void setSourceSymbol( QgsSymbol *sym );
+    void setSourceSymbol( QgsSymbol *sym SIP_TRANSFER );
 
     /** Returns the source color ramp, from which each categories' color is derived.
-     * @see setSourceColorRamp()
-     * @see sourceSymbol()
+     * \see setSourceColorRamp()
+     * \see sourceSymbol()
      */
     QgsColorRamp *sourceColorRamp();
 
     /** Sets the source color ramp.
-      * @param ramp color ramp. Ownership is transferred to the renderer
-      * @see sourceColorRamp()
-      * @see setSourceSymbol()
+      * \param ramp color ramp. Ownership is transferred to the renderer
+      * \see sourceColorRamp()
+      * \see setSourceSymbol()
       */
-    void setSourceColorRamp( QgsColorRamp *ramp );
+    void setSourceColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /** Update the color ramp used and all symbols colors.
-      * @param ramp color ramp. Ownership is transferred to the renderer
-      * @note added in 2.5
+      * \param ramp color ramp. Ownership is transferred to the renderer
+      * \since QGIS 2.5
       */
-    void updateColorRamp( QgsColorRamp *ramp );
+    void updateColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     virtual bool legendSymbolItemsCheckable() const override;
     virtual bool legendSymbolItemChecked( const QString &key ) override;
@@ -176,9 +177,9 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     virtual QString legendClassificationAttribute() const override { return classAttribute(); }
 
     //! creates a QgsCategorizedSymbolRenderer from an existing renderer.
-    //! @note added in 2.5
-    //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    //! \since QGIS 2.5
+    //! \returns a new renderer if the conversion was possible, otherwise 0.
+    static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   protected:
     QString mAttrName;

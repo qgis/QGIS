@@ -4,35 +4,46 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     #include "qgspalettedrasterrenderer.h"
 %End
   public:
-    /** Renderer owns color array*/
-    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray /Array,Transfer/, int nColors /ArraySize/, const QVector<QString>& labels = QVector<QString>() );
-    ~QgsPalettedRasterRenderer();
-    virtual QgsPalettedRasterRenderer * clone() const /Factory/;
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) /Factory/;
+    struct Class
+    {
+
+      Class( int value, const QColor &color = QColor(), const QString &label = QString() );
+      int value;
+      QColor color;
+      QString label;
+    };
+
+    typedef QList< QgsPalettedRasterRenderer::Class > ClassData;
+
+    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes );
+    ~QgsPalettedRasterRenderer();
+    virtual QgsPalettedRasterRenderer *clone() const /Factory/;
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
+
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
     /** Returns number of colors*/
     int nColors() const;
-    /** Returns copy of color array (caller takes ownership)*/
-    QColor* colors() const /Factory/;
-
-    /** Return optional category label
-     *  @note added in 2.1 */
+    ClassData classes() const;
     QString label( int idx ) const;
+    void setLabel( int idx, const QString &label );
 
-    /** Set category label
-     *  @note added in 2.1 */
-    void setLabel( int idx, const QString& label );
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
-
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems /Out/ ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
     QList<int> usesBands() const;
+    void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
+    QgsColorRamp *sourceColorRamp() const;
+    static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
+    static QgsPalettedRasterRenderer::ClassData classDataFromString( const QString &string );
+    static QgsPalettedRasterRenderer::ClassData classDataFromFile( const QString &path );
+    static QString classDataToString( const QgsPalettedRasterRenderer::ClassData &classes );
+    static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = 0 );
 
   private:
 
     QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer& );
-    const QgsPalettedRasterRenderer& operator=( const QgsPalettedRasterRenderer& );
+    const QgsPalettedRasterRenderer &operator=( const QgsPalettedRasterRenderer& );
 };

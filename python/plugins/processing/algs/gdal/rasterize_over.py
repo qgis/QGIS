@@ -28,6 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import QgsProcessingUtils
+
 from qgis.PyQt.QtGui import QIcon
 
 from processing.core.parameters import ParameterVector
@@ -49,15 +51,19 @@ class rasterize_over(GdalAlgorithm):
     INPUT_RASTER = 'INPUT_RASTER'
     FIELD = 'FIELD'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
-    def commandLineName(self):
-        return "gdal:rasterize_over"
+    def name(self):
+        return 'rasterize_over'
+
+    def displayName(self):
+        return self.tr('Rasterize (write over existing raster)')
+
+    def group(self):
+        return self.tr('Vector conversion')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Rasterize (write over existing raster)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector conversion')
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Attribute field'), self.INPUT))
@@ -65,8 +71,9 @@ class rasterize_over(GdalAlgorithm):
                                           self.tr('Existing raster layer'), False))
 
     def getConsoleCommands(self):
-        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        inRasterLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_RASTER))
+        context = dataobjects.createContext()
+        inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        inRasterLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_RASTER), context)
 
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         ogrRasterLayer = ogrConnectionString(inRasterLayer)[1:-1]
@@ -81,3 +88,6 @@ class rasterize_over(GdalAlgorithm):
         arguments.append(ogrRasterLayer)
 
         return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]
+
+    def commandName(self):
+        return "gdal_rasterize"

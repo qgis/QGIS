@@ -6,31 +6,31 @@ class QgsSnappingUtils : QObject
 %End
 
   public:
-    QgsSnappingUtils( QObject* parent /TransferThis/ = 0 );
+    QgsSnappingUtils( QObject *parent /TransferThis/ = 0 );
     ~QgsSnappingUtils();
 
     // main actions
 
     /** Get a point locator for the given layer. If such locator does not exist, it will be created */
-    QgsPointLocator* locatorForLayer( QgsVectorLayer* vl );
+    QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 
     /** Snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches. */
-    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter* filter = 0 );
-    QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = 0 );
+    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = 0 );
+    QgsPointLocator::Match snapToMap( const QgsPoint &pointMap, QgsPointLocator::MatchFilter *filter = 0 );
 
     /** Snap to current layer */
-    QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter* filter = 0 );
+    QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter *filter = 0 );
 
     // environment setup
 
     /** Assign current map settings to the utils - used for conversion between screen coords to map coords */
-    void setMapSettings( const QgsMapSettings& settings );
+    void setMapSettings( const QgsMapSettings &settings );
     QgsMapSettings mapSettings() const;
 
     /** Set current layer so that if mode is SnapCurrentLayer we know which layer to use */
-    void setCurrentLayer( QgsVectorLayer* layer );
+    void setCurrentLayer( QgsVectorLayer *layer );
     /** The current layer used if mode is SnapCurrentLayer */
-    QgsVectorLayer* currentLayer() const;
+    QgsVectorLayer *currentLayer() const;
 
 
     // configuration
@@ -61,13 +61,13 @@ class QgsSnappingUtils : QObject
      */
     struct LayerConfig
     {
-      LayerConfig( QgsVectorLayer* l, QgsPointLocator::Types t, double tol, QgsTolerance::UnitType u );
+      LayerConfig( QgsVectorLayer *l, QgsPointLocator::Types t, double tol, QgsTolerance::UnitType u );
 
-      bool operator==( const QgsSnappingUtils::LayerConfig& other ) const;
-      bool operator!=( const QgsSnappingUtils::LayerConfig& other ) const;
+      bool operator==( const QgsSnappingUtils::LayerConfig &other ) const;
+      bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const;
 
       //! The layer to configure.
-      QgsVectorLayer* layer;
+      QgsVectorLayer *layer;
       //! To which geometry properties of this layers a snapping should happen.
       QgsPointLocator::Types type;
       //! The range around snapping targets in which snapping should occur.
@@ -93,7 +93,7 @@ class QgsSnappingUtils : QObject
     /**
      * The snapping configuration controls the behavior of this object
      */
-    void setConfig( const QgsSnappingConfig& snappingConfig );
+    void setConfig( const QgsSnappingConfig &snappingConfig );
 
     /**
      * Toggles the state of snapping
@@ -104,7 +104,7 @@ class QgsSnappingUtils : QObject
     /**
      * Emitted when the snapping settings object changes.
      */
-    void configChanged( const QgsSnappingConfig& snappingConfig );
+    void configChanged( const QgsSnappingConfig &snappingConfig );
 
   protected:
     //! Called when starting to index - can be overridden and e.g. progress dialog can be provided

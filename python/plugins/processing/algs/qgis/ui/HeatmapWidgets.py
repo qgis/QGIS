@@ -27,7 +27,8 @@ from processing.core.parameters import _resolveLayers
 import os
 from qgis.PyQt import uic
 from qgis.gui import QgsDoubleSpinBox
-from qgis.core import QgsRectangle
+from qgis.core import (QgsRectangle,
+                       QgsProcessingUtils)
 
 pluginPath = os.path.dirname(__file__)
 WIDGET, BASE = uic.loadUiType(
@@ -190,8 +191,9 @@ class HeatmapPixelSizeWidgetWrapper(WidgetWrapper):
         self.setLayer(wrapper.value())
 
     def setLayer(self, layer):
+        context = dataobjects.createContext()
         if isinstance(layer, str):
-            layer = dataobjects.getObjectFromUri(_resolveLayers(layer))
+            layer = QgsProcessingUtils.mapLayerFromString(_resolveLayers(layer), context)
         self.widget.setLayer(layer)
 
     def radiusChanged(self, wrapper):

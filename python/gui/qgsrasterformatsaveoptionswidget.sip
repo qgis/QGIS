@@ -18,30 +18,30 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
 
     QgsRasterFormatSaveOptionsWidget( QWidget* parent /TransferThis/ = 0, const QString& format = "GTiff",
                                       QgsRasterFormatSaveOptionsWidget::Type type = Default,
-                                      const QString& provider = "gdal" );
+                                      const QString &provider = "gdal" );
     ~QgsRasterFormatSaveOptionsWidget();
 
     /**
      * Set output raster format, it is used to determine list
      * of available options
      */
-    void setFormat( const QString& format );
+    void setFormat( const QString &format );
 
     /**
      * Set provider key, , it is used to determine list
      * of available options
      */
-    void setProvider( const QString& provider );
+    void setProvider( const QString &provider );
 
     /**
      * Set output raster layer
      */
-    void setRasterLayer( QgsRasterLayer* rasterLayer );
+    void setRasterLayer( QgsRasterLayer *rasterLayer );
 
     /**
      * Set output raster file name
      */
-    void setRasterFileName( const QString& file );
+    void setRasterFileName( const QString &file );
 
     /**
      * Returns list of selected options
@@ -55,7 +55,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
      * @see options()
      * @note added in QGIS 3.0
      */
-    void setOptions( const QString& options );
+    void setOptions( const QString &options );
 
     /**
      * Set widget look and feel
@@ -102,7 +102,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
     void updateControls();
 
   protected:
-    virtual void showEvent( QShowEvent * event );
+    virtual void showEvent( QShowEvent *event );
 
   signals:
     void optionsChanged();
@@ -111,11 +111,11 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
 
     QString settingsKey( QString profile ) const;
     QString currentProfileKey() const;
-    QString createOptions( const QString& profile ) const;
-    void deleteCreateOptions( const QString& profile );
+    QString createOptions( const QString &profile ) const;
+    void deleteCreateOptions( const QString &profile );
     void setCreateOptions();
-    void setCreateOptions( const QString& profile, const QString& options );
-    void setCreateOptions( const QString& profile, const QStringList& list );
+    void setCreateOptions( const QString &profile, const QString &options );
+    void setCreateOptions( const QString &profile, const QStringList &list );
     QStringList profiles() const;
     bool eventFilter( QObject *obj, QEvent *event );
 

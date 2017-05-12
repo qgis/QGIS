@@ -24,13 +24,13 @@ class QgsPointDistanceRenderer : QgsFeatureRenderer
        * @param isSelected set to true if feature is selected and should be rendered in a selected state
        * @param label optional label text, or empty string for no label
        */
-      GroupedFeature( const QgsFeature& feature, QgsMarkerSymbol* symbol, bool isSelected, const QString& label = QString() );
+      GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol, bool isSelected, const QString &label = QString() );
 
       //! Feature
       QgsFeature feature;
 
       //! Base symbol for rendering feature
-      QgsMarkerSymbol* symbol;
+      QgsMarkerSymbol *symbol;
 
       //! True if feature is selected and should be rendered in a selected state
       bool isSelected;
@@ -46,29 +46,29 @@ class QgsPointDistanceRenderer : QgsFeatureRenderer
      * @param rendererName name of renderer for registry
      * @param labelAttributeName optional attribute for labeling points
      */
-    QgsPointDistanceRenderer( const QString& rendererName, const QString& labelAttributeName = QString() );
+    QgsPointDistanceRenderer( const QString &rendererName, const QString &labelAttributeName = QString() );
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const;
-    bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+    bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
     virtual Capabilities capabilities();
-    virtual QgsSymbolList symbols( QgsRenderContext& context );
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
-    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context );
-    virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
-    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
-    virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context );
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
-    void stopRender( QgsRenderContext& context );
+    virtual QgsSymbolList symbols( QgsRenderContext &context );
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context );
+    virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+    void stopRender( QgsRenderContext &context );
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-    //QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" );
-    void setEmbeddedRenderer( QgsFeatureRenderer* r /Transfer/ );
-    const QgsFeatureRenderer* embeddedRenderer() const;
-    void setLegendSymbolItem( const QString& key, QgsSymbol* symbol  /Transfer/ );
+    //QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" );
+    void setEmbeddedRenderer( QgsFeatureRenderer *r /Transfer/ );
+    const QgsFeatureRenderer *embeddedRenderer() const;
+    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol  /Transfer/ );
     bool legendSymbolItemsCheckable() const;
-    bool legendSymbolItemChecked( const QString& key );
-    void checkLegendSymbolItem( const QString& key, bool state );
-    virtual QString filter( const QgsFields& fields = QgsFields() );
+    bool legendSymbolItemChecked( const QString &key );
+    void checkLegendSymbolItem( const QString &key, bool state );
+    virtual QString filter( const QgsFields &fields = QgsFields() );
 
     /** Sets the attribute name for labeling points.
      * @param name attribute name, or empty string to avoid labeling features by the renderer
@@ -77,7 +77,7 @@ class QgsPointDistanceRenderer : QgsFeatureRenderer
      * @see setLabelColor()
      * @see setMaxLabelScaleDenominator()
      */
-    void setLabelAttributeName( const QString& name );
+    void setLabelAttributeName( const QString &name );
 
     /** Returns the attribute name used for labeling points, or an empty string if no labeling
      * will be done by the renderer.
@@ -94,7 +94,7 @@ class QgsPointDistanceRenderer : QgsFeatureRenderer
      * @see setLabelAttributeName()
      * @see setLabelColor()
      */
-    void setLabelFont( const QFont& font );
+    void setLabelFont( const QFont &font );
 
     /** Returns the font used for labeling points.
      * @see setLabelFont()
@@ -122,7 +122,7 @@ class QgsPointDistanceRenderer : QgsFeatureRenderer
      * @see setLabelAttributeName()
      * @see setLabelFont()
      */
-    void setLabelColor( const QColor& color );
+    void setLabelColor( const QColor &color );
 
     /** Returns the color used for for labeling points.
      * @see setLabelColor()
@@ -167,14 +167,14 @@ class QgsPointDistanceRenderer : QgsFeatureRenderer
      * @see toleranceMapUnitScale()
      * @see setToleranceUnit()
      */
-    void setToleranceMapUnitScale( const QgsMapUnitScale& scale );
+    void setToleranceMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the map unit scale object for the distance tolerance. This is only used if the
      * toleranceUnit() is set to QgsUnitTypes::RenderMapUnits.
      * @see setToleranceMapUnitScale()
      * @see toleranceUnit()
      */
-    const QgsMapUnitScale& toleranceMapUnitScale() const;
+    const QgsMapUnitScale &toleranceMapUnitScale() const;
 
   protected:
 
@@ -185,7 +185,7 @@ class QgsPointDistanceRenderer : QgsFeatureRenderer
      * @param group group of clustered features to label
      * @note may not be available in Python bindings on some platforms
      */
-    void drawLabels( QPointF centerPoint, QgsSymbolRenderContext& context, const QList<QPointF>& labelShifts, const  QgsPointDistanceRenderer::ClusteredGroup& group );
+    void drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const  QgsPointDistanceRenderer::ClusteredGroup &group );
 
   private:
 
@@ -194,6 +194,6 @@ class QgsPointDistanceRenderer : QgsFeatureRenderer
      * @param context destination render context
      * @param group contents of group
      */
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext& context, const QgsPointDistanceRenderer::ClusteredGroup& group ) = 0;
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) = 0;
 
 };

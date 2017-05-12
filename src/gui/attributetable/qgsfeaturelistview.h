@@ -17,6 +17,8 @@
 #define QGSFEATURELISTVIEW_H
 
 #include <QListView>
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <qdebug.h>
 
 #include "qgsfeature.h" // For QgsFeatureIds
@@ -35,9 +37,8 @@ class QRect;
 /** \ingroup gui
  * Shows a list of features and renders a edit button next to each feature.
  *
- * @brief
  * Accepts a display expression to define the way, features are rendered.
- * Uses a {@link QgsFeatureListModel} as source model.
+ * Uses a QgsFeatureListModel as source model.
  *
  */
 class GUI_EXPORT QgsFeatureListView : public QListView
@@ -49,27 +50,27 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Creates a feature list view
      *
-     * @param parent   owner
+     * \param parent   owner
      */
-    explicit QgsFeatureListView( QWidget *parent = nullptr );
+    explicit QgsFeatureListView( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Returns the layer cache
-     * @return the layer cache used as backend
+     * \returns the layer cache used as backend
      */
     QgsVectorLayerCache *layerCache();
 
     /**
-     * Set the {@link QgsFeatureListModel} which is used to retrieve information
+     * Set the QgsFeatureListModel which is used to retrieve information
      *
-     * @param featureListModel  The model to use
+     * \param featureListModel  The model to use
      */
     virtual void setModel( QgsFeatureListModel *featureListModel );
 
     /**
      * Get the featureListModel used by this view
      *
-     * @return The model in use
+     * \returns The model in use
      */
     QgsFeatureListModel *featureListModel() { return mModel; }
 
@@ -77,47 +78,47 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * The display expression is an expression used to render the fields into a single string
      * which is displaied.
      *
-     * @param displayExpression  The expression used to render the feature
+     * \param displayExpression  The expression used to render the feature
      *
-     * @see QgsExpression
+     * \see QgsExpression
      */
     bool setDisplayExpression( const QString &displayExpression );
 
     /**
      * Returns the expression which is currently used to render the features.
      *
-     * @return A string containing the currend display expression
+     * \returns A string containing the currend display expression
      *
-     * @see QgsExpression
+     * \see QgsExpression
      */
     const QString displayExpression() const;
 
     /**
      * Returns a detailed message about errors while parsing a QgsExpression.
      *
-     * @return A message containing information about the parser error.
+     * \returns A message containing information about the parser error.
      */
     QString parserErrorString();
 
     /**
      * Get the currentEditSelection
      *
-     * @return A list of edited feature ids
+     * \returns A list of edited feature ids
      */
     QgsFeatureIds currentEditSelection();
 
     /**
      * Sets if the currently shown form has received any edit events so far.
      *
-     * @param state The state
+     * \param state The state
      */
     void setCurrentFeatureEdited( bool state );
 
     /**
-     * @brief setFeatureSelectionManager
-     * @param featureSelectionManager We will take ownership
+     * \brief setFeatureSelectionManager
+     * \param featureSelectionManager We will take ownership
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event ) override;
     virtual void mousePressEvent( QMouseEvent *event ) override;
@@ -130,33 +131,33 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Is emitted, whenever the current edit selection has been changed.
      *
-     * @param feat the feature, which will be edited.
+     * \param feat the feature, which will be edited.
      */
     void currentEditSelectionChanged( QgsFeature &feat );
 
     /**
      * Is emitted, whenever the display expression is successfully changed
-     * @param expression The expression that was applied
+     * \param expression The expression that was applied
      */
     void displayExpressionChanged( const QString &expression );
 
-    //! @note not available in Python bindings
-    void aboutToChangeEditSelection( bool &ok );
+    //! \note not available in Python bindings
+    void aboutToChangeEditSelection( bool &ok ) SIP_SKIP;
 
   public slots:
 
     /**
      * Set the feature(s) to be edited
      *
-     * @param fids  A list of features to be edited
+     * \param fids  A list of features to be edited
      */
     void setEditSelection( const QgsFeatureIds &fids );
 
     /**
      * Set the feature(s) to be edited
      *
-     * @param index The selection to set
-     * @param command selection update mode
+     * \param index The selection to set
+     * \param command selection update mode
      */
     void setEditSelection( const QModelIndex &index, QItemSelectionModel::SelectionFlags command );
 

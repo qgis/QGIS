@@ -31,10 +31,12 @@ import stat
 import shutil
 import subprocess
 import os
-from qgis.core import QgsApplication
+
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
 from processing.tests.TestData import points
 
@@ -58,6 +60,8 @@ class Grass7Utils(object):
     isGrass7Installed = False
 
     version = None
+
+    command = None
 
     @staticmethod
     def grassBatchJobFilename():
@@ -331,7 +335,7 @@ class Grass7Utils(object):
                         feedback.pushConsoleInfo(line)
 
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
 
     # GRASS session is used to hold the layers already exported or
     # produced in GRASS between multiple calls to GRASS algorithms.
@@ -384,8 +388,8 @@ class Grass7Utils(object):
             if Grass7Utils.isGrass7Installed:
                 return
         try:
-            from processing import runalg
-            result = runalg(
+            from processing import run
+            result = run(
                 'grass7:v.voronoi',
                 points(),
                 False,
@@ -445,4 +449,10 @@ class Grass7Utils(object):
                         helpPath = os.path.abspath(path)
                         break
 
-        return helpPath if helpPath is not None else 'http://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)
+        if helpPath is not None:
+            return helpPath
+        elif Grass7Utils.command:
+            return 'http://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)
+        else:
+            # grass not available!
+            return 'http://grass.osgeo.org/72/manuals/'

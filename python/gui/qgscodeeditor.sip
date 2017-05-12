@@ -14,13 +14,13 @@ class QgsCodeEditor: QsciScintilla
      * @param margin False: Enable folding for code editor
      * @note added in 2.6
      */
-    QgsCodeEditor( QWidget *parent /TransferThis/ = 0, const QString& title = "" , bool folding = false, bool margin = false );
+    QgsCodeEditor( QWidget *parent /TransferThis/ = 0, const QString &title = "" , bool folding = false, bool margin = false );
     ~QgsCodeEditor();
 
     /** Set the widget title
      * @param title widget title
      */
-    void setTitle( const QString& title );
+    void setTitle( const QString &title );
 
     /** Set margin visible state
      *  @param margin Set margin in the editor
@@ -38,11 +38,11 @@ class QgsCodeEditor: QsciScintilla
      * made a selection.
      * @param text The text to be inserted
      */
-    void insertText( const QString& text );
+    void insertText( const QString &text );
 
   protected:
 
-    bool isFixedPitch( const QFont& font );
+    bool isFixedPitch( const QFont &font );
 
     QFont getMonospaceFont();
 };

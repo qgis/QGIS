@@ -19,6 +19,7 @@
 #define QGSRASTERMINMAXORIGIN_H
 
 #include <QDomDocument>
+#include "qgis.h"
 #include <QDomElement>
 
 #include "qgis_core.h"
@@ -26,7 +27,7 @@
 /** \ingroup core
  * This class describes the origin of min/max values. It does not store by
  * itself the min/max values.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRasterMinMaxOrigin
 {
@@ -45,7 +46,7 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     enum Limits
     {
       //! User defined.
-      None,
+      None SIP_PYNAME( None_ ),
       //! Real min-max values
       MinMax,
       //! Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]

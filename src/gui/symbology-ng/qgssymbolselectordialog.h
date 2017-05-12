@@ -17,6 +17,8 @@
 #define QGSSYMBOLSELECTORDIALOG_H
 
 #include <QDialog>
+#include "qgis_sip.h"
+#include "qgis.h"
 
 #include "ui_qgssymbolselectordialogbase.h"
 
@@ -89,10 +91,10 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
     /**
        * Symbol selector widget that can be used to select and build a symbol
-       * @param symbol The symbol to load into the widget as a start point.
-       * @param style The style used by the widget.
-       * @param vl The vector layer for the symbol.
-       * @param parent
+       * \param symbol The symbol to load into the widget as a start point.
+       * \param style The style used by the widget.
+       * \param vl The vector layer for the symbol.
+       * \param parent
        */
     QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent = nullptr );
 
@@ -100,21 +102,21 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QMenu *advancedMenu();
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
-     * @see context()
-     * @note added in QGIS 3.0
+     * \param context symbol widget context
+     * \see context()
+     * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
-     * @note added in QGIS 3.0
+     * \see setContext()
+     * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
     /**
-     * @brief Return the symbol that is currently active in the widget. Can be null.
-     * @return The active symbol.
+     * \brief Return the symbol that is currently active in the widget. Can be null.
+     * \returns The active symbol.
      */
     QgsSymbol *symbol() { return mSymbol; }
 
@@ -124,12 +126,12 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      * Reload the current symbol in the view.
      */
     void loadSymbol();
-    //! @note not available in python bindings
+    //! \note not available in Python bindings
 
     /**
      * Load the given symbol into the widget..
-     * @param symbol The symbol to load.
-     * @param parent The parent symbol layer item.
+     * \param symbol The symbol to load.
+     * \param parent The parent symbol layer item.
      */
     void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent );
 
@@ -143,24 +145,24 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      */
     void updateLockButton();
 
-    //! @note not available in python bindings
-    SymbolLayerItem *currentLayerItem();
+    //! \note not available in Python bindings
+    SymbolLayerItem *currentLayerItem() SIP_SKIP;
 
     /**
      * The current symbol layer that is active in the interface.
-     * @return The active symbol layer.
+     * \returns The active symbol layer.
      */
     QgsSymbolLayer *currentLayer();
 
     /**
      * Move the current active layer by a set offset in the list.
-     * @param offset The offset to move the layer by
+     * \param offset The offset to move the layer by
      */
     void moveLayerByOffset( int offset );
 
     /**
      * Set the properties widget for the active symbol layer.
-     * @param widget The widget to set to configure the active symbol layer.
+     * \param widget The widget to set to configure the active symbol layer.
      */
     void setWidget( QWidget *widget );
 
@@ -199,7 +201,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     void lockLayer();
 
     //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-    //! @note added in QGIS 2.14
+    //! \since QGIS 2.14
     void duplicateLayer();
 
     /**
@@ -221,7 +223,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     //! Slot to update tree when a new symbol from style
     void symbolChanged();
     //! alters tree and sets proper widget when Layer Type is changed
-    //! @note: The layer is received from the LayerPropertiesWidget
+    //! \note: The layer is received from the LayerPropertiesWidget
     void changeLayer( QgsSymbolLayer *layer );
 
 
@@ -247,28 +249,28 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     Q_OBJECT
 
   public:
-    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent = nullptr, bool embedded = false );
+    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0, bool embedded = false );
     ~QgsSymbolSelectorDialog();
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu *advancedMenu();
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
-     * @see context()
-     * @note added in QGIS 3.0
+     * \param context symbol widget context
+     * \see context()
+     * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
-     * @note added in QGIS 3.0
+     * \see setContext()
+     * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
     /**
-     * @brief Return the symbol that is currently active in the widget. Can be null.
-     * @return The active symbol.
+     * \brief Return the symbol that is currently active in the widget. Can be null.
+     * \returns The active symbol.
      */
     QgsSymbol *symbol();
 
@@ -277,15 +279,15 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     void keyPressEvent( QKeyEvent *e ) override;
 
     void loadSymbol();
-    //! @note not available in python bindings
-    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent );
+    //! \note not available in Python bindings
+    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent ) SIP_SKIP;
 
     void updateUi();
 
     void updateLockButton();
 
-    //! @note not available in python bindings
-    SymbolLayerItem *currentLayerItem();
+    //! \note not available in Python bindings
+    SymbolLayerItem *currentLayerItem() SIP_SKIP;
     QgsSymbolLayer *currentLayer();
 
     void moveLayerByOffset( int offset );
@@ -305,7 +307,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     void lockLayer();
 
     //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-    //! @note added in QGIS 2.14
+    //! \since QGIS 2.14
     void duplicateLayer();
 
     void layerChanged();
@@ -316,7 +318,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     //! Slot to update tree when a new symbol from style
     void symbolChanged();
     //! alters tree and sets proper widget when Layer Type is changed
-    //! @note: The layer is received from the LayerPropertiesWidget
+    //! \note: The layer is received from the LayerPropertiesWidget
     void changeLayer( QgsSymbolLayer *layer );
 
   private:

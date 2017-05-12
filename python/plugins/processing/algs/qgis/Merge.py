@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsFields
+from qgis.core import (QgsFields,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -44,27 +45,33 @@ class Merge(GeoAlgorithm):
     LAYERS = 'LAYERS'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'merge_shapes.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Merge vector layers')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def group(self):
+        return self.tr('Vector general tools')
 
+    def name(self):
+        return 'mergevectorlayers'
+
+    def displayName(self):
+        return self.tr('Merge vector layers')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterMultipleInput(self.LAYERS,
                                                  self.tr('Layers to merge'),
                                                  datatype=dataobjects.TYPE_VECTOR_ANY))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Merged')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         inLayers = self.getParameterValue(self.LAYERS)
 
         layers = []
         fields = QgsFields()
         totalFeatureCount = 0
         for layerSource in inLayers.split(';'):
-            layer = dataobjects.getObjectFromUri(layerSource)
+            layer = QgsProcessingUtils.mapLayerFromString(layerSource, context)
 
             if (len(layers) > 0):
                 if (layer.wkbType() != layers[0].wkbType()):
@@ -82,15 +89,14 @@ class Merge(GeoAlgorithm):
                         if (dfield.type() != sfield.type()):
                             raise GeoAlgorithmExecutionException(
                                 self.tr('{} field in layer {} has different '
-                                        'data type than in other layers.'))
+                                        'data type than in other layers.'.format(sfield.name(), layerSource)))
 
                 if not found:
                     fields.append(sfield)
 
         total = 100.0 / totalFeatureCount
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), layers[0].wkbType(),
-            layers[0].crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layers[0].wkbType(),
+                                                                     layers[0].crs(), context)
 
         featureCount = 0
         for layer in layers:

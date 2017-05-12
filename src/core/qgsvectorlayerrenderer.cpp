@@ -18,7 +18,6 @@
 #include "diagram/qgsdiagram.h"
 
 #include "qgsdiagramrenderer.h"
-#include "qgsgeometrycache.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsrenderer.h"
@@ -39,9 +38,6 @@
 
 #include <QPicture>
 
-// TODO:
-// - passing of cache to QgsVectorLayer
-
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id() )
@@ -50,7 +46,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   , mLayer( layer )
   , mFields( layer->fields() )
   , mRenderer( nullptr )
-  , mCache( nullptr )
   , mLabeling( false )
   , mDiagrams( false )
   , mLabelProvider( nullptr )
@@ -265,18 +260,6 @@ bool QgsVectorLayerRenderer::render()
   return true;
 }
 
-void QgsVectorLayerRenderer::setGeometryCachePointer( QgsGeometryCache *cache )
-{
-  mCache = cache;
-
-  if ( mCache )
-  {
-    // Destroy all cached geometries and clear the references to them
-    mCache->setCachedGeometriesRect( mContext.extent() );
-  }
-}
-
-
 
 void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 {
@@ -301,12 +284,6 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 
       bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
-
-      if ( mCache )
-      {
-        // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-        mCache->cacheGeometry( fet.id(), fet.geometry() );
-      }
 
       // render feature
       bool rendered = mRenderer->renderFeature( fet, mContext, -1, sel, drawMarker );
@@ -398,12 +375,6 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
     }
     features[sym].append( fet );
 
-    if ( mCache )
-    {
-      // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-      mCache->cacheGeometry( fet.id(), fet.geometry() );
-    }
-
     // new labeling engine
     if ( mContext.labelingEngine() )
     {
@@ -474,7 +445,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
           return;
         }
 
-        bool sel = mSelectedFeatureIds.contains( fit->id() );
+        bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fit->id() );
         // maybe vertex markers should be drawn only during the last pass...
         bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 

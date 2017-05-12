@@ -31,11 +31,12 @@ import traceback
 from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProject,
-                       QgsProcessingFeedback)
+                       QgsProcessingFeedback,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import resultsList
-from processing.core.ProcessingLog import ProcessingLog
 
 #from processing.gui.ResultsDock import ResultsDock
 from processing.gui.RenderingStyles import RenderingStyles
@@ -48,7 +49,7 @@ from processing.core.outputs import OutputHTML
 from processing.tools import dataobjects
 
 
-def handleAlgorithmResults(alg, feedback=None, showResults=True):
+def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
     wrongLayers = []
     if feedback is None:
         feedback = QgsProcessingFeedback()
@@ -60,9 +61,10 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
             continue
         if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
             try:
-                if hasattr(out, "layer") and out.layer is not None:
-                    out.layer.setName(out.description)
-                    QgsProject.instance().addMapLayers([out.layer])
+                layer = QgsProcessingUtils.mapLayerFromString(out.value, context)
+                if layer:
+                    layer.setName(out.description)
+                    QgsProject.instance().addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
                 else:
                     if ProcessingConfig.getSetting(
                             ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
@@ -70,14 +72,13 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
                     else:
                         name = out.description
                     dataobjects.load(out.value, name, alg.crs,
-                                     RenderingStyles.getStyle(alg.commandLineName(),
+                                     RenderingStyles.getStyle(alg.id(),
                                                               out.name))
             except Exception:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       "Error loading result layer:\n" + traceback.format_exc())
+                QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
                 wrongLayers.append(out.description)
         elif isinstance(out, OutputHTML):
-            resultsList.addResult(alg.getIcon(), out.description, out.value)
+            resultsList.addResult(alg.icon(), out.description, out.value)
         i += 1
 
     QApplication.restoreOverrideCursor()

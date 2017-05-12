@@ -17,6 +17,7 @@
 #define QGSMAPCANVASITEM_H
 
 #include <QGraphicsItem>
+#include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgis_gui.h"
 
@@ -33,7 +34,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
   protected:
 
     //! protected constructor: cannot be constructed directly
-    QgsMapCanvasItem( QgsMapCanvas *mapCanvas );
+    QgsMapCanvasItem( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
     virtual ~QgsMapCanvasItem();
 
@@ -48,9 +49,9 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     void updateCanvas();
 
     /** Sets render context parameters
-    @param p painter for rendering
-    @param context out: configured context
-    @return true in case of success */
+    \param p painter for rendering
+    \param context out: configured context
+    \returns true in case of success */
     bool setRenderContextVariables( QPainter *p, QgsRenderContext &context ) const;
 
   public:

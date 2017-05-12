@@ -75,16 +75,16 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     void createPreviewItem( QgsMarkerSymbol *markerSymbol );
 
     //! Calculates the new values for offset attributes, respecting the symbol's offset units
-    //! @note start and end point are in map units
+    //! \note start and end point are in map units
     QMap< int, QVariant > calculateNewOffsetAttributes( const QgsPoint &startPoint, const QgsPoint &endPoint ) const;
 
     /** Updates the preview item to reflect a new offset.
-     * @note start and end points are in map units
+     * \note start and end points are in map units
      */
     void updateOffsetPreviewItem( const QgsPoint &startPoint, const QgsPoint &endPoint );
 
     //! Calculates the required offset from the start to end points, in the specified unit
-    //! @note start and end points are in map units
+    //! \note start and end points are in map units
     QPointF calculateOffset( const QgsPoint &startPoint, const QgsPoint &endPoint, QgsUnitTypes::RenderUnit unit ) const;
 
     //! Adjusts the calculated offset to account for the symbol's rotation

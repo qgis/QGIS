@@ -30,7 +30,10 @@ import re
 
 from qgis.PyQt.QtCore import QUrl
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsVectorFileWriter,
+                       QgsProcessingUtils,
+                       QgsProject)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
@@ -45,20 +48,20 @@ class GdalAlgorithm(GeoAlgorithm):
 
     def __init__(self):
         GeoAlgorithm.__init__(self)
-        self._icon = None
 
-    def getIcon(self):
-        if self._icon is None:
-            self._icon = QgsApplication.getThemeIcon("/providerGdal.svg")
-        return self._icon
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerGdal.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerGdal.svg")
 
     def getCustomParametersDialog(self):
         return GdalAlgorithmDialog(self)
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         commands = self.getConsoleCommands()
-        layers = dataobjects.getVectorLayers()
-        supported = dataobjects.getSupportedOutputVectorLayerExtensions()
+        layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
+        supported = QgsVectorFileWriter.supportedFormatExtensions()
         for i, c in enumerate(commands):
             for layer in layers:
                 if layer.source() in c:

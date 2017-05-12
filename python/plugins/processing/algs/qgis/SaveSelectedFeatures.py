@@ -25,10 +25,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 
 class SaveSelectedFeatures(GeoAlgorithm):
@@ -36,27 +38,42 @@ class SaveSelectedFeatures(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Save selected features')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'saveselectedfeatures'
+
+    def displayName(self):
+        return self.tr('Save selected features')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Selection')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        vectorLayer = dataobjects.getObjectFromUri(inputFilename)
+        vectorLayer = QgsProcessingUtils.mapLayerFromString(inputFilename, context)
 
-        writer = output.getVectorWriter(vectorLayer.fields(),
-                                        vectorLayer.wkbType(), vectorLayer.crs())
+        writer = output.getVectorWriter(vectorLayer.fields(), vectorLayer.wkbType(), vectorLayer.crs(), context)
 
-        features = vectorLayer.selectedFeaturesIterator()
-        total = 100.0 / int(vectorLayer.selectedFeatureCount())
+        features = vectorLayer.getSelectedFeatures()
+        count = int(vectorLayer.selectedFeatureCount())
+        if count == 0:
+            raise GeoAlgorithmExecutionException(self.tr('There are no selected features in the input layer.'))
+
+        total = 100.0 / count
         for current, feat in enumerate(features):
             writer.addFeature(feat)
             feedback.setProgress(int(current * total))

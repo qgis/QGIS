@@ -84,35 +84,35 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   mActionAddMap->setCheckable( true );
   ag->addAction( mActionAddMap );
   tb->addAction( mActionAddMap );
-  connect( mActionAddMap, SIGNAL( triggered() ), this, SLOT( addMap() ) );
+  connect( mActionAddMap, &QAction::triggered, this, &QgsGrassMapcalc::addMap );
 
   mActionAddConstant = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_add_constant.png" ) ),
                                     tr( "Add constant value" ), this );
   mActionAddConstant->setCheckable( true );
   ag->addAction( mActionAddConstant );
   tb->addAction( mActionAddConstant );
-  connect( mActionAddConstant, SIGNAL( triggered() ), this, SLOT( addConstant() ) );
+  connect( mActionAddConstant, &QAction::triggered, this, &QgsGrassMapcalc::addConstant );
 
   mActionAddFunction = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_add_function.png" ) ),
                                     tr( "Add operator or function" ), this );
   mActionAddFunction->setCheckable( true );
   ag->addAction( mActionAddFunction );
   tb->addAction( mActionAddFunction );
-  connect( mActionAddFunction, SIGNAL( triggered() ), this, SLOT( addFunction() ) );
+  connect( mActionAddFunction, &QAction::triggered, this, &QgsGrassMapcalc::addFunction );
 
   mActionAddConnection = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_add_connection.png" ) ),
                                       tr( "Add connection" ), this );
   mActionAddConnection->setCheckable( true );
   ag->addAction( mActionAddConnection );
   tb->addAction( mActionAddConnection );
-  connect( mActionAddConnection, SIGNAL( triggered() ), this, SLOT( addConnection() ) );
+  connect( mActionAddConnection, &QAction::triggered, this, &QgsGrassMapcalc::addConnection );
 
   mActionSelectItem = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_select.png" ) ),
                                    tr( "Select item" ), this );
   mActionSelectItem->setCheckable( true );
   ag->addAction( mActionSelectItem );
   tb->addAction( mActionSelectItem );
-  connect( mActionSelectItem, SIGNAL( triggered() ), this, SLOT( selectItem() ) );
+  connect( mActionSelectItem, &QAction::triggered, this, &QgsGrassMapcalc::selectItem );
 
   mActionDeleteItem = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_delete.png" ) ),
                                    tr( "Delete selected item" ), this );
@@ -120,33 +120,33 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   mActionDeleteItem->setEnabled( false );
   ag->addAction( mActionDeleteItem );
   tb->addAction( mActionDeleteItem );
-  connect( mActionDeleteItem, SIGNAL( triggered() ), this, SLOT( deleteItem() ) );
+  connect( mActionDeleteItem, &QAction::triggered, this, &QgsGrassMapcalc::deleteItem );
 
   mActionAddMap->setChecked( true );
 
   mActionLoad = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_open.png" ) ),
                              tr( "Open" ), this );
   tb->addAction( mActionLoad );
-  connect( mActionLoad, SIGNAL( triggered() ), this, SLOT( load() ) );
+  connect( mActionLoad, &QAction::triggered, this, &QgsGrassMapcalc::load );
 
   mActionSave = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_save.png" ) ),
                              tr( "Save" ), this );
   tb->addAction( mActionSave );
-  connect( mActionSave, SIGNAL( triggered() ), this, SLOT( save() ) );
+  connect( mActionSave, &QAction::triggered, this, &QgsGrassMapcalc::save );
   mActionSave->setEnabled( false );
 
   mActionSaveAs = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_save_as.png" ) ),
                                tr( "Save as" ), this );
   tb->addAction( mActionSaveAs );
-  connect( mActionSaveAs, SIGNAL( triggered() ), this, SLOT( saveAs() ) );
+  connect( mActionSaveAs, &QAction::triggered, this, &QgsGrassMapcalc::saveAs );
 
   // Map input
   mMapComboBox = new QgsGrassModuleInputComboBox( QgsGrassObject::Raster, this );
   mMapComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
   // QComboBox does not emit activated() when item is selected in completer popup
-  connect( mMapComboBox, SIGNAL( activated( const QString & ) ), this, SLOT( mapChanged( const QString & ) ) );
-  connect( mMapComboBox->completer(), SIGNAL( activated( const QString & ) ), this, SLOT( mapChanged( const QString & ) ) );
-  connect( mMapComboBox, SIGNAL( editTextChanged( const QString & ) ), this, SLOT( mapChanged( const QString & ) ) );
+  connect( mMapComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::activated ), this, &QgsGrassMapcalc::mapChanged );
+  connect( mMapComboBox->completer(), static_cast<void ( QCompleter::* )( const QString & )>( &QCompleter::activated ), this, &QgsGrassMapcalc::mapChanged );
+  connect( mMapComboBox, &QComboBox::editTextChanged, this, &QgsGrassMapcalc::mapChanged );
   bool firstSet = mMapComboBox->setFirst();
   Q_UNUSED( firstSet );
   mInputFrame->layout()->addWidget( mMapComboBox );

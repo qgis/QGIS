@@ -19,7 +19,6 @@
 from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput
 import os
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'November 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
@@ -34,7 +33,10 @@ from processing.core.parameters import ParameterMultipleInput, ParameterExtent, 
 from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
 from processing.algs.gdal.GdalUtils import GdalUtils
-from qgis.core import QgsRectangle
+from qgis.core import (QgsApplication,
+                       QgsRectangle,
+                       QgsProcessingUtils,
+                       QgsProject)
 from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.algs.qgis.ui.RasterCalculatorWidgets import LayersListWidgetWrapper, ExpressionWidgetWrapper
@@ -48,10 +50,22 @@ class RasterCalculator(GeoAlgorithm):
     EXPRESSION = 'EXPRESSION'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Raster calculator')
-        self.group, self.i18n_group = self.trAlgorithm('Raster')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Raster')
+
+    def name(self):
+        return 'rastercalculator'
+
+    def displayName(self):
+        return self.tr('Raster calculator')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterMultipleInput(self.LAYERS,
                                                  self.tr('Input layers'),
                                                  datatype=dataobjects.TYPE_RASTER,
@@ -73,7 +87,7 @@ class RasterCalculator(GeoAlgorithm):
                             if isinstance(out, OutputRaster):
                                 if out.value:
                                     new = "{}@".format(os.path.basename(out.value))
-                                    old = "{}:{}@".format(alg.name, out.name)
+                                    old = "{}:{}@".format(alg.modeler_name, out.name)
                                     value = value.replace(old, new)
                 return value
 
@@ -88,15 +102,15 @@ class RasterCalculator(GeoAlgorithm):
                                           optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         expression = self.getParameterValue(self.EXPRESSION)
         layersValue = self.getParameterValue(self.LAYERS)
         layersDict = {}
         if layersValue:
-            layers = [dataobjects.getObjectFromUri(f) for f in layersValue.split(";")]
+            layers = [QgsProcessingUtils.mapLayerFromString(f, context) for f in layersValue.split(";")]
             layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
 
-        for lyr in dataobjects.getRasterLayers():
+        for lyr in QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance()):
             name = lyr.name()
             if (name + "@") in expression:
                 layersDict[name] = lyr
@@ -156,10 +170,10 @@ class RasterCalculator(GeoAlgorithm):
         else:
             dependent = []
         for alg in list(model.algs.values()):
-            if alg.name not in dependent:
+            if alg.modeler_name not in dependent:
                 for out in alg.algorithm.outputs:
                     if (isinstance(out, OutputRaster) and
-                            "{}:{}@".format(alg.name, out.name) in expression):
-                        values.append(ValueFromOutput(alg.name, out.name))
+                            "{}:{}@".format(alg.modeler_name, out.name) in expression):
+                        values.append(ValueFromOutput(alg.modeler_name, out.name))
 
         algorithm.params[self.LAYERS] = values

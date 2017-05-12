@@ -25,15 +25,18 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsGeometry, QgsFeature, QgsPoint, QgsWkbTypes
+from qgis.core import (QgsGeometry,
+                       QgsFeature,
+                       QgsPoint,
+                       QgsWkbTypes,
+                       QgsApplication,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-
-from processing.tools import dataobjects, vector
 
 
 class Gridify(GeoAlgorithm):
@@ -42,10 +45,22 @@ class Gridify(GeoAlgorithm):
     VSPACING = 'VSPACING'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Snap points to grid')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'snappointstogrid'
+
+    def displayName(self):
+        return self.tr('Snap points to grid')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterNumber(self.HSPACING,
@@ -55,8 +70,8 @@ class Gridify(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
 
@@ -64,11 +79,11 @@ class Gridify(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Invalid grid spacing: {0}/{1}').format(hSpacing, vSpacing))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),
+                                                                     context)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
             geom = f.geometry()
@@ -83,8 +98,7 @@ class Gridify(GeoAlgorithm):
             elif geomType == QgsWkbTypes.LineString:
                 points = self._gridify(geom.asPolyline(), hSpacing, vSpacing)
                 if len(points) < 2:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Failed to gridify feature with FID {0}').format(f.id()))
+                    QgsMessageLog.logMessage(self.tr('Failed to gridify feature with FID {0}').format(f.id()), self.tr('Processing'), QgsMessageLog.INFO)
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromPolyline(points)
@@ -95,8 +109,7 @@ class Gridify(GeoAlgorithm):
                     if len(points) > 1:
                         polyline.append(points)
                 if len(polyline) <= 0:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Failed to gridify feature with FID {0}').format(f.id()))
+                    QgsMessageLog.logMessage(self.tr('Failed to gridify feature with FID {0}').format(f.id()), self.tr('Processing'), QgsMessageLog.INFO)
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromMultiPolyline(polyline)
@@ -108,8 +121,7 @@ class Gridify(GeoAlgorithm):
                     if len(points) > 1:
                         polygon.append(points)
                 if len(polygon) <= 0:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Failed to gridify feature with FID {0}').format(f.id()))
+                    QgsMessageLog.logMessage(self.tr('Failed to gridify feature with FID {0}').format(f.id()), self.tr('Processing'), QgsMessageLog.INFO)
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromPolygon(polygon)
@@ -126,8 +138,7 @@ class Gridify(GeoAlgorithm):
                         multipolygon.append(newPolygon)
 
                 if len(multipolygon) <= 0:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Failed to gridify feature with FID {0}').format(f.id()))
+                    QgsMessageLog.logMessage(self.tr('Failed to gridify feature with FID {0}').format(f.id()), self.tr('Processing'), QgsMessageLog.INFO)
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromMultiPolygon(multipolygon)

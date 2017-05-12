@@ -25,13 +25,18 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsWkbTypes, QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsGeometry
+from qgis.core import (QgsWkbTypes,
+                       QgsExpression,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsGeometry,
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterSelection, ParameterBoolean, ParameterExpression
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class GeometryByExpression(GeoAlgorithm):
@@ -43,10 +48,22 @@ class GeometryByExpression(GeoAlgorithm):
     WITH_M = 'WITH_M'
     EXPRESSION = 'EXPRESSION'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Geometry by expression')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector geometry tools')
+
+    def name(self):
+        return 'geometrybyexpression'
+
+    def displayName(self):
+        return self.tr('Geometry by expression')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
 
@@ -67,9 +84,8 @@ class GeometryByExpression(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Modified geometry')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         geometry_type = self.getParameterValue(self.OUTPUT_GEOMETRY)
         wkb_type = None
@@ -85,10 +101,7 @@ class GeometryByExpression(GeoAlgorithm):
             wkb_type = QgsWkbTypes.addM(wkb_type)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                wkb_type,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), wkb_type, layer.crs(), context)
 
         expression = QgsExpression(self.getParameterValue(self.EXPRESSION))
         if expression.hasParserError():
@@ -100,8 +113,8 @@ class GeometryByExpression(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, input_feature in enumerate(features):
             output_feature = input_feature
 

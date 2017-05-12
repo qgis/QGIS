@@ -19,6 +19,7 @@
 #define QGSCOMPOSERMODEL_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QStringList>
@@ -61,10 +62,10 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     };
 
     /** Constructor
-     * @param composition composition to attach to
-     * @param parent parent object
+     * \param composition composition to attach to
+     * \param parent parent object
      */
-    explicit QgsComposerModel( QgsComposition *composition, QObject *parent = nullptr );
+    explicit QgsComposerModel( QgsComposition *composition, QObject *parent SIP_TRANSFERTHIS = 0 );
 
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -82,173 +83,173 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     /** Clears all items from z-order list and resets the model
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void clear();
 
     /** Returns the size of the z-order list, which includes items which may
      * have been removed from the composition.
-     * @returns size of z-order list
-     * @note added in QGIS 2.5
+     * \returns size of z-order list
+     * \since QGIS 2.5
      */
     int zOrderListSize() const;
 
     /** Rebuilds the z-order list, based on the current stacking of items in the composition.
      * This method should be called after adding multiple items to the composition.
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void rebuildZList();
 
     /** Adds an item to the top of the composition z stack.
-     * @param item item to add. The item must not already exist in the z-order list.
-     * @note added in QGIS 2.5
-     * @see reorderItemToTop
+     * \param item item to add. The item must not already exist in the z-order list.
+     * \since QGIS 2.5
+     * \see reorderItemToTop
      */
     void addItemAtTop( QgsComposerItem *item );
 
     /** Removes an item from the z-order list.
-     * @param item item to remove
-     * @note added in QGIS 2.5
+     * \param item item to remove
+     * \since QGIS 2.5
      */
     void removeItem( QgsComposerItem *item );
 
     /** Moves an item up the z-order list.
-     * @param item item to move
-     * @returns true if item was moved. Returns false if item was not found
+     * \param item item to move
+     * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the top of the z-order list.
-     * @see reorderItemDown
-     * @see reorderItemToTop
-     * @see reorderItemToBottom
-     * @note added in QGIS 2.5
+     * \see reorderItemDown
+     * \see reorderItemToTop
+     * \see reorderItemToBottom
+     * \since QGIS 2.5
      */
     bool reorderItemUp( QgsComposerItem *item );
 
     /** Moves an item down the z-order list.
-     * @param item item to move
-     * @returns true if item was moved. Returns false if item was not found
+     * \param item item to move
+     * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the bottom of the z-order list.
-     * @see reorderItemUp
-     * @see reorderItemToTop
-     * @see reorderItemToBottom
-     * @note added in QGIS 2.5
+     * \see reorderItemUp
+     * \see reorderItemToTop
+     * \see reorderItemToBottom
+     * \since QGIS 2.5
      */
     bool reorderItemDown( QgsComposerItem *item );
 
     /** Moves an item to the top of the z-order list.
-     * @param item item to move
-     * @returns true if item was moved. Returns false if item was not found
+     * \param item item to move
+     * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the top of the z-order list.
-     * @see reorderItemUp
-     * @see reorderItemDown
-     * @see reorderItemToBottom
-     * @note added in QGIS 2.5
+     * \see reorderItemUp
+     * \see reorderItemDown
+     * \see reorderItemToBottom
+     * \since QGIS 2.5
      */
     bool reorderItemToTop( QgsComposerItem *item );
 
     /** Moves an item to the bottom of the z-order list.
-     * @param item item to move
-     * @returns true if item was moved. Returns false if item was not found
+     * \param item item to move
+     * \returns true if item was moved. Returns false if item was not found
      * in z-order list or was already at the bottom of the z-order list.
-     * @see reorderItemUp
-     * @see reorderItemDown
-     * @see reorderItemToTop
-     * @note added in QGIS 2.5
+     * \see reorderItemUp
+     * \see reorderItemDown
+     * \see reorderItemToTop
+     * \since QGIS 2.5
      */
     bool reorderItemToBottom( QgsComposerItem *item );
 
     /** Finds the next composer item above an item. This method only considers
      * items which are currently in the composition, and ignores items which have been
      * removed from the composition.
-     * @param item item to search above
-     * @returns item above specified item. If no items were found, no item
+     * \param item item to search above
+     * \returns item above specified item. If no items were found, no item
      * will be returned.
-     * @see getComposerItemBelow
-     * @note added in QGIS 2.5
+     * \see getComposerItemBelow
+     * \since QGIS 2.5
      */
     QgsComposerItem *getComposerItemAbove( QgsComposerItem *item ) const;
 
     /** Finds the next composer item below an item. This method only considers
      * items which are currently in the composition, and ignores items which have been
      * removed from the composition.
-     * @param item item to search above
-     * @returns item below specified item. If no items were found, no item
+     * \param item item to search above
+     * \returns item below specified item. If no items were found, no item
      * will be returned.
-     * @see getComposerItemAbove
-     * @note added in QGIS 2.5
+     * \see getComposerItemAbove
+     * \since QGIS 2.5
      */
     QgsComposerItem *getComposerItemBelow( QgsComposerItem *item ) const;
 
     /** Returns the item z-order list. This list includes both items currently in the
      * composition and items which have been removed from the composition.
-     * @returns item z-order list
-     * @note added in QGIS 2.5
+     * \returns item z-order list
+     * \since QGIS 2.5
      */
     QList<QgsComposerItem *> *zOrderList();
 
     /** Marks an item as removed from the composition. This must be called whenever an item
      * has been removed from the composition.
-     * @param item to mark as removed from the composition
-     * @see setItemRestored
-     * @note added in QGIS 2.5
+     * \param item to mark as removed from the composition
+     * \see setItemRestored
+     * \since QGIS 2.5
      */
     void setItemRemoved( QgsComposerItem *item );
 
     /** Restores an item to the composition. This must be called whenever an item removed
      * from the composition is restored to the composition.
-     * @param item to mark as restored to the composition
-     * @see setItemRemoved
-     * @note added in QGIS 2.5
+     * \param item to mark as restored to the composition
+     * \see setItemRemoved
+     * \since QGIS 2.5
      */
     void setItemRestored( QgsComposerItem *item );
 
     /** Must be called when an item's display name is modified
-     * @param item item to update
-     * @see updateItemLockStatus
-     * @see updateItemVisibility
-     * @see updateItemSelectStatus
-     * @note added in QGIS 2.5
+     * \param item item to update
+     * \see updateItemLockStatus
+     * \see updateItemVisibility
+     * \see updateItemSelectStatus
+     * \since QGIS 2.5
      */
     void updateItemDisplayName( QgsComposerItem *item );
 
     /** Must be called when an item's lock status changes
-     * @param item item to update
-     * @see updateItemDisplayName
-     * @see updateItemVisibility
-     * @see updateItemSelectStatus
-     * @note added in QGIS 2.5
+     * \param item item to update
+     * \see updateItemDisplayName
+     * \see updateItemVisibility
+     * \see updateItemSelectStatus
+     * \since QGIS 2.5
      */
     void updateItemLockStatus( QgsComposerItem *item );
 
     /** Must be called when an item's visibility changes
-     * @param item item to update
-     * @see updateItemDisplayName
-     * @see updateItemLockStatus
-     * @see updateItemSelectStatus
-     * @note added in QGIS 2.5
+     * \param item item to update
+     * \see updateItemDisplayName
+     * \see updateItemLockStatus
+     * \see updateItemSelectStatus
+     * \since QGIS 2.5
      */
     void updateItemVisibility( QgsComposerItem *item );
 
     /** Must be called when an item's selection status changes
-     * @param item item to update
-     * @see updateItemDisplayName
-     * @see updateItemVisibility
-     * @see updateItemLockStatus
-     * @note added in QGIS 2.5
+     * \param item item to update
+     * \see updateItemDisplayName
+     * \see updateItemVisibility
+     * \see updateItemLockStatus
+     * \since QGIS 2.5
      */
     void updateItemSelectStatus( QgsComposerItem *item );
 
     /** Returns the QModelIndex corresponding to a QgsComposerItem, if possible
-     * @param item QgsComposerItem to find index for
-     * @param column column number for created QModelIndex
-     * @returns QModelIndex corresponding to item and specified column
+     * \param item QgsComposerItem to find index for
+     * \param column column number for created QModelIndex
+     * \returns QModelIndex corresponding to item and specified column
      */
     QModelIndex indexForItem( QgsComposerItem *item, const int column = 0 );
 
   public slots:
 
     /** Sets an item as the current selection from a QModelIndex
-     * @param index QModelIndex of item to set as selected
-     * @note added in QGIS 2.5
+     * \param index QModelIndex of item to set as selected
+     * \since QGIS 2.5
      */
     void setSelected( const QModelIndex &index );
 
@@ -266,8 +267,8 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     QgsComposition *mComposition = nullptr;
 
     /** Returns the QgsComposerItem corresponding to a QModelIndex, if possible
-     * @param index QModelIndex for item
-     * @returns item corresponding to index
+     * \param index QModelIndex for item
+     * \returns item corresponding to index
      */
     QgsComposerItem *itemFromIndex( const QModelIndex &index ) const;
 
@@ -277,13 +278,13 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * list and does not emit QAbstractItemModel signals. Accordingly, this method should
      * only be called when changes to the z-order list are known and QAbstractItemModel begin
      * signals have already been called.
-     * @see rebuildSceneItemList
+     * \see rebuildSceneItemList
      */
     void refreshItemsInScene();
 
     /** Steps through the item z-order list and rebuilds the items in composition list,
      * emitting QAbstractItemModel signals as required.
-     * @see refreshItemsInScene
+     * \see refreshItemsInScene
      */
     void rebuildSceneItemList();
 
@@ -295,7 +296,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
  * \class QgsComposerProxyModel
  * \ingroup core
  * \brief Allows for filtering a QgsComposerModel by item type.
- * \note added in 2.16
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
 {
@@ -304,32 +305,32 @@ class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
   public:
 
     /** Constructor for QgsComposerProxyModel.
-     * @param composition composition to attach model to
-     * @param parent optional parent
+     * \param composition composition to attach model to
+     * \param parent optional parent
      */
-    QgsComposerProxyModel( QgsComposition *composition, QObject *parent = nullptr );
+    QgsComposerProxyModel( QgsComposition *composition, QObject *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns the current item type filter, or QgsComposerItem::ComposerItem if no
      * item type filter is set.
-     * @see setFilterType()
+     * \see setFilterType()
      */
     QgsComposerItem::ItemType filterType() const { return mItemTypeFilter; }
 
     /** Sets the item type filter. Only matching item types will be shown.
-     * @param itemType type to filter. Set to QgsComposerItem::ComposerItem to show all
+     * \param itemType type to filter. Set to QgsComposerItem::ComposerItem to show all
      * item types.
-     * @see filterType()
+     * \see filterType()
      */
     void setFilterType( QgsComposerItem::ItemType itemType );
 
     /** Sets a list of specific items to exclude from the model
-     * @param exceptList list of items to exclude
-     * @see exceptedItemList()
+     * \param exceptList list of items to exclude
+     * \see exceptedItemList()
      */
     void setExceptedItemList( const QList< QgsComposerItem * > &exceptList );
 
     /** Returns the list of specific items excluded from the model.
-     * @see setExceptedItemList()
+     * \see setExceptedItemList()
      */
     QList< QgsComposerItem * > exceptedItemList() const { return mExceptedList; }
 
@@ -339,8 +340,8 @@ class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
 
     /** Returns the QgsComposerItem corresponding to an index from the source
      * QgsComposerModel model.
-     * @param sourceIndex a QModelIndex
-     * @returns QgsComposerItem for specified index from QgsComposerModel
+     * \param sourceIndex a QModelIndex
+     * \returns QgsComposerItem for specified index from QgsComposerModel
      */
     QgsComposerItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
 

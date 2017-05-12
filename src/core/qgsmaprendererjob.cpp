@@ -226,8 +226,6 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
 
   bool requiresLabelRedraw = !( mCache && mCache->hasCacheImage( LABEL_CACHE_ID ) );
 
-  mGeometryCaches.clear();
-
   while ( li.hasPrevious() )
   {
     QgsMapLayer *ml = li.previous();
@@ -301,6 +299,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( mCache && mCache->hasCacheImage( ml->id() ) )
     {
       job.cached = true;
+      job.imageInitialized = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );
       job.renderer = nullptr;
       job.context.setPainter( nullptr );
@@ -339,14 +338,6 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
 
     if ( hasStyleOverride )
       ml->styleManager()->restoreOverrideStyle();
-
-    if ( mRequestedGeomCacheForLayers.contains( ml->id() ) )
-    {
-      if ( QgsVectorLayerRenderer *vlr = dynamic_cast<QgsVectorLayerRenderer *>( job.renderer ) )
-      {
-        vlr->setGeometryCachePointer( &mGeometryCaches[ ml->id()] );
-      }
-    }
 
   } // while (li.hasPrevious())
 
@@ -427,8 +418,6 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
 
 
   jobs.clear();
-
-  updateLayerGeometryCaches();
 }
 
 void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
@@ -462,6 +451,9 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const La
     if ( job.layer && job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
       continue; // skip layer for now, it will be rendered after labels
 
+    if ( !job.imageInitialized )
+      continue; // img not safe to compose
+
     painter.setCompositionMode( job.blendMode );
     painter.setOpacity( job.opacity );
 
@@ -487,6 +479,9 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const La
 
     if ( !job.layer || !job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
       continue;
+
+    if ( !job.imageInitialized )
+      continue; // img not safe to compose
 
     painter.setCompositionMode( job.blendMode );
     painter.setOpacity( job.opacity );

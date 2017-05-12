@@ -56,7 +56,7 @@ void QgsBrowserTreeView::saveState()
   QgsSettings settings;
   QStringList expandedPaths = expandedPathsList( QModelIndex() );
   settings.setValue( expandedPathsKey(), expandedPaths );
-  QgsDebugMsg( "expandedPaths = " + expandedPaths.join( " " ) );
+  QgsDebugMsgLevel( "expandedPaths = " + expandedPaths.join( " " ), 4 );
 }
 
 void QgsBrowserTreeView::restoreState()
@@ -64,7 +64,7 @@ void QgsBrowserTreeView::restoreState()
   QgsSettings settings;
   mExpandPaths = settings.value( expandedPathsKey(), QVariant() ).toStringList();
 
-  QgsDebugMsg( "mExpandPaths = " + mExpandPaths.join( " " ) );
+  QgsDebugMsgLevel( "mExpandPaths = " + mExpandPaths.join( " " ), 4 );
   if ( !mExpandPaths.isEmpty() )
   {
     QSet<QModelIndex> expandIndexSet;
@@ -75,7 +75,7 @@ void QgsBrowserTreeView::restoreState()
         expandIndexSet.insert( expandIndex );
       else
       {
-        QgsDebugMsg( "index for path " + path + " not found" );
+        QgsDebugMsgLevel( "index for path " + path + " not found", 4 );
       }
     }
     Q_FOREACH ( const QModelIndex &expandIndex, expandIndexSet )
@@ -96,7 +96,7 @@ void QgsBrowserTreeView::expandTree( const QModelIndex &index )
   if ( !model() )
     return;
 
-  QgsDebugMsg( "itemPath = " + model()->data( index, QgsBrowserModel::PathRole ).toString() );
+  QgsDebugMsgLevel( "itemPath = " + model()->data( index, QgsBrowserModel::PathRole ).toString(), 4 );
 
   expand( index );
   QModelIndex parentIndex = model()->parent( index );

@@ -19,6 +19,7 @@
 #define QGSPROCESSINGREGISTRY_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsprocessingprovider.h"
 #include <QMap>
 
@@ -30,7 +31,7 @@
  *
  * QgsProcessingRegistry is not usually directly created, but rather accessed through
  * QgsApplication::processingRegistry().
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingRegistry : public QObject
 {
@@ -41,7 +42,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     /**
      * Constructor for QgsProcessingRegistry.
      */
-    QgsProcessingRegistry( QObject *parent = nullptr );
+    QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsProcessingRegistry();
 
@@ -56,24 +57,27 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QList<QgsProcessingProvider *> providers() const { return mProviders.values(); }
 
     /**
-     * Add a processing provider to the registry. Ownership of the provider is transferred to the registry.
+     * Add a processing provider to the registry. Ownership of the provider is transferred to the registry,
+     * and the provider's parent will be set to the registry.
      * Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
      * in the registry).
-     * @see removeProvider()
+     * Adding a provider to the registry automatically triggers the providers QgsProcessingProvider::load()
+     * method to populate the provider with algorithms.
+     * \see removeProvider()
      */
-    bool addProvider( QgsProcessingProvider *provider );
+    bool addProvider( QgsProcessingProvider *provider SIP_TRANSFER );
 
     /**
      * Removes a provider implementation from the registry (the provider object is deleted).
      * Returns false if the provider could not be removed (eg provider does not exist in the registry).
-     * @see addProvider()
+     * \see addProvider()
      */
     bool removeProvider( QgsProcessingProvider *provider );
 
     /**
      * Removes a provider implementation from the registry (the provider object is deleted).
      * Returns false if the provider could not be removed (eg provider does not exist in the registry).
-     * @see addProvider()
+     * \see addProvider()
      */
     bool removeProvider( const QString &providerId );
 
@@ -81,6 +85,19 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      * Returns a matching provider by provider ID.
      */
     QgsProcessingProvider *providerById( const QString &id );
+
+    /**
+     * Returns a list of all available algorithms from registered providers.
+     * \see algorithmById()
+     */
+    QList< const QgsProcessingAlgorithm *> algorithms() const;
+
+    /**
+     * Finds an algorithm by its ID. If no matching algorithm is found, a nullptr
+     * is returned.
+     * \see algorithms()
+     */
+    const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
 
   signals:
 
@@ -94,6 +111,10 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
 
     //! Map of available providers by id. This class owns the pointers
     QMap<QString, QgsProcessingProvider *> mProviders;
+
+#ifdef SIP_RUN
+    QgsProcessingRegistry( const QgsProcessingRegistry &other );
+#endif
 };
 
 #endif // QGSPROCESSINGREGISTRY_H

@@ -19,6 +19,7 @@
 #define QGSRASTERINTERFACE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <limits>
 
 #include <QCoreApplication> // for tr()
@@ -33,7 +34,7 @@
 /** \ingroup core
  * Feedback object tailored for raster block reading.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 {
@@ -47,17 +48,17 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 
     //! Whether the raster provider should return only data that are already available
     //! without waiting for full result. By default this flag is not enabled.
-    //! @see setPreviewOnly()
+    //! \see setPreviewOnly()
     bool isPreviewOnly() const { return mPreviewOnly; }
     //! set flag whether the block request is for preview purposes only
-    //! @see isPreviewOnly()
+    //! \see isPreviewOnly()
     void setPreviewOnly( bool preview ) { mPreviewOnly = preview; }
 
     //! Whether our painter is drawing to a temporary image used just by this layer
-    //! @see setRenderPartialOutput()
+    //! \see setRenderPartialOutput()
     bool renderPartialOutput() const { return mRenderPartialOutput; }
     //! Set whether our painter is drawing to a temporary image used just by this layer
-    //! @see renderPartialOutput()
+    //! \see renderPartialOutput()
     void setRenderPartialOutput( bool enable ) { mRenderPartialOutput = enable; }
 
   private:
@@ -98,7 +99,7 @@ class CORE_EXPORT QgsRasterInterface
     virtual ~QgsRasterInterface() = default;
 
     //! Clone itself, create deep copy
-    virtual QgsRasterInterface *clone() const = 0;
+    virtual QgsRasterInterface *clone() const = 0 SIP_FACTORY;
 
     //! Returns a bitmask containing the supported capabilities
     virtual int capabilities() const
@@ -120,7 +121,7 @@ class CORE_EXPORT QgsRasterInterface
 
     /**
      * Get the extent of the interface.
-     * @return QgsRectangle containing the extent of the layer
+     * \returns QgsRectangle containing the extent of the layer
      */
     virtual QgsRectangle extent() const { return mInput ? mInput->extent() : QgsRectangle(); }
 
@@ -146,13 +147,13 @@ class CORE_EXPORT QgsRasterInterface
     /** Read block of data using given extent and size.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
-     * @param bandNo band number
-     * @param extent extent of block
-     * @param width pixel width of block
-     * @param height pixel height of block
-     * @param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+     * \param bandNo band number
+     * \param extent extent of block
+     * \param width pixel width of block
+     * \param height pixel height of block
+     * \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0 SIP_FACTORY;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
@@ -188,19 +189,20 @@ class CORE_EXPORT QgsRasterInterface
     }
 
     /** \brief Get band statistics.
-     * @param bandNo The band (number).
-     * @param stats Requested statistics
-     * @param extent Extent used to calc statistics, if empty, whole raster extent is used.
-     * @param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
-     * @return Band statistics.
+     * \param bandNo The band (number).
+     * \param stats Requested statistics
+     * \param extent Extent used to calc statistics, if empty, whole raster extent is used.
+     * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * \param feedback optional feedback object
+     * \returns Band statistics.
      */
     virtual QgsRasterBandStats bandStatistics( int bandNo,
         int stats = QgsRasterBandStats::All,
         const QgsRectangle &extent = QgsRectangle(),
-        int sampleSize = 0 );
+        int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr );
 
     /** \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
-     * @return true if statistics are available (ready to use)
+     * \returns true if statistics are available (ready to use)
      */
     virtual bool hasStatistics( int bandNo,
                                 int stats = QgsRasterBandStats::All,
@@ -208,15 +210,16 @@ class CORE_EXPORT QgsRasterInterface
                                 int sampleSize = 0 );
 
     /** \brief Get histogram. Histograms are cached in providers.
-     * @param bandNo The band (number).
-     * @param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
-     * @param minimum Minimum value, if NaN, raster minimum value will be used.
-     * @param maximum Maximum value, if NaN, raster minimum value will be used.
-     * @param extent Extent used to calc histogram, if empty, whole raster extent is used.
-     * @param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
-     * @param includeOutOfRange include out of range values
-     * @return Vector of non NULL cell counts for each bin.
-     * @note binCount, minimum and maximum not optional in python bindings
+     * \param bandNo The band (number).
+     * \param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
+     * \param minimum Minimum value, if NaN, raster minimum value will be used.
+     * \param maximum Maximum value, if NaN, raster minimum value will be used.
+     * \param extent Extent used to calc histogram, if empty, whole raster extent is used.
+     * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * \param includeOutOfRange include out of range values
+     * \param feedback optional feedback object
+     * \returns Vector of non NULL cell counts for each bin.
+     * \note binCount, minimum and maximum not optional in Python bindings
      */
     virtual QgsRasterHistogram histogram( int bandNo,
                                           int binCount = 0,
@@ -224,10 +227,10 @@ class CORE_EXPORT QgsRasterInterface
                                           double maximum = std::numeric_limits<double>::quiet_NaN(),
                                           const QgsRectangle &extent = QgsRectangle(),
                                           int sampleSize = 0,
-                                          bool includeOutOfRange = false );
+                                          bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr );
 
     /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()
-     * @note binCount, minimum and maximum not optional in python bindings
+     * \note binCount, minimum and maximum not optional in Python bindings
      */
     virtual bool hasHistogram( int bandNo,
                                int binCount,
@@ -238,13 +241,13 @@ class CORE_EXPORT QgsRasterInterface
                                bool includeOutOfRange = false );
 
     /** \brief Find values for cumulative pixel count cut.
-     * @param bandNo The band (number).
-     * @param lowerCount The lower count as fraction of 1, e.g. 0.02 = 2%
-     * @param upperCount The upper count as fraction of 1, e.g. 0.98 = 98%
-     * @param lowerValue Location into which the lower value will be set.
-     * @param upperValue  Location into which the upper value will be set.
-     * @param extent Extent used to calc histogram, if empty, whole raster extent is used.
-     * @param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * \param bandNo The band (number).
+     * \param lowerCount The lower count as fraction of 1, e.g. 0.02 = 2%
+     * \param upperCount The upper count as fraction of 1, e.g. 0.98 = 98%
+     * \param lowerValue Location into which the lower value will be set.
+     * \param upperValue  Location into which the upper value will be set.
+     * \param extent Extent used to calc histogram, if empty, whole raster extent is used.
+     * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      */
     virtual void cumulativeCut( int bandNo,
                                 double lowerCount,
@@ -273,7 +276,7 @@ class CORE_EXPORT QgsRasterInterface
     bool mOn;
 
     /** Fill in histogram defaults if not specified
-     * @note binCount, minimum and maximum not optional in python bindings
+     * \note binCount, minimum and maximum not optional in Python bindings
      */
     void initHistogram( QgsRasterHistogram &histogram, int bandNo,
                         int binCount = 0,

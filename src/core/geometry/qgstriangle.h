@@ -19,13 +19,15 @@
 #define QGSTRIANGLE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgspolygon.h"
+#include "qgscircle.h"
 #include "qgslinestring.h"
 
 /** \ingroup core
  * \class QgsTriangle
  * \brief Triangle geometry type.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 {
@@ -34,33 +36,33 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /** Construct a QgsTriangle from three QgsPointV2.
      * An empty triangle is returned if there are identical points or if the points are collinear.
-     * @param p1 first point
-     * @param p2 second point
-     * @param p3 third point
+     * \param p1 first point
+     * \param p2 second point
+     * \param p3 third point
      */
     QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 );
 
     /** Construct a QgsTriangle from three QgsPoint.
      * An empty triangle is returned if there are identical points or if the points are collinear.
-     * @param p1 first point
-     * @param p2 second point
-     * @param p3 third point
+     * \param p1 first point
+     * \param p2 second point
+     * \param p3 third point
      */
     explicit QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 );
 
     /** Construct a QgsTriangle from three QPointF.
      * An empty triangle is returned if there are identical points or if the points are collinear.
-     * @param p1 first point
-     * @param p2 second point
-     * @param p3 third point
+     * \param p1 first point
+     * \param p2 second point
+     * \param p3 third point
      */
     explicit QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 );
 
-    // inherited: bool operator==( const QgsTriangle& other ) const;
-    // inherited: bool operator!=( const QgsTriangle& other ) const;
+    bool operator==( const QgsTriangle &other ) const;
+    bool operator!=( const QgsTriangle &other ) const;
 
     virtual QString geometryType() const override { return QStringLiteral( "Triangle" ); }
-    virtual QgsTriangle *clone() const override;
+    virtual QgsTriangle *clone() const override SIP_FACTORY;
     void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr &wkbPtr ) override;
@@ -72,15 +74,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QString asJSON( int precision = 17 ) const;
 
-    QgsPolygonV2 *surfaceToPolygon() const override;
+    QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
 
-    QgsAbstractGeometry *toCurveType() const override;
+    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
 
     //! Inherited method not used. You cannot add an interior ring into a triangle.
-    void addInteriorRing( QgsCurve *ring ) override;
+    void addInteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
 
     /** Inherited method not used. You cannot add an interior ring into a triangle.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
     void setInteriorRings( const QList< QgsCurve *> &rings ) = delete;
     //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always false.
@@ -89,22 +91,22 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
     bool moveVertex( QgsVertexId vId, const QgsPointV2 &newPos ) override;
 
-    virtual void setExteriorRing( QgsCurve *ring ) override;
+    virtual void setExteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
 
-    virtual QgsAbstractGeometry *boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     // inherited: double pointDistanceToBoundary( double x, double y ) const;
 
     /**
      *  Returns coordinates of a vertex.
-     *  @param atVertex index of the vertex
-     *  @return Coordinates of the vertex or QgsPointV2(0,0) on error (\a atVertex < 0 or > 3).
+     *  \param atVertex index of the vertex
+     *  \returns Coordinates of the vertex or QgsPointV2(0,0) on error (\a atVertex < 0 or > 3).
      */
     QgsPointV2 vertexAt( int atVertex ) const;
 
     /**
      * Returns the three lengths of the triangle.
-     * @return Lengths of triangle ABC where [AB] is at 0, [BC] is at 1, [CA] is at 2
+     * \returns Lengths of triangle ABC where [AB] is at 0, [BC] is at 1, [CA] is at 2
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -116,7 +118,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Returns the three angles of the triangle.
-     * @return Angles in radians of triangle ABC where angle BAC is at 0, angle ABC is at 1, angle BCA is at 2
+     * \returns Angles in radians of triangle ABC where angle BAC is at 0, angle ABC is at 1, angle BCA is at 2
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -128,8 +130,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Is the triangle isocele (two sides with the same length)?
-     * @param lengthTolerance The tolerance to use
-     * @return True or False
+     * \param lengthTolerance The tolerance to use
+     * \returns True or False
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -144,8 +146,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Is the triangle equilateral (three sides with the same length)?
-     * @param lengthTolerance The tolerance to use
-     * @return True or False
+     * \param lengthTolerance The tolerance to use
+     * \returns True or False
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 10, 10 ), QgsPointV2( 16, 10 ), QgsPointV2( 13, 15.1962 ) )
@@ -160,8 +162,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Is the triangle right-angled?
-     * @param angleTolerance The tolerance to use
-     * @return True or False
+     * \param angleTolerance The tolerance to use
+     * \returns True or False
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -176,9 +178,9 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Is the triangle scalene (all sides have differen lengths)?
-     * @param lengthTolerance The tolerance to use
-     * @return True or False
-     * @return True or False
+     * \param lengthTolerance The tolerance to use
+     * \returns True or False
+     * \returns True or False
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 7.2825, 4.2368 ), QgsPointV2( 13.0058, 3.3218 ), QgsPointV2( 9.2145, 6.5242 ) )
@@ -193,7 +195,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * An altitude is a segment (defined by a QgsLineString) from a vertex to the opposite side (or, if necessary, to the extension of the opposite side).
-     * @return Three altitudes from this triangle
+     * \returns Three altitudes from this triangle
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -205,7 +207,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * A median is a segment (defined by a QgsLineString) from a vertex to the midpoint of the opposite side.
-     * @return Three medians from this triangle
+     * \returns Three medians from this triangle
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -217,8 +219,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * The segment (defined by a QgsLineString) returned bisect the angle of a vertex to the opposite side.
-     * @param lengthTolerance The tolerance to use
-     * @return Three angle bisector from this triangle
+     * \param lengthTolerance The tolerance to use
+     * \returns Three angle bisector from this triangle
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -230,7 +232,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Medial (or midpoint) triangle of a triangle ABC is the triangle with vertices at the midpoints of the triangle's sides.
-     * @return The medial from this triangle
+     * \returns The medial from this triangle
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -242,8 +244,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * An orthocenter is the point of intersection of the altitudes of a triangle.
-     * @param lengthTolerance The tolerance to use
-     * @return The orthocenter of the triangle.
+     * \param lengthTolerance The tolerance to use
+     * \returns The orthocenter of the triangle.
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -255,7 +257,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Center of the circumscribed circle of the triangle.
-     * @return The center of the circumscribed circle of the triangle
+     * \returns The center of the circumscribed circle of the triangle
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -267,7 +269,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Radius of the circumscribed circle of the triangle.
-     * @return The radius of the circumscribed circle of the triangle
+     * \returns The radius of the circumscribed circle of the triangle
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -277,12 +279,21 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      */
     double circumscribedRadius( ) const;
 
-    // TODO:
-    // QgsCircle circumscribedCircle ( ) const; // need QgsCircle (from CADDigitize.CADCircle)
+    /**
+    * Circumscribed circle of the triangle.
+    * @return The circumbscribed of the triangle with a QgsCircle.
+    * Example:
+    * \code{.py}
+    *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+    *   tri.circumscribedCircle()
+    *   # QgsCircle(Point (2.5 2.5), 3.5355339059327378, 0)
+    * \endcode
+    */
+    QgsCircle circumscribedCircle( ) const;
 
     /**
      * Center of the inscribed circle of the triangle.
-     * @return The center of the inscribed circle of the triangle
+     * \returns The center of the inscribed circle of the triangle
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -294,7 +305,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Radius of the inscribed circle of the triangle.
-     * @return The radius of the inscribed circle of the triangle
+     * \returns The radius of the inscribed circle of the triangle
      * * Example:
      * \code{.py}
      *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
@@ -304,19 +315,29 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      */
     double inscribedRadius( ) const;
 
-    // TODO:
-    // QgsCircle inscribedCircle ( ) const; // need QgsCircle (from CADDigitize.CADCircle)
+    /**
+    * Inscribed circle of the triangle.
+    * @return The inscribed of the triangle with a QgsCircle.
+    * Example:
+    * \code{.py}
+    *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+    *   tri.inscribedCircle()
+    *   # QgsCircle(Point (1.46446609406726225 3.53553390593273775), 1.4644660940672622, 0)
+    * \endcode
+    */
+    QgsCircle inscribedCircle( ) const;
+
   private:
 
     /**
-     * @brief Convenient method checking the validity of geometry (no duplicate point(s), no colinearity).
-     * @param p1 first point
-     * @param p2 second point
-     * @param p3 third point
-     * @return True if the points can create a triangle, otherwise false.
-     * @note not available in Python bindings
+     * \brief Convenient method checking the validity of geometry (no duplicate point(s), no colinearity).
+     * \param p1 first point
+     * \param p2 second point
+     * \param p3 third point
+     * \returns True if the points can create a triangle, otherwise false.
+     * \note not available in Python bindings
      */
-    bool validateGeom( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 );
+    bool validateGeom( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 ) SIP_SKIP;
 
 };
 #endif // QGSTRIANGLE_H

@@ -88,11 +88,11 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
         << PYRAMID_JPEG_YCBCR_COMPRESSION );
   }
 
-  connect( mProfileComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
-           this, SLOT( updateOptions() ) );
-  connect( mOptionsTable, SIGNAL( cellChanged( int, int ) ), this, SLOT( optionsTableChanged() ) );
-  connect( mOptionsHelpButton, SIGNAL( clicked() ), this, SLOT( helpOptions() ) );
-  connect( mOptionsValidateButton, SIGNAL( clicked() ), this, SLOT( validateOptions() ) );
+  connect( mProfileComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ),
+           this, &QgsRasterFormatSaveOptionsWidget::updateOptions );
+  connect( mOptionsTable, &QTableWidget::cellChanged, this, &QgsRasterFormatSaveOptionsWidget::optionsTableChanged );
+  connect( mOptionsHelpButton, &QAbstractButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::helpOptions );
+  connect( mOptionsValidateButton, &QAbstractButton::clicked, this, [ = ] { validateOptions(); } );
 
   // create eventFilter to map right click to swapOptionsUI()
   // mOptionsLabel->installEventFilter( this );
@@ -261,7 +261,7 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
   if ( mProvider == QLatin1String( "gdal" ) && mFormat != QLatin1String( "" ) && ! mPyramids )
   {
     // get helpCreationOptionsFormat() function ptr for provider
-    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( mProvider ) );
+    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( mProvider ) );
     if ( library )
     {
       helpCreationOptionsFormat_t *helpCreationOptionsFormat =
@@ -357,7 +357,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
     else
     {
       // get validateCreationOptionsFormat() function ptr for provider
-      std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( mProvider ) );
+      std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( mProvider ) );
       if ( library )
       {
         validateCreationOptionsFormat_t *validateCreationOptionsFormat =
@@ -614,7 +614,7 @@ bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event 
         menu = new QMenu( this );
       QAction *action = new QAction( text, menu );
       menu->addAction( action );
-      connect( action, SIGNAL( triggered() ), this, SLOT( swapOptionsUI() ) );
+      connect( action, &QAction::triggered, this, &QgsRasterFormatSaveOptionsWidget::swapOptionsUI );
       menu->exec( mouseEvent->globalPos() );
       delete menu;
       return true;

@@ -36,8 +36,8 @@ QgsAmsLegendFetcher::QgsAmsLegendFetcher( QgsAmsProvider *provider )
   : QgsImageFetcher( provider ), mProvider( provider )
 {
   mQuery = new QgsArcGisAsyncQuery( this );
-  connect( mQuery, SIGNAL( finished() ), this, SLOT( handleFinished() ) );
-  connect( mQuery, SIGNAL( failed( QString, QString ) ), this, SLOT( handleError( QString, QString ) ) );
+  connect( mQuery, &QgsArcGisAsyncQuery::finished, this, &QgsAmsLegendFetcher::handleFinished );
+  connect( mQuery, &QgsArcGisAsyncQuery::failed, this, &QgsAmsLegendFetcher::handleError );
 }
 
 void QgsAmsLegendFetcher::start()
@@ -307,7 +307,7 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
     }
     QgsArcGisAsyncParallelQuery query;
     QEventLoop evLoop;
-    connect( &query, SIGNAL( finished( QStringList ) ), &evLoop, SLOT( quit() ) );
+    connect( &query, &QgsArcGisAsyncParallelQuery::finished, &evLoop, &QEventLoop::quit );
     query.start( queries, &results, true );
     evLoop.exec( QEventLoop::ExcludeUserInputEvents );
 
@@ -353,8 +353,8 @@ QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, co
     return mLegendFetcher->getImage();
   }
   QEventLoop evLoop;
-  connect( mLegendFetcher, SIGNAL( finish( QImage ) ), &evLoop, SLOT( quit() ) );
-  connect( mLegendFetcher, SIGNAL( error( QString ) ), &evLoop, SLOT( quit() ) );
+  connect( mLegendFetcher, &QgsImageFetcher::finish, &evLoop, &QEventLoop::quit );
+  connect( mLegendFetcher, &QgsImageFetcher::error, &evLoop, &QEventLoop::quit );
   mLegendFetcher->start();
   evLoop.exec( QEventLoop::ExcludeUserInputEvents );
   if ( !mLegendFetcher->errorTitle().isEmpty() )
@@ -430,7 +430,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint &point, QgsRast
       params[QStringLiteral( "sublayer" )] = resultMap[QStringLiteral( "layerName" )].toString();
       params[QStringLiteral( "featureType" )] = attributesMap[resultMap[QStringLiteral( "displayFieldName" )].toString()].toString();
       store.setParams( params );
-      store.features().append( feature );
+      store.addFeature( feature );
       entries.insert( entries.size(), qVariantFromValue( QList<QgsFeatureStore>() << store ) );
     }
   }

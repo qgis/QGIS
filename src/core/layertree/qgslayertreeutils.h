@@ -34,7 +34,7 @@ class QgsProject;
 /** \ingroup core
  * Assorted functions for dealing with layer trees.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeUtils
 {
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Remove subtree of embedded groups and replaces it with a custom property embedded-visible-layers
     static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *group );
 
-    //! @note not available in python bindings
+    //! \note not available in Python bindings
     static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup *group, const QgsProject *project );
 
     //! get invisible layers
@@ -77,10 +77,10 @@ class CORE_EXPORT QgsLayerTreeUtils
     static bool hasLegendFilterExpression( const QgsLayerTreeGroup &group );
 
     //! Insert a QgsMapLayer just below another one
-    //! @param group the tree group where layers are (can be the root group)
-    //! @param refLayer the reference layer
-    //! @param layerToInsert the new layer to insert just below the reference layer
-    //! @returns the new tree layer
+    //! \param group the tree group where layers are (can be the root group)
+    //! \param refLayer the reference layer
+    //! \param layerToInsert the new layer to insert just below the reference layer
+    //! \returns the new tree layer
     static QgsLayerTreeLayer *insertLayerBelow( QgsLayerTreeGroup *group, const QgsMapLayer *refLayer, QgsMapLayer *layerToInsert );
 };
 

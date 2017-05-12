@@ -35,6 +35,7 @@ from qgis.PyQt.QtGui import QFont, QColor
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
+    QgsLabelingEngineSettings,
     QgsProject,
     QgsMapSettings,
     QgsPalLabeling,
@@ -79,8 +80,6 @@ class TestQgsPalLabeling(unittest.TestCase):
     """:type: QgsMapSettings"""
     _Canvas = None
     """:type: QgsMapCanvas"""
-    _Pal = None
-    """:type: QgsPalLabeling"""
     _BaseSetup = False
 
     @classmethod
@@ -120,9 +119,6 @@ class TestQgsPalLabeling(unittest.TestCase):
         cls._Canvas.setCanvasColor(cls._MapSettings.backgroundColor())
 
         cls.setDefaultEngineSettings()
-        msg = ('\nCould not initialize PAL labeling engine, '
-               'SKIPPING TEST SUITE')
-        assert cls._Pal, msg
 
         cls._BaseSetup = True
 
@@ -138,7 +134,7 @@ class TestQgsPalLabeling(unittest.TestCase):
     @classmethod
     def setDefaultEngineSettings(cls):
         """Restore default settings for pal labeling"""
-        cls._Pal = QgsPalLabeling()
+        cls._MapSettings.setLabelingEngineSettings(QgsLabelingEngineSettings())
 
     @classmethod
     def removeAllLayers(cls):
@@ -226,6 +222,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         ms.setDestinationCrs(oms.destinationCrs())
         ms.setExtent(oms.extent())
         ms.setOutputImageFormat(oms.outputImageFormat())
+        ms.setLabelingEngineSettings(oms.labelingEngineSettings())
 
         ms.setLayers(oms.layers())
         return ms
@@ -429,20 +426,20 @@ class TestPALConfig(TestQgsPalLabeling):
 
     def test_default_partials_labels_enabled(self):
         # Verify ShowingPartialsLabels is enabled for PAL by default
-        pal = QgsPalLabeling()
-        self.assertTrue(pal.isShowingPartialsLabels())
+        engine_settings = QgsLabelingEngineSettings()
+        self.assertTrue(engine_settings.testFlag(QgsLabelingEngineSettings.UsePartialCandidates))
 
     def test_partials_labels_activate(self):
-        pal = QgsPalLabeling()
+        engine_settings = QgsLabelingEngineSettings()
         # Enable partials labels
-        pal.setShowingPartialsLabels(True)
-        self.assertTrue(pal.isShowingPartialsLabels())
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates)
+        self.assertTrue(engine_settings.testFlag(QgsLabelingEngineSettings.UsePartialCandidates))
 
     def test_partials_labels_deactivate(self):
-        pal = QgsPalLabeling()
+        engine_settings = QgsLabelingEngineSettings()
         # Disable partials labels
-        pal.setShowingPartialsLabels(False)
-        self.assertFalse(pal.isShowingPartialsLabels())
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+        self.assertFalse(engine_settings.testFlag(QgsLabelingEngineSettings.UsePartialCandidates))
 
 
 # noinspection PyPep8Naming,PyShadowingNames

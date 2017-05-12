@@ -20,6 +20,7 @@
 #define QGSSERVERRESPONSE_H
 
 #include "qgis_server.h"
+#include "qgis_sip.h"
 
 #include <QString>
 #include <QIODevice>
@@ -31,11 +32,11 @@ class QgsServerException;
  * QgsServerResponse
  * Class defining response interface passed to services QgsService::executeRequest() method
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 // Note:
-// This class is intended to be used from python code: method signatures and return types should be
+// This class is intended to be used from Python code: method signatures and return types should be
 // compatible with pyQGIS/pyQT types and rules.
 
 class SERVER_EXPORT QgsServerResponse
@@ -51,7 +52,7 @@ class SERVER_EXPORT QgsServerResponse
     /**
      *  Set Header entry
      *  Add Header entry to the response
-     *  Note that it is usually an error to set Header after writing data
+     *  Note that it is usually an error to set Header after data have been sent through the wire
      */
     virtual void setHeader( const QString &key, const QString &value ) = 0;
 
@@ -59,17 +60,17 @@ class SERVER_EXPORT QgsServerResponse
      * Clear header
      * Undo a previous 'setHeader' call
      */
-    virtual void clearHeader( const QString &key ) = 0;
+    virtual void removeHeader( const QString &key ) = 0;
 
     /**
      * Return the header value
      */
-    virtual QString getHeader( const QString &key ) const = 0;
+    virtual QString header( const QString &key ) const = 0;
 
     /**
-     * Return the list of all header keys
+     * Return the header value
      */
-    virtual QList<QString> headerKeys() const = 0;
+    virtual QMap<QString, QString> headers( ) const = 0;
 
     /**
      * Return true if the headers have alredy been sent
@@ -77,10 +78,14 @@ class SERVER_EXPORT QgsServerResponse
     virtual bool headersSent() const = 0;
 
 
-    /** Set the http return code
-     * @param code HTTP return code value
+    /** Set the http status code
+     * \param code HTTP status code value
      */
-    virtual void setReturnCode( int code ) = 0;
+    virtual void setStatusCode( int code ) = 0;
+
+    /** Return the http status code
+     */
+    virtual int statusCode( ) const = 0;
 
     /**
      * Send error
@@ -88,8 +93,8 @@ class SERVER_EXPORT QgsServerResponse
      * from calling setReturnCode() which let you return a specific response body.
      * Calling sendError() will end the transaction and any attempt to write data
      * or set headers will be an error.
-     * @param code HHTP return code value
-     * @param message An informative error message
+     * \param code HHTP return code value
+     * \param message An informative error message
      */
     virtual void sendError( int code,  const QString &message ) = 0;
 
@@ -104,7 +109,7 @@ class SERVER_EXPORT QgsServerResponse
      * Write chunk of data
      * This is a convenient method that will write directly
      * to the underlying I/O device
-     * @return the number of bytes that were actually written
+     * \returns the number of bytes that were actually written
      */
     virtual qint64 write( const QByteArray &byteArray );
 
@@ -113,22 +118,22 @@ class SERVER_EXPORT QgsServerResponse
      *
      * This is a convenient method that will write directly
      * to the underlying I/O device
-     * @return the number of bytes written
+     * \returns the number of bytes written
      *
-     *  @note not available in python bindings
+     *  \note not available in Python bindings
      */
-    virtual qint64 write( const char *data, qint64 maxsize );
+    virtual qint64 write( const char *data, qint64 maxsize ) SIP_SKIP;
 
     /**
      * Writes at most maxSize bytes of data
      *
      * This is a convenient method that will write directly
      * to the underlying I/O device
-     * @return the number of bytes written
+     * \returns the number of bytes written
      *
-     * @note not available in python bindings
+     * \note not available in Python bindings
      */
-    virtual qint64 write( const char *data );
+    virtual qint64 write( const char *data ) SIP_SKIP;
 
     /**
      * Write server exception
@@ -157,6 +162,24 @@ class SERVER_EXPORT QgsServerResponse
      * Reset all headers and content for this response
      */
     virtual void clear() = 0;
+
+    /**
+     * Get the data written so far
+     *
+     * This is implementation dependent: some implementations may not
+     * give access to the underlying and return an empty array.
+     *
+     * Note that each call to 'flush' may empty the buffer and in case
+     * of streaming process you may get partial content
+     */
+    virtual QByteArray data() const = 0;
+
+    /**
+     * Truncate data
+     *
+     * Clear internal buffer
+     */
+    virtual void truncate() = 0;
 };
 
 #endif

@@ -13,7 +13,7 @@ class QgsMapRendererParallelJob : QgsMapRendererQImageJob
 %End
 
   public:
-    QgsMapRendererParallelJob( const QgsMapSettings& settings );
+    QgsMapRendererParallelJob( const QgsMapSettings &settings );
     ~QgsMapRendererParallelJob();
 
     virtual void start();
@@ -23,7 +23,7 @@ class QgsMapRendererParallelJob : QgsMapRendererQImageJob
     virtual bool isActive() const;
     virtual bool usedCachedLabels() const;
 
-    virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
+    virtual QgsLabelingResults *takeLabelingResults() /Transfer/;
 
     // from QgsMapRendererJobWithPreview
     virtual QImage renderedImage();

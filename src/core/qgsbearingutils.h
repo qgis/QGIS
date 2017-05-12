@@ -27,7 +27,7 @@ class QgsPoint;
  * \class QgsBearingUtils
  * \ingroup core
  * Utilities for calculating bearings and directions.
- * \note Added in version 2.18
+ * \since QGIS 2.18
 */
 class CORE_EXPORT QgsBearingUtils
 {

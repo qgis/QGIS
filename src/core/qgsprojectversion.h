@@ -58,7 +58,7 @@ class CORE_EXPORT QgsProjectVersion
      */
     bool operator==( const QgsProjectVersion &other ) const;
 
-    /** Boolean equal operator
+    /** Boolean not equal operator
      */
     bool operator!=( const QgsProjectVersion &other ) const;
 

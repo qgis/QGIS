@@ -19,15 +19,15 @@
 #define QGSDB2PROVIDER_H
 
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include <qgscoordinatereferencesystem.h>
 #include "qgsgeometry.h"
 #include "qgsfields.h"
 #include <QtSql>
 
 /**
- * @class QgsDb2Provider
- * @brief Data provider for DB2 server.
+ * \class QgsDb2Provider
+ * \brief Data provider for DB2 server.
  */
 class QgsDb2Provider : public QgsVectorDataProvider
 {
@@ -44,7 +44,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
      * If service is provided, then username and password is required.
      * If service is not provided, the remaining arguments are required.
      *
-     * @param connInfo A string containing all connection information.
+     * \param connInfo A string containing all connection information.
      */
     static QSqlDatabase getDatabase( const QString &connInfo, QString &errMsg );
 
@@ -92,7 +92,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     //! Import a vector layer into the database
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,

@@ -61,9 +61,9 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
   QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
   watcher->setFuture( future );
   QTimer *timer = new QTimer();
-  connect( timer, SIGNAL( timeout() ), this, SLOT( emitProgressValue() ) );
-  connect( watcher, SIGNAL( finished() ), timer, SLOT( deleteLater() ) );
-  connect( watcher, SIGNAL( finished() ), watcher, SLOT( deleteLater() ) );
+  connect( timer, &QTimer::timeout, this, &QgsGeometryChecker::emitProgressValue );
+  connect( watcher, &QFutureWatcherBase::finished, timer, &QObject::deleteLater );
+  connect( watcher, &QFutureWatcherBase::finished, watcher, &QObject::deleteLater );
   timer->start( 500 );
 
   return future;

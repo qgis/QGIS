@@ -19,6 +19,7 @@
 #define QGSPOINTDISPLACEMENTRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgspointdistancerenderer.h"
 
 /** \class QgsPointDisplacementRenderer
@@ -38,7 +39,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     };
 
     /** Constructor for QgsPointDisplacementRenderer.
-     * @param labelAttributeName optional attribute name for labeling points
+     * \param labelAttributeName optional attribute name for labeling points
      */
     QgsPointDisplacementRenderer( const QString &labelAttributeName = QString() );
 
@@ -49,74 +50,74 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Create a renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem );
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem ) SIP_FACTORY;
 
     /** Sets the line width for the displacement group circle.
-     * @param width line width in mm
-     * @see circleWidth()
-     * @see setCircleColor()
+     * \param width line width in mm
+     * \see circleWidth()
+     * \see setCircleColor()
      */
     void setCircleWidth( double width ) { mCircleWidth = width; }
 
     /** Returns the line width for the displacement group circle in mm.
-     * @see setCircleWidth()
-     * @see circleColor()
+     * \see setCircleWidth()
+     * \see circleColor()
      */
     double circleWidth() const { return mCircleWidth; }
 
     /** Sets the color used for drawing the displacement group circle.
-     * @param color circle color
-     * @see circleColor()
-     * @see setCircleWidth()
+     * \param color circle color
+     * \see circleColor()
+     * \see setCircleWidth()
      */
     void setCircleColor( const QColor &color ) { mCircleColor = color; }
 
     /** Returns the color used for drawing the displacement group circle.
-     * @see setCircleColor()
-     * @see circleWidth()
+     * \see setCircleColor()
+     * \see circleWidth()
      */
     QColor circleColor() const { return mCircleColor; }
 
     /** Sets a factor for increasing the ring size of displacement groups.
-     * @param distance addition factor
-     * @see circleRadiusAddition()
+     * \param distance addition factor
+     * \see circleRadiusAddition()
      */
     void setCircleRadiusAddition( double distance ) { mCircleRadiusAddition = distance; }
 
     /** Returns the factor for increasing the ring size of displacement groups.
-     * @see setCircleRadiusAddition()
+     * \see setCircleRadiusAddition()
      */
     double circleRadiusAddition() const { return mCircleRadiusAddition; }
 
     /** Returns the placement method used for dispersing the points.
-     * @see setPlacement()
-     * @note added in QGIS 2.12
+     * \see setPlacement()
+     * \since QGIS 2.12
      */
     Placement placement() const { return mPlacement; }
 
     /** Sets the placement method used for dispersing the points.
-     * @param placement placement method
-     * @see placement()
-     * @note added in QGIS 2.12
+     * \param placement placement method
+     * \see placement()
+     * \since QGIS 2.12
      */
     void setPlacement( Placement placement ) { mPlacement = placement; }
 
     /** Returns the symbol for the center of a displacement group (but not ownership of the symbol).
-     * @see setCenterSymbol()
+     * \see setCenterSymbol()
     */
     QgsMarkerSymbol *centerSymbol();
 
     /** Sets the center symbol for a displacement group.
-     * @param symbol new center symbol. Ownership is transferred to the renderer.
-     * @see centerSymbol()
+     * \param symbol new center symbol. Ownership is transferred to the renderer.
+     * \see centerSymbol()
     */
-    void setCenterSymbol( QgsMarkerSymbol *symbol );
+    void setCenterSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /** Creates a QgsPointDisplacementRenderer from an existing renderer.
-     * @note added in 2.5
-     * @returns a new renderer if the conversion was possible, otherwise nullptr.
+     * \since QGIS 2.5
+     * \returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
 

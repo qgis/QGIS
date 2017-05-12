@@ -142,10 +142,10 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
   if ( !mManagerMode )
   {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
+    connect( mAddButton, &QAbstractButton::clicked, this, &QgsDb2SourceSelect::addTables );
 
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
+    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsDb2SourceSelect::buildQuery );
   }
 
   populateConnectionList();
@@ -172,7 +172,7 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( new QgsDb2SourceSelectDelegate( this ) );
 
-  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+  connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDb2SourceSelect::treeWidgetSelectionChanged );
 
   QgsSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() ?
@@ -615,12 +615,12 @@ void QgsDb2SourceSelect::addSearchGeometryColumn( const QString &connectionName,
   {
     mColumnTypeThread = new QgsDb2GeomColumnTypeThread( connectionName, estimateMetadata );
 
-    connect( mColumnTypeThread, SIGNAL( setLayerType( QgsDb2LayerProperty ) ),
-             this, SLOT( setLayerType( QgsDb2LayerProperty ) ) );
-    connect( this, SIGNAL( addGeometryColumn( QgsDb2LayerProperty ) ),
-             mColumnTypeThread, SLOT( addGeometryColumn( QgsDb2LayerProperty ) ) );
-    connect( mColumnTypeThread, SIGNAL( finished() ),
-             this, SLOT( columnThreadFinished() ) );
+    connect( mColumnTypeThread, &QgsDb2GeomColumnTypeThread::setLayerType,
+             this, &QgsDb2SourceSelect::setLayerType );
+    connect( this, &QgsDb2SourceSelect::addGeometryColumn,
+             mColumnTypeThread, &QgsDb2GeomColumnTypeThread::addGeometryColumn );
+    connect( mColumnTypeThread, &QThread::finished,
+             this, &QgsDb2SourceSelect::columnThreadFinished );
 
   }
 

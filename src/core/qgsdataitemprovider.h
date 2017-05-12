@@ -17,6 +17,7 @@
 #define QGSDATAITEMPROVIDER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 class QgsDataItem;
 
@@ -32,7 +33,7 @@ class QString;
  *    of the following: QgsDataProider::Dir or QgsDataProvider::File. Passed path is the file
  *    or directory being inspected, parent item is a valid QgsDirectoryItem
  *
- * @note added in 2.10
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsDataItemProvider
 {
@@ -47,7 +48,7 @@ class CORE_EXPORT QgsDataItemProvider
 
     //! Create a new instance of QgsDataItem (or null) for given path and parent item.
     //! Caller takes responsibility of deleting created items.
-    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0;
+    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0 SIP_FACTORY;
 
 };
 

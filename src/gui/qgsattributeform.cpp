@@ -911,15 +911,15 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString &constraint,
     switch ( result )
     {
       case QgsEditorWidgetWrapper::ConstraintResultFailHard:
-        buddy->setText( QStringLiteral( "%1<font color=\"red\">✘</font>" ).arg( text ) );
+        buddy->setText( trUtf8( "%1<font color=\"red\">✘</font>" ).arg( text ) );
         break;
 
       case QgsEditorWidgetWrapper::ConstraintResultFailSoft:
-        buddy->setText( QStringLiteral( "%1<font color=\"orange\">✘</font>" ).arg( text ) );
+        buddy->setText( trUtf8( "%1<font color=\"orange\">✘</font>" ).arg( text ) );
         break;
 
       case QgsEditorWidgetWrapper::ConstraintResultPass:
-        buddy->setText( QStringLiteral( "%1<font color=\"green\">✔</font>" ).arg( text ) );
+        buddy->setText( trUtf8( "%1<font color=\"green\">✔</font>" ).arg( text ) );
         break;
     }
   }
@@ -1697,8 +1697,8 @@ void QgsAttributeForm::addWidgetWrapper( QgsEditorWidgetWrapper *eww )
     {
       if ( meww->field() == eww->field() )
       {
-        connect( meww, SIGNAL( valueChanged( QVariant ) ), eww, SLOT( setValue( QVariant ) ) );
-        connect( eww, SIGNAL( valueChanged( QVariant ) ), meww, SLOT( setValue( QVariant ) ) );
+        connect( meww, static_cast<void ( QgsEditorWidgetWrapper::* )( const QVariant & )>( &QgsEditorWidgetWrapper::valueChanged ), eww, &QgsEditorWidgetWrapper::setValue );
+        connect( eww, static_cast<void ( QgsEditorWidgetWrapper::* )( const QVariant & )>( &QgsEditorWidgetWrapper::valueChanged ), meww, &QgsEditorWidgetWrapper::setValue );
         break;
       }
     }
@@ -1762,7 +1762,7 @@ void QgsAttributeForm::afterWidgetInit()
         isFirstEww = false;
       }
 
-      connect( eww, SIGNAL( valueChanged( const QVariant & ) ), this, SLOT( onAttributeChanged( const QVariant & ) ) );
+      connect( eww, static_cast<void ( QgsEditorWidgetWrapper::* )( const QVariant & )>( &QgsEditorWidgetWrapper::valueChanged ), this, &QgsAttributeForm::onAttributeChanged );
       connect( eww, &QgsEditorWidgetWrapper::constraintStatusChanged, this, &QgsAttributeForm::onConstraintStatusChanged );
     }
   }

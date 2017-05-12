@@ -13,7 +13,7 @@ class QgsDartMeasurement
 
     QgsDartMeasurement();
 
-    QgsDartMeasurement( const QString& name, Type type, const QString& value );
+    QgsDartMeasurement( const QString &name, Type type, const QString &value );
 
     const QString toString() const;
 

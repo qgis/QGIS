@@ -16,8 +16,10 @@
 #define QGSVECTORLAYERFEATUREITERATOR_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QSet>
 #include <memory>
@@ -35,22 +37,29 @@ class QgsVectorLayerFeatureIterator;
 
 /** \ingroup core
  * Partial snapshot of vector layer's state (only the members necessary for access to features)
- * @note not available in Python bindings
 */
 class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
 
     /** Constructor for QgsVectorLayerFeatureSource.
-     * @param layer source layer
+     * \param layer source layer
      */
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
 
     ~QgsVectorLayerFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) override;
 
     friend class QgsVectorLayerFeatureIterator;
+
+    /**
+     * Returns the fields that will be available for features that are retrieved from
+     * this source.
+     *
+     * \since QGIS 3.0
+     */
+    QgsFields fields() const;
 
   protected:
 
@@ -74,7 +83,7 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QgsChangedAttributesMap mChangedAttributeValues;
     QgsAttributeList mDeletedAttributeIds;
 
-    long mCrsId;
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 /** \ingroup core
@@ -105,35 +114,35 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
-    //! @note not available in Python bindings
-    void rewindEditBuffer();
+    //! \note not available in Python bindings
+    void rewindEditBuffer() SIP_SKIP;
 
-    //! @note not available in Python bindings
-    void prepareJoin( int fieldIdx );
+    //! \note not available in Python bindings
+    void prepareJoin( int fieldIdx ) SIP_SKIP;
 
-    //! @note not available in Python bindings
-    void prepareExpression( int fieldIdx );
+    //! \note not available in Python bindings
+    void prepareExpression( int fieldIdx ) SIP_SKIP;
 
-    //! @note not available in Python bindings
-    void prepareFields();
+    //! \note not available in Python bindings
+    void prepareFields() SIP_SKIP;
 
-    //! @note not available in Python bindings
-    void prepareField( int fieldIdx );
+    //! \note not available in Python bindings
+    void prepareField( int fieldIdx ) SIP_SKIP;
 
-    //! @note not available in Python bindings
-    bool fetchNextAddedFeature( QgsFeature &f );
-    //! @note not available in Python bindings
-    bool fetchNextChangedGeomFeature( QgsFeature &f );
-    //! @note not available in Python bindings
-    bool fetchNextChangedAttributeFeature( QgsFeature &f );
-    //! @note not available in Python bindings
-    void useAddedFeature( const QgsFeature &src, QgsFeature &f );
-    //! @note not available in Python bindings
-    void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry &geom, QgsFeature &f );
-    //! @note not available in Python bindings
-    bool nextFeatureFid( QgsFeature &f );
-    //! @note not available in Python bindings
-    void addJoinedAttributes( QgsFeature &f );
+    //! \note not available in Python bindings
+    bool fetchNextAddedFeature( QgsFeature &f ) SIP_SKIP;
+    //! \note not available in Python bindings
+    bool fetchNextChangedGeomFeature( QgsFeature &f ) SIP_SKIP;
+    //! \note not available in Python bindings
+    bool fetchNextChangedAttributeFeature( QgsFeature &f ) SIP_SKIP;
+    //! \note not available in Python bindings
+    void useAddedFeature( const QgsFeature &src, QgsFeature &f ) SIP_SKIP;
+    //! \note not available in Python bindings
+    void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry &geom, QgsFeature &f ) SIP_SKIP;
+    //! \note not available in Python bindings
+    bool nextFeatureFid( QgsFeature &f ) SIP_SKIP;
+    //! \note not available in Python bindings
+    void addJoinedAttributes( QgsFeature &f ) SIP_SKIP;
 
     /**
      * Adds attributes that don't source from the provider but are added inside QGIS
@@ -141,28 +150,28 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      *  - Joined fields
      *  - Expression fields
      *
-     * @param f The feature will be modified
-     * @note not available in Python bindings
+     * \param f The feature will be modified
+     * \note not available in Python bindings
      */
-    void addVirtualAttributes( QgsFeature &f );
+    void addVirtualAttributes( QgsFeature &f ) SIP_SKIP;
 
     /** Adds an expression based attribute to a feature
-     * @param f feature
-     * @param attrIndex attribute index
-     * @note added in QGIS 2.14
-     * @note not available in Python bindings
+     * \param f feature
+     * \param attrIndex attribute index
+     * \since QGIS 2.14
+     * \note not available in Python bindings
      */
-    void addExpressionAttribute( QgsFeature &f, int attrIndex );
+    void addExpressionAttribute( QgsFeature &f, int attrIndex ) SIP_SKIP;
 
     /** Update feature with uncommitted attribute updates.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
-    void updateChangedAttributes( QgsFeature &f );
+    void updateChangedAttributes( QgsFeature &f ) SIP_SKIP;
 
     /** Update feature with uncommitted geometry updates.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
-    void updateFeatureGeometry( QgsFeature &f );
+    void updateFeatureGeometry( QgsFeature &f ) SIP_SKIP;
 
     /** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
      * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
@@ -221,6 +230,16 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 
     void createOrderedJoinList();
+
+    /**
+     * Performs any feature based validity checking, e.g. checking for geometry validity.
+     */
+    bool testFeature( const QgsFeature &feature );
+
+    /**
+     * Checks a feature's geometry for validity, if requested in feature request.
+     */
+    bool checkGeometryValidity( const QgsFeature &feature );
 };
 
 #endif // QGSVECTORLAYERFEATUREITERATOR_H

@@ -5,6 +5,7 @@
   ------------------------------------
   begin                : December 20 , 2016
   copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswfshandler)
+                         (C) 2012 by René-Luc D'Hont    ( parts from qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswfshandler)
                          (C) 2017 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -24,7 +25,7 @@
 #define QGSWFSUTILS_H
 
 #include "qgsmodule.h"
-#include "qgswfsprojectparser.h"
+#include "qgsfeaturerequest.h"
 #include "qgswfsserviceexception.h"
 
 /**
@@ -41,17 +42,13 @@ namespace QgsWfs
   QString implementationVersion();
 
   /**
-   * Return the wms config parser (Transitional)
-   *
-   * XXX This is needed in the current implementation.
-   * This should disappear as soon we get rid of singleton.
-   */
-  QgsWfsProjectParser *getConfigParser( QgsServerInterface *serverIface );
-
-  /**
    * Service URL string
    */
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project );
+
+  /** Transform a Filter element to a feature request
+   */
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem );
 
   // Define namespaces used in WFS documents
   const QString WFS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wfs" );

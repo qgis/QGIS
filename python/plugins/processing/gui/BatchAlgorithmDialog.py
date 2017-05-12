@@ -34,7 +34,7 @@ from qgis.gui import QgsMessageBar
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.AlgorithmExecutor import runalg
+from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 from processing.core.ProcessingResults import ProcessingResults
@@ -44,6 +44,7 @@ from processing.core.outputs import OutputString
 from processing.core.outputs import OutputHTML
 
 from processing.tools.system import getTempFilename
+from processing.tools import dataobjects
 
 import codecs
 
@@ -55,7 +56,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         self.alg = alg
 
-        self.setWindowTitle(self.tr('Batch Processing - {0}').format(self.alg.name))
+        self.setWindowTitle(self.tr('Batch Processing - {0}').format(self.alg.displayName()))
 
         self.setMainWidget(BatchPanel(self, self.alg))
 
@@ -72,6 +73,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         for row in range(self.mainWidget.tblParameters.rowCount()):
             alg = self.alg.getCopy()
+            # hack - remove when getCopy is removed
+            alg.setProvider(self.alg.provider())
             col = 0
             for param in alg.parameters:
                 if param.hidden:
@@ -118,13 +121,15 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         except:
             pass
 
+        context = dataobjects.createContext()
+
         for count, alg in enumerate(self.algs):
             self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(self.algs)))
-            self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(alg.name))
-            if runalg(alg, self.feedback) and not self.canceled:
+            self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(alg.displayName()))
+            if execute(alg, context, self.feedback) and not self.canceled:
                 if self.load[count]:
-                    handleAlgorithmResults(alg, self.feedback, False)
-                self.setInfo(self.tr('Algorithm {0} correctly executed...').format(alg.name))
+                    handleAlgorithmResults(alg, context, self.feedback, False)
+                self.setInfo(self.tr('Algorithm {0} correctly executed...').format(alg.displayName()))
             else:
                 QApplication.restoreOverrideCursor()
                 return

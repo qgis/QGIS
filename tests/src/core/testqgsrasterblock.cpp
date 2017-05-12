@@ -134,6 +134,8 @@ void TestQgsRasterBlock::testWrite()
 {
   QgsRectangle extent = mpRasterLayer->extent();
   int nCols = mpRasterLayer->width(), nRows = mpRasterLayer->height();
+  QVERIFY( nCols > 0 );
+  QVERIFY( nRows > 0 );
   double tform[] =
   {
     extent.xMinimum(), extent.width() / nCols, 0.0,

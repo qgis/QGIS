@@ -19,6 +19,7 @@
 #define QGSPROPERTYASSISTANTWIDGET_H
 
 #include "qgspanelwidget.h"
+#include "qgis_sip.h"
 #include "ui_qgspropertyassistantwidgetbase.h"
 #include "ui_qgspropertysizeassistantwidget.h"
 #include "ui_qgspropertycolorassistantwidget.h"
@@ -106,7 +107,7 @@ class GUI_EXPORT QgsPropertyColorAssistantWidget : public QgsPropertyAbstractTra
  * \class QgsPropertyAssistantWidget
  * \ingroup gui
  * Shows a user-friendly assistant guiding users through the creation of QgsProperty overrides.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui::PropertyAssistantBase
 {
@@ -140,9 +141,9 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
     /**
      * Sets a symbol which can be used for previews inside the widget. If not specified, default
      * created symbols will be used instead.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
-    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); }
+    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); } SIP_SKIP
 
     void setDockMode( bool dockMode ) override;
 

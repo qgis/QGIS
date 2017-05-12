@@ -19,6 +19,7 @@
 #define QGSMAPCANVAS_H
 
 #include "qgsconfig.h"
+#include "qgis_sip.h"
 
 #include "qgsexpressioncontext.h"
 #include "qgsfeature.h"
@@ -77,12 +78,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
   public:
 
     //! Constructor
-    QgsMapCanvas( QWidget *parent = nullptr );
+    QgsMapCanvas( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     ~QgsMapCanvas();
 
     //! Returns the magnification factor
-    //! @note added in 2.16
+    //! \since QGIS 2.16
     double magnificationFactor() const;
 
     /**
@@ -93,39 +94,45 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * to first clear the theme association by calling setTheme() with an
      * empty string before setLayers() calls can be made.
      *
-     * @note added in 3.0
-     * @see layers()
+     * \since QGIS 3.0
+     * \see layers()
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
     void setCurrentLayer( QgsMapLayer *layer );
 
     //! Get access to properties used for map rendering
-    //! @note added in 2.4
-    const QgsMapSettings &mapSettings() const;
+    //! \since QGIS 2.4
+    const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
 
     //! sets destination coordinate reference system
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Resets the \a flags for the canvas' map settings.
+     * \since QGIS 3.0
+     */
+    void setMapSettingsFlags( QgsMapSettings::Flags flags );
+
     //! Get access to the labeling results (may be null)
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     const QgsLabelingResults *labelingResults() const;
 
     //! Set whether to cache images of rendered layers
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setCachingEnabled( bool enabled );
 
     //! Check whether images of rendered layers are curerently being cached
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     bool isCachingEnabled() const;
 
     //! Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void clearCache();
 
     //! Reload all layers, clear the cache and refresh the canvas
-    //! @note added in 2.9
+    //! \since QGIS 2.9
     void refreshAllLayers();
 
     /**
@@ -133,26 +140,26 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * In almost all cases you do NOT want to call this, as it will hang the UI
      * until the rendering job is complete. It's included in API solely for
-     * unit testing and standalone python scripts.
+     * unit testing and standalone Python scripts.
      *
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void waitWhileRendering();
 
     //! Set whether the layers are rendered in parallel or sequentially
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setParallelRenderingEnabled( bool enabled );
 
     //! Check whether the layers are rendered in parallel or sequentially
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     bool isParallelRenderingEnabled() const;
 
     //! Set how often map preview should be updated while it is being rendered (in milliseconds)
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setMapUpdateInterval( int timeMilliseconds );
 
     //! Find out how often map preview should be updated while it is being rendered (in milliseconds)
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     int mapUpdateInterval() const;
 
     //! Get the last reported scale of the canvas
@@ -170,19 +177,19 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setExtent( const QgsRectangle &r, bool magnified = false );
 
     //! Get the current map canvas rotation in clockwise degrees
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     double rotation() const;
 
     //! Set the rotation of the map canvas in clockwise degrees
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     void setRotation( double degrees );
 
     //! Set the center of the map canvas, in geographical coordinates
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     void setCenter( const QgsPoint &center );
 
     //! Get map center, in geographical coordinates
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     QgsPoint center() const;
 
     //! Zoom to the full extent of all layers
@@ -198,18 +205,18 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void clearExtentHistory();
 
     /** Zoom to the extent of the selected features of current (vector) layer.
-     * @param layer optionally specify different than current layer
+     * \param layer optionally specify different than current layer
      */
     void zoomToSelected( QgsVectorLayer *layer = nullptr );
 
     /** Set canvas extent to the bounding box of a set of features
-        @param layer the vector layer
-        @param ids the feature ids*/
+        \param layer the vector layer
+        \param ids the feature ids*/
     void zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
 
     /** Centers canvas extent to feature ids
-        @param layer the vector layer
-        @param ids the feature ids*/
+        \param layer the vector layer
+        \param ids the feature ids*/
     void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
 
     //! Pan to the selected features of current (vector) layer keeping same extent.
@@ -235,7 +242,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QColor canvasColor() const;
 
     //! Set color of selected vector features
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setSelectionColor( const QColor &color );
 
     //! Emits signal scaleChanged to update scale in main window
@@ -249,35 +256,35 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Return the list of layers shown within the map canvas.
-     * @see setLayers()
+     * \see setLayers()
      */
     QList<QgsMapLayer *> layers() const;
 
     /**
      * Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
-     * @param frozen Boolean specifying if the canvas should be frozen (true) or
+     * \param frozen Boolean specifying if the canvas should be frozen (true) or
      * thawed (false). Default is true.
-     * @see isFrozen()
-     * @see setRenderFlag(). freeze() should be used to programmatically halt map updates,
+     * \see isFrozen()
+     * \see setRenderFlag(). freeze() should be used to programmatically halt map updates,
      * while setRenderFlag() should only be used when users disable rendering via GUI.
      */
     void freeze( bool frozen = true );
 
     /**
      * Returns true if canvas is frozen.
-     * @see renderFlag(). isFrozen() should be used to determine whether map updates
+     * \see renderFlag(). isFrozen() should be used to determine whether map updates
      * have been halted programmatically, while renderFlag() should be used to
      * determine whether a user has disabled rendering via GUI.
-     * @see freeze()
+     * \see freeze()
      */
     bool isFrozen() const;
 
     /**
      * Returns true if canvas render is disabled as a result of user disabling
      * renders via the GUI.
-     * @see setRenderFlag()
-     * @see isFrozen(). isFrozen() should be used to determine whether map updates
+     * \see setRenderFlag()
+     * \see isFrozen(). isFrozen() should be used to determine whether map updates
      * have been halted programmatically, while renderFlag() should be used to
      * determine whether a user has disabled rendering via GUI.
      */
@@ -291,8 +298,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Returns the stored overrides of styles for layers.
-     * @note added in 2.12
-     * @see setLayerStyleOverrides().
+     * \since QGIS 2.12
+     * \see setLayerStyleOverrides().
      */
     QMap<QString, QString> layerStyleOverrides() const;
 
@@ -304,8 +311,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * to first clear the theme association by calling setTheme() with an
      * empty string before setLayerStyleOverrides() calls can be made.
      *
-     * @note added in 2.12
-     * @see layerStyleOverrides()
+     * \since QGIS 2.12
+     * \see layerStyleOverrides()
      */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
@@ -324,15 +331,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * If an empty string is passed then the current theme association will be
      * cleared.
-     * @note added in QGIS 3.0
-     * @see theme()
+     * \since QGIS 3.0
+     * \see theme()
      */
     void setTheme( const QString &theme );
 
     /**
      * Returns the map's theme shown in the canvas, if set.
-     * @note added in QGIS 3.0
-     * @see setTheme()
+     * \since QGIS 3.0
+     * \see setTheme()
      */
     QString theme() const { return mTheme; }
 
@@ -363,8 +370,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void zoomToFeatureExtent( QgsRectangle &rect );
 
     //! Returns whether the scale is locked, so zooming can be performed using magnication.
-    //! @note added in 2.16
-    //! @see setScaleLocked()
+    //! \since QGIS 2.16
+    //! \see setScaleLocked()
     bool scaleLocked() const { return mScaleLocked;}
 
     //! used to determine if anti-aliasing is enabled or not
@@ -388,33 +395,33 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QPoint mouseLastXY();
 
     /** Enables a preview mode for the map canvas
-     * @param previewEnabled set to true to enable a preview mode
-     * @see setPreviewMode
-     * @note added in 2.3 */
+     * \param previewEnabled set to true to enable a preview mode
+     * \see setPreviewMode
+     * \since QGIS 2.3 */
     void setPreviewModeEnabled( bool previewEnabled );
 
     /** Returns whether a preview mode is enabled for the map canvas
-     * @returns true if a preview mode is currently enabled
-     * @see setPreviewModeEnabled
-     * @see previewMode
-     * @note added in 2.3 */
+     * \returns true if a preview mode is currently enabled
+     * \see setPreviewModeEnabled
+     * \see previewMode
+     * \since QGIS 2.3 */
     bool previewModeEnabled() const;
 
     /** Sets a preview mode for the map canvas. This setting only has an effect if
      * previewModeEnabled is true.
-     * @param mode preview mode for the canvas
-     * @see previewMode
-     * @see setPreviewModeEnabled
-     * @see previewModeEnabled
-     * @note added in 2.3 */
+     * \param mode preview mode for the canvas
+     * \see previewMode
+     * \see setPreviewModeEnabled
+     * \see previewModeEnabled
+     * \since QGIS 2.3 */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
     /** Returns the current preview mode for the map canvas. This setting only has an effect if
      * previewModeEnabled is true.
-     * @returns preview mode for map canvas
-     * @see setPreviewMode
-     * @see previewModeEnabled
-     * @note added in 2.3 */
+     * \returns preview mode for map canvas
+     * \see setPreviewMode
+     * \see previewModeEnabled
+     * \since QGIS 2.3 */
     QgsPreviewEffect::PreviewMode previewMode() const;
 
     /** Return snapping utility class that is associated with map canvas.
@@ -422,7 +429,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *  (so map tools do not need to test for existence of the instance).
      *
      * Main canvas in QGIS returns an instance which is always up-to-date with the project's snapping configuration.
-     *  @note added in 2.8
+     *  \since QGIS 2.8
      */
     QgsSnappingUtils *snappingUtils() const;
 
@@ -431,7 +438,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * For main canvas in QGIS, do not associate a different instance from the existing one (it is updated from
      * the project's snapping configuration).
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     void setSnappingUtils( QgsSnappingUtils *utils );
 
@@ -439,54 +446,66 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * context used for rendering the map, and can be used to apply specific variable overrides for
      * expression evaluation for the map canvas render. This method will overwrite the existing expression
      * context scope for the canvas.
-     * @param scope new expression context scope
-     * @note added in QGIS 2.12
-     * @see expressionContextScope()
+     * \param scope new expression context scope
+     * \since QGIS 2.12
+     * \see expressionContextScope()
      */
     void setExpressionContextScope( const QgsExpressionContextScope &scope ) { mExpressionContextScope = scope; }
 
     /** Returns a reference to the expression context scope for the map canvas. This scope is injected
      * into the expression context used for rendering the map, and can be used to apply specific variable
      * overrides for expression evaluation for the map canvas render.
-     * @note added in QGIS 2.12
-     * @see setExpressionContextScope()
+     * \since QGIS 2.12
+     * \see setExpressionContextScope()
      */
     QgsExpressionContextScope &expressionContextScope() { return mExpressionContextScope; }
 
     /** Returns a const reference to the expression context scope for the map canvas.
-     * @note added in QGIS 2.12
-     * @see setExpressionContextScope()
-     * @note not available in python bindings
+     * \since QGIS 2.12
+     * \see setExpressionContextScope()
+     * \note not available in Python bindings
      */
-    const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; }
+    const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; } SIP_SKIP
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
-    @param tolerance the segmentation tolerance*/
+    \param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance );
 
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    @param type the segmentation tolerance typename*/
+    \param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 
     /**
      * Returns a list of all annotation items in the canvas.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
 
     /**
      * Returns true if annotations are visible within the map canvas.
-     * @note added in QGIS 3.0
-     * @see setAnnotationsVisible()
+     * \since QGIS 3.0
+     * \see setAnnotationsVisible()
      */
     bool annotationsVisible() const { return mAnnotationsVisible; }
 
     /**
      * Sets whether annotations are \a visible in the canvas.
-     * @note added in QGIS 3.0
-     * @see annotationsVisible()
+     * \since QGIS 3.0
+     * \see annotationsVisible()
      */
     void setAnnotationsVisible( bool visible );
+
+    /**
+     * Sets global labeling engine settings in the internal map settings
+     * \since QGIS 3.0
+     */
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
+
+    /**
+     * Returns global labeling engine settings from the internal map settings
+     * \since QGIS 3.0
+     */
+    const QgsLabelingEngineSettings &labelingEngineSettings() const;
 
   public slots:
 
@@ -507,15 +526,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Sets whether a user has disabled canvas renders via the GUI.
-     * @param flag set to false to indicate that user has disabled renders
-     * @see renderFlag()
-     * @see freeze(). freeze() should be used to programmatically halt map updates,
+     * \param flag set to false to indicate that user has disabled renders
+     * \see renderFlag()
+     * \see freeze(). freeze() should be used to programmatically halt map updates,
      * while setRenderFlag() should only be used when users disable rendering via GUI.
      */
     void setRenderFlag( bool flag );
 
     //! stop rendering (if there is any right now)
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void stopRendering();
 
     //! called to read map canvas settings from project
@@ -530,12 +549,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Sets the factor of magnification to apply to the map canvas. Indeed, we
     //! increase/decrease the DPI of the map settings according to this factor
     //! in order to render marker point, labels, ... bigger.
-    //! @note added in 2.16
+    //! \since QGIS 2.16
     void setMagnificationFactor( double factor );
 
     //! Lock the scale, so zooming can be performed using magnication
-    //! @note added in 2.16
-    //! @see scaleLocked()
+    //! \since QGIS 2.16
+    //! \see scaleLocked()
     void setScaleLocked( bool isLocked );
 
     //! Zoom in with fixed factor
@@ -570,11 +589,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void extentsChanged();
 
     //! Emitted when the rotation of the map changes
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     void rotationChanged( double );
 
     //! Emitted when the scale of the map changes
-    //! @note added in 2.16
+    //! \since QGIS 2.16
     void magnificationChanged( double );
 
     /** Emitted when the canvas has rendered.
@@ -607,7 +626,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void keyReleased( QKeyEvent *e );
 
     /** Emit map tool changed with the old tool
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     void mapToolSet( QgsMapTool *newTool, QgsMapTool *oldTool );
 
@@ -622,21 +641,21 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void zoomNextStatusChanged( bool );
 
     //! Emitted when map CRS has changed
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void destinationCrsChanged();
 
     //! Emitted when the current layer is changed
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     void currentLayerChanged( QgsMapLayer *layer );
 
     //! Emitted when the configuration of overridden layer styles changes
-    //! @note added in 2.12
+    //! \since QGIS 2.12
     void layerStyleOverridesChanged();
 
     /**
      * Emitted when the canvas has been assigned a different map theme.
-     * @see setTheme()
-     * @note added in QGIS 3.0
+     * \see setTheme()
+     * \since QGIS 3.0
      */
     void themeChanged( const QString &theme );
 
@@ -714,7 +733,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /// this class is non-copyable
 
     /**
-       @note
+       \note
 
        Otherwise QScopedPointer would pass the object responsibility on to the
        copy like a hot potato leaving the copyer in a weird state.
@@ -807,27 +826,27 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mAnnotationsVisible = true;
 
     //! Force a resize of the map canvas item
-    //! @note added in 2.16
+    //! \since QGIS 2.16
     void updateMapSize();
 
     /** Starts zooming via rectangle
-     * @param pos start position for rectangle
-     * @note added in QGIS 2.16
+     * \param pos start position for rectangle
+     * \since QGIS 2.16
      */
     void beginZoomRect( QPoint pos );
 
     /** Ends zooming via rectangle
-     * @param pos end position for rectangle
-     * @note added in QGIS 2.16
+     * \param pos end position for rectangle
+     * \since QGIS 2.16
      */
     void endZoomRect( QPoint pos );
 
     /** Returns bounding box of feature list (in canvas coordinates)
-        @param ids feature id list
-        @param layer the layer
-        @param bbox out: bounding box
-        @param errorMsg error message in case of error
-        @return true in case of success*/
+        \param ids feature id list
+        \param layer the layer
+        \param bbox out: bounding box
+        \param errorMsg error message in case of error
+        \returns true in case of success*/
     bool boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorLayer *layer, QgsRectangle &bbox, QString &errorMsg ) const;
 
     void setLayersPrivate( const QList<QgsMapLayer *> &layers );

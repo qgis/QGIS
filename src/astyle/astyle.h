@@ -1,7 +1,7 @@
 // astyle.h
-// Copyright (c) 2016 by Jim Pattee <jimp03@email.com>.
+// Copyright (c) 2017 by Jim Pattee <jimp03@email.com>.
 // This code is licensed under the MIT License.
-// License.txt describes the conditions under which this software may be distributed.
+// License.md describes the conditions under which this software may be distributed.
 
 #ifndef ASTYLE_H
 #define ASTYLE_H
@@ -19,6 +19,7 @@
 
 #include <cctype>
 #include <iostream>		// for cout
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -84,17 +85,17 @@ enum FormatStyle
 	STYLE_LISP
 };
 
-enum BracketMode
+enum BraceMode
 {
 	NONE_MODE,
 	ATTACH_MODE,
 	BREAK_MODE,
 	LINUX_MODE,
-	RUN_IN_MODE		// broken brackets
+	RUN_IN_MODE		// broken braces
 };
 
 // maximun value for int is 16,384 (total value of 32,767)
-enum BracketType
+enum BraceType
 {
 	NULL_TYPE        = 0,
 	NAMESPACE_TYPE   = 1,		// also a DEFINITION_TYPE
@@ -190,14 +191,40 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+// Class ASPeekStream
+// A small class using RAII to peek ahead in the ASSourceIterator stream
+// and to reset the ASSourceIterator pointer in the destructor.
+// It enables a return from anywhere in the method.
+//-----------------------------------------------------------------------------
+
+class ASPeekStream
+{
+private:
+	ASSourceIterator* sourceIterator;
+	bool needReset;		// reset sourceIterator to the original position
+
+public:
+	explicit ASPeekStream(ASSourceIterator* sourceIterator_)
+	{ sourceIterator = sourceIterator_; needReset = false; }
+
+	~ASPeekStream()
+	{ if (needReset) sourceIterator->peekReset(); }
+
+	bool hasMoreLines() const
+	{ return sourceIterator->hasMoreLines(); }
+
+	string peekNextLine()
+	{ needReset = true; return sourceIterator->peekNextLine(); }
+};
+
+
+//-----------------------------------------------------------------------------
 // Class ASResource
 //-----------------------------------------------------------------------------
 
 class ASResource
 {
 public:
-	ASResource() {}
-	virtual ~ASResource() {}
 	void buildAssignmentOperators(vector<const string*>* assignmentOperators);
 	void buildCastOperators(vector<const string*>* castOperators);
 	void buildHeaders(vector<const string*>* headers, int fileType, bool beautifier = false);
@@ -227,10 +254,10 @@ public:
 	static const string AS_NOEXCEPT, AS_INTERRUPT, AS_AUTORELEASEPOOL;
 	static const string AS_WHERE, AS_LET, AS_SYNCHRONIZED;
 	static const string AS_OPERATOR, AS_TEMPLATE;
-	static const string AS_OPEN_BRACKET, AS_CLOSE_BRACKET;
+	static const string AS_OPEN_BRACE, AS_CLOSE_BRACE;
 	static const string AS_OPEN_LINE_COMMENT, AS_OPEN_COMMENT, AS_CLOSE_COMMENT;
 	static const string AS_BAR_DEFINE, AS_BAR_INCLUDE, AS_BAR_IF, AS_BAR_EL, AS_BAR_ENDIF;
-	static const string AS_RETURN;
+	static const string AS_AUTO, AS_RETURN;
 	static const string AS_CIN, AS_COUT, AS_CERR;
 	static const string AS_ASSIGN, AS_PLUS_ASSIGN, AS_MINUS_ASSIGN, AS_MULT_ASSIGN;
 	static const string AS_DIV_ASSIGN, AS_MOD_ASSIGN, AS_XOR_ASSIGN, AS_OR_ASSIGN, AS_AND_ASSIGN;
@@ -258,7 +285,7 @@ public:
 // Functions definitions are at the end of ASResource.cpp.
 //-----------------------------------------------------------------------------
 
-class ASBase
+class ASBase : protected ASResource
 {
 private:
 	// all variables should be set by the "init" function
@@ -275,7 +302,11 @@ protected:  // inline functions
 	bool isWhiteSpace(char ch) const { return (ch == ' ' || ch == '\t'); }
 
 protected:  // functions definitions are at the end of ASResource.cpp
+	const string* findHeader(const string& line, int i,
+	                         const vector<const string*>* possibleHeaders) const;
 	bool findKeyword(const string& line, int i, const string& keyword) const;
+	const string* findOperator(const string& line, int i,
+	                           const vector<const string*>* possibleOperators) const;
 	string getCurrentWord(const string& line, size_t index) const;
 	bool isDigit(char ch) const;
 	bool isLegalNameChar(char ch) const;
@@ -290,7 +321,7 @@ protected:  // functions definitions are at the end of ASResource.cpp
 // Class ASBeautifier
 //-----------------------------------------------------------------------------
 
-class ASBeautifier : protected ASResource, protected ASBase
+class ASBeautifier : protected ASBase
 {
 public:
 	ASBeautifier();
@@ -304,8 +335,10 @@ public:
 	void setDefaultTabLength();
 	void setEmptyLineFill(bool state);
 	void setForceTabXIndentation(int length);
+	void setAfterParenIndent(bool state);
 	void setJavaStyle();
 	void setLabelIndent(bool state);
+	void setMaxContinuationIndentLength(int max);
 	void setMaxInStatementIndentLength(int max);
 	void setMinConditionalIndentOption(int min);
 	void setMinConditionalIndentLength();
@@ -326,7 +359,7 @@ public:
 	string getIndentString() const;
 	string getNextWord(const string& line, size_t currPos) const;
 	bool getAlignMethodColon() const;
-	bool getBracketIndent() const;
+	bool getBraceIndent() const;
 	bool getBlockIndent() const;
 	bool getCaseIndent() const;
 	bool getClassIndent() const;
@@ -340,23 +373,19 @@ public:
 
 protected:
 	void deleteBeautifierVectors();
-	const string* findHeader(const string& line, int i,
-	                         const vector<const string*>* possibleHeaders) const;
-	const string* findOperator(const string& line, int i,
-	                           const vector<const string*>* possibleOperators) const;
 	int  getNextProgramCharDistance(const string& line, int i) const;
-	int  indexOf(vector<const string*>& container, const string* element) const;
+	int  indexOf(const vector<const string*>& container, const string* element) const;
 	void setBlockIndent(bool state);
-	void setBracketIndent(bool state);
-	void setBracketIndentVtk(bool state);
+	void setBraceIndent(bool state);
+	void setBraceIndentVtk(bool state);
 	string extractPreprocessorStatement(const string& line) const;
 	string trim(const string& str) const;
 	string rtrim(const string& str) const;
 
 	// variables set by ASFormatter - must be updated in activeBeautifierStack
 	int  inLineNumber;
-	int  horstmannIndentInStatement;
-	int  nonInStatementBracket;
+	int  runInIndentContinuation;
+	int  nonInStatementBrace;
 	int  objCColonAlignSubsequent;		// for subsequent lines not counting indent
 	bool lineCommentNoBeautify;
 	bool isElseHeaderIndent;
@@ -371,18 +400,18 @@ protected:
 
 private:  // functions
 	ASBeautifier(const ASBeautifier& other);     // inline functions
-	ASBeautifier& operator=(ASBeautifier&);     // not to be implemented
+	ASBeautifier& operator=(ASBeautifier&);      // not to be implemented
 
 	void adjustObjCMethodDefinitionIndentation(const string& line_);
 	void adjustObjCMethodCallIndentation(const string& line_);
 	void adjustParsedLineIndentation(size_t iPrelim, bool isInExtraHeaderIndent);
 	void computePreliminaryIndentation();
 	void parseCurrentLine(const string& line);
-	void popLastInStatementIndent();
+	void popLastContinuationIndent();
 	void processPreprocessor(const string& preproc, const string& line);
-	void registerInStatementIndent(const string& line, int i, int spaceIndentCount_,
-	                               int tabIncrementIn, int minIndent, bool updateParenStack);
-	void registerInStatementIndentColon(const string& line, int i, int tabIncrementIn);
+	void registerContinuationIndent(const string& line, int i, int spaceIndentCount_,
+	                                int tabIncrementIn, int minIndent, bool updateParenStack);
+	void registerContinuationIndentColon(const string& line, int i, int tabIncrementIn);
 	void initVectors();
 	void initTempStacksContainer(vector<vector<const string*>*>*& container,
 	                             vector<vector<const string*>*>* value);
@@ -392,15 +421,15 @@ private:  // functions
 	int  adjustIndentCountForBreakElseIfComments() const;
 	int  computeObjCColonAlignment(const string& line, int colonAlignPosition) const;
 	int  convertTabToSpaces(int i, int tabIncrementIn) const;
-	int  getInStatementIndentAssign(const string& line, size_t currPos) const;
-	int  getInStatementIndentComma(const string& line, size_t currPos) const;
-	int  getObjCFollowingKeyword(const string& line, int BracketPos) const;
+	int  getContinuationIndentAssign(const string& line, size_t currPos) const;
+	int  getContinuationIndentComma(const string& line, size_t currPos) const;
+	int  getObjCFollowingKeyword(const string& line, int bracePos) const;
 	bool isIndentedPreprocessor(const string& line, size_t currPos) const;
 	bool isLineEndComment(const string& line, int startPos) const;
 	bool isPreprocessorConditionalCplusplus(const string& line) const;
 	bool isInPreprocessorUnterminatedComment(const string& line);
 	bool statementEndsWithComma(const string& line, int index) const;
-	string& getIndentedLineReturn(string& newLine, const string& originalLine) const;
+	const string& getIndentedLineReturn(const string& newLine, const string& originalLine) const;
 	string getIndentedSpaceEquivalent(const string& line_) const;
 	string preLineWS(int lineIndentCount, int lineSpaceIndentCount) const;
 	template<typename T> void deleteContainer(T& container);
@@ -424,12 +453,12 @@ private:  // variables
 	vector<int>* activeBeautifierStackLengthStack;
 	vector<const string*>* headerStack;
 	vector<vector<const string*>* >* tempStacks;
-	vector<int>* blockParenDepthStack;
+	vector<int>* squareBracketDepthStack;
 	vector<bool>* blockStatementStack;
 	vector<bool>* parenStatementStack;
-	vector<bool>* bracketBlockStateStack;
-	vector<int>* inStatementIndentStack;
-	vector<int>* inStatementIndentStackSizeStack;
+	vector<bool>* braceBlockStateStack;
+	vector<int>* continuationIndentStack;
+	vector<int>* continuationIndentStackSizeStack;
 	vector<int>* parenIndentStack;
 	vector<pair<int, int> >* preprocIndentStack;
 
@@ -448,20 +477,20 @@ private:  // variables
 	bool isInAsmBlock;
 	bool isInComment;
 	bool isInPreprocessorComment;
-	bool isInHorstmannComment;
+	bool isInRunInComment;
 	bool isInCase;
 	bool isInQuestion;
-	bool isInStatement;
+	bool isContinuation;
 	bool isInHeader;
 	bool isInTemplate;
 	bool isInDefine;
 	bool isInDefineDefinition;
 	bool classIndent;
 	bool isIndentModeOff;
-	bool isInClassHeader;			// is in a class before the opening bracket
+	bool isInClassHeader;			// is in a class before the opening brace
 	bool isInClassHeaderTab;		// is in an indentable class header line
 	bool isInClassInitializer;		// is in a class after the ':' initializer
-	bool isInClass;					// is in a class after the opening bracket
+	bool isInClass;					// is in a class after the opening brace
 	bool isInObjCMethodDefinition;
 	bool isInObjCMethodCall;
 	bool isInObjCMethodCallFirst;
@@ -476,9 +505,10 @@ private:  // variables
 	bool switchIndent;
 	bool caseIndent;
 	bool namespaceIndent;
-	bool bracketIndent;
-	bool bracketIndentVtk;
 	bool blockIndent;
+	bool braceIndent;
+	bool braceIndentVtk;
+	bool shouldIndentAfterParen;
 	bool labelIndent;
 	bool shouldIndentPreprocDefine;
 	bool isInConditional;
@@ -492,12 +522,12 @@ private:  // variables
 	bool blockCommentNoIndent;
 	bool blockCommentNoBeautify;
 	bool previousLineProbationTab;
-	bool lineBeginsWithOpenBracket;
-	bool lineBeginsWithCloseBracket;
+	bool lineBeginsWithOpenBrace;
+	bool lineBeginsWithCloseBrace;
 	bool lineBeginsWithComma;
 	bool lineIsCommentOnly;
 	bool lineIsLineCommentOnly;
-	bool shouldIndentBrackettedLine;
+	bool shouldIndentBracedLine;
 	bool isInSwitch;
 	bool foundPreCommandHeader;
 	bool foundPreCommandMacro;
@@ -506,7 +536,7 @@ private:  // variables
 	int  indentCount;
 	int  spaceIndentCount;
 	int  spaceIndentObjCMethodAlignment;
-	int  bracketPosObjCMethodAlignment;
+	int  bracePosObjCMethodAlignment;
 	int  colonIndentObjCMethodAlignment;
 	int  lineOpeningBlocksNum;
 	int  lineClosingBlocksNum;
@@ -518,10 +548,10 @@ private:  // variables
 	int  tabLength;
 	int  continuationIndent;
 	int  blockTabCount;
-	int  maxInStatementIndent;
+	int  maxContinuationIndent;
 	int  classInitializerIndents;
 	int  templateDepth;
-	int  blockParenCount;
+	int  squareBracketCount;
 	int  prevFinalLineSpaceIndentCount;
 	int  prevFinalLineIndentCount;
 	int  defineIndentCount;
@@ -547,16 +577,16 @@ public:  // functions
 	void enhance(string& line, bool isInNamespace, bool isInPreprocessor, bool isInSQL);
 
 private:  // functions
-	void    convertForceTabIndentToSpaces(string&  line) const;
-	void    convertSpaceIndentToForceTab(string& line) const;
-	size_t  findCaseColon(string&  line, size_t caseIndex) const;
-	int     indentLine(string&  line, int indent) const;
-	bool    isBeginDeclareSectionSQL(string&  line, size_t index) const;
-	bool    isEndDeclareSectionSQL(string&  line, size_t index) const;
-	bool    isOneLineBlockReached(const string& line, int startChar) const;
-	void    parseCurrentLine(string& line, bool isInPreprocessor, bool isInSQL);
-	size_t  processSwitchBlock(string&  line, size_t index);
-	int     unindentLine(string&  line, int unindent) const;
+	void   convertForceTabIndentToSpaces(string&  line) const;
+	void   convertSpaceIndentToForceTab(string& line) const;
+	size_t findCaseColon(const string&  line, size_t caseIndex) const;
+	int    indentLine(string&  line, int indent) const;
+	bool   isBeginDeclareSectionSQL(const string&  line, size_t index) const;
+	bool   isEndDeclareSectionSQL(const string&  line, size_t index) const;
+	bool   isOneLineBlockReached(const string& line, int startChar) const;
+	void   parseCurrentLine(string& line, bool isInPreprocessor, bool isInSQL);
+	size_t processSwitchBlock(string&  line, size_t index);
+	int    unindentLine(string&  line, int unindent) const;
 
 private:
 	// options from command line or options file
@@ -577,10 +607,10 @@ private:
 	char quoteChar;
 
 	// unindent variables
-	int  bracketCount;
+	int  braceCount;
 	int  switchDepth;
 	int  eventPreprocDepth;
-	bool lookingForCaseBracket;
+	bool lookingForCaseBrace;
 	bool unindentNextLine;
 	bool shouldUnindentLine;
 	bool shouldUnindentComment;
@@ -589,7 +619,7 @@ private:
 	// contains variables used to unindent the case blocks
 	struct SwitchVariables
 	{
-		int  switchBracketCount;
+		int  switchBraceCount;
 		int  unindentDepth;
 		bool unindentCase;
 	};
@@ -623,16 +653,17 @@ public:	// functions
 	LineEndFormat getLineEndFormat() const;
 	bool getIsLineReady() const;
 	void setFormattingStyle(FormatStyle style);
-	void setAddBracketsMode(bool state);
-	void setAddOneLineBracketsMode(bool state);
-	void setRemoveBracketsMode(bool state);
+	void setAddBracesMode(bool state);
+	void setAddOneLineBracesMode(bool state);
+	void setRemoveBracesMode(bool state);
 	void setAttachClass(bool state);
+	void setAttachClosingWhile(bool state);
 	void setAttachExternC(bool state);
 	void setAttachNamespace(bool state);
 	void setAttachInline(bool state);
-	void setBracketFormatMode(BracketMode mode);
+	void setBraceFormatMode(BraceMode mode);
 	void setBreakAfterMode(bool state);
-	void setBreakClosingHeaderBracketsMode(bool state);
+	void setBreakClosingHeaderBracesMode(bool state);
 	void setBreakBlocksMode(bool state);
 	void setBreakClosingHeaderBlocksMode(bool state);
 	void setBreakElseIfsMode(bool state);
@@ -667,6 +698,14 @@ public:	// functions
 	size_t getChecksumOut() const;
 	int  getChecksumDiff() const;
 	int  getFormatterFileType() const;
+	// retained for compatability with release 2.06
+	// "Brackets" have been changed to "Braces" in 3.0
+	// they are referenced only by the old "bracket" options
+	void setAddBracketsMode(bool state);
+	void setAddOneLineBracketsMode(bool state);
+	void setRemoveBracketsMode(bool state);
+	void setBreakClosingHeaderBracketsMode(bool state);
+
 
 private:  // functions
 	ASFormatter(const ASFormatter& copy);       // not to be implemented
@@ -674,12 +713,12 @@ private:  // functions
 	template<typename T> void deleteContainer(T& container);
 	template<typename T> void initContainer(T& container, T value);
 	char peekNextChar() const;
-	BracketType getBracketType();
+	BraceType getBraceType();
 	bool adjustChecksumIn(int adjustment);
 	bool computeChecksumIn(const string& currentLine_);
 	bool computeChecksumOut(const string& beautifiedLine);
-	bool addBracketsToStatement();
-	bool removeBracketsFromStatement();
+	bool addBracesToStatement();
+	bool removeBracesFromStatement();
 	bool commentAndHeaderFollows();
 	bool getNextChar();
 	bool getNextLine(bool emptyLineWasDeleted = false);
@@ -688,32 +727,32 @@ private:  // functions
 	bool isBeforeAnyComment() const;
 	bool isBeforeAnyLineEndComment(int startPos) const;
 	bool isBeforeMultipleLineEndComments(int startPos) const;
-	bool isBracketType(BracketType a, BracketType b) const;
+	bool isBraceType(BraceType a, BraceType b) const;
 	bool isClassInitializer() const;
 	bool isClosingHeader(const string* header) const;
-	bool isCurrentBracketBroken() const;
+	bool isCurrentBraceBroken() const;
 	bool isDereferenceOrAddressOf() const;
-	bool isExecSQL(string& line, size_t index) const;
+	bool isExecSQL(const string& line, size_t index) const;
 	bool isEmptyLine(const string& line) const;
 	bool isExternC() const;
 	bool isMultiStatementLine() const;
 	bool isNextWordSharpNonParenHeader(int startChar) const;
-	bool isNonInStatementArrayBracket() const;
+	bool isNonInStatementArrayBrace() const;
 	bool isOkToSplitFormattedLine();
 	bool isPointerOrReference() const;
 	bool isPointerOrReferenceCentered() const;
-	bool isPointerOrReferenceVariable(string& word) const;
+	bool isPointerOrReferenceVariable(const string& word) const;
 	bool isSharpStyleWithParen(const string* header) const;
-	bool isStructAccessModified(string& firstLine, size_t index) const;
-	bool isIndentablePreprocessorBlock(string& firstLine, size_t index);
-	bool isNDefPreprocStatement(string& nextLine_, string& preproc) const;
+	bool isStructAccessModified(const string& firstLine, size_t index) const;
+	bool isIndentablePreprocessorBlock(const string& firstLine, size_t index);
+	bool isNDefPreprocStatement(const string& nextLine_, const string& preproc) const;
 	bool isUnaryOperator() const;
-	bool isUniformInitializerBracket() const;
+	bool isUniformInitializerBrace() const;
 	bool isImmediatelyPostCast() const;
 	bool isInExponent() const;
 	bool isInSwitchStatement() const;
-	bool isNextCharOpeningBracket(int startChar) const;
-	bool isOkToBreakBlock(BracketType bracketType) const;
+	bool isNextCharOpeningBrace(int startChar) const;
+	bool isOkToBreakBlock(BraceType braceType) const;
 	bool isOperatorPaddingDisabled() const;
 	bool pointerSymbolFollows() const;
 	int  findObjCColonAlignment() const;
@@ -723,6 +762,7 @@ private:  // functions
 	void adjustComments();
 	void appendChar(char ch, bool canBreakLine);
 	void appendCharInsideComments();
+	void appendClosingHeader();
 	void appendOperator(const string& sequence, bool canBreakLine = true);
 	void appendSequence(const string& sequence, bool canBreakLine = true);
 	void appendSpacePad();
@@ -734,17 +774,17 @@ private:  // functions
 	void checkIfTemplateOpener();
 	void clearFormattedLineSplitPoints();
 	void convertTabToSpaces();
-	void deleteContainer(vector<BracketType>*& container);
+	void deleteContainer(vector<BraceType>*& container);
 	void formatArrayRunIn();
 	void formatRunIn();
-	void formatArrayBrackets(BracketType bracketType, bool isOpeningArrayBracket);
-	void formatClosingBracket(BracketType bracketType);
+	void formatArrayBraces(BraceType braceType, bool isOpeningArrayBrace);
+	void formatClosingBrace(BraceType braceType);
 	void formatCommentBody();
 	void formatCommentOpener();
 	void formatCommentCloser();
 	void formatLineCommentBody();
 	void formatLineCommentOpener();
-	void formatOpeningBracket(BracketType bracketType);
+	void formatOpeningBrace(BraceType braceType);
 	void formatQuoteBody();
 	void formatQuoteOpener();
 	void formatPointerOrReference();
@@ -755,7 +795,7 @@ private:  // functions
 	void fixOptionVariableConflicts();
 	void goForward(int i);
 	void isLineBreakBeforeClosingHeader();
-	void initContainer(vector<BracketType>*& container, vector<BracketType>* value);
+	void initContainer(vector<BraceType>*& container, vector<BraceType>* value);
 	void initNewLine();
 	void padObjCMethodColon();
 	void padObjCMethodPrefix();
@@ -765,17 +805,19 @@ private:  // functions
 	void padParens();
 	void processPreprocessor();
 	void resetEndOfStatement();
-	void setAttachClosingBracketMode(bool state);
+	void setAttachClosingBraceMode(bool state);
 	void stripCommentPrefix();
 	void testForTimeToSplitFormattedLine();
 	void trimContinuationLine();
 	void updateFormattedLineSplitPointsPointerOrReference(size_t index);
 	size_t findFormattedLineSplitPoint() const;
-	size_t findNextChar(string& line, char searchChar, int searchStart = 0) const;
+	size_t findNextChar(const string& line, char searchChar, int searchStart = 0) const;
 	const string* checkForHeaderFollowingComment(const string& firstLine) const;
 	const string* getFollowingOperator() const;
 	string getPreviousWord(const string& line, int currPos) const;
-	string peekNextText(const string& firstLine, bool endOnEmptyLine = false, bool shouldReset = false) const;
+	string peekNextText(const string& firstLine,
+	                    bool endOnEmptyLine = false,
+	                    shared_ptr<ASPeekStream> streamArg = nullptr) const;
 
 private:  // variables
 	int formatterFileType;
@@ -791,8 +833,8 @@ private:  // variables
 	ASSourceIterator* sourceIterator;
 	ASEnhancer* enhancer;
 
-	vector<const string*>* preBracketHeaderStack;
-	vector<BracketType>* bracketTypeStack;
+	vector<const string*>* preBraceHeaderStack;
+	vector<BraceType>* braceTypeStack;
 	vector<int>* parenStack;
 	vector<bool>* structStack;
 	vector<bool>* questionMarkStack;
@@ -802,7 +844,6 @@ private:  // variables
 	string readyFormattedLine;
 	string verbatimDelimiter;
 	const string* currentHeader;
-	const string* previousOperator;    // used ONLY by pad-oper
 	char currentChar;
 	char previousChar;
 	char previousNonWSChar;
@@ -810,17 +851,17 @@ private:  // variables
 	char quoteChar;
 	streamoff preprocBlockEnd;
 	int  charNum;
-	int  horstmannIndentChars;
+	int  runInIndentChars;
 	int  nextLineSpacePadNum;
 	int  objCColonAlign;
-	int  preprocBracketTypeStackSize;
+	int  preprocBraceTypeStackSize;
 	int  spacePadNum;
 	int  tabIncrementIn;
 	int  templateDepth;
-	int  blockParenCount;
+	int  squareBracketCount;
 	size_t checksumIn;
 	size_t checksumOut;
-	size_t currentLineFirstBracketNum;	// first bracket location on currentLine
+	size_t currentLineFirstBraceNum;	// first brace location on currentLine
 	size_t formattedLineCommentNum;     // comment location on formattedLine
 	size_t leadingSpaces;
 	size_t maxCodeLength;
@@ -839,8 +880,8 @@ private:  // variables
 
 	size_t previousReadyFormattedLineLength;
 	FormatStyle formattingStyle;
-	BracketMode bracketFormatMode;
-	BracketType previousBracketType;
+	BraceMode braceFormatMode;
+	BraceType previousBraceType;
 	PointerAlign pointerAlignment;
 	ReferenceAlign referenceAlignment;
 	ObjCColonPad objCColonPadMode;
@@ -862,6 +903,7 @@ private:  // variables
 	bool shouldAttachExternC;
 	bool shouldAttachNamespace;
 	bool shouldAttachClass;
+	bool shouldAttachClosingWhile;
 	bool shouldAttachInline;
 	bool isInLineComment;
 	bool isInComment;
@@ -893,6 +935,7 @@ private:  // variables
 	bool foundInterfaceHeader;
 	bool foundPreCommandHeader;
 	bool foundPreCommandMacro;
+	bool foundTrailingReturnType;
 	bool foundCastOperator;
 	bool isInLineBreak;
 	bool endOfAsmReached;
@@ -907,7 +950,7 @@ private:  // variables
 	bool isLineReady;
 	bool elseHeaderFollowsComments;
 	bool caseHeaderFollowsComments;
-	bool isPreviousBracketBlockRelated;
+	bool isPreviousBraceBlockRelated;
 	bool isInPotentialCalculation;
 	bool isCharImmediatelyPostComment;
 	bool isPreviousCharPostComment;
@@ -925,19 +968,19 @@ private:  // variables
 	bool isInObjCReturnType;
 	bool isInObjCSelector;
 	bool breakCurrentOneLineBlock;
-	bool shouldRemoveNextClosingBracket;
-	bool isInBracketRunIn;
-	bool currentLineBeginsWithBracket;
-	bool attachClosingBracketMode;
+	bool shouldRemoveNextClosingBrace;
+	bool isInBraceRunIn;
+	bool currentLineBeginsWithBrace;
+	bool attachClosingBraceMode;
 	bool shouldBreakOneLineBlocks;
 	bool shouldBreakOneLineHeaders;
 	bool shouldBreakOneLineStatements;
-	bool shouldBreakClosingHeaderBrackets;
+	bool shouldBreakClosingHeaderBraces;
 	bool shouldBreakElseIfs;
 	bool shouldBreakLineAfterLogical;
-	bool shouldAddBrackets;
-	bool shouldAddOneLineBrackets;
-	bool shouldRemoveBrackets;
+	bool shouldAddBraces;
+	bool shouldAddOneLineBraces;
+	bool shouldRemoveBraces;
 	bool shouldPadMethodColon;
 	bool shouldPadMethodPrefix;
 	bool shouldReparseCurrentChar;
@@ -947,7 +990,7 @@ private:  // variables
 	bool shouldPadParamType;
 	bool shouldUnPadParamType;
 	bool shouldDeleteEmptyLines;
-	bool needHeaderOpeningBracket;
+	bool needHeaderOpeningBrace;
 	bool shouldBreakLineAtNextChar;
 	bool shouldKeepLineUnbroken;
 	bool passedSemicolon;
@@ -972,7 +1015,7 @@ private:  // variables
 	bool isIndentableProprocessor;
 	bool isIndentableProprocessorBlock;
 	bool prependEmptyLine;
-	bool appendOpeningBracket;
+	bool appendOpeningBrace;
 	bool foundClosingHeader;
 	bool isInHeader;
 	bool isImmediatelyPostHeader;
@@ -984,27 +1027,19 @@ private:  // variables
 private:  // inline functions
 	// append the CURRENT character (curentChar) to the current formatted line.
 	void appendCurrentChar(bool canBreakLine = true)
-	{
-		appendChar(currentChar, canBreakLine);
-	}
+	{ appendChar(currentChar, canBreakLine); }
 
 	// check if a specific sequence exists in the current placement of the current line
 	bool isSequenceReached(const char* sequence) const
-	{
-		return currentLine.compare(charNum, strlen(sequence), sequence) == 0;
-	}
+	{ return currentLine.compare(charNum, strlen(sequence), sequence) == 0; }
 
 	// call ASBase::findHeader for the current character
 	const string* findHeader(const vector<const string*>* headers_)
-	{
-		return ASBeautifier::findHeader(currentLine, charNum, headers_);
-	}
+	{ return ASBase::findHeader(currentLine, charNum, headers_); }
 
 	// call ASBase::findOperator for the current character
-	const string* findOperator(const vector<const string*>* headers_)
-	{
-		return ASBeautifier::findOperator(currentLine, charNum, headers_);
-	}
+	const string* findOperator(const vector<const string*>* operators_)
+	{ return ASBase::findOperator(currentLine, charNum, operators_); }
 };  // Class ASFormatter
 
 //-----------------------------------------------------------------------------
@@ -1014,7 +1049,7 @@ private:  // inline functions
 bool sortOnLength(const string* a, const string* b);
 bool sortOnName(const string* a, const string* b);
 
-}   // end of astyle namespace
+}   // namespace astyle
 
 // end of astyle namespace  --------------------------------------------------
 

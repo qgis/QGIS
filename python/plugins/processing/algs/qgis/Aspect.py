@@ -46,13 +46,19 @@ class Aspect(GeoAlgorithm):
     Z_FACTOR = 'Z_FACTOR'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Aspect')
-        self.group, self.i18n_group = self.trAlgorithm('Raster terrain analysis')
+    def group(self):
+        return self.tr('Raster terrain analysis')
 
+    def name(self):
+        return 'aspect'
+
+    def displayName(self):
+        return self.tr('Aspect')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Elevation layer')))
         self.addParameter(ParameterNumber(self.Z_FACTOR,
@@ -60,7 +66,7 @@ class Aspect(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Aspect')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         inputFile = self.getParameterValue(self.INPUT_LAYER)
         zFactor = self.getParameterValue(self.Z_FACTOR)
         outputFile = self.getOutputValue(self.OUTPUT_LAYER)

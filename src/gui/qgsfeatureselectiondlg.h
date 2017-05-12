@@ -19,6 +19,7 @@
 class QgsGenericFeatureSelectionManager;
 
 #include "ui_qgsfeatureselectiondlg.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
@@ -29,18 +30,18 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
     Q_OBJECT
 
   public:
-    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent = nullptr );
+    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Get the selected features
      *
-     * @return The selected feature ids
+     * \returns The selected feature ids
      */
     const QgsFeatureIds &selectedFeatures();
 
     /**
      * Set the selected features
-     * @param ids The feature ids to select
+     * \param ids The feature ids to select
      */
     void setSelectedFeatures( const QgsFeatureIds &ids );
 

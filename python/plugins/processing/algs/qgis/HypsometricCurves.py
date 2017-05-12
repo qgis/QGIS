@@ -26,13 +26,15 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-
 import os
 
 import numpy
 from osgeo import gdal, ogr, osr
 
-from qgis.core import QgsRectangle, QgsGeometry
+from qgis.core import (QgsRectangle,
+                       QgsGeometry,
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -52,10 +54,22 @@ class HypsometricCurves(GeoAlgorithm):
     USE_PERCENTAGE = 'USE_PERCENTAGE'
     OUTPUT_DIRECTORY = 'OUTPUT_DIRECTORY'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Hypsometric curves')
-        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Raster tools')
+
+    def name(self):
+        return 'hypsometriccurves'
+
+    def displayName(self):
+        return self.tr('Hypsometric curves')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_DEM,
                                           self.tr('DEM to analyze')))
         self.addParameter(ParameterVector(self.BOUNDARY_LAYER,
@@ -68,10 +82,9 @@ class HypsometricCurves(GeoAlgorithm):
         self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY,
                                        self.tr('Hypsometric curves')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT_DEM)
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.BOUNDARY_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.BOUNDARY_LAYER), context)
         step = self.getParameterValue(self.STEP)
         percentage = self.getParameterValue(self.USE_PERCENTAGE)
 
@@ -99,8 +112,8 @@ class HypsometricCurves(GeoAlgorithm):
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
             geom = f.geometry()

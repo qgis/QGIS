@@ -13,19 +13,21 @@ class QgsRubberBand: QgsMapCanvasItem
       ICON_X,
       ICON_BOX,
       ICON_CIRCLE,
-      ICON_FULL_BOX
+      ICON_FULL_BOX,
+      ICON_DIAMOND,
+      ICON_FULL_DIAMOND
     };
 
-    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    QgsRubberBand( QgsMapCanvas *mapCanvas /TransferThis/, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
     ~QgsRubberBand();
 
-    void setColor( const QColor & color );
+    void setColor( const QColor &color );
 
-    void setFillColor( const QColor & color );
+    void setFillColor( const QColor &color );
 
     QColor fillColor() const;
 
-    void setStrokeColor( const QColor & color );
+    void setStrokeColor( const QColor &color );
 
     QColor strokeColor() const;
 
@@ -51,7 +53,7 @@ class QgsRubberBand: QgsMapCanvasItem
 
     void reset( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
-    void addPoint( const QgsPoint & p, bool doUpdate = true, int geometryIndex = 0 );
+    void addPoint( const QgsPoint &p, bool doUpdate = true, int geometryIndex = 0 );
 
     void closePoints( bool doUpdate = true, int geometryIndex = 0 );
 
@@ -59,17 +61,17 @@ class QgsRubberBand: QgsMapCanvasItem
 
     void removeLastPoint( int geometryIndex = 0, bool doUpdate = true );
 
-    void movePoint( const QgsPoint & p, int geometryIndex = 0 );
+    void movePoint( const QgsPoint &p, int geometryIndex = 0 );
 
-    void movePoint( int index, const QgsPoint& p, int geometryIndex = 0 );
+    void movePoint( int index, const QgsPoint &p, int geometryIndex = 0 );
 
     int partSize( int geometryIndex ) const;
 
-    void setToGeometry( const QgsGeometry& geom, QgsVectorLayer* layer );
+    void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
 
     void setToCanvasRectangle( QRect rect );
 
-    void addGeometry( const QgsGeometry& geom, QgsVectorLayer* layer );
+    void addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
 
     void setTranslationOffset( double dx, double dy );
 
@@ -84,7 +86,7 @@ class QgsRubberBand: QgsMapCanvasItem
     virtual void updatePosition();
 
   protected:
-    virtual void paint( QPainter* p );
+    virtual void paint( QPainter *p );
 
     void drawShape( QPainter *p, QVector<QPointF> &pts );
 

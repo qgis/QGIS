@@ -29,7 +29,7 @@ typedef QgsTransaction *createTransaction_t( const QString &connString );
 
 QgsTransaction *QgsTransaction::create( const QString &connString, const QString &providerKey )
 {
-  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->providerLibrary( providerKey ) );
+  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->createProviderLibrary( providerKey ) );
   if ( !lib )
     return nullptr;
 
@@ -110,7 +110,7 @@ bool QgsTransaction::addLayer( QgsVectorLayer *layer )
   }
 
   connect( this, &QgsTransaction::afterRollback, layer->dataProvider(), &QgsVectorDataProvider::dataChanged );
-  connect( QgsProject::instance(),  static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsTransaction::onLayersDeleted );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsTransaction::onLayersDeleted );
   mLayers.insert( layer );
 
   if ( mTransactionActive )
@@ -164,7 +164,7 @@ bool QgsTransaction::rollback( QString &errorMsg )
 
 bool QgsTransaction::supportsTransaction( const QgsVectorLayer *layer )
 {
-  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->providerLibrary( layer->providerType() ) );
+  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->createProviderLibrary( layer->providerType() ) );
   if ( !lib )
     return false;
 

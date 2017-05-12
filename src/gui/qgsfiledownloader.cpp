@@ -16,6 +16,7 @@
 #include "qgsfiledownloader.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -25,15 +26,17 @@
 #include <QSslError>
 #endif
 
-QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool enableGuiNotifications )
+QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool enableGuiNotifications, QString authcfg )
   : mUrl( url )
   , mReply( nullptr )
   , mProgressDialog( nullptr )
   , mDownloadCanceled( false )
   , mErrors()
   , mGuiNotificationsEnabled( enableGuiNotifications )
+  , mAuthCfg( )
 {
   mFile.setFileName( outputFileName );
+  mAuthCfg = authcfg;
   startDownload();
 }
 
@@ -57,6 +60,11 @@ void QgsFileDownloader::startDownload()
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( mUrl );
+  if ( !mAuthCfg.isEmpty() )
+  {
+    QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+  }
+
   if ( mReply )
   {
     disconnect( mReply, &QNetworkReply::readyRead, this, &QgsFileDownloader::onReadyRead );
@@ -65,7 +73,12 @@ void QgsFileDownloader::startDownload()
     mReply->abort();
     mReply->deleteLater();
   }
+
   mReply = nam->get( request );
+  if ( !mAuthCfg.isEmpty() )
+  {
+    QgsAuthManager::instance()->updateNetworkReply( mReply, mAuthCfg );
+  }
 
   connect( mReply, &QNetworkReply::readyRead, this, &QgsFileDownloader::onReadyRead );
   connect( mReply, &QNetworkReply::finished, this, &QgsFileDownloader::onFinished );

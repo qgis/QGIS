@@ -511,7 +511,7 @@ void TestQgsGeometryUtils::testCircleCenterRadius()
 void TestQgsGeometryUtils::testSqrDistToLine()
 {
 
-  // See http://hub.qgis.org/issues/13952#note-26
+  // See https://issues.qgis.org/issues/13952#note-26
   QgsPoint qp( 771938, 6.95593e+06 );
   QgsPoint p1( 771946, 6.95593e+06 );
   QgsPoint p2( 771904, 6.95595e+06 );

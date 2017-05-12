@@ -32,6 +32,7 @@ INCLUDE_DIRECTORIES(
   ../../core/auth
   ../../core/geometry
   ../../core/raster
+  ../../core/metadata
   ../../gui
   ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
@@ -43,6 +44,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${QT_QTSCRIPT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
 ADD_LIBRARY(wmsprovider_a STATIC ${WMS_SRCS} ${WMS_MOC_SRCS})

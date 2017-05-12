@@ -38,7 +38,7 @@ class CORE_EXPORT QgsMimeDataUtils
       explicit Uri( QString &encData );
 
       //! Returns whether the object contains valid data
-      //! @note added in 3.0
+      //! \since QGIS 3.0
       bool isValid() const { return !layerType.isEmpty(); }
 
       //! Returns encoded representation of the object
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsMimeDataUtils
 
     /**
      * Returns encoded URI list from a list of layer tree nodes.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode *> &nodes );
 

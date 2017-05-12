@@ -166,11 +166,11 @@ bool QgsWcsCapabilities::sendRequest( QString const &url )
     return false;
   }
 
-  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
-  connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
+  connect( mCapabilitiesReply, &QNetworkReply::finished, this, &QgsWcsCapabilities::capabilitiesReplyFinished );
+  connect( mCapabilitiesReply, &QNetworkReply::downloadProgress, this, &QgsWcsCapabilities::capabilitiesReplyProgress );
 
   QEventLoop loop;
-  connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
+  connect( this, &QgsWcsCapabilities::downloadFinished, &loop, &QEventLoop::quit );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   if ( mCapabilitiesResponse.isEmpty() )
@@ -385,8 +385,8 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
         return;
       }
 
-      connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
-      connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
+      connect( mCapabilitiesReply, &QNetworkReply::finished, this, &QgsWcsCapabilities::capabilitiesReplyFinished );
+      connect( mCapabilitiesReply, &QNetworkReply::downloadProgress, this, &QgsWcsCapabilities::capabilitiesReplyProgress );
       return;
     }
 
@@ -419,8 +419,8 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
         QgsMessageLog::logMessage( mError, tr( "WCS" ) );
         return;
       }
-      connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
-      connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
+      connect( mCapabilitiesReply, &QNetworkReply::finished, this, &QgsWcsCapabilities::capabilitiesReplyFinished );
+      connect( mCapabilitiesReply, &QNetworkReply::downloadProgress, this, &QgsWcsCapabilities::capabilitiesReplyProgress );
       return;
     }
 

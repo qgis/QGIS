@@ -42,8 +42,8 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setSelectionMode( ExtendedSelection );
   setDefaultDropAction( Qt::MoveAction );
 
-  connect( this, SIGNAL( collapsed( QModelIndex ) ), this, SLOT( updateExpandedStateToNode( QModelIndex ) ) );
-  connect( this, SIGNAL( expanded( QModelIndex ) ), this, SLOT( updateExpandedStateToNode( QModelIndex ) ) );
+  connect( this, &QTreeView::collapsed, this, &QgsLayerTreeView::updateExpandedStateToNode );
+  connect( this, &QTreeView::expanded, this, &QgsLayerTreeView::updateExpandedStateToNode );
 }
 
 QgsLayerTreeView::~QgsLayerTreeView()
@@ -56,16 +56,16 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   if ( !qobject_cast<QgsLayerTreeModel *>( model ) )
     return;
 
-  connect( model, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( modelRowsInserted( QModelIndex, int, int ) ) );
-  connect( model, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( modelRowsRemoved() ) );
+  connect( model, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
+  connect( model, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
 
   QTreeView::setModel( model );
 
-  connect( layerTreeModel()->rootGroup(), SIGNAL( expandedChanged( QgsLayerTreeNode *, bool ) ), this, SLOT( onExpandedChanged( QgsLayerTreeNode *, bool ) ) );
+  connect( layerTreeModel()->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );
 
-  connect( selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( onCurrentChanged() ) );
+  connect( selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsLayerTreeView::onCurrentChanged );
 
-  connect( layerTreeModel(), SIGNAL( modelReset() ), this, SLOT( onModelReset() ) );
+  connect( layerTreeModel(), &QAbstractItemModel::modelReset, this, &QgsLayerTreeView::onModelReset );
 
   updateExpandedStateFromNode( layerTreeModel()->rootGroup() );
 }
@@ -253,20 +253,23 @@ void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode *node )
 
 QgsMapLayer *QgsLayerTreeView::layerForIndex( const QModelIndex &index ) const
 {
-  QgsLayerTreeNode *node = layerTreeModel()->index2node( index );
-  if ( node )
+  // Check if model has been set and index is valid
+  if ( layerTreeModel() && index.isValid( ) )
   {
-    if ( QgsLayerTree::isLayer( node ) )
-      return QgsLayerTree::toLayer( node )->layer();
+    QgsLayerTreeNode *node = layerTreeModel()->index2node( index );
+    if ( node )
+    {
+      if ( QgsLayerTree::isLayer( node ) )
+        return QgsLayerTree::toLayer( node )->layer();
+    }
+    else
+    {
+      // possibly a legend node
+      QgsLayerTreeModelLegendNode *legendNode = layerTreeModel()->index2legendNode( index );
+      if ( legendNode )
+        return legendNode->layerNode()->layer();
+    }
   }
-  else
-  {
-    // possibly a legend node
-    QgsLayerTreeModelLegendNode *legendNode = layerTreeModel()->index2legendNode( index );
-    if ( legendNode )
-      return legendNode->layerNode()->layer();
-  }
-
   return nullptr;
 }
 

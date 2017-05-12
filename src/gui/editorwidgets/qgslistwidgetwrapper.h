@@ -21,10 +21,10 @@
 
 class QgsListWidget;
 
-/** @ingroup gui
+/** \ingroup gui
  * Wraps a list widget.
- * @note added in QGIS 3.0
- * @note not available in Python bindings
+ * \since QGIS 3.0
+ * \note not available in Python bindings
  */
 class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
 {

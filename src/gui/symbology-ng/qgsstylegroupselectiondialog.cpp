@@ -70,7 +70,7 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   {
     groupTree->setExpanded( model->indexFromItem( model->item( i ) ), true );
   }
-  connect( groupTree->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( groupTreeSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+  connect( groupTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsStyleGroupSelectionDialog::groupTreeSelectionChanged );
 }
 
 void QgsStyleGroupSelectionDialog::setBold( QStandardItem *item )

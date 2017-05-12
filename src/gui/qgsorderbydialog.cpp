@@ -113,7 +113,7 @@ void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause &
   QgsFieldExpressionWidget *fieldExpression = new QgsFieldExpressionWidget();
   fieldExpression->setLayer( mLayer );
   fieldExpression->setField( orderByClause.expression().expression() );
-  connect( fieldExpression, SIGNAL( fieldChanged( QString ) ), this, SLOT( onExpressionChanged( QString ) ) );
+  connect( fieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsOrderByDialog::onExpressionChanged );
 
   QComboBox *ascComboBox = new QComboBox();
   ascComboBox->addItem( tr( "Ascending" ) );

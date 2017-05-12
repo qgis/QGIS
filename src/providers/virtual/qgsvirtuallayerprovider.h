@@ -32,7 +32,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
 
     /**
      * Constructor of the vector provider
-     * @param uri  uniform resource locator (URI) for a dataset
+     * \param uri  uniform resource locator (URI) for a dataset
      */
     explicit QgsVirtualLayerProvider( QString const &uri = "" );
 
@@ -113,7 +113,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     bool createIt();
     bool loadSourceLayers();
 
-    friend class QgsVirtualLayerFeatureIterator;
+    friend class QgsVirtualLayerFeatureSource;
 
   private slots:
     void invalidateStatistics();

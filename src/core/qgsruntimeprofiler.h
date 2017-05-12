@@ -2,6 +2,7 @@
 #define QGSRUNTIMEPROFILER_H
 
 #include <QTime>
+#include "qgis_sip.h"
 #include <QPair>
 #include <QStack>
 
@@ -20,44 +21,44 @@ class CORE_EXPORT QgsRuntimeProfiler
     QgsRuntimeProfiler();
 
     /**
-     * @brief Begin the group for the profiler. Groups will append {GroupName}/ to the
+     * \brief Begin the group for the profiler. Groups will append {GroupName}/ to the
      * front of the profile tag set using start.
-     * @param name The name of the group.
+     * \param name The name of the group.
      */
     void beginGroup( const QString &name );
 
     /**
-     * @brief End the current active group.
+     * \brief End the current active group.
      */
     void endGroup();
 
     /**
-     * @brief Start a profile event with the given name.
-     * @param name The name of the profile event. Will have the name of
+     * \brief Start a profile event with the given name.
+     * \param name The name of the profile event. Will have the name of
      * the active group appended after ending.
      */
     void start( const QString &name );
 
     /**
-     * @brief End the current profile event.
+     * \brief End the current profile event.
      */
     void end();
 
     /**
-     * @brief Return all the current profile times.
-     * @return A list of profile event names and times.
-     * @note not available in python bindings
+     * \brief Return all the current profile times.
+     * \returns A list of profile event names and times.
+     * \note not available in Python bindings
      */
-    const QList<QPair<QString, double > > profileTimes() const { return mProfileTimes; }
+    const QList<QPair<QString, double > > profileTimes() const { return mProfileTimes; } SIP_SKIP
 
     /**
-     * @brief clear Clear all profile data.
+     * \brief clear Clear all profile data.
      */
     void clear();
 
     /**
-     * @brief The current total time collected in the profiler.
-     * @return The current total time collected in the profiler.
+     * \brief The current total time collected in the profiler.
+     * \returns The current total time collected in the profiler.
      */
     double totalTime();
 

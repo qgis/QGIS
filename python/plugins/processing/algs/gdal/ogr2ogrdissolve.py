@@ -53,10 +53,16 @@ class Ogr2OgrDissolve(GdalAlgorithm):
     FIELDS = 'FIELDS'
     OPTIONS = 'OPTIONS'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Dissolve polygons')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geoprocessing')
+    def name(self):
+        return 'dissolvepolygons'
 
+    def displayName(self):
+        return self.tr('Dissolve polygons')
+
+    def group(self):
+        return self.tr('Vector geoprocessing')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterString(self.GEOMETRY,

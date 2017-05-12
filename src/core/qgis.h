@@ -19,6 +19,7 @@
 #define QGIS_H
 
 #include <QEvent>
+#include "qgis_sip.h"
 #include <QString>
 #include <QRegExp>
 #include <QMetaType>
@@ -34,6 +35,8 @@
 
 #include "qgswkbtypes.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
 
 /** \ingroup core
  * The Qgis class provides global constants for use throughout the application.
@@ -76,20 +79,8 @@ class CORE_EXPORT Qgis
       ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
     };
 
-    //! User defined event types
-    enum UserEvent
-    {
-      // These first two are useful for threads to alert their parent data providers
-
-      //! The extents have been calculated by a provider of a layer
-      ProviderExtentCalcEvent = ( QEvent::User + 1 ),
-
-      //! The row count has been calculated by a provider of a layer
-      ProviderCountCalcEvent
-    };
-
     /** Identify search radius in mm
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
@@ -97,26 +88,26 @@ class CORE_EXPORT Qgis
 
     /** Default highlight color.  The transparency is expected to only be applied to polygon
      *  fill. Lines and outlines are rendered opaque.
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
 
     /** Default highlight buffer in mm.
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
     /** Default highlight line/stroke minimum width in mm.
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
     /** Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
-     * @note added in 2.15*/
+     * \since QGIS 2.15*/
     static const double SCALE_PRECISION;
 
     /** Default Z coordinate value for 2.5d geometry
      *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
-     *  @note added in 3.0 */
+     *  \since QGIS 3.0 */
     static const double DEFAULT_Z_COORDINATE;
 
 };
@@ -127,20 +118,21 @@ class CORE_EXPORT Qgis
 // QLibrary
 #define cast_to_fptr(f) f
 
+
 /** \ingroup core
  * RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
- * @see whileBlocking()
- * @note added in QGIS 2.16
- * @note not available in Python bindings
+ * \see whileBlocking()
+ * \since QGIS 2.16
+ * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
+template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude=rule-of-three
 {
   public:
 
     /** Constructor for QgsSignalBlocker
-     * @param object QObject to block signals from
+     * \param object QObject to block signals from
      */
     explicit QgsSignalBlocker( Object *object )
       : mObject( object )
@@ -170,19 +162,22 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
  *
  * No signals will be emitted when calling these methods.
  *
- * @note added in QGIS 2.16
- * @see QgsSignalBlocker
- * @note not available in Python bindings
+ * \since QGIS 2.16
+ * \see QgsSignalBlocker
+ * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object )
+template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP
 {
   return QgsSignalBlocker<Object>( object );
 }
 
+//! Hash for QVariant
+uint qHash( const QVariant &variant );
+
 //! Returns a string representation of a double
-//! @param a double value
-//! @param precision number of decimal places to retain
+//! \param a double value
+//! \param precision number of decimal places to retain
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
   if ( precision )
@@ -192,9 +187,9 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
 }
 
 //! Compare two doubles (but allow some difference)
-//! @param a first double
-//! @param b second double
-//! @param epsilon maximum difference allowable between doubles
+//! \param a first double
+//! \param b second double
+//! \param epsilon maximum difference allowable between doubles
 inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
 {
   const double diff = a - b;
@@ -202,9 +197,9 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON 
 }
 
 //! Compare two floats (but allow some difference)
-//! @param a first float
-//! @param b second float
-//! @param epsilon maximum difference allowable between floats
+//! \param a first float
+//! \param b second float
+//! \param epsilon maximum difference allowable between floats
 inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 {
   const float diff = a - b;
@@ -236,7 +231,7 @@ inline double qgsRound( double x )
 /**
  * Returns a double \a number, rounded (as close as possible) to the specified number of \a places.
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 inline double qgsRound( double number, double places )
 {
@@ -246,59 +241,59 @@ inline double qgsRound( double number, double places )
 
 /** Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
- * @param string string to convert
- * @param ok will be set to true if conversion was successful
- * @returns string converted to double if possible
- * @note added in version 2.9
- * @see permissiveToInt
+ * \param string string to convert
+ * \param ok will be set to true if conversion was successful
+ * \returns string converted to double if possible
+ * \since QGIS 2.9
+ * \see permissiveToInt
  */
 CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
 
 /** Converts a string to an integer in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
- * @param string string to convert
- * @param ok will be set to true if conversion was successful
- * @returns string converted to int if possible
- * @note added in version 2.9
- * @see permissiveToDouble
+ * \param string string to convert
+ * \param ok will be set to true if conversion was successful
+ * \returns string converted to int if possible
+ * \since QGIS 2.9
+ * \see permissiveToDouble
  */
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
-//! @see qgsVariantGreaterThan()
+//! \see qgsVariantGreaterThan()
 CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 
 //! Compares two QVariant values and returns whether the first is greater than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
-//! @see qgsVariantLessThan()
+//! \see qgsVariantLessThan()
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
 CORE_EXPORT QString qgsVsiPrefix( const QString &path );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
-    @param size size in bytes
+    \param size size in bytes
  */
 void CORE_EXPORT *qgsMalloc( size_t size );
 
 /** Allocates  memory for an array of nmemb elements of size bytes each and returns
     a pointer to the allocated memory. Works like C calloc() but prints debug message
     by QgsLogger if allocation fails.
-    @param nmemb number of elements
-    @param size size of element in bytes
+    \param nmemb number of elements
+    \param size size of element in bytes
  */
 void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size );
 
 /** Frees the memory space  pointed  to  by  ptr. Works like C free().
-    @param ptr pointer to memory space
+    \param ptr pointer to memory space
  */
 void CORE_EXPORT qgsFree( void *ptr );
 
 /** Wkt string that represents a geographic coord sys
- * @note added to replace GEOWkt
+ * \since QGIS GEOWkt
  */
 extern CORE_EXPORT const QString GEOWKT;
 extern CORE_EXPORT const QString PROJECT_SCALES;
@@ -313,12 +308,6 @@ const long GEOCRS_ID = 3452;
 const long GEO_EPSG_CRS_ID = 4326;
 //! Geographic coord sys from EPSG authority
 extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
-//! The length of the string "+proj="
-const int PROJ_PREFIX_LEN = 6;
-//! The length of the string "+ellps="
-const int ELLPS_PREFIX_LEN = 7;
-//! The length of the string "+lat_1="
-const int LAT_PREFIX_LEN = 7;
 
 /** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
@@ -387,3 +376,5 @@ typedef unsigned long long qgssize;
 #else
 #define FALLTHROUGH
 #endif
+
+

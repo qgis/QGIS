@@ -31,7 +31,14 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsRectangle,
+                       QgsFields,
+                       QgsField,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsWkbTypes)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -50,18 +57,23 @@ class VectorGridPolygons(GeoAlgorithm):
     STEP_Y = 'STEP_Y'
     OUTPUT = 'OUTPUT'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
+    def flags(self):
         # this algorithm is deprecated - use GridPolygon instead
-        self.showInToolbox = False
+        return QgsProcessingAlgorithm.FlagDeprecated
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Vector grid (polygons)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+    def group(self):
+        return self.tr('Vector creation tools')
 
+    def name(self):
+        return 'vectorgridpolygons'
+
+    def displayName(self):
+        return self.tr('Vector grid (polygons)')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.STEP_X,
@@ -71,7 +83,7 @@ class VectorGridPolygons(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         xSpace = self.getParameterValue(self.STEP_X)
         ySpace = self.getParameterValue(self.STEP_Y)
@@ -89,8 +101,7 @@ class VectorGridPolygons(GeoAlgorithm):
         fields.append(QgsField('ymin', QVariant.Double, '', 24, 15))
         fields.append(QgsField('ymax', QVariant.Double, '', 24, 15))
         fieldCount = 5
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Polygon, mapCRS)
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, mapCRS, context)
 
         feat = QgsFeature()
         feat.initAttributes(fieldCount)

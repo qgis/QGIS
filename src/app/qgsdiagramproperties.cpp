@@ -174,7 +174,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mSizeFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs() );
-  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mSizeFieldExpressionWidget->setGeomCalculator( myDa );
 
@@ -866,7 +865,6 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpre
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs() );
-  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   dlg.setGeomCalculator( myDa );
 

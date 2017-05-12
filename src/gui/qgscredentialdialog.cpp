@@ -19,9 +19,9 @@
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QPushButton>
-#include <QSettings>
 #include <QThread>
 
 static QString invalidStyle_( const QString &selector = QStringLiteral( "QLineEdit" ) )
@@ -35,14 +35,16 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
 {
   setupUi( this );
   setInstance( this );
-  connect( this, SIGNAL( credentialsRequested( QString, QString *, QString *, QString, bool * ) ),
-           this, SLOT( requestCredentials( QString, QString *, QString *, QString, bool * ) ),
+  connect( this, &QgsCredentialDialog::credentialsRequested,
+           this, &QgsCredentialDialog::requestCredentials,
            Qt::BlockingQueuedConnection );
-  connect( this, SIGNAL( credentialsRequestedMasterPassword( QString *, bool, bool * ) ),
-           this, SLOT( requestCredentialsMasterPassword( QString *, bool, bool * ) ),
+  connect( this, &QgsCredentialDialog::credentialsRequestedMasterPassword,
+           this, &QgsCredentialDialog::requestCredentialsMasterPassword,
            Qt::BlockingQueuedConnection );
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   leMasterPass->setPlaceholderText( tr( "Required" ) );
+  chkbxPasswordHelperEnable->setText( tr( "Store/update the master password in your %1" )
+                                      .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
   leUsername->setFocus();
 }
 
@@ -68,6 +70,7 @@ void QgsCredentialDialog::requestCredentials( const QString &realm, QString *use
   QgsDebugMsg( "Entering." );
   stackedWidget->setCurrentIndex( 0 );
 
+  chkbxPasswordHelperEnable->setChecked( QgsAuthManager::instance()->passwordHelperEnabled( ) );
   labelRealm->setText( realm );
   leUsername->setText( *username );
   lePassword->setText( *password );
@@ -121,6 +124,8 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
   QString titletxt( stored ? tr( "Enter CURRENT master authentication password" ) : tr( "Set NEW master authentication password" ) );
   lblPasswordTitle->setText( titletxt );
 
+  chkbxPasswordHelperEnable->setChecked( QgsAuthManager::instance()->passwordHelperEnabled( ) );
+
   leMasterPassVerify->setVisible( !stored );
   lblDontForget->setVisible( !stored );
 
@@ -170,6 +175,11 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
         else
         {
           *password = leMasterPass->text();
+          // Let's store user's preferences to use the password helper
+          if ( chkbxPasswordHelperEnable->isChecked() != QgsAuthManager::instance()->passwordHelperEnabled( ) )
+          {
+            QgsAuthManager::instance()->setPasswordHelperEnabled( chkbxPasswordHelperEnable->isChecked() );
+          }
         }
         break;
       }
@@ -198,7 +208,6 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
 
   // don't leave master password in singleton's text field, or the ability to show it
   leMasterPass->clear();
-  chkMasterPassShow->setChecked( false );
   leMasterPassVerify->clear();
 
   chkbxEraseAuthDb->setChecked( false );
@@ -214,12 +223,6 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
   {
     close();
   }
-}
-
-void QgsCredentialDialog::on_chkMasterPassShow_stateChanged( int state )
-{
-  leMasterPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
-  leMasterPassVerify->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
 void QgsCredentialDialog::on_leMasterPass_textChanged( const QString &pass )

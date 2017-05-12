@@ -14,13 +14,13 @@ class QgsComposerLabel : QgsComposerItem
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
     /** Resizes the widget such that the text fits to the item. Keeps top left point*/
     void adjustSizeToText();
 
     QString text();
-    void setText( const QString& text );
+    void setText( const QString &text );
 
     int htmlState();
     void setHtmlState( int state );
@@ -29,7 +29,7 @@ class QgsComposerLabel : QgsComposerItem
     QString displayText() const;
 
     QFont font() const;
-    void setFont( const QFont& f );
+    void setFont( const QFont &f );
     /** Accessor for the vertical alignment of the label
      * @returns Qt::AlignmentFlag
      */
@@ -92,7 +92,7 @@ class QgsComposerLabel : QgsComposerItem
     void setMarginY( const double margin );
 
     /** Sets text color */
-    void setFontColor( const QColor& c );
+    void setFontColor( const QColor &c );
     /** Get font color */
     QColor fontColor() const;
 
@@ -100,13 +100,13 @@ class QgsComposerLabel : QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets state from Dom document
      * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
      * @param doc document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     //Overridden to contain part of label's text
     virtual QString displayName() const;

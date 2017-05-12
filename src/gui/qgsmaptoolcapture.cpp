@@ -62,8 +62,8 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
   QPixmap mySelectQPixmap = QPixmap( ( const char ** ) capture_point_cursor );
   setCursor( QCursor( mySelectQPixmap, 8, 8 ) );
 
-  connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
-           this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
+  connect( canvas, &QgsMapCanvas::currentLayerChanged,
+           this, &QgsMapToolCapture::currentLayerChanged );
 }
 
 QgsMapToolCapture::~QgsMapToolCapture()
@@ -664,8 +664,8 @@ void QgsMapToolCapture::validateGeometry()
     return;
 
   mValidator = new QgsGeometryValidator( g.get() );
-  connect( mValidator, SIGNAL( errorFound( QgsGeometry::Error ) ), this, SLOT( addError( QgsGeometry::Error ) ) );
-  connect( mValidator, SIGNAL( finished() ), this, SLOT( validationFinished() ) );
+  connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
+  connect( mValidator, &QThread::finished, this, &QgsMapToolCapture::validationFinished );
   mValidator->start();
   messageEmitted( tr( "Validation started" ) );
 }
@@ -711,12 +711,7 @@ QList<QgsPoint> QgsMapToolCapture::points()
 
 void QgsMapToolCapture::setPoints( const QList<QgsPoint> &pointList )
 {
-  QgsPointSequence pts;
-  QgsGeometry::convertPointList( pointList, pts );
-
-  QgsLineString *line = new QgsLineString();
-  line->setPoints( pts );
-
+  QgsLineString *line = new QgsLineString( pointList );
   mCaptureCurve.clear();
   mCaptureCurve.addCurve( line );
 }

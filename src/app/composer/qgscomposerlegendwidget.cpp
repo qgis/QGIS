@@ -81,7 +81,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend *legend )
   if ( legend )
     mMapComboBox->setComposition( legend->composition() );
   mMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-  connect( mMapComboBox, SIGNAL( itemChanged( QgsComposerItem * ) ), this, SLOT( composerMapChanged( QgsComposerItem * ) ) );
+  connect( mMapComboBox, &QgsComposerItemComboBox::itemChanged, this, &QgsComposerLegendWidget::composerMapChanged );
 
   //add widget for item properties
   QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, legend );
@@ -93,12 +93,12 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend *legend )
   {
     mItemTreeView->setModel( legend->model() );
     mItemTreeView->setMenuProvider( new QgsComposerLegendMenuProvider( mItemTreeView, this ) );
-    connect( legend, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
+    connect( legend, &QgsComposerObject::itemChanged, this, &QgsComposerLegendWidget::setGuiElements );
     mWrapCharLineEdit->setText( legend->wrapChar() );
 
     // connect atlas state to the filter legend by atlas checkbox
-    connect( &legend->composition()->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( updateFilterLegendByAtlasButton() ) );
-    connect( &legend->composition()->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer * ) ), this, SLOT( updateFilterLegendByAtlasButton() ) );
+    connect( &legend->composition()->atlasComposition(), &QgsAtlasComposition::toggled, this, &QgsComposerLegendWidget::updateFilterLegendByAtlasButton );
+    connect( &legend->composition()->atlasComposition(), &QgsAtlasComposition::coverageLayerChanged, this, &QgsComposerLegendWidget::updateFilterLegendByAtlasButton );
   }
 
   registerDataDefinedButton( mLegendTitleDDBtn, QgsComposerObject::LegendTitle );
@@ -106,8 +106,8 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend *legend )
 
   setGuiElements();
 
-  connect( mItemTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
-           this, SLOT( selectedChanged( const QModelIndex &, const QModelIndex & ) ) );
+  connect( mItemTreeView->selectionModel(), &QItemSelectionModel::currentChanged,
+           this, &QgsComposerLegendWidget::selectedChanged );
 }
 
 QgsComposerLegendWidget::QgsComposerLegendWidget(): QgsComposerItemBaseWidget( nullptr, nullptr ), mLegend( nullptr )

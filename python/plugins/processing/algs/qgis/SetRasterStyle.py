@@ -29,6 +29,8 @@ import os
 
 from qgis.PyQt.QtXml import QDomDocument
 
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterRaster
@@ -43,18 +45,31 @@ class SetRasterStyle(GeoAlgorithm):
     STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Raster general tools')
+
+    def name(self):
+        return 'setstyleforrasterlayer'
+
+    def displayName(self):
+        return self.tr('Set style for raster layer')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Set style for raster layer')
-        self.group, self.i18n_group = self.trAlgorithm('Raster general tools')
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterFile(self.STYLE,
                                         self.tr('Style file'), False, False, 'qml'))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Styled'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
 
         style = self.getParameterValue(self.STYLE)
         if layer is None:

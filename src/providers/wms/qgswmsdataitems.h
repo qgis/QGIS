@@ -160,7 +160,7 @@ class QgsXyzTileDataItemProvider : public QgsDataItemProvider
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
     {
       if ( path.isEmpty() )
-        return new QgsXyzTileRootItem( parentItem, QStringLiteral( "Tile Server (XYZ)" ), QStringLiteral( "xyz:" ) );
+        return new QgsXyzTileRootItem( parentItem, QStringLiteral( "XYZ Tiles" ), QStringLiteral( "xyz:" ) );
       return nullptr;
     }
 };

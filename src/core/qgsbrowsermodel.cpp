@@ -132,14 +132,14 @@ void QgsBrowserModel::addRootItems()
     int capabilities = pr->capabilities();
     if ( capabilities == QgsDataProvider::NoDataCapabilities )
     {
-      QgsDebugMsg( pr->name() + " does not have any dataCapabilities" );
+      QgsDebugMsgLevel( pr->name() + " does not have any dataCapabilities", 4 );
       continue;
     }
 
     QgsDataItem *item = pr->createDataItem( QLatin1String( "" ), nullptr );  // empty path -> top level
     if ( item )
     {
-      QgsDebugMsg( "Add new top level item : " + item->name() );
+      QgsDebugMsgLevel( "Add new top level item : " + item->name(), 4 );
       connectItem( item );
       providerMap.insertMulti( capabilities, item );
     }
@@ -298,7 +298,7 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
       QString itemPath = model->data( idx, PathRole ).toString();
       if ( itemPath == path )
       {
-        QgsDebugMsg( "Arrived " + itemPath );
+        QgsDebugMsgLevel( "Arrived " + itemPath, 4 );
         return idx; // we have found the item we have been looking for
       }
 
@@ -315,7 +315,7 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
   if ( matchFlag == Qt::MatchStartsWith )
     return index;
 
-  QgsDebugMsg( "path not found" );
+  QgsDebugMsgLevel( "path not found", 4 );
   return QModelIndex(); // not found
 }
 
@@ -408,7 +408,7 @@ void QgsBrowserModel::itemStateChanged( QgsDataItem *item, QgsDataItem::State ol
   QModelIndex idx = findItem( item );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsg( QString( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ) );
+  QgsDebugMsgLevel( QString( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ), 4 );
   emit stateChanged( idx, oldState );
 }
 void QgsBrowserModel::connectItem( QgsDataItem *item )
@@ -470,7 +470,7 @@ bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
   QgsDataItem *destItem = dataItem( parent );
   if ( !destItem )
   {
-    QgsDebugMsg( "DROP PROBLEM!" );
+    QgsDebugMsgLevel( "DROP PROBLEM!", 4 );
     return false;
   }
 
@@ -500,7 +500,7 @@ void QgsBrowserModel::fetchMore( const QModelIndex &parent )
   if ( !item || item->state() == QgsDataItem::Populating || item->state() == QgsDataItem::Populated )
     return;
 
-  QgsDebugMsg( "path = " + item->path() );
+  QgsDebugMsgLevel( "path = " + item->path(), 4 );
 
   item->populate();
 }
@@ -519,7 +519,7 @@ void QgsBrowserModel::refresh( const QModelIndex &index )
   if ( !item || item->state() == QgsDataItem::Populating )
     return;
 
-  QgsDebugMsg( "Refresh " + item->path() );
+  QgsDebugMsgLevel( "Refresh " + item->path(), 4 );
 
   item->refresh();
 }

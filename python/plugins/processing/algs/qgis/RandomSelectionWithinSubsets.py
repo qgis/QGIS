@@ -31,7 +31,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature
+from qgis.core import QgsFeature, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -40,7 +40,6 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -53,13 +52,19 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sub_selection.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random selection within subsets')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+    def group(self):
+        return self.tr('Vector selection tools')
 
+    def name(self):
+        return 'randomselectionwithinsubsets'
+
+    def displayName(self):
+        return self.tr('Random selection within subsets')
+
+    def defineCharacteristics(self):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
@@ -74,17 +79,17 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection stratified'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
-        layer = dataobjects.getObjectFromUri(filename)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
 
         layer.removeSelection()
         index = layer.fields().lookupField(field)
 
-        unique = vector.getUniqueValues(layer, index)
+        unique = QgsProcessingUtils.uniqueValues(layer, index, context)
         featureCount = layer.featureCount()
 
         value = int(self.getParameterValue(self.NUMBER))
@@ -108,7 +113,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
 
         if not len(unique) == featureCount:
             for i in unique:
-                features = vector.features(layer)
+                features = QgsProcessingUtils.getFeatures(layer, context)
                 FIDs = []
                 for inFeat in features:
                     attrs = inFeat.attributes()

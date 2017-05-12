@@ -274,6 +274,7 @@ tests:
       MASK:
         name: custom/polygon_mask.gml
         type: vector
+      NO_DATA: ''
       PREDICTOR: 1
       RTYPE: '5'
       TFW: false
@@ -325,6 +326,7 @@ tests:
       MASK:
         name: custom/polygon_mask.gml
         type: vector
+      NO_DATA: ''
       PREDICTOR: 1
       RTYPE: '5'
       TFW: false

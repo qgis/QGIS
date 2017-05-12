@@ -34,10 +34,10 @@ from qgis.PyQt.QtGui import QCursor
 
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
-
+from qgis.core import (QgsProcessingUtils,
+                       QgsProject)
 from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -108,7 +108,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         extentsDict[CANVAS_KEY] = {"extent": iface.mapCanvas().extent(),
                                    "authid": iface.mapCanvas().mapSettings().destinationCrs().authid()}
         extents = [CANVAS_KEY]
-        layers = dataobjects.getAllLayers()
+        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for layer in layers:
             authid = layer.crs().authid()
             if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) \

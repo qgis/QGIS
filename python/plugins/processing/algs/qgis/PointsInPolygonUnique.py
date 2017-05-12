@@ -26,7 +26,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import (QgsApplication,
+                       QgsField,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -43,9 +48,22 @@ class PointsInPolygonUnique(GeoAlgorithm):
     FIELD = 'FIELD'
     CLASSFIELD = 'CLASSFIELD'
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector analysis tools')
+
+    def name(self):
+        return 'countuniquepointsinpolygon'
+
+    def displayName(self):
+        return self.tr('Count unique points in polygon')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Count unique points in polygon')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
         self.addParameter(ParameterVector(self.POLYGONS,
                                           self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,
@@ -56,9 +74,9 @@ class PointsInPolygonUnique(GeoAlgorithm):
                                           self.tr('Count field name'), 'NUMPOINTS'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Unique count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
+    def processAlgorithm(self, context, feedback):
+        polyLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)
+        pointLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         fieldName = self.getParameterValue(self.FIELD)
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 
@@ -69,17 +87,17 @@ class PointsInPolygonUnique(GeoAlgorithm):
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
                                                          polyLayer.fields(), fieldName)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), polyLayer.wkbType(), polyLayer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, polyLayer.wkbType(),
+                                                                     polyLayer.crs(), context)
 
-        spatialIndex = vector.spatialindex(pointLayer)
+        spatialIndex = QgsProcessingUtils.createSpatialIndex(pointLayer, context)
 
         ftPoint = QgsFeature()
         outFeat = QgsFeature()
         geom = QgsGeometry()
 
-        features = vector.features(polyLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(polyLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
         for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()
             engine = QgsGeometry.createGeometryEngine(geom.geometry())

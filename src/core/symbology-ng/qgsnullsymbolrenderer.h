@@ -24,7 +24,7 @@
  * \class QgsNullSymbolRenderer
  * \brief Null symbol renderer. Renderer which draws no symbols for features by default, but allows for labeling
  * and diagrams for the layer. Selected features will also be drawn with a default symbol.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
@@ -47,18 +47,18 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     /** Creates a null renderer from XML element.
-     * @param element DOM element
-     * @returns new null symbol renderer
+     * \param element DOM element
+     * \returns new null symbol renderer
      */
-    static QgsFeatureRenderer *create( QDomElement &element );
+    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
 
     virtual QDomElement save( QDomDocument &doc ) override;
 
     /** Creates a QgsNullSymbolRenderer from an existing renderer.
-     * @param renderer renderer to convert from
-     * @returns a new renderer if the conversion was possible, otherwise nullptr.
+     * \param renderer renderer to convert from
+     * \returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
 

@@ -1,10 +1,10 @@
 /***************************************************************************
-  qgsmapcanvas.cpp  -  description
-  -------------------
+qgsmapcanvas.cpp  -  description
+------------------ -
 begin                : Sun Jun 30 2002
-copyright            : (C) 2002 by Gary E.Sherman
+copyright            : ( C ) 2002 by Gary E.Sherman
 email                : sherman at mrcc.com
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -56,6 +56,7 @@ email                : sherman at mrcc.com
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmaprenderersequentialjob.h"
+#include "qgsmapsettingsutils.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgspallabeling.h"
@@ -164,7 +165,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
 
   moveCanvasContents( true );
 
-  connect( &mMapUpdateTimer, SIGNAL( timeout() ), SLOT( mapUpdateTimeout() ) );
+  connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsMapCanvas::mapUpdateTimeout );
   mMapUpdateTimer.setInterval( 250 );
 
 #ifdef Q_OS_WIN
@@ -198,6 +199,14 @@ QgsMapCanvas::~QgsMapCanvas()
   }
   mLastNonZoomMapTool = nullptr;
 
+  // rendering job may still end up writing into canvas map item
+  // so kill it before deleting canvas items
+  if ( mJob )
+  {
+    whileBlocking( mJob )->cancel();
+    delete mJob;
+  }
+
   // delete canvas items prior to deleting the canvas
   // because they might try to update canvas when it's
   // already being destructed, ends with segfault
@@ -214,12 +223,6 @@ QgsMapCanvas::~QgsMapCanvas()
 
   // mCanvasProperties auto-deleted via QScopedPointer
   // CanvasProperties struct has its own dtor for freeing resources
-
-  if ( mJob )
-  {
-    whileBlocking( mJob )->cancel();
-    delete mJob;
-  }
 
   delete mCache;
 
@@ -385,6 +388,13 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   emit destinationCrsChanged();
 }
 
+void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
+{
+  mSettings.setFlags( flags );
+  clearCache();
+  refresh();
+}
+
 const QgsLabelingResults *QgsMapCanvas::labelingResults() const
 {
   return mLabelingResults;
@@ -515,17 +525,6 @@ void QgsMapCanvas::refreshMap()
     mJob = new QgsMapRendererSequentialJob( mSettings );
   connect( mJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::rendererJobFinished );
   mJob->setCache( mCache );
-
-  QStringList layersForGeometryCache;
-  Q_FOREACH ( QgsMapLayer *layer, mSettings.layers() )
-  {
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
-    {
-      if ( vl->isEditable() )
-        layersForGeometryCache << vl->id();
-    }
-  }
-  mJob->setRequestedGeometryCacheForLayers( layersForGeometryCache );
 
   mJob->start();
 
@@ -714,24 +713,8 @@ void QgsMapCanvas::saveAsImage( const QString &fileName, QPixmap *theQPixmap, co
   painter.end();
   image.save( fileName, format.toLocal8Bit().data() );
 
-  //create a world file to go with the image...
-  QgsRectangle myRect = mapSettings().visibleExtent();
-  QString myHeader;
-  // note: use 17 places of precision for all numbers output
-  //Pixel XDim
-  myHeader += qgsDoubleToString( mapUnitsPerPixel() ) + "\r\n";
-  //Rotation on y axis - hard coded
-  myHeader += QLatin1String( "0 \r\n" );
-  //Rotation on x axis - hard coded
-  myHeader += QLatin1String( "0 \r\n" );
-  //Pixel YDim - almost always negative - see
-  //http://en.wikipedia.org/wiki/World_file#cite_note-2
-  myHeader += '-' + qgsDoubleToString( mapUnitsPerPixel() ) + "\r\n";
-  //Origin X (center of top left cell)
-  myHeader += qgsDoubleToString( myRect.xMinimum() + ( mapUnitsPerPixel() / 2 ) ) + "\r\n";
-  //Origin Y (center of top left cell)
-  myHeader += qgsDoubleToString( myRect.yMaximum() - ( mapUnitsPerPixel() / 2 ) ) + "\r\n";
   QFileInfo myInfo  = QFileInfo( fileName );
+
   // build the world file name
   QString outputSuffix = myInfo.suffix();
   QString myWorldFileName = myInfo.absolutePath() + '/' + myInfo.baseName() + '.'
@@ -742,7 +725,7 @@ void QgsMapCanvas::saveAsImage( const QString &fileName, QPixmap *theQPixmap, co
     return;
   }
   QTextStream myStream( &myWorldFile );
-  myStream << myHeader;
+  myStream << QgsMapSettingsUtils::worldFileContent( mapSettings() );
 } // saveAsImage
 
 
@@ -1499,11 +1482,8 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
   QPoint xy = e->pos();
   QgsPoint coord = getCoordinateTransform()->toMapCoordinates( xy );
   emit xyCoordinates( coord );
-} // mouseMoveEvent
+}
 
-
-
-//! Sets the map tool currently being used on the canvas
 void QgsMapCanvas::setMapTool( QgsMapTool *tool )
 {
   if ( !tool )
@@ -1938,7 +1918,6 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
-//! Ask user which datum transform to use
 void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer *ml, const QString &srcAuthId, const QString &destAuthId )
 {
   if ( !ml )
@@ -2118,4 +2097,14 @@ void QgsMapCanvas::setAnnotationsVisible( bool show )
   {
     item->setVisible( show );
   }
+}
+
+void QgsMapCanvas::setLabelingEngineSettings( const QgsLabelingEngineSettings &settings )
+{
+  mSettings.setLabelingEngineSettings( settings );
+}
+
+const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
+{
+  return mSettings.labelingEngineSettings();
 }

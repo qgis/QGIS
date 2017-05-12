@@ -23,7 +23,7 @@
 class QgsVectorLayerCache;
 
 /** \ingroup core
- * @brief
+ * \brief
  * Delivers features from the cache
  *
  */
@@ -34,22 +34,22 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     /**
      * This constructor creates a feature iterator, that delivers all cached features. No request is made to the backend.
      *
-     * @param vlCache          The vector layer cache to use
-     * @param featureRequest   The feature request to answer
+     * \param vlCache          The vector layer cache to use
+     * \param featureRequest   The feature request to answer
      */
     QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 
     /**
      * Rewind to the beginning of the iterator
      *
-     * @return bool true if the operation was ok
+     * \returns bool true if the operation was ok
      */
     virtual bool rewind() override;
 
     /**
      * Close this iterator. No further features will be available.
      *
-     * @return true if successful
+     * \returns true if successful
      */
     virtual bool close() override;
 
@@ -59,18 +59,18 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     /**
      * Implementation for fetching a feature.
      *
-     * @param f      Will write to this feature
-     * @return bool  true if the operation was ok
+     * \param f      Will write to this feature
+     * \returns bool  true if the operation was ok
      *
-     * @see bool getFeature( QgsFeature& f )
+     * \see bool getFeature( QgsFeature& f )
      */
     virtual bool fetchFeature( QgsFeature &f ) override;
 
     /**
      * We have a local special iterator for FilterFids, no need to run the generic.
      *
-     * @param f      Will write to this feature
-     * @return bool  true if the operation was ok
+     * \param f      Will write to this feature
+     * \returns bool  true if the operation was ok
      */
     virtual bool nextFeatureFilterFids( QgsFeature &f ) override { return fetchFeature( f ); }
 
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
 };
 
 /** \ingroup core
- * @brief
+ * \brief
  * Uses another iterator as backend and writes features to the cache
  *
  */
@@ -92,22 +92,22 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
     /**
      * This constructor creates a feature iterator, which queries the backend and caches retrieved features.
      *
-     * @param vlCache          The vector layer cache to use
-     * @param featureRequest   The feature request to answer
+     * \param vlCache          The vector layer cache to use
+     * \param featureRequest   The feature request to answer
      */
     QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 
     /**
      * Rewind to the beginning of the iterator
      *
-     * @return bool true if the operation was ok
+     * \returns bool true if the operation was ok
      */
     virtual bool rewind() override;
 
     /**
      * Close this iterator. No further features will be available.
      *
-     * @return true if successful
+     * \returns true if successful
      */
     virtual bool close() override;
 
@@ -116,10 +116,10 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
     /**
      * Implementation for fetching a feature.
      *
-     * @param f      Will write to this feature
-     * @return bool  true if the operation was ok
+     * \param f      Will write to this feature
+     * \returns bool  true if the operation was ok
      *
-     * @see bool getFeature( QgsFeature& f )
+     * \see bool getFeature( QgsFeature& f )
      */
     virtual bool fetchFeature( QgsFeature &f ) override;
 

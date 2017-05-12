@@ -40,8 +40,8 @@
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
 #include "qgis_server.h"
+#include "qgsserverrequest.h"
 
-class QgsServerRequest;
 class QgsServerResponse;
 class QgsProject;
 
@@ -57,9 +57,9 @@ class SERVER_EXPORT QgsServer
     QgsServer();
 
     /** Set environment variable
-     * @param var environment variable name
-     * @param val value
-     * @note added in 2.14
+     * \param var environment variable name
+     * \param val value
+     * \since QGIS 2.14
      */
     void putenv( const QString &var, const QString &val );
 
@@ -68,27 +68,18 @@ class SERVER_EXPORT QgsServer
      * but can be also passed in args and in this case overrides the environment
      * variable
      *
-     * @param request a QgsServerRequest holding request parameters
-     * @param response a QgsServerResponse for handling response I/O)
+     * \param request a QgsServerRequest holding request parameters
+     * \param response a QgsServerResponse for handling response I/O)
      */
     void handleRequest( QgsServerRequest &request, QgsServerResponse &response );
 
-    /** Handles the request from query string
-     * The query string is normally read from environment
-     * but can be also passed in args and in this case overrides the environment
-     * variable.
-     *
-     * @param queryString QString containing the query string
-     * @return the response headers and body QPair of QByteArray
-     */
-    QPair<QByteArray, QByteArray> handleRequest( const QString &queryString );
 
     //! Returns a pointer to the server interface
     QgsServerInterfaceImpl *serverInterface() { return sServerInterface; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    //! Initialize python
-    //! Note: not in python bindings
+    //! Initialize Python
+    //! Note: not in Python bindings
     void initPython( );
 #endif
 
@@ -103,9 +94,9 @@ class SERVER_EXPORT QgsServer
                                const QMap<QString, QString> &parameters );
 
     /**
-     * @brief QgsServer::printRequestParameters prints the request parameters
-     * @param parameterMap
-     * @param logLevel
+     * \brief QgsServer::printRequestParameters prints the request parameters
+     * \param parameterMap
+     * \param logLevel
      */
     static void printRequestParameters(
       const QMap< QString, QString> &parameterMap,

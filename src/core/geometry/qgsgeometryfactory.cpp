@@ -217,15 +217,17 @@ QgsAbstractGeometry *QgsGeometryFactory::fromRect( const QgsRectangle &rect )
 
 QgsLineString *QgsGeometryFactory::linestringFromPolyline( const QgsPolyline &polyline )
 {
-  QgsLineString *line = new QgsLineString();
-
-  QgsPointSequence points;
+  QVector< double > x;
+  x.reserve( polyline.size() );
+  QVector< double > y;
+  y.reserve( polyline.size() );
   QgsPolyline::const_iterator it = polyline.constBegin();
   for ( ; it != polyline.constEnd(); ++it )
   {
-    points.append( QgsPointV2( it->x(), it->y() ) );
+    x << it->x();
+    y << it->y();
   }
-  line->setPoints( points );
+  QgsLineString *line = new QgsLineString( x, y );
   return line;
 }
 

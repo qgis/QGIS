@@ -17,6 +17,7 @@
 #define QGSCURVEEDITORWIDGET_H
 
 #include <QWidget>
+#include "qgis.h"
 #include <QThread>
 #include <QMutex>
 #include <QPen>
@@ -35,9 +36,7 @@ class HistogramItem;
 class QgsCurveEditorPlotEventFilter;
 
 // fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 typedef QPointF QwtDoublePoint;
-#endif
 
 // just internal guff - definitely not for exposing to public API!
 ///@cond PRIVATE
@@ -132,7 +131,7 @@ class QgsHistogramValuesGatherer: public QThread
 /** \ingroup gui
  * \class QgsCurveEditorWidget
  * A widget for manipulating QgsCurveTransform curves.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 {
@@ -143,19 +142,19 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     /**
      * Constructor for QgsCurveEditorWidget.
      */
-    QgsCurveEditorWidget( QWidget *parent = nullptr, const QgsCurveTransform &curve = QgsCurveTransform() );
+    QgsCurveEditorWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QgsCurveTransform &curve = QgsCurveTransform() );
 
     ~QgsCurveEditorWidget();
 
     /**
      * Returns a curve representing the current curve from the widget.
-     * @see setCurve()
+     * \see setCurve()
      */
     QgsCurveTransform curve() const { return mCurve; }
 
     /**
      * Sets the \a curve to show in the widget.
-     * @see curve()
+     * \see curve()
      */
     void setCurve( const QgsCurveTransform &curve );
 
@@ -163,22 +162,22 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
      * Sets a \a layer and \a expression source for values to show in a histogram
      * behind the curve. The histogram is generated in a background thread to keep
      * the widget responsive.
-     * @see minHistogramValueRange()
-     * @see maxHistogramValueRange()
+     * \see minHistogramValueRange()
+     * \see maxHistogramValueRange()
      */
     void setHistogramSource( const QgsVectorLayer *layer, const QString &expression );
 
     /**
      * Returns the minimum expected value for the range of values shown in the histogram.
-     * @see maxHistogramValueRange()
-     * @see setMinHistogramValueRange()
+     * \see maxHistogramValueRange()
+     * \see setMinHistogramValueRange()
      */
     double minHistogramValueRange() const { return mMinValueRange; }
 
     /**
      * Returns the maximum expected value for the range of values shown in the histogram.
-     * @see minHistogramValueRange()
-     * @see setMaxHistogramValueRange()
+     * \see minHistogramValueRange()
+     * \see setMaxHistogramValueRange()
      */
     double maxHistogramValueRange() const { return mMaxValueRange; }
 
@@ -186,15 +185,15 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
     /**
      * Sets the minimum expected value for the range of values shown in the histogram.
-     * @see setMaxHistogramValueRange()
-     * @see minHistogramValueRange()
+     * \see setMaxHistogramValueRange()
+     * \see minHistogramValueRange()
      */
     void setMinHistogramValueRange( double minValueRange );
 
     /**
      * Sets the maximum expected value for the range of values shown in the histogram.
-     * @see setMinHistogramValueRange()
-     * @see maxHistogramValueRange()
+     * \see setMinHistogramValueRange()
+     * \see maxHistogramValueRange()
      */
     void setMaxHistogramValueRange( double maxValueRange );
 
@@ -230,11 +229,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     double mMinValueRange = 0.0;
     double mMaxValueRange = 1.0;
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     QwtPlotHistogram *mPlotHistogram = nullptr;
-#else
-    HistogramItem *mPlotHistogramItem = nullptr;
-#endif
 
     void updatePlot();
     void addPlotMarker( double x, double y, bool isSelected = false );
@@ -242,11 +237,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
     int findNearestControlPoint( QPointF point ) const;
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     QwtPlotHistogram *createPlotHistogram( const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
-#else
-    HistogramItem *createHistoItem( const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
-#endif
 
 };
 

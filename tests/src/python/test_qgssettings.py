@@ -68,6 +68,14 @@ class TestQgsSettings(unittest.TestCase):
         self.globalsettings.endArray()
         self.globalsettings.sync()
 
+    def addGroupToDefaults(self, prefix, kvp):
+        defaults = QSettings(self.settings.globalSettingsPath(), QSettings.IniFormat)  # NOQA
+        self.globalsettings.beginGroup(prefix)
+        for k, v in kvp.items():
+            self.globalsettings.setValue(k, v)
+        self.globalsettings.endGroup()
+        self.globalsettings.sync()
+
     def test_basic_functionality(self):
         self.assertEqual(self.settings.value('testqgissettings/doesnotexists', 'notexist'), 'notexist')
         self.settings.setValue('testqgissettings/name', 'qgisrocks')
@@ -95,12 +103,68 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual(3, len(self.settings.allKeys()))
         self.assertEqual(2, len(self.globalsettings.allKeys()))
 
-    def test_precedence(self):
+    def test_precedence_simple(self):
         self.assertEqual(self.settings.allKeys(), [])
         self.addToDefaults('testqgissettings/names/name1', 'qgisrocks1')
         self.settings.setValue('testqgissettings/names/name1', 'qgisrocks-1')
 
         self.assertEqual(self.settings.value('testqgissettings/names/name1'), 'qgisrocks-1')
+
+    def test_precedence_group(self):
+        """Test if user can override a group value"""
+        self.assertEqual(self.settings.allKeys(), [])
+        self.addGroupToDefaults('connections-xyz', {
+            'OSM': 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'OSM-b': 'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        })
+        self.settings.beginGroup('connections-xyz')
+        self.assertEqual(self.settings.value('OSM'), 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        self.assertEqual(self.settings.value('OSM-b'), 'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        self.settings.endGroup()
+
+        # Override edit
+        self.settings.beginGroup('connections-xyz')
+        self.settings.setValue('OSM', 'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        self.settings.endGroup()
+
+        # Check it again!
+        self.settings.beginGroup('connections-xyz')
+        self.assertEqual(self.settings.value('OSM'), 'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        self.assertEqual(self.settings.value('OSM-b'), 'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        self.settings.endGroup()
+
+        # Override remove: the global value will be resumed!!!
+        self.settings.beginGroup('connections-xyz')
+        self.settings.remove('OSM')
+        self.settings.endGroup()
+
+        # Check it again!
+        self.settings.beginGroup('connections-xyz')
+        self.assertEqual(self.settings.value('OSM'), 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        self.assertEqual(self.settings.value('OSM-b'), 'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        self.settings.endGroup()
+
+        # Override remove: store a blank!
+        self.settings.beginGroup('connections-xyz')
+        self.settings.setValue('OSM', '')
+        self.settings.endGroup()
+
+        # Check it again!
+        self.settings.beginGroup('connections-xyz')
+        self.assertEqual(self.settings.value('OSM'), '')
+        self.assertEqual(self.settings.value('OSM-b'), 'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        self.settings.endGroup()
+
+        # Override remove: store a None: will resume the global setting!
+        self.settings.beginGroup('connections-xyz')
+        self.settings.setValue('OSM', None)
+        self.settings.endGroup()
+
+        # Check it again!
+        self.settings.beginGroup('connections-xyz')
+        self.assertEqual(self.settings.value('OSM'), 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        self.assertEqual(self.settings.value('OSM-b'), 'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        self.settings.endGroup()
 
     def test_uft8(self):
         self.assertEqual(self.settings.allKeys(), [])
@@ -152,6 +216,35 @@ class TestQgsSettings(unittest.TestCase):
             values.append(self.settings.value("key"))
 
         self.assertEqual(values, ['qgisrocks1', 'qgisrocks2', 'qgisrocks3'])
+
+    def test_array_overrides(self):
+        """Test if an array completely shadows the global one"""
+        self.assertEqual(self.settings.allKeys(), [])
+        self.addArrayToDefaults('testqgissettings', 'key', ['qgisrocks1', 'qgisrocks2', 'qgisrocks3'])
+        self.assertEqual(self.settings.allKeys(), ['testqgissettings/1/key', 'testqgissettings/2/key', 'testqgissettings/3/key', 'testqgissettings/size'])
+        self.assertEqual(self.globalsettings.allKeys(), ['testqgissettings/1/key', 'testqgissettings/2/key', 'testqgissettings/3/key', 'testqgissettings/size'])
+
+        self.assertEqual(3, self.globalsettings.beginReadArray('testqgissettings'))
+        self.globalsettings.endArray()
+        self.assertEqual(3, self.settings.beginReadArray('testqgissettings'))
+
+        # Now override!
+        self.settings.beginWriteArray('testqgissettings')
+        self.settings.setArrayIndex(0)
+        self.settings.setValue('key', 'myqgisrocksmore1')
+        self.settings.setArrayIndex(1)
+        self.settings.setValue('key', 'myqgisrocksmore2')
+        self.settings.endArray()
+
+        # Check it!
+        self.assertEqual(2, self.settings.beginReadArray('testqgissettings'))
+
+        values = []
+        for i in range(2):
+            self.settings.setArrayIndex(i)
+            values.append(self.settings.value("key"))
+
+        self.assertEqual(values, ['myqgisrocksmore1', 'myqgisrocksmore2'])
 
     def test_section_getters_setters(self):
         self.assertEqual(self.settings.allKeys(), [])

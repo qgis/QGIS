@@ -17,7 +17,7 @@ class QgsTreeWidgetItem : QTreeWidgetItem
      * @param view parent QTreeWidget view
      * @param type item type
      */
-    explicit QgsTreeWidgetItem( QTreeWidget * view /TransferThis/, int type = Type );
+    explicit QgsTreeWidgetItem( QTreeWidget *view /TransferThis/, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
      * @param type item type
@@ -71,7 +71,7 @@ class QgsTreeWidgetItem : QTreeWidgetItem
      * @param value sort value
      * @see sortData()
      */
-    void setSortData( int column, const QVariant& value );
+    void setSortData( int column, const QVariant &value );
 
     /** Returns the custom sort data for a specified column. If set, this value will be used when
      * sorting the item instead of the item's display text. If not set, the item's display
@@ -119,13 +119,13 @@ class QgsTreeWidgetItemObject: QObject, QgsTreeWidgetItem
     explicit QgsTreeWidgetItemObject( int type = Type );
 
     //! Constructs a tree widget item of the specified type and appends it to the items in the given parent.
-    explicit QgsTreeWidgetItemObject( QTreeWidget * parent /TransferThis/, int type = Type );
+    explicit QgsTreeWidgetItemObject( QTreeWidget *parent /TransferThis/, int type = Type );
 
     //! Sets the value for the item's column and role to the given value.
-    virtual void setData( int column, int role, const QVariant & value );
+    virtual void setData( int column, int role, const QVariant &value );
 
   signals:
     //! This signal is emitted when the contents of the column in the specified item has been edited by the user.
-    void itemEdited( QTreeWidgetItem* item, int column );
+    void itemEdited( QTreeWidgetItem *item, int column );
 };
 

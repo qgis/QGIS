@@ -21,6 +21,7 @@
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapdecoration.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"

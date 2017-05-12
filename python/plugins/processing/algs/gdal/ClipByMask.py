@@ -30,6 +30,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsProcessingUtils
 from osgeo import gdal
 
 from processing.core.parameters import (ParameterRaster,
@@ -62,13 +63,19 @@ class ClipByMask(GdalAlgorithm):
     RTYPE = 'RTYPE'
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
-    def getIcon(self):
+    def name(self):
+        return 'cliprasterbymasklayer'
+
+    def displayName(self):
+        return self.tr('Clip raster by mask layer')
+
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Clip raster by mask layer')
-        self.group, self.i18n_group = self.trAlgorithm('Raster extraction')
+    def group(self):
+        return self.tr('Raster extraction')
 
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterVector(self.MASK, self.tr('Mask layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON]))
@@ -97,8 +104,8 @@ class ClipByMask(GdalAlgorithm):
     def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
         mask = self.getParameterValue(self.MASK)
-        maskLayer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.MASK))
+        context = dataobjects.createContext()
+        maskLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.MASK), context)
         ogrMask = ogrConnectionString(mask)[1:-1]
         noData = self.getParameterValue(self.NO_DATA)
         opts = self.getParameterValue(self.OPTIONS)

@@ -41,7 +41,7 @@ QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon *composer
 
   if ( mComposerPolygon )
   {
-    connect( mComposerPolygon, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+    connect( mComposerPolygon, &QgsComposerObject::itemChanged, this, &QgsComposerPolygonWidget::setGuiElementValues );
   }
 }
 
@@ -67,7 +67,7 @@ void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
-  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
+  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsComposerPolygonWidget::updateStyleFromWidget );
   connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerPolygonWidget::cleanUpStyleSelector );
   openPanel( d );
   mComposerPolygon->beginCommand( tr( "Polygon style changed" ) );

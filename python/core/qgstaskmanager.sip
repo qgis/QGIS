@@ -1,358 +1,467 @@
-/**
- * \ingroup core
- * \class QgsTask
- * \brief Abstract base class for long running background tasks. Tasks can be controlled directly,
- * or added to a QgsTaskManager for automatic management.
- *
- * Derived classes should implement the process they want to execute in the background
- * within the run() method. This method will be called when the
- * task commences (ie via calling start() ).
- *
- * Long running tasks should periodically check the isCanceled() flag to detect if the task
- * has been canceled via some external event. If this flag is true then the task should
- * clean up and terminate at the earliest possible convenience.
- *
- * \note Added in version 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstaskmanager.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+typedef QList< QgsTask * > QgsTaskList;
+
 class QgsTask : QObject
 {
+%Docstring
+ Abstract base class for long running background tasks. Tasks can be controlled directly,
+ or added to a QgsTaskManager for automatic management.
+
+ Derived classes should implement the process they want to execute in the background
+ within the run() method. This method will be called when the
+ task commences (ie via calling run() ).
+
+ Long running tasks should periodically check the isCanceled() flag to detect if the task
+ has been canceled via some external event. If this flag is true then the task should
+ clean up and terminate at the earliest possible convenience.
+
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
-#include <qgstaskmanager.h>
+#include "qgstaskmanager.h"
 %End
   public:
 
-    //! Status of tasks
     enum TaskStatus
     {
-      Queued, /*!< Task is queued and has not begun */
-      OnHold, /*!< Task is queued but on hold and will not be started */
-      Running, /*!< Task is currently running */
-      Complete, /*!< Task successfully completed */
-      Terminated, /*!< Task was terminated or errored */
+      Queued,
+      OnHold,
+      Running,
+      Complete,
+      Terminated,
     };
 
-    //! Task flags
     enum Flag
     {
-      CanCancel, //!< Task can be canceled
-      AllFlags, //!< Task supports all flags
+      CanCancel,
+      AllFlags,
     };
     typedef QFlags<QgsTask::Flag> Flags;
 
-   /**
-     * Constructor for QgsTask.
-     * @param description text description of task
-     * @param flags task flags
-     */
-    QgsTask( const QString& description = QString(), const Flags& flags = AllFlags );
 
-    /**
-     * Returns the flags associated with the task.
-     */
+    QgsTask( const QString &description = QString(), const Flags &flags = AllFlags );
+%Docstring
+ Constructor for QgsTask.
+ \param description text description of task
+ \param flags task flags
+%End
+
+    ~QgsTask();
+
     Flags flags() const;
+%Docstring
+ Returns the flags associated with the task.
+ :rtype: Flags
+%End
 
-    /**
-     * Returns true if the task can be canceled.
-     */
     bool canCancel() const;
+%Docstring
+ Returns true if the task can be canceled.
+ :rtype: bool
+%End
 
-    /**
-     * Returns true if the task is active, ie it is not complete and has
-     * not been canceled.
-     */
     bool isActive() const;
+%Docstring
+ Returns true if the task is active, ie it is not complete and has
+ not been canceled.
+ :rtype: bool
+%End
 
-    /**
-     * Returns the current task status.
-     */
     TaskStatus status() const;
+%Docstring
+ Returns the current task status.
+ :rtype: TaskStatus
+%End
 
-    /**
-     * Returns the task's description.
-     */
     QString description() const;
+%Docstring
+ Returns the task's description.
+ :rtype: str
+%End
 
-    /**
-     * Returns the task's progress (between 0.0 and 100.0)
-     */
     double progress() const;
+%Docstring
+ Returns the task's progress (between 0.0 and 100.0)
+ :rtype: float
+%End
 
     virtual void cancel();
+%Docstring
+ Notifies the task that it should terminate. Calling this is not guaranteed
+ to immediately end the task, rather it sets the isCanceled() flag which
+ task subclasses can check and terminate their operations at an appropriate
+ time. Any subtasks owned by this task will also be canceled.
+ Derived classes must ensure that the base class implementation is called
+ from any overridden version.
+.. seealso:: isCanceled()
+%End
 
-    /**
-     * Places the task on hold. If the task in not queued
-     * (ie it is already running or has finished) then calling this has no effect.
-     * Calling this method only has an effect for tasks which are managed
-     * by a QgsTaskManager.
-     * @see unhold()
-     */
     void hold();
+%Docstring
+ Places the task on hold. If the task in not queued
+ (ie it is already running or has finished) then calling this has no effect.
+ Calling this method only has an effect for tasks which are managed
+ by a QgsTaskManager.
+.. seealso:: unhold()
+%End
 
-    /**
-     * Releases the task from being held. For tasks managed by a QgsTaskManager
-     * calling this will re-add them to the queue. If the
-     * task in not currently being held then calling this has no effect.
-     * @see hold()
-     */
     void unhold();
+%Docstring
+ Releases the task from being held. For tasks managed by a QgsTaskManager
+ calling this will re-add them to the queue. If the
+ task in not currently being held then calling this has no effect.
+.. seealso:: hold()
+%End
 
-    //! Controls how subtasks relate to their parent task
     enum SubTaskDependency
     {
-      SubTaskIndependent, //!< Subtask is independent of the parent, and can run before, after or at the same time as the parent.
-      ParentDependsOnSubTask, //!< Subtask must complete before parent can begin
+      SubTaskIndependent,
+      ParentDependsOnSubTask,
     };
 
-    /**
-     * Adds a subtask to this task.
-     *
-     * Subtasks allow a single task to be created which
-     * consists of multiple smaller tasks. Subtasks are not visible or indepedently
-     * controllable by users. Ownership of the subtask is transferred.
-     * Subtasks can have an optional list of dependent tasks, which must be completed
-     * before the subtask can begin. By default subtasks are considered independent
-     * of the parent task, ie they can be run either before, after, or at the same
-     * time as the parent task. This behavior can be overridden through the subTaskDependency
-     * argument.
-     *
-     * The parent task must be added to a QgsTaskManager for subtasks to be utilised.
-     * Subtasks should not be added manually to a QgsTaskManager, rather, only the parent
-     * task should be added to the manager.
-     *
-     * Subtasks can be nested, ie a subtask can legally be a parent task itself with
-     * its own set of subtasks.
-     */
-    void addSubTask( QgsTask* subTask /Transfer/, const QgsTaskList& dependencies = QgsTaskList(),
+    void addSubTask( QgsTask *subTask /Transfer/, const QgsTaskList &dependencies = QgsTaskList(),
                      SubTaskDependency subTaskDependency = SubTaskIndependent );
+%Docstring
+ Adds a subtask to this task.
 
-    void setDependentLayers( const QList<QgsMapLayer*>& dependentLayers );
+ Subtasks allow a single task to be created which
+ consists of multiple smaller tasks. Subtasks are not visible or indepedently
+ controllable by users. Ownership of the subtask is transferred.
+ Subtasks can have an optional list of dependent tasks, which must be completed
+ before the subtask can begin. By default subtasks are considered independent
+ of the parent task, ie they can be run either before, after, or at the same
+ time as the parent task. This behavior can be overridden through the subTaskDependency
+ argument. Note that subtasks should NEVER be dependent on their parent task, and violating
+ this constraint will prevent the task from completing successfully.
 
-    QList< QgsMapLayer* > dependentLayers() const;
+ The parent task must be added to a QgsTaskManager for subtasks to be utilized.
+ Subtasks should not be added manually to a QgsTaskManager, rather, only the parent
+ task should be added to the manager.
+
+ Subtasks can be nested, ie a subtask can legally be a parent task itself with
+ its own set of subtasks.
+%End
+
+    void setDependentLayers( const QList<QgsMapLayer *> &dependentLayers );
+%Docstring
+ Sets a list of layers on which the task depends. The task will automatically
+ be canceled if any of these layers are about to be removed.
+.. seealso:: dependentLayerIds()
+%End
+
+    QList< QgsMapLayer * > dependentLayers() const;
+%Docstring
+ Returns the list of layers on which the task depends. The task will automatically
+ be canceled if any of these layers are about to be removed.
+.. seealso:: setDependentLayers()
+ :rtype: list of QgsMapLayer
+%End
+
+    bool waitForFinished( int timeout = 30000 );
+%Docstring
+ Blocks the current thread until the task finishes or a maximum of ``timeout`` milliseconds.
+ If the ``timeout`` is ``-1`` the thread will be blocked forever.
+ In case of a timeout, the task will still be running.
+
+ The result will be false if the wait timed out and true in any other case.
+ :rtype: bool
+%End
 
   signals:
 
-    /**
-     * Will be emitted by task when its progress changes.
-     * @param progress percent of progress, from 0.0 - 100.0
-     * @note derived classes should not emit this signal directly, instead they should call
-     * setProgress()
-     */
     void progressChanged( double progress );
+%Docstring
+ Will be emitted by task when its progress changes.
+ \param progress percent of progress, from 0.0 - 100.0
+.. note::
 
-    /**
-     * Will be emitted by task when its status changes.
-     * @param status new task status
-     * @note derived classes should not emit this signal directly, it will automatically
-     * be emitted
-     */
+   derived classes should not emit this signal directly, instead they should call
+ setProgress()
+%End
+
     void statusChanged( int status );
+%Docstring
+ Will be emitted by task when its status changes.
+ \param status new task status
+.. note::
 
-    /**
-     * Will be emitted by task to indicate its commencement.
-     * @note derived classes should not emit this signal directly, it will automatically
-     * be emitted when the task begins
-     */
+   derived classes should not emit this signal directly, it will automatically
+ be emitted
+%End
+
     void begun();
+%Docstring
+ Will be emitted by task to indicate its commencement.
+.. note::
 
-    /**
-     * Will be emitted by task to indicate its successful completion.
-     * @note derived classes should not emit this signal directly, it will automatically
-     * be emitted
-     */
+   derived classes should not emit this signal directly, it will automatically
+ be emitted when the task begins
+%End
+
     void taskCompleted();
+%Docstring
+ Will be emitted by task to indicate its successful completion.
+.. note::
 
-    /**
-     * Will be emitted by task if it has terminated for any reason
-     * other then completion (e.g., when a task has been canceled or encountered
-     * an internal error).
-     * @note derived classes should not emit this signal directly, it will automatically
-     * be emitted
-     */
+   derived classes should not emit this signal directly, it will automatically
+ be emitted
+%End
+
     void taskTerminated();
+%Docstring
+ Will be emitted by task if it has terminated for any reason
+ other then completion (e.g., when a task has been canceled or encountered
+ an internal error).
+.. note::
+
+   derived classes should not emit this signal directly, it will automatically
+ be emitted
+%End
 
   protected:
 
-    /**
-     * Performs the task's operation. This method will be called when the task commences
-     * (ie via calling start() ), and subclasses should implement the operation they
-     * wish to perform in the background within this method.
-     *
-     * A task must return a boolean value to indicate whether the
-     * task was completed successfully or terminated before completion.
-     */
     virtual bool run() = 0;
+%Docstring
+ Performs the task's operation. This method will be called when the task commences
+ (ie via calling start() ), and subclasses should implement the operation they
+ wish to perform in the background within this method.
 
-    /**
-     * If the task is managed by a QgsTaskManager, this will be called after the
-     * task has finished (whether through successful completion or via early
-     * termination). The result argument reflects whether
-     * the task was successfully completed or not. This method is always called
-     * from the main thread, so it is safe to create widgets and perform other
-     * operations which require the main thread. However, the GUI will be blocked
-     * for the duration of this method so tasks should avoid performing any
-     * lengthy operations here.
-     */
+ A task must return a boolean value to indicate whether the
+ task was completed successfully or terminated before completion.
+ :rtype: bool
+%End
+
     virtual void finished( bool result );
+%Docstring
+ If the task is managed by a QgsTaskManager, this will be called after the
+ task has finished (whether through successful completion or via early
+ termination). The result argument reflects whether
+ the task was successfully completed or not. This method is always called
+ from the main thread, so it is safe to create widgets and perform other
+ operations which require the main thread. However, the GUI will be blocked
+ for the duration of this method so tasks should avoid performing any
+ lengthy operations here.
+%End
 
-    /**
-     * Will return true if task should terminate ASAP. If the task reports the CanCancel
-     * flag, then derived classes' run() methods should periodically check this and
-     * terminate in a safe manner.
-     */
     bool isCanceled() const;
+%Docstring
+ Will return true if task should terminate ASAP. If the task reports the CanCancel
+ flag, then derived classes' run() methods should periodically check this and
+ terminate in a safe manner.
+ :rtype: bool
+%End
 
   protected slots:
 
-    /**
-     * Sets the task's current progress. If task reports the CanReportProgress flag then
-     * the derived class should call this method whenever the task wants to update its
-     * progress. Calling will automatically emit the progressChanged signal.
-     * @param progress percent of progress, from 0.0 - 100.0
-     */
     void setProgress( double progress );
+%Docstring
+ Sets the task's current progress. The derived class should call this method whenever
+ the task wants to update its progress. Calling will automatically emit the progressChanged signal.
+ \param progress percent of progress, from 0.0 - 100.0
+%End
 
 };
+
 
 QFlags<QgsTask::Flag> operator|(QgsTask::Flag f1, QFlags<QgsTask::Flag> f2);
 
-//! List of QgsTask objects
-typedef QList< QgsTask* > QgsTaskList;
 
-/** \ingroup core
- * \class QgsTaskManager
- * \brief Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
- * or accessed via a global instance.
- * \note Added in version 2.16
- */
 class QgsTaskManager : QObject
 {
+%Docstring
+ Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
+ or accessed via QgsApplication.taskManager().
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
-#include <qgstaskmanager.h>
+#include "qgstaskmanager.h"
 %End
   public:
 
-    /** Constructor for QgsTaskManager.
-     * @param parent parent QObject
-     */
-    QgsTaskManager( QObject* parent /TransferThis/ = nullptr );
+    QgsTaskManager( QObject *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsTaskManager.
+ \param parent parent QObject
+%End
 
     virtual ~QgsTaskManager();
 
-    /**
-     * Definition of a task for inclusion within a task bundle.
-     */
     struct TaskDefinition
     {
-      /**
-       * Constructor for TaskDefinition. Ownership of the task is transferred to the definition.
-       */
-      explicit TaskDefinition( QgsTask* task, QgsTaskList dependentTasks = QgsTaskList() );
 
-      //! Task
-      QgsTask* task;
+      explicit TaskDefinition( QgsTask *task, QgsTaskList dependentTasks = QgsTaskList() );
+%Docstring
+ Constructor for TaskDefinition. Ownership of the task is not transferred to the definition,
+ but will be transferred to a QgsTaskManager.
+%End
 
-      /**
-       * List of dependencies which must be completed before task can run. If any dependent tasks are
-       * canceled this task will also be canceled. Dependent tasks must also be added
-       * to the task manager for proper handling of dependencies.
-       */
+      QgsTask *task;
+%Docstring
+Task
+%End
+
       QgsTaskList dependentTasks;
+%Docstring
+ List of dependent tasks which must be completed before task can run. If any dependent tasks are
+ canceled this task will also be canceled. Dependent tasks must also be added
+ to the task manager for proper handling of dependencies.
+%End
+
     };
 
-    /** Adds a task to the manager. Ownership of the task is transferred
-     * to the manager, and the task manager will be responsible for starting
-     * the task. The priority argument can be used to control the run queue's
-     * order of execution.
-     * @returns unique task ID
-     */
-    long addTask( QgsTask* task /Transfer/, int priority = 0 );
+    long addTask( QgsTask *task /Transfer/, int priority = 0 );
+%Docstring
+ Adds a task to the manager. Ownership of the task is transferred
+ to the manager, and the task manager will be responsible for starting
+ the task. The priority argument can be used to control the run queue's
+ order of execution, with larger numbers
+ taking precedence over lower priority numbers.
+ :return: unique task ID
+ :rtype: long
+%End
 
-    /**
-     * Adds a task to the manager, using a full task definition (including dependency
-     * handling). Ownership of the task is transferred to the manager, and the task
-     * manager will be responsible for starting the task. The priority argument can
-     * be used to control the run queue's order of execution.
-     * @returns unique task ID
-     */
-    long addTask( const TaskDefinition& task /Transfer/, int priority = 0 );
+    long addTask( const TaskDefinition &task /Transfer/, int priority = 0 );
+%Docstring
+ Adds a task to the manager, using a full task definition (including dependency
+ handling). Ownership of the task is transferred to the manager, and the task
+ manager will be responsible for starting the task. The priority argument can
+ be used to control the run queue's order of execution, with larger numbers
+ taking precedence over lower priority numbers.
+ :return: unique task ID
+ :rtype: long
+%End
 
+    QgsTask *task( long id ) const;
+%Docstring
+ Returns the task with matching ID.
+ \param id task ID
+ :return: task if found, or None
+ :rtype: QgsTask
+%End
 
-    /** Returns the task with matching ID.
-     * @param id task ID
-     * @returns task if found, or nullptr
-     */
-    QgsTask* task( long id ) const;
+    QList<QgsTask *> tasks() const;
+%Docstring
+ Returns all tasks tracked by the manager.
+ :rtype: list of QgsTask
+%End
 
-    /** Returns all tasks tracked by the manager.
-     */
-    QList<QgsTask*> tasks() const;
-
-    //! Returns the number of tasks tracked by the manager.
     int count() const;
+%Docstring
+Returns the number of tasks tracked by the manager.
+ :rtype: int
+%End
 
-    /** Returns the unique task ID corresponding to a task managed by the class.
-     * @param task task to find
-     * @returns task ID, or -1 if task not found
-     */
-    long taskId( QgsTask* task ) const;
+    long taskId( QgsTask *task ) const;
+%Docstring
+ Returns the unique task ID corresponding to a task managed by the class.
+ \param task task to find
+ :return: task ID, or -1 if task not found
+ :rtype: long
+%End
 
-    //! Instructs all tasks tracked by the manager to terminate.
     void cancelAll();
+%Docstring
+ Instructs all tasks tracked by the manager to terminate. Individual tasks may take some time
+ to cancel, or may totally ignore this instruction. Calling this does not block
+ but will instead signal the tasks to cancel and then return immediately.
+%End
 
-    //! Returns true if all dependencies for the specified task are satisfied
     bool dependenciesSatisfied( long taskId ) const;
+%Docstring
+Returns true if all dependencies for the specified task are satisfied
+ :rtype: bool
+%End
 
-    //! Returns the set of task IDs on which a task is dependent
-    //! @note not available in Python bindings
-    //QSet< long > dependencies( long taskId ) const;
 
-    QList< QgsMapLayer* > dependentLayers( long taskId ) const;
+    QList< QgsMapLayer * > dependentLayers( long taskId ) const;
+%Docstring
+ Returns a list of layers on which as task is dependent. The task will automatically
+ be canceled if any of these layers are above to be removed.
+ \param taskId task ID
+ :return: list of layers
+.. seealso:: tasksDependentOnLayer()
+ :rtype: list of QgsMapLayer
+%End
 
-    QList< QgsTask* > tasksDependentOnLayer( QgsMapLayer* layer ) const;
+    QList< QgsTask * > tasksDependentOnLayer( QgsMapLayer *layer ) const;
+%Docstring
+ Returns a list of tasks which depend on a layer.
+.. seealso:: dependentLayers()
+ :rtype: list of QgsTask
+%End
 
-    /** Returns a list of the active (queued or running) tasks.
-     * @see countActiveTasks()
-     */
-    QList< QgsTask* > activeTasks() const;
+    QList< QgsTask * > activeTasks() const;
+%Docstring
+ Returns a list of the active (queued or running) tasks.
+.. seealso:: countActiveTasks()
+ :rtype: list of QgsTask
+%End
 
-    /** Returns the number of active (queued or running) tasks.
-     * @see activeTasks()
-     * @see countActiveTasksChanged()
-     */
     int countActiveTasks() const;
+%Docstring
+ Returns the number of active (queued or running) tasks.
+.. seealso:: activeTasks()
+.. seealso:: countActiveTasksChanged()
+ :rtype: int
+%End
 
   signals:
 
-    //! Will be emitted when a task reports a progress change
-    //! @param taskId ID of task
-    //! @param progress percent of progress, from 0.0 - 100.0
     void progressChanged( long taskId, double progress );
+%Docstring
+\param progress percent of progress, from 0.0 - 100.0
+%End
 
-    //! Will be emitted when only a single task remains to complete
-    //! and that task has reported a progress change
-    //! @param progress percent of progress, from 0.0 - 100.0
     void finalTaskProgressChanged( double progress );
+%Docstring
+\param progress percent of progress, from 0.0 - 100.0
+%End
 
-    //! Will be emitted when a task reports a status change
-    //! @param taskId ID of task
-    //! @param status new task status
     void statusChanged( long taskId, int status );
+%Docstring
+\param status new task status
+%End
 
-    //! Emitted when a new task has been added to the manager
-    //! @param taskId ID of task
     void taskAdded( long taskId );
+%Docstring
+\param taskId ID of task
+%End
 
-    //! Emitted when a task is about to be deleted
-    //! @param taskId ID of task
     void taskAboutToBeDeleted( long taskId );
+%Docstring
+\param taskId ID of task
+%End
 
-    //! Emitted when all tasks are complete
-    //! @see countActiveTasksChanged()
     void allTasksFinished();
+%Docstring
+.. seealso:: countActiveTasksChanged()
+%End
 
-    //! Emitted when the number of active tasks changes
-    //! @see countActiveTasks()
     void countActiveTasksChanged( int count );
+%Docstring
+.. seealso:: countActiveTasks()
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstaskmanager.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

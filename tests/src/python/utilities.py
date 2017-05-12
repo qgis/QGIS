@@ -18,6 +18,7 @@ import sys
 import glob
 import platform
 import tempfile
+import re
 
 try:
     from urllib2 import urlopen, HTTPError, URLError
@@ -358,6 +359,7 @@ class DoxygenParser():
                                          'QgsSQLStatement::NodeUnaryOperator',
                                          'QgsRuleBasedLabeling::Rule',
                                          'QgsSQLStatement::Visitor']
+        self.version_regex = re.compile(r'QGIS [\d\.]+.*')
         self.parseFiles(path)
 
     def parseFiles(self, path):
@@ -526,9 +528,9 @@ class DoxygenParser():
         found_version_added = False
         for para in d.getiterator('para'):
             for s in para.getiterator('simplesect'):
-                if s.get('kind') == 'note':
+                if s.get('kind') == 'since':
                     for p in s.getiterator('para'):
-                        if p.text and p.text.lower().startswith('added in'):
+                        if self.version_regex.match(p.text):
                             found_version_added = True
                             break
             if found_version_added:

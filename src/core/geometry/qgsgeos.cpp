@@ -417,8 +417,7 @@ int QgsGeos::splitGeometry( const QgsLineString &splitLine,
     }
     else if ( splitLine.numPoints() == 1 )
     {
-      QgsPointV2  pt = splitLine.pointN( 0 );
-      splitLineGeos = createGeosPoint( &pt, 2, mPrecision );
+      splitLineGeos = createGeosPointXY( splitLine.xAt( 0 ), splitLine.yAt( 0 ), false, 0, false, 0, 2, mPrecision );
     }
     else
     {
@@ -987,17 +986,41 @@ QgsPolygonV2 *QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
 
 QgsLineString *QgsGeos::sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM )
 {
-  QgsPointSequence pts;
   const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, geos );
   unsigned int nPoints;
   GEOSCoordSeq_getSize_r( geosinit.ctxt, cs, &nPoints );
-  pts.reserve( nPoints );
+  QVector< double > xOut;
+  xOut.reserve( nPoints );
+  QVector< double > yOut;
+  yOut.reserve( nPoints );
+  QVector< double > zOut;
+  if ( hasZ )
+    zOut.reserve( nPoints );
+  QVector< double > mOut;
+  if ( hasM )
+    mOut.reserve( nPoints );
+  double x = 0;
+  double y = 0;
+  double z = 0;
+  double m = 0;
   for ( unsigned int i = 0; i < nPoints; ++i )
   {
-    pts.push_back( coordSeqPoint( cs, i, hasZ, hasM ) );
+    GEOSCoordSeq_getX_r( geosinit.ctxt, cs, i, &x );
+    xOut << x;
+    GEOSCoordSeq_getY_r( geosinit.ctxt, cs, i, &y );
+    yOut << y;
+    if ( hasZ )
+    {
+      GEOSCoordSeq_getZ_r( geosinit.ctxt, cs, i, &z );
+      zOut << z;
+    }
+    if ( hasM )
+    {
+      GEOSCoordSeq_getOrdinate_r( geosinit.ctxt, cs, i, 3, &m );
+      mOut << m;
+    }
   }
-  QgsLineString *line = new QgsLineString();
-  line->setPoints( pts );
+  QgsLineString *line = new QgsLineString( xOut, yOut, zOut, mOut );
   return line;
 }
 
@@ -1520,16 +1543,15 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     {
       for ( int i = 0; i < numOutPoints; ++i )
       {
-        const QgsPointV2 &pt = line->pointN( i % numPoints ); //todo: create method to get const point reference
-        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, qgsRound( pt.x() / precision ) * precision );
-        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, qgsRound( pt.y() / precision ) * precision );
+        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, qgsRound( line->xAt( i % numPoints ) / precision ) * precision );
+        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, qgsRound( line->yAt( i % numPoints ) / precision ) * precision );
         if ( hasZ )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, qgsRound( pt.z() / precision ) * precision );
+          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, qgsRound( line->zAt( i % numPoints ) / precision ) * precision );
         }
         if ( hasM )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, pt.m() );
+          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, line->mAt( i % numPoints ) );
         }
       }
     }
@@ -1537,16 +1559,15 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     {
       for ( int i = 0; i < numOutPoints; ++i )
       {
-        const QgsPointV2 &pt = line->pointN( i % numPoints ); //todo: create method to get const point reference
-        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, pt.x() );
-        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, pt.y() );
+        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, line->xAt( i % numPoints ) );
+        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, line->yAt( i % numPoints ) );
         if ( hasZ )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, pt.z() );
+          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, line->zAt( i % numPoints ) );
         }
         if ( hasM )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, pt.m() );
+          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, line->mAt( i % numPoints ) );
         }
       }
     }
@@ -1566,6 +1587,14 @@ GEOSGeometry *QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int co
   if ( !pt )
     return nullptr;
 
+  return createGeosPointXY( pt->x(), pt->y(), pt->is3D(), pt->z(), pt->isMeasure(), pt->m(), coordDims, precision );
+}
+
+GEOSGeometry *QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision )
+{
+  Q_UNUSED( hasM );
+  Q_UNUSED( m );
+
   GEOSGeometry *geosPoint = nullptr;
 
   try
@@ -1578,26 +1607,26 @@ GEOSGeometry *QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int co
     }
     if ( precision > 0. )
     {
-      GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, qgsRound( pt->x() / precision ) * precision );
-      GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, qgsRound( pt->y() / precision ) * precision );
-      if ( pt->is3D() )
+      GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, qgsRound( x / precision ) * precision );
+      GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, qgsRound( y / precision ) * precision );
+      if ( hasZ )
       {
-        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, qgsRound( pt->z() / precision ) * precision );
+        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, qgsRound( z / precision ) * precision );
       }
     }
     else
     {
-      GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, pt->x() );
-      GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, pt->y() );
-      if ( pt->is3D() )
+      GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, x );
+      GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, y );
+      if ( hasZ )
       {
-        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, pt->z() );
+        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, z );
       }
     }
 #if 0 //disabled until geos supports m-coordinates
-    if ( pt->isMeasure() )
+    if ( hasM )
     {
-      GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 3, pt->m() );
+      GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 3, m );
     }
 #endif
     geosPoint = GEOSGeom_createPoint_r( geosinit.ctxt, coordSeq );
@@ -2141,10 +2170,8 @@ GEOSGeometry *QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeometry
   if ( !_linestringEndpoints( line, x1, y1, x2, y2 ) )
     return nullptr;
 
-  QgsPointV2 beginPoint( x1, y1 );
-  GEOSGeometry *beginLineVertex = createGeosPoint( &beginPoint, 2, precision );
-  QgsPointV2 endPoint( x2, y2 );
-  GEOSGeometry *endLineVertex = createGeosPoint( &endPoint, 2, precision );
+  GEOSGeometry *beginLineVertex = createGeosPointXY( x1, y1, false, 0, false, 0, 2, precision );
+  GEOSGeometry *endLineVertex = createGeosPointXY( x2, y2, false, 0, false, 0, 2, precision );
 
   bool isRing = false;
   if ( GEOSGeomTypeId_r( geosinit.ctxt, line ) == GEOS_LINEARRING
@@ -2201,10 +2228,8 @@ GEOSGeometry *QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeometry
     GEOSCoordSeq_getY_r( geosinit.ctxt, currentCoordSeq, 0, &yBegin );
     GEOSCoordSeq_getX_r( geosinit.ctxt, currentCoordSeq, currentCoordSeqSize - 1, &xEnd );
     GEOSCoordSeq_getY_r( geosinit.ctxt, currentCoordSeq, currentCoordSeqSize - 1, &yEnd );
-    QgsPointV2 beginPoint( xBegin, yBegin );
-    GEOSGeometry *beginCurrentGeomVertex = createGeosPoint( &beginPoint, 2, precision );
-    QgsPointV2 endPoint( xEnd, yEnd );
-    GEOSGeometry *endCurrentGeomVertex = createGeosPoint( &endPoint, 2, precision );
+    GEOSGeometry *beginCurrentGeomVertex = createGeosPointXY( xBegin, yBegin, false, 0, false, 0, 2, precision );
+    GEOSGeometry *endCurrentGeomVertex = createGeosPointXY( xEnd, yEnd, false, 0, false, 0, 2, precision );
 
     //check how many endpoints of the line merge result are on the (original) line
     int nEndpointsOnOriginalLine = 0;

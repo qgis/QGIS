@@ -31,7 +31,6 @@ from qgis.core import QgsApplication
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -51,4 +50,4 @@ class CreateNewModelAction(ToolboxAction):
         dlg.show()
 
     def updateModel(self):
-        algList.reloadProvider('model')
+        QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()

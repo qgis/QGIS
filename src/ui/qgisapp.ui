@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>25</height>
+     <height>18</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -50,6 +50,7 @@
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
     <addaction name="mActionSaveMapAsImage"/>
+    <addaction name="mActionSaveMapAsPdf"/>
     <addaction name="mActionDxfExport"/>
     <addaction name="mActionDwgImport"/>
     <addaction name="separator"/>
@@ -640,7 +641,16 @@
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
-    <string>Save as &amp;Image...</string>
+    <string>Save Map as &amp;Image...</string>
+   </property>
+  </action>
+  <action name="mActionSaveMapAsPdf">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save Map as &amp;PDF...</string>
    </property>
   </action>
   <action name="mActionNewMapCanvas">
@@ -2182,8 +2192,8 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>:/images/themes/default/mActionRotateFeature.png</normaloff>:/images/themes/default/mActionRotateFeature.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRotateFeature.svg</normaloff>:/images/themes/default/mActionRotateFeature.svg</iconset>
    </property>
    <property name="text">
     <string>Rotate Feature(s)</string>
@@ -2330,8 +2340,8 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>:/images/themes/default/mActionFillRing.png</normaloff>:/images/themes/default/mActionFillRing.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFillRing.svg</normaloff>:/images/themes/default/mActionFillRing.svg</iconset>
    </property>
    <property name="text">
     <string>Fill Ring</string>

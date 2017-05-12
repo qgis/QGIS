@@ -27,7 +27,7 @@
  * \brief A paint effect which blurs a source picture, using a number of different blur
  * methods.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
@@ -43,10 +43,10 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     };
 
     /** Creates a new QgsBlurEffect effect from a properties string map.
-     * @param map encoded properties string map
-     * @returns new QgsBlurEffect
+     * \param map encoded properties string map
+     * \returns new QgsBlurEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsBlurEffect();
 
@@ -56,58 +56,58 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     virtual QgsBlurEffect *clone() const override;
 
     /** Sets blur level (strength)
-     * @param level blur level. Depending on the current @link blurMethod @endlink, this parameter
+     * \param level blur level. Depending on the current blurMethod(), this parameter
      * has different effects
-     * @see blurLevel
-     * @see blurMethod
+     * \see blurLevel
+     * \see blurMethod
      */
     void setBlurLevel( const int level ) { mBlurLevel = level; }
 
     /** Returns the blur level (strength)
-     * @returns blur level. Depending on the current @link blurMethod @endlink, this parameter
+     * \returns blur level. Depending on the current blurMethod(), this parameter
      * has different effects
-     * @see setBlurLevel
-     * @see blurMethod
+     * \see setBlurLevel
+     * \see blurMethod
      */
     int blurLevel() const { return mBlurLevel; }
 
     /** Sets the blur method (algorithm) to use for performing the blur.
-     * @param method blur method
-     * @see blurMethod
+     * \param method blur method
+     * \see blurMethod
      */
     void setBlurMethod( const BlurMethod method ) { mBlurMethod = method; }
 
     /** Returns the blur method (algorithm) used for performing the blur.
-     * @returns blur method
-     * @see setBlurMethod
+     * \returns blur method
+     * \see setBlurMethod
      */
     BlurMethod blurMethod() const { return mBlurMethod; }
 
     /** Sets the transparency for the effect
-     * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
+     * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
-     * @see transparency
+     * \see transparency
      */
     void setTransparency( const double transparency ) { mTransparency = transparency; }
 
     /** Returns the transparency for the effect
-     * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
+     * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
-     * @see setTransparency
+     * \see setTransparency
      */
     double transparency() const { return mTransparency; }
 
     /** Sets the blend mode for the effect
-     * @param mode blend mode used for drawing the effect on to a destination
+     * \param mode blend mode used for drawing the effect on to a destination
      * paint device
-     * @see blendMode
+     * \see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
     /** Returns the blend mode for the effect
-     * @returns blend mode used for drawing the effect on to a destination
+     * \returns blend mode used for drawing the effect on to a destination
      * paint device
-     * @see setBlendMode
+     * \see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 

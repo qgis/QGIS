@@ -119,9 +119,9 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
       QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
       mLayers << SourceLayer( vl, layer.name() );
       // connect to modification signals to invalidate statistics
-      connect( vl, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( invalidateStatistics() ) );
-      connect( vl, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( invalidateStatistics() ) );
-      connect( vl, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( invalidateStatistics() ) );
+      connect( vl, &QgsVectorLayer::featureAdded, this, &QgsVirtualLayerProvider::invalidateStatistics );
+      connect( vl, &QgsVectorLayer::featureDeleted, this, &QgsVirtualLayerProvider::invalidateStatistics );
+      connect( vl, &QgsVectorLayer::geometryChanged, this, &QgsVirtualLayerProvider::invalidateStatistics );
     }
     else
     {

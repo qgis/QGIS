@@ -268,7 +268,7 @@ void Pty::init()
   _xonXoff = true;
   _utf8 =true;
 
-  connect(pty(), SIGNAL(readyRead()) , this , SLOT(dataReceived()));
+  connect(pty(), &QIODevice::readyRead , this , &Pty::dataReceived);
   setPtyChannels(KPtyProcess::AllChannels);
 }
 

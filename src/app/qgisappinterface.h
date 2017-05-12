@@ -41,7 +41,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     /**
      * Constructor.
-     * @param qgis Pointer to the QgisApp object
+     * \param qgis Pointer to the QgisApp object
      */
     QgisAppInterface( QgisApp *qgisapp );
 
@@ -91,11 +91,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     /**
      * Add a widget to the plugins toolbar.
-     * To remove this widget again, call {@link removeToolBarIcon}
+     * To remove this widget again, call removeToolBarIcon()
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \param widget widget to add. The toolbar will take ownership of this widget
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the plugin toolbar
@@ -105,11 +105,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     /**
      * Add a widget to the raster toolbar.
-     * To remove this widget again, call {@link removeRasterToolBarIcon}
+     * To remove this widget again, call removeRasterToolBarIcon()
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \param widget widget to add. The toolbar will take ownership of this widget
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addRasterToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Raster toolbar
@@ -119,11 +119,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     /**
      * Add a widget to the vector toolbar.
-     * To remove this widget again, call {@link removeVectorToolBarIcon}
+     * To remove this widget again, call removeVectorToolBarIcon()
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \param widget widget to add. The toolbar will take ownership of this widget
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addVectorToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Vector toolbar
@@ -133,11 +133,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     /**
      * Add a widget to the database toolbar.
-     * To remove this widget again, call {@link removeDatabaseToolBarIcon}
+     * To remove this widget again, call removeDatabaseToolBarIcon()
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \param widget widget to add. The toolbar will take ownership of this widget
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addDatabaseToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Database toolbar
@@ -147,11 +147,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     /**
      * Add a widget to the web toolbar.
-     * To remove this widget again, call {@link removeWebToolBarIcon}
+     * To remove this widget again, call removeWebToolBarIcon()
      * with the returned QAction.
      *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
+     * \param widget widget to add. The toolbar will take ownership of this widget
+     * \returns the QAction you can use to remove this widget from the toolbar
      */
     QAction *addWebToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Web toolbar
@@ -161,14 +161,14 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QToolBar *addToolBar( const QString &name ) override;
 
     //! Add a toolbar
-    //! @note added in 2.3
+    //! \since QGIS 2.3
     void addToolBar( QToolBar *toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) override;
 
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
      * QGIS documentation, set useQgisDocDirectory to false.
-     * @param url URL to open
-     * @param useQgisDocDirectory If true, the URL will be formed by concatenating
+     * \param url URL to open
+     * \param useQgisDocDirectory If true, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (<prefix>/share/doc)
      */
 #ifndef Q_MOC_RUN
@@ -186,7 +186,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /**
      * Returns a pointer to the layer tree canvas bridge
      *
-     * @note added in 2.12
+     * \since QGIS 2.12
      */
     QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() override;
 
@@ -214,7 +214,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QMap<QString, QVariant> defaultStyleSheetOptions() override;
 
     /** Generate stylesheet
-     * @param opts generated default option values, or a changed copy of them */
+     * \param opts generated default option values, or a changed copy of them */
     void buildStyleSheet( const QMap<QString, QVariant> &opts ) override;
 
     //! Save changed default option keys/values to user settings
@@ -263,12 +263,12 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsAdvancedDigitizingDockWidget *cadDockWidget() override;
 
     /** Show layer properties dialog for layer
-     * @param l layer to show properties table for
+     * \param l layer to show properties table for
      */
     virtual void showLayerProperties( QgsMapLayer *l ) override;
 
     /** Show layer attribute dialog for layer
-     * @param l layer to show attribute table for
+     * \param l layer to show attribute table for
      */
     virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) override;
 
@@ -293,15 +293,15 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
 
     /** Register a new custom drop handler.
-     * @note added in QGIS 3.0
-     * @note Ownership of the factory is not transferred, and the factory must
+     * \since QGIS 3.0
+     * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
-     * @see unregisterCustomDropHandler() */
+     * \see unregisterCustomDropHandler() */
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
     /** Unregister a previously registered custom drop handler.
-     * @note added in QGIS 3.0
-     * @see registerCustomDropHandler() */
+     * \since QGIS 3.0
+     * \see registerCustomDropHandler() */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
     /** Accessors for inserting items into menus and toolbars.
@@ -314,7 +314,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QMenu *viewMenu() override;
     virtual QMenu *layerMenu() override;
     virtual QMenu *newLayerMenu() override;
-    //! @note added in 2.5
+    //! \since QGIS 2.5
     virtual QMenu *addLayerMenu() override;
     virtual QMenu *settingsMenu() override;
     virtual QMenu *pluginMenu() override;
@@ -446,20 +446,20 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /**
      * Open feature form
      * returns true when dialog was accepted (if shown modal, true otherwise)
-     * @param l vector layer
-     * @param f feature to show/modify
-     * @param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
-     * @param showModal if true, will wait for the dialog to be executed (only shown otherwise)
+     * \param l vector layer
+     * \param f feature to show/modify
+     * \param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
+     * \param showModal if true, will wait for the dialog to be executed (only shown otherwise)
      */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) override;
 
     /**
      * Returns a feature form for a given feature
      *
-     * @param layer   The layer for which the dialog will be created
-     * @param feature The feature for which the dialog will be created
+     * \param layer   The layer for which the dialog will be created
+     * \param feature The feature for which the dialog will be created
      *
-     * @return A feature form
+     * \returns A feature form
      */
     virtual QgsAttributeDialog *getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature ) override;
 
@@ -468,7 +468,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * With the help of this you can access methods like addFeature, startEditing
      * or stopEditing while giving the user the appropriate dialogs.
      *
-     * @return An instance of the vector layer tools
+     * \returns An instance of the vector layer tools
      */
     virtual QgsVectorLayerTools *vectorLayerTools() override;
 
@@ -486,16 +486,13 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual void preloadForm( const QString &uifile ) override;
 
     /** Return vector layers in edit mode
-     * @param modified whether to return only layers that have been modified
-     * @returns list of layers in legend order, or empty list
+     * \param modified whether to return only layers that have been modified
+     * \returns list of layers in legend order, or empty list
      */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const override;
 
     //! Get timeout for timed messages: default of 5 seconds
     virtual int messageTimeout() override;
-
-  signals:
-    void currentThemeChanged( const QString & );
 
   private slots:
 

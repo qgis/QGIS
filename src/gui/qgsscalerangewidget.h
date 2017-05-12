@@ -17,6 +17,7 @@
 #define QGSSCALERANGEWIDGET_H
 
 #include <QGridLayout>
+#include "qgis.h"
 #include <QLabel>
 #include "qgis_gui.h"
 
@@ -31,12 +32,12 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     Q_OBJECT
 
   public:
-    explicit QgsScaleRangeWidget( QWidget *parent = nullptr );
+    explicit QgsScaleRangeWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     //! set the map canvas which will be used for the current scale buttons
 
     /**
-     * @brief setMapCanvas set the map canvas which will be used for the current scale buttons
+     * \brief setMapCanvas set the map canvas which will be used for the current scale buttons
      * if not set, the buttons are hidden.
      */
     void setMapCanvas( QgsMapCanvas *mapCanvas );
@@ -79,9 +80,9 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
   signals:
 
     /** Emitted when the scale range set in the widget is changed.
-     * @param min minimum scale
-     * @param max maximum scale
-     * @note added in QGIS 2.16
+     * \param min minimum scale
+     * \param max maximum scale
+     * \since QGIS 2.16
      */
     void rangeChanged( double min, double max );
 

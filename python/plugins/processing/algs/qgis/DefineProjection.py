@@ -28,15 +28,15 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.core import QgsCoordinateReferenceSystem
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsApplication,
+                       QgsProcessingUtils)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
-
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -50,19 +50,31 @@ class DefineProjection(GeoAlgorithm):
     #def getIcon(self):
     #    return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Define current projection')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Vector general tools')
+
+    def name(self):
+        return 'definecurrentprojection'
+
+    def displayName(self):
+        return self.tr('Define current projection')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterCrs(self.CRS, 'Output CRS'))
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Layer with projection'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(fileName)
+        layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
 
         provider = layer.dataProvider()

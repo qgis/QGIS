@@ -25,12 +25,12 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsVectorFileWriter, QgsSettings
+from qgis.core import QgsVectorFileWriter, QgsSettings, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class ExampleAlgorithm(GeoAlgorithm):
@@ -54,16 +54,21 @@ class ExampleAlgorithm(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
 
+    def name(self):
+        # Unique (non-user visible) name of algorithm
+        return 'create_copy_of_layer'
+
+    def displayName(self):
+        # The name that the user will see in the toolbox
+        return self.tr('Create copy of layer')
+
+    def group(self):
+        return self.tr('Algorithms for vector layers')
+
     def defineCharacteristics(self):
         """Here we define the inputs and output of the algorithm, along
         with some other properties.
         """
-
-        # The name that the user will see in the toolbox
-        self.name, self.i18n_name = self.trAlgorithm('Create copy of layer')
-
-        # The branch of the toolbox under which the algorithm will appear
-        self.group, self.i18n_group = self.trAlgorithm('Algorithms for vector layers')
 
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument
@@ -74,8 +79,10 @@ class ExampleAlgorithm(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Output layer with selected features')))
 
-    def processAlgorithm(self, feedback):
-        """Here is where the processing itself takes place."""
+    def processAlgorithm(self, context, feedback):
+        """Here is where the processing itself takes place.
+        :param context:
+        """
 
         # The first thing to do is retrieve the values of the parameters
         # entered by the user
@@ -83,10 +90,10 @@ class ExampleAlgorithm(GeoAlgorithm):
         output = self.getOutputValue(self.OUTPUT_LAYER)
 
         # Input layers vales are always a string with its location.
-        # That string can be converted into a QGIS object (a
+        # That string can be converted into a QGIS layer (a
         # QgsVectorLayer in this case) using the
-        # processing.getObjectFromUri() method.
-        vectorLayer = dataobjects.getObjectFromUri(inputFilename)
+        # QgsProcessingUtils.mapLayerFromString() method.
+        vectorLayer = QgsProcessingUtils.mapLayerFromString(inputFilename, context)
 
         # And now we can process
 
@@ -106,7 +113,7 @@ class ExampleAlgorithm(GeoAlgorithm):
         # selection that might exist in layer and the configuration that
         # indicates should algorithm use only selected features or all
         # of them
-        features = vector.features(vectorLayer)
+        features = QgsProcessingUtils.getFeatures(vectorLayer, context)
         for f in features:
             writer.addFeature(f)
 

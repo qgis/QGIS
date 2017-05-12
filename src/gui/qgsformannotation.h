@@ -19,6 +19,7 @@
 #define QGSFORMANNOTATION_H
 
 #include "qgsannotation.h"
+#include "qgis.h"
 #include "qgsfeature.h"
 #include <QWidget>
 #include "qgis_gui.h"
@@ -27,7 +28,7 @@
  * \class QgsFormAnnotation
  * \ingroup gui
  * An annotation item that embeds a designer form showing the feature attribute
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
 {
@@ -37,7 +38,9 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsFormAnnotation.
      */
-    QgsFormAnnotation( QObject *parent = nullptr );
+    QgsFormAnnotation( QObject *parent SIP_TRANSFERTHIS = 0 );
+
+    QgsFormAnnotation *clone() const override SIP_FACTORY;
 
     QSizeF minimumFrameSize() const override;
     //! Returns the optimal frame size
@@ -45,13 +48,13 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
 
     /**
      * Sets the path to the Qt Designer UI file to show in the annotation.
-     * @see designerForm()
+     * \see designerForm()
      */
     void setDesignerForm( const QString &uiFile );
 
     /**
      * Returns the path to the Qt Designer UI file to show in the annotation.
-     * @see setDesignerForm()
+     * \see setDesignerForm()
      */
     QString designerForm() const { return mDesignerForm; }
 
@@ -63,7 +66,7 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
     /**
      * Returns a new QgsFormAnnotation object.
      */
-    static QgsFormAnnotation *create() { return new QgsFormAnnotation(); }
+    static QgsFormAnnotation *create() SIP_FACTORY { return new QgsFormAnnotation(); }
 
   protected:
 

@@ -143,10 +143,10 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   if ( !mManagerMode )
   {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
+    connect( mAddButton, &QAbstractButton::clicked, this, &QgsMssqlSourceSelect::addTables );
 
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
+    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsMssqlSourceSelect::buildQuery );
   }
 
   populateConnectionList();
@@ -173,7 +173,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( new QgsMssqlSourceSelectDelegate( this ) );
 
-  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+  connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsMssqlSourceSelect::treeWidgetSelectionChanged );
 
   QgsSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addMSSQLDC" ), false ).toBool() ?
@@ -693,12 +693,12 @@ void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString &connectionNam
   {
     mColumnTypeThread = new QgsMssqlGeomColumnTypeThread( connectionName, estimateMetadata );
 
-    connect( mColumnTypeThread, SIGNAL( setLayerType( QgsMssqlLayerProperty ) ),
-             this, SLOT( setLayerType( QgsMssqlLayerProperty ) ) );
-    connect( this, SIGNAL( addGeometryColumn( QgsMssqlLayerProperty ) ),
-             mColumnTypeThread, SLOT( addGeometryColumn( QgsMssqlLayerProperty ) ) );
-    connect( mColumnTypeThread, SIGNAL( finished() ),
-             this, SLOT( columnThreadFinished() ) );
+    connect( mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::setLayerType,
+             this, &QgsMssqlSourceSelect::setLayerType );
+    connect( this, &QgsMssqlSourceSelect::addGeometryColumn,
+             mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::addGeometryColumn );
+    connect( mColumnTypeThread, &QThread::finished,
+             this, &QgsMssqlSourceSelect::columnThreadFinished );
 
   }
 

@@ -29,15 +29,16 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsMapToPixelSimplifier
+from qgis.core import (QgsMapToPixelSimplifier,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -49,13 +50,19 @@ class SimplifyGeometries(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     METHOD = 'METHOD'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'simplify.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Simplify geometries')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry tools')
 
+    def name(self):
+        return 'simplifygeometries'
+
+    def displayName(self):
+        return self.tr('Simplify geometries')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
@@ -71,19 +78,19 @@ class SimplifyGeometries(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         tolerance = self.getParameterValue(self.TOLERANCE)
         method = self.getParameterValue(self.METHOD)
 
         pointsBefore = 0
         pointsAfter = 0
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(),
+                                                                     layer.crs(), context)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         if method != 0:
             simplifier = QgsMapToPixelSimplifier(QgsMapToPixelSimplifier.SimplifyGeometry, tolerance, method)
@@ -106,5 +113,5 @@ class SimplifyGeometries(GeoAlgorithm):
 
         del writer
 
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                               self.tr('Simplify: Input geometries have been simplified from {0} to {1} points').format(pointsBefore, pointsAfter))
+        QgsMessageLog.logMessage(self.tr('Simplify: Input geometries have been simplified from {0} to {1} points').format(pointsBefore, pointsAfter),
+                                 self.tr('Processing'), QgsMessageLog.INFO)

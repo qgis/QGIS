@@ -49,8 +49,8 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >
     mGroupButton->setEnabled( false );
   }
 
-  connect( mTabButton, SIGNAL( toggled( bool ) ), this, SLOT( on_mTabButton_toggled( bool ) ) );
-  connect( mGroupButton, SIGNAL( toggled( bool ) ), this, SLOT( on_mGroupButton_toggled( bool ) ) );
+  connect( mTabButton, &QAbstractButton::toggled, this, &QgsAddTabOrGroup::on_mTabButton_toggled );
+  connect( mGroupButton, &QAbstractButton::toggled, this, &QgsAddTabOrGroup::on_mGroupButton_toggled );
 
   mColumnCountSpinBox->setValue( QgsSettings().value( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), 1 ).toInt() );
 

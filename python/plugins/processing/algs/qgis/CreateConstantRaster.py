@@ -27,12 +27,13 @@ __revision__ = '$Format:%H$'
 
 from osgeo import gdal
 
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools.raster import RasterWriter
-from processing.tools import dataobjects
 
 
 class CreateConstantRaster(GeoAlgorithm):
@@ -41,10 +42,22 @@ class CreateConstantRaster(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     NUMBER = 'NUMBER'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create constant raster layer')
-        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
+    def group(self):
+        return self.tr('Raster tools')
+
+    def name(self):
+        return 'createconstantrasterlayer'
+
+    def displayName(self):
+        return self.tr('Create constant raster layer')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.NUMBER,
@@ -54,9 +67,8 @@ class CreateConstantRaster(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT,
                                     self.tr('Constant')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         value = self.getParameterValue(self.NUMBER)
 
         output = self.getOutputFromName(self.OUTPUT)

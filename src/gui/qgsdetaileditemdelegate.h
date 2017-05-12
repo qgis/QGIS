@@ -18,6 +18,7 @@
 #define QGSDETAILEDITEMDELEGATE_H
 
 #include <QAbstractItemDelegate>
+#include "qgis.h"
 #include <QString>
 #include "qgis_gui.h"
 
@@ -30,13 +31,13 @@ class QFont;
 /** \ingroup gui
  * A custom model/view delegate that can display an icon, heading
  * and detail sections.
- * @see also QgsDetailedItemData
+ * \see also QgsDetailedItemData
  */
 class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
   public:
-    QgsDetailedItemDelegate( QObject *parent = nullptr );
+    QgsDetailedItemDelegate( QObject *parent SIP_TRANSFERTHIS = 0 );
     ~QgsDetailedItemDelegate();
     //! Reimplement for parent class
     void paint( QPainter *painter,

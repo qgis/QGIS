@@ -19,6 +19,7 @@
 #define QGSSCALECOMBOBOX_H
 
 #include <QComboBox>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
@@ -29,7 +30,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
 {
     Q_OBJECT
   public:
-    QgsScaleComboBox( QWidget *parent = nullptr );
+    QgsScaleComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Function to read the selected scale as text
     QString scaleString();

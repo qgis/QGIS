@@ -407,7 +407,7 @@ RegExpFilter::HotSpot* UrlFilter::newHotSpot(int startLine,int startColumn,int e
 {
     HotSpot *spot = new UrlFilter::HotSpot(startLine,startColumn,
                                                endLine,endColumn);
-    connect(spot->getUrlObject(), SIGNAL(activated(QUrl)), this, SIGNAL(activated(QUrl)));
+    connect(spot->getUrlObject(), static_cast<void ( FilterObject::* )( const QUrl& )>( &FilterObject::activated ), this, &UrlFilter::activated);
     return spot;
 }
 
@@ -545,8 +545,8 @@ QList<QAction*> UrlFilter::HotSpot::actions()
     openAction->setObjectName( QStringLiteral("open-action" ));
     copyAction->setObjectName( QStringLiteral("copy-action" ));
 
-    QObject::connect( openAction , SIGNAL(triggered()) , _urlObject , SLOT(activated()) );
-    QObject::connect( copyAction , SIGNAL(triggered()) , _urlObject , SLOT(activated()) );
+    QObject::connect( openAction , &QAction::triggered , _urlObject , static_cast<void ( FilterObject::* )()>( &FilterObject::activated ) );
+    QObject::connect( copyAction , &QAction::triggered , _urlObject , static_cast<void ( FilterObject::* )()>( &FilterObject::activated ) );
 
     list << openAction;
     list << copyAction;

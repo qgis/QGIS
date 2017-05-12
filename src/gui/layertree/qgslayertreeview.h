@@ -17,6 +17,7 @@
 #define QGSLAYERTREEVIEW_H
 
 #include <QTreeView>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsLayerTreeGroup;
@@ -41,14 +42,14 @@ class QgsMapLayer;
  * Allows the client to specify a context menu provider with custom actions. Also it comes
  * with a set of default actions that can be used when building context menu.
  *
- * @see QgsLayerTreeModel
- * @note added in 2.4
+ * \see QgsLayerTreeModel
+ * \since QGIS 2.4
  */
 class GUI_EXPORT QgsLayerTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-    explicit QgsLayerTreeView( QWidget *parent = nullptr );
+    explicit QgsLayerTreeView( QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsLayerTreeView();
 
     //! Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
@@ -61,7 +62,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeViewDefaultActions *defaultActions();
 
     //! Set provider for context menu. Takes ownership of the instance
-    void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider );
+    void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider SIP_TRANSFER );
     //! Return pointer to the context menu provider. May be null
     QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
@@ -76,7 +77,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeGroup *currentGroupNode() const;
 
     /** Get current legend node. May be null if current node is not a legend node.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 
@@ -94,11 +95,11 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void refreshLayerSymbology( const QString &layerId );
 
     //! Enhancement of QTreeView::expandAll() that also records expanded state in layer tree nodes
-    //! @note added in QGIS 2.18
+    //! \since QGIS 2.18
     void expandAllNodes();
 
     //! Enhancement of QTreeView::collapseAll() that also records expanded state in layer tree nodes
-    //! @note added in QGIS 2.18
+    //! \since QGIS 2.18
     void collapseAllNodes();
 
   signals:
@@ -140,8 +141,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
  * Implementation of this interface can be implemented to allow QgsLayerTreeView
  * instance to provide custom context menus (opened upon right-click).
  *
- * @see QgsLayerTreeView
- * @note added in 2.4
+ * \see QgsLayerTreeView
+ * \since QGIS 2.4
  */
 class GUI_EXPORT QgsLayerTreeViewMenuProvider
 {
@@ -149,7 +150,7 @@ class GUI_EXPORT QgsLayerTreeViewMenuProvider
     virtual ~QgsLayerTreeViewMenuProvider() = default;
 
     //! Return a newly created menu instance (or null pointer on error)
-    virtual QMenu *createContextMenu() = 0;
+    virtual QMenu *createContextMenu() = 0 SIP_FACTORY;
 };
 
 

@@ -36,7 +36,8 @@ from processing.core.parameters import (ParameterRaster,
                                         ParameterSelection,
                                         ParameterCrs,
                                         ParameterNumber,
-                                        ParameterString)
+                                        ParameterString,
+                                        ParameterBoolean)
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -52,22 +53,32 @@ class warp(GdalAlgorithm):
     METHOD = 'METHOD'
     TR = 'TR'
     NO_DATA = 'NO_DATA'
-    RAST_EXT = 'RAST_EXT'
-    EXT_CRS = 'EXT_CRS'
+    USE_RASTER_EXTENT = 'USE_RASTER_EXTENT'
+    RASTER_EXTENT = 'RASTER_EXTENT'
+    EXTENT_CRS = 'EXTENT_CRS'
     RTYPE = 'RTYPE'
     OPTIONS = 'OPTIONS'
+    MULTITHREADING = 'MULTITHREADING'
 
     METHOD_OPTIONS = ['near', 'bilinear', 'cubic', 'cubicspline', 'lanczos']
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Warp (reproject)')
-        self.group, self.i18n_group = self.trAlgorithm('Raster projections')
+    def tags(self):
+        return self.tr('transform,reproject,crs,srs').split(',')
 
-        self.tags = self.tr('transform,reproject,crs,srs')
+    def name(self):
+        return 'warpreproject'
+
+    def displayName(self):
+        return self.tr('Warp (reproject)')
+
+    def group(self):
+        return self.tr('Raster projections')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
                                        self.tr('Source SRS'),
@@ -85,18 +96,24 @@ class warp(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Resampling method'),
                                              self.METHOD_OPTIONS))
-        self.addParameter(ParameterExtent(self.RAST_EXT,
+        self.addParameter(ParameterBoolean(self.USE_RASTER_EXTENT,
+                                           self.tr('Set georeferenced extents of output file'),
+                                           False
+                                           ))
+        self.addParameter(ParameterExtent(self.RASTER_EXTENT,
                                           self.tr('Raster extent'),
                                           optional=True))
-
-        self.addParameter(ParameterCrs(self.EXT_CRS,
+        self.addParameter(ParameterCrs(self.EXTENT_CRS,
                                        self.tr('CRS of the raster extent, leave blank for using Destination SRS'),
                                        optional=True))
-
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'),
                                           optional=True,
                                           metadata={'widget_wrapper': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}))
+        self.addParameter(ParameterBoolean(self.MULTITHREADING,
+                                           self.tr('Use multithreaded warping implementation'),
+                                           False
+                                           ))
         self.addParameter(ParameterSelection(self.RTYPE,
                                              self.tr('Output raster type'),
                                              self.TYPE, 5))
@@ -106,10 +123,12 @@ class warp(GdalAlgorithm):
     def getConsoleCommands(self):
         srccrs = self.getParameterValue(self.SOURCE_SRS)
         dstcrs = self.getParameterValue(self.DEST_SRS)
-        rastext = self.getParameterValue(self.RAST_EXT)
-        rastext_crs = self.getParameterValue(self.EXT_CRS)
+        useRasterExtent = self.getParameterValue(self.USE_RASTER_EXTENT)
+        rasterExtent = self.getParameterValue(self.RASTER_EXTENT)
+        extentCrs = self.getParameterValue(self.EXTENT_CRS)
         opts = self.getParameterValue(self.OPTIONS)
         noData = self.getParameterValue(self.NO_DATA)
+        multithreading = self.getParameterValue(self.MULTITHREADING)
 
         if noData is not None:
             noData = str(noData)
@@ -140,8 +159,8 @@ class warp(GdalAlgorithm):
             arguments.append(str(self.getParameterValue(self.TR)))
             arguments.append(str(self.getParameterValue(self.TR)))
 
-        if rastext:
-            regionCoords = rastext.split(',')
+        if useRasterExtent:
+            regionCoords = rasterExtent.split(',')
             if len(regionCoords) >= 4:
                 arguments.append('-te')
                 arguments.append(regionCoords[0])
@@ -149,13 +168,16 @@ class warp(GdalAlgorithm):
                 arguments.append(regionCoords[1])
                 arguments.append(regionCoords[3])
 
-                if rastext_crs:
+                if extentCrs:
                     arguments.append('-te_srs')
-                    arguments.append(rastext_crs)
+                    arguments.append(extentCrs)
 
         if opts:
             arguments.append('-co')
             arguments.append(opts)
+
+        if multithreading:
+            arguments.append('-multi')
 
         if GdalUtils.version() in [2010000, 2010100]:
             arguments.append("--config GDALWARP_IGNORE_BAD_CUTLINE YES")

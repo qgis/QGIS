@@ -21,16 +21,16 @@ class QgsTrackedVectorLayerTools : QgsVectorLayerTools
   public:
     QgsTrackedVectorLayerTools();
 
-    bool addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues, const QgsGeometry& defaultGeometry, QgsFeature* feature ) const;
-    bool startEditing( QgsVectorLayer* layer ) const ;
-    bool stopEditing( QgsVectorLayer* layer, bool allowCancel ) const ;
-    bool saveEdits( QgsVectorLayer* layer ) const ;
-    bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest &request, double dx = 0, double dy = 0, QString *errorMsg = nullptr ) const;
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const;
+    bool startEditing( QgsVectorLayer *layer ) const ;
+    bool stopEditing( QgsVectorLayer *layer, bool allowCancel ) const ;
+    bool saveEdits( QgsVectorLayer *layer ) const ;
+    bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx = 0, double dy = 0, QString *errorMsg = 0 ) const;
 
     /**
      * Set the vector layer tools that will be used to interact with the data
      */
-    void setVectorLayerTools(const QgsVectorLayerTools* tools );
+    void setVectorLayerTools(const QgsVectorLayerTools *tools );
 
     /**
      * Delete all features which have been added via this object.

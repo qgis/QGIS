@@ -17,20 +17,20 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSMULTIPOINTV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsgeometrycollection.h"
 
 /** \ingroup core
  * \class QgsMultiPointV2
  * \brief Multi point geometry collection.
- * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
 {
   public:
     QgsMultiPointV2();
     virtual QString geometryType() const override { return QStringLiteral( "MultiPoint" ); }
-    QgsMultiPointV2 *clone() const override;
+    QgsMultiPointV2 *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -44,9 +44,9 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
     virtual int nCoordinates() const override { return mGeometries.size(); }
 
     //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g ) override;
+    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
 
-    virtual QgsAbstractGeometry *boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
   protected:
 

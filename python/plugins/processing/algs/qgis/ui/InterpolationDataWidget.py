@@ -35,9 +35,10 @@ from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
 from qgis.core import (QgsApplication,
                        QgsMapLayer,
                        QgsMapLayerProxyModel,
-                       QgsWkbTypes
+                       QgsWkbTypes,
+                       QgsProcessingUtils
                        )
-from qgis.gui import QgsFieldProxyModel
+from qgis.core import QgsFieldProxyModel
 from qgis.analysis import QgsInterpolator
 
 from processing.gui.wrappers import WidgetWrapper
@@ -59,9 +60,6 @@ class InterpolationDataWidget(BASE, WIDGET):
         self.cmbLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.cmbFields.setFilters(QgsFieldProxyModel.Numeric)
         self.cmbFields.setLayer(self.cmbLayers.currentLayer())
-
-        #self.delegate = InterpolationTypeDelegate()
-        #self.layersTree.setItemDelegateForColumn(2, self.delegate)
 
     @pyqtSlot()
     def on_btnAdd_clicked(self):
@@ -85,6 +83,7 @@ class InterpolationDataWidget(BASE, WIDGET):
     @pyqtSlot(QgsMapLayer)
     def on_cmbLayers_layerChanged(self, layer):
         self.chkUseZCoordinate.setEnabled(False)
+        self.chkUseZCoordinate.setChecked(False)
 
         if layer is None or not layer.isValid():
             return
@@ -123,11 +122,12 @@ class InterpolationDataWidget(BASE, WIDGET):
 
     def value(self):
         layers = ''
+        context = dataobjects.createContext()
         for i in range(self.layersTree.topLevelItemCount()):
             item = self.layersTree.topLevelItem(i)
             if item:
                 layerName = item.text(0)
-                layer = dataobjects.getObjectFromName(layerName)
+                layer = QgsProcessingUtils.mapLayerFromString(layerName, context)
                 if not layer:
                     continue
 

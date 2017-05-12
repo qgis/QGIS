@@ -20,7 +20,7 @@
  * Widget auto conf plugin that guesses what widget type to use in function of what the widgets support.
  *
  * @note not available in Python bindings
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
 {
@@ -57,7 +57,7 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
  * Widget auto conf plugin that reads the widget setup to use from what the data provider says.
  *
  * @note not available in Python bindings
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class FromDbTablePlugin: public QgsEditorWidgetAutoConfPlugin
 {

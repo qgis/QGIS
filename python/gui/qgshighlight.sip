@@ -10,24 +10,24 @@ class QgsHighlight : QgsMapCanvasItem
      * @param geom initial geometry of highlight
      * @param layer associated map layer
      */
-    //QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsMapLayer *layer );
+    //QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer );
 
     /** Constructor for QgsHighlight
      * @param mapCanvas associated map canvas
      * @param geom initial geometry of highlight
      * @param layer associated vector layer
      */
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsVectorLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsVectorLayer *layer );
 
     ~QgsHighlight();
 
     /** Set line/stroke to color, polygon fill to color with alpha = 63.
      *  This is legacy function, use setFillColor() after setColor() if different fill color is required. */
-    void setColor( const QColor & color );
+    void setColor( const QColor &color );
 
     /** Set polygons fill color.
      * @note: added in version 2.3 */
-    void setFillColor( const QColor & fillColor );
+    void setFillColor( const QColor &fillColor );
 
     /** Set width. Ignored in feature mode. */
     void setWidth( int width );
@@ -45,7 +45,7 @@ class QgsHighlight : QgsMapCanvasItem
     virtual void updatePosition();
 
   protected:
-    virtual void paint( QPainter* p );
+    virtual void paint( QPainter *p );
 
     //! recalculates needed rectangle
     void updateRect();

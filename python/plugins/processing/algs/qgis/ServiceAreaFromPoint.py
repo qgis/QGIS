@@ -31,7 +31,14 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsField, QgsFields
+from qgis.core import (QgsWkbTypes,
+                       QgsUnitTypes,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsField,
+                       QgsFields,
+                       QgsProcessingUtils)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -71,8 +78,17 @@ class ServiceAreaFromPoint(GeoAlgorithm):
     OUTPUT_POINTS = 'OUTPUT_POINTS'
     OUTPUT_POLYGON = 'OUTPUT_POLYGON'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
+
+    def group(self):
+        return self.tr('Network analysis')
+
+    def name(self):
+        return 'serviceareafrompoint'
+
+    def displayName(self):
+        return self.tr('Service area (from point)')
 
     def defineCharacteristics(self):
         self.DIRECTIONS = OrderedDict([
@@ -83,9 +99,6 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
                            ]
-
-        self.name, self.i18n_name = self.trAlgorithm('Service area (from point)')
-        self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer representing network'),
@@ -143,9 +156,8 @@ class ServiceAreaFromPoint(GeoAlgorithm):
                                     self.tr('Service area (convex hull)'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_VECTOR))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
         startPoint = self.getParameterValue(self.START_POINT)
         strategy = self.getParameterValue(self.STRATEGY)
         travelCost = self.getParameterValue(self.TRAVEL_COST)
@@ -225,10 +237,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_POINTS).getVectorWriter(
-                fields,
-                QgsWkbTypes.MultiPoint,
-                layer.crs())
+            self.OUTPUT_POINTS).getVectorWriter(fields, QgsWkbTypes.MultiPoint, layer.crs(), context)
 
         feat.setGeometry(geomUpper)
         feat['type'] = 'upper'
@@ -248,10 +257,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_POLYGON).getVectorWriter(
-                fields,
-                QgsWkbTypes.Polygon,
-                layer.crs())
+            self.OUTPUT_POLYGON).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 
         geom = geomUpper.convexHull()
         feat.setGeometry(geom)

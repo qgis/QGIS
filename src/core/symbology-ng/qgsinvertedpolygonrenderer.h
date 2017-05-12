@@ -16,6 +16,7 @@
 #define QGSINVERTEDPOLYGONRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
@@ -34,17 +35,17 @@
  * Features are collected to form one "inverted" polygon
  * during renderFeature() and rendered on stopRender().
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 {
   public:
 
     /** Constructor
-     * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
+     * \param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
      * Ownership will be transferred.
      */
-    QgsInvertedPolygonRenderer( QgsFeatureRenderer *embeddedRenderer = nullptr );
+    QgsInvertedPolygonRenderer( QgsFeatureRenderer *embeddedRenderer SIP_TRANSFER = 0 );
 
     //! Direct copies are forbidden. Use clone() instead.
     QgsInvertedPolygonRenderer( const QgsInvertedPolygonRenderer & ) = delete;
@@ -56,12 +57,12 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 
     /** Renders a given feature.
      * This will here collect features. The actual rendering will be postponed to stopRender()
-     * @param feature the feature to render
-     * @param context the rendering context
-     * @param layer the symbol layer to render, if that makes sense
-     * @param selected whether this feature has been selected (this will add decorations)
-     * @param drawVertexMarker whether this feature has vertex markers (in edit mode usually)
-     * @returns true if the rendering was ok
+     * \param feature the feature to render
+     * \param context the rendering context
+     * \param layer the symbol layer to render, if that makes sense
+     * \param selected whether this feature has been selected (this will add decorations)
+     * \param drawVertexMarker whether this feature has vertex markers (in edit mode usually)
+     * \returns true if the rendering was ok
      */
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
@@ -101,16 +102,16 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
 
     /** Proxy that will call this method on the embedded renderer.
-     * @note not available in python bindings
+     * \note not available in Python bindings
      */
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override;
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override SIP_SKIP;
 
     /** Proxy that will call this method on the embedded renderer.
      */
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
 
     //! Creates a renderer out of an XML, for loading
-    static QgsFeatureRenderer *create( QDomElement &element );
+    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
 
     virtual QDomElement save( QDomDocument &doc ) override;
 
@@ -123,11 +124,11 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     virtual bool legendSymbolItemChecked( const QString &key ) override;
     virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
 
-    //! @returns true if the geometries are to be preprocessed (merged with an union) before rendering.
+    //! \returns true if the geometries are to be preprocessed (merged with an union) before rendering.
     bool preprocessingEnabled() const { return mPreprocessingEnabled; }
 
     /**
-     * @param enabled enables or disables the preprocessing.
+     * \param enabled enables or disables the preprocessing.
      * When enabled, geometries will be merged with an union before being rendered.
      * It allows fixing some rendering artifacts (when rendering overlapping polygons for instance).
      * This will involve some CPU-demanding computations and is thus disabled by default.
@@ -135,10 +136,10 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     void setPreprocessingEnabled( bool enabled ) { mPreprocessingEnabled = enabled; }
 
     /** Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
-     * @note added in 2.5
-     * @returns a new renderer if the conversion was possible, otherwise 0.
+     * \since QGIS 2.5
+     * \returns a new renderer if the conversion was possible, otherwise 0.
      */
-    static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
 
@@ -152,7 +153,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
       QgsFeature feature;             //< one feature (for attriute-based rendering)
     };
     typedef QVector<CombinedFeature> FeatureCategoryVector;
-    //! Where features are stored, based on the index of their symbol category @see mSymbolCategories
+    //! Where features are stored, based on the index of their symbol category \see mSymbolCategories
     FeatureCategoryVector mFeaturesCategories;
 
     //! Maps a category to an index

@@ -823,6 +823,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
 
       QgsField fld = mAttributeFields.at( i );
 
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
+
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
 
@@ -896,6 +899,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
         break;
 
       QgsField fld = mAttributeFields.at( i );
+
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
 
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
@@ -1127,6 +1133,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     {
       QgsField fld = mAttributeFields.at( it2.key() );
 
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
+
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
 
@@ -1157,6 +1166,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
     {
       QgsField fld = mAttributeFields.at( it2.key() );
+
+      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+        continue; // You can't update timestamp columns they are server only.
 
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
@@ -1642,7 +1654,7 @@ QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString &geometryType, int
 }
 
 
-QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QString &uri,
+QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -1663,7 +1675,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
   {
     if ( errorMessage )
       *errorMessage = db.lastError().text();
-    return QgsVectorLayerImport::ErrConnectionFailed;
+    return QgsVectorLayerExporter::ErrConnectionFailed;
   }
 
   QString dbName = dsUri.database();
@@ -1744,7 +1756,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
   {
     if ( errorMessage )
       *errorMessage = q.lastError().text();
-    return QgsVectorLayerImport::ErrCreateLayer;
+    return QgsVectorLayerExporter::ErrCreateLayer;
   }
 
   // set up spatial reference id
@@ -1770,7 +1782,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
     {
       if ( errorMessage )
         *errorMessage = q.lastError().text();
-      return QgsVectorLayerImport::ErrCreateLayer;
+      return QgsVectorLayerExporter::ErrCreateLayer;
     }
   }
 
@@ -1788,7 +1800,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
     {
       if ( errorMessage )
         *errorMessage = q.lastError().text();
-      return QgsVectorLayerImport::ErrCreateLayer;
+      return QgsVectorLayerExporter::ErrCreateLayer;
     }
   }
 
@@ -1824,7 +1836,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
   {
     if ( errorMessage )
       *errorMessage = q.lastError().text();
-    return QgsVectorLayerImport::ErrCreateLayer;
+    return QgsVectorLayerExporter::ErrCreateLayer;
   }
 
   // clear any resources hold by the query
@@ -1840,7 +1852,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
       *errorMessage = QObject::tr( "Loading of the MSSQL provider failed" );
 
     delete provider;
-    return QgsVectorLayerImport::ErrInvalidLayer;
+    return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
   // add fields to the layer
@@ -1874,7 +1886,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 
         delete provider;
-        return QgsVectorLayerImport::ErrAttributeTypeUnsupported;
+        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
       flist.append( fld );
@@ -1888,10 +1900,10 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
       delete provider;
-      return QgsVectorLayerImport::ErrAttributeCreationFailed;
+      return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
   }
-  return QgsVectorLayerImport::NoError;
+  return QgsVectorLayerExporter::NoError;
 }
 
 
@@ -1945,7 +1957,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   return new QgsMssqlRootItem( parentItem, QStringLiteral( "MSSQL" ), QStringLiteral( "mssql:" ) );
 }
 
-QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
+QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,

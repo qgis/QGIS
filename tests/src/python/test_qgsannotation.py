@@ -63,6 +63,11 @@ class TestQgsAnnotation(unittest.TestCase):
         im = self.renderAnnotation(a, QPointF(20, 30))
         self.assertTrue(self.imageCheck('text_annotation', 'text_annotation', im))
 
+        # check clone
+        clone = a.clone()
+        im = self.renderAnnotation(a, QPointF(20, 30))
+        self.assertTrue(self.imageCheck('text_annotation', 'text_annotation', im))
+
     def testSvgAnnotation(self):
         """ test rendering a svg annotation"""
         a = QgsSvgAnnotation()
@@ -73,6 +78,11 @@ class TestQgsAnnotation(unittest.TestCase):
         im = self.renderAnnotation(a, QPointF(20, 30))
         self.assertTrue(self.imageCheck('svg_annotation', 'svg_annotation', im))
 
+        # check clone
+        clone = a.clone()
+        im = self.renderAnnotation(a, QPointF(20, 30))
+        self.assertTrue(self.imageCheck('svg_annotation', 'svg_annotation', im))
+
     def testHtmlAnnotation(self):
         """ test rendering a html annotation"""
         a = QgsHtmlAnnotation()
@@ -80,6 +90,11 @@ class TestQgsAnnotation(unittest.TestCase):
         a.setFrameOffsetFromReferencePoint(QPointF(70, 90))
         html = TEST_DATA_DIR + "/test_html.html"
         a.setSourceFile(html)
+        im = self.renderAnnotation(a, QPointF(20, 30))
+        self.assertTrue(self.imageCheck('html_annotation', 'html_annotation', im))
+
+        # check clone
+        clone = a.clone()
         im = self.renderAnnotation(a, QPointF(20, 30))
         self.assertTrue(self.imageCheck('html_annotation', 'html_annotation', im))
 

@@ -69,9 +69,9 @@ void QgsCollapsibleGroupBoxBasic::init()
   setFocusProxy( mCollapseButton );
   setFocusPolicy( Qt::StrongFocus );
 
-  connect( mCollapseButton, SIGNAL( clicked() ), this, SLOT( toggleCollapsed() ) );
-  connect( this, SIGNAL( toggled( bool ) ), this, SLOT( checkToggled( bool ) ) );
-  connect( this, SIGNAL( clicked( bool ) ), this, SLOT( checkClicked( bool ) ) );
+  connect( mCollapseButton, &QAbstractButton::clicked, this, &QgsCollapsibleGroupBoxBasic::toggleCollapsed );
+  connect( this, &QGroupBox::toggled, this, &QgsCollapsibleGroupBoxBasic::checkToggled );
+  connect( this, &QGroupBox::clicked, this, &QgsCollapsibleGroupBoxBasic::checkClicked );
 }
 
 void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent *event )
