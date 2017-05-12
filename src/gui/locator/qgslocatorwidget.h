@@ -98,6 +98,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
 
     QString mNextRequestedString;
     bool mHasQueuedRequest = false;
+    bool mHasSelectedResult = false;
     QTimer mPopupTimer;
 
     void updateResults( const QString &text );
