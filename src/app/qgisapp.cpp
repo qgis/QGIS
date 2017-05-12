@@ -5901,6 +5901,15 @@ void QgisApp::saveMapAsPdf()
     if ( dlg.saveAsRaster() )
     {
       image = new QImage( dlg.size(), QImage::Format_ARGB32 );
+      if ( image->isNull() )
+      {
+        messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not allocate required memory for image" ) );
+        delete p;
+        delete image;
+        delete printer;
+
+        return;
+      }
       p->begin( image );
     }
     else
@@ -5924,7 +5933,6 @@ void QgisApp::saveMapAsPdf()
 
     connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ this, p, image, printer ]
     {
-      messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to image" ) );
       p->end();
 
       if ( image )
@@ -5936,26 +5944,13 @@ void QgisApp::saveMapAsPdf()
         pp.end();
       }
 
+      messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to PDF" ) );
       delete p;
       delete image;
       delete printer;
     } );
-    connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ this, p, image, printer ]( int error )
+    connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ this, p, image, printer ]( int )
     {
-      switch ( error )
-      {
-        case QgsMapRendererTask::ImageAllocationFail:
-        {
-          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
-          break;
-        }
-        case QgsMapRendererTask::ImageSaveFail:
-        {
-          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not save the image to file" ) );
-          break;
-        }
-      }
-
       delete p;
       delete image;
       delete printer;
