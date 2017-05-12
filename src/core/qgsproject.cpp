@@ -1550,7 +1550,7 @@ QString QgsProject::writePath( const QString& src, const QString& relativeBasePa
   QFileInfo srcFileInfo( src );
   QFileInfo projFileInfo( fileName() );
   QString srcPath = srcFileInfo.exists() ? srcFileInfo.canonicalFilePath() : src;
-  QString projPath = projFileInfo.canonicalFilePath();
+  QString projPath = projFileInfo.exists( ) ? projFileInfo.canonicalFilePath() : fileName();
 
   if ( !relativeBasePath.isNull() )
   {
