@@ -42,6 +42,11 @@ class QgsLocatorResult
  String displayed for result.
 %End
 
+    QString description;
+%Docstring
+ Descriptive text for result.
+%End
+
     QVariant userData;
 %Docstring
  Custom reference or other data set by the filter.

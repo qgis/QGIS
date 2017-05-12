@@ -83,6 +83,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     void scheduleDelayedPopup();
     void performSearch();
     void showList();
+    void triggerSearchAndShowList();
     void searchFinished();
     void addResult( const QgsLocatorResult &result );
 
@@ -134,7 +135,7 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
  * An abstract list model for displaying the results in a QgsLocatorWidget.
  * \since QGIS 3.0
  */
-class QgsLocatorModel : public QAbstractListModel
+class QgsLocatorModel : public QAbstractTableModel
 {
     Q_OBJECT
 
@@ -148,6 +149,12 @@ class QgsLocatorModel : public QAbstractListModel
       ResultFilterPriorityRole,
       ResultScoreRole,
       ResultFilterNameRole,
+    };
+
+    enum columnCount
+    {
+      Name = 0,
+      Description
     };
 
     /**
